@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -269,7 +268,7 @@ class Mdl_Quotes extends Response_Model
 
         $db_array['notes'] = get_setting('default_quote_notes');
 
-        if ( ! isset($db_array['quote_status_id'])) {
+        if (! isset($db_array['quote_status_id'])) {
             $db_array['quote_status_id'] = 1;
         }
 
@@ -524,7 +523,7 @@ class Mdl_Quotes extends Response_Model
     {
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-        if ( !empty($quote) && ($quote->quote_status_id == 1 && $quote->quote_number == '')) {
+        if (!empty($quote) && ($quote->quote_status_id == 1 && $quote->quote_number == '')) {
             // Generate new quote number if applicable
             if (get_setting('generate_quote_number_for_draft') == 0) {
                 $quote_number = $this->mdl_quotes->get_quote_number($quote->invoice_group_id);

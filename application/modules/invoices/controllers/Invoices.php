@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -104,7 +104,7 @@ class Invoices extends Admin_Controller
             return;
         }
 
-        if ( ! file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             log_message('error', 'While downloading: File not found: ' . $filePath);
             show_404();
 
@@ -153,25 +153,21 @@ class Invoices extends Admin_Controller
         $fields  = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if ( ! $invoice) {
+        if (! $invoice) {
             show_404();
         }
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result();
         $custom_values = [];
-        foreach ($custom_fields as $custom_field)
-        {
-            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
-            {
+        foreach ($custom_fields as $custom_field) {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values                                          = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[ $custom_field->custom_field_id ] = $values;
             }
         }
 
-        foreach ($custom_fields as $cfield)
-        {
-            foreach ($fields as $fvalue)
-            {
+        foreach ($custom_fields as $cfield) {
+            foreach ($fields as $fvalue) {
                 if ($fvalue->invoice_custom_fieldid == $cfield->custom_field_id) {
                     // TODO: Hackish, may need a better optimization
                     $this->mdl_invoices->set_form_value(
@@ -255,17 +251,14 @@ class Invoices extends Admin_Controller
         $invoice        = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_status = $invoice->invoice_status_id;
 
-        if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true)
-        {
+        if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true) {
             // If invoice refers to tasks, mark those tasks back to 'Complete'
             $this->load->model('tasks/mdl_tasks');
             $tasks = $this->mdl_tasks->update_on_invoice_delete($invoice_id);
 
             // Delete the invoice
             $this->mdl_invoices->delete($invoice_id);
-        }
-        else
-        {
+        } else {
             // Add alert that invoices can't be deleted
             $this->session->set_flashdata('alert_error', trans('invoice_deletion_forbidden'));
         }
@@ -283,8 +276,7 @@ class Invoices extends Admin_Controller
     {
         $this->load->helper('pdf');
 
-        if (get_setting('mark_invoices_sent_pdf') == 1)
-        {
+        if (get_setting('mark_invoices_sent_pdf') == 1) {
             $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
             $this->mdl_invoices->mark_sent($invoice_id);
         }
@@ -347,8 +339,7 @@ class Invoices extends Admin_Controller
 
         $this->load->model('invoices/mdl_invoice_amounts');
 
-        foreach ($invoice_ids as $invoice_id)
-        {
+        foreach ($invoice_ids as $invoice_id) {
             $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id->invoice_id);
             // Recalculate invoice amounts
             $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id, $global_discount);

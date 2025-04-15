@@ -66,5 +66,4 @@ class Mdl_Templates extends CI_Model
 
         return $templates;
     }
-
 }

@@ -71,8 +71,7 @@
                             </div>
 
 <?php // New user
-if ( ! $id)
-{
+if (! $id) {
 ?>
                             <div class="form-group">
                                 <label for="user_password">
@@ -88,8 +87,7 @@ if ( ! $id)
                                 <input type="password" name="user_passwordv" id="user_passwordv" class="form-control" required>
                             </div>
 <?php
-}
-else // Edit user
+} else // Edit user
 {
 ?>
                             <div class="form-group">
@@ -110,8 +108,7 @@ else // Edit user
                                     </option>
 <?php
 $usr_lang = $this->mdl_users->form_value('user_language');
-foreach ($languages as $language)
-{
+foreach ($languages as $language) {
 ?>
                                     <option value="<?php echo $language; ?>" <?php check_select($usr_lang, $language); ?>>
                                         <?php echo ucfirst($language); ?>
@@ -127,8 +124,7 @@ foreach ($languages as $language)
                                 <select name="user_type" id="user_type" class="form-control simple-select" required>
 <?php
 $user_type = $this->mdl_users->form_value('user_type');
-foreach ($user_types as $key => $type)
-{
+foreach ($user_types as $key => $type) {
 ?>
                                     <option value="<?php echo $key; ?>" <?php check_select($user_type, $key); ?>>
                                         <?php echo $type; ?>
@@ -182,8 +178,7 @@ foreach ($user_types as $key => $type)
                                     <select name="user_country" id="user_country" class="form-control">
                                         <option value=""><?php _trans('none'); ?></option>
 <?php
-foreach ($countries as $cldr => $country)
-{
+foreach ($countries as $cldr => $country) {
 ?>
                                         <option value="<?php echo $cldr; ?>"
                                             <?php check_select($selected_country, $cldr); ?>>
@@ -195,10 +190,8 @@ foreach ($countries as $cldr => $country)
                                     </select>
                                 </div>
 <?php
-foreach ($custom_fields as $custom_field)
-{
-    if ($custom_field->custom_field_location == 2)
-    {
+foreach ($custom_fields as $custom_field) {
+    if ($custom_field->custom_field_location == 2) {
         print_field($this->mdl_users, $custom_field, $custom_values);
     }
 }
@@ -239,10 +232,8 @@ $eas_code = $this->mdl_users->form_value('user_ubl_eas_code', true);
                                 </div>
 
 <?php
-foreach ($custom_fields as $custom_field)
-{
-    if ($custom_field->custom_field_location == 3)
-    {
+foreach ($custom_fields as $custom_field) {
+    if ($custom_field->custom_field_location == 3) {
         print_field($this->mdl_users, $custom_field, $custom_values);
     }
 }
@@ -286,8 +277,7 @@ foreach ($custom_fields as $custom_field)
                         </div>
 
 <?php
-if ($this->mdl_settings->setting('sumex') == '1')
-{
+if ($this->mdl_settings->setting('sumex') == '1') {
 ?>
 
                         <div class="panel panel-default">
@@ -356,12 +346,12 @@ if ($this->mdl_settings->setting('sumex') == '1')
                                 </div>
 <?php
 $default_custom = false;
-foreach ($custom_fields as $custom_field)
-{
-    if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+foreach ($custom_fields as $custom_field) {
+    if (! $default_custom && ! $custom_field->custom_field_location) {
+        $default_custom = true;
+    }
 
-    if ($custom_field->custom_field_location == 4)
-    {
+    if ($custom_field->custom_field_location == 4) {
         print_field($this->mdl_users, $custom_field, $custom_values);
     }
 }
@@ -372,8 +362,7 @@ foreach ($custom_fields as $custom_field)
                         </div>
 
 <?php
-if ($default_custom)
-{
+if ($default_custom) {
 ?>
                         <div class="row">
                             <div class="col-xs-12">
@@ -386,10 +375,8 @@ if ($default_custom)
                                         <div class="row form-horizontal">
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
-    foreach ($custom_fields as $custom_field)
-    {
-        if (! $custom_field->custom_field_location) // == 0
-        {
+    foreach ($custom_fields as $custom_field) {
+        if (! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_users, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }

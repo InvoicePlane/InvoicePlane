@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,7 +16,6 @@ if (! defined('BASEPATH'))
 #[AllowDynamicProperties]
 class Mdl_Custom_Fields extends MY_Model
 {
-
     public $table = 'ip_custom_fields';
 
     public $primary_key = 'ip_custom_fields.custom_field_id';
@@ -28,8 +26,7 @@ class Mdl_Custom_Fields extends MY_Model
      */
     public static function get_nicename($element)
     {
-        if (in_array($element, Mdl_Custom_Fields::custom_types()))
-        {
+        if (in_array($element, Mdl_Custom_Fields::custom_types())) {
             return strtolower(str_replace('-', '', $element));
         }
 
@@ -107,8 +104,7 @@ class Mdl_Custom_Fields extends MY_Model
      */
     public function save($id = null, $db_array = null)
     {
-        if ($id)
-        {
+        if ($id) {
             // Get the original record before saving
             $original_record = $this->get_by_id($id);
         }
@@ -128,14 +124,14 @@ class Mdl_Custom_Fields extends MY_Model
     public function get_positions($table_name = false)
     {
          $this->load->model(
-            [
+             [
                 'custom_fields/mdl_client_custom',
                 'custom_fields/mdl_invoice_custom',
                 'custom_fields/mdl_payment_custom',
                 'custom_fields/mdl_quote_custom',
                 'custom_fields/mdl_user_custom',
-            ]
-        );
+             ]
+         );
 
         $p = $table_name ? 'ip_' : '';
         $s = $table_name ? '_custom' : '';
@@ -148,10 +144,8 @@ class Mdl_Custom_Fields extends MY_Model
             $p . 'user'     . $s => Mdl_user_custom::$positions,
         ];
 
-        foreach ($positions as $key => $val)
-        {
-            foreach ($val as $key2 => $val2)
-            {
+        foreach ($positions as $key => $val) {
+            foreach ($val as $key2 => $val2) {
                 $val[$key2] = trans($val2);
             }
 
@@ -183,21 +177,16 @@ class Mdl_Custom_Fields extends MY_Model
         $custom_tables = $this->custom_tables();
 
         // Check if the user wants to add 'id' as custom field
-        if (strtolower($db_array['custom_field_label']) == 'id')
-        {
+        if (strtolower($db_array['custom_field_label']) == 'id') {
             // Replace 'id' with 'field_id' to avoid problems with the primary key
             $custom_field_label = 'field_id';
-        }
-        else
-        {
+        } else {
             $custom_field_label = strtolower(str_replace(' ', '_', $db_array['custom_field_label']));
         }
 
         if (in_array($db_array['custom_field_type'], $this->custom_types())) {
             $type = $db_array['custom_field_type'];
-        }
-        else
-        {
+        } else {
             $type = $this->custom_types()[0];
         }
 
@@ -232,7 +221,9 @@ class Mdl_Custom_Fields extends MY_Model
      */
     public function used($id = null, $get = true)
     {
-        if( ! $id) return;
+        if (! $id) {
+            return;
+        }
 
         $cf = $this->get_by_id($id);
         $base = strtr($cf->custom_field_table, ['ip_' => '']) . '_field';
@@ -251,18 +242,16 @@ class Mdl_Custom_Fields extends MY_Model
      */
     public function delete($id)
     {
-        if ( ! $this->used($id))
-        {
+        if (! $this->used($id)) {
             $custom_field = $this->get_by_id($id);
             // Remove MULTIPLE|SINGLE CHOICE values
-            if(preg_match('/CHOICE/', $custom_field->custom_field_type))
-            {
+            if (preg_match('/CHOICE/', $custom_field->custom_field_type)) {
                 $this->load->model('custom_values/mdl_custom_values');
                 $this->mdl_custom_values->delete_all_fid($id);
             }
 
             // Remove reference in custom table
-            $base = strtr($custom_field->custom_field_table,['ip_' => '']) . '_field';
+            $base = strtr($custom_field->custom_field_table, ['ip_' => '']) . '_field';
             $this->db->from($custom_field->custom_field_table)->where($base . 'id', $id)->delete($custom_field->custom_field_table);
             //
             parent::delete($id);
@@ -314,8 +303,7 @@ class Mdl_Custom_Fields extends MY_Model
         $value_key = $cf_table . '_fieldvalue';
         $value_key_serialized = $cf_table . '_fieldvalue_serialized';
 
-        if (!isset($value[0]->$value_key))
-        {
+        if (!isset($value[0]->$value_key)) {
             return '';
         }
 
@@ -334,39 +322,33 @@ class Mdl_Custom_Fields extends MY_Model
 
         $fields = $this->$custom_field_model->by_id($model_id)->get()->result();
 
-        if (empty($fields))
-        {
+        if (empty($fields)) {
             return [];
         }
 
         $values = [];
         $custom_field = str_replace('mdl_', '', $custom_field_model);
 
-        foreach ($fields as $field)
-        {
+        foreach ($fields as $field) {
             // Get the custom field value
             $field_id_fieldlabel = $custom_field . '_fieldvalue';
 
             // Check if exist !(null or '')
-            if ( ! $field->$field_id_fieldlabel)
-            {
+            if (! $field->$field_id_fieldlabel) {
                 $values[$field->custom_field_label] = null; // $field->$field_id_fieldlabel
                 continue;
             }
 
-            if ($field->custom_field_type == 'MULTIPLE-CHOICE')
-            {
+            if ($field->custom_field_type == 'MULTIPLE-CHOICE') {
                 $custom_values = $this->mdl_custom_values->get_by_ids($field->$field_id_fieldlabel)->result();
 
-                if ( ! empty($custom_values))
-                {
+                if (! empty($custom_values)) {
                     $key_serialized = $field_id_fieldlabel . '_serialized';
 
                     $field->$field_id_fieldlabel = [];
                     $field->$key_serialized = '';
 
-                    foreach ($custom_values as $custom_value)
-                    {
+                    foreach ($custom_values as $custom_value) {
                         //Fix compatibility issue with php 5.6
                         array_push($field->$field_id_fieldlabel, $custom_value->custom_values_value);
 
@@ -375,13 +357,10 @@ class Mdl_Custom_Fields extends MY_Model
                         $field->$key_serialized .= $custom_value === end($custom_values) ? '' : ', ';
                     }
                 }
-            }
-            elseif ($field->custom_field_type == 'SINGLE-CHOICE')
-            {
+            } elseif ($field->custom_field_type == 'SINGLE-CHOICE') {
                 $custom_value = $this->mdl_custom_values->get_by_id($field->$field_id_fieldlabel)->result();
 
-                if ( ! empty($custom_value))
-                {
+                if (! empty($custom_value)) {
                     $custom_value = $custom_value[0];
                     $field->$field_id_fieldlabel = $custom_value->custom_values_value;
                 }
@@ -430,5 +409,4 @@ class Mdl_Custom_Fields extends MY_Model
 
         $this->dbforge->add_column($table_name, $column);
     }
-
 }

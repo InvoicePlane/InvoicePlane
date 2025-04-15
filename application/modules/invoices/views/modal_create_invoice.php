@@ -63,9 +63,9 @@
                     </span>
                     <select name="client_id" id="create_invoice_client_id" class="client-id-select form-control"
                             autofocus="autofocus" required>
-                        <?php if (!empty($client)) : ?>
-                            <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client, false)); ?></option>
-                        <?php endif; ?>
+<?php if (!empty($client)) : ?>
+                        <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client, false)); ?></option>
+<?php endif; ?>
                     </select>
                 </div>
             </div>
@@ -93,13 +93,17 @@
             <div class="form-group">
                 <label for="invoice_group_id"><?php _trans('invoice_group'); ?></label>
                 <select name="invoice_group_id" id="invoice_group_id"
-                	class="form-control simple-select" data-minimum-results-for-search="Infinity" required>
-                    <?php foreach ($invoice_groups as $invoice_group) { ?>
-                        <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
-                            <?php _htmlsc($invoice_group->invoice_group_name); ?>
-                        </option>
-                    <?php } ?>
+                    class="form-control simple-select" data-minimum-results-for-search="Infinity" required>
+<?php
+foreach ($invoice_groups as $invoice_group) {
+    $is_selected = (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) ? ' selected="selected"' : '';
+?>
+                    <option value="<?php echo $invoice_group->invoice_group_id; ?>"<?php echo $is_selected; ?>>
+                        <?php _htmlsc($invoice_group->invoice_group_name); ?>
+                    </option>
+<?php
+}
+?>
                 </select>
             </div>
 

@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -85,8 +84,7 @@ class Quotes extends Guest_Controller
 
         $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
 
-        if (! $quote)
-        {
+        if (! $quote) {
             show_404();
         }
 
@@ -128,8 +126,7 @@ class Quotes extends Guest_Controller
 
         $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
 
-        if (! $quote)
-        {
+        if (! $quote) {
             show_404();
         }
 
@@ -163,5 +160,4 @@ class Quotes extends Guest_Controller
 
         redirect_to('guest/quotes');
     }
-
 }

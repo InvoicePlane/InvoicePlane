@@ -14,20 +14,22 @@
 
             <tbody>
 <?php
-foreach ($tasks as $task)
-{
+foreach ($tasks as $task) {
+    $label_class = (isset($task_statuses[$task->task_status]['class'])) ? $task_statuses[$task->task_status]['class'] : '';
 ?>
                 <tr>
                     <td>
-                        <span class="label <?php if (isset($task_statuses[$task->task_status]['class'])) echo $task_statuses[$task->task_status]['class']; ?>">
-                            <?php if (isset($task_statuses[$task->task_status]['label'])) echo $task_statuses[$task->task_status]['label']; ?>
+                        <span class="label <?php echo $label_class; ?>">
+                            <?php if (isset($task_statuses[$task->task_status]['label'])) {
+                                echo $task_statuses[$task->task_status]['label'];
+                            } ?>
                         </span>
                     </td>
                     <td>
                         <?php echo htmlspecialchars($task->task_name, ENT_COMPAT); ?>
                     </td>
                     <td>
-                        <div class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">
+                        <div class="<?php echo $task->is_overdue ? 'text-danger' : ''; ?>">
                             <?php echo date_from_mysql($task->task_finish_date); ?>
                         </div>
                     </td>
@@ -51,8 +53,7 @@ foreach ($tasks as $task)
                                     </a>
                                 </li>
 <?php
-    if (!($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true))
-    {
+    if (!($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true)) {
 ?>
                                 <li>
                                     <form action="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"

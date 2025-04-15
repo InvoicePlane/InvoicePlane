@@ -38,7 +38,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class MY_Model extends CI_Model
 {
-
     public $table;
 
     public $primary_key;
@@ -286,7 +285,6 @@ class MY_Model extends CI_Model
             $this->db->insert($this->table, $db_array);
 
             return $this->db->insert_id();
-
         } else {
             if ($this->date_modified_field) {
                 if (is_array($db_array)) {

@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -64,23 +64,19 @@ function get_xml_template_files()
     $path = APPPATH . 'helpers/XMLconfigs/';
     $xml_config_files = array_diff(scandir($path), ['.', '..']);
 
-    foreach ($xml_config_files as $key => $xml_config_file)
-    {
+    foreach ($xml_config_files as $key => $xml_config_file) {
         $xml_config_files[$key] = str_replace('.php', '', $xml_config_file);
 
-        if (file_exists($path . $xml_config_files[$key] . '.php') && include $path . $xml_config_files[$key] . '.php')
-        {
+        if (file_exists($path . $xml_config_files[$key] . '.php') && include $path . $xml_config_files[$key] . '.php') {
             // By default config filename
             $generator = $xml_config_files[$key];
             // Use other template? (Optional)
-            if ( ! empty($xml_setting['generator']))
-            {
+            if (! empty($xml_setting['generator'])) {
                 $generator = $xml_setting['generator'];
             }
 
             // The template to generate the e-invoice file exist?
-            if (file_exists(APPPATH . 'libraries/XMLtemplates/' . $generator . 'Xml.php'))
-            {
+            if (file_exists(APPPATH . 'libraries/XMLtemplates/' . $generator . 'Xml.php')) {
                 // Add the name in list + translated country
                 $xml_template_items[$xml_config_files[$key]] = $xml_setting['full-name']
                 . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
@@ -102,8 +98,7 @@ function get_xml_template_files()
  */
 function get_xml_full_name($xml_id)
 {
-    if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php'))
-    {
+    if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
 
         return $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
@@ -117,10 +112,12 @@ function get_xml_full_name($xml_id)
 function get_ubl_eas_codes()
 {
     $file = APPPATH . 'config' . DIRECTORY_SEPARATOR . 'peppol_eas_code_list.csv';
-    $rows = array_map(function($v){return str_getcsv($v, ";");}, file($file));
+    $rows = array_map(function ($v) {
+        return str_getcsv($v, ";");
+    }, file($file));
     $head = array_shift($rows);
     $eas  = [];
-    foreach($rows as $row) {
+    foreach ($rows as $row) {
         if ($row[1] == 'ICD') {
             $eas[] = array_combine($head, $row);
         }

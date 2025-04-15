@@ -14,8 +14,7 @@
 
         <tbody>
 <?php
-foreach ($custom_fields as $custom_field)
-{
+foreach ($custom_fields as $custom_field) {
     $alpha    = str_replace("-", "_", strtolower($custom_field->custom_field_type));
     $position = $positions[ $custom_field->custom_field_table ][ $custom_field->custom_field_location ];
 ?>
@@ -31,8 +30,7 @@ foreach ($custom_fields as $custom_field)
                             <i class="fa fa-cog"></i> <?php _trans('options'); ?>
                         </a>
 <?php
-    if (in_array($custom_field->custom_field_type, $custom_value_fields))
-    {
+    if (in_array($custom_field->custom_field_type, $custom_value_fields)) {
 ?>
                         <a href="<?php echo site_url('custom_values/field/' . $custom_field->custom_field_id); ?>"
                            class="btn btn-default">

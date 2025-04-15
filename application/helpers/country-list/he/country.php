@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return array(
     'UG' => 'אוגנדה',
     'UZ' => 'אוזבקיסטן',
     'AT' => 'אוסטריה',

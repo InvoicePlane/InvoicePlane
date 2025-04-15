@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return array(
     'IS' => 'アイスランド',
     'IE' => 'アイルランド',
     'AZ' => 'アゼルバイジャン',

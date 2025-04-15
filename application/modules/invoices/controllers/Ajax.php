@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,7 +16,6 @@ if (! defined('BASEPATH'))
 #[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
-
     public $ajax_controller = true;
 
     public function save()
@@ -33,27 +31,22 @@ class Ajax extends Admin_Controller
 
         $this->mdl_invoices->set_id($invoice_id);
 
-        if ($this->mdl_invoices->run_validation('validation_rules_save_invoice'))
-        {
+        if ($this->mdl_invoices->run_validation('validation_rules_save_invoice')) {
             $items = json_decode($this->input->post('items'));
 
             $invoice_discount_percent = (float) $this->input->post('invoice_discount_percent');
             $invoice_discount_amount  = (float) $this->input->post('invoice_discount_amount');
 
             // Percent by default. Only one allowed. Prevent set 2 global discounts by geeky client - since v1.6.3
-            if ($invoice_discount_percent && $invoice_discount_amount)
-            {
+            if ($invoice_discount_percent && $invoice_discount_amount) {
                 $invoice_discount_amount = 0.0;
             }
 
             // New discounts (for legacy_calculation false) - since v1.6.3 Need if taxes applied after discounts
             $items_subtotal = 0.0;
-            if ($invoice_discount_amount)
-            {
-                foreach ($items as $item)
-                {
-                    if ( ! empty($item->item_name))
-                    {
+            if ($invoice_discount_amount) {
+                foreach ($items as $item) {
+                    if (! empty($item->item_name)) {
                         $items_subtotal += standardize_amount($item->item_quantity) * standardize_amount($item->item_price);
                     }
                 }
@@ -68,11 +61,9 @@ class Ajax extends Admin_Controller
                 'items_subtotal' => $items_subtotal,
             ];
 
-            foreach ($items as $item)
-            {
+            foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
-                if ( ! empty($item->item_name))
-                {
+                if (! empty($item->item_name)) {
                     // Standardize item data
                     $item->item_quantity        = $item->item_quantity         ? standardize_amount($item->item_quantity)        : 0.0;
                     $item->item_price           = $item->item_price            ? standardize_amount($item->item_price)           : 0.0;
@@ -80,29 +71,22 @@ class Ajax extends Admin_Controller
                     $item->item_product_id      = $item->item_product_id       ? $item->item_product_id                          : null;
                     $item->item_product_unit_id = $item->item_product_unit_id  ? $item->item_product_unit_id                     : null;
                     $item->item_product_unit    = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
-                    if (property_exists($item, 'item_date'))
-                    {
+                    if (property_exists($item, 'item_date')) {
                         $item->item_date        = $item->item_date             ? date_to_mysql($item->item_date)                 : null;
                     }
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
 
-                    if ( ! $item->item_task_id)
-                    {
+                    if (! $item->item_task_id) {
                         unset($item->item_task_id);
-                    }
-                    else
-                    {
+                    } else {
                         empty($this->mdl_tasks) && $this->load->model('tasks/mdl_tasks');
                         $this->mdl_tasks->update_status(4, $item->item_task_id);
                     }
 
                     $this->mdl_items->save($item_id, $item, $global_discount);
-
-                }
-                elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price)))
-                {
+                } elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price))) {
                     // Throw an error message and use the form validation for that (todo: where the translations of: The .* field is required.)
                     $this->load->library('form_validation');
                     $this->form_validation->set_rules('item_name', trans('item'), 'required');
@@ -125,15 +109,13 @@ class Ajax extends Admin_Controller
             // Generate new invoice number if needed
             $invoice_number = $this->input->post('invoice_number');
 
-            if (empty($invoice_number) && $invoice_status_id != 1)
-            {
+            if (empty($invoice_number) && $invoice_status_id != 1) {
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
                 $invoice_number   = $this->mdl_invoices->get_invoice_number($invoice_group_id);
             }
 
             // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
-            if(! config_item('legacy_calculation') && $invoice_discount_amount && $invoice_discount_amount != $global_discount['item'])
-            {
+            if (! config_item('legacy_calculation') && $invoice_discount_amount && $invoice_discount_amount != $global_discount['item']) {
                 // Adjust amount to reflect real calculation (cents)
                 $invoice_discount_amount = $global_discount['item'];
             }
@@ -152,8 +134,7 @@ class Ajax extends Admin_Controller
             ];
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
-            if ($this->config->item('disable_read_only') === false && $invoice_status == get_setting('read_only_toggle'))
-            {
+            if ($this->config->item('disable_read_only') === false && $invoice_status == get_setting('read_only_toggle')) {
                 $db_array['is_read_only'] = 1;
             }
 
@@ -161,8 +142,7 @@ class Ajax extends Admin_Controller
 
             $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $invoice_id)->get()->num_rows();
 
-            if ($sumexInvoice >= 1)
-            {
+            if ($sumexInvoice >= 1) {
                 $sumex_array =
                 [
                     'sumex_invoice'        => $invoice_id,
@@ -178,8 +158,7 @@ class Ajax extends Admin_Controller
                 $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
             }
 
-            if(config_item('legacy_calculation'))
-            {
+            if (config_item('legacy_calculation')) {
                 // Recalculate for discounts
                 $this->load->model('invoices/mdl_invoice_amounts');
                 $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
@@ -189,7 +168,6 @@ class Ajax extends Admin_Controller
                 'success' => 1,
             ];
         } else {
-
             log_message('error', '980: I wasnt able to run the validation validation_rules_save_invoice');
 
             $this->load->helper('json_error');
@@ -200,36 +178,28 @@ class Ajax extends Admin_Controller
         }
 
         // Save all custom fields
-        if ($this->input->post('custom'))
-        {
+        if ($this->input->post('custom')) {
             $db_array = [];
 
             $values = [];
-            foreach ($this->input->post('custom') as $custom)
-            {
-                if (preg_match("/^(.*)\[\]$/i", $custom['name'], $matches))
-                {
+            foreach ($this->input->post('custom') as $custom) {
+                if (preg_match("/^(.*)\[\]$/i", $custom['name'], $matches)) {
                     $values[$matches[1]][] = $custom['value'];
-                }
-                else
-                {
+                } else {
                     $values[$custom['name']] = $custom['value'];
                 }
             }
 
-            foreach ($values as $key => $value)
-            {
+            foreach ($values as $key => $value) {
                 preg_match("/^custom\[(.*?)\](?:\[\]|)$/", $key, $matches);
-                if ($matches)
-                {
+                if ($matches) {
                     $db_array[$matches[1]] = $value;
                 }
             }
 
             $this->load->model('custom_fields/mdl_invoice_custom');
             $result = $this->mdl_invoice_custom->save_custom($invoice_id, $db_array);
-            if ($result !== true)
-            {
+            if ($result !== true) {
                 $response = [
                     'success'           => 0,
                     'validation_errors' => $result,
@@ -246,17 +216,14 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
-        if ($this->mdl_invoice_tax_rates->run_validation())
-        {
+        if ($this->mdl_invoice_tax_rates->run_validation()) {
             // Only Legacy calculation have global taxes - since v1.6.3
             config_item('legacy_calculation') && $this->mdl_invoice_tax_rates->save();
 
             $response = [
                 'success' => 1,
             ];
-        }
-        else
-        {
+        } else {
             $response = [
                 'success'           => 0,
                 'validation_errors' => $this->mdl_invoice_tax_rates->validation_errors,
@@ -276,24 +243,20 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_invoices');
 
         // Only continue if the invoice exists or no item id was provided
-        if ($this->mdl_invoices->get_by_id($invoice_id) || empty($item_id))
-        {
+        if ($this->mdl_invoices->get_by_id($invoice_id) || empty($item_id)) {
             // Delete invoice item
             $this->load->model('mdl_items');
             $item = $this->mdl_items->delete($item_id);
 
             // Check if deletion was successful
-            if ($item)
-            {
+            if ($item) {
                 $success = 1;
                 // Mark task as complete from invoiced
-                if (isset($item->item_task_id) && $item->item_task_id)
-                {
+                if (isset($item->item_task_id) && $item->item_task_id) {
                     $this->load->model('tasks/mdl_tasks');
                     $this->mdl_tasks->update_status(3, $item->item_task_id);
                 }
             }
-
         }
 
         // Return the response
@@ -398,9 +361,7 @@ class Ajax extends Admin_Controller
                 'success'    => 1,
                 'invoice_id' => $this->security->xss_clean($invoice_id),
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success'           => 0,
@@ -449,9 +410,7 @@ class Ajax extends Admin_Controller
                 'success' => 1,
                 'invoice_id' => $this->security->xss_clean($invoice_id),
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success'           => 0,
@@ -485,17 +444,14 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_invoices');
 
-        if ($this->mdl_invoices->run_validation())
-        {
+        if ($this->mdl_invoices->run_validation()) {
             $invoice_id = $this->mdl_invoices->create();
 
             $response = [
                 'success'    => 1,
                 'invoice_id' => $invoice_id,
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success'           => 0,
@@ -510,16 +466,13 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_invoices_recurring');
 
-        if ($this->mdl_invoices_recurring->run_validation())
-        {
+        if ($this->mdl_invoices_recurring->run_validation()) {
             $this->mdl_invoices_recurring->save();
 
             $response = [
                 'success' => 1,
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success'           => 0,
@@ -579,16 +532,14 @@ class Ajax extends Admin_Controller
             'invoices/mdl_invoice_tax_rates',
         ]);
 
-        if ($this->mdl_invoices->run_validation())
-        {
+        if ($this->mdl_invoices->run_validation()) {
             $target_id = $this->mdl_invoices->save();
             $source_id = $this->security->xss_clean($this->input->post('invoice_id'));
 
             $this->mdl_invoices->copy_credit_invoice($source_id, $target_id);
 
             // Set source invoice to read-only
-            if ($this->config->item('disable_read_only') == false)
-            {
+            if ($this->config->item('disable_read_only') == false) {
                 $this->mdl_invoices->where('invoice_id', $source_id);
                 $this->mdl_invoices->update('ip_invoices', ['is_read_only' => '1']);
             }
@@ -604,9 +555,7 @@ class Ajax extends Admin_Controller
                 'success' => 1,
                 'invoice_id' => $target_id,
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success' => 0,
@@ -616,5 +565,4 @@ class Ajax extends Admin_Controller
 
         exit(json_encode($response));
     }
-
 }

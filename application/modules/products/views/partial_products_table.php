@@ -10,18 +10,21 @@
                 <th class="amount last"><?php _trans('product_price'); ?></th>
                 <th><?php _trans('product_unit'); ?></th>
                 <th><?php _trans('tax_rate'); ?></th>
-                <?php if (get_setting('sumex')) : ?>
-                    <th><?php _trans('product_tariff'); ?></th>
-                <?php endif; ?>
+<?php
+$sumex_active = get_setting('sumex');
+if ($sumex_active) {
+?>
+                <th><?php _trans('product_tariff'); ?></th>
+<?php
+}
+?>
                 <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
 
             <tbody>
 <?php
-$sumex_active = get_setting('sumex');
-foreach ($products as $product)
-{
+foreach ($products as $product) {
 ?>
                 <tr>
                     <td><?php _htmlsc($product->family_name); ?></td>
@@ -32,8 +35,7 @@ foreach ($products as $product)
                     <td><?php _htmlsc($product->unit_name); ?></td>
                     <td><?php echo ($product->tax_rate_id) ? htmlsc($product->tax_rate_name) : trans('none'); ?></td>
 <?php
-    if ($sumex_active)
-    {
+    if ($sumex_active) {
 ?>
                     <td><?php _htmlsc($product->product_tariff); ?></td>
 <?php

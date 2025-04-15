@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return array(
     'UM' => 'ASV mazās aizjūras teritorijas',
     'AF' => 'Afganistāna',
     'AL' => 'Albānija',

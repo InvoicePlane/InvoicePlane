@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -73,5 +72,4 @@ class Mdl_Units extends Response_Model
             ]
         );
     }
-
 }

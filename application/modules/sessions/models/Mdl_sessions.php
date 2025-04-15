@@ -59,7 +59,6 @@ class Mdl_Sessions extends CI_Model
 
                     $this->db->where('user_email', $email);
                     $user = $this->db->get('ip_users')->row();
-
                 } else {
                     /**
                      * The password didn't verify against original md5
@@ -86,5 +85,4 @@ class Mdl_Sessions extends CI_Model
 
         return false;
     }
-
 }

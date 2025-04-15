@@ -119,5 +119,4 @@ class Reports extends Admin_Controller
 
         $this->layout->buffer('content', 'reports/sales_by_year_index')->render();
     }
-
 }

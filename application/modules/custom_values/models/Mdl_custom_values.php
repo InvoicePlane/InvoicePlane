@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -107,22 +106,21 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function used($id = null, $get = true)
     {
-        if( ! $id) return;
+        if (! $id) {
+            return;
+        }
 
         $this->load->model('custom_fields/mdl_custom_fields');
         $cv = $this->get_by_id($id)->row();
         $cf = $this->mdl_custom_fields->get_by_id($cv->custom_values_field);
         unset($cv);
-        $base = strtr($cf->custom_field_table,['ip_' => '']) . '_fieldvalue';
+        $base = strtr($cf->custom_field_table, ['ip_' => '']) . '_fieldvalue';
 
         // Get values [SINGLE|MULTIPLE]-CHOICE
         $this->db->from($cf->custom_field_table);
-        if('SINGLE-CHOICE' == $cf->custom_field_type)
-        {
+        if ('SINGLE-CHOICE' == $cf->custom_field_type) {
             $this->db->where($base, $id);
-        }
-        else
-        {
+        } else {
             $this->db->or_like($base, $id . ',')
                      ->or_like($base, ',' . $id)
                      ->or_where($base, $id);
@@ -137,8 +135,7 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function delete($id)
     {
-        if ( ! $this->used($id))
-        {
+        if (! $this->used($id)) {
             parent::delete($id);
             return true;
         }
@@ -187,8 +184,7 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function get_by_ids($ids)
     {
-        if (empty($ids))
-        {
+        if (empty($ids)) {
             return null;
         }
 

@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
-
     public $ajax_controller = true;
 
     public function name_query()
@@ -113,7 +112,6 @@ class Ajax extends Admin_Controller
 
         // Only continue if the note exists or no item id was provided
         if ($this->mdl_client_notes->get_by_id($client_note_id) || empty($client_note_id)) {
-
             // Delete invoice item
             $this->load->model('mdl_client_notes');
             $item = $this->mdl_client_notes->delete($client_note_id);
@@ -122,7 +120,6 @@ class Ajax extends Admin_Controller
             if ($item) {
                 $success = 1;
             }
-
         }
 
         // Return the response
@@ -160,11 +157,12 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('clients/mdl_client_notes');
         $data = [
-            'client_notes' => $this->mdl_client_notes->where('client_id',
-                $this->input->post('client_id'))->get()->result(),
+            'client_notes' => $this->mdl_client_notes->where(
+                'client_id',
+                $this->input->post('client_id')
+            )->get()->result(),
         ];
 
         $this->layout->load_view('clients/partial_notes', $data);
     }
-
 }

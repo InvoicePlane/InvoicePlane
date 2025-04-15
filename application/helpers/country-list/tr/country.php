@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return array(
     'VI' => 'ABD Virgin Adaları',
     'AF' => 'Afganistan',
     'AX' => 'Aland Adaları',

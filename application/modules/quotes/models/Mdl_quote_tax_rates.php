@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -47,8 +46,7 @@ class Mdl_Quote_Tax_Rates extends Response_Model
 
         $quote_id = isset($db_array['quote_id']) ? $db_array['quote_id'] : $this->input->post('quote_id');
 
-        if ($quote_id)
-        {
+        if ($quote_id) {
             $global_discount['item'] = $this->mdl_quote_amounts->get_global_discount($quote_id);
             // Recalculate quote amounts
             $this->mdl_quote_amounts->calculate($quote_id, $global_discount);
@@ -79,5 +77,4 @@ class Mdl_Quote_Tax_Rates extends Response_Model
             ],
         ];
     }
-
 }

@@ -86,7 +86,7 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('tasks/form', trans('create_task')); ?></li>
                         <li><?php echo anchor('tasks/index', trans('view_tasks')); ?></li>
-						<li role="separator" class="divider"></li>
+                        <li role="separator" class="divider"></li>
                         <li><?php echo anchor('projects/form', trans('create_project')); ?></li>
                         <li><?php echo anchor('projects/index', trans('view_projects')); ?></li>
                     </ul>
@@ -157,18 +157,18 @@
                         $this->session->userdata('user_id')); ?>"
                        class="tip icon" data-placement="bottom"
                        title="<?php
-                       _htmlsc($this->session->userdata('user_name'));
-                       if ($this->session->userdata('user_company')) {
-                           print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
-                       }
-                       ?>">
+                        _htmlsc($this->session->userdata('user_name'));
+                        if ($this->session->userdata('user_company')) {
+                            print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
+                        }
+                        ?>">
                         <i class="fa fa-user"></i>
                         <span class="visible-xs">&nbsp;<?php
                             _htmlsc($this->session->userdata('user_name'));
-                            if ($this->session->userdata('user_company')) {
-                                print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
-                            }
-                            ?></span>
+                        if ($this->session->userdata('user_company')) {
+                            print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
+                        }
+                        ?></span>
                     </a>
                 </li>
                 <li>

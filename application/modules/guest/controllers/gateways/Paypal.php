@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -50,8 +49,7 @@ class Paypal extends Base_Controller
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
         // Check if the invoice is payable
-        if ($invoice->invoice_balance <= 0)
-        {
+        if ($invoice->invoice_balance <= 0) {
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
         }
@@ -79,8 +77,7 @@ class Paypal extends Base_Controller
         $paypal_response = $this->lib_paypal->captureOrder($order_id);
 
         //handle the payment
-        if ($paypal_response['status'])
-        {
+        if ($paypal_response['status']) {
             $paypal_object = json_decode($paypal_response['response']->getBody());
 
             $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id;
@@ -108,11 +105,9 @@ class Paypal extends Base_Controller
                 'merchant_response_date'       => date('Y-m-d'),
                 'merchant_response_driver'     => 'paypal',
                 'merchant_response'            => $paypal_object->status,
-                'merchant_response_reference'  => 'Resource ID:'.$paypal_object->id,
+                'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
             ]);
-        }
-        else
-        {
+        } else {
             $response_error = json_decode($paypal_response['error']->getResponse()->getBody());
 
             //get the order details to have the invoice id from paypal
@@ -129,8 +124,10 @@ class Paypal extends Base_Controller
             ]);
 
             //set error message to be flashed
-            $this->session->set_flashdata('alert_error',
-                trans('online_payment_payment_failed').'<br>' . $response_error->details[0]->description);
+            $this->session->set_flashdata(
+                'alert_error',
+                trans('online_payment_payment_failed') . '<br>' . $response_error->details[0]->description
+            );
             $this->session->keep_flashdata('alert_error');
         }
     }

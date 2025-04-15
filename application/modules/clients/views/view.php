@@ -63,14 +63,10 @@
 
 <?php
 $locations = [];
-foreach ($custom_fields as $custom_field)
-{
-    if (array_key_exists($custom_field->custom_field_location, $locations))
-    {
+foreach ($custom_fields as $custom_field) {
+    if (array_key_exists($custom_field->custom_field_location, $locations)) {
         $locations[$custom_field->custom_field_location] += 1;
-    }
-    else
-    {
+    } else {
         $locations[$custom_field->custom_field_location] = 1;
     }
 }
@@ -197,10 +193,8 @@ foreach ($custom_fields as $custom_field)
 <?php } ?>
 
 <?php
-foreach ($custom_fields as $custom_field)
-{
-    if ($custom_field->custom_field_location == 2)
-    {
+foreach ($custom_fields as $custom_field) {
+    if ($custom_field->custom_field_location == 2) {
         $column = $custom_field->custom_field_label;
         $value  = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
 ?>
@@ -243,12 +237,12 @@ foreach ($custom_fields as $custom_field)
 <?php
 
 $default_custom = false;
-foreach ($custom_fields as $custom_field)
-{
-    if (! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+foreach ($custom_fields as $custom_field) {
+    if (! $default_custom && ! $custom_field->custom_field_location) {
+        $default_custom = true;
+    }
 
-    if ($custom_field->custom_field_location == 4)
-    {
+    if ($custom_field->custom_field_location == 4) {
         $column = $custom_field->custom_field_label;
         $value  = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
 ?>
@@ -288,8 +282,7 @@ $keys             = explode(' ', $base); // to array
 $lang             = explode(' ', strtr($base, ['_1' => '']));
 $user_fields_nook = ($req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields > 0 && $client->client_einvoicing_version != '');
 // e-Invoicing button toggle users table checking
-if ($client->client_einvoicing_active && ! $user_fields_nook)
-{
+if ($client->client_einvoicing_active && ! $user_fields_nook) {
 ?>
                             <span class="pull-right cursor-pointer btn btn-xs btn-default alert-<?php echo $user_toggle; ?>"
                                   data-toggle="collapse" data-target=".einvoice-users-check"
@@ -316,8 +309,7 @@ if ($client->client_einvoicing_active && ! $user_fields_nook)
 
 <?php
 // e-Invoicing panel Client checks table
-if ($client->client_einvoicing_active && $user_fields_nook)
-{
+if ($client->client_einvoicing_active && $user_fields_nook) {
 ?>
                             <div class="alert alert-warning small" style="margin: 0px 10px 10px;">
                                 <table>
@@ -336,16 +328,15 @@ if ($client->client_einvoicing_active && $user_fields_nook)
                                     <tr><td>
 <?php
     $reqs = []; // init ! important
-    if ($req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields)
-    {
-        foreach($keys as $l => $key)
-        {
-            if ($req_einvoicing->clients[$client->client_id]->$key)
-            {
+    if ($req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields) {
+        foreach ($keys as $l => $key) {
+            if ($req_einvoicing->clients[$client->client_id]->$key) {
                 $reqs[] = '<i class="' . $class_checks[$req_einvoicing->clients[$client->client_id]->$key] . '"></i>'
-                        . anchor('/clients/form/' . $client->client_id . '#client_' . $key, trans($lang[$l])
-                                 , $title_tip  . ' #' . trans($lang[$l]). ' (' . trim(trans('field')) . ')"' // ! Need add: "
-                          );
+                        . anchor(
+                            '/clients/form/' . $client->client_id . '#client_' . $key,
+                            trans($lang[$l]),
+                            $title_tip  . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ')"'
+                        ); // ! Need add: "
             }
         }
     }
@@ -357,9 +348,7 @@ if ($client->client_einvoicing_active && $user_fields_nook)
                                 </tbody>
                             </table>
 <?php
-}
-else
-{
+} else {
     // Client ok! Show check fields user(s)
 ?>
                             <table class="einvoice-users-check table no-margin collapse<?php
@@ -371,8 +360,7 @@ else
                                 </thead>
 <?php
     // e-Invoicing panel User(s) checks table
-    foreach ($req_einvoicing->users as $uid => $user)
-    {
+    foreach ($req_einvoicing->users as $uid => $user) {
         $ok = ! $user->einvoicing_empty_fields; // or ->show_table (inverse)
         $tx = $ok ? 'success' : ($_SESSION['user_id'] == $uid ? 'danger' : 'warning');
 ?>
@@ -386,17 +374,16 @@ else
                                         <td>
 <?php
         $reqs = []; // Re init ! important
-        if ($user->einvoicing_empty_fields)
-        {
+        if ($user->einvoicing_empty_fields) {
             $reqs = []; // reuse
-            foreach($keys as $l => $key)
-            {
-                if ($user->$key)
-                {
+            foreach ($keys as $l => $key) {
+                if ($user->$key) {
                     $reqs[] = '<i class="' . $class_checks[$user->$key] . '"></i>'
-                            . anchor('/users/form/' . $uid . '#user_' . $key, trans($lang[$l])
-                                     , $title_tip  . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')). ' ' . htmlsc($user->user_name) . ')"' // ! Need add: "
-                              );
+                            . anchor(
+                                '/users/form/' . $uid . '#user_' . $key,
+                                trans($lang[$l]),
+                                $title_tip  . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ' ' . htmlsc($user->user_name) . ')"'
+                            ); // ! Need add: "
                 }
             }
         }
@@ -423,8 +410,7 @@ else
             </div>
 
 <?php
-if ($client->client_surname != '') // Client is not a company
-{
+if ($client->client_surname != '') { // Client is not a company
 ?>
             <hr>
 
@@ -445,8 +431,7 @@ if ($client->client_surname != '') // Client is not a company
                                     <td><?php echo format_gender($client->client_gender) ?></td>
                                 </tr>
 <?php
-    if ($this->mdl_settings->setting('sumex') == '1')
-    {
+    if ($this->mdl_settings->setting('sumex') == '1') {
 ?>
                                 <tr>
                                     <th><?php _trans('sumex_ssn'); ?></th>
@@ -465,10 +450,8 @@ if ($client->client_surname != '') // Client is not a company
 <?php
     } // fi sumex
 
-    foreach ($custom_fields as $custom_field)
-    {
-        if ($custom_field->custom_field_location == 3)
-        {
+    foreach ($custom_fields as $custom_field) {
+        if ($custom_field->custom_field_location == 3) {
             $column = $custom_field->custom_field_label;
             $value  = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
 ?>
@@ -489,8 +472,7 @@ if ($client->client_surname != '') // Client is not a company
 <?php
 } // fi client->client_surname
 
-if ($default_custom)
-{
+if ($default_custom) {
 ?>
             <hr>
 
@@ -502,10 +484,8 @@ if ($default_custom)
                         <div class="panel-body table-content">
                             <table class="table no-margin">
 <?php
-    foreach ($custom_fields as $custom_field)
-    {
-        if (! $custom_field->custom_field_location) // == 0
-        {
+    foreach ($custom_fields as $custom_field) {
+        if (! $custom_field->custom_field_location) { // == 0
             $column = $custom_field->custom_field_label;
             $value  = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
 ?>
@@ -554,8 +534,7 @@ if ($default_custom)
 
         </div>
 <?php
-foreach (explode(' ', 'quote invoice payment') as $what)
-{
+foreach (explode(' ', 'quote invoice payment') as $what) {
     $table = $what . '_table'; // dynamic var name
 ?>
         <div id="client-<?php echo $what; ?>s" class="tab-pane table-content<?php echo $activeTab == $what . 's' ? ' active' : ''; ?>">

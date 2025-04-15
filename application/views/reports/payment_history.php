@@ -19,8 +19,7 @@
         </tr>
 <?php
 $sum = 0;
-foreach ($results as $result)
-{
+foreach ($results as $result) {
 ?>
         <tr>
             <td><?php echo date_from_mysql($result->payment_date, true); ?></td>
@@ -34,8 +33,7 @@ foreach ($results as $result)
     $sum += $result->payment_amount;
 }
 
-if (!empty($results))
-{
+if (!empty($results)) {
 ?>
         <tr>
             <td colspan=5><?php _trans('total'); ?></td>

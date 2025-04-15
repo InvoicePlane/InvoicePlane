@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -49,5 +48,4 @@ class Payments extends Guest_Controller
         $this->layout->buffer('content', 'guest/payments_index');
         $this->layout->render('layout_guest');
     }
-
 }

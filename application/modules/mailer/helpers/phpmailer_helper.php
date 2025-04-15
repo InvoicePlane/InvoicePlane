@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -72,7 +72,7 @@ function phpmail_send(
             }
 
             // Check if certificates should not be verified
-            if ( ! get_setting('smtp_verify_certs', true)) {
+            if (! get_setting('smtp_verify_certs', true)) {
                 $mail->SMTPOptions = [
                     'ssl' => [
                         'verify_peer'       => false,

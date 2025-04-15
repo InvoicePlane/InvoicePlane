@@ -43,5 +43,4 @@ class Mdl_Payment_Methods extends Response_Model
             )
         );
     }
-
 }

@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return array(
     'AU' => 'Австралия',
     'AT' => 'Австрия',
     'AZ' => 'Азербайджан',

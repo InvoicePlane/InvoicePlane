@@ -45,7 +45,6 @@ require_once dirname(__FILE__) . '/Config.php';
 #[AllowDynamicProperties]
 class CI
 {
-
     public static $APP;
 
     public function __construct()
@@ -58,14 +57,14 @@ class CI
 
         /* re-assign language and config for modules */
         if (!$LANG instanceof MX_Lang) {
-            $LANG = new MX_Lang;
+            $LANG = new MX_Lang();
         }
 
         if (!$CFG instanceof MX_Config) {
-            $CFG = new MX_Config;
+            $CFG = new MX_Config();
         }
     }
 }
 
 /* create the application object */
-new CI;
+new CI();

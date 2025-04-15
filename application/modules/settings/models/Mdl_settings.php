@@ -141,5 +141,4 @@ class Mdl_Settings extends CI_Model
 
         return $themes;
     }
-
 }

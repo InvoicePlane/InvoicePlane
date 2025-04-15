@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -38,5 +37,4 @@ class Guest extends Guest_Controller
         $this->layout->buffer('content', 'guest/index');
         $this->layout->render('layout_guest');
     }
-
 }

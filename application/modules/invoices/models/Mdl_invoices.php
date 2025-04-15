@@ -252,7 +252,7 @@ class Mdl_Invoices extends Response_Model
                 'item_product_unit_id' => $invoice_item->item_product_unit_id,
             ];
 
-            if ( ! $copy_recurring_items_only || $invoice_item->item_is_recurring) {
+            if (! $copy_recurring_items_only || $invoice_item->item_is_recurring) {
                 $this->mdl_items->save(null, $db_array, $global_discount);
             }
         }
@@ -377,7 +377,7 @@ class Mdl_Invoices extends Response_Model
         $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
         $db_array['invoice_terms'] = get_setting('default_invoice_terms');
 
-        if ( ! isset($db_array['invoice_status_id'])) {
+        if (! isset($db_array['invoice_status_id'])) {
             $db_array['invoice_status_id'] = 1;
         }
 
@@ -493,7 +493,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice_array = [];
 
-        if ( ! empty($invoice_number)) {
+        if (! empty($invoice_number)) {
             $invoice_array = glob(UPLOADS_ARCHIVE_FOLDER . '*' . '_*' . $invoice_number . '*.pdf');
         } else {
             foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
@@ -592,7 +592,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->get_by_id($invoice_id);
 
-        if ( ! empty($invoice)) {
+        if (! empty($invoice)) {
             if ($invoice->invoice_status_id == 2) {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->where('invoice_id', $invoice_id);
@@ -616,7 +616,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->get_by_id($invoice_id);
 
-        if ( ! empty($invoice)) {
+        if (! empty($invoice)) {
             if ($invoice->invoice_status_id == 1) {
                 // Generate new invoice number if applicable
                 $invoice_number = $invoice->invoice_number;
@@ -646,7 +646,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if ( !empty($invoice) && ($invoice->invoice_status_id == 1 && $invoice->invoice_number == '')) {
+        if (!empty($invoice) && ($invoice->invoice_status_id == 1 && $invoice->invoice_number == '')) {
             // Generate new invoice number if applicable
             if (get_setting('generate_invoice_number_for_draft') == 0) {
                 $invoice_number = $this->get_invoice_number($invoice->invoice_group_id);
@@ -668,7 +668,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->get_by_id($invoice_id);
 
-        if ( ! empty($invoice) && get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
+        if (! empty($invoice) && get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
             $current_date = date_to_mysql(date(date_format_setting()));
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_date_due', $this->get_date_due($current_date));

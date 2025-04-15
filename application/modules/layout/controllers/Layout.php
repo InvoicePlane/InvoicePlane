@@ -1,6 +1,8 @@
 <?php
 
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -79,5 +81,4 @@ class Layout extends MX_Controller
 
         $this->load->view($view, $data);
     }
-
 }

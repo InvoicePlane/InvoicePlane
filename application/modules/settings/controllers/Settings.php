@@ -47,8 +47,7 @@ class Settings extends Admin_Controller
             if ($settings['tax_rate_decimal_places'] != get_setting('tax_rate_decimal_places')) {
                 $this->db->query("
                     ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent`
-                    DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null"
-                );
+                    DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null");
             }
 
             // Save the submitted settings :todo:improve: Save In One SQL query : $db_array[$key] = val; •••& @end mdl save $db_array.
@@ -66,16 +65,11 @@ class Settings extends Admin_Controller
                 if (isset($settings[$key . '_field_is_password']) && $value != '') {
                     // Encrypt passwords but don't save empty passwords
                     $this->mdl_settings->save($key, $this->crypt->encode(trim($value)));
-
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
-
                     // Format amount inputs
                     $this->mdl_settings->save($key, standardize_amount($value));
-
                 } else {
-
                     $this->mdl_settings->save($key, $value);
-
                 }
 
                 if ($key == 'number_format') {
@@ -83,7 +77,6 @@ class Settings extends Admin_Controller
                     $this->mdl_settings->save('decimal_point', $number_formats[$value]['decimal_point']);
                     $this->mdl_settings->save('thousands_separator', $number_formats[$value]['thousands_separator']);
                 }
-
             }
 
             $upload_config = [

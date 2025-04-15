@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -63,14 +62,12 @@ function check_select($value1, $value2 = null, $operator = '==', $checked = fals
     $select = $checked ? 'checked="checked"' : 'selected="selected"';
 
     // Instant-validate if $value1 is a bool value
-    if (is_bool($value1) && $value2 === null)
-    {
+    if (is_bool($value1) && $value2 === null) {
         echo $value1 ? $select : '';
         return;
     }
 
-    switch ($operator)
-    {
+    switch ($operator) {
         case '==':
             $echo_selected = $value1 == $value2;
             break;

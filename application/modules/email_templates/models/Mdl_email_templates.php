@@ -76,5 +76,4 @@ class Mdl_Email_Templates extends Response_Model
             )
         );
     }
-
 }

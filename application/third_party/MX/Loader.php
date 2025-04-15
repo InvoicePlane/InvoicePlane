@@ -42,7 +42,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class MX_Loader extends CI_Loader
 {
-
     public $_ci_plugins = [];
 
     public $_ci_cached_vars = [];
@@ -170,8 +169,10 @@ class MX_Loader extends CI_Loader
     /** Load the database drivers **/
     public function database($params = '', $return = false, $query_builder = null)
     {
-        if ($return === false && $query_builder === null &&
-            isset(CI::$APP->db) && is_object(CI::$APP->db) && !empty(CI::$APP->db->conn_id)) {
+        if (
+            $return === false && $query_builder === null &&
+            isset(CI::$APP->db) && is_object(CI::$APP->db) && !empty(CI::$APP->db->conn_id)
+        ) {
             return false;
         }
 
@@ -201,7 +202,7 @@ class MX_Loader extends CI_Loader
 
 
 
-	$_alias = $object_name == null ? $class : strtolower($object_name);
+        $_alias = $object_name == null ? $class : strtolower($object_name);
 
         list($path, $_library) = Modules::find($library, $this->_module, 'libraries/');
 
@@ -211,9 +212,10 @@ class MX_Loader extends CI_Loader
             ($path2) && $params = Modules::load_file($file, $path2, 'config');
         }
 
-	if ($path === false) {
-	    if ($this->_ci_load_library($library, $params, $object_name) == false)
-		return $this->libraries($library);
+        if ($path === false) {
+            if ($this->_ci_load_library($library, $params, $object_name) == false) {
+                return $this->libraries($library);
+            }
         } else {
             Modules::load_file($_library, $path);
 
@@ -229,11 +231,11 @@ class MX_Loader extends CI_Loader
     /** Load an array of libraries **/
     public function libraries($libraries)
     {
-	if (is_array($libraries)) {
+        if (is_array($libraries)) {
             foreach ($libraries as $library => $alias) {
                 (is_int($library)) ? $this->library($alias) : $this->library($library, null, $alias);
-	    }
-	}
+            }
+        }
 
         return $this;
     }
@@ -245,7 +247,7 @@ class MX_Loader extends CI_Loader
             return $this->models($model);
         }
 
-        ($_alias = $object_name) OR $_alias = basename($model);
+        ($_alias = $object_name) or $_alias = basename($model);
 
         if (in_array($_alias, $this->_ci_models, true)) {
             return $this;
@@ -258,7 +260,7 @@ class MX_Loader extends CI_Loader
             /* check application & packages */
             parent::model($model, $object_name, $connect);
         } else {
-            class_exists('CI_Model', false) OR load_class('Model', 'core');
+            class_exists('CI_Model', false) or load_class('Model', 'core');
 
             if ($connect !== false && !class_exists('CI_DB', false)) {
                 if ($connect === true) {
@@ -418,21 +420,17 @@ class MX_Loader extends CI_Loader
 
         // Patch from https://bitbucket.org/wiredesignz/codeigniter-modular-extensions-hmvc/pull-requests/24/
         if (method_exists($this, '_ci_object_to_array')) {
-
             return $this->_ci_load([
                 '_ci_view' => $view,
                 '_ci_vars' => $this->_ci_object_to_array($vars),
                 '_ci_return' => $return,
             ]);
-
         } else {
-
             return $this->_ci_load([
                 '_ci_view' => $view,
                 '_ci_vars' => $this->_ci_prepare_view_vars($vars),
                 '_ci_return' => $return,
             ]);
-
         }
     }
 
@@ -457,7 +455,6 @@ class MX_Loader extends CI_Loader
                 }
             }
         } elseif (isset($_ci_path)) {
-
             $_ci_file = basename($_ci_path);
             if (!file_exists($_ci_path)) {
                 $_ci_path = '';
@@ -477,8 +474,11 @@ class MX_Loader extends CI_Loader
         ob_start();
 
         if ((bool)@ini_get('short_open_tag') === false && CI::$APP->config->item('rewrite_short_tags') == true) {
-            echo eval('?>' . preg_replace("/;*\s*\?>/", "; ?>",
-                    str_replace('<?=', '<?php echo ', file_get_contents($_ci_path))));
+            echo eval('?>' . preg_replace(
+                "/;*\s*\?>/",
+                "; ?>",
+                str_replace('<?=', '<?php echo ', file_get_contents($_ci_path))
+            ));
         } else {
             include($_ci_path);
         }
@@ -508,4 +508,4 @@ class MX_Loader extends CI_Loader
 }
 
 /** load the CI class for Modular Separation **/
-(class_exists('CI', false)) OR require dirname(__FILE__) . '/Ci.php';
+(class_exists('CI', false)) or require dirname(__FILE__) . '/Ci.php';

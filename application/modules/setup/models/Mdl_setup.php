@@ -48,7 +48,7 @@ class Mdl_Setup extends CI_Model
         $commands = explode(';', $contents);
 
         foreach ($commands as $command) {
-            if ( ! trim($command)) {
+            if (! trim($command)) {
                 continue;
             }
 
@@ -85,15 +85,13 @@ class Mdl_Setup extends CI_Model
         $this->db->insert('ip_invoice_groups', array(
                 'invoice_group_name' => 'Invoice Default',
                 'invoice_group_next_id' => 1
-            )
-        );
+            ));
 
         $this->db->insert('ip_invoice_groups', array(
                 'invoice_group_name' => 'Quote Default',
                 'invoice_group_prefix' => 'QUO',
                 'invoice_group_next_id' => 1
-            )
-        );
+            ));
 
         $this->db->insert('ip_payment_methods', array(
             'payment_method_name' => 'Cash',
@@ -273,8 +271,7 @@ class Mdl_Setup extends CI_Model
                 `client_id` INT NOT NULL, `client_custom_fieldid` INT NOT NULL,
                 `client_custom_fieldvalue` TEXT NULL ,
                 UNIQUE (client_id, client_custom_fieldid)
-            );'
-        );
+            );');
 
         $this->db->query('CREATE TABLE `ip_invoice_custom_new`
             (
@@ -282,8 +279,7 @@ class Mdl_Setup extends CI_Model
             `invoice_id` INT NOT NULL, `invoice_custom_fieldid` INT NOT NULL,
             `invoice_custom_fieldvalue` TEXT NULL ,
             UNIQUE (invoice_id, invoice_custom_fieldid)
-            );'
-        );
+            );');
 
         $this->db->query('CREATE TABLE `ip_quote_custom_new`
             (
@@ -291,8 +287,7 @@ class Mdl_Setup extends CI_Model
                 `quote_id` INT NOT NULL, `quote_custom_fieldid` INT NOT NULL,
                 `quote_custom_fieldvalue` TEXT NULL ,
                 UNIQUE (quote_id, quote_custom_fieldid)
-            );'
-        );
+            );');
 
         $this->db->query('CREATE TABLE `ip_payment_custom_new`
             (
@@ -300,8 +295,7 @@ class Mdl_Setup extends CI_Model
                 `payment_id` INT NOT NULL, `payment_custom_fieldid` INT NOT NULL,
                 `payment_custom_fieldvalue` TEXT NULL ,
                 UNIQUE (payment_id, payment_custom_fieldid)
-            );'
-        );
+            );');
 
         $this->db->query('CREATE TABLE `ip_user_custom_new`
             (
@@ -309,8 +303,7 @@ class Mdl_Setup extends CI_Model
                 `user_id` INT NOT NULL, `user_custom_fieldid` INT NOT NULL,
                 `user_custom_fieldvalue` TEXT NULL ,
                 UNIQUE (user_id, user_custom_fieldid)
-            );'
-        );
+            );');
 
         // Migrate Data
         foreach ($drop_columns as $value) {
@@ -322,7 +315,6 @@ class Mdl_Setup extends CI_Model
 
             if ($res->num_rows()) {
                 foreach ($res->result() as $row) {
-
                     $escaped_table_type = $this->db->escape($row->{$table_type . '_id'});
                     $escaped_column = $this->db->escape($row->{$value['column']});
 
@@ -363,8 +355,7 @@ class Mdl_Setup extends CI_Model
         if (!isset($test_user->user_all_clients)) {
             $this->db->query('ALTER TABLE `ip_users`
               ADD `user_all_clients` INT(1) NOT NULL DEFAULT 0
-              AFTER `user_psalt`;'
-            );
+              AFTER `user_psalt`;');
         }
 
         // Copy the invoice pdf footer to the new quote pdf footer setting
@@ -384,27 +375,21 @@ class Mdl_Setup extends CI_Model
 
         //**recur_end_date**
         $rows_recur_end_date = $this->db->query('SELECT * FROM `ip_invoices_recurring`');
-        foreach($rows_recur_end_date->result() as $row)
-        {
-            if($row->recur_end_date == '0000-00-00')
-            {
-                $this->db->set('recur_end_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
+        foreach ($rows_recur_end_date->result() as $row) {
+            if ($row->recur_end_date == '0000-00-00') {
+                $this->db->set('recur_end_date', null)->where('invoice_recurring_id', $row->invoice_recurring_id)->update('ip_invoices_recurring');
             }
 
-            if($row->recur_next_date == '0000-00-00')
-            {
-                $this->db->set('recur_next_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
-
+            if ($row->recur_next_date == '0000-00-00') {
+                $this->db->set('recur_next_date', null)->where('invoice_recurring_id', $row->invoice_recurring_id)->update('ip_invoices_recurring');
             }
         }
 
         //**client_bdate**
         $rows_client_bdate = $this->db->query('SELECT * FROM `ip_clients`');
-        foreach($rows_client_bdate->result() as $row_bdate)
-        {
-            if($row_bdate->client_birthdate == '0000-00-00')
-            {
-                $this->db->set('client_birthdate',NULL)->where('client_id',$row_bdate->client_id)->update('ip_clients');
+        foreach ($rows_client_bdate->result() as $row_bdate) {
+            if ($row_bdate->client_birthdate == '0000-00-00') {
+                $this->db->set('client_birthdate', null)->where('client_id', $row_bdate->client_id)->update('ip_clients');
             }
         }
     }

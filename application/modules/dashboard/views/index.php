@@ -1,7 +1,7 @@
 <div id="content">
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-    <div class="row <?php if (get_setting('disable_quickactions') == 1) echo 'hidden'; ?>">
+    <div class="row<?php echo (get_setting('disable_quickactions') == 1) ? ' hidden' : ''; ?>">
         <div class="col-xs-12">
 
             <div id="panel-quick-actions" class="panel panel-default quick-actions">
@@ -44,20 +44,24 @@
                 </div>
 
                 <table class="table table-hover table-bordered table-condensed no-margin">
-                    <?php foreach ($quote_status_totals as $total) { ?>
-                        <tr>
-                            <td>
-                                <a href="<?php echo site_url($total['href']); ?>">
-                                    <?php echo $total['label']; ?>
-                                </a>
-                            </td>
-                            <td class="amount">
-                        <span class="<?php echo $total['class']; ?>">
-                            <?php echo format_currency($total['sum_total']); ?>
-                        </span>
-                            </td>
-                        </tr>
-                    <?php } ?>
+<?php
+foreach ($quote_status_totals as $total) {
+?>
+                    <tr>
+                        <td>
+                            <a href="<?php echo site_url($total['href']); ?>">
+                                <?php echo $total['label']; ?>
+                            </a>
+                        </td>
+                        <td class="amount">
+                            <span class="<?php echo $total['class']; ?>">
+                                <?php echo format_currency($total['sum_total']); ?>
+                            </span>
+                        </td>
+                    </tr>
+<?php
+}
+?>
                 </table>
             </div>
 
@@ -72,41 +76,48 @@
                 </div>
 
                 <table class="table table-hover table-bordered table-condensed no-margin">
-                    <?php foreach ($invoice_status_totals as $total) { ?>
-                        <tr>
-                            <td>
-                                <a href="<?php echo site_url($total['href']); ?>">
-                                    <?php echo $total['label']; ?>
-                                </a>
-                            </td>
-                            <td class="amount">
-                        <span class="<?php echo $total['class']; ?>">
-                            <?php echo format_currency($total['sum_total']); ?>
-                        </span>
-                            </td>
-                        </tr>
-                    <?php } ?>
+<?php
+foreach ($invoice_status_totals as $total) {
+?>
+                    <tr>
+                        <td>
+                            <a href="<?php echo site_url($total['href']); ?>">
+                                <?php echo $total['label']; ?>
+                            </a>
+                        </td>
+                        <td class="amount">
+                            <span class="<?php echo $total['class']; ?>">
+                                <?php echo format_currency($total['sum_total']); ?>
+                            </span>
+                        </td>
+                    </tr>
+<?php
+}
+?>
                 </table>
             </div>
-
-
-            <?php if (empty($overdue_invoices)) { ?>
-                <div class="panel panel-default panel-heading">
-                    <span class="text-muted"><?php _trans('no_overdue_invoices'); ?></span>
-                </div>
-            <?php } else {
-                $overdue_invoices_total = 0;
-                foreach ($overdue_invoices as $invoice) {
-                    $overdue_invoices_total += $invoice->invoice_balance;
-                }
-                ?>
-                <div class="panel panel-danger panel-heading">
-                    <?php echo anchor('invoices/status/overdue', '<i class="fa fa-external-link"></i> ' . trans('overdue_invoices'), 'class="text-danger"'); ?>
-                    <span class="pull-right text-danger">
-                        <?php echo format_currency($overdue_invoices_total); ?>
-                    </span>
-                </div>
-            <?php } ?>
+<?php
+if (empty($overdue_invoices)) {
+?>
+            <div class="panel panel-default panel-heading">
+                <span class="text-muted"><?php _trans('no_overdue_invoices'); ?></span>
+            </div>
+<?php
+} else {
+    $overdue_invoices_total = 0;
+    foreach ($overdue_invoices as $invoice) {
+        $overdue_invoices_total += $invoice->invoice_balance;
+    }
+?>
+            <div class="panel panel-danger panel-heading">
+                <?php echo anchor('invoices/status/overdue', '<i class="fa fa-external-link"></i> ' . trans('overdue_invoices'), 'class="text-danger"'); ?>
+                <span class="pull-right text-danger">
+                    <?php echo format_currency($overdue_invoices_total); ?>
+                </span>
+            </div>
+<?php
+}
+?>
 
         </div>
     </div>
@@ -132,7 +143,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($quotes as $quote) { ?>
+<?php
+foreach ($quotes as $quote) {
+?>
                             <tr>
                                 <td>
                                 <span class="label
@@ -159,7 +172,9 @@
                                     </a>
                                 </td>
                             </tr>
-                        <?php } ?>
+<?php
+}
+?>
                         <tr>
                             <td colspan="6" class="text-right small">
                                 <?php echo anchor('quotes/status/all', trans('view_all')); ?>
@@ -193,10 +208,12 @@
                         </thead>
                         <tbody>
 
-                        <?php foreach ($invoices as $invoice) {
-                            if ($this->config->item('disable_read_only') == true) {
-                                $invoice->is_read_only = 0;
-                            } ?>
+<?php
+foreach ($invoices as $invoice) {
+    if ($this->config->item('disable_read_only') == true) {
+        $invoice->is_read_only = 0;
+    }
+?>
                             <tr>
                                 <td>
                                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
@@ -213,7 +230,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="<?php if ($invoice->is_overdue) { ?>font-overdue<?php } ?>">
+                                    <span class="<?php echo ($invoice->is_overdue) ? 'font-overdue' : '' ?>">
                                         <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                                     </span>
                                 </td>
@@ -227,20 +244,28 @@
                                     <?php echo format_currency($invoice->invoice_balance * $invoice->invoice_sign); ?>
                                 </td>
                                 <td style="text-align: center;">
-                                    <?php if ($invoice->sumex_id != null): ?>
+<?php
+    if ($invoice->sumex_id != null) {
+?>
                                         <a href="<?php echo site_url('invoices/generate_sumex_pdf/' . $invoice->invoice_id); ?>"
                                            title="<?php _trans('download_pdf'); ?>">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </a>
-                                    <?php else: ?>
+<?php
+    } else {
+?>
                                         <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                            title="<?php _trans('download_pdf'); ?>">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </a>
-                                    <?php endif; ?>
+<?php
+    }
+?>
                                 </td>
                             </tr>
-                        <?php } ?>
+<?php
+}
+?>
                         <tr>
                             <td colspan="6" class="text-right small">
                                 <?php echo anchor('invoices/status/all', trans('view_all')); ?>
@@ -255,7 +280,9 @@
         </div>
     </div>
 
-    <?php if (get_setting('projects_enabled') == 1) : ?>
+<?php
+if (get_setting('projects_enabled') == 1) {
+?>
         <div class="row">
             <div class="col-xs-12 col-md-6">
 
@@ -274,25 +301,29 @@
                             </thead>
 
                             <tbody>
-                            <?php foreach ($projects as $project) { ?>
+<?php
+    foreach ($projects as $project) {
+?>
                                 <tr>
                                     <td>
                                         <?php echo anchor('projects/view/' . $project->project_id, htmlsc($project->project_name)); ?>
                                     </td>
                                     <td>
-                                        <?php if ($project->client_id != null): ?>
+                                        <?php if ($project->client_id != null) : ?>
                                             <?php echo anchor('clients/view/' . $project->client_id, htmlsc(format_client($project))); ?>
-                                        <?php else: ?>
+                                        <?php else : ?>
                                             -
                                         <?php endif; ?>
                                     </td>
                                 </tr>
-                            <?php } ?>
-                        		<tr>
-                            		<td colspan="6" class="text-right small">
-                                		<?php echo anchor('projects/index', trans('view_all')); ?>
-                            		</td>
-                        		</tr>
+<?php
+    }
+?>
+                                <tr>
+                                    <td colspan="6" class="text-right small">
+                                        <?php echo anchor('projects/index', trans('view_all')); ?>
+                                    </td>
+                                </tr>
                             </tbody>
 
                         </table>
@@ -321,18 +352,22 @@
                             </thead>
 
                             <tbody>
-                            <?php foreach ($tasks as $task) { ?>
+<?php
+    foreach ($tasks as $task) {
+?>
                                 <tr>
                                     <td>
-                                    <span class="label <?php if (isset($task_statuses[$task->task_status]['class'])) echo $task_statuses[$task->task_status]['class']; ?>">
-                                        <?php if (isset($task_statuses[$task->task_status]['label'])) echo $task_statuses[$task->task_status]['label']; ?>
+                                    <span class="label <?php echo isset($task_statuses[$task->task_status]['class']) ? $task_statuses[$task->task_status]['class'] : '' ?>">
+                                        <?php if (isset($task_statuses[$task->task_status]['label'])) {
+                                            echo $task_statuses[$task->task_status]['label'];
+                                        } ?>
                                     </span>
                                     </td>
                                     <td>
                                         <?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?>
                                     </td>
                                     <td>
-                                    <span class="<?php if ($task->is_overdue) { ?>font-overdue<?php } ?>">
+                                    <span class="<?php echo ($task->is_overdue) ? 'font-overdue' : ''; ?>">
                                         <?php echo date_from_mysql($task->task_finish_date); ?>
                                     </span>
                                     </td>
@@ -340,12 +375,14 @@
                                         <?php echo !empty($task->project_id) ? anchor('projects/view/' . $task->project_id, htmlsc($task->project_name)) : ''; ?>
                                     </td>
                                 </tr>
-                            <?php } ?>
-                        		<tr>
-                            		<td colspan="6" class="text-right small">
-                                		<?php echo anchor('tasks/index', trans('view_all')); ?>
-                            		</td>
-                        		</tr>
+<?php
+    }
+?>
+                                <tr>
+                                    <td colspan="6" class="text-right small">
+                                        <?php echo anchor('tasks/index', trans('view_all')); ?>
+                                    </td>
+                                </tr>
                             </tbody>
 
                         </table>
@@ -355,6 +392,8 @@
 
             </div>
         </div>
-    <?php endif; ?>
+<?php
+} // End if projects_enabled
+?>
 
 </div>

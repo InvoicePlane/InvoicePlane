@@ -1,4 +1,5 @@
 <?php
+
 // CIUS-RO UBL Invoice 1.0.9 : https://ecosio.com/en/peppol-and-xml-document-validator/
 // https://facturis-online.ro/e-factura/biblioteca-cu-informatii-oficiale-despre-formatul-xml-pentru-e-factura.html
 defined('BASEPATH') || exit('No direct script access allowed');

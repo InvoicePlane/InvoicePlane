@@ -1,4 +1,5 @@
 <?php
+
 // Xrechnung UBL Invoice 3.0
 defined('BASEPATH') || exit('No direct script access allowed');
 

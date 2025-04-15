@@ -78,5 +78,4 @@ class Tax_Rates extends Admin_Controller
         $this->mdl_tax_rates->delete($id);
         redirect('tax_rates');
     }
-
 }

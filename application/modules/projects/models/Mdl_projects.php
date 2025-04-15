@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -64,20 +63,17 @@ class Mdl_Projects extends Response_Model
     {
         $result = array();
 
-        if (!$project_id)
-        {
+        if (!$project_id) {
             return $result;
         }
 
         $this->load->model('tasks/mdl_tasks');
         $query = $this->mdl_tasks->where('ip_tasks.project_id', $project_id)->get();
 
-        foreach ($query->result() as $row)
-        {
+        foreach ($query->result() as $row) {
             $result[] = $row;
         }
 
         return $result;
     }
-
 }

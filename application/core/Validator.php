@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,7 +16,6 @@ if (! defined('BASEPATH'))
 #[AllowDynamicProperties]
 class Validator extends MY_Model
 {
-
     /**
      * @return bool
      */
@@ -179,8 +177,7 @@ class Validator extends MY_Model
 */
                 $result = $this->validate_type($model->custom_field_type, $value, $key);
 
-                if ($result === false)
-                {
+                if ($result === false) {
                     $errors[] = [
                         'field'     => $model->custom_field_id,
                         'label'     => $model->custom_field_label,
@@ -190,8 +187,7 @@ class Validator extends MY_Model
             }
         }
 
-        if (count($errors) == 0)
-        {
+        if (count($errors) == 0) {
             $this->_formdata = $db_array;
             $this->fixinput();
             return true;

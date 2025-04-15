@@ -103,7 +103,7 @@ class Mdl_Invoices_Recurring extends Response_Model
         $db_array['recur_start_date'] = date_to_mysql($db_array['recur_start_date']);
         $db_array['recur_next_date'] = $db_array['recur_start_date'];
 
-        $db_array['recur_end_date'] = $db_array['recur_end_date'] ? date_to_mysql($db_array['recur_end_date']) : NULL;
+        $db_array['recur_end_date'] = $db_array['recur_end_date'] ? date_to_mysql($db_array['recur_end_date']) : null;
 
         return $db_array;
     }
@@ -115,7 +115,7 @@ class Mdl_Invoices_Recurring extends Response_Model
     {
         $db_array = [
             'recur_end_date'  => date('Y-m-d'),
-            'recur_next_date' => NULL
+            'recur_next_date' => null
         ];
 
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);
@@ -148,5 +148,4 @@ class Mdl_Invoices_Recurring extends Response_Model
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);
         $this->db->update('ip_invoices_recurring', $db_array);
     }
-
 }

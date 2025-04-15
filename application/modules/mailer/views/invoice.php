@@ -59,8 +59,7 @@
 
 <?php
 // e-invoice alert when client or user empty required field
-if ($invoice->client_einvoicing_version != '' && $invoice->client_einvoicing_active == 0)
-{
+if ($invoice->client_einvoicing_version != '' && $invoice->client_einvoicing_active == 0) {
 ?>
                 <div class="alert alert-warning">
                     <table style="margin-left: auto; margin-right: auto;">
@@ -87,8 +86,7 @@ if ($invoice->client_einvoicing_version != '' && $invoice->client_einvoicing_act
                     <select name="email_template" id="email_template" class="form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
 <?php
-foreach ($email_templates as $email_template)
-{
+foreach ($email_templates as $email_template) {
 ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
                             <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
@@ -133,8 +131,7 @@ foreach ($email_templates as $email_template)
                     <select name="pdf_template" id="pdf_template" class="form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
 <?php
-foreach ($pdf_templates as $pdf_template)
-{
+foreach ($pdf_templates as $pdf_template) {
 ?>
                         <option value="<?php echo $pdf_template; ?>"
                             <?php check_select($selected_pdf_template, $pdf_template); ?>>

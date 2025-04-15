@@ -46,13 +46,11 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
 
         $invoice_id = isset($db_array['invoice_id']) ? $db_array['invoice_id'] : $this->input->post('invoice_id');
 
-        if ($invoice_id)
-        {
+        if ($invoice_id) {
             $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
             // Recalculate invoice amounts
             $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
         }
-
     }
 
     /**
@@ -78,5 +76,4 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
             ],
         ];
     }
-
 }

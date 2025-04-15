@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,7 +16,6 @@ if (! defined('BASEPATH'))
 #[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
-
     public $ajax_controller = true;
 
     public function save()
@@ -39,19 +37,15 @@ class Ajax extends Admin_Controller
             $quote_discount_amount  = (float) $this->input->post('quote_discount_amount');
 
             // Percent by default. Only one allowed. Prevent set 2 global discounts by geeky client - since v1.6.3
-            if ($quote_discount_percent && $quote_discount_amount)
-            {
+            if ($quote_discount_percent && $quote_discount_amount) {
                 $quote_discount_amount = 0.0;
             }
 
             // New discounts (for legacy_calculation false) - since v1.6.3 Need if taxes applied after discounts
             $items_subtotal = 0.0;
-            if ($quote_discount_amount)
-            {
-                foreach ($items as $item)
-                {
-                    if ( ! empty($item->item_name))
-                    {
+            if ($quote_discount_amount) {
+                foreach ($items as $item) {
+                    if (! empty($item->item_name)) {
                         $items_subtotal += standardize_amount($item->item_quantity) * standardize_amount($item->item_price);
                     }
                 }
@@ -66,11 +60,9 @@ class Ajax extends Admin_Controller
                 'items_subtotal' => $items_subtotal,
             ];
 
-            foreach ($items as $item)
-            {
+            foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
-                if ( ! empty($item->item_name))
-                {
+                if (! empty($item->item_name)) {
                     // Standardize item data
                     $item->item_quantity        = $item->item_quantity         ? standardize_amount($item->item_quantity)        : 0.0;
                     $item->item_price           = $item->item_price            ? standardize_amount($item->item_price)           : 0.0;
@@ -83,10 +75,7 @@ class Ajax extends Admin_Controller
                     unset($item->item_id);
 
                     $this->mdl_quote_items->save($item_id, $item, $global_discount);
-
-                }
-                elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price)))
-                {
+                } elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price))) {
                     // Throw an error message and use the form validation for that (todo: where the translations of: The .* field is required.)
                     $this->load->library('form_validation');
                     $this->form_validation->set_rules('item_name', trans('item'), 'required');
@@ -109,15 +98,13 @@ class Ajax extends Admin_Controller
             // Generate new quote number if needed
             $quote_number = $this->input->post('quote_number');
 
-            if (empty($quote_number) && $quote_status_id != 1)
-            {
+            if (empty($quote_number) && $quote_status_id != 1) {
                 $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
                 $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
             }
 
             // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
-            if(! config_item('legacy_calculation') && $quote_discount_amount && $quote_discount_amount != $global_discount['item'])
-            {
+            if (! config_item('legacy_calculation') && $quote_discount_amount && $quote_discount_amount != $global_discount['item']) {
                 // Adjust amount to reflect real calculation (cents)
                 $quote_discount_amount = $global_discount['item'];
             }
@@ -135,8 +122,7 @@ class Ajax extends Admin_Controller
 
             $this->mdl_quotes->save($quote_id, $db_array, $global_discount);
 
-            if(config_item('legacy_calculation'))
-            {
+            if (config_item('legacy_calculation')) {
                 // Recalculate for discounts
                 $this->load->model('quotes/mdl_quote_amounts');
                 $this->mdl_quote_amounts->calculate($quote_id, $global_discount);
@@ -146,7 +132,6 @@ class Ajax extends Admin_Controller
                 'success' => 1,
             ];
         } else {
-
             log_message('error', '980: I wasnt able to run the validation validation_rules_save_quote');
 
             $this->load->helper('json_error');
@@ -157,36 +142,28 @@ class Ajax extends Admin_Controller
         }
 
         // Save all custom fields
-        if ($this->input->post('custom'))
-        {
+        if ($this->input->post('custom')) {
             $db_array = [];
 
             $values = [];
-            foreach ($this->input->post('custom') as $custom)
-            {
-                if (preg_match("/^(.*)\[\]$/i", $custom['name'], $matches))
-                {
+            foreach ($this->input->post('custom') as $custom) {
+                if (preg_match("/^(.*)\[\]$/i", $custom['name'], $matches)) {
                     $values[$matches[1]][] = $custom['value'];
-                }
-                else
-                {
+                } else {
                     $values[$custom['name']] = $custom['value'];
                 }
             }
 
-            foreach ($values as $key => $value)
-            {
+            foreach ($values as $key => $value) {
                 preg_match("/^custom\[(.*?)\](?:\[\]|)$/", $key, $matches);
-                if ($matches)
-                {
+                if ($matches) {
                     $db_array[$matches[1]] = $value;
                 }
             }
 
             $this->load->model('custom_fields/mdl_quote_custom');
             $result = $this->mdl_quote_custom->save_custom($quote_id, $db_array);
-            if ($result !== true)
-            {
+            if ($result !== true) {
                 $response = [
                     'success'           => 0,
                     'validation_errors' => $result,
@@ -203,17 +180,14 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('quotes/mdl_quote_tax_rates');
 
-        if ($this->mdl_quote_tax_rates->run_validation())
-        {
+        if ($this->mdl_quote_tax_rates->run_validation()) {
             // Only Legacy calculation have global taxes - since v1.6.3
             config_item('legacy_calculation') && $this->mdl_quote_tax_rates->save();
 
             $response = [
                 'success' => 1,
             ];
-        }
-        else
-        {
+        } else {
             $response = [
                 'success'           => 0,
                 'validation_errors' => $this->mdl_quote_tax_rates->validation_errors,
@@ -234,7 +208,6 @@ class Ajax extends Admin_Controller
 
         // Only continue if the quote exists or no item id was provided
         if ($this->mdl_quotes->get_by_id($quote_id) || empty($item_id)) {
-
             // Delete quote item
             $this->load->model('mdl_quote_items');
             $item = $this->mdl_quote_items->delete($item_id);
@@ -243,7 +216,6 @@ class Ajax extends Admin_Controller
             if ($item) {
                 $success = 1;
             }
-
         }
 
         // Return the response
@@ -334,8 +306,7 @@ class Ajax extends Admin_Controller
         $user_id = $this->security->xss_clean($this->input->post('user_id'));
         $user = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
 
-        if ( ! empty($user))
-        {
+        if (! empty($user)) {
             $quote_id = $this->input->post('quote_id');
 
             $db_array = [
@@ -348,9 +319,7 @@ class Ajax extends Admin_Controller
                 'success'  => 1,
                 'quote_id' => $this->security->xss_clean($quote_id),
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success'           => 0,
@@ -386,8 +355,7 @@ class Ajax extends Admin_Controller
         $client_id = $this->security->xss_clean($this->input->post('client_id'));
         $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
-        if ( ! empty($client))
-        {
+        if (! empty($client)) {
             $quote_id = $this->input->post('quote_id');
 
             $db_array = [
@@ -400,9 +368,7 @@ class Ajax extends Admin_Controller
                 'success' => 1,
                 'quote_id' => $this->security->xss_clean($quote_id),
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success' => 0,
@@ -436,17 +402,14 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('quotes/mdl_quotes');
 
-        if ($this->mdl_quotes->run_validation())
-        {
+        if ($this->mdl_quotes->run_validation()) {
             $quote_id = $this->mdl_quotes->create();
 
             $response = [
                 'success' => 1,
                 'quote_id' => $quote_id,
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success'           => 0,
@@ -485,7 +448,6 @@ class Ajax extends Admin_Controller
         ]);
 
         if ($this->mdl_invoices->run_validation()) {
-
             // Get the quote
             $quote_id = $this->input->post('quote_id');
             $quote    = $this->mdl_quotes->get_by_id($quote_id);
@@ -515,8 +477,7 @@ class Ajax extends Admin_Controller
 
             $quote_items = $this->mdl_quote_items->where('quote_id', $this->input->post('quote_id'))->get()->result();
 
-            foreach ($quote_items as $quote_item)
-            {
+            foreach ($quote_items as $quote_item) {
                 $db_array = [
                     'invoice_id'           => $invoice_id,
                     'item_tax_rate_id'     => $quote_item->item_tax_rate_id,
@@ -536,8 +497,7 @@ class Ajax extends Admin_Controller
 
             $quote_tax_rates = $this->mdl_quote_tax_rates->where('quote_id', $this->input->post('quote_id'))->get()->result();
 
-            foreach ($quote_tax_rates as $quote_tax_rate)
-            {
+            foreach ($quote_tax_rates as $quote_tax_rate) {
                 $db_array = [
                     'invoice_id'              => $invoice_id,
                     'tax_rate_id'             => $quote_tax_rate->tax_rate_id,
@@ -552,9 +512,7 @@ class Ajax extends Admin_Controller
                 'success'    => 1,
                 'invoice_id' => $invoice_id,
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success'           => 0,
@@ -564,5 +522,4 @@ class Ajax extends Admin_Controller
 
         exit(json_encode($response));
     }
-
 }

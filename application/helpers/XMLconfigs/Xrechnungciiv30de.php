@@ -1,4 +1,5 @@
 <?php
+
 // Xrechnung CII 3.0.2 : https://github.com/ConnectingEurope/eInvoicing-EN16931/blob/master/cii/examples/CII_example5.xml
 defined('BASEPATH') || exit('No direct script access allowed');
 

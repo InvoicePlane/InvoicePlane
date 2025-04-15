@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -190,7 +190,7 @@ class Mdl_Clients extends Response_Model
     {
         $db_array = parent::db_array();
 
-        if ( ! isset($db_array['client_active'])) {
+        if (! isset($db_array['client_active'])) {
             $db_array['client_active'] = 0;
         }
 

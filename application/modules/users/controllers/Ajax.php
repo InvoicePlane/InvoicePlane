@@ -96,7 +96,7 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_settings');
         $permissiveSearchUsers = $this->input->get('permissive_search_users');
 
-        if ( ! preg_match('!^[0-1]{1}$!', $permissiveSearchUsers)) {
+        if (! preg_match('!^[0-1]{1}$!', $permissiveSearchUsers)) {
             exit;
         }
 
@@ -188,5 +188,4 @@ class Ajax extends Admin_Controller
 
         $this->layout->load_view('users/modal_user_client', $data);
     }
-
 }

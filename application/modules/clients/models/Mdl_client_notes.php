@@ -59,5 +59,4 @@ class Mdl_Client_Notes extends Response_Model
         // For Ajax Check if deletion was successful
         return true;
     }
-
 }

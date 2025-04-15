@@ -80,8 +80,7 @@ function set_language($language)
     // Set the new language
     $CI->lang->load('ip', $new_language);
     $CI->lang->load('form_validation', $new_language);
-    if(file_exists($lang_dir . DIRECTORY_SEPARATOR . $default_lang . DIRECTORY_SEPARATOR . 'custom_lang.php'))
-    {
+    if (file_exists($lang_dir . DIRECTORY_SEPARATOR . $default_lang . DIRECTORY_SEPARATOR . 'custom_lang.php')) {
         $CI->lang->load('custom', $new_language);
     }
 

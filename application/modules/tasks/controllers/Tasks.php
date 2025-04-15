@@ -63,7 +63,7 @@ class Tasks extends Admin_Controller
             redirect('tasks');
         }
 
-        if ( ! $this->input->post('btn_submit')) {
+        if (! $this->input->post('btn_submit')) {
             $prep_form = $this->mdl_tasks->prep_form($id);
             if ($id && ! $prep_form) {
                 show_404();

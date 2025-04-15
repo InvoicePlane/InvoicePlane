@@ -57,7 +57,7 @@ class Facturxv10Xml extends BaseXml
     {
         $node = $this->doc->createElement('rsm:ExchangedDocumentContext');
         // XRechnung-CII-validation
-        if ( ! empty($id = @$this->options['BusinessProcessSpecifiedDocumentContextParameterID'])) {
+        if (! empty($id = @$this->options['BusinessProcessSpecifiedDocumentContextParameterID'])) {
             $businessNode = $this->doc->createElement('ram:BusinessProcessSpecifiedDocumentContextParameter');
             $businessNode->appendChild($this->doc->createElement('ram:ID', $id));
             $node->appendChild($businessNode);
@@ -68,7 +68,7 @@ class Facturxv10Xml extends BaseXml
         // urn:cen.eu:en16931:2017#conformant#urn:(zugferd:2.3 | factur-x.eu):1p0:extended
         $id = 'urn:cen.eu:en16931:2017'; // KISS
         // XRechnung-CII-validation
-        if ( ! empty($cid = @$this->options['GuidelineSpecifiedDocumentContextParameterID'])) {
+        if (! empty($cid = @$this->options['GuidelineSpecifiedDocumentContextParameterID'])) {
             $id = $cid;
         }
 
@@ -105,8 +105,7 @@ class Facturxv10Xml extends BaseXml
     {
         $node = $this->doc->createElement('rsm:SupplyChainTradeTransaction');
 
-        foreach ($this->items as $index => $item)
-        {
+        foreach ($this->items as $index => $item) {
             $node->appendChild($this->xmlIncludedSupplyChainTradeLineItem($index + 1, $item));
         }
 
@@ -122,8 +121,7 @@ class Facturxv10Xml extends BaseXml
         $date = date_create($this->invoice->invoice_date_due);
         $PaymentTerms = trans('due_date') . ' ' . date_format($date, get_setting('date_format'));
         $terms = trim(htmlsc(strip_tags($this->invoice->invoice_terms)));
-        if ($terms !== '' && $terms !== '0')
-        {
+        if ($terms !== '' && $terms !== '0') {
             $PaymentTerms .= PHP_EOL . trans('terms') . PHP_EOL . $terms;
         }
 
@@ -137,7 +135,7 @@ class Facturxv10Xml extends BaseXml
         $node = $this->doc->createElement('ram:ApplicableHeaderTradeAgreement');
 
         // XRechnung-CII-validation ram:BuyerReference
-        if ( ! empty($this->options['CII'])) {
+        if (! empty($this->options['CII'])) {
             $node->appendChild($this->doc->createElement('ram:BuyerReference', 'N/A'));
         }
 
@@ -163,7 +161,7 @@ class Facturxv10Xml extends BaseXml
     }
 
     // xml(Seller|Buyer)TradeParty helper
-    protected function xmlTradeParty(& $node, $who)
+    protected function xmlTradeParty(&$node, $who)
     {
         $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'id name zip address_1 address_2 city country vat_id')));
         if ($who == 'user') {
@@ -173,8 +171,7 @@ class Facturxv10Xml extends BaseXml
         $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->{$prop[1]}))); // *_name
 
         // XRechnung-CII-validation
-        if ( ! empty($this->options['CII'])) {
-
+        if (! empty($this->options['CII'])) {
             $ciip = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'tax_code ubl_eas_code invoicing_contact phone mobile email')));
 
             // Tax code (national identification number)
@@ -203,7 +200,7 @@ class Facturxv10Xml extends BaseXml
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
         $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->{$prop[2]}))); // *_zip
         $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->{$prop[3]}))); // *_address_1
-        if($addr = $this->invoice->{$prop[4]}) { // *_address_2
+        if ($addr = $this->invoice->{$prop[4]}) { // *_address_2
             $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($addr))); // *_address_2
         }
 
@@ -213,7 +210,7 @@ class Facturxv10Xml extends BaseXml
         $node->appendChild($addressNode);
 
         // XRechnung-CII-validation    URIUniversalCommunicationURIID
-        if ( ! empty($this->options['CII'])) {
+        if (! empty($this->options['CII'])) {
             // ram:URIUniversalCommunication/ram:URIID
             $uriNode = $this->doc->createElement('ram:URIUniversalCommunication');
             $idNode = $this->doc->createElement('ram:URIID', $this->invoice->{$ciip[5]}); // *_email
@@ -223,10 +220,9 @@ class Facturxv10Xml extends BaseXml
         }
 
         // SpecifiedTaxRegistration
-        if( ! $this->notax) {
+        if (! $this->notax) {
             $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->{$prop[7]})); // *_vat_id zugferd 2
         }
-
     }
 
     /**
@@ -269,14 +265,11 @@ class Facturxv10Xml extends BaseXml
         $node->appendChild($this->xmlSpecifiedTradeSettlementPaymentMeans());
 
         // taxes
-        if( ! $this->notax) // hard? todo? legacy_calculation: like if have discounts (how to find item(s) with amount > of amount discount to get/dispatch % of global VAT's
-        {
-            foreach ($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal)
-            {
+        if (! $this->notax) { // hard? todo? legacy_calculation: like if have discounts (how to find item(s) with amount > of amount discount to get/dispatch % of global VAT's
+            foreach ($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal) {
                 $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal[0])); // 'S' by default
             }
-        }
-        else // Not subject to VAT
+        } else // Not subject to VAT
         {
             $percent = $this->invoice->invoice_item_tax_total; // it's 0.00 same of invoice_tax_total
             $subtotal = $this->invoice->invoice_item_subtotal; // invoice_subtotal
@@ -297,8 +290,7 @@ class Facturxv10Xml extends BaseXml
         $period->appendChild($dateNode);
         $node->appendChild($period);
 
-        if($this->invoice->invoice_discount_amount_total != 0)
-        {
+        if ($this->invoice->invoice_discount_amount_total != 0) {
             // If global discount (ram:AppliedTradeAllowanceCharge)
             // Must be after BillingSpecifiedPeriod and before SpecifiedTradePaymentTerms !important
             // SpecifiedTradeAllowanceCharge
@@ -314,34 +306,28 @@ class Facturxv10Xml extends BaseXml
     }
 
     // helper to make SpecifiedTradeAllowanceCharge 's
-    protected function addSpecifiedTradeAllowanceCharge_discount( & $node)
+    protected function addSpecifiedTradeAllowanceCharge_discount(&$node)
     {
         // Note: If empty itemsSubtotalGroupedByTaxPercent ($this->notax) Only one `SpecifiedTradeAllowanceCharge` ;)
-        if($this->invoice->invoice_discount_amount_total != 0 && $this->itemsSubtotalGroupedByTaxPercent)
-        {
+        if ($this->invoice->invoice_discount_amount_total != 0 && $this->itemsSubtotalGroupedByTaxPercent) {
             $category = 'S';
             $amounts = [];
             // Loop on itemsSubtotalGroupedByTaxPercent to dispatch discount by VAT's rate
-            foreach($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal)
-            {
+            foreach ($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal) {
                 // Don't divide per 0
-                if($this->invoice->invoice_subtotal != 0)
-                {
+                if ($this->invoice->invoice_subtotal != 0) {
                     // from set_invoice_discount_amount_total (helper)
                     $amounts[$percent] = ($subtotal[1] / $this->invoice->invoice_subtotal) * $this->invoice->invoice_discount_amount_subtotal;
                 }
             }
-        }
-        else
-        {
+        } else {
             $category = 'O';
             // from set_invoice_discount_amount_total (helper)
             $amounts[0] = $this->invoice->invoice_discount_amount_subtotal;
         }
 
         // Loop on VAT to dispatch global discount
-        foreach($amounts as $percent => $amount)
-        {
+        foreach ($amounts as $percent => $amount) {
             $discountNode = $this->doc->createElement('ram:SpecifiedTradeAllowanceCharge');
             // ChargeIndicator
             $indicatorNode = $this->doc->createElement('ram:ChargeIndicator');
@@ -360,8 +346,7 @@ class Facturxv10Xml extends BaseXml
             $taxNode->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
 
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', $category)); // S or O
-            if($category === 'S')
-            {
+            if ($category === 'S') {
                 $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', $percent)); // of VAT rate
             }
 
@@ -386,8 +371,7 @@ class Facturxv10Xml extends BaseXml
 
         if ($category == 'S') {
             $node->appendChild($this->currencyElement('ram:RateApplicablePercent', $percent));
-        }
-        else {
+        } else {
             // For auto entreprises not subject to VAT (Catégory 'O') see https://github.com/ConnectingEurope/eInvoicing-EN16931/blob/master/ubl/schematron/codelist/EN16931-UBL-codes.sch#L133
             // Not For NLCIUS CII 1.0.3.9 : Warning for [BR-NL-35] ram:ExemptionReasonCode is not recommended
             if (empty($this->options['NoReasonCode'])) {
@@ -408,8 +392,7 @@ class Facturxv10Xml extends BaseXml
     protected function currencyElement($name, $amount, $add_code = false)
     {
         $el = $this->doc->createElement($name, $this->formattedFloat($amount, $this->decimal_places));
-        if($add_code)
-        {
+        if ($add_code) {
             $el->setAttribute('currencyID', $this->currencyCode);
         }
 
@@ -453,8 +436,7 @@ class Facturxv10Xml extends BaseXml
         $node->appendChild($this->currencyElement('ram:AllowanceTotalAmount', $this->invoice->invoice_discount_amount_subtotal)); // optional
 
         $invoiceTotal = $this->invoice->invoice_total; // ApplicableTradeTax>CategoryCode=O
-        if( ! $this->notax)
-        {
+        if (! $this->notax) {
             $invoiceTotal = $this->invoice->invoice_item_subtotal;
         }
 
@@ -512,8 +494,7 @@ class Facturxv10Xml extends BaseXml
 
         $node->appendChild($grossPriceNode);
 
-        if($item->item_discount != 0)
-        {
+        if ($item->item_discount != 0) {
             // AppliedTradeAllowanceCharge
             $discountNode = $this->doc->createElement('ram:AppliedTradeAllowanceCharge');
 
@@ -531,7 +512,7 @@ class Facturxv10Xml extends BaseXml
         $price = $item->item_price;
 
         // XRechnung-CII-validation
-        if ( ! empty($this->options['CII'])) {
+        if (! empty($this->options['CII'])) {
             // Item net price MUST equal (Gross price - Allowance amount) when gross price is provided.
             $price -= $item->item_discount_amount;
         }
@@ -564,13 +545,10 @@ class Facturxv10Xml extends BaseXml
         $taxNode = $this->doc->createElement('ram:ApplicableTradeTax');
         $taxNode->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
 
-        if ($item->item_tax_rate_percent != 0)
-        {
+        if ($item->item_tax_rate_percent != 0) {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'S'));
             $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', $item->item_tax_rate_percent));
-        }
-        else
-        {
+        } else {
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', 'O'));
         }
 

@@ -43,5 +43,4 @@ class Mdl_Families extends Response_Model
             )
         );
     }
-
 }

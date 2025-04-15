@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CUSTOM LANGUAGE STRINGS
  *

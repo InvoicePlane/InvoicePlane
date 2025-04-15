@@ -51,12 +51,10 @@ class Mdl_Quote_Custom extends Validator
     {
         $result = $this->validate($db_array);
 
-        if ($result === true)
-        {
+        if ($result === true) {
             $form_data = isset($this->_formdata) ? $this->_formdata : null;
 
-            if (is_null($form_data))
-            {
+            if (is_null($form_data)) {
                 return true;
             }
 
@@ -72,8 +70,7 @@ class Mdl_Quote_Custom extends Validator
 
                 $quote_custom = $this->where('quote_id', $quote_id)->where('quote_custom_fieldid', $key)->get();
 
-                if ($quote_custom->num_rows())
-                {
+                if ($quote_custom->num_rows()) {
                     $quote_custom_id = $quote_custom->row()->quote_custom_id;
                 }
 
@@ -91,5 +88,4 @@ class Mdl_Quote_Custom extends Validator
         $this->db->where('ip_quote_custom.quote_id', $quote_id);
         return $this;
     }
-
 }

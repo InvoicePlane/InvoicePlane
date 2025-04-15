@@ -28,7 +28,6 @@ class Sessions extends Base_Controller
         );
 
         if ($this->input->post('btn_login')) {
-
             $this->db->where('user_email', $this->input->post('email'));
             $query = $this->db->get('ip_users');
             $user = $query->row();
@@ -38,13 +37,11 @@ class Sessions extends Base_Controller
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
                 redirect('sessions/login');
             } else {
-
                 // Check if the user is marked as active
                 if ($user->user_active == 0) {
                     $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
                     redirect('sessions/login');
                 } else {
-
                     if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
                         if ($this->session->userdata('user_type') == 1) {
                             redirect('dashboard');
@@ -55,11 +52,8 @@ class Sessions extends Base_Controller
                         $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
                         redirect('sessions/login');
                     }
-
                 }
-
             }
-
         }
 
         $this->load->view('session_login', $view_data);
@@ -75,14 +69,11 @@ class Sessions extends Base_Controller
         $this->load->model('mdl_sessions');
         //check if user is banned
         $login_log = $this->_login_log_check($email_address);
-        if(empty($login_log)||$login_log->log_count < 10)
-        {
+        if (empty($login_log) || $login_log->log_count < 10) {
             if ($this->mdl_sessions->auth($email_address, $password)) {
                 $this->_login_log_reset($email_address);
                 return true;
-            }
-            else
-            {
+            } else {
                 //track failed attempt
                 $this->_login_log_addfailure($email_address);
             }
@@ -106,7 +97,7 @@ class Sessions extends Base_Controller
     {
         // Check if a token was provided
         if ($token) {
-            if(preg_match("/[^[:alnum:]\-_]/", $token)) {
+            if (preg_match("/[^[:alnum:]\-_]/", $token)) {
                 log_message('error', 'Incoming token is not alphanumeric ' . $token);
                 redirect('/');
             }
@@ -169,7 +160,8 @@ class Sessions extends Base_Controller
 
             // Call the save_change_password() function from users model
             $this->mdl_users->save_change_password(
-                $user_id, $new_password
+                $user_id,
+                $new_password
             );
 
             // Update the user and set him active again
@@ -178,7 +170,7 @@ class Sessions extends Base_Controller
             );
 
             //delete failed attempts from login_log table
-            $user = $this->db->where('user_id',$user_id)->get('ip_users')->row();
+            $user = $this->db->where('user_id', $user_id)->get('ip_users')->row();
             $this->_login_log_reset($user->user_email);
 
             $this->db->where('user_id', $user_id);
@@ -186,7 +178,6 @@ class Sessions extends Base_Controller
 
             // Redirect back to the login form
             redirect('sessions/login');
-
         }
 
         // Check if the password reset form was used
@@ -250,15 +241,12 @@ class Sessions extends Base_Controller
 
                 // Mail the invoice with the pre-configured mailer if possible
                 if (mailer_configured()) {
-
                     $this->load->helper('mailer/phpmailer');
 
                     if (!phpmail_send($email_from, $email, trans('password_reset'), $email_message)) {
                         $email_failed = true;
                     }
-
                 } else {
-
                     $this->load->library('email');
 
                     // Set email configuration
@@ -301,17 +289,15 @@ class Sessions extends Base_Controller
      */
     private function _login_log_check($username)
     {
-        $login_log_query =  $this->db->where('login_name',$username)->get('ip_login_log')->row();
+        $login_log_query =  $this->db->where('login_name', $username)->get('ip_login_log')->row();
 
-        if(!empty($login_log_query) && $login_log_query->log_count > 10)
-        {
+        if (!empty($login_log_query) && $login_log_query->log_count > 10) {
             $current_time = new DateTime();
             $interval = $current_time->diff(new DateTime($login_log_query->log_create_timestamp));
             //if the last recorded failed attempt is over 12 hours ago, then unlock the account
             //the fails are only counted up to 11, this means that the account is also unlocked
             //if the last failed 11th login attempt is over 12 hours ago.
-            if($interval->h>12)
-            {
+            if ($interval->h > 12) {
                 $this->_login_log_reset($username);
                 return null;
             }
@@ -329,23 +315,20 @@ class Sessions extends Base_Controller
      */
     private function _login_log_addfailure($username)
     {
-        if(empty($login_log_check = $this->_login_log_check($username)))
-        {
+        if (empty($login_log_check = $this->_login_log_check($username))) {
             //create the log
-            $this->db->insert('ip_login_log',[
+            $this->db->insert('ip_login_log', [
                 'login_name' => $username,
                 'log_count' => 1,
                 'log_create_timestamp' => date('c')
             ]);
-        }
-        else
-        {
+        } else {
             //update the log
             $this->db->set([
-                'log_count'=>$login_log_check->log_count+1,
+                'log_count' => $login_log_check->log_count + 1,
                 'log_create_timestamp' => date('c')
             ])
-            ->where('login_name',$username)
+            ->where('login_name', $username)
             ->update('ip_login_log');
         }
     }
@@ -358,6 +341,6 @@ class Sessions extends Base_Controller
      */
     private function _login_log_reset($username)
     {
-        $this->db->delete('ip_login_log',['login_name'=>$username]);
+        $this->db->delete('ip_login_log', ['login_name' => $username]);
     }
 }

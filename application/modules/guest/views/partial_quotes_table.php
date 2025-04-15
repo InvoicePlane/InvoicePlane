@@ -14,8 +14,7 @@
 
         <tbody>
 <?php
-foreach ($quotes as $quote)
-{
+foreach ($quotes as $quote) {
 ?>
             <tr>
                 <td>
@@ -24,16 +23,13 @@ foreach ($quotes as $quote)
                         <?php echo $quote->quote_number; ?>
                     </a>
 <?php
-    if ($quote->quote_status_id == 4)
-    {
+    if ($quote->quote_status_id == 4) {
 ?>
-                        <span class="text-success"><?php _trans('approved'); ?></span>
+                    <span class="text-success"><?php _trans('approved'); ?></span>
 <?php
-    }
-    elseif ($quote->quote_status_id == 5)
-    {
+    } elseif ($quote->quote_status_id == 5) {
 ?>
-                        <span class="text-danger"><?php _trans('rejected'); ?></span>
+                    <span class="text-danger"><?php _trans('rejected'); ?></span>
 <?php
     }
 ?>

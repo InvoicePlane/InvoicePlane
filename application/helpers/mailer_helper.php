@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -183,7 +183,7 @@ function email_quote_status($quote_id, $status)
     ini_set('display_errors', 'on');
     error_reporting(E_ALL);
 
-    if ( ! mailer_configured()) {
+    if (! mailer_configured()) {
         return false;
     }
 
@@ -218,11 +218,9 @@ function email_quote_status($quote_id, $status)
  */
 function check_mail_errors($errors = [], $redirect = '')
 {
-    if ($errors)
-    {
+    if ($errors) {
         $CI = & get_instance();
-        foreach($errors as $i => $e)
-        {
+        foreach ($errors as $i => $e) {
             $errors[$i] = strtr(trans('form_validation_valid_email'), ['{field}' => trans($e)]);
         }
 

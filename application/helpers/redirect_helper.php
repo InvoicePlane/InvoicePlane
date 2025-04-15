@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -29,8 +28,7 @@ function redirect_to($fallback_url_string, $redirect = true)
 
     $CI->session->unset_userdata('redirect_to');
 
-    if ($redirect)
-    {
+    if ($redirect) {
         redirect($redirect_url);
     }
 

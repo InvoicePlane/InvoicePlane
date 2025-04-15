@@ -1,7 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -79,8 +78,7 @@ class Invoices extends Guest_Controller
     {
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
-        if (! $invoice)
-        {
+        if (! $invoice) {
             show_404();
         }
 
@@ -120,8 +118,7 @@ class Invoices extends Guest_Controller
     {
         $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
-        if (! $invoice)
-        {
+        if (! $invoice) {
             show_404();
         }
 
@@ -141,8 +138,7 @@ class Invoices extends Guest_Controller
     {
         $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
-        if (! $invoice)
-        {
+        if (! $invoice) {
             show_404();
         }
 

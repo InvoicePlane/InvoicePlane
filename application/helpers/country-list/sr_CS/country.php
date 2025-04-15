@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return array(
     'JM' => 'Јамајка',
     'JP' => 'Јапан',
     'YE' => 'Јемен',

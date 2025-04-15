@@ -83,18 +83,14 @@ class BaseXml extends stdClass
         $item_discount = 0.0;
         $item_subtotal = 0.0;
         $discount = 0.0;
-        foreach ($this->items as $item)
-        {
+        foreach ($this->items as $item) {
             $item_discount += $item->item_discount;
             $item_subtotal += $item->item_subtotal;
         }
 
-        if($this->invoice->invoice_discount_amount > 0)
-        {
+        if ($this->invoice->invoice_discount_amount > 0) {
             $discount = $this->invoice->invoice_discount_amount;
-        }
-        elseif($this->invoice->invoice_discount_percent > 0)
-        {
+        } elseif ($this->invoice->invoice_discount_percent > 0) {
             $discount = $item_subtotal * ($this->invoice->invoice_discount_percent / 100);
         }
 
@@ -107,15 +103,12 @@ class BaseXml extends stdClass
     public function setItemsSubtotalGroupedByTaxPercent()
     {
         $result = [];
-        foreach ($this->items as $item)
-        {
-            if ($item->item_tax_rate_percent == 0)
-            {
+        foreach ($this->items as $item) {
+            if ($item->item_tax_rate_percent == 0) {
                 continue;
             }
 
-            if ( ! isset($result[$item->item_tax_rate_percent]))
-            {
+            if (! isset($result[$item->item_tax_rate_percent])) {
                 $result[$item->item_tax_rate_percent] = [0, 0];
             }
 
@@ -123,7 +116,6 @@ class BaseXml extends stdClass
                 $result[$item->item_tax_rate_percent][0] += ($item->item_total - $item->item_tax_total),
                 $result[$item->item_tax_rate_percent][1] += $item->item_subtotal, // without discounts
             ];
-
         }
 
         $this->itemsSubtotalGroupedByTaxPercent = $result; // help to dispatch invoice global discount tax rate + same for vat's of invoices
@@ -138,8 +130,7 @@ class BaseXml extends stdClass
      */
     public function formattedDate($date, $format = 'Ymd')
     {
-        if ($date)
-        {
+        if ($date) {
             $date = DateTime::createFromFormat('Y-m-d', $date);
             return $date->format($format);
         }
@@ -156,5 +147,4 @@ class BaseXml extends stdClass
     {
         return number_format(floatval($qty), $this->item_decimals, '.', '');
     }
-
 }

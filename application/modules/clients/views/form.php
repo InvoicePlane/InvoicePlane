@@ -85,8 +85,7 @@ $user_toggle   = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : '
                                     <?php _trans('use_system_language') ?>
                                 </option>
 <?php
-foreach ($languages as $language)
-{
+foreach ($languages as $language) {
     $client_lang = $this->mdl_clients->form_value('client_language');
 ?>
                                 <option value="<?php echo $language; ?>"
@@ -124,12 +123,9 @@ foreach ($languages as $language)
 
                     <div class="panel-body">
 <?php
-if ($this->mdl_clients->form_value('client_id'))
-{
+if ($this->mdl_clients->form_value('client_id')) {
     $this->layout->load_view('clients/partial_client_einvoicing');
-}
-else
-{
+} else {
 ?>
                         <div class="alert alert-warning small" style="font-size:medium;">
                             <i class="fa fa-exclamation-triangle fa-2x"></i>&nbsp;
@@ -212,10 +208,8 @@ else
                             </div>
                         </div>
 <?php
-foreach ($custom_fields as $custom_field)
-{
-    if ($custom_field->custom_field_location == 1)
-    {
+foreach ($custom_fields as $custom_field) {
+    if ($custom_field->custom_field_location == 1) {
         print_field($this->mdl_clients, $custom_field, $custom_values);
     }
 }
@@ -289,10 +283,8 @@ foreach ($custom_fields as $custom_field)
                         </div>
 
 <?php
-foreach ($custom_fields as $custom_field)
-{
-    if ($custom_field->custom_field_location == 2)
-    {
+foreach ($custom_fields as $custom_field) {
+    if ($custom_field->custom_field_location == 2) {
         print_field($this->mdl_clients, $custom_field, $custom_values);
     }
 }
@@ -348,10 +340,8 @@ $eas_code = $this->mdl_clients->form_value('client_ubl_eas_code', true);
                         </div>
 
 <?php
-foreach ($custom_fields as $custom_field)
-{
-    if ($custom_field->custom_field_location == 4)
-    {
+foreach ($custom_fields as $custom_field) {
+    if ($custom_field->custom_field_location == 4) {
         print_field($this->mdl_clients, $custom_field, $custom_values);
     }
 }
@@ -398,8 +388,7 @@ $is_custom_title = null === ClientTitleEnum::tryFrom($client_title);
                             <label for="client_title"><?php _trans('client_title'); ?></label>
                             <select name="client_title" id="client_title" class="form-control simple-select">
 <?php
-foreach ($client_title_choices as $client_title_choice)
-{
+foreach ($client_title_choices as $client_title_choice) {
 ?>
                                 <option
                                     value="<?php echo $client_title_choice; ?>"
@@ -440,8 +429,7 @@ $bdate = ($bdate && $bdate != '0000-00-00') ? date_from_mysql($bdate) : '';
                         </div>
 
 <?php
-if ($this->mdl_settings->setting('sumex') == '1')
-{
+if ($this->mdl_settings->setting('sumex') == '1') {
     $avs = format_avs($this->mdl_clients->form_value('client_avs'));
     $insuredNumber = $this->mdl_clients->form_value('client_insurednumber');
     $veka = $this->mdl_clients->form_value('client_veka');
@@ -477,12 +465,12 @@ if ($this->mdl_settings->setting('sumex') == '1')
 
 <?php
 $default_custom = false;
-foreach ($custom_fields as $custom_field)
-{
-    if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+foreach ($custom_fields as $custom_field) {
+    if (! $default_custom && ! $custom_field->custom_field_location) {
+        $default_custom = true;
+    }
 
-    if ($custom_field->custom_field_location == 3)
-    {
+    if ($custom_field->custom_field_location == 3) {
         print_field($this->mdl_clients, $custom_field, $custom_values);
     }
 }
@@ -495,8 +483,7 @@ foreach ($custom_fields as $custom_field)
         </div>
 
 <?php
-if ($default_custom)
-{
+if ($default_custom) {
 ?>
             <div class="row">
                 <div class="col-xs-12">
@@ -509,10 +496,8 @@ if ($default_custom)
                             <div class="row">
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
-    foreach ($custom_fields as $custom_field)
-    {
-        if (! $custom_field->custom_field_location) // == 0
-        {
+    foreach ($custom_fields as $custom_field) {
+        if (! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_clients, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }

@@ -50,10 +50,9 @@
                 </div>
             </td>
 <?php
-            if ( ! $legacy_calculation)
-            {
-                $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
-            }
+if (! $legacy_calculation) {
+    $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
+}
 ?>
             <td class="td-amount">
                 <div class="input-group">
@@ -69,10 +68,9 @@
                 </div>
             </td>
 <?php
-            if ($legacy_calculation)
-            {
-                $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
-            }
+if ($legacy_calculation) {
+    $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
+}
 ?>
             <td class="td-icon text-right td-vert-middle">
                 <button type="button" class="btn_delete_item btn btn-link btn-sm" title="<?php _trans('delete'); ?>">
@@ -106,20 +104,18 @@
                 <span name="subtotal" class="amount"></span>
             </td>
 <?php
-            if ( ! $legacy_calculation)
-            {
-                $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
-            }
+if (! $legacy_calculation) {
+    $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
+}
 ?>
             <td class="td-amount td-vert-middle">
                 <span><?php _trans('tax'); ?></span><br/>
                 <span name="item_tax_total" class="amount"></span>
             </td>
 <?php
-            if ($legacy_calculation)
-            {
-                $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
-            }
+if ($legacy_calculation) {
+    $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
+}
 ?>
             <td class="td-amount td-vert-middle">
                 <span><?php _trans('total'); ?></span><br/>
@@ -128,8 +124,10 @@
         </tr>
         </tbody>
 
-        <?php foreach ($items as $item) { ?>
-            <tbody class="item">
+<?php
+foreach ($items as $item) {
+?>
+        <tbody class="item">
             <tr>
                 <td rowspan="2" class="td-icon"><i class="fa fa-arrows cursor-move"></i></td>
                 <td class="td-text">
@@ -159,30 +157,32 @@
                     </div>
                 </td>
 <?php
-                if ( ! $legacy_calculation)
-                {
-                    $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
-                }
+    if (! $legacy_calculation) {
+        $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
+    }
 ?>
                 <td class="td-amount">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
                         <select name="item_tax_rate_id" class="form-control">
                             <option value="0"><?php _trans('none'); ?></option>
-                            <?php foreach ($tax_rates as $tax_rate) { ?>
-                                <option value="<?php echo $tax_rate->tax_rate_id; ?>"
-                                        <?php if ($item->item_tax_rate_id == $tax_rate->tax_rate_id) { ?>selected="selected"<?php } ?>>
-                                    <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
-                                </option>
-                            <?php } ?>
+<?php
+    foreach ($tax_rates as $tax_rate) {
+        $is_selected = ($item->item_tax_rate_id == $tax_rate->tax_rate_id) ? ' selected="selected"' : '';
+?>
+                            <option value="<?php echo $tax_rate->tax_rate_id; ?>"<?php echo $is_selected; ?>>
+                                <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
+                            </option>
+<?php
+    }
+?>
                         </select>
                     </div>
                 </td>
 <?php
-                if ($legacy_calculation)
-                {
-                    $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
-                }
+    if ($legacy_calculation) {
+        $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
+    }
 ?>
                 <td class="td-icon text-right td-vert-middle">
                     <button type="button" class="btn_delete_item btn btn-link btn-sm" title="<?php _trans('delete'); ?>"
@@ -205,12 +205,16 @@
                         <select name="item_product_unit_id"
                                 class="form-control">
                             <option value="0"><?php _trans('none'); ?></option>
-                            <?php foreach ($units as $unit) { ?>
-                                <option value="<?php echo $unit->unit_id; ?>"
-                                    <?php check_select($item->item_product_unit_id, $unit->unit_id); ?>>
-                                    <?php echo htmlsc($unit->unit_name) . "/" . htmlsc($unit->unit_name_plrl); ?>
-                                </option>
-                            <?php } ?>
+<?php
+    foreach ($units as $unit) {
+?>
+                            <option value="<?php echo $unit->unit_id; ?>"
+                                <?php check_select($item->item_product_unit_id, $unit->unit_id); ?>>
+                                <?php echo htmlsc($unit->unit_name) . "/" . htmlsc($unit->unit_name_plrl); ?>
+                            </option>
+<?php
+    }
+?>
                         </select>
                     </div>
                 </td>
@@ -221,10 +225,9 @@
                     </span>
                 </td>
 <?php
-                if ( ! $legacy_calculation)
-                {
-                    $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
-                }
+    if (! $legacy_calculation) {
+        $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
+    }
 ?>
                 <td class="td-amount td-vert-middle">
                     <span><?php _trans('tax'); ?></span><br/>
@@ -233,10 +236,9 @@
                     </span>
                 </td>
 <?php
-                if ($legacy_calculation)
-                {
-                    $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
-                }
+    if ($legacy_calculation) {
+        $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
+    }
 ?>
                 <td class="td-amount td-vert-middle">
                     <span><?php _trans('total'); ?></span><br/>
@@ -245,8 +247,10 @@
                     </span>
                 </td>
             </tr>
-            </tbody>
-        <?php } ?>
+        </tbody>
+<?php
+} // End foreach items
+?>
 
     </table>
 </div>
@@ -272,10 +276,9 @@
     <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-bordered text-right">
 <?php
-            if ( ! $legacy_calculation)
-            {
-                $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
-            }
+if (! $legacy_calculation) {
+    $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
+}
 ?>
             <tr>
                 <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
@@ -286,36 +289,39 @@
                 <td class="amount"><?php echo format_currency($quote->quote_item_tax_total); ?></td>
             </tr>
 <?php
-            if ($legacy_calculation)
-            {
+if ($legacy_calculation) {
 ?>
             <tr>
                 <td><?php _trans('quote_tax'); ?></td>
                 <td>
-                    <?php if ($quote_tax_rates) {
-                        foreach ($quote_tax_rates as $quote_tax_rate) { ?>
-                            <form method="POST" class="form-inline"
-                                  action="<?php echo site_url('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id) ?>">
-                                <?php _csrf_field(); ?>
-                                    <button type="submit" class="btn btn-xs btn-link" onclick="var Y=confirm('<?php _trans('delete_tax_warning'); ?>');if(Y)show_loader();return Y;">
-                                    <i class="fa fa-trash-o"></i>
-                                </button>
-                                <span class="text-muted">
-                                    <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%' ?>
-                                </span>
-                                <span class="amount">
-                                    <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
-                                </span>
-                            </form>
-                        <?php }
-                    } else {
-                        echo format_currency('0');
-                    } ?>
+<?php
+    if ($quote_tax_rates) {
+        foreach ($quote_tax_rates as $quote_tax_rate) {
+?>
+                    <form method="POST" class="form-inline"
+                          action="<?php echo site_url('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id) ?>">
+                        <?php _csrf_field(); ?>
+                        <button type="submit" class="btn btn-xs btn-link" onclick="var Y=confirm('<?php _trans('delete_tax_warning'); ?>');if(Y)show_loader();return Y;">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                        <span class="text-muted">
+                            <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%' ?>
+                        </span>
+                        <span class="amount">
+                            <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
+                        </span>
+                    </form>
+<?php
+        }
+    } else {
+        echo format_currency('0');
+    }
+?>
                 </td>
             </tr>
 <?php
-                $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
-            }
+    $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
+}
 ?>
             <tr>
                 <td><b><?php _trans('total'); ?></b></td>

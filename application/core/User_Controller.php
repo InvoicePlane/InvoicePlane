@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,7 +16,6 @@ if (! defined('BASEPATH'))
 #[AllowDynamicProperties]
 class User_Controller extends Base_Controller
 {
-
     /**
      * User_Controller constructor.
      *
@@ -28,8 +26,7 @@ class User_Controller extends Base_Controller
     {
         parent::__construct();
 
-        if ($this->session->userdata($required_key) != $required_val)
-        {
+        if ($this->session->userdata($required_key) != $required_val) {
             session_destroy();
             redirect('sessions/login');
         }

@@ -17,7 +17,8 @@ class ClientTitleEnum
 
     const CUSTOM    = 'custom';
 
-    private static function getValues() {
+    private static function getValues()
+    {
         return [
             self::MISTER,
             self::MISSUS,
@@ -25,30 +26,27 @@ class ClientTitleEnum
             self::PROFESSOR,
             self::CUSTOM
         ];
-
     }
 
-    public static function tryFrom($value) {
+    public static function tryFrom($value)
+    {
 
         $values = self::getValues();
 
-        $searchResult = array_search($value,$values);
+        $searchResult = array_search($value, $values);
 
-        if($searchResult) {
-
+        if ($searchResult) {
             $returnObject = new StdClass();
             $returnObject->value = $searchResult;
 
             return $returnObject;
-
         } else {
-
             return null;
-
         }
     }
 
-    public static function cases() {
+    public static function cases()
+    {
 
         $values = self::getValues();
 

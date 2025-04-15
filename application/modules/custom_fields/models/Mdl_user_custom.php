@@ -53,19 +53,16 @@ class Mdl_User_Custom extends Validator
     {
         $result = $this->validate($db_array);
 
-        if ($result === true)
-        {
+        if ($result === true) {
             $form_data = isset($this->_formdata) ? $this->_formdata : null;
 
-            if (is_null($form_data))
-            {
+            if (is_null($form_data)) {
                 return true;
             }
 
             $user_custom_id = null;
 
-            foreach ($form_data as $key => $value)
-            {
+            foreach ($form_data as $key => $value) {
                 $db_array =
                 [
                     'user_id'                => $user_id,
@@ -75,8 +72,7 @@ class Mdl_User_Custom extends Validator
 
                 $user_custom = $this->where('user_id', $user_id)->where('user_custom_fieldid', $key)->get();
 
-                if ($user_custom->num_rows())
-                {
+                if ($user_custom->num_rows()) {
                     $user_custom_id = $user_custom->row()->user_custom_id;
                 }
 
@@ -108,5 +104,4 @@ class Mdl_User_Custom extends Validator
         $result = $this->where('ip_user_custom.user_id', $user_id)->get()->result();
         return $result;
     }
-
 }

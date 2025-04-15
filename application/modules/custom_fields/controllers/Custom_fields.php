@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -41,8 +40,7 @@ class Custom_Fields extends Admin_Controller
     {
         // Determine which name of table custom field to load
         $custom_tables = $this->mdl_custom_fields->custom_tables();
-        if ($name != 'all' && in_array($name, $custom_tables))
-        {
+        if ($name != 'all' && in_array($name, $custom_tables)) {
             $this->mdl_custom_fields->by_table_name($name);
         }
 
@@ -72,21 +70,18 @@ class Custom_Fields extends Admin_Controller
      */
     public function form($id = null)
     {
-        if ($this->input->post('btn_cancel'))
-        {
+        if ($this->input->post('btn_cancel')) {
             redirect('custom_fields');
         }
 
         $this->filter_input();  // <<<--- filters _POST array for nastiness
 
-        if ($this->mdl_custom_fields->run_validation())
-        {
+        if ($this->mdl_custom_fields->run_validation()) {
             $this->mdl_custom_fields->save($id);
             redirect('custom_fields');
         }
 
-        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_custom_fields->prep_form($id))
-        {
+        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_custom_fields->prep_form($id)) {
             show_404();
         }
 
@@ -109,8 +104,7 @@ class Custom_Fields extends Admin_Controller
      */
     public function delete($id)
     {
-        if( ! $this->mdl_custom_fields->delete($id))
-        {
+        if (! $this->mdl_custom_fields->delete($id)) {
             $this->session->set_flashdata('alert_info', trans('id') . sprintf(' "%s" ', $id) . trans('custom_fields_used_not_deletable'));
         }
 
@@ -118,5 +112,4 @@ class Custom_Fields extends Admin_Controller
         $r = empty($_SERVER['HTTP_REFERER']) ? 'custom_fields' : $_SERVER['HTTP_REFERER'];
         redirect($r);
     }
-
 }

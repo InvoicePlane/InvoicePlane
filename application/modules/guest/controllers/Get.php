@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -36,8 +35,7 @@ class Get extends Base_Controller
     public function show_files($url_key = null): void
     {
         header('Content-Type: application/json; charset=utf-8');
-        if ($url_key && ! $result = $this->mdl_uploads->get_files($url_key))
-        {
+        if ($url_key && ! $result = $this->mdl_uploads->get_files($url_key)) {
             exit('{}');
         }
 
@@ -48,8 +46,7 @@ class Get extends Base_Controller
     public function get_file($filename): void
     {
         $filename = urldecode($filename);
-        if (! file_exists($this->targetPath . $filename))
-        {
+        if (! file_exists($this->targetPath . $filename)) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $filename . $ref);
         }
@@ -83,10 +80,9 @@ class Get extends Base_Controller
 
     private function respond_message(int $httpCode, string $messageKey, string $dynamicLogValue = ''): void
     {
-        log_message('debug', 'guest/get: ' . trans($messageKey)  .': (status ' . $httpCode . ') ' . $dynamicLogValue);
+        log_message('debug', 'guest/get: ' . trans($messageKey)  . ': (status ' . $httpCode . ') ' . $dynamicLogValue);
         http_response_code($httpCode);
         _trans($messageKey);
         exit;
     }
 }
-

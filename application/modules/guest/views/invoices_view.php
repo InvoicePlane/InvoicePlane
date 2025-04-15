@@ -1,10 +1,8 @@
 <?php
 $global_discount = $invoice->invoice_discount_percent > 0 ? format_amount($invoice->invoice_discount_percent) . '%' : format_currency($invoice->invoice_discount_amount);
-if ($invoice_tax_rates)
-{
+if ($invoice_tax_rates) {
     $global_taxes = [];
-    foreach ($invoice_tax_rates as $invoice_tax_rate)
-    {
+    foreach ($invoice_tax_rates as $invoice_tax_rate) {
         $global_taxes[] = $invoice_tax_rate->invoice_tax_rate_name . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%): '
                           . format_currency($invoice_tax_rate->invoice_tax_rate_amount);
     }
@@ -17,16 +15,13 @@ if ($invoice_tax_rates)
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
 <?php
-if ($invoice->invoice_balance == 0 || $invoice->invoice_status_id >= 4)
-{
+if ($invoice->invoice_balance == 0 || $invoice->invoice_status_id >= 4) {
 ?>
             <button class="btn btn-success disabled">
                 <i class="fa fa-check"></i> <?php echo trans('paid') ?>
             </button>
 <?php
-}
-elseif ($enable_online_payments)
-{
+} elseif ($enable_online_payments) {
 ?>
             <a href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>"
                class="btn btn-primary">
@@ -65,14 +60,12 @@ elseif ($enable_online_payments)
                             <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>
                         </div>
 <?php
-if ($invoice->client_phone)
-{
+if ($invoice->client_phone) {
 ?>
                         <br><span><strong><?php _trans('phone'); ?>:</strong> <?php _htmlsc($invoice->client_phone); ?></span>
 <?php
 }
-if ($invoice->client_email)
-{
+if ($invoice->client_email) {
 ?>
                         <br><span><strong><?php _trans('email'); ?>:</strong> <?php _htmlsc($invoice->client_email); ?></span>
 <?php
@@ -115,8 +108,7 @@ if ($invoice->client_email)
                     </tr>
                     </thead>
 <?php
-foreach ($items as $i => $item)
-{
+foreach ($items as $i => $item) {
 ?>
                         <tbody class="item">
                         <tr>
@@ -146,8 +138,7 @@ foreach ($items as $i => $item)
 <?php
     // New Discount calculation - since v1.6.3
     $item_global_discount = $legacy_calculation ? 0 : $item->item_subtotal - ($item->item_total - $item->item_tax_total + $item->item_discount);
-    if ($item_global_discount)
-    {
+    if ($item_global_discount) {
 ?>
                                     <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('global_discount'); ?>">
                                         + <?php echo format_currency($item_global_discount); ?>
@@ -163,7 +154,7 @@ foreach ($items as $i => $item)
                             <td>
                                 <span class="pull-left"><?php _trans('tax'); ?></span>
                                 <span class="pull-right amount"><?php
-                                    echo $item->item_tax_rate_percent ? $item->item_tax_rate_name . ' (' . format_amount($item->item_tax_rate_percent) .'%): ' : '';
+                                    echo $item->item_tax_rate_percent ? $item->item_tax_rate_name . ' (' . format_amount($item->item_tax_rate_percent) . '%): ' : '';
                                     echo format_currency($item->item_tax_total);
                                 ?></span>
                             </td>
@@ -226,8 +217,7 @@ foreach ($items as $i => $item)
 
             </div>
 <?php
-if ($invoice->invoice_terms)
-{
+if ($invoice->invoice_terms) {
 ?>
             <div class="col-xs-12 col-md-6">
                 <strong><?php _trans('invoice_terms'); ?></strong><br/>
@@ -235,7 +225,7 @@ if ($invoice->invoice_terms)
             </div>
 <?php
 }
- ?>
+?>
         </div>
 
     </form>

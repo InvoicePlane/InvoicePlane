@@ -28,34 +28,27 @@ $contRows = 0;
 $contYears = 0;
 $pattern = '/^payment_*/i';
 
-foreach ($results as $result)
-{
-    if ($final_year == 0)
-    {
-        foreach ($result as $index => $value)
-        {
-            if ($initial_year == 0)
-            {
+foreach ($results as $result) {
+    if ($final_year == 0) {
+        foreach ($result as $index => $value) {
+            if ($initial_year == 0) {
                 $initial_year = intval(substr($index, 11, 4));
             }
 
             $aux = intval(substr($index, 11, 4));
 
-            if ($aux > $final_year)
-            {
+            if ($aux > $final_year) {
                 $final_year = $aux;
             }
         }
     }
 
-    if ($contYears == 0 && ($final_year - $initial_year) > 0)
-    {
+    if ($contYears == 0 && ($final_year - $initial_year) > 0) {
         $numYears = $final_year - $initial_year + 1;
         $contYears = 1;
     }
 
-    if ($contRows == 0)
-    {
+    if ($contRows == 0) {
         $numRows += $numYears * 4;
         $contRows = 1;
     }
@@ -70,24 +63,30 @@ foreach ($results as $result)
         </tr>
 
 <?php
-    foreach ($result as $index => $value)
-    {
+    foreach ($result as $index => $value) {
         $quarter = substr($index, 8, 2);
         $year = substr($index, 11, 4);
 
-        if (preg_match($pattern, $index))
-        {
+        if (preg_match($pattern, $index)) {
 ?>
         <tr>
             <td style="border-bottom: none;">&nbsp;</td>
             <td style="border-bottom: none;text-align:center;"><?php
-                switch($quarter) {
-                    case 't1': echo trans('Q1') . "/" . $year; break;
-                    case 't2': echo trans('Q2') . "/" . $year; break;
-                    case 't3': echo trans('Q3') . "/" . $year; break;
-                    case 't4': echo trans('Q4') . "/" . $year; break;
-                }
-                ?></td>
+            switch ($quarter) {
+                case 't1':
+                        echo trans('Q1') . "/" . $year;
+                    break;
+                case 't2':
+                        echo trans('Q2') . "/" . $year;
+                    break;
+                case 't3':
+                        echo trans('Q3') . "/" . $year;
+                    break;
+                case 't4':
+                        echo trans('Q4') . "/" . $year;
+                    break;
+            }
+            ?></td>
             <td style="border-bottom: none;text-align:center;"><?php echo ($value > 0) ? format_currency($value) : ''; ?></td>
         </tr>
 <?php

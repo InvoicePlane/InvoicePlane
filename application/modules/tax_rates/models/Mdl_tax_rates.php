@@ -48,5 +48,4 @@ class Mdl_Tax_Rates extends Response_Model
             )
         );
     }
-
 }
