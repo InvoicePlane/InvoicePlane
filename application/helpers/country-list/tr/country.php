@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'VI' => 'ABD Virgin Adaları',
     'AF' => 'Afganistan',
     'AX' => 'Aland Adaları',
@@ -249,4 +249,4 @@ return array(
     'IT' => 'İtalya',
     'IS' => 'İzlanda',
     'CL' => 'Şili',
-);
+];

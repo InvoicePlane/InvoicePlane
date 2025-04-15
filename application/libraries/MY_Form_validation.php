@@ -25,7 +25,7 @@ class MY_Form_validation extends CI_Form_validation
             $query = $this->CI->db->limit(1)->where($field, $str)->where($id_field . ' != ', $id_val)->get($table);
         } else {
             list($table, $field) = explode('.', $field);
-            $query = $this->CI->db->limit(1)->get_where($table, array($field => $str));
+            $query = $this->CI->db->limit(1)->get_where($table, [$field => $str]);
         }
 
         return $query->num_rows() === 0;

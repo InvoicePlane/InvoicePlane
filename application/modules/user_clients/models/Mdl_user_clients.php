@@ -41,7 +41,7 @@ class Mdl_User_Clients extends MY_Model
      */
     public function validation_rules()
     {
-        return array(
+        return [
             'user_id' => [
                 'field' => 'user_id',
                 'label' => trans('user'),
@@ -52,7 +52,7 @@ class Mdl_User_Clients extends MY_Model
                 'label' => trans('client'),
                 'rules' => 'required'
             ],
-        );
+        ];
     }
 
     /**

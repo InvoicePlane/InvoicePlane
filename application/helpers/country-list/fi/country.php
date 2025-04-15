@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'AF' => 'Afganistan',
     'AX' => 'Ahvenanmaa',
     'NL' => 'Alankomaat',
@@ -249,4 +249,4 @@ return array(
     'UM' => 'Yhdysvaltain pienet erillissaaret',
     'ZW' => 'Zimbabwe',
     'ZZ' => 'tuntematon tai virheellinen alue',
-);
+];

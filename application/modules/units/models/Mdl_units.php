@@ -59,7 +59,7 @@ class Mdl_Units extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
+        return [
             'unit_name' => [
                 'field' => 'unit_name',
                 'label' => trans('unit_name'),
@@ -70,6 +70,6 @@ class Mdl_Units extends Response_Model
                 'label' => trans('unit_name_plrl'),
                 'rules' => 'required'
             ]
-        );
+        ];
     }
 }

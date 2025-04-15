@@ -127,8 +127,8 @@ class Cron extends Base_Controller
                 }
 
                 $from = ! empty($tpl->email_template_from_email) ?
-                    array($tpl->email_template_from_email, $tpl->email_template_from_name) :
-                    array($invoice->user_email, "");
+                    [$tpl->email_template_from_email, $tpl->email_template_from_name] :
+                    [$invoice->user_email, ""];
 
                 $subject = !empty($tpl->email_template_subject) ?
                     $tpl->email_template_subject :

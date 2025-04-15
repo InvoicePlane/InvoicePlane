@@ -29,7 +29,7 @@ class Dashboard extends Admin_Controller
         $invoice_overview_period = get_setting('invoice_overview_period');
 
         $this->layout->set(
-            array(
+            [
                 'invoice_status_totals' => $this->mdl_invoice_amounts->get_status_totals($invoice_overview_period),
                 'quote_status_totals' => $this->mdl_quote_amounts->get_status_totals($quote_overview_period),
                 'invoice_status_period' => str_replace('-', '_', $invoice_overview_period),
@@ -42,7 +42,7 @@ class Dashboard extends Admin_Controller
                 'projects' => $this->mdl_projects->get_latest()->get()->result(),
                 'tasks' => $this->mdl_tasks->get_latest()->get()->result(),
                 'task_statuses' => $this->mdl_tasks->statuses(),
-            )
+            ]
         );
 
         $this->layout->buffer('content', 'dashboard/index');

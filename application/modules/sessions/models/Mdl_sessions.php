@@ -49,10 +49,10 @@ class Mdl_Sessions extends CI_Model
                     $salt = $this->crypt->salt();
                     $hash = $this->crypt->generate_password($password, $salt);
 
-                    $db_array = array(
+                    $db_array = [
                         'user_psalt' => $salt,
                         'user_password' => $hash
-                    );
+                    ];
 
                     $this->db->where('user_id', $user->user_id);
                     $this->db->update('ip_users', $db_array);
@@ -68,14 +68,14 @@ class Mdl_Sessions extends CI_Model
             }
 
             if ($this->crypt->check_password($user->user_password, $password)) {
-                $session_data = array(
+                $session_data = [
                     'user_type' => $user->user_type,
                     'user_id' => $user->user_id,
                     'user_name' => $user->user_name,
                     'user_email' => $user->user_email,
                     'user_company' => $user->user_company,
                     'user_language' => isset($user->user_language) ? $user->user_language : 'system',
-                );
+                ];
 
                 $this->session->set_userdata($session_data);
 

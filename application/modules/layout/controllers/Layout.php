@@ -16,7 +16,7 @@ if (!defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Layout extends MX_Controller
 {
-    public $view_data = array();
+    public $view_data = [];
 
     /**
      * @return $this
@@ -29,14 +29,14 @@ class Layout extends MX_Controller
             foreach ($args[0] as $arg) {
                 $key = $arg[0];
                 $view = explode('/', $arg[1]);
-                $data = array_merge(isset($arg[2]) ? $arg[2] : array(), $this->view_data);
+                $data = array_merge(isset($arg[2]) ? $arg[2] : [], $this->view_data);
 
                 $this->view_data[$key] = $this->load->view($view[0] . '/' . $view[1], $data, true);
             }
         } else {
             $key = $args[0];
             $view = explode('/', $args[1]);
-            $data = array_merge(isset($args[2]) ? $args[2] : array(), $this->view_data);
+            $data = array_merge(isset($args[2]) ? $args[2] : [], $this->view_data);
 
             $this->view_data[$key] = $this->load->view($view[0] . '/' . $view[1], $data, true);
         }
@@ -73,7 +73,7 @@ class Layout extends MX_Controller
      * @param string $view
      * @param array $data
      */
-    public function load_view($view, $data = array())
+    public function load_view($view, $data = [])
     {
         $view = explode('/', $view);
 

@@ -16,7 +16,7 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Settings extends CI_Model
 {
-    public $settings = array();
+    public $settings = [];
 
     /**
      * @param $key
@@ -24,10 +24,10 @@ class Mdl_Settings extends CI_Model
      */
     public function save($key, $value)
     {
-        $db_array = array(
+        $db_array = [
             'setting_key' => $key,
             'setting_value' => $value,
-        );
+        ];
 
         if ($this->get($key) !== null) {
             $this->db->where('setting_key', $key);

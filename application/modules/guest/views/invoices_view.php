@@ -57,7 +57,7 @@ if ($invoice->invoice_balance == 0 || $invoice->invoice_status_id >= 4) {
                         <h3><?php _htmlsc(format_client($invoice)); ?></h3>
 
                         <div class="client-address">
-                            <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>
+                            <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
                         </div>
 <?php
 if ($invoice->client_phone) {

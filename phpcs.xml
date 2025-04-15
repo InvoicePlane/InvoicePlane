@@ -1,0 +1,9 @@
+<ruleset name="coding-style">
+    <description>Coding style for InvoicPlane</description>
+    <!-- More info see: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-Ruleset -->
+    <file>./application</file>
+    <file>./index.php</file>
+    <exclude-pattern>./application/logs/*</exclude-pattern>
+    <exclude-pattern>./vendor/*</exclude-pattern>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+</ruleset>

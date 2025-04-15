@@ -102,7 +102,7 @@ class Modules
         /* create or return an existing controller from the registry */
         if (!isset(self::$registry[$alias])) {
             /* find the controller */
-            list($class) = $module == null ? CI::$APP->router->locate(array()) : CI::$APP->router->locate(explode('/', $module));
+            list($class) = $module == null ? CI::$APP->router->locate([]) : CI::$APP->router->locate(explode('/', $module));
 
             /* controller cannot be located */
             if (empty($class)) {
