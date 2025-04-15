@@ -17,4 +17,4 @@ Line Number: <?php echo $line; ?>
         <?php endif ?>
     <?php endforeach ?>
 
-<?php endif ?>
+<?php endif;

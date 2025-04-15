@@ -239,4 +239,5 @@ foreach ($pdf_templates as $pdf_template) {
     </div>
 </form>
 
-<?php _dropzone_script($invoice->invoice_url_key, $invoice->client_id); ?>
+<?php
+_dropzone_script($invoice->invoice_url_key, $invoice->client_id);

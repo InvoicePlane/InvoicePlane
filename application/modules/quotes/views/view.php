@@ -506,4 +506,5 @@ if ($default_custom) {
 ?>
     </div>
 
-<?php _dropzone_script($quote->quote_url_key, $quote->client_id); ?>
+<?php
+_dropzone_script($quote->quote_url_key, $quote->client_id);

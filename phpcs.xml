@@ -10,6 +10,8 @@
     <rule ref="Generic.ControlStructures.InlineControlStructure"/>
     <rule ref="Generic.PHP.DeprecatedFunctions"/>
     <rule ref="Generic.Strings.UnnecessaryStringConcat"/>
+    <!-- The closing ?> tag MUST be omitted from files containing only PHP. -->
+    <rule ref="Zend.Files.ClosingTag"/>
     <!-- There MUST NOT be more than one statement per line. -->
     <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
     <!-- Character Encoding PHP code MUST use only UTF-8 without BOM. -->

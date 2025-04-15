@@ -638,4 +638,5 @@ if ($default_custom) {
     </div>
 </div>
 
-<?php _dropzone_script($invoice->invoice_url_key, $invoice->client_id); ?>
+<?php
+_dropzone_script($invoice->invoice_url_key, $invoice->client_id);

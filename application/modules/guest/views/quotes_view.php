@@ -223,4 +223,6 @@ foreach ($items as $i => $item) {
 
     </div>
 </div>
-<?php _dropzone_script($quote->quote_url_key, $quote->client_id, 'guest/get', false); ?>
+
+<?php
+_dropzone_script($quote->quote_url_key, $quote->client_id, 'guest/get', false);

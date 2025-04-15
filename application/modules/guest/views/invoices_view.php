@@ -231,4 +231,5 @@ if ($invoice->invoice_terms) {
     </form>
 
 </div>
-<?php _dropzone_script($invoice->invoice_url_key, $invoice->client_id, 'guest/get', false); ?>
+<?php
+_dropzone_script($invoice->invoice_url_key, $invoice->client_id, 'guest/get', false);

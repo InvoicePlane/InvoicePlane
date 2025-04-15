@@ -227,4 +227,5 @@ foreach ($pdf_templates as $pdf_template) {
 
 </form>
 
-<?php _dropzone_script($quote->quote_url_key, $quote->client_id); ?>
+<?php
+_dropzone_script($quote->quote_url_key, $quote->client_id);
