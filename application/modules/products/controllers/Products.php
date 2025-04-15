@@ -64,10 +64,8 @@ class Products extends Admin_Controller
             redirect('products');
         }
 
-        if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_products->prep_form($id)) {
-                show_404();
-            }
+        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_products->prep_form($id)) {
+            show_404();
         }
 
         $this->load->model('families/mdl_families');

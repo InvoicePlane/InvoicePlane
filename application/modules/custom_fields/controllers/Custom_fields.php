@@ -85,12 +85,9 @@ class Custom_Fields extends Admin_Controller
             redirect('custom_fields');
         }
 
-        if ($id && ! $this->input->post('btn_submit'))
+        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_custom_fields->prep_form($id))
         {
-            if ( ! $this->mdl_custom_fields->prep_form($id))
-            {
-                show_404();
-            }
+            show_404();
         }
 
         $this->layout->set(

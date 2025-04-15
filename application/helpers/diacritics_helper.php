@@ -46,7 +46,7 @@ function diacritics_seems_utf8($str)
 
         # Does not match any model
         for ($j = 0; $j < $n; $j++) { # n bytes matching 10bbbbbb follow ?
-            if ((++$i == $length) || ((ord($str[$i]) & 0xC0) != 0x80)) {
+            if ((++$i === $length) || ((ord($str[$i]) & 0xC0) != 0x80)) {
                 return false;
             }
         }

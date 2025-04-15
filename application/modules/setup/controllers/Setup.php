@@ -266,11 +266,7 @@ class Setup extends MX_Controller
 
         // Then check if the first version entry is less than 30 minutes old
         // If yes we assume that the user ran the setup a few minutes ago
-        if ($data[0]->version_date_applied < (time() - 1800)) {
-            $update = true;
-        } else {
-            $update = false;
-        }
+        $update = $data[0]->version_date_applied < time() - 1800;
 
         $this->layout->set('update', $update);
 

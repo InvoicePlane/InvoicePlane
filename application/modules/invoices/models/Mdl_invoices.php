@@ -178,18 +178,15 @@ class Mdl_Invoices extends Response_Model
 
         $this->db->insert('ip_invoice_amounts', $db_array);
 
-        if ($include_invoice_tax_rates) {
-            // Create the default invoice tax record if applicable
-            if (get_setting('default_invoice_tax_rate')) {
-                $db_array = [
-                    'invoice_id'              => $invoice_id,
-                    'tax_rate_id'             => get_setting('default_invoice_tax_rate'),
-                    'include_item_tax'        => get_setting('default_include_item_tax', 0),
-                    'invoice_tax_rate_amount' => 0,
-                ];
-
-                $this->db->insert('ip_invoice_tax_rates', $db_array);
-            }
+        // Create the default invoice tax record if applicable
+        if ($include_invoice_tax_rates && get_setting('default_invoice_tax_rate')) {
+            $db_array = [
+                'invoice_id'              => $invoice_id,
+                'tax_rate_id'             => get_setting('default_invoice_tax_rate'),
+                'include_item_tax'        => get_setting('default_include_item_tax', 0),
+                'invoice_tax_rate_amount' => 0,
+            ];
+            $this->db->insert('ip_invoice_tax_rates', $db_array);
         }
 
         if ($invoice_group !== '0') {
@@ -415,11 +412,7 @@ class Mdl_Invoices extends Response_Model
         $this->db->where('invoice_id', $invoice->invoice_id);
         $payment_results = $this->db->get('ip_payments');
 
-        if ($payment_results->num_rows() > 0) {
-            $invoice->payments = $payment_results->result();
-        } else {
-            $invoice->payments = null;
-        }
+        $invoice->payments = $payment_results->num_rows() > 0 ? $payment_results->result() : null;
 
         return $invoice;
     }
@@ -653,17 +646,15 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if ( ! empty($invoice)) {
-            if ($invoice->invoice_status_id == 1 && $invoice->invoice_number == '') {
-                // Generate new invoice number if applicable
-                if (get_setting('generate_invoice_number_for_draft') == 0) {
-                    $invoice_number = $this->get_invoice_number($invoice->invoice_group_id);
+        if ( !empty($invoice) && ($invoice->invoice_status_id == 1 && $invoice->invoice_number == '')) {
+            // Generate new invoice number if applicable
+            if (get_setting('generate_invoice_number_for_draft') == 0) {
+                $invoice_number = $this->get_invoice_number($invoice->invoice_group_id);
 
-                    // Set new invoice number and save
-                    $this->db->where('invoice_id', $invoice_id);
-                    $this->db->set('invoice_number', $invoice_number);
-                    $this->db->update('ip_invoices');
-                }
+                // Set new invoice number and save
+                $this->db->where('invoice_id', $invoice_id);
+                $this->db->set('invoice_number', $invoice_number);
+                $this->db->update('ip_invoices');
             }
         }
     }

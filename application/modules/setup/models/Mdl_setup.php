@@ -48,7 +48,7 @@ class Mdl_Setup extends CI_Model
         $commands = explode(';', $contents);
 
         foreach ($commands as $command) {
-            if (!trim($command)) {
+            if ( ! trim($command)) {
                 continue;
             }
 

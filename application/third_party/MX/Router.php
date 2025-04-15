@@ -158,12 +158,9 @@ class MX_Router extends CI_Router
             }
 
             // application sub-sub-directory controller exists?
-            if ($controller) {
-                if (is_file(APPPATH . 'controllers/' . $module . '/' . $directory . '/' . ucfirst($controller) . $ext)) {
-                    $this->directory = $module . '/' . $directory . '/';
-
-                    return array_slice($segments, 2);
-                }
+            if ($controller && is_file(APPPATH . 'controllers/' . $module . '/' . $directory . '/' . ucfirst($controller) . $ext)) {
+                $this->directory = $module . '/' . $directory . '/';
+                return array_slice($segments, 2);
             }
         }
 

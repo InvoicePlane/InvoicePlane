@@ -134,12 +134,10 @@ class MX_Loader extends CI_Loader
 
         /* autoload database & libraries */
         if (isset($autoload['libraries'])) {
-            if (in_array('database', $autoload['libraries'])) {
-                /* autoload database */
-                if (!$db = CI::$APP->config->item('database')) {
-                    $this->database();
-                    $autoload['libraries'] = array_diff($autoload['libraries'], ['database']);
-                }
+            /* autoload database */
+            if (in_array('database', $autoload['libraries']) && !$db = CI::$APP->config->item('database')) {
+                $this->database();
+                $autoload['libraries'] = array_diff($autoload['libraries'], ['database']);
             }
 
             /* autoload libraries */
@@ -203,12 +201,7 @@ class MX_Loader extends CI_Loader
 
 
 
-	if ($object_name == null) {
-		$_alias = $class;
-	}
-	else {
-		$_alias = strtolower($object_name);
-	}
+	$_alias = $object_name == null ? $class : strtolower($object_name);
 
         list($path, $_library) = Modules::find($library, $this->_module, 'libraries/');
 
@@ -451,7 +444,7 @@ class MX_Loader extends CI_Loader
             $_ci_path = '';
 
             /* add file extension if not provided */
-            $_ci_file = (pathinfo($_ci_view, PATHINFO_EXTENSION)) ? $_ci_view : $_ci_view . EXT;
+            $_ci_file = (pathinfo($_ci_view, PATHINFO_EXTENSION) !== '' && pathinfo($_ci_view, PATHINFO_EXTENSION) !== '0') ? $_ci_view : $_ci_view . EXT;
 
             foreach ($this->_ci_view_paths as $path => $cascade) {
                 if (file_exists($view = $path . $_ci_file)) {

@@ -574,11 +574,7 @@ class Sumex
 
         $postal = $this->generatePostal($street, $zip, $city);
 
-        if ($phone != null) {
-            $telecom = $this->generateTelecom($phone);
-        } else {
-            $telecom = null;
-        }
+        $telecom = $phone != null ? $this->generateTelecom($phone) : null;
 
 
         $person->appendChild($familyName);

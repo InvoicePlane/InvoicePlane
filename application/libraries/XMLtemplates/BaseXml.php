@@ -36,6 +36,7 @@ class BaseXml extends stdClass
     public $notax;
 
     public $options = [];
+
      // CustomizationID, Endpoint, ...
     public $item_decimals = 2;
 

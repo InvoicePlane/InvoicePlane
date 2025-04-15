@@ -225,11 +225,7 @@ class Validator extends MY_Model
 
                 switch ($ftype) {
                     case 'DATE':
-                        if ($value == '') {
-                            $this->_formdata[$key] = null;
-                        } else {
-                            $this->_formdata[$key] = date_to_mysql($value);
-                        }
+                        $this->_formdata[$key] = $value == '' ? null : date_to_mysql($value);
 
                         break;
 

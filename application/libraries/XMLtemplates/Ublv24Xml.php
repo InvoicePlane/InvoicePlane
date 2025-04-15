@@ -98,36 +98,34 @@ class Ublv24Xml extends BaseXml
         $node->appendChild($OrderReference);
 
         // [ubl-BE-01]-At least two AdditionalDocumentReference elements must be present.
-        if ( ! empty($aRef = @$this->options['DocumentReference'])) {
-            if (is_array($aRef)) {
-                foreach ($aRef as $ref) {
-                    $docRefNode = $this->doc->createElement('cac:AdditionalDocumentReference');
-                    if ($ref[0] != 'url') {
-                        $docRefIdNode   = $this->doc->createElement('cbc:ID', $ref[0]);
-                        $docRefDescNode = $this->doc->createElement('cbc:DocumentDescription', $ref[1]);
-                    }
-                    elseif ($ref[0] == 'url') {
-                        $docRefIdNode   = $this->doc->createElement('cbc:ID', $invoiceNumber);
-                        $type = $this->invoice->invoice_sign > 0 ? 0 : 1; // 0 Invoice 1 CreditNote
-                        $docRefDescNode = $this->doc->createElement('cbc:DocumentDescription', $ref[1][$type]);
-
-                        $docAttachNode = $this->doc->createElement('cac:Attachment');
-                        $docExtRefNode = $this->doc->createElement('cac:ExternalReference');
-                        $docUriNode = $this->doc->createElement('cbc:URI', site_url('guest/view/invoice/' . $this->invoice->invoice_url_key));
-
-                        $docExtRefNode->appendChild($docUriNode);
-                        $docAttachNode->appendChild($docExtRefNode);
-                    }
-
-                    $docRefNode->appendChild($docRefIdNode);
-                    $docRefNode->appendChild($docRefDescNode);
-                    if (isset($docAttachNode)) {
-                        $docRefNode->appendChild($docAttachNode);
-                        unset($docAttachNode);
-                    }
-
-                    $node->appendChild($docRefNode);
+        if ( !empty($aRef = @$this->options['DocumentReference']) && is_array($aRef)) {
+            foreach ($aRef as $ref) {
+                $docRefNode = $this->doc->createElement('cac:AdditionalDocumentReference');
+                if ($ref[0] != 'url') {
+                    $docRefIdNode   = $this->doc->createElement('cbc:ID', $ref[0]);
+                    $docRefDescNode = $this->doc->createElement('cbc:DocumentDescription', $ref[1]);
                 }
+                elseif ($ref[0] == 'url') {
+                    $docRefIdNode   = $this->doc->createElement('cbc:ID', $invoiceNumber);
+                    $type = $this->invoice->invoice_sign > 0 ? 0 : 1; // 0 Invoice 1 CreditNote
+                    $docRefDescNode = $this->doc->createElement('cbc:DocumentDescription', $ref[1][$type]);
+
+                    $docAttachNode = $this->doc->createElement('cac:Attachment');
+                    $docExtRefNode = $this->doc->createElement('cac:ExternalReference');
+                    $docUriNode = $this->doc->createElement('cbc:URI', site_url('guest/view/invoice/' . $this->invoice->invoice_url_key));
+
+                    $docExtRefNode->appendChild($docUriNode);
+                    $docAttachNode->appendChild($docExtRefNode);
+                }
+
+                $docRefNode->appendChild($docRefIdNode);
+                $docRefNode->appendChild($docRefDescNode);
+                if (isset($docAttachNode)) {
+                    $docRefNode->appendChild($docAttachNode);
+                    unset($docAttachNode);
+                }
+
+                $node->appendChild($docRefNode);
             }
         }
 
@@ -277,7 +275,7 @@ class Ublv24Xml extends BaseXml
         $contactName  = $this->invoice->{$prop[0]}; // *_invoicing_contact;
         $contactPhone = $this->invoice->{$prop[1]}; // *_phone;
         $contactEmail = $this->invoice->{$prop[2]}; // *_email;
-        if ($contactName . $contactPhone . $contactEmail) {
+        if ($contactName . $contactPhone . $contactEmail !== '') {
             $node = $this->doc->createElement('cac:Contact');
             if ($contactName) {
                 $node->appendChild($this->doc->createElement('cbc:Name', $contactName));
@@ -338,7 +336,8 @@ class Ublv24Xml extends BaseXml
     // xml helper
     protected function xmlPaymentTerms(& $node)
     {
-        if ($note = trim(htmlsc(strip_tags($this->invoice->invoice_terms)))) {
+        $note = trim(htmlsc(strip_tags($this->invoice->invoice_terms)));
+        if ($note !== '' && $note !== '0') {
             $nodeNote = $this->doc->createElement('cbc:Note', $note);
             $nodeTerms = $this->doc->createElement('cac:PaymentTerms');
             $nodeTerms->appendChild($nodeNote);
@@ -470,7 +469,7 @@ class Ublv24Xml extends BaseXml
         }
 
         // Subject to VAT
-        if ($category == 'S') {
+        if ($category === 'S') {
             $nodeTax->appendChild($this->doc->createElement('cbc:Percent', $item->item_tax_rate_percent)); // O Document MUST not contain empty elements.
         }
 
@@ -515,7 +514,7 @@ class Ublv24Xml extends BaseXml
             $nodeTax  = $this->doc->createElement('cac:TaxCategory');
             $nodeTax->appendChild($this->doc->createElement('cbc:ID', $category));
             // Subject to VAT
-            if ($category == 'S') {
+            if ($category === 'S') {
                 $nodeTax->appendChild($this->doc->createElement('cbc:Percent', $percent)); // O Document MUST not contain empty elements.
             }
 

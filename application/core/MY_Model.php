@@ -131,7 +131,7 @@ class MY_Model extends CI_Model
      */
     public function __call($name, $arguments)
     {
-        if (substr($name, 0, 7) == 'filter_') {
+        if (substr($name, 0, 7) === 'filter_') {
             $this->filter[] = [substr($name, 7), $arguments];
         } else {
             call_user_func_array([$this->db, $name], $arguments);

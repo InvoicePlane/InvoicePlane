@@ -83,7 +83,7 @@ function parse_template($object, $body)
                     break;
                 default:
                     // Check if it's a custom field
-                    if (preg_match('/ip_cf_([0-9].*)/', $var, $cf_id)) {
+                    if (preg_match('/ip_cf_(\d.*)/', $var, $cf_id)) {
                         // Get the custom field
                         $CI = & get_instance();
                         $CI->load->model('custom_fields/mdl_custom_fields');

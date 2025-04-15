@@ -63,10 +63,8 @@ class Projects extends Admin_Controller
             redirect('projects');
         }
 
-        if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_projects->prep_form($id)) {
-                show_404();
-            }
+        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_projects->prep_form($id)) {
+            show_404();
         }
 
         $this->load->model('clients/mdl_clients');

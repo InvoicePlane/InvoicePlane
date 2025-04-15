@@ -222,21 +222,13 @@ class Mdl_Reports extends CI_Model
         $maxQuantity = null,
         $taxChecked = false
     ) {
-        if ($minQuantity == "") {
+        if ($minQuantity == '') {
             $minQuantity = 0;
         }
 
-        if ($from_date == "") {
-            $from_date = date("Y-m-d");
-        } else {
-            $from_date = date_to_mysql($from_date);
-        }
+        $from_date = $from_date == '' ? date('Y-m-d') : date_to_mysql($from_date);
 
-        if ($to_date == "") {
-            $to_date = date("Y-m-d");
-        } else {
-            $to_date = date_to_mysql($to_date);
-        }
+        $to_date = $to_date == '' ? date('Y-m-d') : date_to_mysql($to_date);
 
         $from_date_year = intval(substr($from_date, 0, 4));
         $to_date_year = intval(substr($to_date, 0, 4));

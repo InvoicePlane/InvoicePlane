@@ -65,7 +65,7 @@ class Upload extends Admin_Controller
 
     public function create_dir($path, $chmod = '0755'): bool
     {
-        if (! (is_dir($path) || is_link($path)))
+        if (!is_dir($path) && !is_link($path))
         {
             return mkdir($path, $chmod);
         }
@@ -92,13 +92,9 @@ class Upload extends Admin_Controller
 
         $finalPath = $this->targetPath . $url_key . '_' . $filename;
 
-        if (realpath($this->targetPath) === substr(realpath($finalPath), 0, strlen(realpath($this->targetPath))))
-        {
-            if (! file_exists($finalPath) || @unlink($finalPath))
-            {
-                $this->mdl_uploads->delete_file($url_key, $filename);
-                $this->respond_message(200, 'upload_file_deleted_successfully', $filename);
-            }
+        if (realpath($this->targetPath) === substr(realpath($finalPath), 0, strlen(realpath($this->targetPath))) && (! file_exists($finalPath) || @unlink($finalPath))) {
+            $this->mdl_uploads->delete_file($url_key, $filename);
+            $this->respond_message(200, 'upload_file_deleted_successfully', $filename);
         }
 
         $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';

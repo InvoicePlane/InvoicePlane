@@ -77,13 +77,11 @@ class Modules
             $module = substr($module, 0, $pos);
         }
 
-        if ($class = self::load($module)) {
-            if (method_exists($class, $method)) {
-                ob_start();
-                $output = call_user_func_array([$class, $method], array_slice($args, 1));
-                $buffer = ob_get_clean();
-                return ($output !== null) ? $output : $buffer;
-            }
+        if (($class = self::load($module)) && method_exists($class, $method)) {
+            ob_start();
+            $output = call_user_func_array([$class, $method], array_slice($args, 1));
+            $buffer = ob_get_clean();
+            return ($output !== null) ? $output : $buffer;
         }
 
         log_message('error', sprintf('Module controller failed to run: %s/%s', $module, $method));
@@ -102,20 +100,12 @@ class Modules
         }
 
         /* get the requested controller class name */
-        if ($module==null) {
-            $alias = '';
-        } else {
-            $alias = strtolower(basename($module));
-        }
+        $alias = $module == null ? '' : strtolower(basename($module));
 
         /* create or return an existing controller from the registry */
         if (!isset(self::$registry[$alias])) {
             /* find the controller */
-            if ($module == null) {
-                list($class) = CI::$APP->router->locate(array());
-            } else {
-                list($class) = CI::$APP->router->locate(explode('/', $module));
-            }
+            list($class) = $module == null ? CI::$APP->router->locate(array()) : CI::$APP->router->locate(explode('/', $module));
 
             /* controller cannot be located */
             if (empty($class)) {
@@ -200,10 +190,8 @@ class Modules
     public static function parse_routes($module, $uri)
     {
         /* load the route file */
-        if (!isset(self::$routes[$module])) {
-            if (list($path) = self::find('routes', $module, 'config/')) {
-                $path && self::$routes[$module] = self::load_file('routes', $path, 'route');
-            }
+        if (!isset(self::$routes[$module]) && list($path) = self::find('routes', $module, 'config/')) {
+            $path && self::$routes[$module] = self::load_file('routes', $path, 'route');
         }
 
         if (!isset(self::$routes[$module])) {
@@ -235,7 +223,7 @@ class Modules
         $segments = explode('/', $file);
 
         $file = array_pop($segments);
-        $file_ext = (pathinfo($file, PATHINFO_EXTENSION)) ? $file : $file . EXT;
+        $file_ext = (pathinfo($file, PATHINFO_EXTENSION) !== '' && pathinfo($file, PATHINFO_EXTENSION) !== '0') ? $file : $file . EXT;
 
         $path = ltrim(implode('/', $segments) . '/', '/');
         $module ? $modules[$module] = $path : $modules = [];

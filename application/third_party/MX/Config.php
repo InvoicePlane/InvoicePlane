@@ -62,11 +62,7 @@ class MX_Config extends CI_Config
             $current_config =& $this->config;
 
             if ($use_sections === true) {
-                if (isset($current_config[$file])) {
-                    $current_config[$file] = array_merge($current_config[$file], $config);
-                } else {
-                    $current_config[$file] = $config;
-                }
+                $current_config[$file] = isset($current_config[$file]) ? array_merge($current_config[$file], $config) : $config;
 
             } else {
                 $current_config = array_merge($current_config, $config);

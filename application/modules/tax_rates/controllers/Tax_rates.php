@@ -62,10 +62,8 @@ class Tax_Rates extends Admin_Controller
             redirect('tax_rates');
         }
 
-        if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_tax_rates->prep_form($id)) {
-                show_404();
-            }
+        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_tax_rates->prep_form($id)) {
+            show_404();
         }
 
         $this->layout->buffer('content', 'tax_rates/form');

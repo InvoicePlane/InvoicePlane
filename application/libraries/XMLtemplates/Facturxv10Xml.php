@@ -121,7 +121,8 @@ class Facturxv10Xml extends BaseXml
     {
         $date = date_create($this->invoice->invoice_date_due);
         $PaymentTerms = trans('due_date') . ' ' . date_format($date, get_setting('date_format'));
-        if ($terms = trim(htmlsc(strip_tags($this->invoice->invoice_terms))))
+        $terms = trim(htmlsc(strip_tags($this->invoice->invoice_terms)));
+        if ($terms !== '' && $terms !== '0')
         {
             $PaymentTerms .= PHP_EOL . trans('terms') . PHP_EOL . $terms;
         }
@@ -359,7 +360,7 @@ class Facturxv10Xml extends BaseXml
             $taxNode->appendChild($this->doc->createElement('ram:TypeCode', 'VAT'));
 
             $taxNode->appendChild($this->doc->createElement('ram:CategoryCode', $category)); // S or O
-            if($category == 'S')
+            if($category === 'S')
             {
                 $taxNode->appendChild($this->doc->createElement('ram:RateApplicablePercent', $percent)); // of VAT rate
             }
