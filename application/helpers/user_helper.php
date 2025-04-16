@@ -12,10 +12,8 @@ if (! defined('BASEPATH')) {
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
-
 /**
  * @param mixed id or object $user - since 1.6.3
- * @return string
  */
 function format_user($user): string
 {

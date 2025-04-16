@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 /**
  * @param obj|int $client (or id - since 1.6.3)
  * @param bool    $show_title - since 1.6.3
- * @return string
  */
 function format_client($client, $show_title = true): string
 {

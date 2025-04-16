@@ -114,8 +114,6 @@ function standardize_amount($amount)
  * @Scopes Invoices controllers
  *
  * @param $items
- *
- * @return mixed
  */
 function items_tax_usages_bad($items): mixed
 {

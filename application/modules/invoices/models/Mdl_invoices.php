@@ -484,9 +484,6 @@ class Mdl_Invoices extends Response_Model
         return $this->invoice_custom->get_by_invid($id);
     }
 
-    /**
-     * @return array
-     */
     public function get_archives($invoice_number): array
     {
         $invoice_array = [];
