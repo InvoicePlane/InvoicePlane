@@ -59,7 +59,7 @@ class MX_Loader extends CI_Loader
             $this->controller = $controller;
 
             /* references to ci loader variables */
-            foreach (get_class_vars('CI_Loader') as $var => $val) {
+            foreach (array_keys(get_class_vars('CI_Loader')) as $var) {
                 if ($var != '_ci_ob_level') {
                     $this->$var =& CI::$APP->load->$var;
                 }
