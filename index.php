@@ -15,7 +15,7 @@ if ( ! file_exists('ipconfig.php')) {
     exit('The <b>ipconfig.php</b> file is missing! Please make a copy of the <b>ipconfig.php.example</b> file and rename it to <b>ipconfig.php</b>');
 }
 
-require 'vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, 'ipconfig.php');
 $dotenv->load();
 

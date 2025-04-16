@@ -19,7 +19,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * Class Facturxv10Xml
  */
 
-include_once 'BaseXml.php'; // ! important
+include_once __DIR__ . '/BaseXml.php'; // ! important
 
 class Facturxv10Xml extends BaseXml
 {

@@ -15,7 +15,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * Todo:        Why not for Credit note (but need positive amounts) and (maybe) little retail xml head
  */
 
-include_once 'BaseXml.php'; // ! important
+include_once __DIR__ . '/BaseXml.php'; // ! important
 
 class Ublv24Xml extends BaseXml
 {

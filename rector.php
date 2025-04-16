@@ -22,5 +22,5 @@ return RectorConfig::configure()
     // ->withPhpSets()
     ->withTypeCoverageLevel(0)
     ->withDeadCodeLevel(0)
-    ->withCodeQualityLevel(35)
+    ->withCodeQualityLevel(37)
     ->withCodingStyleLevel(12);

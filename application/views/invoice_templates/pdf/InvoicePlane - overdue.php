@@ -1,4 +1,4 @@
 <?php
 
 $invoice_mode = 'overdue'; // Need in InvoicePlane template
-include 'InvoicePlane.php';
+include __DIR__ . '/InvoicePlane.php';
