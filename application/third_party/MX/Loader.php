@@ -492,6 +492,7 @@ class MX_Loader extends CI_Loader
         } else {
             CI::$APP->output->append_output(ob_get_clean());
         }
+
         return null;
     }
 

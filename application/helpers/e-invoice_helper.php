@@ -103,6 +103,7 @@ function get_xml_full_name($xml_id)
 
         return $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
     }
+
     return null;
 }
 

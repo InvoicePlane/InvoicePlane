@@ -61,6 +61,7 @@ class PaypalLib
 
             return $clientException->getResponse()->getBody();
         }
+
         return null;
     }
 

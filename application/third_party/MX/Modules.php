@@ -208,6 +208,7 @@ class Modules
                 return explode('/', $module . '/' . $val);
             }
         }
+
         return null;
     }
 

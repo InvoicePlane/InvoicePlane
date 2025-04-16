@@ -70,6 +70,7 @@ class MX_Config extends CI_Config
             unset($config);
             return $this->item($file);
         }
+
         return null;
     }
 }

@@ -291,6 +291,7 @@ class Ublv24Xml extends BaseXml
 
             return $node;
         }
+
         return null;
     }
 
