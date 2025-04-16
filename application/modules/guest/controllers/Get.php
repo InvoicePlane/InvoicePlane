@@ -15,7 +15,7 @@ if (! defined('BASEPATH')) {
 
 class Get extends Base_Controller
 {
-    public $targetPath;
+    public $targetPath = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/'
 
     public $ctype_default = 'application/octet-stream';
 
@@ -29,7 +29,6 @@ class Get extends Base_Controller
         parent::__construct();
         $this->load->model('upload/mdl_uploads');
         $this->content_types = $this->mdl_uploads->content_types;
-        $this->targetPath = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/'
     }
 
     public function show_files($url_key = null): void
