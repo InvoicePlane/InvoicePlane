@@ -18,8 +18,6 @@ class Mailer extends Admin_Controller
 {
     private $mailer_configured;
 
-    private $errors = [];
-
     /**
      * Mailer constructor.
      */
