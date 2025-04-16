@@ -99,8 +99,9 @@ function get_available_languages()
 
     $languages = directory_map(APPPATH . 'language', true);
     sort($languages);
+    $counter = count($languages);
 
-    for ($i = 0; $i < count($languages); $i++) {
+    for ($i = 0; $i < $counter; $i++) {
         $languages[$i] = str_replace(['\\', '/'], '', $languages[$i]);
     }
 
