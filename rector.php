@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -14,6 +15,7 @@ return RectorConfig::configure()
     ->withSkip([
         ExplicitBoolCompareRector::class,
         UseIdenticalOverEqualWithSameTypeRector::class,
+        RemoveUselessParamTagRector::class, // DeadCodeLevel(19)
     ])
     ->withSkip([
         __DIR__ . '/application/logs/*',
@@ -21,6 +23,6 @@ return RectorConfig::configure()
     // uncomment to reach your current PHP version
     // ->withPhpSets()
     ->withTypeCoverageLevel(0)
-    ->withDeadCodeLevel(18)
+    ->withDeadCodeLevel(19)
     ->withCodeQualityLevel(70) // 0 to 70
     ->withCodingStyleLevel(12);
