@@ -56,7 +56,9 @@ class MX_Router extends CI_Router
     {
         if ($this->translate_uri_dashes === true) {
             foreach (range(0, 2) as $v) {
-                isset($segments[$v]) && $segments[$v] = str_replace('-', '_', $segments[$v]);
+                if (isset($segments[$v])) {
+                    $segments[$v] = str_replace('-', '_', $segments[$v]);
+                }
             }
         }
 

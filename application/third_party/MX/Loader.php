@@ -155,7 +155,9 @@ class MX_Loader extends CI_Loader
         /* autoload module controllers */
         if (isset($autoload['modules'])) {
             foreach ($autoload['modules'] as $controller) {
-                ($controller != $this->_module) && $this->module($controller);
+                if ($controller != $this->_module) {
+                    $this->module($controller);
+                }
             }
         }
     }

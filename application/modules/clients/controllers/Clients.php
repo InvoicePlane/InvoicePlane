@@ -262,7 +262,9 @@ class Clients extends Admin_Controller
             unset($_SESSION[$key]);
         } else {
             // Set pages saved in session
-            isset($_SESSION[$key]) && $p = $_SESSION[$key];
+            if (isset($_SESSION[$key])) {
+                $p = $_SESSION[$key];
+            }
             // Up Actual page num
             $p[$activeTab] = $page;
             // Save in session

@@ -81,7 +81,9 @@ class Ajax extends Admin_Controller
                     if (! $item->item_task_id) {
                         unset($item->item_task_id);
                     } else {
-                        empty($this->mdl_tasks) && $this->load->model('tasks/mdl_tasks');
+                        if (empty($this->mdl_tasks)) {
+                            $this->load->model('tasks/mdl_tasks');
+                        }
                         $this->mdl_tasks->update_status(4, $item->item_task_id);
                     }
 

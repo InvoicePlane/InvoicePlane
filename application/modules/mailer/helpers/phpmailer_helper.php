@@ -171,7 +171,9 @@ function phpmail_send(
     }
 
     // Only Notify the error. The success is in mailer controller.
-    $ok || $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+    if (!$ok) {
+        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+    }
 
     return $ok;
 }
