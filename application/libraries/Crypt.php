@@ -57,6 +57,7 @@ class Crypt
         if (preg_match("/^base64:(.*)$/", $key, $matches)) {
             $key = base64_decode($matches[1]);
         }
+
         return Cryptor::Encrypt($data, $key);
     }
 
@@ -75,6 +76,7 @@ class Crypt
         if (preg_match("/^base64:(.*)$/", $key, $matches)) {
             $key = base64_decode($matches[1]);
         }
+
         return Cryptor::Decrypt($data, $key);
     }
 }
