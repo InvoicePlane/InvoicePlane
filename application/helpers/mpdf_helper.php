@@ -112,7 +112,7 @@ function pdf_create(
             $invoice_array[] = $file;
         }
 
-        if (! empty($invoice_array) && null !== $is_guest) {
+        if ($invoice_array !== [] && null !== $is_guest) {
             rsort($invoice_array);
 
             if ($stream) {

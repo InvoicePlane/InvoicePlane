@@ -230,7 +230,7 @@ class Modules
         $path = ltrim(implode('/', $segments) . '/', '/');
         $module ? $modules[$module] = $path : $modules = [];
 
-        if (!empty($segments)) {
+        if ($segments !== []) {
             $modules[array_shift($segments)] = ltrim(implode('/', $segments) . '/', '/');
         }
 

@@ -388,7 +388,7 @@ if ($client->client_einvoicing_active && $user_fields_nook) {
             }
         }
         // Show Ok or Errors
-        $reqs = empty($reqs) ? trans('no') : implode(', ', $reqs);
+        $reqs = $reqs === [] ? trans('no') : implode(', ', $reqs);
 ?>
                                             <span><?php echo $reqs; ?></span>
                                         </td>

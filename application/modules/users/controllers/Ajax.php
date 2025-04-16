@@ -174,7 +174,7 @@ class Ajax extends Admin_Controller
                 $assigned_clients[] = (int)$assigned_client->client_id;
             }
 
-            if (empty($assigned_clients)) {
+            if ($assigned_clients === []) {
                 $clients = $this->mdl_clients->get()->result();
             } else {
                 $clients = $this->mdl_clients->where_not_in('ip_clients.client_id', $assigned_clients)->get()->result();
