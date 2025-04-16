@@ -61,7 +61,7 @@ class Payment_Information extends Base_Controller
                     $driver_payment_method = get_setting('gateway_' . $d . '_payment_method');
 
                     if ($invoice_payment_method == 0 || $driver_payment_method == 0 || $driver_payment_method == $invoice_payment_method) {
-                        array_push($available_drivers, $driver);
+                        $available_drivers[] = $driver;
                     }
                 }
             }

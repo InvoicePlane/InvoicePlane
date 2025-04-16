@@ -495,7 +495,7 @@ class Mdl_Invoices extends Response_Model
             $invoice_array = glob(UPLOADS_ARCHIVE_FOLDER . '*_*' . $invoice_number . '*.pdf');
         } else {
             foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
-                array_push($invoice_array, $file);
+                $invoice_array[] = $file;
             }
 
             rsort($invoice_array);
