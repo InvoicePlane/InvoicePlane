@@ -105,8 +105,6 @@ class Mdl_Payments extends Response_Model
             $invoice_balance += (float)$payment->payment_amount;
         }
 
-        $invoice_balance = $invoice_balance;
-
         if ($amount > $invoice_balance) {
             $this->form_validation->set_message('validate_payment_amount', trans('payment_cannot_exceed_balance'));
             return false;
