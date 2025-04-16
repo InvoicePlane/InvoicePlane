@@ -108,29 +108,6 @@ class View extends Base_Controller
         return $names;
     }
 
-    // get_attachments by file system (Original renamed. For memo)
-    private function get_attachments_files($key)
-    {
-        $path = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/'
-        $files = scandir($path);
-        $attachments = [];
-
-        if ($files !== false) {
-            foreach ($files as $file) {
-                if ('.' != $file && '..' != $file && strpos($file, $key) !== false) {
-                    $attachments[] =
-                    [
-                        'name'     => substr($file, strpos($file, '_', 1) + 1),
-                        'fullname' => $file,
-                        'size'     => filesize($path . '/' . $file),
-                    ];
-                }
-            }
-        }
-
-        return $attachments;
-    }
-
     /**
      * @param $invoice_url_key
      * @param bool $stream

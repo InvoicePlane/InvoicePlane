@@ -66,17 +66,6 @@ class Get extends Base_Controller
         readfile($this->targetPath . $filename);
     }
 
-    private function sanitize_file_name(string $filename): string
-    {
-        // Clean filename (same in dropzone script)
-        return preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', trim($filename));
-    }
-
-    private function get_target_file_path(string $url_key, string $filename): string
-    {
-        return $this->targetPath . $url_key . '_' . $filename;
-    }
-
     private function respond_message(int $httpCode, string $messageKey, string $dynamicLogValue = ''): void
     {
         log_message('debug', 'guest/get: ' . trans($messageKey)  . ': (status ' . $httpCode . ') ' . $dynamicLogValue);
