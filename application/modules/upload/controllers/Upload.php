@@ -79,7 +79,6 @@ class Upload extends Admin_Controller
 
     public function delete_file($url_key): void
     {
-        $path = $this->targetPath;
         $filename = urldecode($this->input->post('name'));
 
         $finalPath = $this->targetPath . $url_key . '_' . $filename;

@@ -168,9 +168,6 @@ class Mdl_Custom_Fields extends MY_Model
         // Get the default db array
         $db_array = parent::db_array();
 
-        // Get the array of custom tables
-        $custom_tables = $this->custom_tables();
-
         // Check if the user wants to add 'id' as custom field
         if (strtolower($db_array['custom_field_label']) == 'id') {
             // Replace 'id' with 'field_id' to avoid problems with the primary key
@@ -184,11 +181,6 @@ class Mdl_Custom_Fields extends MY_Model
         } else {
             $type = $this->custom_types()[0];
         }
-
-        // Create the name for the custom field column
-        $this->load->helper('diacritics');
-
-        $clean_name = preg_replace('/[^a-z0-9_\s]/', '', strtolower(diacritics_remove_diacritics($custom_field_label)));
 
         $db_array['custom_field_type'] = $type;
 

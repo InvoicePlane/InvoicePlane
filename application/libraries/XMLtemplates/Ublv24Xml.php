@@ -147,7 +147,7 @@ class Ublv24Xml extends BaseXml
         $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'ubl_eas_code vat_id tax_code')));
         $schm = $this->invoice->{$prop[0]}; // *_ubl_eas_code
         $vat  = $this->invoice->{$prop[1]}; // *_vat_id
-        $nin  = $this->invoice->{$prop[2]}; // *_tax_code National identification number (Like SIRET in France)
+        // $nin  = $this->invoice->{$prop[2]}; // *_tax_code National identification number (Like SIRET in France)
 
         $schemeID = $schm; // AES code (Electronic Address Scheme) : https://docs.peppol.eu/poacc/billing/3.0/codelist/eas/
         $id       = $vat;  //
