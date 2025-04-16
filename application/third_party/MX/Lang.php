@@ -59,7 +59,7 @@ class MX_Lang extends CI_Lang
             return $this->language;
         }
 
-        $_module or $_module = CI::$APP->router->fetch_module();
+        $_module || $_module = CI::$APP->router->fetch_module();
         list($path, $_langfile) = Modules::find($langfile . '_lang', $_module, 'language/' . $idiom . '/');
 
         if ($path === false) {

@@ -109,7 +109,7 @@
 
             </ul>
 
-            <?php if (isset($filter_display) and $filter_display == true) { ?>
+            <?php if (isset($filter_display) && $filter_display == true) { ?>
                 <?php $this->layout->load_view('filter/jquery_filter'); ?>
                 <form class="navbar-form navbar-left" role="search" onsubmit="return false;">
                     <div class="form-group">

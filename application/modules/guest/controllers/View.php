@@ -46,7 +46,7 @@ class View extends Base_Controller
 
         $invoice = $invoice->row();
 
-        if ($this->session->userdata('user_type') != 1 and $invoice->invoice_status_id == 2) {
+        if ($this->session->userdata('user_type') != 1 && $invoice->invoice_status_id == 2) {
             $this->mdl_invoices->mark_viewed($invoice->invoice_id);
         }
 

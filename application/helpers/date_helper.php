@@ -82,7 +82,7 @@ function date_formats()
 function date_from_mysql($date, $ignore_post_check = false)
 {
     if ($date) {
-        if (!$_POST or $ignore_post_check) {
+        if (!$_POST || $ignore_post_check) {
             $CI = &get_instance();
 
             if ($date != null) {

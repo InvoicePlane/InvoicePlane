@@ -63,7 +63,7 @@ class Email_Templates extends Admin_Controller
             redirect('email_templates');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
+        if ($id && !$this->input->post('btn_submit')) {
             if (!$this->mdl_email_templates->prep_form($id)) {
                 show_404();
             }

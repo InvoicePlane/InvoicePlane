@@ -260,7 +260,9 @@ class MX_Loader extends CI_Loader
             /* check application & packages */
             parent::model($model, $object_name, $connect);
         } else {
-            class_exists('CI_Model', false) or load_class('Model', 'core');
+            if (!class_exists('CI_Model', false)) {
+                load_class('Model', 'core');
+            }
 
             if ($connect !== false && !class_exists('CI_DB', false)) {
                 if ($connect === true) {
@@ -510,4 +512,6 @@ class MX_Loader extends CI_Loader
 }
 
 /** load the CI class for Modular Separation **/
-(class_exists('CI', false)) or require dirname(__FILE__) . '/Ci.php';
+if (!class_exists('CI', false)) {
+    require dirname(__FILE__) . '/Ci.php';
+}

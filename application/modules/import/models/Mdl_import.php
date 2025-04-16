@@ -179,7 +179,7 @@ class Mdl_Import extends Response_Model
             $record_error = false;
 
             // Check to make sure the file headers match expected headers
-            if ($row == 1 and $data != $headers) {
+            if ($row == 1 && $data != $headers) {
                 return false;
             } elseif ($row > 1) {
                 // Init the array
@@ -262,7 +262,7 @@ class Mdl_Import extends Response_Model
             $record_error = false;
 
             // Check to make sure the file headers match expected headers
-            if ($row == 1 and $data != $headers) {
+            if ($row == 1 && $data != $headers) {
                 return false;
             } elseif ($row > 1) {
                 // Init the array
@@ -339,7 +339,7 @@ class Mdl_Import extends Response_Model
         while (($data = fgetcsv($handle, 1000, ',')) != false) {
             $record_error = false;
 
-            if ($row == 1 and $data != $headers) {
+            if ($row == 1 && $data != $headers) {
                 return false;
             } elseif ($row > 1) {
                 $db_array = [];

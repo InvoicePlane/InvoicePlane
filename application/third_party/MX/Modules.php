@@ -4,14 +4,16 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-(defined('EXT')) or define('EXT', '.php');
+defined('EXT') || define('EXT', '.php');
 
 global $CFG;
 
 /* get module locations from config settings or use the default module location and offset */
-is_array(Modules::$locations = $CFG->item('modules_locations')) or Modules::$locations = [
-    APPPATH . 'modules/' => '../modules/',
-];
+if (!is_array(Modules::$locations = $CFG->item('modules_locations'))) {
+    Modules::$locations = [
+        APPPATH . 'modules/' => '../modules/',
+    ];
+}
 
 /* PHP5 spl_autoload */
 spl_autoload_register('Modules::autoload');
@@ -142,7 +144,7 @@ class Modules
             /* load config or language array */
             include $location;
 
-            if (!isset($$type) or !is_array($$type)) {
+            if (!isset($$type) || !is_array($$type)) {
                 show_error(sprintf('%s does not contain a valid %s array', $location, $type));
             }
 
@@ -157,7 +159,7 @@ class Modules
     public static function autoload($class)
     {
         /* don't autoload CI_ prefixed classes or those using the config subclass_prefix */
-        if (strstr($class, 'CI_') or strstr($class, config_item('subclass_prefix'))) {
+        if (strstr($class, 'CI_') || strstr($class, config_item('subclass_prefix'))) {
             return;
         }
 
@@ -201,7 +203,7 @@ class Modules
             $key = str_replace([':any', ':num'], ['.+', '[0-9]+'], $key);
 
             if (preg_match('#^' . $key . '$#', $uri)) {
-                if (strpos($val, '$') !== false and strpos($key, '(') !== false) {
+                if (strpos($val, '$') !== false && strpos($key, '(') !== false) {
                     $val = preg_replace('#^' . $key . '$#', $val, $uri);
                 }
 
@@ -236,7 +238,7 @@ class Modules
             foreach ($modules as $module => $subpath) {
                 $fullpath = $location . $module . '/' . $base . $subpath;
 
-                if ($base == 'libraries/' or $base == 'models/') {
+                if ($base == 'libraries/' || $base == 'models/') {
                     if (is_file($fullpath . ucfirst($file_ext))) {
                         return [$fullpath, ucfirst($file)];
                     }

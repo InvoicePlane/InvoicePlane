@@ -25,7 +25,7 @@ class Mdl_Reports extends CI_Model
     {
         $this->db->select('client_name, client_surname, CONCAT(client_name," ", client_surname) AS client_namesurname');
 
-        if ($from_date and $to_date) {
+        if ($from_date && $to_date) {
             $from_date = date_to_mysql($from_date);
             $to_date = date_to_mysql($to_date);
 
@@ -112,7 +112,7 @@ class Mdl_Reports extends CI_Model
     {
         $this->load->model('payments/mdl_payments');
 
-        if ($from_date and $to_date) {
+        if ($from_date && $to_date) {
             $from_date = date_to_mysql($from_date);
             $to_date = date_to_mysql($to_date);
 

@@ -48,7 +48,7 @@ class MX_Config extends CI_Config
             return $this->item($file);
         }
 
-        $_module or $_module = CI::$APP->router->fetch_module();
+        $_module || $_module = CI::$APP->router->fetch_module();
         list($path, $file) = Modules::find($file, $_module, 'config/');
 
         if ($path === false) {
