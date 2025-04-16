@@ -36,6 +36,7 @@ class MY_Form_validation extends CI_Form_validation
         if (is_object($module)) {
             $this->CI = &$module;
         }
+
         return parent::run($group);
     }
 }
