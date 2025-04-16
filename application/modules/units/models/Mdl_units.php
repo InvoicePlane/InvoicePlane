@@ -52,6 +52,7 @@ class Mdl_Units extends Response_Model
                 }
             }
         }
+        return null;
     }
 
     /**

@@ -334,7 +334,7 @@ class MX_Loader extends CI_Loader
         }
 
         if (isset($this->_ci_helpers[$helper])) {
-            return;
+            return null;
         }
 
         list($path, $_helper) = Modules::find($helper . '_helper', $this->_module, 'helpers/');
@@ -492,6 +492,7 @@ class MX_Loader extends CI_Loader
         } else {
             CI::$APP->output->append_output(ob_get_clean());
         }
+        return null;
     }
 
     public function __get($class)

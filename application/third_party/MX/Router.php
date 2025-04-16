@@ -146,7 +146,7 @@ class MX_Router extends CI_Router
         }
 
         if (!empty($this->directory)) {
-            return;
+            return null;
         }
 
         // application sub-directory controller exists?
@@ -177,6 +177,7 @@ class MX_Router extends CI_Router
         }
 
         $this->located = -1;
+        return null;
     }
 
     protected function _set_404override_controller()

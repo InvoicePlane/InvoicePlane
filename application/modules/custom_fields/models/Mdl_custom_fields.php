@@ -222,7 +222,7 @@ class Mdl_Custom_Fields extends MY_Model
     public function used($id = null, $get = true)
     {
         if (! $id) {
-            return;
+            return null;
         }
 
         $cf = $this->get_by_id($id);

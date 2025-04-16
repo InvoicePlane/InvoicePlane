@@ -107,7 +107,7 @@ class Mdl_Custom_Values extends MY_Model
     public function used($id = null, $get = true)
     {
         if (! $id) {
-            return;
+            return null;
         }
 
         $this->load->model('custom_fields/mdl_custom_fields');

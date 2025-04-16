@@ -43,6 +43,7 @@ function _htmlsc($output)
     }
 
     echo htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
+    return null;
 }
 
 /**
@@ -59,6 +60,7 @@ function _htmle($output)
     }
 
     echo htmlentities($output, ENT_COMPAT);
+    return null;
 }
 
 /**

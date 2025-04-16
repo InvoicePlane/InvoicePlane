@@ -85,6 +85,7 @@ class Modules
         }
 
         log_message('error', sprintf('Module controller failed to run: %s/%s', $module, $method));
+        return null;
     }
 
     /** Load a module controller **/
@@ -106,7 +107,7 @@ class Modules
 
             /* controller cannot be located */
             if (empty($class)) {
-                return;
+                return null;
             }
 
             /* set the module directory */
@@ -192,7 +193,7 @@ class Modules
         }
 
         if (!isset(self::$routes[$module])) {
-            return;
+            return null;
         }
 
         /* parse module routes */
@@ -207,6 +208,7 @@ class Modules
                 return explode('/', $module . '/' . $val);
             }
         }
+        return null;
     }
 
     /**

@@ -73,6 +73,7 @@ class Payments extends Admin_Controller
             if ($id && ! $prep_form) {
                 show_404();
             }
+
             $this->load->model('custom_values/mdl_custom_values');
             $payment_custom = $this->mdl_payment_custom->where('payment_id', $id)->get();
             if ($payment_custom->num_rows()) {

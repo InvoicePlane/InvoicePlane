@@ -70,6 +70,7 @@ class MX_Lang extends CI_Lang
             if ($return) {
                 return $lang;
             }
+
             $this->language = array_merge($this->language, $lang);
             $this->is_loaded[] = $langfile . '_lang' . EXT;
             unset($lang);

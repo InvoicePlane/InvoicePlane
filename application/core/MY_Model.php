@@ -413,6 +413,7 @@ class MY_Model extends CI_Model
         } elseif (!$id) {
             return true;
         }
+        return null;
     }
 
     /**
@@ -459,6 +460,7 @@ class MY_Model extends CI_Model
 
             return $run;
         }
+        return null;
     }
 
     /**

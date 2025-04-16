@@ -275,7 +275,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
             header('Content-Type', 'application/pdf');
             $pdf->Output($filename . '.pdf', 'I');
 
-            return;
+            return null;
         }
 
         $filePath = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
