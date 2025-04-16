@@ -70,15 +70,11 @@ class Payments extends Admin_Controller
 
         if (! $this->input->post('btn_submit')) {
             $prep_form = $this->mdl_payments->prep_form($id);
-
             if ($id && ! $prep_form) {
                 show_404();
             }
-
             $this->load->model('custom_values/mdl_custom_values');
-
             $payment_custom = $this->mdl_payment_custom->where('payment_id', $id)->get();
-
             if ($payment_custom->num_rows()) {
                 $payment_custom = $payment_custom->row();
 
@@ -88,11 +84,9 @@ class Payments extends Admin_Controller
                     $this->mdl_payments->set_form_value('custom[' . $key . ']', $val);
                 }
             }
-        } else {
-            if ($this->input->post('custom')) {
-                foreach ($this->input->post('custom') as $key => $val) {
-                    $this->mdl_payments->set_form_value('custom[' . $key . ']', $val);
-                }
+        } elseif ($this->input->post('custom')) {
+            foreach ($this->input->post('custom') as $key => $val) {
+                $this->mdl_payments->set_form_value('custom[' . $key . ']', $val);
             }
         }
 

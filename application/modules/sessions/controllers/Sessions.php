@@ -36,23 +36,19 @@ class Sessions extends Base_Controller
             if (empty($user)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
                 redirect('sessions/login');
-            } else {
-                // Check if the user is marked as active
-                if ($user->user_active == 0) {
-                    $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
-                    redirect('sessions/login');
-                } else {
-                    if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
-                        if ($this->session->userdata('user_type') == 1) {
-                            redirect('dashboard');
-                        } elseif ($this->session->userdata('user_type') == 2) {
-                            redirect('guest');
-                        }
-                    } else {
-                        $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
-                        redirect('sessions/login');
-                    }
+            } elseif ($user->user_active == 0) {
+                // Check if the user is marked as active (not implemented: Todo?)
+                $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
+                redirect('sessions/login');
+            } elseif ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
+                if ($this->session->userdata('user_type') == 1) {
+                    redirect('dashboard');
+                } elseif ($this->session->userdata('user_type') == 2) {
+                    redirect('guest');
                 }
+            } else {
+                $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
+                redirect('sessions/login');
             }
         }
 

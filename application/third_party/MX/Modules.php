@@ -237,10 +237,9 @@ class Modules
                     if (is_file($fullpath . ucfirst($file_ext))) {
                         return [$fullpath, ucfirst($file)];
                     }
-                } else /* load non-class files */ {
-                    if (is_file($fullpath . $file_ext)) {
-                        return [$fullpath, $file];
-                    }
+                } elseif (is_file($fullpath . $file_ext)) {
+                    // load non-class files
+                    return [$fullpath, $file];
                 }
             }
         }

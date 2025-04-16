@@ -66,16 +66,13 @@ class MX_Lang extends CI_Lang
             if ($lang = parent::load($langfile, $lang, $return, $add_suffix, $alt_path)) {
                 return $lang;
             }
-        } else {
-            if ($lang = Modules::load_file($_langfile, $path, 'lang')) {
-                if ($return) {
-                    return $lang;
-                }
-
-                $this->language = array_merge($this->language, $lang);
-                $this->is_loaded[] = $langfile . '_lang' . EXT;
-                unset($lang);
+        } elseif ($lang = Modules::load_file($_langfile, $path, 'lang')) {
+            if ($return) {
+                return $lang;
             }
+            $this->language = array_merge($this->language, $lang);
+            $this->is_loaded[] = $langfile . '_lang' . EXT;
+            unset($lang);
         }
 
         return $this->language;

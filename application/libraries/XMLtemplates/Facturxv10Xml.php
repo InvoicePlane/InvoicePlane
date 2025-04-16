@@ -371,12 +371,11 @@ class Facturxv10Xml extends BaseXml
 
         if ($category == 'S') {
             $node->appendChild($this->currencyElement('ram:RateApplicablePercent', $percent));
-        } else {
+        } elseif (empty($this->options['NoReasonCode'])) {
             // For auto entreprises not subject to VAT (Catégory 'O') see https://github.com/ConnectingEurope/eInvoicing-EN16931/blob/master/ubl/schematron/codelist/EN16931-UBL-codes.sch#L133
             // Not For NLCIUS CII 1.0.3.9 : Warning for [BR-NL-35] ram:ExemptionReasonCode is not recommended
-            if (empty($this->options['NoReasonCode'])) {
-                $node->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O')); // vatex-eu-132-1a
-            }
+            $node->appendChild($this->doc->createElement('ram:ExemptionReasonCode', 'VATEX-EU-O'));
+            // vatex-eu-132-1a
         }
 
         return $node;
