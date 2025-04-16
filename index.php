@@ -46,7 +46,7 @@ function env($env_key, $default = null)
  */
 function env_bool($env_key, $default = false)
 {
-    return env($env_key, $default) === 'true' ? true : false;
+    return env($env_key, $default) === 'true';
 }
 
 // Enable debug mode if set
@@ -94,6 +94,7 @@ switch (ENVIRONMENT) {
         } else {
             error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
         }
+
         break;
 
     default:
