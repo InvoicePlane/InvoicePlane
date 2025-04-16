@@ -644,16 +644,13 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if (!empty($invoice) && ($invoice->invoice_status_id == 1 && $invoice->invoice_number == '')) {
-            // Generate new invoice number if applicable
-            if (get_setting('generate_invoice_number_for_draft') == 0) {
-                $invoice_number = $this->get_invoice_number($invoice->invoice_group_id);
-
-                // Set new invoice number and save
-                $this->db->where('invoice_id', $invoice_id);
-                $this->db->set('invoice_number', $invoice_number);
-                $this->db->update('ip_invoices');
-            }
+        // Generate new invoice number if applicable
+        if (!empty($invoice) && ($invoice->invoice_status_id == 1 && $invoice->invoice_number == '') && get_setting('generate_invoice_number_for_draft') == 0) {
+            $invoice_number = $this->get_invoice_number($invoice->invoice_group_id);
+            // Set new invoice number and save
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->set('invoice_number', $invoice_number);
+            $this->db->update('ip_invoices');
         }
     }
 
