@@ -107,11 +107,11 @@ foreach ($languages as $language) {
                     <div class="panel-heading">
                         e-<?php _trans('invoicing'); ?>
                         <span class="<?php echo $client_id ? 'pull-right' : 'hidden'; ?> toggle_einvoicing<?php
-                              echo ! $req_einvoicing->show_table
-                                   ? ''
-                                   : ' btn btn-xs btn-default cursor-pointer alert-' . $user_toggle . '"
+                              echo $req_einvoicing->show_table
+                                   ? ' btn btn-xs btn-default cursor-pointer alert-' . $user_toggle . '"
                               data-toggle="collapse" data-target=".einvoice-user-check-lists"
-                              onclick="switch_fa_toggle(\'einvoice_users_check_fa_toggle\')';
+                              onclick="switch_fa_toggle(\'einvoice_users_check_fa_toggle\')'
+                                   : '';
                         ?>">
                             <i class="fa fa-<?php echo $nb ? ($me ? 'ban' : 'warning') : 'check-square-o text-success'; ?>"></i>
                             <span data-toggle="tooltip" data-placement="bottom" title="<?php echo '🗸 ' . ($nb_users - $nb) . '/' . $nb_users . ' ' . trans('user' . ($nb_users > 1 ? 's' : '')); ?>">

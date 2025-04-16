@@ -126,13 +126,13 @@ class Cron extends Base_Controller
                     $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
                 }
 
-                $from = ! empty($tpl->email_template_from_email) ?
-                    [$tpl->email_template_from_email, $tpl->email_template_from_name] :
-                    [$invoice->user_email, ""];
+                $from = empty($tpl->email_template_from_email) ?
+                    [$invoice->user_email, ''] :
+                    [$tpl->email_template_from_email, $tpl->email_template_from_name];
 
-                $subject = !empty($tpl->email_template_subject) ?
-                    $tpl->email_template_subject :
-                    trans('invoice') . ' #' . $new_invoice->invoice_number;
+                $subject = empty($tpl->email_template_subject) ?
+                    trans('invoice') . ' #' . $new_invoice->invoice_number :
+                    $tpl->email_template_subject;
 
                 $pdf_template = $tpl->email_template_pdf_template;
                 $to = $invoice->client_email;

@@ -361,7 +361,7 @@ foreach ($email_templates_invoice as $email_template) {
                     </div>
                 </div>
 
-                <div class="row <?php echo ! get_setting('qr_code') ? 'hidden' : ''; ?>">
+                <div class="row <?php echo get_setting('qr_code') ? '' : 'hidden'; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[qr_code_recipient]">
@@ -392,7 +392,7 @@ foreach ($email_templates_invoice as $email_template) {
                     </div>
                 </div>
 
-                <div class="row <?php echo ! get_setting('qr_code') ? 'hidden' : ''; ?>">
+                <div class="row <?php echo get_setting('qr_code') ? '' : 'hidden'; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[qr_code_bic]">

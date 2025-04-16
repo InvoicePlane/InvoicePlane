@@ -1,6 +1,6 @@
 <?php
 $completed = env_bool('SETUP_COMPLETED') ? '' : ' hidden';
-$disabled  = ! env_bool('DISABLE_SETUP') ? '' : ' hidden';
+$disabled  = env_bool('DISABLE_SETUP') ? ' hidden' : '';
 ?><!doctype html>
 
 <!--[if lt IE 7]>

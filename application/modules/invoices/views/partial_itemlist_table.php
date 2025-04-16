@@ -13,7 +13,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
 -->
             <th class="amount"><?php _trans('quantity'); ?></th>
             <th class="amount"><?php _trans('price'); ?></th>
-            <?php echo ! $legacy_calculation ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
+            <?php echo $legacy_calculation ? '' : '<th class="amount">' . trans('item_discount') . '</th>' ?>
             <th class="amount"><?php _trans('tax_rate'); ?></th>
             <?php echo $legacy_calculation ? '<th class="amount">' . trans('item_discount') . '</th>' : '' ?>
 <!--

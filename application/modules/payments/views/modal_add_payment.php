@@ -98,7 +98,7 @@ if ($this->mdl_payments->form_value('payment_method_id')) {
 }
 ?>
                         <select name="payment_method_id" id="payment_method_id" class="form-control simple-select"
-                                <?php echo(! empty($invoice_payment_method) ? 'disabled="disabled"' : ''); ?>>
+                                <?php echo(empty($invoice_payment_method) ? '' : 'disabled="disabled"'); ?>>
                             <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($payment_methods as $payment_method) {
