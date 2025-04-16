@@ -502,7 +502,7 @@ class MX_Loader extends CI_Loader
 
     public function __get($class)
     {
-        return (isset($this->controller)) ? $this->controller->$class : CI::$APP->$class;
+        return (property_exists($this, 'controller') && $this->controller !== null) ? $this->controller->$class : CI::$APP->$class;
     }
 
     protected function &_ci_get_component($component)

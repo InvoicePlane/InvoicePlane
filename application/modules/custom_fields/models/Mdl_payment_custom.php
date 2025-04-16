@@ -47,7 +47,7 @@ class Mdl_Payment_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $form_data = isset($this->_formdata) ? $this->_formdata : null;
+            $form_data = property_exists($this, '_formdata') && $this->_formdata !== null ? $this->_formdata : null;
 
             if (is_null($form_data)) {
                 return true;
