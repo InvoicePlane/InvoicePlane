@@ -200,8 +200,6 @@ class MX_Loader extends CI_Loader
             return $this;
         }
 
-
-
         $_alias = $object_name == null ? $class : strtolower($object_name);
 
         list($path, $_library) = Modules::find($library, $this->_module, 'libraries/');

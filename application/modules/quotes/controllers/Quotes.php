@@ -152,7 +152,6 @@ class Quotes extends Admin_Controller
             $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
         }
 
-
         // Activate 'Change_user' if admin users > 1  (get the sum of user type = 1 & active)
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
         $change_user = $change_user->user_type > 1;

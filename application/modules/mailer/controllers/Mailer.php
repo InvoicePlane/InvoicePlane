@@ -121,7 +121,6 @@ class Mailer extends Admin_Controller
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
 
-
         $this->layout->set(
             [
                 'selected_email_template' => $email_template_id,

@@ -271,8 +271,6 @@ class Mdl_Invoices extends Response_Model
             $this->mdl_invoice_tax_rates->save(null, $db_array);
         }
 
-
-
         // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
         $custom_fields = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();

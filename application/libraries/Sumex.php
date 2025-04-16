@@ -164,7 +164,6 @@ class Sumex
         $this->_storno = $this->_options['storno'];
         $this->_copy = $this->_options['copy'];
 
-
         $this->_patient['givenName'] = $this->invoice->client_name;
         $this->_patient['familyName'] = $this->invoice->client_surname;
         $this->_patient['birthdate'] = $this->invoice->client_birthdate;
@@ -187,7 +186,6 @@ class Sumex
         $this->_casenumber = $this->invoice->sumex_casenumber;
         $this->_insuredid = $this->invoice->client_insurednumber;
 
-
         $treatments = [
             'disease',
             'accident',
@@ -196,7 +194,6 @@ class Sumex
             'birthdefect',
             'unknown'
         ];
-
 
         $this->_treatment = [
             'start' => $this->invoice->sumex_treatmentstart,
@@ -229,7 +226,6 @@ class Sumex
         curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
         $out = curl_exec($ch);
         curl_close($ch);
-
 
         return $out;
     }
@@ -404,7 +400,6 @@ class Sumex
         $node->setAttribute('payment_to', 'postal_account');
         $node->setAttribute('post_account', $subNumb);
 
-
         // IBAN not required
         //$node->setAttribute('iban', 'CH1111111111111111111');
         $node->setAttribute('reference_number', '1112111111');
@@ -575,7 +570,6 @@ class Sumex
         $postal = $this->generatePostal($street, $zip, $city);
 
         $telecom = $phone != null ? $this->generateTelecom($phone) : null;
-
 
         $person->appendChild($familyName);
         $person->appendChild($givenName);

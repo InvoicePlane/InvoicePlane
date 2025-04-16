@@ -10,6 +10,13 @@
     <rule ref="Generic.ControlStructures.InlineControlStructure"/>
     <rule ref="Generic.PHP.DeprecatedFunctions"/>
     <rule ref="Generic.Strings.UnnecessaryStringConcat"/>
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
+    <!-- The end of line character -->
+    <rule ref="Generic.Files.LineEndings">
+        <properties>
+            <property name="eolChar" value="\n"/>
+        </properties>
+    </rule>
     <!-- The closing ?> tag MUST be omitted from files containing only PHP. -->
     <rule ref="Zend.Files.ClosingTag"/>
     <!-- There MUST NOT be more than one statement per line. -->
