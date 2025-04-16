@@ -101,7 +101,6 @@ class Mdl_User_Custom extends Validator
      */
     public function get_by_useid($user_id)
     {
-        $result = $this->where('ip_user_custom.user_id', $user_id)->get()->result();
-        return $result;
+        return $this->where('ip_user_custom.user_id', $user_id)->get()->result();
     }
 }

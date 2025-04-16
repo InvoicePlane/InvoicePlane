@@ -137,8 +137,7 @@ class Mdl_Client_Custom extends Validator
      */
     public function get_by_clid($client_id)
     {
-        $result = $this->where('ip_client_custom.client_id', $client_id)->get()->result();
-        return $result;
+        return $this->where('ip_client_custom.client_id', $client_id)->get()->result();
     }
 
     /**

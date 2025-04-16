@@ -65,9 +65,7 @@ class Mdl_Uploads extends Response_Model
      */
     public function create($db_array = null)
     {
-        $upload_id = parent::save(null, $db_array);
-
-        return $upload_id;
+        return parent::save(null, $db_array);
     }
 
     /**

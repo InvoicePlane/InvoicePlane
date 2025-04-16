@@ -74,9 +74,8 @@ class Validator extends MY_Model
         }
 
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
-        $result = $this->custom_value->column_has_value($key, $value);
 
-        return $result;
+        return $this->custom_value->column_has_value($key, $value);
     }
 
     /**

@@ -42,25 +42,21 @@ class QrCode
 
     public function paymentData()
     {
-        $paymentData = Data::create()
+        return Data::create()
             ->setName($this->recipient)
             ->setIban($this->iban)
             ->setBic($this->bic)
             ->setCurrency($this->currencyCode)
             ->setRemittanceText($this->remittance_text)
             ->setAmount($this->invoice->invoice_balance);
-
-        return $paymentData;
     }
 
     public function generate()
     {
-        $qrCodeDataUri = Builder::create()
+        return Builder::create()
             ->data($this->paymentData())
             ->errorCorrectionLevel(new ErrorCorrectionLevelMedium()) // required by EPC standard
             ->build()
             ->getDataUri();
-
-        return $qrCodeDataUri;
     }
 }

@@ -34,21 +34,17 @@ function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename, $optio
     ], 'ublciixml');
     $CI->ublciixml->xml();
 
-    $path = UPLOADS_TEMP_FOLDER . $filename . '.xml';
-
-    return $path;
+    return UPLOADS_TEMP_FOLDER . $filename . '.xml';
 }
 
 function include_rdf($embedXml, $urn = 'factur-x')
 {
-    $rdf = '<rdf:Description rdf:about="" xmlns:zf="urn:' . $urn . ':pdfa:CrossIndustryDocument:invoice:1p0#">' . "\n"
+    return '<rdf:Description rdf:about="" xmlns:zf="urn:' . $urn . ':pdfa:CrossIndustryDocument:invoice:1p0#">' . "\n"
          . '  <zf:DocumentType>INVOICE</zf:DocumentType>' . "\n"
          . '  <zf:DocumentFileName>' . $embedXml . '</zf:DocumentFileName>' . "\n"
          . '  <zf:Version>1.0</zf:Version>' . "\n"
          . '  <zf:ConformanceLevel>COMFORT</zf:ConformanceLevel>' . "\n"
          . '</rdf:Description>' . "\n";
-
-    return $rdf;
 }
 
 /**
