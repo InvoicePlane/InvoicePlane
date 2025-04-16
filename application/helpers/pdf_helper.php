@@ -53,8 +53,6 @@ function discount_global_print_in_pdf($obj, $show_item_discounts, $is = 'invoice
  *
  * @param      $invoice_id
  * @param bool $stream
- * @param null $invoice_template
- * @param null $is_guest
  *
  * @return string
  */
@@ -298,10 +296,8 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
  *
  * @param      $quote_id
  * @param bool $stream
- * @param null $quote_template
  *
  * @return string
- *
  * @throws \Mpdf\MpdfException
  */
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)

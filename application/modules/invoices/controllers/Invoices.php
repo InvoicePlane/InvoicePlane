@@ -270,7 +270,6 @@ class Invoices extends Admin_Controller
     /**
      * @param      $invoice_id
      * @param bool $stream
-     * @param null $invoice_template
      */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null): void
     {

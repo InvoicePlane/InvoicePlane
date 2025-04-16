@@ -14,19 +14,14 @@ if (! defined('BASEPATH')) {
  *
  * eInvoicing add-ons by Verony
  */
-
 /**
  * Create a PDF.
  *
  * @param      $html
  * @param      $filename
  * @param bool $stream
- * @param null $password
- * @param null $isInvoice
- * @param null $is_guest
  * @param bool $embed_xml        (eInvoicing)
  * @param null $associated_files (eInvoicing)
- *
  * @return string
  *
  * @throws \Mpdf\MpdfException

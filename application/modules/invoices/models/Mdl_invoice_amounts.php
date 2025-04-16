@@ -244,7 +244,6 @@ class Mdl_Invoice_Amounts extends CI_Model
     }
 
     /**
-     * @param null $period
      * @return mixed
      */
     public function get_total_invoiced($period = null)
@@ -284,7 +283,6 @@ class Mdl_Invoice_Amounts extends CI_Model
     }
 
     /**
-     * @param null $period
      * @return mixed
      */
     public function get_total_paid($period = null)
@@ -321,7 +319,6 @@ class Mdl_Invoice_Amounts extends CI_Model
     }
 
     /**
-     * @param null $period
      * @return mixed
      */
     public function get_total_balance($period = null)

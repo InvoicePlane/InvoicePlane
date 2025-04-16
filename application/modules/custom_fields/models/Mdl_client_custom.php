@@ -86,7 +86,6 @@ class Mdl_Client_Custom extends Validator
     }
 
     /**
-     * @param null $id
      * @return void
      */
     public function prep_form($id = null)

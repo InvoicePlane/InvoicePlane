@@ -33,8 +33,6 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      * @return void
      */
     public function save($id = null, $db_array = null)

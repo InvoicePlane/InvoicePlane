@@ -46,9 +46,6 @@ class Projects extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -79,9 +76,6 @@ class Projects extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $project_id
-     */
     public function view($project_id)
     {
         if ($this->input->post('btn_cancel')) {

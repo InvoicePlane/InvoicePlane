@@ -203,7 +203,6 @@ class Mdl_Quote_Amounts extends CI_Model
     }
 
     /**
-     * @param null $period
      * @return mixed
      */
     public function get_total_quoted($period = null)

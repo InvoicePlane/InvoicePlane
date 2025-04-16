@@ -17,8 +17,6 @@ if (! defined('BASEPATH')) {
 class Mdl_Reports extends CI_Model
 {
     /**
-     * @param null $from_date
-     * @param null $to_date
      * @return mixed
      */
     public function sales_by_client($from_date = null, $to_date = null)
@@ -104,8 +102,6 @@ class Mdl_Reports extends CI_Model
     }
 
     /**
-     * @param null $from_date
-     * @param null $to_date
      * @return mixed
      */
     public function payment_history($from_date = null, $to_date = null)
@@ -204,10 +200,6 @@ class Mdl_Reports extends CI_Model
     }
 
     /**
-     * @param null $from_date
-     * @param null $to_date
-     * @param null $minQuantity
-     * @param null $maxQuantity
      * @param bool $taxChecked
      * @return mixed
      */

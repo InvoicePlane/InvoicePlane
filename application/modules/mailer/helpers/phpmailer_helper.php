@@ -12,16 +12,11 @@ if (! defined('BASEPATH')) {
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
-
 /**
  * @param      $from
  * @param      $to
  * @param      $subject
  * @param      $message
- * @param null $attachment_path
- * @param null $cc
- * @param null $bcc
- * @param null $more_attachments
  *
  * @return bool
  */

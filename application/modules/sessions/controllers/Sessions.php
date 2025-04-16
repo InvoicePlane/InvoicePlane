@@ -86,7 +86,6 @@ class Sessions extends Base_Controller
     }
 
     /**
-     * @param null $token
      * @return mixed
      */
     public function passwordreset($token = null)

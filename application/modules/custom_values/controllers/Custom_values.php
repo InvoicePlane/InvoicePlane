@@ -54,9 +54,6 @@ class Custom_Values extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function field($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -90,9 +87,6 @@ class Custom_Values extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function edit($id = null)
     {
         $value = $this->mdl_custom_values->get_by_id($id)->row();
@@ -125,9 +119,6 @@ class Custom_Values extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function create($id = null)
     {
         if (! $id) {

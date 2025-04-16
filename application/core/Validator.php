@@ -123,8 +123,6 @@ class Validator extends MY_Model
 
     /**
      * @param $column
-     *
-     * @return null
      */
     public function get_field_type($column)
     {

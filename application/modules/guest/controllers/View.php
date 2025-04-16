@@ -134,7 +134,6 @@ class View extends Base_Controller
     /**
      * @param $invoice_url_key
      * @param bool $stream
-     * @param null $invoice_template
      */
     public function generate_invoice_pdf($invoice_url_key, $stream = true, $invoice_template = null)
     {
@@ -159,7 +158,6 @@ class View extends Base_Controller
     /**
      * @param $invoice_url_key
      * @param bool $stream
-     * @param null $invoice_template
      */
     public function generate_sumex_pdf($invoice_url_key, $stream = true, $invoice_template = null)
     {
@@ -243,7 +241,6 @@ class View extends Base_Controller
     /**
      * @param $quote_url_key
      * @param bool $stream
-     * @param null $quote_template
      */
     public function generate_quote_pdf($quote_url_key, $stream = true, $quote_template = null)
     {

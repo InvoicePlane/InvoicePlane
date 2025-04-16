@@ -63,9 +63,6 @@ class Clients extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null): void
     {
         if ($this->input->post('btn_cancel')) {

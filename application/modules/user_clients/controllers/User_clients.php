@@ -33,9 +33,6 @@ class User_Clients extends Admin_Controller
         redirect('users');
     }
 
-    /**
-     * @param null $id
-     */
     public function user($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -61,9 +58,6 @@ class User_Clients extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $user_id
-     */
     public function create($user_id = null)
     {
         if (! $user_id) {

@@ -97,11 +97,6 @@ class Mdl_Custom_Fields extends MY_Model
         return $this->get()->result();
     }
 
-    /**
-     * @param null $id
-     * @param null $db_array
-     * @return null
-     */
     public function save($id = null, $db_array = null)
     {
         if ($id) {

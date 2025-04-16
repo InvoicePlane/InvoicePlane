@@ -26,8 +26,6 @@ class Mdl_invoice_sumex extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      * @return void
      */
     public function save($id = null, $db_array = null)

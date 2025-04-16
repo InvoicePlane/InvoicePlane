@@ -246,10 +246,7 @@ class MY_Model extends CI_Model
     /**
      * Function to save an entry to the database
      *
-     * @param null $id
-     * @param null $db_array
      *
-     * @return null
      */
     public function save($id = null, $db_array = null)
     {

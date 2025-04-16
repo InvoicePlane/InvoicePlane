@@ -36,9 +36,6 @@ function mailer_configured()
  * @param        $to
  * @param        $subject
  * @param string $body
- * @param null   $cc
- * @param null   $bcc
- * @param null   $attachments
  *
  * @return bool
  */
@@ -110,9 +107,6 @@ function email_invoice(
  * @param        $to
  * @param        $subject
  * @param string $body
- * @param null   $cc
- * @param null   $bcc
- * @param null   $attachments
  *
  * @return bool
  */

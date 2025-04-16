@@ -86,8 +86,6 @@ class Mdl_Quote_Items extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      * @param []   $global_discount
      *
      * @return int|null

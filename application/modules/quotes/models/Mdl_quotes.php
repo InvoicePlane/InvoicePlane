@@ -151,8 +151,6 @@ class Mdl_Quotes extends Response_Model
     }
 
     /**
-     * @param null $db_array
-     *
      * @return int|null
      */
     public function create($db_array = null)

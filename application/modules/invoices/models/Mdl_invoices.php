@@ -159,9 +159,7 @@ class Mdl_Invoices extends Response_Model
     }
 
     /**
-     * @param null $db_array
      * @param bool $include_invoice_tax_rates
-     *
      * @return int|null
      */
     public function create($db_array = null, $include_invoice_tax_rates = true)

@@ -42,7 +42,6 @@ function format_currency($amount)
 /**
  * Return a formated amount based on the system settings, e.g. 1.234,56
  *
- * @param null $amount
  *
  * @return null|string
  */
@@ -64,7 +63,6 @@ function format_amount($amount = null)
 /**
  * Return a formated amount as a quantity based on the system settings, e.g. 1.234,56
  *
- * @param null $amount
  *
  * @return null|string
  */

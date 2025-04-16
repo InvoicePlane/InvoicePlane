@@ -112,7 +112,6 @@ class Invoices extends Guest_Controller
     /**
      * @param      $invoice_id
      * @param bool $stream
-     * @param null $invoice_template
      */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null): void
     {
@@ -132,7 +131,6 @@ class Invoices extends Guest_Controller
     /**
      * @param      $invoice_id
      * @param bool $stream
-     * @param null $invoice_template
      */
     public function generate_sumex_pdf($invoice_id, $stream = true, $invoice_template = null): void
     {

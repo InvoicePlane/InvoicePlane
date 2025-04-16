@@ -114,8 +114,6 @@ class Mdl_Payments extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      * @return bool|int|null
      */
     public function save($id = null, $db_array = null)
@@ -167,9 +165,6 @@ class Mdl_Payments extends Response_Model
         return $db_array;
     }
 
-    /**
-     * @param null $id
-     */
     public function delete($id = null)
     {
         // Get the invoice id before deleting payment
@@ -203,7 +198,6 @@ class Mdl_Payments extends Response_Model
     }
 
     /**
-     * @param null $id
      * @return bool
      */
     public function prep_form($id = null)

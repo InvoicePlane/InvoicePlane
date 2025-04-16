@@ -39,7 +39,6 @@ class Mdl_Settings extends CI_Model
 
     /**
      * @param $key
-     * @return null
      */
     public function get($key)
     {

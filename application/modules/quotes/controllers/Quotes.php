@@ -204,7 +204,6 @@ class Quotes extends Admin_Controller
     /**
      * @param $quote_id
      * @param bool $stream
-     * @param null $quote_template
      */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {

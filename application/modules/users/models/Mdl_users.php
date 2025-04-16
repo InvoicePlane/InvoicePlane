@@ -331,8 +331,6 @@ class Mdl_Users extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      *
      * @return int|null
      */
