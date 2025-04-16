@@ -22,7 +22,7 @@
 
             <div class="webpreview-header">
 
-                <h2><?php _trans('quote') . ' ' . $quote->quote_number; ?></h2>
+                <h2><?php _trans('quote'); ?>&nbsp;<?php echo $quote->quote_number; ?></h2>
 
                 <div class="btn-group">
 <?php if (isset($_SESSION['user_id'], $_SESSION['user_type'])) { ?>

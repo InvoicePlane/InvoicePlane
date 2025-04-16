@@ -22,7 +22,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <?php _trans('user') . ': ' . htmlsc($user->user_name); ?>
+                    <?php echo trans('user') . ': ' . htmlsc($user->user_name); ?>
                 </div>
 
                 <div class="panel-body table-content">
