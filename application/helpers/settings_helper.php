@@ -75,8 +75,6 @@ function check_select($value1, $value2 = null, $operator = '==', $checked = fals
             $echo_selected = $value1 != $value2;
             break;
         case 'e':
-            $echo_selected = empty($value1);
-            break;
         case '!e':
             $echo_selected = empty($value1);
             break;
