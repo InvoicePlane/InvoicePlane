@@ -159,7 +159,6 @@ class Users extends Admin_Controller
                 'selected_country' => $this->mdl_users->form_value('user_country') ?: get_setting('default_country'),
                 'clients'          => $this->mdl_clients->where('client_active', 1)->get()->result(),
                 'languages'        => get_available_languages(),
-                'ubl_eas_codes'    => get_ubl_eas_codes(),
             ]
         );
 

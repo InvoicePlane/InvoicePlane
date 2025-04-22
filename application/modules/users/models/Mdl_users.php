@@ -121,9 +121,6 @@ class Mdl_Users extends Response_Model
             'user_tax_code' => [
                 'field' => 'user_tax_code',
             ],
-            'user_ubl_eas_code' => [
-                'field' => 'user_ubl_eas_code',
-            ],
             'user_invoicing_contact' => [
                 'field' => 'user_invoicing_contact',
                 'rules' => 'trim',
@@ -236,9 +233,6 @@ class Mdl_Users extends Response_Model
             ],
             'user_tax_code' => [
                 'field' => 'user_tax_code',
-            ],
-            'user_ubl_eas_code' => [
-                'field' => 'user_ubl_eas_code',
             ],
             'user_invoicing_contact' => [
                 'field' => 'user_invoicing_contact',

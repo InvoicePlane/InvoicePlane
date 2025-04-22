@@ -214,7 +214,6 @@ class Clients extends Admin_Controller
                 'client_title_choices' => $this->get_client_title_choices(),
                 'xml_templates'        => get_xml_template_files(), // eInvoicing
                 'req_einvoicing'       => $req_einvoicing,          // eInvoicing
-                'ubl_eas_codes'        => get_ubl_eas_codes(),      // eInvoicing
             ]
         );
 

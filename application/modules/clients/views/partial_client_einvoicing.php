@@ -25,7 +25,7 @@
     });
 </script>
 
-<div class="row" style="font-size: medium;">
+<div class="row<?php echo $xml_templates ? '' : ' hidden'; ?>">
     <div class="col-xs-12 col-md-6">
 
         <div class="form-group">
@@ -43,7 +43,7 @@
                 </option>
             </select>
 <?php
-$disabled = ''; // hint (And little tweak  for .help-block)
+$disabled = ''; // hint (And little tweak for .help-block)
 $client_einvoicing_version = $this->mdl_clients->form_value('client_einvoicing_version');
 // Check logged user e-invoice fields (show_table 0 = ok, 1 = no)
 if ($req_einvoicing->users[$_SESSION['user_id']]->show_table > 0)
