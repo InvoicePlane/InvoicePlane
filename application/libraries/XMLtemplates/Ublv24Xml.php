@@ -138,8 +138,8 @@ class Ublv24Xml extends BaseXml
     protected function xmlParty($who)
     {
         $node = $this->doc->createElement('cac:Party');
-        $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'ubl_eas_code vat_id tax_code')));
-        $schm = $this->invoice->{$prop[0]}; // *_ubl_eas_code
+        $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'eas_code vat_id tax_code')));
+        $schm = $this->options[$prop[0]];   // *_eas_code (from options in XMLconfig)
         $vat  = $this->invoice->{$prop[1]}; // *_vat_id
         $nin  = $this->invoice->{$prop[2]}; // *_tax_code National identification number (Like SIRET in France)
 
@@ -199,7 +199,7 @@ class Ublv24Xml extends BaseXml
         $node->appendChild($nodeName);
 
         if ( ! empty($this->options['PartyLegalEntity']['CompanyID'])) {
-            $prop = $who . '_' . $this->options['PartyLegalEntity']['CompanyID']; // *_tax_id / *_tax_code
+            $prop = $who . '_' . $this->options['PartyLegalEntity']['CompanyID']; // *_vat_id / *_tax_code
             $nodeName = $this->doc->createElement('cbc:CompanyID', $this->invoice->$prop);
             if ( ! empty($this->options['PartyLegalEntity']['SchemeID'])) {
                 $nodeName->setAttribute('schemeID', $schemeID);

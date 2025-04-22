@@ -13,7 +13,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * 9944 PEPPOL  Netherlands VAT number;
  */
 $xml_setting = [
-    'full-name'   => 'SI UBL Invoice 2.0 - ' . trans('tax_code'), // Adjust like : 'SI UBL Invoice 2.0 - EAS 0106' (if you need)
+    'full-name'   => 'SI UBL Invoice 2.0 - ' . trans('vat_id'), // Adjust like : 'SI UBL Invoice 2.0 - EAS 9944' (if you need)
     'countrycode' => 'NL',
     'embedXML'    => false,
     'XMLname'     => '', // Must be empty when not embedded in PDF
@@ -27,12 +27,12 @@ $xml_setting = [
         // [BR-CL-25]-Endpoint identifier scheme identifier MUST belong to the CEF EAS code list
         // [BR-NL-1] For suppliers in the Netherlands the supplier MUST provide either a KVK or OIN number for its legal entity identifier
         // /ubl:Invoice[1]/cac:AccountingCustomerParty[1]/cac:Party[1]/cbc:EndpointID[1] schemeID="`client_eas_code`"
-        'client_eas_code'     => '0106', // *EAS code for EndpointID > schemeID : Adjust with what you need (like 0106 or 0190)
+        'client_eas_code'     => '9944', // *EAS code for EndpointID > schemeID : Adjust with what you need
         // /ubl:Invoice[1]/cac:AccountingSupplierParty[1]/cac:Party[1]/cbc:EndpointID[1] schemeID="`user_eas_code`"
-        'user_eas_code'       => '0106', // *EAS code for EndpointID > schemeID : Adjust with what you need (like 0106 or 0190)
+        'user_eas_code'       => '9944', // *EAS code for EndpointID > schemeID : Adjust with what you need
         // Adjust with what you need (vat_id or tax_code) : Note same for user & client
-        'EndpointID'          => 'tax_code',
-        'PartyLegalEntity'    => ['CompanyID' => 'tax_code', 'SchemeID' => true],
+        'EndpointID'          => 'vat_id',
+        'PartyLegalEntity'    => ['CompanyID' => 'vat_id', 'SchemeID' => true],
         'PartyIdentification' => false, // or '' or 0 or null
         'InvoiceLineTaxTotal' => false,
         // [BR-NL-29] The use of a payment means text (cac:PaymentMeans/cbc:PaymentMeansCode/@name) is not recommended

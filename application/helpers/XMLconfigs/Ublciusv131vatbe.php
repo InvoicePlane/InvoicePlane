@@ -15,7 +15,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * NOTE : To be fully valid with tax (%) : use 21, 12, 6 or 0 (or adjust/update the TaxName option array)
  */
 $xml_setting = [
-    'full-name'   => 'UBL.BE Invoice 1.31 - ' . trans('tax_code'), // Adjust like : 'UBL.BE Invoice 1.31 - EAS 0208' (if you need)
+    'full-name'   => 'UBL.BE Invoice 1.31 -  ' . trans('vat_id'), // Adjust like : 'UBL.BE Invoice 1.31 - N°TVA' (if you need)
     'countrycode' => 'BE',
     'embedXML'    => false,
     'XMLname'     => '', // Must be empty when not embedded in PDF
@@ -27,12 +27,12 @@ $xml_setting = [
         'BuyerReference'      => true,
         'Delivery'            => true,
         // /ubl:Invoice[1]/cac:AccountingCustomerParty[1]/cac:Party[1]/cbc:EndpointID[1] schemeID="`client_eas_code`"
-        'client_eas_code'     => '0208', // *EAS code for EndpointID > schemeID : Adjust with what you need (9925 for vat_id)
+        'client_eas_code'     => '9925', // *EAS code for EndpointID > schemeID : Adjust with what you need (0204 for tax_code)
         // /ubl:Invoice[1]/cac:AccountingSupplierParty[1]/cac:Party[1]/cbc:EndpointID[1] schemeID="`user_eas_code`"
-        'user_eas_code'       => '0208', // *EAS code for EndpointID > schemeID : Adjust with what you need (9925 for vat_id)
+        'user_eas_code'       => '9925', // *EAS code for EndpointID > schemeID : Adjust with what you need (0204 for tax_code)
         // Adjust with what you need (vat_id or tax_code) : Note same for user & client
-        'EndpointID'          => 'tax_code',
-        'PartyLegalEntity'    => ['CompanyID' => 'tax_code', 'SchemeID' => false],
+        'EndpointID'          => 'vat_id',
+        'PartyLegalEntity'    => ['CompanyID' => 'vat_id', 'SchemeID' => false],
         'InvoiceLineTaxTotal' => true,
         // [ubl-BE-01]-At least two AdditionalDocumentReference elements must be present.
         'DocumentReference'   => [
