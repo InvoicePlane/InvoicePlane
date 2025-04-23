@@ -217,7 +217,7 @@ class Facturxv10Xml extends BaseXml
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
         if (empty($this->minimum)) {
-            // Not for MINIMUM profile : CountryID is expected
+            // Not for MINIMUM profile : Only CountryID is expected
             $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->{$prop[2]}))); // *_zip
             $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->{$prop[3]}))); // *_address_1
             if($addr = $this->invoice->{$prop[4]}) { // *_address_2
@@ -231,13 +231,28 @@ class Facturxv10Xml extends BaseXml
             $node->appendChild($addressNode);
         }
 
-        // XRechnung-CII-validation    URIUniversalCommunication > URIID
-        if ( ! empty($this->options['CII'])) {
-            // ram:URIUniversalCommunication/ram:URIID
+        // XRechnung-CII-validation : URIUniversalCommunication > URIID : schemeID
+        if ( ! empty($this->options['URIUniversalCommunication'])) {
+            // ram:[Buyer|Seller]TradeParty/ram:URIUniversalCommunication/ram:URIID
             $uriNode = $this->doc->createElement('ram:URIUniversalCommunication');
-            $idNode = $this->doc->createElement('ram:URIID', $this->invoice->{$ciip[3]}); // *_email
+            // E-mail by default
+            $uriID = $who . '_email'; // *_email
+            $schemeID = 'EM';
+            $opt = $this->options['URIUniversalCommunication'];
+            // Check & set from options
+            if ( ! empty($tmp = $opt[$who])) {
+                // user|client[_vat_id|tax_code] (from db in $this->invoice->*)
+                if ( ! empty($tmp['URIID'])) {
+                    $uriID = $tmp['URIID'];
+                }
+                // From configXml option
+                if ( ! empty($tmp['schemeID'])) {
+                    $schemeID = $tmp['schemeID'];
+                }
+            }
+            $idNode = $this->doc->createElement('ram:URIID', $this->invoice->{$uriID});
             // [BR-CL-25]-Endpoint identifier scheme identifier MUST belong to the CEF EAS code list
-            $idNode->setAttribute('schemeID', 'EM'); // todo $schemeID
+            $idNode->setAttribute('schemeID', $schemeID);
             $uriNode->appendChild($idNode);
             $node->appendChild($uriNode);
         }
