@@ -23,6 +23,8 @@ include_once 'BaseXml.php'; // ! important
 
 class Facturxv10Xml extends BaseXml
 {
+    public $noLineItem = false;
+    public $minimum = false;
     public function __construct($params)
     {
         parent::__construct($params);
@@ -63,12 +65,17 @@ class Facturxv10Xml extends BaseXml
             $node->appendChild($businessNode);
         }
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
-        // urn:cen.eu:en16931:2017#compliant#urn:(zugferd:2.3 | factur-x.eu):1p0:(basic | en16931) ::: en16931 = COMFORT (profil)
-        // urn:cen.eu:en16931:2017#conformant#urn:(zugferd:2.3 | factur-x.eu):1p0:extended
-        $id = 'urn:cen.eu:en16931:2017'; // KISS
-        // XRechnung-CII-validation
+        // urn:cen.eu:en16931:2017#compliant#urn:(zugferd | factur-x.eu):1p0:(basic | en16931) ::: en16931 = COMFORT (profil)
+        // urn:cen.eu:en16931:2017#conformant#urn:(zugferd | factur-x.eu):1p0:extended
+        $id = 'urn:cen.eu:en16931:2017'; // KISS (confort profile)
+        // Set profile variation option (XRechnung-CII / Basic / Extended / Minimum ...)
         if ( ! empty($cid = @$this->options['GuidelineSpecifiedDocumentContextParameterID'])) {
             $id = $cid;
+            // Check & set for some profile variation
+            // true when is minimum
+            $this->minimum = strpos($id, ':minimum') !== false;
+            // true when is minimum or basicwl (without line)
+            $this->noLineItem = $this->minimum || strpos($id, ':basicwl') !== false;
         }
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', $id));
         $node->appendChild($guidelineNode);
@@ -102,9 +109,12 @@ class Facturxv10Xml extends BaseXml
     {
         $node = $this->doc->createElement('rsm:SupplyChainTradeTransaction');
 
-        foreach ($this->items as $index => $item)
-        {
-            $node->appendChild($this->xmlIncludedSupplyChainTradeLineItem($index + 1, $item));
+        if (empty($this->noLineItem)) {
+            // Not for MINIMUM & basicwl (without line) profiles : ApplicableHeaderTradeAgreement is expected
+            foreach ($this->items as $index => $item)
+            {
+                $node->appendChild($this->xmlIncludedSupplyChainTradeLineItem($index + 1, $item));
+            }
         }
 
         $node->appendChild($this->xmlApplicableHeaderTradeAgreement());
@@ -160,34 +170,45 @@ class Facturxv10Xml extends BaseXml
     // xml(Seller|Buyer)TradeParty helper
     protected function xmlTradeParty(& $node, $who)
     {
-        $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'id name zip address_1 address_2 city country vat_id')));
-        if ($who == 'user') {
-            $node->appendChild($this->doc->createElement('ram:ID', $this->invoice->{$prop[0]})); // *_id zugferd 2 : SELLER123
+        // Make array of user|client* properties
+        $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'id name zip address_1 address_2 city country vat_id tax_code eas_code')));
+        if (empty($this->minimum)) {
+            // Not for MINIMUM profile : Name is expected
+            if ($who == 'user') {
+                $node->appendChild($this->doc->createElement('ram:ID', $this->invoice->{$prop[0]})); // *_id zugferd 2 : SELLER123
+            }
         }
         $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->{$prop[1]}))); // *_name
 
+        // SpecifiedLegalOrganization XRechnung-CII-validation + (minimum profile : need for user if $this->notax)
+        if ( ! empty($this->options[$prop[9]])) { // *_eas_code
+            // Required when "No subject to VAT" for minimum profile (Factur-X/Zugferd2.3).
+            // Note: is valid with VAT but not required
+            // Only for MINIMUM profile : ram:SpecifiedLegalOrganization is expected for seller (user) only
+            $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
+            // user_tax_code Tax code (SIREN/SIRET) (national identification number)
+            $idNode  = $this->doc->createElement('ram:ID', $this->invoice->{$prop[8]}); // *_tax_code
+            // Like EAS code. Note perplexity suggest to use FR:SIRET or FR:SIREN but unvalid with ecosio
+            // EAS code for schemeID (Electronic Address Scheme) : https://ec.europa.eu/digital-building-blocks/sites/display/DIGITAL/Code+lists
+            $idNode->setAttribute('schemeID', $this->options[$prop[9]]); // *_eas_code
+            $sloNode->appendChild($idNode);
+            $node->appendChild($sloNode);
+        }
         // XRechnung-CII-validation
         if ( ! empty($this->options['CII'])) {
-
-            $ciip = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'tax_code ubl_eas_code invoicing_contact phone mobile email')));
-
-            // Tax code (national identification number)
-            $ciiNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
-            $idNode  = $this->doc->createElement('ram:ID', $this->invoice->{$ciip[0]}); // *_tax_code
-            $idNode->setAttribute('schemeID', $this->invoice->{$ciip[1]}); // *_ubl_eas_code
-            $ciiNode->appendChild($idNode);
-            $node->appendChild($ciiNode);
+            // Make array of user|client* properties
+            $ciip = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'invoicing_contact phone mobile email')));
             // Contact name
             $ciiNode = $this->doc->createElement('ram:DefinedTradeContact');
-            $ciiNode->appendChild($this->doc->createElement('ram:PersonName', $this->invoice->{$ciip[2]})); // *_invoicing_contact
+            $ciiNode->appendChild($this->doc->createElement('ram:PersonName', $this->invoice->{$ciip[0]})); // *_invoicing_contact
             // Phone
             $telNode = $this->doc->createElement('ram:TelephoneUniversalCommunication');
-            $tel = $this->invoice->{$ciip[3]} ? $this->invoice->{$ciip[3]} : $this->invoice->{$ciip[4]}; // *_phone or *_mobile
+            $tel = $this->invoice->{$ciip[1]} ? $this->invoice->{$ciip[1]} : $this->invoice->{$ciip[2]}; // *_phone or *_mobile
             $telNode->appendChild($this->doc->createElement('ram:CompleteNumber', $tel));
             $ciiNode->appendChild($telNode);
             // E-mail
             $melNode = $this->doc->createElement('ram:EmailURIUniversalCommunication');
-            $melNode->appendChild($this->doc->createElement('ram:URIID', $this->invoice->{$ciip[5]})); // *_email
+            $melNode->appendChild($this->doc->createElement('ram:URIID', $this->invoice->{$ciip[3]})); // *_email
             $ciiNode->appendChild($melNode);
 
             $node->appendChild($ciiNode);
@@ -195,30 +216,39 @@ class Facturxv10Xml extends BaseXml
 
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');
-        $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->{$prop[2]}))); // *_zip
-        $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->{$prop[3]}))); // *_address_1
-        if($addr = $this->invoice->{$prop[4]}) { // *_address_2
-            $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($addr))); // *_address_2
+        if (empty($this->minimum)) {
+            // Not for MINIMUM profile : CountryID is expected
+            $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->{$prop[2]}))); // *_zip
+            $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->{$prop[3]}))); // *_address_1
+            if($addr = $this->invoice->{$prop[4]}) { // *_address_2
+                $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($addr))); // *_address_2
+            }
+            $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->{$prop[5]}))); // *_city
         }
-        $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->{$prop[5]}))); // *_city
         $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->{$prop[6]}))); // *_country
-        $node->appendChild($addressNode);
+        if (empty($this->minimum) || $who == 'user') {
+            // Not for MINIMUM profile : ram:PostalTradeAddress > ram:CountryID is expected for seller (user) only
+            $node->appendChild($addressNode);
+        }
 
-        // XRechnung-CII-validation    URIUniversalCommunicationURIID
+        // XRechnung-CII-validation    URIUniversalCommunication > URIID
         if ( ! empty($this->options['CII'])) {
             // ram:URIUniversalCommunication/ram:URIID
             $uriNode = $this->doc->createElement('ram:URIUniversalCommunication');
-            $idNode = $this->doc->createElement('ram:URIID', $this->invoice->{$ciip[5]}); // *_email
+            $idNode = $this->doc->createElement('ram:URIID', $this->invoice->{$ciip[3]}); // *_email
+            // [BR-CL-25]-Endpoint identifier scheme identifier MUST belong to the CEF EAS code list
             $idNode->setAttribute('schemeID', 'EM'); // todo $schemeID
             $uriNode->appendChild($idNode);
             $node->appendChild($uriNode);
         }
 
         // SpecifiedTaxRegistration
-        if( ! $this->notax) {
-            $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->{$prop[7]})); // *_vat_id zugferd 2
+        if (empty($this->minimum) || $who == 'user') {
+            // Note for MINIMUM profile : ram:SpecifiedTaxRegistration is only expected for seller (user)
+            if( ! $this->notax) {
+                $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->{$prop[7]})); // *_vat_id zugferd 2
+            }
         }
-
     }
 
     /**
@@ -237,64 +267,72 @@ class Facturxv10Xml extends BaseXml
     protected function xmlApplicableHeaderTradeDelivery()
     {
         $node = $this->doc->createElement('ram:ApplicableHeaderTradeDelivery');
+        if (empty($this->minimum)) {
+            // Not for MINIMUM profile : must have no character or element information item [children], because the type's content type is empty
 
-        // ActualDeliverySupplyChainEvent
-        $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
-        $dateNode = $this->doc->createElement('ram:OccurrenceDateTime');
-        $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
-        $eventNode->appendChild($dateNode);
+            // ActualDeliverySupplyChainEvent
+            $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
+            $dateNode = $this->doc->createElement('ram:OccurrenceDateTime');
+            $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+            $eventNode->appendChild($dateNode);
 
-        $node->appendChild($eventNode);
+            $node->appendChild($eventNode);
+        }
         return $node;
     }
 
     protected function xmlApplicableHeaderTradeSettlement()
     {
         $node = $this->doc->createElement('ram:ApplicableHeaderTradeSettlement');
-
-        $node->appendChild($this->doc->createElement('ram:PaymentReference', $this->invoice->invoice_number));
+        if (empty($this->minimum)) {
+            // Not for MINIMUM profile : InvoiceCurrencyCode is expected
+            $node->appendChild($this->doc->createElement('ram:PaymentReference', $this->invoice->invoice_number));
+        }
         $node->appendChild($this->doc->createElement('ram:InvoiceCurrencyCode', $this->currencyCode));
 
-        // bank
-        $node->appendChild($this->xmlSpecifiedTradeSettlementPaymentMeans());
+        if (empty($this->minimum)) {
+            // Not for MINIMUM profile : SpecifiedTradeSettlementHeaderMonetarySummation is expected
+            // bank
+            $node->appendChild($this->xmlSpecifiedTradeSettlementPaymentMeans());
 
-        // taxes
-        if( ! $this->notax) // hard? todo? legacy_calculation: like if have discounts (how to find item(s) with amount > of amount discount to get/dispatch % of global VAT's
-        {
-            foreach ($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal)
+            // taxes
+            if( ! $this->notax) // hard? todo? legacy_calculation: like if have discounts (how to find item(s) with amount > of amount discount to get/dispatch % of global VAT's
             {
-                $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal[0])); // 'S' by default
+                foreach ($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal)
+                {
+                    $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal[0])); // 'S' by default
+                }
             }
-        }
-        else // Not subject to VAT
-        {
-            $percent = $this->invoice->invoice_item_tax_total; // it's 0.00 same of invoice_tax_total
-            $subtotal = $this->invoice->invoice_item_subtotal; // invoice_subtotal
-            $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal, 'O')); // "O" pour "Exonéré" (Out of scope).
-        }
+            else // Not subject to VAT
+            {
+                $percent = $this->invoice->invoice_item_tax_total; // it's 0.00 same of invoice_tax_total
+                $subtotal = $this->invoice->invoice_item_subtotal; // invoice_subtotal
+                $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal, 'O')); // "O" pour "Exonéré" (Out of scope).
+            }
 
-        // BillingSpecifiedPeriod (optional)
-        $period = $this->doc->createElement('ram:BillingSpecifiedPeriod');
-        // StartDateTime
-        $dateNode = $this->doc->createElement('ram:StartDateTime');
-        $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
-        $period->appendChild($dateNode);
-        // EndDateTime
-        $dateNode = $this->doc->createElement('ram:EndDateTime');
-        $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_due));
-        $period->appendChild($dateNode);
-        $node->appendChild($period);
+            // BillingSpecifiedPeriod (optional)
+            $period = $this->doc->createElement('ram:BillingSpecifiedPeriod');
+            // StartDateTime
+            $dateNode = $this->doc->createElement('ram:StartDateTime');
+            $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+            $period->appendChild($dateNode);
+            // EndDateTime
+            $dateNode = $this->doc->createElement('ram:EndDateTime');
+            $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_due));
+            $period->appendChild($dateNode);
+            $node->appendChild($period);
 
-        if($this->invoice->invoice_discount_amount_total != 0)
-        {
-            // If global discount (ram:AppliedTradeAllowanceCharge)
-            // Must be after BillingSpecifiedPeriod and before SpecifiedTradePaymentTerms !important
-            // SpecifiedTradeAllowanceCharge
-            $this->addSpecifiedTradeAllowanceCharge_discount($node);
+            if($this->invoice->invoice_discount_amount_total != 0)
+            {
+                // If global discount (ram:AppliedTradeAllowanceCharge)
+                // Must be after BillingSpecifiedPeriod and before SpecifiedTradePaymentTerms !important
+                // SpecifiedTradeAllowanceCharge
+                $this->addSpecifiedTradeAllowanceCharge_discount($node);
+            }
+
+            // SpecifiedTradePaymentTerms (zugferd 2.3 & facturx 1.0.7)
+            $node->appendChild($this->xmlSpecifiedTradePaymentTerms());
         }
-
-        // SpecifiedTradePaymentTerms (zugferd 2.3 & facturx 1.0.7)
-        $node->appendChild($this->xmlSpecifiedTradePaymentTerms());
 
         // sums
         $node->appendChild($this->xmlSpecifiedTradeSettlementHeaderMonetarySummation());
@@ -427,26 +465,31 @@ class Facturxv10Xml extends BaseXml
     protected function xmlSpecifiedTradeSettlementHeaderMonetarySummation()
     {
         $node = $this->doc->createElement('ram:SpecifiedTradeSettlementHeaderMonetarySummation');
+        if (empty($this->minimum)) {
+            // Not for MINIMUM profile : TaxBasisTotalAmount is expected
+            // LineTotalAmount (sum of net line amounts) Represents the total amount of the invoice lines before charges, discounts and taxes.
+            $node->appendChild($this->currencyElement('ram:LineTotalAmount', $this->invoice->invoice_item_subtotal + $this->invoice->invoice_discount_amount_subtotal));
 
-        // LineTotalAmount (sum of net line amounts) Represents the total amount of the invoice lines before charges, discounts and taxes.
-        $node->appendChild($this->currencyElement('ram:LineTotalAmount', $this->invoice->invoice_item_subtotal + $this->invoice->invoice_discount_amount_subtotal));
+            // ChargeTotalAmount (total charges at document level) Indicates the total amount of additional charges applied to the invoice.
+            // $node->appendChild($this->currencyElement('ram:ChargeTotalAmount', 0)); // optional (insurance, ...)
 
-        // ChargeTotalAmount (total charges at document level) Indicates the total amount of additional charges applied to the invoice.
-        // $node->appendChild($this->currencyElement('ram:ChargeTotalAmount', 0)); // optional (insurance, ...)
+            // AllowanceTotalAmount (total discounts ‘at document level’) Represents the total amount of discounts granted on the invoice. (see set_invoice_discount_amount_total() helper)
+            $node->appendChild($this->currencyElement('ram:AllowanceTotalAmount', $this->invoice->invoice_discount_amount_subtotal)); // optional
 
-        // AllowanceTotalAmount (total discounts ‘at document level’) Represents the total amount of discounts granted on the invoice. (see set_invoice_discount_amount_total() helper)
-        $node->appendChild($this->currencyElement('ram:AllowanceTotalAmount', $this->invoice->invoice_discount_amount_subtotal)); // optional
-
-        $invoiceTotal = $this->invoice->invoice_total; // ApplicableTradeTax>CategoryCode=O
-        if( ! $this->notax)
-        {
-            $invoiceTotal = $this->invoice->invoice_item_subtotal;
+            $invoiceTotal = $this->invoice->invoice_total; // ApplicableTradeTax>CategoryCode=O
+            if( ! $this->notax)
+            {
+                $invoiceTotal = $this->invoice->invoice_item_subtotal;
+            }
         }
         // TaxBasisTotalAmount (total amount excluding VAT)
         $node->appendChild($this->currencyElement('ram:TaxBasisTotalAmount', $invoiceTotal)); // ApplicableTradeTax>CategoryCode= O || S FIX
         $node->appendChild($this->currencyElement('ram:TaxTotalAmount', $this->invoice->invoice_item_tax_total, true));
         $node->appendChild($this->currencyElement('ram:GrandTotalAmount', $this->invoice->invoice_total));
-        $node->appendChild($this->currencyElement('ram:TotalPrepaidAmount', $this->invoice->invoice_paid));
+        if (empty($this->minimum)) {
+            // Not for MINIMUM profile : DuePayableAmount is expected
+            $node->appendChild($this->currencyElement('ram:TotalPrepaidAmount', $this->invoice->invoice_paid));
+        }
         $node->appendChild($this->currencyElement('ram:DuePayableAmount', $this->invoice->invoice_balance));
         return $node;
     }
