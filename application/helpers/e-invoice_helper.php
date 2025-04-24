@@ -58,7 +58,7 @@ function get_xml_template_files()
 {
     $xml_template_items = [];
     $path = APPPATH . 'helpers/XMLconfigs/';
-    $xml_config_files = array_diff(scandir($path), ['.', '..']);
+    $xml_config_files = is_dir($path) ? array_diff(scandir($path), ['.', '..']) : [];
 
     foreach ($xml_config_files as $key => $xml_config_file) {
         $xml_config_files[$key] = str_replace('.php', '', $xml_config_file);
@@ -101,25 +101,4 @@ function get_xml_full_name($xml_id)
     }
 
     return null;
-}
-
-/**
- * @return array
- */
-
-function get_ubl_eas_codes()
-{
-    $file = APPPATH . 'config' . DIRECTORY_SEPARATOR . 'peppol_eas_code_list.csv';
-    $rows = array_map(function ($v) {
-        return str_getcsv($v, ";");
-    }, file($file));
-    $head = array_shift($rows);
-    $eas  = [];
-    foreach ($rows as $row) {
-        if ($row[1] == 'ICD') {
-            $eas[] = array_combine($head, $row);
-        }
-    }
-
-    return $eas;
 }

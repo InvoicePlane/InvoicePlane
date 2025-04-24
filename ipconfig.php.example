@@ -35,7 +35,7 @@ SESS_EXPIRATION=864000
 SESS_MATCH_IP=true
 
 # Global Amounts Calculation - Since 1.6.3
-# ----- : TODO  : xml-templates : PEPPOL3BIS, UBL, CII ••• (checks, modify, create New models).
+# This change Taxes and discounts calcuation mode
 # true  : Taxes: Global Y, Item Y. Use classic calculation for Discounts & Taxes : Conserve same calculation as previous v1.6.3 (Default)
 # false : Taxes: Global N, Item Y. Use simple item tax system calculation : Apply global discount after item discount & before item tax
 # - E-invoicing Notice:

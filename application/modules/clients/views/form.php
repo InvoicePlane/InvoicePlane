@@ -1,15 +1,21 @@
 <?php
 $client_active = $this->mdl_clients->form_value('client_active');
 $active        = ($client_active == 1 || ! is_numeric($client_active)) ? ' checked="checked"' : '';
-// e-Invoicing panel
+// eInvoicing panel
 $nb_users      = count($req_einvoicing->users);
 $me            = $req_einvoicing->users[$_SESSION['user_id']]->show_table;
 $nb            = $req_einvoicing->show_table; // Of users in error
 $ln            = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on more nb_users no ok
 $user_toggle   = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
+// eInvoicing enabled?
+$einvoicingCol = $einvoicing ? 'col-xs-12 col-sm-6' : 'hidden';
+$einvoicingTip = $einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . '(' : ''; // tootip base
+$einvoicingReq = $einvoicing ? $einvoicingTip . trans('required_field') . ')"' : '';
+$einvoicingB2B = $einvoicing ? $einvoicingTip . 'B2B ' . trans('required_field') . ')"' : '';
+$einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
 ?>
 <script type="text/javascript">
-    // e-Invoicing button panel helper user(s) icon toggle
+    // eInvoicing button panel helper user(s) icon toggle
     const switch_fa_toggle = function (id) {
         const f = $('#'+id);f.toggleClass('fa-user').toggleClass('fa-users');
     }
@@ -68,7 +74,7 @@ $user_toggle   = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : '
                             <input id="client_surname" name="client_surname" type="text" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_surname', true); ?>">
                         </div>
-                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (B2B <?php _trans('required_field'); ?>)">
+                        <div class="form-group"<?php echo $einvoicingB2B; ?>>
                             <label for="client_company"><?php _trans('client_company'); ?></label>
 
                             <div class="controls">
@@ -101,12 +107,12 @@ foreach ($languages as $language) {
                 </div>
 
             </div>
-            <div class="col-xs-12 col-sm-6">
+            <div class="<?php echo $einvoicingCol; ?>">
                 <div class="panel panel-default"><!-- eInvoicing panel -->
 
                     <div class="panel-heading">
                         e-<?php _trans('invoicing'); ?>
-                        <span class="<?php echo $client_id ? 'pull-right' : 'hidden'; ?> toggle_einvoicing<?php
+                        <span class="<?php echo $xml_templates && $client_id ? 'pull-right' : 'hidden'; ?> toggle_einvoicing<?php
                               echo $req_einvoicing->show_table
                                    ? ' btn btn-xs btn-default cursor-pointer alert-' . $user_toggle . '"
                               data-toggle="collapse" data-target=".einvoice-user-check-lists"
@@ -123,16 +129,26 @@ foreach ($languages as $language) {
 
                     <div class="panel-body">
 <?php
-if ($this->mdl_clients->form_value('client_id')) {
-    $this->layout->load_view('clients/partial_client_einvoicing');
-} else {
+if ($xml_templates) {
+    if ($this->mdl_clients->form_value('client_id')) {
+        $this->layout->load_view('clients/partial_client_einvoicing');
+    } else {
 ?>
                         <div class="alert alert-warning small" style="font-size:medium;">
                             <i class="fa fa-exclamation-triangle fa-2x"></i>&nbsp;
                             <?php _trans('einvoicing_no_enabled_hint'); ?>
                         </div>
 <?php
-} // End if
+    } // End if client_id
+} else {
+?>
+                        <div class="alert alert-info small" style="font-size:medium;">
+                            <i class="fa fa-info"></i>&nbsp;
+                            <?php _trans('einvoicing_how_enable_hint'); ?>
+                            <a href="https://github.com/InvoicePlane/InvoicePlane-e-invoices" target="_blank">InvoicePlane-e-invoices</a>
+                        </div>
+<?php
+} // End if xml_templates
 ?>
                     </div>
                 </div>
@@ -148,7 +164,7 @@ if ($this->mdl_clients->form_value('client_id')) {
                     </div>
 
                     <div class="panel-body">
-                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                        <div class="form-group"<?php echo $einvoicingReq; ?>>
                             <label for="client_address_1"><?php _trans('street_address'); ?></label>
 
                             <div class="controls">
@@ -157,7 +173,7 @@ if ($this->mdl_clients->form_value('client_id')) {
                             </div>
                         </div>
 
-                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('optional'); ?>)">
+                        <div class="form-group"<?php echo $einvoicingOpt; ?>>
                             <label for="client_address_2"><?php _trans('street_address_2'); ?></label>
 
                             <div class="controls">
@@ -166,7 +182,7 @@ if ($this->mdl_clients->form_value('client_id')) {
                             </div>
                         </div>
 
-                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                        <div class="form-group"<?php echo $einvoicingReq; ?>>
                             <label for="client_city"><?php _trans('city'); ?></label>
 
                             <div class="controls">
@@ -184,7 +200,7 @@ if ($this->mdl_clients->form_value('client_id')) {
                             </div>
                         </div>
 
-                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                        <div class="form-group"<?php echo $einvoicingReq; ?>>
                             <label for="client_zip"><?php _trans('zip_code'); ?></label>
 
                             <div class="controls">
@@ -193,7 +209,7 @@ if ($this->mdl_clients->form_value('client_id')) {
                             </div>
                         </div>
 
-                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (<?php _trans('required_field'); ?>)">
+                        <div class="form-group"<?php echo $einvoicingReq; ?>>
                             <label for="client_country"><?php _trans('country'); ?></label>
 
                             <div class="controls">
@@ -305,7 +321,7 @@ foreach ($custom_fields as $custom_field) {
                     </div>
 
                     <div class="panel-body">
-                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (B2B <?php _trans('required_field'); ?>)">
+                        <div class="form-group"<?php echo $einvoicingB2B; ?>>
                             <label for="client_vat_id"><?php _trans('vat_id'); ?></label>
 
                             <div class="controls">
@@ -321,22 +337,6 @@ foreach ($custom_fields as $custom_field) {
                                 <input type="text" name="client_tax_code" id="client_tax_code" class="form-control"
                                        value="<?php echo $this->mdl_clients->form_value('client_tax_code', true); ?>">
                             </div>
-                        </div>
-
-                        <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="e-<?php _trans('invoicing'); ?> (UBL <?php _trans('required_field'); ?>)">
-                            <label for="client_ubl_eas_code"><?php _trans('ubl_eas_code'); ?></label>
-<?php
-$eas_code = $this->mdl_clients->form_value('client_ubl_eas_code', true);
-?>
-                            <select name="client_ubl_eas_code" id="client_ubl_eas_code"
-                                class="form-control simple-select">
-                                <?php foreach ($ubl_eas_codes as $code) { ?>
-                                    <option value="<?php echo $code['Code']; ?>" <?php check_select($eas_code, $code['Code']); ?>>
-                                        <?php echo $code['Code']; ?> <?php echo $code['Code name']; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                            <p class="help-block"><?php _trans('ubl_eas_code_help'); ?></p>
                         </div>
 
 <?php
