@@ -195,7 +195,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         unlink(UPLOADS_TEMP_FOLDER . $filename . '.xml');
     }
 
-    // Create the UBL XML file if not embed & the client e-Invoicing active
+    // Create the UBL XML file if not embed & the client eInvoicing active
     if ($xml_id != '' && $embed_xml !== true)
     {
         // Added the (unnecessary) prefix "date(Y-m-d)_" to the invoice file name to get the same ".pdf" and ".xml" file names!

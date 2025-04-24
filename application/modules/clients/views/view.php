@@ -151,9 +151,11 @@ foreach ($custom_fields as $custom_field)
             </div>
 
             <hr>
-
+<?php
+$colClass = 'col-xs-12 col-sm-6' . ($einvoicing ? ' col-lg-4' : '');
+?>
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="<?php echo $colClass; ?>">
 
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading"><?php _trans('contact_information'); ?></div>
@@ -217,7 +219,7 @@ foreach ($custom_fields as $custom_field)
                     </div>
 
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="<?php echo $colClass; ?>">
                     <div class="panel panel-default no-margin">
 
                         <div class="panel-heading"><?php _trans('tax_information'); ?></div>
@@ -266,28 +268,28 @@ foreach ($custom_fields as $custom_field)
                     </div>
                 </div>
 
-                <!-- e-Invoicing panel -->
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <!-- eInvoicing panel -->
+                <div class="<?php echo $einvoicing ? $colClass : ' hidden'; ?>">
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading">
                             e-<?php _trans('invoicing'); ?>
 <?php
-// Panel e-Invoicing checks
+// Panel eInvoicing checks
 $title_tip = ' data-toggle="tooltip" data-placement="bottom" title="' . trans('edit'); // Tooltip helper ! Need add: . '"'
 
-// For e-Invoicing panel client (users)
+// For eInvoicing panel client (users)
 $nb_users     = count($req_einvoicing->users);
 $me           = $req_einvoicing->users[$_SESSION['user_id']]->show_table;
 $nb           = $req_einvoicing->show_table;
 $ln           = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on more nb_users no ok
 $user_toggle  = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
-// For e-Invoicing panel User(s) table
+// For eInvoicing panel User(s) table
 $class_checks     = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning', 'fa fa-lg fa-square-o text-danger']; // Checkboxe icons
 $base             = 'address_1 zip city country company vat_id';
 $keys             = explode(' ', $base); // to array
 $lang             = explode(' ', strtr($base, ['_1' => '']));
 $user_fields_nook = ($req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields > 0 && $client->client_einvoicing_version != '');
-// e-Invoicing button toggle users table checking
+// eInvoicing button toggle users table checking
 if ($client->client_einvoicing_active && ! $user_fields_nook)
 {
 ?>
@@ -302,7 +304,7 @@ if ($client->client_einvoicing_active && ! $user_fields_nook)
                                 <i id="einvoice_users_check_fa_toggle" class="fa fa-toggle-<?php echo $me ? 'on' : 'off'; ?> fa-margin"></i>
                             </span>
 <?php
-} // End if e-Invoicing button toggle users table checking
+} // End if eInvoicing button toggle users table checking
 ?>
                         </div>
                         <div class="panel-body table-content">
@@ -315,7 +317,7 @@ if ($client->client_einvoicing_active && ! $user_fields_nook)
                             </table>
 
 <?php
-// e-Invoicing panel Client checks table
+// eInvoicing panel Client checks table
 if ($client->client_einvoicing_active && $user_fields_nook)
 {
 ?>
@@ -370,7 +372,7 @@ else
                                     <tr><th><?php _trans('user'); ?></th><th>e-<?php _trans('invoice'); ?></th><th><?php _trans('errors'); ?></th></tr>
                                 </thead>
 <?php
-    // e-Invoicing panel User(s) checks table
+    // eInvoicing panel User(s) checks table
     foreach ($req_einvoicing->users as $uid => $user)
     {
         $ok = ! $user->einvoicing_empty_fields; // or ->show_table (inverse)
@@ -418,7 +420,7 @@ else
                         </div>
                     </div>
                 </div>
-                <!-- /e-Invoicing panel -->
+                <!-- /eInvoicing panel -->
 
             </div>
 

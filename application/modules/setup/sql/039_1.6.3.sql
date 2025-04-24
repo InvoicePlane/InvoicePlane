@@ -10,5 +10,3 @@ ALTER TABLE `ip_clients`
     ADD COLUMN client_invoicing_contact VARCHAR(50) DEFAULT NULL AFTER `client_surname`,
     ADD COLUMN client_einvoicing_active TINYINT(1) NOT NULL DEFAULT '0' AFTER `client_title`,
     ADD COLUMN client_einvoicing_version VARCHAR(25) DEFAULT NULL AFTER `client_einvoicing_active`;
-
-DELETE FROM `ip_settings` WHERE `setting_key` = 'include_zugferd';

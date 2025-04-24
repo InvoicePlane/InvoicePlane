@@ -76,6 +76,25 @@
                             </select>
                         </div>
 
+                        <div class="form-group">
+                            <label for="settings[einvoicing]">
+                                <?php _trans('einvoicing_enable'); ?>
+                            </label>
+                            <select name="settings[einvoicing]" id="settings[einvoicing]"
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0">
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('einvoicing'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                            <p class="help-block">
+                                <?php _trans('einvoicing_enable_help'); ?>
+                                <a href="https://github.com/InvoicePlane/InvoicePlane-e-invoices" target="_blank">InvoicePlane-e-invoices</a>
+                            </p>
+                        </div>
+
                     </div>
                 </div>
             </div>

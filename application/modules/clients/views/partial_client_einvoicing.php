@@ -98,7 +98,7 @@ foreach($req_einvoicing->users as $user_id => $user)
         $open      = $user_id == $_SESSION['user_id'] && $req_einvoicing->users[$_SESSION['user_id']]->show_table;
         $me        = $user_id == $_SESSION['user_id'];
 ?>
-        <!-- check if mandatory e-invoicing fields are empty -->
+        <!-- Check if mandatory eInvoicing fields are empty -->
         <div class="col-xs-12 col-md-6 einvoice-user-check-lists collapse<?php echo $open ? ' in" aria-expanded="true' : '" aria-expanded="false'; ?>">
             <div class="form-group" data-toggle="tooltip" data-placement="top" title="<?php _htmlsc($user->user_name); ?>">
                 <div class="table-responsive">

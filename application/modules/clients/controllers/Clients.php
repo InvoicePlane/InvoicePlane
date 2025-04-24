@@ -56,6 +56,7 @@ class Clients extends Admin_Controller
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_clients'),
                 'filter_method'      => 'filter_clients',
+                'einvoicing'         => get_setting('einvoicing'),
             ]
         );
 
@@ -128,7 +129,7 @@ class Clients extends Admin_Controller
             redirect('clients/' . $where . '/' . $id);
         }
 
-        // Get a check of filled Required (client and users) fields for e-Invoicing
+        // Get a check of filled Required (client and users) fields for eInvoicing
         $req_einvoicing = $this->get_req_fields_einvoice(($new_client || ! $id) ? null : $this->db->from('ip_clients')->where('client_id', $id)->get()->row());
 
         if ($id && ! $this->input->post('btn_submit'))
@@ -213,7 +214,8 @@ class Clients extends Admin_Controller
                 'languages'            => get_available_languages(),
                 'client_title_choices' => $this->get_client_title_choices(),
                 'xml_templates'        => get_xml_template_files(), // eInvoicing
-                'req_einvoicing'       => $req_einvoicing,          // eInvoicing
+                'req_einvoicing'       => $req_einvoicing,
+                'einvoicing'           => get_setting('einvoicing'),
             ]
         );
 
@@ -251,10 +253,10 @@ class Clients extends Admin_Controller
 
         $this->load->helper('e-invoice'); // eInvoicing++
 
-        // Get a check of filled Required (client and users) fields for e-invoicing
+        // Get a check of filled Required (client and users) fields for eInvoicing
         $req_einvoicing = $this->get_req_fields_einvoice($client);
 
-        // Update active e-invoicing client
+        // Update active eInvoicing client
         $o = $client->client_einvoicing_active;
         if (! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0)
         {
@@ -315,6 +317,7 @@ class Clients extends Admin_Controller
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
                 'activeTab'        => $activeTab,
                 'req_einvoicing'   => $req_einvoicing,
+                'einvoicing'       => get_setting('einvoicing'),
             ]
         );
 
@@ -386,7 +389,7 @@ class Clients extends Admin_Controller
     {
         $cid = empty($client->client_id) ? 0 : $client->client_id; // Client is New (form) or exist
         $c = new stdClass;
-        // check if required (e-invoicing) fields are filled in?
+        // check if required (eInvoicing) fields are filled in?
         $c->address_1 = $cid ? ($client->client_address_1 != '' ? 0 : 1) : 0;
         $c->zip       = $cid ? ($client->client_zip       != '' ? 0 : 1) : 0;
         $c->city      = $cid ? ($client->client_city      != '' ? 0 : 1) : 0;
@@ -418,12 +421,12 @@ class Clients extends Admin_Controller
         // $show_table = $c->einvoicing_empty_fields;
         $show_table = 0; // Only user
 
-        // Get user(s) fields for e-invoicing
+        // Get user(s) fields for eInvoicing
         $users = $this->get_admin_active_users($user_id);
         foreach ($users as $o)
         {
             $u = new stdClass;
-            // check if required (e-invoicing) fields are filled in?
+            // check if required (eInvoicing) fields are filled in?
             $u->address_1 = $o->user_address_1 != '' ? 0 : 1;
             $u->zip       = $o->user_zip       != '' ? 0 : 1;
             $u->city      = $o->user_city      != '' ? 0 : 1;
