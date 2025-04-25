@@ -78,7 +78,7 @@ class Ajax extends Admin_Controller
 
         $data = [
             'records' => $this->mdl_clients->with_total_balance()->get()->result(),
-       ];
+        ];
 
         $this->layout->load_view('clients/partial_client_table', $data);
     }
@@ -103,10 +103,10 @@ class Ajax extends Admin_Controller
 
         // Determine which name of table custom field to load
         $custom_tables = $this->mdl_custom_fields->custom_tables();
-        if ($name != 'all' && in_array($name, $custom_tables))
-        {
+        if ($name != 'all' && in_array($name, $custom_tables)) {
             $this->mdl_custom_fields->by_table_name($name);
         }
+
         $custom_fields = $this->mdl_custom_fields->get()->result();
 
         $this->load->model('custom_values/mdl_custom_values');
@@ -141,6 +141,7 @@ class Ajax extends Admin_Controller
                 $this->mdl_custom_values->like("CONCAT_WS('^',LOWER(custom_values_value), LOWER(custom_field_table), LOWER(custom_field_label), LOWER(custom_field_type))", $keyword);
             }
         }
+
         $this->mdl_custom_values->grouped();
         $custom_values = $this->mdl_custom_values->get()->result();
 
@@ -257,7 +258,7 @@ class Ajax extends Admin_Controller
         $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
-        // Not used: user_id	user_type	user_active	user_date_modified	user_language	user_password	user_psalt	user_passwordreset_token
+        // Not used: user_id    user_type   user_active user_date_modified  user_language   user_password   user_psalt  user_passwordreset_token
         // Not showed in frontend table:
         // user_date_created,LOWER(user_company),LOWER(user_address_1),LOWER(user_address_2),LOWER(user_city),LOWER(user_state),LOWER(user_zip),LOWER(user_country),
         // LOWER(user_invoicing_contact),LOWER(user_phone),LOWER(user_fax),LOWER(user_mobile),LOWER(user_web),
@@ -375,5 +376,4 @@ class Ajax extends Admin_Controller
 
         $this->layout->load_view('payments/partial_payments_table', $data);
     }
-
 }

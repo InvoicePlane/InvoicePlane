@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Items extends Response_Model
 {
-
     public $table = 'ip_invoice_items';
 
     public $primary_key = 'ip_invoice_items.item_id';
@@ -97,13 +96,11 @@ class Mdl_Items extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      * @param []   $global_discount
      *
      * @return int|null
      */
-    public function save($id = null, $db_array = null, & $global_discount = [])
+    public function save($id = null, $db_array = null, &$global_discount = [])
     {
         $id = parent::save($id, $db_array);
 
@@ -113,12 +110,9 @@ class Mdl_Items extends Response_Model
         ]);
         $this->mdl_item_amounts->calculate($id, $global_discount);
 
-        if (is_object($db_array) && isset($db_array->invoice_id))
-        {
+        if (is_object($db_array) && isset($db_array->invoice_id)) {
             $this->mdl_invoice_amounts->calculate($db_array->invoice_id, $global_discount);
-        }
-        elseif (is_array($db_array) && isset($db_array['invoice_id']))
-        {
+        } elseif (is_array($db_array) && isset($db_array['invoice_id'])) {
             $this->mdl_invoice_amounts->calculate($db_array['invoice_id'], $global_discount);
         }
 
@@ -137,8 +131,7 @@ class Mdl_Items extends Response_Model
         // and the task id to update status if the item refers a task
         $query = $this->db->get_where($this->table, ['item_id' => $item_id]);
 
-        if ($query->num_rows() == 0)
-        {
+        if ($query->num_rows() == 0) {
             return false;
         }
 
@@ -178,5 +171,4 @@ class Mdl_Items extends Response_Model
             ->row();
         return $row->items_subtotal;
     }
-
 }

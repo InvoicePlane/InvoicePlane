@@ -42,14 +42,13 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class MX_Config extends CI_Config
 {
-
     public function load($file = '', $use_sections = false, $fail_gracefully = false, $_module = '')
     {
         if (in_array($file, $this->is_loaded, true)) {
             return $this->item($file);
         }
 
-        $_module OR $_module = CI::$APP->router->fetch_module();
+        $_module || $_module = CI::$APP->router->fetch_module();
         list($path, $file) = Modules::find($file, $_module, 'config/');
 
         if ($path === false) {
@@ -62,12 +61,7 @@ class MX_Config extends CI_Config
             $current_config =& $this->config;
 
             if ($use_sections === true) {
-                if (isset($current_config[$file])) {
-                    $current_config[$file] = array_merge($current_config[$file], $config);
-                } else {
-                    $current_config[$file] = $config;
-                }
-
+                $current_config[$file] = isset($current_config[$file]) ? array_merge($current_config[$file], $config) : $config;
             } else {
                 $current_config = array_merge($current_config, $config);
             }
@@ -76,5 +70,7 @@ class MX_Config extends CI_Config
             unset($config);
             return $this->item($file);
         }
+
+        return null;
     }
 }

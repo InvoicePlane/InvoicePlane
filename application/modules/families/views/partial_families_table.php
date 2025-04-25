@@ -10,8 +10,7 @@
 
             <tbody>
 <?php
-foreach ($families as $family)
-{
+foreach ($families as $family) {
 ?>
                 <tr>
                     <td><?php _htmlsc($family->family_name); ?></td>

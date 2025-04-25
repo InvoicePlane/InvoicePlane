@@ -1,5 +1,6 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+
+defined('BASEPATH') || exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------
@@ -10,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-$config['payment_gateways'] = array(
+$config['payment_gateways'] = [
 /*     'AuthorizeNet_AIM' => array(
         'apiLoginId' => array(
             'type' => 'text',
@@ -441,30 +442,30 @@ $config['payment_gateways'] = array(
             'label' => 'Test Mode',
         ),
     ), */
-    'Stripe' => array(
-        'apiKey' => array(
+    'Stripe' => [
+        'apiKey' => [
             'type' => 'password',
             'label' => 'Secret key',
-        ),
-        'apiKeyPublic' => array(
+        ],
+        'apiKeyPublic' => [
             'type' => 'text',
             'label' => 'Publishable key'
-        ),
-    ),
-    'PayPal' => array(
-        'clientId' => array(
+        ],
+    ],
+    'PayPal' => [
+        'clientId' => [
             'type'  => 'text',
             'label' => 'Client ID'
-        ),
-        'clientSecret' => array(
+        ],
+        'clientSecret' => [
             'type'  => 'password',
             'label' => 'Secret'
-        ),
-        'testMode' => array(
+        ],
+        'testMode' => [
             'type' => 'checkbox',
             'label' => 'Test Mode',
-        ),
-    ),
+        ],
+    ],
     /* 'TargetPay_Directebanking' => array(
         'subAccountId' => array(
             'type' => 'text',
@@ -519,4 +520,4 @@ $config['payment_gateways'] = array(
             'label' => 'Test Mode',
         ),
     ), */
-);
+];

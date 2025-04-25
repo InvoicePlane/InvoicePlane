@@ -39,9 +39,6 @@ class Invoice_Groups extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -56,10 +53,10 @@ class Invoice_Groups extends Admin_Controller
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_invoice_groups->prep_form($id)) {
+            if (! $this->mdl_invoice_groups->prep_form($id)) {
                 show_404();
             }
-        } elseif ( ! $id) {
+        } elseif (! $id) {
             $this->mdl_invoice_groups->set_form_value('invoice_group_left_pad', 0);
             $this->mdl_invoice_groups->set_form_value('invoice_group_next_id', 1);
         }
@@ -76,5 +73,4 @@ class Invoice_Groups extends Admin_Controller
         $this->mdl_invoice_groups->delete($id);
         redirect('invoice_groups');
     }
-
 }

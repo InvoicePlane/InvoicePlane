@@ -16,14 +16,13 @@
 
         <tbody>
 <?php
-foreach ($custom_values as $custom_values)
-{
+foreach ($custom_values as $custom_values) {
     $href     = site_url('custom_fields/form/' . $custom_values->custom_field_id);
     $alpha    = str_replace("-", "_", strtolower($custom_values->custom_field_type));
     $position = $positions[ $custom_values->custom_field_table ][ $custom_values->custom_field_location ];
 ?>
             <tr>
-                <td><?php echo anchor($href, $custom_values->custom_field_id, ' title="'. trans('edit') . '"'); ?></td>
+                <td><?php echo anchor($href, $custom_values->custom_field_id, ' title="' . trans('edit') . '"'); ?></td>
                 <td><?php echo anchor($href, '<i class="fa fa-edit fa-margin"></i> ' . htmlsc($custom_values->custom_field_label), ' class="btn btn-sm btn-default"'); ?></td>
                 <td><?php echo $custom_values->count; ?></td>
                 <td><?php _trans($custom_tables[$custom_values->custom_field_table]); ?></td>

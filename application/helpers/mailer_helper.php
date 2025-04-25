@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -36,9 +36,6 @@ function mailer_configured()
  * @param        $to
  * @param        $subject
  * @param string $body
- * @param null   $cc
- * @param null   $bcc
- * @param null   $attachments
  *
  * @return bool
  */
@@ -81,15 +78,19 @@ function email_invoice(
     if (! filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'to_email';
     }
+
     if (! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'from_email';
     }
+
     if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'cc_email';
     }
+
     if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'bcc_email';
     }
+
     check_mail_errors($errors, 'mailer/invoice/' . $invoice_id);
 
     $message = (empty($message) ? ' ' : $message);
@@ -106,9 +107,6 @@ function email_invoice(
  * @param        $to
  * @param        $subject
  * @param string $body
- * @param null   $cc
- * @param null   $bcc
- * @param null   $attachments
  *
  * @return bool
  */
@@ -146,15 +144,19 @@ function email_quote(
     if (! filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'to_email';
     }
+
     if (! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'from_email';
     }
+
     if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'cc_email';
     }
+
     if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'bcc_email';
     }
+
     check_mail_errors($errors, 'mailer/quote/' . $quote_id);
 
     $message = (empty($message) ? ' ' : $message);
@@ -175,7 +177,7 @@ function email_quote_status($quote_id, $status)
     ini_set('display_errors', 'on');
     error_reporting(E_ALL);
 
-    if ( ! mailer_configured()) {
+    if (! mailer_configured()) {
         return false;
     }
 
@@ -210,13 +212,12 @@ function email_quote_status($quote_id, $status)
  */
 function check_mail_errors($errors = [], $redirect = '')
 {
-    if ($errors)
-    {
+    if ($errors) {
         $CI = & get_instance();
-        foreach($errors as $i => $e)
-        {
+        foreach ($errors as $i => $e) {
             $errors[$i] = strtr(trans('form_validation_valid_email'), ['{field}' => trans($e)]);
         }
+
         $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
         $redirect = empty($redirect) ? (empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER']) : $redirect;
         redirect($redirect);

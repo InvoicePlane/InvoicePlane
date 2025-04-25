@@ -17,7 +17,9 @@ if (! defined('BASEPATH')) {
 class Mdl_Payments extends Response_Model
 {
     public $table = 'ip_payments';
+
     public $primary_key = 'ip_payments.payment_id';
+
     public $validation_rules = 'validation_rules';
 
     public function default_select()
@@ -91,24 +93,19 @@ class Mdl_Payments extends Response_Model
 
         $invoice = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
 
-        if ($invoice == null)
-        {
+        if ($invoice == null) {
             return false;
         }
 
         $invoice_balance = (float)$invoice->invoice_balance;
 
-        if ($payment_id)
-        {
+        if ($payment_id) {
             $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
 
-            $invoice_balance = $invoice_balance + (float)$payment->payment_amount;
+            $invoice_balance += (float)$payment->payment_amount;
         }
 
-        $invoice_balance = (float)$invoice_balance;
-
-        if ($amount > $invoice_balance)
-        {
+        if ($amount > $invoice_balance) {
             $this->form_validation->set_message('validate_payment_amount', trans('payment_cannot_exceed_balance'));
             return false;
         }
@@ -117,8 +114,6 @@ class Mdl_Payments extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      * @return bool|int|null
      */
     public function save($id = null, $db_array = null)
@@ -136,8 +131,7 @@ class Mdl_Payments extends Response_Model
         // Set proper status for the invoice
         $invoice = $this->db->where('invoice_id', $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
 
-        if ($invoice == null)
-        {
+        if ($invoice == null) {
             return false;
         }
 
@@ -145,8 +139,7 @@ class Mdl_Payments extends Response_Model
         $paid = (float)$invoice->invoice_paid;
         $total = (float)$invoice->invoice_total;
 
-        if ($paid >= $total)
-        {
+        if ($paid >= $total) {
             $this->db->where('invoice_id', $db_array['invoice_id']);
             $this->db->set('invoice_status_id', 4);
             $this->db->update('ip_invoices');
@@ -172,14 +165,12 @@ class Mdl_Payments extends Response_Model
         return $db_array;
     }
 
-    /**
-     * @param null $id
-     */
     public function delete($id = null)
     {
         // Get the invoice id before deleting payment
         $this->db->select('invoice_id');
         $this->db->where('payment_id', $id);
+
         $invoice_id = $this->db->get('ip_payments')->row()->invoice_id;
 
         // Delete the payment
@@ -193,10 +184,10 @@ class Mdl_Payments extends Response_Model
         // Change invoice status back to sent
         $this->db->select('invoice_status_id');
         $this->db->where('invoice_id', $invoice_id);
+
         $invoice = $this->db->get('ip_invoices')->row();
 
-        if ($invoice->invoice_status_id == 4)
-        {
+        if ($invoice->invoice_status_id == 4) {
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_status_id', 2);
             $this->db->update('ip_invoices');
@@ -207,18 +198,15 @@ class Mdl_Payments extends Response_Model
     }
 
     /**
-     * @param null $id
      * @return bool
      */
     public function prep_form($id = null)
     {
-        if (! parent::prep_form($id))
-        {
+        if (! parent::prep_form($id)) {
             return false;
         }
 
-        if (! $id)
-        {
+        if (! $id) {
             parent::set_form_value('payment_date', date('Y-m-d'));
         }
 
@@ -234,5 +222,4 @@ class Mdl_Payments extends Response_Model
         $this->filter_where('ip_clients.client_id', $client_id);
         return $this;
     }
-
 }

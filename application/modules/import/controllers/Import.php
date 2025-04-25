@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -49,13 +48,13 @@ class Import extends Admin_Controller
 
     public function form()
     {
-        if ( ! $this->input->post('btn_submit')) {
+        if (! $this->input->post('btn_submit')) {
             $this->load->helper('directory');
 
             $files = directory_map('./uploads/import');
 
             foreach ($files as $key => $file) {
-                if ( ! is_numeric(array_search($file, $this->allowed_files))) {
+                if (! is_numeric(array_search($file, $this->allowed_files))) {
                     unset($files[$key]);
                 }
             }
@@ -63,48 +62,41 @@ class Import extends Admin_Controller
             $this->layout->set('files', $files);
             $this->layout->buffer('content', 'import/import_index');
             $this->layout->render();
-        }
-        else
-        {
+        } else {
             $this->load->helper('file');
 
             $import_id = $this->mdl_import->start_import();
 
-            if ($this->input->post('files'))
-            {
+            if ($this->input->post('files')) {
                 $files = $this->allowed_files;
 
-                foreach ($files as $key => $file)
-                {
-                    if ( ! is_numeric(array_search($file, $this->input->post('files'))))
-                    {
+                foreach ($files as $key => $file) {
+                    if (! is_numeric(array_search($file, $this->input->post('files')))) {
                         unset($files[$key]);
                     }
                 }
 
-                foreach ($files as $file)
-                {
-                    switch($file)
-                    {
+                foreach ($files as $file) {
+                    switch ($file) {
                         case 'clients.csv':
                             $ids = $this->mdl_import->import_data($file, 'ip_clients');
                             $this->mdl_import->record_import_details($import_id, 'ip_clients', 'clients', $ids);
-                        break;
+                            break;
                         case 'invoices.csv':
                             $this->load->model('invoices/mdl_invoices');
                             $ids = $this->mdl_import->import_invoices();
                             $this->mdl_import->record_import_details($import_id, 'ip_invoices', 'invoices', $ids);
-                        break;
+                            break;
                         case 'invoice_items.csv':
                             $this->load->model('invoices/mdl_items');
                             $ids = $this->mdl_import->import_invoice_items();
                             $this->mdl_import->record_import_details($import_id, 'ip_invoice_items', 'invoice_items', $ids);
-                        break;
+                            break;
                         case 'payments.csv':
                             $this->load->model('payments/mdl_payments');
                             $ids = $this->mdl_import->import_payments();
                             $this->mdl_import->record_import_details($import_id, 'ip_payments', 'payments', $ids);
-                        break;
+                            break;
                     }
                 }
             }
@@ -121,5 +113,4 @@ class Import extends Admin_Controller
         $this->mdl_import->delete($id);
         redirect('import');
     }
-
 }

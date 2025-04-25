@@ -10,8 +10,7 @@
 
                     <tbody>
 <?php
-foreach ($elements as $element)
-{
+foreach ($elements as $element) {
 ?>
                         <tr>
                             <td><?php echo $element->custom_values_id; ?></td>

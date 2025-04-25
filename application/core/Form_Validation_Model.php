@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Form_Validation_Model extends MY_Model
 {
-
     /**
      * Form_Validation_Model constructor.
      */

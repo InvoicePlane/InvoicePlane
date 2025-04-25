@@ -16,8 +16,7 @@
 
         <tbody>
 <?php
-foreach ($payments as $payment)
-{
+foreach ($payments as $payment) {
 ?>
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>

@@ -34,12 +34,17 @@ if (! defined('BASEPATH')) {
 class Cryptor
 {
     private $cipher_algo;
+
     private $hash_algo;
+
     private $iv_num_bytes;
+
     private $format;
 
     const FORMAT_RAW = 0;
+
     const FORMAT_B64 = 1;
+
     const FORMAT_HEX = 2;
 
     /**
@@ -54,14 +59,12 @@ class Cryptor
         $this->hash_algo = $hash_algo;
         $this->format = $fmt;
 
-        if (!in_array($cipher_algo, openssl_get_cipher_methods(true)))
-        {
-            throw new \Exception("Cryptor:: - unknown cipher algo {$cipher_algo}");
+        if (!in_array($cipher_algo, openssl_get_cipher_methods(true))) {
+            throw new \Exception('Cryptor:: - unknown cipher algo ' . $cipher_algo);
         }
 
-        if (!in_array($hash_algo, openssl_get_md_methods(true)))
-        {
-            throw new \Exception("Cryptor:: - unknown hash algo {$hash_algo}");
+        if (!in_array($hash_algo, openssl_get_md_methods(true))) {
+            throw new \Exception('Cryptor:: - unknown hash algo ' . $hash_algo);
         }
 
         $this->iv_num_bytes = openssl_cipher_iv_length($cipher_algo);
@@ -76,8 +79,7 @@ class Cryptor
      */
     public function encryptString($in, $key, $fmt = null)
     {
-        if ($fmt === null)
-        {
+        if ($fmt === null) {
             $fmt = $this->format;
         }
 
@@ -94,8 +96,7 @@ class Cryptor
         $opts =  OPENSSL_RAW_DATA;
         $encrypted = openssl_encrypt($in, $this->cipher_algo, $keyhash, $opts, $iv);
 
-        if ($encrypted === false)
-        {
+        if ($encrypted === false) {
             throw new \Exception('Cryptor::encryptString() - Encryption failed: ' . openssl_error_string());
         }
 
@@ -103,12 +104,9 @@ class Cryptor
         $res = $iv . $encrypted;
 
         // and format the result if required.
-        if ($fmt == Cryptor::FORMAT_B64)
-        {
+        if ($fmt == Cryptor::FORMAT_B64) {
             $res = base64_encode($res);
-        }
-        else if ($fmt == Cryptor::FORMAT_HEX)
-        {
+        } elseif ($fmt == Cryptor::FORMAT_HEX) {
             $res = unpack('H*', $res)[1];
         }
 
@@ -124,28 +122,22 @@ class Cryptor
      */
     public function decryptString($in, $key, $fmt = null)
     {
-        if ($fmt === null)
-        {
+        if ($fmt === null) {
             $fmt = $this->format;
         }
 
         $raw = $in;
 
         // Restore the encrypted data if encoded
-        if ($fmt == Cryptor::FORMAT_B64)
-        {
+        if ($fmt == Cryptor::FORMAT_B64) {
             $raw = base64_decode($in);
-        }
-        else if ($fmt == Cryptor::FORMAT_HEX)
-        {
+        } elseif ($fmt == Cryptor::FORMAT_HEX) {
             $raw = pack('H*', $in);
         }
 
         // and do an integrity check on the size.
-        if (strlen($raw) < $this->iv_num_bytes)
-        {
-            throw new \Exception('Cryptor::decryptString() - ' .
-                'data length ' . strlen($raw) . " is less than iv length {$this->iv_num_bytes}");
+        if (strlen($raw) < $this->iv_num_bytes) {
+            throw new \Exception('Cryptor::decryptString() - data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
         }
 
         // Extract the initialisation vector and encrypted data
@@ -159,8 +151,7 @@ class Cryptor
         $opts = OPENSSL_RAW_DATA;
         $res = openssl_decrypt($raw, $this->cipher_algo, $keyhash, $opts, $iv);
 
-        if ($res === false)
-        {
+        if ($res === false) {
             throw new \Exception('Cryptor::decryptString - decryption failed: ' . openssl_error_string());
         }
 

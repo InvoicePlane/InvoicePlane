@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -18,7 +17,9 @@ if (! defined('BASEPATH'))
 class Mdl_Payment_Custom extends Validator
 {
     public static $positions = ['custom_fields'];
+
     public $table = 'ip_payment_custom';
+
     public $primary_key = 'ip_payment_custom.payment_custom_id';
 
     public function default_select()
@@ -45,19 +46,16 @@ class Mdl_Payment_Custom extends Validator
     {
         $result = $this->validate($db_array);
 
-        if ($result === true)
-        {
-            $form_data = isset($this->_formdata) ? $this->_formdata : null;
+        if ($result === true) {
+            $form_data = property_exists($this, '_formdata') && $this->_formdata !== null ? $this->_formdata : null;
 
-            if (is_null($form_data))
-            {
+            if (is_null($form_data)) {
                 return true;
             }
 
             $payment_custom_id = null;
 
-            foreach ($form_data as $key => $value)
-            {
+            foreach ($form_data as $key => $value) {
                 $db_array =
                 [
                     'payment_id'                => $payment_id,
@@ -67,8 +65,7 @@ class Mdl_Payment_Custom extends Validator
 
                 $payment_custom = $this->where('payment_id', $payment_id)->where('payment_custom_fieldid', $key)->get();
 
-                if ($payment_custom->num_rows())
-                {
+                if ($payment_custom->num_rows()) {
                     $payment_custom_id = $payment_custom->row()->payment_custom_id;
                 }
 
@@ -93,8 +90,6 @@ class Mdl_Payment_Custom extends Validator
 
     public function get_by_payid($payment_id)
     {
-        $result = $this->where('ip_payment_custom.payment_id', $payment_id)->get()->result();
-        return $result;
+        return $this->where('ip_payment_custom.payment_id', $payment_id)->get()->result();
     }
-
 }

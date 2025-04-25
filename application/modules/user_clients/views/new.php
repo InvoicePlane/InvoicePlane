@@ -43,7 +43,7 @@
 
                         <div class="alert alert-info">
                             <label>
-                                <input type="checkbox" name="user_all_clients" id="user_all_clients" value="1" <?php echo ($user->user_all_clients)?'checked="checked"':''; ?>> <?php _trans('user_all_clients') ?>
+                                <input type="checkbox" name="user_all_clients" id="user_all_clients" value="1" <?php echo ($user->user_all_clients) ? 'checked="checked"' : ''; ?>> <?php _trans('user_all_clients') ?>
                             </label>
 
                             <div>
@@ -55,7 +55,7 @@
                             <label for="client_id"><?php _trans('client'); ?></label>
                             <select name="client_id" id="client_id" class="form-control simple-select"
                                     autofocus="autofocus" required>
-                                <?php
+<?php
                                 foreach ($clients as $client) {
                                     echo '<option value="' . $client->client_id . '">' . htmlsc(format_client($client)) . '</option>';
                                 }

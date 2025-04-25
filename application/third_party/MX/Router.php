@@ -1,6 +1,6 @@
 <?php
 
-(defined('BASEPATH')) or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 // load the MX core module class
 require dirname(__FILE__) . '/Modules.php';
@@ -56,7 +56,9 @@ class MX_Router extends CI_Router
     {
         if ($this->translate_uri_dashes === true) {
             foreach (range(0, 2) as $v) {
-                isset($segments[$v]) && $segments[$v] = str_replace('-', '_', $segments[$v]);
+                if (isset($segments[$v])) {
+                    $segments[$v] = str_replace('-', '_', $segments[$v]);
+                }
             }
         }
 
@@ -122,6 +124,7 @@ class MX_Router extends CI_Router
 
                                 return array_slice($segments, 2);
                             }
+
                             $this->located = -1;
                         }
                     } else {
@@ -130,6 +133,7 @@ class MX_Router extends CI_Router
 
                             return array_slice($segments, 1);
                         }
+
                         $this->located = -1;
                     }
                 }
@@ -144,7 +148,7 @@ class MX_Router extends CI_Router
         }
 
         if (!empty($this->directory)) {
-            return;
+            return null;
         }
 
         // application sub-directory controller exists?
@@ -156,12 +160,9 @@ class MX_Router extends CI_Router
             }
 
             // application sub-sub-directory controller exists?
-            if ($controller) {
-                if (is_file(APPPATH . 'controllers/' . $module . '/' . $directory . '/' . ucfirst($controller) . $ext)) {
-                    $this->directory = $module . '/' . $directory . '/';
-
-                    return array_slice($segments, 2);
-                }
+            if ($controller && is_file(APPPATH . 'controllers/' . $module . '/' . $directory . '/' . ucfirst($controller) . $ext)) {
+                $this->directory = $module . '/' . $directory . '/';
+                return array_slice($segments, 2);
             }
         }
 
@@ -178,6 +179,7 @@ class MX_Router extends CI_Router
         }
 
         $this->located = -1;
+        return null;
     }
 
     protected function _set_404override_controller()
@@ -240,6 +242,7 @@ class MX_Router extends CI_Router
         if ($suffix && strpos($class, $suffix) === false) {
             $class .= $suffix;
         }
+
         parent::set_class($class);
     }
 }

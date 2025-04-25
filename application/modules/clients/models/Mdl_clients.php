@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -26,11 +26,7 @@ class Mdl_Clients extends Response_Model
 
     public function default_select(): void
     {
-        $this->db->select(
-            'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
-            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname',
-            false
-        );
+        $this->db->select('SQL_CALC_FOUND_ROWS ' . $this->table . '.*, CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname', false);
     }
 
     public function default_order_by(): void
@@ -163,6 +159,7 @@ class Mdl_Clients extends Response_Model
             if (preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)) {
                 return $matches[1] . $matches[2] . $matches[3] . $matches[4];
             }
+
             if (preg_match('/^\d{13}$/', $input)) {
                 return $input;
             }
@@ -186,7 +183,7 @@ class Mdl_Clients extends Response_Model
     {
         $db_array = parent::db_array();
 
-        if ( ! isset($db_array['client_active'])) {
+        if (! isset($db_array['client_active'])) {
             $db_array['client_active'] = 0;
         }
 
