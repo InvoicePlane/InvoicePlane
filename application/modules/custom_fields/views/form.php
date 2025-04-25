@@ -16,8 +16,7 @@ $custom_field_type = $this->mdl_custom_fields->form_value('custom_field_type');
         </div>
     </div>
 <?php
-if ($disabled)
-{
+if ($disabled) {
 ?>
     <input type="hidden" name="custom_field_table" value="<?php echo $custom_field_table; ?>">
     <input type="hidden" name="custom_field_type" value="<?php echo $custom_field_type; ?>">
@@ -29,6 +28,7 @@ if ($disabled)
         <div class="col-xs-12 col-md-6 col-md-offset-3">
 
             <?php $this->layout->load_view('layout/alerts'); ?>
+
             <div class="form-group">
                 <label for="custom_field_label"><?php _trans('label'); ?></label>
                 <input type="text" name="custom_field_label" id="custom_field_label" class="form-control"
@@ -39,8 +39,7 @@ if ($disabled)
                 <label for="custom_field_table"><?php _trans('table'); ?></label>
                 <select name="custom_field_table" id="custom_field_table" class="form-control simple-select"<?php echo $disabled ?: ' required' ; ?>>
 <?php
-foreach ($custom_field_tables as $table => $label)
-{
+foreach ($custom_field_tables as $table => $label) {
 ?>
                     <option value="<?php echo $table; ?>" <?php check_select($custom_field_table, $table); ?>><?php _trans($label); ?></option>
 <?php
@@ -59,8 +58,7 @@ foreach ($custom_field_tables as $table => $label)
                 <select name="custom_field_type" id="custom_field_type" class="form-control simple-select"<?php echo $disabled ?: ' required' ; ?>>
 <?php
 
-foreach ($custom_field_types as $type)
-{
+foreach ($custom_field_types as $type) {
     $alpha = str_replace("-", "_", strtolower($type));
 ?>
                         <option value="<?php echo $type; ?>" <?php check_select($custom_field_type, $type); ?>><?php _trans($alpha); ?></option>

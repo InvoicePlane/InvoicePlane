@@ -30,6 +30,7 @@ class Sumex
         'naturopathictherapist',
         'other'
     ];
+
     const PLACES = [
         'practice',
         'hospital',
@@ -37,6 +38,7 @@ class Sumex
         'association',
         'company'
     ];
+
     const CANTONS = [
         "AG",
         "AI",
@@ -70,18 +72,31 @@ class Sumex
         "F",
         "I"
     ];
+
     public $invoice;
+
     public $doc;
+
     public $root;
+
     public $_lang = "it";
+
     public $_mode = "production";
+
     public $_copy = "0";
+
     public $_storno = "0";
+
     public $_role = "physiotherapist";
+
     public $_place = "practice";
+
     public $_currency = "CHF";
+
     public $_paymentperiod = "P30D";
+
     public $_canton = "TI";
+
     public $_esrType = "9";
 
     public $_patient = [
@@ -97,7 +112,9 @@ class Sumex
     ];
 
     public $_casedate = "1970-01-01";
+
     public $_casenumber = "0";
+
     public $_insuredid = '1234567';
 
     public $_treatment = [
@@ -141,11 +158,11 @@ class Sumex
         if (!is_array(@$params['options'])) {
             $params['options'] = [];
         }
+
         $this->_options = array_merge($this->_options, $params['options']);
 
         $this->_storno = $this->_options['storno'];
         $this->_copy = $this->_options['copy'];
-
 
         $this->_patient['givenName'] = $this->invoice->client_name;
         $this->_patient['familyName'] = $this->invoice->client_surname;
@@ -169,7 +186,6 @@ class Sumex
         $this->_casenumber = $this->invoice->sumex_casenumber;
         $this->_insuredid = $this->invoice->client_insurednumber;
 
-
         $treatments = [
             'disease',
             'accident',
@@ -178,7 +194,6 @@ class Sumex
             'birthdefect',
             'unknown'
         ];
-
 
         $this->_treatment = [
             'start' => $this->invoice->sumex_treatmentstart,
@@ -211,7 +226,6 @@ class Sumex
         curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
         $out = curl_exec($ch);
         curl_close($ch);
-
 
         return $out;
     }
@@ -310,6 +324,7 @@ class Sumex
         if ($this->_treatment['observations'] != "") {
             $node->appendChild($remark);
         }
+
         $node->appendChild($balance);
         $node->appendChild($esr);
         $node->appendChild($tiersGarant);
@@ -341,7 +356,7 @@ class Sumex
         $referenceNumber .= sprintf("%010d", $this->invoice->invoice_id);
         $referenceNumber .= sprintf("%09d", date("Ymd", strtotime($this->invoice->invoice_date_modified)));
         $refCsum = invoice_recMod10($referenceNumber);
-        $referenceNumber = $referenceNumber . $refCsum;
+        $referenceNumber .= $refCsum;
 
         if (!preg_match("/\d{27}/", $referenceNumber)) {
             throw new Error("Invalid reference number!");
@@ -384,7 +399,6 @@ class Sumex
         // Assume always postal: This should be have an option in the future
         $node->setAttribute('payment_to', 'postal_account');
         $node->setAttribute('post_account', $subNumb);
-
 
         // IBAN not required
         //$node->setAttribute('iban', 'CH1111111111111111111');
@@ -555,12 +569,7 @@ class Sumex
 
         $postal = $this->generatePostal($street, $zip, $city);
 
-        if ($phone != null) {
-            $telecom = $this->generateTelecom($phone);
-        } else {
-            $telecom = null;
-        }
-
+        $telecom = $phone != null ? $this->generateTelecom($phone) : null;
 
         $person->appendChild($familyName);
         $person->appendChild($givenName);
@@ -577,6 +586,7 @@ class Sumex
         $telecom = $this->doc->createElement('invoice:telecom');
         $phone = $this->doc->createElement('invoice:phone');
         $phone->nodeValue = $phoneNr;
+
         $telecom->appendChild($phone);
         return $telecom;
     }

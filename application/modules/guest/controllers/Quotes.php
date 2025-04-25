@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -63,6 +62,7 @@ class Quotes extends Guest_Controller
 
         $this->mdl_quotes->where_in('ip_quotes.client_id', $this->user_clients);
         $this->mdl_quotes->paginate(site_url('guest/quotes/status/' . $status), $page);
+
         $quotes = $this->mdl_quotes->result();
 
         $this->layout->set(
@@ -84,8 +84,7 @@ class Quotes extends Guest_Controller
 
         $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
 
-        if (! $quote)
-        {
+        if (! $quote) {
             show_404();
         }
 
@@ -117,7 +116,6 @@ class Quotes extends Guest_Controller
     /**
      * @param $quote_id
      * @param bool $stream
-     * @param null $quote_template
      */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
@@ -127,8 +125,7 @@ class Quotes extends Guest_Controller
 
         $quote = $this->mdl_quotes->guest_visible()->where('ip_quotes.quote_id', $quote_id)->where_in('ip_quotes.client_id', $this->user_clients)->get()->row();
 
-        if (! $quote)
-        {
+        if (! $quote) {
             show_404();
         }
 
@@ -162,5 +159,4 @@ class Quotes extends Guest_Controller
 
         redirect_to('guest/quotes');
     }
-
 }

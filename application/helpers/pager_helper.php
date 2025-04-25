@@ -44,7 +44,5 @@ function pager($base_url, $model)
         $pager .= '<a class="btn btn-default disabled" href="#" title="' . trans('last') . '"><i class="fa fa-fast-forward no-margin"></i></a>';
     }
 
-    $pager .= '</div>';
-
-    return $pager;
+    return $pager . '</div>';
 }

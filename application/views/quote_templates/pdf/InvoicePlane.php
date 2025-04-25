@@ -22,7 +22,8 @@ $colspan = $show_item_discounts ? 5 : 4;
         <div>
             <b><?php _htmlsc($quote->client_name); ?></b>
         </div>
-        <?php if ($quote->client_vat_id) {
+<?php
+        if ($quote->client_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($quote->client_vat_id) . '</div>';
         }
         if ($quote->client_tax_code) {
@@ -51,16 +52,18 @@ $colspan = $show_item_discounts ? 5 : 4;
             echo '<div>' . get_country_name(trans('cldr'), htmlsc($quote->client_country)) . '</div>';
         }
 
-        echo '<br/>';
+        echo '<br>';
 
         if ($quote->client_phone) {
             echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($quote->client_phone) . '</div>';
-        } ?>
+        }
+?>
 
     </div>
     <div id="company">
         <div><b><?php _htmlsc($quote->user_name); ?></b></div>
-        <?php if ($quote->user_vat_id) {
+<?php
+        if ($quote->user_vat_id) {
             echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($quote->user_vat_id) . '</div>';
         }
         if ($quote->user_tax_code) {
@@ -97,7 +100,7 @@ $colspan = $show_item_discounts ? 5 : 4;
         if ($quote->user_fax) {
             echo '<div>' . trans('fax_abbr') . ': ' . htmlsc($quote->user_fax) . '</div>';
         }
-        ?>
+?>
     </div>
 
 </header>
@@ -130,45 +133,59 @@ $colspan = $show_item_discounts ? 5 : 4;
             <th class="item-desc"><?php _trans('description'); ?></th>
             <th class="item-amount text-right"><?php _trans('qty'); ?></th>
             <th class="item-price text-right"><?php _trans('price'); ?></th>
-            <?php if ($show_item_discounts) : ?>
-                <th class="item-discount text-right"><?php _trans('discount'); ?></th>
-            <?php endif; ?>
+<?php
+if ($show_item_discounts) {
+?>
+            <th class="item-discount text-right"><?php _trans('discount'); ?></th>
+<?php
+}
+?>
             <th class="item-total text-right"><?php _trans('total'); ?></th>
         </tr>
         </thead>
         <tbody>
 
-        <?php
-        foreach ($items as $item) { ?>
+<?php
+foreach ($items as $item) {
+?>
             <tr>
                 <td><?php _htmlsc($item->item_name); ?></td>
                 <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                 <td class="text-right">
                     <?php echo format_quantity($item->item_quantity); ?>
-                    <?php if ($item->item_product_unit) : ?>
-                        <br>
-                        <small><?php _htmlsc($item->item_product_unit); ?></small>
-                    <?php endif; ?>
+<?php
+    if ($item->item_product_unit) {
+?>
+                    <br>
+                    <small><?php _htmlsc($item->item_product_unit); ?></small>
+<?php
+    }
+?>
                 </td>
                 <td class="text-right">
                     <?php echo format_currency($item->item_price); ?>
                 </td>
-                <?php if ($show_item_discounts) : ?>
-                    <td class="text-right">
-                        <?php echo format_currency($item->item_discount); ?>
-                    </td>
-                <?php endif; ?>
+<?php
+    if ($show_item_discounts) {
+?>
+                <td class="text-right">
+                    <?php echo format_currency($item->item_discount); ?>
+                </td>
+<?php
+    }
+?>
                 <td class="text-right">
                     <?php echo format_currency($item->item_total); ?>
                 </td>
             </tr>
-        <?php } ?>
+<?php
+}
+?>
 
         </tbody>
 <?php
 // Fix for mpdf: table head of items printed on 2nd page
-if($add_table_and_head_for_sums)
-{
+if ($add_table_and_head_for_sums) {
     $colspan .= '" style="width:543px'; // little hackish
 ?>
     </table>
@@ -188,10 +205,9 @@ if($add_table_and_head_for_sums)
         <tbody class="invoice-sums">
 
 <?php
-        if ( ! $legacy_calculation)
-        {
-            discount_global_print_in_pdf($quote, $show_item_discounts, 'quote'); // in helpers/pdf_helper
-        }
+if (! $legacy_calculation) {
+    discount_global_print_in_pdf($quote, $show_item_discounts, 'quote'); // in helpers/pdf_helper
+}
 ?>
 
         <tr>
@@ -201,33 +217,40 @@ if($add_table_and_head_for_sums)
             <td class="text-right"><?php echo format_currency($quote->quote_item_subtotal); ?></td>
         </tr>
 
-        <?php if ($quote->quote_item_tax_total > 0) { ?>
-            <tr>
-                <td class="text-right" colspan="<?php echo $colspan ?>">
-                    <?php _trans('item_tax'); ?>
-                </td>
-                <td class="text-right">
-                    <?php echo format_currency($quote->quote_item_tax_total); ?>
-                </td>
-            </tr>
-        <?php } ?>
-
-        <?php foreach ($quote_tax_rates as $quote_tax_rate) : ?>
-            <tr>
-                <td class="text-right" colspan="<?php echo $colspan ?>">
-                    <?php echo $quote_tax_rate->quote_tax_rate_name . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%)'; ?>
-                </td>
-                <td class="text-right">
-                    <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
-                </td>
-            </tr>
-        <?php endforeach ?>
+<?php
+if ($quote->quote_item_tax_total > 0) {
+?>
+        <tr>
+            <td class="text-right" colspan="<?php echo $colspan ?>">
+                <?php _trans('item_tax'); ?>
+            </td>
+            <td class="text-right">
+                <?php echo format_currency($quote->quote_item_tax_total); ?>
+            </td>
+        </tr>
+<?php
+}
+?>
 
 <?php
-        if ($legacy_calculation)
-        {
-            discount_global_print_in_pdf($quote, $show_item_discounts, 'quote'); // in helpers/pdf_helper
-        }
+foreach ($quote_tax_rates as $quote_tax_rate) {
+?>
+        <tr>
+            <td class="text-right" colspan="<?php echo $colspan ?>">
+                <?php echo $quote_tax_rate->quote_tax_rate_name . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%)'; ?>
+            </td>
+            <td class="text-right">
+                <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
+            </td>
+        </tr>
+<?php
+}
+?>
+
+<?php
+if ($legacy_calculation) {
+    discount_global_print_in_pdf($quote, $show_item_discounts, 'quote'); // in helpers/pdf_helper
+}
 ?>
 
         <tr>
@@ -243,12 +266,16 @@ if($add_table_and_head_for_sums)
 </main>
 
 <div class="invoice-terms">
-    <?php if ($quote->notes) : ?>
-        <div class="notes">
-            <b><?php _trans('notes'); ?></b><br/>
-            <?php echo nl2br(htmlsc($quote->notes)); ?>
-        </div>
-    <?php endif; ?>
+<?php
+if ($quote->notes) {
+?>
+    <div class="notes">
+        <b><?php _trans('notes'); ?></b><br/>
+        <?php echo nl2br(htmlsc($quote->notes)); ?>
+    </div>
+<?php
+}
+?>
 </div>
 
 <htmlpagefooter name="footer">

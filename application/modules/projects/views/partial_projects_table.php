@@ -11,8 +11,7 @@
 
             <tbody>
 <?php
-foreach ($projects as $project)
-{
+foreach ($projects as $project) {
 ?>
                 <tr>
                     <td><?php echo anchor('projects/view/' . $project->project_id, htmlsc($project->project_name)); ?></td>

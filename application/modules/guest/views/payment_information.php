@@ -63,11 +63,11 @@
         <div class="col-xs-12 col-md-8 col-md-offset-2">
 
             <br>
-            <?php
+<?php
             $logo = invoice_logo();
-if ($logo) {
-    echo $logo . '<br><br>';
-}
+            if ($logo) {
+                echo $logo . '<br><br>';
+            }
 ?>
 
             <div class="form-group">
@@ -112,8 +112,7 @@ if ($logo) {
                                             <td class="text-right"><?php echo format_currency($invoice->invoice_balance); ?></td>
                                         </tr>
 <?php
-if ($payment_method)
-{
+if ($payment_method) {
 ?>
                                         <tr>
                                             <td><?php echo trans('payment_method') . ': '; ?></td>
@@ -127,8 +126,7 @@ if ($payment_method)
                             </div>
                         </div>
 <?php
-if (! empty($invoice->invoice_terms))
-{
+if (! empty($invoice->invoice_terms)) {
 ?>
                         <div class="col-xs-12 text-muted">
                             <br>
@@ -143,18 +141,16 @@ if (! empty($invoice->invoice_terms))
                 </div>
             </div>
 <?php
-if ($payment_provider == null && ! $disable_form)
-{
+if ($payment_provider == null && ! $disable_form) {
 ?>
                 <div>
                     <p><?php echo trans('select_payment_method'); ?></p>
                 </div>
                 <ul class="list-group">
 <?php
-    foreach ($gateways as $gateway)
-    {
+    foreach ($gateways as $gateway) {
 ?>
-                        <a class="list-group-item list-group-item-action" href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key . '/' . $gateway); ?>"><?php echo ucwords(str_replace('_', ' ', $gateway)); ?></a>
+                    <a class="list-group-item list-group-item-action" href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key . '/' . $gateway); ?>"><?php echo ucwords(str_replace('_', ' ', $gateway)); ?></a>
 <?php
     }
 ?>

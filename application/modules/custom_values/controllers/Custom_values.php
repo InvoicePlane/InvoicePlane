@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -55,9 +54,6 @@ class Custom_Values extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function field($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -91,9 +87,6 @@ class Custom_Values extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function edit($id = null)
     {
         $value = $this->mdl_custom_values->get_by_id($id)->row();
@@ -107,27 +100,25 @@ class Custom_Values extends Admin_Controller
             $this->mdl_custom_values->save($id);
             redirect('custom_values/field/' . $fid);
         }
+
         $this->load->model('custom_fields/mdl_custom_fields');
         $positions = $this->mdl_custom_fields->get_positions(true);
         $position = $positions[ $value->custom_field_table ][ $value->custom_field_location ];
         unset($positions);
 
         $this->layout->set(
-           [
+            [
               'id'                 => $id,
               'fid'                => $fid,
               'value'              => $value,
               'position'           => $position,
               'custom_field_usage' => $this->mdl_custom_values->used($id),
-           ]
+            ]
         );
         $this->layout->buffer('content', 'custom_values/edit');
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function create($id = null)
     {
         if (! $id) {
@@ -174,13 +165,11 @@ class Custom_Values extends Admin_Controller
      */
     public function delete($id)
     {
-        if ( ! $this->mdl_custom_values->delete($id))
-        {
-            $this->session->set_flashdata('alert_info', trans('id') . " \"{$id}\" " . trans('custom_values_used_not_deletable'));
+        if (! $this->mdl_custom_values->delete($id)) {
+            $this->session->set_flashdata('alert_info', trans('id') . sprintf(' "%s" ', $id) . trans('custom_values_used_not_deletable'));
         }
 
         $fid = $this->input->post('custom_field_id');
         redirect('custom_values' . ($fid ? '/field/' . $fid : ''));
     }
-
 }

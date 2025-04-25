@@ -60,7 +60,7 @@
                         <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
                     </span>
                     <select name="client_id" id="client_id" class="client-id-select form-control" autofocus="autofocus">
-<?php if ( ! empty($client)) : ?>
+<?php if (! empty($client)) : ?>
                         <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client, false)); ?></option>
 <?php endif; ?>
                     </select>

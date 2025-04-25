@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -45,8 +44,7 @@ class Stripe extends Base_Controller
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
         // Check if the invoice is payable
-        if ($invoice->invoice_balance <= 0)
-        {
+        if ($invoice->invoice_balance <= 0) {
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
 
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
@@ -121,11 +119,13 @@ class Stripe extends Base_Controller
             ]);
 
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
-        } catch (Error|Exception|ErrorException $e) {
+        } catch (Error | Exception | ErrorException $e) {
             //TODO: log error
 
-            $this->session->set_flashdata('alert_error',
-                trans('online_payment_payment_failed') . '<br>' . $e->getMessage());
+            $this->session->set_flashdata(
+                'alert_error',
+                trans('online_payment_payment_failed') . '<br>' . $e->getMessage()
+            );
             $this->session->keep_flashdata('alert_error');
 
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));

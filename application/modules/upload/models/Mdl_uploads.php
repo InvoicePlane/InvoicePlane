@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -18,8 +17,11 @@ if (! defined('BASEPATH'))
 class Mdl_Uploads extends Response_Model
 {
     public $table = 'ip_uploads';
+
     public $primary_key = 'ip_uploads.upload_id';
+
     public $date_modified_field = 'uploaded_date';
+
     public $content_types =
     [
         'avif' => 'image/avif',
@@ -58,14 +60,11 @@ class Mdl_Uploads extends Response_Model
     }
 
     /**
-     * @param null $db_array
      * @return int|null
      */
     public function create($db_array = null)
     {
-        $upload_id = parent::save(null, $db_array);
-
-        return $upload_id;
+        return parent::save(null, $db_array);
     }
 
     /**
@@ -80,10 +79,8 @@ class Mdl_Uploads extends Response_Model
 
         $names = [];
 
-        if ($query->num_rows() > 0)
-        {
-            foreach ($query->result() as $row)
-            {
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
                 $names[] =
                 [
                     'path'     => UPLOADS_CFILES_FOLDER . $row->file_name_new,
@@ -107,10 +104,8 @@ class Mdl_Uploads extends Response_Model
 
         $names = [];
 
-        if ($query->num_rows() > 0)
-        {
-            foreach ($query->result() as $row)
-            {
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
                 $names[] =
                 [
                     'path'     => UPLOADS_CFILES_FOLDER . $row->file_name_new,
@@ -129,17 +124,15 @@ class Mdl_Uploads extends Response_Model
     public function get_files($url_key)
     {
         $result = [];
-        if ($url_key && $rows = $this->where('url_key', $url_key)->get()->result())
-        {
-            foreach ($rows as $row)
-            {
+        if ($url_key && $rows = $this->where('url_key', $url_key)->get()->result()) {
+            foreach ($rows as $row) {
                 $size = @filesize(UPLOADS_CFILES_FOLDER . $row->file_name_new);
-                if ($size === false)
-                {
+                if ($size === false) {
                     // Probably Deleted, remove it
                     $this->delete_file($url_key, $row->file_name_original);
                     continue;
                 }
+
                 $result[] =
                 [
                     'name' => $row->file_name_original,
@@ -147,6 +140,7 @@ class Mdl_Uploads extends Response_Model
                 ];
             }
         }
+
         return $result;
     }
 

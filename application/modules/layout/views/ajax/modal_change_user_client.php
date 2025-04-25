@@ -5,7 +5,9 @@ $type = empty($quote_id) ? 'invoice' : 'quote'; // Basic test
 $who_id  = $who  . '_id'; // Add *_id user/client
 $type_id = $type . '_id'; // Add *_id quote/invoice
 $type_id = $this->input->post($type_id) ?: false; // Type exist? get id
-if ( ! $type_id) return; // No quote/invoice id do nothing
+if (! $type_id) {
+    return; // No quote/invoice id do nothing
+}
 $permissive = get_setting('enable_permissive_search_' . $who . 's');
 ?>
 <script>
@@ -26,7 +28,7 @@ $permissive = get_setting('enable_permissive_search_' . $who . 's');
                     <?php echo $type; ?>_id: $('#<?php echo $type; ?>_id').val()
                 },
                 function (data) {
-                    <?php echo (IP_DEBUG ? 'console.log("' . $who . ': ' . $type .'", data);' : '') . PHP_EOL; ?>
+                    <?php echo (IP_DEBUG ? 'console.log("' . $who . ': ' . $type . '", data);' : '') . PHP_EOL; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         // The validation was successful and quote/invoice was Updated
@@ -64,13 +66,12 @@ $permissive = get_setting('enable_permissive_search_' . $who . 's');
 <?php
 $who_id = isset($$who->$who_id) ? $$who->$who_id : $this->input->post($who_id);
 
-if ($who_id)
-{
+if ($who_id) {
     $format = 'format_' . $who; // func name
     $name = $who . '_name'; // user or client property
     $name = empty($$who->$name) ? $format($who_id) : $user->$name
 ?>
-                            <option value="<?php echo $who_id; ?>"><?php _htmlsc($name); ?></option>
+                        <option value="<?php echo $who_id; ?>"><?php _htmlsc($name); ?></option>
 <?php
 }
 ?>

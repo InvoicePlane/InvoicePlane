@@ -74,7 +74,6 @@
 
                     <?php foreach ($fields as $key => $setting) { ?>
                         <?php if ($setting['type'] == 'checkbox') { ?>
-
                             <div class="checkbox">
                                 <label>
                                     <input type="hidden" name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
@@ -87,7 +86,6 @@
                             </div>
 
                         <?php } else { ?>
-
                             <div class="form-group">
                                 <label for="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]">
                                     <?php _trans('online_payment_' . $key, '', $setting['label']); ?>
@@ -96,7 +94,7 @@
                                     name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     id="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     <?php if ($setting['type'] == 'password') { ?>
-                                        value="<?php echo $this->crypt->decode(get_setting('gateway_' . $d . '_'.$key)); ?>"
+                                        value="<?php echo $this->crypt->decode(get_setting('gateway_' . $d . '_' . $key)); ?>"
                                     <?php } else { ?>
                                         value="<?php echo get_setting('gateway_' . $d . '_' . $key); ?>"
                                     <?php } ?>

@@ -15,8 +15,7 @@
 
                 <tbody>
 <?php
-foreach ($payment_logs as $log)
-{
+foreach ($payment_logs as $log) {
 ?>
                     <tr>
                         <td><?php echo $log->merchant_response_id; ?></td>

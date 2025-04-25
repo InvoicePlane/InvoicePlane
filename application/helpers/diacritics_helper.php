@@ -43,13 +43,15 @@ function diacritics_seems_utf8($str)
         else {
             return false;
         }
+
         # Does not match any model
         for ($j = 0; $j < $n; $j++) { # n bytes matching 10bbbbbb follow ?
-            if ((++$i == $length) || ((ord($str[$i]) & 0xC0) != 0x80)) {
+            if ((++$i === $length) || ((ord($str[$i]) & 0xC0) != 0x80)) {
                 return false;
             }
         }
     }
+
     return true;
 }
 
@@ -68,7 +70,7 @@ function diacritics_remove_accents($string)
     }
 
     if (diacritics_seems_utf8($string)) {
-        $chars = array(
+        $chars = [
             // Decompositions for Latin-1 Supplement
             chr(195) . chr(128) => 'A', chr(195) . chr(129) => 'A',
             chr(195) . chr(130) => 'A', chr(195) . chr(131) => 'A',
@@ -94,10 +96,9 @@ function diacritics_remove_accents($string)
             chr(195) . chr(177) => 'n', chr(195) . chr(178) => 'o',
             chr(195) . chr(179) => 'o', chr(195) . chr(180) => 'o',
             chr(195) . chr(181) => 'o', chr(195) . chr(182) => 'o',
-            chr(195) . chr(182) => 'o', chr(195) . chr(185) => 'u',
-            chr(195) . chr(186) => 'u', chr(195) . chr(187) => 'u',
-            chr(195) . chr(188) => 'u', chr(195) . chr(189) => 'y',
-            chr(195) . chr(191) => 'y',
+            chr(195) . chr(185) => 'u', chr(195) . chr(186) => 'u',
+            chr(195) . chr(187) => 'u', chr(195) . chr(188) => 'u',
+            chr(195) . chr(189) => 'y', chr(195) . chr(191) => 'y',
             // Decompositions for Latin Extended-A
             chr(196) . chr(128) => 'A', chr(196) . chr(129) => 'a',
             chr(196) . chr(130) => 'A', chr(196) . chr(131) => 'a',
@@ -166,7 +167,7 @@ function diacritics_remove_accents($string)
             // Euro Sign
             chr(226) . chr(130) . chr(172) => 'E',
             // GBP (Pound) Sign
-            chr(194) . chr(163) => '');
+            chr(194) . chr(163) => ''];
 
         $string = strtr($string, $chars);
     } else {
@@ -185,8 +186,8 @@ function diacritics_remove_accents($string)
         $chars['out'] = 'EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy';
 
         $string = strtr($string, $chars['in'], $chars['out']);
-        $double_chars['in'] = array(chr(140), chr(156), chr(198), chr(208), chr(222), chr(223), chr(230), chr(240), chr(254));
-        $double_chars['out'] = array('OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th');
+        $double_chars['in'] = [chr(140), chr(156), chr(198), chr(208), chr(222), chr(223), chr(230), chr(240), chr(254)];
+        $double_chars['out'] = ['OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th'];
         $string = str_replace($double_chars['in'], $double_chars['out'], $string);
     }
 
@@ -199,7 +200,7 @@ function diacritics_remove_accents($string)
  */
 function diacritics_remove_diacritics($text)
 {
-    $trans = array(
+    $trans = [
         'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Ç' => 'C', 'È' => 'E',
         'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ñ' => 'N',
         'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U',
@@ -304,6 +305,6 @@ function diacritics_remove_diacritics($text)
         'Ｗ' => 'W', 'Ｘ' => 'X', 'Ｙ' => 'Y', 'Ｚ' => 'Z', 'ａ' => 'a', 'ｂ' => 'b', 'ｃ' => 'c', 'ｄ' => 'd',
         'ｅ' => 'e', 'ｆ' => 'f', 'ｇ' => 'g', 'ｈ' => 'h', 'ｉ' => 'i', 'ｊ' => 'j', 'ｋ' => 'k', 'ｌ' => 'l',
         'ｍ' => 'm', 'ｎ' => 'n', 'ｏ' => 'o', 'ｐ' => 'p', 'ｑ' => 'q', 'ｒ' => 'r', 'ｓ' => 's', 'ｔ' => 't',
-        'ｕ' => 'u', 'ｖ' => 'v', 'ｗ' => 'w', 'ｘ' => 'x', 'ｙ' => 'y', 'ｚ' => 'z');
+        'ｕ' => 'u', 'ｖ' => 'v', 'ｗ' => 'w', 'ｘ' => 'x', 'ｙ' => 'y', 'ｚ' => 'z'];
     return strtr($text, $trans);
 }

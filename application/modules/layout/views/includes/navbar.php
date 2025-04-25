@@ -109,7 +109,7 @@
 
             </ul>
 
-            <?php if (isset($filter_display) and $filter_display == true) { ?>
+            <?php if (isset($filter_display) && $filter_display == true) { ?>
                 <?php $this->layout->load_view('filter/jquery_filter'); ?>
                 <form class="navbar-form navbar-left" role="search" onsubmit="return false;">
                     <div class="form-group">
@@ -157,18 +157,18 @@
                         $this->session->userdata('user_id')); ?>"
                        class="tip icon" data-placement="bottom"
                        title="<?php
-                       _htmlsc($this->session->userdata('user_name'));
-                       if ($this->session->userdata('user_company')) {
-                           print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
-                       }
-                       ?>">
+                        _htmlsc($this->session->userdata('user_name'));
+                        if ($this->session->userdata('user_company')) {
+                            print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
+                        }
+                        ?>">
                         <i class="fa fa-user"></i>
                         <span class="visible-xs">&nbsp;<?php
                             _htmlsc($this->session->userdata('user_name'));
-                            if ($this->session->userdata('user_company')) {
-                                print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
-                            }
-                            ?></span>
+                        if ($this->session->userdata('user_company')) {
+                            print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
+                        }
+                        ?></span>
                     </a>
                 </li>
                 <li>

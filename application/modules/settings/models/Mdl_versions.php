@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Versions extends Response_Model
 {
-
     public $table = 'ip_versions';
 
     public $primary_key = 'ip_versions.version_id';

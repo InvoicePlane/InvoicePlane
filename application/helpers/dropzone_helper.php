@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -32,14 +31,13 @@ function _dropzone_html($read_only = true)
             <i class="fa fa-plus"></i> <?php _trans('add_files'); ?>
         </button>
 <?php
-if ( ! $read_only)
-{
+    if (! $read_only) {
 ?>
         <button type="button" class="btn btn-sm btn-danger removeAllFiles-button pull-right hidden">
             <i class="fa fa-trash-o"></i> <?php _trans('delete_attachments'); ?>
         </button>
 <?php
-}
+    }
 ?>
         <!-- dropzone -->
         <div class="row">
@@ -81,15 +79,14 @@ if ( ! $read_only)
                                     <span><?php _trans('download'); ?></span>
                                 </button>
 <?php
-if ( ! $read_only)
-{
+    if (! $read_only) {
 ?>
                                 <button data-dz-remove class="btn btn-sm btn-danger delete">
                                     <i class="fa fa-trash-o"></i>
                                     <span><?php _trans('delete'); ?></span>
                                 </button>
 <?php
-}
+    }
 ?>
                             </div>
                         </div>
@@ -125,15 +122,12 @@ function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acce
 
     // Allow extentions system
     $content_types = [];
-    if ($acceptedExts === null)
-    {
+    if ($acceptedExts === null) {
         // Default
         $CI = & get_instance();
         $CI->load->model('upload/mdl_uploads');
         $content_types = array_keys($CI->mdl_uploads->content_types);
-    }
-    elseif (is_array($acceptedExts))
-    {
+    } elseif (is_array($acceptedExts)) {
         // User Overide
         $content_types = $acceptedExts;
     }
@@ -265,8 +259,7 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
     });
 
 <?php
-    if ($acceptedExts !== false)
-    {
+    if ($acceptedExts !== false) {
 ?>
     // File accepted, start upload
     myDropzone.on('sending', function (file, xhr, formData) {

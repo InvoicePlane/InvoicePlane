@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return [
     'AF' => 'Afganistanas',
     'IE' => 'Airija',
     'AX' => 'Alandų salos',
@@ -247,4 +249,4 @@
     'SH' => 'Šventoji Elena',
     'LC' => 'Šventoji Liucija',
     'CV' => 'Žaliasis Kyšulys',
-);
+];

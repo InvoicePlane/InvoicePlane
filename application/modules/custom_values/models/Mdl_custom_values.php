@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -18,6 +17,7 @@ if (! defined('BASEPATH'))
 class Mdl_Custom_Values extends MY_Model
 {
     public $table = 'ip_custom_values';
+
     public $primary_key = 'ip_custom_values.custom_values_id';
 
     /**
@@ -56,8 +56,6 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function save_custom($fid)
     {
-        $field_id = null;
-
         $this->load->module('custom_fields');
         $field_custom = $this->mdl_custom_fields->get_by_id($fid);
 
@@ -106,26 +104,26 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function used($id = null, $get = true)
     {
-        if( ! $id) return;
+        if (! $id) {
+            return null;
+        }
 
         $this->load->model('custom_fields/mdl_custom_fields');
         $cv = $this->get_by_id($id)->row();
         $cf = $this->mdl_custom_fields->get_by_id($cv->custom_values_field);
         unset($cv);
-        $base = strtr($cf->custom_field_table,['ip_' => '']) . '_fieldvalue';
+        $base = strtr($cf->custom_field_table, ['ip_' => '']) . '_fieldvalue';
 
         // Get values [SINGLE|MULTIPLE]-CHOICE
         $this->db->from($cf->custom_field_table);
-        if('SINGLE-CHOICE' == $cf->custom_field_type)
-        {
+        if ('SINGLE-CHOICE' == $cf->custom_field_type) {
             $this->db->where($base, $id);
-        }
-        else
-        {
+        } else {
             $this->db->or_like($base, $id . ',')
                      ->or_like($base, ',' . $id)
                      ->or_where($base, $id);
         }
+
         return $get ? $this->db->get()->result() : $this->db;
     }
 
@@ -135,11 +133,11 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function delete($id)
     {
-        if ( ! $this->used($id))
-        {
+        if (! $this->used($id)) {
             parent::delete($id);
             return true;
         }
+
         return false;
     }
 
@@ -184,10 +182,10 @@ class Mdl_Custom_Values extends MY_Model
      */
     public function get_by_ids($ids)
     {
-        if (empty($ids))
-        {
+        if (empty($ids)) {
             return null;
         }
+
         $ids = is_array($ids) ? $ids : explode(',', $ids);
         return $this->where_in('custom_values_id', $ids)->get();
     }

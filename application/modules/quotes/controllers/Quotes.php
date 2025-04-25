@@ -121,21 +121,16 @@ class Quotes extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result();
         $custom_values = [];
-        foreach ($custom_fields as $custom_field)
-        {
-            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
-            {
+        foreach ($custom_fields as $custom_field) {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
 
-        foreach ($custom_fields as $cfield)
-        {
-            foreach ($fields as $fvalue)
-            {
-                if ($fvalue->quote_custom_fieldid == $cfield->custom_field_id)
-                {
+        foreach ($custom_fields as $cfield) {
+            foreach ($fields as $fvalue) {
+                if ($fvalue->quote_custom_fieldid == $cfield->custom_field_id) {
                     // TODO: Hackish, may need a better optimization
                     $this->mdl_quotes->set_form_value(
                         'custom[' . $cfield->custom_field_id . ']',
@@ -156,7 +151,6 @@ class Quotes extends Admin_Controller
             // Legacy calculation false: helper to Alert if not standard taxes (number_helper) - since 1.6.3
             $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
         }
-
 
         // Activate 'Change_user' if admin users > 1  (get the sum of user type = 1 & active)
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
@@ -210,7 +204,6 @@ class Quotes extends Admin_Controller
     /**
      * @param $quote_id
      * @param bool $stream
-     * @param null $quote_template
      */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
@@ -254,5 +247,4 @@ class Quotes extends Admin_Controller
             $this->mdl_quote_amounts->calculate($quote_id->quote_id, $global_discount);
         }
     }
-
 }

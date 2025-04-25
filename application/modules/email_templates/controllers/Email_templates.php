@@ -39,9 +39,6 @@ class Email_Templates extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -51,7 +48,7 @@ class Email_Templates extends Admin_Controller
         $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         if ($this->input->post('is_update') == 0 && $this->input->post('email_template_title') != '') {
-            $check = $this->db->get_where('ip_email_templates', array('email_template_title' => $this->input->post('email_template_title')))->result();
+            $check = $this->db->get_where('ip_email_templates', ['email_template_title' => $this->input->post('email_template_title')])->result();
             if (!empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('email_template_already_exists'));
                 redirect('email_templates/form');
@@ -63,10 +60,11 @@ class Email_Templates extends Admin_Controller
             redirect('email_templates');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
+        if ($id && !$this->input->post('btn_submit')) {
             if (!$this->mdl_email_templates->prep_form($id)) {
                 show_404();
             }
+
             $this->mdl_email_templates->set_form_value('is_update', true);
         }
 

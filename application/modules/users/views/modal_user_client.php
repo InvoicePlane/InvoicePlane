@@ -37,7 +37,7 @@
                 <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
                     <?php
                     foreach ($clients as $client) {
-                        echo "<option value=\"" . $client->client_id . "\" ";
+                        echo '<option value="' . $client->client_id . '" ';
                         echo ">" . htmlsc(format_client($client)) . "</option>";
                     }
                     ?>

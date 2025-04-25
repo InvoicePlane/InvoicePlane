@@ -1,10 +1,8 @@
 <?php
 $global_discount = $quote->quote_discount_percent > 0 ? format_amount($quote->quote_discount_percent) . '%' : format_currency($quote->quote_discount_amount);
-if ($quote_tax_rates)
-{
+if ($quote_tax_rates) {
     $global_taxes = [];
-    foreach ($quote_tax_rates as $quote_tax_rate)
-    {
+    foreach ($quote_tax_rates as $quote_tax_rate) {
         $global_taxes[] = $quote_tax_rate->quote_tax_rate_name . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%): '
                           . format_currency($quote_tax_rate->quote_tax_rate_amount);
     }
@@ -17,8 +15,7 @@ if ($quote_tax_rates)
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
 <?php
-if (in_array($quote->quote_status_id, [2, 3]))
-{
+if (in_array($quote->quote_status_id, [2, 3])) {
 ?>
             <a href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>"
                class="btn btn-success">
@@ -31,18 +28,14 @@ if (in_array($quote->quote_status_id, [2, 3]))
                 <?php _trans('reject_this_quote'); ?>
             </a>
 <?php
-}
-elseif ($quote->quote_status_id == 4)
-{
+} elseif ($quote->quote_status_id == 4) {
 ?>
             <a href="#" class="btn btn-success disabled">
                 <i class="fa fa-check"></i>
                 <?php _trans('quote_approved'); ?>
             </a>
 <?php
-}
-elseif ($quote->quote_status_id == 5)
-{
+} elseif ($quote->quote_status_id == 5) {
 ?>
             <a href="#" class="btn btn-danger disabled">
                 <i class="fa fa-times-circle"></i>
@@ -77,14 +70,12 @@ elseif ($quote->quote_status_id == 5)
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
                     </div>
 <?php
-if ($quote->client_phone)
-{
+if ($quote->client_phone) {
 ?>
                     <br><span><strong><?php _trans('phone'); ?>:</strong> <?php _htmlsc($quote->client_phone); ?></span>
 <?php
 }
-if ($quote->client_email)
-{
+if ($quote->client_email) {
 ?>
                     <br><span><strong><?php _trans('email'); ?>:</strong> <?php _htmlsc($quote->client_email); ?></span>
 <?php
@@ -127,8 +118,7 @@ if ($quote->client_email)
                 </tr>
                 </thead>
 <?php
-foreach ($items as $i => $item)
-{
+foreach ($items as $i => $item) {
 ?>
                 <tbody class="item">
                 <tr>
@@ -158,8 +148,7 @@ foreach ($items as $i => $item)
 <?php
     // New Discount calculation - since v1.6.3
     $item_global_discount = $legacy_calculation ? 0 : $item->item_subtotal - ($item->item_total - $item->item_tax_total + $item->item_discount);
-    if ($item_global_discount)
-    {
+    if ($item_global_discount) {
 ?>
                             <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('global_discount'); ?>">
                                 + <?php echo format_currency($item_global_discount); ?>
@@ -175,7 +164,7 @@ foreach ($items as $i => $item)
                     <td>
                         <span class="pull-left"><?php _trans('tax'); ?></span>
                         <span class="pull-right amount"><?php
-                            echo $item->item_tax_rate_percent ? $item->item_tax_rate_name . ' (' . format_amount($item->item_tax_rate_percent) .'%): ' : '';
+                            echo $item->item_tax_rate_percent ? $item->item_tax_rate_name . ' (' . format_amount($item->item_tax_rate_percent) . '%): ' : '';
                             echo format_currency($item->item_tax_total);
                         ?></span>
                     </td>
@@ -234,4 +223,6 @@ foreach ($items as $i => $item)
 
     </div>
 </div>
-<?php _dropzone_script($quote->quote_url_key, $quote->client_id, 'guest/get', false); ?>
+
+<?php
+_dropzone_script($quote->quote_url_key, $quote->client_id, 'guest/get', false);

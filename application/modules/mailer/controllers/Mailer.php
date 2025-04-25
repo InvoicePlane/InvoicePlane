@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -18,7 +17,6 @@ if (! defined('BASEPATH'))
 class Mailer extends Admin_Controller
 {
     private $mailer_configured;
-    private $errors = [];
 
     /**
      * Mailer constructor.
@@ -31,8 +29,7 @@ class Mailer extends Admin_Controller
 
         $this->mailer_configured = mailer_configured();
 
-        if (! $this->mailer_configured)
-        {
+        if (! $this->mailer_configured) {
             $this->layout->buffer('content', 'mailer/not_configured');
             $this->layout->render();
         }
@@ -43,8 +40,7 @@ class Mailer extends Admin_Controller
      */
     public function invoice($invoice_id)
     {
-        if (! $this->mailer_configured)
-        {
+        if (! $this->mailer_configured) {
             return;
         }
 
@@ -64,15 +60,13 @@ class Mailer extends Admin_Controller
         $email_template_id = select_email_invoice_template($invoice);
         $email_template    = '{}';
 
-        if ($email_template_id)
-        {
+        if ($email_template_id) {
             $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
         }
 
         // Get all custom fields
         $custom_fields = [];
-        foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table)
-        {
+        foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
 
@@ -96,8 +90,7 @@ class Mailer extends Admin_Controller
      */
     public function quote($quote_id)
     {
-        if (! $this->mailer_configured)
-        {
+        if (! $this->mailer_configured) {
             return;
         }
 
@@ -111,23 +104,20 @@ class Mailer extends Admin_Controller
             ]
         );
 
-       $this->load->helper('dropzone');
+        $this->load->helper('dropzone');
 
         $email_template_id = get_setting('email_quote_template');
         $email_template = '{}';
 
-        if ($email_template_id)
-        {
+        if ($email_template_id) {
             $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
         }
 
         // Get all custom fields
         $custom_fields = [];
-        foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table)
-        {
+        foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
-
 
         $this->layout->set(
             [
@@ -142,7 +132,6 @@ class Mailer extends Admin_Controller
         );
         $this->layout->buffer('content', 'mailer/quote');
         $this->layout->render();
-
     }
 
     /**
@@ -150,13 +139,11 @@ class Mailer extends Admin_Controller
      */
     public function send_invoice($invoice_id)
     {
-        if ($this->input->post('btn_cancel'))
-        {
+        if ($this->input->post('btn_cancel')) {
             redirect('invoices/view/' . $invoice_id);
         }
 
-        if (! $this->mailer_configured)
-        {
+        if (! $this->mailer_configured) {
             return;
         }
 
@@ -164,16 +151,14 @@ class Mailer extends Admin_Controller
         $from = $this->input->post('from_email', true);
 
         $from         = [$from, $this->input->post('from_name')];
+
         $pdf_template = $this->input->post('pdf_template', true);
         $subject      = $this->input->post('subject');
         $body         = $this->input->post('body');
 
-        if (strlen($body) != strlen(strip_tags($body)))
-        {
+        if (strlen($body) != strlen(strip_tags($body))) {
             $body = htmlspecialchars_decode($body, ENT_COMPAT);
-        }
-        else
-        {
+        } else {
             $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
         }
 
@@ -185,12 +170,12 @@ class Mailer extends Admin_Controller
 
         $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
 
-        if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files))
-        {
+        if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_invoices->mark_sent($invoice_id);
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
             redirect('invoices/view/' . $invoice_id);
         }
+
         redirect('mailer/invoice/' . $invoice_id);
     }
 
@@ -199,13 +184,11 @@ class Mailer extends Admin_Controller
      */
     public function send_quote($quote_id)
     {
-        if ($this->input->post('btn_cancel'))
-        {
+        if ($this->input->post('btn_cancel')) {
             redirect('quotes/view/' . $quote_id);
         }
 
-        if (! $this->mailer_configured)
-        {
+        if (! $this->mailer_configured) {
             return;
         }
 
@@ -213,15 +196,13 @@ class Mailer extends Admin_Controller
         $from = $this->input->post('from_email');
 
         $from         = [$from, $this->input->post('from_name')];
+
         $pdf_template = $this->input->post('pdf_template');
         $subject      = $this->input->post('subject');
 
-        if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body'))))
-        {
+        if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
             $body = htmlspecialchars_decode($this->input->post('body'), ENT_COMPAT);
-        }
-        else
-        {
+        } else {
             $body = htmlspecialchars_decode(nl2br($this->input->post('body')), ENT_COMPAT);
         }
 
@@ -233,14 +214,13 @@ class Mailer extends Admin_Controller
 
         $this->mdl_quotes->generate_quote_number_if_applicable($quote_id);
 
-        if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files))
-        {
+        if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
             $this->mdl_quotes->mark_sent($quote_id);
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
 
             redirect('quotes/view/' . $quote_id);
         }
+
         redirect('mailer/quote/' . $quote_id);
     }
-
 }
