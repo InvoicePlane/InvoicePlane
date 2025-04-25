@@ -35,11 +35,17 @@
 
     <div id="login" class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
 
-        <?php if ($login_logo) { ?>
+<?php
+if ($login_logo) {
+?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo img-responsive">
-        <?php } else { ?>
+<?php
+} else {
+?>
             <h1><?php _trans('login'); ?></h1>
-        <?php } ?>
+<?php
+}
+?>
 
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
 
@@ -51,14 +57,14 @@
                 <label for="email" class="control-label"><?php _trans('email'); ?></label>
                 <input type="email" name="email" id="email" class="form-control"
                        placeholder="<?php _trans('email'); ?>" required autofocus
-                    <?php if (!empty($_POST['email'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
+                >
             </div>
 
             <div class="form-group">
                 <label for="password" class="control-label"><?php _trans('password'); ?></label>
                 <input type="password" name="password" id="password" class="form-control"
                        placeholder="<?php _trans('password'); ?>" required
-                    <?php if (!empty($_POST['password'])) : ?> value="<?php echo $_POST['email']; ?>"<?php endif; ?>>
+                >
             </div>
 
             <input type="hidden" name="btn_login" value="true">

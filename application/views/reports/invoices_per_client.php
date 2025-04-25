@@ -11,10 +11,8 @@
     <table>
 <?php
 $client_id = '';
-foreach ($results as $result)
-{
-    if ($client_id != $result->client_id)
-    {
+foreach ($results as $result) {
+    if ($client_id != $result->client_id) {
         $client_id = $result->client_id;
 ?>
         <tr>

@@ -1,17 +1,16 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -37,10 +36,10 @@ class Payments extends Admin_Controller
 
         $this->layout->set(
             [
-                'payments' => $payments,
-                'filter_display' => true,
+                'filter_display'     => true,
                 'filter_placeholder' => trans('filter_payments'),
-                'filter_method' => 'filter_payments',
+                'filter_method'      => 'filter_payments',
+                'payments'           => $payments,
             ]
         );
 
@@ -48,13 +47,9 @@ class Payments extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
-        if ($this->input->post('btn_cancel'))
-        {
+        if ($this->input->post('btn_cancel')) {
             redirect('payments');
         }
 
@@ -62,8 +57,7 @@ class Payments extends Admin_Controller
 
         $this->load->model('custom_fields/mdl_payment_custom');
 
-        if ($this->mdl_payments->run_validation())
-        {
+        if ($this->mdl_payments->run_validation()) {
             $id = $this->mdl_payments->save($id);
 
             $this->mdl_payment_custom->save_custom($id, $this->input->post('custom'));
@@ -71,57 +65,44 @@ class Payments extends Admin_Controller
             redirect('payments');
         }
 
-        if ( ! $this->input->post('btn_submit'))
-        {
+        if (! $this->input->post('btn_submit')) {
             $prep_form = $this->mdl_payments->prep_form($id);
-
-            if ($id && ! $prep_form)
-            {
+            if ($id && ! $prep_form) {
                 show_404();
             }
 
             $this->load->model('custom_values/mdl_custom_values');
-
             $payment_custom = $this->mdl_payment_custom->where('payment_id', $id)->get();
-
-            if ($payment_custom->num_rows())
-            {
+            if ($payment_custom->num_rows()) {
                 $payment_custom = $payment_custom->row();
 
                 unset($payment_custom->payment_id, $payment_custom->payment_custom_id);
 
-                foreach ($payment_custom as $key => $val)
-                {
+                foreach ($payment_custom as $key => $val) {
                     $this->mdl_payments->set_form_value('custom[' . $key . ']', $val);
                 }
             }
-        }
-        else
-        {
-            if ($this->input->post('custom'))
-            {
-                foreach ($this->input->post('custom') as $key => $val)
-                {
-                    $this->mdl_payments->set_form_value('custom[' . $key . ']', $val);
-                }
+        } elseif ($this->input->post('custom')) {
+            foreach ($this->input->post('custom') as $key => $val) {
+                $this->mdl_payments->set_form_value('custom[' . $key . ']', $val);
             }
         }
 
         $this->load->helper('custom_values');
-        $this->load->model('invoices/mdl_invoices');
-        $this->load->model('payment_methods/mdl_payment_methods');
-        $this->load->model('custom_fields/mdl_custom_fields');
-        $this->load->model('custom_values/mdl_custom_values');
+        $this->load->model([
+            'invoices/mdl_invoices',
+            'payment_methods/mdl_payment_methods',
+            'custom_fields/mdl_custom_fields',
+            'custom_values/mdl_custom_values',
+        ]);
 
         $open_invoices = $this->mdl_invoices->is_open()->get()->result();
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result();
         $custom_values = [];
 
-        foreach ($custom_fields as $custom_field)
-        {
-            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
-            {
+        foreach ($custom_fields as $custom_field) {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
@@ -129,10 +110,8 @@ class Payments extends Admin_Controller
 
         $fields = $this->mdl_payment_custom->get_by_payid($id);
 
-        foreach ($custom_fields as $cfield)
-        {
-            foreach ($fields as $fvalue)
-            {
+        foreach ($custom_fields as $cfield) {
+            foreach ($fields as $fvalue) {
                 if ($fvalue->payment_custom_fieldid == $cfield->custom_field_id) {
                     // TODO: Hackish, may need a better optimization
                     $this->mdl_payments->set_form_value(
@@ -146,26 +125,24 @@ class Payments extends Admin_Controller
 
         $amounts = [];
         $invoice_payment_methods = [];
-        foreach ($open_invoices as $open_invoice)
-        {
+        foreach ($open_invoices as $open_invoice) {
             $amounts['invoice' . $open_invoice->invoice_id] = format_amount($open_invoice->invoice_balance);
             $invoice_payment_methods['invoice' . $open_invoice->invoice_id] = $open_invoice->payment_method;
         }
 
         $this->layout->set(
             [
-                'payment_id' => $id,
-                'payment_methods' => $this->mdl_payment_methods->get()->result(),
-                'open_invoices' => $open_invoices,
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'amounts' => json_encode($amounts),
+                'payment_id'              => $id,
+                'payment_methods'         => $this->mdl_payment_methods->get()->result(),
+                'open_invoices'           => $open_invoices,
+                'custom_fields'           => $custom_fields,
+                'custom_values'           => $custom_values,
+                'amounts'                 => json_encode($amounts),
                 'invoice_payment_methods' => json_encode($invoice_payment_methods),
             ]
         );
 
-        if ($id)
-        {
+        if ($id) {
             $this->layout->set('payment', $this->mdl_payments->where('ip_payments.payment_id', $id)->get()->row());
         }
 
@@ -178,14 +155,17 @@ class Payments extends Admin_Controller
      */
     public function online_logs($page = 0)
     {
-        $this->load->model('mdl_payment_logs');
+        $this->load->model('payments/mdl_payment_logs');
 
         $this->mdl_payment_logs->paginate(site_url('payments/online_logs'), $page);
         $payment_logs = $this->mdl_payment_logs->result();
 
         $this->layout->set(
             [
-                'payment_logs' => $payment_logs,
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_online_logs'),
+                'filter_method'      => 'filter_online_logs',
+                'payment_logs'       => $payment_logs,
             ]
         );
 
@@ -201,5 +181,4 @@ class Payments extends Admin_Controller
         $this->mdl_payments->delete($id);
         redirect('payments');
     }
-
 }

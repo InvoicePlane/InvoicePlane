@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,6 +16,13 @@ if (! defined('BASEPATH'))
 #[AllowDynamicProperties]
 class Mdl_Invoice_Amounts extends CI_Model
 {
+    public $decimal_places = 2;
+
+    public function __construct()
+    {
+        $this->decimal_places = (int) get_setting('tax_rate_decimal_places');
+    }
+
     /**
      * IP_INVOICE_AMOUNTS
      * invoice_amount_id
@@ -56,24 +62,20 @@ class Mdl_Invoice_Amounts extends CI_Model
         $invoice_amounts = $query->row();
 
         // Discounts calculation - since v1.6.3
-        if (config_item('legacy_calculation'))
-        {
+        if (config_item('legacy_calculation')) {
             $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
-            $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
-            $invoice_total = $this->calculate_discount($invoice_id, $invoice_subtotal);
-        }
-        else
-        {
+            $invoice_subtotal      = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+            $invoice_total         = $this->calculate_discount($invoice_id, $invoice_subtotal);
+        } else {
             $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount - $global_discount['item'];
-            $invoice_total = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+            $invoice_total         = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
         }
 
         // Get the amount already paid
         $query = $this->db->query("
           SELECT SUM(payment_amount) AS invoice_paid
           FROM ip_payments
-          WHERE invoice_id = " . $this->db->escape($invoice_id)
-        );
+          WHERE invoice_id = " . $this->db->escape($invoice_id));
 
         $invoice_paid = $query->row()->invoice_paid ? floatval($query->row()->invoice_paid) : 0;
 
@@ -104,30 +106,26 @@ class Mdl_Invoice_Amounts extends CI_Model
         // Get invoice status
         $this->load->model('invoices/mdl_invoices');
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
-        $invoice_is_credit = ($invoice->creditinvoice_parent_id > 0 ? true : false);
+        $invoice_is_credit = ($invoice->creditinvoice_parent_id > 0);
 
         // Set to paid if balance is zero
-        if ($invoice->invoice_balance == 0) {
-            // Check if the invoice total is not zero or negative
-            if ($invoice->invoice_total != 0 || $invoice_is_credit) {
+        // Check if the invoice total is not zero or negative
+        if ($invoice->invoice_balance == 0 && ($invoice->invoice_total != 0 || $invoice_is_credit)) {
+            $this->db->where('invoice_id', $invoice_id);
+            $payment = $this->db->get('ip_payments')->row();
+            $payment_method_id = ($payment->payment_method_id ? $payment->payment_method_id : 0);
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->set('invoice_status_id', 4);
+            $this->db->set('payment_method', $payment_method_id);
+            $this->db->update('ip_invoices');
+            // Set to read-only if applicable
+            if (
+                $this->config->item('disable_read_only') == false
+                && $invoice->invoice_status_id == get_setting('read_only_toggle')
+            ) {
                 $this->db->where('invoice_id', $invoice_id);
-                $payment = $this->db->get('ip_payments')->row();
-                $payment_method_id = isset($payment->payment_method_id) ? $payment->payment_method_id : 0;
-
-                $this->db->where('invoice_id', $invoice_id);
-                $this->db->set('invoice_status_id', 4);
-                $this->db->set('payment_method', $payment_method_id);
+                $this->db->set('is_read_only', 1);
                 $this->db->update('ip_invoices');
-
-                // Set to read-only if applicable
-                if (
-                    $this->config->item('disable_read_only') == false
-                    && $invoice->invoice_status_id == get_setting('read_only_toggle')
-                ) {
-                    $this->db->where('invoice_id', $invoice_id);
-                    $this->db->set('is_read_only', 1);
-                    $this->db->update('ip_invoices');
-                }
             }
         }
     }
@@ -141,33 +139,25 @@ class Mdl_Invoice_Amounts extends CI_Model
     {
         $this->db->where('invoice_id', $invoice_id);
         $invoice_data = $this->db->get('ip_invoices')->row();
+        // Prevent NULL in number_format
+        $total            = (float)number_format((float)$invoice_total, $this->decimal_places, '.', '');
+        $discount_amount  = (float)number_format((float)$invoice_data->invoice_discount_amount, $this->decimal_places, '.', '');
+        $discount_percent = (float)number_format((float)$invoice_data->invoice_discount_percent, $this->decimal_places, '.', '');
 
-        if ($invoice_data->invoice_discount_amount==null) {
-            $invoice_data->invoice_discount_amount = 0.0;
-        }
+        $total -= $discount_amount;
 
-        if ($invoice_data->invoice_discount_percent==null) {
-            $invoice_data->invoice_discount_percent = 0.0;
-        }
-
-        $total = number_format(floatval($invoice_total), 2, '.', '');
-        $discount_amount = number_format(floatval($invoice_data->invoice_discount_amount), 2, '.', '');
-        $discount_percent = number_format(floatval($invoice_data->invoice_discount_percent), 2, '.', '');
-
-        $total = $total - $discount_amount;
-        $total = $total - round(($total / 100 * $discount_percent), 2);
-
-        return $total;
+        return $total - round(($total / 100 * $discount_percent), $this->decimal_places);
     }
 
     /**
+     * legacy_calculation false: Need global_discount to recalculate invoice amounts - since v1.6.3
+     *
      * @param $invoice_id
      *
      * return global_discount
      */
     public function get_global_discount($invoice_id)
     {
-        // The global_discount amounts is needed to recalculate invoice amounts (if legacy_calculation is false)
         $row = $this->db->query("
             SELECT SUM(item_subtotal) - (SUM(item_total) - SUM(item_tax_total) + SUM(item_discount)) AS global_discount
             FROM ip_invoice_item_amounts
@@ -185,17 +175,16 @@ class Mdl_Invoice_Amounts extends CI_Model
     {
         // First check to see if there are any invoice taxes applied
         $this->load->model('invoices/mdl_invoice_tax_rates');
-        $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result();
+        // Only appliable in legacy calculation - since 1.6.3
+        $invoice_tax_rates = config_item('legacy_calculation') ? $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result() : null;
 
-        if ($invoice_tax_rates)
-        {
+        if ($invoice_tax_rates) {
             // There are invoice taxes applied
             // Get the current invoice amount record
             $invoice_amount = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
 
             // Loop through the invoice taxes and update the amount for each of the applied invoice taxes
-            foreach ($invoice_tax_rates as $invoice_tax_rate)
-            {
+            foreach ($invoice_tax_rates as $invoice_tax_rate) {
                 if ($invoice_tax_rate->include_item_tax) {
                     // The invoice tax rate should include the applied item tax
                     $invoice_tax_rate_amount = ($invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total) * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
@@ -227,9 +216,8 @@ class Mdl_Invoice_Amounts extends CI_Model
             // Recalculate the invoice total and balance
             $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
 
-            // Discounts calculation - since v1.6.3
-            if(config_item('legacy_calculation'))
-            {
+            // Legacy calculation need recalculate global discounts - New calculation not! & deactivated before here - Only for memo - Todo?: idea settings: calculation mode - since v1.6.3
+            if (config_item('legacy_calculation')) {
                 $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);
             }
 
@@ -243,9 +231,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 
             $this->db->where('invoice_id', $invoice_id);
             $this->db->update('ip_invoice_amounts', $db_array);
-        }
-        else
-        {
+        } else {
             // No invoice taxes applied
 
             $db_array = [
@@ -258,7 +244,6 @@ class Mdl_Invoice_Amounts extends CI_Model
     }
 
     /**
-     * @param null $period
      * @return mixed
      */
     public function get_total_invoiced($period = null)
@@ -298,7 +283,6 @@ class Mdl_Invoice_Amounts extends CI_Model
     }
 
     /**
-     * @param null $period
      * @return mixed
      */
     public function get_total_paid($period = null)
@@ -335,7 +319,6 @@ class Mdl_Invoice_Amounts extends CI_Model
     }
 
     /**
-     * @param null $period
      * @return mixed
      */
     public function get_total_balance($period = null)
@@ -434,8 +417,7 @@ class Mdl_Invoice_Amounts extends CI_Model
 
         $return = [];
 
-        foreach ($this->mdl_invoices->statuses() as $key => $status)
-        {
+        foreach ($this->mdl_invoices->statuses() as $key => $status) {
             $return[$key] = [
                 'invoice_status_id' => $key,
                 'class'             => $status['class'],
@@ -446,12 +428,10 @@ class Mdl_Invoice_Amounts extends CI_Model
             ];
         }
 
-        foreach ($results as $result)
-        {
+        foreach ($results as $result) {
             $return[$result['invoice_status_id']] = array_merge($return[$result['invoice_status_id']], $result);
         }
 
         return $return;
     }
-
 }

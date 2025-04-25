@@ -1,3 +1,4 @@
 <?php
+
 $invoice_mode = 'paid'; // Need in InvoicePlane template
-include 'InvoicePlane.php';
+include __DIR__ . '/InvoicePlane.php';

@@ -182,7 +182,7 @@ return [
     'PZ' => 'Panama Canal Zone',
     'PG' => 'Papua New Guinea',
     'PY' => 'Paraguay',
-    'YD' => 'People\'s Democratic Republic of Yemen',
+    'YD' => "People's Democratic Republic of Yemen",
     'PE' => 'Peru',
     'PH' => 'Philippines',
     'PN' => 'Pitcairn Islands',

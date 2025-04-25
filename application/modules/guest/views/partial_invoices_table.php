@@ -15,8 +15,7 @@
 
                 <tbody>
 <?php
-foreach ($invoices as $invoice)
-{
+foreach ($invoices as $invoice) {
     $css_class = ($invoice->invoice_status_id != 4 && $invoice->invoice_date_due < date('Y-m-d')) ? 'font-overdue' : '';
 ?>
                     <tr>
@@ -32,17 +31,21 @@ foreach ($invoices as $invoice)
                         <td><?php echo format_currency($invoice->invoice_balance); ?></td>
                         <td>
                             <div class="options btn-group btn-group-sm">
-<?php // fix 404 when balance = 0.00
-    if ($enable_online_payments && $invoice->invoice_balance > 0 && $invoice->invoice_status_id != 4)
-    {
+                                <a class="btn btn-default" href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>">
+                                    <i class="fa fa-eye"></i> <?php _trans('view'); ?>
+                                </a>
+                                <a class="btn btn-default" target="_blank" href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>">
+                                    <i class="fa fa-print"></i> <?php _trans('pdf'); ?>
+                                </a>
+<?php
+    // fix 404 when balance = 0.00
+    if ($enable_online_payments && $invoice->invoice_balance > 0 && $invoice->invoice_status_id != 4) {
 ?>
                                 <a class="btn btn-primary" href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>">
                                     <i class="fa fa-credit-card"></i> <?php _trans('pay_now'); ?>
                                 </a>
 <?php
-    }
-    elseif ($invoice->invoice_balance == 0)
-    {
+    } elseif ($invoice->invoice_balance == 0) {
 ?>
                                 <button class="btn btn-success disabled">
                                     <i class="fa fa-check"></i> <?php _trans('paid') ?>
@@ -51,12 +54,6 @@ foreach ($invoices as $invoice)
     }
 ?>
 
-                                <a class="btn btn-default" href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>">
-                                    <i class="fa fa-eye"></i> <?php _trans('view'); ?>
-                                </a>
-                                <a class="btn btn-default" target="_blank" href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>">
-                                    <i class="fa fa-print"></i> <?php _trans('pdf'); ?>
-                                </a>
                             </div>
                         </td>
                     </tr>

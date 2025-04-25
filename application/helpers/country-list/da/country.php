@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return [
     'AF' => 'Afghanistan',
     'AL' => 'Albanien',
     'DZ' => 'Algeriet',
@@ -247,4 +249,4 @@
     'AX' => 'Åland',
     'GQ' => 'Ækvatorialguinea',
     'AT' => 'Østrig',
-);
+];

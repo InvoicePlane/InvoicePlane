@@ -23,10 +23,11 @@ $pg = $pg ? ' : ' . implode(' - ', array_map(function($v){return ! is_numeric($v
     <meta name="_csrf" content="<?php echo $this->security->get_csrf_hash() ?>">
     <meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
     <meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
+    <meta name="legacy_calculation" content="<?php echo intval(config_item('legacy_calculation')); ?>">
 
     <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
-    <link rel="stylesheet" href="<?php _theme_asset('css/style.min.css'); ?>" type="text/css">
+    <link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>" type="text/css">
     <link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>" type="text/css">
 
 <?php if (get_setting('monospace_amounts') == 1) { ?>

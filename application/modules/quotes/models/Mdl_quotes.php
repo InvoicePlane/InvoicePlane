@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -79,7 +78,7 @@ class Mdl_Quotes extends Response_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_quotes.quote_date_created DESC');
+        $this->db->order_by('ip_quotes.quote_date_created DESC, ip_quotes.quote_number DESC, ip_quotes.quote_id DESC');
     }
 
     public function default_join()
@@ -152,8 +151,6 @@ class Mdl_Quotes extends Response_Model
     }
 
     /**
-     * @param null $db_array
-     *
      * @return int|null
      */
     public function create($db_array = null)
@@ -201,6 +198,12 @@ class Mdl_Quotes extends Response_Model
             'items_subtotal' => $this->mdl_quote_items->get_items_subtotal($source_id),
         ];
         unset($quote); // Free memory
+
+        // Update the discounts - since v1.6.3
+        $this->where('quote_id', $target_id)->update('ip_quotes', [
+            'quote_discount_percent' => $global_discount['percent'],
+            'quote_discount_amount'  => $global_discount['amount'],
+        ]);
 
         $quote_items = $this->mdl_quote_items->where('quote_id', $source_id)->get()->result();
 
@@ -263,7 +266,7 @@ class Mdl_Quotes extends Response_Model
 
         $db_array['notes'] = get_setting('default_quote_notes');
 
-        if ( ! isset($db_array['quote_status_id'])) {
+        if (! isset($db_array['quote_status_id'])) {
             $db_array['quote_status_id'] = 1;
         }
 
@@ -487,12 +490,10 @@ class Mdl_Quotes extends Response_Model
 
         $quote = $this->db->get('ip_quotes');
 
-        if ($quote->num_rows()) {
-            if ($quote->row()->quote_status_id == 2) {
-                $this->db->where('quote_id', $quote_id);
-                $this->db->set('quote_status_id', 3);
-                $this->db->update('ip_quotes');
-            }
+        if ($quote->num_rows() && $quote->row()->quote_status_id == 2) {
+            $this->db->where('quote_id', $quote_id);
+            $this->db->set('quote_status_id', 3);
+            $this->db->update('ip_quotes');
         }
     }
 
@@ -506,12 +507,10 @@ class Mdl_Quotes extends Response_Model
 
         $quote = $this->db->get('ip_quotes');
 
-        if ($quote->num_rows()) {
-            if ($quote->row()->quote_status_id == 1) {
-                $this->db->where('quote_id', $quote_id);
-                $this->db->set('quote_status_id', 2);
-                $this->db->update('ip_quotes');
-            }
+        if ($quote->num_rows() && $quote->row()->quote_status_id == 1) {
+            $this->db->where('quote_id', $quote_id);
+            $this->db->set('quote_status_id', 2);
+            $this->db->update('ip_quotes');
         }
     }
 
@@ -522,18 +521,13 @@ class Mdl_Quotes extends Response_Model
     {
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-        if ( ! empty($quote)) {
-            if ($quote->quote_status_id == 1 && $quote->quote_number == '') {
-                // Generate new quote number if applicable
-                if (get_setting('generate_quote_number_for_draft') == 0) {
-                    $quote_number = $this->mdl_quotes->get_quote_number($quote->invoice_group_id);
-
-                    // Set new quote number and save
-                    $this->db->where('quote_id', $quote_id);
-                    $this->db->set('quote_number', $quote_number);
-                    $this->db->update('ip_quotes');
-                }
-            }
+        // Generate new quote number if applicable
+        if (!empty($quote) && ($quote->quote_status_id == 1 && $quote->quote_number == '') && get_setting('generate_quote_number_for_draft') == 0) {
+            $quote_number = $this->mdl_quotes->get_quote_number($quote->invoice_group_id);
+            // Set new quote number and save
+            $this->db->where('quote_id', $quote_id);
+            $this->db->set('quote_number', $quote_number);
+            $this->db->update('ip_quotes');
         }
     }
 }

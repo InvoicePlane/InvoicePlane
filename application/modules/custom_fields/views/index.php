@@ -21,8 +21,7 @@ $active = $this->uri->segment(3);
                 <?php _trans('all'); ?>
             </a>
 <?php
-foreach ($custom_tables as $table)
-{
+foreach ($custom_tables as $table) {
 ?>
             <a href="<?php echo site_url('custom_fields/table/' . $table); ?>"
                class="btn <?php echo $active == $table ? 'btn-primary' : 'btn-default' ?>">
@@ -40,14 +39,7 @@ foreach ($custom_tables as $table)
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
     <div id="filter_results">
-        <?php $this->layout->load_view('custom_fields/partial_custom_fields_table',
-            [
-                'custom_fields'       => $custom_fields,
-                'custom_tables'       => $custom_tables,
-                'custom_value_fields' => $custom_value_fields,
-                'positions'           => $positions,
-            ]
-        ); ?>
+        <?php $this->layout->load_view('custom_fields/partial_custom_fields_table'); ?>
     </div>
 
 </div>

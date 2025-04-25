@@ -9,6 +9,7 @@ $pg = $pg ? ' : ' . implode(' - ', array_map(function($v){return ! is_numeric($v
 <meta name="robots" content="NOINDEX,NOFOLLOW">
 <meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
 <meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
+<meta name="legacy_calculation" content="<?php echo intval(config_item('legacy_calculation')); ?>">
 
 <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
@@ -45,7 +46,8 @@ $pg = $pg ? ' : ' . implode(' - ', array_map(function($v){return ! is_numeric($v
                 format: '<?php echo date_format_datepicker(); ?>',
                 language: '<?php _trans('cldr'); ?>',
                 weekStart: '<?php echo get_setting('first_day_of_week'); ?>',
-                todayBtn: "linked"
+                todayHighlight: true,
+                todayBtn: 'linked'
             });
         });
 
@@ -64,7 +66,11 @@ $pg = $pg ? ' : ' . implode(' - ', array_map(function($v){return ! is_numeric($v
 
         $(document).on('click', '#btn_copy_invoice', function () {
             var invoice_id = $(this).data('invoice-id');
-            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {invoice_id: invoice_id});
+            var client_id = $(this).data('client-id');
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {
+                invoice_id: invoice_id,
+                client_id: client_id
+            });
         });
 
         $(document).on('click', '#btn_create_credit', function () {

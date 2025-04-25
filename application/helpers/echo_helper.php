@@ -22,7 +22,10 @@ if (! defined('BASEPATH')) {
  */
 function htmlsc($output)
 {
-    if (!is_null($output)) return htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
+    if (!is_null($output)) {
+        return htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
+    }
+
     return $output;
 }
 
@@ -35,8 +38,12 @@ function htmlsc($output)
  */
 function _htmlsc($output)
 {
-    if ($output==null) return '';
+    if ($output == null) {
+        return '';
+    }
+
     echo htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
+    return null;
 }
 
 /**
@@ -48,8 +55,12 @@ function _htmlsc($output)
  */
 function _htmle($output)
 {
-    if ($output==null) return '';
+    if ($output == null) {
+        return '';
+    }
+
     echo htmlentities($output, ENT_COMPAT);
+    return null;
 }
 
 /**

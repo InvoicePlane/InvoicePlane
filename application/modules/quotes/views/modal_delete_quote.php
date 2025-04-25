@@ -15,8 +15,8 @@
                 <?php _csrf_field(); ?>
 
                 <div class="btn-group">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fa fa-trash-o fa-margin"></i> <?php echo trans('confirm_deletion') ?>
+                    <button type="submit" class="btn btn-danger ajax-loader">
+                        <i class="fa fa-trash-o fa-margin"></i> <?php _trans('confirm_deletion') ?>
                     </button>
                     <a href="#" class="btn btn-default" data-dismiss="modal">
                         <i class="fa fa-times"></i> <?php _trans('cancel'); ?>

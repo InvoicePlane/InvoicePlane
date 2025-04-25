@@ -18,12 +18,7 @@
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
     <div id="filter_results">
-        <?php $this->layout->load_view('users/partial_users_table',
-            [
-                'users'      => $users,
-                'user_types' => $user_types,
-            ]
-        ); ?>
+        <?php $this->layout->load_view('users/partial_users_table'); ?>
     </div>
 
 </div>

@@ -92,7 +92,7 @@ function format_boolean($txt)
 
     if ($txt == '1') {
         return trans('true');
-    } else if ($txt == '0') {
+    } elseif ($txt == '0') {
         return trans('false');
     }
 
@@ -109,7 +109,6 @@ function format_avs($txt)
         return $txt; // do noting or null
     }
     return $matches[1] . "." . $matches[2] . "." . $matches[3] . "." . $matches[4];
-
 }
 
 /**
@@ -134,7 +133,7 @@ function format_fallback($txt)
 function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $class_label = '', $class_group = 'form-group')
 {
     $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_id . ']');
-?>
+    ?>
     <div class="<?php echo $class_group; ?>">
         <div class="<?php echo $class_top; ?>">
             <label class="<?php echo $class_label; ?>"
@@ -144,62 +143,59 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
         </div>
 
         <div class="<?php echo $class_bottom; ?>">
-<?php
-    switch ($custom_field->custom_field_type)
-    {
+    <?php
+    switch ($custom_field->custom_field_type) {
         case 'DATE':
                 $dateValue = ($fieldValue == "" ? "" : date_from_mysql($fieldValue));
-?>
+            ?>
             <input type="text" class="form-control datepicker"
                    name="custom[<?php echo $custom_field->custom_field_id; ?>]"
                    id="<?php echo $custom_field->custom_field_id; ?>"
                    value="<?php echo $dateValue; ?>">
-<?php
-        break;
+            <?php
+            break;
         case 'SINGLE-CHOICE':
             $choices = $cv[$custom_field->custom_field_id];
-?>
+            ?>
                 <select id="custom<?php echo $custom_field->custom_field_id; ?>"
                         name="custom[<?php echo $custom_field->custom_field_id; ?>]"
                         class="form-control simple-select">
                     <option value="" <?php check_select('', $fieldValue); ?>><?php _trans('none'); ?></option>
-<?php
-            foreach ($choices as $val)
-            {
-?>
+            <?php
+            foreach ($choices as $val) {
+                ?>
                         <option value="<?php echo $val->custom_values_id; ?>" <?php check_select($val->custom_values_id, $fieldValue); ?>>
                             <?php _htmlsc($val->custom_values_value); ?>
                         </option>
-<?php
+                <?php
             } // End foreach
-?>
+            ?>
                 </select>
-<?php
-        break;
+            <?php
+            break;
         case 'MULTIPLE-CHOICE':
             $choices = $cv[$custom_field->custom_field_id];
             $selChoices = explode(',', $fieldValue);
-?>
+            ?>
                 <select id="custom<?php echo $custom_field->custom_field_id; ?>"
                         name="custom[<?php echo $custom_field->custom_field_id; ?>][]"
                         multiple="multiple"
                         class="form-control multiple-select">
                     <option value="" <?php check_select('', $fieldValue); ?>><?php echo trans('none'); ?></option>
-<?php
-            foreach ($choices as $choice)
-            {
-?>
+            <?php
+            foreach ($choices as $choice) {
+                ?>
                         <option value="<?php echo $choice->custom_values_id; ?>" <?php check_select(in_array($choice->custom_values_id, $selChoices)); ?>>
                             <?php _htmlsc($choice->custom_values_value); ?>
                         </option>
-<?php
+                <?php
             } // End foreach
-?>
+            ?>
                 </select>
-<?php
-        break;
+            <?php
+            break;
         case 'BOOLEAN':
-?>
+            ?>
                 <select id="custom<?php echo $custom_field->custom_field_id; ?>"
                         name="custom[<?php echo $custom_field->custom_field_id; ?>]"
                         class="form-control simple-select" data-minimum-results-for-search="Infinity">
@@ -207,18 +203,18 @@ function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom
                     <option value="0" <?php check_select($fieldValue, '0'); ?>><?php _trans('false'); ?></option>
                     <option value="1" <?php check_select($fieldValue, '1'); ?>><?php _trans('true'); ?></option>
                 </select>
-<?php
-        break;
+            <?php
+            break;
         default:
-?>
+            ?>
             <input type="text" class="form-control"
                    name="custom[<?php echo $custom_field->custom_field_id; ?>]"
                    id="custom<?php echo $custom_field->custom_field_id; ?>"
                    value="<?php _htmlsc($fieldValue); ?>">
-<?php
+            <?php
     } // End switch
-?>
+    ?>
         </div>
     </div>
-<?php
+    <?php
 }

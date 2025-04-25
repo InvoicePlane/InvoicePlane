@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return [
     'SA' => 'A-rập Xê-út',
     'EG' => 'Ai Cập',
     'AZ' => 'Ai-déc-bai-gian',
@@ -235,4 +237,4 @@
     'MO' => 'Đặc khu hành chính Macao thuộc CHND Trung Hoa',
     'DE' => 'Đức',
     'IN' => 'Ấn Độ',
-);
+];

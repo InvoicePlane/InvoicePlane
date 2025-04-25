@@ -1,8 +1,10 @@
 <?php
-if ($this->config->item('disable_read_only') == true)
-{
+if ($this->config->item('disable_read_only') == true) {
     $invoice->is_read_only = 0;
 }
+// Little helper
+$its_mine = $this->session->__get('user_id') == $invoice->user_id;
+$my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
 ?>
 
 <script>
@@ -16,34 +18,38 @@ if ($this->config->item('disable_read_only') == true)
         });
 
         $('.btn_add_product').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000)
-            );
+            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_task').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" +
-                Math.floor(Math.random() * 1000)
-            );
+            $('#modal-placeholder').load("<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_row').click(function () {
             $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            // Legacy:no: check items tax usage is correct (ReLoad on change)
+            check_items_tax_usages();
         });
 
-        <?php if (!$items) { ?>
+<?php
+if (!$items) {
+?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
-        <?php } ?>
+<?php
+}
+?>
+
+        // Legacy:no: check items tax usage is correct (Load on change)
+        $(document).on('loaded', check_items_tax_usages());
 
         $('#btn_create_recurring').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>",
-                {
-                    invoice_id: <?php echo $invoice_id; ?>
-                }
-            );
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>", {
+                invoice_id: <?php echo $invoice_id; ?>
+            });
         });
+<?php
+if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id) {
+?>
 
         $('#invoice_change_client').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_client'); ?>", {
@@ -51,6 +57,16 @@ if ($this->config->item('disable_read_only') == true)
                 client_id: "<?php echo $this->db->escape_str($invoice->client_id); ?>",
             });
         });
+
+        $('#invoice_change_user').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_user'); ?>", {
+                invoice_id: <?php echo $invoice_id; ?>,
+                user_id: "<?php echo $this->db->escape_str($invoice->user_id); ?>",
+            });
+        });
+<?php
+} // End if
+?>
 
         $('#btn_save_invoice').click(function () {
             var items = [];
@@ -131,8 +147,9 @@ if ($this->config->item('disable_read_only') == true)
                 });
         });
 
-        <?php if ($invoice->is_read_only != 1):
-          if (get_setting('show_responsive_itemlist') == 1) { ?>
+<?php
+if ($invoice->is_read_only != 1) {
+            if (get_setting('show_responsive_itemlist') == 1) { ?>
              function UpR(k) {
                var parent = k.parents('.item');
                var pos = parent.prev();
@@ -149,7 +166,9 @@ if ($this->config->item('disable_read_only') == true)
              $(document).on('click', '.down', function () {
                DownR($(this));
              });
-        <?php } else { ?>
+<?php
+    } else {
+?>
             var fixHelper = function (e, tr) {
                 var $originals = tr.children();
                 var $helper = tr.clone();
@@ -163,7 +182,9 @@ if ($this->config->item('disable_read_only') == true)
                 items: 'tbody',
                 helper: fixHelper,
             });
-        <?php } ?>
+<?php
+    }
+?>
 
         if ($('#invoice_discount_percent').val().length > 0) {
             $('#invoice_discount_amount').prop('disabled', true);
@@ -187,9 +208,11 @@ if ($this->config->item('disable_read_only') == true)
                 $('#invoice_discount_amount').prop('disabled', false);
             }
         });
-        <?php endif; ?>
+<?php
+}
+?>
 
-        <?php if ($invoice->invoice_is_recurring) : ?>
+<?php if ($invoice->invoice_is_recurring) { ?>
         $(document).on('click', '.js-item-recurrence-toggler', function () {
             var itemRecurrenceState = $(this).next('input').val();
             if (itemRecurrenceState === ('1')) {
@@ -202,31 +225,52 @@ if ($this->config->item('disable_read_only') == true)
                 $(this).addClass('fa-calendar-check-o text-success');
             }
         });
-        <?php endif; ?>
+<?php } ?>
 
     });
 </script>
 
 <?php
 echo $modal_delete_invoice;
-echo $modal_add_invoice_tax;
+echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation have global taxes - since v1.6.3
 ?>
-
 <div id="headerbar">
     <h1 class="headerbar-title">
-        <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id); ?>
+        <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing') ;?>: <?php _htmlsc(PHP_EOL . format_user($invoice->user_id)); ?>">
+            <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : trans('id') . ': ' . $invoice->invoice_id); ?>
+        </span>
+<?php
+// Nb Admins > 1 only
+if ($change_user) {
+?>
+        <a data-toggle="tooltip" data-placement="bottom"
+           title="<?php _trans('edit') ;?> <?php _trans('user') ;?> (<?php _trans('invoicing') ;?>): <?php _htmlsc(PHP_EOL . format_user($invoice->user_id)); ?>"
+           href="<?php echo site_url('users/form/' . $invoice->user_id); ?>">
+            <i class="fa fa-xs fa-user text-<?php echo $my_class; ?>"></i>
+                <span class="hidden-xs"><?php _htmlsc($invoice->user_name); ?></span>
+        </a>
+<?php
+    if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
+?>
+
+        <span id="invoice_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
+              data-toggle="tooltip" data-placement="bottom"
+              title="<?php _trans('change_user'); ?>"></span>
+<?php
+    } // End if draft
+} // End if change_user
+?>
     </h1>
 
-    <div class="headerbar-item pull-right<?php echo ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) ? ' btn-group' :''; ?>">
+    <div class="headerbar-item pull-right<?php echo ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) ? ' btn-group' : ''; ?>">
 
         <div class="options btn-group btn-group-sm">
-            <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
             <ul class="dropdown-menu">
 <?php
-if ($invoice->is_read_only != 1)
-{
+if ($legacy_calculation && $invoice->is_read_only != 1) { // Legacy calculation have global taxes - since v1.6.3
 ?>
                 <li>
                     <a href="#add-invoice-tax" data-toggle="modal">
@@ -242,8 +286,7 @@ if ($invoice->is_read_only != 1)
                     </a>
                 </li>
 <?php
-if ($invoice->invoice_balance != 0)
-{
+if ($invoice->invoice_balance != 0) {
 ?>
                 <li>
                     <a href="#" class="invoice-add-payment"
@@ -281,21 +324,21 @@ if ($invoice->invoice_balance != 0)
                 </li>
                 <li>
                     <a href="#" id="btn_copy_invoice"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
+                       data-invoice-id="<?php echo $invoice_id; ?>"
+                       data-client-id="<?php echo $invoice->client_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
                         <?php _trans('copy_invoice'); ?>
                     </a>
                 </li>
 <?php
-if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1))
-{
+if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) {
 ?>
-                    <li>
-                        <a href="#delete-invoice" data-toggle="modal">
-                            <i class="fa fa-trash-o fa-margin"></i>
-                            <?php _trans('delete'); ?>
-                        </a>
-                    </li>
+                <li>
+                    <a href="#delete-invoice" data-toggle="modal">
+                        <i class="fa fa-trash-o fa-margin"></i>
+                        <?php _trans('delete'); ?>
+                    </a>
+                </li>
 <?php
 } // End if
 ?>
@@ -303,8 +346,7 @@ if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_del
         </div>
 
 <?php
-if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4)
-{
+if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
 ?>
         <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
             <i class="fa fa-check"></i> <?php _trans('save'); ?>
@@ -316,17 +358,14 @@ if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4)
 
     <div class="headerbar-item invoice-labels pull-right">
 <?php
-if ($invoice->invoice_is_recurring)
-{
+if ($invoice->invoice_is_recurring) {
 ?>
         <span class="label label-info">
-            <i class="fa fa-refresh"></i>
-            <?php _trans('recurring'); ?>
+            <i class="fa fa-refresh"></i> <?php _trans('recurring'); ?>
         </span>
 <?php
 }
-if ($invoice->is_read_only == 1)
-{
+if ($invoice->is_read_only == 1) {
 ?>
         <span class="label label-danger">
             <i class="fa fa-read-only"></i> <?php _trans('read_only'); ?>
@@ -348,13 +387,10 @@ if ($invoice->is_read_only == 1)
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-5">
 
-                    <h3>
-                        <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>">
-                            <?php _htmlsc(format_client($invoice)) ?>
-                        </a>
+                    <h2>
+                        <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php _htmlsc(format_client($invoice)); ?></a>
 <?php
-if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id)
-{
+if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id) {
 ?>
                         <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
                               data-toggle="tooltip" data-placement="bottom"
@@ -362,7 +398,7 @@ if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id)
 <?php
 } // End if
 ?>
-                    </h3>
+                    </h2>
                     <br>
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
@@ -370,10 +406,10 @@ if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id)
 <?php if ($invoice->client_phone || $invoice->client_email) : ?>
                     <hr>
 <?php endif; ?>
-<?php if ($invoice->client_phone): ?>
+<?php if ($invoice->client_phone) : ?>
                     <div><?php _trans('phone'); ?>:&nbsp;<?php _htmlsc($invoice->client_phone); ?></div>
 <?php endif; ?>
-<?php if ($invoice->client_email): ?>
+<?php if ($invoice->client_email) : ?>
                     <div><?php _trans('email'); ?>:&nbsp;<?php _auto_link($invoice->client_email); ?></div>
 <?php endif; ?>
 
@@ -385,14 +421,13 @@ if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id)
                     <div class="details-box panel panel-default panel-body">
                         <div class="row">
 <?php
-if ($invoice->invoice_sign == -1)
-{
+if ($invoice->invoice_sign == -1) {
     $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
-    $view_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $parent_invoice_number);
+    $view_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . $parent_invoice_number);
 ?>
                             <div class="col-xs-12">
                                 <div class="alert alert-warning small">
-                                    <i class="fa fa-credit-invoice"></i>&nbsp;<?php _trans('credit_invoice_for_invoice') . ' ' . $view_link; ?>
+                                    <i class="fa fa-credit-invoice"></i>&nbsp;<?php echo $view_link; ?>
                                 </div>
                             </div>
 <?php
@@ -402,15 +437,23 @@ if ($invoice->invoice_sign == -1)
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
-                                    <label><?php _trans('invoice'); ?> #</label>
+<?php if ($einvoice_name) : ?>
+                                    <span class="pull-right" id="e_invoice_active"
+                                          data-toggle="tooltip" data-placement="bottom"
+                                          title="e-<?php echo trans('invoice') . ' ' . trans('version') . PHP_EOL . $einvoice_name; ?>  🗸"
+                                    >
+                                    <i class="fa fa-file-code-o"></i>&nbsp;<?php echo $einvoice_name; ?>&nbsp;<i class="fa fa-check-square-o text-success"></i></span>
+<?php endif; ?>
+                                    <label for="invoice_number"><?php _trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number" class="form-control"
 <?php if ($invoice->invoice_number) : ?>
                                            value="<?php echo $invoice->invoice_number; ?>"
 <?php else : ?>
                                            placeholder="<?php _trans('not_set'); ?>"
 <?php endif; ?>
-                                        <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
+                                           <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
                                     >
+
                                 </div>
 
                                 <div class="invoice-properties has-feedback">
@@ -452,11 +495,10 @@ if ($invoice->invoice_sign == -1)
                                             <?php echo ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) ? 'disabled="disabled"' : ''; ?>
                                     >
 <?php
-foreach ($invoice_statuses as $key => $status)
-{
+foreach ($invoice_statuses as $key => $status) {
+    $is_selected = ($key == $invoice->invoice_status_id) ? ' selected="selected"' : '';
 ?>
-                                        <option value="<?php echo $key; ?>"
-                                                <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
+                                        <option value="<?php echo $key; ?>"<?php echo $is_selected; ?>>
                                             <?php echo $status['label']; ?>
                                         </option>
 <?php
@@ -473,8 +515,7 @@ foreach ($invoice_statuses as $key => $status)
                                     >
                                         <option value="0"><?php _trans('select_payment_method'); ?></option>
 <?php
-foreach ($payment_methods as $payment_method)
-{
+foreach ($payment_methods as $payment_method) {
 ?>
                                         <option <?php check_select($invoice->payment_method, $payment_method->payment_method_id) ?>
                                             value="<?php echo $payment_method->payment_method_id; ?>">
@@ -496,21 +537,20 @@ foreach ($payment_methods as $payment_method)
 
 <?php
 $default_custom = false;
-$classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-md-6'];
-foreach ($custom_fields as $custom_field)
-{
-    if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+foreach ($custom_fields as $custom_field) {
+    if (! $default_custom && ! $custom_field->custom_field_location) {
+        $default_custom = true;
+    }
 
-    if ($custom_field->custom_field_location == 1)
-    {
+    if ($custom_field->custom_field_location == 1) {
         print_field($this->mdl_invoices, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
     }
 }
 ?>
 
 <?php
-if ($invoice->invoice_status_id != 1)
-{
+if ($invoice->invoice_status_id != 1) {
 ?>
                             <div class="col-xs-12">
                                 <div class="form-group">
@@ -566,8 +606,7 @@ if ($invoice->invoice_status_id != 1)
             </div>
 
 <?php
-if ($default_custom)
-{
+if ($default_custom) {
 ?>
             <div class="row">
                 <div class="col-xs-12">
@@ -580,10 +619,8 @@ if ($default_custom)
                             <div class="row">
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
-    foreach ($custom_fields as $custom_field)
-    {
-        if (! $custom_field->custom_field_location) // == 0
-        {
+    foreach ($custom_fields as $custom_field) {
+        if (! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_invoices, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }
@@ -599,8 +636,8 @@ if ($default_custom)
 ?>
 
         </div>
-
     </div>
 </div>
 
-<?php _dropzone_script($invoice->invoice_url_key, $invoice->client_id); ?>
+<?php
+_dropzone_script($invoice->invoice_url_key, $invoice->client_id);

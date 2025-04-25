@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -32,20 +31,18 @@ class Payment_Information extends Base_Controller
         // Check if the invoice exists and is billable
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
-        if (! $invoice)
-        {
+        if (! $invoice) {
             $this->session->set_flashdata('alert_error', lang('invoice_not_found'));
             redirect('guest'); // /invoices
         }
 
         // Check if the invoice is payable
-        if ($invoice->invoice_balance == 0)
-        {
-            if ($this->session->user_id)
-            {
+        if ($invoice->invoice_balance == 0) {
+            if ($this->session->user_id) {
                 $this->session->set_flashdata('alert_info', lang('invoice_already_paid'));
                 redirect('guest'); // /invoices
             }
+
             $disable_form = true;
         }
 
@@ -55,39 +52,33 @@ class Payment_Information extends Base_Controller
         $gateways = $this->config->item('payment_gateways');
 
         $available_drivers = [];
-        if (! $disable_form)
-        {
-            foreach ($gateways as $driver => $fields)
-            {
+        if (! $disable_form) {
+            foreach ($gateways as $driver => $fields) {
                 $d = strtolower($driver);
 
-                if (get_setting('gateway_' . $d . '_enabled') == 1)
-                {
+                if (get_setting('gateway_' . $d . '_enabled') == 1) {
                     $invoice_payment_method = $invoice->payment_method;
                     $driver_payment_method = get_setting('gateway_' . $d . '_payment_method');
 
-                    if ($invoice_payment_method == 0 || $driver_payment_method == 0 || $driver_payment_method == $invoice_payment_method)
-                    {
-                        array_push($available_drivers, $driver);
+                    if ($invoice_payment_method == 0 || $driver_payment_method == 0 || $driver_payment_method == $invoice_payment_method) {
+                        $available_drivers[] = $driver;
                     }
                 }
             }
         }
 
         // If only one provider is available, serve it without showing options
-        if (count($available_drivers) == 1)
-        {
+        if (count($available_drivers) == 1) {
             $payment_provider = $available_drivers[0];
         }
 
         // Get additional invoice information
         $payment_method = $this->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
-        if ($invoice->payment_method == 0)
-        {
+        if ($invoice->payment_method == 0) {
             $payment_method = null;
         }
 
-        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time() ? true : false);
+        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
 
         // Return the view
         $data =

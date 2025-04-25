@@ -11,6 +11,9 @@ if ( ! defined('BASEPATH')) {
  * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
+ *
+ * ZUGFeRD v1.0 (Historic file)
+ * Only for update purpose (from 1.4.7 to 1.6.2) when the include_zugferd option are active. If not, I'm deleted!
  */
 
 /**
@@ -34,7 +37,7 @@ class Zugferdv10Xml
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
     }
 
-    public function xml(): void
+    public function xml()
     {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->doc->formatOutput = true;
@@ -164,7 +167,13 @@ class Zugferdv10Xml
     protected function xmlSellerTradeParty($index = '', $item = '')
     {
         $node = $this->doc->createElement('ram:SellerTradeParty');
+
+        if ( ! empty($this->invoice->user_company)) {
+            $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_company)));
+            $node->appendChild($this->doc->createElement('ram:DefinedTradeContact', htmlsc($this->invoice->user_name)));
+        } else {
         $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
+        }
 
         // PostalTradeAddress
         $addressNode = $this->doc->createElement('ram:PostalTradeAddress');

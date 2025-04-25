@@ -8,6 +8,7 @@
 
         // Creates the invoice
         $('#quote_to_invoice_confirm').click(function () {
+            show_loader(); // Show spinner
             $.post("<?php echo site_url('quotes/ajax/quote_to_invoice'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
                     client_id: $('#client_id').val(),
@@ -25,8 +26,8 @@
                     }
                     else {
                         // The validation was not successful
-                        $('.fullpage-loader-close').click();
-                        $('.has-error').removeClass('has-error');
+                        close_loader();
+                        $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('[name="' + key + '"]').parent().parent().addClass('has-error');
                         }

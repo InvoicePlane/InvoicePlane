@@ -5,8 +5,14 @@
             <th><?php _trans('active'); ?></th>
             <th><?php _trans('client_name'); ?></th>
             <th><?php _trans('email_address'); ?></th>
+<?php
+if ($einvoicing) {
+?>
             <th><?php echo ' e-' . trans('invoicing') . ' ' . ucfirst(trans('version')); ?></th>
             <th><?php echo ' e-' . trans('invoicing') . ' ' . trans('active'); ?></th>
+<?php
+}
+?>
             <th><?php _trans('phone_number'); ?></th>
             <th class="amount last"><?php _trans('balance'); ?></th>
             <th><?php _trans('options'); ?></th>
@@ -15,8 +21,7 @@
         <tbody>
 <?php
 $class_checks = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning']; // e-invoice
-foreach ($records as $client)
-{
+foreach ($records as $client) {
 ?>
             <tr>
                 <td>
@@ -24,23 +29,26 @@ foreach ($records as $client)
                 </td>
                 <td><?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?></td>
                 <td><?php _htmlsc($client->client_email); ?></td>
+<?php
+if ($einvoicing) {
+?>
                 <td><?php _htmlsc($client->client_einvoicing_version); ?></td>
                 <td>
 <?php
-if ($client->client_einvoicing_active == 1)
-{
+    if ($client->client_einvoicing_active == 1) {
 ?>
                     <i class="<?php echo $class_checks[0] ?>"></i>
 <?php
-}
-elseif ($client->client_einvoicing_version != '')
-{
+    } elseif ($client->client_einvoicing_version != '') {
 ?>
                     <i class="<?php echo $class_checks[1] ?>"></i>
 <?php
-}
+    }
 ?>
                 </td>
+<?php
+}
+?>
                 <td><?php _htmlsc($client->client_phone ? $client->client_phone : ($client->client_mobile ? $client->client_mobile : '')); ?></td>
                 <td class="amount last"><?php echo format_currency($client->client_invoice_balance); ?></td>
                 <td>

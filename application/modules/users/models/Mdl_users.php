@@ -1,16 +1,16 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -121,9 +121,6 @@ class Mdl_Users extends Response_Model
             'user_tax_code' => [
                 'field' => 'user_tax_code',
             ],
-            'user_subscribernumber' => [
-                'field' => 'user_subscribernumber',
-            ],
             'user_invoicing_contact' => [
                 'field' => 'user_invoicing_contact',
                 'rules' => 'trim',
@@ -144,6 +141,9 @@ class Mdl_Users extends Response_Model
                 'rules' => 'trim|xss_clean',
             ],
             // SUMEX
+            'user_subscribernumber' => [
+                'field' => 'user_subscribernumber',
+            ],
             'user_gln' => [
                 'field' => 'user_gln',
             ],
@@ -151,6 +151,21 @@ class Mdl_Users extends Response_Model
                 'field' => 'user_rcc',
             ],
         ];
+    }
+
+    /**
+     * @param int $amount
+     *
+     * @return mixed
+     */
+    public function get_latest($amount = 20)
+    {
+        return $this->mdl_users
+            ->where('user_active', 1)
+            ->order_by('user_id', 'DESC')
+            ->limit($amount)
+            ->get()
+            ->result();
     }
 
     /**
@@ -219,9 +234,6 @@ class Mdl_Users extends Response_Model
             'user_tax_code' => [
                 'field' => 'user_tax_code',
             ],
-            'user_subscribernumber' => [
-                'field' => 'user_subscribernumber',
-            ],
             'user_invoicing_contact' => [
                 'field' => 'user_invoicing_contact',
             ],
@@ -238,6 +250,9 @@ class Mdl_Users extends Response_Model
                 'field' => 'user_remittance',
             ],
             // SUMEX
+            'user_subscribernumber' => [
+                'field' => 'user_subscribernumber',
+            ],
             'user_gln' => [
                 'field' => 'user_gln',
             ],
@@ -310,8 +325,6 @@ class Mdl_Users extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      *
      * @return int|null
      */

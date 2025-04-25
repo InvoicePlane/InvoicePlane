@@ -17,8 +17,7 @@
             <th class="amount"><?php _trans('total'); ?></th>
         </tr>
 <?php
-foreach ($results as $result)
-{
+foreach ($results as $result) {
 ?>
         <tr>
             <td><?php _htmlsc(format_client($result)); ?></td>

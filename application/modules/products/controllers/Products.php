@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -46,9 +46,6 @@ class Products extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -64,10 +61,8 @@ class Products extends Admin_Controller
             redirect('products');
         }
 
-        if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_products->prep_form($id)) {
-                show_404();
-            }
+        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_products->prep_form($id)) {
+            show_404();
         }
 
         $this->load->model('families/mdl_families');

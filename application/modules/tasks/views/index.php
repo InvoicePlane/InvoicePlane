@@ -18,11 +18,7 @@
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div id="filter_results">
-        <?php $this->layout->load_view('tasks/partial_tasks_table',
-            [
-                'tasks' => $tasks,
-            ]
-        ); ?>
+        <?php $this->layout->load_view('tasks/partial_tasks_table'); ?>
     </div>
 
 </div>

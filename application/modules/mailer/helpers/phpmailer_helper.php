@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,16 +12,11 @@ if ( ! defined('BASEPATH')) {
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
-
 /**
  * @param      $from
  * @param      $to
  * @param      $subject
  * @param      $message
- * @param null $attachment_path
- * @param null $cc
- * @param null $bcc
- * @param null $more_attachments
  *
  * @return bool
  */
@@ -72,7 +67,7 @@ function phpmail_send(
             }
 
             // Check if certificates should not be verified
-            if ( ! get_setting('smtp_verify_certs', true)) {
+            if (! get_setting('smtp_verify_certs', true)) {
                 $mail->SMTPOptions = [
                     'ssl' => [
                         'verify_peer'       => false,
@@ -137,14 +132,21 @@ function phpmail_send(
         $mail->addBCC($admin->user_email);
     }
 
-    // Add the attachments if needed - eInvoicing++
+    $xml_del = false;
+    // Add the attachments if needed
     if ($attachment_path && get_setting('email_pdf_attachment')) {
         $mail->addAttachment($attachment_path);
 
-        // attach the XML file
+        // eInvoicing replace ARCHIVE (pdf) to TEMP (xml) for no embed_xml - since 1.6.3
+        $attachment_path = strtr($attachment_path, [UPLOADS_ARCHIVE_FOLDER => UPLOADS_TEMP_FOLDER]);
+
+        // The XML eInvoicing file exist in temporary?
         $xml_file = rtrim($attachment_path, '.pdf') . '.xml';
         if (file_exists($xml_file)) {
+            // Attach eInvoicing temp file
             $mail->addAttachment($xml_file);
+            // Need Delete
+            $xml_del = true;
         }
     }
 
@@ -156,13 +158,17 @@ function phpmail_send(
     }
 
     // And away it goes...
-    if ($mail->send()) {
-        $CI->session->set_flashdata('alert_success', 'The email has been sent');
+    $ok = $mail->send();
 
-        return true;
+    // Delete the tmp CII-XML file
+    if ($xml_del) {
+        unlink($xml_file);
     }
-    // Or not...
-    $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
 
-    return false;
+    // Only Notify the error. The success is in mailer controller.
+    if (!$ok) {
+        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+    }
+
+    return $ok;
 }

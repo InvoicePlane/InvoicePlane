@@ -1,16 +1,31 @@
-<script>
+<?php
+// Little helper
+$its_mine = $this->session->__get('user_id') == $quote->user_id;
+$my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
+?>
 
+<script>
     $(function () {
         $('.btn_add_product').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" +
-                    Math.floor(Math.random() * 1000)
-            );
+            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_row').click(function () {
             $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            // Legacy:no: check items tax usage is correct (ReLoad on change)
+            check_items_tax_usages();
         });
+
+<?php if ( ! $items) { ?>
+        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+<?php } ?>
+
+        // Legacy:no: check items tax usage is correct (Load on change)
+        $(document).on('loaded', check_items_tax_usages());
+<?php
+if ($quote->quote_status_id == 1)
+{
+?>
 
         $('#quote_change_client').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
@@ -19,9 +34,15 @@
             });
         });
 
-        <?php if (!$items) { ?>
-        $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
-        <?php } ?>
+        $('#quote_change_user').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_user'); ?>", {
+                quote_id: <?php echo $quote_id; ?>,
+                user_id: "<?php echo $this->db->escape_str($quote->user_id); ?>",
+            });
+        });
+<?php
+} // End if
+?>
 
         $('#btn_save_quote').click(function () {
             var items = [];
@@ -165,29 +186,60 @@
     });
 </script>
 
-<?php echo $modal_delete_quote; ?>
-<?php echo $modal_add_quote_tax; ?>
-
+<?php
+echo $modal_delete_quote;
+echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have global taxes - since v1.6.3
+?>
 <div id="headerbar">
     <h1 class="headerbar-title">
-        <?php
-        echo trans('quote') . ' ';
-        echo($quote->quote_number ? '#' . $quote->quote_number : $quote->quote_id);
-        ?>
+        <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing') ;?>: <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>">
+            <?php echo trans('quote') . ' ' . ($quote->quote_number ? '#' . $quote->quote_number : trans('id') . ': ' . $quote->quote_id); ?>
+        </span>
+<?php
+// Nb Admins > 1 only
+if ($change_user)
+{
+?>
+        <a data-toggle="tooltip" data-placement="bottom"
+           title="<?php _trans('edit') ;?> <?php _trans('user') ;?> (<?php _trans('invoicing') ;?>): <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>"
+           href="<?php echo site_url('users/form/' . $quote->user_id); ?>">
+            <i class="fa fa-xs fa-user text-<?php echo $my_class; ?>"></i>
+                <span class="hidden-xs"><?php _htmlsc($quote->user_name); ?></span>
+        </a>
+<?php
+if ($quote->quote_status_id == 1)
+{
+?>
+
+        <span id="quote_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
+              data-toggle="tooltip" data-placement="bottom"
+              title="<?php _trans('change_user'); ?>"></span>
+<?php
+    } // End if draft
+} // End if change_user
+?>
     </h1>
 
     <div class="headerbar-item pull-right btn-group">
         <div class="options btn-group btn-group-sm">
-            <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
             <ul class="dropdown-menu">
+<?php
+// Legacy calculation have global taxes - since v1.6.3
+if ($legacy_calculation)
+{
+?>
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
                         <i class="fa fa-plus fa-margin"></i>
                         <?php _trans('add_quote_tax'); ?>
                     </a>
                 </li>
+<?php
+}
+?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-quote-id="<?php echo $quote_id; ?>">
@@ -283,13 +335,21 @@
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="quote-properties">
-                                    <label for="quote_number">
-                                        <?php _trans('quote'); ?> #
-                                    </label>
+<?php if ($einvoice_name) : ?>
+                                    <span class="pull-right" id="e_invoice_active"
+                                          data-toggle="tooltip" data-placement="bottom"
+                                          title="e-<?php echo trans('invoice') . ' ' . trans('version') . PHP_EOL . $einvoice_name; ?>  🗸"
+                                    >
+                                    <i class="fa fa-file-code-o"></i>&nbsp;<?php echo $einvoice_name; ?>&nbsp;<i class="fa fa-check-square-o text-success"></i></span>
+<?php endif; ?>
+                                    <label for="quote_number"><?php _trans('quote'); ?> #</label>
                                     <input type="text" id="quote_number" class="form-control"
-                                        <?php if ($quote->quote_number) : ?> value="<?php echo $quote->quote_number; ?>"
-                                        <?php else : ?> placeholder="<?php _trans('not_set'); ?>"
-                                        <?php endif; ?>>
+<?php if ($quote->quote_number) : ?>
+                                           value="<?php echo $quote->quote_number; ?>"
+<?php else : ?>
+                                           placeholder="<?php _trans('not_set'); ?>"
+<?php endif; ?>
+                                    >
                                 </div>
                                 <div class="quote-properties has-feedback">
                                     <label for="quote_date_created">
@@ -365,10 +425,11 @@ if ($quote->quote_status_id != 1)
                             </div>
 <?php
 $default_custom = false;
-$classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-md-6'];
+$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field)
 {
     if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+
     if ($custom_field->custom_field_location == 1)
     {
         print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);

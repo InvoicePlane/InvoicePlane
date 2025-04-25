@@ -1,8 +1,8 @@
 <?php
 
-$config = array(
+$config = [
     // Works in conjunction with MY_Model to provide pagination style
-    'pagination_style' => array(
+    'pagination_style' => [
         'first_link' => '&lsaquo;&lsaquo;',
         'next_link' => '&rsaquo;',
         'prev_link' => '&lsaquo;',
@@ -20,6 +20,5 @@ $config = array(
         'prev_tag_open' => '<li>',
         'prev_tag_close' => '</li>',
         'num_links' => '10'
-    ),
-
-);
+    ],
+];
