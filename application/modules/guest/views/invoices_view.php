@@ -17,7 +17,7 @@ if ($invoice_tax_rates)
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
 <?php
-if ($invoice->invoice_balance == 0 || $invoice->invoice_status_id != 4)
+if ($invoice->invoice_balance == 0 || $invoice->invoice_status_id >= 4)
 {
 ?>
             <button class="btn btn-success disabled">
@@ -59,7 +59,7 @@ elseif ($enable_online_payments)
                 <div class="col-xs-12 col-md-9 clearfix">
                     <div class="pull-left">
 
-                        <h3><?php echo format_client($invoice); ?></h3>
+                        <h3><?php _htmlsc(format_client($invoice)); ?></h3>
 
                         <div class="client-address">
                             <?php $this->layout->load_view('clients/partial_client_address', array('client' => $invoice)); ?>

@@ -19,7 +19,7 @@
 
     <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
-    <link rel="stylesheet" href="<?php _theme_asset('css/welcome.min.css'); ?>" type="text/css">
+    <link rel="stylesheet" href="<?php _theme_asset('css/welcome.css'); ?>" type="text/css">
     <!--[if lt IE 9]>
     <script src="<?php _core_asset('js/legacy.min.js'); ?>"></script>
     <![endif]-->

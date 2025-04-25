@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -18,7 +18,7 @@ class Mdl_Invoices_Recurring extends Response_Model
 {
     public $table = 'ip_invoices_recurring';
     public $primary_key = 'ip_invoices_recurring.invoice_recurring_id';
-    public $recur_frequencies = array(
+    public $recur_frequencies = [
         '1D' => 'calendar_day_1',
         '2D' => 'calendar_day_2',
         '3D' => 'calendar_day_3',
@@ -47,13 +47,13 @@ class Mdl_Invoices_Recurring extends Response_Model
         '3Y' => 'calendar_year_3',
         '4Y' => 'calendar_year_4',
         '5Y' => 'calendar_year_5',
-    );
+    ];
 
     public function default_select()
     {
         $this->db->select("SQL_CALC_FOUND_ROWS ip_invoices.*,
             ip_clients.client_name,
-			ip_clients.client_surname,
+            ip_clients.client_surname,
             ip_invoices_recurring.*,
             IF(recur_end_date > date(NOW()) OR recur_end_date IS NULL, 'active', 'inactive') AS recur_status", false);
     }
@@ -69,26 +69,26 @@ class Mdl_Invoices_Recurring extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'invoice_id' => array(
+        return [
+            'invoice_id' => [
                 'field' => 'invoice_id',
                 'rules' => 'required'
-            ),
-            'recur_start_date' => array(
+            ],
+            'recur_start_date' => [
                 'field' => 'recur_start_date',
                 'label' => trans('start_date'),
                 'rules' => 'required'
-            ),
-            'recur_end_date' => array(
+            ],
+            'recur_end_date' => [
                 'field' => 'recur_end_date',
                 'label' => trans('end_date')
-            ),
-            'recur_frequency' => array(
+            ],
+            'recur_frequency' => [
                 'field' => 'recur_frequency',
                 'label' => trans('every'),
                 'rules' => 'required'
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -115,10 +115,10 @@ class Mdl_Invoices_Recurring extends Response_Model
      */
     public function stop($invoice_recurring_id)
     {
-        $db_array = array(
-            'recur_end_date' => date('Y-m-d'),
+        $db_array = [
+            'recur_end_date'  => date('Y-m-d'),
             'recur_next_date' => NULL
-        );
+        ];
 
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);
         $this->db->update('ip_invoices_recurring', $db_array);
@@ -143,9 +143,9 @@ class Mdl_Invoices_Recurring extends Response_Model
 
         $recur_next_date = increment_date($invoice_recurring->recur_next_date, $invoice_recurring->recur_frequency);
 
-        $db_array = array(
+        $db_array = [
             'recur_next_date' => $recur_next_date
-        );
+        ];
 
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);
         $this->db->update('ip_invoices_recurring', $db_array);

@@ -79,7 +79,7 @@ class Mdl_Quotes extends Response_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_quotes.quote_date_created DESC');
+        $this->db->order_by('ip_quotes.quote_date_created DESC, ip_quotes.quote_number DESC, ip_quotes.quote_id DESC');
     }
 
     public function default_join()
@@ -201,6 +201,12 @@ class Mdl_Quotes extends Response_Model
             'items_subtotal' => $this->mdl_quote_items->get_items_subtotal($source_id),
         ];
         unset($quote); // Free memory
+
+        // Update the discounts - since v1.6.3
+        $this->where('quote_id', $target_id)->update('ip_quotes', [
+            'quote_discount_percent' => $global_discount['percent'],
+            'quote_discount_amount'  => $global_discount['amount'],
+        ]);
 
         $quote_items = $this->mdl_quote_items->where('quote_id', $source_id)->get()->result();
 

@@ -407,4 +407,40 @@ class Mdl_Setup extends CI_Model
             }
         }
     }
+
+    public function upgrade_039_1_6_3()
+    {
+        //** Set include_zugferd to einvoicing**
+        $einvoicing = '0';
+        $rows = $this->db->query('SELECT * FROM `ip_settings`');
+        foreach($rows->result() as $row) {
+            if($row->setting_key == 'include_zugferd') {
+                $einvoicing = $row->setting_value;
+                $this->db->set('setting_key', 'einvoicing')->where('setting_id', $row->setting_id)->update('ip_settings');
+                break;
+            }
+        }
+        if($einvoicing == '1') {
+            //**Enable einvoicing with Zugferd 1.0 for all clients if einvoicing parameter is on**
+            $data = [ 'client_einvoicing_active' => '1', 'client_einvoicing_version' => 'Zugferdv10'];
+            $rows = $this->db->query('SELECT * FROM `ip_clients`');
+            foreach($rows->result() as $row) {
+                if($row->client_active == '1') {
+                    $this->db->update('ip_clients', $data, ['client_id' => $row->client_id]);
+                }
+            }
+        }
+        else {
+            //**Delete the old zugferd files if einvoicing parameter is off**
+            $filename = 'Zugferdv10';
+            $files[] = APPPATH . 'libraries/XMLtemplates/' . $filename . 'Xml.php';
+            $files[] = APPPATH . 'helpers/XMLconfigs/' . $filename . '.php';
+            foreach($files as $file) {
+                // Delete if exist
+                if (file_exists($file)) {
+                    unlink($file);
+                }
+            }
+        }
+    }
 }

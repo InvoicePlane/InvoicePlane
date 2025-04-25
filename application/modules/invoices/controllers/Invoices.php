@@ -77,39 +77,24 @@ class Invoices extends Admin_Controller
 
     public function archive(): void
     {
-        $invoice_array = [];
-
-        if (isset($_POST['invoice_number'])) {
-            $invoiceNumber = $_POST['invoice_number'];
-            $invoice_array = glob(UPLOADS_ARCHIVE_FOLDER . '*' . '_' . $invoiceNumber . '.pdf');
-            $this->layout->set(
-                [
-                    'invoices_archive' => $invoice_array,
-                ]
-            );
-            $this->layout->buffer('content', 'invoices/archive');
-            $this->layout->render();
-        } else {
-            foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
-                array_push($invoice_array, $file);
-            }
-
-            rsort($invoice_array);
-            $this->layout->set(
-                [
-                    'invoices_archive' => $invoice_array,
-                ]
-            );
-            $this->layout->buffer('content', 'invoices/archive');
-            $this->layout->render();
-        }
+        $invoice_array = $this->mdl_invoices->get_archives(0);
+        $this->layout->set(
+            [
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_archives'),
+                'filter_method'      => 'filter_archives',
+                'invoices_archive'   => $invoice_array,
+            ]
+        );
+        $this->layout->buffer('content', 'invoices/archive');
+        $this->layout->render();
     }
 
     public function download($invoice): void
     {
         $safeBaseDir = realpath(UPLOADS_ARCHIVE_FOLDER);
 
-        $fileName = basename($invoice); // Strip directory traversal sequences
+        $fileName = urldecode(basename($invoice)); // Strip directory traversal sequences
         $filePath = realpath($safeBaseDir . DIRECTORY_SEPARATOR . $fileName);
 
         if ($filePath === false || ! str_starts_with($filePath, $safeBaseDir)) {
@@ -148,7 +133,7 @@ class Invoices extends Admin_Controller
                 'upload/mdl_uploads',
             ]
         );
-        $this->load->helper(['custom_values', 'client', 'dropzone']);
+        $this->load->helper(['custom_values', 'dropzone', 'e-invoice']);
         $this->load->module('payments');
 
         $this->db->reset_query();
@@ -174,15 +159,19 @@ class Invoices extends Admin_Controller
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result();
         $custom_values = [];
-        foreach ($custom_fields as $custom_field) {
-            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-                $custom_values[$custom_field->custom_field_id] = $values;
+        foreach ($custom_fields as $custom_field)
+        {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
+            {
+                $values                                          = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $custom_values[ $custom_field->custom_field_id ] = $values;
             }
         }
 
-        foreach ($custom_fields as $cfield) {
-            foreach ($fields as $fvalue) {
+        foreach ($custom_fields as $cfield)
+        {
+            foreach ($fields as $fvalue)
+            {
                 if ($fvalue->invoice_custom_fieldid == $cfield->custom_field_id) {
                     // TODO: Hackish, may need a better optimization
                     $this->mdl_invoices->set_form_value(
@@ -198,11 +187,28 @@ class Invoices extends Admin_Controller
         $payment_cf       = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
         $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
 
+        $items            = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
+
+        // Name of e-invoice library or false
+        $einvoice_name = ($invoice->client_einvoicing_active > 0 && $invoice->client_einvoicing_version != '');
+        $einvoice_name = $einvoice_name ? get_xml_full_name($invoice->client_einvoicing_version) : false;
+
+        if ($einvoice_name) {
+            // Legacy calculation false: helper to Alert if not standard taxes (number_helper) - since 1.6.3
+            $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
+        }
+
+        // Activate 'Change_user' if admin users > 1  (get the sum of user type = 1 & active)
+        $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
+        $change_user = $change_user->user_type > 1;
+
         $this->layout->set(
             [
                 'invoice'           => $invoice,
-                'items'             => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
+                'items'             => $items,
                 'invoice_id'        => $invoice_id,
+                'einvoice_name'     => $einvoice_name,
+                'change_user'       => $change_user,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
                 'units'             => $this->mdl_units->get()->result(),

@@ -14,17 +14,28 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * @param object $client
+ * @param obj|int $client (or id - since 1.6.3)
+ * @param bool    $show_title - since 1.6.3
  * @return string
  */
-function format_client($client)
+function format_client($client, $show_title = true) :string
 {
-    $client_title='';
-    if(property_exists($client, 'client_title')){
-        $client_title = $client->client_title === 'custom' ? '' : $client->client_title ?? '';
+    // Get an id
+    if ($client && is_numeric($client)) {
+        $CI = & get_instance();
+        if ( ! property_exists($CI, 'mdl_clients'))
+            $CI->load->model('clients/mdl_clients');
+        $client = $CI->mdl_clients->get_by_id($client);
+    }
+    // Not exist or find, Stop.
+    if (empty($client->client_name)) return '';
+
+    $client_title = '';
+    if($show_title && ! empty($client->client_title)) {
+        $client_title = $client->client_title != 'custom' ? ucfirst(trans($client->client_title)) . ' ' : '';
     }
 
-    return ucfirst(trans($client_title)) . ' ' . $client->client_name . (empty($client->client_surname) ? '' : ' ' . $client->client_surname);
+    return $client_title . $client->client_name . (empty($client->client_surname) ? '' : ' ' . $client->client_surname);
 }
 
 /**

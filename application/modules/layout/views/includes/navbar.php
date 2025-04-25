@@ -86,7 +86,7 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('tasks/form', trans('create_task')); ?></li>
                         <li><?php echo anchor('tasks/index', trans('view_tasks')); ?></li>
-						<li role="separator" class="divider"></li>
+                        <li role="separator" class="divider"></li>
                         <li><?php echo anchor('projects/form', trans('create_project')); ?></li>
                         <li><?php echo anchor('projects/index', trans('view_projects')); ?></li>
                     </ul>

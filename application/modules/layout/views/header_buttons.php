@@ -11,9 +11,9 @@ if ( ! isset($hide_submit_button))
 }
 if ( ! isset($hide_cancel_button))
 {
-    $href_cancel = empty($href_cancel) ? 'onclick="window.history.back()"' : 'href="' . $href_cancel . '"';
+    $attribute_cancel = empty($attribute_cancel) ? 'onclick="window.history.back()"' : $attribute_cancel;
 ?>
-        <button type="button" <?php echo $href_cancel; ?> id="btn-cancel" name="btn_cancel" class="btn btn-danger ajax-loader" value="1">
+        <button type="button" <?php echo $attribute_cancel; ?> id="btn-cancel" name="btn_cancel" class="btn btn-danger ajax-loader" value="1">
             <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
         </button>
 <?php

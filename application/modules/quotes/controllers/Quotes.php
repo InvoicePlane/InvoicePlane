@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -96,7 +96,7 @@ class Quotes extends Admin_Controller
             ]
         );
 
-        $this->load->helper(['custom_values', 'dropzone']);
+        $this->load->helper(['custom_values', 'dropzone', 'e-invoice']);
 
         $fields = $this->mdl_quote_custom->by_id($quote_id)->get()->result();
         $this->db->reset_query();
@@ -115,23 +115,27 @@ class Quotes extends Admin_Controller
 
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-
         if (!$quote) {
             show_404();
         }
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result();
         $custom_values = [];
-        foreach ($custom_fields as $custom_field) {
-            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
+        foreach ($custom_fields as $custom_field)
+        {
+            if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields()))
+            {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
 
-        foreach ($custom_fields as $cfield) {
-            foreach ($fields as $fvalue) {
-                if ($fvalue->quote_custom_fieldid == $cfield->custom_field_id) {
+        foreach ($custom_fields as $cfield)
+        {
+            foreach ($fields as $fvalue)
+            {
+                if ($fvalue->quote_custom_fieldid == $cfield->custom_field_id)
+                {
                     // TODO: Hackish, may need a better optimization
                     $this->mdl_quotes->set_form_value(
                         'custom[' . $cfield->custom_field_id . ']',
@@ -142,11 +146,29 @@ class Quotes extends Admin_Controller
             }
         }
 
+        $items = $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
+
+        // Name of e-invoice library or false
+        $einvoice_name = ($quote->client_einvoicing_active > 0 && $quote->client_einvoicing_version != '');
+        $einvoice_name = $einvoice_name ? get_xml_full_name($quote->client_einvoicing_version) : false;
+
+        if ($einvoice_name) {
+            // Legacy calculation false: helper to Alert if not standard taxes (number_helper) - since 1.6.3
+            $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
+        }
+
+
+        // Activate 'Change_user' if admin users > 1  (get the sum of user type = 1 & active)
+        $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
+        $change_user = $change_user->user_type > 1;
+
         $this->layout->set(
             [
                 'quote'           => $quote,
-                'items'           => $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result(),
+                'items'           => $items,
                 'quote_id'        => $quote_id,
+                'einvoice_name'   => $einvoice_name,
+                'change_user'     => $change_user,
                 'units'           => $this->mdl_units->get()->result(),
                 'tax_rates'       => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),

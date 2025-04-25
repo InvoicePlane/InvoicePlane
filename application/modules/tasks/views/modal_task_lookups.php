@@ -25,36 +25,44 @@
             $('#task-modal-submit').hide();
         }
 
-        // Creates the invoice
+        // Creates the invoice item
         $('.select-items-confirm').click(function () {
             var task_ids = [];
 
             $("input[name='task_ids[]']:checked").each(function () {
                 task_ids.push(parseInt($(this).val()));
             });
+            // No Check No post
+            if ( ! task_ids.length) return; // todo: why not animate checkboxes
 
             $.post("<?php echo site_url('tasks/ajax/process_task_selections'); ?>", {
                 task_ids: task_ids
             }, function (data) {
-                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
                 var items = JSON.parse(data);
 
                 for (var key in items) {
                     // Set default tax rate id if empty
-                    if (!items[key].tax_rate_id) items[key].tax_rate_id = 0;
+                    if (!items[key].tax_rate_id) items[key].tax_rate_id = '<?php echo $default_item_tax_rate; ?>';
 
-                    if ($('#item_table tbody:last input[name=item_name]').val() !== '') {
+                    if ($('#item_table .item:last input[name=item_name]').val() !== '') {
                         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
                     }
-                    $('#item_table .item:last input[name=item_task_id]').val(items[key].task_id);
-                    $('#item_table .item:last input[name=item_name]').val(items[key].task_name);
-                    $('#item_table .item:last textarea[name=item_description]').val(items[key].task_description);
-                    $('#item_table .item:last input[name=item_price]').val(items[key].task_price);
-                    $('#item_table .item:last input[name=item_quantity]').val('1');
-                    $('#item_table .item:last select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
+
+                    var last_item_row = $('#item_table .item:last');
+
+                    last_item_row.find('input[name=item_task_id]').val(items[key].task_id);
+                    last_item_row.find('input[name=item_name]').val(items[key].task_name);
+                    last_item_row.find('textarea[name=item_description]').val(items[key].task_description);
+                    last_item_row.find('input[name=item_price]').val(items[key].task_price);
+                    last_item_row.find('input[name=item_quantity]').val('1');
+                    last_item_row.find('select[name=item_tax_rate_id]').val(items[key].tax_rate_id);
 
                     $('#modal-choose-items').modal('hide');
                     $('#invoice_change_client').hide();
+
+                    // Legacy:no: check items tax usage is correct (ReLoad on change) - since 1.6.3
+                    check_items_tax_usages();
                 }
             });
         });

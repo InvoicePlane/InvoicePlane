@@ -53,7 +53,7 @@ class Ajax extends Admin_Controller
         foreach ($clients as $client) {
             $response[] = [
                 'id' => $client->client_id,
-                'text' => (format_client($client)),
+                'text' => htmlsc(format_client($client, false)),
             ];
         }
 
@@ -81,7 +81,7 @@ class Ajax extends Admin_Controller
         foreach ($clients as $client) {
             $response[] = [
                 'id' => $client->client_id,
-                'text' => htmlsc(format_client($client)),
+                'text' => htmlsc(format_client($client, false)),
             ];
         }
 

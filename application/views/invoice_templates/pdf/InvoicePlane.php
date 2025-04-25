@@ -329,14 +329,20 @@ if($add_table_and_head_for_sums)
 
 </main>
 
-<footer>
-    <?php if ($invoice->invoice_terms) { ?>
+<div class="invoice-terms">
+<?php if ($invoice->invoice_terms) { ?>
         <div class="notes">
             <b><?php _trans('terms'); ?></b><br/>
             <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
         </div>
-    <?php } ?>
-</footer>
+<?php } ?>
+</div>
+
+<htmlpagefooter name="footer">
+    <footer>
+        <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number;?> - <?php _trans('page'); ?> {PAGENO} / {nbpg}
+    </footer>
+</htmlpagefooter>
 
 </body>
 </html>

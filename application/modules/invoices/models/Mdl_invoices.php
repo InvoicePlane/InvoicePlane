@@ -75,7 +75,7 @@ class Mdl_Invoices extends Response_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_invoices.invoice_date_created DESC');
+        $this->db->order_by('ip_invoices.invoice_date_created DESC, ip_invoices.invoice_number DESC, ip_invoices.invoice_id DESC');
     }
 
     public function default_join()
@@ -229,6 +229,12 @@ class Mdl_Invoices extends Response_Model
         ];
         unset($invoice); // Free memory
 
+        // Update the discounts - since v1.6.3
+        $this->where('invoice_id', $target_id)->update('ip_invoices', [
+            'invoice_discount_percent' => $global_discount['percent'],
+            'invoice_discount_amount'  => $global_discount['amount'],
+        ]);
+
         // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
@@ -268,6 +274,8 @@ class Mdl_Invoices extends Response_Model
             $this->mdl_invoice_tax_rates->save(null, $db_array);
         }
 
+
+
         // Copy the custom fields
         $this->load->model('custom_fields/mdl_invoice_custom');
         $custom_fields = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
@@ -276,6 +284,7 @@ class Mdl_Invoices extends Response_Model
         foreach ($custom_fields as $field) {
             $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
         }
+
         $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
 
@@ -298,6 +307,13 @@ class Mdl_Invoices extends Response_Model
             'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
             'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
         ];
+
+        // Update the discounts - since v1.6.3
+        $this->where('invoice_id', $target_id)->update('ip_invoices', [
+            'invoice_discount_percent' => $global_discount['percent'],
+            'invoice_discount_amount'  => $global_discount['amount'],
+        ]);
+
         unset($invoice); // Free memory
 
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
@@ -475,6 +491,26 @@ class Mdl_Invoices extends Response_Model
 
         return $this->invoice_custom->get_by_invid($id);
     }
+
+    /**
+     * @return array
+     */
+    public function get_archives($invoice_number): array
+    {
+        $invoice_array = [];
+
+        if ( ! empty($invoice_number)) {
+            $invoice_array = glob(UPLOADS_ARCHIVE_FOLDER . '*' . '_*' . $invoice_number . '*.pdf');
+        } else {
+            foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
+                array_push($invoice_array, $file);
+            }
+            rsort($invoice_array);
+        }
+
+        return $invoice_array;
+    }
+
 
     /**
      * @param int $invoice_id

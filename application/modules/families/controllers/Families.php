@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -34,7 +34,12 @@ class Families extends Admin_Controller
         $this->mdl_families->paginate(site_url('families/index'), $page);
         $families = $this->mdl_families->result();
 
-        $this->layout->set('families', $families);
+        $this->layout->set([
+            'filter_display'     => true,
+            'filter_placeholder' => trans('filter_families'),
+            'filter_method'      => 'filter_families',
+            'families'           => $families,
+        ]);
         $this->layout->buffer('content', 'families/index');
         $this->layout->render();
     }

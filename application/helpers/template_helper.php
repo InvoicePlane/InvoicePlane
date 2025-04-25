@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
@@ -124,7 +124,7 @@ function get_invoice_status($id)
     $CI = & get_instance();
 
     if (empty($CI->mdl_invoices)) {
-        $CI->load->model('mdl_invoices');
+        $CI->load->model('invoices/mdl_invoices');
     }
     $statuses = $CI->mdl_invoices->statuses();
 

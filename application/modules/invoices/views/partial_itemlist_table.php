@@ -343,6 +343,10 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <td><?php _trans('item_tax'); ?></td>
                 <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
             </tr>
+<?php
+            if ($legacy_calculation)
+            {
+?>
             <tr>
                 <td><?php _trans('invoice_tax'); ?></td>
                 <td>
@@ -351,8 +355,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                             <form method="post"
                                 action="<?php echo site_url('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id) ?>">
                                 <?php _csrf_field(); ?>
-                                <button type="submit" class="btn btn-xs btn-link"
-                                        onclick="return confirm('<?php _trans('delete_tax_warning'); ?>');">
+                                <button type="submit" class="btn btn-xs btn-link" onclick="var Y=confirm('<?php _trans('delete_tax_warning'); ?>');if(Y)show_loader();return Y;">
                                     <i class="fa fa-trash-o"></i>
                                 </button>
                                 <span class="text-muted">
@@ -369,8 +372,6 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 </td>
             </tr>
 <?php
-            if ($legacy_calculation)
-            {
                 $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
             }
 ?>

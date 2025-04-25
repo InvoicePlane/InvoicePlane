@@ -113,7 +113,7 @@ class Users extends Admin_Controller
             }
         }
 
-        $this->load->helper('custom_values');
+        $this->load->helper(['custom_values', 'e-invoice']);
         $this->load->model(
             [
                 'user_clients/mdl_user_clients',
@@ -123,7 +123,6 @@ class Users extends Admin_Controller
                 'custom_values/mdl_custom_values'
             ]
         );
-        $this->load->helper('country');
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
         $custom_values = [];
@@ -160,6 +159,7 @@ class Users extends Admin_Controller
                 'selected_country' => $this->mdl_users->form_value('user_country') ?: get_setting('default_country'),
                 'clients'          => $this->mdl_clients->where('client_active', 1)->get()->result(),
                 'languages'        => get_available_languages(),
+                'einvoicing'       => get_setting('einvoicing'),
             ]
         );
 

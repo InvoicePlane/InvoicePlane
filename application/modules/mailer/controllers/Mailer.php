@@ -163,18 +163,6 @@ class Mailer extends Admin_Controller
         $to   = $this->input->post('to_email', true);
         $from = $this->input->post('from_email', true);
 
-        if (! filter_var($to, FILTER_VALIDATE_EMAIL))
-        {
-            $this->errors[] = 'to_email';
-        }
-
-        if (! filter_var($from, FILTER_VALIDATE_EMAIL))
-        {
-            $this->errors[] = 'from_email';
-        }
-
-        $this->check_mail_errors('mailer/invoice/' . $invoice_id);
-
         $from         = [$from, $this->input->post('from_name')];
         $pdf_template = $this->input->post('pdf_template', true);
         $subject      = $this->input->post('subject');
@@ -221,20 +209,8 @@ class Mailer extends Admin_Controller
             return;
         }
 
-        $to  = $this->input->post('to_email');
+        $to   = $this->input->post('to_email');
         $from = $this->input->post('from_email');
-
-        if (! filter_var($to, FILTER_VALIDATE_EMAIL))
-        {
-            $this->errors[] = 'to_email';
-        }
-
-        if (! filter_var($from, FILTER_VALIDATE_EMAIL))
-        {
-            $this->errors[] = 'from_email';
-        }
-
-        $this->check_mail_errors('mailer/quote/' . $quote_id);
 
         $from         = [$from, $this->input->post('from_name')];
         $pdf_template = $this->input->post('pdf_template');
@@ -265,22 +241,6 @@ class Mailer extends Admin_Controller
             redirect('quotes/view/' . $quote_id);
         }
         redirect('mailer/quote/' . $quote_id);
-    }
-
-    /**
-     * @param str $redirect
-     */
-    public function check_mail_errors($redirect)
-    {
-        if ($this->errors)
-        {
-            foreach($this->errors as $i => $e)
-            {
-                $this->errors[$i] = strtr(trans('form_validation_valid_email'), ['{field}' => trans($e)]);
-            }
-            $this->session->set_flashdata('alert_error', implode('<br>', $this->errors));
-            redirect($redirect);
-        }
     }
 
 }

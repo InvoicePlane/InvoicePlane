@@ -107,10 +107,11 @@ class Mdl_Items extends Response_Model
     {
         $id = parent::save($id, $db_array);
 
-        $this->load->model('invoices/mdl_item_amounts');
+        $this->load->model([
+            'invoices/mdl_item_amounts',
+            'invoices/mdl_invoice_amounts',
+        ]);
         $this->mdl_item_amounts->calculate($id, $global_discount);
-
-        $this->load->model('invoices/mdl_invoice_amounts');
 
         if (is_object($db_array) && isset($db_array->invoice_id))
         {
@@ -160,13 +161,14 @@ class Mdl_Items extends Response_Model
     }
 
     /**
+     * legacy_calculation false: Need to recalculate invoice amounts - since v1.6.3
+     *
      * @param $invoice_id
      *
      * return items_subtotal
      */
     public function get_items_subtotal($invoice_id)
     {
-        // Needed to recalculate invoice amounts (if legacy_calculation is false)
         $row = $this->db->query("
             SELECT SUM(item_subtotal) AS items_subtotal
             FROM ip_invoice_item_amounts

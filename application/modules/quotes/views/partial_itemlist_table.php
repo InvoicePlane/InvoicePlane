@@ -285,6 +285,10 @@
                 <td><?php _trans('item_tax'); ?></td>
                 <td class="amount"><?php echo format_currency($quote->quote_item_tax_total); ?></td>
             </tr>
+<?php
+            if ($legacy_calculation)
+            {
+?>
             <tr>
                 <td><?php _trans('quote_tax'); ?></td>
                 <td>
@@ -293,8 +297,7 @@
                             <form method="POST" class="form-inline"
                                   action="<?php echo site_url('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id) ?>">
                                 <?php _csrf_field(); ?>
-                                <button type="submit" class="btn btn-xs btn-link"
-                                        onclick="return confirm('<?php _trans('delete_tax_warning'); ?>');">
+                                    <button type="submit" class="btn btn-xs btn-link" onclick="var Y=confirm('<?php _trans('delete_tax_warning'); ?>');if(Y)show_loader();return Y;">
                                     <i class="fa fa-trash-o"></i>
                                 </button>
                                 <span class="text-muted">
@@ -311,8 +314,6 @@
                 </td>
             </tr>
 <?php
-            if ($legacy_calculation)
-            {
                 $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
             }
 ?>

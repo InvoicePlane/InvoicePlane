@@ -18,11 +18,6 @@
                 $('#payment_method_id').prop('disabled', false);
             }
         });
-
-        $(document).ready(function(){
-            $('#btn-cancel').attr('onclick', "window.location.href = '<?php echo site_url() ?>/payments'");
-        });
-
     });
 </script>
 
@@ -41,7 +36,7 @@ if ($payment_id)
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('payment_form'); ?></h1>
-        <?php $this->layout->load_view('layout/header_buttons'); ?>
+        <?php $this->layout->load_view('layout/header_buttons', ['attribute_cancel' => 'onclick="window.location.href = `' . site_url('payments') . '`;"']); ?>
     </div>
 
     <div id="content">
@@ -62,7 +57,7 @@ if (! $payment_id)
 ?>
                         <option value="<?php echo $invoice->invoice_id; ?>"
                                 <?php check_select($this->mdl_payments->form_value('invoice_id'), $invoice->invoice_id); ?>>
-                            <?php echo $invoice->invoice_number . ' - ' . format_client($invoice) . ' - ' . format_currency($invoice->invoice_balance); ?>
+                            <?php echo $invoice->invoice_number . ' - ' . htmlsc(format_client($invoice)) . ' - ' . format_currency($invoice->invoice_balance); ?>
                         </option>
 <?php
     } // End foreach
@@ -71,7 +66,7 @@ else
 {
 ?>
                     <option value="<?php echo $payment->invoice_id; ?>">
-                        <?php echo $payment->invoice_number . ' - ' . format_client($payment) . ' - ' . format_currency($payment->invoice_balance); ?>
+                        <?php echo $payment->invoice_number . ' - ' . htmlsc(format_client($payment)) . ' - ' . format_currency($payment->invoice_balance); ?>
                     </option>
 <?php
 }
@@ -126,18 +121,18 @@ else
 ?>
 
                 <select id="payment_method_id" name="payment_method_id"
-                    class="form-control simple-select" data-minimum-results-for-search="Infinity"
-                    <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
+                        class="form-control simple-select" data-minimum-results-for-search="Infinity"
+                        <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
 <?php
-                    foreach ($payment_methods as $payment_method)
-                    {
+                foreach ($payment_methods as $payment_method)
+                {
 ?>
-                        <option value="<?php echo $payment_method->payment_method_id; ?>"
-                                <?php echo $this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id ? 'selected="selected"' : ''; ?>>
-                            <?php echo $payment_method->payment_method_name; ?>
-                        </option>
+                    <option value="<?php echo $payment_method->payment_method_id; ?>"
+                            <?php echo $this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id ? 'selected="selected"' : ''; ?>>
+                        <?php echo $payment_method->payment_method_name; ?>
+                    </option>
 <?php
-                    }
+                }
 ?>
                 </select>
             </div>
@@ -158,7 +153,7 @@ else
 $classes = ['col-xs-12 col-sm-2 text-right text-left-xs', 'col-xs-12 col-sm-6', 'control-label', 'form-group'];
 foreach ($custom_fields as $custom_field)
 {
-	print_field($this->mdl_payments, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+    print_field($this->mdl_payments, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
 }
 ?>
 

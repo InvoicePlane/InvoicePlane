@@ -8,10 +8,10 @@ if (! defined('BASEPATH'))
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -37,10 +37,10 @@ class Payments extends Admin_Controller
 
         $this->layout->set(
             [
-                'payments' => $payments,
-                'filter_display' => true,
+                'filter_display'     => true,
                 'filter_placeholder' => trans('filter_payments'),
-                'filter_method' => 'filter_payments',
+                'filter_method'      => 'filter_payments',
+                'payments'           => $payments,
             ]
         );
 
@@ -108,10 +108,12 @@ class Payments extends Admin_Controller
         }
 
         $this->load->helper('custom_values');
-        $this->load->model('invoices/mdl_invoices');
-        $this->load->model('payment_methods/mdl_payment_methods');
-        $this->load->model('custom_fields/mdl_custom_fields');
-        $this->load->model('custom_values/mdl_custom_values');
+        $this->load->model([
+            'invoices/mdl_invoices',
+            'payment_methods/mdl_payment_methods',
+            'custom_fields/mdl_custom_fields',
+            'custom_values/mdl_custom_values',
+        ]);
 
         $open_invoices = $this->mdl_invoices->is_open()->get()->result();
 
@@ -154,12 +156,12 @@ class Payments extends Admin_Controller
 
         $this->layout->set(
             [
-                'payment_id' => $id,
-                'payment_methods' => $this->mdl_payment_methods->get()->result(),
-                'open_invoices' => $open_invoices,
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'amounts' => json_encode($amounts),
+                'payment_id'              => $id,
+                'payment_methods'         => $this->mdl_payment_methods->get()->result(),
+                'open_invoices'           => $open_invoices,
+                'custom_fields'           => $custom_fields,
+                'custom_values'           => $custom_values,
+                'amounts'                 => json_encode($amounts),
                 'invoice_payment_methods' => json_encode($invoice_payment_methods),
             ]
         );
@@ -178,14 +180,17 @@ class Payments extends Admin_Controller
      */
     public function online_logs($page = 0)
     {
-        $this->load->model('mdl_payment_logs');
+        $this->load->model('payments/mdl_payment_logs');
 
         $this->mdl_payment_logs->paginate(site_url('payments/online_logs'), $page);
         $payment_logs = $this->mdl_payment_logs->result();
 
         $this->layout->set(
             [
-                'payment_logs' => $payment_logs,
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_online_logs'),
+                'filter_method'      => 'filter_online_logs',
+                'payment_logs'       => $payment_logs,
             ]
         );
 

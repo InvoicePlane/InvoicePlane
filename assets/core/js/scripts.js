@@ -45,11 +45,7 @@ function inject_email_template(template_fields, email_template) {
         key = key.replace("email_template_", "");
         // if key is in template_fields, apply value to form field
         if (val && template_fields.indexOf(key) > -1) {
-            if (key === 'pdf_template') {
-                $("#" + key).val(val).trigger('change');
-            } else {
-                $("#" + key).val(val);
-            }
+            $("#" + key).val(val).trigger('change');
         }
     });
 }
@@ -141,9 +137,47 @@ function insert_html_tag(tag_type, destination_id) {
     }
 }
 
-// Get crsf names from ipconfig (config_item) on meta tags
+// Get crsf names from ipconfig (config_item) on meta tags - since v1.6.3
 const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content');   // Default: _ip_csrf
 const csrf_cookie_name = document.querySelector('meta[name="csrf_cookie_name"]').getAttribute('content'); // Default: ip_csrf_cookie
+
+const legacy_calculation = parseInt(document.querySelector('meta[name="legacy_calculation"]').getAttribute('content')); // Default: 1 (legacy on)
+
+// For Quote & Invoice views. Verify and set alert on item tax fields. All or not rule - since v1.6.3
+function check_items_tax_usages(e) {
+    // Not for legacy & only when e-Ivoice active(todo? global taxes?)
+    if (legacy_calculation || ! document.querySelector('#e_invoice_active')) return;
+
+    let x; // Loop index
+    let oks = [0,0]; // Counters: No tax, Tax.
+    let taxfield = document.querySelectorAll('.item select[name="item_tax_rate_id"]'); // get all tax selects
+
+    for (x = 0; x < taxfield.length; x++) {
+        if (taxfield[x].value != 0) {
+            oks[1]++; // +1 for Tax
+        }
+        else {
+            oks[0]++; // +1 for No
+        }
+     // taxfield[x].classList.add('alert-success'); // dbg! But Idea** green2ok. Todo?: same thing for all inputs amount.
+        taxfield[x].classList.remove('alert-danger');
+
+        // Have already event? Not: Add listener to Old&New fields to check when value change
+        if ( ! $(taxfield[x]).data('hasTaxEvent')) {
+            $(taxfield[x]).on('change', check_items_tax_usages).data('hasTaxEvent', true);
+        }
+    }
+    // Zero with 0 == error. Need One == 0 to be valid (Why not an alert-success with Idea**)
+    if (oks[0] != 0 && oks[1] != 0) {
+        for (x = 0; x < taxfield.length; x++) {
+            taxfield[x].classList.add('alert-danger'); // redNo0k
+         // taxfield[x].classList.remove('alert-success'); // Idea** (Todo?: like for all inputs amount?)
+        }
+        // Only true, not from event. Set focus 1st tax selector (See items_tax_usages_bad() in number_helper)
+        'undefined' != typeof(e) && e === true && taxfield[0].focus();
+     }
+}
+
 $(function () {
     // Automatical CSRF protection for
     // All jquery POST requests
@@ -163,6 +197,9 @@ $(function () {
     $('form').on('submit', function(){
         $('input[name="' + csrf_token_name + '"]').prop('value', Cookies.get(csrf_cookie_name));
     });
+
+    // Set the default options for all instances of Select2
+    $.fn.select2.defaults.set('selectionCssClass', ':all:');
 
     // Correct the height of the content area
     var $content = $('#content'),
@@ -252,7 +289,32 @@ $(function () {
         update_email_template_preview();
     });
 
-    // Fullpage loader (spinner)
+    // Spinner loader helper (global scope access)
+    window.fullpage_loader = $('#fullpage-loader');
+    window.loader_error = $('#loader-error');
+    window.loader_icon = $('#loader-icon');
+    window.reset_loader = function () {
+        loader_error.hide();
+        loader_icon.addClass('fa-spin').removeClass('text-danger');
+        clearTimeout(window.fullpageloaderTimeout);
+    }
+    window.close_loader = function () {
+        fullpage_loader.fadeOut(200);
+        reset_loader();
+    }
+    window.show_loader = function (timeout) {
+        timeout = timeout ? parseInt(timeout) : 10000; // 10s by default
+        // Reset
+        reset_loader();
+        // Show
+        fullpage_loader.fadeIn(200);
+        window.fullpageloaderTimeout = window.setTimeout(function () {
+            loader_error.fadeIn(200);
+            loader_icon.removeClass('fa-spin').addClass('text-danger');
+        }, timeout);
+    }
+
+    // Fullpage loader (Open spinner) From FORM? Only valid
     $(document).on('click', '.ajax-loader', function () {
 
         // Get parent form of clicked element
@@ -261,21 +323,14 @@ $(function () {
         if (form.length && !form[0].checkValidity()) {
             return; // No valid, don't show spinner.
         }
-
         // Show loader
-        $('#fullpage-loader').fadeIn(200);
-        window.fullpageloaderTimeout = window.setTimeout(function () {
-            $('#loader-error').fadeIn(200);
-            $('#loader-icon').removeClass('fa-spin').addClass('text-danger');
-        }, 10000);
+        show_loader();
 
     });
 
+    // Fullpage loader (Close spinner) by red cross (top right)
     $(document).on('click', '.fullpage-loader-close', function () {
-        $('#fullpage-loader').fadeOut(200);
-        $('#loader-error').hide();
-        $('#loader-icon').addClass('fa-spin').removeClass('text-danger');
-        clearTimeout(window.fullpageloaderTimeout);
+        close_loader();
     });
 
     var password_input = $('.passwordmeter-input');

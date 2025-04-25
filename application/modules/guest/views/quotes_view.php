@@ -72,7 +72,7 @@ elseif ($quote->quote_status_id == 5)
             <div class="col-xs-12 col-md-9 clearfix">
                 <div class="pull-left">
 
-                    <h3><?php echo format_client($quote); ?></h3>
+                    <h3><?php _htmlsc(format_client($quote)); ?></h3>
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
                     </div>

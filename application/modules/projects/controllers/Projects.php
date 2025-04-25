@@ -40,7 +40,7 @@ class Projects extends Admin_Controller
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_projects'),
                 'filter_method'      => 'filter_projects',
-                'projects' => $projects
+                'projects'           => $projects,
             ]
         );
         $this->layout->buffer('content', 'projects/index');

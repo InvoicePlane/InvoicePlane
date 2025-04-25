@@ -7,16 +7,101 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
+
+    public function name_query($type = 1)
+    {
+        // Load the model & helper
+        $this->load->model('users/mdl_users');
+        $this->load->helper('user');
+
+        $response = [];
+
+        // Get the post input
+        $query = $this->input->get('query');
+        $permissiveSearchUsers = $this->input->get('permissive_search_users');
+
+        if (empty($query)) {
+            echo json_encode($response);
+            exit;
+        }
+
+        // Search for chars "in the middle" of users names
+        $permissiveSearchUsers ? $moreUsersQuery = '%' : $moreUsersQuery = '';
+
+        // Search for users $type
+        $escapedQuery = $this->db->escape_str($query);
+        $escapedQuery = str_replace('%', '', $escapedQuery);
+        // Not searched: user_address_1 user_address_2 user_city user_state user_zip user_country user_invoicing_contact
+        $users = $this->mdl_users
+            ->where('user_active', 1)
+            ->where('user_type', $type)
+            ->having('user_name LIKE \'' . $moreUsersQuery . $escapedQuery . '%\'')
+            ->or_having('user_company LIKE \'' . $moreUsersQuery . $escapedQuery . '%\'')
+            ->or_having('user_invoicing_contact LIKE \'' . $moreUsersQuery . $escapedQuery . '%\'')
+            ->order_by('user_name')
+            ->get()
+            ->result();
+
+        foreach ($users as $user) {
+            $response[] = [
+                'id'   => $user->user_id,
+                'text' => format_user($user),
+            ];
+        }
+
+        // Return the results
+        echo json_encode($response);
+    }
+
+    /**
+     * Get the latest users
+     */
+    public function get_latest()
+    {
+        // Load the model & helper
+        $this->load->model('users/mdl_users');
+
+        $response = [];
+
+        $users = $this->mdl_users
+            ->where('user_active', 1)
+            ->limit(5)
+            ->order_by('user_date_created')
+            ->get()
+            ->result();
+
+        foreach ($users as $user) {
+            $response[] = [
+                'id'   => $user->user_id,
+                'text' => htmlsc(format_user($user)),
+            ];
+        }
+
+        // Return the results
+        echo json_encode($response);
+    }
+
+    public function save_preference_permissive_search_users()
+    {
+        $this->load->model('mdl_settings');
+        $permissiveSearchUsers = $this->input->get('permissive_search_users');
+
+        if ( ! preg_match('!^[0-1]{1}$!', $permissiveSearchUsers)) {
+            exit;
+        }
+
+        $this->mdl_settings->save('enable_permissive_search_users', $permissiveSearchUsers);
+    }
 
     public function save_user_client()
     {

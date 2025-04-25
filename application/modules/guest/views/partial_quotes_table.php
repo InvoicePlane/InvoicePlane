@@ -44,6 +44,12 @@ foreach ($quotes as $quote)
                 <td><?php echo format_currency($quote->quote_total); ?></td>
                 <td>
                     <div class="options btn-group btn-group-sm">
+                        <a class="btn btn-default" href="<?php echo site_url('guest/quotes/view/' . $quote->quote_id); ?>">
+                            <i class="fa fa-eye"></i> <?php _trans('view'); ?>
+                        </a>
+                        <a class="btn btn-default" target="_blank" href="<?php echo site_url('guest/quotes/generate_pdf/' . $quote->quote_id); ?>">
+                            <i class="fa fa-print"></i> <?php _trans('pdf'); ?>
+                        </a>
 <?php
     if (in_array($quote->quote_status_id, [2, 3])) {
 ?>
@@ -56,12 +62,6 @@ foreach ($quotes as $quote)
 <?php
     }
 ?>
-                        <a class="btn btn-default" href="<?php echo site_url('guest/quotes/view/' . $quote->quote_id); ?>">
-                            <i class="fa fa-eye"></i> <?php _trans('view'); ?>
-                        </a>
-                        <a class="btn btn-default" target="_blank" href="<?php echo site_url('guest/quotes/generate_pdf/' . $quote->quote_id); ?>">
-                            <i class="fa fa-print"></i> <?php _trans('pdf'); ?>
-                        </a>
                     </div>
                 </td>
             </tr>

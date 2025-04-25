@@ -185,12 +185,13 @@ class Ajax extends Admin_Controller
 
         $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
-
+        // client_id : Column 'client_id' in where clause is ambiguous (ip_clients.client_id or ip_project.client_id
+        // Not showed in frontend table
+        // project_id,client_id,
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = strtolower($keyword);
-                // client_id : Column 'client_id' in where clause is ambiguous (ip_clients.client_id or ip_project.client_id
-                $this->mdl_projects->like("CONCAT_WS('^',project_id,LOWER(client_name),LOWER(project_name))", $keyword);
+                $this->mdl_projects->like("CONCAT_WS('^',LOWER(client_name),LOWER(project_name))", $keyword);
             }
         }
 
@@ -207,17 +208,19 @@ class Ajax extends Admin_Controller
 
         $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
-
+        // Column 'project_id' in where clause is ambiguous
+        // Not showed in frontend table:
+        // task_id,ip_tasks.project_id,LOWER(task_description),
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = strtolower($keyword);
-                // Column 'project_id' in where clause is ambiguous
-                $this->mdl_tasks->like("CONCAT_WS('^',task_id,ip_tasks.project_id,LOWER(task_name),LOWER(task_description),LOWER(task_price),task_finish_date,LOWER(task_status),LOWER(tax_rate_id))", $keyword);
+                $this->mdl_tasks->like("CONCAT_WS('^',LOWER(task_name),LOWER(project_name),LOWER(task_price),task_finish_date,LOWER(task_status),LOWER(tax_rate_id))", $keyword);
             }
         }
 
         $data = [
-            'tasks' => $this->mdl_tasks->get()->result()
+            'tasks'         => $this->mdl_tasks->get()->result(),
+            'task_statuses' => $this->mdl_tasks->statuses(),
         ];
 
         $this->layout->load_view('tasks/partial_tasks_table', $data);
@@ -231,10 +234,12 @@ class Ajax extends Admin_Controller
         $keywords = explode(' ', $query);
 
         // Columns 'tax_rate_id' & 'unit_id' in where clause is ambiguous
+        // Not showed in frontend table:
+        // product_id,LOWER(family_name),purchase_price,LOWER(provider_name),LOWER(tax_rate_name),LOWER(unit_name_plrl),
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = strtolower($keyword);
-                $this->mdl_products->like("CONCAT_WS('^',product_id,LOWER(family_name),product_sku,LOWER(product_name),LOWER(product_description),product_price,purchase_price,LOWER(provider_name),LOWER(tax_rate_name),LOWER(unit_name_plrl),product_tariff)", $keyword);
+                $this->mdl_products->like("CONCAT_WS('^',product_sku,LOWER(family_name),LOWER(product_name),LOWER(product_description),product_price,product_tariff)", $keyword);
             }
         }
 
@@ -253,14 +258,15 @@ class Ajax extends Admin_Controller
         $keywords = explode(' ', $query);
 
         // Not used: user_id	user_type	user_active	user_date_modified	user_language	user_password	user_psalt	user_passwordreset_token
+        // Not showed in frontend table:
+        // user_date_created,LOWER(user_company),LOWER(user_address_1),LOWER(user_address_2),LOWER(user_city),LOWER(user_state),LOWER(user_zip),LOWER(user_country),
+        // LOWER(user_invoicing_contact),LOWER(user_phone),LOWER(user_fax),LOWER(user_mobile),LOWER(user_web),
+        // LOWER(user_vat_id),LOWER(user_tax_code),LOWER(user_all_clients),LOWER(user_subscribernumber),LOWER(user_bank),LOWER(user_iban),LOWER(user_bic),LOWER(user_remittance_tmpl),LOWER(user_gln),LOWER(user_rcc)
+
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = strtolower($keyword);
-                $this->mdl_users->like("CONCAT_WS('^',
-user_date_created,LOWER(user_name),LOWER(user_company),LOWER(user_address_1),LOWER(user_address_2),LOWER(user_city),LOWER(user_state),LOWER(user_zip),LOWER(user_country),
-LOWER(user_invoicing_contact),LOWER(user_phone),LOWER(user_fax),LOWER(user_mobile),LOWER(user_email),LOWER(user_web),
-LOWER(user_vat_id),LOWER(user_tax_code),LOWER(user_all_clients),LOWER(user_subscribernumber),LOWER(user_bank),LOWER(user_iban),LOWER(user_bic),LOWER(user_remittance_tmpl),LOWER(user_gln),LOWER(user_rcc)
-                )", $keyword);
+                $this->mdl_users->like("CONCAT_WS('^', LOWER(user_name), LOWER(user_email))", $keyword);
             }
         }
 
@@ -270,6 +276,83 @@ LOWER(user_vat_id),LOWER(user_tax_code),LOWER(user_all_clients),LOWER(user_subsc
         ];
 
         $this->layout->load_view('users/partial_users_table', $data);
+    }
+
+    public function filter_families()
+    {
+        $this->load->model('families/mdl_families');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+        // Not showed in frontend table:
+        // family_id,
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_families->like("CONCAT_WS('^',LOWER(family_name))", $keyword);
+            }
+        }
+
+        $data = [
+            'families' => $this->mdl_families->get()->result()
+        ];
+
+        $this->layout->load_view('families/partial_families_table', $data);
+    }
+
+    public function filter_invoices_recuring()
+    {
+        $this->load->model('invoices/mdl_invoices_recurring');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        // invoice_recurring_id invoice_id
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_invoices_recurring->like("CONCAT_WS('^',recur_start_date,recur_end_date,recur_next_date,recur_frequency,LOWER(invoice_number),LOWER(client_name),LOWER(client_surname))", $keyword);
+            }
+        }
+
+        $data = [
+            'recur_frequencies'  => $this->mdl_invoices_recurring->recur_frequencies,
+            'recurring_invoices' => $this->mdl_invoices_recurring->get()->result(),
+        ];
+
+        $this->layout->load_view('invoices/partial_invoices_recurring_table', $data);
+    }
+
+    public function filter_online_logs()
+    {
+        $this->load->model('payments/mdl_payment_logs');
+
+        $query = $this->input->post('filter_query');
+        $keywords = explode(' ', $query);
+
+        foreach ($keywords as $keyword) {
+            if ($keyword) {
+                $keyword = strtolower($keyword);
+                $this->mdl_payment_logs->like("CONCAT_WS('^',merchant_response_id,LOWER(invoice_number),merchant_response_successful,merchant_response_date,LOWER(merchant_response_driver),LOWER(merchant_response),LOWER(merchant_response_reference))", $keyword);
+            }
+        }
+
+        $data = [
+            'payment_logs' => $this->mdl_payment_logs->get()->result()
+        ];
+
+        $this->layout->load_view('payments/partial_online_logs_table', $data);
+    }
+
+    public function filter_archives()
+    {
+        $this->load->model('invoices/mdl_invoices');
+
+        $data = [
+            'invoices_archive' => $this->mdl_invoices->get_archives($this->input->post('filter_query')),
+        ];
+
+        $this->layout->load_view('invoices/partial_invoice_archive', $data);
     }
 
     public function filter_payments()
@@ -290,7 +373,7 @@ LOWER(user_vat_id),LOWER(user_tax_code),LOWER(user_all_clients),LOWER(user_subsc
             'payments' => $this->mdl_payments->get()->result()
         ];
 
-        $this->layout->load_view('payments/partial_payment_table', $data);
+        $this->layout->load_view('payments/partial_payments_table', $data);
     }
 
 }
