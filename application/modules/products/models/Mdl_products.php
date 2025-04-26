@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Products extends Response_Model
 {
     public $table = 'ip_products';
+
     public $primary_key = 'ip_products.product_id';
 
     public function default_select()
@@ -55,59 +56,59 @@ class Mdl_Products extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'product_sku' => array(
+        return [
+            'product_sku' => [
                 'field' => 'product_sku',
                 'label' => trans('product_sku'),
                 'rules' => ''
-            ),
-            'product_name' => array(
+            ],
+            'product_name' => [
                 'field' => 'product_name',
                 'label' => trans('product_name'),
                 'rules' => 'required'
-            ),
-            'product_description' => array(
+            ],
+            'product_description' => [
                 'field' => 'product_description',
                 'label' => trans('product_description'),
                 'rules' => ''
-            ),
-            'product_price' => array(
+            ],
+            'product_price' => [
                 'field' => 'product_price',
                 'label' => trans('product_price'),
                 'rules' => 'required'
-            ),
-            'purchase_price' => array(
+            ],
+            'purchase_price' => [
                 'field' => 'purchase_price',
                 'label' => trans('purchase_price'),
                 'rules' => ''
-            ),
-            'provider_name' => array(
+            ],
+            'provider_name' => [
                 'field' => 'provider_name',
                 'label' => trans('provider_name'),
                 'rules' => ''
-            ),
-            'family_id' => array(
+            ],
+            'family_id' => [
                 'field' => 'family_id',
                 'label' => trans('family'),
                 'rules' => 'numeric'
-            ),
-            'unit_id' => array(
+            ],
+            'unit_id' => [
                 'field' => 'unit_id',
                 'label' => trans('unit'),
                 'rules' => 'numeric'
-            ),
-            'tax_rate_id' => array(
+            ],
+            'tax_rate_id' => [
                 'field' => 'tax_rate_id',
                 'label' => trans('tax_rate'),
                 'rules' => 'numeric'
-            ),
+            ],
             // Sumex
-            'product_tariff' => array(
+            'product_tariff' => [
                 'field' => 'product_tariff',
                 'label' => trans('product_tariff'),
                 'rules' => ''
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -125,5 +126,4 @@ class Mdl_Products extends Response_Model
 
         return $db_array;
     }
-
 }

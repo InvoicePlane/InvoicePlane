@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -9,10 +9,10 @@ require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -30,7 +30,7 @@ class Clients extends Admin_Controller
         $this->load->model('mdl_clients');
     }
 
-    public function index()
+    public function index(): void
     {
         // Display active clients by default
         redirect('clients/status/active');
@@ -40,7 +40,7 @@ class Clients extends Admin_Controller
      * @param string $status
      * @param int    $page
      */
-    public function status($status = 'active', $page = 0)
+    public function status($status = 'active', $page = 0): void
     {
         if (is_numeric(array_search($status, ['active', 'inactive']))) {
             $function = 'is_' . $status;
@@ -50,21 +50,21 @@ class Clients extends Admin_Controller
         $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
         $clients = $this->mdl_clients->result();
 
-        $this->layout->set([
-            'records'            => $clients,
-            'filter_display'     => true,
-            'filter_placeholder' => trans('filter_clients'),
-            'filter_method'      => 'filter_clients',
-        ]);
+        $this->layout->set(
+            [
+                'records'            => $clients,
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_clients'),
+                'filter_method'      => 'filter_clients',
+                'einvoicing'         => get_setting('einvoicing'),
+            ]
+        );
 
         $this->layout->buffer('content', 'clients/index');
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
-    public function form($id = null)
+    public function form($id = null): void
     {
         if ($this->input->post('btn_cancel')) {
             redirect('clients');
@@ -80,7 +80,7 @@ class Clients extends Admin_Controller
                 'client_surname' => $this->input->post('client_surname'),
             ])->result();
 
-            if ( ! empty($check)) {
+            if (! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
                 redirect('clients/form');
             } else {
@@ -94,6 +94,13 @@ class Clients extends Admin_Controller
                 $_POST[self::CLIENT_TITLE] = $client_title_custom;
                 $this->mdl_clients->set_form_value(self::CLIENT_TITLE, $client_title_custom);
             }
+
+            // fix e-invoice reset
+            if ($this->input->post('client_start_einvoicing') == '0') {
+                $_POST['client_einvoicing_version'] = '';
+                $this->mdl_clients->set_form_value('client_einvoicing_version', '');
+            }
+
             $id = $this->mdl_clients->save($id);
 
             if ($new_client) {
@@ -104,18 +111,21 @@ class Clients extends Admin_Controller
             $this->load->model('custom_fields/mdl_client_custom');
             $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
 
+            $where = 'view';
             if ($result !== true) {
                 $this->session->set_flashdata('alert_error', $result);
                 $this->session->set_flashdata('alert_success', null);
-                redirect('clients/form/' . $id);
-
-                return;
+                $where = 'form';
             }
-            redirect('clients/view/' . $id);
+
+            redirect('clients/' . $where . '/' . $id);
         }
 
+        // Get a check of filled Required (client and users) fields for eInvoicing
+        $req_einvoicing = $this->get_req_fields_einvoice(($new_client || ! $id) ? null : $this->db->from('ip_clients')->where('client_id', $id)->get()->row());
+
         if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_clients->prep_form($id)) {
+            if (! $this->mdl_clients->prep_form($id)) {
                 show_404();
             }
 
@@ -141,9 +151,11 @@ class Clients extends Admin_Controller
             }
         }
 
-        $this->load->model('custom_fields/mdl_custom_fields');
-        $this->load->model('custom_values/mdl_custom_values');
-        $this->load->model('custom_fields/mdl_client_custom');
+        $this->load->model([
+            'custom_fields/mdl_custom_fields',
+            'custom_values/mdl_custom_values',
+            'custom_fields/mdl_client_custom',
+        ]);
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result();
         $custom_values = [];
@@ -169,17 +181,22 @@ class Clients extends Admin_Controller
             }
         }
 
-        $this->load->helper('country');
-        $this->load->helper('custom_values');
+        $this->load->helper(['custom_values', 'e-invoice']); // e-invoice - since 1.6.3
 
-        $this->layout->set([
-            'custom_fields'        => $custom_fields,
-            'custom_values'        => $custom_values,
-            'countries'            => get_country_list(trans('cldr')),
-            'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
-            'languages'            => get_available_languages(),
-            'client_title_choices' => $this->get_client_title_choices(),
-        ]);
+        $this->layout->set(
+            [
+                'client_id'            => $id,
+                'custom_fields'        => $custom_fields,
+                'custom_values'        => $custom_values,
+                'countries'            => get_country_list(trans('cldr')),
+                'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
+                'languages'            => get_available_languages(),
+                'client_title_choices' => $this->get_client_title_choices(),
+                'xml_templates'        => get_xml_template_files(), // eInvoicing
+                'req_einvoicing'       => $req_einvoicing,
+                'einvoicing'           => get_setting('einvoicing'),
+            ]
+        );
 
         $this->layout->buffer('content', 'clients/form');
         $this->layout->render();
@@ -188,15 +205,8 @@ class Clients extends Admin_Controller
     /**
      * @param int $client_id
      */
-    public function view($client_id, $activeTab = 'detail', $page = 0)
+    public function view($client_id, $activeTab = 'detail', $page = 0): void
     {
-        $this->load->model('clients/mdl_client_notes');
-        $this->load->model('invoices/mdl_invoices');
-        $this->load->model('quotes/mdl_quotes');
-        $this->load->model('payments/mdl_payments');
-        $this->load->model('custom_fields/mdl_custom_fields');
-        $this->load->model('custom_fields/mdl_client_custom');
-
         $client = $this->mdl_clients
             ->with_total()
             ->with_total_balance()
@@ -204,52 +214,112 @@ class Clients extends Admin_Controller
             ->where('ip_clients.client_id', $client_id)
             ->get()->row();
 
-        $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
-
-        $this->mdl_client_custom->prep_form($client_id);
-
-        if ( ! $client) {
+        if (! $client) {
             show_404();
         }
 
-        $this->mdl_invoices->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/invoices'), $page, 5);
-        $this->mdl_quotes->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/quotes'), $page, 5);
-        $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
+        $this->load->model(
+            [
+                'clients/mdl_client_notes',
+                'invoices/mdl_invoices',
+                'quotes/mdl_quotes',
+                'payments/mdl_payments',
+                'custom_fields/mdl_custom_fields',
+                'custom_fields/mdl_client_custom',
+            ]
+        );
 
-        $this->layout->set([
-            'client'           => $client,
-            'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-            'invoices'         => $this->mdl_invoices->result(),
-            'quotes'           => $this->mdl_quotes->result(),
-            'payments'         => $this->mdl_payments->result(),
-            'custom_fields'    => $custom_fields,
-            'quote_statuses'   => $this->mdl_quotes->statuses(),
-            'invoice_statuses' => $this->mdl_invoices->statuses(),
-            'activeTab'        => $activeTab,
-        ]);
+        $this->load->helper('e-invoice'); // eInvoicing++
 
-        $this->layout->buffer([
+        // Get a check of filled Required (client and users) fields for eInvoicing
+        $req_einvoicing = $this->get_req_fields_einvoice($client);
+
+        // Update active eInvoicing client
+        $o = $client->client_einvoicing_active;
+        if (! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
+            $client->client_einvoicing_active = 1; // update view
+        } else {
+            $client->client_einvoicing_active = 0; // update view
+        }
+
+        // Update db if need
+        if ($o != $client->client_einvoicing_active) {
+            $this->db->where('client_id', $client_id);
+            $this->db->set('client_einvoicing_active', $client->client_einvoicing_active);
+            $this->db->update('ip_clients');
+        }
+
+        // Change page only for one url (tab) system
+        $p = ['invoices' => 0, 'quotes' => 0, 'payments' => 0]; // Default
+        // Session key
+        $key = 'clientview';
+        // When detail (from menu)
+        if ($activeTab == 'detail') {
+            // Clear temp + session
+            $this->session->unmark_temp($key);
+            unset($_SESSION[$key]);
+        } else {
+            // Set pages saved in session
+            if (isset($_SESSION[$key])) {
+                $p = $_SESSION[$key];
+            }
+
+            // Up Actual page num
+            $p[$activeTab] = $page;
+            // Save in session
+            $_SESSION[$key] = $p;
+            // For 300 seconds
+            $this->session->mark_as_temp($key);
+        }
+
+        $base_url = site_url('clients/view/' . $client_id);
+        $this->mdl_invoices->by_client($client_id)->paginate($base_url . '/invoices', $p['invoices'], 5);
+        $this->mdl_quotes->by_client($client_id)->paginate($base_url . '/quotes', $p['quotes'], 5);
+        $this->mdl_payments->by_client($client_id)->paginate($base_url . '/payments', $p['payments'], 5);
+
+        $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
+        $this->mdl_client_custom->prep_form($client_id);
+
+        $this->layout->set(
             [
-                'invoice_table',
-                'invoices/partial_invoice_table',
-            ],
+                'client'           => $client,
+                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'invoices'         => $this->mdl_invoices->result(),
+                'quotes'           => $this->mdl_quotes->result(),
+                'payments'         => $this->mdl_payments->result(),
+                'custom_fields'    => $custom_fields,
+                'quote_statuses'   => $this->mdl_quotes->statuses(),
+                'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'activeTab'        => $activeTab,
+                'req_einvoicing'   => $req_einvoicing,
+                'einvoicing'       => get_setting('einvoicing'),
+            ]
+        );
+
+        $this->layout->buffer(
             [
-                'quote_table',
-                'quotes/partial_quote_table',
-            ],
-            [
-                'payment_table',
-                'payments/partial_payment_table',
-            ],
-            [
-                'partial_notes',
-                'clients/partial_notes',
-            ],
-            [
-                'content',
-                'clients/view',
-            ],
-        ]);
+                [
+                    'invoice_table',
+                    'invoices/partial_invoice_table',
+                ],
+                [
+                    'quote_table',
+                    'quotes/partial_quote_table',
+                ],
+                [
+                    'payment_table',
+                    'payments/partial_payments_table',
+                ],
+                [
+                    'partial_notes',
+                    'clients/partial_notes',
+                ],
+                [
+                    'content',
+                    'clients/view',
+                ],
+            ]
+        );
 
         $this->layout->render();
     }
@@ -257,7 +327,7 @@ class Clients extends Admin_Controller
     /**
      * @param int $client_id
      */
-    public function delete($client_id)
+    public function delete($client_id): void
     {
         $this->mdl_clients->delete($client_id);
         redirect('clients');
@@ -269,5 +339,111 @@ class Clients extends Admin_Controller
             fn ($clientTitleEnum) => $clientTitleEnum->value,
             ClientTitleEnum::cases()
         );
+    }
+
+    /**
+     * @param int $user_id : get result only with it (or all if null)
+     * @return array $user(s)
+     */
+    public function get_admin_active_users($user_id = ''): array
+    {
+        $where = ['user_type' => '1', 'user_active' => '1']; // Administrators Active Only
+        if ($user_id) {
+            $where['user_id'] = $user_id;
+        }
+
+        return $this->db->from('ip_users')->where($where)->get()->result();
+    }
+
+    /**
+     * @param object $client
+     * @param int $user_id : get result only with it (or all if null)
+     * @return object $req_fields
+     */
+    public function get_req_fields_einvoice($client = null, $user_id = ''): object
+    {
+        $cid = empty($client->client_id) ? 0 : $client->client_id; // Client is New (form) or exist
+        $c = new stdClass();
+        // check if required (einvoicing) fields are filled in?
+        $c->address_1 = $cid ? ($client->client_address_1 != '' ? 0 : 1) : 0;
+        $c->zip       = $cid ? ($client->client_zip       != '' ? 0 : 1) : 0;
+        $c->city      = $cid ? ($client->client_city      != '' ? 0 : 1) : 0;
+        $c->country   = $cid ? ($client->client_country   != '' ? 0 : 1) : 0;
+        $c->company   = $cid ? ($client->client_company   != '' ? 0 : 1) : 0;
+        $c->vat_id    = $cid ? ($client->client_vat_id    != '' ? 0 : 1) : 0;
+        // little tweak to run with or without vat_id
+        if ($c->company + $c->vat_id == 2) {
+            $c->company = 0;
+            $c->vat_id  = 0;
+        }
+
+        $total_empty_fields_client = 0;
+        foreach ($c as $val) {
+            $total_empty_fields_client += $val;
+        }
+
+        $c->einvoicing_empty_fields = $total_empty_fields_client;
+        $c->show_table              = ! $c->einvoicing_empty_fields;
+
+        // Begin to save results
+        $req_fields = new stdClass();
+        $req_fields->clients[$cid] = $c;
+        // Init user in session (tricks to make it 1st)
+        $req_fields->users[$_SESSION['user_id']] = null;
+
+        // $show_table = $c->einvoicing_empty_fields;
+        $show_table = 0; // Only user
+
+        // Get user(s) fields for eInvoicing
+        $users = $this->get_admin_active_users($user_id);
+        foreach ($users as $o) {
+            $u = new stdClass();
+            // check if required (eInvoicing) fields are filled in?
+            $u->address_1 = $o->user_address_1 != '' ? 0 : 1;
+            $u->zip       = $o->user_zip       != '' ? 0 : 1;
+            $u->city      = $o->user_city      != '' ? 0 : 1;
+            // todo: user_tax user_tax_code user_bank user_iban user_bic ?
+            $u->country   = $o->user_country   != '' ? 0 : 1;
+            $u->company   = $o->user_company   != '' ? 0 : 1;
+            $u->vat_id    = $o->user_vat_id    != '' ? 0 : 1;
+            // little tweak to run with or without vat_id
+            if ($u->company + $u->vat_id == 2) {
+                $u->company = 0;
+                $u->vat_id  = 0;
+            }
+
+            $total_empty_fields_user = 0;
+            foreach ($u as $val) {
+                $total_empty_fields_user += $val;
+            }
+
+            // Check mandatory fields (no company, client, email address, ...)
+            $u->einvoicing_empty_fields = $total_empty_fields_user;
+
+            // For show table (or not) record (in relation with client)
+            $u->tr_show_address_1 = $u->address_1 + $c->address_1 > 0 ? 1 : 0;
+            $u->tr_show_zip       = $u->zip       + $c->zip       > 0 ? 1 : 0;
+            $u->tr_show_city      = $u->city      + $c->city      > 0 ? 1 : 0;
+            $u->tr_show_country   = $u->country   + $c->country   > 0 ? 1 : 0;
+            $u->tr_show_company   = $u->company   + $c->company   > 0 ? 1 : 0;
+            $u->tr_show_vat_id    = $u->vat_id    + $c->vat_id    > 0 ? 1 : 0;
+            $u->show_table        = $u->tr_show_address_1 +
+                                     $u->tr_show_zip      +
+                                     $u->tr_show_city     +
+                                     $u->tr_show_country  +
+                                     $u->tr_show_company  +
+                                     $u->tr_show_vat_id > 0 ? 1 : 0;
+
+            // No nessessary to check but for handly loop in view
+            $u->user_name = $o->user_name;
+
+            // Save user
+            $req_fields->users[$o->user_id] = $u;
+            $show_table += $u->show_table;
+        }
+
+        $req_fields->show_table = $show_table;
+
+        return $req_fields;
     }
 }

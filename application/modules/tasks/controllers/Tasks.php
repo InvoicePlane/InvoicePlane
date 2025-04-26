@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -34,15 +34,19 @@ class Tasks extends Admin_Controller
         $this->mdl_tasks->paginate(site_url('tasks/index'), $page);
         $tasks = $this->mdl_tasks->result();
 
-        $this->layout->set('tasks', $tasks);
-        $this->layout->set('task_statuses', $this->mdl_tasks->statuses());
+        $this->layout->set(
+            [
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_tasks'),
+                'filter_method'      => 'filter_tasks',
+                'tasks'              => $tasks,
+                'task_statuses'      => $this->mdl_tasks->statuses()
+            ]
+        );
         $this->layout->buffer('content', 'tasks/index');
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -56,7 +60,7 @@ class Tasks extends Admin_Controller
             redirect('tasks');
         }
 
-        if ( ! $this->input->post('btn_submit')) {
+        if (! $this->input->post('btn_submit')) {
             $prep_form = $this->mdl_tasks->prep_form($id);
             if ($id && ! $prep_form) {
                 show_404();

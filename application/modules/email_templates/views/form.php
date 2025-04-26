@@ -1,7 +1,6 @@
 <form method="post">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('email_template_form'); ?></h1>
@@ -12,13 +11,7 @@
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
-        <input class="hidden" name="is_update" type="hidden"
-            <?php if ($this->mdl_email_templates->form_value('is_update')) {
-                echo 'value="1"';
-            } else {
-                echo 'value="0"';
-            } ?>
-        >
+        <input class="hidden" name="is_update" type="hidden" value="<?php echo ($this->mdl_email_templates->form_value('is_update')) ? '1': '0'; ?>">
 
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">
@@ -98,21 +91,29 @@
                         <option value=""><?php _trans('none'); ?></option>
 
                         <optgroup label="<?php _trans('invoices'); ?>">
-                            <?php foreach ($invoice_templates as $template): ?>
-                                <option class="hidden-invoice" value="<?php echo $template; ?>"
-                                    <?php check_select($selected_pdf_template, $template); ?>>
-                                    <?php echo $template; ?>
-                                </option>
-                            <?php endforeach; ?>
+<?php
+foreach ($invoice_templates as $template) {
+?>
+                            <option class="hidden-invoice" value="<?php echo $template; ?>"
+                                <?php check_select($selected_pdf_template, $template); ?>>
+                                <?php echo $template; ?>
+                            </option>
+<?php
+}
+?>
                         </optgroup>
 
                         <optgroup label="<?php _trans('quotes'); ?>">
-                            <?php foreach ($quote_templates as $template): ?>
-                                <option class="hidden-quote" value="<?php echo $template; ?>"
-                                    <?php check_select($selected_pdf_template, $template); ?>>
-                                    <?php echo $template; ?>
-                                </option>
-                            <?php endforeach; ?>
+<?php
+foreach ($quote_templates as $template) {
+?>
+                            <option class="hidden-quote" value="<?php echo $template; ?>"
+                                <?php check_select($selected_pdf_template, $template); ?>>
+                                <?php echo $template; ?>
+                            </option>
+<?php
+}
+?>
                         </optgroup>
                     </select>
                 </div>
@@ -222,7 +223,7 @@
     });
 
     $(document).ready(function() {
-    	// find the type of template that has been loaded and enable/disable
+        // find the type of template that has been loaded and enable/disable
         // the invoice and quote selects as required
         var inputValue = $('input[type="radio"]:checked').attr("value");
 
@@ -237,16 +238,16 @@
 
         // if the radio input for 'type of template' gets clicked, check the
         // new value and enable/disable the invoice and quote selects as required.
-    	$('input[type="radio"]').click(function() {
+        $('input[type="radio"]').click(function() {
             var inputValue = $(this).attr("value");
 
             if (inputValue === 'quote') {
-            	$('#tags_invoice').prop('disabled', 'disabled');
-            	$('#tags_quote').prop('disabled', false);
+                $('#tags_invoice').prop('disabled', 'disabled');
+                $('#tags_quote').prop('disabled', false);
             } else {
                 // inputValue === 'invoice'
-            	$('#tags_invoice').prop('disabled', false);
-            	$('#tags_quote').prop('disabled', 'disabled');
+                $('#tags_invoice').prop('disabled', false);
+                $('#tags_quote').prop('disabled', 'disabled');
             }
         });
     });

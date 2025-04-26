@@ -7,19 +7,19 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Mdl_Payment_Custom extends Validator
 {
-    public static $positions = array(
-        'custom_fields'
-    );
+    public static $positions = ['custom_fields'];
+
     public $table = 'ip_payment_custom';
+
     public $primary_key = 'ip_payment_custom.payment_custom_id';
 
     public function default_select()
@@ -47,7 +47,7 @@ class Mdl_Payment_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $form_data = isset($this->_formdata) ? $this->_formdata : null;
+            $form_data = property_exists($this, '_formdata') && $this->_formdata !== null ? $this->_formdata : null;
 
             if (is_null($form_data)) {
                 return true;
@@ -56,11 +56,12 @@ class Mdl_Payment_Custom extends Validator
             $payment_custom_id = null;
 
             foreach ($form_data as $key => $value) {
-                $db_array = array(
-                    'payment_id' => $payment_id,
-                    'payment_custom_fieldid' => $key,
-                    'payment_custom_fieldvalue' => $value
-                );
+                $db_array =
+                [
+                    'payment_id'                => $payment_id,
+                    'payment_custom_fieldid'    => $key,
+                    'payment_custom_fieldvalue' => $value,
+                ];
 
                 $payment_custom = $this->where('payment_id', $payment_id)->where('payment_custom_fieldid', $key)->get();
 
@@ -89,8 +90,6 @@ class Mdl_Payment_Custom extends Validator
 
     public function get_by_payid($payment_id)
     {
-        $result = $this->where('ip_payment_custom.payment_id', $payment_id)->get()->result();
-        return $result;
+        return $this->where('ip_payment_custom.payment_id', $payment_id)->get()->result();
     }
-
 }

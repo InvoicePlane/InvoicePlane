@@ -18,26 +18,24 @@
                 $('#payment_method_id').prop('disabled', false);
             }
         });
-
-        $(document).ready(function(){
-            $('#btn-cancel').attr('onclick', "window.location.href = '<?php echo site_url() ?>/payments'");
-        });
-
     });
 </script>
 
 <form method="post" class="form-horizontal">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
-    <?php if ($payment_id) { ?>
-        <input type="hidden" name="payment_id" value="<?php echo $payment_id; ?>">
-    <?php } ?>
+<?php
+if ($payment_id) {
+?>
+    <input type="hidden" name="payment_id" value="<?php echo $payment_id; ?>">
+<?php
+}
+?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('payment_form'); ?></h1>
-        <?php $this->layout->load_view('layout/header_buttons'); ?>
+        <?php $this->layout->load_view('layout/header_buttons', ['attribute_cancel' => 'onclick="window.location.href = `' . site_url('payments') . '`;"']); ?>
     </div>
 
     <div id="content">
@@ -50,18 +48,24 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="invoice_id" id="invoice_id" class="form-control simple-select" required>
-                    <?php if (!$payment_id) { ?>
-                        <?php foreach ($open_invoices as $invoice) { ?>
-                            <option value="<?php echo $invoice->invoice_id; ?>"
+<?php
+if (! $payment_id) {
+    foreach ($open_invoices as $invoice) {
+?>
+                        <option value="<?php echo $invoice->invoice_id; ?>"
                                 <?php check_select($this->mdl_payments->form_value('invoice_id'), $invoice->invoice_id); ?>>
-                                <?php echo $invoice->invoice_number . ' - ' . format_client($invoice) . ' - ' . format_currency($invoice->invoice_balance); ?>
-                            </option>
-                        <?php } ?>
-                    <?php } else { ?>
-                        <option value="<?php echo $payment->invoice_id; ?>">
-                            <?php echo $payment->invoice_number . ' - ' . format_client($payment) . ' - ' . format_currency($payment->invoice_balance); ?>
+                            <?php echo $invoice->invoice_number . ' - ' . htmlsc(format_client($invoice)) . ' - ' . format_currency($invoice->invoice_balance); ?>
                         </option>
-                    <?php } ?>
+<?php
+    } // End foreach
+} else {
+?>
+                    <option value="<?php echo $payment->invoice_id; ?>">
+                        <?php echo $payment->invoice_number . ' - ' . htmlsc(format_client($payment)) . ' - ' . format_currency($payment->invoice_balance); ?>
+                    </option>
+<?php
+}
+?>
                 </select>
             </div>
         </div>
@@ -100,23 +104,29 @@
             </div>
             <div class="col-xs-12 col-sm-6 payment-method-wrapper">
 
-                <?php
+<?php
                 // Add a hidden input field if a payment method was set to pass the disabled attribute
-                if ($this->mdl_payments->form_value('payment_method_id')) { ?>
+if ($this->mdl_payments->form_value('payment_method_id')) {
+?>
                     <input type="hidden" name="payment_method_id" class="hidden"
                            value="<?php echo $this->mdl_payments->form_value('payment_method_id'); ?>">
-                <?php } ?>
+<?php
+}
+?>
 
                 <select id="payment_method_id" name="payment_method_id"
-                	class="form-control simple-select" data-minimum-results-for-search="Infinity"
-                    <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
-
-                    <?php foreach ($payment_methods as $payment_method) { ?>
-                        <option value="<?php echo $payment_method->payment_method_id; ?>"
-                                <?php if ($this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id) { ?>selected="selected"<?php } ?>>
-                            <?php echo $payment_method->payment_method_name; ?>
-                        </option>
-                    <?php } ?>
+                        class="form-control simple-select" data-minimum-results-for-search="Infinity"
+                        <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
+<?php
+foreach ($payment_methods as $payment_method) {
+?>
+                    <option value="<?php echo $payment_method->payment_method_id; ?>"
+                        <?php echo $this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id ? 'selected="selected"' : ''; ?>>
+                        <?php echo $payment_method->payment_method_name; ?>
+                    </option>
+<?php
+}
+?>
                 </select>
             </div>
         </div>
@@ -132,11 +142,12 @@
 
         </div>
 
-        <?php
-        $cv = $this->controller->view_data["custom_values"];
-        foreach ($custom_fields as $custom_field) {
-            print_field($this->mdl_payments, $custom_field, $cv, "col-xs-12 col-sm-2 text-right text-left-xs", "col-xs-12 col-sm-6");
-        } ?>
+<?php
+$classes = ['col-xs-12 col-sm-2 text-right text-left-xs', 'col-xs-12 col-sm-6', 'control-label', 'form-group'];
+foreach ($custom_fields as $custom_field) {
+    print_field($this->mdl_payments, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+}
+?>
 
     </div>
 

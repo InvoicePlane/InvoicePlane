@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -25,7 +25,7 @@ class QrCode
 
     public function __construct($params)
     {
-        $CI = &get_instance();
+        $CI = & get_instance();
 
         $CI->load->helper('template');
 
@@ -40,27 +40,23 @@ class QrCode
         );
     }
 
-    public function paymentData(): Data
+    public function paymentData()
     {
-        $paymentData = Data::create()
+        return Data::create()
             ->setName($this->recipient)
             ->setIban($this->iban)
             ->setBic($this->bic)
             ->setCurrency($this->currencyCode)
             ->setRemittanceText($this->remittance_text)
             ->setAmount($this->invoice->invoice_balance);
-
-        return $paymentData;
     }
 
     public function generate()
     {
-        $qrCodeDataUri = Builder::create()
+        return Builder::create()
             ->data($this->paymentData())
             ->errorCorrectionLevel(new ErrorCorrectionLevelMedium()) // required by EPC standard
             ->build()
             ->getDataUri();
-
-        return $qrCodeDataUri;
     }
 }

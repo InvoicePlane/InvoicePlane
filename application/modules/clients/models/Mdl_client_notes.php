@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Client_Notes extends Response_Model
 {
     public $table = 'ip_client_notes';
+
     public $primary_key = 'ip_client_notes.client_note_id';
 
     public function default_order_by()
@@ -26,18 +27,18 @@ class Mdl_Client_Notes extends Response_Model
 
     public function validation_rules()
     {
-        return array(
-            'client_id' => array(
+        return [
+            'client_id' => [
                 'field' => 'client_id',
                 'label' => trans('client'),
                 'rules' => 'required'
-            ),
-            'client_note' => array(
+            ],
+            'client_note' => [
                 'field' => 'client_note',
                 'label' => trans('note'),
                 'rules' => 'required'
-            )
-        );
+            ]
+        ];
     }
 
     public function db_array()
@@ -58,5 +59,4 @@ class Mdl_Client_Notes extends Response_Model
         // For Ajax Check if deletion was successful
         return true;
     }
-
 }

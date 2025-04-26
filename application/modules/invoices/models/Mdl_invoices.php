@@ -75,7 +75,7 @@ class Mdl_Invoices extends Response_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_invoices.invoice_date_created DESC');
+        $this->db->order_by('ip_invoices.invoice_date_created DESC, ip_invoices.invoice_number DESC, ip_invoices.invoice_id DESC');
     }
 
     public function default_join()
@@ -159,9 +159,7 @@ class Mdl_Invoices extends Response_Model
     }
 
     /**
-     * @param null $db_array
      * @param bool $include_invoice_tax_rates
-     *
      * @return int|null
      */
     public function create($db_array = null, $include_invoice_tax_rates = true)
@@ -178,18 +176,15 @@ class Mdl_Invoices extends Response_Model
 
         $this->db->insert('ip_invoice_amounts', $db_array);
 
-        if ($include_invoice_tax_rates) {
-            // Create the default invoice tax record if applicable
-            if (get_setting('default_invoice_tax_rate')) {
-                $db_array = [
-                    'invoice_id'              => $invoice_id,
-                    'tax_rate_id'             => get_setting('default_invoice_tax_rate'),
-                    'include_item_tax'        => get_setting('default_include_item_tax', 0),
-                    'invoice_tax_rate_amount' => 0,
-                ];
-
-                $this->db->insert('ip_invoice_tax_rates', $db_array);
-            }
+        // Create the default invoice tax record if applicable
+        if ($include_invoice_tax_rates && get_setting('default_invoice_tax_rate')) {
+            $db_array = [
+                'invoice_id'              => $invoice_id,
+                'tax_rate_id'             => get_setting('default_invoice_tax_rate'),
+                'include_item_tax'        => get_setting('default_include_item_tax', 0),
+                'invoice_tax_rate_amount' => 0,
+            ];
+            $this->db->insert('ip_invoice_tax_rates', $db_array);
         }
 
         if ($invoice_group !== '0') {
@@ -219,6 +214,22 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
+        // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+        $invoice = $this->get_by_id($source_id); // This is the original invoice
+        $global_discount = [
+            'amount'         => $invoice->invoice_discount_amount,
+            'percent'        => $invoice->invoice_discount_percent,
+            'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
+            'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
+        ];
+        unset($invoice); // Free memory
+
+        // Update the discounts - since v1.6.3
+        $this->where('invoice_id', $target_id)->update('ip_invoices', [
+            'invoice_discount_percent' => $global_discount['percent'],
+            'invoice_discount_amount'  => $global_discount['amount'],
+        ]);
+
         // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
@@ -239,8 +250,8 @@ class Mdl_Invoices extends Response_Model
                 'item_product_unit_id' => $invoice_item->item_product_unit_id,
             ];
 
-            if ( ! $copy_recurring_items_only || $invoice_item->item_is_recurring) {
-                $this->mdl_items->save(null, $db_array);
+            if (! $copy_recurring_items_only || $invoice_item->item_is_recurring) {
+                $this->mdl_items->save(null, $db_array, $global_discount);
             }
         }
 
@@ -266,6 +277,7 @@ class Mdl_Invoices extends Response_Model
         foreach ($custom_fields as $field) {
             $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
         }
+
         $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
 
@@ -279,6 +291,23 @@ class Mdl_Invoices extends Response_Model
     {
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
+
+        // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+        $invoice = $this->get_by_id($source_id); // This is the original invoice
+        $global_discount = [
+            'amount'         => $invoice->invoice_discount_amount,
+            'percent'        => $invoice->invoice_discount_percent,
+            'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
+            'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
+        ];
+
+        // Update the discounts - since v1.6.3
+        $this->where('invoice_id', $target_id)->update('ip_invoices', [
+            'invoice_discount_percent' => $global_discount['percent'],
+            'invoice_discount_amount'  => $global_discount['amount'],
+        ]);
+
+        unset($invoice); // Free memory
 
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
@@ -299,7 +328,7 @@ class Mdl_Invoices extends Response_Model
                 'item_product_unit_id' => $invoice_item->item_product_unit_id,
             ];
 
-            $this->mdl_items->save(null, $db_array);
+            $this->mdl_items->save(null, $db_array, $global_discount);
         }
 
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
@@ -323,6 +352,7 @@ class Mdl_Invoices extends Response_Model
         foreach ($custom_fields as $field) {
             $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
         }
+
         $this->mdl_invoice_custom->save_custom($target_id, $form_data);
     }
 
@@ -343,7 +373,7 @@ class Mdl_Invoices extends Response_Model
         $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
         $db_array['invoice_terms'] = get_setting('default_invoice_terms');
 
-        if ( ! isset($db_array['invoice_status_id'])) {
+        if (! isset($db_array['invoice_status_id'])) {
             $db_array['invoice_status_id'] = 1;
         }
 
@@ -378,11 +408,7 @@ class Mdl_Invoices extends Response_Model
         $this->db->where('invoice_id', $invoice->invoice_id);
         $payment_results = $this->db->get('ip_payments');
 
-        if ($payment_results->num_rows() > 0) {
-            $invoice->payments = $payment_results->result();
-        } else {
-            $invoice->payments = null;
-        }
+        $invoice->payments = $payment_results->num_rows() > 0 ? $payment_results->result() : null;
 
         return $invoice;
     }
@@ -456,6 +482,24 @@ class Mdl_Invoices extends Response_Model
         return $this->invoice_custom->get_by_invid($id);
     }
 
+    public function get_archives($invoice_number): array
+    {
+        $invoice_array = [];
+
+        if (! empty($invoice_number)) {
+            $invoice_array = glob(UPLOADS_ARCHIVE_FOLDER . '*_*' . $invoice_number . '*.pdf');
+        } else {
+            foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
+                $invoice_array[] = $file;
+            }
+
+            rsort($invoice_array);
+        }
+
+        return $invoice_array;
+    }
+
+
     /**
      * @param int $invoice_id
      */
@@ -471,6 +515,7 @@ class Mdl_Invoices extends Response_Model
     public function is_open()
     {
         $this->filter_where_in('invoice_status_id', [2, 3]);
+        $this->filter_where('invoice_balance <> "0.00"');
 
         return $this;
     }
@@ -514,6 +559,7 @@ class Mdl_Invoices extends Response_Model
     public function is_paid()
     {
         $this->filter_where('invoice_status_id', 4);
+        $this->filter_or_where('invoice_balance', '0.00');
 
         return $this;
     }
@@ -539,7 +585,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->get_by_id($invoice_id);
 
-        if ( ! empty($invoice)) {
+        if (! empty($invoice)) {
             if ($invoice->invoice_status_id == 2) {
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->where('invoice_id', $invoice_id);
@@ -563,7 +609,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->get_by_id($invoice_id);
 
-        if ( ! empty($invoice)) {
+        if (! empty($invoice)) {
             if ($invoice->invoice_status_id == 1) {
                 // Generate new invoice number if applicable
                 $invoice_number = $invoice->invoice_number;
@@ -593,18 +639,13 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if ( ! empty($invoice)) {
-            if ($invoice->invoice_status_id == 1 && $invoice->invoice_number == '') {
-                // Generate new invoice number if applicable
-                if (get_setting('generate_invoice_number_for_draft') == 0) {
-                    $invoice_number = $this->get_invoice_number($invoice->invoice_group_id);
-
-                    // Set new invoice number and save
-                    $this->db->where('invoice_id', $invoice_id);
-                    $this->db->set('invoice_number', $invoice_number);
-                    $this->db->update('ip_invoices');
-                }
-            }
+        // Generate new invoice number if applicable
+        if (!empty($invoice) && ($invoice->invoice_status_id == 1 && $invoice->invoice_number == '') && get_setting('generate_invoice_number_for_draft') == 0) {
+            $invoice_number = $this->get_invoice_number($invoice->invoice_group_id);
+            // Set new invoice number and save
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->set('invoice_number', $invoice_number);
+            $this->db->update('ip_invoices');
         }
     }
 
@@ -617,7 +658,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->get_by_id($invoice_id);
 
-        if ( ! empty($invoice) && get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
+        if (! empty($invoice) && get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
             $current_date = date_to_mysql(date(date_format_setting()));
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_date_due', $this->get_date_due($current_date));

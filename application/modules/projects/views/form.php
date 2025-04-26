@@ -1,8 +1,3 @@
-<?php
-    $default_client_name = $this->mdl_projects->form_value('client_name', true);
-    $default_client_surname = $this->mdl_projects->form_value('client_surname', true);
-?>
-
 <script>
     $(function () {
         <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
@@ -11,8 +6,7 @@
 
 <form method="post">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('projects_form'); ?></h1>
@@ -20,23 +14,36 @@
     </div>
 
     <div id="content">
+
         <?php $this->layout->load_view('layout/alerts'); ?>
+
         <div class="form-group">
             <label for="project_name"><?php _trans('project_name'); ?></label>
             <input type="text" name="project_name" id="project_name" class="form-control"
                    value="<?php echo $this->mdl_projects->form_value('project_name', true); ?>" required>
         </div>
-        <div class="form-group">
+
+        <div class="form-group has-feedback">
             <label for="client_id"><?php _trans('client'); ?></label>
-            <select name="client_id" id="client_id" class="client-id-select form-control" autofocus="autofocus">
-                <?php if(null !== $default_client_name): ?>
-                    <option value="<?php echo $default_client_name; ?>">
-                        <?php echo $default_client_name . ' ' . $default_client_surname; ?>
-                    </option>
-                <?php endif; ?>
-            </select>
+            <div class="input-group">
+                <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
+                    <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
+                </span>
+                <select name="client_id" id="client_id" class="client-id-select form-control" autofocus="autofocus">
+<?php
+$permissive = get_setting('enable_permissive_search_users');
+if (! empty($project->client_id)) {
+?>
+                    <option value="<?php echo $project->client_id; ?>"><?php _htmlsc(format_client($project)); ?></option>
+<?php
+}
+?>
+                </select>
+            </div>
         </div>
 
+        <input class="hidden" id="input_permissive_search_clients"
+               value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
     </div>
 
 </form>

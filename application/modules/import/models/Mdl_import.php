@@ -17,9 +17,11 @@ if (! defined('BASEPATH')) {
 class Mdl_Import extends Response_Model
 {
     public $table = 'ip_imports';
+
     public $primary_key = 'ip_imports.import_id';
-    public $expected_headers = array(
-        'clients.csv' => array(
+
+    public $expected_headers = [
+        'clients.csv' => [
             'client_name',
             'client_address_1',
             'client_address_2',
@@ -35,16 +37,16 @@ class Mdl_Import extends Response_Model
             'client_vat_id',
             'client_tax_code',
             'client_active'
-        ),
-        'invoices.csv' => array(
+        ],
+        'invoices.csv' => [
             'user_email',
             'client_name',
             'invoice_date_created',
             'invoice_date_due',
             'invoice_number',
             'invoice_terms'
-        ),
-        'invoice_items.csv' => array(
+        ],
+        'invoice_items.csv' => [
             'invoice_number',
             'item_tax_rate',
             'item_date_added',
@@ -52,28 +54,28 @@ class Mdl_Import extends Response_Model
             'item_description',
             'item_quantity',
             'item_price'
-        ),
-        'payments.csv' => array(
+        ],
+        'payments.csv' => [
             'invoice_number',
             'payment_method',
             'payment_date',
             'payment_amount',
             'payment_note'
-        )
-    );
-    public $primary_keys = array(
-        'ip_clients' => 'client_id',
-        'ip_invoices' => 'invoice_id',
+        ],
+    ];
+
+    public $primary_keys = [
+        'ip_clients'       => 'client_id',
+        'ip_invoices'      => 'invoice_id',
         'ip_invoice_items' => 'item_id',
-        'ip_payments' => 'payment_id'
-    );
+        'ip_payments'      => 'payment_id'
+    ];
 
     /**
      * Mdl_Import constructor.
      */
     public function __construct()
     {
-
     }
 
     public function default_select()
@@ -92,10 +94,7 @@ class Mdl_Import extends Response_Model
 
     public function start_import()
     {
-        $db_array = array(
-            'import_date' => date('Y-m-d H:i:s')
-        );
-
+        $db_array = ['import_date' => date('Y-m-d H:i:s')];
         $this->db->insert('ip_imports', $db_array);
 
         return $this->db->insert_id();
@@ -117,25 +116,26 @@ class Mdl_Import extends Response_Model
         $headers = $this->expected_headers[$file];
 
         // Init an array to store the inserted ids
-        $ids = array();
+        $ids = [];
 
         $fileheaders = null;
 
-        while (($data = fgetcsv($handle, 1000, ",")) <> false) {
+        while (($data = fgetcsv($handle, 1000, ",")) != false) {
             // Check to make sure the file headers match the expected headers
             if ($row == 1) {
                 foreach ($headers as $header) {
-                    if (!in_array($header, $data)) {
+                    if (! in_array($header, $data)) {
                         return false;
                     }
                 }
+
                 $fileheaders = $data;
             } elseif ($row > 1) {
                 // Init the array
-                $db_array = array();
+                $db_array = [];
                 // Loop through each of the values in the row
-                foreach ($headers as $key => $header) {
-                    $db_array[$header] = ($data[array_keys($fileheaders, $header)[0]] <> 'null') ? $data[array_keys($fileheaders, $header)[0]] : '';
+                foreach ($headers as $header) {
+                    $db_array[$header] = ($data[array_keys($fileheaders, $header)[0]] != null) ? $data[array_keys($fileheaders, $header)[0]] : '';
                 }
 
                 // Create a couple of default values if file is clients.csv
@@ -172,18 +172,18 @@ class Mdl_Import extends Response_Model
         $headers = $this->expected_headers['invoices.csv'];
 
         // Init an array to store the inserted ids
-        $ids = array();
+        $ids = [];
 
-        while (($data = fgetcsv($handle, 1000, ",")) <> false) {
+        while (($data = fgetcsv($handle, 1000, ',')) != false) {
             // Init $record_error as false
             $record_error = false;
 
             // Check to make sure the file headers match expected headers
-            if ($row == 1 and $data <> $headers) {
+            if ($row == 1 && $data != $headers) {
                 return false;
             } elseif ($row > 1) {
                 // Init the array
-                $db_array = array();
+                $db_array = [];
 
                 // Loop through each of the values in the row
                 foreach ($headers as $key => $header) {
@@ -208,21 +208,22 @@ class Mdl_Import extends Response_Model
                             $data[$key] = $client->row()->client_id;
                         } else {
                             // Existing client not found - create new client
-                            $client_db_array = array(
+                            $client_db_array = [
                                 'client_name' => $data[$key],
                                 'client_date_created' => date('Y-m-d'),
                                 'client_date_modified' => date('Y-m-d')
-                            );
+                            ];
 
                             $this->db->insert('ip_clients', $client_db_array);
                             $data[$key] = $this->db->insert_id();
                         }
                     }
+
                     // Each invoice needs a url key
                     $db_array['invoice_url_key'] = $this->mdl_invoices->get_url_key();
 
                     // Assign the final value to the array
-                    $db_array[$header] = ($data[$key] <> 'null') ? $data[$key] : '';
+                    $db_array[$header] = ($data[$key] != 'null') ? $data[$key] : '';
                 }
 
                 // Check for any record errors
@@ -254,18 +255,18 @@ class Mdl_Import extends Response_Model
         $headers = $this->expected_headers['invoice_items.csv'];
 
         // Init an array to store the inserted ids
-        $ids = array();
+        $ids = [];
 
-        while (($data = fgetcsv($handle, 1000, ",")) <> false) {
+        while (($data = fgetcsv($handle, 1000, ',')) != false) {
             // Init record_error as false
             $record_error = false;
 
             // Check to make sure the file headers match expected headers
-            if ($row == 1 and $data <> $headers) {
+            if ($row == 1 && $data != $headers) {
                 return false;
             } elseif ($row > 1) {
                 // Init the array
-                $db_array = array();
+                $db_array = [];
 
                 foreach ($headers as $key => $header) {
                     if ($header == 'invoice_number') {
@@ -287,10 +288,10 @@ class Mdl_Import extends Response_Model
                             if ($tax_rate->num_rows()) {
                                 $data[$key] = $tax_rate->row()->tax_rate_id;
                             } else {
-                                $this->db->insert('ip_tax_rates', array(
-                                    'tax_rate_name' => $data[$key],
-                                    'tax_rate_percent' => $data[$key]
-                                ));
+                                $this->db->insert('ip_tax_rates', [
+                                    'tax_rate_name'    => $data[$key],
+                                    'tax_rate_percent' => $data[$key],
+                                ]);
                                 $data[$key] = $this->db->insert_id();
                             }
                         } else {
@@ -299,12 +300,20 @@ class Mdl_Import extends Response_Model
                     }
 
                     // Assign the final value to the array
-                    $db_array[$header] = ($data[$key] <> 'null') ? $data[$key] : '';
+                    $db_array[$header] = ($data[$key] != 'null') ? $data[$key] : '';
                 }
 
-                if (!$record_error) {
+                if (! $record_error) {
+                    // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
+                    $global_discount = [
+                        'amount'         => 0.0, // Only to prevent bug because mdl_items->save() call Mdl_Item_Amounts->calculate()
+                        'percent'        => 0.0, // But no Global discount applied because all amount = 0
+                        'item'           => 0.0, // This is Global invoice discount
+                        'items_subtotal' => 0.0, // Todo: verify if work fine (untested)
+                    ];
+
                     // No errors, go ahead and create the record
-                    $ids[] = $this->mdl_items->save(null, $db_array);
+                    $ids[] = $this->mdl_items->save(null, $db_array, $global_discount);
                 }
             }
 
@@ -325,15 +334,15 @@ class Mdl_Import extends Response_Model
 
         $headers = $this->expected_headers['payments.csv'];
 
-        $ids = array();
+        $ids = [];
 
-        while (($data = fgetcsv($handle, 1000, ",")) <> false) {
+        while (($data = fgetcsv($handle, 1000, ',')) != false) {
             $record_error = false;
 
-            if ($row == 1 and $data <> $headers) {
+            if ($row == 1 && $data != $headers) {
                 return false;
             } elseif ($row > 1) {
-                $db_array = array();
+                $db_array = [];
 
                 foreach ($headers as $key => $header) {
                     if ($header == 'invoice_number') {
@@ -354,7 +363,7 @@ class Mdl_Import extends Response_Model
                             if ($payment_method->num_rows()) {
                                 $data[$key] = $payment_method->row()->payment_method_id;
                             } else {
-                                $this->db->insert('ip_payment_methods', array('payment_method_name' => $data[$key]));
+                                $this->db->insert('ip_payment_methods', ['payment_method_name' => $data[$key]]);
                                 $data[$key] = $this->db->insert_id();
                             }
                         } else {
@@ -363,7 +372,7 @@ class Mdl_Import extends Response_Model
                         }
                     }
 
-                    $db_array[$header] = ($data[$key] <> 'null') ? $data[$key] : '';
+                    $db_array[$header] = ($data[$key] != 'null') ? $data[$key] : '';
                 }
 
                 if (!$record_error) {
@@ -386,12 +395,12 @@ class Mdl_Import extends Response_Model
     public function record_import_details($import_id, $table_name, $import_lang_key, $ids)
     {
         foreach ($ids as $id) {
-            $db_array = array(
+            $db_array = [
                 'import_id' => $import_id,
                 'import_table_name' => $table_name,
                 'import_lang_key' => $import_lang_key,
                 'import_record_id' => $id
-            );
+            ];
 
             $this->db->insert('ip_import_details', $db_array);
         }
@@ -407,7 +416,8 @@ class Mdl_Import extends Response_Model
 
         // Loop through details and delete each of the imported records
         foreach ($import_details as $import_detail) {
-            $this->db->query("DELETE FROM " . $import_detail->import_table_name . " WHERE " . $this->primary_keys[$import_detail->import_table_name] . ' = ' . $import_detail->import_record_id);
+            $this->db->query('DELETE FROM ' . $import_detail->import_table_name
+            . ' WHERE ' . $this->primary_keys[$import_detail->import_table_name] . ' = ' . $import_detail->import_record_id);
         }
 
         // Delete the master import record
@@ -421,5 +431,4 @@ class Mdl_Import extends Response_Model
         $this->load->helper('orphan');
         delete_orphans();
     }
-
 }

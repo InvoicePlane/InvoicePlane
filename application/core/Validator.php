@@ -7,16 +7,15 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Validator extends MY_Model
 {
-
     /**
      * @return bool
      */
@@ -32,12 +31,12 @@ class Validator extends MY_Model
      */
     public function validate_date($value)
     {
-        if ($value == "") {
+        if ($value == '') {
             return null;
         }
 
-        if (!is_date($value)) {
-            $this->form_validation->set_message('validate_date', 'Invalid date');
+        if (! is_date($value)) {
+            $this->form_validation->set_message('validate_date', trans('invalid_date'));
             return false;
         }
 
@@ -51,11 +50,11 @@ class Validator extends MY_Model
      */
     public function validate_boolean($value)
     {
-        if ($value == "0" || $value == "1") {
+        if ($value == '0' || $value == '1') {
             return true;
         }
 
-        if ($value == "") {
+        if ($value == '') {
             return null;
         }
 
@@ -63,44 +62,39 @@ class Validator extends MY_Model
     }
 
     /**
-     * @param $value
-     * @param $key
+     * @param str $value
+     * @param int $key
      *
-     * @return null
+     * @return bool|null
      */
     public function validate_singlechoice($value, $key)
     {
-        if ($value == "") {
+        if ($value == '') {
             return null;
         }
 
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
-        $result = $this->custom_value->column_has_value($key, $value);
 
-        return $result;
+        return $this->custom_value->column_has_value($key, $value);
     }
 
     /**
-     * @param $value
-     * @param $id
+     * @param array $values
+     * @param int   $id
      *
      * @return bool|null
      */
-    public function validate_multiplechoice($value, $id)
+    public function validate_multiplechoice($values, $id)
     {
-        if ($value == "") {
+        // Fix unresetable (Origin only == '')
+        if ($values == '' || $values[0] == '') { // work with str, array & null: See https://www.php.net/manual/function.is-null.php#87355
             return null;
         }
 
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
         $this->custom_value->where('custom_field_id', $id);
-        $dbvals = $this->custom_value->where_in('custom_values_id', $value)->get();
-
-        if ($dbvals->num_rows() == sizeof($value)) {
-            return true;
-        }
-
-        return false;
+        $dbvals = $this->custom_value->where_in('custom_values_id', $values)->get();
+        return $dbvals->num_rows() == count($values);
     }
 
     /**
@@ -129,8 +123,6 @@ class Validator extends MY_Model
 
     /**
      * @param $column
-     *
-     * @return null
      */
     public function get_field_type($column)
     {
@@ -167,30 +159,32 @@ class Validator extends MY_Model
 
             if ($model->num_rows()) {
                 $model = $model->row();
-                if (@$model->custom_field_required == "1") {
-                    if ($value == "") {
+/*
+                if (@$model->custom_field_required == '1') // Todo implement (Only here & Not in db! Oldies?)
+                {
+                    if ($value == '') {
                         $errors[] = [
-                            "field" => $model->custom_field_id,
-                            "label" => $model->custom_field_label,
-                            "error_msg" => "missing field required",
+                            'field'     => $model->custom_field_id,
+                            'label'     => $model->custom_field_label,
+                            'error_msg' => 'missing field required',
                         ];
                         continue;
                     }
                 }
-
+*/
                 $result = $this->validate_type($model->custom_field_type, $value, $key);
 
                 if ($result === false) {
                     $errors[] = [
-                        "field" => $model->custom_field_id,
-                        "label" => $model->custom_field_label,
-                        "error_msg" => "invalid input",
+                        'field'     => $model->custom_field_id,
+                        'label'     => $model->custom_field_label,
+                        'error_msg' => 'invalid input',
                     ];
                 }
             }
         }
 
-        if (sizeof($errors) == 0) {
+        if (count($errors) == 0) {
             $this->_formdata = $db_array;
             $this->fixinput();
             return true;
@@ -210,7 +204,7 @@ class Validator extends MY_Model
     {
         $nicename = $this->mdl_custom_fields->get_nicename($type);
         $validation_rule = 'validate_' . $nicename;
-        return $this->{$validation_rule}($value, $key);
+        return $this->$validation_rule($value, $key);
     }
 
     public function fixinput()
@@ -223,23 +217,22 @@ class Validator extends MY_Model
                 $ftype = $model->custom_field_type;
 
                 switch ($ftype) {
-                    case "DATE":
-                        if ($value == "") {
-                            $this->_formdata[$key] = null;
-                        } else {
-                            $this->_formdata[$key] = date_to_mysql($value);
-                        }
+                    case 'DATE':
+                        $this->_formdata[$key] = $value == '' ? null : date_to_mysql($value);
 
                         break;
 
-                    case "MULTIPLE-CHOICE":
+                    case 'MULTIPLE-CHOICE':
+                        $value = is_array($value) && $value[0] == '' ? null : $value; // reset if none in list
                         $this->_formdata[$key] = is_array($value) ? implode(',', $value) : $value;
                         break;
 
-                    case "TEXT":
-                        if ($value == "") {
+                    case 'TEXT':
+                    case 'SINGLE-CHOICE':
+                        if ($value == '') {
                             $this->_formdata[$key] = null;
                         }
+
                         break;
                 }
             }

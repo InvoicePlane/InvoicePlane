@@ -7,17 +7,19 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Mdl_Payments extends Response_Model
 {
     public $table = 'ip_payments';
+
     public $primary_key = 'ip_payments.payment_id';
+
     public $validation_rules = 'validation_rules';
 
     public function default_select()
@@ -36,7 +38,7 @@ class Mdl_Payments extends Response_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_payments.payment_date DESC');
+        $this->db->order_by('ip_payments.payment_date DESC, ip_payments.payment_id DESC');
     }
 
     public function default_join()
@@ -52,31 +54,31 @@ class Mdl_Payments extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'invoice_id' => array(
+        return [
+            'invoice_id' => [
                 'field' => 'invoice_id',
                 'label' => trans('invoice'),
                 'rules' => 'required'
-            ),
-            'payment_date' => array(
+            ],
+            'payment_date' => [
                 'field' => 'payment_date',
                 'label' => trans('date'),
                 'rules' => 'required'
-            ),
-            'payment_amount' => array(
+            ],
+            'payment_amount' => [
                 'field' => 'payment_amount',
                 'label' => trans('payment'),
                 'rules' => 'required|callback_validate_payment_amount'
-            ),
-            'payment_method_id' => array(
+            ],
+            'payment_method_id' => [
                 'field' => 'payment_method_id',
                 'label' => trans('payment_method')
-            ),
-            'payment_note' => array(
+            ],
+            'payment_note' => [
                 'field' => 'payment_note',
                 'label' => trans('note')
-            )
-        );
+            ],
+        ];
     }
 
     /**
@@ -100,10 +102,8 @@ class Mdl_Payments extends Response_Model
         if ($payment_id) {
             $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
 
-            $invoice_balance = $invoice_balance + (float)$payment->payment_amount;
+            $invoice_balance += (float)$payment->payment_amount;
         }
-
-        $invoice_balance = (float)$invoice_balance;
 
         if ($amount > $invoice_balance) {
             $this->form_validation->set_message('validate_payment_amount', trans('payment_cannot_exceed_balance'));
@@ -114,8 +114,6 @@ class Mdl_Payments extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      * @return bool|int|null
      */
     public function save($id = null, $db_array = null)
@@ -126,17 +124,18 @@ class Mdl_Payments extends Response_Model
         // Save the payment
         $id = parent::save($id, $db_array);
 
+        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($db_array['invoice_id']);
         // Recalculate invoice amounts
-        $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
+        $this->mdl_invoice_amounts->calculate($db_array['invoice_id'], $global_discount);
 
         // Set proper status for the invoice
         $invoice = $this->db->where('invoice_id', $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
 
-        // Calculate sum for payments
         if ($invoice == null) {
             return false;
         }
 
+        // Calculate sum for payments
         $paid = (float)$invoice->invoice_paid;
         $total = (float)$invoice->invoice_total;
 
@@ -146,8 +145,9 @@ class Mdl_Payments extends Response_Model
             $this->db->update('ip_invoices');
         }
 
+        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($db_array['invoice_id']);
         // Recalculate invoice amounts
-        $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
+        $this->mdl_invoice_amounts->calculate($db_array['invoice_id'], $global_discount);
 
         return $id;
     }
@@ -165,26 +165,26 @@ class Mdl_Payments extends Response_Model
         return $db_array;
     }
 
-    /**
-     * @param null $id
-     */
     public function delete($id = null)
     {
         // Get the invoice id before deleting payment
         $this->db->select('invoice_id');
         $this->db->where('payment_id', $id);
+
         $invoice_id = $this->db->get('ip_payments')->row()->invoice_id;
 
         // Delete the payment
         parent::delete($id);
 
-        // Recalculate invoice amounts
         $this->load->model('invoices/mdl_invoice_amounts');
-        $this->mdl_invoice_amounts->calculate($invoice_id);
+        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
+        // Recalculate invoice amounts
+        $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
 
         // Change invoice status back to sent
         $this->db->select('invoice_status_id');
         $this->db->where('invoice_id', $invoice_id);
+
         $invoice = $this->db->get('ip_invoices')->row();
 
         if ($invoice->invoice_status_id == 4) {
@@ -198,16 +198,15 @@ class Mdl_Payments extends Response_Model
     }
 
     /**
-     * @param null $id
      * @return bool
      */
     public function prep_form($id = null)
     {
-        if (!parent::prep_form($id)) {
+        if (! parent::prep_form($id)) {
             return false;
         }
 
-        if (!$id) {
+        if (! $id) {
             parent::set_form_value('payment_date', date('Y-m-d'));
         }
 
@@ -223,5 +222,4 @@ class Mdl_Payments extends Response_Model
         $this->filter_where('ip_clients.client_id', $client_id);
         return $this;
     }
-
 }

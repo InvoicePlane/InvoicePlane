@@ -3,32 +3,14 @@
         // Display the create quote modal
         $('#create-quote').modal('show');
 
+        // Select2 for all select inputs
         $('.simple-select').select2();
 
         <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
 
-        // Toggle on/off permissive search on clients names
-        $('span#toggle_permissive_search_clients').click(function () {
-            if ($('input#input_permissive_search_clients').val() == ('1')) {
-                $.get("<?php echo site_url('clients/ajax/save_preference_permissive_search_clients'); ?>", {
-                    permissive_search_clients: '0'
-                });
-                $('input#input_permissive_search_clients').val('0');
-                $('span#toggle_permissive_search_clients i').removeClass('fa-toggle-on');
-                $('span#toggle_permissive_search_clients i').addClass('fa-toggle-off');
-            } else {
-                $.get("<?php echo site_url('clients/ajax/save_preference_permissive_search_clients'); ?>", {
-                    permissive_search_clients: '1'
-                });
-                $('input#input_permissive_search_clients').val('1');
-                $('span#toggle_permissive_search_clients i').removeClass('fa-toggle-off');
-                $('span#toggle_permissive_search_clients i').addClass('fa-toggle-on');
-            }
-        });
-
         // Creates the quote
         $('#quote_create_confirm').click(function () {
-            console.log('clicked');
+            show_loader(); // Show spinner
             // Posts the data to validate and create the quote;
             // will create the new client if necessary
             $.post("<?php echo site_url('quotes/ajax/create'); ?>", {
@@ -39,7 +21,7 @@
                     invoice_group_id: $('#invoice_group_id').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         // The validation was successful and quote was created
@@ -47,6 +29,7 @@
                     }
                     else {
                         // The validation was not successful
+                        close_loader();
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().parent().addClass('has-error');
@@ -71,15 +54,15 @@
             <div class="form-group has-feedback">
                 <label for="create_quote_client_id"><?php _trans('client'); ?></label>
                 <div class="input-group">
-                    <select name="client_id" id="create_quote_client_id" class="client-id-select form-control"
-                            autofocus="autofocus" required>
-                        <?php if (!empty($client)) : ?>
-                            <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
-                        <?php endif; ?>
-                    </select>
                     <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
                         <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
                     </span>
+                    <select name="client_id" id="create_quote_client_id" class="client-id-select form-control"
+                            autofocus="autofocus" required>
+                        <?php if (!empty($client)) : ?>
+                            <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client, false)); ?></option>
+                        <?php endif; ?>
+                    </select>
                 </div>
             </div>
 

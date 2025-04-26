@@ -1,5 +1,3 @@
-<?php $this->load->helper('country'); ?>
-
 <span class="client-address-street-line">
     <?php echo($client->client_address_1 ? htmlsc($client->client_address_1) . '<br>' : ''); ?>
 </span>

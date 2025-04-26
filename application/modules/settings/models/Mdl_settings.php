@@ -7,16 +7,16 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Mdl_Settings extends CI_Model
 {
-    public $settings = array();
+    public $settings = [];
 
     /**
      * @param $key
@@ -24,10 +24,10 @@ class Mdl_Settings extends CI_Model
      */
     public function save($key, $value)
     {
-        $db_array = array(
+        $db_array = [
             'setting_key' => $key,
             'setting_value' => $value,
-        );
+        ];
 
         if ($this->get($key) !== null) {
             $this->db->where('setting_key', $key);
@@ -39,12 +39,12 @@ class Mdl_Settings extends CI_Model
 
     /**
      * @param $key
-     * @return null
      */
     public function get($key)
     {
         $this->db->select('setting_value');
         $this->db->where('setting_key', $key);
+
         $query = $this->db->get('ip_settings');
 
         if ($query->row()) {
@@ -88,7 +88,7 @@ class Mdl_Settings extends CI_Model
      */
     public function setting($key, $default = '')
     {
-        return (isset($this->settings[$key])) ? $this->settings[$key] : $default;
+        return (isset($this->settings[$key]) && $this->settings[$key] !== '') ? $this->settings[$key] : $default;
     }
 
     /**
@@ -140,5 +140,4 @@ class Mdl_Settings extends CI_Model
 
         return $themes;
     }
-
 }

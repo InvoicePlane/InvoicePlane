@@ -34,6 +34,16 @@ DB_PORT=
 SESS_EXPIRATION=864000
 SESS_MATCH_IP=true
 
+# Global Amounts Calculation - Since 1.6.3
+# This change Taxes and discounts calcuation mode
+# true  : Taxes: Global Y, Item Y. Use classic calculation for Discounts & Taxes : Conserve same calculation as previous v1.6.3 (Default)
+# false : Taxes: Global N, Item Y. Use simple item tax system calculation : Apply global discount after item discount & before item tax
+# - E-invoicing Notice:
+# - Important to valid xml data on some model need use simple calculation system.
+# - Set to false if use:
+# -- xml-template :🗸:   Zugferd23, Facturx10 (EN16931 & embed in pdf)
+LEGACY_CALCULATION=true
+
 # Enable the deletion of invoices
 ENABLE_INVOICE_DELETION=false
 

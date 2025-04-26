@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Form_Validation_Model extends MY_Model
 {
-
     /**
      * Form_Validation_Model constructor.
      */
@@ -25,6 +24,6 @@ class Form_Validation_Model extends MY_Model
         parent::__construct();
 
         $this->load->library('form_validation');
-        $this->form_validation->CI =& $this;
+        $this->form_validation->CI = & $this;
     }
 }

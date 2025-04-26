@@ -23,14 +23,15 @@
         // this is the email quote window, disable the invoice select
         $('#tags_invoice').prop('disabled', 'disabled');
         $('#tags_quote').prop('disabled', false);
+        // Fix blocked by browser if to_email field is empty
+        $('#btn_cancel').on('click', function(){$('#to_email').prop('required', false);});
     });
 
 </script>
 
 <form method="post" action="<?php echo site_url('mailer/send_quote/' . $quote->quote_id) ?>">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('email_quote'); ?></h1>
@@ -41,7 +42,7 @@
                     <i class="fa fa-send"></i>
                     <?php _trans('send'); ?>
                 </button>
-                <button class="btn btn-danger" name="btn_cancel" value="1">
+                <button class="btn btn-danger" name="btn_cancel" id="btn_cancel" value="1">
                     <i class="fa fa-times"></i>
                     <?php _trans('cancel'); ?>
                 </button>
@@ -68,12 +69,16 @@
                     <label for="email_template"><?php _trans('email_template'); ?></label>
                     <select name="email_template" id="email_template" class="form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
-                        <?php foreach ($email_templates as $email_template): ?>
-                            <option value="<?php echo $email_template->email_template_id; ?>"
-                                <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
-                                <?php _htmlsc($email_template->email_template_title); ?>
-                            </option>
-                        <?php endforeach; ?>
+<?php
+foreach ($email_templates as $email_template) {
+?>
+                        <option value="<?php echo $email_template->email_template_id; ?>"
+                            <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
+                            <?php _htmlsc($email_template->email_template_title); ?>
+                        </option>
+<?php
+}
+?>
                     </select>
                 </div>
 
@@ -85,7 +90,7 @@
 
                 <div class="form-group">
                     <label for="from_email"><?php _trans('from_email'); ?></label>
-                    <input type="email" name="from_email" id="from_email" class="form-control"
+                    <input type="text" name="from_email" id="from_email" class="form-control" required
                            value="<?php echo $quote->user_email; ?>">
                 </div>
 
@@ -109,12 +114,16 @@
                     <label for="pdf_template"><?php _trans('pdf_template'); ?></label>
                     <select name="pdf_template" id="pdf_template" class="form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
-                        <?php foreach ($pdf_templates as $pdf_template): ?>
-                            <option value="<?php echo $pdf_template; ?>"
-                                <?php check_select($selected_pdf_template, $pdf_template); ?>>
-                                <?php echo $pdf_template; ?>
-                            </option>
-                        <?php endforeach; ?>
+<?php
+foreach ($pdf_templates as $pdf_template) {
+?>
+                        <option value="<?php echo $pdf_template; ?>"
+                            <?php check_select($selected_pdf_template, $pdf_template); ?>>
+                            <?php echo $pdf_template; ?>
+                        </option>
+<?php
+}
+?>
                     </select>
                 </div>
 
@@ -196,7 +205,7 @@
             <div class="col-xs-12 col-md-8 col-md-offset-2">
 
                 <div class="form-group">
-                    <?php $this->layout->load_view('upload/dropzone-quote-html'); ?>
+                    <?php _dropzone_html(false); ?>
                 </div>
 
                 <div class="form-group">
@@ -218,4 +227,5 @@
 
 </form>
 
-<?php $this->layout->load_view('upload/dropzone-quote-scripts'); ?>
+<?php
+_dropzone_script($quote->quote_url_key, $quote->client_id);

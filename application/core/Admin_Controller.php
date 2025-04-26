@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -26,13 +26,16 @@ class Admin_Controller extends User_Controller
     {
         $input = $this->input->post();
 
-        array_walk($input, function (&$value, $key): void {
-            if (!is_array($value)) {
-                $value = $this->security->xss_clean($value);
-                $value = strip_tags($value);
-                $value = html_escape($value);   // <<<=== that's a CodeIgniter helper
+        array_walk(
+            $input,
+            function (&$value, $key): void {
+                if (!is_array($value)) {
+                    $value = $this->security->xss_clean($value);
+                    $value = strip_tags($value);
+                    $value = html_escape($value);   // <<<=== that's a CodeIgniter helper
+                }
             }
-        });
+        );
     }
 
     protected function setCacheHeaders()
@@ -43,7 +46,7 @@ class Admin_Controller extends User_Controller
             ->set_header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
 
         $xFrameOptions = env('X_FRAME_OPTIONS');
-        if (!empty($xFrameOptions)) {
+        if (! empty($xFrameOptions)) {
             $this->output->set_header('X-Frame-Options: ' . $xFrameOptions);
         }
 

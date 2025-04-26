@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -52,6 +52,7 @@ function invoice_logo_pdf()
  * Documentation: https://www.postfinance.ch/binp/postfinance/public/dam.M26m_i6_6ceYcN2XtAN4w8OHMynQG7FKxJVK8TtQzr0.spool/content/dam/pf/de/doc/consult/manual/dlserv/inpayslip_isr_man_en.pdf.
  *
  * @param string $slipType
+ * @param        $amount
  * @param string $rnumb
  *
  * @return string
@@ -68,9 +69,10 @@ function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
         $amount = .5 * round((float) $amount / .5, 1);
     }
 
-    if ( ! $isEur && $amount > 99999999.95) {
+    if (! $isEur && $amount > 99999999.95) {
         throw new Error('Invalid amount');
     }
+
     if ($isEur && $amount > 99999999.99) {
         throw new Error('Invalid amount');
     }
@@ -78,7 +80,7 @@ function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
     $amountLine    = sprintf('%010d', $amount * 100);
     $checkSlAmount = invoice_recMod10($slipType . $amountLine);
 
-    if ( ! preg_match("/\d{2}-\d{1,6}-\d{1}/", $subNumb)) {
+    if (! preg_match("/\d{2}-\d{1,6}-\d{1}/", $subNumb)) {
         throw new Error('Invalid subscriber number');
     }
 

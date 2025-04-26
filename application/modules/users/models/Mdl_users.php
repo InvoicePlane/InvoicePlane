@@ -1,16 +1,16 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -35,12 +35,12 @@ class Mdl_Users extends Response_Model
         ];
     }
 
-    public function default_select()
+    public function default_select(): void
     {
         $this->db->select('SQL_CALC_FOUND_ROWS ip_users.*', false);
     }
 
-    public function default_order_by()
+    public function default_order_by(): void
     {
         $this->db->order_by('ip_users.user_name');
     }
@@ -121,13 +121,29 @@ class Mdl_Users extends Response_Model
             'user_tax_code' => [
                 'field' => 'user_tax_code',
             ],
-            'user_subscribernumber' => [
-                'field' => 'user_subscribernumber',
+            'user_invoicing_contact' => [
+                'field' => 'user_invoicing_contact',
+                'rules' => 'trim',
+            ],
+            'user_bank' => [
+                'field' => 'user_bank',
+                'rules' => 'trim',
             ],
             'user_iban' => [
                 'field' => 'user_iban',
             ],
+            'user_bic' => [
+                'field' => 'user_bic',
+                'rules' => 'trim|xss_clean',
+            ],
+            'user_remittance_tmpl' => [
+                'field' => 'user_remittance',
+                'rules' => 'trim|xss_clean',
+            ],
             // SUMEX
+            'user_subscribernumber' => [
+                'field' => 'user_subscribernumber',
+            ],
             'user_gln' => [
                 'field' => 'user_gln',
             ],
@@ -135,6 +151,21 @@ class Mdl_Users extends Response_Model
                 'field' => 'user_rcc',
             ],
         ];
+    }
+
+    /**
+     * @param int $amount
+     *
+     * @return mixed
+     */
+    public function get_latest($amount = 20)
+    {
+        return $this->mdl_users
+            ->where('user_active', 1)
+            ->order_by('user_id', 'DESC')
+            ->limit($amount)
+            ->get()
+            ->result();
     }
 
     /**
@@ -203,13 +234,25 @@ class Mdl_Users extends Response_Model
             'user_tax_code' => [
                 'field' => 'user_tax_code',
             ],
-            'user_subscribernumber' => [
-                'field' => 'user_subscribernumber',
+            'user_invoicing_contact' => [
+                'field' => 'user_invoicing_contact',
+            ],
+            'user_bank' => [
+                'field' => 'user_bank',
             ],
             'user_iban' => [
                 'field' => 'user_iban',
             ],
+            'user_bic' => [
+                'field' => 'user_bic',
+            ],
+            'user_remittance_tmpl' => [
+                'field' => 'user_remittance',
+            ],
             // SUMEX
+            'user_subscribernumber' => [
+                'field' => 'user_subscribernumber',
+            ],
             'user_gln' => [
                 'field' => 'user_gln',
             ],
@@ -263,7 +306,7 @@ class Mdl_Users extends Response_Model
      * @param $user_id
      * @param $password
      */
-    public function save_change_password($user_id, $password)
+    public function save_change_password($user_id, $password): void
     {
         $this->load->library('crypt');
 
@@ -282,8 +325,6 @@ class Mdl_Users extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      *
      * @return int|null
      */
@@ -307,7 +348,7 @@ class Mdl_Users extends Response_Model
     /**
      * @param int $id
      */
-    public function delete($id)
+    public function delete($id): void
     {
         parent::delete($id);
 

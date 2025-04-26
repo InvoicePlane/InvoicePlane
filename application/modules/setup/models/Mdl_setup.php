@@ -16,7 +16,7 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Setup extends CI_Model
 {
-    public $errors = array();
+    public $errors = [];
 
     /**
      * @return bool
@@ -48,7 +48,7 @@ class Mdl_Setup extends CI_Model
         $commands = explode(';', $contents);
 
         foreach ($commands as $command) {
-            if (!trim($command)) {
+            if (! trim($command)) {
                 continue;
             }
 
@@ -68,11 +68,11 @@ class Mdl_Setup extends CI_Model
      */
     private function save_version($sql_file)
     {
-        $version_db_array = array(
+        $version_db_array = [
             'version_date_applied' => time(),
             'version_file' => $sql_file,
             'version_sql_errors' => count($this->errors)
-        );
+        ];
 
         $this->db->insert('ip_versions', $version_db_array);
     }
@@ -82,26 +82,24 @@ class Mdl_Setup extends CI_Model
      */
     public function install_default_data()
     {
-        $this->db->insert('ip_invoice_groups', array(
+        $this->db->insert('ip_invoice_groups', [
                 'invoice_group_name' => 'Invoice Default',
                 'invoice_group_next_id' => 1
-            )
-        );
+            ]);
 
-        $this->db->insert('ip_invoice_groups', array(
+        $this->db->insert('ip_invoice_groups', [
                 'invoice_group_name' => 'Quote Default',
                 'invoice_group_prefix' => 'QUO',
                 'invoice_group_next_id' => 1
-            )
-        );
+            ]);
 
-        $this->db->insert('ip_payment_methods', array(
+        $this->db->insert('ip_payment_methods', [
             'payment_method_name' => 'Cash',
-        ));
+        ]);
 
-        $this->db->insert('ip_payment_methods', array(
+        $this->db->insert('ip_payment_methods', [
             'payment_method_name' => 'Credit Card',
-        ));
+        ]);
     }
 
     /**
@@ -111,7 +109,7 @@ class Mdl_Setup extends CI_Model
     {
         $this->load->helper('string');
 
-        $default_settings = array(
+        $default_settings = [
             'default_language' => $this->session->userdata('ip_lang'),
             'date_format' => 'm/d/Y',
             'currency_symbol' => '$',
@@ -132,16 +130,16 @@ class Mdl_Setup extends CI_Model
             'public_invoice_template' => 'InvoicePlane_Web',
             'public_quote_template' => 'InvoicePlane_Web',
             'disable_sidebar' => 1,
-        );
+        ];
 
         foreach ($default_settings as $setting_key => $setting_value) {
             $this->db->where('setting_key', $setting_key);
 
             if (!$this->db->get('ip_settings')->num_rows()) {
-                $db_array = array(
+                $db_array = [
                     'setting_key' => $setting_key,
                     'setting_value' => $setting_value
-                );
+                ];
 
                 $this->db->insert('ip_settings', $db_array);
             }
@@ -211,15 +209,15 @@ class Mdl_Setup extends CI_Model
          * therefore check if it's an update, if the time difference between v1.1.2 and v1.2.0 is
          * greater than 100 and if v1.2.0 was not installed within this update process
          */
-        $this->db->where_in("version_file", array("006_1.2.0.sql", "005_1.1.2.sql"));
+        $this->db->where_in("version_file", ["006_1.2.0.sql", "005_1.1.2.sql"]);
         $versions = $this->db->get('ip_versions')->result();
         $upgrade_diff = $versions[1]->version_date_applied - $versions[0]->version_date_applied;
 
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
-            $setup_notice = array(
+            $setup_notice = [
                 'type' => 'alert-danger',
                 'content' => trans('setup_v120_alert'),
-            );
+            ];
             $this->session->set_userdata('setup_notice', $setup_notice);
         }
     }
@@ -230,15 +228,15 @@ class Mdl_Setup extends CI_Model
          * but only display the warning when the previous version is 1.4.6 or lower and it's an update
          * (see above for details)
          */
-        $this->db->where_in("version_file", array("018_1.4.6.sql", "019_1.4.7.sql"));
+        $this->db->where_in("version_file", ["018_1.4.6.sql", "019_1.4.7.sql"]);
         $versions = $this->db->get('ip_versions')->result();
         $upgrade_diff = $versions[1]->version_date_applied - $versions[0]->version_date_applied;
 
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
-            $setup_notice = array(
+            $setup_notice = [
                 'type' => 'alert-danger',
                 'content' => trans('setup_v147_alert'),
-            );
+            ];
             $this->session->set_userdata('setup_notice', $setup_notice);
         }
     }
@@ -246,23 +244,23 @@ class Mdl_Setup extends CI_Model
     public function upgrade_023_1_5_0()
     {
         $res = $this->db->query('SELECT * FROM ip_custom_fields');
-        $drop_columns = array();
+        $drop_columns = [];
 
-        $tables = array(
+        $tables = [
             'client',
             'invoice',
             'quote',
             'payment',
             'user',
-        );
+        ];
 
         if ($res->num_rows()) {
             foreach ($res->result() as $row) {
-                $drop_columns[] = array(
+                $drop_columns[] = [
                     'field_id' => $row->custom_field_id,
                     'column' => $row->custom_field_column,
                     'table' => $row->custom_field_table,
-                );
+                ];
             }
         }
 
@@ -273,8 +271,7 @@ class Mdl_Setup extends CI_Model
                 `client_id` INT NOT NULL, `client_custom_fieldid` INT NOT NULL,
                 `client_custom_fieldvalue` TEXT NULL ,
                 UNIQUE (client_id, client_custom_fieldid)
-            );'
-        );
+            );');
 
         $this->db->query('CREATE TABLE `ip_invoice_custom_new`
             (
@@ -282,8 +279,7 @@ class Mdl_Setup extends CI_Model
             `invoice_id` INT NOT NULL, `invoice_custom_fieldid` INT NOT NULL,
             `invoice_custom_fieldvalue` TEXT NULL ,
             UNIQUE (invoice_id, invoice_custom_fieldid)
-            );'
-        );
+            );');
 
         $this->db->query('CREATE TABLE `ip_quote_custom_new`
             (
@@ -291,8 +287,7 @@ class Mdl_Setup extends CI_Model
                 `quote_id` INT NOT NULL, `quote_custom_fieldid` INT NOT NULL,
                 `quote_custom_fieldvalue` TEXT NULL ,
                 UNIQUE (quote_id, quote_custom_fieldid)
-            );'
-        );
+            );');
 
         $this->db->query('CREATE TABLE `ip_payment_custom_new`
             (
@@ -300,8 +295,7 @@ class Mdl_Setup extends CI_Model
                 `payment_id` INT NOT NULL, `payment_custom_fieldid` INT NOT NULL,
                 `payment_custom_fieldvalue` TEXT NULL ,
                 UNIQUE (payment_id, payment_custom_fieldid)
-            );'
-        );
+            );');
 
         $this->db->query('CREATE TABLE `ip_user_custom_new`
             (
@@ -309,8 +303,7 @@ class Mdl_Setup extends CI_Model
                 `user_id` INT NOT NULL, `user_custom_fieldid` INT NOT NULL,
                 `user_custom_fieldvalue` TEXT NULL ,
                 UNIQUE (user_id, user_custom_fieldid)
-            );'
-        );
+            );');
 
         // Migrate Data
         foreach ($drop_columns as $value) {
@@ -322,20 +315,19 @@ class Mdl_Setup extends CI_Model
 
             if ($res->num_rows()) {
                 foreach ($res->result() as $row) {
-
                     $escaped_table_type = $this->db->escape($row->{$table_type . '_id'});
                     $escaped_column = $this->db->escape($row->{$value['column']});
 
-                    $query = "INSERT INTO $table_name
+                    $query = "INSERT INTO {$table_name}
                         (" . $table_type . "_id, " . $table_type . "_custom_fieldid, " . $table_type . "_custom_fieldvalue)
                         VALUES (
-                            $escaped_table_type,
+                            {$escaped_table_type},
                             (
                                 SELECT custom_field_id
                                 FROM ip_custom_fields
                                 WHERE ip_custom_fields.custom_field_column = " . $this->db->escape($value['column']) . "
                             ),
-                            $escaped_column
+                            {$escaped_column}
                         )";
 
                     $this->db->query($query);
@@ -363,8 +355,7 @@ class Mdl_Setup extends CI_Model
         if (!isset($test_user->user_all_clients)) {
             $this->db->query('ALTER TABLE `ip_users`
               ADD `user_all_clients` INT(1) NOT NULL DEFAULT 0
-              AFTER `user_psalt`;'
-            );
+              AFTER `user_psalt`;');
         }
 
         // Copy the invoice pdf footer to the new quote pdf footer setting
@@ -384,26 +375,58 @@ class Mdl_Setup extends CI_Model
 
         //**recur_end_date**
         $rows_recur_end_date = $this->db->query('SELECT * FROM `ip_invoices_recurring`');
-        foreach($rows_recur_end_date->result() as $row)
-        {
-            if($row->recur_end_date == '0000-00-00')
-            {
-                $this->db->set('recur_end_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
+        foreach ($rows_recur_end_date->result() as $row) {
+            if ($row->recur_end_date == '0000-00-00') {
+                $this->db->set('recur_end_date', null)->where('invoice_recurring_id', $row->invoice_recurring_id)->update('ip_invoices_recurring');
             }
-            if($row->recur_next_date == '0000-00-00')
-            {
-                $this->db->set('recur_next_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
 
+            if ($row->recur_next_date == '0000-00-00') {
+                $this->db->set('recur_next_date', null)->where('invoice_recurring_id', $row->invoice_recurring_id)->update('ip_invoices_recurring');
             }
         }
 
         //**client_bdate**
         $rows_client_bdate = $this->db->query('SELECT * FROM `ip_clients`');
-        foreach($rows_client_bdate->result() as $row_bdate)
-        {
-            if($row_bdate->client_birthdate == '0000-00-00')
-            {
-                $this->db->set('client_birthdate',NULL)->where('client_id',$row_bdate->client_id)->update('ip_clients');
+        foreach ($rows_client_bdate->result() as $row_bdate) {
+            if ($row_bdate->client_birthdate == '0000-00-00') {
+                $this->db->set('client_birthdate', null)->where('client_id', $row_bdate->client_id)->update('ip_clients');
+            }
+        }
+    }
+
+    public function upgrade_039_1_6_3()
+    {
+        //** Set include_zugferd to einvoicing**
+        $einvoicing = '0';
+        $rows = $this->db->query('SELECT * FROM `ip_settings`');
+        foreach($rows->result() as $row) {
+            if($row->setting_key == 'include_zugferd') {
+                $einvoicing = $row->setting_value;
+                $this->db->set('setting_key', 'einvoicing')->where('setting_id', $row->setting_id)->update('ip_settings');
+                break;
+            }
+        }
+
+        if($einvoicing == '1') {
+            //**Enable einvoicing with Zugferd 1.0 for all clients if einvoicing parameter is on**
+            $data = [ 'client_einvoicing_active' => '1', 'client_einvoicing_version' => 'Zugferdv10'];
+            $rows = $this->db->query('SELECT * FROM `ip_clients`');
+            foreach($rows->result() as $row) {
+                if($row->client_active == '1') {
+                    $this->db->update('ip_clients', $data, ['client_id' => $row->client_id]);
+                }
+            }
+        }
+        else {
+            //**Delete the old zugferd files if einvoicing parameter is off**
+            $filename = 'Zugferdv10';
+            $files[] = APPPATH . 'libraries/XMLtemplates/' . $filename . 'Xml.php';
+            $files[] = APPPATH . 'helpers/XMLconfigs/' . $filename . '.php';
+            foreach($files as $file) {
+                // Delete if exist
+                if (file_exists($file)) {
+                    unlink($file);
+                }
             }
         }
     }

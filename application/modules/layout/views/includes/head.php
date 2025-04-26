@@ -1,17 +1,20 @@
-<title><?php echo get_setting('custom_title', null, true) ?: 'InvoicePlane';?></title>
+<title><?php echo get_setting('custom_title', 'InvoicePlane', true); ?></title>
 
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="NOINDEX,NOFOLLOW">
+<meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
+<meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
+<meta name="legacy_calculation" content="<?php echo intval(config_item('legacy_calculation')); ?>">
 
-<link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
+<link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
-<link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>">
-<link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>">
+<link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>" type="text/css">
+<link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>" type="text/css">
 
 <?php if (get_setting('monospace_amounts') == 1) { ?>
-    <link rel="stylesheet" href="<?php _theme_asset('css/monospace.css'); ?>">
+    <link rel="stylesheet" href="<?php _theme_asset('css/monospace.css'); ?>" type="text/css">
 <?php } ?>
 
 <!--[if lt IE 9]>
@@ -40,7 +43,8 @@
                 format: '<?php echo date_format_datepicker(); ?>',
                 language: '<?php _trans('cldr'); ?>',
                 weekStart: '<?php echo get_setting('first_day_of_week'); ?>',
-                todayBtn: "linked"
+                todayHighlight: true,
+                todayBtn: 'linked'
             });
         });
 
@@ -59,7 +63,11 @@
 
         $(document).on('click', '#btn_copy_invoice', function () {
             var invoice_id = $(this).data('invoice-id');
-            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {invoice_id: invoice_id});
+            var client_id = $(this).data('client-id');
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_copy_invoice'); ?>", {
+                invoice_id: invoice_id,
+                client_id: client_id
+            });
         });
 
         $(document).on('click', '#btn_create_credit', function () {

@@ -15,18 +15,18 @@
         </thead>
 
         <tbody>
-        <?php
-        $invoice_idx = 1;
-        $invoice_count = count($invoices);
-        $invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
-        foreach ($invoices as $invoice) {
-            // Disable read-only if not applicable
-            if ($this->config->item('disable_read_only') == true) {
-                $invoice->is_read_only = 0;
-            }
-            // Convert the dropdown menu to a dropup if invoice is after the invoice split
-            $dropup = $invoice_idx > $invoice_list_split ? true : false;
-            ?>
+<?php
+$invoice_idx = 1;
+$invoice_count = count($invoices);
+$invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
+foreach ($invoices as $invoice) {
+    // Disable read-only if not applicable
+    if ($this->config->item('disable_read_only') == true) {
+        $invoice->is_read_only = 0;
+    }
+    // Convert the dropdown menu to a dropup if invoice is after the invoice split
+    $dropup = $invoice_idx > $invoice_list_split;
+?>
             <tr>
                 <td>
                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
@@ -55,7 +55,7 @@
                 </td>
 
                 <td>
-                    <span class="<?php if ($invoice->is_overdue) { ?>font-overdue<?php } ?>">
+                    <span class="<?php echo $invoice->is_overdue ? 'font-overdue' : ''; ?>">
                         <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                     </span>
                 </td>
@@ -67,9 +67,7 @@
                     </a>
                 </td>
 
-                <td class="amount <?php if ($invoice->invoice_sign == '-1') {
-                    echo 'text-danger';
-                }; ?>">
+                <td class="amount <?php echo ($invoice->invoice_sign == '-1') ? 'text-danger' : ''; ?>">
                     <?php echo format_currency($invoice->invoice_total); ?>
                 </td>
 
@@ -83,13 +81,17 @@
                             <i class="fa fa-cog"></i> <?php _trans('options'); ?>
                         </a>
                         <ul class="dropdown-menu">
-                            <?php if ($invoice->is_read_only != 1) { ?>
-                                <li>
-                                    <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>">
-                                        <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
-                                    </a>
-                                </li>
-                            <?php } ?>
+<?php
+    if ($invoice->is_read_only != 1) {
+?>
+                            <li>
+                                <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>">
+                                    <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
+                                </a>
+                            </li>
+<?php
+    }
+?>
                             <li>
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                    target="_blank">
@@ -110,28 +112,33 @@
                                     <?php _trans('enter_payment'); ?>
                                 </a>
                             </li>
-                            <?php if (
-                                $invoice->invoice_status_id == 1 ||
-                                ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
-                            ) { ?>
-                                <li>
-                                    <form action="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
-                                          method="POST">
-                                        <?php _csrf_field(); ?>
-                                        <button type="submit" class="dropdown-button"
-                                                onclick="return confirm('<?php _trans('delete_invoice_warning'); ?>');">
-                                            <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
-                                        </button>
-                                    </form>
-                                </li>
-                            <?php } ?>
+<?php
+    if (
+        $invoice->invoice_status_id == 1 ||
+        ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
+    ) {
+?>
+                            <li>
+                                <form action="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
+                                      method="POST">
+                                    <?php _csrf_field(); ?>
+                                    <button type="submit" class="dropdown-button"
+                                            onclick="return confirm('<?php _trans('delete_invoice_warning'); ?>');">
+                                        <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
+                                    </button>
+                                </form>
+                            </li>
+<?php
+    }
+?>
                         </ul>
                     </div>
                 </td>
             </tr>
-            <?php
-            $invoice_idx++;
-        } ?>
+<?php
+    $invoice_idx++;
+} // End foreach invoices
+?>
         </tbody>
 
     </table>

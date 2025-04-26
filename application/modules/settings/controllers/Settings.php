@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -47,11 +47,10 @@ class Settings extends Admin_Controller
             if ($settings['tax_rate_decimal_places'] != get_setting('tax_rate_decimal_places')) {
                 $this->db->query("
                     ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent`
-                    DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null"
-                );
+                    DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null");
             }
 
-            // Save the submitted settings
+            // Save the submitted settings :todo:improve: Save In One SQL query : $db_array[$key] = val; •••& @end mdl save $db_array.
             foreach ($settings as $key => $value) {
                 if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
                     // Skip all meta fields
@@ -66,16 +65,11 @@ class Settings extends Admin_Controller
                 if (isset($settings[$key . '_field_is_password']) && $value != '') {
                     // Encrypt passwords but don't save empty passwords
                     $this->mdl_settings->save($key, $this->crypt->encode(trim($value)));
-
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
-
                     // Format amount inputs
                     $this->mdl_settings->save($key, standardize_amount($value));
-
                 } else {
-
                     $this->mdl_settings->save($key, $value);
-
                 }
 
                 if ($key == 'number_format') {
@@ -83,16 +77,15 @@ class Settings extends Admin_Controller
                     $this->mdl_settings->save('decimal_point', $number_formats[$value]['decimal_point']);
                     $this->mdl_settings->save('thousands_separator', $number_formats[$value]['thousands_separator']);
                 }
-
             }
 
-            $upload_config = array(
-                'upload_path' => './uploads/',
-                'allowed_types' => 'gif|jpg|jpeg|png|svg',
-                'max_size' => '9999',
-                'max_width' => '9999',
-                'max_height' => '9999'
-            );
+            $upload_config = [
+                'upload_path'   => './uploads/',
+                'allowed_types' => 'gif|jpg|jpeg|png|svg', // Invoice quote logo image :Todo: Add webp avif? (& test imgs in pdf)
+                'max_size'      => '9999',
+                'max_width'     => '9999',
+                'max_height'    => '9999',
+            ];
 
             // Check for invoice logo upload
             if ($_FILES['invoice_logo']['name']) {
@@ -128,14 +121,14 @@ class Settings extends Admin_Controller
         }
 
         // Load required resources
-        $this->load->model('invoice_groups/mdl_invoice_groups');
-        $this->load->model('tax_rates/mdl_tax_rates');
-        $this->load->model('email_templates/mdl_email_templates');
-        $this->load->model('payment_methods/mdl_payment_methods');
-        $this->load->model('invoices/mdl_templates');
-        $this->load->model('custom_fields/mdl_invoice_custom');
-
-        $this->load->helper('country');
+        $this->load->model([
+            'invoice_groups/mdl_invoice_groups',
+            'tax_rates/mdl_tax_rates',
+            'email_templates/mdl_email_templates',
+            'payment_methods/mdl_payment_methods',
+            'invoices/mdl_templates',
+            'custom_fields/mdl_invoice_custom',
+        ]);
 
         // Collect the list of templates
         $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
@@ -148,27 +141,28 @@ class Settings extends Admin_Controller
 
         // Set data in the layout
         $this->layout->set(
-            array(
-                'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
-                'tax_rates' => $this->mdl_tax_rates->get()->result(),
-                'payment_methods' => $this->mdl_payment_methods->get()->result(),
+            [
+                'invoice_groups'           => $this->mdl_invoice_groups->get()->result(),
+                'tax_rates'                => $this->mdl_tax_rates->get()->result(),
+                'payment_methods'          => $this->mdl_payment_methods->get()->result(),
                 'public_invoice_templates' => $public_invoice_templates,
-                'pdf_invoice_templates' => $pdf_invoice_templates,
-                'public_quote_templates' => $public_quote_templates,
-                'pdf_quote_templates' => $pdf_quote_templates,
-                'languages' => get_available_languages(),
-                'countries' => get_country_list(trans('cldr')),
-                'date_formats' => date_formats(),
-                'current_date' => new DateTime(),
-                'available_themes' => $available_themes,
-                'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
-                'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'custom_fields' => ['ip_invoice_custom' => $this->mdl_invoice_custom->get()->result()],
-                'gateway_drivers' => $gateways,
-                'number_formats' => $number_formats,
-                'gateway_currency_codes' => get_currencies(),
-                'first_days_of_weeks' => ['0' => lang('sunday'), '1' => lang('monday')]
-            )
+                'pdf_invoice_templates'    => $pdf_invoice_templates,
+                'public_quote_templates'   => $public_quote_templates,
+                'pdf_quote_templates'      => $pdf_quote_templates,
+                'languages'                => get_available_languages(),
+                'countries'                => get_country_list(trans('cldr')),
+                'date_formats'             => date_formats(),
+                'current_date'             => new DateTime(),
+                'available_themes'         => $available_themes,
+                'email_templates_quote'    => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
+                'email_templates_invoice'  => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'custom_fields'            => ['ip_invoice_custom' => $this->mdl_invoice_custom->get()->result()],
+                'gateway_drivers'          => $gateways,
+                'number_formats'           => $number_formats,
+                'gateway_currency_codes'   => get_currencies(),
+                'first_days_of_weeks'      => ['0' => lang('sunday'), '1' => lang('monday')],
+                'legacy_calculation'       => config_item('legacy_calculation'),
+            ]
         );
 
         $this->layout->buffer('content', 'settings/index');

@@ -5,14 +5,12 @@
 
         <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
-            <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-                   value="<?php echo $this->security->get_csrf_hash() ?>">
+            <?php _csrf_field(); ?>
 
             <legend><?php _trans('setup_database_details'); ?></legend>
 
             <?php if (!$database['success']) { ?>
-
-                <?php if ($database['message'] and $_POST) { ?>
+                <?php if ($database['message'] && $_POST) { ?>
                     <div class="alert alert-danger">
                         <b><?php _trans('failure'); ?></b><br>
                         <?php echo $database['message']; ?>

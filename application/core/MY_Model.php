@@ -38,7 +38,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class MY_Model extends CI_Model
 {
-
     public $table;
 
     public $primary_key;
@@ -131,7 +130,7 @@ class MY_Model extends CI_Model
      */
     public function __call($name, $arguments)
     {
-        if (substr($name, 0, 7) == 'filter_') {
+        if (substr($name, 0, 7) === 'filter_') {
             $this->filter[] = [substr($name, 7), $arguments];
         } else {
             call_user_func_array([$this->db, $name], $arguments);
@@ -228,9 +227,9 @@ class MY_Model extends CI_Model
         $this->next_offset = $this->offset + $per_page;
 
         $config = [
-            'base_url' => $base_url,
+            'base_url'   => $base_url,
             'total_rows' => $this->total_rows,
-            'per_page' => $per_page,
+            'per_page'   => $per_page,
         ];
 
         $this->last_offset = ($this->total_pages * $per_page) - $per_page;
@@ -247,10 +246,7 @@ class MY_Model extends CI_Model
     /**
      * Function to save an entry to the database
      *
-     * @param null $id
-     * @param null $db_array
      *
-     * @return null
      */
     public function save($id = null, $db_array = null)
     {
@@ -286,7 +282,6 @@ class MY_Model extends CI_Model
             $this->db->insert($this->table, $db_array);
 
             return $this->db->insert_id();
-
         } else {
             if ($this->date_modified_field) {
                 if (is_array($db_array)) {
@@ -415,6 +410,8 @@ class MY_Model extends CI_Model
         } elseif (!$id) {
             return true;
         }
+
+        return null;
     }
 
     /**
@@ -461,6 +458,8 @@ class MY_Model extends CI_Model
 
             return $run;
         }
+
+        return null;
     }
 
     /**

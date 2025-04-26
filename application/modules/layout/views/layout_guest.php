@@ -10,37 +10,31 @@
 <html class="no-js" lang="<?php _trans('cldr'); ?>"> <!--<![endif]-->
 
 <head>
-    <title>
-        <?php
-        if (get_setting('custom_title') != '') {
-            echo get_setting('custom_title', '', true);
-        } else {
-            echo 'InvoicePlane';
-        } ?>
-    </title>
+    <title><?php echo get_setting('custom_title', 'InvoicePlane', true); ?></title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
     <meta name="_csrf" content="<?php echo $this->security->get_csrf_hash() ?>">
+    <meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
+    <meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
+    <meta name="legacy_calculation" content="<?php echo intval(config_item('legacy_calculation')); ?>">
 
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
+    <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
-    <link rel="stylesheet"
-          href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/style.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/core/css/custom.css">
+    <link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>" type="text/css">
+    <link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>" type="text/css">
 
-    <?php if (get_setting('monospace_amounts') == 1) { ?>
-        <link rel="stylesheet"
-              href="<?php echo base_url(); ?>assets/<?php echo get_setting('system_theme', 'invoiceplane'); ?>/css/monospace.css">
-    <?php } ?>
+<?php if (get_setting('monospace_amounts') == 1) { ?>
+    <link rel="stylesheet" href="<?php _theme_asset('css/monospace.css'); ?>" type="text/css">
+<?php } ?>
 
     <!--[if lt IE 9]>
-    <script src="<?php echo base_url(); ?>assets/core/js/legacy.min.js"></script>
+    <script src="<?php _core_asset('js/legacy.min.js'); ?>"></script>
     <![endif]-->
 
-    <script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
+    <script src="<?php _core_asset('js/dependencies.min.js'); ?>"></script>
 
 </head>
 <body class="<?php echo get_setting('disable_sidebar') ? 'hidden-sidebar' : ''; ?>">
@@ -79,9 +73,7 @@
 
 <div id="main-area">
 
-    <div class="sidebar hidden-xs <?php if (get_setting('disable_sidebar') == 1) {
-        echo 'hidden';
-    } ?>">
+    <div class="sidebar hidden-xs<?php echo get_setting('disable_sidebar') == 1 ? ' hidden' : ''; ?>">
         <ul>
             <li>
                 <a href="<?php echo site_url('guest'); ?>" title="<?php _trans('dashboard'); ?>" class="tip"
@@ -121,9 +113,9 @@
 
 <?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
 
-<script defer src="<?php echo base_url(); ?>assets/core/js/scripts.min.js"></script>
+<script defer src="<?php _core_asset('js/scripts.min.js'); ?>"></script>
 <?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
+    <script src="<?php _core_asset('js/locales/bootstrap-datepicker.' . trans('cldr') . '.js'); ?>"></script>
 <?php } ?>
 
 </body>

@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -33,9 +33,6 @@ class User_Clients extends Admin_Controller
         redirect('users');
     }
 
-    /**
-     * @param null $id
-     */
     public function user($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -50,47 +47,40 @@ class User_Clients extends Admin_Controller
 
         $user_clients = $this->mdl_user_clients->assigned_to($id)->get()->result();
 
-        $this->layout->set('user', $user);
-        $this->layout->set('user_clients', $user_clients);
+        $this->layout->set(
+            [
+                'user'         => $user,
+                'user_clients' => $user_clients,
+            ]
+        );
         $this->layout->set('id', $id);
         $this->layout->buffer('content', 'user_clients/field');
         $this->layout->render();
     }
 
-    /**
-     * @param null $user_id
-     */
     public function create($user_id = null)
     {
-        if (!$user_id) {
+        if (! $user_id) {
             redirect('custom_values');
-        }
-
-        if ($this->input->post('btn_cancel')) {
+        } elseif ($this->input->post('btn_cancel')) {
             redirect('user_clients/field/' . $user_id);
         }
 
         if ($this->mdl_user_clients->run_validation()) {
-
             if ($this->input->post('user_all_clients')) {
-                $users_id = array($user_id);
+                $users_id = [$user_id];
 
                 $this->mdl_user_clients->set_all_clients_user($users_id);
 
-                $user_update = array(
-                    'user_all_clients' => 1
-                );
-
+                $user_update = ['user_all_clients' => 1];
             } else {
-                $user_update = array(
-                    'user_all_clients' => 0
-                );
+                $user_update = ['user_all_clients' => 0];
 
-               $this->mdl_user_clients->save();
+                $this->mdl_user_clients->save();
             }
 
-            $this->db->where('user_id',$user_id);
-            $this->db->update('ip_users',$user_update);
+            $this->db->where('user_id', $user_id);
+            $this->db->update('ip_users', $user_update);
 
             redirect('user_clients/user/' . $user_id);
         }
@@ -98,9 +88,13 @@ class User_Clients extends Admin_Controller
         $user = $this->mdl_users->get_by_id($user_id);
         $clients = $this->mdl_clients->get_not_assigned_to_user($user_id);
 
-        $this->layout->set('id', $user_id);
-        $this->layout->set('user', $user);
-        $this->layout->set('clients', $clients);
+        $this->layout->set(
+            [
+                 'id'      => $user_id,
+                 'user'    => $user,
+                 'clients' => $clients,
+             ]
+        );
         $this->layout->buffer('content', 'user_clients/new');
         $this->layout->render();
     }
@@ -115,5 +109,4 @@ class User_Clients extends Admin_Controller
         $this->mdl_user_clients->delete($user_client_id);
         redirect('user_clients/user/' . $ref->user_id);
     }
-
 }

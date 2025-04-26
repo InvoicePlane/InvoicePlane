@@ -7,10 +7,10 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -34,15 +34,19 @@ class Users extends Admin_Controller
         $this->mdl_users->paginate(site_url('users/index'), $page);
         $users = $this->mdl_users->result();
 
-        $this->layout->set('users', $users);
-        $this->layout->set('user_types', $this->mdl_users->user_types());
+        $this->layout->set(
+            [
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_users'),
+                'filter_method'      => 'filter_users',
+                'users'              => $users,
+                'user_types'         => $this->mdl_users->user_types(),
+            ]
+        );
         $this->layout->buffer('content', 'users/index');
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -61,12 +65,13 @@ class Users extends Admin_Controller
             if ($this->session->userdata('user_id') == $id) {
                 $new_details = $this->mdl_users->get_by_id($id);
 
-                $session_data = [
-                    'user_type' => $new_details->user_type,
-                    'user_id' => $new_details->user_id,
-                    'user_name' => $new_details->user_name,
-                    'user_email' => $new_details->user_email,
-                    'user_company' => $new_details->user_company,
+                $session_data =
+                [
+                    'user_type'     => $new_details->user_type,
+                    'user_id'       => $new_details->user_id,
+                    'user_name'     => $new_details->user_name,
+                    'user_email'    => $new_details->user_email,
+                    'user_company'  => $new_details->user_company,
                     'user_language' => $new_details->user_language ?? 'system',
                 ];
 
@@ -79,7 +84,7 @@ class Users extends Admin_Controller
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_users->prep_form($id)) {
+            if (! $this->mdl_users->prep_form($id)) {
                 show_404();
             }
 
@@ -104,13 +109,16 @@ class Users extends Admin_Controller
             }
         }
 
-        $this->load->helper('custom_values');
-        $this->load->model('user_clients/mdl_user_clients');
-        $this->load->model('clients/mdl_clients');
-        $this->load->model('custom_fields/mdl_custom_fields');
-        $this->load->model('custom_fields/mdl_user_custom');
-        $this->load->model('custom_values/mdl_custom_values');
-        $this->load->helper('country');
+        $this->load->helper(['custom_values', 'e-invoice']);
+        $this->load->model(
+            [
+                'user_clients/mdl_user_clients',
+                'clients/mdl_clients',
+                'custom_fields/mdl_custom_fields',
+                'custom_fields/mdl_user_custom',
+                'custom_values/mdl_custom_values'
+            ]
+        );
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
         $custom_values = [];
@@ -138,15 +146,16 @@ class Users extends Admin_Controller
 
         $this->layout->set(
             [
-                'id' => $id,
-                'user_types' => $this->mdl_users->user_types(),
-                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(),
-                'custom_fields' => $custom_fields,
-                'custom_values' => $custom_values,
-                'countries' => get_country_list(trans('cldr')),
+                'id'               => $id,
+                'user_types'       => $this->mdl_users->user_types(),
+                'user_clients'     => $this->mdl_user_clients->where('ip_user_clients.user_id', $id)->get()->result(),
+                'custom_fields'    => $custom_fields,
+                'custom_values'    => $custom_values,
+                'countries'        => get_country_list(trans('cldr')),
                 'selected_country' => $this->mdl_users->form_value('user_country') ?: get_setting('default_country'),
-                'clients' => $this->mdl_clients->where('client_active', 1)->get()->result(),
-                'languages' => get_available_languages(),
+                'clients'          => $this->mdl_clients->where('client_active', 1)->get()->result(),
+                'languages'        => get_available_languages(),
+                'einvoicing'       => get_setting('einvoicing'),
             ]
         );
 
@@ -180,6 +189,7 @@ class Users extends Admin_Controller
         if ($id != 1) {
             $this->mdl_users->delete($id);
         }
+
         redirect('users');
     }
 
@@ -195,5 +205,4 @@ class Users extends Admin_Controller
 
         redirect('users/form/' . $user_id);
     }
-
 }

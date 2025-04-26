@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
-
     public $ajax_controller = true;
 
     public function name_query()
@@ -36,16 +35,17 @@ class Ajax extends Admin_Controller
         }
 
         // Search for chars "in the middle" of clients names
-        $permissiveSearchClients ? $moreClientsQuery = '%' : $moreClientsQuery = '';
+        $moreClientsQuery = $permissiveSearchClients ? '%' : '';
 
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
         $escapedQuery = str_replace("%", "", $escapedQuery);
+
         $clients = $this->mdl_clients
             ->where('client_active', 1)
-            ->having('client_name LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_surname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_fullname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->having("client_name LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
+            ->or_having("client_surname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
+            ->or_having("client_fullname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
             ->order_by('client_name')
             ->get()
             ->result();
@@ -53,7 +53,7 @@ class Ajax extends Admin_Controller
         foreach ($clients as $client) {
             $response[] = [
                 'id' => $client->client_id,
-                'text' => (format_client($client)),
+                'text' => htmlsc(format_client($client, false)),
             ];
         }
 
@@ -81,7 +81,7 @@ class Ajax extends Admin_Controller
         foreach ($clients as $client) {
             $response[] = [
                 'id' => $client->client_id,
-                'text' => htmlsc(format_client($client)),
+                'text' => htmlsc(format_client($client, false)),
             ];
         }
 
@@ -112,7 +112,6 @@ class Ajax extends Admin_Controller
 
         // Only continue if the note exists or no item id was provided
         if ($this->mdl_client_notes->get_by_id($client_note_id) || empty($client_note_id)) {
-
             // Delete invoice item
             $this->load->model('mdl_client_notes');
             $item = $this->mdl_client_notes->delete($client_note_id);
@@ -121,7 +120,6 @@ class Ajax extends Admin_Controller
             if ($item) {
                 $success = 1;
             }
-
         }
 
         // Return the response
@@ -159,11 +157,12 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('clients/mdl_client_notes');
         $data = [
-            'client_notes' => $this->mdl_client_notes->where('client_id',
-                $this->input->post('client_id'))->get()->result(),
+            'client_notes' => $this->mdl_client_notes->where(
+                'client_id',
+                $this->input->post('client_id')
+            )->get()->result(),
         ];
 
         $this->layout->load_view('clients/partial_notes', $data);
     }
-
 }

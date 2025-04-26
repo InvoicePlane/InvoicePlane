@@ -7,16 +7,15 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Mdl_Custom_Fields extends MY_Model
 {
-
     public $table = 'ip_custom_fields';
 
     public $primary_key = 'ip_custom_fields.custom_field_id';
@@ -30,6 +29,7 @@ class Mdl_Custom_Fields extends MY_Model
         if (in_array($element, Mdl_Custom_Fields::custom_types())) {
             return strtolower(str_replace('-', '', $element));
         }
+
         return 'fallback';
     }
 
@@ -97,11 +97,6 @@ class Mdl_Custom_Fields extends MY_Model
         return $this->get()->result();
     }
 
-    /**
-     * @param null $id
-     * @param null $db_array
-     * @return null
-     */
     public function save($id = null, $db_array = null)
     {
         if ($id) {
@@ -115,6 +110,44 @@ class Mdl_Custom_Fields extends MY_Model
         // Save the record to ip_custom_fields
         $id = parent::save($id, $db_array);
         return $id;
+    }
+
+    /**
+     * @param $table_name
+     * @return array
+     */
+    public function get_positions($table_name = false)
+    {
+         $this->load->model(
+             [
+                'custom_fields/mdl_client_custom',
+                'custom_fields/mdl_invoice_custom',
+                'custom_fields/mdl_payment_custom',
+                'custom_fields/mdl_quote_custom',
+                'custom_fields/mdl_user_custom',
+             ]
+         );
+
+        $p = $table_name ? 'ip_' : '';
+        $s = $table_name ? '_custom' : '';
+
+        $positions = [
+            $p . 'client'   . $s => Mdl_client_custom::$positions,
+            $p . 'invoice'  . $s => Mdl_invoice_custom::$positions,
+            $p . 'payment'  . $s => Mdl_payment_custom::$positions,
+            $p . 'quote'    . $s => Mdl_quote_custom::$positions,
+            $p . 'user'     . $s => Mdl_user_custom::$positions,
+        ];
+
+        foreach ($positions as $key => $val) {
+            foreach ($val as $key2 => $val2) {
+                $val[$key2] = trans($val2);
+            }
+
+            $positions[$key] = $val;
+        }
+
+        return $positions;
     }
 
     /**
@@ -135,9 +168,6 @@ class Mdl_Custom_Fields extends MY_Model
         // Get the default db array
         $db_array = parent::db_array();
 
-        // Get the array of custom tables
-        $custom_tables = $this->custom_tables();
-
         // Check if the user wants to add 'id' as custom field
         if (strtolower($db_array['custom_field_label']) == 'id') {
             // Replace 'id' with 'field_id' to avoid problems with the primary key
@@ -152,11 +182,6 @@ class Mdl_Custom_Fields extends MY_Model
             $type = $this->custom_types()[0];
         }
 
-        // Create the name for the custom field column
-        $this->load->helper('diacritics');
-
-        $clean_name = preg_replace('/[^a-z0-9_\s]/', '', strtolower(diacritics_remove_diacritics($custom_field_label)));
-
         $db_array['custom_field_type'] = $type;
 
         // Return the db array
@@ -169,21 +194,69 @@ class Mdl_Custom_Fields extends MY_Model
     public function custom_tables()
     {
         return [
-            'ip_client_custom' => 'client',
+            'ip_client_custom'  => 'client',
             'ip_invoice_custom' => 'invoice',
             'ip_payment_custom' => 'payment',
-            'ip_quote_custom' => 'quote',
-            'ip_user_custom' => 'user',
+            'ip_quote_custom'   => 'quote',
+            'ip_user_custom'    => 'user',
         ];
     }
 
     /**
      * @param $id
+     * @return mixed
+     */
+    public function used($id = null, $get = true)
+    {
+        if (! $id) {
+            return null;
+        }
+
+        $cf = $this->get_by_id($id);
+        $base = strtr($cf->custom_field_table, ['ip_' => '']) . '_field';
+
+        $this->db->from($cf->custom_field_table)
+                        ->where($base . 'id', $id)
+                        ->where($base . 'value IS NOT NULL', null, false)
+                        ->where($base . 'value <> ""');
+
+        return $get ? $this->db->get()->result() : $this->db;
+    }
+
+    /**
+     * @param $id
+     * @return bool
      */
     public function delete($id)
     {
-        $custom_field = $this->get_by_id($id);
-        parent::delete($id);
+        if (! $this->used($id)) {
+            $custom_field = $this->get_by_id($id);
+            // Remove MULTIPLE|SINGLE CHOICE values
+            if (preg_match('/CHOICE/', $custom_field->custom_field_type)) {
+                $this->load->model('custom_values/mdl_custom_values');
+                $this->mdl_custom_values->delete_all_fid($id);
+            }
+
+            // Remove reference in custom table
+            $base = strtr($custom_field->custom_field_table, ['ip_' => '']) . '_field';
+            $this->db->from($custom_field->custom_field_table)->where($base . 'id', $id)->delete($custom_field->custom_field_table);
+            //
+            parent::delete($id);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $name
+     * @return $this
+     */
+    public function by_table_name($name)
+    {
+        $table = array_flip($this->custom_tables()); // get ip_*name*_custom
+        $this->by_table($table[$name]);
+        return $this;
     }
 
     /**
@@ -247,10 +320,16 @@ class Mdl_Custom_Fields extends MY_Model
             // Get the custom field value
             $field_id_fieldlabel = $custom_field . '_fieldvalue';
 
+            // Check if exist !(null or '')
+            if (! $field->$field_id_fieldlabel) {
+                $values[$field->custom_field_label] = null; // $field->$field_id_fieldlabel
+                continue;
+            }
+
             if ($field->custom_field_type == 'MULTIPLE-CHOICE') {
                 $custom_values = $this->mdl_custom_values->get_by_ids($field->$field_id_fieldlabel)->result();
 
-                if (!empty($custom_values)) {
+                if (! empty($custom_values)) {
                     $key_serialized = $field_id_fieldlabel . '_serialized';
 
                     $field->$field_id_fieldlabel = [];
@@ -258,7 +337,7 @@ class Mdl_Custom_Fields extends MY_Model
 
                     foreach ($custom_values as $custom_value) {
                         //Fix compatibility issue with php 5.6
-                        array_push($field->$field_id_fieldlabel, $custom_value->custom_values_value);
+                        $field->$field_id_fieldlabel[] = $custom_value->custom_values_value;
 
                         // Add as serialized string
                         $field->$key_serialized .= $custom_value->custom_values_value;
@@ -268,7 +347,7 @@ class Mdl_Custom_Fields extends MY_Model
             } elseif ($field->custom_field_type == 'SINGLE-CHOICE') {
                 $custom_value = $this->mdl_custom_values->get_by_id($field->$field_id_fieldlabel)->result();
 
-                if (!empty($custom_value)) {
+                if (! empty($custom_value)) {
                     $custom_value = $custom_value[0];
                     $field->$field_id_fieldlabel = $custom_value->custom_values_value;
                 }
@@ -291,8 +370,8 @@ class Mdl_Custom_Fields extends MY_Model
 
         $column = [
             $old_column_name => [
-                'name' => $new_column_name,
-                'type' => 'VARCHAR',
+                'name'       => $new_column_name,
+                'type'       => 'VARCHAR',
                 'constraint' => 50,
             ],
         ];
@@ -310,12 +389,11 @@ class Mdl_Custom_Fields extends MY_Model
 
         $column = [
             $column_name => [
-                'type' => 'VARCHAR',
+                'type'       => 'VARCHAR',
                 'constraint' => 256,
             ],
         ];
 
         $this->dbforge->add_column($table_name, $column);
     }
-
 }

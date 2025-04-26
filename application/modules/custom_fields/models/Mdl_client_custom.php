@@ -7,23 +7,25 @@ if (! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Mdl_Client_Custom extends Validator
 {
-    public static $positions = array(
+    public static $positions = [
         'custom_fields',
         'address',
         'contact_information',
         'personal_information',
-        'tax_information'
-    );
+        'tax_information',
+    ];
+
     public $table = 'ip_client_custom';
+
     public $primary_key = 'ip_client_custom.client_custom_id';
 
     public function default_select()
@@ -51,7 +53,7 @@ class Mdl_Client_Custom extends Validator
         $result = $this->validate($db_array);
 
         if ($result === true) {
-            $form_data = isset($this->_formdata) ? $this->_formdata : null;
+            $form_data = property_exists($this, '_formdata') && $this->_formdata !== null ? $this->_formdata : null;
 
             if (is_null($form_data)) {
                 return true;
@@ -61,11 +63,12 @@ class Mdl_Client_Custom extends Validator
             $db_array['client_id'] = $client_id;
 
             foreach ($form_data as $key => $value) {
-                $db_array = array(
-                    'client_id' => $client_id,
-                    'client_custom_fieldid' => $key,
-                    'client_custom_fieldvalue' => $value
-                );
+                $db_array =
+                [
+                    'client_id'                => $client_id,
+                    'client_custom_fieldid'    => $key,
+                    'client_custom_fieldvalue' => $value,
+                ];
 
                 $client_custom = $this->where('client_id', $client_id)->where('client_custom_fieldid', $key)->get();
 
@@ -83,7 +86,6 @@ class Mdl_Client_Custom extends Validator
     }
 
     /**
-     * @param null $id
      * @return void
      */
     public function prep_form($id = null)
@@ -97,10 +99,8 @@ class Mdl_Client_Custom extends Validator
                 foreach ($values as $value) {
                     $type = $value->custom_field_type;
                     if ($type != null) {
-                        $nicename = Mdl_Custom_Fields::get_nicename(
-                            $type
-                        );
-                        $formatted = call_user_func("format_" . $nicename, $value->client_custom_fieldvalue);
+                        $nicename = Mdl_Custom_Fields::get_nicename($type);
+                        $formatted = call_user_func('format_' . $nicename, $value->client_custom_fieldvalue);
                         $this->set_form_value('cf_' . $value->custom_field_id, $formatted);
                     }
                 }
@@ -136,8 +136,7 @@ class Mdl_Client_Custom extends Validator
      */
     public function get_by_clid($client_id)
     {
-        $result = $this->where('ip_client_custom.client_id', $client_id)->get()->result();
-        return $result;
+        return $this->where('ip_client_custom.client_id', $client_id)->get()->result();
     }
 
     /**
@@ -150,16 +149,13 @@ class Mdl_Client_Custom extends Validator
         $fields = $this->mdl_custom_fields->result();
 
         foreach ($fields as $field) {
-            if ($field->custom_field_type == "DATE") {
-                $db_array[$field->custom_field_column] = date_to_mysql(
-                    $db_array[$field->custom_field_column]
-                );
-            } elseif ($field->custom_field_type == "MULTIPLE-CHOICE") {
-                $db_array[$field->custom_field_column] = implode(",", $db_array[$field->custom_field_column]);
+            if ($field->custom_field_type == 'DATE') {
+                $db_array[$field->custom_field_column] = date_to_mysql($db_array[$field->custom_field_column]);
+            } elseif ($field->custom_field_type == 'MULTIPLE-CHOICE') {
+                $db_array[$field->custom_field_column] = implode(',', $db_array[$field->custom_field_column]);
             }
         }
 
         return $db_array;
     }
-
 }

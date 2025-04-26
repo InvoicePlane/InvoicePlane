@@ -12,7 +12,7 @@
 
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _trans('settings'); ?></h1>
-    <?php $this->layout->load_view('layout/header_buttons', array('hide_cancel_button' => true)); ?>
+    <?php $this->layout->load_view('layout/header_buttons', ['hide_cancel_button' => true]); ?>
 </div>
 
 <ul id="settings-tabs" class="nav nav-tabs nav-tabs-noborder">
@@ -44,8 +44,7 @@
 
 <form method="post" id="form-settings" enctype="multipart/form-data">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div class="tabbable tabs-below">
 

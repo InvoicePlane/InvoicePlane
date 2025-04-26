@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Items extends Response_Model
 {
-
     public $table = 'ip_invoice_items';
 
     public $primary_key = 'ip_invoice_items.item_id';
@@ -97,24 +96,24 @@ class Mdl_Items extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
+     * @param []   $global_discount
      *
      * @return int|null
      */
-    public function save($id = null, $db_array = null)
+    public function save($id = null, $db_array = null, &$global_discount = [])
     {
         $id = parent::save($id, $db_array);
 
-        $this->load->model('invoices/mdl_item_amounts');
-        $this->mdl_item_amounts->calculate($id);
-
-        $this->load->model('invoices/mdl_invoice_amounts');
+        $this->load->model([
+            'invoices/mdl_item_amounts',
+            'invoices/mdl_invoice_amounts',
+        ]);
+        $this->mdl_item_amounts->calculate($id, $global_discount);
 
         if (is_object($db_array) && isset($db_array->invoice_id)) {
-            $this->mdl_invoice_amounts->calculate($db_array->invoice_id);
+            $this->mdl_invoice_amounts->calculate($db_array->invoice_id, $global_discount);
         } elseif (is_array($db_array) && isset($db_array['invoice_id'])) {
-            $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
+            $this->mdl_invoice_amounts->calculate($db_array['invoice_id'], $global_discount);
         }
 
         return $id;
@@ -139,17 +138,37 @@ class Mdl_Items extends Response_Model
         $row = $query->row();
         $invoice_id = $row->invoice_id;
 
-        // Delete the item
+        // Delete the item itself
         parent::delete($item_id);
 
         // Delete the item amounts
         $this->db->where('item_id', $item_id);
         $this->db->delete('ip_invoice_item_amounts');
 
-        // Recalculate invoice amounts
         $this->load->model('invoices/mdl_invoice_amounts');
-        $this->mdl_invoice_amounts->calculate($invoice_id);
+        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
+        // Recalculate invoice amounts
+        $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
 
         return true;
+    }
+
+    /**
+     * legacy_calculation false: Need to recalculate invoice amounts - since v1.6.3
+     *
+     * @param $invoice_id
+     *
+     * return items_subtotal
+     */
+    public function get_items_subtotal($invoice_id)
+    {
+        $row = $this->db->query("
+            SELECT SUM(item_subtotal) AS items_subtotal
+            FROM ip_invoice_item_amounts
+            WHERE item_id
+                IN (SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . ")
+            ")
+            ->row();
+        return $row->items_subtotal;
     }
 }
