@@ -35,7 +35,7 @@
 
 <div id="content" class="table-content">
 
-	<?php echo $this->layout->load_view('layout/alerts'); ?>
+    <?php echo $this->layout->load_view('layout/alerts'); ?>
 
     <div id="filter_results">
 

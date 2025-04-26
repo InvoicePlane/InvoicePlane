@@ -1,8 +1,7 @@
 <?php
 // Called in custom_fields/views/form.php & custom_values/views/field.php
 // Where It's used
-if ($custom_field_usage)
-{
+if ($custom_field_usage) {
     $url = [
         'invoice' => 'invoices/view/',
         'quote'   => 'quotes/view/',
@@ -30,21 +29,18 @@ if ($custom_field_usage)
                     <div class="panel-body">
 <?php
     $need_model = false;
-    if (in_array($what, ['invoice', 'quote']))
-    {
+    if (in_array($what, ['invoice', 'quote'])) {
         $need_model = true;
         $model = 'mdl_' . $what . 's';
         $CI = & get_instance();
         $CI->load->model($what . 's/' . $model);
     }
 
-    foreach ($custom_field_usage as $key => $obj)
-    {
+    foreach ($custom_field_usage as $obj) {
         $fid = $what . '_id'; // Like invoice_id
         $id = $obj->$fid;
         $fid = $id;
-        if ($need_model)
-        {
+        if ($need_model) {
             $fid = '#' . $CI->$model->get_by_id($id)->{$what . '_number'};
         }
         // $val = $what . '_custom_fieldvalue'; // like invoice_custom_fieldvalue
@@ -71,4 +67,4 @@ if ($custom_field_usage)
     </script>
 <?php
 } // End if
-?>
+

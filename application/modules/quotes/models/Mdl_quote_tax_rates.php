@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -18,6 +17,7 @@ if (! defined('BASEPATH'))
 class Mdl_Quote_Tax_Rates extends Response_Model
 {
     public $table = 'ip_quote_tax_rates';
+
     public $primary_key = 'ip_quote_tax_rates.quote_tax_rate_id';
 
     public function default_select()
@@ -33,8 +33,6 @@ class Mdl_Quote_Tax_Rates extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      * @return void
      */
     public function save($id = null, $db_array = null)
@@ -44,17 +42,9 @@ class Mdl_Quote_Tax_Rates extends Response_Model
 
         $this->load->model('quotes/mdl_quote_amounts');
 
-        if (isset($db_array['quote_id']))
-        {
-            $quote_id = $db_array['quote_id'];
-        }
-        else
-        {
-            $quote_id = $this->input->post('quote_id');
-        }
+        $quote_id = isset($db_array['quote_id']) ? $db_array['quote_id'] : $this->input->post('quote_id');
 
-        if ($quote_id)
-        {
+        if ($quote_id) {
             $global_discount['item'] = $this->mdl_quote_amounts->get_global_discount($quote_id);
             // Recalculate quote amounts
             $this->mdl_quote_amounts->calculate($quote_id, $global_discount);
@@ -85,5 +75,4 @@ class Mdl_Quote_Tax_Rates extends Response_Model
             ],
         ];
     }
-
 }

@@ -30,9 +30,7 @@ class Mdl_Templates extends CI_Model
             $templates = directory_map(APPPATH . '/views/invoice_templates/public', true);
         }
 
-        $templates = $this->remove_extension($templates);
-
-        return $templates;
+        return $this->remove_extension($templates);
     }
 
     /**
@@ -62,9 +60,6 @@ class Mdl_Templates extends CI_Model
             $templates = directory_map(APPPATH . '/views/quote_templates/public', true);
         }
 
-        $templates = $this->remove_extension($templates);
-
-        return $templates;
+        return $this->remove_extension($templates);
     }
-
 }

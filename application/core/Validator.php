@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,7 +16,6 @@ if (! defined('BASEPATH'))
 #[AllowDynamicProperties]
 class Validator extends MY_Model
 {
-
     /**
      * @return bool
      */
@@ -76,9 +74,8 @@ class Validator extends MY_Model
         }
 
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
-        $result = $this->custom_value->column_has_value($key, $value);
 
-        return $result;
+        return $this->custom_value->column_has_value($key, $value);
     }
 
     /**
@@ -97,12 +94,7 @@ class Validator extends MY_Model
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
         $this->custom_value->where('custom_field_id', $id);
         $dbvals = $this->custom_value->where_in('custom_values_id', $values)->get();
-
-        if ($dbvals->num_rows() == sizeof($values)) {
-            return true;
-        }
-
-        return false;
+        return $dbvals->num_rows() == count($values);
     }
 
     /**
@@ -131,8 +123,6 @@ class Validator extends MY_Model
 
     /**
      * @param $column
-     *
-     * @return null
      */
     public function get_field_type($column)
     {
@@ -184,8 +174,7 @@ class Validator extends MY_Model
 */
                 $result = $this->validate_type($model->custom_field_type, $value, $key);
 
-                if ($result === false)
-                {
+                if ($result === false) {
                     $errors[] = [
                         'field'     => $model->custom_field_id,
                         'label'     => $model->custom_field_label,
@@ -195,8 +184,7 @@ class Validator extends MY_Model
             }
         }
 
-        if (sizeof($errors) == 0)
-        {
+        if (count($errors) == 0) {
             $this->_formdata = $db_array;
             $this->fixinput();
             return true;
@@ -230,11 +218,7 @@ class Validator extends MY_Model
 
                 switch ($ftype) {
                     case 'DATE':
-                        if ($value == '') {
-                            $this->_formdata[$key] = null;
-                        } else {
-                            $this->_formdata[$key] = date_to_mysql($value);
-                        }
+                        $this->_formdata[$key] = $value == '' ? null : date_to_mysql($value);
 
                         break;
 
@@ -248,6 +232,7 @@ class Validator extends MY_Model
                         if ($value == '') {
                             $this->_formdata[$key] = null;
                         }
+
                         break;
                 }
             }

@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_User_Clients extends MY_Model
 {
     public $table = 'ip_user_clients';
+
     public $primary_key = 'ip_user_clients.user_client_id';
 
     public function default_select()
@@ -40,7 +41,7 @@ class Mdl_User_Clients extends MY_Model
      */
     public function validation_rules()
     {
-        return array(
+        return [
             'user_id' => [
                 'field' => 'user_id',
                 'label' => trans('user'),
@@ -51,7 +52,7 @@ class Mdl_User_Clients extends MY_Model
                 'label' => trans('client'),
                 'rules' => 'required'
             ],
-        );
+        ];
     }
 
     /**
@@ -73,12 +74,10 @@ class Mdl_User_Clients extends MY_Model
         $this->load->model('clients/mdl_clients');
 
         $nbUsers = count($users_id);
-        for ($x = 0; $x < $nbUsers; $x++)
-        {
+        for ($x = 0; $x < $nbUsers; $x++) {
             $clients = $this->mdl_clients->get_not_assigned_to_user($users_id[$x]);
             $nbClients = count($clients);
-            for ($i = 0; $i < $nbClients; $i++)
-            {
+            for ($i = 0; $i < $nbClients; $i++) {
                 $user_client =
                 [
                     'user_id' => $users_id[$x],
@@ -98,8 +97,7 @@ class Mdl_User_Clients extends MY_Model
         $new_users = [];
         $nbUsers = count($users);
 
-        for ($i = 0; $i < $nbUsers; $i++)
-        {
+        for ($i = 0; $i < $nbUsers; $i++) {
             $new_users[] = $users[$i]->user_id;
         }
 

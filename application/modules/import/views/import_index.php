@@ -19,8 +19,7 @@
 
                         <?php _csrf_field(); ?>
 <?php
-foreach ($files as $file)
-{
+foreach ($files as $file) {
 ?>
                         <div class="checkbox">
                             <label>

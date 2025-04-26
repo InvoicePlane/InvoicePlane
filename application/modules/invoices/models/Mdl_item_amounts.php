@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -27,7 +26,7 @@ class Mdl_Item_Amounts extends CI_Model
      * @param $item_id
      * @param $global_discount
      */
-    public function calculate($item_id, & $global_discount)
+    public function calculate($item_id, &$global_discount)
     {
         $this->load->model('invoices/mdl_items');
         $item = $this->mdl_items->get_by_id($item_id);
@@ -35,21 +34,17 @@ class Mdl_Item_Amounts extends CI_Model
         $item_subtotal = $item->item_quantity * $item->item_price;
 
         // Legacy calculation - discounts - since v1.6.3
-        if(config_item('legacy_calculation'))
-        {
+        if (config_item('legacy_calculation')) {
             $item_tax_total = $item_subtotal * ($item->item_tax_rate_percent / 100);
             $item_discount_total = $item->item_discount_amount * $item->item_quantity;
             $item_total = $item_subtotal + $item_tax_total - $item_discount_total;
-        }
-        else
-        {
+        } else {
             $item_discount = 0.0; // For total & tax calculation after all discounts applied Proportionally by item
-            if($global_discount['amount'] != 0 && $global_discount['items_subtotal'] != 0) // Prevent divide per 0
-            {
+            if ($global_discount['amount'] != 0 && $global_discount['items_subtotal'] != 0) { // Prevent divide per 0
                 $item_discount = round($global_discount['amount'] * ($item_subtotal / $global_discount['items_subtotal']), 2);
             }
-            if($global_discount['percent'] != 0) // Percent per default
-            {
+
+            if ($global_discount['percent'] != 0) { // Percent per default
                 $item_discount = round(($item_subtotal * ($global_discount['percent'] / 100)), 2);
             }
 
@@ -68,13 +63,10 @@ class Mdl_Item_Amounts extends CI_Model
         ];
 
         $this->db->where('item_id', $item_id);
-        if ($this->db->get('ip_invoice_item_amounts')->num_rows())
-        {
+        if ($this->db->get('ip_invoice_item_amounts')->num_rows()) {
             $this->db->where('item_id', $item_id);
             $this->db->update('ip_invoice_item_amounts', $db_array);
-        }
-        else
-        {
+        } else {
             $this->db->insert('ip_invoice_item_amounts', $db_array);
         }
     }

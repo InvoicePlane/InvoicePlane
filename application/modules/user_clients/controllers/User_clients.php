@@ -33,9 +33,6 @@ class User_Clients extends Admin_Controller
         redirect('users');
     }
 
-    /**
-     * @param null $id
-     */
     public function user($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -61,40 +58,29 @@ class User_Clients extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $user_id
-     */
     public function create($user_id = null)
     {
-        if (! $user_id)
-        {
+        if (! $user_id) {
             redirect('custom_values');
-        }
-        elseif ($this->input->post('btn_cancel'))
-        {
+        } elseif ($this->input->post('btn_cancel')) {
             redirect('user_clients/field/' . $user_id);
         }
 
-        if ($this->mdl_user_clients->run_validation())
-        {
-            if ($this->input->post('user_all_clients'))
-            {
+        if ($this->mdl_user_clients->run_validation()) {
+            if ($this->input->post('user_all_clients')) {
                 $users_id = [$user_id];
 
                 $this->mdl_user_clients->set_all_clients_user($users_id);
 
                 $user_update = ['user_all_clients' => 1];
-
-            }
-            else
-            {
+            } else {
                 $user_update = ['user_all_clients' => 0];
 
                 $this->mdl_user_clients->save();
             }
 
-            $this->db->where('user_id',$user_id);
-            $this->db->update('ip_users',$user_update);
+            $this->db->where('user_id', $user_id);
+            $this->db->update('ip_users', $user_update);
 
             redirect('user_clients/user/' . $user_id);
         }
@@ -108,7 +94,7 @@ class User_Clients extends Admin_Controller
                  'user'    => $user,
                  'clients' => $clients,
              ]
-         );
+        );
         $this->layout->buffer('content', 'user_clients/new');
         $this->layout->render();
     }
@@ -123,5 +109,4 @@ class User_Clients extends Admin_Controller
         $this->mdl_user_clients->delete($user_client_id);
         redirect('user_clients/user/' . $ref->user_id);
     }
-
 }

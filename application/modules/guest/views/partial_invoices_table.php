@@ -15,8 +15,7 @@
 
                 <tbody>
 <?php
-foreach ($invoices as $invoice)
-{
+foreach ($invoices as $invoice) {
     $css_class = ($invoice->invoice_status_id != 4 && $invoice->invoice_date_due < date('Y-m-d')) ? 'font-overdue' : '';
 ?>
                     <tr>
@@ -40,16 +39,13 @@ foreach ($invoices as $invoice)
                                 </a>
 <?php
     // fix 404 when balance = 0.00
-    if ($enable_online_payments && $invoice->invoice_balance > 0 && $invoice->invoice_status_id != 4)
-    {
+    if ($enable_online_payments && $invoice->invoice_balance > 0 && $invoice->invoice_status_id != 4) {
 ?>
                                 <a class="btn btn-primary" href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key); ?>">
                                     <i class="fa fa-credit-card"></i> <?php _trans('pay_now'); ?>
                                 </a>
 <?php
-    }
-    elseif ($invoice->invoice_balance == 0)
-    {
+    } elseif ($invoice->invoice_balance == 0) {
 ?>
                                 <button class="btn btn-success disabled">
                                     <i class="fa fa-check"></i> <?php _trans('paid') ?>

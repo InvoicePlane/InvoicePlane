@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -325,8 +325,6 @@ class Mdl_Users extends Response_Model
     }
 
     /**
-     * @param null $id
-     * @param null $db_array
      *
      * @return int|null
      */

@@ -20,7 +20,7 @@ function delete_orphans()
 {
     $CI =& get_instance();
 
-    $queries = array(
+    $queries = [
         'DELETE FROM ip_invoices WHERE client_id NOT IN (SELECT client_id FROM ip_clients)',
         'DELETE FROM ip_quotes WHERE client_id NOT IN (SELECT client_id FROM ip_clients)',
         'DELETE FROM ip_invoice_amounts WHERE invoice_id NOT IN (SELECT invoice_id FROM ip_invoices)',
@@ -39,7 +39,7 @@ function delete_orphans()
         'DELETE FROM ip_quote_tax_rates WHERE quote_id NOT IN (SELECT quote_id FROM ip_quotes)',
         'DELETE FROM ip_invoice_tax_rates WHERE invoice_id NOT IN (SELECT invoice_id FROM ip_invoices)',
         'DELETE FROM ip_invoices_recurring WHERE invoice_id NOT IN (SELECT invoice_id FROM ip_invoices)'
-    );
+    ];
 
     foreach ($queries as $query) {
         $CI->db->query($query);

@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -18,6 +17,7 @@ if (! defined('BASEPATH'))
 class Mdl_Projects extends Response_Model
 {
     public $table = 'ip_projects';
+
     public $primary_key = 'ip_projects.project_id';
 
     public function default_select()
@@ -46,37 +46,34 @@ class Mdl_Projects extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'project_name' => array(
+        return [
+            'project_name' => [
                 'field' => 'project_name',
                 'label' => trans('project_name'),
                 'rules' => 'required'
-            ),
-            'client_id' => array(
+            ],
+            'client_id' => [
                 'field' => 'client_id',
                 'label' => trans('client'),
-            )
-        );
+            ]
+        ];
     }
 
     public function get_tasks($project_id)
     {
-        $result = array();
+        $result = [];
 
-        if (!$project_id)
-        {
+        if (!$project_id) {
             return $result;
         }
 
         $this->load->model('tasks/mdl_tasks');
         $query = $this->mdl_tasks->where('ip_tasks.project_id', $project_id)->get();
 
-        foreach ($query->result() as $row)
-        {
+        foreach ($query->result() as $row) {
             $result[] = $row;
         }
 
         return $result;
     }
-
 }

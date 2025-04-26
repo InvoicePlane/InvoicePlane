@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,19 +14,14 @@ if ( ! defined('BASEPATH')) {
  *
  * eInvoicing add-ons by Verony
  */
-
 /**
  * Create a PDF.
  *
  * @param      $html
  * @param      $filename
  * @param bool $stream
- * @param null $password
- * @param null $isInvoice
- * @param null $is_guest
  * @param bool $embed_xml        (eInvoicing)
  * @param null $associated_files (eInvoicing)
- *
  * @return string
  *
  * @throws \Mpdf\MpdfException
@@ -77,15 +72,13 @@ function pdf_create(
     }
 
     // Set a password if set for the voucher
-    if ( ! empty($password)) {
+    if (! empty($password)) {
         $mpdf->SetProtection(['copy', 'print'], $password, $password);
     }
 
     // Check if the archive folder is available
-    if ( ! (is_dir(UPLOADS_ARCHIVE_FOLDER) || is_link(UPLOADS_ARCHIVE_FOLDER))) {
-        if ( ! mkdir(UPLOADS_ARCHIVE_FOLDER, '0777') && ! is_dir(UPLOADS_ARCHIVE_FOLDER)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', UPLOADS_ARCHIVE_FOLDER));
-        }
+    if (! is_dir(UPLOADS_ARCHIVE_FOLDER) || is_link(UPLOADS_ARCHIVE_FOLDER) && ( ! mkdir(UPLOADS_ARCHIVE_FOLDER, '0777') && ! is_dir(UPLOADS_ARCHIVE_FOLDER))) {
+        throw new \RuntimeException(sprintf('Directory "%s" was not created', UPLOADS_ARCHIVE_FOLDER));
     }
 
     // Set the footer if voucher is invoice and if set in settings
@@ -95,13 +88,13 @@ function pdf_create(
     }
 
     // Set the footer if voucher is quote and if set in settings
-    if ( ! $isInvoice && ! empty($CI->mdl_settings->settings['pdf_quote_footer'])) {
+    if (! $isInvoice && ! empty($CI->mdl_settings->settings['pdf_quote_footer'])) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
     }
 
     // Watermark (eInvoicing++ PDFA and PDFX do not permit transparency, so mPDF does not allow Watermarks!)
-    if ( ! $embed_xml && get_setting('pdf_watermark')) {
+    if (! $embed_xml && get_setting('pdf_watermark')) {
         $mpdf->showWatermarkText = true;
     }
 
@@ -114,7 +107,7 @@ function pdf_create(
             $invoice_array[] = $file;
         }
 
-        if ( ! empty($invoice_array) && null !== $is_guest) {
+        if ($invoice_array !== [] && null !== $is_guest) {
             rsort($invoice_array);
 
             if ($stream) {
@@ -139,6 +132,7 @@ function pdf_create(
     if ($stream) {
         return $mpdf->Output($filename . '.pdf', 'I');
     }
+
     $mpdf->Output(UPLOADS_TEMP_FOLDER . $filename . '.pdf', 'F');
 
     return UPLOADS_TEMP_FOLDER . $filename . '.pdf';

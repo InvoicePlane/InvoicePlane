@@ -59,14 +59,11 @@ class Mdl_Quote_Amounts extends CI_Model
         $quote_amounts = $query->row();
 
         // Discounts calculation - since v1.6.3
-        if(config_item('legacy_calculation'))
-        {
+        if (config_item('legacy_calculation')) {
             $quote_item_subtotal = $quote_amounts->quote_item_subtotal - $quote_amounts->quote_item_discount;
             $quote_subtotal = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
             $quote_total = $this->calculate_discount($quote_id, $quote_subtotal);
-        }
-        else
-        {
+        } else {
             $quote_item_subtotal = $quote_amounts->quote_item_subtotal - $quote_amounts->quote_item_discount - $global_discount['item'];
             $quote_total = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
         }
@@ -80,14 +77,11 @@ class Mdl_Quote_Amounts extends CI_Model
         ];
 
         $this->db->where('quote_id', $quote_id);
-        if ($this->db->get('ip_quote_amounts')->num_rows())
-        {
+        if ($this->db->get('ip_quote_amounts')->num_rows()) {
             // The record already exists; update it
             $this->db->where('quote_id', $quote_id);
             $this->db->update('ip_quote_amounts', $db_array);
-        }
-        else
-        {
+        } else {
             // The record does not yet exist; insert it
             $this->db->insert('ip_quote_amounts', $db_array);
         }
@@ -107,14 +101,13 @@ class Mdl_Quote_Amounts extends CI_Model
         $quote_data = $this->db->get('ip_quotes')->row();
 // not my job to cntrl & fix '0.00' is not 0.0 && discount amount allways 0.00 (legacy.on)
         // Prevent NULL in number format
-        $total            = (float)number_format((float)$quote_total,                        $this->decimal_places, '.', '');
-        $discount_amount  = (float)number_format((float)$quote_data->quote_discount_amount,  $this->decimal_places, '.', '');
+        $total            = (float)number_format((float)$quote_total, $this->decimal_places, '.', '');
+        $discount_amount  = (float)number_format((float)$quote_data->quote_discount_amount, $this->decimal_places, '.', '');
         $discount_percent = (float)number_format((float)$quote_data->quote_discount_percent, $this->decimal_places, '.', '');
 
-        $total = $total - $discount_amount;
-        $total = $total - round(($total / 100 * $discount_percent), $this->decimal_places);
+        $total -= $discount_amount;
 
-        return $total;
+        return $total - round(($total / 100 * $discount_percent), $this->decimal_places);
     }
 
     /**
@@ -146,22 +139,17 @@ class Mdl_Quote_Amounts extends CI_Model
         // Only appliable in legacy calculation - since 1.6.3
         $quote_tax_rates = config_item('legacy_calculation') ? $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result() : null;
 
-        if ($quote_tax_rates)
-        {
+        if ($quote_tax_rates) {
             // There are quote taxes applied
             // Get the current quote amount record
             $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();
 
             // Loop through the quote taxes and update the amount for each of the applied quote taxes
-            foreach ($quote_tax_rates as $quote_tax_rate)
-            {
-                if ($quote_tax_rate->include_item_tax)
-                {
+            foreach ($quote_tax_rates as $quote_tax_rate) {
+                if ($quote_tax_rate->include_item_tax) {
                     // The quote tax rate should include the applied item tax
                     $quote_tax_rate_amount = ($quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total) * ($quote_tax_rate->quote_tax_rate_percent / 100);
-                }
-                else
-                {
+                } else {
                     // The quote tax rate should not include the applied item tax
                     $quote_tax_rate_amount = $quote_amount->quote_item_subtotal * ($quote_tax_rate->quote_tax_rate_percent / 100);
                 }
@@ -182,8 +170,7 @@ class Mdl_Quote_Amounts extends CI_Model
                     FROM ip_quote_tax_rates
                     WHERE quote_id = " . $this->db->escape($quote_id) . "
                 )
-                WHERE quote_id = " . $this->db->escape($quote_id)
-            );
+                WHERE quote_id = " . $this->db->escape($quote_id));
 
             // Get the updated quote amount record
             $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();
@@ -192,8 +179,7 @@ class Mdl_Quote_Amounts extends CI_Model
             $quote_total = $quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total + $quote_amount->quote_tax_total;
 
             // Legacy calculation need recalculate global discounts - New calculation not! & deactivated before here - Only for memo - Todo?: idea settings: calculation mode - since v1.6.3
-            if(config_item('legacy_calculation'))
-            {
+            if (config_item('legacy_calculation')) {
                 $quote_total = $this->calculate_discount($quote_id, $quote_total);
             }
 
@@ -204,9 +190,7 @@ class Mdl_Quote_Amounts extends CI_Model
 
             $this->db->where('quote_id', $quote_id);
             $this->db->update('ip_quote_amounts', $db_array);
-        }
-        else
-        {
+        } else {
             // No quote taxes applied
 
             $db_array = [
@@ -219,7 +203,6 @@ class Mdl_Quote_Amounts extends CI_Model
     }
 
     /**
-     * @param null $period
      * @return mixed
      */
     public function get_total_quoted($period = null)
@@ -334,8 +317,7 @@ class Mdl_Quote_Amounts extends CI_Model
 
         $return = [];
 
-        foreach ($this->mdl_quotes->statuses() as $key => $status)
-        {
+        foreach ($this->mdl_quotes->statuses() as $key => $status) {
             $return[$key] = [
                 'quote_status_id' => $key,
                 'class'           => $status['class'],
@@ -346,12 +328,10 @@ class Mdl_Quote_Amounts extends CI_Model
             ];
         }
 
-        foreach ($results as $result)
-        {
+        foreach ($results as $result) {
             $return[$result['quote_status_id']] = array_merge($return[$result['quote_status_id']], $result);
         }
 
         return $return;
     }
-
 }

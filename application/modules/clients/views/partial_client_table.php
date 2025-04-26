@@ -22,8 +22,7 @@ if ($einvoicing)
         <tbody>
 <?php
 $class_checks = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning']; // e-invoice
-foreach ($records as $client)
-{
+foreach ($records as $client) {
 ?>
             <tr>
                 <td>
@@ -38,14 +37,11 @@ if ($einvoicing)
                 <td><?php _htmlsc($client->client_einvoicing_version); ?></td>
                 <td>
 <?php
-    if ($client->client_einvoicing_active == 1)
-    {
+    if ($client->client_einvoicing_active == 1) {
 ?>
                     <i class="<?php echo $class_checks[0] ?>"></i>
 <?php
-    }
-    elseif ($client->client_einvoicing_version != '')
-    {
+    } elseif ($client->client_einvoicing_version != '') {
 ?>
                     <i class="<?php echo $class_checks[1] ?>"></i>
 <?php

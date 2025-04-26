@@ -21,8 +21,7 @@ $active = $this->uri->segment(3);
                 <?php _trans('all'); ?>
             </a>
 <?php
-foreach ($custom_tables as $table)
-{
+foreach ($custom_tables as $table) {
 ?>
             <a href="<?php echo site_url('custom_fields/table/' . $table); ?>"
                class="btn <?php echo $active == $table ? 'btn-primary' : 'btn-default' ?>">

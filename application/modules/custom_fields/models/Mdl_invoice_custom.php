@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -22,7 +21,9 @@ class Mdl_Invoice_Custom extends Validator
         'custom_fields',
         'properties',
     ];
+
     public $table = 'ip_invoice_custom';
+
     public $primary_key = 'ip_invoice_custom.invoice_custom_id';
 
     public function default_select()
@@ -43,19 +44,16 @@ class Mdl_Invoice_Custom extends Validator
     public function save_custom($invoice_id, $db_array)
     {
         $result = $this->validate($db_array);
-        if ($result === true)
-        {
-            $form_data = isset($this->_formdata) ? $this->_formdata : null;
+        if ($result === true) {
+            $form_data = property_exists($this, '_formdata') && $this->_formdata !== null ? $this->_formdata : null;
 
-            if (is_null($form_data))
-            {
+            if (is_null($form_data)) {
                 return true;
             }
 
             $invoice_custom_id = null;
 
-            foreach ($form_data as $key => $value)
-            {
+            foreach ($form_data as $key => $value) {
                 $db_array =
                 [
                     'invoice_id'                => $invoice_id,
@@ -64,8 +62,7 @@ class Mdl_Invoice_Custom extends Validator
                 ];
                 $invoice_custom = $this->where('invoice_id', $invoice_id)->where('invoice_custom_fieldid', $key)->get();
 
-                if ($invoice_custom->num_rows())
-                {
+                if ($invoice_custom->num_rows()) {
                     $invoice_custom_id = $invoice_custom->row()->invoice_custom_id;
                 }
 
@@ -85,5 +82,4 @@ class Mdl_Invoice_Custom extends Validator
         $this->db->where('ip_invoice_custom.invoice_id', $invoice_id);
         return $this;
     }
-
 }

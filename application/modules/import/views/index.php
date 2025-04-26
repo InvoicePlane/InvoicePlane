@@ -34,8 +34,7 @@
 
             <tbody>
 <?php
-foreach ($imports as $import)
-{
+foreach ($imports as $import) {
 ?>
                 <tr>
                     <td><?php echo $import->import_id; ?></td>

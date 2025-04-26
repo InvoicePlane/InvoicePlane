@@ -16,8 +16,7 @@
 
                 <tbody>
 <?php
-foreach ($recurring_invoices as $invoice)
-{
+foreach ($recurring_invoices as $invoice) {
 ?>
                     <tr>
                         <td>

@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -34,6 +33,7 @@ class Payments extends Guest_Controller
     {
         $this->mdl_payments->where('(ip_payments.invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE client_id IN (' . implode(',', $this->user_clients) . ')))');
         $this->mdl_payments->paginate(site_url('guest/payments/index'), $page);
+
         $payments = $this->mdl_payments->result();
 
         $this->layout->set(
@@ -48,5 +48,4 @@ class Payments extends Guest_Controller
         $this->layout->buffer('content', 'guest/payments_index');
         $this->layout->render('layout_guest');
     }
-
 }

@@ -44,9 +44,6 @@ class Families extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -56,9 +53,9 @@ class Families extends Admin_Controller
         $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         if ($this->input->post('is_update') == 0 && $this->input->post('family_name') != '') {
-            $check = $this->db->get_where('ip_families', array('family_name' => $this->input->post('family_name')))->result();
+            $check = $this->db->get_where('ip_families', ['family_name' => $this->input->post('family_name')])->result();
 
-            if ( ! empty($check)) {
+            if (! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('family_already_exists'));
                 redirect('families/form');
             }
@@ -70,7 +67,7 @@ class Families extends Admin_Controller
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_families->prep_form($id)) {
+            if (! $this->mdl_families->prep_form($id)) {
                 show_404();
             }
 

@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Guest_Controller extends User_Controller
 {
-
     /** @var array */
     public $user_clients = [];
 
@@ -40,5 +39,4 @@ class Guest_Controller extends User_Controller
             $this->user_clients[$user_client->client_id] = $user_client->client_id;
         }
     }
-
 }

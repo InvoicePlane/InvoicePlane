@@ -52,7 +52,7 @@
 
             <input type="hidden" name="invoice_date_created" id="invoice_date_created"
                    value="<?php $credit_date = date_from_mysql(date('Y-m-d', time()), true);
-                   echo $credit_date; ?>">
+                    echo $credit_date; ?>">
 
             <div class="form-group">
                 <label for="invoice_password"><?php _trans('invoice_password'); ?></label>
@@ -78,7 +78,7 @@
             <p><strong><?php _trans('credit_invoice_details'); ?></strong></p>
 
             <ul>
-                <li><?php _trans('client') . ': ' . htmlsc($invoice->client_name); ?></li>
+                <li><?php echo trans('client') . ': ' . htmlsc($invoice->client_name); ?></li>
                 <li><?php echo trans('credit_invoice_date') . ': ' . $credit_date; ?></li>
                 <li><?php echo trans('invoice_group') . ': ' . $credit_invoice_group; ?></li>
             </ul>

@@ -16,30 +16,32 @@ $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert
             check_items_tax_usages();
         });
 
-<?php if ( ! $items) { ?>
+<?php
+if (! $items) {
+?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
-<?php } ?>
+<?php
+}
+?>
 
         // Legacy:no: check items tax usage is correct (Load on change)
         $(document).on('loaded', check_items_tax_usages());
 <?php
-if ($quote->quote_status_id == 1)
-{
+if ($quote->quote_status_id == 1) {
 ?>
-
-        $('#quote_change_client').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
-                quote_id: <?php echo $quote_id; ?>,
-                client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>",
-            });
+    $('#quote_change_client').click(function () {
+        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
+            quote_id: <?php echo $quote_id; ?>,
+            client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>",
         });
+    });
 
-        $('#quote_change_user').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_user'); ?>", {
-                quote_id: <?php echo $quote_id; ?>,
-                user_id: "<?php echo $this->db->escape_str($quote->user_id); ?>",
-            });
+    $('#quote_change_user').click(function () {
+        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_user'); ?>", {
+            quote_id: <?php echo $quote_id; ?>,
+            user_id: "<?php echo $this->db->escape_str($quote->user_id); ?>",
         });
+    });
 <?php
 } // End if
 ?>
@@ -74,7 +76,7 @@ if ($quote->quote_status_id == 1)
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
@@ -112,7 +114,7 @@ if ($quote->quote_status_id == 1)
                     'item_id': item_id,
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
                     var response = JSON.parse(data);
 
                     if (response.success === 1) {
@@ -150,38 +152,44 @@ if ($quote->quote_status_id == 1)
             }
         });
 
-        <?php if (get_setting('show_responsive_itemlist') == 1) { ?>
-            function UpR(k) {
-              var parent = k.parents('.item');
-              var pos = parent.prev();
-              parent.insertBefore(pos);
-            }
-            function DownR(k) {
-              var parent = k.parents('.item');
-              var pos = parent.next();
-              parent.insertAfter(pos);
-            }
-            $(document).on('click', '.up', function () {
-              UpR($(this));
+<?php
+if (get_setting('show_responsive_itemlist') == 1) {
+?>
+        function UpR(k) {
+          var parent = k.parents('.item');
+          var pos = parent.prev();
+          parent.insertBefore(pos);
+        }
+        function DownR(k) {
+          var parent = k.parents('.item');
+          var pos = parent.next();
+          parent.insertAfter(pos);
+        }
+        $(document).on('click', '.up', function () {
+          UpR($(this));
+        });
+        $(document).on('click', '.down', function () {
+          DownR($(this));
+        });
+<?php
+} else {
+?>
+        var fixHelper = function (e, tr) {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+            $helper.children().each(function (index) {
+                $(this).width($originals.eq(index).width());
             });
-            $(document).on('click', '.down', function () {
-              DownR($(this));
-            });
-        <?php } else { ?>
-            var fixHelper = function (e, tr) {
-                var $originals = tr.children();
-                var $helper = tr.clone();
-                $helper.children().each(function (index) {
-                    $(this).width($originals.eq(index).width());
-                });
-                return $helper;
-            };
+            return $helper;
+        };
 
-            $('#item_table').sortable({
-                helper: fixHelper,
-                items: 'tbody',
-            });
-        <?php } ?>
+        $('#item_table').sortable({
+            helper: fixHelper,
+            items: 'tbody',
+        });
+<?php
+}
+?>
     });
 </script>
 
@@ -196,8 +204,7 @@ echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have
         </span>
 <?php
 // Nb Admins > 1 only
-if ($change_user)
-{
+if ($change_user) {
 ?>
         <a data-toggle="tooltip" data-placement="bottom"
            title="<?php _trans('edit') ;?> <?php _trans('user') ;?> (<?php _trans('invoicing') ;?>): <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>"
@@ -206,10 +213,8 @@ if ($change_user)
                 <span class="hidden-xs"><?php _htmlsc($quote->user_name); ?></span>
         </a>
 <?php
-if ($quote->quote_status_id == 1)
-{
+    if ($quote->quote_status_id == 1) {
 ?>
-
         <span id="quote_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
               data-toggle="tooltip" data-placement="bottom"
               title="<?php _trans('change_user'); ?>"></span>
@@ -227,8 +232,7 @@ if ($quote->quote_status_id == 1)
             <ul class="dropdown-menu">
 <?php
 // Legacy calculation have global taxes - since v1.6.3
-if ($legacy_calculation)
-{
+if ($legacy_calculation) {
 ?>
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
@@ -297,31 +301,35 @@ if ($legacy_calculation)
                         <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>">
                             <?php _htmlsc(format_client($quote)) ?>
                         </a>
-                        <?php if ($quote->quote_status_id == 1) { ?>
-                            <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
-                                  data-toggle="tooltip" data-placement="bottom"
-                                  title="<?php _trans('change_client'); ?>"></span>
-                        <?php } ?>
+<?php
+if ($quote->quote_status_id == 1) {
+?>
+                        <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
+                              data-toggle="tooltip" data-placement="bottom"
+                              title="<?php _trans('change_client'); ?>"></span>
+<?php
+}
+?>
                     </h3>
                     <br>
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
                     </div>
-                    <?php if ($quote->client_phone || $quote->client_email) : ?>
+<?php if ($quote->client_phone || $quote->client_email) : ?>
                         <hr>
-                    <?php endif; ?>
-                    <?php if ($quote->client_phone): ?>
+<?php endif; ?>
+<?php if ($quote->client_phone) : ?>
                         <div>
                             <?php _trans('phone'); ?>:&nbsp;
                             <?php _htmlsc($quote->client_phone); ?>
                         </div>
-                    <?php endif; ?>
-                    <?php if ($quote->client_email): ?>
+<?php endif; ?>
+<?php if ($quote->client_email) : ?>
                         <div>
                             <?php _trans('email'); ?>:&nbsp;
                             <?php _auto_link($quote->client_email); ?>
                         </div>
-                    <?php endif; ?>
+<?php endif; ?>
 
                 </div>
 
@@ -385,13 +393,16 @@ if ($legacy_calculation)
                                     </label>
                                     <select name="quote_status_id" id="quote_status_id"
                                             class="form-control simple-select" data-minimum-results-for-search="Infinity">
-                                        <?php foreach ($quote_statuses as $key => $status) { ?>
-                                            <option value="<?php echo $key; ?>"
-                                                    <?php if ($key == $quote->quote_status_id) { ?>selected="selected"
-                                                <?php } ?>>
-                                                <?php echo $status['label']; ?>
-                                            </option>
-                                        <?php } ?>
+<?php
+foreach ($quote_statuses as $key => $status) {
+    $is_selected = ($key == $quote->quote_status_id) ? ' selected="selected"' : '';
+?>
+                                        <option value="<?php echo $key; ?>"<?php echo $is_selected; ?>>
+                                            <?php echo $status['label']; ?>
+                                        </option>
+<?php
+}
+?>
                                     </select>
                                 </div>
                                 <div class="quote-properties">
@@ -403,8 +414,7 @@ if ($legacy_calculation)
                                 </div>
 
 <?php
-if ($quote->quote_status_id != 1)
-{
+if ($quote->quote_status_id != 1) {
 ?>
                                 <div class="quote-properties">
                                     <label for="quote-guest-url"><?php _trans('guest_url'); ?></label>
@@ -425,12 +435,12 @@ if ($quote->quote_status_id != 1)
 <?php
 $default_custom = false;
 $classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
-foreach ($custom_fields as $custom_field)
-{
-    if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+foreach ($custom_fields as $custom_field) {
+    if (! $default_custom && ! $custom_field->custom_field_location) {
+        $default_custom = true;
+    }
 
-    if ($custom_field->custom_field_location == 1)
-    {
+    if ($custom_field->custom_field_location == 1) {
         print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
     }
 }
@@ -466,8 +476,7 @@ foreach ($custom_fields as $custom_field)
             </div>
         </div>
 <?php
-if ($default_custom)
-{
+if ($default_custom) {
 ?>
         <div class="row">
             <div class="col-xs-12 col-md-6">
@@ -480,10 +489,8 @@ if ($default_custom)
                         <div class="row">
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
-    foreach ($custom_fields as $custom_field)
-    {
-        if (! $custom_field->custom_field_location) // == 0
-        {
+    foreach ($custom_fields as $custom_field) {
+        if (! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }
@@ -499,4 +506,5 @@ if ($default_custom)
 ?>
     </div>
 
-<?php _dropzone_script($quote->quote_url_key, $quote->client_id); ?>
+<?php
+_dropzone_script($quote->quote_url_key, $quote->client_id);

@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -18,6 +17,7 @@ if (! defined('BASEPATH'))
 class Mdl_Units extends Response_Model
 {
     public $table = 'ip_units';
+
     public $primary_key = 'ip_units.unit_id';
 
     public function default_select()
@@ -52,6 +52,8 @@ class Mdl_Units extends Response_Model
                 }
             }
         }
+
+        return null;
     }
 
     /**
@@ -59,7 +61,7 @@ class Mdl_Units extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
+        return [
             'unit_name' => [
                 'field' => 'unit_name',
                 'label' => trans('unit_name'),
@@ -70,7 +72,6 @@ class Mdl_Units extends Response_Model
                 'label' => trans('unit_name_plrl'),
                 'rules' => 'required'
             ]
-        );
+        ];
     }
-
 }

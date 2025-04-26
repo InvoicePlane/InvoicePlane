@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -48,9 +47,6 @@ class Users extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -88,7 +84,7 @@ class Users extends Admin_Controller
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_users->prep_form($id)) {
+            if (! $this->mdl_users->prep_form($id)) {
                 show_404();
             }
 
@@ -193,6 +189,7 @@ class Users extends Admin_Controller
         if ($id != 1) {
             $this->mdl_users->delete($id);
         }
+
         redirect('users');
     }
 
@@ -208,5 +205,4 @@ class Users extends Admin_Controller
 
         redirect('users/form/' . $user_id);
     }
-
 }

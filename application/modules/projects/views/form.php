@@ -14,7 +14,9 @@
     </div>
 
     <div id="content">
+
         <?php $this->layout->load_view('layout/alerts'); ?>
+
         <div class="form-group">
             <label for="project_name"><?php _trans('project_name'); ?></label>
             <input type="text" name="project_name" id="project_name" class="form-control"
@@ -30,8 +32,7 @@
                 <select name="client_id" id="client_id" class="client-id-select form-control" autofocus="autofocus">
 <?php
 $permissive = get_setting('enable_permissive_search_users');
-if (! empty($project->client_id))
-{
+if (! empty($project->client_id)) {
 ?>
                     <option value="<?php echo $project->client_id; ?>"><?php _htmlsc(format_client($project)); ?></option>
 <?php

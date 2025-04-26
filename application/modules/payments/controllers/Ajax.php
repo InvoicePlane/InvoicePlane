@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -23,17 +22,14 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('payments/mdl_payments');
 
-        if ($this->mdl_payments->run_validation())
-        {
+        if ($this->mdl_payments->run_validation()) {
             $payment_id = $this->mdl_payments->save();
 
             $response = [
                 'success'    => 1,
                 'payment_id' => $payment_id,
             ];
-        }
-        else
-        {
+        } else {
             $this->load->helper('json_error');
             $response = [
                 'success'           => 0,
@@ -61,5 +57,4 @@ class Ajax extends Admin_Controller
 
         $this->layout->load_view('payments/modal_add_payment', $data);
     }
-
 }

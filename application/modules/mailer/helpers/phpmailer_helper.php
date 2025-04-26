@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,16 +12,11 @@ if ( ! defined('BASEPATH')) {
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
-
 /**
  * @param      $from
  * @param      $to
  * @param      $subject
  * @param      $message
- * @param null $attachment_path
- * @param null $cc
- * @param null $bcc
- * @param null $more_attachments
  *
  * @return bool
  */
@@ -72,7 +67,7 @@ function phpmail_send(
             }
 
             // Check if certificates should not be verified
-            if ( ! get_setting('smtp_verify_certs', true)) {
+            if (! get_setting('smtp_verify_certs', true)) {
                 $mail->SMTPOptions = [
                     'ssl' => [
                         'verify_peer'       => false,
@@ -171,7 +166,9 @@ function phpmail_send(
     }
 
     // Only Notify the error. The success is in mailer controller.
-    $ok || $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+    if (!$ok) {
+        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+    }
 
     return $ok;
 }

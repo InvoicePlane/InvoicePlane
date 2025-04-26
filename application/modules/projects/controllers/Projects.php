@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -47,9 +46,6 @@ class Projects extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -63,10 +59,8 @@ class Projects extends Admin_Controller
             redirect('projects');
         }
 
-        if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_projects->prep_form($id)) {
-                show_404();
-            }
+        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_projects->prep_form($id)) {
+            show_404();
         }
 
         $this->load->model('clients/mdl_clients');
@@ -82,9 +76,6 @@ class Projects extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $project_id
-     */
     public function view($project_id)
     {
         if ($this->input->post('btn_cancel')) {
@@ -94,7 +85,7 @@ class Projects extends Admin_Controller
         $this->load->model('projects/mdl_projects');
         $project = $this->mdl_projects->get_by_id($project_id);
 
-        if ( ! $project) {
+        if (! $project) {
             show_404();
         }
 
@@ -120,5 +111,4 @@ class Projects extends Admin_Controller
         $this->mdl_projects->delete($id);
         redirect('projects');
     }
-
 }

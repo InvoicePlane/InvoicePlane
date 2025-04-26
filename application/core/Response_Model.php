@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Response_Model extends Form_Validation_Model
 {
-
     /**
      * @param null|int   $id
      * @param null|array $db_array

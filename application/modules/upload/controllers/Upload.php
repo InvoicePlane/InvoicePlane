@@ -1,7 +1,6 @@
 <?php
 
-if (! defined('BASEPATH'))
-{
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,8 +16,10 @@ if (! defined('BASEPATH'))
 #[AllowDynamicProperties]
 class Upload extends Admin_Controller
 {
-    public $targetPath;
+    public $targetPath = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/';
+
     public $ctype_default = 'application/octet-stream';
+
     public $content_types = [];
 
     /**
@@ -29,26 +30,21 @@ class Upload extends Admin_Controller
         parent::__construct();
         $this->load->model('upload/mdl_uploads');
         $this->content_types = $this->mdl_uploads->content_types;
-        $this->targetPath = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/'; // double slash fix
     }
 
     public function upload_file($customerId, $url_key): void
     {
         // Show files Legacy (obsolete)
-        if (empty($_FILES['file']))
-        {
+        if (empty($_FILES['file'])) {
             $this->show_files($url_key);
-        }
-        elseif (empty($_FILES['file']['name']))
-        {
+        } elseif (empty($_FILES['file']['name'])) {
             $this->respond_message(400, 'upload_error_no_file');
         }
 
         $filename = $this->sanitize_file_name($_FILES['file']['name']);
         $filePath = $this->get_target_file_path($url_key, $filename);
 
-        if (file_exists($filePath))
-        {
+        if (file_exists($filePath)) {
             $this->respond_message(409, 'upload_error_duplicate_file', $filename);
         }
 
@@ -63,18 +59,17 @@ class Upload extends Admin_Controller
 
     public function create_dir($path, $chmod = '0755'): bool
     {
-        if (! (is_dir($path) || is_link($path)))
-        {
+        if (!is_dir($path) && !is_link($path)) {
             return mkdir($path, $chmod);
         }
+
         return true;
     }
 
     public function show_files($url_key = null): void
     {
         header('Content-Type: application/json; charset=utf-8');
-        if ($url_key && ! $result = $this->mdl_uploads->get_files($url_key))
-        {
+        if ($url_key && ! $result = $this->mdl_uploads->get_files($url_key)) {
             exit('{}');
         }
 
@@ -84,19 +79,15 @@ class Upload extends Admin_Controller
 
     public function delete_file($url_key): void
     {
-        $path = $this->targetPath;
         $filename = urldecode($this->input->post('name'));
 
         $finalPath = $this->targetPath . $url_key . '_' . $filename;
 
-        if (realpath($this->targetPath) === substr(realpath($finalPath), 0, strlen(realpath($this->targetPath))))
-        {
-            if (! file_exists($finalPath) || @unlink($finalPath))
-            {
-                $this->mdl_uploads->delete_file($url_key, $filename);
-                $this->respond_message(200, 'upload_file_deleted_successfully', $filename);
-            }
+        if (realpath($this->targetPath) === substr(realpath($finalPath), 0, strlen(realpath($this->targetPath))) && (! file_exists($finalPath) || @unlink($finalPath))) {
+            $this->mdl_uploads->delete_file($url_key, $filename);
+            $this->respond_message(200, 'upload_file_deleted_successfully', $filename);
         }
+
         $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
         $this->respond_message(410, 'upload_error_file_delete', $finalPath . $ref);
     }
@@ -104,8 +95,7 @@ class Upload extends Admin_Controller
     public function get_file($filename): void
     {
         $filename = urldecode($filename);
-        if (! file_exists($this->targetPath . $filename))
-        {
+        if (! file_exists($this->targetPath . $filename)) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $filename . $ref);
         }
@@ -140,8 +130,7 @@ class Upload extends Admin_Controller
     private function validate_mime_type(string $mimeType): void
     {
         $allowedTypes = array_values($this->content_types);
-        if (! in_array($mimeType, $allowedTypes, true))
-        {
+        if (! in_array($mimeType, $allowedTypes, true)) {
             $this->respond_message(415, 'upload_error_unsupported_file_type', $mimeType);
         }
     }
@@ -156,8 +145,7 @@ class Upload extends Admin_Controller
             'file_name_new'      => $url_key . '_' . $filename,
         ];
 
-        if (! $this->mdl_uploads->create($data))
-        {
+        if (! $this->mdl_uploads->create($data)) {
             $this->respond_message(500, 'upload_error_database', $filename);
         }
     }
@@ -168,26 +156,24 @@ class Upload extends Admin_Controller
         $this->create_dir($this->targetPath);
 
         // Checks to ensure that the target dir is writable
-        if (! is_writable($this->targetPath))
-        {
+        if (! is_writable($this->targetPath)) {
             $this->respond_message(410, 'upload_error_folder_not_writable', $this->targetPath);
         }
         // Checks to ensure that the tempFile is a valid upload file AND it was uploaded via PHP's HTTP POST upload.
-        elseif (! move_uploaded_file($tempFile, $filePath))
-        {
+        elseif (! move_uploaded_file($tempFile, $filePath)) {
             $this->respond_message(400, 'upload_error_invalid_move_uploaded_file', $filename);
         }
     }
 
     private function respond_message(int $httpCode, string $messageKey, string $dynamicLogValue = ''): void
     {
-        log_message('debug', trans($messageKey)  .': (status ' . $httpCode . ') ' . $dynamicLogValue);
+        log_message('debug', trans($messageKey)  . ': (status ' . $httpCode . ') ' . $dynamicLogValue);
         http_response_code($httpCode);
         _trans($messageKey);
-        if ($httpCode == 410)
-        {
+        if ($httpCode == 410) {
             echo PHP_EOL . PHP_EOL . '"' . basename(UPLOADS_FOLDER) . DIRECTORY_SEPARATOR . basename($this->targetPath) . '"';
         }
+
         exit;
     }
 }

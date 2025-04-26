@@ -33,6 +33,6 @@
 
 <div id="content" class="table-content">
 
-    <?php $this->layout->load_view('invoices/partial_invoice_table', array('invoices' => $invoices)); ?>
+    <?php $this->layout->load_view('invoices/partial_invoice_table', ['invoices' => $invoices]); ?>
 
 </div>
