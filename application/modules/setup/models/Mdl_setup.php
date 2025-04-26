@@ -406,6 +406,7 @@ class Mdl_Setup extends CI_Model
                 break;
             }
         }
+
         if($einvoicing == '1') {
             //**Enable einvoicing with Zugferd 1.0 for all clients if einvoicing parameter is on**
             $data = [ 'client_einvoicing_active' => '1', 'client_einvoicing_version' => 'Zugferdv10'];
