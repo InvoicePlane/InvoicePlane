@@ -147,7 +147,7 @@ if ($logo) {
                                 </tr>
 <?php if ($payment_method): ?>
                                 <tr>
-                                    <td><?php _trans('payment_method') . ': '; ?></td>
+                                    <td><?php _trans('payment_method'); ?></td>
                                     <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
                                 </tr>
 <?php endif; ?>

@@ -48,7 +48,6 @@ function format_currency($amount)
 /**
  * Return a formated amount based on the system settings, e.g. 1.234,56
  *
- * @param null $amount
  *
  * @return null|string
  */
@@ -64,13 +63,13 @@ function format_amount($amount = null)
 
         return number_format($amount, $decimals, $decimal_point, $thousands_separator);
     }
+
     return null;
 }
 
 /**
  * Return a formated amount as a quantity based on the system settings, e.g. 1.234,56
  *
- * @param null $amount
  *
  * @return null|string
  */
@@ -86,6 +85,7 @@ function format_quantity($amount = null)
 
         return number_format($amount, $decimals, $decimal_point, $thousands_separator);
     }
+
     return null;
 }
 
@@ -111,6 +111,7 @@ function standardize_amount($amount)
 
         $amount = strtr($amount, [$thousands_separator => '', $decimal_point => '.']);
     }
+
     return $amount;
 }
 
@@ -121,8 +122,6 @@ function standardize_amount($amount)
  * @Scopes Invoices controllers
  *
  * @param $items
- *
- * @return mixed
  */
 function items_tax_usages_bad($items) :mixed
 {
@@ -131,6 +130,7 @@ function items_tax_usages_bad($items) :mixed
     {
         return false;
     }
+
     // Check if taxe are in all or not alert
     $checks = [];
     $oks = [0,0];
@@ -147,6 +147,7 @@ function items_tax_usages_bad($items) :mixed
             $checks[0][] = $item->item_id;
         }
     }
+
    // Bad: One with 0 Ok (false), No 0 NoOk (true)
    if ($oks[0] != 0 && $oks[1] != 0)
    {
@@ -158,5 +159,6 @@ function items_tax_usages_bad($items) :mixed
         );
         return $checks;
     }
+
     return false;
 }

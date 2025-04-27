@@ -34,6 +34,7 @@ function custom_terms_or_notes($terms_or_notes, $custom_fields, $field = '[BANQU
                 $ribs .= '<div style="width:50%;float:'.$float.'">'.str_replace(' - ', '<br />', $rib).'</div>';
             }
         }
+
         if(isset($custom_fields['invoice'][$field])){
             $ribs = '';#RAZ
             foreach($custom_fields['invoice'][$field] as $id => $rib){
@@ -41,8 +42,10 @@ function custom_terms_or_notes($terms_or_notes, $custom_fields, $field = '[BANQU
                 $ribs .= '<div style="width:50%;float:'.$float.'">'.str_replace(' - ', '<br />', $rib).'</div>';
             }
         }
+
         $custom_rib = $ribs ? '<div>Virement bancaire<br />'.$ribs.'</div><br style="clear:both;" />' : '';
     }
+
     return nl2br(str_replace($field, $custom_rib, htmlsc($terms_or_notes)));
 }
 
