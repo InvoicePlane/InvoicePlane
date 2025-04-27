@@ -63,6 +63,7 @@ class Zugferdv10Xml
             if ( ! isset($result[$item->item_tax_rate_percent])) {
                 $result[$item->item_tax_rate_percent] = 0;
             }
+
             $result[$item->item_tax_rate_percent] += $item->item_subtotal;
         }
 
@@ -108,6 +109,7 @@ class Zugferdv10Xml
         $node = $this->doc->createElement('rsm:SpecifiedExchangedDocumentContext');
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:ferd:CrossIndustryDocument:invoice:1p0:basic'));
+
         $node->appendChild($guidelineNode);
 
         return $node;
@@ -124,11 +126,13 @@ class Zugferdv10Xml
         // IssueDateTime
         $dateNode = $this->doc->createElement('ram:IssueDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+
         $node->appendChild($dateNode);
 
         // IncludedNote
         $noteNode = $this->doc->createElement('ram:IncludedNote');
         $noteNode->appendChild($this->doc->createElement('ram:Content', htmlsc($this->invoice->invoice_terms)));
+
         $node->appendChild($noteNode);
 
         return $node;
@@ -200,6 +204,7 @@ class Zugferdv10Xml
         $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->client_address_2)));
         $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->client_city)));
         $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->client_country)));
+
         $node->appendChild($addressNode);
 
         // SpecifiedTaxRegistration
@@ -217,6 +222,7 @@ class Zugferdv10Xml
         $node = $this->doc->createElement('ram:SpecifiedTaxRegistration');
         $el = $this->doc->createElement('ram:ID', $content);
         $el->setAttribute('schemeID', $schemeID);
+
         $node->appendChild($el);
 
         return $node;
@@ -230,6 +236,7 @@ class Zugferdv10Xml
         $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
         $dateNode = $this->doc->createElement('ram:OccurrenceDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+
         $eventNode->appendChild($dateNode);
 
         $node->appendChild($eventNode);
@@ -300,6 +307,7 @@ class Zugferdv10Xml
         // AssociatedDocumentLineDocument
         $lineNode = $this->doc->createElement('ram:AssociatedDocumentLineDocument');
         $lineNode->appendChild($this->doc->createElement('ram:LineID', $lineNumber));
+
         $node->appendChild($lineNode);
 
         // SpecifiedSupplyChainTradeAgreement
@@ -308,6 +316,7 @@ class Zugferdv10Xml
         // SpecifiedSupplyChainTradeDelivery
         $deliveyNode = $this->doc->createElement('ram:SpecifiedSupplyChainTradeDelivery');
         $deliveyNode->appendChild($this->quantityElement('ram:BilledQuantity', $item->item_quantity));
+
         $node->appendChild($deliveyNode);
 
         // SpecifiedSupplyChainTradeSettlement
@@ -316,6 +325,7 @@ class Zugferdv10Xml
         // SpecifiedTradeProduct
         $tradeNode = $this->doc->createElement('ram:SpecifiedTradeProduct');
         $tradeNode->appendChild($this->doc->createElement('ram:Name', htmlsc($item->item_name) . "\n" . htmlsc($item->item_description)));
+
         $node->appendChild($tradeNode);
 
         return $node;
@@ -332,11 +342,13 @@ class Zugferdv10Xml
         // GrossPriceProductTradePrice
         $grossPriceNode = $this->doc->createElement('ram:GrossPriceProductTradePrice');
         $grossPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price, 4));
+
         $node->appendChild($grossPriceNode);
 
         // NetPriceProductTradePrice
         $netPriceNode = $this->doc->createElement('ram:NetPriceProductTradePrice');
         $netPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price, 4));
+
         $node->appendChild($netPriceNode);
 
         return $node;
@@ -368,6 +380,7 @@ class Zugferdv10Xml
         // SpecifiedTradeSettlementMonetarySummation
         $sumNode = $this->doc->createElement('ram:SpecifiedTradeSettlementMonetarySummation');
         $sumNode->appendChild($this->currencyElement('ram:LineTotalAmount', $item->item_subtotal));
+
         $node->appendChild($sumNode);
 
         return $node;

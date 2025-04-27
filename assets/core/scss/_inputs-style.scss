@@ -29,6 +29,11 @@ button, input, optgroup, select {
       padding: 0 3px;
       line-height: 1.5;
     }
+    // Fix multi lines tags outer of field (overflow)
+    &--multiple {
+      height: auto;
+    }
+
   }
 }
 
@@ -57,7 +62,6 @@ button, input, optgroup, select {
 
     .select2-selection__rendered {
       color: $input-color;
-      // line-height: 30px;
     }
 
     .select2-selection__placeholder {
@@ -102,7 +106,18 @@ button, input, optgroup, select {
     .select2-selection__choice {
       background-color: $input-bg;
       border-color: $input-border;
-      margin-top: 3px;
+      margin: 3px 2px 3px 0px;
+      // Fix disgraceful height (when too long tag, the search field need little place)
+      max-width: calc(100% - 20px);
+    }
+
+    .select2-search {
+      &.select2-search--inline {
+        // Adjust textarea style (search cursor placement)
+        .select2-search__field {
+          margin: 0 0 5px 0;
+        }
+      }
     }
 
     .select2-selection__choice__remove {

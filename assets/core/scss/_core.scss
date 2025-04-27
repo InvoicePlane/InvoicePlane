@@ -7,6 +7,10 @@
 |   properly. Only edit them if you know what you are doing!
 |   =========================================================
 */
+
+// For: fieldset, quick-actions, sidebar, #main-content, #headerbar & div.table .file-row > div
+$ip_border_base: 1px solid #ddd;
+
 /*
 |   =========================================================
 |   BS3 fix block table .collapse.in e-invoice in client view
@@ -117,7 +121,7 @@ form {
 
 fieldset {
   border-radius: $border-radius-base;
-  border: 1px solid #ddd;
+  border: $ip_border_base;
   margin-bottom: 15px;
   padding: 15px;
 }
@@ -400,10 +404,10 @@ div#item_table {
 
   li {
     a {
-      padding: 14px;
+      padding: 14.5px;
       display: block;
-      border-bottom: 1px solid #ddd;
-      font-size: $font-size-large;
+      border-bottom: $ip_border_base;
+      font-size: $font-size-large !important;
       color: $gray;
       text-align: center;
 
@@ -430,7 +434,7 @@ div#item_table {
 
 #main-content {
   width: 100%;
-  border-left: 1px solid #ddd;
+  border-left: $ip_border_base;
 
   @media screen and (min-width: $screen-md) {
     width: calc(100% - 66px);
@@ -465,7 +469,7 @@ div#item_table {
 #headerbar {
   min-height: 47px;
   padding: 8px 15px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: $ip_border_base;
   @include clearfix();
 
   .headerbar-item.pull-right {
@@ -576,7 +580,7 @@ div.table-content {
   div.table .file-row > div {
     display: table-cell;
     vertical-align: top;
-    border-top: 1px solid #ddd;
+    border-top: $ip_border_base;
     padding: 8px;
   }
 
@@ -797,7 +801,7 @@ div.table-content {
 
 .quick-actions .btn {
   border: none;
-  border-right: 1px solid #ddd;
+  border-right: $ip_border_base;
 
   &:last-child {
     border-right: none;
