@@ -13,7 +13,7 @@
 <?php
 $pg = explode('index.php/',@$_SERVER['REQUEST_URI']);
 $pg = (isset($pg[1]))? explode('/', $pg[1]) : '';
-$pg = $pg ? ' : ' . implode(' - ', array_map(function($v){return ! is_numeric($v) ? trans($v) : $v;}, $pg)) : '';
+$pg = $pg ? ' : ' . implode(' - ', array_map(fn($v) => is_numeric($v) ? $v : trans($v), $pg)) : ''; // php >= 7.4
 ?>
     <title><?php echo get_setting('custom_title', 'InvoicePlane', true) . $pg; ?></title>
     <meta charset="utf-8">

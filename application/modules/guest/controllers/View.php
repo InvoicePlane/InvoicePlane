@@ -67,7 +67,6 @@ class View extends Base_Controller
 
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
 
-
         // Generate and replace invoice terms or quote notes into the PDF template #by swd 2022
         $invoice->invoice_terms = custom_terms_or_notes($invoice->invoice_terms, $custom_fields);
 

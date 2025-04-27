@@ -428,7 +428,9 @@ $default_custom = false;
 $classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field)
 {
-    if( ! $default_custom && ! $custom_field->custom_field_location) $default_custom = true;
+    if( ! $default_custom && ! $custom_field->custom_field_location) {
+        $default_custom = true;
+    }
 
     if ($custom_field->custom_field_location == 1)
     {
@@ -500,4 +502,5 @@ if ($default_custom)
 ?>
     </div>
 
-<?php _dropzone_script($quote->quote_url_key, $quote->client_id); ?>
+<?php
+_dropzone_script($quote->quote_url_key, $quote->client_id);
