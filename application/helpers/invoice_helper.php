@@ -129,14 +129,16 @@ function invoice_qrcode($invoice_id)
     ) {
         $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
 
-        if($invoice->client_country == 'HR') {
-            $CI->load->library('PDF417Barcode', [ 'invoice' => $invoice ]);
-            $pdf417barcode_data_uri = $CI->pdf417barcode->generate();
-            return '<img src="' . $pdf417barcode_data_uri . '" alt="PDF 417 Barcode" id="invoice-pdf417-barcode">';
-        } else {
-            $CI->load->library('QrCode', [ 'invoice' => $invoice ]);
-            $qrcode_data_uri = $CI->qrcode->generate();
-            return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+        if ((float) $invoice->invoice_balance) {
+            if($invoice->client_country == 'HR') {
+                $CI->load->library('PDF417Barcode', [ 'invoice' => $invoice ]);
+                $pdf417barcode_data_uri = $CI->pdf417barcode->generate();
+                return '<img src="' . $pdf417barcode_data_uri . '" alt="PDF 417 Barcode" id="invoice-pdf417-barcode">';
+            } else {
+                $CI->load->library('QrCode', [ 'invoice' => $invoice ]);
+                $qrcode_data_uri = $CI->qrcode->generate();
+                return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+            }
         }
     }
 
@@ -149,7 +151,7 @@ function invoice_qrcode($invoice_id)
  * @param number invoice-id
  * @return string
  */
-function invoice_pdf417barcode($invoice_id) 
+function invoice_pdf417barcode($invoice_id)
 {
     $CI = &get_instance();
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
