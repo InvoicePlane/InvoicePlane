@@ -160,6 +160,21 @@
                             <input type="file" name="invoice_logo" size="40" class="form-control"/>
                         </div>
 
+                        <div class="form-group">
+                            <label for="settings[pdf_page_numbers]">
+                                <?php _trans('pdf_page_numbers'); ?>
+                            </label>
+                            <select name="settings[pdf_page_numbers]" id="settings[pdf_page_numbers]"
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0">
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('pdf_page_numbers'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                        </div>
+
                     </div>
                 </div>
             </div>
