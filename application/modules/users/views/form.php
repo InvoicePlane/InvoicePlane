@@ -1,9 +1,10 @@
 <?php
 // eInvoicing enabled?
-$einvoicingTip = $einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . '(' : ''; // tootip base
+$einvoicingTip = $einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . ' (' : ''; // tootip base
 $einvoicingReq = $einvoicing ? $einvoicingTip . trans('required_field') . ')"' : '';
 $einvoicingB2B = $einvoicing ? $einvoicingTip . 'B2B ' . trans('required_field') . ')"' : '';
 $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
+$qr_code_info = get_setting('qr_code') ? '<span class="pull-right"><i class="fa fa-qrcode"  data-toggle="tooltip" data-placement="bottom" title="' . trans('user_qr_code_hint') . '"></i></span>' : '';
 ?>
 <script>
     $(function () {
@@ -66,10 +67,10 @@ $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
                             </div>
 
                             <div class="form-group"<?php echo $einvoicingReq; ?>>
-                                <label for="user_company"><?php _trans('company'); ?></label>
+                                <label for="user_company"><?php _trans('company'); ?></label><?php echo $qr_code_info; ?>
                                 <input type="text" name="user_company" id="user_company" class="form-control"
                                        value="<?php echo $this->mdl_users->form_value('user_company', true); ?>">
-                           </div>
+                            </div>
 
                             <div class="form-group">
                                 <label for="user_email"><?php _trans('email_address'); ?></label>
@@ -94,8 +95,7 @@ if (! $id) {
                                 <input type="password" name="user_passwordv" id="user_passwordv" class="form-control" required>
                             </div>
 <?php
-} else // Edit user
-{
+} else { // Edit user
 ?>
                             <div class="form-group">
                                 <a href="<?php echo site_url('users/change_password/' . $id); ?>"
@@ -244,24 +244,33 @@ foreach ($custom_fields as $custom_field) {
                                            value="<?php echo $this->mdl_users->form_value('user_bank', true); ?>">
                                 </div>
 
-                                <div class="form-group"<?php echo $einvoicingReq; ?>>
+                                <div class="form-group"<?php echo $einvoicingReq; ?>><?php echo $qr_code_info; ?>
                                     <label for="user_iban"><?php echo 'IBAN'; ?></label>
                                     <input type="text" name="user_iban" id="user_iban" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_iban', true); ?>">
                                 </div>
 
-                                <div class="form-group"<?php echo $einvoicingOpt; ?>>
+                                <div class="form-group"<?php echo $einvoicingOpt; ?>><?php echo $qr_code_info; ?>
                                     <label for="user_bic"><?php echo 'BIC'; ?></label>
                                     <input type="text" name="user_bic" id="user_bic"
                                            class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_bic', true); ?>">
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="user_remittance_tmpl"><?php _trans('user_remittance_tmpl'); ?></label>
-                                    <input type="text" name="user_remittance_tmpl" id="user_remittance_tmpl" class="form-control"
+                                <div class="form-group"><?php echo $qr_code_info; ?>
+                                    <label for="user_remittance_text"><?php _trans('user_remittance_text'); ?></label>
+                                    <input type="text" name="user_remittance_text" id="user_remittance_text" class="form-control taggable"
                                            placeholder="{{{invoice_number}}} {{{invoice_date_due}}}"
-                                           value="<?php echo $this->mdl_users->form_value('user_remittance_tmpl', true); ?>">
+                                           value="<?php echo $this->mdl_users->form_value('user_remittance_text', true); ?>">
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <?php _trans('qr_code_settings_remittance_text_tags'); ?>
+                                </div>
+                                <div class="panel-body">
+                                    <?php $this->layout->load_view('email_templates/template-tags-invoices'); ?>
                                 </div>
                             </div>
 

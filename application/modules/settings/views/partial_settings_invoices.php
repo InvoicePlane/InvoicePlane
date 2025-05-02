@@ -359,6 +359,9 @@ foreach ($email_templates_invoice as $email_template) {
             </div>
             <div class="panel-body">
 
+<?php
+$qr_code = get_setting('qr_code');
+?>
                 <div class="form-group">
                     <div class="checkbox">
                         <label>
@@ -372,7 +375,7 @@ foreach ($email_templates_invoice as $email_template) {
                                 name="settings[qr_code]"
                                 id="settings[qr_code]"
                                 value="1"
-                                <?php check_select(get_setting('qr_code'), 1, '==', true) ?>
+                                <?php check_select($qr_code, 1, '==', true) ?>
                             >
                             <?php _trans('qr_code_settings_enable'); ?>
                         </label>
@@ -380,7 +383,15 @@ foreach ($email_templates_invoice as $email_template) {
                     </div>
                 </div>
 
-                <div class="row <?php echo get_setting('qr_code') ? '' : 'hidden'; ?>">
+                <div class="row <?php echo $qr_code ? '' : 'hidden'; ?>">
+                    <div class="col-xs-12">
+                        <p class="alert alert-info no-padding">
+                            <i class="fa fa-info"></i><?php _trans('qr_code_settings_enable_hint_users'); ?>&nbsp;<i class="fa fa-qrcode"></i>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row <?php echo $qr_code ? '' : 'hidden'; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[qr_code_recipient]">
@@ -391,6 +402,7 @@ foreach ($email_templates_invoice as $email_template) {
                                 name="settings[qr_code_recipient]"
                                 id="settings[qr_code_recipient]"
                                 class="form-control"
+                                placeholder="<?php _htmlsc(trans('company')); ?>"
                                 value="<?php echo get_setting('qr_code_recipient'); ?>"
                             >
                         </div>
@@ -411,7 +423,7 @@ foreach ($email_templates_invoice as $email_template) {
                     </div>
                 </div>
 
-                <div class="row <?php echo get_setting('qr_code') ? '' : 'hidden'; ?>">
+                <div class="row <?php echo $qr_code ? '' : 'hidden'; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[qr_code_bic]">

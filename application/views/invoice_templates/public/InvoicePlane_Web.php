@@ -322,19 +322,19 @@ if (get_setting('qr_code') && $invoice->invoice_balance > 0) {
                             <td>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
-                                    <?php echo get_setting('qr_code_recipient'); ?>
+                                    <?php echo $invoice->user_company ?: get_setting('qr_code_recipient'); ?>
                                 </div>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
-                                    <?php echo get_setting('qr_code_iban'); ?>
+                                    <?php echo $invoice->user_iban ?: get_setting('qr_code_iban'); ?>
                                 </div>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
-                                    <?php echo get_setting('qr_code_bic'); ?>
+                                    <?php echo $invoice->user_bic ?: get_setting('qr_code_bic'); ?>
                                 </div>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
-                                    <?php echo parse_template($invoice, get_setting('qr_code_remittance_text')); ?>
+                                    <?php echo parse_template($invoice, $invoice->user_remittance_text ?: get_setting('qr_code_remittance_text')); ?>
                                 </div>
                             </td>
                             <td class="amount">
