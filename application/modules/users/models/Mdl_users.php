@@ -136,7 +136,7 @@ class Mdl_Users extends Response_Model
                 'field' => 'user_bic',
                 'rules' => 'trim|xss_clean',
             ],
-            'user_remittance_tmpl' => [
+            'user_remittance_text' => [
                 'field' => 'user_remittance',
                 'rules' => 'trim|xss_clean',
             ],
@@ -246,7 +246,7 @@ class Mdl_Users extends Response_Model
             'user_bic' => [
                 'field' => 'user_bic',
             ],
-            'user_remittance_tmpl' => [
+            'user_remittance_text' => [
                 'field' => 'user_remittance',
             ],
             // SUMEX

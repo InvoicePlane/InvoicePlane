@@ -262,7 +262,7 @@ class Ajax extends Admin_Controller
         // Not showed in frontend table:
         // user_date_created,LOWER(user_company),LOWER(user_address_1),LOWER(user_address_2),LOWER(user_city),LOWER(user_state),LOWER(user_zip),LOWER(user_country),
         // LOWER(user_invoicing_contact),LOWER(user_phone),LOWER(user_fax),LOWER(user_mobile),LOWER(user_web),
-        // LOWER(user_vat_id),LOWER(user_tax_code),LOWER(user_all_clients),LOWER(user_subscribernumber),LOWER(user_bank),LOWER(user_iban),LOWER(user_bic),LOWER(user_remittance_tmpl),LOWER(user_gln),LOWER(user_rcc)
+        // LOWER(user_vat_id),LOWER(user_tax_code),LOWER(user_all_clients),LOWER(user_subscribernumber),LOWER(user_bank),LOWER(user_iban),LOWER(user_bic),LOWER(user_remittance_text),LOWER(user_gln),LOWER(user_rcc)
 
         foreach ($keywords as $keyword) {
             if ($keyword) {

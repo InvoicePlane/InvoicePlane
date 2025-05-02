@@ -9,7 +9,7 @@ $ln            = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on mor
 $user_toggle   = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
 // eInvoicing enabled?
 $einvoicingCol = $einvoicing ? 'col-xs-12 col-sm-6' : 'hidden';
-$einvoicingTip = $einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . '(' : ''; // tootip base
+$einvoicingTip = $einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . ' (' : ''; // tootip base
 $einvoicingReq = $einvoicing ? $einvoicingTip . trans('required_field') . ')"' : '';
 $einvoicingB2B = $einvoicing ? $einvoicingTip . 'B2B ' . trans('required_field') . ')"' : '';
 $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';

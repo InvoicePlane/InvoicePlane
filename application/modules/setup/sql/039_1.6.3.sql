@@ -2,7 +2,7 @@
 ALTER TABLE `ip_users`
     ADD COLUMN user_bank VARCHAR(100) DEFAULT NULL AFTER `user_subscribernumber`,
     ADD COLUMN user_bic VARCHAR(11) DEFAULT NULL AFTER `user_iban`,
-    ADD COLUMN user_remittance_tmpl VARCHAR(105) DEFAULT NULL AFTER `user_bic`,
+    ADD COLUMN user_remittance_text VARCHAR(105) DEFAULT NULL AFTER `user_bic`,
     ADD COLUMN user_invoicing_contact VARCHAR(50) DEFAULT NULL AFTER `user_country`;
 
 ALTER TABLE `ip_clients`

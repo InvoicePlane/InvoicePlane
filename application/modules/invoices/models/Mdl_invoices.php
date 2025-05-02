@@ -586,17 +586,21 @@ class Mdl_Invoices extends Response_Model
         $invoice = $this->get_by_id($invoice_id);
 
         if (! empty($invoice)) {
+            $up = false;
             if ($invoice->invoice_status_id == 2) {
-                $this->db->where('invoice_id', $invoice_id);
-                $this->db->where('invoice_id', $invoice_id);
+                $up = true;
                 $this->db->set('invoice_status_id', 3);
-                $this->db->update('ip_invoices');
             }
 
             // Set the invoice to read-only if feature is not disabled and setting is view
             if ($this->config->item('disable_read_only') == false && get_setting('read_only_toggle') == 3) {
-                $this->db->where('invoice_id', $invoice_id);
+                $up = true;
                 $this->db->set('is_read_only', 1);
+            }
+
+            // Save?
+            if ($up) {
+                $this->db->where('invoice_id', $invoice_id);
                 $this->db->update('ip_invoices');
             }
         }
@@ -610,23 +614,23 @@ class Mdl_Invoices extends Response_Model
         $invoice = $this->get_by_id($invoice_id);
 
         if (! empty($invoice)) {
+            $up = false;
             if ($invoice->invoice_status_id == 1) {
-                // Generate new invoice number if applicable
-                $invoice_number = $invoice->invoice_number;
-
-                // Set new date and save
-                $this->db->where('invoice_id', $invoice_id);
-                $this->db->set('invoice_status_id', 2);
-                $this->db->set('invoice_number', $invoice_number);
-                $this->db->update('ip_invoices');
-
+                // Set new due date and save
                 $this->update_invoice_due_date($invoice_id);
+                $up = true;
+                $this->db->set('invoice_status_id', 2);
             }
 
             // Set the invoice to read-only if feature is not disabled and setting is sent
             if ($this->config->item('disable_read_only') == false && get_setting('read_only_toggle') == 2) {
-                $this->db->where('invoice_id', $invoice_id);
+                $up = true;
                 $this->db->set('is_read_only', 1);
+            }
+
+            // Save?
+            if ($up) {
+                $this->db->where('invoice_id', $invoice_id);
                 $this->db->update('ip_invoices');
             }
         }
@@ -658,7 +662,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice = $this->get_by_id($invoice_id);
 
-        if (! empty($invoice) && get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
+        if (! empty($invoice) && $invoice->is_read_only != 1 && get_setting('no_update_invoice_due_date_mail') == 0) {
             $current_date = date_to_mysql(date(date_format_setting()));
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_date_due', $this->get_date_due($current_date));
