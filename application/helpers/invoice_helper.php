@@ -130,10 +130,13 @@ function invoice_qrcode($invoice_id)
         && $CI->mdl_settings->setting('qr_code_bic')
     ) {
         $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-        $CI->load->library('QrCode', ['invoice' => $invoice]);
-        $qrcode_data_uri = $CI->qrcode->generate();
 
-        return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+        if ((float) $invoice->invoice_balance) {
+            $CI->load->library('QrCode', ['invoice' => $invoice]);
+            $qrcode_data_uri = $CI->qrcode->generate();
+
+            return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+        }
     }
 
     return '';
