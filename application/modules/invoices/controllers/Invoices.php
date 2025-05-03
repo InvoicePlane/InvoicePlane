@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @autor        InvoicePlane Developers & Contributors
+ * @copyright    Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license      https://invoiceplane.com/license.txt
+ * @link         https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -24,6 +24,8 @@ class Invoices extends Admin_Controller
         parent::__construct();
 
         $this->load->model('mdl_invoices');
+        $this->load->model('settings/mdl_settings'); // Load settings model
+        $this->load->helper('zugferd_helper');       // Load the helper 
     }
 
     public function index()
@@ -277,6 +279,13 @@ class Invoices extends Admin_Controller
         if (get_setting('mark_invoices_sent_pdf') == 1) {
             $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
             $this->mdl_invoices->mark_sent($invoice_id);
+        }
+
+        // Check the ZUGFeRD settings
+        $includeZugferd = $this->mdl_settings->setting('include_zugferd');
+
+        if ($includeZugferd !== 'no') {
+            createZugferdPdfAndXml($invoice_id);
         }
 
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
