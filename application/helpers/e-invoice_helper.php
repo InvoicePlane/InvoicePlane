@@ -102,3 +102,112 @@ function get_xml_full_name($xml_id)
 
     return null;
 }
+
+/**
+ * @param int $user_id : get result only with it (or all if null)
+ * @return array $user(s)
+ */
+function get_admin_active_users($user_id = ''): array
+{
+    $CI = &get_instance();
+
+    $where = ['user_type' => '1', 'user_active' => '1']; // Administrators Active Only
+    if ($user_id) {
+        $where['user_id'] = $user_id;
+    }
+
+    return $CI->db->from('ip_users')->where($where)->get()->result();
+}
+
+/**
+ * @scope clients & invoices controllers
+ * @param object $client
+ * @param int $user_id : get result only with it (or all if null)
+ * @return object $req_fields
+ */
+function get_req_fields_einvoice($client = null, $user_id = ''): object
+{
+    $cid = empty($client->client_id) ? 0 : $client->client_id; // Client is New (form) or exist
+    $c = new stdClass();
+    // check if required (einvoicing) fields are filled in?
+    $c->address_1 = $cid ? ($client->client_address_1 != '' ? 0 : 1) : 0;
+    $c->zip       = $cid ? ($client->client_zip       != '' ? 0 : 1) : 0;
+    $c->city      = $cid ? ($client->client_city      != '' ? 0 : 1) : 0;
+    $c->country   = $cid ? ($client->client_country   != '' ? 0 : 1) : 0;
+    $c->company   = $cid ? ($client->client_company   != '' ? 0 : 1) : 0;
+    $c->vat_id    = $cid ? ($client->client_vat_id    != '' ? 0 : 1) : 0;
+    // little tweak to run with or without vat_id
+    if ($c->company + $c->vat_id == 2) {
+        $c->company = 0;
+        $c->vat_id  = 0;
+    }
+
+    $total_empty_fields_client = 0;
+    foreach ($c as $val) {
+        $total_empty_fields_client += $val;
+    }
+
+    $c->einvoicing_empty_fields = $total_empty_fields_client;
+    $c->show_table              = ! $c->einvoicing_empty_fields;
+
+    // Begin to save results
+    $req_fields = new stdClass();
+    $req_fields->clients[$cid] = $c;
+    // Init user in session (tricks to make it 1st)
+    $req_fields->users[$_SESSION['user_id']] = null;
+
+    // $show_table = $c->einvoicing_empty_fields;
+    $show_table = 0; // Only user
+
+    // Get user(s) fields for eInvoicing
+    $users = get_admin_active_users($user_id);
+    foreach ($users as $o) {
+        $u = new stdClass();
+        // check if required (eInvoicing) fields are filled in?
+        $u->address_1 = $o->user_address_1 != '' ? 0 : 1;
+        $u->zip       = $o->user_zip       != '' ? 0 : 1;
+        $u->city      = $o->user_city      != '' ? 0 : 1;
+        // todo: user_tax user_tax_code user_bank user_iban user_bic ?
+        $u->country   = $o->user_country   != '' ? 0 : 1;
+        $u->company   = $o->user_company   != '' ? 0 : 1;
+        $u->vat_id    = $o->user_vat_id    != '' ? 0 : 1;
+        // little tweak to run with or without vat_id
+        if ($u->company + $u->vat_id == 2) {
+            $u->company = 0;
+            $u->vat_id  = 0;
+        }
+
+        $total_empty_fields_user = 0;
+        foreach ($u as $val) {
+            $total_empty_fields_user += $val;
+        }
+
+        // Check mandatory fields (no company, client, email address, ...)
+        $u->einvoicing_empty_fields = $total_empty_fields_user;
+
+        // For show table (or not) record (in relation with client)
+        $u->tr_show_address_1 = $u->address_1 + $c->address_1 > 0 ? 1 : 0;
+        $u->tr_show_zip       = $u->zip       + $c->zip       > 0 ? 1 : 0;
+        $u->tr_show_city      = $u->city      + $c->city      > 0 ? 1 : 0;
+        $u->tr_show_country   = $u->country   + $c->country   > 0 ? 1 : 0;
+        $u->tr_show_company   = $u->company   + $c->company   > 0 ? 1 : 0;
+        $u->tr_show_vat_id    = $u->vat_id    + $c->vat_id    > 0 ? 1 : 0;
+        $u->show_table        = $u->tr_show_address_1 +
+                                 $u->tr_show_zip      +
+                                 $u->tr_show_city     +
+                                 $u->tr_show_country  +
+                                 $u->tr_show_company  +
+                                 $u->tr_show_vat_id > 0 ? 1 : 0;
+
+        // No nessessary to check but for handly loop in view
+        $u->user_name = $o->user_name;
+
+        // Save user
+        $req_fields->users[$o->user_id] = $u;
+        $show_table += $u->show_table;
+    }
+
+    $req_fields->show_table = $show_table;
+
+    return $req_fields;
+}
