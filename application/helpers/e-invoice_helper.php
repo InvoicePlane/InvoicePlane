@@ -148,13 +148,16 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
     }
 
     $c->einvoicing_empty_fields = $total_empty_fields_client;
-    $c->show_table              = ! $c->einvoicing_empty_fields;
+    $c->show_table              = intval(! $c->einvoicing_empty_fields);
 
     // Begin to save results
     $req_fields = new stdClass();
     $req_fields->clients[$cid] = $c;
-    // Init user in session (tricks to make it 1st)
-    $req_fields->users[$_SESSION['user_id']] = null;
+
+    if (empty($user_id)) {
+        // Init user in session (tricks to make it 1st)
+        $req_fields->users[$_SESSION['user_id']] = null;
+    }
 
     // $show_table = $c->einvoicing_empty_fields;
     $show_table = 0; // Only user
@@ -210,4 +213,46 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
     $req_fields->show_table = $show_table;
 
     return $req_fields;
+}
+
+/** since 1.6.3
+ * Return if a is standardized taxes with legacy_calculation false in ipconfig
+ * For obtain a Valid xml data. See in temp/einvoice-test.xml (debug true)
+ *
+ * @Scopes Invoices controllers
+ *
+ * @param $items
+ */
+function items_tax_usages_bad($items): mixed
+{
+    // Only Legacy calculation have global taxes - since v1.6.3
+    if (config_item('legacy_calculation')) {
+        return false;
+    }
+
+    // Check if taxe are in all or not alert
+    $checks = [];
+    $oks = [0,0];
+    foreach ($items as $item) {
+        if ($item->item_tax_rate_percent) {
+            $oks[1]++;
+            $checks[1][] = $item->item_id;
+        } else {
+            $oks[0]++;
+            $checks[0][] = $item->item_id;
+        }
+    }
+
+    // Bad: One with 0 Ok (false), No 0 NoOk (true)
+    if ($oks[0] != 0 && $oks[1] != 0) {
+        $CI = & get_instance();
+        $CI->session->set_flashdata(
+            'alert_warning',
+            '<h3 class="pull-right"><a class="btn btn-default" href="javascript:check_items_tax_usages(true);"><i class="fa fa-cogs"></i> ' . trans('view') . '</a></h3>'
+            . trans('items_tax_usages_bad_set')
+        );
+        return $checks;
+    }
+
+    return false;
 }
