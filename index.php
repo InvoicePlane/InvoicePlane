@@ -306,9 +306,8 @@ define('UPLOADS_TEMP_MPDF_FOLDER', UPLOADS_TEMP_FOLDER . 'mpdf' . DIRECTORY_SEPA
 define('VIEWPATH', $view_folder . DIRECTORY_SEPARATOR);
 define('THEME_FOLDER', FCPATH . 'assets' . DIRECTORY_SEPARATOR);
 
-// Automatic temp pdf cleanup
-array_map('unlink', glob(UPLOADS_TEMP_FOLDER . '*.pdf'));
-array_map('unlink', glob(UPLOADS_TEMP_FOLDER . '*_zugferd.xml'));
+// Automatic temp pdf & xml files cleanup
+array_map('unlink', glob(UPLOADS_TEMP_FOLDER . '*.{pdf,xml}', \GLOB_BRACE));
 
 /*
  * --------------------------------------------------------------------
