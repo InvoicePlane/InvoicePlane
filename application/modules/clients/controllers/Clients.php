@@ -121,10 +121,12 @@ class Clients extends Admin_Controller
             redirect('clients/' . $where . '/' . $id);
         }
 
-        $this->load->helper('e-invoice'); // eInvoicing++
-
-        // Get a check of filled Required (client and users) fields for eInvoicing
-        $req_einvoicing = get_req_fields_einvoice(($new_client || ! $id) ? null : $this->db->from('ip_clients')->where('client_id', $id)->get()->row());
+        $req_einvoicing = get_setting('einvoicing');
+        if ($req_einvoicing) {
+            $this->load->helper('e-invoice'); // eInvoicing++
+            // Get a check of filled Required (client and users) fields for eInvoicing
+            $req_einvoicing = get_req_fields_einvoice(($new_client || ! $id) ? null : $this->db->from('ip_clients')->where('client_id', $id)->get()->row());
+        }
 
         if ($id && ! $this->input->post('btn_submit')) {
             if (! $this->mdl_clients->prep_form($id)) {
@@ -196,7 +198,6 @@ class Clients extends Admin_Controller
                 'client_title_choices' => $this->get_client_title_choices(),
                 'xml_templates'        => get_xml_template_files(), // eInvoicing
                 'req_einvoicing'       => $req_einvoicing,
-                'einvoicing'           => get_setting('einvoicing'),
             ]
         );
 
@@ -231,24 +232,26 @@ class Clients extends Admin_Controller
             ]
         );
 
-        $this->load->helper('e-invoice'); // eInvoicing++
+        $req_einvoicing = get_setting('einvoicing');
+        if ($req_einvoicing) {
+            $this->load->helper('e-invoice'); // eInvoicing++
+            // Get a check of filled Required (client and users) fields for eInvoicing
+            $req_einvoicing = get_req_fields_einvoice($client);
 
-        // Get a check of filled Required (client and users) fields for eInvoicing
-        $req_einvoicing = get_req_fields_einvoice($client);
+            // Update active eInvoicing client
+            $o = $client->client_einvoicing_active;
+            if (! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
+                $client->client_einvoicing_active = 1; // update view
+            } else {
+                $client->client_einvoicing_active = 0; // update view
+            }
 
-        // Update active eInvoicing client
-        $o = $client->client_einvoicing_active;
-        if (! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
-            $client->client_einvoicing_active = 1; // update view
-        } else {
-            $client->client_einvoicing_active = 0; // update view
-        }
-
-        // Update db if need
-        if ($o != $client->client_einvoicing_active) {
-            $this->db->where('client_id', $client_id);
-            $this->db->set('client_einvoicing_active', $client->client_einvoicing_active);
-            $this->db->update('ip_clients');
+            // Update db if need
+            if ($o != $client->client_einvoicing_active) {
+                $this->db->where('client_id', $client_id);
+                $this->db->set('client_einvoicing_active', $client->client_einvoicing_active);
+                $this->db->update('ip_clients');
+            }
         }
 
         // Change page only for one url (tab) system
@@ -294,7 +297,6 @@ class Clients extends Admin_Controller
                 'invoice_statuses' => $this->mdl_invoices->statuses(),
                 'activeTab'        => $activeTab,
                 'req_einvoicing'   => $req_einvoicing,
-                'einvoicing'       => get_setting('einvoicing'),
             ]
         );
 

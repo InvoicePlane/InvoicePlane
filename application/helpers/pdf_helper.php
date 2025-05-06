@@ -70,13 +70,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         ]
     );
 
-    $CI->load->helper(
-        [
-            'country',
-            'client',
-            'e-invoice', // eInvoicing++
-        ]
-    );
+    $CI->load->helper(['country', 'client']);
 
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
     $invoice = $CI->mdl_invoices->get_payments($invoice);
@@ -118,34 +112,39 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         $custom_fields['quote'] = $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $invoice->quote_id);
     }
 
-    // START eInvoicing
     $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
-    // Get eInvoice library version (name) and user checks
-    $einvoice = get_einvoice_usage($invoice, $items, false);
-    // eInvoice library to Generate the appropriate UBL/CII or false
-    $xml_id    = $einvoice->user ? $einvoice->name : false;
-    $options   = [];
-    $generator = $xml_id;
-    $embed_xml = false;
-    $path      = APPPATH . 'helpers/XMLconfigs/';
-    if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
-        $embed_xml = $xml_setting['embedXML'];
-        $XMLname   = $xml_setting['XMLname'];
-        $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
-        $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
-    }
 
-    // PDF associated or embedded (CII e.g. Zugferd, Factur-X) Xml file
+    // START eInvoicing
+    $xml_id    = false;
+    $embed_xml = false;
+    // For embed file on PDF
     $associatedFiles = null;
-    if ($embed_xml && $invoice->client_einvoicing_active == 1) {
-        // Create the CII XML file
-        $associatedFiles = [[
-            'name'           => $XMLname,
-            'mime'           => 'text/xml',
-            'description'    => $xml_id . ' CII Invoice',
-            'AFRelationship' => 'Alternative',
-            'path'           => generate_xml_invoice_file($invoice, $items, $generator, $filename, $options),
-        ]];
+    if (get_setting('einvoicing')) {
+        $CI->load->helper('e-invoice'); // eInvoicing++
+        // Get eInvoice library version (name) and user checks
+        $einvoice = get_einvoice_usage($invoice, $items, false);
+        // eInvoice library to Generate the appropriate UBL/CII or false
+        $xml_id    = $einvoice->user ? $einvoice->name : false;
+        $options   = [];
+        $generator = $xml_id;
+        $path      = APPPATH . 'helpers/XMLconfigs/';
+        if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
+            $embed_xml = $xml_setting['embedXML'];
+            $XMLname   = $xml_setting['XMLname'];
+            $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
+            $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
+        }
+
+        if ($embed_xml && $invoice->client_einvoicing_active == 1) {
+            // Create the CII XML file
+            $associatedFiles = [[
+                'name'           => $XMLname,
+                'mime'           => 'text/xml',
+                'description'    => $xml_id . ' CII Invoice',
+                'AFRelationship' => 'Alternative',
+                'path'           => generate_xml_invoice_file($invoice, $items, $generator, $filename, $options),
+            ]];
+        }
     }
 
     $data = [

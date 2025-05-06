@@ -1,18 +1,20 @@
 <?php
 $client_active = $this->mdl_clients->form_value('client_active');
 $active        = ($client_active == 1 || ! is_numeric($client_active)) ? ' checked="checked"' : '';
-// eInvoicing panel
-$nb_users      = count($req_einvoicing->users);
-$me            = $req_einvoicing->users[$_SESSION['user_id']]->show_table;
-$nb            = $req_einvoicing->show_table; // Of users in error
-$ln            = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on more nb_users no ok
-$user_toggle   = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
+
+if ($req_einvoicing) {
+    // eInvoicing panel
+    $nb_users      = count($req_einvoicing->users);
+    $me            = $req_einvoicing->users[$_SESSION['user_id']]->show_table;
+    $nb            = $req_einvoicing->show_table; // Of users in error
+    $ln            = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on more nb_users no ok
+    $user_toggle   = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
+}
 // eInvoicing enabled?
-$einvoicingCol = $einvoicing ? 'col-xs-12 col-sm-6' : 'hidden';
-$einvoicingTip = $einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . ' (' : ''; // tootip base
-$einvoicingReq = $einvoicing ? $einvoicingTip . trans('required_field') . ')"' : '';
-$einvoicingB2B = $einvoicing ? $einvoicingTip . 'B2B ' . trans('required_field') . ')"' : '';
-$einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
+$einvoicingTip = $req_einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . ' (' : ''; // tootip base
+$einvoicingReq = $req_einvoicing ? $einvoicingTip . trans('required_field') . ')"' : '';
+$einvoicingB2B = $req_einvoicing ? $einvoicingTip . 'B2B ' . trans('required_field') . ')"' : '';
+$einvoicingOpt = $req_einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
 ?>
 <script type="text/javascript">
     // eInvoicing button panel helper user(s) icon toggle
@@ -45,9 +47,8 @@ $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
 
         <input class="hidden" name="is_update" type="hidden" value="<?php echo $this->mdl_clients->form_value('is_update') ? '1' : '0'; ?>">
 
-        <div class="row"><!-- personal + e-invoice -->
-            <div class="col-xs-12 col-sm-6">
-
+        <div class="row">
+            <div class="col-xs-12 col-sm-6"><!-- personal -->
                 <div class="panel panel-default">
                     <div class="panel-heading form-inline clearfix">
                         <?php _trans('personal_information'); ?>
@@ -74,7 +75,7 @@ $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
                             <input id="client_surname" name="client_surname" type="text" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_surname', true); ?>">
                         </div>
-                        <div class="form-group"<?php echo $einvoicingB2B; ?>>
+                        <div class="form-group"<?php echo $einvoicingReq; ?>>
                             <label for="client_company"><?php _trans('client_company'); ?></label>
 
                             <div class="controls">
@@ -107,8 +108,11 @@ foreach ($languages as $language) {
                 </div>
 
             </div>
-            <div class="<?php echo $einvoicingCol; ?>">
-                <div class="panel panel-default"><!-- eInvoicing panel -->
+<?php
+if ($req_einvoicing) {
+?>
+            <div class="col-xs-12 col-sm-6"><!-- eInvoicing -->
+                <div class="panel panel-default">
 
                     <div class="panel-heading">
                         e-<?php _trans('invoicing'); ?>
@@ -129,18 +133,18 @@ foreach ($languages as $language) {
 
                     <div class="panel-body">
 <?php
-if ($xml_templates) {
-    if ($this->mdl_clients->form_value('client_id')) {
-        $this->layout->load_view('clients/partial_client_einvoicing');
-    } else {
+    if ($xml_templates) {
+        if ($this->mdl_clients->form_value('client_id')) {
+            $this->layout->load_view('clients/partial_client_einvoicing');
+        } else {
 ?>
                         <div class="alert alert-warning small" style="font-size:medium;">
                             <i class="fa fa-exclamation-triangle fa-2x"></i>&nbsp;
                             <?php _trans('einvoicing_no_enabled_hint'); ?>
                         </div>
 <?php
-    } // End if client_id
-} else {
+        } // End if client_id
+    } else {
 ?>
                         <div class="alert alert-info small" style="font-size:medium;">
                             <i class="fa fa-info"></i>&nbsp;
@@ -148,16 +152,18 @@ if ($xml_templates) {
                             <a href="https://github.com/InvoicePlane/InvoicePlane-e-invoices" target="_blank">InvoicePlane-e-invoices</a>
                         </div>
 <?php
-} // End if xml_templates
+    } // End if xml_templates
 ?>
                     </div>
                 </div>
 
             </div>
         </div>
+<?php
+} // End if einvoicing
+?>
 
-        <div class="row"><!-- Address + contact -->
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-6"><!-- Address -->
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <?php _trans('address'); ?>
@@ -191,7 +197,7 @@ if ($xml_templates) {
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group"<?php echo $einvoicingOpt; ?>>
                             <label for="client_state"><?php _trans('state'); ?></label>
 
                             <div class="controls">
@@ -235,7 +241,8 @@ foreach ($custom_fields as $custom_field) {
                 </div>
 
             </div>
-            <div class="col-xs-12 col-sm-6">
+
+            <div class="col-xs-12 col-sm-6"><!-- Contact -->
 
                 <div class="panel panel-default">
 
@@ -310,10 +317,8 @@ foreach ($custom_fields as $custom_field) {
                 </div>
 
             </div>
-        </div>
 
-        <div class="row"><!-- Tax + Persona -->
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-6"><!-- Tax -->
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -321,7 +326,7 @@ foreach ($custom_fields as $custom_field) {
                     </div>
 
                     <div class="panel-body">
-                        <div class="form-group"<?php echo $einvoicingB2B; ?>>
+                        <div class="form-group"<?php echo $einvoicingOpt; ?>>
                             <label for="client_vat_id"><?php _trans('vat_id'); ?></label>
 
                             <div class="controls">
@@ -330,7 +335,7 @@ foreach ($custom_fields as $custom_field) {
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group"<?php echo $einvoicingReq; ?>>
                             <label for="client_tax_code"><?php _trans('tax_code'); ?></label>
 
                             <div class="controls">
@@ -349,7 +354,8 @@ foreach ($custom_fields as $custom_field) {
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6">
+
+            <div class="col-xs-12 col-sm-6"><!-- Personal -->
                 <div class="panel panel-default">
 
                     <div class="panel-heading">
@@ -485,7 +491,7 @@ foreach ($custom_fields as $custom_field) {
 <?php
 if ($default_custom) {
 ?>
-            <div class="row">
+            <div class="row"><!-- Custom -->
                 <div class="col-xs-12">
 
                     <hr>

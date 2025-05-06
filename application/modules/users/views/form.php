@@ -168,7 +168,7 @@ foreach ($user_types as $key => $type) {
                                            value="<?php echo $this->mdl_users->form_value('user_city', true); ?>">
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group"<?php echo $einvoicingOpt; ?>>
                                     <label for="user_state"><?php _trans('state'); ?></label>
                                     <input type="text" name="user_state" id="user_state" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_state', true); ?>">
@@ -210,13 +210,13 @@ foreach ($custom_fields as $custom_field) {
                             <div class="panel-heading"><?php _trans('tax_information'); ?></div>
 
                             <div class="panel-body">
-                                <div class="form-group"<?php echo $einvoicingB2B; ?>>
+                                <div class="form-group"<?php echo $einvoicingOpt; ?>>
                                     <label for="user_vat_id"><?php _trans('vat_id'); ?></label>
                                     <input type="text" name="user_vat_id" id="user_vat_id" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_vat_id', true); ?>">
                                 </div>
 
-                                <div class="form-group"<?php echo $einvoicingB2B; ?>>
+                                <div class="form-group"<?php echo $einvoicingReq; ?>>
                                     <label for="user_tax_code"><?php _trans('tax_code'); ?></label>
                                     <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_tax_code', true); ?>">
@@ -238,7 +238,7 @@ foreach ($custom_fields as $custom_field) {
                             <div class="panel-heading"><?php _trans('bank_information'); ?></div>
 
                             <div class="panel-body">
-                                <div class="form-group"<?php echo $einvoicingReq; ?>>
+                                <div class="form-group"<?php echo $einvoicingOpt; ?>>
                                     <label for="user_bank"><?php _trans('bank'); ?></label>
                                     <input type="text" name="user_bank" id="user_bank" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_bank', true); ?>">

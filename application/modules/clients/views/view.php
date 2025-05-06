@@ -148,7 +148,7 @@ foreach ($custom_fields as $custom_field) {
 
             <hr>
 <?php
-$colClass = 'col-xs-12 col-sm-6' . ($einvoicing ? ' col-lg-4' : '');
+$colClass = 'col-xs-12 col-sm-6' . ($req_einvoicing ? ' col-lg-4' : '');
 ?>
             <div class="row">
                 <div class="<?php echo $colClass; ?>">
@@ -261,9 +261,11 @@ foreach ($custom_fields as $custom_field) {
 
                     </div>
                 </div>
-
+<?php
+if ($req_einvoicing) {
+?>
                 <!-- eInvoicing panel -->
-                <div class="<?php echo $einvoicing ? $colClass : ' hidden'; ?>">
+                <div class="<?php echo $colClass; ?>">
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading">
                             e-<?php _trans('invoicing'); ?>
@@ -408,7 +410,9 @@ if ($client->client_einvoicing_active && $user_fields_nook) {
                     </div>
                 </div>
                 <!-- /eInvoicing panel -->
-
+<?php
+}
+?>
             </div>
 
 <?php
