@@ -110,6 +110,7 @@ class Stripe extends Base_Controller
                     'payment_note'      => trans('online_payment_intent_id') . ': ' . $session->payment_intent,
                 ]);
             }
+
             // paid / cancel (+other flow)
             // Admin (& error log) message
             $response = $paid ? '. livemode: '      . trans($session->livemode ? 'yes' : 'no')
@@ -133,7 +134,7 @@ class Stripe extends Base_Controller
         finally {
             $paid = is_bool($paid) ? ($paid ? 'success' : 'info') : $paid; // Tweak to reuse (flashdata alert_*)
             // Check stripe server ok
-            $ok = isset($session->status); // Stripe is accessible?
+            $ok = $session->status !== null; // Stripe is accessible?
             // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts)
             $this->db->insert('ip_merchant_responses', [
                 'invoice_id'                   => $invoice->invoice_id,
