@@ -12,7 +12,7 @@ if (! defined('BASEPATH')) {
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  *
- * eInvoicing add-ons by Verony
+ * eInvoicing based on Verony Idea - since 1.6.3
  */
 
 /**
@@ -120,12 +120,13 @@ function get_admin_active_users($user_id = ''): array
 }
 
 /**
- * @scope clients & invoices controllers
- * @param object $client
- * @param int $user_id : get result only with it (or all if null)
+ * @scope clients, quotes & invoices controllers
+ * @param object  $client
+ * @param int     $user_id : get result only with it (or all if null)
+ * @param bool    $vat : check vat user field(s) are filled
  * @return object $req_fields
  */
-function get_req_fields_einvoice($client = null, $user_id = ''): object
+function get_req_fields_einvoice($client = null, $user_id = '', $vat = false): object
 {
     $cid = empty($client->client_id) ? 0 : $client->client_id; // Client is New (form) or exist
     $c = new stdClass();
@@ -135,11 +136,11 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
     $c->city      = $cid ? ($client->client_city      != '' ? 0 : 1) : 0;
     $c->country   = $cid ? ($client->client_country   != '' ? 0 : 1) : 0;
     $c->company   = $cid ? ($client->client_company   != '' ? 0 : 1) : 0;
+    $c->tax_code  = $cid ? ($client->client_tax_code  != '' ? 0 : 1) : 0;
     $c->vat_id    = $cid ? ($client->client_vat_id    != '' ? 0 : 1) : 0;
-    // little tweak to run with or without vat_id
-    if ($c->company + $c->vat_id == 2) {
-        $c->company = 0;
-        $c->vat_id  = 0;
+    // Tweak to run with client not subject to VAT (no vat_id)
+    if ($c->vat_id == 1 && ! $vat) {
+        $c->vat_id = 0;
     }
 
     $total_empty_fields_client = 0;
@@ -170,14 +171,14 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
         $u->address_1 = $o->user_address_1 != '' ? 0 : 1;
         $u->zip       = $o->user_zip       != '' ? 0 : 1;
         $u->city      = $o->user_city      != '' ? 0 : 1;
-        // todo: user_tax user_tax_code user_bank user_iban user_bic ?
+        // todo: user_iban user_bic?
         $u->country   = $o->user_country   != '' ? 0 : 1;
         $u->company   = $o->user_company   != '' ? 0 : 1;
+        $u->tax_code  = $o->user_tax_code  != '' ? 0 : 1;
         $u->vat_id    = $o->user_vat_id    != '' ? 0 : 1;
-        // little tweak to run with or without vat_id
-        if ($u->company + $u->vat_id == 2) {
-            $u->company = 0;
-            $u->vat_id  = 0;
+        // Tweak to run with user not subject to VAT (no vat_id)
+        if ($u->vat_id == 1 && ! $vat) {
+            $u->vat_id = 0;
         }
 
         $total_empty_fields_user = 0;
@@ -194,12 +195,14 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
         $u->tr_show_city      = $u->city      + $c->city      > 0 ? 1 : 0;
         $u->tr_show_country   = $u->country   + $c->country   > 0 ? 1 : 0;
         $u->tr_show_company   = $u->company   + $c->company   > 0 ? 1 : 0;
+        $u->tr_show_tax_code  = $u->tax_code  + $c->tax_code  > 0 ? 1 : 0;
         $u->tr_show_vat_id    = $u->vat_id    + $c->vat_id    > 0 ? 1 : 0;
         $u->show_table        = $u->tr_show_address_1 +
                                  $u->tr_show_zip      +
                                  $u->tr_show_city     +
                                  $u->tr_show_country  +
                                  $u->tr_show_company  +
+                                 $u->tr_show_tax_code +
                                  $u->tr_show_vat_id > 0 ? 1 : 0;
 
         // No nessessary to check but for handly loop in view
@@ -215,7 +218,67 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
     return $req_fields;
 }
 
-/** since 1.6.3
+/**
+ * @scope pdf helper, quotes & invoices controllers
+ * @param object $invoice | $quote
+ * @param object $items
+ */
+function get_einvoice_usage($invoice, $items, $full = true): object
+{
+    $einvoice = new stdclass();
+    $einvoice->name = false;
+    $einvoice->user = false;
+    if (! get_setting('einvoicing')) {
+        return $einvoice;
+    }
+
+    // eInvoice activated for client
+    $on = ($invoice->client_einvoicing_active > 0 && $invoice->client_einvoicing_version != '');
+    if ($on) {
+        // Set eInvoice name
+        $einvoice->name = $invoice->client_einvoicing_version;
+        if ($full) {
+            $einvoice->name = get_xml_full_name($einvoice->name);
+            // Good item tax usage? Legacy calculation false: Alert if not standard taxes
+            $on = ! items_tax_usages_bad($items); // false or array ids[0] no taxes, ids[1] taxes + alert notification
+        }
+
+        // Check for user to make an eInvoice file
+        if ($on) {
+            // Minimal to activate eInvoice for other admin user (invoicer)
+            $on = ($invoice->user_company && $invoice->user_tax_code);
+            // Check if need vat_id filled (Subject to VAT)
+            if ($on && $items[0]->item_tax_rate_percent) {
+                $on = boolval($invoice->user_vat_id);
+            }
+        }
+
+        $einvoice->user = $on;
+    }
+
+    return $einvoice;
+
+}
+
+/**
+ * @param $items
+ */
+function get_items_tax_usages($items): array
+{
+    $checks = [[], []];
+
+    foreach ($items as $item) {
+        if ($item->item_tax_rate_percent) {
+            $checks[1][] = $item->item_id;
+        } else {
+            $checks[0][] = $item->item_id;
+        }
+    }
+
+    return $checks;
+}
+
+/**
  * Return if a is standardized taxes with legacy_calculation false in ipconfig
  * For obtain a Valid xml data. See in temp/einvoice-test.xml (debug true)
  *
@@ -231,20 +294,10 @@ function items_tax_usages_bad($items): mixed
     }
 
     // Check if taxe are in all or not alert
-    $checks = [];
-    $oks = [0,0];
-    foreach ($items as $item) {
-        if ($item->item_tax_rate_percent) {
-            $oks[1]++;
-            $checks[1][] = $item->item_id;
-        } else {
-            $oks[0]++;
-            $checks[0][] = $item->item_id;
-        }
-    }
+    $checks = get_items_tax_usages($items);
 
     // Bad: One with 0 Ok (false), No 0 NoOk (true)
-    if ($oks[0] != 0 && $oks[1] != 0) {
+    if (count($checks[0]) != 0 && count($checks[1]) != 0) {
         $CI = & get_instance();
         $CI->session->set_flashdata(
             'alert_warning',

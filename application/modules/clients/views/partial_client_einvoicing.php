@@ -83,7 +83,7 @@ foreach ($xml_templates as $xml_key => $xml_template) {
         </div>
 <?php
 $class_checks = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning']; // Checkboxe icons
-$base         = 'address_1 zip city country company vat_id'; // Field names
+$base         = 'address_1 zip city country company tax_code vat_id'; // Field names
 $keys         = explode(' ', $base); // To array
 $lang         = explode(' ', strtr($base, ['_1' => ''])); // Translation vars name
 // Users loop

@@ -436,12 +436,15 @@ if ($invoice->invoice_sign == -1) {
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
-<?php if ($einvoice_name) : ?>
+<?php if ($einvoice->name) : ?>
                                     <span class="pull-right" id="e_invoice_active"
                                           data-toggle="tooltip" data-placement="bottom"
-                                          title="e-<?php echo trans('invoice') . ' ' . trans('version') . PHP_EOL . $einvoice_name; ?>  🗸"
+                                          title="e-<?php echo trans('invoice') . ' ' . ($einvoice->user ? trans('version') . ' ' . $einvoice->name . ' 🗸' : '🚫 ' . trans('einvoicing_user_fields_error')); ?>"
                                     >
-                                    <i class="fa fa-file-code-o"></i>&nbsp;<?php echo $einvoice_name; ?>&nbsp;<i class="fa fa-check-square-o text-success"></i></span>
+                                        <i class="fa fa-file-code-o"></i>
+                                        <?php echo $einvoice->name; ?>
+                                        <i class="fa fa-<?php echo $einvoice->user ? 'check-square-o text-success' : 'user-times text-warning'; ?>"></i>
+                                    </span>
 <?php endif; ?>
                                     <label for="invoice_number"><?php _trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number" class="form-control"

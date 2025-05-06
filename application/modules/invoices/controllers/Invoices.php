@@ -182,18 +182,10 @@ class Invoices extends Admin_Controller
         // Check whether there are payment custom fields
         $payment_cf       = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
         $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
-
-        $items            = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
-
-        // Name of e-invoice library or false
-        $einvoice_name = ($invoice->client_einvoicing_active > 0 && $invoice->client_einvoicing_version != '');
-        $einvoice_name = $einvoice_name ? get_xml_full_name($invoice->client_einvoicing_version) : false;
-
-        if ($einvoice_name) {
-            // Legacy calculation false: helper to Alert if not standard taxes (number_helper) - since 1.6.3
-            $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
-        }
-
+        // Get Items
+        $items = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
+        // Get eInvoice library name and user checks
+        $einvoice = get_einvoice_usage($invoice, $items);
         // Activate 'Change_user' if admin users > 1  (get the sum of user type = 1 & active)
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
         $change_user = $change_user->user_type > 1;
@@ -203,7 +195,7 @@ class Invoices extends Admin_Controller
                 'invoice'           => $invoice,
                 'items'             => $items,
                 'invoice_id'        => $invoice_id,
-                'einvoice_name'     => $einvoice_name,
+                'einvoice'          => $einvoice,
                 'change_user'       => $change_user,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
@@ -222,25 +214,14 @@ class Invoices extends Admin_Controller
             ]
         );
 
-        if ($invoice->sumex_id != null) {
-            $this->layout->buffer(
-                [
-                    ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
-                    ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
-                    ['modal_add_payment', 'payments/modal_add_payment'],
-                    ['content', 'invoices/view_sumex'],
-                ]
-            );
-        } else {
-            $this->layout->buffer(
-                [
-                    ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
-                    ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
-                    ['modal_add_payment', 'payments/modal_add_payment'],
-                    ['content', 'invoices/view'],
-                ]
-            );
-        }
+        $this->layout->buffer(
+            [
+                ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
+                ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
+                ['modal_add_payment', 'payments/modal_add_payment'],
+                ['content', 'invoices/view' . ($invoice->sumex_id ? '_sumex' : '')],
+            ]
+        );
 
         $this->layout->render();
     }

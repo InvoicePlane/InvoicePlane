@@ -279,7 +279,7 @@ $ln           = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on more
 $user_toggle  = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
 // For eInvoicing panel User(s) table
 $class_checks     = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning', 'fa fa-lg fa-square-o text-danger']; // Checkboxe icons
-$base             = 'address_1 zip city country company vat_id';
+$base             = 'address_1 zip city country company tax_code vat_id'; // Field names
 $keys             = explode(' ', $base); // to array
 $lang             = explode(' ', strtr($base, ['_1' => '']));
 $user_fields_nook = ($req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields > 0 && $client->client_einvoicing_version != '');

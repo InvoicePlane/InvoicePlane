@@ -120,14 +120,15 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     // START eInvoicing
     $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
-
-    // Generate the appropriate UBL/CII
-    $xml_id    = $invoice->client_einvoicing_version;
+    // Get eInvoice library version (name) and user checks
+    $einvoice = get_einvoice_usage($invoice, $items, false);
+    // eInvoice library to Generate the appropriate UBL/CII or false
+    $xml_id    = $einvoice->user ? $einvoice->name : false;
     $options   = [];
     $generator = $xml_id;
     $embed_xml = false;
     $path      = APPPATH . 'helpers/XMLconfigs/';
-    if (file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
+    if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
         $embed_xml = $xml_setting['embedXML'];
         $XMLname   = $xml_setting['XMLname'];
         $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
@@ -186,13 +187,10 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     // Create the UBL XML file if not embed & the client eInvoicing active
-    if ($xml_id != '' && $embed_xml !== true) {
+    if ($xml_id && $embed_xml !== true && $invoice->client_einvoicing_active == 1) {
         // Added the (unnecessary) prefix "date(Y-m-d)_" to the invoice file name to get the same ".pdf" and ".xml" file names!
         $filename = date('Y-m-d') . '_' . $filename;
-
-        if ($invoice->client_einvoicing_active == 1) {
-            generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
-        }
+        generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
     }
     // END eInvoicing
 

@@ -196,6 +196,7 @@ $lang = [
     'einvoicing_start_hint'                        => 'And show the empty (<i>additional e-invoicing</i>) fields to fill in!',
     'einvoicing_ubl_cii_required_help'             => 'An e-invoice XML will only be created <b>if all required fields are filled in!</b>',
     'einvoicing_ubl_cii_creation_help'             => 'The e-invoice XML is based on <b><i>this template!</i></b>',
+    'einvoicing_user_fields_error'                 => 'Empty user fields detected',
     'elements'                                     => 'Elements',
     'email'                                        => 'Email',
     'email_address'                                => 'Email Address',
