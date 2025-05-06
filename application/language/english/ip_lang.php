@@ -182,6 +182,7 @@ $lang = [
     'documentation'                                => 'Documentation',
     'download'                                     => 'Download',
     'download_pdf'                                 => 'Download PDF',
+    'download_xml'                                 => 'Download XML',
     'draft'                                        => 'Draft',
     'drop_files_here'                              => 'Drop files here!',
     'due_date'                                     => 'Due Date',

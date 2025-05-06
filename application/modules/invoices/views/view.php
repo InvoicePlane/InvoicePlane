@@ -122,6 +122,10 @@ if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id) {
             window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
         });
 
+        $('#btn_generate_xml').click(function () {
+            window.open('<?php echo site_url('invoices/generate_xml/' . $invoice_id); ?>', '_blank');
+        });
+
         $(document).on('click', '.btn_delete_item', function () {
             var btn = $(this);
             var item_id = btn.data('item-id');
@@ -307,6 +311,20 @@ if ($invoice->invoice_balance != 0) {
                         <?php _trans('download_pdf'); ?>
                     </a>
                 </li>
+<?php
+// Only if einvoice is On and user fields OK
+if ($einvoice->name) {
+?>
+                <li>
+                    <a href="#" id="btn_generate_xml"
+                       data-invoice-id="<?php echo $invoice_id; ?>">
+                        <i class="fa fa-file-code-o fa-margin"></i>
+                        <?php _trans('download_xml'); ?>
+                    </a>
+                </li>
+<?php
+}
+?>
                 <li>
                     <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                         <i class="fa fa-send fa-margin"></i>

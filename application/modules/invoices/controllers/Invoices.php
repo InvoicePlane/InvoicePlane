@@ -264,16 +264,39 @@ class Invoices extends Admin_Controller
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
     }
 
-    public function generate_zugferd_xml($invoice_id): void
+    public function generate_xml($invoice_id): void
     {
-        $this->load->model('invoices/mdl_items');
-        $this->load->library('ZugferdXml', [
-            'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
-            'items'   => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-        ]);
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        if (! $invoice) {
+            show_404();
+        }
 
+        $this->load->model('invoices/mdl_items');
+        $items   = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
+
+        $this->load->helper('e-invoice'); // eInvoicing++
+        $einvoice = get_einvoice_usage($invoice, $items, false);
+        if (! $einvoice->user) {
+            show_404();
+        }
+
+        // eInvoice library to Generate the appropriate UBL/CII or false
+        $xml_id    = $einvoice->name; // $invoice->client_einvoicing_version
+        $options   = [];
+        $generator = $xml_id;
+        $path      = APPPATH . 'helpers/XMLconfigs/';
+        if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
+            $embed_xml = $xml_setting['embedXML'];
+            $XMLname   = $xml_setting['XMLname'];
+            $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
+            $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
+        }
+
+        $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
+        $path = generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
         $this->output->set_content_type('text/xml');
-        $this->output->set_output($this->zugferdxml->xml());
+        $this->output->set_output(file_get_contents($path));
+        unlink($path);
     }
 
     public function generate_sumex_pdf($invoice_id): void
