@@ -137,7 +137,7 @@ class Ajax extends Admin_Controller
             ];
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
-            if ($this->config->item('disable_read_only') === false && $invoice_status == get_setting('read_only_toggle')) {
+            if ($this->config->item('disable_read_only') === false && $invoice_status_id == get_setting('read_only_toggle')) {
                 $db_array['is_read_only'] = 1;
             }
 
