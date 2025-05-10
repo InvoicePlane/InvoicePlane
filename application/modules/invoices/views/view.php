@@ -5,6 +5,8 @@ if ($this->config->item('disable_read_only') == true) {
 // Little helper
 $its_mine = $this->session->__get('user_id') == $invoice->user_id;
 $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
+// In change user toggle & After eInvoice (name) when user required field missing
+$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . htmlsc(PHP_EOL . format_user($invoice->user_id));
 ?>
 
 <script>
@@ -247,7 +249,7 @@ echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation ha
 if ($change_user) {
 ?>
         <a data-toggle="tooltip" data-placement="bottom"
-           title="<?php _trans('edit') ;?> <?php _trans('user') ;?> (<?php _trans('invoicing') ;?>): <?php _htmlsc(PHP_EOL . format_user($invoice->user_id)); ?>"
+           title="<?php echo $edit_user_title; ?>"
            href="<?php echo site_url('users/form/' . $invoice->user_id); ?>">
             <i class="fa fa-xs fa-user text-<?php echo $my_class; ?>"></i>
                 <span class="hidden-xs"><?php _htmlsc($invoice->user_name); ?></span>
@@ -454,16 +456,35 @@ if ($invoice->invoice_sign == -1) {
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
-<?php if ($einvoice->name) : ?>
-                                    <span class="pull-right" id="e_invoice_active"
-                                          data-toggle="tooltip" data-placement="bottom"
-                                          title="e-<?php echo trans('invoice') . ' ' . ($einvoice->user ? trans('version') . ' ' . $einvoice->name . ' 🗸' : '🚫 ' . trans('einvoicing_user_fields_error')); ?>"
+<?php
+if ($einvoice->name) {
+?>
+                                    <label class="pull-right" id="e_invoice_active"
+                                           data-toggle="tooltip" data-placement="bottom"
+                                           title="e-<?php echo trans('invoice') . ' ' . ($einvoice->user ? trans('version') . ' ' . $einvoice->name . ' 🗸' : '🚫 ' . trans('einvoicing_user_fields_error')); ?>"
                                     >
                                         <i class="fa fa-file-code-o"></i>
                                         <?php echo $einvoice->name; ?>
-                                        <i class="fa fa-<?php echo $einvoice->user ? 'check-square-o text-success' : 'user-times text-warning'; ?>"></i>
-                                    </span>
-<?php endif; ?>
+<?php
+    if ($einvoice->user) {
+?>
+                                        <i class="fa fa-check-square-o text-success"></i>
+<?php
+    } else {
+?>
+                                        <a class="fa fa-user-times text-warning"
+                                           href="<?php echo site_url('users/form/' . $invoice->user_id); ?>"
+                                           data-toggle="tooltip" data-placement="top"
+                                           title="<?php echo $edit_user_title; ?>"
+                                        ></a>
+<?php
+    }
+?>
+
+                                    </label>
+<?php
+}
+?>
                                     <label for="invoice_number"><?php _trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number" class="form-control"
 <?php if ($invoice->invoice_number) : ?>
