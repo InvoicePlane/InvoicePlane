@@ -120,9 +120,9 @@ class Users extends Admin_Controller
             ]
         );
 
-        $custom_fields = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
+        $custom_fields['ip_user_custom'] = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
         $custom_values = [];
-        foreach ($custom_fields as $custom_field) {
+        foreach ($custom_fields['ip_user_custom'] as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
                 $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
@@ -131,7 +131,7 @@ class Users extends Admin_Controller
 
         $fields = $this->mdl_user_custom->get_by_useid($id);
 
-        foreach ($custom_fields as $cfield) {
+        foreach ($custom_fields['ip_user_custom'] as $cfield) {
             foreach ($fields as $fvalue) {
                 if ($fvalue->user_custom_fieldid == $cfield->custom_field_id) {
                     // TODO: Hackish, may need a better optimization
@@ -143,6 +143,9 @@ class Users extends Admin_Controller
                 }
             }
         }
+
+        // Need in remittance text tags selector (template-tags-invoices)
+        $custom_fields['ip_invoice_custom'] = $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result();
 
         $this->layout->set(
             [

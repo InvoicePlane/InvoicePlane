@@ -57,6 +57,11 @@
                     <option value="{{{client_tax_code}}}">
                         <?php _trans('tax_code'); ?>
                     </option>
+                </optgroup>
+<?php
+if (get_setting('sumex')) {
+?>
+                <optgroup label="<?php _trans('sumex_information'); ?>">
                     <option value="{{{client_avs}}}">
                         <?php _trans('sumex_ssn'); ?>
                     </option>
@@ -67,6 +72,10 @@
                         <?php _trans('sumex_veka'); ?>
                     </option>
                 </optgroup>
+<?php
+}
+if ($custom_fields['ip_client_custom']) {
+?>
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_client_custom'] as $custom) { ?>
                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
@@ -74,6 +83,9 @@
                         </option>
                     <?php } ?>
                 </optgroup>
+<?php
+}
+?>
             </select>
         </div>
 
@@ -123,12 +135,31 @@
                         <?php _trans('web_address'); ?>
                     </option>
                 </optgroup>
+                <optgroup label="<?php _trans('tax_information'); ?>">
+                    <option value="{{{user_vat_id}}}">
+                        <?php _trans('vat_id'); ?>
+                    </option>
+                    <option value="{{{user_tax_code}}}">
+                        <?php _trans('tax_code'); ?>
+                    </option>
+                </optgroup>
+                <optgroup label="<?php _trans('bank_information'); ?>">
+                    <option value="{{{user_bank}}}">
+                        <?php _trans('bank'); ?>
+                    </option>
+                    <option value="{{{user_iban}}}">
+                        IBAN
+                    </option>
+                    <option value="{{{user_bic}}}">
+                        BIC
+                    </option>
+                </optgroup>
+<?php
+if (get_setting('sumex')) {
+?>
                 <optgroup label="<?php _trans('sumex_information'); ?>">
                     <option value="{{{user_subscribernumber}}}">
                         <?php _trans('user_subscriber_number'); ?>
-                    </option>
-                    <option value="{{{user_iban}}}">
-                        <?php _trans('user_iban'); ?>
                     </option>
                     <option value="{{{user_gln}}}">
                         <?php _trans('gln'); ?>
@@ -137,6 +168,10 @@
                         <?php _trans('sumex_rcc'); ?>
                     </option>
                 </optgroup>
+<?php
+}
+if ($custom_fields['ip_user_custom']) {
+?>
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_user_custom'] as $custom) { ?>
                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
@@ -144,6 +179,9 @@
                         </option>
                     <?php } ?>
                 </optgroup>
+<?php
+}
+?>
             </select>
         </div>
 
@@ -183,6 +221,9 @@
                         <?php _trans('guest_url'); ?>
                     </option>
                 </optgroup>
+<?php
+if ($custom_fields['ip_quote_custom']) {
+?>
 
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_quote_custom'] as $custom) { ?>
@@ -191,6 +232,9 @@
                         </option>
                     <?php } ?>
                 </optgroup>
+<?php
+}
+?>
             </select>
         </div>
 

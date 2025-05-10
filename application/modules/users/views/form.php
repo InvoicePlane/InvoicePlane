@@ -197,7 +197,7 @@ foreach ($countries as $cldr => $country) {
                                     </select>
                                 </div>
 <?php
-foreach ($custom_fields as $custom_field) {
+foreach ($custom_fields['ip_user_custom'] as $custom_field) {
     if ($custom_field->custom_field_location == 2) {
         print_field($this->mdl_users, $custom_field, $custom_values);
     }
@@ -223,7 +223,7 @@ foreach ($custom_fields as $custom_field) {
                                 </div>
 
 <?php
-foreach ($custom_fields as $custom_field) {
+foreach ($custom_fields['ip_user_custom'] as $custom_field) {
     if ($custom_field->custom_field_location == 3) {
         print_field($this->mdl_users, $custom_field, $custom_values);
     }
@@ -279,7 +279,6 @@ foreach ($custom_fields as $custom_field) {
 <?php
 if ($this->mdl_settings->setting('sumex') == '1') {
 ?>
-
                         <div class="panel panel-default">
                             <div class="panel-heading"><?php _trans('sumex_information'); ?></div>
 
@@ -309,7 +308,6 @@ if ($this->mdl_settings->setting('sumex') == '1') {
 <?php
 } // Endif sumex
 ?>
-
                         <div class="panel panel-default">
 
                             <div class="panel-heading"><?php _trans('contact_information'); ?></div>
@@ -346,7 +344,7 @@ if ($this->mdl_settings->setting('sumex') == '1') {
                                 </div>
 <?php
 $default_custom = false;
-foreach ($custom_fields as $custom_field) {
+foreach ($custom_fields['ip_user_custom'] as $custom_field) {
     if (! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
     }
@@ -372,10 +370,10 @@ if ($default_custom) {
                                 <div class="panel panel-default">
                                     <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
                                     <div class="panel-body">
-                                        <div class="row form-horizontal">
+                                        <div class="row">
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
-    foreach ($custom_fields as $custom_field) {
+    foreach ($custom_fields['ip_user_custom'] as $custom_field) {
         if (! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_users, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
