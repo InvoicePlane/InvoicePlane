@@ -314,8 +314,8 @@ if ($invoice->invoice_balance != 0) {
                     </a>
                 </li>
 <?php
-// Only if einvoice is On and user fields OK
-if ($einvoice->name) {
+// eInvoice & user fields OK: Show download XML Option
+if ($einvoice->user) {
 ?>
                 <li>
                     <a href="#" id="btn_generate_xml"
