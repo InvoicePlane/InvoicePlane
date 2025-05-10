@@ -158,7 +158,6 @@ if ($req_einvoicing) {
                 </div>
 
             </div>
-        </div>
 <?php
 } // End if einvoicing
 ?>
@@ -491,29 +490,29 @@ foreach ($custom_fields as $custom_field) {
 <?php
 if ($default_custom) {
 ?>
-            <div class="row"><!-- Custom -->
-                <div class="col-xs-12">
+        <div class="row"><!-- Custom -->
+            <div class="col-xs-12">
 
-                    <hr>
+                <hr>
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
-                        <div class="panel-body">
-                            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
+                    <div class="panel-body">
+                        <div class="row">
 <?php
-    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
-    foreach ($custom_fields as $custom_field) {
-        if (! $custom_field->custom_field_location) { // == 0
-            print_field($this->mdl_clients, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
-        }
+$classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
+foreach ($custom_fields as $custom_field) {
+    if (! $custom_field->custom_field_location) { // == 0
+        print_field($this->mdl_clients, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
     }
+}
 ?>
-                            </div>
                         </div>
                     </div>
-
                 </div>
+
             </div>
+        </div>
 <?php
 } // End if custom_fields
 ?>
