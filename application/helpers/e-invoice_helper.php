@@ -126,7 +126,7 @@ function get_admin_active_users($user_id = ''): array
  * @param bool    $vat : check vat user field(s) are filled
  * @return object $req_fields
  */
-function get_req_fields_einvoice($client = null, $user_id = '', $vat = false): object
+function get_req_fields_einvoice($client = null, $user_id = ''): object
 {
     $cid = empty($client->client_id) ? 0 : $client->client_id; // Client is New (form) or exist
     $c = new stdClass();
@@ -138,9 +138,10 @@ function get_req_fields_einvoice($client = null, $user_id = '', $vat = false): o
     $c->company   = $cid ? ($client->client_company   != '' ? 0 : 1) : 0;
     $c->tax_code  = $cid ? ($client->client_tax_code  != '' ? 0 : 1) : 0;
     $c->vat_id    = $cid ? ($client->client_vat_id    != '' ? 0 : 1) : 0;
-    // Tweak to run with client not subject to VAT (no vat_id)
-    if ($c->vat_id == 1 && ! $vat) {
-        $c->vat_id = 0;
+    // Tweak to run with or without VAT
+    if ($c->company + $c->vat_id == 2) {
+        $c->company = 0;
+        $c->vat_id  = 0;
     }
 
     $total_empty_fields_client = 0;
@@ -176,9 +177,10 @@ function get_req_fields_einvoice($client = null, $user_id = '', $vat = false): o
         $u->company   = $o->user_company   != '' ? 0 : 1;
         $u->tax_code  = $o->user_tax_code  != '' ? 0 : 1;
         $u->vat_id    = $o->user_vat_id    != '' ? 0 : 1;
-        // Tweak to run with user not subject to VAT (no vat_id)
-        if ($u->vat_id == 1 && ! $vat) {
-            $u->vat_id = 0;
+        // Tweak to run with or without VAT
+        if ($u->company + $u->vat_id == 2) {
+            $u->company = 0;
+            $u->vat_id  = 0;
         }
 
         $total_empty_fields_user = 0;
