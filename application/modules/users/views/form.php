@@ -1,10 +1,11 @@
 <?php
+$itsCompany    = $this->mdl_users->form_value('user_company') || $this->mdl_users->form_value('user_vat_id');
+$qr_code_info  = get_setting('qr_code') ? '<span class="pull-right"><i class="fa fa-qrcode"  data-toggle="tooltip" data-placement="bottom" title="' . trans('user_qr_code_hint') . '"></i></span>' : '';
 // eInvoicing enabled?
 $einvoicingTip = $einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . ' (' : ''; // tootip base
 $einvoicingReq = $einvoicing ? $einvoicingTip . trans('required_field') . ')"' : '';
 $einvoicingB2B = $einvoicing ? $einvoicingTip . 'B2B ' . trans('required_field') . ')"' : '';
 $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
-$qr_code_info = get_setting('qr_code') ? '<span class="pull-right"><i class="fa fa-qrcode"  data-toggle="tooltip" data-placement="bottom" title="' . trans('user_qr_code_hint') . '"></i></span>' : '';
 ?>
 <script>
     $(function () {
@@ -66,7 +67,7 @@ $qr_code_info = get_setting('qr_code') ? '<span class="pull-right"><i class="fa 
                                        value="<?php echo $this->mdl_users->form_value('user_name', true); ?>">
                             </div>
 
-                            <div class="form-group"<?php echo $einvoicingReq; ?>>
+                            <div class="form-group"<?php echo  $itsCompany ? $einvoicingB2B : $einvoicingReq; ?>>
                                 <label for="user_company"><?php _trans('company'); ?></label><?php echo $qr_code_info; ?>
                                 <input type="text" name="user_company" id="user_company" class="form-control"
                                        value="<?php echo $this->mdl_users->form_value('user_company', true); ?>">
@@ -210,7 +211,7 @@ foreach ($custom_fields['ip_user_custom'] as $custom_field) {
                             <div class="panel-heading"><?php _trans('tax_information'); ?></div>
 
                             <div class="panel-body">
-                                <div class="form-group"<?php echo $einvoicingOpt; ?>>
+                                <div class="form-group"<?php echo  $itsCompany ? $einvoicingB2B : $einvoicingOpt; ?>>
                                     <label for="user_vat_id"><?php _trans('vat_id'); ?></label>
                                     <input type="text" name="user_vat_id" id="user_vat_id" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_vat_id', true); ?>">

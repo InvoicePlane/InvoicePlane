@@ -1,7 +1,7 @@
 <?php
 $client_active = $this->mdl_clients->form_value('client_active');
 $active        = ($client_active == 1 || ! is_numeric($client_active)) ? ' checked="checked"' : '';
-
+$itsCompany    = $this->mdl_clients->form_value('client_company') || $this->mdl_clients->form_value('client_vat_id');
 if ($req_einvoicing) {
     // eInvoicing panel
     $nb_users      = count($req_einvoicing->users);
@@ -75,8 +75,8 @@ $einvoicingOpt = $req_einvoicing ? $einvoicingTip . trans('optional') . ')"' : '
                             <input id="client_surname" name="client_surname" type="text" class="form-control"
                                    value="<?php echo $this->mdl_clients->form_value('client_surname', true); ?>">
                         </div>
-                        <div class="form-group"<?php echo $einvoicingReq; ?>>
-                            <label for="client_company"><?php _trans('client_company'); ?></label>
+                        <div class="form-group"<?php echo $itsCompany ? $einvoicingB2B : $einvoicingOpt; ?>>
+                            <label for="client_company"><?php _trans('client_company'); ?> (<?php _trans($itsCompany ? 'required_field' : 'optional'); ?>)</label>
 
                             <div class="controls">
                                 <input id="client_company" name="client_company" type="text" class="form-control"
@@ -325,8 +325,8 @@ foreach ($custom_fields as $custom_field) {
                     </div>
 
                     <div class="panel-body">
-                        <div class="form-group"<?php echo $einvoicingOpt; ?>>
-                            <label for="client_vat_id"><?php _trans('vat_id'); ?></label>
+                        <div class="form-group"<?php echo $itsCompany ? $einvoicingB2B : $einvoicingOpt; ?>>
+                            <label for="client_vat_id"><?php _trans('vat_id'); ?> (<?php _trans($itsCompany ? 'required_field' : 'optional'); ?>)</label>
 
                             <div class="controls">
                                 <input type="text" name="client_vat_id" id="client_vat_id" class="form-control"
