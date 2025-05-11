@@ -120,12 +120,13 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     // For embed file on PDF
     $associatedFiles = null;
     if (get_setting('einvoicing')) {
-        $CI->load->helper('e-invoice'); // eInvoicing++
-        // Get eInvoice library version (name) and user checks
+        $CI->load->helper('e-invoice');
+        // Get eInvoice name (version) and user checks
         $einvoice = get_einvoice_usage($invoice, $items, false);
-        // eInvoice library to Generate the appropriate UBL/CII or false
+        // Set eInvoice config (false if Client & User not Ok)
         $xml_id    = $einvoice->user ? $einvoice->name : false;
         $options   = [];
+        // Same name of config & library(+Xml) by default
         $generator = $xml_id;
         $path      = APPPATH . 'helpers/XMLconfigs/';
         if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
@@ -135,14 +136,14 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
             $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
         }
 
-        if ($embed_xml && $invoice->client_einvoicing_active == 1) {
+        if ($xml_id && $embed_xml) {
             // Create the CII XML file
             $associatedFiles = [[
-                'name'           => $XMLname,
-                'mime'           => 'text/xml',
-                'description'    => $xml_id . ' CII Invoice',
-                'AFRelationship' => 'Alternative',
                 'path'           => generate_xml_invoice_file($invoice, $items, $generator, $filename, $options),
+                'name'           => $_SERVER['CIIname'] ?? $XMLname,   // Get from generator or from config
+                'mime'           => $_SERVER['CIImime'] ?? 'text/xml', // Get mime from generator
+                'description'    => $xml_id . ' e-' . trans('invoice'),
+                'AFRelationship' => 'Alternative',
             ]];
         }
     }
@@ -174,20 +175,23 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         associated_files: $associatedFiles
     );
 
-    // To Simplify xml validation (remove einvoice_test.xml file in uploads/temp when debug is over)
-    if (IP_DEBUG) {
-        @unlink(UPLOADS_TEMP_FOLDER . 'einvoice_test.xml'); // Same file but Always new (when get pdf)
-        @copy(UPLOADS_TEMP_FOLDER . $filename . '.xml', UPLOADS_TEMP_FOLDER . 'einvoice_test.xml');
-    }
-
     if ($embed_xml && file_exists(UPLOADS_TEMP_FOLDER . $filename . '.xml')) {
+        if (IP_DEBUG) {
+            // To simplify xml validation Copy to uploads/temp/einvoice_test.xml. Same file but Always new (when get/send pdf)
+            copy(UPLOADS_TEMP_FOLDER . $filename . '.xml', UPLOADS_TEMP_FOLDER . 'einvoice_test.xml');
+        }
         // Delete the tmp CII-XML file
         unlink(UPLOADS_TEMP_FOLDER . $filename . '.xml');
     }
 
-    // Create the UBL XML file if not embed & the client eInvoicing active
-    if ($xml_id && $embed_xml !== true && $invoice->client_einvoicing_active == 1) {
-        // Added the (unnecessary) prefix "date(Y-m-d)_" to the invoice file name to get the same ".pdf" and ".xml" file names!
+    // eInvoice Ok & not in pdf, create the UBL XML file
+    if ($xml_id && $embed_xml !== true) {
+        // Need Specific eInvoice filename?
+        if (! empty($options['CIIname'])) {
+            // The mailer helper parse tag(s) of this $_SERVER var & phpmailer attach the file with this (name).
+            $_SERVER['CIIname'] = $options['CIIname'];
+        }
+        // Same name of pdf file for attachment work!
         $filename = date('Y-m-d') . '_' . $filename;
         generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
     }

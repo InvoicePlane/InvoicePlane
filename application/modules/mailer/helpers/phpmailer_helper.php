@@ -144,7 +144,13 @@ function phpmail_send(
         $xml_file = rtrim($attachment_path, '.pdf') . '.xml';
         if (file_exists($xml_file)) {
             // Attach eInvoicing temp file
-            $mail->addAttachment($xml_file);
+            if (! empty($_SERVER['CIIname'])) {
+                // Need Specific eInvoice filename? (see mailer helper)
+                $mail->addAttachment($xml_file, $_SERVER['CIIname']); // phpmailer-sent-attachment-as-other-name
+            } else {
+                $mail->addAttachment($xml_file);
+            }
+
             // Need Delete
             $xml_del = true;
         }
