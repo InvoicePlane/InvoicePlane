@@ -128,6 +128,7 @@ class Settings extends Admin_Controller
             'payment_methods/mdl_payment_methods',
             'invoices/mdl_templates',
             'custom_fields/mdl_invoice_custom',
+            'custom_fields/mdl_custom_fields',
         ]);
 
         // Collect the list of templates
@@ -156,7 +157,7 @@ class Settings extends Admin_Controller
                 'available_themes'         => $available_themes,
                 'email_templates_quote'    => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
                 'email_templates_invoice'  => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'custom_fields'            => ['ip_invoice_custom' => $this->mdl_invoice_custom->get()->result()],
+                'custom_fields'            => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
                 'gateway_drivers'          => $gateways,
                 'number_formats'           => $number_formats,
                 'gateway_currency_codes'   => get_currencies(),
