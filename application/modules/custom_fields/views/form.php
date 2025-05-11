@@ -39,6 +39,8 @@ if ($disabled) {
                 <label for="custom_field_table"><?php _trans('table'); ?></label>
                 <select name="custom_field_table" id="custom_field_table" class="form-control simple-select"<?php echo $disabled ?: ' required' ; ?>>
 <?php
+// New field? Auto select (work if come from custom_fields/table/*)
+$custom_field_table = $custom_field_table ?: (isset($_SERVER['HTTP_REFERER']) ? 'ip_' . basename($_SERVER['HTTP_REFERER']) . '_custom' : '');
 foreach ($custom_field_tables as $table => $label) {
 ?>
                     <option value="<?php echo $table; ?>" <?php check_select($custom_field_table, $table); ?>><?php _trans($label); ?></option>
