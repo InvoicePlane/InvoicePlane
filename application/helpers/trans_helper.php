@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -24,7 +24,7 @@ if (! defined('BASEPATH')) {
  */
 function trans($line, $id = '', $default = null)
 {
-    $CI = & get_instance();
+    $CI          = & get_instance();
     $lang_string = $CI->lang->line($line);
 
     // Fall back to default language if the current language has no translated string
@@ -66,15 +66,15 @@ function trans($line, $id = '', $default = null)
 function set_language($language)
 {
     // Clear the current loaded language
-    $CI = & get_instance();
+    $CI                  = & get_instance();
     $CI->lang->is_loaded = [];
-    $CI->lang->language = [];
+    $CI->lang->language  = [];
 
     // Load system language if no custom language is set
     $default_lang = isset($CI->mdl_settings) ? $CI->mdl_settings->setting('default_language') : 'english';
     $new_language = ($language == 'system' ? $default_lang : $language);
 
-    $app_dir = $CI->config->_config_paths[0];
+    $app_dir  = $CI->config->_config_paths[0];
     $lang_dir = $app_dir . DIRECTORY_SEPARATOR . 'language';
 
     // Set the new language

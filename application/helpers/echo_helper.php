@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,7 +14,7 @@ if (! defined('BASEPATH')) {
  */
 
 /**
- * Shorthand for htmlspecialchars()
+ * Shorthand for htmlspecialchars().
  *
  * @param $output
  *
@@ -22,7 +22,7 @@ if (! defined('BASEPATH')) {
  */
 function htmlsc($output)
 {
-    if (!is_null($output)) {
+    if (null !== $output) {
         return htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
     }
 
@@ -30,7 +30,7 @@ function htmlsc($output)
 }
 
 /**
- * Echo something with escaped HTML special chars
+ * Echo something with escaped HTML special chars.
  *
  * @param mixed $output
  *
@@ -43,11 +43,10 @@ function _htmlsc($output)
     }
 
     echo htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
-    return null;
 }
 
 /**
- * Echo something with escaped HTML entities
+ * Echo something with escaped HTML entities.
  *
  * @param mixed $output
  *
@@ -60,14 +59,13 @@ function _htmle($output)
     }
 
     echo htmlentities($output, ENT_COMPAT);
-    return null;
 }
 
 /**
- * Echo a language string with the trans helper
+ * Echo a language string with the trans helper.
  *
- * @param string $line
- * @param string $id
+ * @param string      $line
+ * @param string      $id
  * @param null|string $default
  *
  * @return void
@@ -78,11 +76,11 @@ function _trans($line, $id = '', $default = null)
 }
 
 /**
- * Echo for the auto link function with special chars handling
+ * Echo for the auto link function with special chars handling.
  *
- * @param $str
+ * @param        $str
  * @param string $type
- * @param bool $popup
+ * @param bool   $popup
  *
  * @return void
  */
@@ -92,7 +90,7 @@ function _auto_link($str, $type = 'both', $popup = false)
 }
 
 /**
- * Output the standard CSRF protection field
+ * Output the standard CSRF protection field.
  *
  * @return void
  */
@@ -105,7 +103,7 @@ function _csrf_field()
 
 /**
  * Returns the correct URL for a asset within the theme directory
- * Also appends the current version to the asset to prevent browser caching issues
+ * Also appends the current version to the asset to prevent browser caching issues.
  *
  * @param string $asset
  *
@@ -120,7 +118,7 @@ function _theme_asset($asset)
 
 /**
  * Returns the correct URL for a asset within the core directory
- * Also appends the current version to the asset to prevent browser caching issues
+ * Also appends the current version to the asset to prevent browser caching issues.
  *
  * @param string $asset
  *

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -20,7 +20,7 @@ function format_user($user): string
     // Get an id
     if ($user && is_numeric($user)) {
         $CI = & get_instance();
-        if (! property_exists($CI, 'mdl_users')) {
+        if ( ! property_exists($CI, 'mdl_users')) {
             $CI->load->model('users/mdl_users');
         }
 
@@ -33,7 +33,7 @@ function format_user($user): string
     }
 
     $user_company = empty($user->user_company) ? '' : ' - ' . $user->user_company;
-    $contact = empty($user->user_invoicing_contact) ? '' : ' - ' . $user->user_invoicing_contact;
+    $contact      = empty($user->user_invoicing_contact) ? '' : ' - ' . $user->user_invoicing_contact;
 
     return ucfirst($user->user_name) . $user_company . $contact;
 }

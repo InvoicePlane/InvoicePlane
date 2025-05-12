@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,17 +17,17 @@ if (! defined('BASEPATH')) {
 class Ajax extends Admin_Controller
 {
     /**
-     * @param null|integer $invoice_id
+     * @param null|int $invoice_id
      */
     public function modal_task_lookups($invoice_id = null)
     {
         $default_item_tax_rate = get_setting('default_item_tax_rate');
-        $data = [
+        $data                  = [
             'default_item_tax_rate' => $default_item_tax_rate !== '' ?: 0,
             'tasks'                 => [],
         ];
 
-        if (!empty($invoice_id)) {
+        if ( ! empty($invoice_id)) {
             $this->load->model('mdl_tasks');
             $data['tasks'] = $this->mdl_tasks->get_tasks_to_invoice($invoice_id);
         }

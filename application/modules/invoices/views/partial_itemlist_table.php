@@ -61,7 +61,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 </div>
             </td>
 <?php
-if (! $legacy_calculation) {
+if ( ! $legacy_calculation) {
     $this->layout->load_view('layout/partial/itemlist_table_item_discount_input');
 }
 ?>
@@ -124,7 +124,7 @@ if ($invoice->sumex_id == '') {
                         <option value="0"><?php _trans('none'); ?></option>
                         <?php foreach ($units as $unit) { ?>
                             <option value="<?php echo $unit->unit_id; ?>">
-                                <?php echo $unit->unit_name . "/" . $unit->unit_name_plrl; ?>
+                                <?php echo $unit->unit_name . '/' . $unit->unit_name_plrl; ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -135,7 +135,7 @@ if ($invoice->sumex_id == '') {
                 <span name="subtotal" class="amount"></span>
             </td>
 <?php
-if (! $legacy_calculation) {
+if ( ! $legacy_calculation) {
     $this->layout->load_view('layout/partial/itemlist_table_item_discount_show');
 }
 ?>
@@ -164,7 +164,7 @@ foreach ($items as $item) {
                 <i class="fa fa-arrows cursor-move"></i>
 <?php
     if ($invoice->invoice_is_recurring) {
-        if ($item->item_is_recurring == 1 || is_null($item->item_is_recurring)) {
+        if ($item->item_is_recurring == 1 || null === $item->item_is_recurring) {
             $item_recurrence_state = '1';
             $item_recurrence_class = 'fa-calendar-check-o text-success';
         } else {
@@ -209,7 +209,7 @@ foreach ($items as $item) {
                 </div>
             </td>
 <?php
-    if (! $legacy_calculation) {
+    if ( ! $legacy_calculation) {
         $this->layout->load_view('layout/partial/itemlist_table_item_discount_input', ['item' => $item]);
     }
 ?>
@@ -285,7 +285,7 @@ foreach ($items as $item) {
 ?>
                             <option value="<?php echo $unit->unit_id; ?>"
                                 <?php check_select($item->item_product_unit_id, $unit->unit_id); ?>>
-                                <?php echo htmlsc($unit->unit_name) . "/" . htmlsc($unit->unit_name_plrl); ?>
+                                <?php echo htmlsc($unit->unit_name) . '/' . htmlsc($unit->unit_name_plrl); ?>
                             </option>
 <?php
     }
@@ -300,7 +300,7 @@ foreach ($items as $item) {
                     </span>
                 </td>
 <?php
-    if (! $legacy_calculation) {
+    if ( ! $legacy_calculation) {
         $this->layout->load_view('layout/partial/itemlist_table_item_discount_show', ['item' => $item]);
     }
 ?>
@@ -355,7 +355,7 @@ foreach ($items as $item) {
     <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-bordered text-right">
 <?php
-if (! $legacy_calculation) {
+if ( ! $legacy_calculation) {
     $this->layout->load_view('invoices/partial_itemlist_table_invoice_discount');
 }
 ?>

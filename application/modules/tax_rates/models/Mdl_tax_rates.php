@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -39,13 +39,13 @@ class Mdl_Tax_Rates extends Response_Model
             'tax_rate_name' => [
                 'field' => 'tax_rate_name',
                 'label' => trans('tax_rate_name'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'tax_rate_percent' => [
                 'field' => 'tax_rate_percent',
                 'label' => trans('tax_rate_percent'),
-                'rules' => 'required'
-            ]
+                'rules' => 'required',
+            ],
         ];
     }
 }

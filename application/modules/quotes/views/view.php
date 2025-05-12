@@ -19,7 +19,7 @@ $edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing
         });
 
 <?php
-if (! $items) {
+if ( ! $items) {
 ?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
 <?php
@@ -201,7 +201,7 @@ echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have
 ?>
 <div id="headerbar">
     <h1 class="headerbar-title">
-        <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing') ;?>: <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>">
+        <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing'); ?>: <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>">
             <?php echo trans('quote') . ' ' . ($quote->quote_number ? '#' . $quote->quote_number : trans('id') . ': ' . $quote->quote_id); ?>
         </span>
 <?php
@@ -459,9 +459,9 @@ if ($quote->quote_status_id != 1) {
                             </div>
 <?php
 $default_custom = false;
-$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+$classes        = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field) {
-    if (! $default_custom && ! $custom_field->custom_field_location) {
+    if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
     }
 
@@ -477,7 +477,7 @@ foreach ($custom_fields as $custom_field) {
 
         </div>
 
-<?php $this->layout->load_view('quotes/partial_itemlist_' . (get_setting('show_responsive_itemlist') ? 'responsive' : 'table'));?>
+<?php $this->layout->load_view('quotes/partial_itemlist_' . (get_setting('show_responsive_itemlist') ? 'responsive' : 'table')); ?>
 
         <hr/>
 
@@ -515,7 +515,7 @@ if ($default_custom) {
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
     foreach ($custom_fields as $custom_field) {
-        if (! $custom_field->custom_field_location) { // == 0
+        if ( ! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }

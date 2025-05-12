@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -34,7 +34,7 @@ class Quotes extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int $page
+     * @param int    $page
      */
     public function status($status = 'all', $page = 0)
     {
@@ -70,7 +70,7 @@ class Quotes extends Admin_Controller
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_quotes'),
                 'filter_method'      => 'filter_quotes',
-                'quote_statuses'     => $this->mdl_quotes->statuses()
+                'quote_statuses'     => $this->mdl_quotes->statuses(),
             ]
         );
 
@@ -115,7 +115,7 @@ class Quotes extends Admin_Controller
 
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-        if (!$quote) {
+        if ( ! $quote) {
             show_404();
         }
 
@@ -123,7 +123,7 @@ class Quotes extends Admin_Controller
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
@@ -166,7 +166,7 @@ class Quotes extends Admin_Controller
                 'custom_js_vars'  => [
                     'currency_symbol'           => get_setting('currency_symbol'),
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
-                    'decimal_point'             => get_setting('decimal_point')
+                    'decimal_point'             => get_setting('decimal_point'),
                 ],
                 'legacy_calculation' => config_item('legacy_calculation'),
             ]
@@ -196,7 +196,7 @@ class Quotes extends Admin_Controller
     }
 
     /**
-     * @param $quote_id
+     * @param      $quote_id
      * @param bool $stream
      */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)

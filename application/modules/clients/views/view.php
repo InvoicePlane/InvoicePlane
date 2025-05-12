@@ -240,7 +240,7 @@ foreach ($custom_fields as $custom_field) {
 
 $default_custom = false;
 foreach ($custom_fields as $custom_field) {
-    if (! $default_custom && ! $custom_field->custom_field_location) {
+    if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
     }
 
@@ -274,11 +274,11 @@ if ($req_einvoicing) {
 $title_tip = ' data-toggle="tooltip" data-placement="bottom" title="' . trans('edit'); // Tooltip helper ! Need add: . '"'
 
 // For eInvoicing panel client (users)
-$nb_users     = count($req_einvoicing->users);
-$me           = $req_einvoicing->users[$_SESSION['user_id']]->show_table;
-$nb           = $req_einvoicing->show_table;
-$ln           = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on more nb_users no ok
-$user_toggle  = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
+$nb_users    = count($req_einvoicing->users);
+$me          = $req_einvoicing->users[$_SESSION['user_id']]->show_table;
+$nb          = $req_einvoicing->show_table;
+$ln          = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on more nb_users no ok
+$user_toggle = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
 // For eInvoicing panel User(s) table
 $class_checks     = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning', 'fa fa-lg fa-square-o text-danger']; // Checkboxe icons
 $base             = 'address_1 zip city country company tax_code vat_id'; // Field names
@@ -334,12 +334,12 @@ if ($client->client_einvoicing_active && $user_fields_nook) {
     $reqs = []; // init ! important
     if ($req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields) {
         foreach ($keys as $l => $key) {
-            if ($req_einvoicing->clients[$client->client_id]->$key) {
-                $reqs[] = '<i class="' . $class_checks[$req_einvoicing->clients[$client->client_id]->$key] . '"></i>'
+            if ($req_einvoicing->clients[$client->client_id]->{$key}) {
+                $reqs[] = '<i class="' . $class_checks[$req_einvoicing->clients[$client->client_id]->{$key}] . '"></i>'
                         . anchor(
                             '/clients/form/' . $client->client_id . '#client_' . $key,
                             trans($lang[$l]),
-                            $title_tip  . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ')"'
+                            $title_tip . ' #' . trans($lang[$l]) . ' (' . mb_trim(trans('field')) . ')"'
                         ); // ! Need add: "
             }
         }
@@ -374,19 +374,19 @@ if ($client->client_einvoicing_active && $user_fields_nook) {
                                             <i class="fa fa-fw fa-user"></i>
                                             <span><?php echo anchor('/users/form/' . $uid, $user->user_name); ?></span>
                                         </td>
-                                        <td><i class="<?php echo $class_checks[ $ok ? 0 : 2 ]; ?>"></i><?php _trans($ok ? 'yes' : 'no'); ?></td>
+                                        <td><i class="<?php echo $class_checks[$ok ? 0 : 2]; ?>"></i><?php _trans($ok ? 'yes' : 'no'); ?></td>
                                         <td>
 <?php
         $reqs = []; // Re init ! important
         if ($user->einvoicing_empty_fields) {
             $reqs = []; // reuse
             foreach ($keys as $l => $key) {
-                if ($user->$key) {
-                    $reqs[] = '<i class="' . $class_checks[$user->$key] . '"></i>'
+                if ($user->{$key}) {
+                    $reqs[] = '<i class="' . $class_checks[$user->{$key}] . '"></i>'
                             . anchor(
                                 '/users/form/' . $uid . '#user_' . $key,
                                 trans($lang[$l]),
-                                $title_tip  . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ' ' . htmlsc($user->user_name) . ')"'
+                                $title_tip . ' #' . trans($lang[$l]) . ' (' . mb_trim(trans('field')) . ' ' . htmlsc($user->user_name) . ')"'
                             ); // ! Need add: "
                 }
             }
@@ -491,7 +491,7 @@ if ($default_custom) {
                             <table class="table no-margin">
 <?php
     foreach ($custom_fields as $custom_field) {
-        if (! $custom_field->custom_field_location) { // == 0
+        if ( ! $custom_field->custom_field_location) { // == 0
             $column = $custom_field->custom_field_label;
             $value  = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
 ?>
@@ -549,7 +549,7 @@ foreach (explode(' ', 'quote invoice payment') as $what) {
                     <?php echo pager(site_url('clients/view/' . $client->client_id . '/' . $what . 's'), 'mdl_' . $what . 's'); ?>
                 </div>
             </div>
-            <?php echo $$table; ?>
+            <?php echo ${$table}; ?>
         </div>
 <?php
 }

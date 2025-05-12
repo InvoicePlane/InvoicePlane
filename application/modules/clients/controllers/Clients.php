@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -80,7 +80,7 @@ class Clients extends Admin_Controller
                 'client_surname' => $this->input->post('client_surname'),
             ])->result();
 
-            if (! empty($check)) {
+            if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
                 redirect('clients/form');
             } else {
@@ -129,7 +129,7 @@ class Clients extends Admin_Controller
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
-            if (! $this->mdl_clients->prep_form($id)) {
+            if ( ! $this->mdl_clients->prep_form($id)) {
                 show_404();
             }
 
@@ -217,7 +217,7 @@ class Clients extends Admin_Controller
             ->where('ip_clients.client_id', $client_id)
             ->get()->row();
 
-        if (! $client) {
+        if ( ! $client) {
             show_404();
         }
 
@@ -240,7 +240,7 @@ class Clients extends Admin_Controller
 
             // Update active eInvoicing client
             $o = $client->client_einvoicing_active;
-            if (! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
+            if ( ! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
                 $client->client_einvoicing_active = 1; // update view
             } else {
                 $client->client_einvoicing_active = 0; // update view
@@ -344,5 +344,4 @@ class Clients extends Admin_Controller
             ClientTitleEnum::cases()
         );
     }
-
 }

@@ -4,11 +4,11 @@ $active        = ($client_active == 1 || ! is_numeric($client_active)) ? ' check
 $itsCompany    = $this->mdl_clients->form_value('client_company') || $this->mdl_clients->form_value('client_vat_id');
 if ($req_einvoicing) {
     // eInvoicing panel
-    $nb_users      = count($req_einvoicing->users);
-    $me            = $req_einvoicing->users[$_SESSION['user_id']]->show_table;
-    $nb            = $req_einvoicing->show_table; // Of users in error
-    $ln            = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on more nb_users no ok
-    $user_toggle   = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
+    $nb_users    = count($req_einvoicing->users);
+    $me          = $req_einvoicing->users[$_SESSION['user_id']]->show_table;
+    $nb          = $req_einvoicing->show_table; // Of users in error
+    $ln          = 'user' . (($nb ?: $nb_users) > 1 ? 's' : ''); // tweak 1 on more nb_users no ok
+    $user_toggle = ($req_einvoicing->show_table ? ($me ? 'danger' : 'warning') : 'default') . ' ' . ($me ? '" aria-expanded="true' : '" collapsed" aria-expanded="false');
 }
 // eInvoicing enabled?
 $einvoicingTip = $req_einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . ' (' : ''; // tootip base
@@ -435,9 +435,9 @@ $bdate = ($bdate && $bdate != '0000-00-00') ? date_from_mysql($bdate) : '';
 
 <?php
 if ($this->mdl_settings->setting('sumex') == '1') {
-    $avs = format_avs($this->mdl_clients->form_value('client_avs'));
+    $avs           = format_avs($this->mdl_clients->form_value('client_avs'));
     $insuredNumber = $this->mdl_clients->form_value('client_insurednumber');
-    $veka = $this->mdl_clients->form_value('client_veka');
+    $veka          = $this->mdl_clients->form_value('client_veka');
 ?>
 
                         <div class="form-group">
@@ -471,7 +471,7 @@ if ($this->mdl_settings->setting('sumex') == '1') {
 <?php
 $default_custom = false;
 foreach ($custom_fields as $custom_field) {
-    if (! $default_custom && ! $custom_field->custom_field_location) {
+    if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
     }
 
@@ -502,7 +502,7 @@ if ($default_custom) {
 <?php
 $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
 foreach ($custom_fields as $custom_field) {
-    if (! $custom_field->custom_field_location) { // == 0
+    if ( ! $custom_field->custom_field_location) { // == 0
         print_field($this->mdl_clients, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
     }
 }

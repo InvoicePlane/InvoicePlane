@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -49,7 +49,7 @@ class Email_Templates extends Admin_Controller
 
         if ($this->input->post('is_update') == 0 && $this->input->post('email_template_title') != '') {
             $check = $this->db->get_where('ip_email_templates', ['email_template_title' => $this->input->post('email_template_title')])->result();
-            if (!empty($check)) {
+            if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('email_template_already_exists'));
                 redirect('email_templates/form');
             }
@@ -60,8 +60,8 @@ class Email_Templates extends Admin_Controller
             redirect('email_templates');
         }
 
-        if ($id && !$this->input->post('btn_submit')) {
-            if (!$this->mdl_email_templates->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_email_templates->prep_form($id)) {
                 show_404();
             }
 

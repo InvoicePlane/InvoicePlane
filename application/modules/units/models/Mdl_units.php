@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -32,10 +32,11 @@ class Mdl_Units extends Response_Model
 
     /**
      * Return either the singular unit name or the plural unit name,
-     * depending on the quantity
+     * depending on the quantity.
      *
      * @param $unit_id
      * @param $quantity
+     *
      * @return mixed
      */
     public function get_name($unit_id, $quantity)
@@ -46,14 +47,12 @@ class Mdl_Units extends Response_Model
                 if ($unit->unit_id == $unit_id) {
                     if ($quantity < -1 || $quantity > 1) { // Fix 0
                         return $unit->unit_name_plrl;
-                    } else {
-                        return $unit->unit_name;
                     }
+
+                    return $unit->unit_name;
                 }
             }
         }
-
-        return null;
     }
 
     /**
@@ -65,13 +64,13 @@ class Mdl_Units extends Response_Model
             'unit_name' => [
                 'field' => 'unit_name',
                 'label' => trans('unit_name'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'unit_name_plrl' => [
                 'field' => 'unit_name_plrl',
                 'label' => trans('unit_name_plrl'),
-                'rules' => 'required'
-            ]
+                'rules' => 'required',
+            ],
         ];
     }
 }

@@ -22,7 +22,7 @@
                     payment_method: $('#payment_method_id').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         // The validation was successful and invoice was created
@@ -63,7 +63,7 @@
                     </span>
                     <select name="client_id" id="create_invoice_client_id" class="client-id-select form-control"
                             autofocus="autofocus" required>
-<?php if (!empty($client)) : ?>
+<?php if ( ! empty($client)) : ?>
                         <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client, false)); ?></option>
 <?php endif; ?>
                     </select>

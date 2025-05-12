@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -60,7 +60,7 @@ class User_Clients extends Admin_Controller
 
     public function create($user_id = null)
     {
-        if (! $user_id) {
+        if ( ! $user_id) {
             redirect('custom_values');
         } elseif ($this->input->post('btn_cancel')) {
             redirect('user_clients/field/' . $user_id);
@@ -85,22 +85,22 @@ class User_Clients extends Admin_Controller
             redirect('user_clients/user/' . $user_id);
         }
 
-        $user = $this->mdl_users->get_by_id($user_id);
+        $user    = $this->mdl_users->get_by_id($user_id);
         $clients = $this->mdl_clients->get_not_assigned_to_user($user_id);
 
         $this->layout->set(
             [
-                 'id'      => $user_id,
-                 'user'    => $user,
-                 'clients' => $clients,
-             ]
+                'id'      => $user_id,
+                'user'    => $user,
+                'clients' => $clients,
+            ]
         );
         $this->layout->buffer('content', 'user_clients/new');
         $this->layout->render();
     }
 
     /**
-     * @param integer $user_client_id
+     * @param int $user_client_id
      */
     public function delete($user_client_id)
     {

@@ -12,7 +12,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 */
 
 $config['payment_gateways'] = [
-/*     'AuthorizeNet_AIM' => array(
+    /*     'AuthorizeNet_AIM' => array(
         'apiLoginId' => array(
             'type' => 'text',
             'label' => 'Api Login Id',
@@ -38,7 +38,7 @@ $config['payment_gateways'] = [
         //    'label' => 'Developer Endpoint',
         //),
     ),*/
-/*     'AuthorizeNet_SIM' => array(
+    /*     'AuthorizeNet_SIM' => array(
         'apiLoginId' => array(
             'type' => 'text',
             'label' => 'Api Login Id',
@@ -55,18 +55,18 @@ $config['payment_gateways'] = [
             'type' => 'checkbox',
             'label' => 'Developer Mode',
         ), */
-        //'liveEndpoint' => array(
-        //    'type' => 'text',
-        //    'label' => 'Live Endpoint',
-        //),
-        //'developerEndpoint' => array(
-        //    'type' => 'text',
-        //    'label' => 'Developer Endpoint',
-        //),
-        //'hashSecret' => array(
-        //    'type' => 'text',
-        //    'label' => 'Hash Secret',
-        //),
+    //'liveEndpoint' => array(
+    //    'type' => 'text',
+    //    'label' => 'Live Endpoint',
+    //),
+    //'developerEndpoint' => array(
+    //    'type' => 'text',
+    //    'label' => 'Developer Endpoint',
+    //),
+    //'hashSecret' => array(
+    //    'type' => 'text',
+    //    'label' => 'Hash Secret',
+    //),
     /* ),
     'Buckaroo_Ideal' => array(
         'websiteKey' => array(
@@ -390,7 +390,7 @@ $config['payment_gateways'] = [
             'label' => 'Test Mode',
         ),
     ), */
-/*     'Pin' => array(
+    /*     'Pin' => array(
         'secretKey' => array(
             'type' => 'password',
             'label' => 'Secret Key',
@@ -444,25 +444,25 @@ $config['payment_gateways'] = [
     ), */
     'Stripe' => [
         'apiKey' => [
-            'type' => 'password',
+            'type'  => 'password',
             'label' => 'Secret key',
         ],
         'apiKeyPublic' => [
-            'type' => 'text',
-            'label' => 'Publishable key'
+            'type'  => 'text',
+            'label' => 'Publishable key',
         ],
     ],
     'PayPal' => [
         'clientId' => [
             'type'  => 'text',
-            'label' => 'Client ID'
+            'label' => 'Client ID',
         ],
         'clientSecret' => [
             'type'  => 'password',
-            'label' => 'Secret'
+            'label' => 'Secret',
         ],
         'testMode' => [
-            'type' => 'checkbox',
+            'type'  => 'checkbox',
             'label' => 'Test Mode',
         ],
     ],
@@ -478,7 +478,7 @@ $config['payment_gateways'] = [
             'label' => 'Sub Account Id',
         ),
     ), */
-/*     'TargetPay_Mrcash' => array(
+    /*     'TargetPay_Mrcash' => array(
         'subAccountId' => array(
             'type' => 'text',
             'label' => 'Sub Account Id',

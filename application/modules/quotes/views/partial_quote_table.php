@@ -15,8 +15,8 @@
 
         <tbody>
 <?php
-$quote_idx = 1;
-$quote_count = count($quotes);
+$quote_idx        = 1;
+$quote_count      = count($quotes);
 $quote_list_split = $quote_count > 3 ? $quote_count / 2 : 9999;
 
 foreach ($quotes as $quote) {
@@ -32,7 +32,7 @@ foreach ($quotes as $quote) {
                 <td>
                     <a href="<?php echo site_url('quotes/view/' . $quote->quote_id); ?>"
                        title="<?php _trans('edit'); ?>">
-                        <?php echo($quote->quote_number ? $quote->quote_number : $quote->quote_id); ?>
+                        <?php echo $quote->quote_number ? $quote->quote_number : $quote->quote_id; ?>
                     </a>
                 </td>
                 <td>

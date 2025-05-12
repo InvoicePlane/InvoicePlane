@@ -59,7 +59,7 @@
                     </span>
                     <select name="client_id" id="create_quote_client_id" class="client-id-select form-control"
                             autofocus="autofocus" required>
-                        <?php if (!empty($client)) : ?>
+                        <?php if ( ! empty($client)) : ?>
                             <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client, false)); ?></option>
                         <?php endif; ?>
                     </select>

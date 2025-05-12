@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -30,7 +30,7 @@ class Guest_Controller extends User_Controller
 
         $user_clients = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
 
-        if (!$user_clients) {
+        if ( ! $user_clients) {
             show_error(trans('guest_account_denied'), 403);
             exit;
         }

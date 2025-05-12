@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -40,6 +40,7 @@ class Mdl_Payment_Custom extends Validator
     /**
      * @param $payment_id
      * @param $db_array
+     *
      * @return bool|string
      */
     public function save_custom($payment_id, $db_array)
@@ -49,15 +50,14 @@ class Mdl_Payment_Custom extends Validator
         if ($result === true) {
             $form_data = property_exists($this, '_formdata') && $this->_formdata !== null ? $this->_formdata : null;
 
-            if (is_null($form_data)) {
+            if (null === $form_data) {
                 return true;
             }
 
             $payment_custom_id = null;
 
             foreach ($form_data as $key => $value) {
-                $db_array =
-                [
+                $db_array = [
                     'payment_id'                => $payment_id,
                     'payment_custom_fieldid'    => $key,
                     'payment_custom_fieldvalue' => $value,
@@ -79,12 +79,14 @@ class Mdl_Payment_Custom extends Validator
     }
 
     /**
-     * @param integer $payment_id
+     * @param int $payment_id
+     *
      * @return $this
      */
     public function by_id($payment_id)
     {
         $this->db->where('ip_payment_custom.payment_id', $payment_id);
+
         return $this;
     }
 

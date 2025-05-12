@@ -30,16 +30,16 @@ class Zugferdv10Xml
 
     public function __construct($params)
     {
-        $CI = &get_instance();
-        $this->invoice = $params['invoice'];
-        $this->items = $params['items'];
-        $this->filename = $params['filename'];
+        $CI                 = &get_instance();
+        $this->invoice      = $params['invoice'];
+        $this->items        = $params['items'];
+        $this->filename     = $params['filename'];
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
     }
 
     public function xml()
     {
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc               = new DOMDocument('1.0', 'UTF-8');
         $this->doc->formatOutput = true;
 
         $this->root = $this->xmlRoot();
@@ -90,7 +90,7 @@ class Zugferdv10Xml
 
     public function formattedFloat($amount, $nb_decimals = 2)
     {
-        return number_format(floatval($amount), $nb_decimals, '.', '');
+        return number_format((float) $amount, $nb_decimals, '.', '');
     }
 
     protected function xmlRoot()
@@ -106,7 +106,7 @@ class Zugferdv10Xml
 
     protected function xmlSpecifiedExchangedDocumentContext()
     {
-        $node = $this->doc->createElement('rsm:SpecifiedExchangedDocumentContext');
+        $node          = $this->doc->createElement('rsm:SpecifiedExchangedDocumentContext');
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:ferd:CrossIndustryDocument:invoice:1p0:basic'));
 
@@ -176,7 +176,7 @@ class Zugferdv10Xml
             $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_company)));
             $node->appendChild($this->doc->createElement('ram:DefinedTradeContact', htmlsc($this->invoice->user_name)));
         } else {
-        $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
+            $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->user_name)));
         }
 
         // PostalTradeAddress
@@ -220,7 +220,7 @@ class Zugferdv10Xml
     protected function xmlSpecifiedTaxRegistration($schemeID, $content)
     {
         $node = $this->doc->createElement('ram:SpecifiedTaxRegistration');
-        $el = $this->doc->createElement('ram:ID', $content);
+        $el   = $this->doc->createElement('ram:ID', $content);
         $el->setAttribute('schemeID', $schemeID);
 
         $node->appendChild($el);
@@ -234,7 +234,7 @@ class Zugferdv10Xml
 
         // ActualDeliverySupplyChainEvent
         $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
-        $dateNode = $this->doc->createElement('ram:OccurrenceDateTime');
+        $dateNode  = $this->doc->createElement('ram:OccurrenceDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
 
         $eventNode->appendChild($dateNode);

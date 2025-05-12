@@ -16,8 +16,8 @@
 
         <tbody>
 <?php
-$invoice_idx = 1;
-$invoice_count = count($invoices);
+$invoice_idx        = 1;
+$invoice_count      = count($invoices);
 $invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
 foreach ($invoices as $invoice) {
     // Disable read-only if not applicable
@@ -31,22 +31,17 @@ foreach ($invoices as $invoice) {
                 <td>
                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
                         <?php echo $invoice_statuses[$invoice->invoice_status_id]['label'];
-                        if ($invoice->invoice_sign == '-1') { ?>
-                            &nbsp;<i class="fa fa-credit-invoice" title="<?php echo trans('credit_invoice') ?>"></i>
-                        <?php } ?>
-                        <?php if ($invoice->is_read_only) { ?>
-                            &nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only') ?>"></i>
-                        <?php } ?>
-                        <?php if ($invoice->invoice_is_recurring) { ?>
-                            &nbsp;<i class="fa fa-refresh" title="<?php echo trans('recurring') ?>"></i>
-                        <?php } ?>
+                            if ($invoice->invoice_sign == '-1') {?>&nbsp;<i class="fa fa-credit-invoice" title="<?php _trans('credit_invoice'); ?>"></i><?php }
+                            if ($invoice->is_read_only) {?>&nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only'); ?>"></i><?php }
+                            if ($invoice->invoice_is_recurring) {?>&nbsp;<i class="fa fa-refresh" title="<?php _trans('recurring'); ?>"></i><?php }
+                        ?>
                     </span>
                 </td>
 
                 <td>
                     <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>"
                        title="<?php _trans('edit'); ?>">
-                        <?php echo($invoice->invoice_number ? $invoice->invoice_number : $invoice->invoice_id); ?>
+                        <?php echo $invoice->invoice_number ? $invoice->invoice_number : $invoice->invoice_id; ?>
                     </a>
                 </td>
 

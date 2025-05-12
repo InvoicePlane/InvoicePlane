@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,11 +14,11 @@ if (! defined('BASEPATH')) {
  */
 
 /**
- * Deletes orphaned entries in the database
+ * Deletes orphaned entries in the database.
  */
 function delete_orphans()
 {
-    $CI =& get_instance();
+    $CI = & get_instance();
 
     $queries = [
         'DELETE FROM ip_invoices WHERE client_id NOT IN (SELECT client_id FROM ip_clients)',
@@ -38,7 +38,7 @@ function delete_orphans()
         'DELETE FROM ip_client_notes WHERE client_id NOT IN (SELECT client_id FROM ip_clients)',
         'DELETE FROM ip_quote_tax_rates WHERE quote_id NOT IN (SELECT quote_id FROM ip_quotes)',
         'DELETE FROM ip_invoice_tax_rates WHERE invoice_id NOT IN (SELECT invoice_id FROM ip_invoices)',
-        'DELETE FROM ip_invoices_recurring WHERE invoice_id NOT IN (SELECT invoice_id FROM ip_invoices)'
+        'DELETE FROM ip_invoices_recurring WHERE invoice_id NOT IN (SELECT invoice_id FROM ip_invoices)',
     ];
 
     foreach ($queries as $query) {

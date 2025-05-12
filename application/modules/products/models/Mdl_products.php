@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -60,53 +60,53 @@ class Mdl_Products extends Response_Model
             'product_sku' => [
                 'field' => 'product_sku',
                 'label' => trans('product_sku'),
-                'rules' => ''
+                'rules' => '',
             ],
             'product_name' => [
                 'field' => 'product_name',
                 'label' => trans('product_name'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'product_description' => [
                 'field' => 'product_description',
                 'label' => trans('product_description'),
-                'rules' => ''
+                'rules' => '',
             ],
             'product_price' => [
                 'field' => 'product_price',
                 'label' => trans('product_price'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'purchase_price' => [
                 'field' => 'purchase_price',
                 'label' => trans('purchase_price'),
-                'rules' => ''
+                'rules' => '',
             ],
             'provider_name' => [
                 'field' => 'provider_name',
                 'label' => trans('provider_name'),
-                'rules' => ''
+                'rules' => '',
             ],
             'family_id' => [
                 'field' => 'family_id',
                 'label' => trans('family'),
-                'rules' => 'numeric'
+                'rules' => 'numeric',
             ],
             'unit_id' => [
                 'field' => 'unit_id',
                 'label' => trans('unit'),
-                'rules' => 'numeric'
+                'rules' => 'numeric',
             ],
             'tax_rate_id' => [
                 'field' => 'tax_rate_id',
                 'label' => trans('tax_rate'),
-                'rules' => 'numeric'
+                'rules' => 'numeric',
             ],
             // Sumex
             'product_tariff' => [
                 'field' => 'product_tariff',
                 'label' => trans('product_tariff'),
-                'rules' => ''
+                'rules' => '',
             ],
         ];
     }
@@ -118,11 +118,11 @@ class Mdl_Products extends Response_Model
     {
         $db_array = parent::db_array();
 
-        $db_array['product_price'] = (empty($db_array['product_price']) ? null : standardize_amount($db_array['product_price']));
+        $db_array['product_price']  = (empty($db_array['product_price']) ? null : standardize_amount($db_array['product_price']));
         $db_array['purchase_price'] = (empty($db_array['purchase_price']) ? null : standardize_amount($db_array['purchase_price']));
-        $db_array['family_id'] = (empty($db_array['family_id']) ? null : $db_array['family_id']);
-        $db_array['unit_id'] = (empty($db_array['unit_id']) ? null : $db_array['unit_id']);
-        $db_array['tax_rate_id'] = (empty($db_array['tax_rate_id']) ? null : $db_array['tax_rate_id']);
+        $db_array['family_id']      = (empty($db_array['family_id']) ? null : $db_array['family_id']);
+        $db_array['unit_id']        = (empty($db_array['unit_id']) ? null : $db_array['unit_id']);
+        $db_array['tax_rate_id']    = (empty($db_array['tax_rate_id']) ? null : $db_array['tax_rate_id']);
 
         return $db_array;
     }

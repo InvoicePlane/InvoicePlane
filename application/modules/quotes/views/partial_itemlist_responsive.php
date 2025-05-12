@@ -43,7 +43,7 @@
 foreach ($units as $unit) {
 ?>
                                     <option value="<?php echo $unit->unit_id; ?>">
-                                        <?php echo $unit->unit_name . "/" . $unit->unit_name_plrl; ?>
+                                        <?php echo $unit->unit_name . '/' . $unit->unit_name_plrl; ?>
                                     </option>
 <?php
 }
@@ -56,7 +56,7 @@ foreach ($units as $unit) {
                                 <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                             </div>
 <?php
-if (! $legacy_calculation) {
+if ( ! $legacy_calculation) {
     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input');
 }
 ?>
@@ -96,7 +96,7 @@ if ($legacy_calculation) {
                                 </div>
                             </div>
 <?php
-if (! $legacy_calculation) {
+if ( ! $legacy_calculation) {
     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show');
 }
 ?>
@@ -177,7 +177,7 @@ foreach ($items as $item) {
                                     <?php foreach ($units as $unit) { ?>
                                         <option value="<?php echo $unit->unit_id; ?>"
                                             <?php check_select($item->item_product_unit_id, $unit->unit_id); ?>>
-                                            <?php echo htmlsc($unit->unit_name) . "/" . htmlsc($unit->unit_name_plrl); ?>
+                                            <?php echo htmlsc($unit->unit_name) . '/' . htmlsc($unit->unit_name_plrl); ?>
                                         </option>
                                     <?php } ?>
                                 </select>
@@ -189,7 +189,7 @@ foreach ($items as $item) {
                                 <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                             </div>
 <?php
-    if (! $legacy_calculation) {
+    if ( ! $legacy_calculation) {
         $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
     }
 ?>
@@ -226,7 +226,7 @@ foreach ($items as $item) {
                                 </div>
                             </div>
 <?php
-    if (! $legacy_calculation) {
+    if ( ! $legacy_calculation) {
         $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
     }
 ?>
@@ -282,7 +282,7 @@ foreach ($items as $item) {
     <div class="col-xs-12 col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
         <table class="table table-bordered text-right">
 <?php
-if (! $legacy_calculation) {
+if ( ! $legacy_calculation) {
     $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
 }
 ?>

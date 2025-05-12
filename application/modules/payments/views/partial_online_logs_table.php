@@ -22,15 +22,11 @@ foreach ($payment_logs as $log) {
                         <td>
                             <a href="<?php echo site_url('invoices/view/' . $log->invoice_id); ?>"
                                title="<?php _trans('invoice'); ?>">
-                                <?php echo($log->invoice_number ? $log->invoice_number : $log->invoice_id); ?>
+                                <?php echo $log->invoice_number ? $log->invoice_number : $log->invoice_id; ?>
                             </a>
                         </td>
                         <td>
-                            <?php
-                            echo $log->merchant_response_successful
-                                ? '<i class="fa fa-check text-success"></i>'
-                                : '<i class="fa fa-ban text-danger"></i>';
-                            ?>
+                            <i class="fa <?php echo $log->merchant_response_successful ? 'fa-check text-success' : 'fa-ban text-danger'; ?>"></i>
                         </td>
                         <td><?php echo date_from_mysql($log->merchant_response_date); ?></td>
                         <td><?php echo $log->merchant_response_driver; ?></td>

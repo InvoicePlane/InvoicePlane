@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -39,8 +39,8 @@ class Mdl_Payment_Methods extends Response_Model
             'payment_method_name' => [
                 'field' => 'payment_method_name',
                 'label' => trans('payment_method'),
-                'rules' => 'required'
-            ]
+                'rules' => 'required',
+            ],
         ];
     }
 }

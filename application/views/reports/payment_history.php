@@ -33,7 +33,7 @@ foreach ($results as $result) {
     $sum += $result->payment_amount;
 }
 
-if (!empty($results)) {
+if ( ! empty($results)) {
 ?>
         <tr>
             <td colspan=5><?php _trans('total'); ?></td>

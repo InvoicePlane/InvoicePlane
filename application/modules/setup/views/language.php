@@ -15,7 +15,7 @@
 <?php
 foreach ($languages as $language) {
 ?>
-                <option value="<?php echo $language; ?>"<?php echo $language == 'english' ? ' selected="selected"' : '' ;?>><?php
+                <option value="<?php echo $language; ?>"<?php echo $language == 'english' ? ' selected="selected"' : ''; ?>><?php
                     echo ucfirst(str_replace('/', '', $language));
                 ?></option>
 <?php

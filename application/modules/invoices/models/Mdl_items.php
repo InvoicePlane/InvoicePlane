@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -135,7 +135,7 @@ class Mdl_Items extends Response_Model
             return false;
         }
 
-        $row = $query->row();
+        $row        = $query->row();
         $invoice_id = $row->invoice_id;
 
         // Delete the item itself
@@ -154,7 +154,7 @@ class Mdl_Items extends Response_Model
     }
 
     /**
-     * legacy_calculation false: Need to recalculate invoice amounts - since v1.6.3
+     * legacy_calculation false: Need to recalculate invoice amounts - since v1.6.3.
      *
      * @param $invoice_id
      *
@@ -162,13 +162,14 @@ class Mdl_Items extends Response_Model
      */
     public function get_items_subtotal($invoice_id)
     {
-        $row = $this->db->query("
+        $row = $this->db->query('
             SELECT SUM(item_subtotal) AS items_subtotal
             FROM ip_invoice_item_amounts
             WHERE item_id
-                IN (SELECT item_id FROM ip_invoice_items WHERE invoice_id = " . $this->db->escape($invoice_id) . ")
-            ")
+                IN (SELECT item_id FROM ip_invoice_items WHERE invoice_id = ' . $this->db->escape($invoice_id) . ')
+            ')
             ->row();
+
         return $row->items_subtotal;
     }
 }

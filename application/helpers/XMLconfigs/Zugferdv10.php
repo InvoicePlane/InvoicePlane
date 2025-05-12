@@ -1,4 +1,5 @@
 <?php
+
 defined('BASEPATH') || exit('No direct script access allowed');
 /*
  * ZUGFeRD v1.0 (Historic file)

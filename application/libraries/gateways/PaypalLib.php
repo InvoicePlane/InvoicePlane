@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -23,8 +23,8 @@ class PaypalLib
     public function __construct($params)
     {
         $params['demo'] && $this->endpoint = 'https://api-m.sandbox.paypal.com';
-        $this->client_id = $params['client_id'];
-        $this->client_secret = $params['client_secret'];
+        $this->client_id                   = $params['client_id'];
+        $this->client_secret               = $params['client_secret'];
 
         log_message('debug', 'Paypal library initialization started');
 
@@ -38,39 +38,12 @@ class PaypalLib
     }
 
     /**
-     * Generate the authentication token
-     *
-     * @return void
-     */
-    protected function authorize()
-    {
-        log_message('debug', 'Paypal library authorization started');
-        try {
-            $response = $this->client->request('post', 'v1/oauth2/token', [
-                'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                ],
-                'auth' => [$this->client_id, $this->client_secret],
-                'form_params' => ['grant_type' => 'client_credentials'],
-            ]);
-
-            $this->bearer_token = json_decode($response->getBody())->access_token;
-            log_message('debug', 'Paypal library authorization obtained');
-        } catch (ClientException $clientException) {
-            log_message('error', 'Paypal library authorization failed');
-
-            return $clientException->getResponse()->getBody();
-        }
-
-        return null;
-    }
-
-    /**
-     * Create an order on paypal
+     * Create an order on paypal.
      *
      * @see https://developer.paypal.com/docs/api/orders/v2/#orders_create
      *
-     * @param  array  $order_information
+     * @param array $order_information
+     *
      * @return string
      */
     public function createOrder($order_information): string|array
@@ -79,15 +52,15 @@ class PaypalLib
         try {
             $response = $this->client->request('POST', 'v2/checkout/orders', [
                 'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->bearer_token
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->bearer_token,
                 ],
                 'body' => json_encode([
                     'purchase_units' => [[
                         'invoice_id' => $order_information['invoice_id'],
-                        'amount' => [
+                        'amount'     => [
                             'currency_code' => $order_information['currency_code'],
-                            'value' => $order_information['value'],
+                            'value'         => $order_information['value'],
                         ],
                         'custom_id' => $order_information['custom_id'],
                     ]],
@@ -105,11 +78,11 @@ class PaypalLib
     }
 
     /**
-     * Capture the payment of the order
+     * Capture the payment of the order.
      *
      * @see https://developer.paypal.com/docs/api/orders/v2/#orders_capture
      *
-     * @param  string  $order_id
+     * @param string $order_id
      */
     public function captureOrder($order_id): array
     {
@@ -117,9 +90,9 @@ class PaypalLib
         try {
             $response = $this->client->request('POST', 'v2/checkout/orders/' . $order_id . '/capture', [
                 'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->bearer_token
-                ]
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->bearer_token,
+                ],
             ]);
             log_message('debug', 'Paypal library order capturing completed');
 
@@ -132,11 +105,11 @@ class PaypalLib
     }
 
     /**
-     * Get the details of a paypal order by order id
+     * Get the details of a paypal order by order id.
      *
      * @see https://developer.paypal.com/docs/api/orders/v2/#orders_get
      *
-     * @param  string  $order_id
+     * @param string $order_id
      */
     public function showOrderDetails($order_id)
     {
@@ -144,9 +117,9 @@ class PaypalLib
         try {
             $response = $this->client->request('GET', 'v2/checkout/orders/' . $order_id, [
                 'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->bearer_token
-                ]
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->bearer_token,
+                ],
             ]);
             log_message('debug', 'Paypal library show order completed');
 
@@ -155,6 +128,32 @@ class PaypalLib
             log_message('debug', 'Paypal library show order failed');
 
             return ['status' => false, 'error' => $clientException];
+        }
+    }
+
+    /**
+     * Generate the authentication token.
+     *
+     * @return void
+     */
+    protected function authorize()
+    {
+        log_message('debug', 'Paypal library authorization started');
+        try {
+            $response = $this->client->request('post', 'v1/oauth2/token', [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'auth'        => [$this->client_id, $this->client_secret],
+                'form_params' => ['grant_type' => 'client_credentials'],
+            ]);
+
+            $this->bearer_token = json_decode($response->getBody())->access_token;
+            log_message('debug', 'Paypal library authorization obtained');
+        } catch (ClientException $clientException) {
+            log_message('error', 'Paypal library authorization failed');
+
+            return $clientException->getResponse()->getBody();
         }
     }
 }

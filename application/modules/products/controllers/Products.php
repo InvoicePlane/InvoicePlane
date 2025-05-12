@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -39,7 +39,7 @@ class Products extends Admin_Controller
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_products'),
                 'filter_method'      => 'filter_products',
-                'products'           => $products
+                'products'           => $products,
             ]
         );
         $this->layout->buffer('content', 'products/index');
@@ -61,7 +61,7 @@ class Products extends Admin_Controller
             redirect('products');
         }
 
-        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_products->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit') && ! $this->mdl_products->prep_form($id)) {
             show_404();
         }
 
@@ -71,8 +71,8 @@ class Products extends Admin_Controller
 
         $this->layout->set(
             [
-                'families' => $this->mdl_families->get()->result(),
-                'units' => $this->mdl_units->get()->result(),
+                'families'  => $this->mdl_families->get()->result(),
+                'units'     => $this->mdl_units->get()->result(),
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
             ]
         );

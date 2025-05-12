@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -45,42 +45,42 @@ class Mdl_User_Clients extends MY_Model
             'user_id' => [
                 'field' => 'user_id',
                 'label' => trans('user'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'client_id' => [
                 'field' => 'client_id',
                 'label' => trans('client'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
         ];
     }
 
     /**
      * @param $user_id
+     *
      * @return $this
      */
     public function assigned_to($user_id)
     {
         $this->filter_where('ip_user_clients.user_id', $user_id);
+
         return $this;
     }
 
     /**
-    *
-    * @param array $users_id
-    */
+     * @param array $users_id
+     */
     public function set_all_clients_user($users_id)
     {
         $this->load->model('clients/mdl_clients');
 
         $nbUsers = count($users_id);
         for ($x = 0; $x < $nbUsers; $x++) {
-            $clients = $this->mdl_clients->get_not_assigned_to_user($users_id[$x]);
+            $clients   = $this->mdl_clients->get_not_assigned_to_user($users_id[$x]);
             $nbClients = count($clients);
             for ($i = 0; $i < $nbClients; $i++) {
-                $user_client =
-                [
-                    'user_id' => $users_id[$x],
+                $user_client = [
+                    'user_id'   => $users_id[$x],
                     'client_id' => $clients[$i]->client_id,
                 ];
 
@@ -95,7 +95,7 @@ class Mdl_User_Clients extends MY_Model
         $users = $this->mdl_users->where('user_all_clients', 1)->get()->result();
 
         $new_users = [];
-        $nbUsers = count($users);
+        $nbUsers   = count($users);
 
         for ($i = 0; $i < $nbUsers; $i++) {
             $new_users[] = $users[$i]->user_id;

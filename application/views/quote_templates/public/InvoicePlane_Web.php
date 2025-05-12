@@ -76,36 +76,36 @@ if ($logo = invoice_logo()) {
 
                         <h4><?php _htmlsc($quote->user_name); ?></h4>
                         <p><?php
-                           if ($quote->user_vat_id) {
+                            if ($quote->user_vat_id) {
                                 echo lang('vat_id_short') . ': ' . $quote->user_vat_id . '<br>';
-                           }
-                           if ($quote->user_tax_code) {
-                               echo lang('tax_code_short') . ': ' . $quote->user_tax_code . '<br>';
-                           }
-                           if ($quote->user_address_1) {
-                               echo htmlsc($quote->user_address_1) . '<br>';
-                           }
-                           if ($quote->user_address_2) {
-                               echo htmlsc($quote->user_address_2) . '<br>';
-                           }
-                           if ($quote->user_city) {
-                               echo htmlsc($quote->user_city) . ' ';
-                           }
-                           if ($quote->user_state) {
-                               echo htmlsc($quote->user_state) . ' ';
-                           }
-                           if ($quote->user_zip) {
-                               echo htmlsc($quote->user_zip) . '<br>';
-                           }
-                           if ($quote->user_phone) {
-                                _trans('phone_abbr'); ?>: <?php echo htmlsc($quote->user_phone); ?>
-                                <br>
-                           <?php }
-                           if ($quote->user_fax) {
-                                _trans('fax_abbr'); ?>: <?php echo htmlsc($quote->user_fax);
-                           }
-?>
-                        </p>
+                            }
+                            if ($quote->user_tax_code) {
+                                echo lang('tax_code_short') . ': ' . $quote->user_tax_code . '<br>';
+                            }
+                            if ($quote->user_address_1) {
+                                echo htmlsc($quote->user_address_1) . '<br>';
+                            }
+                            if ($quote->user_address_2) {
+                                echo htmlsc($quote->user_address_2) . '<br>';
+                            }
+                            if ($quote->user_city) {
+                                echo htmlsc($quote->user_city) . ' ';
+                            }
+                            if ($quote->user_state) {
+                                echo htmlsc($quote->user_state) . ' ';
+                            }
+                            if ($quote->user_zip) {
+                                echo htmlsc($quote->user_zip) . '<br>';
+                            }
+                            if ($quote->user_phone) {
+                                _trans('phone_abbr');
+                                echo ': ' . htmlsc($quote->user_phone) . '<br>';
+                            }
+                            if ($quote->user_fax) {
+                                _trans('fax_abbr');
+                                echo ': ' . htmlsc($quote->user_fax);
+                            }
+                            ?></p>
 
                     </div>
                     <div class="col-lg-2"></div>
@@ -113,34 +113,34 @@ if ($logo = invoice_logo()) {
 
                         <h4><?php _htmlsc($quote->client_name); ?></h4>
                         <p><?php
-                        if ($quote->client_vat_id) {
-                            _trans('vat_id_short');
-                            echo ': ' . $quote->client_vat_id . '<br>';
-                        }
-                        if ($quote->client_tax_code) {
-                            _trans('tax_code_short');
-                            echo ': ' . $quote->client_tax_code . '<br>';
-                        }
-                        if ($quote->client_address_1) {
-                            echo htmlsc($quote->client_address_1) . '<br>';
-                        }
-                        if ($quote->client_address_2) {
-                            echo htmlsc($quote->client_address_2) . '<br>';
-                        }
-                        if ($quote->client_city) {
-                            echo htmlsc($quote->client_city) . ' ';
-                        }
-                        if ($quote->client_state) {
-                            echo htmlsc($quote->client_state) . ' ';
-                        }
-                        if ($quote->client_zip) {
-                            echo htmlsc($quote->client_zip) . '<br>';
-                        }
-                        if ($quote->client_phone) {
-                            _trans('phone_abbr');
-                            echo ': ' . htmlsc($quote->client_phone) . '<br>';
-                        }
-                        ?></p>
+                            if ($quote->client_vat_id) {
+                                _trans('vat_id_short');
+                                echo ': ' . $quote->client_vat_id . '<br>';
+                            }
+                            if ($quote->client_tax_code) {
+                                _trans('tax_code_short');
+                                echo ': ' . $quote->client_tax_code . '<br>';
+                            }
+                            if ($quote->client_address_1) {
+                                echo htmlsc($quote->client_address_1) . '<br>';
+                            }
+                            if ($quote->client_address_2) {
+                                echo htmlsc($quote->client_address_2) . '<br>';
+                            }
+                            if ($quote->client_city) {
+                                echo htmlsc($quote->client_city) . ' ';
+                            }
+                            if ($quote->client_state) {
+                                echo htmlsc($quote->client_state) . ' ';
+                            }
+                            if ($quote->client_zip) {
+                                echo htmlsc($quote->client_zip) . '<br>';
+                            }
+                            if ($quote->client_phone) {
+                                _trans('phone_abbr');
+                                echo ': ' . htmlsc($quote->client_phone) . '<br>';
+                            }
+                            ?></p>
 
                         <br>
 
@@ -150,7 +150,7 @@ if ($logo = invoice_logo()) {
                                     <td><?php _trans('quote_date'); ?></td>
                                     <td style="text-align:right;"><?php echo date_from_mysql($quote->quote_date_created); ?></td>
                                 </tr>
-                                <tr class="<?php echo($is_expired ? 'overdue' : '') ?>">
+                                <tr class="<?php echo $is_expired ? 'overdue' : '' ?>">
                                     <td><?php _trans('expires'); ?></td>
                                     <td class="amount">
                                         <?php echo date_from_mysql($quote->quote_date_expires); ?>
@@ -204,20 +204,18 @@ foreach ($items as $item) {
 ?>
 
 <?php
-if (! $legacy_calculation) {
+if ( ! $legacy_calculation) {
 ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="amount"><?php _trans('discount'); ?></td>
-                                    <td class="amount">
-                                        <?php
+                                    <td class="amount"><?php
                                         if ($quote->quote_discount_percent > 0) {
                                             echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
                                         } else {
                                             echo format_currency($quote->quote_discount_amount);
                                         }
-                                        ?>
-                                    </td>
+                                    ?></td>
                                 </tr>
 <?php
 }
@@ -247,10 +245,7 @@ foreach ($quote_tax_rates as $quote_tax_rate) {
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="amount">
-                                        <?php
-                                            _htmlsc($quote_tax_rate->quote_tax_rate_name);
-                                            echo ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent);
-                                        ?>&nbsp;%
+                                        <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' ' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '&nbsp;%'; ?>
                                     </td>
                                     <td class="amount"><?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?></td>
                                 </tr>
@@ -264,15 +259,13 @@ if ($legacy_calculation) {
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="amount"><?php _trans('discount'); ?></td>
-                                    <td class="amount">
-                                        <?php
+                                    <td class="amount"><?php
                                         if ($quote->quote_discount_percent > 0) {
                                             echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
                                         } else {
                                             echo format_currency($quote->quote_discount_amount);
                                         }
-                                        ?>
-                                    </td>
+                                    ?></td>
                                 </tr>
 <?php
 }

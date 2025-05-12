@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -18,9 +18,9 @@ if (! defined('BASEPATH')) {
 /**
  * Print a html for global discounts table template.
  *
- * @param obj  $obj ($invoice or $quote object)
- * @param bool $show_item_discounts
- * @param str  $is 'invoice' or 'quote'
+ * @param obj    $obj                 ($invoice or $quote object)
+ * @param bool   $show_item_discounts
+ * @param string $is                  'invoice' or 'quote'
  *
  * @scope views/[invoice|quote]_templates/pdf/InvoicePlane[| - paid| - overdue].pdf
  *
@@ -28,7 +28,7 @@ if (! defined('BASEPATH')) {
  */
 function discount_global_print_in_pdf($obj, $show_item_discounts, $is = 'invoice')
 {
-    $type = ['p' => $is . '_discount_percent', 'a' => $is . '_discount_amount'];
+    $type     = ['p' => $is . '_discount_percent', 'a' => $is . '_discount_amount'];
     $discount = 0;
     if ($obj->{$type['p']} != '0.00') { // discount_percent
         $discount = format_amount($obj->{$type['p']}) . '%';
@@ -40,7 +40,7 @@ function discount_global_print_in_pdf($obj, $show_item_discounts, $is = 'invoice
 ?>
             <tr>
                 <td class="text-right" colspan="<?php echo $show_item_discounts ? '5' : '4'; ?>"><?php
-                    echo rtrim(trans('discount'), ' '); // Rem not space char (in French ip_lang & maybe other)
+                    echo mb_rtrim(trans('discount'), ' '); // Rem not space char (in French ip_lang & maybe other)
                 ?></td>
                 <td class="text-right"><?php echo $discount; ?></td>
             </tr>
@@ -78,7 +78,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     // Override system language with client language
     set_language($invoice->client_language);
 
-    if (! $invoice_template) {
+    if ( ! $invoice_template) {
         $CI->load->helper('template');
         $invoice_template = select_pdf_invoice_template($invoice);
     }
@@ -101,8 +101,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     }
 
     // Get all custom fields
-    $custom_fields =
-    [
+    $custom_fields = [
         'invoice' => $CI->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $invoice->invoice_id),
         'client'  => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $invoice->client_id),
         'user'    => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $invoice->user_id),
@@ -124,8 +123,8 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         // Get eInvoice name (version) and user checks
         $einvoice = get_einvoice_usage($invoice, $items, false);
         // Set eInvoice config (false if Client & User not Ok)
-        $xml_id    = $einvoice->user ? $einvoice->name : false;
-        $options   = [];
+        $xml_id  = $einvoice->user ? $einvoice->name : false;
+        $options = [];
         // Same name of config & library(+Xml) by default
         $generator = $xml_id;
         $path      = APPPATH . 'helpers/XMLconfigs/';
@@ -187,7 +186,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     // eInvoice Ok & not in pdf, create the UBL XML file
     if ($xml_id && $embed_xml !== true) {
         // Need Specific eInvoice filename?
-        if (! empty($options['CIIname'])) {
+        if ( ! empty($options['CIIname'])) {
             // The mailer helper parse tag(s) of this $_SERVER var & phpmailer attach the file with this (name).
             $_SERVER['CIIname'] = $options['CIIname'];
         }
@@ -223,7 +222,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
     $shortsum = mb_substr($sha1sum, 0, 8);
     $filename = trans('invoice') . '_' . $invoice->invoice_number . '_' . $shortsum;
 
-    if (! $client) {
+    if ( ! $client) {
         file_put_contents($temp, $sumexPDF);
 
         // Hackish
@@ -274,7 +273,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
             header('Content-Type', 'application/pdf');
             $pdf->Output($filename . '.pdf', 'I');
 
-            return null;
+            return;
         }
 
         $filePath = UPLOADS_TEMP_FOLDER . $filename . '.pdf';
@@ -299,6 +298,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
  * @param bool $stream
  *
  * @return string
+ *
  * @throws \Mpdf\MpdfException
  */
 function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
@@ -325,7 +325,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     // Override language with system language
     set_language($quote->client_language);
 
-    if (! $quote_template) {
+    if ( ! $quote_template) {
         $quote_template = $CI->mdl_settings->setting('pdf_quote_template');
     }
 
@@ -341,15 +341,13 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     }
 
     // Get all custom fields
-    $custom_fields =
-    [
+    $custom_fields = [
         'quote'  => $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $quote->quote_id),
         'client' => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id),
         'user'   => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
     ];
 
-    $data =
-    [
+    $data = [
         'quote'               => $quote,
         'quote_tax_rates'     => $CI->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
         'items'               => $items,

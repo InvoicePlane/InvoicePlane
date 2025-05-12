@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -39,8 +39,8 @@ class Mdl_Families extends Response_Model
             'family_name' => [
                 'field' => 'family_name',
                 'label' => trans('family_name'),
-                'rules' => 'required'
-            ]
+                'rules' => 'required',
+            ],
         ];
     }
 }

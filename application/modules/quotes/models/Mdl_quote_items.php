@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -124,7 +124,7 @@ class Mdl_Quote_Items extends Response_Model
             return false;
         }
 
-        $row = $query->row();
+        $row      = $query->row();
         $quote_id = $row->quote_id;
 
         // Delete the item itself
@@ -143,7 +143,7 @@ class Mdl_Quote_Items extends Response_Model
     }
 
     /**
-     * legacy_calculation false: Need to recalculate quote amounts - since v1.6.3
+     * legacy_calculation false: Need to recalculate quote amounts - since v1.6.3.
      *
      * @param $quote_id
      *
@@ -151,13 +151,14 @@ class Mdl_Quote_Items extends Response_Model
      */
     public function get_items_subtotal($quote_id)
     {
-        $row = $this->db->query("
+        $row = $this->db->query('
             SELECT SUM(item_subtotal) AS items_subtotal
             FROM ip_quote_item_amounts
             WHERE item_id
-                IN (SELECT item_id FROM ip_quote_items WHERE quote_id = " . $this->db->escape($quote_id) . ")
-            ")
+                IN (SELECT item_id FROM ip_quote_items WHERE quote_id = ' . $this->db->escape($quote_id) . ')
+            ')
             ->row();
+
         return $row->items_subtotal;
     }
 }

@@ -184,7 +184,7 @@ foreach ($items as $i => $item) {
             <table class="table table-bordered">
                 <thead>
                 <tr>
-<?php if (! $legacy_calculation) { ?>
+<?php if ( ! $legacy_calculation) { ?>
                     <th class="text-right"><?php _trans('global_discount'); ?></th>
 <?php } ?>
                     <th class="text-right"><?php _trans('subtotal'); ?></th>
@@ -200,7 +200,7 @@ foreach ($items as $i => $item) {
                 </thead>
                 <tbody>
                 <tr>
-<?php if (! $legacy_calculation) { ?>
+<?php if ( ! $legacy_calculation) { ?>
                     <td class="amount"><?php echo $global_discount; ?></td>
 <?php } ?>
                     <td class="amount"><?php echo format_currency($quote->quote_item_subtotal); ?></td>

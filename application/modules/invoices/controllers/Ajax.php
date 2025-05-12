@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -46,16 +46,15 @@ class Ajax extends Admin_Controller
             $items_subtotal = 0.0;
             if ($invoice_discount_amount) {
                 foreach ($items as $item) {
-                    if (! empty($item->item_name)) {
+                    if ( ! empty($item->item_name)) {
                         $items_subtotal += standardize_amount($item->item_quantity) * standardize_amount($item->item_price);
                     }
                 }
             }
 
             // New discounts (for legacy_calculation false) - since v1.6.3 Need if taxes applied after discounts
-            $global_discount =
-            [
-                'amount'         => $invoice_discount_amount  ? standardize_amount($invoice_discount_amount)  : 0.0,
+            $global_discount = [
+                'amount'         => $invoice_discount_amount ? standardize_amount($invoice_discount_amount) : 0.0,
                 'percent'        => $invoice_discount_percent ? standardize_amount($invoice_discount_percent) : 0.0,
                 'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
                 'items_subtotal' => $items_subtotal,
@@ -63,22 +62,22 @@ class Ajax extends Admin_Controller
 
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
-                if (! empty($item->item_name)) {
+                if ( ! empty($item->item_name)) {
                     // Standardize item data
-                    $item->item_quantity        = $item->item_quantity         ? standardize_amount($item->item_quantity)        : 0.0;
-                    $item->item_price           = $item->item_price            ? standardize_amount($item->item_price)           : 0.0;
-                    $item->item_discount_amount = $item->item_discount_amount  ? standardize_amount($item->item_discount_amount) : null;
-                    $item->item_product_id      = $item->item_product_id       ? $item->item_product_id                          : null;
-                    $item->item_product_unit_id = $item->item_product_unit_id  ? $item->item_product_unit_id                     : null;
+                    $item->item_quantity        = $item->item_quantity ? standardize_amount($item->item_quantity) : 0.0;
+                    $item->item_price           = $item->item_price ? standardize_amount($item->item_price) : 0.0;
+                    $item->item_discount_amount = $item->item_discount_amount ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id      = $item->item_product_id ? $item->item_product_id : null;
+                    $item->item_product_unit_id = $item->item_product_unit_id ? $item->item_product_unit_id : null;
                     $item->item_product_unit    = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
                     if (property_exists($item, 'item_date')) {
-                        $item->item_date        = $item->item_date             ? date_to_mysql($item->item_date)                 : null;
+                        $item->item_date = $item->item_date ? date_to_mysql($item->item_date) : null;
                     }
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
 
-                    if (! $item->item_task_id) {
+                    if ( ! $item->item_task_id) {
                         unset($item->item_task_id);
                     } else {
                         if (empty($this->mdl_tasks)) {
@@ -89,14 +88,13 @@ class Ajax extends Admin_Controller
                     }
 
                     $this->mdl_items->save($item_id, $item, $global_discount);
-                } elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price))) {
+                } elseif (empty($item->item_name) && ( ! empty($item->item_quantity) || ! empty($item->item_price))) {
                     // Throw an error message and use the form validation for that (todo: where the translations of: The .* field is required.)
                     $this->load->library('form_validation');
                     $this->form_validation->set_rules('item_name', trans('item'), 'required');
                     $this->form_validation->run();
 
-                    $response =
-                    [
+                    $response = [
                         'success'           => 0,
                         'validation_errors' => [
                             'item_name' => form_error('item_name', '', ''),
@@ -118,13 +116,12 @@ class Ajax extends Admin_Controller
             }
 
             // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
-            if (! config_item('legacy_calculation') && $invoice_discount_amount && $invoice_discount_amount != $global_discount['item']) {
+            if ( ! config_item('legacy_calculation') && $invoice_discount_amount && $invoice_discount_amount != $global_discount['item']) {
                 // Adjust amount to reflect real calculation (cents)
                 $invoice_discount_amount = $global_discount['item'];
             }
 
-            $db_array =
-            [
+            $db_array = [
                 'invoice_number'           => $invoice_number,
                 'invoice_status_id'        => $invoice_status_id,
                 'invoice_date_created'     => date_to_mysql($this->input->post('invoice_date_created')),
@@ -146,8 +143,7 @@ class Ajax extends Admin_Controller
             $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $invoice_id)->get()->num_rows();
 
             if ($sumexInvoice >= 1) {
-                $sumex_array =
-                [
+                $sumex_array = [
                     'sumex_invoice'        => $invoice_id,
                     'sumex_reason'         => $this->input->post('invoice_sumex_reason'),
                     'sumex_diagnosis'      => $this->input->post('invoice_sumex_diagnosis'),
@@ -349,9 +345,9 @@ class Ajax extends Admin_Controller
 
         // Get the user ID
         $user_id = $this->security->xss_clean($this->input->post('user_id'));
-        $user = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
+        $user    = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
 
-        if (!empty($user)) {
+        if ( ! empty($user)) {
             $invoice_id = $this->security->xss_clean($this->input->post('invoice_id'));
 
             $db_array = [
@@ -398,9 +394,9 @@ class Ajax extends Admin_Controller
 
         // Get the client ID
         $client_id = $this->security->xss_clean($this->input->post('client_id'));
-        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
+        $client    = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
-        if (!empty($client)) {
+        if ( ! empty($client)) {
             $invoice_id = $this->security->xss_clean($this->input->post('invoice_id'));
 
             $db_array = [
@@ -410,7 +406,7 @@ class Ajax extends Admin_Controller
             $this->db->update('ip_invoices', $db_array);
 
             $response = [
-                'success' => 1,
+                'success'    => 1,
                 'invoice_id' => $this->security->xss_clean($invoice_id),
             ];
         } else {
@@ -493,7 +489,7 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_invoices_recurring');
 
         $data = [
-            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
+            'invoice_id'        => $this->security->xss_clean($this->input->post('invoice_id')),
             'recur_frequencies' => $this->mdl_invoices_recurring->recur_frequencies,
         ];
 
@@ -502,7 +498,7 @@ class Ajax extends Admin_Controller
 
     public function get_recur_start_date()
     {
-        $invoice_date = $this->input->post('invoice_date');
+        $invoice_date    = $this->input->post('invoice_date');
         $recur_frequency = $this->input->post('recur_frequency');
 
         echo increment_user_date($invoice_date, $recur_frequency);
@@ -555,13 +551,13 @@ class Ajax extends Admin_Controller
             $this->mdl_invoices->update('ip_invoice_amounts', ['invoice_sign' => '-1']);
 
             $response = [
-                'success' => 1,
+                'success'    => 1,
                 'invoice_id' => $target_id,
             ];
         } else {
             $this->load->helper('json_error');
             $response = [
-                'success' => 0,
+                'success'           => 0,
                 'validation_errors' => json_errors(),
             ];
         }

@@ -53,7 +53,7 @@ foreach ($tasks as $task) {
                                     </a>
                                 </li>
 <?php
-    if (!($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true)) {
+    if ( ! ($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true)) {
 ?>
                                 <li>
                                     <form action="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"

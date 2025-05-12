@@ -43,7 +43,7 @@
                 </option>
             </select>
 <?php
-$disabled = ''; // hint (And little tweak for .help-block)
+$disabled                  = ''; // hint (And little tweak for .help-block)
 $client_einvoicing_version = $this->mdl_clients->form_value('client_einvoicing_version');
 // Check logged user e-invoice fields (show_table 0 = ok, 1 = no)
 if ($req_einvoicing->users[$_SESSION['user_id']]->show_table > 0) {
@@ -121,18 +121,18 @@ foreach ($req_einvoicing->users as $user_id => $user) {
             // tr_show_* (attr name)
             $tr_show_key = 'tr_show_' . $key;
             // Show it in Errors (1)
-            if ($user->$tr_show_key) {
+            if ($user->{$tr_show_key}) {
                 // Prepare some stuff
-                $c_icon = '<i class="' . $class_checks[$req_einvoicing->clients[$client_id]->$key] . '"></i>';
-                $u_icon = '<i class="' . $class_checks[$user->$key] . '"></i>';
+                $c_icon = '<i class="' . $class_checks[$req_einvoicing->clients[$client_id]->{$key}] . '"></i>';
+                $u_icon = '<i class="' . $class_checks[$user->{$key}] . '"></i>';
 ?>
                             <tr>
                                 <td><?php _trans($lang[$l]); ?></td>
                                 <td class="text-center">
-                                    <?php echo anchor('clients/form/' . $client_id . '#client_' . $key, $c_icon, $title_tip  . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ')"'); ?>
+                                    <?php echo anchor('clients/form/' . $client_id . '#client_' . $key, $c_icon, $title_tip . ' #' . trans($lang[$l]) . ' (' . mb_trim(trans('field')) . ')"'); ?>
                                 </td>
                                 <td class="text-center">
-                                    <?php echo anchor('users/form/' . $user_id . '#user_' . $key, $u_icon, $title_tip . ' ' . htmlsc($user->user_name) . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ')"'); ?>
+                                    <?php echo anchor('users/form/' . $user_id . '#user_' . $key, $u_icon, $title_tip . ' ' . htmlsc($user->user_name) . ' #' . trans($lang[$l]) . ' (' . mb_trim(trans('field')) . ')"'); ?>
                                 </td>
                             </tr>
 <?php

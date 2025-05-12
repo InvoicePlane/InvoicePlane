@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -65,8 +65,7 @@ class Users extends Admin_Controller
             if ($this->session->userdata('user_id') == $id) {
                 $new_details = $this->mdl_users->get_by_id($id);
 
-                $session_data =
-                [
+                $session_data = [
                     'user_type'     => $new_details->user_type,
                     'user_id'       => $new_details->user_id,
                     'user_name'     => $new_details->user_name,
@@ -84,7 +83,7 @@ class Users extends Admin_Controller
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
-            if (! $this->mdl_users->prep_form($id)) {
+            if ( ! $this->mdl_users->prep_form($id)) {
                 show_404();
             }
 
@@ -116,15 +115,15 @@ class Users extends Admin_Controller
                 'clients/mdl_clients',
                 'custom_fields/mdl_custom_fields',
                 'custom_fields/mdl_user_custom',
-                'custom_values/mdl_custom_values'
+                'custom_values/mdl_custom_values',
             ]
         );
 
         $custom_fields['ip_user_custom'] = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
-        $custom_values = [];
+        $custom_values                   = [];
         foreach ($custom_fields['ip_user_custom'] as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }

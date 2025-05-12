@@ -1,7 +1,7 @@
 <?php
-$disabled = $custom_field_usage ? ' disabled' : '';
+$disabled           = $custom_field_usage ? ' disabled' : '';
 $custom_field_table = $this->mdl_custom_fields->form_value('custom_field_table');
-$custom_field_type = $this->mdl_custom_fields->form_value('custom_field_type');
+$custom_field_type  = $this->mdl_custom_fields->form_value('custom_field_type');
 ?>
 <form method="post">
 
@@ -37,7 +37,7 @@ if ($disabled) {
 
             <div class="form-group">
                 <label for="custom_field_table"><?php _trans('table'); ?></label>
-                <select name="custom_field_table" id="custom_field_table" class="form-control simple-select"<?php echo $disabled ?: ' required' ; ?>>
+                <select name="custom_field_table" id="custom_field_table" class="form-control simple-select"<?php echo $disabled ?: ' required'; ?>>
 <?php
 // New field? Auto select (work if come from custom_fields/table/*)
 $custom_field_table = $custom_field_table ?: (isset($_SERVER['HTTP_REFERER']) ? 'ip_' . basename($_SERVER['HTTP_REFERER']) . '_custom' : '');
@@ -57,11 +57,11 @@ foreach ($custom_field_tables as $table => $label) {
 
             <div class="form-group">
                 <label for="custom_field_type"><?php _trans('type'); ?></label>
-                <select name="custom_field_type" id="custom_field_type" class="form-control simple-select"<?php echo $disabled ?: ' required' ; ?>>
+                <select name="custom_field_type" id="custom_field_type" class="form-control simple-select"<?php echo $disabled ?: ' required'; ?>>
 <?php
 
 foreach ($custom_field_types as $type) {
-    $alpha = str_replace("-", "_", strtolower($type));
+    $alpha = str_replace('-', '_', mb_strtolower($type));
 ?>
                         <option value="<?php echo $type; ?>" <?php check_select($custom_field_type, $type); ?>><?php _trans($alpha); ?></option>
 <?php

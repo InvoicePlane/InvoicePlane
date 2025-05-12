@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -57,8 +57,8 @@ function include_rdf($embedXml, $urn = 'factur-x')
 function get_xml_template_files()
 {
     $xml_template_items = [];
-    $path = APPPATH . 'helpers/XMLconfigs/';
-    $xml_config_files = is_dir($path) ? array_diff(scandir($path), ['.', '..']) : [];
+    $path               = APPPATH . 'helpers/XMLconfigs/';
+    $xml_config_files   = is_dir($path) ? array_diff(scandir($path), ['.', '..']) : [];
 
     foreach ($xml_config_files as $key => $xml_config_file) {
         $xml_config_files[$key] = str_replace('.php', '', $xml_config_file);
@@ -67,7 +67,7 @@ function get_xml_template_files()
             // By default config filename
             $generator = $xml_config_files[$key];
             // Use other template? (Optional)
-            if (! empty($xml_setting['generator'])) {
+            if ( ! empty($xml_setting['generator'])) {
                 $generator = $xml_setting['generator'];
             }
 
@@ -99,12 +99,11 @@ function get_xml_full_name($xml_id)
 
         return $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
     }
-
-    return null;
 }
 
 /**
  * @param int $user_id : get result only with it (or all if null)
+ *
  * @return array $user(s)
  */
 function get_admin_active_users($user_id = ''): array
@@ -121,23 +120,25 @@ function get_admin_active_users($user_id = ''): array
 
 /**
  * @scope clients, quotes & invoices controllers
- * @param object  $client
- * @param int     $user_id : get result only with it (or all if null)
- * @param bool    $vat : check vat user field(s) are filled
+ *
+ * @param object $client
+ * @param int    $user_id : get result only with it (or all if null)
+ * @param bool   $vat     : check vat user field(s) are filled
+ *
  * @return object $req_fields
  */
 function get_req_fields_einvoice($client = null, $user_id = ''): object
 {
     $cid = empty($client->client_id) ? 0 : $client->client_id; // Client is New (form) or exist
-    $c = new stdClass();
+    $c   = new stdClass();
     // check if required (einvoicing) fields are filled in?
-    $c->address_1 = $cid ? ($client->client_address_1 != '' ? 0 : 1) : 0;
-    $c->zip       = $cid ? ($client->client_zip       != '' ? 0 : 1) : 0;
-    $c->city      = $cid ? ($client->client_city      != '' ? 0 : 1) : 0;
-    $c->country   = $cid ? ($client->client_country   != '' ? 0 : 1) : 0;
-    $c->company   = $cid ? ($client->client_company   != '' ? 0 : 1) : 0;
-    $c->tax_code  = $cid ? ($client->client_tax_code  != '' ? 0 : 1) : 0;
-    $c->vat_id    = $cid ? ($client->client_vat_id    != '' ? 0 : 1) : 0;
+    $c->address_1 = $cid && $client->client_address_1 == '' ? 1 : 0;
+    $c->zip       = $cid && $client->client_zip       == '' ? 1 : 0;
+    $c->city      = $cid && $client->client_city      == '' ? 1 : 0;
+    $c->country   = $cid && $client->client_country   == '' ? 1 : 0;
+    $c->company   = $cid && $client->client_company   == '' ? 1 : 0;
+    $c->tax_code  = $cid && $client->client_tax_code  == '' ? 1 : 0;
+    $c->vat_id    = $cid && $client->client_vat_id    == '' ? 1 : 0;
     // Tweak to run with or without VAT
     if ($c->company + $c->vat_id == 2) {
         $c->company = 0;
@@ -150,10 +151,10 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
     }
 
     $c->einvoicing_empty_fields = $total_empty_fields_client;
-    $c->show_table              = intval(! $c->einvoicing_empty_fields);
+    $c->show_table              = (int) ( ! $c->einvoicing_empty_fields);
 
     // Begin to save results
-    $req_fields = new stdClass();
+    $req_fields                = new stdClass();
     $req_fields->clients[$cid] = $c;
 
     if (empty($user_id)) {
@@ -168,11 +169,10 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
     $users = get_admin_active_users($user_id);
     foreach ($users as $o) {
         $u = new stdClass();
-        // check if required (eInvoicing) fields are filled in?
+        // check if required (eInvoicing) fields are filled in? todo: user_iban user_bic?
         $u->address_1 = $o->user_address_1 != '' ? 0 : 1;
         $u->zip       = $o->user_zip       != '' ? 0 : 1;
         $u->city      = $o->user_city      != '' ? 0 : 1;
-        // todo: user_iban user_bic?
         $u->country   = $o->user_country   != '' ? 0 : 1;
         $u->company   = $o->user_company   != '' ? 0 : 1;
         $u->tax_code  = $o->user_tax_code  != '' ? 0 : 1;
@@ -191,7 +191,7 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
         // Check mandatory fields (no company, client, email address, ...)
         $u->einvoicing_empty_fields = $total_empty_fields_user;
 
-        // For show table (or not) record (in relation with client)
+        // User records filled? (in relation with client)
         $u->tr_show_address_1 = $u->address_1 + $c->address_1 > 0 ? 1 : 0;
         $u->tr_show_zip       = $u->zip       + $c->zip       > 0 ? 1 : 0;
         $u->tr_show_city      = $u->city      + $c->city      > 0 ? 1 : 0;
@@ -199,13 +199,8 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
         $u->tr_show_company   = $u->company   + $c->company   > 0 ? 1 : 0;
         $u->tr_show_tax_code  = $u->tax_code  + $c->tax_code  > 0 ? 1 : 0;
         $u->tr_show_vat_id    = $u->vat_id    + $c->vat_id    > 0 ? 1 : 0;
-        $u->show_table        = $u->tr_show_address_1 +
-                                 $u->tr_show_zip      +
-                                 $u->tr_show_city     +
-                                 $u->tr_show_country  +
-                                 $u->tr_show_company  +
-                                 $u->tr_show_tax_code +
-                                 $u->tr_show_vat_id > 0 ? 1 : 0;
+        // Show user table when sum of tr_show > 0
+        $u->show_table = $u->tr_show_address_1 + $u->tr_show_zip + $u->tr_show_city + $u->tr_show_country + $u->tr_show_company + $u->tr_show_tax_code + $u->tr_show_vat_id > 0 ? 1 : 0;
 
         // No nessessary to check but for handly loop in view
         $u->user_name = $o->user_name;
@@ -222,15 +217,16 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
 
 /**
  * @scope pdf helper, quotes & invoices controllers
+ *
  * @param object $invoice | $quote
  * @param object $items
  */
 function get_einvoice_usage($invoice, $items, $full = true): object
 {
-    $einvoice = new stdclass();
+    $einvoice       = new stdclass();
     $einvoice->name = false;
     $einvoice->user = false;
-    if (! get_setting('einvoicing')) {
+    if ( ! get_setting('einvoicing')) {
         return $einvoice;
     }
 
@@ -251,7 +247,7 @@ function get_einvoice_usage($invoice, $items, $full = true): object
             $on = ($invoice->user_company && $invoice->user_tax_code);
             // Check if need vat_id filled (Subject to VAT)
             if ($on && $items[0]->item_tax_rate_percent) {
-                $on = boolval($invoice->user_vat_id);
+                $on = (bool) ($invoice->user_vat_id);
             }
         }
 
@@ -259,7 +255,6 @@ function get_einvoice_usage($invoice, $items, $full = true): object
     }
 
     return $einvoice;
-
 }
 
 /**
@@ -282,7 +277,7 @@ function get_items_tax_usages($items): array
 
 /**
  * Return if a is standardized taxes with legacy_calculation false in ipconfig
- * For obtain a Valid xml data. See in temp/einvoice-test.xml (debug true)
+ * For obtain a Valid xml data. See in temp/einvoice-test.xml (debug true).
  *
  * @Scopes Invoices controllers
  *
@@ -306,6 +301,7 @@ function items_tax_usages_bad($items): mixed
             '<h3 class="pull-right"><a class="btn btn-default" href="javascript:check_items_tax_usages(true);"><i class="fa fa-cogs"></i> ' . trans('view') . '</a></h3>'
             . trans('items_tax_usages_bad_set')
         );
+
         return $checks;
     }
 

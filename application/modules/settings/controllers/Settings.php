@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -52,7 +52,7 @@ class Settings extends Admin_Controller
 
             // Save the submitted settings :todo:improve: Save In One SQL query : $db_array[$key] = val; •••& @end mdl save $db_array.
             foreach ($settings as $key => $value) {
-                if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
+                if (str_contains($key, 'field_is_password') || str_contains($key, 'field_is_amount')) {
                     // Skip all meta fields
                     continue;
                 }
@@ -64,7 +64,7 @@ class Settings extends Admin_Controller
 
                 if (isset($settings[$key . '_field_is_password']) && $value != '') {
                     // Encrypt passwords but don't save empty passwords
-                    $this->mdl_settings->save($key, $this->crypt->encode(trim($value)));
+                    $this->mdl_settings->save($key, $this->crypt->encode(mb_trim($value)));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
                     $this->mdl_settings->save($key, standardize_amount($value));
@@ -91,7 +91,7 @@ class Settings extends Admin_Controller
             if ($_FILES['invoice_logo']['name']) {
                 $this->load->library('upload', $upload_config);
 
-                if (!$this->upload->do_upload('invoice_logo')) {
+                if ( ! $this->upload->do_upload('invoice_logo')) {
                     $this->session->set_flashdata('alert_error', $this->upload->display_errors());
                     redirect('settings');
                 }
@@ -105,7 +105,7 @@ class Settings extends Admin_Controller
             if ($_FILES['login_logo']['name']) {
                 $this->load->library('upload', $upload_config);
 
-                if (!$this->upload->do_upload('login_logo')) {
+                if ( ! $this->upload->do_upload('login_logo')) {
                     $this->session->set_flashdata('alert_error', $this->upload->display_errors());
                     redirect('settings');
                 }
@@ -132,10 +132,10 @@ class Settings extends Admin_Controller
         ]);
 
         // Collect the list of templates
-        $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
+        $pdf_invoice_templates    = $this->mdl_templates->get_invoice_templates('pdf');
         $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
-        $pdf_quote_templates = $this->mdl_templates->get_quote_templates('pdf');
-        $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
+        $pdf_quote_templates      = $this->mdl_templates->get_quote_templates('pdf');
+        $public_quote_templates   = $this->mdl_templates->get_quote_templates('public');
 
         // Get all themes
         $available_themes = $this->mdl_settings->get_themes();

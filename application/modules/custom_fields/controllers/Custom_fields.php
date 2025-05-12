@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -78,7 +78,7 @@ class Custom_Fields extends Admin_Controller
             redirect('custom_fields');
         }
 
-        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_custom_fields->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit') && ! $this->mdl_custom_fields->prep_form($id)) {
             show_404();
         }
 
@@ -101,7 +101,7 @@ class Custom_Fields extends Admin_Controller
      */
     public function delete($id)
     {
-        if (! $this->mdl_custom_fields->delete($id)) {
+        if ( ! $this->mdl_custom_fields->delete($id)) {
             $this->session->set_flashdata('alert_info', trans('id') . sprintf(' "%s" ', $id) . trans('custom_fields_used_not_deletable'));
         }
 

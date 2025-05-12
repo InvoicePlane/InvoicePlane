@@ -18,7 +18,7 @@ if ($this->config->item('disable_read_only') == true) {
         });
 
 <?php
-if (!$items) {
+if ( ! $items) {
     ?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
 <?php
@@ -82,7 +82,7 @@ if (!$items) {
                     payment_method: $('#payment_method').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
@@ -165,9 +165,7 @@ echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation ha
         <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id); ?>
     </h1>
 
-    <div class="headerbar-item pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
-        ?>btn-group<?php
-                                          } ?>">
+    <div class="headerbar-item pull-right<?php echo ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) ? ' btn-group' : ''; ?>">
 
         <div class="options btn-group pull-left">
             <a class="btn btn-sm btn-default dropdown-toggle"
@@ -374,10 +372,10 @@ $reasons = [
     'maternity',
     'prevention',
     'birthdefect',
-    'unknown'
+    'unknown',
 ];
 foreach ($reasons as $key => $reason) {
-    $selected = ($invoice->sumex_reason == $key ? " selected" : "");
+    $selected = ($invoice->sumex_reason == $key ? ' selected' : '');
 ?>
                                                 <option value="<?php echo $key; ?>"<?php echo $selected; ?>>
                                                     <?php _trans('reason_' . $reason); ?>
@@ -440,7 +438,7 @@ if ($invoice->invoice_sign == -1) {
                             <div class="col-xs-12">
                                 <span class="label label-warning">
                                     <i class="fa fa-credit-invoice"></i>&nbsp;
-                                    <?php echo trans('credit_invoice_for_invoice') . ' ' . $credit_link;?>
+                                    <?php echo trans('credit_invoice_for_invoice') . ' ' . $credit_link; ?>
                                 </span>
                             </div>
 <?php
@@ -458,7 +456,7 @@ if ($invoice->invoice_sign == -1) {
                                     </label>
                                     <select name="invoice_status_id" id="invoice_status_id"
                                             class="form-control simple-select"
-                                            <?php echo ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) ? 'disabled="disabled"' : '';?>
+                                            <?php echo ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) ? 'disabled="disabled"' : ''; ?>
                                     >
 <?php
 foreach ($invoice_statuses as $key => $status) {
@@ -483,7 +481,7 @@ foreach ($invoice_statuses as $key => $status) {
                                         <?php else : ?>
                                             placeholder="<?php _trans('not_set'); ?>"
                                         <?php endif; ?>
-                                        <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
+                                        <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>
                                     >
                                 </div>
 
@@ -494,7 +492,7 @@ foreach ($invoice_statuses as $key => $status) {
                                         <input name="invoice_date_created" id="invoice_date_created"
                                                class="form-control datepicker"
                                                value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>"
-                                               <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
+                                               <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>
                                         >
                                         <span class="input-group-addon">
                                         <i class="fa fa-calendar fa-fw"></i>
@@ -509,7 +507,7 @@ foreach ($invoice_statuses as $key => $status) {
                                         <input name="invoice_date_due" id="invoice_date_due"
                                                class="form-control datepicker"
                                                value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
-                                               <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
+                                               <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>
                                         >
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar fa-fw"></i>
@@ -519,7 +517,7 @@ foreach ($invoice_statuses as $key => $status) {
 <?php
 $default_custom = false;
 foreach ($custom_fields as $custom_field) {
-    if (! $default_custom && ! $custom_field->custom_field_location) {
+    if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
     }
 
@@ -544,7 +542,7 @@ foreach ($custom_fields as $custom_field) {
 
                     <label><?php _trans('sumex_observations'); ?></label>
                     <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control" rows="3"
-                              <?php echo $invoice->is_read_only ? 'disabled="disabled"' : '';?>
+                              <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>
                     ><?php echo $invoice->sumex_observations; ?></textarea>
 
                 </div>
@@ -572,7 +570,7 @@ if ($default_custom) {
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
     foreach ($custom_fields as $custom_field) {
-        if (! $custom_field->custom_field_location) { // == 0
+        if ( ! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_invoices, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }

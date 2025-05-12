@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -29,7 +29,7 @@ class Mailer extends Admin_Controller
 
         $this->mailer_configured = mailer_configured();
 
-        if (! $this->mailer_configured) {
+        if ( ! $this->mailer_configured) {
             $this->layout->buffer('content', 'mailer/not_configured');
             $this->layout->render();
         }
@@ -40,7 +40,7 @@ class Mailer extends Admin_Controller
      */
     public function invoice($invoice_id)
     {
-        if (! $this->mailer_configured) {
+        if ( ! $this->mailer_configured) {
             return;
         }
 
@@ -90,7 +90,7 @@ class Mailer extends Admin_Controller
      */
     public function quote($quote_id)
     {
-        if (! $this->mailer_configured) {
+        if ( ! $this->mailer_configured) {
             return;
         }
 
@@ -107,7 +107,7 @@ class Mailer extends Admin_Controller
         $this->load->helper('dropzone');
 
         $email_template_id = get_setting('email_quote_template');
-        $email_template = '{}';
+        $email_template    = '{}';
 
         if ($email_template_id) {
             $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
@@ -143,20 +143,20 @@ class Mailer extends Admin_Controller
             redirect('invoices/view/' . $invoice_id);
         }
 
-        if (! $this->mailer_configured) {
+        if ( ! $this->mailer_configured) {
             return;
         }
 
         $to   = $this->input->post('to_email', true);
         $from = $this->input->post('from_email', true);
 
-        $from         = [$from, $this->input->post('from_name')];
+        $from = [$from, $this->input->post('from_name')];
 
         $pdf_template = $this->input->post('pdf_template', true);
         $subject      = $this->input->post('subject');
         $body         = $this->input->post('body');
 
-        if (strlen($body) != strlen(strip_tags($body))) {
+        if (mb_strlen($body) != mb_strlen(strip_tags($body))) {
             $body = htmlspecialchars_decode($body, ENT_COMPAT);
         } else {
             $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
@@ -188,19 +188,19 @@ class Mailer extends Admin_Controller
             redirect('quotes/view/' . $quote_id);
         }
 
-        if (! $this->mailer_configured) {
+        if ( ! $this->mailer_configured) {
             return;
         }
 
         $to   = $this->input->post('to_email');
         $from = $this->input->post('from_email');
 
-        $from         = [$from, $this->input->post('from_name')];
+        $from = [$from, $this->input->post('from_name')];
 
         $pdf_template = $this->input->post('pdf_template');
         $subject      = $this->input->post('subject');
 
-        if (strlen($this->input->post('body')) != strlen(strip_tags($this->input->post('body')))) {
+        if (mb_strlen($this->input->post('body')) != mb_strlen(strip_tags($this->input->post('body')))) {
             $body = htmlspecialchars_decode($this->input->post('body'), ENT_COMPAT);
         } else {
             $body = htmlspecialchars_decode(nl2br($this->input->post('body')), ENT_COMPAT);

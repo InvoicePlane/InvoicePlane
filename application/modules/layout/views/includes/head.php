@@ -6,7 +6,7 @@
 <meta name="robots" content="NOINDEX,NOFOLLOW">
 <meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
 <meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
-<meta name="legacy_calculation" content="<?php echo intval(config_item('legacy_calculation')); ?>">
+<meta name="legacy_calculation" content="<?php echo (int) (config_item('legacy_calculation')); ?>">
 
 <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 

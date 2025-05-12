@@ -1,11 +1,11 @@
 <?php
 // Determine for who is (Replace $) (type) & (who) _id system
-$who  = empty($user_id) ? 'client' : 'user'; // Basic test
-$type = empty($quote_id) ? 'invoice' : 'quote'; // Basic test
-$who_id  = $who  . '_id'; // Add *_id user/client
+$who     = empty($user_id) ? 'client' : 'user'; // Basic test
+$type    = empty($quote_id) ? 'invoice' : 'quote'; // Basic test
+$who_id  = $who . '_id'; // Add *_id user/client
 $type_id = $type . '_id'; // Add *_id quote/invoice
 $type_id = $this->input->post($type_id) ?: false; // Type exist? get id
-if (! $type_id) {
+if ( ! $type_id) {
     return; // No quote/invoice id do nothing
 }
 $permissive = get_setting('enable_permissive_search_' . $who . 's');
@@ -64,12 +64,12 @@ $permissive = get_setting('enable_permissive_search_' . $who . 's');
                     <select name="<?php echo $who; ?>_id" id="change_<?php echo $who; ?>_id" class="<?php echo $who; ?>-id-select form-control"
                             autofocus="autofocus" required>
 <?php
-$who_id = isset($$who->$who_id) ? $$who->$who_id : $this->input->post($who_id);
+$who_id = ${$who}->{$who_id} ?? $this->input->post($who_id);
 
 if ($who_id) {
     $format = 'format_' . $who; // func name
-    $name = $who . '_name'; // user or client property
-    $name = empty($$who->$name) ? $format($who_id) : $user->$name
+    $name   = $who . '_name'; // user or client property
+    $name   = empty(${$who}->{$name}) ? $format($who_id) : $user->{$name}
 ?>
                         <option value="<?php echo $who_id; ?>"><?php _htmlsc($name); ?></option>
 <?php

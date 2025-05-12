@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -13,10 +13,10 @@ if (! defined('BASEPATH')) {
  * @link        https://invoiceplane.com
  */
 /**
- * @param      $from
- * @param      $to
- * @param      $subject
- * @param      $message
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $message
  *
  * @return bool
  */
@@ -67,7 +67,7 @@ function phpmail_send(
             }
 
             // Check if certificates should not be verified
-            if (! get_setting('smtp_verify_certs', true)) {
+            if ( ! get_setting('smtp_verify_certs', true)) {
                 $mail->SMTPOptions = [
                     'ssl' => [
                         'verify_peer'       => false,
@@ -141,10 +141,10 @@ function phpmail_send(
         $attachment_path = strtr($attachment_path, [UPLOADS_ARCHIVE_FOLDER => UPLOADS_TEMP_FOLDER]);
 
         // The XML eInvoicing file exist in temporary?
-        $xml_file = rtrim($attachment_path, '.pdf') . '.xml';
+        $xml_file = mb_rtrim($attachment_path, '.pdf') . '.xml';
         if (file_exists($xml_file)) {
             // Attach eInvoicing temp file
-            if (! empty($_SERVER['CIIname'])) {
+            if ( ! empty($_SERVER['CIIname'])) {
                 // Need Specific eInvoice filename? (see mailer helper)
                 $mail->addAttachment($xml_file, $_SERVER['CIIname']); // phpmailer-sent-attachment-as-other-name
             } else {
@@ -172,7 +172,7 @@ function phpmail_send(
     }
 
     // Only Notify the error. The success is in mailer controller.
-    if (!$ok) {
+    if ( ! $ok) {
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
     }
 

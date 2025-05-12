@@ -47,7 +47,7 @@
 <?php
 // LEGACY_CALCULATION false : Taxes Global N, Item Y : Use simple calculation : Apply global discount before item tax
 // For e-invoices : 🗸 EN16931, ? PEPPOL3BIS, ? UBL, ? CII ••• (WIP : todo: checks, modify, create models).
-if (! $legacy_calculation) {
+if ( ! $legacy_calculation) {
 ?>
                     <input name="settings[default_include_item_tax]" id="settings[default_include_item_tax]" type="hidden" value="">
 <?php

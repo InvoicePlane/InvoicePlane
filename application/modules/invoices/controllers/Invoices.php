@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -104,7 +104,7 @@ class Invoices extends Admin_Controller
             return;
         }
 
-        if (! file_exists($filePath)) {
+        if ( ! file_exists($filePath)) {
             log_message('error', 'While downloading: File not found: ' . $filePath);
             show_404();
 
@@ -153,7 +153,7 @@ class Invoices extends Admin_Controller
         $fields  = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if (! $invoice) {
+        if ( ! $invoice) {
             show_404();
         }
 
@@ -161,8 +161,8 @@ class Invoices extends Admin_Controller
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values                                          = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-                $custom_values[ $custom_field->custom_field_id ] = $values;
+                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
 
@@ -267,16 +267,16 @@ class Invoices extends Admin_Controller
     public function generate_xml($invoice_id): void
     {
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
-        if (! $invoice) {
+        if ( ! $invoice) {
             show_404();
         }
 
         $this->load->model('invoices/mdl_items');
-        $items   = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
+        $items = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
 
         $this->load->helper('e-invoice'); // eInvoicing++
         $einvoice = get_einvoice_usage($invoice, $items, false);
-        if (! $einvoice->user) {
+        if ( ! $einvoice->user) {
             show_404();
         }
 
@@ -293,7 +293,7 @@ class Invoices extends Admin_Controller
         }
 
         $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
-        $path = generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
+        $path     = generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
         $this->output->set_content_type('text/xml');
         $this->output->set_output(file_get_contents($path));
         unlink($path);

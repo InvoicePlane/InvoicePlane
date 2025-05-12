@@ -1,6 +1,6 @@
 <?php
-$itsCompany    = $this->mdl_users->form_value('user_company') || $this->mdl_users->form_value('user_vat_id');
-$qr_code_info  = get_setting('qr_code') ? '<span class="pull-right"><i class="fa fa-qrcode"  data-toggle="tooltip" data-placement="bottom" title="' . trans('user_qr_code_hint') . '"></i></span>' : '';
+$itsCompany   = $this->mdl_users->form_value('user_company') || $this->mdl_users->form_value('user_vat_id');
+$qr_code_info = get_setting('qr_code') ? '<span class="pull-right"><i class="fa fa-qrcode"  data-toggle="tooltip" data-placement="bottom" title="' . trans('user_qr_code_hint') . '"></i></span>' : '';
 // eInvoicing enabled?
 $einvoicingTip = $einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . ' (' : ''; // tootip base
 $einvoicingReq = $einvoicing ? $einvoicingTip . trans('required_field') . ')"' : '';
@@ -80,7 +80,7 @@ $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
                             </div>
 
 <?php // New user
-if (! $id) {
+if ( ! $id) {
 ?>
                             <div class="form-group">
                                 <label for="user_password">
@@ -346,7 +346,7 @@ if ($this->mdl_settings->setting('sumex') == '1') {
 <?php
 $default_custom = false;
 foreach ($custom_fields['ip_user_custom'] as $custom_field) {
-    if (! $default_custom && ! $custom_field->custom_field_location) {
+    if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
     }
 
@@ -375,7 +375,7 @@ if ($default_custom) {
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
     foreach ($custom_fields['ip_user_custom'] as $custom_field) {
-        if (! $custom_field->custom_field_location) { // == 0
+        if ( ! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_users, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }

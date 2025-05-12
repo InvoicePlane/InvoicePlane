@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,8 +14,10 @@ if (! defined('BASEPATH')) {
  */
 
 /**
- * Show html for dropzone (upload module)
+ * Show html for dropzone (upload module).
+ *
  * @param $read_only : Like $invoice->is_read_only
+ *
  * @return void
  * */
 function _dropzone_html($read_only = true)
@@ -27,11 +29,11 @@ function _dropzone_html($read_only = true)
 
     <div class="panel-body clearfix">
         <!-- The fileinput-button span is used to style the file input field as button -->
-        <button type="button" class="btn btn-sm btn-default fileinput-button<?php echo $read_only ? ' hide" readonly="readonly' : '' ; ?>">
+        <button type="button" class="btn btn-sm btn-default fileinput-button<?php echo $read_only ? ' hide" readonly="readonly' : ''; ?>">
             <i class="fa fa-plus"></i> <?php _trans('add_files'); ?>
         </button>
 <?php
-    if (! $read_only) {
+    if ( ! $read_only) {
 ?>
         <button type="button" class="btn btn-sm btn-danger removeAllFiles-button pull-right hidden">
             <i class="fa fa-trash-o"></i> <?php _trans('delete_attachments'); ?>
@@ -79,7 +81,7 @@ function _dropzone_html($read_only = true)
                                     <span><?php _trans('download'); ?></span>
                                 </button>
 <?php
-    if (! $read_only) {
+    if ( ! $read_only) {
 ?>
                                 <button data-dz-remove class="btn btn-sm btn-danger delete">
                                     <i class="fa fa-trash-o"></i>
@@ -118,7 +120,7 @@ function _dropzone_html($read_only = true)
  * */
 function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acceptedExts = null)
 {
-    $site_url = site_url(empty($site_url) ? 'upload/' : (rtrim($site_url, '/') . '/'));
+    $site_url = site_url(empty($site_url) ? 'upload/' : (mb_rtrim($site_url, '/') . '/'));
 
     // Allow extentions system
     $content_types = [];

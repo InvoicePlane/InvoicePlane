@@ -8,30 +8,30 @@ $add_table_and_head_for_sums = 1; // Set to 0/false/null/'', return to original 
 // Note: watermarktext not applied if embed xml (Zugferd/Factur-x) pdf A (see mpdf_helper)
 
 // Init some vars (edit if you know what you're doing)
-$colspan = $show_item_discounts ? 5 : 4;
-$text_class = '';
-$text_class_date = '';
+$colspan            = $show_item_discounts ? 5 : 4;
+$text_class         = '';
+$text_class_date    = '';
 $text_class_balance = '';
-$watermark = '';
-$stamp = '';
-$show_qrcode = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
-$invoice_mode = isset($invoice_mode) ? $invoice_mode : 'default'; // from template - overdue / paid.php
+$watermark          = '';
+$stamp              = '';
+$show_qrcode        = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
+$invoice_mode ??= 'default'; // from template - overdue / paid.php
 
 switch ($invoice_mode) {
     case 'overdue':
-        $text_class = 'text-red';
+        $text_class         = 'text-red';
         $text_class_date    = ' class="' . $text_class . '"';
         $text_class_balance = ' class="' . $text_class . '"';
-        $watermark = '<watermarktext content="' . trans('overdue') . '" alpha="0.2" />';
-        $stamp = '<span class="stamp overdue">' . trans('overdue') . '</span>'; // * if watermark ok == no stamp (todo?)
+        $watermark          = '<watermarktext content="' . trans('overdue') . '" alpha="0.2" />';
+        $stamp              = '<span class="stamp overdue">' . trans('overdue') . '</span>'; // * if watermark ok == no stamp (todo?)
         break;
     case 'paid':
         $show_qrcode = false;
-        $text_class = 'text-green';
-//      $text_class_date    = ' class="' . $text_class . '"';
+        $text_class  = 'text-green';
+        // $text_class_date    = ' class="' . $text_class . '"';
         $text_class_balance = ' class="' . $text_class . '"';
-        $watermark = '<watermarktext content="' . trans('paid') . '" alpha="0.2" />';
-        $stamp = '<span class="stamp paid">' . trans('paid') . '</span>'; // * if watermark ok == no stamp (todo?)
+        $watermark          = '<watermarktext content="' . trans('paid') . '" alpha="0.2" />';
+        $stamp              = '<span class="stamp paid">' . trans('paid') . '</span>'; // * if watermark ok == no stamp (todo?)
         break;
     default:
 }
@@ -56,82 +56,82 @@ switch ($invoice_mode) {
             <b><?php _htmlsc(format_client($invoice)); ?></b>
         </div>
 <?php
-        if ($invoice->client_vat_id) {
-            echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->client_vat_id) . '</div>';
-        }
-        if ($invoice->client_tax_code) {
-            echo '<div>' . trans('tax_code_short') . ': ' . htmlsc($invoice->client_tax_code) . '</div>';
-        }
-        if ($invoice->client_address_1) {
-            echo '<div>' . htmlsc($invoice->client_address_1) . '</div>';
-        }
-        if ($invoice->client_address_2) {
-            echo '<div>' . htmlsc($invoice->client_address_2) . '</div>';
-        }
-        if ($invoice->client_city || $invoice->client_state || $invoice->client_zip) {
-            echo '<div>';
-            if ($invoice->client_city) {
-                echo htmlsc($invoice->client_city) . ' ';
-            }
-            if ($invoice->client_state) {
-                echo htmlsc($invoice->client_state) . ' ';
-            }
-            if ($invoice->client_zip) {
-                echo htmlsc($invoice->client_zip);
-            }
-            echo '</div>';
-        }
-        if ($invoice->client_country) {
-            echo '<div>' . get_country_name(trans('cldr'), htmlsc($invoice->client_country)) . '</div>';
-        }
+if ($invoice->client_vat_id) {
+    echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->client_vat_id) . '</div>';
+}
+if ($invoice->client_tax_code) {
+    echo '<div>' . trans('tax_code_short') . ': ' . htmlsc($invoice->client_tax_code) . '</div>';
+}
+if ($invoice->client_address_1) {
+    echo '<div>' . htmlsc($invoice->client_address_1) . '</div>';
+}
+if ($invoice->client_address_2) {
+    echo '<div>' . htmlsc($invoice->client_address_2) . '</div>';
+}
+if ($invoice->client_city || $invoice->client_state || $invoice->client_zip) {
+    echo '<div>';
+    if ($invoice->client_city) {
+        echo htmlsc($invoice->client_city) . ' ';
+    }
+    if ($invoice->client_state) {
+        echo htmlsc($invoice->client_state) . ' ';
+    }
+    if ($invoice->client_zip) {
+        echo htmlsc($invoice->client_zip);
+    }
+    echo '</div>';
+}
+if ($invoice->client_country) {
+    echo '<div>' . get_country_name(trans('cldr'), htmlsc($invoice->client_country)) . '</div>';
+}
 
-        echo '<br>';
+echo '<br>';
 
-        if ($invoice->client_phone) {
-            echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '</div>';
-        }
- ?>
+if ($invoice->client_phone) {
+    echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '</div>';
+}
+?>
     </div>
     <div id="company">
         <div><b><?php _htmlsc($invoice->user_name); ?></b></div>
 <?php
-        if ($invoice->user_vat_id) {
-            echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '</div>';
-        }
-        if ($invoice->user_tax_code) {
-            echo '<div>' . trans('tax_code_short') . ': ' . htmlsc($invoice->user_tax_code) . '</div>';
-        }
-        if ($invoice->user_address_1) {
-            echo '<div>' . htmlsc($invoice->user_address_1) . '</div>';
-        }
-        if ($invoice->user_address_2) {
-            echo '<div>' . htmlsc($invoice->user_address_2) . '</div>';
-        }
-        if ($invoice->user_city || $invoice->user_state || $invoice->user_zip) {
-            echo '<div>';
-            if ($invoice->user_city) {
-                echo htmlsc($invoice->user_city) . ' ';
-            }
-            if ($invoice->user_state) {
-                echo htmlsc($invoice->user_state) . ' ';
-            }
-            if ($invoice->user_zip) {
-                echo htmlsc($invoice->user_zip);
-            }
-            echo '</div>';
-        }
-        if ($invoice->user_country) {
-            echo '<div>' . get_country_name(trans('cldr'), htmlsc($invoice->user_country)) . '</div>';
-        }
+if ($invoice->user_vat_id) {
+   echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '</div>';
+}
+if ($invoice->user_tax_code) {
+    echo '<div>' . trans('tax_code_short') . ': ' . htmlsc($invoice->user_tax_code) . '</div>';
+}
+if ($invoice->user_address_1) {
+    echo '<div>' . htmlsc($invoice->user_address_1) . '</div>';
+}
+if ($invoice->user_address_2) {
+    echo '<div>' . htmlsc($invoice->user_address_2) . '</div>';
+}
+if ($invoice->user_city || $invoice->user_state || $invoice->user_zip) {
+    echo '<div>';
+    if ($invoice->user_city) {
+        echo htmlsc($invoice->user_city) . ' ';
+    }
+    if ($invoice->user_state) {
+        echo htmlsc($invoice->user_state) . ' ';
+    }
+    if ($invoice->user_zip) {
+        echo htmlsc($invoice->user_zip);
+    }
+    echo '</div>';
+}
+if ($invoice->user_country) {
+    echo '<div>' . get_country_name(trans('cldr'), htmlsc($invoice->user_country)) . '</div>';
+}
 
-        echo '<br>';
+echo '<br>';
 
-        if ($invoice->user_phone) {
-            echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->user_phone) . '</div>';
-        }
-        if ($invoice->user_fax) {
-            echo '<div>' . trans('fax_abbr') . ': ' . htmlsc($invoice->user_fax) . '</div>';
-        }
+if ($invoice->user_phone) {
+    echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->user_phone) . '</div>';
+}
+if ($invoice->user_fax) {
+    echo '<div>' . trans('fax_abbr') . ': ' . htmlsc($invoice->user_fax) . '</div>';
+}
 ?>
     </div>
 
@@ -250,7 +250,7 @@ if ($add_table_and_head_for_sums) {
         <tbody class="invoice-sums">
 
 <?php
-if (! $legacy_calculation) {
+if ( ! $legacy_calculation) {
     discount_global_print_in_pdf($invoice, $show_item_discounts); // in helpers/pdf_helper
 }
 ?>
@@ -374,7 +374,7 @@ if ($invoice->invoice_terms) {
 
 <htmlpagefooter name="footer">
     <footer>
-        <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number;?> - <?php _trans('page'); ?> {PAGENO} / {nbpg}
+        <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number; ?> - <?php _trans('page'); ?> {PAGENO} / {nbpg}
     </footer>
 </htmlpagefooter>
 

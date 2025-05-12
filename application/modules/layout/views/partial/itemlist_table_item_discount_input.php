@@ -1,7 +1,7 @@
 <?php
 // Called in [quotes|invoices]/partial_itemlist_table.php (item & new) line
 $invoice_disabled = isset($invoice) && $invoice->is_read_only == 1 ? ' disabled="disabled"' : '';
-$item_value = isset($item->item_discount_amount) ? format_amount($item->item_discount_amount) : '';
+$item_value       = isset($item->item_discount_amount) ? format_amount($item->item_discount_amount) : '';
 ?>
             <td class="td-amount">
                 <div class="input-group">

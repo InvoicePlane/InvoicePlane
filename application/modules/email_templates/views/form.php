@@ -11,7 +11,7 @@
 
         <?php $this->layout->load_view('layout/alerts'); ?>
 
-        <input class="hidden" name="is_update" type="hidden" value="<?php echo ($this->mdl_email_templates->form_value('is_update')) ? '1': '0'; ?>">
+        <input class="hidden" name="is_update" type="hidden" value="<?php echo ($this->mdl_email_templates->form_value('is_update')) ? '1' : '0'; ?>">
 
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">

@@ -6,8 +6,7 @@
             <th><?php _trans('client_name'); ?></th>
             <th><?php _trans('email_address'); ?></th>
 <?php
-if ($einvoicing)
-{
+if ($einvoicing) {
 ?>
             <th><?php echo ' e-' . trans('invoicing') . ' ' . ucfirst(trans('version')); ?></th>
             <th><?php echo ' e-' . trans('invoicing') . ' ' . trans('active'); ?></th>
@@ -31,8 +30,7 @@ foreach ($records as $client) {
                 <td><?php echo anchor('clients/view/' . $client->client_id, htmlsc(format_client($client))); ?></td>
                 <td><?php _htmlsc($client->client_email); ?></td>
 <?php
-if ($einvoicing)
-{
+if ($einvoicing) {
 ?>
                 <td><?php _htmlsc($client->client_einvoicing_version); ?></td>
                 <td>

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -68,7 +68,7 @@ function email_invoice(
     }
 
     // Need Specific eInvoice filename?
-    if (! empty($_SERVER['CIIname'])) {
+    if ( ! empty($_SERVER['CIIname'])) {
         // Use $options['CIIname' => '{{{tags}}}'] in your config (helpers/XMLconfigs)
         // Or set $_SERVER['CIIname'] in your generator (libraries/XMLtemplates)
         $_SERVER['CIIname'] = parse_template($db_invoice, $_SERVER['CIIname']);
@@ -82,11 +82,11 @@ function email_invoice(
 
     // Check parsed emails before phpmail - since v1.6.3
     $errors = [];
-    if (! filter_var($to, FILTER_VALIDATE_EMAIL)) {
+    if ( ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'to_email';
     }
 
-    if (! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
+    if ( ! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'from_email';
     }
 
@@ -148,11 +148,11 @@ function email_quote(
 
     // Check parsed emails before phpmail - since v1.6.3
     $errors = [];
-    if (! filter_var($to, FILTER_VALIDATE_EMAIL)) {
+    if ( ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'to_email';
     }
 
-    if (! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
+    if ( ! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'from_email';
     }
 
@@ -184,7 +184,7 @@ function email_quote_status($quote_id, $status)
     ini_set('display_errors', 'on');
     error_reporting(E_ALL);
 
-    if (! mailer_configured()) {
+    if ( ! mailer_configured()) {
         return false;
     }
 
@@ -215,7 +215,7 @@ function email_quote_status($quote_id, $status)
 
 /**
  * @param []  $errors
- * @param str $redirect
+ * @param string $redirect
  */
 function check_mail_errors($errors = [], $redirect = '')
 {

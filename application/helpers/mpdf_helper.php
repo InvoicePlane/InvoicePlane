@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -22,6 +22,7 @@ if (! defined('BASEPATH')) {
  * @param bool $stream
  * @param bool $embed_xml        (eInvoicing)
  * @param null $associated_files (eInvoicing)
+ *
  * @return string
  *
  * @throws \Mpdf\MpdfException
@@ -72,12 +73,12 @@ function pdf_create(
     }
 
     // Set a password if set for the voucher
-    if (! empty($password)) {
+    if ( ! empty($password)) {
         $mpdf->SetProtection(['copy', 'print'], $password, $password);
     }
 
     // Check if the archive folder is available
-    if (! is_dir(UPLOADS_ARCHIVE_FOLDER) || is_link(UPLOADS_ARCHIVE_FOLDER) && ( ! mkdir(UPLOADS_ARCHIVE_FOLDER, '0777') && ! is_dir(UPLOADS_ARCHIVE_FOLDER))) {
+    if ( ! is_dir(UPLOADS_ARCHIVE_FOLDER) || is_link(UPLOADS_ARCHIVE_FOLDER) && ( ! mkdir(UPLOADS_ARCHIVE_FOLDER, '0777') && ! is_dir(UPLOADS_ARCHIVE_FOLDER))) {
         throw new \RuntimeException(sprintf('Directory "%s" was not created', UPLOADS_ARCHIVE_FOLDER));
     }
 
@@ -88,13 +89,13 @@ function pdf_create(
     }
 
     // Set the footer if voucher is quote and if set in settings
-    if (! $isInvoice && ! empty($CI->mdl_settings->settings['pdf_quote_footer'])) {
+    if ( ! $isInvoice && ! empty($CI->mdl_settings->settings['pdf_quote_footer'])) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->SetHTMLFooter('<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
     }
 
     // Watermark (eInvoicing++ PDFA and PDFX do not permit transparency, so mPDF does not allow Watermarks!)
-    if (! $embed_xml && get_setting('pdf_watermark')) {
+    if ( ! $embed_xml && get_setting('pdf_watermark')) {
         $mpdf->showWatermarkText = true;
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -36,7 +36,7 @@ class Mdl_Custom_Values extends MY_Model
         return [
             'TEXT',
             'DATE',
-            'BOOLEAN'
+            'BOOLEAN',
         ];
     }
 
@@ -47,7 +47,7 @@ class Mdl_Custom_Values extends MY_Model
     {
         return [
             'SINGLE-CHOICE',
-            'MULTIPLE-CHOICE'
+            'MULTIPLE-CHOICE',
         ];
     }
 
@@ -59,11 +59,11 @@ class Mdl_Custom_Values extends MY_Model
         $this->load->module('custom_fields');
         $field_custom = $this->mdl_custom_fields->get_by_id($fid);
 
-        if (! $field_custom) {
+        if ( ! $field_custom) {
             return;
         }
 
-        $db_array = $this->db_array();
+        $db_array                        = $this->db_array();
         $db_array['custom_values_field'] = $fid;
 
         parent::save(null, $db_array);
@@ -78,8 +78,8 @@ class Mdl_Custom_Values extends MY_Model
             'custom_values_value' => [
                 'field' => 'custom_values_value',
                 'label' => 'Value',
-                'rules' => 'required'
-            ]
+                'rules' => 'required',
+            ],
         ];
     }
 
@@ -93,19 +93,20 @@ class Mdl_Custom_Values extends MY_Model
             'ip_invoice_custom' => 'invoice',
             'ip_payment_custom' => 'payment',
             'ip_quote_custom'   => 'quote',
-            'ip_user_custom'    => 'user'
+            'ip_user_custom'    => 'user',
         ];
     }
 
     /**
-     * @param int $id
+     * @param int  $id
      * @param bool $get
+     *
      * @return null|object
      */
     public function used($id = null, $get = true)
     {
-        if (! $id) {
-            return null;
+        if ( ! $id) {
+            return;
         }
 
         $this->load->model('custom_fields/mdl_custom_fields');
@@ -120,8 +121,8 @@ class Mdl_Custom_Values extends MY_Model
             $this->db->where($base, $id);
         } else {
             $this->db->or_like($base, $id . ',')
-                     ->or_like($base, ',' . $id)
-                     ->or_where($base, $id);
+                ->or_like($base, ',' . $id)
+                ->or_where($base, $id);
         }
 
         return $get ? $this->db->get()->result() : $this->db;
@@ -129,12 +130,14 @@ class Mdl_Custom_Values extends MY_Model
 
     /**
      * @param $id
+     *
      * @return bool
      */
     public function delete($id)
     {
-        if (! $this->used($id)) {
+        if ( ! $this->used($id)) {
             parent::delete($id);
+
             return true;
         }
 
@@ -151,6 +154,7 @@ class Mdl_Custom_Values extends MY_Model
 
     /**
      * @param $id
+     *
      * @return $this
      */
     public function get_by_fid($id)
@@ -160,6 +164,7 @@ class Mdl_Custom_Values extends MY_Model
 
     /**
      * @param $id
+     *
      * @return $this
      */
     public function get_by_column($id)
@@ -169,6 +174,7 @@ class Mdl_Custom_Values extends MY_Model
 
     /**
      * @param $id
+     *
      * @return $this
      */
     public function get_by_id($id)
@@ -178,21 +184,24 @@ class Mdl_Custom_Values extends MY_Model
 
     /**
      * @param $ids
+     *
      * @return null|object
      */
     public function get_by_ids($ids)
     {
         if (empty($ids)) {
-            return null;
+            return;
         }
 
         $ids = is_array($ids) ? $ids : explode(',', $ids);
+
         return $this->where_in('custom_values_id', $ids)->get();
     }
 
     /**
      * @param $fid
      * @param $id
+     *
      * @return bool
      */
     public function column_has_value($fid, $id)
@@ -200,7 +209,8 @@ class Mdl_Custom_Values extends MY_Model
         $this->where('custom_field_id', $fid);
         $this->where('custom_values_id', $id);
         $this->get();
-        return boolval($this->num_rows());
+
+        return (bool) ($this->num_rows());
     }
 
     /**
@@ -211,6 +221,7 @@ class Mdl_Custom_Values extends MY_Model
         $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*,ip_custom_values.*', false);
         $this->db->select('count(custom_field_label) as count');
         $this->db->group_by('ip_custom_fields.custom_field_id');
+
         return $this;
     }
 

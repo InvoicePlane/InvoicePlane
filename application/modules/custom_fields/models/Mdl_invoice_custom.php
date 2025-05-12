@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -16,8 +16,7 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Invoice_Custom extends Validator
 {
-    public static $positions =
-    [
+    public static $positions = [
         'custom_fields',
         'properties',
     ];
@@ -47,15 +46,14 @@ class Mdl_Invoice_Custom extends Validator
         if ($result === true) {
             $form_data = property_exists($this, '_formdata') && $this->_formdata !== null ? $this->_formdata : null;
 
-            if (is_null($form_data)) {
+            if (null === $form_data) {
                 return true;
             }
 
             $invoice_custom_id = null;
 
             foreach ($form_data as $key => $value) {
-                $db_array =
-                [
+                $db_array = [
                     'invoice_id'                => $invoice_id,
                     'invoice_custom_fieldid'    => $key,
                     'invoice_custom_fieldvalue' => $value,
@@ -80,6 +78,7 @@ class Mdl_Invoice_Custom extends Validator
     public function by_id($invoice_id)
     {
         $this->db->where('ip_invoice_custom.invoice_id', $invoice_id);
+
         return $this;
     }
 }

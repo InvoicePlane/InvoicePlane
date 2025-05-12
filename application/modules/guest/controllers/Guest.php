@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -21,7 +21,7 @@ class Guest extends Guest_Controller
         $this->load->model(
             [
                 'quotes/mdl_quotes',
-                'invoices/mdl_invoices'
+                'invoices/mdl_invoices',
             ]
         );
 
