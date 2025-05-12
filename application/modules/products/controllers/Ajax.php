@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -27,12 +27,12 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_products');
         $this->load->model('families/mdl_families');
 
-        if (!empty($filter_family)) {
+        if ( ! empty($filter_family)) {
             $this->mdl_products->by_family($filter_family);
             $filter_family = $this->security->xss_clean($filter_family);
         }
 
-        if (!empty($filter_product)) {
+        if ( ! empty($filter_product)) {
             $this->mdl_products->by_product($filter_product);
             $filter_product = $this->security->xss_clean($filter_product);
         }

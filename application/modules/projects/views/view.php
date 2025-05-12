@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-xs-12 col-md-4">
 <?php
-if (!empty($project->client_name)) {
+if ( ! empty($project->client_name)) {
 ?>
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -75,9 +75,7 @@ foreach ($tasks as $task) {
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="<?php if ($task->is_overdue) {
-                                            ?>text-danger<?php
-                                                     } ?>">
+                                        <span class="<?php echo $task->is_overdue ? 'text-danger' : ''; ?>">
                                             <?php echo date_from_mysql($task->task_finish_date); ?>
                                         </span>
                                     </td>

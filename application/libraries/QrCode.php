@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -31,8 +31,8 @@ class QrCode
 
         $this->invoice         = $params['invoice'];
         $this->recipient       = $this->invoice->user_company ?: $CI->mdl_settings->setting('qr_code_recipient');
-        $this->iban            = $this->invoice->user_iban    ?: $CI->mdl_settings->setting('qr_code_iban');
-        $this->bic             = $this->invoice->user_bic     ?: $CI->mdl_settings->setting('qr_code_bic');
+        $this->iban            = $this->invoice->user_iban ?: $CI->mdl_settings->setting('qr_code_iban');
+        $this->bic             = $this->invoice->user_bic ?: $CI->mdl_settings->setting('qr_code_bic');
         $this->currencyCode    = $CI->mdl_settings->setting('currency_code');
         $this->remittance_text = parse_template(
             $this->invoice,

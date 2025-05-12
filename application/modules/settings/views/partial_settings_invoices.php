@@ -594,8 +594,7 @@ foreach ($slipTypes as $k => $v) {
                                     class="form-control simple-select">
 <?php
 $roles = Sumex::ROLES;
-foreach ($roles as $k => $v)
-{
+foreach ($roles as $k => $v) {
 ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_role'), $k) ?>>
                                     <?php _trans('invoice_sumex_role_' . $v); ?>

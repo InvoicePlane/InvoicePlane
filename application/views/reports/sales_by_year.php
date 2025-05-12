@@ -21,21 +21,21 @@
 
 <?php
 $initial_year = 0;
-$final_year = 0;
-$numYears = 1;
-$numRows = 1;
-$contRows = 0;
-$contYears = 0;
-$pattern = '/^payment_*/i';
+$final_year   = 0;
+$numYears     = 1;
+$numRows      = 1;
+$contRows     = 0;
+$contYears    = 0;
+$pattern      = '/^payment_*/i';
 
 foreach ($results as $result) {
     if ($final_year == 0) {
         foreach ($result as $index => $value) {
             if ($initial_year == 0) {
-                $initial_year = intval(substr($index, 11, 4));
+                $initial_year = (int) (mb_substr($index, 11, 4));
             }
 
-            $aux = intval(substr($index, 11, 4));
+            $aux = (int) (mb_substr($index, 11, 4));
 
             if ($aux > $final_year) {
                 $final_year = $aux;
@@ -44,7 +44,7 @@ foreach ($results as $result) {
     }
 
     if ($contYears == 0 && ($final_year - $initial_year) > 0) {
-        $numYears = $final_year - $initial_year + 1;
+        $numYears  = $final_year - $initial_year + 1;
         $contYears = 1;
     }
 
@@ -64,8 +64,8 @@ foreach ($results as $result) {
 
 <?php
     foreach ($result as $index => $value) {
-        $quarter = substr($index, 8, 2);
-        $year = substr($index, 11, 4);
+        $quarter = mb_substr($index, 8, 2);
+        $year    = mb_substr($index, 11, 4);
 
         if (preg_match($pattern, $index)) {
 ?>
@@ -74,16 +74,16 @@ foreach ($results as $result) {
             <td style="border-bottom: none;text-align:center;"><?php
             switch ($quarter) {
                 case 't1':
-                        echo trans('Q1') . "/" . $year;
+                    echo trans('Q1') . '/' . $year;
                     break;
                 case 't2':
-                        echo trans('Q2') . "/" . $year;
+                    echo trans('Q2') . '/' . $year;
                     break;
                 case 't3':
-                        echo trans('Q3') . "/" . $year;
+                    echo trans('Q3') . '/' . $year;
                     break;
                 case 't4':
-                        echo trans('Q4') . "/" . $year;
+                    echo trans('Q4') . '/' . $year;
                     break;
             }
             ?></td>

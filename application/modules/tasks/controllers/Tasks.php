@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -40,7 +40,7 @@ class Tasks extends Admin_Controller
                 'filter_placeholder' => trans('filter_tasks'),
                 'filter_method'      => 'filter_tasks',
                 'tasks'              => $tasks,
-                'task_statuses'      => $this->mdl_tasks->statuses()
+                'task_statuses'      => $this->mdl_tasks->statuses(),
             ]
         );
         $this->layout->buffer('content', 'tasks/index');
@@ -60,7 +60,7 @@ class Tasks extends Admin_Controller
             redirect('tasks');
         }
 
-        if (! $this->input->post('btn_submit')) {
+        if ( ! $this->input->post('btn_submit')) {
             $prep_form = $this->mdl_tasks->prep_form($id);
             if ($id && ! $prep_form) {
                 show_404();
@@ -72,9 +72,9 @@ class Tasks extends Admin_Controller
 
         $this->layout->set(
             [
-                'projects' => $this->mdl_projects->get()->result(),
+                'projects'      => $this->mdl_projects->get()->result(),
                 'task_statuses' => $this->mdl_tasks->statuses(),
-                'tax_rates' => $this->mdl_tax_rates->get()->result(),
+                'tax_rates'     => $this->mdl_tax_rates->get()->result(),
             ]
         );
         $this->layout->buffer('content', 'tasks/form');

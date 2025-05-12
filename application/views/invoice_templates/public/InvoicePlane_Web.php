@@ -135,17 +135,17 @@ if ($logo) {
                                     <td><?php _trans('invoice_date'); ?></td>
                                     <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
                                 </tr>
-                                <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
+                                <tr class="<?php echo $is_overdue ? 'overdue' : '' ?>">
                                     <td><?php _trans('due_date'); ?></td>
                                     <td class="amount">
                                         <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                                     </td>
                                 </tr>
-                                <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
+                                <tr class="<?php echo $is_overdue ? 'overdue' : '' ?>">
                                     <td><?php _trans('amount_due'); ?></td>
                                     <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
                                 </tr>
-<?php if ($payment_method): ?>
+<?php if ($payment_method) : ?>
                                 <tr>
                                     <td><?php _trans('payment_method'); ?></td>
                                     <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
@@ -194,15 +194,13 @@ if ($logo) {
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="amount"><?php _trans('discount'); ?></td>
-                                    <td class="amount">
-                                        <?php
-                                            if ($invoice->invoice_discount_percent > 0) {
-                                                echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
-                                            } else {
-                                                echo format_currency($invoice->invoice_discount_amount);
-                                            }
-                                        ?>
-                                    </td>
+                                    <td class="amount"><?php
+                                        if ($invoice->invoice_discount_percent > 0) {
+                                            echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
+                                        } else {
+                                            echo format_currency($invoice->invoice_discount_amount);
+                                        }
+                                    ?></td>
                                 </tr>
 <?php endif ?>
 
@@ -224,10 +222,7 @@ if ($logo) {
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="amount">
-                                        <?php
-                                            _htmlsc($invoice_tax_rate->invoice_tax_rate_name);
-                                            echo ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent)
-                                        ?>&nbsp;%
+                                        <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '&nbsp;%'; ?>
                                     </td>
                                     <td class="amount"><?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?></td>
                                 </tr>
@@ -237,17 +232,15 @@ if ($logo) {
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="amount"><?php _trans('discount'); ?></td>
-                                    <td class="amount">
-                                        <?php
-                                            if ($invoice->invoice_discount_percent > 0) {
-                                                echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
-                                            } else {
-                                                echo format_currency($invoice->invoice_discount_amount);
-                                            }
-                                        ?>
-                                    </td>
+                                    <td class="amount"><?php
+                                        if ($invoice->invoice_discount_percent > 0) {
+                                            echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
+                                        } else {
+                                            echo format_currency($invoice->invoice_discount_amount);
+                                        }
+                                    ?></td>
                                 </tr>
-<?php endif ?>
+<?php endif; ?>
 
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,7 +14,7 @@ if (! defined('BASEPATH')) {
  */
 
 /**
- * @param obj|int $client (or id - since 1.6.3)
+ * @param obj|int $client     (or id - since 1.6.3)
  * @param bool    $show_title - since 1.6.3
  */
 function format_client($client, $show_title = true): string
@@ -22,7 +22,7 @@ function format_client($client, $show_title = true): string
     // Get an id
     if ($client && is_numeric($client)) {
         $CI = & get_instance();
-        if (! property_exists($CI, 'mdl_clients')) {
+        if ( ! property_exists($CI, 'mdl_clients')) {
             $CI->load->model('clients/mdl_clients');
         }
 
@@ -44,6 +44,7 @@ function format_client($client, $show_title = true): string
 
 /**
  * @param string $gender
+ *
  * @return string
  */
 function format_gender($gender)

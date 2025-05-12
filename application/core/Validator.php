@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -32,11 +32,12 @@ class Validator extends MY_Model
     public function validate_date($value)
     {
         if ($value == '') {
-            return null;
+            return;
         }
 
-        if (! is_date($value)) {
+        if ( ! is_date($value)) {
             $this->form_validation->set_message('validate_date', trans('invalid_date'));
+
             return false;
         }
 
@@ -55,22 +56,22 @@ class Validator extends MY_Model
         }
 
         if ($value == '') {
-            return null;
+            return;
         }
 
         return false;
     }
 
     /**
-     * @param str $value
-     * @param int $key
+     * @param string $value
+     * @param int    $key
      *
      * @return bool|null
      */
     public function validate_singlechoice($value, $key)
     {
         if ($value == '') {
-            return null;
+            return;
         }
 
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
@@ -88,12 +89,13 @@ class Validator extends MY_Model
     {
         // Fix unresetable (Origin only == '')
         if ($values == '' || $values[0] == '') { // work with str, array & null: See https://www.php.net/manual/function.is-null.php#87355
-            return null;
+            return;
         }
 
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
         $this->custom_value->where('custom_field_id', $id);
         $dbvals = $this->custom_value->where_in('custom_values_id', $values)->get();
+
         return $dbvals->num_rows() == count($values);
     }
 
@@ -130,7 +132,7 @@ class Validator extends MY_Model
         $el = $this->cf->get_by_column($column)->row();
 
         if ($el == null) {
-            return null;
+            return;
         }
 
         return $el->custom_field_type;
@@ -147,7 +149,7 @@ class Validator extends MY_Model
         $this->load->model('custom_values/mdl_custom_values');
 
         $db_array = $array;
-        $errors = [];
+        $errors   = [];
 
         if (empty($db_array)) {
             // Return true if no fields need to be validated
@@ -187,6 +189,7 @@ class Validator extends MY_Model
         if (count($errors) == 0) {
             $this->_formdata = $db_array;
             $this->fixinput();
+
             return true;
         }
 
@@ -202,9 +205,10 @@ class Validator extends MY_Model
      */
     public function validate_type($type, $value, $key)
     {
-        $nicename = $this->mdl_custom_fields->get_nicename($type);
+        $nicename        = $this->mdl_custom_fields->get_nicename($type);
         $validation_rule = 'validate_' . $nicename;
-        return $this->$validation_rule($value, $key);
+
+        return $this->{$validation_rule}($value, $key);
     }
 
     public function fixinput()
@@ -223,7 +227,7 @@ class Validator extends MY_Model
                         break;
 
                     case 'MULTIPLE-CHOICE':
-                        $value = is_array($value) && $value[0] == '' ? null : $value; // reset if none in list
+                        $value                 = is_array($value) && $value[0] == '' ? null : $value; // reset if none in list
                         $this->_formdata[$key] = is_array($value) ? implode(',', $value) : $value;
                         break;
 

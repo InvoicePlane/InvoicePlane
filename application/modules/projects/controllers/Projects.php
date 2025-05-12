@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -59,7 +59,7 @@ class Projects extends Admin_Controller
             redirect('projects');
         }
 
-        if ($id && !$this->input->post('btn_submit') && ! $this->mdl_projects->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit') && ! $this->mdl_projects->prep_form($id)) {
             show_404();
         }
 
@@ -85,7 +85,7 @@ class Projects extends Admin_Controller
         $this->load->model('projects/mdl_projects');
         $project = $this->mdl_projects->get_by_id($project_id);
 
-        if (! $project) {
+        if ( ! $project) {
             show_404();
         }
 

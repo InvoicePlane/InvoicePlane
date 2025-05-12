@@ -10,7 +10,7 @@ Line Number: <?php echo $exception->getLine(); ?>
 <?php if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) : ?>
     Backtrace:
     <?php foreach ($exception->getTrace() as $error) : ?>
-        <?php if (isset($error['file']) && strpos($error['file'], realpath(BASEPATH)) !== 0) : ?>
+        <?php if (isset($error['file']) && ! str_starts_with($error['file'], realpath(BASEPATH))) : ?>
             File: <?php echo $error['file'], "\n"; ?>
             Line: <?php echo $error['line'], "\n"; ?>
             Function: <?php echo $error['function'], "\n\n"; ?>

@@ -210,7 +210,7 @@ if (($_temp = realpath($system_path)) !== false) {
 } else {
     // Ensure there's a trailing slash
     $system_path = strtr(
-        rtrim($system_path, '/\\'),
+        mb_rtrim($system_path, '/\\'),
         '/\\',
         DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
     ) . DIRECTORY_SEPARATOR;
@@ -249,14 +249,14 @@ if (is_dir($application_folder)) {
         $application_folder = $_temp;
     } else {
         $application_folder = strtr(
-            rtrim($application_folder, '/\\'),
+            mb_rtrim($application_folder, '/\\'),
             '/\\',
             DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
         );
     }
 } elseif (is_dir(BASEPATH . $application_folder . DIRECTORY_SEPARATOR)) {
     $application_folder = BASEPATH . strtr(
-        trim($application_folder, '/\\'),
+        mb_trim($application_folder, '/\\'),
         '/\\',
         DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
     );
@@ -276,14 +276,14 @@ if ( ! isset($view_folder[0]) && is_dir(APPPATH . 'views' . DIRECTORY_SEPARATOR)
         $view_folder = $_temp;
     } else {
         $view_folder = strtr(
-            rtrim($view_folder, '/\\'),
+            mb_rtrim($view_folder, '/\\'),
             '/\\',
             DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
         );
     }
 } elseif (is_dir(APPPATH . $view_folder . DIRECTORY_SEPARATOR)) {
     $view_folder = APPPATH . strtr(
-        trim($view_folder, '/\\'),
+        mb_trim($view_folder, '/\\'),
         '/\\',
         DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
     );
@@ -306,9 +306,8 @@ define('UPLOADS_TEMP_MPDF_FOLDER', UPLOADS_TEMP_FOLDER . 'mpdf' . DIRECTORY_SEPA
 define('VIEWPATH', $view_folder . DIRECTORY_SEPARATOR);
 define('THEME_FOLDER', FCPATH . 'assets' . DIRECTORY_SEPARATOR);
 
-// Automatic temp pdf cleanup
-array_map('unlink', glob(UPLOADS_TEMP_FOLDER . '*.pdf'));
-array_map('unlink', glob(UPLOADS_TEMP_FOLDER . '*_zugferd.xml'));
+// Automatic temp pdf & xml files cleanup
+array_map('unlink', glob(UPLOADS_TEMP_FOLDER . '*.{pdf,xml}', \GLOB_BRACE));
 
 /*
  * --------------------------------------------------------------------

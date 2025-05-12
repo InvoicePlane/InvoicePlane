@@ -36,7 +36,7 @@
                     <select id="online-payment-select" class="form-control">
                         <option value=""><?php _trans('none'); ?></option>
                         <?php foreach ($gateway_drivers as $driver => $fields) {
-                            $d = strtolower($driver);
+                            $d = mb_strtolower($driver);
                             ?>
                             <option value="<?php echo $d; ?>">
                                 <?php echo ucwords(str_replace('_', ' ', $driver)); ?>
@@ -50,7 +50,7 @@
 
         <?php
         foreach ($gateway_drivers as $driver => $fields) {
-            $d = strtolower($driver);
+            $d = mb_strtolower($driver);
             ?>
             <div id="gateway-settings-<?php echo $d; ?>"
                 class="gateway-settings panel panel-default <?php echo get_setting('gateway_' . $d . '_enabled') ? 'active-gateway' : 'hidden'; ?>">

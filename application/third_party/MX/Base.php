@@ -1,19 +1,19 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-/* load MX core classes */
+// load MX core classes
 require_once dirname(__FILE__) . '/Lang.php';
 require_once dirname(__FILE__) . '/Config.php';
 
 /**
- * Modular Extensions - HMVC
+ * Modular Extensions - HMVC.
  *
  * Adapted from the CodeIgniter Core Classes
  *
- * @link    http://codeigniter.com
+ * @see    http://codeigniter.com
  *
  * Description:
  * This library extends the CodeIgniter CI_Controller class and creates an application
@@ -22,6 +22,7 @@ require_once dirname(__FILE__) . '/Config.php';
  * Install this file as application/third_party/MX/Base.php
  *
  * @copyright    Copyright (c) 2015 Wiredesignz
+ *
  * @version    5.5
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -42,7 +43,6 @@ require_once dirname(__FILE__) . '/Config.php';
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
 #[AllowDynamicProperties]
 class CI extends CI_Controller
 {
@@ -50,18 +50,17 @@ class CI extends CI_Controller
 
     public function __construct()
     {
-
-        /* assign the application instance */
+        // assign the application instance
         self::$APP = $this;
 
         global $LANG, $CFG;
 
-        /* re-assign language and config for modules */
-        if (!$LANG instanceof MX_Lang) {
+        // re-assign language and config for modules
+        if ( ! $LANG instanceof MX_Lang) {
             $LANG = new MX_Lang();
         }
 
-        if (!$CFG instanceof MX_Config) {
+        if ( ! $CFG instanceof MX_Config) {
             $CFG = new MX_Config();
         }
 
@@ -69,5 +68,5 @@ class CI extends CI_Controller
     }
 }
 
-/* create the application object */
+// create the application object
 new CI();

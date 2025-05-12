@@ -39,7 +39,6 @@ require dirname(__FILE__) . '/Modules.php';
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
 #[AllowDynamicProperties]
 class MX_Router extends CI_Router
 {
@@ -52,48 +51,11 @@ class MX_Router extends CI_Router
         return $this->module;
     }
 
-    protected function _set_request($segments = [])
-    {
-        if ($this->translate_uri_dashes === true) {
-            foreach (range(0, 2) as $v) {
-                if (isset($segments[$v])) {
-                    $segments[$v] = str_replace('-', '_', $segments[$v]);
-                }
-            }
-        }
-
-        $segments = $this->locate($segments);
-
-        if ($this->located == -1) {
-            $this->_set_404override_controller();
-
-            return;
-        }
-
-        if (empty($segments)) {
-            $this->_set_default_controller();
-
-            return;
-        }
-
-        $this->set_class($segments[0]);
-
-        if (isset($segments[1])) {
-            $this->set_method($segments[1]);
-        } else {
-            $segments[1] = 'index';
-        }
-
-        array_unshift($segments, null);
-        unset($segments[0]);
-        $this->uri->rsegments = $segments;
-    }
-
     /** Locate the controller **/
     public function locate($segments)
     {
         $this->located = 0;
-        $ext = $this->config->item('controller_suffix') . EXT;
+        $ext           = $this->config->item('controller_suffix') . EXT;
 
         // use module route if available
         if (isset($segments[0]) && $routes = Modules::parse_routes($segments[0], implode('/', $segments))) {
@@ -107,7 +69,7 @@ class MX_Router extends CI_Router
         foreach (Modules::$locations as $location => $offset) {
             // module exists?
             if (is_dir($source = $location . $module . '/controllers/')) {
-                $this->module = $module;
+                $this->module    = $module;
                 $this->directory = $offset . $module . '/controllers/';
 
                 // module sub-controller exists?
@@ -147,8 +109,8 @@ class MX_Router extends CI_Router
             }
         }
 
-        if (!empty($this->directory)) {
-            return null;
+        if ( ! empty($this->directory)) {
+            return;
         }
 
         // application sub-directory controller exists?
@@ -162,6 +124,7 @@ class MX_Router extends CI_Router
             // application sub-sub-directory controller exists?
             if ($controller && is_file(APPPATH . 'controllers/' . $module . '/' . $directory . '/' . ucfirst($controller) . $ext)) {
                 $this->directory = $module . '/' . $directory . '/';
+
                 return array_slice($segments, 2);
             }
         }
@@ -179,7 +142,59 @@ class MX_Router extends CI_Router
         }
 
         $this->located = -1;
-        return null;
+    }
+
+    public function set_class($class)
+    {
+        // fixed error with HMVC plugin in Codeigniter and php 7
+        /*$suffix = $this->config->item('controller_suffix');
+        if (strpos($class, $suffix) === false) {
+            $class .= $suffix;
+        }
+        parent::set_class($class);*/
+        $suffix = (string) $this->config->item('controller_suffix');
+        if ($suffix && ! str_contains($class, $suffix)) {
+            $class .= $suffix;
+        }
+
+        parent::set_class($class);
+    }
+
+    protected function _set_request($segments = [])
+    {
+        if ($this->translate_uri_dashes === true) {
+            foreach (range(0, 2) as $v) {
+                if (isset($segments[$v])) {
+                    $segments[$v] = str_replace('-', '_', $segments[$v]);
+                }
+            }
+        }
+
+        $segments = $this->locate($segments);
+
+        if ($this->located == -1) {
+            $this->_set_404override_controller();
+
+            return;
+        }
+
+        if (empty($segments)) {
+            $this->_set_default_controller();
+
+            return;
+        }
+
+        $this->set_class($segments[0]);
+
+        if (isset($segments[1])) {
+            $this->set_method($segments[1]);
+        } else {
+            $segments[1] = 'index';
+        }
+
+        array_unshift($segments, null);
+        unset($segments[0]);
+        $this->uri->rsegments = $segments;
     }
 
     protected function _set_404override_controller()
@@ -189,7 +204,7 @@ class MX_Router extends CI_Router
 
     protected function _set_module_path(&$_route)
     {
-        if (!empty($_route)) {
+        if ( ! empty($_route)) {
             // Are module/directory/controller/method segments being specified?
             $sgs = sscanf($_route, '%[^/]/%[^/]/%[^/]/%s', $module, $directory, $class, $method);
 
@@ -228,21 +243,5 @@ class MX_Router extends CI_Router
         if (empty($this->class)) {
             $this->_set_404override_controller();
         }
-    }
-
-    public function set_class($class)
-    {
-        // fixed error with HMVC plugin in Codeigniter and php 7
-        /*$suffix = $this->config->item('controller_suffix');
-        if (strpos($class, $suffix) === false) {
-            $class .= $suffix;
-        }
-        parent::set_class($class);*/
-        $suffix = (string) $this->config->item('controller_suffix');
-        if ($suffix && strpos($class, $suffix) === false) {
-            $class .= $suffix;
-        }
-
-        parent::set_class($class);
     }
 }

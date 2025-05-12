@@ -228,9 +228,9 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-\(\)';
 |
 */
 $config['enable_query_strings'] = false;
-$config['controller_trigger'] = 'c';
-$config['function_trigger'] = 'm';
-$config['directory_trigger'] = 'd';
+$config['controller_trigger']   = 'c';
+$config['function_trigger']     = 'm';
+$config['directory_trigger']    = 'd';
 
 /*
 |--------------------------------------------------------------------------
@@ -382,7 +382,7 @@ $config['cache_query_string'] = false;
 |
 */
 $config['encryption_cipher'] = env('ENCRYPTION_CIPHER');
-$config['encryption_key'] = env('ENCRYPTION_KEY');
+$config['encryption_key']    = env('ENCRYPTION_KEY');
 
 /*
 |--------------------------------------------------------------------------
@@ -435,13 +435,13 @@ $config['encryption_key'] = env('ENCRYPTION_KEY');
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = env('SESS_DRIVER', 'files');
-$config['sess_table_name'] = env('SESS_DRIVER', 'ip_sessions');
-$config['sess_cookie_name'] = env('SESS_DRIVER', 'ip_session');
-$config['sess_expiration'] = env('SESS_EXPIRATION', 864000);
-$config['sess_save_path'] = env('SESS_SAVE_PATH', sys_get_temp_dir());
-$config['sess_match_ip'] = env_bool('SESS_MATCH_IP', true);
-$config['sess_time_to_update'] = 300;
+$config['sess_driver']             = env('SESS_DRIVER', 'files');
+$config['sess_table_name']         = env('SESS_DRIVER', 'ip_sessions');
+$config['sess_cookie_name']        = env('SESS_DRIVER', 'ip_session');
+$config['sess_expiration']         = env('SESS_EXPIRATION', 864000);
+$config['sess_save_path']          = env('SESS_SAVE_PATH', sys_get_temp_dir());
+$config['sess_match_ip']           = env_bool('SESS_MATCH_IP', true);
+$config['sess_time_to_update']     = 300;
 $config['sess_regenerate_destroy'] = env_bool('SESS_REGENERATE_DESTROY', false);
 
 /*
@@ -459,10 +459,10 @@ $config['sess_regenerate_destroy'] = env_bool('SESS_REGENERATE_DESTROY', false);
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['cookie_prefix'] = '';
-$config['cookie_domain'] = '';
-$config['cookie_path'] = '/';
-$config['cookie_secure'] = env('COOKIE_SECURE', false);
+$config['cookie_prefix']   = '';
+$config['cookie_domain']   = '';
+$config['cookie_path']     = '/';
+$config['cookie_secure']   = env('COOKIE_SECURE', false);
 $config['cookie_httponly'] = false;
 
 /*
@@ -507,11 +507,11 @@ $config['global_xss_filtering'] = false;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection'] = env('CSRF_PROTECTION', true);
-$config['csrf_token_name'] = '_ip_csrf';
-$config['csrf_cookie_name'] = 'ip_csrf_cookie';
-$config['csrf_expire'] = env('SESS_EXPIRATION', 3600);
-$config['csrf_regenerate'] = true;
+$config['csrf_protection']   = env('CSRF_PROTECTION', true);
+$config['csrf_token_name']   = '_ip_csrf';
+$config['csrf_cookie_name']  = 'ip_csrf_cookie';
+$config['csrf_expire']       = env('SESS_EXPIRATION', 3600);
+$config['csrf_regenerate']   = true;
 $config['csrf_exclude_uris'] = [];
 
 /*

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -34,7 +34,7 @@ class Quotes extends Admin_Controller
 
     /**
      * @param string $status
-     * @param int $page
+     * @param int    $page
      */
     public function status($status = 'all', $page = 0)
     {
@@ -70,7 +70,7 @@ class Quotes extends Admin_Controller
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_quotes'),
                 'filter_method'      => 'filter_quotes',
-                'quote_statuses'     => $this->mdl_quotes->statuses()
+                'quote_statuses'     => $this->mdl_quotes->statuses(),
             ]
         );
 
@@ -115,7 +115,7 @@ class Quotes extends Admin_Controller
 
         $quote = $this->mdl_quotes->get_by_id($quote_id);
 
-        if (!$quote) {
+        if ( ! $quote) {
             show_404();
         }
 
@@ -123,7 +123,7 @@ class Quotes extends Admin_Controller
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
@@ -143,14 +143,8 @@ class Quotes extends Admin_Controller
 
         $items = $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
 
-        // Name of e-invoice library or false
-        $einvoice_name = ($quote->client_einvoicing_active > 0 && $quote->client_einvoicing_version != '');
-        $einvoice_name = $einvoice_name ? get_xml_full_name($quote->client_einvoicing_version) : false;
-
-        if ($einvoice_name) {
-            // Legacy calculation false: helper to Alert if not standard taxes (number_helper) - since 1.6.3
-            $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
-        }
+        // Get eInvoice library name and user checks
+        $einvoice = get_einvoice_usage($quote, $items);
 
         // Activate 'Change_user' if admin users > 1  (get the sum of user type = 1 & active)
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
@@ -161,7 +155,7 @@ class Quotes extends Admin_Controller
                 'quote'           => $quote,
                 'items'           => $items,
                 'quote_id'        => $quote_id,
-                'einvoice_name'   => $einvoice_name,
+                'einvoice'        => $einvoice,
                 'change_user'     => $change_user,
                 'units'           => $this->mdl_units->get()->result(),
                 'tax_rates'       => $this->mdl_tax_rates->get()->result(),
@@ -172,7 +166,7 @@ class Quotes extends Admin_Controller
                 'custom_js_vars'  => [
                     'currency_symbol'           => get_setting('currency_symbol'),
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
-                    'decimal_point'             => get_setting('decimal_point')
+                    'decimal_point'             => get_setting('decimal_point'),
                 ],
                 'legacy_calculation' => config_item('legacy_calculation'),
             ]
@@ -202,7 +196,7 @@ class Quotes extends Admin_Controller
     }
 
     /**
-     * @param $quote_id
+     * @param      $quote_id
      * @param bool $stream
      */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)

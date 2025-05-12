@@ -19,7 +19,7 @@
     <meta name="_csrf" content="<?php echo $this->security->get_csrf_hash() ?>">
     <meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
     <meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
-    <meta name="legacy_calculation" content="<?php echo intval(config_item('legacy_calculation')); ?>">
+    <meta name="legacy_calculation" content="<?php echo (int) (config_item('legacy_calculation')); ?>">
 
     <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
@@ -126,7 +126,7 @@ if ($payment_method) {
                             </div>
                         </div>
 <?php
-if (! empty($invoice->invoice_terms)) {
+if ( ! empty($invoice->invoice_terms)) {
 ?>
                         <div class="col-xs-12 text-muted">
                             <br>

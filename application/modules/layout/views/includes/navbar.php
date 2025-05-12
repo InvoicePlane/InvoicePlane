@@ -159,14 +159,14 @@
                        title="<?php
                         _htmlsc($this->session->userdata('user_name'));
                         if ($this->session->userdata('user_company')) {
-                            print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
+                            echo ' (' . htmlsc($this->session->userdata('user_company')) . ')';
                         }
                         ?>">
                         <i class="fa fa-user"></i>
                         <span class="visible-xs">&nbsp;<?php
                             _htmlsc($this->session->userdata('user_name'));
                         if ($this->session->userdata('user_company')) {
-                            print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
+                            echo ' (' . htmlsc($this->session->userdata('user_company')) . ')';
                         }
                         ?></span>
                     </a>

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -14,7 +14,8 @@ if (! defined('BASEPATH')) {
  */
 
 /**
- * Returns all errors prepared for JSON
+ * Returns all errors prepared for JSON.
+ *
  * @return array
  */
 function json_errors()

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -21,34 +21,34 @@ class Mdl_Invoices_Recurring extends Response_Model
     public $primary_key = 'ip_invoices_recurring.invoice_recurring_id';
 
     public $recur_frequencies = [
-        '1D' => 'calendar_day_1',
-        '2D' => 'calendar_day_2',
-        '3D' => 'calendar_day_3',
-        '4D' => 'calendar_day_4',
-        '5D' => 'calendar_day_5',
-        '6D' => 'calendar_day_6',
+        '1D'  => 'calendar_day_1',
+        '2D'  => 'calendar_day_2',
+        '3D'  => 'calendar_day_3',
+        '4D'  => 'calendar_day_4',
+        '5D'  => 'calendar_day_5',
+        '6D'  => 'calendar_day_6',
         '15D' => 'calendar_day_15',
         '30D' => 'calendar_day_30',
-        '7D' => 'calendar_week_1',
+        '7D'  => 'calendar_week_1',
         '14D' => 'calendar_week_2',
         '21D' => 'calendar_week_3',
         '28D' => 'calendar_week_4',
-        '1M' => 'calendar_month_1',
-        '2M' => 'calendar_month_2',
-        '3M' => 'calendar_month_3',
-        '4M' => 'calendar_month_4',
-        '5M' => 'calendar_month_5',
-        '6M' => 'calendar_month_6',
-        '7M' => 'calendar_month_7',
-        '8M' => 'calendar_month_8',
-        '9M' => 'calendar_month_9',
+        '1M'  => 'calendar_month_1',
+        '2M'  => 'calendar_month_2',
+        '3M'  => 'calendar_month_3',
+        '4M'  => 'calendar_month_4',
+        '5M'  => 'calendar_month_5',
+        '6M'  => 'calendar_month_6',
+        '7M'  => 'calendar_month_7',
+        '8M'  => 'calendar_month_8',
+        '9M'  => 'calendar_month_9',
         '10M' => 'calendar_month_10',
         '11M' => 'calendar_month_11',
-        '1Y' => 'calendar_year_1',
-        '2Y' => 'calendar_year_2',
-        '3Y' => 'calendar_year_3',
-        '4Y' => 'calendar_year_4',
-        '5Y' => 'calendar_year_5',
+        '1Y'  => 'calendar_year_1',
+        '2Y'  => 'calendar_year_2',
+        '3Y'  => 'calendar_year_3',
+        '4Y'  => 'calendar_year_4',
+        '5Y'  => 'calendar_year_5',
     ];
 
     public function default_select()
@@ -74,21 +74,21 @@ class Mdl_Invoices_Recurring extends Response_Model
         return [
             'invoice_id' => [
                 'field' => 'invoice_id',
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'recur_start_date' => [
                 'field' => 'recur_start_date',
                 'label' => trans('start_date'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'recur_end_date' => [
                 'field' => 'recur_end_date',
-                'label' => trans('end_date')
+                'label' => trans('end_date'),
             ],
             'recur_frequency' => [
                 'field' => 'recur_frequency',
                 'label' => trans('every'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
         ];
     }
@@ -101,7 +101,7 @@ class Mdl_Invoices_Recurring extends Response_Model
         $db_array = parent::db_array();
 
         $db_array['recur_start_date'] = date_to_mysql($db_array['recur_start_date']);
-        $db_array['recur_next_date'] = $db_array['recur_start_date'];
+        $db_array['recur_next_date']  = $db_array['recur_start_date'];
 
         $db_array['recur_end_date'] = $db_array['recur_end_date'] ? date_to_mysql($db_array['recur_end_date']) : null;
 
@@ -115,7 +115,7 @@ class Mdl_Invoices_Recurring extends Response_Model
     {
         $db_array = [
             'recur_end_date'  => date('Y-m-d'),
-            'recur_next_date' => null
+            'recur_next_date' => null,
         ];
 
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);
@@ -123,12 +123,14 @@ class Mdl_Invoices_Recurring extends Response_Model
     }
 
     /**
-     * Sets filter to only recurring invoices which should be generated now
+     * Sets filter to only recurring invoices which should be generated now.
+     *
      * @return \Mdl_Invoices_Recurring
      */
     public function active()
     {
-        $this->filter_where("recur_next_date <= date(NOW()) AND (recur_end_date > date(NOW()) OR recur_end_date IS NULL)");
+        $this->filter_where('recur_next_date <= date(NOW()) AND (recur_end_date > date(NOW()) OR recur_end_date IS NULL)');
+
         return $this;
     }
 
@@ -142,7 +144,7 @@ class Mdl_Invoices_Recurring extends Response_Model
         $recur_next_date = increment_date($invoice_recurring->recur_next_date, $invoice_recurring->recur_frequency);
 
         $db_array = [
-            'recur_next_date' => $recur_next_date
+            'recur_next_date' => $recur_next_date,
         ];
 
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);

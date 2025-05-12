@@ -1,10 +1,11 @@
 <?php
+$itsCompany   = $this->mdl_users->form_value('user_company') || $this->mdl_users->form_value('user_vat_id');
+$qr_code_info = get_setting('qr_code') ? '<span class="pull-right"><i class="fa fa-qrcode"  data-toggle="tooltip" data-placement="bottom" title="' . trans('user_qr_code_hint') . '"></i></span>' : '';
 // eInvoicing enabled?
 $einvoicingTip = $einvoicing ? ' data-toggle="tooltip" data-placement="bottom" title="e-' . trans('invoicing') . ' (' : ''; // tootip base
 $einvoicingReq = $einvoicing ? $einvoicingTip . trans('required_field') . ')"' : '';
 $einvoicingB2B = $einvoicing ? $einvoicingTip . 'B2B ' . trans('required_field') . ')"' : '';
 $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
-$qr_code_info = get_setting('qr_code') ? '<span class="pull-right"><i class="fa fa-qrcode"  data-toggle="tooltip" data-placement="bottom" title="' . trans('user_qr_code_hint') . '"></i></span>' : '';
 ?>
 <script>
     $(function () {
@@ -66,8 +67,8 @@ $qr_code_info = get_setting('qr_code') ? '<span class="pull-right"><i class="fa 
                                        value="<?php echo $this->mdl_users->form_value('user_name', true); ?>">
                             </div>
 
-                            <div class="form-group"<?php echo $einvoicingReq; ?>>
-                                <label for="user_company"><?php _trans('company'); ?></label><?php echo $qr_code_info; ?>
+                            <div class="form-group"<?php echo  $itsCompany ? $einvoicingB2B : $einvoicingReq; ?>>
+                                <label for="user_company"><?php _trans('company'); ?> (<?php _trans($itsCompany ? 'required_field' : 'optional'); ?>)</label><?php echo $qr_code_info; ?>
                                 <input type="text" name="user_company" id="user_company" class="form-control"
                                        value="<?php echo $this->mdl_users->form_value('user_company', true); ?>">
                             </div>
@@ -79,7 +80,7 @@ $qr_code_info = get_setting('qr_code') ? '<span class="pull-right"><i class="fa 
                             </div>
 
 <?php // New user
-if (! $id) {
+if ( ! $id) {
 ?>
                             <div class="form-group">
                                 <label for="user_password">
@@ -168,7 +169,7 @@ foreach ($user_types as $key => $type) {
                                            value="<?php echo $this->mdl_users->form_value('user_city', true); ?>">
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group"<?php echo $einvoicingOpt; ?>>
                                     <label for="user_state"><?php _trans('state'); ?></label>
                                     <input type="text" name="user_state" id="user_state" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_state', true); ?>">
@@ -197,7 +198,7 @@ foreach ($countries as $cldr => $country) {
                                     </select>
                                 </div>
 <?php
-foreach ($custom_fields as $custom_field) {
+foreach ($custom_fields['ip_user_custom'] as $custom_field) {
     if ($custom_field->custom_field_location == 2) {
         print_field($this->mdl_users, $custom_field, $custom_values);
     }
@@ -210,20 +211,20 @@ foreach ($custom_fields as $custom_field) {
                             <div class="panel-heading"><?php _trans('tax_information'); ?></div>
 
                             <div class="panel-body">
-                                <div class="form-group"<?php echo $einvoicingB2B; ?>>
-                                    <label for="user_vat_id"><?php _trans('vat_id'); ?></label>
+                                <div class="form-group"<?php echo  $itsCompany ? $einvoicingB2B : $einvoicingOpt; ?>>
+                                    <label for="user_vat_id"><?php _trans('vat_id'); ?> (<?php _trans($itsCompany ? 'required_field' : 'optional'); ?>)</label>
                                     <input type="text" name="user_vat_id" id="user_vat_id" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_vat_id', true); ?>">
                                 </div>
 
-                                <div class="form-group"<?php echo $einvoicingB2B; ?>>
+                                <div class="form-group"<?php echo $einvoicingReq; ?>>
                                     <label for="user_tax_code"><?php _trans('tax_code'); ?></label>
                                     <input type="text" name="user_tax_code" id="user_tax_code" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_tax_code', true); ?>">
                                 </div>
 
 <?php
-foreach ($custom_fields as $custom_field) {
+foreach ($custom_fields['ip_user_custom'] as $custom_field) {
     if ($custom_field->custom_field_location == 3) {
         print_field($this->mdl_users, $custom_field, $custom_values);
     }
@@ -238,7 +239,7 @@ foreach ($custom_fields as $custom_field) {
                             <div class="panel-heading"><?php _trans('bank_information'); ?></div>
 
                             <div class="panel-body">
-                                <div class="form-group"<?php echo $einvoicingReq; ?>>
+                                <div class="form-group"<?php echo $einvoicingOpt; ?>>
                                     <label for="user_bank"><?php _trans('bank'); ?></label>
                                     <input type="text" name="user_bank" id="user_bank" class="form-control"
                                            value="<?php echo $this->mdl_users->form_value('user_bank', true); ?>">
@@ -279,7 +280,6 @@ foreach ($custom_fields as $custom_field) {
 <?php
 if ($this->mdl_settings->setting('sumex') == '1') {
 ?>
-
                         <div class="panel panel-default">
                             <div class="panel-heading"><?php _trans('sumex_information'); ?></div>
 
@@ -309,7 +309,6 @@ if ($this->mdl_settings->setting('sumex') == '1') {
 <?php
 } // Endif sumex
 ?>
-
                         <div class="panel panel-default">
 
                             <div class="panel-heading"><?php _trans('contact_information'); ?></div>
@@ -346,8 +345,8 @@ if ($this->mdl_settings->setting('sumex') == '1') {
                                 </div>
 <?php
 $default_custom = false;
-foreach ($custom_fields as $custom_field) {
-    if (! $default_custom && ! $custom_field->custom_field_location) {
+foreach ($custom_fields['ip_user_custom'] as $custom_field) {
+    if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
     }
 
@@ -372,11 +371,11 @@ if ($default_custom) {
                                 <div class="panel panel-default">
                                     <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
                                     <div class="panel-body">
-                                        <div class="row form-horizontal">
+                                        <div class="row">
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
-    foreach ($custom_fields as $custom_field) {
-        if (! $custom_field->custom_field_location) { // == 0
+    foreach ($custom_fields['ip_user_custom'] as $custom_field) {
+        if ( ! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_users, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }

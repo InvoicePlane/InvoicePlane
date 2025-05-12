@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -22,23 +22,12 @@ class Paypal extends Base_Controller
         $this->_create_client();
     }
 
-    protected function _create_client(): void
-    {
-        $this->load->library('crypt');
-
-        //load the REST API consumer library
-        $this->load->library('gateways/PaypalLib', [
-            'client_id'     => get_setting('gateway_paypal_clientId'),
-            'client_secret' => $this->crypt->decode(get_setting('gateway_paypal_clientSecret')),
-            'demo'          => get_setting('gateway_paypal_testMode') == 1
-        ], 'lib_paypal');
-    }
-
     /**
      * Create the order on PayPal that is then processed when
-     * the user inserts the payment method
+     * the user inserts the payment method.
      *
-     * @param  string  $invoice_url_key
+     * @param string $invoice_url_key
+     *
      * @return json the PayPal object to be loaded in the JS SDK script
      */
     public function paypal_create_order($invoice_url_key)
@@ -67,9 +56,10 @@ class Paypal extends Base_Controller
 
     /**
      * Capture the payment which is put on hold on PayPal
-     * after the user has set the card details
+     * after the user has set the card details.
      *
-     * @param  string  $order_id
+     * @param string $order_id
+     *
      * @return void
      */
     public function paypal_capture_payment($order_id)
@@ -81,7 +71,7 @@ class Paypal extends Base_Controller
             $paypal_object = json_decode($paypal_response['response']->getBody());
 
             $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id;
-            $amount = $paypal_object->purchase_units[0]->payments->captures[0]->amount->value;
+            $amount     = $paypal_object->purchase_units[0]->payments->captures[0]->amount->value;
 
             //record the payment
             $this->load->model('payments/mdl_payments');
@@ -130,5 +120,17 @@ class Paypal extends Base_Controller
             );
             $this->session->keep_flashdata('alert_error');
         }
+    }
+
+    protected function _create_client(): void
+    {
+        $this->load->library('crypt');
+
+        //load the REST API consumer library
+        $this->load->library('gateways/PaypalLib', [
+            'client_id'     => get_setting('gateway_paypal_clientId'),
+            'client_secret' => $this->crypt->decode(get_setting('gateway_paypal_clientSecret')),
+            'demo'          => get_setting('gateway_paypal_testMode') == 1,
+        ], 'lib_paypal');
     }
 }

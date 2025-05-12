@@ -16,7 +16,7 @@ if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) {
     <p>Backtrace:</p>
 <?php
     foreach (debug_backtrace() as $error) {
-        if (isset($error['file']) && strpos($error['file'], realpath(BASEPATH)) !== 0) {
+        if (isset($error['file']) && ! str_starts_with($error['file'], realpath(BASEPATH))) {
 ?>
     <p style="margin-left:10px">
         File: <?php echo $error['file'] ?><br/>

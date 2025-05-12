@@ -1,7 +1,7 @@
 <?php
-$href = site_url('custom_fields/form/' . $value->custom_field_id);
-$link = anchor($href, '<i class="fa fa-edit fa-margin"></i> ' . htmlsc($value->custom_field_label), ' class="btn btn-sm btn-default"');
-$alpha = strtr(strtolower($value->custom_field_type), ['-' => '_']);
+$href  = site_url('custom_fields/form/' . $value->custom_field_id);
+$link  = anchor($href, '<i class="fa fa-edit fa-margin"></i> ' . htmlsc($value->custom_field_label), ' class="btn btn-sm btn-default"');
+$alpha = strtr(mb_strtolower($value->custom_field_type), ['-' => '_']);
 $table = strtr($value->custom_field_table, ['ip_' => '', '_custom' => '']);
 ?>
 <form method="post">

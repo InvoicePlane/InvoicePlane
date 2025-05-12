@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -45,15 +45,14 @@ class Ajax extends Admin_Controller
             $items_subtotal = 0.0;
             if ($quote_discount_amount) {
                 foreach ($items as $item) {
-                    if (! empty($item->item_name)) {
+                    if ( ! empty($item->item_name)) {
                         $items_subtotal += standardize_amount($item->item_quantity) * standardize_amount($item->item_price);
                     }
                 }
             }
 
             // New discounts (for legacy_calculation false) - since v1.6.3 Need if taxes applied after discounts
-            $global_discount =
-            [
+            $global_discount = [
                 'amount'         => $quote_discount_amount ? standardize_amount($quote_discount_amount) : 0.0,
                 'percent'        => $quote_discount_percent ? standardize_amount($quote_discount_percent) : 0.0,
                 'item'           => 0.0, // Updated by ref (Need for quote_item_subtotal calculation in Mdl_quote_amounts)
@@ -62,27 +61,26 @@ class Ajax extends Admin_Controller
 
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
-                if (! empty($item->item_name)) {
+                if ( ! empty($item->item_name)) {
                     // Standardize item data
-                    $item->item_quantity        = $item->item_quantity         ? standardize_amount($item->item_quantity)        : 0.0;
-                    $item->item_price           = $item->item_price            ? standardize_amount($item->item_price)           : 0.0;
-                    $item->item_discount_amount = $item->item_discount_amount  ? standardize_amount($item->item_discount_amount) : null;
-                    $item->item_product_id      = $item->item_product_id       ? $item->item_product_id                          : null;
-                    $item->item_product_unit_id = $item->item_product_unit_id  ? $item->item_product_unit_id                     : null;
+                    $item->item_quantity        = $item->item_quantity ? standardize_amount($item->item_quantity) : 0.0;
+                    $item->item_price           = $item->item_price ? standardize_amount($item->item_price) : 0.0;
+                    $item->item_discount_amount = $item->item_discount_amount ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id      = $item->item_product_id ? $item->item_product_id : null;
+                    $item->item_product_unit_id = $item->item_product_unit_id ? $item->item_product_unit_id : null;
                     $item->item_product_unit    = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
 
                     $this->mdl_quote_items->save($item_id, $item, $global_discount);
-                } elseif (empty($item->item_name) && (!empty($item->item_quantity) || !empty($item->item_price))) {
+                } elseif (empty($item->item_name) && ( ! empty($item->item_quantity) || ! empty($item->item_price))) {
                     // Throw an error message and use the form validation for that (todo: where the translations of: The .* field is required.)
                     $this->load->library('form_validation');
                     $this->form_validation->set_rules('item_name', trans('item'), 'required');
                     $this->form_validation->run();
 
-                    $response =
-                    [
+                    $response = [
                         'success'           => 0,
                         'validation_errors' => [
                             'item_name' => form_error('item_name', '', ''),
@@ -100,11 +98,11 @@ class Ajax extends Admin_Controller
 
             if (empty($quote_number) && $quote_status_id != 1) {
                 $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
-                $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
+                $quote_number   = $this->mdl_quotes->get_quote_number($quote_group_id);
             }
 
             // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
-            if (! config_item('legacy_calculation') && $quote_discount_amount && $quote_discount_amount != $global_discount['item']) {
+            if ( ! config_item('legacy_calculation') && $quote_discount_amount && $quote_discount_amount != $global_discount['item']) {
                 // Adjust amount to reflect real calculation (cents)
                 $quote_discount_amount = $global_discount['item'];
             }
@@ -304,9 +302,9 @@ class Ajax extends Admin_Controller
 
         // Get the user ID
         $user_id = $this->security->xss_clean($this->input->post('user_id'));
-        $user = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
+        $user    = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
 
-        if (! empty($user)) {
+        if ( ! empty($user)) {
             $quote_id = $this->input->post('quote_id');
 
             $db_array = [
@@ -353,9 +351,9 @@ class Ajax extends Admin_Controller
 
         // Get the client ID
         $client_id = $this->security->xss_clean($this->input->post('client_id'));
-        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
+        $client    = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
-        if (! empty($client)) {
+        if ( ! empty($client)) {
             $quote_id = $this->input->post('quote_id');
 
             $db_array = [
@@ -365,13 +363,13 @@ class Ajax extends Admin_Controller
             $this->db->update('ip_quotes', $db_array);
 
             $response = [
-                'success' => 1,
+                'success'  => 1,
                 'quote_id' => $this->security->xss_clean($quote_id),
             ];
         } else {
             $this->load->helper('json_error');
             $response = [
-                'success' => 0,
+                'success'           => 0,
                 'validation_errors' => json_errors(),
             ];
         }
@@ -406,7 +404,7 @@ class Ajax extends Admin_Controller
             $quote_id = $this->mdl_quotes->create();
 
             $response = [
-                'success' => 1,
+                'success'  => 1,
                 'quote_id' => $quote_id,
             ];
         } else {

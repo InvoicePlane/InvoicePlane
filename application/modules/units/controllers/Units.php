@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -49,12 +49,12 @@ class Units extends Admin_Controller
 
         if (
             $this->input->post('is_update') == 0
-            && $this->input->post('unit_name') != ''
+            && $this->input->post('unit_name')      != ''
             && $this->input->post('unit_name_plrl') != ''
         ) {
             $check = $this->db->get_where('ip_units', ['unit_name' => $this->input->post('unit_name')])->result();
 
-            if (! empty($check)) {
+            if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('unit_already_exists'));
                 redirect('units/form');
             }
@@ -66,7 +66,7 @@ class Units extends Admin_Controller
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
-            if (! $this->mdl_units->prep_form($id)) {
+            if ( ! $this->mdl_units->prep_form($id)) {
                 show_404();
             }
 

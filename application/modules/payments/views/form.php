@@ -49,7 +49,7 @@ if ($payment_id) {
             <div class="col-xs-12 col-sm-6">
                 <select name="invoice_id" id="invoice_id" class="form-control simple-select" required>
 <?php
-if (! $payment_id) {
+if ( ! $payment_id) {
     foreach ($open_invoices as $invoice) {
 ?>
                         <option value="<?php echo $invoice->invoice_id; ?>"
@@ -116,7 +116,7 @@ if ($this->mdl_payments->form_value('payment_method_id')) {
 
                 <select id="payment_method_id" name="payment_method_id"
                         class="form-control simple-select" data-minimum-results-for-search="Infinity"
-                        <?php echo($this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''); ?>>
+                        <?php echo $this->mdl_payments->form_value('payment_method_id') ? 'disabled="disabled"' : ''; ?>>
 <?php
 foreach ($payment_methods as $payment_method) {
 ?>

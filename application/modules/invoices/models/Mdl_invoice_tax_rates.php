@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -42,7 +42,7 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
 
         $this->load->model('invoices/mdl_invoice_amounts');
 
-        $invoice_id = isset($db_array['invoice_id']) ? $db_array['invoice_id'] : $this->input->post('invoice_id');
+        $invoice_id = $db_array['invoice_id'] ?? $this->input->post('invoice_id');
 
         if ($invoice_id) {
             $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
@@ -60,17 +60,17 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
             'invoice_id' => [
                 'field' => 'invoice_id',
                 'label' => trans('invoice'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'tax_rate_id' => [
                 'field' => 'tax_rate_id',
                 'label' => trans('tax_rate'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'include_item_tax' => [
                 'field' => 'include_item_tax',
                 'label' => trans('tax_rate_placement'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
         ];
     }

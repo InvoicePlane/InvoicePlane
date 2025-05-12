@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -45,7 +45,7 @@ class Base_Controller extends MX_Controller
         $this->load->helper('redirect');
 
         // Check if database has been configured
-        if (! env_bool('SETUP_COMPLETED')) {
+        if ( ! env_bool('SETUP_COMPLETED')) {
             redirect('/welcome');
         } else {
             $this->load->library(['encryption', 'form_validation', 'session']);

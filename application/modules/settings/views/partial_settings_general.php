@@ -212,7 +212,7 @@
                                 class="form-control simple-select"
                                 data-minimum-results-for-search="Infinity">
                                 <?php foreach ($number_formats as $key => $value) { ?>
-                                    <option value="<?php print($key); ?>"
+                                    <option value="<?php echo $key; ?>"
                                         <?php check_select(get_setting('number_format'), $value['label']); ?>>
                                         <?php _trans($value['label']); ?>
                                     </option>

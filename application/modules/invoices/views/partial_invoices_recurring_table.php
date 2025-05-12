@@ -20,7 +20,7 @@ foreach ($recurring_invoices as $invoice) {
 ?>
                     <tr>
                         <td>
-                            <span class="label label-<?php echo $invoice->recur_status != 'active' ? 'default' : 'success';?>">
+                            <span class="label label-<?php echo $invoice->recur_status != 'active' ? 'default' : 'success'; ?>">
                                 <?php _trans($invoice->recur_status); ?>
                             </span>
                         </td>

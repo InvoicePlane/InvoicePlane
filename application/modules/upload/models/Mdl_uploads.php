@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -22,8 +22,7 @@ class Mdl_Uploads extends Response_Model
 
     public $date_modified_field = 'uploaded_date';
 
-    public $content_types =
-    [
+    public $content_types = [
         'avif' => 'image/avif',
         'gif'  => 'image/gif',
         'png'  => 'image/png',
@@ -69,6 +68,7 @@ class Mdl_Uploads extends Response_Model
 
     /**
      * @param $id
+     *
      * @return array
      */
     public function get_quote_uploads($id)
@@ -81,8 +81,7 @@ class Mdl_Uploads extends Response_Model
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                $names[] =
-                [
+                $names[] = [
                     'path'     => UPLOADS_CFILES_FOLDER . $row->file_name_new,
                     'filename' => $row->file_name_original,
                 ];
@@ -94,20 +93,20 @@ class Mdl_Uploads extends Response_Model
 
     /**
      * @param $id
+     *
      * @return array
      */
     public function get_invoice_uploads($id)
     {
         $this->load->model('invoices/mdl_invoices');
         $invoice = $this->mdl_invoices->get_by_id($id);
-        $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = '" . $invoice->invoice_url_key . "'");
+        $query   = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = '" . $invoice->invoice_url_key . "'");
 
         $names = [];
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                $names[] =
-                [
+                $names[] = [
                     'path'     => UPLOADS_CFILES_FOLDER . $row->file_name_new,
                     'filename' => $row->file_name_original,
                 ];
@@ -119,6 +118,7 @@ class Mdl_Uploads extends Response_Model
 
     /**
      * @param $url_key
+     *
      * @return array
      */
     public function get_files($url_key)
@@ -133,8 +133,7 @@ class Mdl_Uploads extends Response_Model
                     continue;
                 }
 
-                $result[] =
-                [
+                $result[] = [
                     'name' => $row->file_name_original,
                     'size' => $size,
                 ];
@@ -155,11 +154,13 @@ class Mdl_Uploads extends Response_Model
 
     /**
      * @param $client_id
+     *
      * @return $this
      */
     public function by_client($client_id)
     {
         $this->filter_where('ip_uploads.client_id', $client_id);
+
         return $this;
     }
 }

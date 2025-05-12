@@ -2,6 +2,8 @@
 // Little helper
 $its_mine = $this->session->__get('user_id') == $quote->user_id;
 $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
+// In change user toggle & After eInvoice (name) when user required field missing
+$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . htmlsc(PHP_EOL . format_user($quote->user_id));
 ?>
 
 <script>
@@ -16,9 +18,13 @@ $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert
             check_items_tax_usages();
         });
 
-<?php if ( ! $items) { ?>
+<?php
+if ( ! $items) {
+?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
-<?php } ?>
+<?php
+}
+?>
 
         // Legacy:no: check items tax usage is correct (Load on change)
         $(document).on('loaded', check_items_tax_usages());
@@ -192,7 +198,7 @@ echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have
 ?>
 <div id="headerbar">
     <h1 class="headerbar-title">
-        <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing') ;?>: <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>">
+        <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing'); ?>: <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>">
             <?php echo trans('quote') . ' ' . ($quote->quote_number ? '#' . $quote->quote_number : trans('id') . ': ' . $quote->quote_id); ?>
         </span>
 <?php
@@ -201,7 +207,7 @@ if ($change_user)
 {
 ?>
         <a data-toggle="tooltip" data-placement="bottom"
-           title="<?php _trans('edit') ;?> <?php _trans('user') ;?> (<?php _trans('invoicing') ;?>): <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>"
+           title="<?php echo $edit_user_title; ?>"
            href="<?php echo site_url('users/form/' . $quote->user_id); ?>">
             <i class="fa fa-xs fa-user text-<?php echo $my_class; ?>"></i>
                 <span class="hidden-xs"><?php _htmlsc($quote->user_name); ?></span>
@@ -335,13 +341,36 @@ if ($legacy_calculation)
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="quote-properties">
-<?php if ($einvoice_name) : ?>
-                                    <span class="pull-right" id="e_invoice_active"
-                                          data-toggle="tooltip" data-placement="bottom"
-                                          title="e-<?php echo trans('invoice') . ' ' . trans('version') . PHP_EOL . $einvoice_name; ?>  🗸"
+<?php
+if ($einvoice->name) {
+?>
+                                    <label class="pull-right" id="e_invoice_active"
+                                           data-toggle="tooltip" data-placement="bottom"
+                                           title="e-<?php echo trans('invoice') . ' ' . ($einvoice->user ? trans('version') . ' ' . $einvoice->name . ' 🗸' : '🚫 ' . trans('einvoicing_user_fields_error')); ?>"
                                     >
-                                    <i class="fa fa-file-code-o"></i>&nbsp;<?php echo $einvoice_name; ?>&nbsp;<i class="fa fa-check-square-o text-success"></i></span>
-<?php endif; ?>
+                                        <i class="fa fa-file-code-o"></i>
+                                        <?php echo $einvoice->name; ?>
+<?php
+    if ($einvoice->user) {
+?>
+                                        <i class="fa fa-check-square-o text-success"></i>
+<?php
+    } else {
+?>
+                                        <a class="fa fa-user-times text-warning"
+                                           href="<?php echo site_url('users/form/' . $quote->user_id); ?>"
+                                           data-toggle="tooltip" data-placement="top"
+                                           title="<?php echo $edit_user_title; ?>"
+                                        ></a>
+<?php
+    }
+?>
+
+                                    </label>
+<?php
+}
+?>
+
                                     <label for="quote_number"><?php _trans('quote'); ?> #</label>
                                     <input type="text" id="quote_number" class="form-control"
 <?php if ($quote->quote_number) : ?>
@@ -425,15 +454,13 @@ if ($quote->quote_status_id != 1)
                             </div>
 <?php
 $default_custom = false;
-$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
-foreach ($custom_fields as $custom_field)
-{
-    if( ! $default_custom && ! $custom_field->custom_field_location) {
+$classes        = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+foreach ($custom_fields as $custom_field) {
+    if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
     }
 
-    if ($custom_field->custom_field_location == 1)
-    {
+    if ($custom_field->custom_field_location == 1) {
         print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
     }
 }
@@ -445,7 +472,7 @@ foreach ($custom_fields as $custom_field)
 
         </div>
 
-<?php $this->layout->load_view('quotes/partial_itemlist_' . (get_setting('show_responsive_itemlist') ? 'responsive' : 'table'));?>
+<?php $this->layout->load_view('quotes/partial_itemlist_' . (get_setting('show_responsive_itemlist') ? 'responsive' : 'table')); ?>
 
         <hr/>
 
@@ -469,8 +496,7 @@ foreach ($custom_fields as $custom_field)
             </div>
         </div>
 <?php
-if ($default_custom)
-{
+if ($default_custom) {
 ?>
         <div class="row">
             <div class="col-xs-12 col-md-6">
@@ -483,10 +509,8 @@ if ($default_custom)
                         <div class="row">
 <?php
     $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
-    foreach ($custom_fields as $custom_field)
-    {
-        if (! $custom_field->custom_field_location) // == 0
-        {
+    foreach ($custom_fields as $custom_field) {
+        if ( ! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }

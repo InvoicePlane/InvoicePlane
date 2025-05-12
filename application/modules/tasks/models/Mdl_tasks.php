@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -40,6 +40,7 @@ class Mdl_Tasks extends Response_Model
     public function get_latest()
     {
         $this->db->order_by('ip_tasks.task_id', 'DESC');
+
         return $this;
     }
 
@@ -61,36 +62,36 @@ class Mdl_Tasks extends Response_Model
             'task_name' => [
                 'field' => 'task_name',
                 'label' => trans('task_name'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'task_description' => [
                 'field' => 'task_description',
                 'label' => trans('task_description'),
-                'rules' => ''
+                'rules' => '',
             ],
             'task_price' => [
                 'field' => 'task_price',
                 'label' => trans('task_price'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'task_finish_date' => [
                 'field' => 'task_finish_date',
                 'label' => trans('task_finish_date'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'project_id' => [
                 'field' => 'project_id',
                 'label' => trans('project'),
-                'rules' => ''
+                'rules' => '',
             ],
             'task_status' => [
                 'field' => 'task_status',
-                'label' => lang('status')
+                'label' => lang('status'),
             ],
             'tax_rate_id' => [
                 'field' => 'tax_rate_id',
                 'label' => lang('tax_rate'),
-                'rules' => 'numeric'
+                'rules' => 'numeric',
             ],
         ];
     }
@@ -103,22 +104,23 @@ class Mdl_Tasks extends Response_Model
         $db_array = parent::db_array();
 
         $db_array['task_finish_date'] = date_to_mysql($db_array['task_finish_date']);
-        $db_array['task_price'] = standardize_amount($db_array['task_price']);
+        $db_array['task_price']       = standardize_amount($db_array['task_price']);
 
         return $db_array;
     }
 
     /**
-     * @param null|integer $id
+     * @param null|int $id
+     *
      * @return bool
      */
     public function prep_form($id = null)
     {
-        if (!parent::prep_form($id)) {
+        if ( ! parent::prep_form($id)) {
             return false;
         }
 
-        if (!$id) {
+        if ( ! $id) {
             parent::set_form_value('task_finish_date', date('Y-m-d'));
             parent::set_form_value('task_price', get_setting('default_hourly_rate'));
         }
@@ -127,13 +129,14 @@ class Mdl_Tasks extends Response_Model
     }
 
     /**
-     * @param integer $task_id
+     * @param int $task_id
+     *
      * @return array
      */
     public function get_invoice_for_task($task_id)
     {
-        if (!$task_id) {
-            return null;
+        if ( ! $task_id) {
+            return;
         }
 
         $invoice_item = $this->db->select('ip_invoice_items.invoice_id')
@@ -141,8 +144,8 @@ class Mdl_Tasks extends Response_Model
             ->where('ip_invoice_items.item_task_id', $task_id)
             ->get()->result();
 
-        if (empty($invoice_item) || !isset($invoice_item->invoice_id)) {
-            return null;
+        if (empty($invoice_item) || ! isset($invoice_item->invoice_id)) {
+            return;
         }
 
         $this->load->model('invoices/mdl_invoices');
@@ -151,14 +154,15 @@ class Mdl_Tasks extends Response_Model
     }
 
     /**
-     * @param integer $invoice_id
+     * @param int $invoice_id
+     *
      * @return array
      */
     public function get_tasks_to_invoice($invoice_id)
     {
         $result = [];
 
-        if (!$invoice_id) {
+        if ( ! $invoice_id) {
             return $result;
         }
 
@@ -195,11 +199,11 @@ class Mdl_Tasks extends Response_Model
     }
 
     /**
-     * @param integer $invoice_id
+     * @param int $invoice_id
      */
     public function update_on_invoice_delete($invoice_id)
     {
-        if (!$invoice_id) {
+        if ( ! $invoice_id) {
             return;
         }
 
@@ -215,8 +219,8 @@ class Mdl_Tasks extends Response_Model
     }
 
     /**
-     * @param integer $new_status
-     * @param integer $task_id
+     * @param int $new_status
+     * @param int $task_id
      */
     public function update_status($new_status, $task_id)
     {
@@ -234,29 +238,29 @@ class Mdl_Tasks extends Response_Model
         return [
             '1' => [
                 'label' => trans('not_started'),
-                'class' => 'draft'
+                'class' => 'draft',
             ],
             '2' => [
                 'label' => trans('in_progress'),
-                'class' => 'viewed'
+                'class' => 'viewed',
             ],
             '3' => [
                 'label' => trans('complete'),
-                'class' => 'sent'
+                'class' => 'sent',
             ],
             '4' => [
                 'label' => trans('invoiced'),
-                'class' => 'paid'
-            ]
+                'class' => 'paid',
+            ],
         ];
     }
 
     /**
-     * @param integer $project_id
+     * @param int $project_id
      */
     public function update_on_project_delete($project_id)
     {
-        if (!$project_id) {
+        if ( ! $project_id) {
             return;
         }
 

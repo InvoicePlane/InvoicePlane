@@ -19,40 +19,34 @@ defined('BASEPATH') || exit('No direct script access allowed');
 */
 
 $config['number_formats'] = [
-    'number_format_us_uk' =>
-        [
-            'label' => 'number_format_us_uk',
-            'decimal_point' => '.',
-            'thousands_separator' => ',',
-        ],
-    'number_format_european' =>
-        [
-            'label' => 'number_format_european',
-            'decimal_point' => ',',
-            'thousands_separator' => '.',
-        ],
-    'number_format_iso80k1_point' =>
-        [
-            'label' => 'number_format_iso80k1_point',
-            'decimal_point' => '.',
-            'thousands_separator' => ' ',
-        ],
-    'number_format_iso80k1_comma' =>
-        [
-            'label' => 'number_format_iso80k1_comma',
-            'decimal_point' => ',',
-            'thousands_separator' => ' ',
-        ],
-    'number_format_compact_point' =>
-        [
-            'label' => 'number_format_compact_point',
-            'decimal_point' => '.',
-            'thousands_separator' => '',
-        ],
-    'number_format_compact_comma' =>
-        [
-            'label' => 'number_format_compact_comma',
-            'decimal_point' => ',',
-            'thousands_separator' => '',
-        ],
+    'number_format_us_uk' => [
+        'label'               => 'number_format_us_uk',
+        'decimal_point'       => '.',
+        'thousands_separator' => ',',
+    ],
+    'number_format_european' => [
+        'label'               => 'number_format_european',
+        'decimal_point'       => ',',
+        'thousands_separator' => '.',
+    ],
+    'number_format_iso80k1_point' => [
+        'label'               => 'number_format_iso80k1_point',
+        'decimal_point'       => '.',
+        'thousands_separator' => ' ',
+    ],
+    'number_format_iso80k1_comma' => [
+        'label'               => 'number_format_iso80k1_comma',
+        'decimal_point'       => ',',
+        'thousands_separator' => ' ',
+    ],
+    'number_format_compact_point' => [
+        'label'               => 'number_format_compact_point',
+        'decimal_point'       => '.',
+        'thousands_separator' => '',
+    ],
+    'number_format_compact_comma' => [
+        'label'               => 'number_format_compact_comma',
+        'decimal_point'       => ',',
+        'thousands_separator' => '',
+    ],
 ];

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -104,7 +104,7 @@ class Invoices extends Admin_Controller
             return;
         }
 
-        if (! file_exists($filePath)) {
+        if ( ! file_exists($filePath)) {
             log_message('error', 'While downloading: File not found: ' . $filePath);
             show_404();
 
@@ -153,7 +153,7 @@ class Invoices extends Admin_Controller
         $fields  = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
-        if (! $invoice) {
+        if ( ! $invoice) {
             show_404();
         }
 
@@ -161,8 +161,8 @@ class Invoices extends Admin_Controller
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values                                          = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
-                $custom_values[ $custom_field->custom_field_id ] = $values;
+                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
 
@@ -182,18 +182,10 @@ class Invoices extends Admin_Controller
         // Check whether there are payment custom fields
         $payment_cf       = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
         $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
-
-        $items            = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
-
-        // Name of e-invoice library or false
-        $einvoice_name = ($invoice->client_einvoicing_active > 0 && $invoice->client_einvoicing_version != '');
-        $einvoice_name = $einvoice_name ? get_xml_full_name($invoice->client_einvoicing_version) : false;
-
-        if ($einvoice_name) {
-            // Legacy calculation false: helper to Alert if not standard taxes (number_helper) - since 1.6.3
-            $bads = items_tax_usages_bad($items); // bads is false or array ids[0] no taxes, ids[1] taxes
-        }
-
+        // Get Items
+        $items = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
+        // Get eInvoice library name and user checks
+        $einvoice = get_einvoice_usage($invoice, $items);
         // Activate 'Change_user' if admin users > 1  (get the sum of user type = 1 & active)
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
         $change_user = $change_user->user_type > 1;
@@ -203,7 +195,7 @@ class Invoices extends Admin_Controller
                 'invoice'           => $invoice,
                 'items'             => $items,
                 'invoice_id'        => $invoice_id,
-                'einvoice_name'     => $einvoice_name,
+                'einvoice'          => $einvoice,
                 'change_user'       => $change_user,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
@@ -222,25 +214,14 @@ class Invoices extends Admin_Controller
             ]
         );
 
-        if ($invoice->sumex_id != null) {
-            $this->layout->buffer(
-                [
-                    ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
-                    ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
-                    ['modal_add_payment', 'payments/modal_add_payment'],
-                    ['content', 'invoices/view_sumex'],
-                ]
-            );
-        } else {
-            $this->layout->buffer(
-                [
-                    ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
-                    ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
-                    ['modal_add_payment', 'payments/modal_add_payment'],
-                    ['content', 'invoices/view'],
-                ]
-            );
-        }
+        $this->layout->buffer(
+            [
+                ['modal_delete_invoice', 'invoices/modal_delete_invoice'],
+                ['modal_add_invoice_tax', 'invoices/modal_add_invoice_tax'],
+                ['modal_add_payment', 'payments/modal_add_payment'],
+                ['content', 'invoices/view' . ($invoice->sumex_id ? '_sumex' : '')],
+            ]
+        );
 
         $this->layout->render();
     }
@@ -283,16 +264,39 @@ class Invoices extends Admin_Controller
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
     }
 
-    public function generate_zugferd_xml($invoice_id): void
+    public function generate_xml($invoice_id): void
     {
-        $this->load->model('invoices/mdl_items');
-        $this->load->library('ZugferdXml', [
-            'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
-            'items'   => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
-        ]);
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        if ( ! $invoice) {
+            show_404();
+        }
 
+        $this->load->model('invoices/mdl_items');
+        $items = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
+
+        $this->load->helper('e-invoice'); // eInvoicing++
+        $einvoice = get_einvoice_usage($invoice, $items, false);
+        if ( ! $einvoice->user) {
+            show_404();
+        }
+
+        // eInvoice library to Generate the appropriate UBL/CII or false
+        $xml_id    = $einvoice->name; // $invoice->client_einvoicing_version
+        $options   = [];
+        $generator = $xml_id;
+        $path      = APPPATH . 'helpers/XMLconfigs/';
+        if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
+            $embed_xml = $xml_setting['embedXML'];
+            $XMLname   = $xml_setting['XMLname'];
+            $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
+            $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
+        }
+
+        $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
+        $path     = generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
         $this->output->set_content_type('text/xml');
-        $this->output->set_output($this->zugferdxml->xml());
+        $this->output->set_output(file_get_contents($path));
+        unlink($path);
     }
 
     public function generate_sumex_pdf($invoice_id): void

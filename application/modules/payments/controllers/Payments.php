@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -65,7 +65,7 @@ class Payments extends Admin_Controller
             redirect('payments');
         }
 
-        if (! $this->input->post('btn_submit')) {
+        if ( ! $this->input->post('btn_submit')) {
             $prep_form = $this->mdl_payments->prep_form($id);
             if ($id && ! $prep_form) {
                 show_404();
@@ -103,7 +103,7 @@ class Payments extends Admin_Controller
 
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
@@ -123,10 +123,10 @@ class Payments extends Admin_Controller
             }
         }
 
-        $amounts = [];
+        $amounts                 = [];
         $invoice_payment_methods = [];
         foreach ($open_invoices as $open_invoice) {
-            $amounts['invoice' . $open_invoice->invoice_id] = format_amount($open_invoice->invoice_balance);
+            $amounts['invoice' . $open_invoice->invoice_id]                 = format_amount($open_invoice->invoice_balance);
             $invoice_payment_methods['invoice' . $open_invoice->invoice_id] = $open_invoice->payment_method;
         }
 

@@ -1,15 +1,15 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /**
- * Modular Extensions - HMVC
+ * Modular Extensions - HMVC.
  *
  * Adapted from the CodeIgniter Core Classes
  *
- * @link    http://codeigniter.com
+ * @see    http://codeigniter.com
  *
  * Description:
  * This library extends the CodeIgniter CI_Config class
@@ -18,6 +18,7 @@ if (! defined('BASEPATH')) {
  * Install this file as application/third_party/MX/Config.php
  *
  * @copyright    Copyright (c) 2015 Wiredesignz
+ *
  * @version    5.5
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,7 +39,6 @@ if (! defined('BASEPATH')) {
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
 #[AllowDynamicProperties]
 class MX_Config extends CI_Config
 {
@@ -49,16 +49,17 @@ class MX_Config extends CI_Config
         }
 
         $_module || $_module = CI::$APP->router->fetch_module();
-        list($path, $file) = Modules::find($file, $_module, 'config/');
+        list($path, $file)   = Modules::find($file, $_module, 'config/');
 
         if ($path === false) {
             parent::load($file, $use_sections, $fail_gracefully);
+
             return $this->item($file);
         }
 
         if ($config = Modules::load_file($file, $path, 'config')) {
-            /* reference to the config array */
-            $current_config =& $this->config;
+            // reference to the config array
+            $current_config = & $this->config;
 
             if ($use_sections === true) {
                 $current_config[$file] = isset($current_config[$file]) ? array_merge($current_config[$file], $config) : $config;
@@ -68,9 +69,8 @@ class MX_Config extends CI_Config
 
             $this->is_loaded[] = $file;
             unset($config);
+
             return $this->item($file);
         }
-
-        return null;
     }
 }

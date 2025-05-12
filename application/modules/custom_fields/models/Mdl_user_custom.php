@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -16,8 +16,7 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_User_Custom extends Validator
 {
-    public static $positions =
-    [
+    public static $positions = [
         'custom_fields',
         'account_information',
         'address',
@@ -47,6 +46,7 @@ class Mdl_User_Custom extends Validator
     /**
      * @param $user_id
      * @param $db_array
+     *
      * @return bool|string
      */
     public function save_custom($user_id, $db_array)
@@ -56,15 +56,14 @@ class Mdl_User_Custom extends Validator
         if ($result === true) {
             $form_data = property_exists($this, '_formdata') && $this->_formdata !== null ? $this->_formdata : null;
 
-            if (is_null($form_data)) {
+            if (null === $form_data) {
                 return true;
             }
 
             $user_custom_id = null;
 
             foreach ($form_data as $key => $value) {
-                $db_array =
-                [
+                $db_array = [
                     'user_id'                => $user_id,
                     'user_custom_fieldid'    => $key,
                     'user_custom_fieldvalue' => $value,
@@ -86,17 +85,20 @@ class Mdl_User_Custom extends Validator
     }
 
     /**
-     * @param integer $user_id
+     * @param int $user_id
+     *
      * @return $this
      */
     public function by_id($user_id)
     {
         $this->db->where('ip_user_custom.user_id', $user_id);
+
         return $this;
     }
 
     /**
-     * @param integer $user_id
+     * @param int $user_id
+     *
      * @return mixed
      */
     public function get_by_useid($user_id)

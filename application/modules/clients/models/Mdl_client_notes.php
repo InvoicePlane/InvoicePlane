@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -31,13 +31,13 @@ class Mdl_Client_Notes extends Response_Model
             'client_id' => [
                 'field' => 'client_id',
                 'label' => trans('client'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'client_note' => [
                 'field' => 'client_note',
                 'label' => trans('note'),
-                'rules' => 'required'
-            ]
+                'rules' => 'required',
+            ],
         ];
     }
 
@@ -56,6 +56,7 @@ class Mdl_Client_Notes extends Response_Model
     public function delete($id)
     {
         parent::delete($id);
+
         // For Ajax Check if deletion was successful
         return true;
     }

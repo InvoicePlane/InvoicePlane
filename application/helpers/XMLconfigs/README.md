@@ -1,68 +1,136 @@
-# How to: Add e-Invoice configuration and template generator
+## How to: Add e-Invoice configuration and template generator
 
-To implement a new e-invoicing xml system, there are 2 files that need to be placed in their respective folder.
+> You can find and download more e-invoice examples in [InvoicePlane-e-invoices repository](https://github.com/InvoicePlane/InvoicePlane-e-invoices).
 
-> Add the configuration file (`Shortidv10.php`) in this folder (`helpers/XMLconfigs/`)
+---
 
-> and the xml-template file (`Shortidv10Xml.php`) in the [`libraries/XMLtemplates/`](../../libraries/XMLtemplates) folder.
+<details>
+
+<summary>
+
+#### File name rules
+
+</summary>
+
+_To implement a new e-invoicing xml system, there are 2 files that need to be placed in their respective folder._
+
+> Add the configuration file (`Shortidv10.php`) in `helpers/XMLconfigs/` folder (here)
+
+> and the generator file (`Shortidv10Xml.php`) in the [`libraries/XMLtemplates/`](../../libraries/XMLtemplates/) folder.
+
+**Configuration filename (XML helper)**
+
+```
+Filename: 'Shortidv10.php'  -> "Shortid" + "version" + ".php" : max 25 characters (without ".php")
+                            (preferably without spaces " ", dots ".", hyphen "-", underscore "_" or special characters)
+```
+
+**Generator filename (XML template)**
+
+```
+Filename: 'Shortidv10Xml.php'  -> Same name of configurator file with "Xml"
+                               -> Don't respect this rule if the "generator" option is set. (Use an other template to make XML).
+```
 
 _It is important to make the file names as short as possible and preferably use only numbers and letters._
 
 _Each **country** has its format **specifications** and version on which it is best to base the shortened name._
 
-**You can find and download more e-invoice examples in [InvoicePlane-e-invoices](https://github.com/InvoicePlane/InvoicePlane-e-invoices) repository.**
-
 ---
 
-### The name of files explanations
+</details>
 
-#### The name of Configuration file in `application/helpers/XMLconfigs/` folder (here)
+<details>
 
-```
-Filename: 'Einvoicev10.php'    -> "Shortid" + "version" + ".php" : max 25 characters (without ".php")
-                               (preferably without spaces " ", dots ".", hyphen "-", underscore "_" or special characters)
-```
+<summary>
 
-#### The name of XML template file ([generator](#XML_template)) in `application/libraries/XMLtemplates/` folder
+#### Configuration rules
 
-```
-Filename: 'Einvoicev10Xml.php'    -> Same name of config file with "Xml"
-                                  (Don't need if you set the "generator" in configuration "$xml_setting" option (use other existing XMLtemplate))
-```
+</summary>
 
----
+_**Required**_
 
-### The configuration file explanations to set items
-
-#### Required in Configuration file
-
-The Variable name is mandatory `$xml_setting` and it's an array and contain at minima this 4 keys
+> The Variable `$xml_setting` name is mandatory and it's an array and contain at minima this 4 keys
 
 ```
-'full-name'   => 'E-Invoice v1.0',    -> String : CII / UBL version name. Visible in the client edit form (drop-down selector in e-invoice panel)
-'countrycode' => 'EX',                -> String : Associated countrycode (if available in your native language country list)
-'embedXML'    => false,               -> Bool   : To embed the Xml file in Pdf set to true (for 'ZUGFeRD' and similar)
-'XMLname'     => 'e-invoice.xml',     -> String : Name of the embedded in a CII Pdf Xml file (if not, leave empty)
+'full-name'   => 'E-Invoice v1.0', // String : CII / UBL version name. Visible in the client edit form (drop-down selector in e-invoice panel)
+'countrycode' => 'EX',             // String : Associated countrycode (if available in your native language country list)
+'embedXML'    => false,            // Bool   : To embed the Xml file in Pdf set to true (for 'ZUGFeRD' and similar)
+'XMLname'     => '',               // String : Name of the embedded in a CII Pdf Xml file (if not, leave empty)
 ```
 
-**Optional in Configuration file for the `$xml_setting` array**
+_Optional_
 
 ```
-'generator'   => 'Einvoicev10',       -> String : Name of the Xml file generator without 'Xml' and '.php' extension (optional)
-'options'     => ['Opt1' => 'param'], -> Mixed (String|Array|Object) : If you need variables or specific codes transmit to generator (Optional)
+'generator'   => 'Einvoicev10',       // String : Name of the Xml file generator without 'Xml' and '.php' extension (optional)
+'options'     => ['Opt1' => 'param'], // Mixed (String|Array|Object) : If you need variables or specific codes transmit to generator (Optional)
 ```
 
-##### Example of config files for the [XML generator](#XML_template) file `Einvoicev10.php` to this folder (`application/helpers/XMLconfigs/`)
+<details>
+
+<summary>
+
+###### Dynamic file name and mime Options (Need for more specific electronic invoice)
+
+</summary>
+
+> _Change XML file **name** dynamically:_
+
+_You have two ways for that:_
+
+- 1: Set the `$_SERVER['CIIname']` with what you need in your [XML generator](#XML_template). It's look something like this:
+
+```php
+$_SERVER['CIIname'] = 'CII' . $this->invoice->user_vat_id . '_' . $this->invoice->invoice_number . '.xml';
+```
+
+- 2: In your configuration file add `CIIname` in `options` with someting like this:
+
+```php
+    'options' => ['CIIname' => 'CII{{{user_vat_id}}}_{{{invoice_number}}}.xml'],
+```
+
+- 2.1: _**Only work for not embed in PDF (Email attach file name)**_:
+  - InvoicePlane (_in mailer_helper_) replace the `{{{tag}}}` by value (_Same system of [Email templates](https://wiki.invoiceplane.com/en/1.6/settings/email-templates)_).
+  - Automatically change the attached file by this name (_in phpmailer_helper_).
+  - _If you use `CIIname` in configuration `options` and `$_SERVER['CIIname']` in generator, the `CIIname` `options` replaced by the `$_SERVER['CIIname']` value._
+
+
+> _Change file **mime** type (**Only for embed in PDF**):_
+
+- Set `$_SERVER['CIImime']` in your [XML generator](#XML_template) with someting like this:
+
+```php
+$_SERVER['CIImime'] = 'application/json';
+```
+
+</details>
+
+</details>
+
+
+##### Examples of configuration file
+
+> **Note:** For this example (and the following ones) we will name the [XML generator](#XML_template) `Einvoicev10Xml.php`.
+
+###### Basic
+
+_Filename: `Einvoicev10.php`_
+
+- Name in selector (client form): _E-Facture v1.0 - French_
+- Embed in PDF with `e-facture.xml` file
+- Use `Einvoicev10Xml.php` to generate XML
+  - _Same file base name of generator (`Einvoicev10`)_
 
 ```php
 <?php
 defined('BASEPATH') || exit('No direct script access allowed');
 
 $xml_setting = [
-  'full-name'   => 'E-invoice v1.0',
+  'full-name'   => 'E-Facture v1.0',
   'countrycode' => 'FR',
   'embedXML'    => true,
-  'XMLname'     => 'e-invoice.xml',
+  'XMLname'     => 'e-facture.xml',
 ];
 ```
 
@@ -70,16 +138,24 @@ $xml_setting = [
 
 <summary>
 
-##### Example of config file use the same (`Einvoicev10.php`) XML template generator file but for German country
+##### Show more examples of configuration files
 
 </summary>
+
+###### For German country
+
+- Name in selector (client form): _E-Rechnung v1.0 - German_
+- Embed in PDF with `e-rechnung.xml` file
+- Use `Einvoicev10Xml.php` to generate XML
+
+_Example filename: `Einvoicev10de.php`_
 
 ```php
 <?php
 defined('BASEPATH') || exit('No direct script access allowed');
 
 $xml_setting = [
-    'full-name'   => 'E-invoice v1.0',
+    'full-name'   => 'E-Rechnung v1.0',
     'countrycode' => 'DE',
     'embedXML'    => true,
     'XMLname'     => 'e-rechnung.xml',
@@ -87,18 +163,37 @@ $xml_setting = [
 ];
 ```
 
-> Note: it would be named `Einvoicev10de.php` (or with you want, because the `generator` option are used)
+###### For Italian country
+
+- Name in selector (client form): _E-Fattura v1.0 - Italian_
+- Not embed in PDF
+- Use `Einvoicev10Xml.php` to generate XML
+- Use a dynamic name of electronic invoice when send a mail
+  - (XML attachement file look like `IT98765432109876_321.xml`)
+
+_Example filename: `Einvoicev10it.php`_
+
+```php
+<?php
+defined('BASEPATH') || exit('No direct script access allowed');
+
+$xml_setting = [
+    'full-name'   => 'E-Fattura v1.0',
+    'countrycode' => 'IT',
+    'embedXML'    => false,
+    'XMLname'     => '',
+    'generator'   => 'Einvoicev10',
+    'options'     => ['CIIname' => '{{{user_country}}}{{{user_vat_id}}}_{{{invoice_number}}}.xml'],
+];
+```
 
 </details>
-
-> **_Note: Need to be placed in `application/helpers/XMLconfigs/`_**
 
 ---
 
 <a id="XML_template"></a>
-### XML template
+#### XML Generator template
 
-**_Note: Need to be placed in [`application/libraries/XMLtemplates/`](../../libraries/XMLtemplates) folder_**
+_Note: Need to be placed in [`application/libraries/XMLtemplates/`](../../libraries/XMLtemplates) folder_
 
-
-> A Minimal Example provided in [the README of XMLtemplates folder](../../libraries/XMLtemplates/README.md).
+##### A Minimal Example provided in [the README of XMLtemplates folder](../../libraries/XMLtemplates/README.md).

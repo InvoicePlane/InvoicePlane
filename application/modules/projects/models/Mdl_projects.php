@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -38,6 +38,7 @@ class Mdl_Projects extends Response_Model
     public function get_latest()
     {
         $this->db->order_by('ip_projects.project_id', 'DESC');
+
         return $this;
     }
 
@@ -50,12 +51,12 @@ class Mdl_Projects extends Response_Model
             'project_name' => [
                 'field' => 'project_name',
                 'label' => trans('project_name'),
-                'rules' => 'required'
+                'rules' => 'required',
             ],
             'client_id' => [
                 'field' => 'client_id',
                 'label' => trans('client'),
-            ]
+            ],
         ];
     }
 
@@ -63,7 +64,7 @@ class Mdl_Projects extends Response_Model
     {
         $result = [];
 
-        if (!$project_id) {
+        if ( ! $project_id) {
             return $result;
         }
 

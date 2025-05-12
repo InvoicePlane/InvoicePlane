@@ -1,15 +1,15 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /**
- * Modular Extensions - HMVC
+ * Modular Extensions - HMVC.
  *
  * Adapted from the CodeIgniter Core Classes
  *
- * @link    http://codeigniter.com
+ * @see    http://codeigniter.com
  *
  * Description:
  * This library extends the CodeIgniter CI_Language class
@@ -18,6 +18,7 @@ if (! defined('BASEPATH')) {
  * Install this file as application/third_party/MX/Lang.php
  *
  * @copyright    Copyright (c) 2011 Wiredesignz
+ *
  * @version    5.5
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,7 +39,6 @@ if (! defined('BASEPATH')) {
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
 #[AllowDynamicProperties]
 class MX_Lang extends CI_Lang
 {
@@ -53,13 +53,13 @@ class MX_Lang extends CI_Lang
         }
 
         $deft_lang = CI::$APP->config->item('language');
-        $idiom = ($lang == '') ? $deft_lang : $lang;
+        $idiom     = ($lang == '') ? $deft_lang : $lang;
 
         if (in_array($langfile . '_lang' . EXT, $this->is_loaded, true)) {
             return $this->language;
         }
 
-        $_module || $_module = CI::$APP->router->fetch_module();
+        $_module || $_module    = CI::$APP->router->fetch_module();
         list($path, $_langfile) = Modules::find($langfile . '_lang', $_module, 'language/' . $idiom . '/');
 
         if ($path === false) {
@@ -71,7 +71,7 @@ class MX_Lang extends CI_Lang
                 return $lang;
             }
 
-            $this->language = array_merge($this->language, $lang);
+            $this->language    = array_merge($this->language, $lang);
             $this->is_loaded[] = $langfile . '_lang' . EXT;
             unset($lang);
         }
