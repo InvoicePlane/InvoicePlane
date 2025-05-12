@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-use Rector\Config\RectorConfig;
-use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
+use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
+use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
+use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\If_\UnwrapFutureCompatibleIfPhpVersionRector;
 
@@ -14,6 +15,7 @@ return RectorConfig::configure()
         __DIR__ . '/application',
     ])
     ->withSkip([
+        ExplicitReturnNullRector::class,
         ExplicitBoolCompareRector::class,
         UseIdenticalOverEqualWithSameTypeRector::class,
         RemoveUselessParamTagRector::class, // DeadCodeLevel(19)
