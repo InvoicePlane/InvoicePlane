@@ -21,7 +21,7 @@ class Crypt
      */
     public function salt()
     {
-        return mb_substr(sha1(mt_rand()), 0, 22);
+        return substr(sha1(mt_rand()), 0, 22);
     }
 
     /**
