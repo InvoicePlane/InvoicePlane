@@ -77,7 +77,8 @@ class Ajax extends Admin_Controller
         }
 
         $data = [
-            'records' => $this->mdl_clients->with_total_balance()->get()->result(),
+            'records'    => $this->mdl_clients->with_total_balance()->get()->result(),
+            'einvoicing' => get_setting('einvoicing'),
         ];
 
         $this->layout->load_view('clients/partial_client_table', $data);
