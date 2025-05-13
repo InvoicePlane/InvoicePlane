@@ -6,6 +6,10 @@
         "resources",
         "storage"
     ],
+    "notName": [
+        "Crypt.php",
+        "Cryptor.php"
+    ],
     "rules": {
         "@PSR12": true,
         "statement_indentation": false,
