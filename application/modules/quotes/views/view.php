@@ -29,8 +29,7 @@ if ( ! $items) {
         // Legacy:no: check items tax usage is correct (Load on change)
         $(document).on('loaded', check_items_tax_usages());
 <?php
-if ($quote->quote_status_id == 1)
-{
+if ($quote->quote_status_id == 1) {
 ?>
 
         $('#quote_change_client').click(function () {
@@ -80,7 +79,7 @@ if ($quote->quote_status_id == 1)
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
@@ -119,7 +118,7 @@ if ($quote->quote_status_id == 1)
                     'item_id': item_id,
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                     var response = JSON.parse(data);
 
                     if (response.success === 1) {
@@ -203,8 +202,7 @@ echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have
         </span>
 <?php
 // Nb Admins > 1 only
-if ($change_user)
-{
+if ($change_user) {
 ?>
         <a data-toggle="tooltip" data-placement="bottom"
            title="<?php echo $edit_user_title; ?>"
@@ -213,8 +211,7 @@ if ($change_user)
                 <span class="hidden-xs"><?php _htmlsc($quote->user_name); ?></span>
         </a>
 <?php
-if ($quote->quote_status_id == 1)
-{
+if ($quote->quote_status_id == 1) {
 ?>
 
         <span id="quote_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
@@ -234,8 +231,7 @@ if ($quote->quote_status_id == 1)
             <ul class="dropdown-menu">
 <?php
 // Legacy calculation have global taxes - since v1.6.3
-if ($legacy_calculation)
-{
+if ($legacy_calculation) {
 ?>
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
@@ -433,8 +429,7 @@ if ($einvoice->name) {
                                 </div>
 
 <?php
-if ($quote->quote_status_id != 1)
-{
+if ($quote->quote_status_id != 1) {
 ?>
                                 <div class="quote-properties">
                                     <label for="quote-guest-url"><?php _trans('guest_url'); ?></label>

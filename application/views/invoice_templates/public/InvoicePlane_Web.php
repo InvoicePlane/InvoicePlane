@@ -30,7 +30,7 @@
                         <i class="fa fa-dashboard"></i> <?php _trans('dashboard'); ?>
                     </a>
 <?php } ?>
-                    <a href="<?php echo site_url('guest/view/generate_' . ($invoice->sumex_id == NULL ? 'invoice' : 'sumex') . '_pdf/' . $invoice_url_key); ?>"
+                    <a href="<?php echo site_url('guest/view/generate_' . ($invoice->sumex_id == null ? 'invoice' : 'sumex') . '_pdf/' . $invoice_url_key); ?>"
                        class="btn btn-primary">
                         <i class="fa fa-print"></i> <?php _trans('download_pdf'); ?>
                     </a>
@@ -266,8 +266,7 @@ if ($logo) {
 
 <?php if ($invoice->invoice_balance == 0) {
     echo '<span class="stamp rotate bottom paid">' . trans('paid') . '</span>';
-}
-elseif ($is_overdue) {
+} elseif ($is_overdue) {
     echo '<span class="stamp rotate bottom overdue">' . trans('overdue') . '</span>';
 } ?>
 
@@ -312,7 +311,7 @@ elseif ($is_overdue) {
 <?php if ($invoice->invoice_terms) { ?>
                     <div class="col-xs-12 col-md-6">
                         <h4><?php echo trans('terms'); ?></h4>
-                        <div><?php echo $invoice->invoice_terms;#2022 nl2br(htmlsc($invoice->invoice_terms)); ?></div>
+                        <div><?php echo $invoice->invoice_terms; //2022 nl2br(htmlsc($invoice->invoice_terms));?></div>
                     </div>
 <?php } ?>
 

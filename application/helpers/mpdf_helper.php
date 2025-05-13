@@ -37,11 +37,10 @@ function pdf_create(
     bool $embed_xml = false,
     ?array $associated_files = []
 ) {
-
     // From Mpdf.php function AdjustHTML() : MpdfException.
-    $len = strlen($html);
-    $limit = intval(ini_get('pcre.backtrack_limit'));
-    if($len > $limit){// Fail
+    $len   = mb_strlen($html);
+    $limit = (int) (ini_get('pcre.backtrack_limit'));
+    if ($len > $limit) { // Fail
         echo $html;
         die();
     }

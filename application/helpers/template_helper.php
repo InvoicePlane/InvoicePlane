@@ -93,7 +93,7 @@ function parse_template($object, $body)
                             // Get the values for the custom field
                             $cf_model = str_replace('ip_', 'mdl_', $cf->custom_field_table);
 
-                            $replace = $CI->mdl_custom_fields->get_value_for_field($cf_id[1], $cf_model, $object);//ids like csv
+                            $replace = $CI->mdl_custom_fields->get_value_for_field($cf_id[1], $cf_model, $object); //ids like csv
 /*
                             // Get the real values for the custom field 1.5.11-1 (by me)
                             if ($values = $CI->mdl_custom_fields->get_values_for_fields($cf_model, $object->invoice_id)) {
@@ -117,7 +117,6 @@ function parse_template($object, $body)
                                 $el      = $CI->cv->get_by_id($replace)->row();
                                 $replace = $el->custom_values_value;
                             }
-
                         } else {
                             $replace = '';
                         }

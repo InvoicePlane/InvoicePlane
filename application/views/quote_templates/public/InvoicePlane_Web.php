@@ -261,7 +261,7 @@ if ($logo = invoice_logo()) {
 <?php if ($quote->notes) { ?>
                         <div class="col-xs-12 col-md-6">
                             <h4><?php echo trans('notes'); ?></h4>
-                            <div><?php echo $quote->notes;#2022  nl2br(htmlsc($quote->notes)); ?></div>
+                            <div><?php echo $quote->notes; //2022  nl2br(htmlsc($quote->notes));?></div>
                         </div>
 <?php } ?>
 

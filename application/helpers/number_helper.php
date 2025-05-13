@@ -30,8 +30,7 @@ function format_currency($amount)
     $decimals                  = $decimal_point ? (int) $CI->mdl_settings->setting('tax_rate_decimal_places') : 0;
     $amount                    = (float) (is_numeric($amount) ? $amount : standardize_amount($amount)); // prevent null format
 
-    if ($currency_symbol_placement == 'before')
-    {
+    if ($currency_symbol_placement == 'before') {
         return $currency_symbol . number_format($amount, $decimals, $decimal_point, $thousands_separator);
     }
 

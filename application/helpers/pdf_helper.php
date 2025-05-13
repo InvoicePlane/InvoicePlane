@@ -170,7 +170,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     ];
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
-    #echo $html;exit;#dbg
+    //echo $html;exit;#dbg
 
     // Create PDF with or without an embedded XML
     $CI->load->helper('mpdf');
@@ -359,7 +359,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         'user'   => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
     ];
 
-    #Generate and replace invoice terms or quote notes into the PDF template #by swd 2022
+    //Generate and replace invoice terms or quote notes into the PDF template #by swd 2022
     $quote->notes = custom_terms_or_notes($quote->notes, $custom_fields);
 
     $data = [
@@ -373,7 +373,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     ];
 
     $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);
-    #echo $html;exit;#dbg
+    //echo $html;exit;#dbg
     $CI->load->helper('mpdf');
 
     return pdf_create($html, trans('quote') . '_' . str_replace(['\\', '/'], '_', $quote->quote_number), $stream, $quote->quote_password);

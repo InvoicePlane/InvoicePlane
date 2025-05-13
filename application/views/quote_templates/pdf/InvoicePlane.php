@@ -271,7 +271,7 @@ if ($quote->notes) {
 ?>
     <div class="notes">
         <b><?php _trans('notes'); ?></b><br/>
-        <?php echo $quote->notes;#2022  nl2br(htmlsc($quote->notes)); ?>
+        <?php echo $quote->notes; //2022  nl2br(htmlsc($quote->notes));?>
     </div>
 <?php
 }
