@@ -20,7 +20,7 @@ $colspan = $show_item_discounts ? 5 : 4;
 
     <div id="client">
         <div>
-            <b><?php _htmlsc($quote->client_name); ?></b>
+            <b><?php _htmlsc(format_client($quote)); ?></b>
         </div>
 <?php
 if ($quote->client_vat_id) {
