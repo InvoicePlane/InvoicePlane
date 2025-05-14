@@ -5,10 +5,20 @@ if ($this->config->item('disable_read_only') == true) {
 ?>
 <script>
     $(function () {
+        $('.item-task-id').each(function () {
+            // Disable client change if at least one item already has a task id assigned
+            if ($(this).val().length > 0) {
+                $('#invoice_change_client').hide();
+                return false;
+            }
+        });
+
         $('.btn_add_product').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000)
-            );
+            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
+        });
+
+        $('.btn_add_task').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_row').click(function () {
@@ -533,7 +543,7 @@ foreach ($custom_fields as $custom_field) {
 
             </div>
 
-            <?php $this->layout->load_view('invoices/partial_item_table'); ?>
+<?php $this->layout->load_view('invoices/partial_itemlist_' . (get_setting('show_responsive_itemlist') ? 'responsive' : 'table')); ?>
 
             <hr/>
 
