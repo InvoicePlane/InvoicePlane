@@ -67,7 +67,7 @@ $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
                                        value="<?php echo $this->mdl_users->form_value('user_name', true); ?>">
                             </div>
 
-                            <div class="form-group"<?php echo  $itsCompany ? $einvoicingB2B : $einvoicingReq; ?>>
+                            <div class="form-group"<?php echo $itsCompany ? $einvoicingB2B : $einvoicingOpt; ?>>
                                 <label for="user_company"><?php _trans('company'); ?> (<?php _trans($itsCompany ? 'required_field' : 'optional'); ?>)</label><?php echo $qr_code_info; ?>
                                 <input type="text" name="user_company" id="user_company" class="form-control"
                                        value="<?php echo $this->mdl_users->form_value('user_company', true); ?>">

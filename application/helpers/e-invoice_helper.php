@@ -241,13 +241,14 @@ function get_einvoice_usage($invoice, $items, $full = true): object
             $on = ! items_tax_usages_bad($items); // false or array ids[0] no taxes, ids[1] taxes + alert notification
         }
 
-        // Check for user to make an eInvoice file
+        // Check user (invoicer able to make an eInvoice file)
         if ($on) {
-            // Minimal to activate eInvoice for other admin user (invoicer)
-            $on = ($invoice->user_company && $invoice->user_tax_code);
-            // Check if need vat_id filled (Subject to VAT)
-            if ($on && $items[0]->item_tax_rate_percent) {
-                $on = (bool) ($invoice->user_vat_id);
+            // National Identification Number
+            $on = (bool) $invoice->user_tax_code;
+            // Item & tax?
+            if ($on && $items && $items[0]->item_tax_rate_percent) {
+                // Company + vat id filled (for Subject to VAT)
+                $on = $invoice->user_company && $invoice->user_vat_id;
             }
         }
 
