@@ -35,12 +35,11 @@
             <div class="form-group">
                 <label for="client_id"><?php _trans('client'); ?></label>
                 <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
-                    <?php
+<?php
                     foreach ($clients as $client) {
-                        echo '<option value="' . $client->client_id . '" ';
-                        echo '>' . htmlsc(format_client($client)) . '</option>';
+                        echo '<option value="' . $client->client_id . '">' . htmlsc(format_client($client)) . '</option>';
                     }
-                    ?>
+?>
                 </select>
             </div>
 

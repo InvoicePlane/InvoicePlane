@@ -27,7 +27,7 @@ if ( ! empty($project->client_name)) {
 ?>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <strong><?php echo format_client($project); ?></strong>
+                    <strong><?php _htmlsc(format_client($project)); ?></strong>
                 </div>
                 <div class="panel-body">
                     <div class="client-address">
