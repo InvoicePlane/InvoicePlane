@@ -134,7 +134,7 @@ if ($req_einvoicing) {
                     <div class="panel-body">
 <?php
     if ($xml_templates) {
-        if ($this->mdl_clients->form_value('client_id')) {
+        if ($client_id) {
             $this->layout->load_view('clients/partial_client_einvoicing');
         } else {
 ?>
@@ -413,7 +413,7 @@ foreach ($client_title_choices as $client_title_choice) {
                                 name="client_title_custom"
                                 type="text"
                                 class="form-control <?php echo $client_title === ClientTitleEnum::CUSTOM || $is_custom_title ? '' : 'hidden' ?>"
-                                placeholder=<?php echo trans('custom_title') ?>
+                                placeholder="<?php _htmlsc(trans('custom_title')); ?>"
                                 value="<?php echo $this->mdl_clients->form_value('client_title', true); ?>"
                             >
                         </div>

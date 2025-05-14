@@ -12,7 +12,7 @@ $edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing
 <script>
     $(function () {
         $('.item-task-id').each(function () {
-            // Disable client chaning if at least one item already has a task id assigned
+            // Disable client change if at least one item already has a task id assigned
             if ($(this).val().length > 0) {
                 $('#invoice_change_client').hide();
                 return false;
