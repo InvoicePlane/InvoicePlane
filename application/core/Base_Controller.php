@@ -48,7 +48,7 @@ class Base_Controller extends MX_Controller
         if ( ! env_bool('SETUP_COMPLETED')) {
             redirect('/welcome');
         } else {
-            $this->load->library(['encryption', 'form_validation', 'session']);
+            $this->load->library(['encryption', 'form_validation', 'session', 'ClientTitleEnum']);
             $this->load->database();
 
             $this->load->helper(['trans', 'number', 'pager', 'invoice', 'date', 'form', 'echo', 'user', 'client', 'country']);

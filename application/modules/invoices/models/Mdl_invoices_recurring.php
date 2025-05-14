@@ -53,11 +53,12 @@ class Mdl_Invoices_Recurring extends Response_Model
 
     public function default_select()
     {
-        $this->db->select("SQL_CALC_FOUND_ROWS ip_invoices.*,
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_invoices.*,
+            ip_clients.client_title,
             ip_clients.client_name,
             ip_clients.client_surname,
             ip_invoices_recurring.*,
-            IF(recur_end_date > date(NOW()) OR recur_end_date IS NULL, 'active', 'inactive') AS recur_status", false);
+            IF(recur_end_date > date(NOW()) OR recur_end_date IS NULL, "active", "inactive") AS recur_status', false);
     }
 
     public function default_join()

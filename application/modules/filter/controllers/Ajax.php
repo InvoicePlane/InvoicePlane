@@ -28,7 +28,7 @@ class Ajax extends Admin_Controller
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = mb_strtolower($keyword);
-                $this->mdl_invoices->like("CONCAT_WS('^',LOWER(invoice_number),invoice_date_created,invoice_date_due,LOWER(client_name),invoice_total,invoice_balance)", $keyword);
+                $this->mdl_invoices->like("CONCAT_WS('^',LOWER(invoice_number),invoice_date_created,invoice_date_due,LOWER(client_title),LOWER(client_name),LOWER(client_surname),invoice_total,invoice_balance)", $keyword);
             }
         }
 
@@ -50,7 +50,7 @@ class Ajax extends Admin_Controller
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = mb_strtolower($keyword);
-                $this->mdl_quotes->like("CONCAT_WS('^',LOWER(quote_number),quote_date_created,quote_date_expires,LOWER(client_name),quote_total)", $keyword);
+                $this->mdl_quotes->like("CONCAT_WS('^',LOWER(quote_number),quote_date_created,quote_date_expires,LOWER(client_title),LOWER(client_name),LOWER(client_surname),quote_total)", $keyword);
             }
         }
 
@@ -72,12 +72,12 @@ class Ajax extends Admin_Controller
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = mb_trim(mb_strtolower($keyword));
-                $this->mdl_clients->like("CONCAT_WS('^',LOWER(client_name),LOWER(client_surname),LOWER(client_email),client_phone,client_active)", $keyword);
+                $this->mdl_clients->like("CONCAT_WS('^',LOWER(client_title),LOWER(client_name),LOWER(client_surname),LOWER(client_email),client_phone,client_active)", $keyword);
             }
         }
 
         $data = [
-            'records'    => $this->mdl_clients->with_total_balance()->get()->result(),
+            'records'        => $this->mdl_clients->with_total_balance()->get()->result(),
             'einvoicing' => get_setting('einvoicing'),
         ];
 
@@ -192,7 +192,7 @@ class Ajax extends Admin_Controller
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = mb_strtolower($keyword);
-                $this->mdl_projects->like("CONCAT_WS('^',LOWER(client_name),LOWER(project_name))", $keyword);
+                $this->mdl_projects->like("CONCAT_WS('^',LOWER(client_title),LOWER(client_name),LOWER(client_surname),LOWER(project_name))", $keyword);
             }
         }
 
@@ -312,7 +312,7 @@ class Ajax extends Admin_Controller
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = mb_strtolower($keyword);
-                $this->mdl_invoices_recurring->like("CONCAT_WS('^',recur_start_date,recur_end_date,recur_next_date,recur_frequency,LOWER(invoice_number),LOWER(client_name),LOWER(client_surname))", $keyword);
+                $this->mdl_invoices_recurring->like("CONCAT_WS('^',recur_start_date,recur_end_date,recur_next_date,recur_frequency,LOWER(invoice_number),LOWER(client_title),LOWER(client_name),LOWER(client_surname))", $keyword);
             }
         }
 
@@ -366,7 +366,7 @@ class Ajax extends Admin_Controller
         foreach ($keywords as $keyword) {
             if ($keyword) {
                 $keyword = mb_strtolower($keyword);
-                $this->mdl_payments->like("CONCAT_WS('^',payment_date,LOWER(invoice_number),LOWER(client_name),payment_amount,LOWER(payment_method_name),LOWER(payment_note))", $keyword);
+                $this->mdl_payments->like("CONCAT_WS('^',payment_date,LOWER(invoice_number),LOWER(client_title),LOWER(client_name),LOWER(client_surname),payment_amount,LOWER(payment_method_name),LOWER(payment_note))", $keyword);
             }
         }
 
