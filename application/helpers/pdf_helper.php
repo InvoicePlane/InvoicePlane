@@ -215,7 +215,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
     // and is language-dependant. Fix accordingly if you really need this hack
     $temp     = tempnam('/tmp', 'invsumex_');
     $tempCopy = tempnam('/tmp', 'invsumex_');
-    $pdf      = new FPDI();
+    $pdf      = new \setasign\Fpdi\Fpdi();
     $sumexPDF = $CI->sumex->pdf();
 
     $sha1sum  = sha1($sumexPDF);
