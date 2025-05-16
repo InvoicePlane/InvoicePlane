@@ -59,7 +59,8 @@
                     </option>
                 </optgroup>
 <?php
-if (get_setting('sumex')) {
+$sumex = get_setting('sumex') == '1';
+if ($sumex) {
 ?>
                 <optgroup label="<?php _trans('sumex_information'); ?>">
                     <option value="{{{client_avs}}}">
@@ -155,7 +156,7 @@ if ($custom_fields['ip_client_custom']) {
                     </option>
                 </optgroup>
 <?php
-if (get_setting('sumex')) {
+if ($sumex) {
 ?>
                 <optgroup label="<?php _trans('sumex_information'); ?>">
                     <option value="{{{user_subscribernumber}}}">
@@ -237,7 +238,9 @@ if ($custom_fields['ip_quote_custom']) {
 ?>
             </select>
         </div>
-
+<?php
+if ($sumex) {
+?>
         <div class="form-group">
             <label for="tags_sumex"><?php _trans('invoice_sumex'); ?></label>
             <select id="tags_sumex" class="tag-select form-control">
@@ -264,6 +267,8 @@ if ($custom_fields['ip_quote_custom']) {
                 </option>
             </select>
         </div>
-
+<?php
+}
+?>
     </div>
 </div>

@@ -15,19 +15,15 @@
             <tbody>
 <?php
 foreach ($tasks as $task) {
-    $label_class = (isset($task_statuses[$task->task_status]['class'])) ? $task_statuses[$task->task_status]['class'] : '';
+    $label_class = $task_statuses[$task->task_status]['class'] ?? '';
 ?>
                 <tr>
                     <td>
                         <span class="label <?php echo $label_class; ?>">
-                            <?php if (isset($task_statuses[$task->task_status]['label'])) {
-                                echo $task_statuses[$task->task_status]['label'];
-                            } ?>
+                            <?php echo $task_statuses[$task->task_status]['label'] ?? ''; ?>
                         </span>
                     </td>
-                    <td>
-                        <?php echo htmlspecialchars($task->task_name, ENT_COMPAT); ?>
-                    </td>
+                    <td><a href="<?php echo site_url('tasks/form/' . $task->task_id); ?>"><i class="fa fa-edit"></i> <?php _htmlsc($task->task_name); ?></a></td>
                     <td>
                         <div class="<?php echo $task->is_overdue ? 'text-danger' : ''; ?>">
                             <?php echo date_from_mysql($task->task_finish_date); ?>

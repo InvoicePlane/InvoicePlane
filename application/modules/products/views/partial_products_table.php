@@ -11,7 +11,7 @@
                 <th><?php _trans('product_unit'); ?></th>
                 <th><?php _trans('tax_rate'); ?></th>
 <?php
-$sumex_active = get_setting('sumex');
+$sumex_active = get_setting('sumex') == '1';
 if ($sumex_active) {
 ?>
                 <th><?php _trans('product_tariff'); ?></th>
@@ -27,9 +27,9 @@ if ($sumex_active) {
 foreach ($products as $product) {
 ?>
                 <tr>
-                    <td><?php _htmlsc($product->family_name); ?></td>
+                    <td><a href="<?php echo site_url('families/form/' . $product->family_id); ?>"><i class="fa fa-edit"></i> <?php _htmlsc($product->family_name); ?></a></td>
                     <td><?php _htmlsc($product->product_sku); ?></td>
-                    <td><?php _htmlsc($product->product_name); ?></td>
+                    <td><a href="<?php echo site_url('products/form/' . $product->product_id); ?>"><i class="fa fa-edit"></i> <?php _htmlsc($product->product_name); ?></a></td>
                     <td><?php echo nl2br(htmlsc($product->product_description)); ?></td>
                     <td class="amount last"><?php echo format_currency($product->product_price); ?></td>
                     <td><?php _htmlsc($product->unit_name); ?></td>

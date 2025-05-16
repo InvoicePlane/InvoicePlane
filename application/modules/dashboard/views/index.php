@@ -242,17 +242,17 @@ foreach ($invoices as $invoice) {
 <?php
     if ($invoice->sumex_id != null) {
 ?>
-                                        <a href="<?php echo site_url('invoices/generate_sumex_pdf/' . $invoice->invoice_id); ?>"
-                                           target="_blank" title="<?php _trans('download_pdf'); ?>">
-                                            <i class="fa fa-file-pdf-o"></i>
-                                        </a>
+                                    <a href="<?php echo site_url('invoices/generate_sumex_pdf/' . $invoice->invoice_id); ?>"
+                                       target="_blank" title="<?php _trans('generate_sumex'); ?>">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                    </a>
 <?php
     } else {
 ?>
-                                        <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
-                                           target="_blank" title="<?php _trans('download_pdf'); ?>">
-                                            <i class="fa fa-file-pdf-o"></i>
-                                        </a>
+                                    <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
+                                       target="_blank" title="<?php _trans('download_pdf'); ?>">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                    </a>
 <?php
     }
 ?>
