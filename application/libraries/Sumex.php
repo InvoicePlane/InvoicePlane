@@ -212,22 +212,109 @@ class Sumex
         $this->_canton      = self::CANTONS[$CI->mdl_settings->setting('sumex_canton')];
     }
 
-    public function pdf()
+    public function pdf($invoice_template = null)
     {
-        $ch = curl_init();
-
         $xml = $this->xml();
+        // Make PDF with Sumex (embed)
+        if (SUMEX_URL) {
+            // External by XML post. See https://github.com/InvoicePlane/InvoicePlane/pull/453
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, SUMEX_URL);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 180); //timeout in seconds
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+            $out = curl_exec($ch);
+            curl_close($ch);
 
-        curl_setopt($ch, CURLOPT_URL, SUMEX_URL . '/generateInvoice');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 180); //timeout in seconds
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
-        $out = curl_exec($ch);
-        curl_close($ch);
+            return $out;
+        }
 
-        return $out;
+        // Internal like eInvoice - Since v1.6.3
+        $CI = & get_instance();
+
+        $CI->load->model(
+            [
+                'invoices/mdl_invoice_tax_rates',
+                'custom_fields/mdl_custom_fields',
+            ]
+        );
+
+        // Override system language with client language
+        set_language($this->invoice->client_language);
+
+        if ( ! $invoice_template) {
+            $CI->load->helper('template');
+            $invoice_template = select_pdf_invoice_template($this->invoice);
+        }
+
+        $payment_method = false;
+        if ($this->invoice->payment_method != 0) {
+            $CI->load->model('payment_methods/mdl_payment_methods');
+            $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $this->invoice->payment_method)->get()->row();
+        }
+
+        // Determine if discounts should be displayed
+        $show_item_discounts = false;
+        foreach ($this->items as $item) {
+            if ($item->item_discount != '0.00') {
+                $show_item_discounts = true;
+                break;
+            }
+        }
+
+        // Get all custom fields
+        $custom_fields = [
+            'invoice' => $CI->mdl_custom_fields->get_values_for_fields('mdl_invoice_custom', $this->invoice->invoice_id),
+            'client'  => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $this->invoice->client_id),
+            'user'    => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $this->invoice->user_id),
+        ];
+
+        if ($this->invoice->quote_id) {
+            $custom_fields['quote'] = $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $this->invoice->quote_id);
+        }
+
+        $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $this->invoice->invoice_number);
+        // Create the SUMEX XML file (embed)
+        $path = UPLOADS_TEMP_FOLDER . $filename . '.xml';
+        file_put_contents($path, $this->xml());
+        $associatedFiles = [[
+            'path'           => $path,
+            'name'           => 'sumex.xml', // todo: what's need in real
+            'mime'           => 'text/xml',
+            'description'    => 'SUMEX ' . trans('invoice'),
+            'AFRelationship' => 'Alternative',
+        ]];
+
+        $data = [
+            'invoice'             => $this->invoice,
+            'invoice_tax_rates'   => $CI->mdl_invoice_tax_rates->where('invoice_id', $this->invoice->invoice_id)->get()->result(),
+            'items'               => $this->items,
+            'payment_method'      => $payment_method,
+            'output_type'         => 'pdf',
+            'show_item_discounts' => $show_item_discounts,
+            'custom_fields'       => $custom_fields,
+            'legacy_calculation'  => config_item('legacy_calculation'),
+        ];
+
+        $CI->load->helper(['pdf', 'mpdf']);
+
+        $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
+
+        // Create PDF with embed XML
+        $retval = pdf_create(
+            html:             $html,
+            filename:         $filename,
+            stream:           false,
+            password:         $this->invoice->invoice_password,
+            isInvoice:        true,
+            is_guest:         null,
+            embed_xml:        true,
+            associated_files: $associatedFiles
+        );
+
+        return file_get_contents($retval);
     }
 
     public function xml()
@@ -267,10 +354,10 @@ class Sumex
 
         $transport = $this->doc->createElement('invoice:transport');
         $transport->setAttribute('from', $this->_company['gln']);
-        $transport->setAttribute('to', '7601003000078'); // Example: SUVA
+        $transport->setAttribute('to', '7601003000078'); // Example: SUVA Todo
 
         $via = $this->doc->createElement('invoice:via');
-        $via->setAttribute('via', '7601003000078'); // Example: SUVA
+        $via->setAttribute('via', '7601003000078'); // Example: SUVA todo
         $via->setAttribute('sequence_id', '1');
 
         $transport->appendChild($via);
@@ -655,7 +742,7 @@ class Sumex
         $node->setAttribute('code', (int) $item->product_sku);
         $node->setAttribute('session', 1);
         $node->setAttribute('quantity', $item->item_quantity);
-        $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", strtotime($item->item_date)));
+        $node->setAttribute('date_begin', date("Y-m-d\TH:i:s", $item->item_date ? strtotime($item->item_date) : time()));
         $node->setAttribute('provider_id', $this->_company['gln']);
         $node->setAttribute('responsible_id', $this->_company['gln']);
         $node->setAttribute('unit', $item->item_price);

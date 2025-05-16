@@ -124,13 +124,9 @@ function date_from_timestamp($timestamp)
 function date_to_mysql($date)
 {
     $CI = &get_instance();
-    if ($date == null) {
-        return '';
-    }
+    $d  = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
 
-    $date = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
-
-    return $date->format('Y-m-d');
+    return $d ? $d->format('Y-m-d') : '';
 }
 
 /**
@@ -186,17 +182,13 @@ function date_format_datepicker()
  */
 function increment_user_date($date, $increment)
 {
-    $CI = &get_instance();
-
-    if ($date == null) {
+    if ( ! $d = date_to_mysql($date)) {
         return '';
     }
 
-    $mysql_date = date_to_mysql($date);
-
-    $new_date = new DateTime($mysql_date);
-
+    $new_date = new DateTime($d);
     $new_date->add(new DateInterval('P' . $increment));
+    $CI = &get_instance();
 
     return $new_date->format($CI->mdl_settings->setting('date_format'));
 }

@@ -540,6 +540,11 @@ $qr_code = get_setting('qr_code');
                 </div>
             </div>
         </div>
+<?php
+$sumex = get_setting('sumex');
+// Set in ipconfig OR is 1 (in db)
+if (SUMEX_SETTINGS || $sumex != 0) {
+?>
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -558,7 +563,7 @@ $qr_code = get_setting('qr_code');
                                 <option value="0">
                                     <?php _trans('no'); ?>
                                 </option>
-                                <option value="1" <?php check_select(get_setting('sumex'), '1'); ?>>
+                                <option value="1" <?php check_select($sumex, '1'); ?>>
                                     <?php _trans('yes'); ?>
                                 </option>
                             </select>
@@ -572,14 +577,14 @@ $qr_code = get_setting('qr_code');
                             <select name="settings[sumex_sliptype]" id="settings[sumex_sliptype]"
                                     class="form-control simple-select" data-minimum-results-for-search="Infinity">
 <?php
-$slipTypes = ['esr9', 'esrRed'];
-foreach ($slipTypes as $k => $v) {
+    $slipTypes = ['esr9', 'esrRed'];
+    foreach ($slipTypes as $k => $v) {
 ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_sliptype'), $k) ?>>
                                     <?php _trans('invoice_sumex_sliptype-' . $v); ?>
                                 </option>
 <?php
-}
+    }
 ?>
                             </select>
                             <p class="help-block"><?php _trans('invoice_sumex_sliptype_help'); ?></p>
@@ -593,14 +598,14 @@ foreach ($slipTypes as $k => $v) {
                             <select name="settings[sumex_role]" id="settings[sumex_role]"
                                     class="form-control simple-select">
 <?php
-$roles = Sumex::ROLES;
-foreach ($roles as $k => $v) {
+    $roles = Sumex::ROLES;
+    foreach ($roles as $k => $v) {
 ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_role'), $k) ?>>
                                     <?php _trans('invoice_sumex_role_' . $v); ?>
                                 </option>
 <?php
-}
+    }
 ?>
                             </select>
                         </div>
@@ -613,13 +618,13 @@ foreach ($roles as $k => $v) {
                                     class="form-control simple-select" data-minimum-results-for-search="Infinity">
 <?php
 $places = Sumex::PLACES;
-foreach ($places as $k => $v) {
+    foreach ($places as $k => $v) {
 ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_place'), $k); ?>>
                                     <?php _trans('invoice_sumex_place_' . $v); ?>
                                 </option>
 <?php
-}
+    }
 ?>
                             </select>
                         </div>
@@ -631,14 +636,14 @@ foreach ($places as $k => $v) {
                             <select name="settings[sumex_canton]" id="settings[sumex_canton]"
                                     class="form-control simple-select">
 <?php
-$cantons = Sumex::CANTONS;
-foreach ($cantons as $k => $v) {
+    $cantons = Sumex::CANTONS;
+    foreach ($cantons as $k => $v) {
 ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_canton'), $k); ?>>
                                     <?php echo $v; ?>
                                 </option>
 <?php
-}
+    }
 ?>
                             </select>
                         </div>
@@ -646,5 +651,9 @@ foreach ($cantons as $k => $v) {
                 </div>
             </div>
         </div>
+<?php
+} // End If Sumex
+?>
+
     </div>
 </div>
