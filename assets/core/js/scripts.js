@@ -351,7 +351,7 @@ $(function () {
     $(document).on('keydown', function (e) {
         if (e.ctrlKey && e.key === 's') {
             // Detect if modal is open
-            if ($('.modal-footer .btn-success').length) {
+            if ($('.modal-footer .btn-success:visible').length) {
                 e.preventDefault();
                 $('.modal-footer .btn-success').click();
             } else if ($('#headerbar .btn-success').length) {
