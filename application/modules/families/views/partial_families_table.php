@@ -13,7 +13,7 @@
 foreach ($families as $family) {
 ?>
                 <tr>
-                    <td><?php _htmlsc($family->family_name); ?></td>
+                    <td><a href="<?php echo site_url('families/form/' . $family->family_id); ?>"><i class="fa fa-edit"></i> <?php _htmlsc($family->family_name); ?></a></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"

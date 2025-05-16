@@ -543,7 +543,7 @@ $qr_code = get_setting('qr_code');
 <?php
 $sumex = get_setting('sumex');
 // Set in ipconfig OR is 1 (in db)
-if (SUMEX_SETTINGS || $sumex != 0) {
+if (SUMEX_SETTINGS || $sumex == '1') {
 ?>
 
         <div class="panel panel-default">
@@ -617,7 +617,7 @@ if (SUMEX_SETTINGS || $sumex != 0) {
                             <select name="settings[sumex_place]" id="settings[sumex_place]"
                                     class="form-control simple-select" data-minimum-results-for-search="Infinity">
 <?php
-$places = Sumex::PLACES;
+    $places = Sumex::PLACES;
     foreach ($places as $k => $v) {
 ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_place'), $k); ?>>
