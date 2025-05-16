@@ -135,21 +135,25 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
             // Just remove the row if no item ID is set (new row)
             if (typeof item_id === 'undefined') {
                 $(this).parents('.item').remove();
-            }
+                check_items_tax_usages();
+            } else {
+                $.post("<?php echo site_url('invoices/ajax/delete_item/' . $invoice->invoice_id); ?>", {
+                        'item_id': item_id,
+                    },
+                    function (data) {
+                        <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
+                        var response = JSON.parse(data);
 
-            $.post("<?php echo site_url('invoices/ajax/delete_item/' . $invoice->invoice_id); ?>", {
-                    'item_id': item_id,
-                },
-                function (data) {
-                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
-                    var response = JSON.parse(data);
+                        if (response.success === 1) {
+                            btn.parents('.item').remove();
+                        } else {
+                            btn.removeClass('btn-link').addClass('btn-danger').prop('disabled', true);
+                        }
 
-                    if (response.success === 1) {
-                        btn.parents('.item').remove();
-                    } else {
-                        btn.removeClass('btn-link').addClass('btn-danger').prop('disabled', true);
+                        check_items_tax_usages();
                     }
-                });
+                );
+            }
         });
 
 <?php
