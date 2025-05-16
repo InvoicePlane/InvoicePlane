@@ -199,7 +199,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     return $retval;
 }
 
-function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
+function generate_invoice_sumex($invoice_id, $stream = true, $invoice_template = null, $client = false)
 {
     $CI = & get_instance();
 
@@ -210,64 +210,24 @@ function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
         'items'   => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
     ]);
 
-    // Append a copy at the end and change the title:
-    // WARNING: The title depends on what invoice type is (TP, TG)
-    // and is language-dependant. Fix accordingly if you really need this hack
-    $temp     = tempnam('/tmp', 'invsumex_');
-    $tempCopy = tempnam('/tmp', 'invsumex_');
-    $pdf      = new \setasign\Fpdi\Fpdi();
-    $sumexPDF = $CI->sumex->pdf();
-
+    $sumexPDF = $CI->sumex->pdf($invoice_template);
     $sha1sum  = sha1($sumexPDF);
     $shortsum = mb_substr($sha1sum, 0, 8);
-    $filename = trans('invoice') . '_' . $invoice->invoice_number . '_' . $shortsum;
+    $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number) . '_' . $shortsum;
 
     if ( ! $client) {
+        $temp = tempnam('/tmp', 'invsumex_');
         file_put_contents($temp, $sumexPDF);
-
-        // Hackish
-        $sumexPDF = str_replace(
-            'Giustificativo per la richiesta di rimborso',
-            'Copia: Giustificativo per la richiesta di rimborso',
-            $sumexPDF
-        );
-
-        file_put_contents($tempCopy, $sumexPDF);
-
+        $pdf       = new \setasign\Fpdi\Fpdi();
         $pageCount = $pdf->setSourceFile($temp);
-
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $templateId = $pdf->importPage($pageNo);
             $size       = $pdf->getTemplateSize($templateId);
-
-            if ($size['w'] > $size['h']) {
-                $pageFormat = 'L';  //  landscape
-            } else {
-                $pageFormat = 'P';  //  portrait
-            }
-
-            $pdf->addPage($pageFormat, [$size['w'], $size['h']]);
-            $pdf->useTemplate($templateId);
-        }
-
-        $pageCount = $pdf->setSourceFile($tempCopy);
-
-        for ($pageNo = 2; $pageNo <= $pageCount; $pageNo++) {
-            $templateId = $pdf->importPage($pageNo);
-            $size       = $pdf->getTemplateSize($templateId);
-
-            if ($size['w'] > $size['h']) {
-                $pageFormat = 'L';  //  landscape
-            } else {
-                $pageFormat = 'P';  //  portrait
-            }
-
-            $pdf->addPage($pageFormat, [$size['w'], $size['h']]);
+            $pdf->addPage($size['orientation'], [$size['width'], $size['height']]);
             $pdf->useTemplate($templateId);
         }
 
         unlink($temp);
-        unlink($tempCopy);
 
         if ($stream) {
             header('Content-Type', 'application/pdf');

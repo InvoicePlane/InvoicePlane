@@ -50,6 +50,13 @@ ENABLE_INVOICE_DELETION=false
 # Disable the read-only mode for invoices
 DISABLE_READ_ONLY=false
 
+# Sumex Customizations (Swiss Medical Invoices)
+# Need one (or more) Name containing "sumex" in invoice groups
+# Settings panel: true to Enable - Since v-1.6.3
+SUMEX_SETTINGS=false
+# Set the url where post the xml to get a generated pdf - Since v-1.5.0. See https://github.com/InvoicePlane/InvoicePlane/pull/453
+SUMEX_URL=
+
 ##
 ## DO NOT CHANGE ANY CONFIGURATION VALUES BELOW THIS LINE!
 ## =======================================================

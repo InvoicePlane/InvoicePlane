@@ -144,6 +144,6 @@ class Invoices extends Guest_Controller
 
         $this->load->helper('pdf');
 
-        generate_invoice_sumex($invoice_id);
+        generate_invoice_sumex($invoice_id, $stream, $invoice_template, true);
     }
 }

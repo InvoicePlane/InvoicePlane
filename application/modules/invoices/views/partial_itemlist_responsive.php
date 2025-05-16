@@ -33,24 +33,22 @@ if ($invoice->invoice_is_recurring) {
                                 <label for="item_name" class="input-group-addon ig-addon-aligned"><?php _trans('item'); ?></label>
                                 <input type="text" name="item_name" id="item_name" class="form-control" value="">
                             </div>
+                            <div class="input-group">
 <?php
 if ($invoice->sumex_id == '') {
 ?>
-                                <div class="input-group">
-                                    <label for="item_description" class="input-group-addon ig-addon-aligned"><?php _trans('description'); ?></label>
-                                    <textarea name="item_description" id="item_description" class="form-control"></textarea>
-                                </div>
+                                <label for="item_description" class="input-group-addon ig-addon-aligned"><?php _trans('description'); ?></label>
+                                <textarea name="item_description" id="item_description" class="form-control"></textarea>
 <?php
 } else {
 ?>
-                                <div class="input-group">
-                                    <label for="item_date" class="input-group-addon ig-addon-aligned"><?php _trans('date'); ?></label>
-                                    <input type="text" name="item_date" id="item_date" class="form-control datepicker"
-                                           value="<?php echo format_date(@$item->item_date); ?>"<?php echo $invoice_disabled; ?>>
-                                </div>
+                                <label for="item_date" class="input-group-addon ig-addon-aligned"><?php _trans('date'); ?></label>
+                                <input type="text" name="item_date" id="item_date" class="form-control datepicker"
+                                       value="<?php echo format_date(date('y-m-d')); ?>"<?php echo $invoice_disabled; ?>>
 <?php
 }
 ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -210,23 +208,22 @@ foreach ($items as $item) {
                                 <label for="item_name_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('item'); ?></label>
                                 <input type="text" name="item_name" id="item_name_<?php echo $item->item_id; ?>" class="form-control" value="<?php echo _htmlsc($item->item_name); ?>"<?php echo $invoice_disabled; ?>>
                             </div>
+
+                            <div class="input-group">
 <?php
     if ($invoice->sumex_id == '') {
 ?>
-                            <div class="input-group">
                                 <label for="item_description_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('description'); ?></label>
-                                <textarea name="item_description" id="item_description_<?php echo $item->item_id; ?>" class="form-control"<?php echo $invoice_disabled; ?>><?php echo htmlsc($item->item_description); ?></textarea>
-                            </div>
+                                <textarea name="item_description" id="item_description_<?php echo $item->item_id; ?>" class="form-control"<?php echo $invoice_disabled; ?>><?php _htmlsc($item->item_description); ?></textarea>
 <?php
     } else {
 ?>
-                            <div class="input-group">
                                 <label for="item_date_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('date'); ?></label>
                                 <input type="text" name="item_date" id="item_date_<?php echo $item->item_id; ?>" class="form-control datepicker" value="<?php echo format_date($item->item_date); ?>"<?php echo $invoice_disabled; ?>>
-                            </div>
 <?php
     }
 ?>
+                            </div>
                         </div>
                     </div>
                 </div>

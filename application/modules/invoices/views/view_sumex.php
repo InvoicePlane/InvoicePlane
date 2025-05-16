@@ -2,6 +2,11 @@
 if ($this->config->item('disable_read_only') == true) {
     $invoice->is_read_only = 0;
 }
+// Little helper
+$its_mine = $this->session->__get('user_id') == $invoice->user_id;
+$my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
+// In change user toggle & After eInvoice (name) when user required field missing
+$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . htmlsc(PHP_EOL . format_user($invoice->user_id));
 ?>
 <script>
     $(function () {
@@ -57,7 +62,7 @@ if ( ! $items) {
         $('#btn_save_invoice').click(function () {
             var items = [];
             var item_order = 1;
-            $('table tbody.item').each(function () {
+            $('#item_table .item').each(function () {
                 var row = {};
                 $(this).find('input,select,textarea').each(function () {
                     if ($(this).is(':checkbox')) {
@@ -120,6 +125,30 @@ if ( ! $items) {
             window.open('<?php echo site_url('invoices/generate_sumex_pdf/' . $invoice_id); ?>', '_blank');
         });
 
+        $(document).on('click', '.btn_delete_item', function () {
+            var btn = $(this);
+            var item_id = btn.data('item-id');
+
+            // Just remove the row if no item ID is set (new row)
+            if (typeof item_id === 'undefined') {
+                $(this).parents('.item').remove();
+            }
+
+            $.post("<?php echo site_url('invoices/ajax/delete_item/' . $invoice->invoice_id); ?>", {
+                    'item_id': item_id,
+                },
+                function (data) {
+                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
+                    var response = JSON.parse(data);
+
+                    if (response.success === 1) {
+                        btn.parents('.item').remove();
+                    } else {
+                        btn.removeClass('btn-link').addClass('btn-danger').prop('disabled', true);
+                    }
+                });
+        });
+
 <?php
 if ($invoice->is_read_only != 1) {
 ?>
@@ -172,7 +201,30 @@ echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation ha
 
 <div id="headerbar">
     <h1 class="headerbar-title">
-        <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id); ?>
+        <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing'); ?>: <?php _htmlsc(PHP_EOL . format_user($invoice->user_id)); ?>">
+            <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : trans('id') . ': ' . $invoice->invoice_id); ?>
+        </span>
+<?php
+// Nb Admins > 1 only
+if ($change_user) {
+?>
+        <a data-toggle="tooltip" data-placement="bottom"
+           title="<?php echo $edit_user_title; ?>"
+           href="<?php echo site_url('users/form/' . $invoice->user_id); ?>">
+            <i class="fa fa-xs fa-user text-<?php echo $my_class; ?>"></i>
+                <span class="hidden-xs"><?php _htmlsc($invoice->user_name); ?></span>
+        </a>
+<?php
+    if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
+?>
+
+        <span id="invoice_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
+              data-toggle="tooltip" data-placement="bottom"
+              title="<?php _trans('change_user'); ?>"></span>
+<?php
+    } // End if draft
+} // End if change_user
+?>
     </h1>
 
     <div class="headerbar-item pull-right<?php echo ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) ? ' btn-group' : ''; ?>">
@@ -206,7 +258,8 @@ if ($invoice->invoice_balance != 0) {
                     <a href="#" class="invoice-add-payment"
                        data-invoice-id="<?php echo $invoice_id; ?>"
                        data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
-                       data-invoice-payment-method="<?php echo $invoice->payment_method; ?>">
+                       data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
+                       data-payment-cf-exist="<?php echo $payment_cf_exist ?? ''; ?>">
                         <i class="fa fa-credit-card fa-margin"></i>
                         <?php _trans('enter_payment'); ?>
                     </a>
@@ -343,6 +396,12 @@ if ($invoice->invoice_status_id == 1) {
 <?php endif; ?>
                     </div>
                     <div class="col-md-6">
+<?php
+// Fix New invoice date in db
+$invoice->sumex_treatmentstart = $invoice->sumex_treatmentstart == '0000-00-00' ? date('y-m-d') : $invoice->sumex_treatmentstart;
+$invoice->sumex_treatmentend   = $invoice->sumex_treatmentend   == '0000-00-00' ? date('y-m-d') : $invoice->sumex_treatmentend;
+$invoice->sumex_casedate       = $invoice->sumex_casedate       == '0000-00-00' ? date('y-m-d') : $invoice->sumex_casedate;
+?>
                         <h3><?php _trans('treatment'); ?></h3>
                         <br>
                         <div class="col-xs-12 col-md-8">
@@ -377,11 +436,11 @@ if ($invoice->invoice_status_id == 1) {
                                                     class="form-control simple-select">
 <?php
 $reasons = [
-    'disease',
     'accident',
+    'birthdefect',
+    'disease',
     'maternity',
     'prevention',
-    'birthdefect',
     'unknown',
 ];
 foreach ($reasons as $key => $reason) {
@@ -403,7 +462,7 @@ foreach ($reasons as $key => $reason) {
                                             <span class="input-group-addon"><?php _trans('case_date'); ?></span>
                                             <input id="invoice_sumex_casedate" name="sumex_casedate"
                                                    class="form-control datepicker"
-                                                   value="<?php echo date_from_mysql($invoice->sumex_treatmentend); ?>"
+                                                   value="<?php echo date_from_mysql($invoice->sumex_casedate); ?>"
                                                    type="text">
                                         </div>
                                     </td>
@@ -414,7 +473,7 @@ foreach ($reasons as $key => $reason) {
                                             <span class="input-group-addon"><?php _trans('case_number'); ?></span>
                                             <input id="invoice_sumex_casenumber" name="sumex_casenumber"
                                                    class="form-control"
-                                                   value="<?php echo htmlentities($invoice->sumex_casenumber, ENT_COMPAT); ?>"
+                                                   value="<?php _htmle($invoice->sumex_casenumber); ?>"
                                                    type="text">
                                         </div>
                                     </td>
@@ -425,7 +484,7 @@ foreach ($reasons as $key => $reason) {
                                             <span class="input-group-addon"><?php _trans('invoice_sumex_diagnosis'); ?></span>
                                             <input id="invoice_sumex_diagnosis" name="invoice_sumex_diagnosis"
                                                    class="form-control"
-                                                   value="<?php echo htmlentities($invoice->sumex_diagnosis, ENT_COMPAT); ?>"
+                                                   value="<?php _htmle($invoice->sumex_diagnosis); ?>"
                                                    type="text" maxlength="500">
                                         </div>
                                     </td>
@@ -455,7 +514,7 @@ if ($invoice->invoice_sign == -1) {
 }
 ?>
 
-                            <div class="col-xs-12 col-sm-12">
+                            <div class="col-xs-12">
 
                                 <div class="invoice-properties">
                                     <label><?php _trans('status');
@@ -523,20 +582,70 @@ foreach ($invoice_statuses as $key => $status) {
                                             <i class="fa fa-calendar fa-fw"></i>
                                         </span>
                                     </div>
+
                                 </div>
+
+                                <div class="invoice-properties">
+                                    <label><?php _trans('payment_method'); ?></label>
+                                    <select name="payment_method" id="payment_method"
+                                            class="form-control simple-select"
+                                            <?php echo ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) ? 'disabled="disabled"' : ''; ?>
+                                    >
+                                        <option value="0"><?php _trans('select_payment_method'); ?></option>
+<?php
+foreach ($payment_methods as $payment_method) {
+?>
+                                        <option <?php check_select($invoice->payment_method, $payment_method->payment_method_id) ?>
+                                            value="<?php echo $payment_method->payment_method_id; ?>">
+                                            <?php echo $payment_method->payment_method_name; ?>
+                                        </option>
+<?php
+} // End foreach
+?>
+                                    </select>
+                                </div>
+
+                                <div class="invoice-properties">
+                                    <label><?php _trans('invoice_password'); ?></label>
+                                    <input type="text" id="invoice_password" class="form-control"
+                                           value="<?php _htmlsc($invoice->invoice_password); ?>"
+                                           <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>>
+                                </div>
+                            </div>
 <?php
 $default_custom = false;
+$classes        = ['control-label', 'controls', '', 'col-xs-12'];
 foreach ($custom_fields as $custom_field) {
     if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
     }
 
     if ($custom_field->custom_field_location == 1) {
-        print_field($this->mdl_invoices, $custom_field, $custom_values);
+        print_field($this->mdl_invoices, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
     }
 }
 ?>
+
+<?php
+if ($invoice->invoice_status_id != 1) {
+?>
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label for="invoice-guest-url"><?php _trans('guest_url'); ?></label>
+                                    <div class="input-group">
+                                        <input type="text" id="invoice-guest-url" readonly class="form-control"
+                                               value="<?php echo site_url('guest/view/invoice/' . $invoice->invoice_url_key) ?>">
+                                        <span class="input-group-addon to-clipboard cursor-pointer"
+                                              data-clipboard-target="#invoice-guest-url">
+                                            <i class="fa fa-clipboard fa-fw"></i>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
+<?php
+} // End if
+?>
+
                         </div>
                     </div>
                 </div>
@@ -548,20 +657,43 @@ foreach ($custom_fields as $custom_field) {
             <hr/>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-4">
+                <div class="col-xs-12 col-md-4">
 
-                    <label><?php _trans('sumex_observations'); ?></label>
-                    <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control" rows="3"
-                              <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>
-                    ><?php echo $invoice->sumex_observations; ?></textarea>
+                    <div class="panel panel-default no-margin">
+                        <div class="panel-heading">
+                            <?php _trans('sumex_observations'); ?>
+                        </div>
+                        <div class="panel-body">
+                            <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control" rows="3"
+                                      <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>
+                            ><?php echo $invoice->sumex_observations; ?></textarea>
+                        </div>
+                    </div>
 
                 </div>
 
-                <div class="col-xs-12 col-sm-8">
+                <div class="col-xs-12 col-md-4">
+
+                    <div class="panel panel-default no-margin">
+                        <div class="panel-heading">
+                            <?php _trans('invoice_terms'); ?>
+                        </div>
+                        <div class="panel-body">
+                            <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
+                                      <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>
+                            ><?php _htmlsc($invoice->invoice_terms); ?></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-xs-12 col-md-4">
 
                     <?php _dropzone_html($invoice->is_read_only); ?>
 
                 </div>
+
+                <div class="col-xs-12 visible-xs visible-sm"><br></div>
 
             </div>
 
@@ -569,7 +701,7 @@ foreach ($custom_fields as $custom_field) {
 if ($default_custom) {
 ?>
             <div class="row">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12">
 
                     <hr>
 
@@ -593,18 +725,6 @@ if ($default_custom) {
             </div>
 <?php
 } // End if custom_fields
-?>
-
-<?php
-if ($invoice->invoice_status_id != 1) {
-?>
-            <p class="padded">
-                <?php _trans('guest_url'); ?>:
-                <?php echo auto_link(site_url('guest/view/invoice/' . $invoice->invoice_url_key)); ?>
-            </p>
-<?php
-}
-
 ?>
 
         </div>

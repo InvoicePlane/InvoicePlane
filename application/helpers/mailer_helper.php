@@ -64,7 +64,7 @@ function email_invoice(
     if ($db_invoice->sumex_id == null) {
         $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
     } else {
-        $invoice = generate_invoice_sumex($invoice_id, false, true);
+        $invoice = generate_invoice_sumex($invoice_id, false, $invoice_template, true);
     }
 
     // Need Specific eInvoice filename?

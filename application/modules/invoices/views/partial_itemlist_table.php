@@ -111,7 +111,7 @@ if ($invoice->sumex_id == '') {
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('date'); ?></span>
                     <input type="text" name="item_date" class="form-control datepicker"
-                           value="<?php echo format_date(@$item->item_date); ?>"<?php echo $invoice_disabled; ?>>
+                           value="<?php echo format_date(date('y-m-d')); ?>"<?php echo $invoice_disabled; ?>>
                 </div>
             </td>
 <?php
