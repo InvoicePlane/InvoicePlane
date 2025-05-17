@@ -412,9 +412,9 @@ foreach ($client_title_choices as $client_title_choice) {
                                 id="client_title_custom"
                                 name="client_title_custom"
                                 type="text"
-                                class="form-control <?php echo $client_title === ClientTitleEnum::CUSTOM || $is_custom_title ? '' : 'hidden' ?>"
+                                class="form-control<?php echo $is_custom_title ? '' : ' hidden' ?>"
                                 placeholder="<?php _htmlsc(trans('custom_title')); ?>"
-                                value="<?php echo $this->mdl_clients->form_value('client_title', true); ?>"
+                                value="<?php _htmlsc($client_title); ?>"
                             >
                         </div>
                         <div class="form-group has-feedback">

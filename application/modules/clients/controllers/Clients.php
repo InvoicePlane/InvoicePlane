@@ -88,7 +88,8 @@ class Clients extends Admin_Controller
 
         if ($this->mdl_clients->run_validation()) {
             $client_title_custom = $this->input->post('client_title_custom');
-            if ($client_title_custom !== '') {
+            // Custom title selected
+            if ($_POST[self::CLIENT_TITLE] == ClientTitleEnum::CUSTOM) {
                 $_POST[self::CLIENT_TITLE] = $client_title_custom;
                 $this->mdl_clients->set_form_value(self::CLIENT_TITLE, $client_title_custom);
             }
