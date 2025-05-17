@@ -1,19 +1,16 @@
-const ClientTitleEnum = {
-    MISTER: 'mr',
-    MISSUS: 'mrs',
-    DOCTOR: 'doctor',
-    PROFESSOR: 'professor',
-    CUSTOM: 'custom'
-}
+const ClientTitleEnum = new Array(
+    'mr',
+    'mrs',
+    'doctor',
+    'professor'
+);
 
 $('#client_title').change((event) => {
     const client_title_custom_element = $('#client_title_custom');
 
-    if (ClientTitleEnum.CUSTOM === event.target.value) {
+    if (ClientTitleEnum.indexOf(event.target.value) == -1) {
         client_title_custom_element.removeClass('hidden')
-    }
-
-    if (ClientTitleEnum.CUSTOM !== event.target.value) {
+    } else {
         client_title_custom_element.addClass('hidden');
         client_title_custom_element.val('');
     }
