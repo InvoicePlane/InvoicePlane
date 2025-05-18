@@ -343,7 +343,7 @@ foreach ($items as $item) {
                     <i class="fa fa-database"></i>
                     <?php _trans('add_product'); ?>
                 </a>
-                <a href="javascript:void(0);" class="btn_add_task btn btn-sm btn-default">
+                <a href="javascript:void(0);" class="btn_add_task btn btn-sm btn-default<?php echo get_setting('projects_enabled') == 1 ?: ' hidden'; ?>">
                     <i class="fa fa-database"></i> <?php _trans('add_task'); ?>
                 </a>
             <?php } ?>

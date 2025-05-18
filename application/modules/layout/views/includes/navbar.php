@@ -77,7 +77,7 @@
                     </ul>
                 </li>
 
-                <li class="dropdown <?php echo get_setting('projects_enabled') == 1 ?: 'hidden'; ?>">
+                <li class="dropdown<?php echo get_setting('projects_enabled') == 1 ?: ' hidden'; ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;
                         <span class="hidden-md"><?php _trans('tasks'); ?></span>
