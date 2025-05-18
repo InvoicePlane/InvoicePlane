@@ -40,11 +40,11 @@ function env($env_key, $default = null)
  * Small helper function to get bool values for the env setting.
  *
  * @param string $env_key
- * @param bool   $default
+ * @param string $default
  *
  * @return bool
  */
-function env_bool($env_key, $default = false)
+function env_bool($env_key, $default = 'false')
 {
     return env($env_key, $default) === 'true';
 }
@@ -52,7 +52,7 @@ function env_bool($env_key, $default = false)
 // Enable debug mode if set
 define('IP_DEBUG', env_bool('ENABLE_DEBUG'));
 // Settings Invoices Sumex panel - Since v1.6.3
-define('SUMEX_SETTINGS', env_bool('SUMEX_SETTINGS', false));
+define('SUMEX_SETTINGS', env_bool('SUMEX_SETTINGS'));
 // Where post sumex xml to get pdf - Since v1.5.0 - See https://github.com/InvoicePlane/InvoicePlane/pull/453
 define('SUMEX_URL', env('SUMEX_URL'));
 
