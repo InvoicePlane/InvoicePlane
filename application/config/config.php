@@ -18,7 +18,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 | Note: need set to false to valid Zugferd2 & Facturx xml (discounts & VAT)
 |
 */
-$config['legacy_calculation'] = env_bool('LEGACY_CALCULATION');
+$config['legacy_calculation'] = env_bool('LEGACY_CALCULATION', 'true');
 
 /*
 |--------------------------------------------------------------------------
