@@ -1,5 +1,6 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+
+defined('BASEPATH') || exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------------
@@ -8,13 +9,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | This file lets you define "hooks" to extend CI without hacking the core
 | files.  Please see the user guide for info:
 |
-|	https://codeigniter.com/user_guide/general/hooks.html
+|   https://codeigniter.com/user_guide/general/hooks.html
 |
 */
 
-$hook['pre_controller'] = array(
-    'class' => 'SetTimezoneClass',
+$hook['pre_controller'] = [
+    'class'    => 'SetTimezoneClass',
     'function' => 'setTimezone',
     'filename' => 'SetTimezoneClass.php',
-    'filepath' => 'hooks'
-);
+    'filepath' => 'hooks',
+];

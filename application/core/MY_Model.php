@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -10,10 +10,10 @@ if (! defined('BASEPATH')) {
  *
  * Install this file as application/core/MY_Model.php
  *
- * @package       CodeIgniter
  * @author        Jesse Terry
  * @copyright     Copyright (c) 2012-2013, Jesse Terry
- * @link          http://developer13.com
+ *
+ * @see          http://developer13.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,13 +32,10 @@ if (! defined('BASEPATH')) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- *
  */
-
 #[AllowDynamicProperties]
 class MY_Model extends CI_Model
 {
-
     public $table;
 
     public $primary_key;
@@ -131,8 +128,8 @@ class MY_Model extends CI_Model
      */
     public function __call($name, $arguments)
     {
-        if (substr($name, 0, 7) == 'filter_') {
-            $this->filter[] = [substr($name, 7), $arguments];
+        if (mb_substr($name, 0, 7) === 'filter_') {
+            $this->filter[] = [mb_substr($name, 7), $arguments];
         } else {
             call_user_func_array([$this->db, $name], $arguments);
         }
@@ -143,7 +140,7 @@ class MY_Model extends CI_Model
     /**
      * Sets CI query object and automatically creates active record query
      * based on methods in child model.
-     * $this->model_name->get()
+     * $this->model_name->get().
      *
      * @param bool $include_defaults
      *
@@ -165,43 +162,8 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Query builder which listens to methods in child model
-     *
-     * @param array $exclude
-     */
-    private function set_defaults($exclude = [])
-    {
-        $native_methods = $this->native_methods;
-
-        foreach ($exclude as $unset_method) {
-            unset($native_methods[array_search($unset_method, $native_methods)]);
-        }
-
-        foreach ($native_methods as $native_method) {
-            $native_method = 'default_' . $native_method;
-
-            if (method_exists($this, $native_method)) {
-                $this->$native_method();
-            }
-        }
-    }
-
-    private function run_filters()
-    {
-        foreach ($this->filter as $filter) {
-            call_user_func_array([$this->db, $filter[0]], $filter[1]);
-        }
-
-        /**
-         * Clear the filter array since this should only be run once per model
-         * execution
-         */
-        $this->filter = [];
-    }
-
-    /**
      * Call when paginating results
-     * $this->model_name->paginate()
+     * $this->model_name->paginate().
      *
      * @param     $base_url
      * @param int $offset
@@ -212,9 +174,9 @@ class MY_Model extends CI_Model
         $this->load->helper('url');
         $this->load->library('pagination');
 
-        $this->offset = $offset;
+        $this->offset       = $offset;
         $default_list_limit = $this->mdl_settings->setting('default_list_limit');
-        $per_page = (empty($default_list_limit) ? $this->default_limit : $default_list_limit);
+        $per_page           = (empty($default_list_limit) ? $this->default_limit : $default_list_limit);
 
         $this->set_defaults();
         $this->run_filters();
@@ -222,15 +184,15 @@ class MY_Model extends CI_Model
         $this->db->limit($per_page, $this->offset);
         $this->query = $this->db->get($this->table);
 
-        $this->total_rows = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
-        $this->total_pages = ceil($this->total_rows / $per_page);
+        $this->total_rows      = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
+        $this->total_pages     = ceil($this->total_rows / $per_page);
         $this->previous_offset = $this->offset - $per_page;
-        $this->next_offset = $this->offset + $per_page;
+        $this->next_offset     = $this->offset + $per_page;
 
         $config = [
-            'base_url' => $base_url,
+            'base_url'   => $base_url,
             'total_rows' => $this->total_rows,
-            'per_page' => $per_page,
+            'per_page'   => $per_page,
         ];
 
         $this->last_offset = ($this->total_pages * $per_page) - $per_page;
@@ -245,22 +207,17 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Function to save an entry to the database
-     *
-     * @param null $id
-     * @param null $db_array
-     *
-     * @return null
+     * Function to save an entry to the database.
      */
     public function save($id = null, $db_array = null)
     {
-        if (!$db_array) {
+        if ( ! $db_array) {
             $db_array = $this->db_array();
         }
 
         $datetime = date('Y-m-d H:i:s');
 
-        if (!$id) {
+        if ( ! $id) {
             if ($this->date_created_field) {
                 if (is_array($db_array)) {
                     $db_array[$this->date_created_field] = $datetime;
@@ -286,21 +243,20 @@ class MY_Model extends CI_Model
             $this->db->insert($this->table, $db_array);
 
             return $this->db->insert_id();
-
-        } else {
-            if ($this->date_modified_field) {
-                if (is_array($db_array)) {
-                    $db_array[$this->date_modified_field] = $datetime;
-                } else {
-                    $db_array->{$this->date_modified_field} = $datetime;
-                }
-            }
-
-            $this->db->where($this->primary_key, $id);
-            $this->db->update($this->table, $db_array);
-
-            return $id;
         }
+
+        if ($this->date_modified_field) {
+            if (is_array($db_array)) {
+                $db_array[$this->date_modified_field] = $datetime;
+            } else {
+                $db_array->{$this->date_modified_field} = $datetime;
+            }
+        }
+
+        $this->db->where($this->primary_key, $id);
+        $this->db->update($this->table, $db_array);
+
+        return $id;
     }
 
     /**
@@ -326,7 +282,7 @@ class MY_Model extends CI_Model
 
     /**
      * Deletes a record based on primary key value
-     * $this->model_name->delete(5);
+     * $this->model_name->delete(5);.
      *
      * @param $id
      */
@@ -338,7 +294,7 @@ class MY_Model extends CI_Model
 
     /**
      * Returns the CI query result object
-     * $this->model_name->get()->result();
+     * $this->model_name->get()->result();.
      *
      * @return mixed
      */
@@ -349,7 +305,7 @@ class MY_Model extends CI_Model
 
     /**
      * Returns the CI query row object
-     * $this->model_name->get()->row();
+     * $this->model_name->get()->row();.
      *
      * @return mixed
      */
@@ -360,7 +316,7 @@ class MY_Model extends CI_Model
 
     /**
      * Returns CI query result array
-     * $this->model_name->get()->result_array();
+     * $this->model_name->get()->result_array();.
      *
      * @return mixed
      */
@@ -371,7 +327,7 @@ class MY_Model extends CI_Model
 
     /**
      * Returns CI query row array
-     * $this->model_name->get()->row_array();
+     * $this->model_name->get()->row_array();.
      *
      * @return mixed
      */
@@ -382,7 +338,7 @@ class MY_Model extends CI_Model
 
     /**
      * Returns CI query num_rows()
-     * $this->model_name->get()->num_rows();
+     * $this->model_name->get()->num_rows();.
      *
      * @return mixed
      */
@@ -392,15 +348,15 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Used to retrieve record by ID and populate $this->form_values
+     * Used to retrieve record by ID and populate $this->form_values.
      *
      * @param int $id
      *
-     * @return boolean|null
+     * @return bool|null
      */
     public function prep_form($id = null)
     {
-        if (!$_POST && $id) {
+        if ( ! $_POST && $id) {
             $row = $this->get_by_id($id);
 
             if ($row) {
@@ -412,13 +368,15 @@ class MY_Model extends CI_Model
             }
 
             return false;
-        } elseif (!$id) {
+        }
+
+        if ( ! $id) {
             return true;
         }
     }
 
     /**
-     * Retrieves a single record based on primary key value
+     * Retrieves a single record based on primary key value.
      *
      * @param $id
      *
@@ -440,7 +398,7 @@ class MY_Model extends CI_Model
      */
     public function run_validation($validation_rules = null)
     {
-        if (!$validation_rules) {
+        if ( ! $validation_rules) {
             $validation_rules = $this->default_validation_rules;
         }
 
@@ -453,7 +411,7 @@ class MY_Model extends CI_Model
 
             $this->load->library('form_validation');
 
-            $this->form_validation->set_rules($this->$validation_rules());
+            $this->form_validation->set_rules($this->{$validation_rules}());
 
             $run = $this->form_validation->run();
 
@@ -464,7 +422,7 @@ class MY_Model extends CI_Model
     }
 
     /**
-     * Returns the assigned form value to a form input element
+     * Returns the assigned form value to a form input element.
      *
      * @param string $key
      * @param bool   $escape
@@ -473,7 +431,8 @@ class MY_Model extends CI_Model
      */
     public function form_value($key, $escape = false)
     {
-        $value = isset($this->form_values[$key]) ? $this->form_values[$key] : '';
+        $value = $this->form_values[$key] ?? '';
+
         return $escape ? htmlspecialchars($value) : $value;
     }
 
@@ -492,5 +451,40 @@ class MY_Model extends CI_Model
     public function set_id($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * Query builder which listens to methods in child model.
+     *
+     * @param array $exclude
+     */
+    private function set_defaults($exclude = [])
+    {
+        $native_methods = $this->native_methods;
+
+        foreach ($exclude as $unset_method) {
+            unset($native_methods[array_search($unset_method, $native_methods)]);
+        }
+
+        foreach ($native_methods as $native_method) {
+            $native_method = 'default_' . $native_method;
+
+            if (method_exists($this, $native_method)) {
+                $this->{$native_method}();
+            }
+        }
+    }
+
+    private function run_filters()
+    {
+        foreach ($this->filter as $filter) {
+            call_user_func_array([$this->db, $filter[0]], $filter[1]);
+        }
+
+        /*
+         * Clear the filter array since this should only be run once per model
+         * execution
+         */
+        $this->filter = [];
     }
 }

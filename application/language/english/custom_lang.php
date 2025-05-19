@@ -1,6 +1,7 @@
 <?php
+
 /**
- * CUSTOM LANGUAGE STRINGS
+ * CUSTOM LANGUAGE STRINGS.
  *
  * Add your custom Language Strings here with the following scheme:
  *
@@ -11,5 +12,4 @@
  * If you are not sure take a look at the ip_lang.php file or visit the
  * community forums.
  */
-
 $lang = [];

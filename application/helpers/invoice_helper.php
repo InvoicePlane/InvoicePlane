@@ -52,6 +52,7 @@ function invoice_logo_pdf()
  * Documentation: https://www.postfinance.ch/binp/postfinance/public/dam.M26m_i6_6ceYcN2XtAN4w8OHMynQG7FKxJVK8TtQzr0.spool/content/dam/pf/de/doc/consult/manual/dlserv/inpayslip_isr_man_en.pdf.
  *
  * @param string $slipType
+ * @param        $amount
  * @param string $rnumb
  *
  * @return string
@@ -71,6 +72,7 @@ function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
     if ( ! $isEur && $amount > 99999999.95) {
         throw new Error('Invalid amount');
     }
+
     if ($isEur && $amount > 99999999.99) {
         throw new Error('Invalid amount');
     }
@@ -128,10 +130,13 @@ function invoice_qrcode($invoice_id)
         && $CI->mdl_settings->setting('qr_code_bic')
     ) {
         $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-        $CI->load->library('QrCode', ['invoice' => $invoice]);
-        $qrcode_data_uri = $CI->qrcode->generate();
 
-        return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+        if ((float) $invoice->invoice_balance) {
+            $CI->load->library('QrCode', ['invoice' => $invoice]);
+            $qrcode_data_uri = $CI->qrcode->generate();
+
+            return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+        }
     }
 
     return '';

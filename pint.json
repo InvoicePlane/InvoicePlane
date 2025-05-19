@@ -2,11 +2,17 @@
     "preset": "per",
     "exclude": [
         "application/views/**/pdf/",
+        "application/logs",
         "resources",
         "storage"
     ],
+    "notName": [
+        "Crypt.php",
+        "Cryptor.php"
+    ],
     "rules": {
         "@PSR12": true,
+        "statement_indentation": false,
         "align_multiline_comment": true,
         "array_indentation": true,
         "array_syntax": {
@@ -16,7 +22,13 @@
         "binary_operator_spaces": {
             "default": "single_space",
             "operators": {
+                "-": "align_single_space_minimal",
+                "+": "align_single_space_minimal",
                 "=": "align_single_space_minimal",
+                "<": "align_single_space_minimal",
+                ">": "align_single_space_minimal",
+                "!=": "align_single_space_minimal",
+                "==": "align_single_space_minimal",
                 "=>": "align_single_space_minimal"
             }
         },

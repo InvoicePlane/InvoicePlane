@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -38,5 +38,4 @@ class Versions extends Admin_Controller
         $this->layout->buffer('content', 'settings/versions');
         $this->layout->render();
     }
-
 }

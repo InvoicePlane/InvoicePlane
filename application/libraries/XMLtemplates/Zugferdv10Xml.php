@@ -7,14 +7,20 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
+ *
+ * ZUGFeRD v1.0 (Historic file)
+ * Only for update purpose (from 1.4.7 to 1.6.2) when the include_zugferd option are active. If not, I'm deleted!
  */
 
-#[AllowDynamicProperties]
-class ZugferdXml
+/**
+ * Class Zugferdv10Xml.
+ */
+#[\AllowDynamicProperties]
+class Zugferdv10Xml
 {
     public $invoice;
 
@@ -27,6 +33,7 @@ class ZugferdXml
         $CI                 = &get_instance();
         $this->invoice      = $params['invoice'];
         $this->items        = $params['items'];
+        $this->filename     = $params['filename'];
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
     }
 
@@ -41,22 +48,8 @@ class ZugferdXml
         $this->root->appendChild($this->xmlSpecifiedSupplyChainTradeTransaction());
 
         $this->doc->appendChild($this->root);
-
-        return $this->doc->saveXML();
-    }
-
-    /**
-     * @return string|null
-     */
-    public function zugferdFormattedDate($date)
-    {
-        if ($date) {
-            $date = DateTime::createFromFormat('Y-m-d', $date);
-
-            return $date->format('Ymd');
-        }
-
-        return '';
+        $this->doc->save(UPLOADS_FOLDER . 'temp/' . $this->filename . '.xml');
+        // return $this->doc->saveXML();
     }
 
     public function itemsSubtotalGroupedByTaxPercent()
@@ -70,6 +63,7 @@ class ZugferdXml
             if ( ! isset($result[$item->item_tax_rate_percent])) {
                 $result[$item->item_tax_rate_percent] = 0;
             }
+
             $result[$item->item_tax_rate_percent] += $item->item_subtotal;
         }
 
@@ -80,9 +74,23 @@ class ZugferdXml
     // elements helpers
     // ===========================================================================
 
-    public function zugferdFormattedFloat($amount, $nb_decimals = 2)
+    /**
+     * @return string|null
+     */
+    public function formattedDate($date)
     {
-        return number_format((float) $amount, $nb_decimals);
+        if ($date) {
+            $date = DateTime::createFromFormat('Y-m-d', $date);
+
+            return $date->format('Ymd');
+        }
+
+        return '';
+    }
+
+    public function formattedFloat($amount, $nb_decimals = 2)
+    {
+        return number_format((float) $amount, $nb_decimals, '.', '');
     }
 
     protected function xmlRoot()
@@ -101,6 +109,7 @@ class ZugferdXml
         $node          = $this->doc->createElement('rsm:SpecifiedExchangedDocumentContext');
         $guidelineNode = $this->doc->createElement('ram:GuidelineSpecifiedDocumentContextParameter');
         $guidelineNode->appendChild($this->doc->createElement('ram:ID', 'urn:ferd:CrossIndustryDocument:invoice:1p0:basic'));
+
         $node->appendChild($guidelineNode);
 
         return $node;
@@ -117,11 +126,13 @@ class ZugferdXml
         // IssueDateTime
         $dateNode = $this->doc->createElement('ram:IssueDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+
         $node->appendChild($dateNode);
 
         // IncludedNote
         $noteNode = $this->doc->createElement('ram:IncludedNote');
         $noteNode->appendChild($this->doc->createElement('ram:Content', htmlsc($this->invoice->invoice_terms)));
+
         $node->appendChild($noteNode);
 
         return $node;
@@ -129,7 +140,7 @@ class ZugferdXml
 
     protected function dateElement($date)
     {
-        $el = $this->doc->createElement('udt:DateTimeString', $this->zugferdFormattedDate($date));
+        $el = $this->doc->createElement('udt:DateTimeString', $this->formattedDate($date));
         $el->setAttribute('format', 102);
 
         return $el;
@@ -193,6 +204,7 @@ class ZugferdXml
         $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($this->invoice->client_address_2)));
         $addressNode->appendChild($this->doc->createElement('ram:CityName', htmlsc($this->invoice->client_city)));
         $addressNode->appendChild($this->doc->createElement('ram:CountryID', htmlsc($this->invoice->client_country)));
+
         $node->appendChild($addressNode);
 
         // SpecifiedTaxRegistration
@@ -210,6 +222,7 @@ class ZugferdXml
         $node = $this->doc->createElement('ram:SpecifiedTaxRegistration');
         $el   = $this->doc->createElement('ram:ID', $content);
         $el->setAttribute('schemeID', $schemeID);
+
         $node->appendChild($el);
 
         return $node;
@@ -223,6 +236,7 @@ class ZugferdXml
         $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
         $dateNode  = $this->doc->createElement('ram:OccurrenceDateTime');
         $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
+
         $eventNode->appendChild($dateNode);
 
         $node->appendChild($eventNode);
@@ -265,7 +279,7 @@ class ZugferdXml
      */
     protected function currencyElement($name, $amount, $nb_decimals = 2)
     {
-        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($amount, $nb_decimals));
+        $el = $this->doc->createElement($name, $this->formattedFloat($amount, $nb_decimals));
         $el->setAttribute('currencyID', $this->currencyCode);
 
         return $el;
@@ -293,6 +307,7 @@ class ZugferdXml
         // AssociatedDocumentLineDocument
         $lineNode = $this->doc->createElement('ram:AssociatedDocumentLineDocument');
         $lineNode->appendChild($this->doc->createElement('ram:LineID', $lineNumber));
+
         $node->appendChild($lineNode);
 
         // SpecifiedSupplyChainTradeAgreement
@@ -301,6 +316,7 @@ class ZugferdXml
         // SpecifiedSupplyChainTradeDelivery
         $deliveyNode = $this->doc->createElement('ram:SpecifiedSupplyChainTradeDelivery');
         $deliveyNode->appendChild($this->quantityElement('ram:BilledQuantity', $item->item_quantity));
+
         $node->appendChild($deliveyNode);
 
         // SpecifiedSupplyChainTradeSettlement
@@ -309,6 +325,7 @@ class ZugferdXml
         // SpecifiedTradeProduct
         $tradeNode = $this->doc->createElement('ram:SpecifiedTradeProduct');
         $tradeNode->appendChild($this->doc->createElement('ram:Name', htmlsc($item->item_name) . "\n" . htmlsc($item->item_description)));
+
         $node->appendChild($tradeNode);
 
         return $node;
@@ -325,11 +342,13 @@ class ZugferdXml
         // GrossPriceProductTradePrice
         $grossPriceNode = $this->doc->createElement('ram:GrossPriceProductTradePrice');
         $grossPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price, 4));
+
         $node->appendChild($grossPriceNode);
 
         // NetPriceProductTradePrice
         $netPriceNode = $this->doc->createElement('ram:NetPriceProductTradePrice');
         $netPriceNode->appendChild($this->currencyElement('ram:ChargeAmount', $item->item_price, 4));
+
         $node->appendChild($netPriceNode);
 
         return $node;
@@ -340,7 +359,7 @@ class ZugferdXml
      */
     protected function quantityElement($name, $quantity)
     {
-        $el = $this->doc->createElement($name, $this->zugferdFormattedFloat($quantity, 4));
+        $el = $this->doc->createElement($name, $this->formattedFloat($quantity, 4));
         $el->setAttribute('unitCode', 'C62');
 
         return $el;
@@ -361,6 +380,7 @@ class ZugferdXml
         // SpecifiedTradeSettlementMonetarySummation
         $sumNode = $this->doc->createElement('ram:SpecifiedTradeSettlementMonetarySummation');
         $sumNode->appendChild($this->currencyElement('ram:LineTotalAmount', $item->item_subtotal));
+
         $node->appendChild($sumNode);
 
         return $node;

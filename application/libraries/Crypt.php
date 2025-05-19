@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -27,6 +27,7 @@ class Crypt
     /**
      * @param string $password
      * @param string $salt
+     *
      * @return string
      */
     public function generate_password($password, $salt)
@@ -37,50 +38,47 @@ class Crypt
     /**
      * @param string $hash
      * @param string $password
+     *
      * @return bool
      */
     public function check_password($hash, $password)
     {
         $new_hash = crypt($password, $hash);
 
-        return ($hash == $new_hash);
+        return $hash == $new_hash;
     }
 
     /**
      * @param string $data
+     *
      * @return string
      */
     public function encode($data)
     {
-
         $key = getenv('ENCRYPTION_KEY');
-        if (preg_match("/^base64:(.*)$/", $key, $matches)) {
+        if (preg_match('/^base64:(.*)$/', $key, $matches)) {
             $key = base64_decode($matches[1]);
         }
 
-        $encrypted = Cryptor::Encrypt($data, $key);
-        return $encrypted;
-
+        return Cryptor::Encrypt($data, $key);
     }
 
     /**
      * @param string $data
+     *
      * @return string
      */
     public function decode($data)
     {
-
         if (empty($data)) {
             return '';
         }
 
         $key = getenv('ENCRYPTION_KEY');
-        if (preg_match("/^base64:(.*)$/", $key, $matches)) {
+        if (preg_match('/^base64:(.*)$/', $key, $matches)) {
             $key = base64_decode($matches[1]);
         }
 
-        $decrypted = Cryptor::Decrypt($data, $key);
-        return $decrypted;
-
+        return Cryptor::Decrypt($data, $key);
     }
 }
