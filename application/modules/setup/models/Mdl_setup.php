@@ -295,8 +295,9 @@ class Mdl_Setup extends CI_Model
                 $this->db->set('recur_end_date', null)->where('invoice_recurring_id', $row->invoice_recurring_id)->update('ip_invoices_recurring');
             }
 
-            if ($row->recur_next_date == '0000-00-00') {
-                $this->db->set('recur_next_date', null)->where('invoice_recurring_id', $row->invoice_recurring_id)->update('ip_invoices_recurring');
+            if($row->recur_next_date == '0000-00-00')
+            {
+                $this->db->set('recur_next_date',NULL)->where('invoice_recurring_id',$row->invoice_recurring_id)->update('ip_invoices_recurring');
             }
         }
 
@@ -311,17 +312,43 @@ class Mdl_Setup extends CI_Model
 
     public function upgrade_039_1_6_3()
     {
-        //** Set include_zugferd to einvoicing**
         $einvoicing = '0';
         $rows       = $this->db->query('SELECT * FROM `ip_settings`');
+
+        /**
+         * Let's do the foreach loop only once for 2 repairs:
+         * - e-invoicing and
+         * - setting the language to lowercase
+         */
         foreach ($rows->result() as $row) {
+            /**
+             * ===========================================
+             * ** Set include_zugferd to einvoicing**
+             * ===========================================
+             */
             if ($row->setting_key == 'include_zugferd') {
                 $einvoicing = $row->setting_value;
                 $this->db->set('setting_key', 'einvoicing')->where('setting_id', $row->setting_id)->update('ip_settings');
                 break;
             }
+
+            /**
+             * ===========================================
+             * ** Set languages to _lowercase_ **
+             * ===========================================
+             */
+            if($row->setting_key == 'default_language')
+            {
+                $this->db->set('setting_value', strtolower($row->setting_value))->where('setting_id', $row->setting_id)->update('ip_settings');
+                break;
+            }
         }
 
+        /**
+         * ===========================================
+         * ** E-Invoicing Stuff **
+         * ===========================================
+         */
         if ($einvoicing == '1') {
             //**Enable einvoicing with Zugferd 1.0 for all clients if einvoicing parameter is on**
             $data = ['client_einvoicing_active' => '1', 'client_einvoicing_version' => 'Zugferdv10'];
@@ -341,6 +368,20 @@ class Mdl_Setup extends CI_Model
                 if (file_exists($file)) {
                     unlink($file);
                 }
+            }
+        }
+
+        /**
+         * ===========================================
+         * ** user_language stuff **
+         * ===========================================
+         */
+        $rows = $this->db->query('SELECT * FROM `ip_users`');
+        foreach($rows->result() as $row)
+        {
+            if($row->user_language != 'system')
+            {
+                $this->db->set('user_language', strtolower($row->user_language))->where('user_id', $row->user_id)->update('ip_users');
             }
         }
     }
