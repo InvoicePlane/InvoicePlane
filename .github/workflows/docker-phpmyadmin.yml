@@ -1,0 +1,56 @@
+name: Build & Push PHPMyAdmin Docker Image
+
+on:
+  push:
+    branches:
+      - development
+    paths:
+      - 'resources/docker/phpmyadmin/Dockerfile'
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build PHPMyAdmin Image
+        run: |
+          docker build -t phpmyadmin-test ./resources/docker/phpmyadmin
+          docker run --rm phpmyadmin-test phpmyadmin --version  # Test version
+
+      - name: Log in to GHCR
+        if: success()
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Docker Hub
+        if: success()
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push PHPMyAdmin Image (Development)
+        if: github.ref == 'refs/heads/development'
+        run: |
+          docker tag phpmyadmin-test ghcr.io/${{ github.repository }}:phpmyadmin-dev-latest
+          docker push ghcr.io/${{ github.repository }}:phpmyadmin-dev-latest
+
+      - name: Push PHPMyAdmin Image (Master Release)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          docker tag phpmyadmin-test ghcr.io/${{ github.repository }}:phpmyadmin-${VERSION}
+          docker tag phpmyadmin-test ghcr.io/${{ github.repository }}:latest
+          docker push ghcr.io/${{ github.repository }}:phpmyadmin-${VERSION}
+          docker push ghcr.io/${{ github.repository }}:latest
