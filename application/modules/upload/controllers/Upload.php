@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -16,11 +16,18 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Upload extends Admin_Controller
 {
-    public $targetPath = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/';
+    public $targetPath;
 
-    public $ctype_default = 'application/octet-stream';
-
-    public $content_types = [];
+    public $ctype_default = "application/octet-stream";
+    public $content_types = array(
+        'gif' => 'image/gif',
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'pdf' => 'application/pdf',
+        'png' => 'image/png',
+        'txt' => 'text/plain',
+        'xml' => 'application/xml',
+    );
 
     /**
      * Upload constructor.
@@ -29,150 +36,172 @@ class Upload extends Admin_Controller
     {
         parent::__construct();
         $this->load->model('upload/mdl_uploads');
-        $this->content_types = $this->mdl_uploads->content_types;
+        $this->targetPath = UPLOADS_FOLDER . '/customer_files';
     }
 
-    public function upload_file($customerId, $url_key): void
+    /**
+     * @param $customerId
+     * @param $url_key
+     */
+    public function upload_file($customerId, $url_key)
     {
-        // Show files Legacy (obsolete)
-        if (empty($_FILES['file'])) {
-            $this->show_files($url_key);
-        } elseif (empty($_FILES['file']['name'])) {
-            $this->respond_message(400, 'upload_error_no_file');
+        Upload::create_dir($this->targetPath . '/');
+
+        if (!empty($_FILES)) {
+            $tempFile = $_FILES['file']['tmp_name'];
+            $fileName = preg_replace('/\s+/', '_', $_FILES['file']['name']);
+            $targetFile = $this->targetPath . '/' . $url_key . '_' . $fileName;
+            $file_exists = file_exists($targetFile);
+
+            if (!$file_exists) {
+                // If file does not exists then upload
+                $data = array(
+                    'client_id' => $customerId,
+                    'url_key' => $url_key,
+                    'file_name_original' => $fileName,
+                    'file_name_new' => $url_key . '_' . $fileName
+                );
+
+                $this->mdl_uploads->create($data);
+
+                move_uploaded_file($tempFile, $targetFile);
+
+                echo json_encode([
+                    'success' => true
+                ]);
+
+            } else {
+                // If file exists then echo the error and set a http error response
+                echo json_encode([
+                    'success' => false,
+                    'message' => trans('error_duplicate_file')
+                ]);
+                http_response_code(404);
+            }
+
+        } else {
+            Upload::show_files($url_key, $customerId);
         }
-
-        $filename = $this->sanitize_file_name($_FILES['file']['name']);
-        $filePath = $this->get_target_file_path($url_key, $filename);
-
-        if (file_exists($filePath)) {
-            $this->respond_message(409, 'upload_error_duplicate_file', $filename);
-        }
-
-        $tempFile = $_FILES['file']['tmp_name'];
-        $this->validate_mime_type(mime_content_type($tempFile));
-        $this->move_uploaded_file($tempFile, $filePath, $filename);
-
-        $this->save_file_metadata($customerId, $url_key, $filename);
-
-        $this->respond_message(200, 'upload_file_uploaded_successfully', $filename);
     }
 
-    public function create_dir($path, $chmod = '0755'): bool
+    /**
+     * @param string $path
+     * @param string $chmod
+     * @return bool
+     */
+    public function create_dir($path, $chmod = '0777')
     {
-        if ( ! is_dir($path) && ! is_link($path)) {
+        if (!(is_dir($path) || is_link($path))) {
             return mkdir($path, $chmod);
+        } else {
+            return false;
         }
-
-        return true;
     }
 
-    public function show_files($url_key = null): void
+    /**
+     * @param $url_key
+     * @param null $customerId
+     * @return void
+     */
+    public function show_files($url_key, $customerId = null)
     {
-        header('Content-Type: application/json; charset=utf-8');
-        if ($url_key && ! $result = $this->mdl_uploads->get_files($url_key)) {
-            exit('{}');
+        $result = array();
+        $path = $this->targetPath;
+
+        $files = scandir($path);
+
+        if ($files !== false) {
+
+            foreach ($files as $file) {
+                if (in_array($file, array(".", ".."))) {
+                    continue;
+                }
+                if (strpos($file, $url_key) !== 0) {
+                    continue;
+                }
+                if (substr(realpath($path), realpath($file) == 0)) {
+                    $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                    $obj['fullname'] = $file;
+                    $obj['size'] = filesize($path . '/' . $file);
+                    $result[] = $obj;
+                }
+            }
+
+        } else {
+            return;
         }
 
         echo json_encode($result);
-        exit;
     }
 
-    public function delete_file($url_key): void
+    /**
+     * @param $url_key
+     */
+    public function delete_file($url_key)
     {
-        $filename = urldecode($this->input->post('name'));
+        $path = $this->targetPath;
+        $fileName = $_POST['name'];
 
-        $finalPath = $this->targetPath . $url_key . '_' . $filename;
+        $this->mdl_uploads->delete_file($url_key, $fileName);
 
-        if (realpath($this->targetPath) === mb_substr(realpath($finalPath), 0, mb_strlen(realpath($this->targetPath))) && ( ! file_exists($finalPath) || @unlink($finalPath))) {
-            $this->mdl_uploads->delete_file($url_key, $filename);
-            $this->respond_message(200, 'upload_file_deleted_successfully', $filename);
-        }
+        // AVOID TREE TRAVERSAL!
+        $finalPath = $path . '/' . $url_key . '_' . $fileName;
 
-        $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-        $this->respond_message(410, 'upload_error_file_delete', $finalPath . $ref);
-    }
-
-    public function get_file($filename): void
-    {
-        $filename = urldecode($filename);
-        if ( ! file_exists($this->targetPath . $filename)) {
-            $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-            $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $filename . $ref);
-        }
-
-        $path_parts = pathinfo($this->targetPath . $filename);
-        $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
-        $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
-
-        $file_size = filesize($this->targetPath . $filename);
-
-        header('Expires: -1');
-        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-        header('Pragma: no-cache');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        header('Content-Type: ' . $ctype);
-        header('Content-Length: ' . $file_size);
-
-        readfile($this->targetPath . $filename);
-    }
-
-    private function sanitize_file_name(string $filename): string
-    {
-        // Clean filename (same in dropzone script)
-        return preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', mb_trim($filename));
-    }
-
-    private function get_target_file_path(string $url_key, string $filename): string
-    {
-        return $this->targetPath . $url_key . '_' . $filename;
-    }
-
-    private function validate_mime_type(string $mimeType): void
-    {
-        $allowedTypes = array_values($this->content_types);
-        if ( ! in_array($mimeType, $allowedTypes, true)) {
-            $this->respond_message(415, 'upload_error_unsupported_file_type', $mimeType);
+        if (strpos(realpath($path), realpath($finalPath)) == 0) {
+            unlink($path . '/' . $url_key . '_' . $fileName);
         }
     }
 
-    private function save_file_metadata(int $customerId, string $url_key, string $filename): void
+    /**
+     * Returns the corresponding file as a download and prevents execution of files
+     *
+     * @param string $filename
+     * @return void
+     */
+    public function get_file($filename)
     {
-        $data = [
-            'client_id'          => $customerId,
-            'url_key'            => $url_key,
-            'file_name_original' => $filename,
-            'file_name_new'      => $url_key . '_' . $filename,
-        ];
+        $base_path = realpath(UPLOADS_CFILES_FOLDER);
 
-        if ( ! $this->mdl_uploads->create($data)) {
-            $this->respond_message(500, 'upload_error_database', $filename);
-        }
-    }
-
-    private function move_uploaded_file(string $tempFile, string $filePath, string $filename): void
-    {
-        // Create the target dir (if unexist)
-        $this->create_dir($this->targetPath);
-
-        // Checks to ensure that the target dir is writable
-        if ( ! is_writable($this->targetPath)) {
-            $this->respond_message(410, 'upload_error_folder_not_writable', $this->targetPath);
-        }
-        // Checks to ensure that the tempFile is a valid upload file AND it was uploaded via PHP's HTTP POST upload.
-        elseif ( ! move_uploaded_file($tempFile, $filePath)) {
-            $this->respond_message(400, 'upload_error_invalid_move_uploaded_file', $filename);
-        }
-    }
-
-    private function respond_message(int $httpCode, string $messageKey, string $dynamicLogValue = ''): void
-    {
-        log_message('debug', trans($messageKey) . ': (status ' . $httpCode . ') ' . $dynamicLogValue);
-        http_response_code($httpCode);
-        _trans($messageKey);
-        if ($httpCode == 410) {
-            echo PHP_EOL . PHP_EOL . '"' . basename(UPLOADS_FOLDER) . DIRECTORY_SEPARATOR . basename($this->targetPath) . '"';
+        if (!$base_path) {
+            log_message('error', "Invalid base upload directory: " . UPLOADS_CFILES_FOLDER);
+            show_404();
+            exit;
         }
 
+        $file_path = realpath($base_path . DIRECTORY_SEPARATOR . basename($filename));
+
+        if (!$file_path || strpos($file_path, $base_path) !== 0) {
+            log_message('error', "Unauthorized file access attempt: $filename");
+            show_404();
+            exit;
+        }
+
+        $path_parts = pathinfo($file_path);
+        $file_ext = strtolower($path_parts['extension'] ?? '');
+
+        if (!isset($this->content_types[$file_ext])) {
+            log_message('error', "Unsupported file type: $file_ext");
+            show_error('Unsupported file type', 403);
+            exit;
+        }
+
+        if (!file_exists($file_path)) {
+            log_message('error', "File not found: $file_path");
+            show_404();
+            exit;
+        }
+
+        $file_size = filesize($file_path);
+        $ctype = $this->content_types[$file_ext] ?? $this->ctype_default;
+
+        header("Expires: -1");
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Pragma: no-cache");
+        header("Content-Disposition: attachment; filename=\"" . basename($file_path) . "\"");
+        header("Content-Type: " . $ctype);
+        header("Content-Length: " . $file_size);
+
+        readfile($file_path);
         exit;
     }
 }
