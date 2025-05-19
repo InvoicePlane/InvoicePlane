@@ -1,30 +1,43 @@
-## Description
-<!--
-Please check the following steps to submit your pull request. If you have any questions please read the contribution guide available at https://go.invoiceplane.com/contribguide or join the community forums or the Slack channel.
-You can check items by changing `[ ]` to `[x]`.
-If you can't check all checklist items please add `[WIP]` in front of your title.
-Remove this first paragraph but please keep the following checklist even if it's incomplete.
--->
+# Pull Request Checklist  
 
-## Related Issue
-<!--- Please make sure there's an accomanying issue in the issues list -->
-<!--- Please try and link to an accompanying thread on the forums, if there is one -->
+Please check the following steps before submitting your PR. If any items are incomplete, consider marking it as `[WIP]` (Work in Progress).  
 
-## Motivation and Context
-<!--- Why would you like this change? Does it solve a provlem or is it an improvement? -->
-<!--- If it fixes an open issue, please link to the issue here. -->
+## Checklist  
+- [ ] My code follows the code formatting guidelines.  
+- [ ] I have tested my changes locally.  
+- [ ] I selected the appropriate branch for this PR.  
+- [ ] I have rebased my changes on top of the selected branch.  
+- [ ] I included relevant documentation updates if necessary.  
+- [ ] I have an accompanying issue ID for this pull request.  
 
-## Screenshots (if appropriate):
+---
 
-## Pull Request Checklist
+## Description  
+Provide a brief description of the changes made in this pull request.  
 
-  * [ ] My code follows the code formatting guidelines.
-  * [ ] I have an issue ID for this pull request.
-  * [ ] I selected the corresponding branch.
-  * [ ] I have rebased my changes on top of the corresponding branch.
+---
 
-## Issue Type (Please check one or more)
+## Related Issue(s)  
+List any related issues or discussions. If applicable, link to an accompanying thread on the forums.  
+Fixes # (example)  
 
-  * [ ] Bugfix
-  * [ ] Improvement of an existing Feature
-  * [ ] New Feature
+---
+
+## Motivation and Context  
+Why was this change necessary? Does it solve a problem or improve an existing feature? If this PR fixes an open issue, link to it here.  
+
+---
+
+## Issue Type (Check one or more)  
+- [ ] Bugfix  
+- [ ] Improvement of an existing feature  
+- [ ] New feature  
+
+---
+
+## Screenshots (If Applicable)  
+Attach relevant screenshots that demonstrate your changes.  
+
+---
+
+*Thank you for your contribution to InvoicePlane! We appreciate your time and effort.*
