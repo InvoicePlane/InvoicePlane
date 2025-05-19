@@ -1,22 +1,21 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Base_Controller extends MX_Controller
 {
-
     /** @var bool */
     public $ajax_controller = false;
 
@@ -30,13 +29,14 @@ class Base_Controller extends MX_Controller
         $this->config->load('invoice_plane');
 
         // Don't allow non-ajax requests to ajax controllers
-        if ($this->ajax_controller && !$this->input->is_ajax_request()) {
+        if ($this->ajax_controller && ! $this->input->is_ajax_request()) {
             exit;
         }
 
-        // Globally disallow GET requests to delete methods
         $this->load->helper('url');
-        if (strstr(current_url(), 'delete') && $this->input->method() !== 'post') {
+
+        // Globally disallow GET requests to delete methods
+        if (mb_strstr(current_url(), 'delete') && $this->input->method() !== 'post') {
             show_404();
         }
 
@@ -45,33 +45,24 @@ class Base_Controller extends MX_Controller
         $this->load->helper('redirect');
 
         // Check if database has been configured
-        if (!env_bool('SETUP_COMPLETED')) {
+        if ( ! env_bool('SETUP_COMPLETED')) {
             redirect('/welcome');
         } else {
-
-            $this->load->library('encryption');
-            $this->load->library('form_validation');
-            $this->load->library('session');
+            $this->load->library(['encryption', 'form_validation', 'session', 'ClientTitleEnum']);
             $this->load->database();
 
-            $this->load->helper('trans');
-            $this->load->helper('number');
-            $this->load->helper('pager');
-            $this->load->helper('invoice');
-            $this->load->helper('date');
-            $this->load->helper('form');
-            $this->load->helper('echo');
-            $this->load->helper('client');
+            $this->load->helper(['trans', 'number', 'pager', 'invoice', 'date', 'form', 'echo', 'user', 'client', 'country']);
 
             // Load setting model and load settings
-	    $this->load->model('settings/mdl_settings');
-	    if ($this->mdl_settings != null)
+            $this->load->model('settings/mdl_settings');
+            if ($this->mdl_settings != null) {
                 $this->mdl_settings->load_settings();
+            }
+
             $this->load->helper('settings');
 
             // Load the language based on user config, fall back to system if needed
             $user_lang = $this->session->userdata('user_language');
-
             if (empty($user_lang) || $user_lang == 'system') {
                 set_language(get_setting('default_language'));
             } else {
@@ -82,7 +73,6 @@ class Base_Controller extends MX_Controller
 
             // Load the layout module to start building the app
             $this->load->module('layout');
-
         }
     }
 }

@@ -1,12 +1,12 @@
 <div class="table-responsive">
-    <table class="table table-hover table-bordered table-striped">
+    <table id="products_table" class="table table-hover table-bordered table-striped">
         <tr>
             <th>&nbsp;</th>
             <th><?php _trans('product_sku'); ?></th>
             <th><?php _trans('family_name'); ?></th>
             <th><?php _trans('product_name'); ?></th>
             <th><?php _trans('product_description'); ?></th>
-            <th class="text-right"><?php _trans('product_price'); ?></th>
+            <th class="amount"><?php _trans('product_price'); ?></th>
         </tr>
         <?php foreach ($products as $product) { ?>
             <tr class="product">
@@ -26,7 +26,7 @@
                 <td>
                     <?php echo nl2br(htmlsc($product->product_description)); ?>
                 </td>
-                <td class="text-right">
+                <td class="amount">
                     <?php echo format_currency($product->product_price); ?>
                 </td>
             </tr>

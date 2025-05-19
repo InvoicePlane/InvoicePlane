@@ -1,0 +1,26 @@
+<ruleset name="coding-style">
+    <description>Coding style for InvoicPlane</description>
+    <!-- More info see: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-Ruleset -->
+    <file>./application</file>
+    <file>./index.php</file>
+    <exclude-pattern>./application/logs/*</exclude-pattern>
+    <exclude-pattern>./vendor/*</exclude-pattern>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+    <rule ref="Generic.ControlStructures.InlineControlStructure"/>
+    <rule ref="Generic.PHP.DeprecatedFunctions"/>
+    <rule ref="Generic.Strings.UnnecessaryStringConcat"/>
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
+    <!-- The end of line character -->
+    <rule ref="Generic.Files.LineEndings">
+        <properties>
+            <property name="eolChar" value="\n"/>
+        </properties>
+    </rule>
+    <!-- The closing ?> tag MUST be omitted from files containing only PHP. -->
+    <rule ref="Zend.Files.ClosingTag"/>
+    <!-- There MUST NOT be more than one statement per line. -->
+    <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
+    <!-- Character Encoding PHP code MUST use only UTF-8 without BOM. -->
+    <rule ref="Generic.Files.ByteOrderMark"/>
+</ruleset>

@@ -1,6 +1,6 @@
 <script>
     $(function () {
-        // Display the create quote modal
+        // Display the copy invoice modal
         $('#modal_copy_invoice').modal('show');
 
         // Select2 for all select inputs
@@ -10,14 +10,15 @@
 
         // Creates the invoice
         $('#copy_invoice_confirm').click(function () {
+            show_loader(); // Show spinner
             $.post("<?php echo site_url('invoices/ajax/copy_invoice'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
-                    client_id: $('#copy_invoice_client_id').val(),
+                    client_id: $('#client_id').val(),
+                    user_id: $('#user_id').val(),
                     invoice_date_created: $('#invoice_date_created_modal').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
-                    user_id: $('#user_id').val(),
                     payment_method: $('#payment_method').val()
                 },
                 function (data) {
@@ -28,12 +29,14 @@
                     }
                     else {
                         // The validation was not successful
+                        close_loader();
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().parent().addClass('has-error');
                         }
                     }
-                });
+                }
+            );
         });
     });
 
@@ -48,18 +51,24 @@
         </div>
         <div class="modal-body">
 
-            <input type="hidden" name="user_id" id="user_id" class="form-control"
-                   value="<?php echo $invoice->user_id; ?>">
+            <input type="hidden" name="user_id" id="user_id" value="<?php echo $invoice->user_id; ?>">
             <input type="hidden" name="payment_method" id="payment_method" class="form-control"
                    value="<?php echo $invoice->payment_method; ?>">
+            <input class="hidden" id="input_permissive_search_clients"
+                   value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
 
-            <div class="form-group">
-                <label for="copy_invoice_client_id"><?php _trans('client'); ?></label>
-                <select name="client_id" id="copy_invoice_client_id" class="client-id-select form-control" autofocus="autofocus">
-                <?php if ( ! empty($client)) : ?>
-                        <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
-                    <?php endif; ?>
-                </select>
+            <div class="form-group has-feedback">
+                <label for="client_id"><?php _trans('client'); ?></label>
+                <div class="input-group">
+                    <span id="toggle_permissive_search_clients" class="input-group-addon" title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
+                        <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw" ></i>
+                    </span>
+                    <select name="client_id" id="client_id" class="client-id-select form-control" autofocus="autofocus" required="required">
+<?php if ( ! empty($client)) : ?>
+                        <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client, false)); ?></option>
+<?php endif; ?>
+                    </select>
+                </div>
             </div>
 
             <div class="form-group has-feedback">

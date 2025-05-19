@@ -171,7 +171,7 @@
                             </label>
                             <select name="settings[currency_code]"
                                 id="settings[currency_code]"
-                                class="input-sm form-control simple-select">
+                                class="form-control simple-select">
                                 <?php foreach ($gateway_currency_codes as $val => $key) { ?>
                                     <option value="<?php echo $val; ?>"
                                         <?php check_select(get_setting('currency_code', '', true), $val); ?>>
@@ -196,6 +196,8 @@
                                     3
                                 </option>
                             </select>
+                            <p class="help-block"><?php _trans('tax_rate_decimal_places_hint'); ?></p>
+
                         </div>
                     </div>
                 </div>
@@ -210,7 +212,7 @@
                                 class="form-control simple-select"
                                 data-minimum-results-for-search="Infinity">
                                 <?php foreach ($number_formats as $key => $value) { ?>
-                                    <option value="<?php print($key); ?>"
+                                    <option value="<?php echo $key; ?>"
                                         <?php check_select(get_setting('number_format'), $value['label']); ?>>
                                         <?php _trans($value['label']); ?>
                                     </option>
@@ -371,7 +373,6 @@
 
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="monospace_amounts">
                                 <?php _trans('monospaced_font_for_amounts'); ?>
@@ -387,13 +388,12 @@
                             <p class="help-block">
                                 <?php _trans('example'); ?>:
                                 <span style="font-family: Monaco, Lucida Console, monospace">
-                        <?php echo format_currency(123456.78); ?>
-                    </span>
+                                    <?php echo format_currency(123456.78); ?>
+                                </span>
                             </p>
                         </div>
-                      </div>
-
-                      <div class="col-xs-12 col-md-6">
+                    </div>
+                    <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="login_logo">
                                 <?php _trans('login_logo'); ?>
@@ -409,7 +409,7 @@
                     </div>
                 </div>
 
-              	<div class="row">
+                <div class="row">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[reports_in_new_tab]">
@@ -423,14 +423,14 @@
                                 </option>
                             </select>
                         </div>
- 				            </div>
+                    </div>
                     <div class="col-xs-12 col-md-6">
-    					          <div class="form-group">
+                        <div class="form-group">
                             <label for="settings[show_responsive_itemlist]">
                                 <?php _trans('show_responsive_itemlist'); ?>
                             </label>
                             <select name="settings[show_responsive_itemlist]" id="settings[show_responsive_itemlist]"
-                                    class="form-control simple-select">
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <option value="0">
                                     <?php _trans('no'); ?>
                                 </option>
@@ -439,7 +439,6 @@
                                 </option>
                             </select>
                         </div>
-
                     </div>
                 </div>
 

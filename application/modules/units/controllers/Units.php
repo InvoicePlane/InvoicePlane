@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -39,9 +39,6 @@ class Units extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -50,8 +47,9 @@ class Units extends Admin_Controller
 
         $this->filter_input();  // <<<--- filters _POST array for nastiness
 
-        if ($this->input->post('is_update') == 0
-            && $this->input->post('unit_name') != ''
+        if (
+            $this->input->post('is_update') == 0
+            && $this->input->post('unit_name')      != ''
             && $this->input->post('unit_name_plrl') != ''
         ) {
             $check = $this->db->get_where('ip_units', ['unit_name' => $this->input->post('unit_name')])->result();
@@ -87,5 +85,4 @@ class Units extends Admin_Controller
         $this->mdl_units->delete($id);
         redirect('units');
     }
-
 }

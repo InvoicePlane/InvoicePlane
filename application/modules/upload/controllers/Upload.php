@@ -1,33 +1,26 @@
 <?php
 
-if (!defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
- * 
- * @author        InvoicePlane Developers
- * @copyright     InvoicePlane
- * @license       https://invoiceplane.com/license.txt
- * @link          https://invoiceplane.com
+ *
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Upload extends Admin_Controller
 {
-    public $targetPath;
+    public $targetPath = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/';
 
     public $ctype_default = 'application/octet-stream';
-    public $content_types = [
-        'gif'  => 'image/gif',
-        'jpg'  => 'image/jpeg',
-        'jpeg' => 'image/jpeg',
-        'pdf'  => 'application/pdf',
-        'png'  => 'image/png',
-        'txt'  => 'text/plain',
-        'xml'  => 'application/xml',
-    ];
+
+    public $content_types = [];
 
     /**
      * Upload constructor.
@@ -36,213 +29,161 @@ class Upload extends Admin_Controller
     {
         parent::__construct();
         $this->load->model('upload/mdl_uploads');
-        $this->targetPath = UPLOADS_FOLDER . '/customer_files';
+        $this->content_types = $this->mdl_uploads->content_types;
     }
 
     public function upload_file($customerId, $url_key)
     {
-        if (!$this->validate_csrf()) {
-            $this->respond_error(403, 'ip_lang.error_csrf', 'ip_lang.log_error_csrf');
-            return;
+        $this->create_dir($this->targetPath . '/');
+
+        if (!empty($_FILES)) {
+            $tempFile = $_FILES['file']['tmp_name'];
+            $fileName = preg_replace('/\s+/', '_', $_FILES['file']['name']);
+            $targetFile = $this->targetPath . '/' . $url_key . '_' . $fileName;
+            $file_exists = file_exists($targetFile);
+
+            if (!$file_exists) {
+                $data = [
+                    'client_id' => $customerId,
+                    'url_key' => $url_key,
+                    'file_name_original' => $fileName,
+                    'file_name_new' => $url_key . '_' . $fileName
+                ];
+
+                $this->mdl_uploads->create($data);
+
+                move_uploaded_file($tempFile, $targetFile);
+
+                echo json_encode(['success' => true]);
+            } else {
+                // If file exists then echo the error and set a http error response
+                echo json_encode(['success' => false, 'message' => trans('error_duplicate_file')]);
+                http_response_code(404);
+            }
+        } else {
+            $this->show_files($url_key, $customerId);
         }
-
-        if (empty($_FILES) || !isset($_FILES['file'])) {
-            $this->respond_error(400, 'ip_lang.error_no_file', 'ip_lang.log_error_no_file');
-            return;
-        }
-
-        $fileName = $this->sanitize_file_name($_FILES['file']['name']);
-        $tempFile = $_FILES['file']['tmp_name'];
-        $filePath = $this->get_target_file_path($url_key, $fileName);
-
-        if (!$this->validate_upload($tempFile, $fileName)) {
-            return;
-        }
-
-        $fileType = mime_content_type($tempFile);
-        if (!$this->validate_mime_type($fileType)) {
-            return;
-        }
-
-        if (file_exists($filePath)) {
-            $this->respond_error(409, 'ip_lang.error_duplicate_file', 'ip_lang.log_info_duplicate_file', $fileName);
-            return;
-        }
-
-        if (!$this->save_file_metadata($customerId, $url_key, $fileName)) {
-            return;
-        }
-
-        if (!$this->move_uploaded_file($tempFile, $filePath, $fileName)) {
-            return;
-        }
-
-        log_message('info', sprintf(_trans('ip_lang.log_info_file_uploaded'), $fileName));
-        echo json_encode(['success' => true, 'message' => _trans('ip_lang.file_uploaded_successfully')]);
     }
 
+    /**
+     * @param string $path
+     * @param string $chmod
+     * @return bool
+     */
     public function create_dir($path, $chmod = '0777')
     {
-        if (!(is_dir($path) || is_link($path))) {
+        if (!is_dir($path) && !is_link($path)) {
             return mkdir($path, $chmod);
         }
+
         return false;
     }
 
+    /**
+     * @param $url_key
+     * @param null $customerId
+     * @return void
+     */
     public function show_files($url_key, $customerId = null)
     {
         $result = [];
         $path = $this->targetPath;
 
         $files = scandir($path);
-        if ($files === false) {
+
+        if ($files !== false) {
+            foreach ($files as $file) {
+                if (in_array($file, array(".", ".."))) {
+                    continue;
+                }
+                if (strpos($file, $url_key) !== 0) {
+                    continue;
+                }
+                if (substr(realpath($path), realpath($file) == 0)) {
+                    $obj['name'] = substr($file, strpos($file, '_', 1) + 1);
+                    $obj['fullname'] = $file;
+                    $obj['size'] = filesize($path . '/' . $file);
+                    $result[] = $obj;
+                }
+            }
+        } else {
             return;
-        }
-
-        foreach ($files as $file) {
-            if (in_array($file, ['.', '..'])) {
-                continue;
-            }
-            if (strpos($file, $url_key) !== 0) {
-                continue;
-            }
-            if (realpath($path) !== substr(realpath($file), 0, strlen(realpath($path)))) {
-                continue;
-            }
-
-            $result[] = [
-                'name' => substr($file, strpos($file, '_', 1) + 1),
-                'fullname' => $file,
-                'size' => filesize($path . '/' . $file),
-            ];
         }
 
         echo json_encode($result);
     }
 
+    /**
+     * @param $url_key
+     */
     public function delete_file($url_key)
     {
         $path = $this->targetPath;
-        $fileName = $this->input->post('name');
+        $fileName = urldecode($this->input->post('name'));
 
         $this->mdl_uploads->delete_file($url_key, $fileName);
 
+        // AVOID TREE TRAVERSAL!
         $finalPath = $path . '/' . $url_key . '_' . $fileName;
 
-        if (realpath($path) === substr(realpath($finalPath), 0, strlen(realpath($path)))) {
-            unlink($finalPath);
+        if (strpos(realpath($path), realpath($finalPath)) == 0) {
+            unlink($path . '/' . $url_key . '_' . $fileName);
         }
     }
 
+    /**
+     * Returns the corresponding file as a download and prevents execution of files
+     *
+     * @param string $filename
+     * @return void
+     */
     public function get_file($filename)
     {
         $base_path = realpath(UPLOADS_CFILES_FOLDER);
+
         if (!$base_path) {
-            log_message('error', sprintf(_trans('ip_lang.log_error_invalid_directory'), UPLOADS_CFILES_FOLDER));
+            log_message('error', "Invalid base upload directory: " . UPLOADS_CFILES_FOLDER);
             show_404();
-            return;
+            exit;
         }
 
         $file_path = realpath($base_path . DIRECTORY_SEPARATOR . basename($filename));
-        if (!$file_path || strpos($file_path, $base_path) !== 0) {
-            log_message('error', sprintf(_trans('ip_lang.log_error_unauthorized_access'), $filename));
+
+        if (!$file_path || !str_starts_with($file_path, $base_path)) {
+            log_message('error', "Unauthorized file access attempt: $filename");
             show_404();
-            return;
+            exit;
         }
 
         $path_parts = pathinfo($file_path);
         $file_ext = strtolower($path_parts['extension'] ?? '');
 
         if (!isset($this->content_types[$file_ext])) {
-            log_message('error', sprintf(_trans('ip_lang.log_error_unsupported_file_type'), $file_ext));
-            show_error(_trans('ip_lang.error_unsupported_file_type'), 403);
-            return;
+            log_message('error', "Unsupported file type: $file_ext");
+            show_error('Unsupported file type', 403);
+            exit;
         }
 
         if (!file_exists($file_path)) {
-            log_message('error', sprintf(_trans('ip_lang.log_error_file_not_found'), $file_path));
+            log_message('error', "File not found: $file_path");
             show_404();
-            return;
+            exit;
         }
 
-        $file_size = filesize($file_path);
+        $path_parts = pathinfo($this->targetPath . $filename);
+        $file_ext = mb_strtolower($path_parts['extension'] ?? '');
         $ctype = $this->content_types[$file_ext] ?? $this->ctype_default;
+
+        $file_size = filesize($this->targetPath . $filename);
 
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
-        header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
 
-        readfile($file_path);
-    }
-
-    private function validate_csrf(): bool
-    {
-        return $this->security->csrf_verify();
-    }
-
-    private function sanitize_file_name(string $fileName): string
-    {
-        return preg_replace('/\s+/', '_', $fileName);
-    }
-
-    private function get_target_file_path(string $url_key, string $fileName): string
-    {
-        return $this->targetPath . '/' . $url_key . '_' . $fileName;
-    }
-
-    private function validate_upload(string $tempFile, string $fileName): bool
-    {
-        if (!is_uploaded_file($tempFile)) {
-            $this->respond_error(400, 'ip_lang.error_invalid_file_upload', 'ip_lang.log_error_invalid_file_upload', $fileName);
-            return false;
-        }
-        return true;
-    }
-
-    private function validate_mime_type(string $mimeType): bool
-    {
-        $allowedTypes = array_values($this->content_types);
-        if (!in_array($mimeType, $allowedTypes, true)) {
-            $this->respond_error(415, 'ip_lang.error_unsupported_file_type', 'ip_lang.log_error_unsupported_file_type', $mimeType);
-            return false;
-        }
-        return true;
-    }
-
-    private function save_file_metadata(int $customerId, string $url_key, string $fileName): bool
-    {
-        $data = [
-            'client_id' => $customerId,
-            'url_key' => $url_key,
-            'file_name_original' => $fileName,
-            'file_name_new' => $url_key . '_' . $fileName,
-        ];
-
-        if (!$this->mdl_uploads->create($data)) {
-            $this->respond_error(500, 'ip_lang.error_database', 'ip_lang.log_error_database', $fileName);
-            return false;
-        }
-
-        return true;
-    }
-
-    private function move_uploaded_file(string $tempFile, string $filePath, string $fileName): bool
-    {
-        if (!move_uploaded_file($tempFile, $filePath)) {
-            $this->respond_error(500, 'ip_lang.error_file_save', 'ip_lang.log_error_file_save', $fileName);
-            return false;
-        }
-
-        return true;
-    }
-
-    private function respond_error(int $httpCode, string $messageKey, string $logKey, string $dynamicValue = '')
-    {
-        log_message('error', sprintf(_trans($logKey), $dynamicValue));
-        http_response_code($httpCode);
-        echo json_encode(['success' => false, 'message' => _trans($messageKey)]);
+        readfile($this->targetPath . $filename);
+        exit;
     }
 }

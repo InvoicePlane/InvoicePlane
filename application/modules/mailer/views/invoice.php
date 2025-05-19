@@ -10,7 +10,7 @@
             $.post("<?php echo site_url('email_templates/ajax/get_content'); ?>", {
                 email_template_id: email_template_id
             }, function (data) {
-                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                 inject_email_template(template_fields, JSON.parse(data));
             });
         });
@@ -23,14 +23,15 @@
         // this is the email invoice window, disable the quote select
         $('#tags_invoice').prop('disabled', false);
         $('#tags_quote').prop('disabled', 'disabled');
+        // Fix blocked by browser if to_email field is empty
+        $('#btn_cancel').on('click', function(){$('#to_email').prop('required', false);});
     });
 
 </script>
 
 <form method="post" action="<?php echo site_url('mailer/send_invoice/' . $invoice->invoice_id) ?>">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('email_invoice'); ?></h1>
@@ -41,7 +42,7 @@
                     <i class="fa fa-send"></i>
                     <?php _trans('send'); ?>
                 </button>
-                <button class="btn btn-danger" name="btn_cancel" value="1">
+                <button class="btn btn-danger" name="btn_cancel" id="btn_cancel" value="1">
                     <i class="fa fa-times"></i>
                     <?php _trans('cancel'); ?>
                 </button>
@@ -56,6 +57,22 @@
 
                 <?php $this->layout->load_view('layout/alerts'); ?>
 
+<?php
+// e-invoice alert when client or user empty required field
+if ($invoice->client_einvoicing_version != '' && $invoice->client_einvoicing_active == 0) {
+?>
+                <div class="alert alert-warning">
+                    <table style="margin-left: auto; margin-right: auto;">
+                        <tr>
+                            <td><i class="fa fa-exclamation-triangle fa-2x"></i>&emsp;</td>
+                            <td><?php echo trans('einvoicing_no_creation_hint') . '<br>' . trans('einvoicing_send_invoice_hint'); ?></td>
+                        </tr>
+                    </table>
+                </div>
+<?php
+}
+?>
+
                 <div class="form-group">
                     <label for="to_email"><?php _trans('to_email'); ?></label>
                     <input type="email" multiple name="to_email" id="to_email" class="form-control" required
@@ -68,12 +85,16 @@
                     <label for="email_template"><?php _trans('email_template'); ?></label>
                     <select name="email_template" id="email_template" class="form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
-                        <?php foreach ($email_templates as $email_template): ?>
-                            <option value="<?php echo $email_template->email_template_id; ?>"
-                                <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
-                                <?php _htmlsc($email_template->email_template_title); ?>
-                            </option>
-                        <?php endforeach; ?>
+<?php
+foreach ($email_templates as $email_template) {
+?>
+                        <option value="<?php echo $email_template->email_template_id; ?>"
+                            <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
+                            <?php _htmlsc($email_template->email_template_title); ?>
+                        </option>
+<?php
+}
+?>
                     </select>
                 </div>
 
@@ -85,7 +106,7 @@
 
                 <div class="form-group">
                     <label for="from_email"><?php _trans('from_email'); ?></label>
-                    <input type="email" name="from_email" id="from_email" class="form-control"
+                    <input type="text" name="from_email" id="from_email" class="form-control" required
                            value="<?php echo $invoice->user_email; ?>">
                 </div>
 
@@ -109,12 +130,16 @@
                     <label for="pdf_template"><?php _trans('pdf_template'); ?></label>
                     <select name="pdf_template" id="pdf_template" class="form-control simple-select">
                         <option value=""><?php _trans('none'); ?></option>
-                        <?php foreach ($pdf_templates as $pdf_template): ?>
-                            <option value="<?php echo $pdf_template; ?>"
-                                <?php check_select($selected_pdf_template, $pdf_template); ?>>
-                                <?php echo $pdf_template; ?>
-                            </option>
-                        <?php endforeach; ?>
+<?php
+foreach ($pdf_templates as $pdf_template) {
+?>
+                        <option value="<?php echo $pdf_template; ?>"
+                            <?php check_select($selected_pdf_template, $pdf_template); ?>>
+                            <?php echo $pdf_template; ?>
+                        </option>
+<?php
+}
+?>
                     </select>
                 </div>
 
@@ -195,7 +220,7 @@
             <div class="col-xs-12 col-md-8 col-md-offset-2">
 
                 <div class="form-group">
-                    <?php $this->layout->load_view('upload/dropzone-invoice-html'); ?>
+                    <?php _dropzone_html($invoice->is_read_only); ?>
                 </div>
 
                 <div class="form-group"><label for="invoice-guest-url"><?php _trans('guest_url'); ?></label>
@@ -211,9 +236,8 @@
 
             </div>
         </div>
-
     </div>
-
 </form>
 
-<?php $this->layout->load_view('upload/dropzone-invoice-scripts'); ?>
+<?php
+_dropzone_script($invoice->invoice_url_key, $invoice->client_id);
