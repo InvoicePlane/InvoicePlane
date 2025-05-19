@@ -18,7 +18,7 @@
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div id="filter_results">
-        <?php $this->layout->load_view('payments/partial_payment_table'); ?>
+        <?php $this->layout->load_view('payments/partial_payments_table'); ?>
     </div>
 
 </div>

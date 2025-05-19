@@ -1,30 +1,31 @@
 <?php
+
 /**
- * Contains the language translations for the payment gateways
+ * Contains the language translations for the payment gateways.
  */
 $lang = [
     // General strings
-    'online_payment'                     => 'Online Payment',
-    'online_payments'                    => 'Online Payments',
-    'online_payment_for'                 => 'Online Payment for',
-    'online_payment_for_invoice'         => 'Online Payment for Invoice',
-    'online_payment_method'              => 'Online Payment Method',
-    'online_payment_creditcard_hint'     => 'If you want to pay via credit card please enter the information below.<br/>The credit card information are not stored on our servers and will be transferred to the online payment gateway using a secure connection.',
-    'enable_online_payments'             => 'Enable Online Payments',
-    'payment_provider'                   => 'Payment Provider',
-    'provider_response'                  => 'Provider Response',
-    'add_payment_provider'               => 'Add a Payment Provider',
-    'transaction_reference'              => 'Transaction Reference',
-    'transaction_successful'             => 'Transaction successful',
-    'payment_description'                => 'Payment for Invoice %s',
+    'online_payment'                 => 'Online Payment',
+    'online_payments'                => 'Online Payments',
+    'online_payment_for'             => 'Online Payment for',
+    'online_payment_for_invoice'     => 'Online Payment for Invoice',
+    'online_payment_method'          => 'Online Payment Method',
+    'online_payment_creditcard_hint' => 'If you want to pay via credit card please enter the information below.<br/>The credit card information are not stored on our servers and will be transferred to the online payment gateway using a secure connection.',
+    'enable_online_payments'         => 'Enable Online Payments',
+    'payment_provider'               => 'Payment Provider',
+    'provider_response'              => 'Provider Response',
+    'add_payment_provider'           => 'Add a Payment Provider',
+    'transaction_reference'          => 'Transaction Reference',
+    'transaction_successful'         => 'Transaction successful',
+    'payment_description'            => 'Payment for Invoice %s',
 
     // Credit card strings
-    'creditcard_cvv'                     => 'CVV / CSC',
-    'creditcard_details'                 => 'Credit Card details',
-    'creditcard_expiry_month'            => 'Expiry Month',
-    'creditcard_expiry_year'             => 'Expiry Year',
-    'creditcard_number'                  => 'Credit Card Number',
-    'online_payment_card_invalid'        => 'This credit card is invalid. Please check the provided information.',
+    'creditcard_cvv'              => 'CVV / CSC',
+    'creditcard_details'          => 'Credit Card details',
+    'creditcard_expiry_month'     => 'Expiry Month',
+    'creditcard_expiry_year'      => 'Expiry Year',
+    'creditcard_number'           => 'Credit Card Number',
+    'online_payment_card_invalid' => 'This credit card is invalid. Please check the provided information.',
 
     // Payment Gateway Fields
     'online_payment_apiLoginId'          => 'Api Login Id', // Field for AuthorizeNet_AIM
@@ -65,9 +66,9 @@ $lang = [
     'online_payment_callbackPassword'    => 'Callback Password', // Field for WorldPay
 
     // Status / Error Messages
-    'online_payment_payment_cancelled'   => 'Payment cancelled.',
-    'online_payment_payment_failed'      => 'Payment failed. Please try again.',
-    'online_payment_payment_successful'  => 'Payment for Invoice %s successful!',
-    'online_payment_payment_redirect'    => 'Please wait while we redirect you to the payment page...',
-    'online_payment_3dauth_redirect'     => 'Please wait while we redirect you to your card issuer for authentication...'
+    'online_payment_payment_cancelled'  => 'Payment cancelled.',
+    'online_payment_payment_failed'     => 'Payment failed. Please try again.',
+    'online_payment_payment_successful' => 'Payment for Invoice %s successful!',
+    'online_payment_payment_redirect'   => 'Please wait while we redirect you to the payment page...',
+    'online_payment_3dauth_redirect'    => 'Please wait while we redirect you to your card issuer for authentication...',
 ];

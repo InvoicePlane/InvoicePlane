@@ -17,15 +17,14 @@
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
 
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/core/img/favicon.png">
+    <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/invoiceplane/css/welcome.css">
-
+    <link rel="stylesheet" href="<?php _theme_asset('css/welcome.css'); ?>" type="text/css">
     <!--[if lt IE 9]>
-    <script src="<?php echo base_url(); ?>assets/core/js/legacy.min.js"></script>
+    <script src="<?php _core_asset('js/legacy.min.js'); ?>"></script>
     <![endif]-->
 
-    <script src="<?php echo base_url(); ?>assets/core/js/dependencies.min.js"></script>
+    <script src="<?php _core_asset('js/dependencies.min.js'); ?>"></script>
 
 </head>
 <body>
@@ -35,6 +34,8 @@
 </noscript>
 
 <?php echo $content; ?>
+
+<script>$('.simple-select').select2();</script>
 
 </body>
 </html>

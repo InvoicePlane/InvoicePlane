@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Invoice_Groups extends Response_Model
 {
     public $table = 'ip_invoice_groups';
+
     public $primary_key = 'ip_invoice_groups.invoice_group_id';
 
     public function default_select()
@@ -34,33 +35,34 @@ class Mdl_Invoice_Groups extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'invoice_group_name' => array(
+        return [
+            'invoice_group_name' => [
                 'field' => 'invoice_group_name',
                 'label' => trans('name'),
-                'rules' => 'required'
-            ),
-            'invoice_group_identifier_format' => array(
+                'rules' => 'required',
+            ],
+            'invoice_group_identifier_format' => [
                 'field' => 'invoice_group_identifier_format',
                 'label' => trans('identifier_format'),
-                'rules' => 'required'
-            ),
-            'invoice_group_next_id' => array(
+                'rules' => 'required',
+            ],
+            'invoice_group_next_id' => [
                 'field' => 'invoice_group_next_id',
                 'label' => trans('next_id'),
-                'rules' => 'required'
-            ),
-            'invoice_group_left_pad' => array(
+                'rules' => 'required',
+            ],
+            'invoice_group_left_pad' => [
                 'field' => 'invoice_group_left_pad',
                 'label' => trans('left_pad'),
-                'rules' => 'required'
-            )
-        );
+                'rules' => 'required',
+            ],
+        ];
     }
 
     /**
-     * @param $invoice_group_id
+     * @param      $invoice_group_id
      * @param bool $set_next
+     *
      * @return mixed
      */
     public function generate_invoice_number($invoice_group_id, $set_next = true)
@@ -81,9 +83,20 @@ class Mdl_Invoice_Groups extends Response_Model
     }
 
     /**
+     * @param $invoice_group_id
+     */
+    public function set_next_invoice_number($invoice_group_id)
+    {
+        $this->db->where($this->primary_key, $invoice_group_id);
+        $this->db->set('invoice_group_next_id', 'invoice_group_next_id+1', false);
+        $this->db->update($this->table);
+    }
+
+    /**
      * @param $identifier_format
      * @param $next_id
      * @param $left_pad
+     *
      * @return mixed
      */
     private function parse_identifier_format($identifier_format, $next_id, $left_pad)
@@ -104,7 +117,7 @@ class Mdl_Invoice_Groups extends Response_Model
                         $replace = date('d');
                         break;
                     case 'id':
-                        $replace = str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
+                        $replace = mb_str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
                         break;
                     default:
                         $replace = '';
@@ -116,15 +129,4 @@ class Mdl_Invoice_Groups extends Response_Model
 
         return $identifier_format;
     }
-
-    /**
-     * @param $invoice_group_id
-     */
-    public function set_next_invoice_number($invoice_group_id)
-    {
-        $this->db->where($this->primary_key, $invoice_group_id);
-        $this->db->set('invoice_group_next_id', 'invoice_group_next_id+1', false);
-        $this->db->update($this->table);
-    }
-
 }

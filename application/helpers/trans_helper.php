@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -24,7 +24,7 @@ if (! defined('BASEPATH')) {
  */
 function trans($line, $id = '', $default = null)
 {
-    $CI = & get_instance();
+    $CI          = & get_instance();
     $lang_string = $CI->lang->line($line);
 
     // Fall back to default language if the current language has no translated string
@@ -66,24 +66,24 @@ function trans($line, $id = '', $default = null)
 function set_language($language)
 {
     // Clear the current loaded language
-    $CI = & get_instance();
+    $CI                  = & get_instance();
     $CI->lang->is_loaded = [];
-    $CI->lang->language = [];
+    $CI->lang->language  = [];
 
     // Load system language if no custom language is set
     $default_lang = isset($CI->mdl_settings) ? $CI->mdl_settings->setting('default_language') : 'english';
     $new_language = ($language == 'system' ? $default_lang : $language);
 
-    $app_dir = $CI->config->_config_paths[0];
+    $app_dir  = $CI->config->_config_paths[0];
     $lang_dir = $app_dir . DIRECTORY_SEPARATOR . 'language';
 
     // Set the new language
     $CI->lang->load('ip', $new_language);
     $CI->lang->load('form_validation', $new_language);
-    if(file_exists($lang_dir . DIRECTORY_SEPARATOR . $default_lang . DIRECTORY_SEPARATOR . 'custom_lang.php'))
-    {
+    if (file_exists($lang_dir . DIRECTORY_SEPARATOR . $default_lang . DIRECTORY_SEPARATOR . 'custom_lang.php')) {
         $CI->lang->load('custom', $new_language);
     }
+
     $CI->lang->load('gateway', $new_language);
 }
 
@@ -99,8 +99,9 @@ function get_available_languages()
 
     $languages = directory_map(APPPATH . 'language', true);
     sort($languages);
+    $counter = count($languages);
 
-    for ($i = 0; $i < count($languages); $i++) {
+    for ($i = 0; $i < $counter; $i++) {
         $languages[$i] = str_replace(['\\', '/'], '', $languages[$i]);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -33,9 +33,10 @@ class Stripe extends Base_Controller
 
     /**
      * Creates a checkout session on Stripe
-     * that is then retrieved to execute the payment
+     * that is then retrieved to execute the payment.
      *
-     * @param  string  $invoice_url_key  the url key that is used to retrive the invoice
+     * @param string $invoice_url_key the url key that is used to retrive the invoice
+     *
      * @return json the client secret in a json format
      */
     public function create_checkout_session($invoice_url_key)
@@ -60,7 +61,7 @@ class Stripe extends Base_Controller
                         'currency'     => get_setting('gateway_stripe_currency'),
                         'unit_amount'  => $invoice->invoice_balance * 100,
                         'product_data' => [
-                            'name' => trans('invoice') . ' #' . $invoice->invoice_number
+                            'name' => trans('invoice') . ' #' . $invoice->invoice_number,
                         ],
                     ],
                     'quantity' => 1,
@@ -74,9 +75,10 @@ class Stripe extends Base_Controller
     /**
      * The callback endpoint called by stripe once the
      * card transaction has been completed or aborted
-     * Handle exceptions Improved by @Matthias-Ab
+     * Handle exceptions Improved by @Matthias-Ab.
      *
-     * @param  string  $checkout_session_id
+     * @param string $checkout_session_id
+     *
      * @return void
      */
     public function callback($checkout_session_id)
@@ -110,34 +112,33 @@ class Stripe extends Base_Controller
                     'payment_note'      => trans('online_payment_intent_id') . ': ' . $session->payment_intent,
                 ]);
             }
+
             // paid / cancel (+other flow)
             // Admin (& error log) message
-            $response = $paid ? '. livemode: '      . trans($session->livemode ? 'yes' : 'no')
-                                . ', currency: '    . $session->currency
-                                . ', amount: '      . ($session->amount_received / 100)              // 0 in test. Set in live mode?
-                                . ', fee: '         . ($session->application_fee_amount / 100)       // 0 in test. Set in live mode?
-                                . ', session ID: '  . $session->id                                   // Unique identifier for the object.
+            $response = $paid ? '. livemode: ' . trans($session->livemode ? 'yes' : 'no')
+                                . ', currency: ' . $session->currency
+                                . ', amount: ' . ($session->amount_received / 100)              // 0 in test. Set in live mode?
+                                . ', fee: ' . ($session->application_fee_amount / 100)       // 0 in test. Set in live mode?
+                                . ', session ID: ' . $session->id                                   // Unique identifier for the object.
                               :
                                 ($session->cancel ? $session->cancellation_reason : $session->last_payment_error); // Cancelled
             // User (& error) message
             $user_msg = $paid ? sprintf(trans('online_payment_successful'), '#' . $invoice->invoice_number)
                               : trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
-        }
-        catch (Error|Exception|ErrorException $e) {
+        } catch (Error|Exception|ErrorException $e) {
             $user_msg = trans('online_payment_error') . (empty($user_msg) ? '' : '<br>' . $user_msg);
-            $paid = 'error'; // tweak to reuse
+            $paid     = 'error'; // tweak to reuse
             // Log the error so you can debug
             $response = __CLASS__ . '::' . __FUNCTION__ . ' exception: ' . $e->getMessage() . (empty($response) ? '' : ' - response: ' . $response);
             log_message('error', strtr($response . ' user_msg: ' . $user_msg, ['<br>' => ' '])); // No br's
-        }
-        finally {
+        } finally {
             $paid = is_bool($paid) ? ($paid ? 'success' : 'info') : $paid; // Tweak to reuse (flashdata alert_*)
             // Check stripe server ok
-            $ok = isset($session->status); // Stripe is accessible?
+            $ok = $session->status !== null; // Stripe is accessible?
             // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts)
             $this->db->insert('ip_merchant_responses', [
                 'invoice_id'                   => $invoice->invoice_id,
-                'merchant_response_successful' => intval($ok), // response server API (no)ok
+                'merchant_response_successful' => (int) $ok, // response server API (no)ok
                 'merchant_response_date'       => date('Y-m-d'),
                 'merchant_response_driver'     => __CLASS__,
                 'merchant_response'            => ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,

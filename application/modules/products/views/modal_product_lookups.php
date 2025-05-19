@@ -12,11 +12,13 @@
             $("input[name='product_ids[]']:checked").each(function () {
                 product_ids.push(parseInt($(this).val()));
             });
+            // No Check No post
+            if ( ! product_ids.length) return; // todo: why not animate checkboxes
 
             $.post("<?php echo site_url('products/ajax/process_product_selections'); ?>", {
                 product_ids: product_ids
             }, function (data) {
-                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
                 var items = JSON.parse(data);
 
                 for (var key in items) {
@@ -39,15 +41,21 @@
 
                     $('#modal-choose-items').modal('hide');
                 }
+
+                // Legacy:no: check items tax usage is correct (ReLoad on change) - since 1.6.3
+                check_items_tax_usages();
             });
         });
 
-        // Toggle checkbox when click on row
-        $(document).on('click', '.product', function (event) {
-            if (event.target.type !== 'checkbox') {
-                $(':checkbox', this).trigger('click');
-            }
-        });
+        // Add on rows a click event to Toggle they checkbox
+        function addClickTrToggleCheck (){
+            $('#products_table tr').click(function (event) {
+                if (event.target.type !== 'checkbox') {
+                    $(':checkbox', this).trigger('click');
+                }
+            });
+        }
+        addClickTrToggleCheck(); // init row click event ! important
 
         // Reset the form
         $('#product-reset-button').click(function () {
@@ -59,9 +67,9 @@
             lookup_url += Math.floor(Math.random() * 1000) + '/?';
             lookup_url += "&reset_table=true";
 
-            // Reload modal with settings
+            // Reload to default & add rows click event
             window.setTimeout(function () {
-                product_table.load(lookup_url);
+                product_table.load(lookup_url, addClickTrToggleCheck);
             }, 250);
         });
 
@@ -94,9 +102,9 @@
                 lookup_url += "&filter_product=" + filter_product;
             }
 
-            // Reload modal with settings
+            // Reload by filtered & add rows click event
             window.setTimeout(function () {
-                product_table.load(lookup_url);
+                product_table.load(lookup_url, addClickTrToggleCheck);
             }, 250);
         }
 

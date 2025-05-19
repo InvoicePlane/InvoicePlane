@@ -1,42 +1,46 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
- * Redirect the user to a given URL
+ * Redirect the user to a given URL.
  *
  * @param string $fallback_url_string
- * @param bool $redirect
+ * @param bool   $redirect
+ *
  * @return mixed
  */
 function redirect_to($fallback_url_string, $redirect = true)
 {
-    $CI = &get_instance();
+    $CI = & get_instance();
 
     $redirect_url = ($CI->session->userdata('redirect_to')) ? $CI->session->userdata('redirect_to') : $fallback_url_string;
+
+    $CI->session->unset_userdata('redirect_to');
 
     if ($redirect) {
         redirect($redirect_url);
     }
+
     return $redirect_url;
 }
 
 /**
- * Sets the current URL in the session
+ * Sets the current URL in the session.
  */
 function redirect_to_set()
 {
-    $CI = &get_instance();
+    $CI = & get_instance();
     $CI->session->set_userdata('redirect_to', $CI->uri->uri_string());
 }

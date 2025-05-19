@@ -1,30 +1,52 @@
 <?php
-$cv = $this->controller->view_data["custom_values"];
+// Little helper
+$its_mine = $this->session->__get('user_id') == $quote->user_id;
+$my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
+// In change user toggle & After eInvoice (name) when user required field missing
+$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . htmlsc(PHP_EOL . format_user($quote->user_id));
 ?>
-<script>
 
+<script>
     $(function () {
         $('.btn_add_product').click(function () {
-            $('#modal-placeholder').load(
-                "<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" +
-                    Math.floor(Math.random() * 1000)
-            );
+            $('#modal-placeholder').load("<?php echo site_url('products/ajax/modal_product_lookups'); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_row').click(function () {
             $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
+            // Legacy:no: check items tax usage is correct (ReLoad on change)
+            check_items_tax_usages();
         });
 
-        $('#quote_change_client').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
-                quote_id: <?php echo $quote_id; ?>,
-                client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>",
-            });
-        });
-
-        <?php if (!$items) { ?>
+<?php
+if ( ! $items) {
+?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
-        <?php } ?>
+<?php
+}
+?>
+
+        // Legacy:no: check items tax usage is correct (Load on change)
+        $(document).on('loaded', check_items_tax_usages());
+<?php
+if ($quote->quote_status_id == 1) {
+?>
+    $('#quote_change_client').click(function () {
+        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
+            quote_id: <?php echo $quote_id; ?>,
+            client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>",
+        });
+    });
+
+    $('#quote_change_user').click(function () {
+        $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_user'); ?>", {
+            quote_id: <?php echo $quote_id; ?>,
+            user_id: "<?php echo $this->db->escape_str($quote->user_id); ?>",
+        });
+    });
+<?php
+} // End if
+?>
 
         $('#btn_save_quote').click(function () {
             var items = [];
@@ -56,7 +78,7 @@ $cv = $this->controller->view_data["custom_values"];
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                    <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
@@ -88,21 +110,25 @@ $cv = $this->controller->view_data["custom_values"];
             // Just remove the row if no item ID is set (new row)
             if (typeof item_id === 'undefined') {
                 $(this).parents('.item').remove();
-            }
+                check_items_tax_usages();
+            } else {
+                $.post("<?php echo site_url('quotes/ajax/delete_item/' . $quote->quote_id); ?>", {
+                        'item_id': item_id,
+                    },
+                    function (data) {
+                        <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
+                        var response = JSON.parse(data);
 
-            $.post("<?php echo site_url('quotes/ajax/delete_item/' . $quote->quote_id); ?>", {
-                    'item_id': item_id,
-                },
-                function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-                    var response = JSON.parse(data);
+                        if (response.success === 1) {
+                            btn.parents('.item').remove();
+                        } else {
+                            btn.removeClass('btn-link').addClass('btn-danger').prop('disabled', true);
+                        }
 
-                    if (response.success === 1) {
-                        btn.parents('.item').remove();
-                    } else {
-                        btn.removeClass('btn-link').addClass('btn-danger').prop('disabled', true);
+                        check_items_tax_usages();
                     }
-                });
+                );
+            }
         });
 
         $('#btn_generate_pdf').click(function () {
@@ -132,64 +158,97 @@ $cv = $this->controller->view_data["custom_values"];
             }
         });
 
-        <?php if (get_setting('show_responsive_itemlist') == 1) { ?>
-            function UpR(k) {
-              var parent = k.parents('.item');
-              var pos = parent.prev();
-              parent.insertBefore(pos);
-            }
-            function DownR(k) {
-              var parent = k.parents('.item');
-              var pos = parent.next();
-              parent.insertAfter(pos);
-            }
-            $(document).on('click', '.up', function () {
-              UpR($(this));
+<?php
+if (get_setting('show_responsive_itemlist') == 1) {
+?>
+        function UpR(k) {
+          var parent = k.parents('.item');
+          var pos = parent.prev();
+          parent.insertBefore(pos);
+        }
+        function DownR(k) {
+          var parent = k.parents('.item');
+          var pos = parent.next();
+          parent.insertAfter(pos);
+        }
+        $(document).on('click', '.up', function () {
+          UpR($(this));
+        });
+        $(document).on('click', '.down', function () {
+          DownR($(this));
+        });
+<?php
+} else {
+?>
+        var fixHelper = function (e, tr) {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+            $helper.children().each(function (index) {
+                $(this).width($originals.eq(index).width());
             });
-            $(document).on('click', '.down', function () {
-              DownR($(this));
-            });
-        <?php } else { ?>
-            var fixHelper = function (e, tr) {
-                var $originals = tr.children();
-                var $helper = tr.clone();
-                $helper.children().each(function (index) {
-                    $(this).width($originals.eq(index).width());
-                });
-                return $helper;
-            };
+            return $helper;
+        };
 
-            $('#item_table').sortable({
-                helper: fixHelper,
-                items: 'tbody',
-            });
-        <?php } ?>
+        $('#item_table').sortable({
+            helper: fixHelper,
+            items: 'tbody',
+        });
+<?php
+}
+?>
     });
 </script>
 
-<?php echo $modal_delete_quote; ?>
-<?php echo $modal_add_quote_tax; ?>
-
+<?php
+echo $modal_delete_quote;
+echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have global taxes - since v1.6.3
+?>
 <div id="headerbar">
     <h1 class="headerbar-title">
-        <?php
-        echo trans('quote') . ' ';
-        echo($quote->quote_number ? '#' . $quote->quote_number : $quote->quote_id);
-        ?>
+        <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing'); ?>: <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>">
+            <?php echo trans('quote') . ' ' . ($quote->quote_number ? '#' . $quote->quote_number : trans('id') . ': ' . $quote->quote_id); ?>
+        </span>
+<?php
+// Nb Admins > 1 only
+if ($change_user) {
+?>
+        <a data-toggle="tooltip" data-placement="bottom"
+           title="<?php echo $edit_user_title; ?>"
+           href="<?php echo site_url('users/form/' . $quote->user_id); ?>">
+            <i class="fa fa-xs fa-user text-<?php echo $my_class; ?>"></i>
+                <span class="hidden-xs"><?php _htmlsc($quote->user_name); ?></span>
+        </a>
+<?php
+    if ($quote->quote_status_id == 1) {
+?>
+        <span id="quote_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
+              data-toggle="tooltip" data-placement="bottom"
+              title="<?php _trans('change_user'); ?>"></span>
+<?php
+    } // End if draft
+} // End if change_user
+?>
     </h1>
 
-    <div class="headerbar-item pull-right">
-        <div class="btn-group btn-group-sm">
+    <div class="headerbar-item pull-right btn-group">
+        <div class="options btn-group btn-group-sm">
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                <?php _trans('options'); ?> <i class="fa fa-chevron-down"></i>
+                <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
-            <ul class="dropdown-menu dropdown-menu-right">
+            <ul class="dropdown-menu">
+<?php
+// Legacy calculation have global taxes - since v1.6.3
+if ($legacy_calculation) {
+?>
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
                         <i class="fa fa-plus fa-margin"></i>
                         <?php _trans('add_quote_tax'); ?>
                     </a>
                 </li>
+<?php
+}
+?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
                        data-quote-id="<?php echo $quote_id; ?>">
@@ -235,7 +294,9 @@ $cv = $this->controller->view_data["custom_values"];
 </div>
 
 <div id="content">
+
     <?php echo $this->layout->load_view('layout/alerts'); ?>
+
     <div id="quote_form">
         <div class="quote">
 
@@ -246,31 +307,35 @@ $cv = $this->controller->view_data["custom_values"];
                         <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>">
                             <?php _htmlsc(format_client($quote)) ?>
                         </a>
-                        <?php if ($quote->quote_status_id == 1) { ?>
-                            <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
-                                  data-toggle="tooltip" data-placement="bottom"
-                                  title="<?php _trans('change_client'); ?>"></span>
-                        <?php } ?>
+<?php
+if ($quote->quote_status_id == 1) {
+?>
+                        <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
+                              data-toggle="tooltip" data-placement="bottom"
+                              title="<?php _trans('change_client'); ?>"></span>
+<?php
+}
+?>
                     </h3>
                     <br>
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
                     </div>
-                    <?php if ($quote->client_phone || $quote->client_email) : ?>
+<?php if ($quote->client_phone || $quote->client_email) : ?>
                         <hr>
-                    <?php endif; ?>
-                    <?php if ($quote->client_phone): ?>
+<?php endif; ?>
+<?php if ($quote->client_phone) : ?>
                         <div>
                             <?php _trans('phone'); ?>:&nbsp;
                             <?php _htmlsc($quote->client_phone); ?>
                         </div>
-                    <?php endif; ?>
-                    <?php if ($quote->client_email): ?>
+<?php endif; ?>
+<?php if ($quote->client_email) : ?>
                         <div>
                             <?php _trans('email'); ?>:&nbsp;
                             <?php _auto_link($quote->client_email); ?>
                         </div>
-                    <?php endif; ?>
+<?php endif; ?>
 
                 </div>
 
@@ -283,13 +348,44 @@ $cv = $this->controller->view_data["custom_values"];
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="quote-properties">
-                                    <label for="quote_number">
-                                        <?php _trans('quote'); ?> #
+<?php
+if ($einvoice->name) {
+?>
+                                    <label class="pull-right" id="e_invoice_active"
+                                           data-toggle="tooltip" data-placement="bottom"
+                                           title="e-<?php echo trans('invoice') . ' ' . ($einvoice->user ? trans('version') . ' ' . $einvoice->name . ' 🗸' : '🚫 ' . trans('einvoicing_user_fields_error')); ?>"
+                                    >
+                                        <i class="fa fa-file-code-o"></i>
+                                        <?php echo $einvoice->name; ?>
+<?php
+    if ($einvoice->user) {
+?>
+                                        <i class="fa fa-check-square-o text-success"></i>
+<?php
+    } else {
+?>
+                                        <a class="fa fa-user-times text-warning"
+                                           href="<?php echo site_url('users/form/' . $quote->user_id); ?>"
+                                           data-toggle="tooltip" data-placement="top"
+                                           title="<?php echo $edit_user_title; ?>"
+                                        ></a>
+<?php
+    }
+?>
+
                                     </label>
-                                    <input type="text" id="quote_number" class="form-control input-sm"
-                                        <?php if ($quote->quote_number) : ?> value="<?php echo $quote->quote_number; ?>"
-                                        <?php else : ?> placeholder="<?php _trans('not_set'); ?>"
-                                        <?php endif; ?>>
+<?php
+}
+?>
+
+                                    <label for="quote_number"><?php _trans('quote'); ?> #</label>
+                                    <input type="text" id="quote_number" class="form-control"
+<?php if ($quote->quote_number) : ?>
+                                           value="<?php echo $quote->quote_number; ?>"
+<?php else : ?>
+                                           placeholder="<?php _trans('not_set'); ?>"
+<?php endif; ?>
+                                    >
                                 </div>
                                 <div class="quote-properties has-feedback">
                                     <label for="quote_date_created">
@@ -297,7 +393,7 @@ $cv = $this->controller->view_data["custom_values"];
                                     </label>
                                     <div class="input-group">
                                         <input name="quote_date_created" id="quote_date_created"
-                                               class="form-control input-sm datepicker"
+                                               class="form-control datepicker"
                                                value="<?php echo date_from_mysql($quote->quote_date_created); ?>"/>
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar fa-fw"></i>
@@ -310,22 +406,13 @@ $cv = $this->controller->view_data["custom_values"];
                                     </label>
                                     <div class="input-group">
                                         <input name="quote_date_expires" id="quote_date_expires"
-                                               class="form-control input-sm datepicker"
+                                               class="form-control datepicker"
                                                value="<?php echo date_from_mysql($quote->quote_date_expires); ?>">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar fa-fw"></i>
                                         </span>
                                     </div>
                                 </div>
-
-                                <!-- Custom fields -->
-                                <?php foreach ($custom_fields as $custom_field): ?>
-                                    <?php if ($custom_field->custom_field_location != 1) {
-                                        continue;
-                                    } ?>
-                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
-                                <?php endforeach; ?>
-
                             </div>
                             <div class="col-xs-12 col-md-6">
 
@@ -334,40 +421,59 @@ $cv = $this->controller->view_data["custom_values"];
                                         <?php _trans('status'); ?>
                                     </label>
                                     <select name="quote_status_id" id="quote_status_id"
-                                            class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
-                                        <?php foreach ($quote_statuses as $key => $status) { ?>
-                                            <option value="<?php echo $key; ?>"
-                                                    <?php if ($key == $quote->quote_status_id) { ?>selected="selected"
-                                                <?php } ?>>
-                                                <?php echo $status['label']; ?>
-                                            </option>
-                                        <?php } ?>
+                                            class="form-control simple-select" data-minimum-results-for-search="Infinity">
+<?php
+foreach ($quote_statuses as $key => $status) {
+    $is_selected = ($key == $quote->quote_status_id) ? ' selected="selected"' : '';
+?>
+                                        <option value="<?php echo $key; ?>"<?php echo $is_selected; ?>>
+                                            <?php echo $status['label']; ?>
+                                        </option>
+<?php
+}
+?>
                                     </select>
                                 </div>
                                 <div class="quote-properties">
                                     <label for="quote_password">
                                         <?php _trans('quote_password'); ?>
                                     </label>
-                                    <input type="text" id="quote_password" class="form-control input-sm"
+                                    <input type="text" id="quote_password" class="form-control"
                                            value="<?php _htmlsc($quote->quote_password) ?>">
                                 </div>
 
-                                <?php if ($quote->quote_status_id != 1) { ?>
-                                    <div class="quote-properties">
-                                        <label for="quote-guest-url"><?php _trans('guest_url'); ?></label>
-                                        <div class="input-group">
-                                            <input type="text" id="quote-guest-url" readonly class="form-control"
-                                                   value="<?php echo site_url('guest/view/quote/' . $quote->quote_url_key); ?>">
-                                            <span class="input-group-addon to-clipboard cursor-pointer"
-                                                  data-clipboard-target="#quote-guest-url">
-                                                <i class="fa fa-clipboard fa-fw"></i>
-                                            </span>
-                                        </div>
+<?php
+if ($quote->quote_status_id != 1) {
+?>
+                                <div class="quote-properties">
+                                    <label for="quote-guest-url"><?php _trans('guest_url'); ?></label>
+                                    <div class="input-group">
+                                        <input type="text" id="quote-guest-url" readonly class="form-control"
+                                               value="<?php echo site_url('guest/view/quote/' . $quote->quote_url_key); ?>">
+                                        <span class="input-group-addon to-clipboard cursor-pointer"
+                                              data-clipboard-target="#quote-guest-url">
+                                            <i class="fa fa-clipboard fa-fw"></i>
+                                        </span>
                                     </div>
-                                <?php } ?>
+                                </div>
+<?php
+}
+?>
 
                             </div>
+<?php
+$default_custom = false;
+$classes        = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+foreach ($custom_fields as $custom_field) {
+    if ( ! $default_custom && ! $custom_field->custom_field_location) {
+        $default_custom = true;
+    }
 
+    if ($custom_field->custom_field_location == 1) {
+        print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+    }
+}
+?>
                         </div>
                     </div>
                 </div>
@@ -375,12 +481,7 @@ $cv = $this->controller->view_data["custom_values"];
 
         </div>
 
-        <?php if (get_setting('show_responsive_itemlist') == 1) {
-             $this->layout->load_view('quotes/partial_itemlist_responsive');
-           } else {
-             $this->layout->load_view('quotes/partial_itemlist_table');
-           }
-         ?>
+<?php $this->layout->load_view('quotes/partial_itemlist_' . (get_setting('show_responsive_itemlist') ? 'responsive' : 'table')); ?>
 
         <hr/>
 
@@ -388,12 +489,9 @@ $cv = $this->controller->view_data["custom_values"];
             <div class="col-xs-12 col-md-6">
 
                 <div class="panel panel-default no-margin">
-                    <div class="panel-heading">
-                        <?php _trans('notes'); ?>
-                    </div>
+                    <div class="panel-heading"><?php _trans('notes'); ?></div>
                     <div class="panel-body">
-                        <textarea name="notes" id="notes" rows="3"
-                                  class="input-sm form-control"><?php _htmlsc($quote->notes); ?></textarea>
+                        <textarea name="notes" id="notes" rows="3" class="form-control"><?php _htmlsc($quote->notes); ?></textarea>
                     </div>
                 </div>
 
@@ -402,53 +500,40 @@ $cv = $this->controller->view_data["custom_values"];
             </div>
             <div class="col-xs-12 col-md-6">
 
-                <?php $this->layout->load_view('upload/dropzone-quote-html'); ?>
+                <?php _dropzone_html(false); ?>
 
-                <?php if ($custom_fields): ?>
-                    <?php $cv = $this->controller->view_data["custom_values"]; ?>
-                    <div class="row">
-                        <div class="col-xs-12">
+            </div>
+        </div>
+<?php
+if ($default_custom) {
+?>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
 
-                            <hr>
+                <hr>
 
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <?php _trans('custom_fields'); ?>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-xs-6">
-                                            <?php $i = 0; ?>
-                                            <?php foreach ($custom_fields as $custom_field): ?>
-                                                <?php if ($custom_field->custom_field_location != 0) {
-                                                    continue;
-                                                } ?>
-                                                <?php $i++; ?>
-                                                <?php if ($i % 2 != 0): ?>
-                                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        </div>
-                                        <div class="col-xs-6">
-                                            <?php $i = 0; ?>
-                                            <?php foreach ($custom_fields as $custom_field): ?>
-                                                <?php if ($custom_field->custom_field_location != 0) {
-                                                    continue;
-                                                } ?>
-                                                <?php $i++; ?>
-                                                <?php if ($i % 2 == 0): ?>
-                                                    <?php print_field($this->mdl_quotes, $custom_field, $cv); ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading"><?php _trans('custom_fields'); ?></div>
+                    <div class="panel-body">
+                        <div class="row">
+<?php
+    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
+    foreach ($custom_fields as $custom_field) {
+        if ( ! $custom_field->custom_field_location) { // == 0
+            print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+        }
+    }
+?>
                         </div>
                     </div>
-                <?php endif; ?>
-            </div>
-    </div>
-</div>
+                </div>
 
-<?php $this->layout->load_view('upload/dropzone-quote-scripts'); ?>
+            </div>
+        </div>
+<?php
+} // End if custom_fields
+?>
+    </div>
+
+<?php
+_dropzone_script($quote->quote_url_key, $quote->client_id);

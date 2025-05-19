@@ -1,16 +1,16 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -34,14 +34,18 @@ class Products extends Admin_Controller
         $this->mdl_products->paginate(site_url('products/index'), $page);
         $products = $this->mdl_products->result();
 
-        $this->layout->set('products', $products);
+        $this->layout->set(
+            [
+                'filter_display'     => true,
+                'filter_placeholder' => trans('filter_products'),
+                'filter_method'      => 'filter_products',
+                'products'           => $products,
+            ]
+        );
         $this->layout->buffer('content', 'products/index');
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -57,10 +61,8 @@ class Products extends Admin_Controller
             redirect('products');
         }
 
-        if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_products->prep_form($id)) {
-                show_404();
-            }
+        if ($id && ! $this->input->post('btn_submit') && ! $this->mdl_products->prep_form($id)) {
+            show_404();
         }
 
         $this->load->model('families/mdl_families');
@@ -69,8 +71,8 @@ class Products extends Admin_Controller
 
         $this->layout->set(
             [
-                'families' => $this->mdl_families->get()->result(),
-                'units' => $this->mdl_units->get()->result(),
+                'families'  => $this->mdl_families->get()->result(),
+                'units'     => $this->mdl_units->get()->result(),
                 'tax_rates' => $this->mdl_tax_rates->get()->result(),
             ]
         );

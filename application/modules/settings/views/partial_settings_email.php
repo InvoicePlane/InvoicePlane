@@ -133,7 +133,7 @@
                                     <?php _trans('smtp_security'); ?>
                                 </label>
                                 <select name="settings[smtp_security]" id="settings[smtp_security]"
-                                    class="form-control simple-select">
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                     <option value=""><?php _trans('none'); ?></option>
                                     <option value="ssl" <?php check_select(get_setting('smtp_security'), 'ssl'); ?>>
                                         <?php _trans('smtp_ssl'); ?>
@@ -149,7 +149,7 @@
                                     <?php _trans('smtp_verify_certs'); ?>
                                 </label>
                                 <select name="settings[smtp_verify_certs]" id="settings[smtp_verify_certs]"
-                                    class="form-control simple-select">
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                     <option value="1"><?php _trans('yes'); ?></option>
                                     <option value="0" <?php check_select(get_setting('smtp_verify_certs'), '0'); ?>>
                                         <?php _trans('no'); ?>

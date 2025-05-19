@@ -25,42 +25,38 @@ class QrCode
 
     public function __construct($params)
     {
-        $CI = &get_instance();
+        $CI = & get_instance();
 
         $CI->load->helper('template');
 
         $this->invoice         = $params['invoice'];
-        $this->recipient       = $CI->mdl_settings->setting('qr_code_recipient');
-        $this->iban            = $CI->mdl_settings->setting('qr_code_iban');
-        $this->bic             = $CI->mdl_settings->setting('qr_code_bic');
+        $this->recipient       = $this->invoice->user_company ?: $CI->mdl_settings->setting('qr_code_recipient');
+        $this->iban            = $this->invoice->user_iban ?: $CI->mdl_settings->setting('qr_code_iban');
+        $this->bic             = $this->invoice->user_bic ?: $CI->mdl_settings->setting('qr_code_bic');
         $this->currencyCode    = $CI->mdl_settings->setting('currency_code');
         $this->remittance_text = parse_template(
             $this->invoice,
-            $CI->mdl_settings->setting('qr_code_remittance_text')
+            $this->invoice->user_remittance_text ?: $CI->mdl_settings->setting('qr_code_remittance_text')
         );
     }
 
-    public function paymentData(): Data
+    public function paymentData()
     {
-        $paymentData = Data::create()
+        return Data::create()
             ->setName($this->recipient)
             ->setIban($this->iban)
             ->setBic($this->bic)
             ->setCurrency($this->currencyCode)
             ->setRemittanceText($this->remittance_text)
             ->setAmount($this->invoice->invoice_balance);
-
-        return $paymentData;
     }
 
     public function generate()
     {
-        $qrCodeDataUri = Builder::create()
+        return Builder::create()
             ->data($this->paymentData())
             ->errorCorrectionLevel(new ErrorCorrectionLevelMedium()) // required by EPC standard
             ->build()
             ->getDataUri();
-
-        return $qrCodeDataUri;
     }
 }

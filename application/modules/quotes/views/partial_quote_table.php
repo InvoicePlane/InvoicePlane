@@ -14,15 +14,15 @@
         </thead>
 
         <tbody>
-        <?php
-        $quote_idx = 1;
-        $quote_count = count($quotes);
-        $quote_list_split = $quote_count > 3 ? $quote_count / 2 : 9999;
+<?php
+$quote_idx        = 1;
+$quote_count      = count($quotes);
+$quote_list_split = $quote_count > 3 ? $quote_count / 2 : 9999;
 
-        foreach ($quotes as $quote) {
-            // Convert the dropdown menu to a dropup if quote is after the invoice split
-            $dropup = $quote_idx > $quote_list_split ? true : false;
-            ?>
+foreach ($quotes as $quote) {
+    // Convert the dropdown menu to a dropup if quote is after the invoice split
+    $dropup = $quote_idx > $quote_list_split;
+?>
             <tr>
                 <td>
                     <span class="label <?php echo $quote_statuses[$quote->quote_status_id]['class']; ?>">
@@ -32,7 +32,7 @@
                 <td>
                     <a href="<?php echo site_url('quotes/view/' . $quote->quote_id); ?>"
                        title="<?php _trans('edit'); ?>">
-                        <?php echo($quote->quote_number ? $quote->quote_number : $quote->quote_id); ?>
+                        <?php echo $quote->quote_number ? $quote->quote_number : $quote->quote_id; ?>
                     </a>
                 </td>
                 <td>
@@ -87,9 +87,10 @@
                     </div>
                 </td>
             </tr>
-            <?php
-            $quote_idx++;
-        } ?>
+<?php
+    $quote_idx++;
+} // End foreach
+?>
         </tbody>
 
     </table>

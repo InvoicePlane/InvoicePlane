@@ -1,4 +1,6 @@
-<?php foreach ($client_notes as $client_note) : ?>
+<?php
+foreach ($client_notes as $client_note) {
+?>
     <div class="panel panel-default small">
         <div class="panel-body">
             <?php echo nl2br(htmlsc($client_note->client_note)); ?>
@@ -10,4 +12,5 @@
             </span>
         </div>
     </div>
-<?php endforeach; ?>
+<?php
+}

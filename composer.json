@@ -27,7 +27,8 @@
   "require-dev": {
     "filp/whoops": "^2.15",
     "laravel/pint": "^1.16",
-    "rector/rector": "0.14.8",
+    "squizlabs/php_codesniffer": "^3.12",
+    "rector/rector": "^2.0",
     "symfony/var-dumper": "^6.4"
   },
   "scripts": {
