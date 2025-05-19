@@ -31,10 +31,6 @@ body *:focus {
   select {
     padding-left: 6px;
   }
-
-  textarea.h135rem {
-    height: 13.5rem;
-  }
 }
 
 .mb-1 {
@@ -48,6 +44,6 @@ table.invoice-qr-code-table {
 }
 
 img#invoice-qr-code {
-  width: 100px;
+  width: 200px;
   height: auto;
 }

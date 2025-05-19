@@ -1,6 +1,8 @@
 <?php
 
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -14,7 +16,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 #[AllowDynamicProperties]
 class Layout extends MX_Controller
 {
-    public $view_data = array();
+    public $view_data = [];
 
     /**
      * @return $this
@@ -25,16 +27,16 @@ class Layout extends MX_Controller
 
         if (count($args) == 1) {
             foreach ($args[0] as $arg) {
-                $key = $arg[0];
+                $key  = $arg[0];
                 $view = explode('/', $arg[1]);
-                $data = array_merge(isset($arg[2]) ? $arg[2] : array(), $this->view_data);
+                $data = array_merge($arg[2] ?? [], $this->view_data);
 
                 $this->view_data[$key] = $this->load->view($view[0] . '/' . $view[1], $data, true);
             }
         } else {
-            $key = $args[0];
+            $key  = $args[0];
             $view = explode('/', $args[1]);
-            $data = array_merge(isset($args[2]) ? $args[2] : array(), $this->view_data);
+            $data = array_merge($args[2] ?? [], $this->view_data);
 
             $this->view_data[$key] = $this->load->view($view[0] . '/' . $view[1], $data, true);
         }
@@ -67,11 +69,12 @@ class Layout extends MX_Controller
 
     /**
      * Simple function to load a view directly using the assigned template
-     * Does not use buffering or rendering
+     * Does not use buffering or rendering.
+     *
      * @param string $view
-     * @param array $data
+     * @param array  $data
      */
-    public function load_view($view, $data = array())
+    public function load_view($view, $data = [])
     {
         $view = explode('/', $view);
 
@@ -79,5 +82,4 @@ class Layout extends MX_Controller
 
         $this->load->view($view, $data);
     }
-
 }

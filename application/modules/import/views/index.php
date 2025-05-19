@@ -33,7 +33,9 @@
             </thead>
 
             <tbody>
-            <?php foreach ($imports as $import) { ?>
+<?php
+foreach ($imports as $import) {
+?>
                 <tr>
                     <td><?php echo $import->import_id; ?></td>
                     <td><?php echo $import->import_date; ?></td>
@@ -61,7 +63,9 @@
                         </div>
                     </td>
                 </tr>
-            <?php } ?>
+<?php
+}
+?>
             </tbody>
 
         </table>

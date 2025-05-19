@@ -7,21 +7,16 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
-
 /**
- * @param      $from
- * @param      $to
- * @param      $subject
- * @param      $message
- * @param null $attachment_path
- * @param null $cc
- * @param null $bcc
- * @param null $more_attachments
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $message
  *
  * @return bool
  */
@@ -42,6 +37,9 @@ function phpmail_send(
     $mail          = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
+
+    // Set msg from PHPMailer in user lang. Only work with 2 letters. See phpmailer.lang-fr.php (in vendor dir).
+    $mail->setLanguage(trans('cldr')); // Default ($langcode = 'en', $lang_path = '')
 
     switch (get_setting('email_send_method')) {
         case 'smtp':
@@ -134,10 +132,30 @@ function phpmail_send(
         $mail->addBCC($admin->user_email);
     }
 
-    // Add the attachment if supplied
+    $xml_del = false;
+    // Add the attachments if needed
     if ($attachment_path && get_setting('email_pdf_attachment')) {
         $mail->addAttachment($attachment_path);
+
+        // eInvoicing replace ARCHIVE (pdf) to TEMP (xml) for no embed_xml - since 1.6.3
+        $attachment_path = strtr($attachment_path, [UPLOADS_ARCHIVE_FOLDER => UPLOADS_TEMP_FOLDER]);
+
+        // The XML eInvoicing file exist in temporary?
+        $xml_file = mb_rtrim($attachment_path, '.pdf') . '.xml';
+        if (file_exists($xml_file)) {
+            // Attach eInvoicing temp file
+            if ( ! empty($_SERVER['CIIname'])) {
+                // Need Specific eInvoice filename? (see mailer helper)
+                $mail->addAttachment($xml_file, $_SERVER['CIIname']); // phpmailer-sent-attachment-as-other-name
+            } else {
+                $mail->addAttachment($xml_file);
+            }
+
+            // Need Delete
+            $xml_del = true;
+        }
     }
+
     // Add the other attachments if supplied
     if ($more_attachments) {
         foreach ($more_attachments as $paths) {
@@ -146,13 +164,17 @@ function phpmail_send(
     }
 
     // And away it goes...
-    if ($mail->send()) {
-        $CI->session->set_flashdata('alert_success', 'The email has been sent');
+    $ok = $mail->send();
 
-        return true;
+    // Delete the tmp CII-XML file
+    if ($xml_del) {
+        unlink($xml_file);
     }
-    // Or not...
-    $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
 
-    return false;
+    // Only Notify the error. The success is in mailer controller.
+    if ( ! $ok) {
+        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+    }
+
+    return $ok;
 }
