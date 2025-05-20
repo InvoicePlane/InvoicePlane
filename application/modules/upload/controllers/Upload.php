@@ -34,10 +34,7 @@ class Upload extends Admin_Controller
 
     public function upload_file($customerId, $url_key): void
     {
-        // Show files Legacy (obsolete)
-        if (empty($_FILES['file'])) {
-            $this->show_files($url_key);
-        } elseif (empty($_FILES['file']['name'])) {
+        if (empty($_FILES['file']['name'])) {
             $this->respond_message(400, 'upload_error_no_file');
         }
 
@@ -73,8 +70,7 @@ class Upload extends Admin_Controller
             exit('{}');
         }
 
-        echo json_encode($result);
-        exit;
+        exit(json_encode($result));
     }
 
     public function delete_file($url_key): void
