@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<todo version="0.1.20">
+    <note priority="veryhigh" time="1670337384">
+        rapport vente/Chiffre d'Affaire par mois/trimestre(option?) : See report MVC
+    </note>
+    <note priority="veryhigh" time="1671321259">
+        il existe un bug avec les miliers lorsque le point est séparateur EUR
+    </note>
+    <note priority="high" time="1670336913">
+        liste des devis : + 1 option : modal to convert to invoice like quote option
+        <note priority="high" time="1670337201">
+            {GET:{scheme:http,host:facture.japautocasse.com,filename:/quotes/ajax/modal_quote_to_invoice/587,remote:{Adresse:217.160.0.217:80}}}
+        </note>
+    </note>
+</todo>
