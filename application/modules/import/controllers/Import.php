@@ -54,7 +54,7 @@ class Import extends Admin_Controller
             $files = directory_map('./uploads/import');
 
             foreach ($files as $key => $file) {
-                if ( ! is_numeric(array_search($file, $this->allowed_files))) {
+                if ( ! is_numeric(array_search($file, $this->allowed_files, true))) {
                     unset($files[$key]);
                 }
             }
@@ -71,7 +71,7 @@ class Import extends Admin_Controller
                 $files = $this->allowed_files;
 
                 foreach ($files as $key => $file) {
-                    if ( ! is_numeric(array_search($file, $this->input->post('files')))) {
+                    if ( ! is_numeric(array_search($file, $this->input->post('files'), true))) {
                         unset($files[$key]);
                     }
                 }

@@ -269,7 +269,7 @@ class Mdl_Clients extends Response_Model
             $assigned_clients[] = $client->client_id;
         }
 
-        if (count($assigned_clients) > 0) {
+        if ($assigned_clients !== []) {
             $this->where_not_in('ip_clients.client_id', $assigned_clients);
         }
 
