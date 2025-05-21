@@ -368,7 +368,7 @@ class Mdl_Setup extends CI_Model
     /**
      * @param string $contents
      */
-    private function execute_contents($contents)
+    private function execute_contents(string|bool $contents)
     {
         $commands = explode(';', $contents);
 

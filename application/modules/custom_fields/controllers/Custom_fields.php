@@ -36,7 +36,7 @@ class Custom_Fields extends Admin_Controller
      * @param string $name of table (simple) NAME (more comprehensive) & why not a filter by type??? like I/Q payment & todo for product ;)
      * @param int    $page
      */
-    public function table($name = 'all', $page = 0): void
+    public function table(string $name = 'all', $page = 0): void
     {
         // Determine which name of table custom field to load
         $custom_tables = $this->mdl_custom_fields->custom_tables();

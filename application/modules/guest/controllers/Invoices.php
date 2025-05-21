@@ -33,10 +33,9 @@ class Invoices extends Guest_Controller
     }
 
     /**
-     * @param string $status
-     * @param int    $page
+     * @param int $page
      */
-    public function status($status = 'open', $page = 0): void
+    public function status(string $status = 'open', $page = 0): void
     {
         // Determine which group of invoices to load
         switch ($status) {

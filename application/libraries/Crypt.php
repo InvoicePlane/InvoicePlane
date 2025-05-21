@@ -16,21 +16,16 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Crypt
 {
-    /**
-     * @return bool|string
-     */
-    public function salt()
+    public function salt(): string
     {
         return substr(sha1(mt_rand()), 0, 22);
     }
 
     /**
      * @param string $password
-     * @param string $salt
      *
-     * @return string
      */
-    public function generate_password($password, $salt)
+    public function generate_password($password, string $salt): string
     {
         return crypt($password, '$2a$10$' . $salt);
     }
@@ -38,10 +33,8 @@ class Crypt
     /**
      * @param string $hash
      * @param string $password
-     *
-     * @return bool
      */
-    public function check_password($hash, $password)
+    public function check_password($hash, $password): bool
     {
         $new_hash = crypt($password, $hash);
 
@@ -50,10 +43,8 @@ class Crypt
 
     /**
      * @param string $data
-     *
-     * @return string
      */
-    public function encode($data)
+    public function encode($data): string
     {
         $key = getenv('ENCRYPTION_KEY');
         if (preg_match('/^base64:(.*)$/', $key, $matches)) {
@@ -65,10 +56,8 @@ class Crypt
 
     /**
      * @param string $data
-     *
-     * @return string
      */
-    public function decode($data)
+    public function decode($data): string
     {
         if (empty($data)) {
             return '';

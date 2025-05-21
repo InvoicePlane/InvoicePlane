@@ -53,7 +53,7 @@ class Mdl_Client_Notes extends Response_Model
     /**
      * @param int $id
      */
-    public function delete($id)
+    public function delete($id): bool
     {
         parent::delete($id);
 

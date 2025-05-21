@@ -33,10 +33,9 @@ class Quotes extends Guest_Controller
     }
 
     /**
-     * @param string $status
-     * @param int    $page
+     * @param int $page
      */
-    public function status($status = 'open', $page = 0)
+    public function status(string $status = 'open', $page = 0)
     {
         redirect_to_set(); // Sets the current URL in the session to force redirect_to()
 
@@ -135,7 +134,7 @@ class Quotes extends Guest_Controller
     /**
      * @param $quote_id
      */
-    public function approve($quote_id)
+    public function approve(string $quote_id)
     {
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
@@ -149,7 +148,7 @@ class Quotes extends Guest_Controller
     /**
      * @param $quote_id
      */
-    public function reject($quote_id)
+    public function reject(string $quote_id)
     {
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');

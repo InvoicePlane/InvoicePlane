@@ -168,7 +168,7 @@ class Users extends Admin_Controller
     /**
      * @param $user_id
      */
-    public function change_password($user_id)
+    public function change_password(string $user_id)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('users');
@@ -199,7 +199,7 @@ class Users extends Admin_Controller
      * @param $user_id
      * @param $user_client_id
      */
-    public function delete_user_client($user_id, $user_client_id)
+    public function delete_user_client(string $user_id, $user_client_id)
     {
         $this->load->model('mdl_user_clients');
 

@@ -61,10 +61,8 @@ function format_singlechoice($txt)
 
 /**
  * @param $txt
- *
- * @return string
  */
-function format_multiplechoice($txt)
+function format_multiplechoice($txt): string
 {
     if ($txt == null) {
         return '';
@@ -140,7 +138,7 @@ function format_fallback($txt)
  * @param string $class_label
  * @param string $class_group
  */
-function print_field($module, $custom_field, $cv, $class_top = '', $class_bottom = 'controls', $class_label = '', $class_group = 'form-group')
+function print_field($module, $custom_field, array $cv, $class_top = '', $class_bottom = 'controls', $class_label = '', $class_group = 'form-group'): void
 {
     $fieldValue = $module->form_value('custom[' . $custom_field->custom_field_id . ']');
     ?>

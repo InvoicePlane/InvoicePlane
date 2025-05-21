@@ -34,7 +34,10 @@ class ClientTitleEnum
         }
     }
 
-    public static function cases()
+    /**
+     * @return list<\StdClass>
+     */
+    public static function cases(): array
     {
         $values   = self::VALUES;
         $values[] = self::CUSTOM;

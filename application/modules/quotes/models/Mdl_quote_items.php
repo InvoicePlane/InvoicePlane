@@ -111,10 +111,8 @@ class Mdl_Quote_Items extends Response_Model
 
     /**
      * @param int $item_id
-     *
-     * @return bool
      */
-    public function delete($item_id)
+    public function delete($item_id): bool
     {
         // Get item:
         // the quote id is needed to recalculate quote amounts

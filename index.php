@@ -41,10 +41,8 @@ function env($env_key, $default = null)
  *
  * @param string $env_key
  * @param string $default
- *
- * @return bool
  */
-function env_bool($env_key, $default = 'false')
+function env_bool($env_key, $default = 'false'): bool
 {
     return env($env_key, $default) === 'true';
 }

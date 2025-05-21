@@ -16,7 +16,7 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Import extends Admin_Controller
 {
-    private $allowed_files = [
+    private array $allowed_files = [
         'clients.csv',
         'invoices.csv',
         'invoice_items.csv',

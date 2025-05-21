@@ -16,7 +16,7 @@ if ( ! defined('BASEPATH')) {
 /**
  * Deletes orphaned entries in the database.
  */
-function delete_orphans()
+function delete_orphans(): void
 {
     $CI = & get_instance();
 

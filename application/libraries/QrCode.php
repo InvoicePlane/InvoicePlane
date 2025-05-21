@@ -23,7 +23,7 @@ class QrCode
 
     public $remittance_text;
 
-    public function __construct($params)
+    public function __construct(array $params)
     {
         $CI = & get_instance();
 
@@ -51,7 +51,7 @@ class QrCode
             ->setAmount($this->invoice->invoice_balance);
     }
 
-    public function generate()
+    public function generate(): string
     {
         return Builder::create()
             ->data($this->paymentData())

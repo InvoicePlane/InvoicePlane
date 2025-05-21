@@ -21,7 +21,7 @@ class Layout extends MX_Controller
     /**
      * @return $this
      */
-    public function buffer(...$args)
+    public function buffer(...$args): static
     {
         if (count($args) == 1) {
             foreach ($args[0] as $arg) {
@@ -45,7 +45,7 @@ class Layout extends MX_Controller
     /**
      * @return $this
      */
-    public function set(...$args)
+    public function set(...$args): static
     {
         if (count($args) == 1) {
             foreach ($args[0] as $key => $value) {
@@ -58,7 +58,7 @@ class Layout extends MX_Controller
         return $this;
     }
 
-    public function render($view = 'layout')
+    public function render(string $view = 'layout')
     {
         $this->load->view('layout/' . $view, $this->view_data);
     }

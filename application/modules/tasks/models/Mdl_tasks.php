@@ -109,10 +109,8 @@ class Mdl_Tasks extends Response_Model
 
     /**
      * @param null|int $id
-     *
-     * @return bool
      */
-    public function prep_form($id = null)
+    public function prep_form($id = null): bool
     {
         if ( ! parent::prep_form($id)) {
             return false;

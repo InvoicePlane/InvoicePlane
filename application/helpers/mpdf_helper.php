@@ -29,7 +29,7 @@ if ( ! defined('BASEPATH')) {
  */
 function pdf_create(
     $html,
-    $filename,
+    string $filename,
     bool $stream = true,
     $password = null,
     $isInvoice = null,

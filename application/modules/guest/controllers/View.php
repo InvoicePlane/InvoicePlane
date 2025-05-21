@@ -214,7 +214,7 @@ class View extends Base_Controller
     /**
      * @param $quote_url_key
      */
-    public function approve_quote($quote_url_key)
+    public function approve_quote(string $quote_url_key)
     {
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
@@ -228,7 +228,7 @@ class View extends Base_Controller
     /**
      * @param $quote_url_key
      */
-    public function reject_quote($quote_url_key)
+    public function reject_quote(string $quote_url_key)
     {
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
@@ -243,10 +243,8 @@ class View extends Base_Controller
      * Retail since 1.6.3.
      *
      * @param $url_key
-     *
-     * @return array
      */
-    private function get_attachments($url_key)
+    private function get_attachments(string $url_key): array
     {
         $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = '" . $url_key . "'");
 
