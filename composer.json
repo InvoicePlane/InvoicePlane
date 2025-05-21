@@ -32,6 +32,17 @@
         "symfony/var-dumper": "^6.4"
     },
     "scripts": {
+        "check": [
+            "rector",
+            "phpcs",
+            "pint"
+        ],
+        "rector": [
+            "vendor/bin/rector process"
+        ],
+        "phpcs": [
+            "vendor/bin/phpcbf -p --standard=phpcs.xml"
+        ],
         "pint": [
             "vendor/bin/pint"
         ]
