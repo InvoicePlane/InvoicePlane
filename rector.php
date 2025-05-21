@@ -7,7 +7,6 @@ use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
-use Rector\DeadCode\Rector\If_\UnwrapFutureCompatibleIfPhpVersionRector;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -19,7 +18,6 @@ return RectorConfig::configure()
         ExplicitBoolCompareRector::class,
         UseIdenticalOverEqualWithSameTypeRector::class,
         RemoveUselessParamTagRector::class, // DeadCodeLevel(19)
-        UnwrapFutureCompatibleIfPhpVersionRector::class, // DeadCodeLevel(36)
     ])
     ->withSkip([
         __DIR__ . '/application/logs/*',
