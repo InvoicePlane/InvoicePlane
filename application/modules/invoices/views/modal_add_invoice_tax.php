@@ -14,8 +14,7 @@
                     include_item_tax: $('#include_item_tax').val()
                 },
                 function (data) {
-                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
-                    var response = json_parse(data);
+                    var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
                     }

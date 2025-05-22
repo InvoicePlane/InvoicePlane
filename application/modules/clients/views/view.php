@@ -11,8 +11,7 @@
             $('.delete_client_note').click(delete_client_note);
         }
         function reload_client_notes(data){
-            <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
-            var response = json_parse(data);
+            var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
             if (response.success === 1) {
                 // The validation was successful
                 $('.has-error').removeClass('has-error');

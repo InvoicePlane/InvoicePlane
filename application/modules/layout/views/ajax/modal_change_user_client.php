@@ -28,8 +28,7 @@ $permissive = get_setting('enable_permissive_search_' . $who . 's');
                     <?php echo $type; ?>_id: $('#<?php echo $type; ?>_id').val()
                 },
                 function (data) {
-                    <?php echo (IP_DEBUG ? 'console.log("' . $who . ': ' . $type . '", data);' : '') . PHP_EOL; ?>
-                    var response = json_parse(data);
+                    var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
                         // The validation was successful and quote/invoice was Updated
                         window.location = "<?php echo site_url($type . 's/view'); ?>/" + response.<?php echo $type; ?>_id;

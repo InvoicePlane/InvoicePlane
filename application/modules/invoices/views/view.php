@@ -101,8 +101,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                     payment_method: $('#payment_method').val(),
                 },
                 function (data) {
-                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
-                    var response = json_parse(data);
+                    var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
                     } else {
@@ -141,9 +140,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                         'item_id': item_id,
                     },
                     function (data) {
-                        <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
-                        var response = json_parse(data);
-
+                        var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                         if (response.success === 1) {
                             btn.parents('.item').remove();
                         } else {

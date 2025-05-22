@@ -78,8 +78,7 @@ if ($quote->quote_status_id == 1) {
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                 },
                 function (data) {
-                    <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
-                    var response = json_parse(data);
+                    var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
                     } else {
@@ -116,9 +115,7 @@ if ($quote->quote_status_id == 1) {
                         'item_id': item_id,
                     },
                     function (data) {
-                        <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
-                        var response = json_parse(data);
-
+                        var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                         if (response.success === 1) {
                             btn.parents('.item').remove();
                         } else {

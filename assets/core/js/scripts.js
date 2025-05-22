@@ -1,8 +1,11 @@
 "use strict";
 
 // Check JSON validity. No, show error in alert
-function json_parse(data) {
-    let response = {"success":0, "validation_errors":0};
+function json_parse(data, debug) {
+    if (typeof(debug) != 'undefined' && debug) {
+        console.trace(data);
+    }
+    let response = data.search(/\{"success"\:/) > -1 ? {"success":0, "validation_errors":0} : {};
     try {
         response = JSON.parse(data);
     } catch (e) {
