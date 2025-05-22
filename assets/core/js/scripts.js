@@ -1,6 +1,6 @@
 "use strict";
 
-// Check JSON validity. No, show error in alert
+// Check JSON validity. No, show error in console and alert.
 function json_parse(data, debug) {
     if (typeof(debug) != 'undefined' && debug) {
         console.trace(data);
@@ -14,10 +14,10 @@ function json_parse(data, debug) {
             if($('#content .alert-danger').length) {
                 $('#content .alert-danger').prepend(plus);
             } else {
-                $('#content').prepend(plus);
+                $('#content').prepend('<div class="alert alert-danger">' + plus + '</div>');
             }
         }, 100);
-        // console.error('Invalid JSON returned from server:', data.replace(/<[^>]+>/g, ''));
+        console.error('Invalid JSON returned from server! data:', data);
     } finally {
         return response;
     }
