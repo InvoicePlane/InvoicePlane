@@ -19,7 +19,7 @@
                 },
                 function (data) {
                     <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
-                    var response = JSON.parse(data);
+                    var response = json_parse(data);
                     if (response.success === 1) {
                         // The validation was successful and payment was added
                         if ($('#payment_cf_exist').val() === 'yes') {

@@ -79,7 +79,7 @@ if ($quote->quote_status_id == 1) {
                 },
                 function (data) {
                     <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
-                    var response = JSON.parse(data);
+                    var response = json_parse(data);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
                     } else {
@@ -117,7 +117,7 @@ if ($quote->quote_status_id == 1) {
                     },
                     function (data) {
                         <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
-                        var response = JSON.parse(data);
+                        var response = json_parse(data);
 
                         if (response.success === 1) {
                             btn.parents('.item').remove();

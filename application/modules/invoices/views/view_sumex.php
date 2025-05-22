@@ -98,7 +98,7 @@ if ( ! $items) {
                 },
                 function (data) {
                     <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
-                    var response = JSON.parse(data);
+                    var response = json_parse(data);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
                     }
@@ -139,7 +139,7 @@ if ( ! $items) {
                     },
                     function (data) {
                         <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
-                        var response = JSON.parse(data);
+                        var response = json_parse(data);
 
                         if (response.success === 1) {
                             btn.parents('.item').remove();
