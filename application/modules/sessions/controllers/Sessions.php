@@ -16,6 +16,10 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Sessions extends Base_Controller
 {
+    const LOGIN_OK = 1;
+    const LOGIN_FAIL = 0;
+    const LOGIN_BLOCKED = -1;
+
     public function index()
     {
         redirect('sessions/login');
@@ -44,22 +48,24 @@ class Sessions extends Base_Controller
                     $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
                     redirect('sessions/login');
                 } else {
-
-                    if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
-                        if ($this->session->userdata('user_type') == 1) {
+                    $auth = $this->authenticate($this->input->post('email'), $this->input->post('password'));
+                    if (self::LOGIN_OK == $auth) {
+                        if ($this->session->userdata('user_type') == 1) {              // admin
                             redirect('dashboard');
-                        } elseif ($this->session->userdata('user_type') == 2) {
+                        } elseif ($this->session->userdata('user_type') == 2) {        // guest
                             redirect('guest');
+                        } elseif ($this->session->userdata('user_type') == 3) {        // normal user by xie
+                            redirect('dashboard');
                         }
+                    } elseif (self::LOGIN_BLOCKED == $auth){
+                        $this->session->set_flashdata('alert_error', trans('loginalert_login_blocked'));
+                        redirect('sessions/login');
                     } else {
                         $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
                         redirect('sessions/login');
                     }
-
                 }
-
             }
-
         }
 
         $this->load->view('session_login', $view_data);
@@ -68,26 +74,32 @@ class Sessions extends Base_Controller
     /**
      * @param $email_address
      * @param $password
-     * @return bool
+     * @return constant
      */
     public function authenticate($email_address, $password)
     {
         $this->load->model('mdl_sessions');
+
         //check if user is banned
         $login_log = $this->_login_log_check($email_address);
-        if(empty($login_log)||$login_log->log_count < 10)
-        {
+
+        if(!empty($login_log) && $login_log->log_count >= 10) {
+            return self::LOGIN_BLOCKED;
+        } else {
             if ($this->mdl_sessions->auth($email_address, $password)) {
+
+                if($login_log->log_count > 0)
+                    $this->session->set_flashdata('alert_danger',
+                    'Anzahl letzter falscher Anmeldungen: '.$login_log->log_count);
+
                 $this->_login_log_reset($email_address);
-                return true;
-            }
-            else
-            {
+                return self::LOGIN_OK;
+            } else {
                 //track failed attempt
                 $this->_login_log_addfailure($email_address);
             }
         }
-        return false;
+        return self::LOGIN_FAIL;
     }
 
     public function logout()
@@ -112,7 +124,7 @@ class Sessions extends Base_Controller
 
             //prevent brute force attacks by counting times a token is used
             $login_log_check = $this->_login_log_check($token);
-            if (!empty($login_log_check) && $login_log_check->log_count > 10) {
+            if (!empty($login_log_check) && $login_log_check->log_count >= 10) {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
                 //the use of a token counts as a failure
@@ -204,7 +216,7 @@ class Sessions extends Base_Controller
 
             //prevent brute force attacks by counting password resets
             $login_log_check = $this->_login_log_check($email);
-            if (!empty($login_log_check) && $login_log_check->log_count > 10) {
+            if (!empty($login_log_check) && $login_log_check->log_count >= 10) {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
                 //a password recovery attempt counts as failed login
@@ -302,7 +314,7 @@ class Sessions extends Base_Controller
     {
         $login_log_query =  $this->db->where('login_name',$username)->get('ip_login_log')->row();
 
-        if(!empty($login_log_query) && $login_log_query->log_count > 10)
+        if(!empty($login_log_query) && $login_log_query->log_count >= 10)
         {
             $current_time = new DateTime();
             $interval = $current_time->diff(new DateTime($login_log_query->log_create_timestamp));

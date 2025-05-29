@@ -25,6 +25,7 @@
                 <th><?php _trans('name'); ?></th>
                 <th><?php _trans('user_type'); ?></th>
                 <th><?php _trans('email_address'); ?></th>
+                <th><?php _trans('blocked'); ?></th>
                 <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
@@ -35,6 +36,19 @@
                     <td><?php _htmlsc($user->user_name); ?></td>
                     <td><?php echo $user_types[$user->user_type]; ?></td>
                     <td><?php echo $user->user_email; ?></td>
+                    <td><?php if ($users_blocked[$user->user_email]) : ?>
+
+    <form class="navbar-form navbar-left" method="post" action="<?php echo site_url('users/unblock'); ?>">
+        <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
+           value="<?php echo $this->security->get_csrf_hash() ?>">
+        <input type="hidden" name="email" value="<?= $user->user_email ?>" >
+        <button type="submit" id="blocked" class="btn btn-default" >
+                <i class="fa fa-key fa-margin"></i> <?php _trans('blocked'); ?>
+        </button>
+    </form>
+
+                        <?php endif; ?>
+                   </td>
                     <td>
                         <div class="options btn-group btn-group-sm">
                             <?php if ($user->user_type == 2) : ?>
