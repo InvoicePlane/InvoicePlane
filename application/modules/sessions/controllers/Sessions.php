@@ -90,7 +90,7 @@ class Sessions extends Base_Controller
 
                 if($login_log->log_count > 0)
                     $this->session->set_flashdata('alert_danger',
-                    'Anzahl letzter falscher Anmeldungen: '.$login_log->log_count);
+trans('loginalert_wrong_last_logins') .$login_log->log_count);
 
                 $this->_login_log_reset($email_address);
                 return self::LOGIN_OK;

@@ -5,9 +5,13 @@ if ( ! defined('BASEPATH')) {
 }
 
 /*
-alter table ip_clients add column delivery_address_name text, add column delivery_address_1 text, add column delivery_address_2 text, add column delivery_city text, add column delivery_zip text, add column delivery_state text, add column delivery_country text ;
 
-alter table ip_clients add column billing_address_name text, add column billing_address_1 text, add column billing_address_2 text, add column billing_city text, add column billing_state text, add column billing_zip text, add column billing_country text;
+alter table ip_clients add column billing_address_name	text, add column billing_address_1 text, add column billing_address_2 text, add column billing_city text,
+  add column billing_state text, add column billing_zip text, add column billing_country text;
+
+alter table ip_clients add column delivery_address_name	text, add column delivery_address_1 text, add column delivery_address_2 text, add column delivery_city text, 
+  add column delivery_zip text, add column delivery_state text, add column delivery_country text;
+
 */
 
 require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
@@ -242,7 +246,11 @@ class Clients extends Admin_Controller
 	// auto customer number by chrissie for new customer if none entered
 	$my_customerno = $this->input->post('client_extended_customer_no');
 	$my_id = sprintf("%03d", $id);
+if (ip_xtra()) {
+	if (empty($my_customerno)) $my_customerno = "XCN-".(100 + $my_id);// auto customer number prefix - change if you want
+} else {
 	if (empty($my_customerno)) $my_customerno = "K-".$my_id;	// auto customer number prefix - change if you want
+}
 
 	// insert or update?
 	$exists_extended = $this->mdl_client_extended->get_by_clientid($id);
