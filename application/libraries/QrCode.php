@@ -40,7 +40,7 @@ class QrCode {
       ->setBic($this->bic)
       ->setCurrency($this->currencyCode)
       ->setRemittanceText($this->remittance_text)
-      ->setAmount($this->invoice->invoice_total);
+      ->setAmount($this->invoice->invoice_balance);
 
     return $paymentData;
   }

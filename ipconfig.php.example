@@ -10,6 +10,10 @@ IP_URL=
 # Having problems? Enable debug by changing the value to 'true' to enable advanced logging
 ENABLE_DEBUG=false
 
+X_FRAME_OPTIONS=SAMEORIGIN
+ENABLE_X_CONTENT_TYPE_OPTIONS=true
+SESS_REGENERATE_DESTROY=false
+
 # Set this setting to 'true' if you want to disable the setup for security purposes
 DISABLE_SETUP=false
 
@@ -23,6 +27,35 @@ DB_USERNAME=
 DB_PASSWORD=
 DB_DATABASE=
 DB_PORT=
+
+## Backend settings
+# Show invoice options as buttons (true) or dropdown (false)
+#INVOICE_OPTIONS_BUTTONS=true
+
+# pdf stamp function of invoices and quotes by chrissie ^ x-tra-designs
+# this stamp pdf have to be in uploads/customer_files directory
+#INVOICE_STAMP_PDF=invoice_stamp_default.pdf
+#QUOTE_STAMP_PDF=quote_stamp_default.pdf
+
+# additional invoice copy with watermark
+#INVOICE_COPY=true
+#INVOICE_COPY_WATERMARK="Kopie"
+# additional extra footer with text: invoice ... page 1 of 2 ...
+#INVOICE_PAGE_FOOTER=true
+
+# pdf3a via horstoeko zugpferd
+# INVOICE_PDF3A=true
+# zugpferd xml extended profile via horstoeko
+# INVOICE_HORST_ZUG=true
+
+
+#IP_MODE=atac
+#INVOICE_STAMP_PDF=atac-ug_bp_2022.pdf
+#QUOTE_STAMP_PDF=atac-ug_bp_2022.pdf
+
+#IP_MODE=xtra
+#IP_MODE=hbk
+
 
 # If you want to be logged out after closing your browser window, set this setting to 0 (ZERO).
 # The number represents the amount of minutes after that IP will automatically log out users,

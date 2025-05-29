@@ -1,0 +1,20 @@
+/* =============================================================================
+   InvoicePlane
+   Custom Stylesheet
+
+   All changes made in this file will override the default styles in PDFs.
+   ========================================================================== */
+
+footer-xtra{
+/*
+color:#878686;
+*/
+width:100%;
+border: none;
+padding:8px 0}
+
+@font-face {
+  font-family: 'raleway';
+  font-weight: normal;
+  font-style: normal;
+}

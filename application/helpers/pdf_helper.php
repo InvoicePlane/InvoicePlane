@@ -103,10 +103,32 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     );
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
+	
+    //var_dump ($invoice->client_id);
 
     $CI->load->helper('mpdf');
+
+if(ip_atac()) {
+	// markus: with custom filename: atacUG_01234_001_Client-Name
+	// three digit customer number
+	$cid = sprintf("%03d", $invoice->client_id); 
+	
+	// replace characters in client name - no german umlauts!
+	$cname  = $invoice->client_name;
+	$cnsearch = array(" ", "ä", "ö", "ü", "ß", "Ä", "Ö", "Ü");
+	$cnreplace = array("-", "ae", "oe", "ue", "ss", "Ae", "Oe", "Ue");
+	$mycname = str_replace($cnsearch, $cnreplace, $cname);
+
+	$pdf_stamp = env('INVOICE_STAMP_PDF');
+	return pdf_create($html, 'atacUG_' . $invoice->invoice_number . '_' . $cid . '_' . $mycname, $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles, $pdf_stamp);
+}
+
+    // pdf stamp by chrissie - default stamping and invoice naming
+    // default filename: "Rechnung_01234"
+    $pdf_stamp = env('INVOICE_STAMP_PDF');
     return pdf_create($html, trans('invoice') . '_' . str_replace(array('\\', '/'), '_', $invoice->invoice_number),
-        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles);
+        $stream, $invoice->invoice_password, true, $is_guest, $include_zugferd, $associatedFiles, $pdf_stamp);
+
 }
 
 function generate_invoice_sumex($invoice_id, $stream = true, $client = false)
@@ -259,5 +281,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
 
     $CI->load->helper('mpdf');
 
-    return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), $stream, $quote->quote_password);
+    $pdf_stamp = env('QUOTE_STAMP_PDF');
+    return pdf_create($html, trans('quote') . '_' . str_replace(array('\\', '/'), '_', $quote->quote_number), 
+    $stream, $quote->quote_password, false, false, false, false, $pdf_stamp);
 }

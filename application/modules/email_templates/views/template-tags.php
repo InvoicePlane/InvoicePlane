@@ -67,6 +67,40 @@
                         <?php _trans('sumex_veka'); ?>
                     </option>
                 </optgroup>
+
+                <optgroup label="<?php _trans('extended_information'); ?>">
+                    <option value="{{{client_extended_salutation}}}">
+                        <?php _trans('salutation'); ?>
+                    </option>
+                    <option value="{{{client_extended_customer_no}}}">
+                        <?php _trans('flags'); ?>
+                    </option>
+                    <option value="{{{client_extended_contact_person}}}">
+                        <?php _trans('contact_person'); ?>
+                    </option>
+                    <option value="{{{client_extended_contract}}}">
+                        <?php _trans('contract'); ?>
+                    </option>
+                    <option value="{{{client_extended_direct_debit}}}">
+                        <?php _trans('direct_debit'); ?>
+                    </option>
+                    <option value="{{{client_extended_bank_name}}}">
+                        <?php _trans('bank_name'); ?>
+                    </option>
+                    <option value="{{{client_extended_bank_bic}}}">
+                        <?php _trans('bank_bic'); ?>
+                    </option>
+                    <option value="{{{client_extended_bank_iban}}}">
+                        <?php _trans('bank_iban'); ?>
+                    </option>
+                    <option value="{{{client_extended_payment_terms}}}">
+                        <?php _trans('payment_terms'); ?>
+                    </option>
+                    <option value="{{{client_extended_delivery_terms}}}">
+                        <?php _trans('delivery_terms'); ?>
+                    </option>
+                </optgroup>
+
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_client_custom'] as $custom) { ?>
                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">

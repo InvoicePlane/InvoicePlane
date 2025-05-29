@@ -17,37 +17,3 @@ body *:focus {
 .form-control, .panel {
   box-shadow: none;
 }
-
-#item_table {
-  .input-group {
-    padding-bottom: 0.5rem;
-  }
-
-  .ig-addon-aligned {
-    width: 10rem;
-    text-align: right;
-  }
-
-  select {
-    padding-left: 6px;
-  }
-
-  textarea.h135rem {
-    height: 13.5rem;
-  }
-}
-
-.mb-1 {
-  margin-bottom: 0.5rem;
-}
-
-table.invoice-qr-code-table {
-  width: 100%;
-  line-height: 1.4;
-  font-size: 14px;
-}
-
-img#invoice-qr-code {
-  width: 100px;
-  height: auto;
-}

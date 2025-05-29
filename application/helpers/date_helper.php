@@ -1,8 +1,5 @@
 <?php
-
-if (! defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  * InvoicePlane
@@ -84,10 +81,13 @@ function date_from_mysql($date, $ignore_post_check = false)
     if ($date) {
         if (!$_POST or $ignore_post_check) {
             $CI = &get_instance();
-
             if ($date != null) {
                 $date = DateTime::createFromFormat('Y-m-d', $date);
-                return $date->format($CI->mdl_settings->setting('date_format'));
+		// attention - $date can be null here after call of createFromFormat if illegal date string
+		if ($date)
+                	return $date->format($CI->mdl_settings->setting('date_format'));
+		else 
+			return '';
             }
             else {
                 return '';

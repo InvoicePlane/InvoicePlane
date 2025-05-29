@@ -34,11 +34,33 @@ class Users extends Admin_Controller
         $this->mdl_users->paginate(site_url('users/index'), $page);
         $users = $this->mdl_users->result();
 
+        $users_blocked = [];
+        foreach($users as $u) {
+            $login_log_query =  $this->db->where('login_name',$u->user_email)->get('ip_login_log')->row();
+            $blocked = 0;
+            if(!empty($login_log_query) && $login_log_query->log_count >= 10)   
+                $blocked = 1;
+            $users_blocked [$u->user_email] = $blocked;
+        }
+
         $this->layout->set('users', $users);
+        $this->layout->set('users_blocked', $users_blocked);
+
         $this->layout->set('user_types', $this->mdl_users->user_types());
         $this->layout->buffer('content', 'users/index');
         $this->layout->render();
     }
+
+        /**
+         * unblock
+         */
+        public function unblock() {
+                if ($this->input->post('email')) {
+                    $this->db->delete('ip_login_log',['login_name' => $this->input->post('email')]);
+                }
+            redirect('users');
+        }
+
 
     /**
      * @param null $id

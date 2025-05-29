@@ -31,6 +31,17 @@
 
             </div>
         </div>
+
+        <div class="col-xs-12">
+            <div id="panel-quick-actions" class="panel panel-default quick-actions">
+                <div class="panel-heading">
+                    <b><?php _trans('logged_in'); ?></b>
+                </div>
+                <i class="fa fa-key" title="<?php _trans('loggged_in') ?>"></i>
+               <span class="hidden-xs"><?= $user_name; ?> (<?= $user_email; ?>)</span>
+           </div>
+       </div>
+
     </div>
 
     <div class="row">

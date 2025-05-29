@@ -85,3 +85,54 @@ All security vulnerabilities will be promptly addressed.
 
 > _The name 'InvoicePlane' and the InvoicePlane logo are both copyright by Kovah.de and InvoicePlane.com
 and their usage is restricted! For more information visit invoiceplane.com/license-copyright_
+
+### Changes by chrissie
+
+* for PHP 8.3
+
+On serveral vendor Classes, #[\AllowDynamicProperties] were added. There might be further ones not noticed yet. 
+
+```
+vendor/codeigniter/framework/system/database/drivers/mysqli/mysqli_driver.php:#[\AllowDynamicProperties]
+vendor/codeigniter/framework/system/core/Controller.php:#[\AllowDynamicProperties]
+vendor/codeigniter/framework/system/core/Exceptions.php:#[\AllowDynamicProperties]
+vendor/codeigniter/framework/system/core/Router.php:#[\AllowDynamicProperties]
+vendor/codeigniter/framework/system/core/Config.php:#[\AllowDynamicProperties]
+vendor/codeigniter/framework/system/core/URI.php:#[\AllowDynamicProperties]
+vendor/codeigniter/framework/system/core/Loader.php:#[\AllowDynamicProperties]
+```
+
+* For PDF stamp of invoices via another pdf for nice looking of invoices by chrissie
+
+```
+mikehaertl/php-pdftk
+```
+
+was added via composer:
+
+```
+composer require mikehaertl/php-pdftk
+```
+
+This neeeds the Linux-Program/-Pakage pdftk based on Java, or the FreeBSD port /usr/ports/print/pdftk/ depending on your OS
+
+---
+
+* added sorting of clients ascending / descending
+* added upload documents for clients
+* added ip_atac(), ip_xtra() and ip_hbk(), added atac quote/invoice templates
+* added invoice copy with invoice watermark
+* added extra invoice footer invoice page ... of ...
+* page size, font, ..., see helpers/mpdf_helper.php
+
+* correct PDF 3a via Horstoeku Zugferd, activation via ipconfig.php
+```
+composer require horstoeko/zugferd
+```
+* seee mpdf_helper.php
+
+* Added idea about horst oeko zupferd extended profile and switch
+* Added ip_client_extended table with the most common used custom fields for convience
+* Invoice, Quote Options as buttons
+* separate billing address, delivery address
+* added infinitive scroll for customers index table - enjoy

@@ -22,3 +22,7 @@ if ($this->session->flashdata('alert_info')) {
 if ($this->session->flashdata('alert_error')) {
     echo '<div class="' . $alert_class . ' alert-danger">' . $this->session->flashdata('alert_error') . '</div>';
 }
+
+if ($this->session->flashdata('alert_danger')) {
+    echo '<div class="' . $alert_class . ' alert-danger">' . $this->session->flashdata('alert_danger') . '</div>';
+}

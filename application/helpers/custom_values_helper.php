@@ -19,9 +19,8 @@ if (! defined('BASEPATH')) {
  */
 function format_date($txt)
 {
-    if ($txt == null) {
-        return '';
-    }
+    if ($txt == null ||
+	$txt == '0000-00-00') return '';
 
     return date_from_mysql($txt);
 }
