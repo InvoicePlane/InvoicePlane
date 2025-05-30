@@ -102,7 +102,7 @@ foreach ($custom_field_types as $type) {
             updatePositions(optionIndex);
         });
 
-        var jsonPositions = JSON.parse('<?php echo json_encode($positions); ?>');
+        var jsonPositions = json_parse('<?php echo json_encode($positions); ?>', <?php echo (int) IP_DEBUG; ?>);
         var optionIndex = $("#custom_field_table option:selected").index();
         // Init Selector with Selected value
         updatePositions(optionIndex, <?php echo $custom_field_location; ?>);

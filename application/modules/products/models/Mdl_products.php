@@ -60,7 +60,6 @@ class Mdl_Products extends Response_Model
             'product_sku' => [
                 'field' => 'product_sku',
                 'label' => trans('product_sku'),
-                'rules' => '',
             ],
             'product_name' => [
                 'field' => 'product_name',
@@ -70,7 +69,6 @@ class Mdl_Products extends Response_Model
             'product_description' => [
                 'field' => 'product_description',
                 'label' => trans('product_description'),
-                'rules' => '',
             ],
             'product_price' => [
                 'field' => 'product_price',
@@ -80,12 +78,10 @@ class Mdl_Products extends Response_Model
             'purchase_price' => [
                 'field' => 'purchase_price',
                 'label' => trans('purchase_price'),
-                'rules' => '',
             ],
             'provider_name' => [
                 'field' => 'provider_name',
                 'label' => trans('provider_name'),
-                'rules' => '',
             ],
             'family_id' => [
                 'field' => 'family_id',
@@ -106,7 +102,6 @@ class Mdl_Products extends Response_Model
             'product_tariff' => [
                 'field' => 'product_tariff',
                 'label' => trans('product_tariff'),
-                'rules' => '',
             ],
         ];
     }

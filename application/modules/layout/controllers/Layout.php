@@ -21,10 +21,8 @@ class Layout extends MX_Controller
     /**
      * @return $this
      */
-    public function buffer()
+    public function buffer(...$args): static
     {
-        $args = func_get_args();
-
         if (count($args) == 1) {
             foreach ($args[0] as $arg) {
                 $key  = $arg[0];
@@ -47,10 +45,8 @@ class Layout extends MX_Controller
     /**
      * @return $this
      */
-    public function set()
+    public function set(...$args): static
     {
-        $args = func_get_args();
-
         if (count($args) == 1) {
             foreach ($args[0] as $key => $value) {
                 $this->view_data[$key] = $value;
@@ -62,7 +58,7 @@ class Layout extends MX_Controller
         return $this;
     }
 
-    public function render($view = 'layout')
+    public function render(string $view = 'layout')
     {
         $this->load->view('layout/' . $view, $this->view_data);
     }

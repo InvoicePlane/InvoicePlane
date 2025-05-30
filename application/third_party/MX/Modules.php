@@ -18,7 +18,7 @@ if ( ! is_array(Modules::$locations = $CFG->item('modules_locations'))) {
 // PHP5 spl_autoload
 spl_autoload_register('Modules::autoload');
 
-function myEach($arr)
+function myEach($arr): array|false
 {
     $key    = key($arr);
     $result = ($key === null) ? false : [$key, current($arr), 'key' => $key, 'value' => current($arr)];
@@ -134,7 +134,7 @@ class Modules
     }
 
     /** Load a module file **/
-    public static function load_file($file, $path, $type = 'other', $result = true)
+    public static function load_file($file, string $path, $type = 'other', $result = true)
     {
         $file     = str_replace(EXT, '', $file);
         $location = $path . $file . EXT;
@@ -164,7 +164,7 @@ class Modules
     }
 
     /** Library base class autoload **/
-    public static function autoload($class)
+    public static function autoload(string $class)
     {
         // don't autoload CI_ prefixed classes or those using the config subclass_prefix
         if (mb_strstr($class, 'CI_') || mb_strstr($class, config_item('subclass_prefix'))) {
@@ -198,7 +198,7 @@ class Modules
     }
 
     /** Parse module routes **/
-    public static function parse_routes($module, $uri)
+    public static function parse_routes(string $module, $uri)
     {
         // load the route file
         if ( ! isset(self::$routes[$module]) && list($path) = self::find('routes', $module, 'config/')) {
@@ -228,8 +228,10 @@ class Modules
      * Scans for files located within modules directories.
      * Also scans application directories for models, plugins and views.
      * Generates fatal error if file not found.
+     *
+     * @return mixed[]
      **/
-    public static function find($file, $module, $base)
+    public static function find($file, $module, string $base): array
     {
         $segments = explode('/', $file);
 

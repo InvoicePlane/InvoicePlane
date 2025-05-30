@@ -15,10 +15,8 @@ if ( ! defined('BASEPATH')) {
 
 /**
  * Check if mail sending is configured in the settings.
- *
- * @return bool
  */
-function mailer_configured()
+function mailer_configured(): bool
 {
     $CI = &get_instance();
 
@@ -40,9 +38,9 @@ function mailer_configured()
  * @return bool
  */
 function email_invoice(
-    $invoice_id,
+    string $invoice_id,
     $invoice_template,
-    $from,
+    array $from,
     $to,
     $subject,
     $body,
@@ -118,9 +116,9 @@ function email_invoice(
  * @return bool
  */
 function email_quote(
-    $quote_id,
+    string $quote_id,
     $quote_template,
-    $from,
+    array $from,
     $to,
     $subject,
     $body,
@@ -179,7 +177,7 @@ function email_quote(
  *
  * @return bool if the email was sent
  */
-function email_quote_status($quote_id, $status)
+function email_quote_status(string $quote_id, $status)
 {
     ini_set('display_errors', 'on');
     error_reporting(E_ALL);
@@ -217,7 +215,7 @@ function email_quote_status($quote_id, $status)
  * @param []  $errors
  * @param string $redirect
  */
-function check_mail_errors($errors = [], $redirect = '')
+function check_mail_errors(array $errors = [], $redirect = ''): void
 {
     if ($errors) {
         $CI = & get_instance();

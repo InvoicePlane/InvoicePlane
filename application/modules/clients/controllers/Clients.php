@@ -35,12 +35,11 @@ class Clients extends Admin_Controller
     }
 
     /**
-     * @param string $status
-     * @param int    $page
+     * @param int $page
      */
-    public function status($status = 'active', $page = 0): void
+    public function status(string $status = 'active', $page = 0): void
     {
-        if (is_numeric(array_search($status, ['active', 'inactive']))) {
+        if (is_numeric(array_search($status, ['active', 'inactive'], true))) {
             $function = 'is_' . $status;
             $this->mdl_clients->{$function}();
         }

@@ -3,8 +3,8 @@
         var $invoice_id = $('#invoice_id');
         $invoice_id.focus();
 
-        amounts = JSON.parse('<?php echo $amounts; ?>');
-        invoice_payment_methods = JSON.parse('<?php echo $invoice_payment_methods; ?>');
+        amounts = json_parse('<?php echo $amounts; ?>', <?php echo (int) IP_DEBUG; ?>);
+        invoice_payment_methods = json_parse('<?php echo $invoice_payment_methods; ?>', <?php echo (int) IP_DEBUG; ?>);
         $invoice_id.change(function () {
             var invoice_identifier = "invoice" + $('#invoice_id').val();
             $('#payment_amount').val(amounts[invoice_identifier].replace("&nbsp;", " "));

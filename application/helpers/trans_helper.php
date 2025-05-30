@@ -22,7 +22,7 @@ if ( ! defined('BASEPATH')) {
  *
  * @return string
  */
-function trans($line, $id = '', $default = null)
+function trans($line, ?string $id = '', $default = null)
 {
     $CI          = & get_instance();
     $lang_string = $CI->lang->line($line);
@@ -63,7 +63,7 @@ function trans($line, $id = '', $default = null)
  *
  * @param string $language
  */
-function set_language($language)
+function set_language($language): void
 {
     // Clear the current loaded language
     $CI                  = & get_instance();

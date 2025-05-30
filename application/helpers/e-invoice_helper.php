@@ -14,15 +14,12 @@ if ( ! defined('BASEPATH')) {
  *
  * eInvoicing based on Verony Idea - since 1.6.3
  */
-
 /**
  * Returns path of invoice xml generated file.
  *
  * @scope  helpers/pdf_helper.php (2)
- *
- * @return string
  */
-function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename, $options)
+function generate_xml_invoice_file($invoice, $items, string $xml_lib, string $filename, $options): string
 {
     $CI = &get_instance();
 
@@ -37,7 +34,7 @@ function generate_xml_invoice_file($invoice, $items, $xml_lib, $filename, $optio
     return UPLOADS_TEMP_FOLDER . $filename . '.xml';
 }
 
-function include_rdf($embedXml, $urn = 'factur-x')
+function include_rdf(string $embedXml, string $urn = 'factur-x'): string
 {
     return '<rdf:Description rdf:about="" xmlns:zf="urn:' . $urn . ':pdfa:CrossIndustryDocument:invoice:1p0#">' . "\n"
          . '  <zf:DocumentType>INVOICE</zf:DocumentType>' . "\n"
@@ -51,10 +48,8 @@ function include_rdf($embedXml, $urn = 'factur-x')
  * Returns all available xml-template items.
  *
  * @scope  modules/clients/controllers/Clients.php
- *
- * @return array
  */
-function get_xml_template_files()
+function get_xml_template_files(): array
 {
     $xml_template_items = [];
     $path               = APPPATH . 'helpers/XMLconfigs/';
@@ -92,7 +87,7 @@ function get_xml_template_files()
  *
  * @return mixed
  */
-function get_xml_full_name($xml_id)
+function get_xml_full_name(string $xml_id)
 {
     if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
@@ -221,7 +216,7 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
  * @param object $invoice | $quote
  * @param object $items
  */
-function get_einvoice_usage($invoice, $items, $full = true): object
+function get_einvoice_usage($invoice, array $items, $full = true): object
 {
     $einvoice       = new stdclass();
     $einvoice->name = false;

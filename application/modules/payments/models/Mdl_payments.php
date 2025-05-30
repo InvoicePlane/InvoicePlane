@@ -200,10 +200,7 @@ class Mdl_Payments extends Response_Model
         delete_orphans();
     }
 
-    /**
-     * @return bool
-     */
-    public function prep_form($id = null)
+    public function prep_form($id = null): bool
     {
         if ( ! parent::prep_form($id)) {
             return false;

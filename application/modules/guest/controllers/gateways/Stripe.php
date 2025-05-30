@@ -77,11 +77,10 @@ class Stripe extends Base_Controller
      * card transaction has been completed or aborted
      * Handle exceptions Improved by @Matthias-Ab.
      *
-     * @param string $checkout_session_id
      *
      * @return void
      */
-    public function callback($checkout_session_id)
+    public function callback(string $checkout_session_id)
     {
         try {
             // Retrieve the Checkout Session from Stripe

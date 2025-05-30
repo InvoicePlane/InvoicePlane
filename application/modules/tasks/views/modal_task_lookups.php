@@ -38,9 +38,7 @@
             $.post("<?php echo site_url('tasks/ajax/process_task_selections'); ?>", {
                 task_ids: task_ids
             }, function (data) {
-                <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
-                var items = JSON.parse(data);
-
+                var items = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                 for (var key in items) {
                     // Set default tax rate id if empty
                     if (!items[key].tax_rate_id) items[key].tax_rate_id = '<?php echo $default_item_tax_rate; ?>';

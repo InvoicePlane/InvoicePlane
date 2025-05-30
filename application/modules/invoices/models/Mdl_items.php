@@ -121,10 +121,8 @@ class Mdl_Items extends Response_Model
 
     /**
      * @param int $item_id
-     *
-     * @return bool
      */
-    public function delete($item_id)
+    public function delete($item_id): bool
     {
         // Get item:
         // the invoice id is needed to recalculate invoice amounts

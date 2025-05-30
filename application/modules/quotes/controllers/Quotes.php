@@ -33,10 +33,9 @@ class Quotes extends Admin_Controller
     }
 
     /**
-     * @param string $status
-     * @param int    $page
+     * @param int $page
      */
-    public function status($status = 'all', $page = 0)
+    public function status(string $status = 'all', $page = 0)
     {
         // Determine which group of quotes to load
         switch ($status) {
@@ -215,7 +214,7 @@ class Quotes extends Admin_Controller
      * @param $quote_id
      * @param $quote_tax_rate_id
      */
-    public function delete_quote_tax($quote_id, $quote_tax_rate_id)
+    public function delete_quote_tax(string $quote_id, $quote_tax_rate_id)
     {
         $this->load->model('quotes/mdl_quote_tax_rates');
         $this->mdl_quote_tax_rates->delete($quote_tax_rate_id);

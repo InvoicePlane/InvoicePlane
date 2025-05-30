@@ -173,7 +173,7 @@ class Settings extends Admin_Controller
     /**
      * @param $type
      */
-    public function remove_logo($type)
+    public function remove_logo(string $type)
     {
         unlink('./uploads/' . get_setting($type . '_logo'));
 

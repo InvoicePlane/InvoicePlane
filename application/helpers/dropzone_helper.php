@@ -17,10 +17,8 @@ if ( ! defined('BASEPATH')) {
  * Show html for dropzone (upload module).
  *
  * @param $read_only : Like $invoice->is_read_only
- *
- * @return void
  * */
-function _dropzone_html($read_only = true)
+function _dropzone_html($read_only = true): void
 {
 ?>
 <div class="panel panel-default no-margin">
@@ -118,7 +116,7 @@ function _dropzone_html($read_only = true)
  * @param arr $acceptedExts
  * @return void
  * */
-function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acceptedExts = null)
+function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acceptedExts = null): void
 {
     $site_url = site_url(empty($site_url) ? 'upload/' : (mb_rtrim($site_url, '/') . '/'));
 

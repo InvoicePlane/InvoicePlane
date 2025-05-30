@@ -463,7 +463,7 @@ class MY_Model extends CI_Model
         $native_methods = $this->native_methods;
 
         foreach ($exclude as $unset_method) {
-            unset($native_methods[array_search($unset_method, $native_methods)]);
+            unset($native_methods[array_search($unset_method, $native_methods, true)]);
         }
 
         foreach ($native_methods as $native_method) {

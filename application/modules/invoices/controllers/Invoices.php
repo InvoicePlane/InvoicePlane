@@ -33,10 +33,9 @@ class Invoices extends Admin_Controller
     }
 
     /**
-     * @param string $status
-     * @param int    $page
+     * @param int $page
      */
-    public function status($status = 'all', $page = 0): void
+    public function status(string $status = 'all', $page = 0): void
     {
         // Determine which group of invoices to load
         switch ($status) {
@@ -322,7 +321,7 @@ class Invoices extends Admin_Controller
         $this->output->set_output($this->sumex->pdf());
     }
 
-    public function delete_invoice_tax($invoice_id, $invoice_tax_rate_id): void
+    public function delete_invoice_tax(string $invoice_id, $invoice_tax_rate_id): void
     {
         $this->load->model('invoices/mdl_invoice_tax_rates');
         $this->mdl_invoice_tax_rates->delete($invoice_tax_rate_id);

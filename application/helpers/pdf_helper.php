@@ -23,10 +23,8 @@ if ( ! defined('BASEPATH')) {
  * @param string $is                  'invoice' or 'quote'
  *
  * @scope views/[invoice|quote]_templates/pdf/InvoicePlane[| - paid| - overdue].pdf
- *
- * @return void
  */
-function discount_global_print_in_pdf($obj, $show_item_discounts, $is = 'invoice')
+function discount_global_print_in_pdf($obj, $show_item_discounts, string $is = 'invoice'): void
 {
     $type     = ['p' => $is . '_discount_percent', 'a' => $is . '_discount_amount'];
     $discount = 0;

@@ -26,7 +26,7 @@ class ClientTitleEnum
 
     public static function tryFrom($value)
     {
-        if (false !== $searchResult = array_search($value, self::VALUES)) {
+        if (false !== $searchResult = array_search($value, self::VALUES, true)) {
             $returnObject        = new StdClass();
             $returnObject->value = $searchResult;
 
@@ -34,7 +34,10 @@ class ClientTitleEnum
         }
     }
 
-    public static function cases()
+    /**
+     * @return list<\StdClass>
+     */
+    public static function cases(): array
     {
         $values   = self::VALUES;
         $values[] = self::CUSTOM;

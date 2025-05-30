@@ -39,11 +39,11 @@ class Cryptor
 
     public const FORMAT_HEX = 2;
 
-    private $cipher_algo;
+    private string $cipher_algo;
 
-    private $hash_algo;
+    private string $hash_algo;
 
-    private $iv_num_bytes;
+    private int|bool $iv_num_bytes;
 
     private $format;
 
@@ -54,7 +54,7 @@ class Cryptor
      * @param string $hash_algo   key hashing algorithm
      * @param [type] $fmt         Format of the encrypted data
      */
-    public function __construct($cipher_algo = 'aes-256-ctr', $hash_algo = 'sha256', $fmt = self::FORMAT_B64)
+    public function __construct(string $cipher_algo = 'aes-256-ctr', string $hash_algo = 'sha256', $fmt = self::FORMAT_B64)
     {
         $this->cipher_algo = $cipher_algo;
         $this->hash_algo   = $hash_algo;
@@ -80,7 +80,7 @@ class Cryptor
      *
      * @return string the encrypted string
      */
-    public static function Encrypt($in, $key, $fmt = null)
+    public static function Encrypt($in, $key, $fmt = null): string
     {
         $c = new self();
 
@@ -96,7 +96,7 @@ class Cryptor
      *
      * @return string the decrypted string
      */
-    public static function Decrypt($in, $key, $fmt = null)
+    public static function Decrypt($in, $key, $fmt = null): string
     {
         $c = new self();
 
@@ -157,7 +157,7 @@ class Cryptor
      *
      * @return string the decrypted string
      */
-    public function decryptString($in, $key, $fmt = null)
+    public function decryptString($in, $key, $fmt = null): string
     {
         if ($fmt === null) {
             $fmt = $this->format;

@@ -17,10 +17,8 @@ if ( ! defined('BASEPATH')) {
  * Available date formats
  * The setting value represents the PHP date() formatting, the datepicker value represents the
  * DatePicker formatting (see http://bootstrap-datepicker.readthedocs.io/en/stable/options.html#format).
- *
- * @return array
  */
-function date_formats()
+function date_formats(): array
 {
     return [
         'd/m/Y' => [
@@ -103,10 +101,8 @@ function date_from_mysql($date, $ignore_post_check = false)
 
 /**
  * @param $timestamp
- *
- * @return string
  */
-function date_from_timestamp($timestamp)
+function date_from_timestamp($timestamp): string
 {
     $CI = &get_instance();
 
@@ -131,10 +127,8 @@ function date_to_mysql($date)
 
 /**
  * @param $date
- *
- * @return bool
  */
-function is_date($date)
+function is_date($date): bool
 {
     $CI     = &get_instance();
     $format = $CI->mdl_settings->setting('date_format');
@@ -177,10 +171,8 @@ function date_format_datepicker()
  *
  * @param $date      - user formatted date
  * @param $increment - interval (1D, 2M, 1Y, etc)
- *
- * @return string
  */
-function increment_user_date($date, $increment)
+function increment_user_date($date, string $increment): string
 {
     if ( ! $d = date_to_mysql($date)) {
         return '';
@@ -198,10 +190,8 @@ function increment_user_date($date, $increment)
  *
  * @param $date
  * @param $increment
- *
- * @return string
  */
-function increment_date($date, $increment)
+function increment_date($date, string $increment): string
 {
     if ($date == null) {
         return '';

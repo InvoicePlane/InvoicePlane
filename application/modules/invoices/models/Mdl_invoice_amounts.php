@@ -16,6 +16,9 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Invoice_Amounts extends CI_Model
 {
+    /**
+     * @var int
+     */
     public $decimal_places = 2;
 
     public function __construct()

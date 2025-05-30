@@ -20,7 +20,7 @@ class PaypalLib
 
     protected string $bearer_token;
 
-    public function __construct($params)
+    public function __construct(array $params)
     {
         $params['demo'] && $this->endpoint = 'https://api-m.sandbox.paypal.com';
         $this->client_id                   = $params['client_id'];
@@ -42,11 +42,9 @@ class PaypalLib
      *
      * @see https://developer.paypal.com/docs/api/orders/v2/#orders_create
      *
-     * @param array $order_information
-     *
      * @return string
      */
-    public function createOrder($order_information): string|array
+    public function createOrder(array $order_information): string|array
     {
         log_message('debug', 'Paypal library order creation started');
         try {
@@ -81,10 +79,8 @@ class PaypalLib
      * Capture the payment of the order.
      *
      * @see https://developer.paypal.com/docs/api/orders/v2/#orders_capture
-     *
-     * @param string $order_id
      */
-    public function captureOrder($order_id): array
+    public function captureOrder(string $order_id): array
     {
         log_message('debug', 'Paypal library order capturing started');
         try {
@@ -108,10 +104,8 @@ class PaypalLib
      * Get the details of a paypal order by order id.
      *
      * @see https://developer.paypal.com/docs/api/orders/v2/#orders_get
-     *
-     * @param string $order_id
      */
-    public function showOrderDetails($order_id)
+    public function showOrderDetails(string $order_id): array
     {
         log_message('debug', 'Paypal library show order started');
         try {

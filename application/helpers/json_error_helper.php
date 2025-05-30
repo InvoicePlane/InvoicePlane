@@ -15,10 +15,8 @@ if ( ! defined('BASEPATH')) {
 
 /**
  * Returns all errors prepared for JSON.
- *
- * @return array
  */
-function json_errors()
+function json_errors(): array
 {
     // Think of a better name for this function. It doesn't return
     // json itself but is called from something which will.

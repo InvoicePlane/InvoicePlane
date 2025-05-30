@@ -234,10 +234,8 @@ class Mdl_Custom_Fields extends MY_Model
 
     /**
      * @param $id
-     *
-     * @return bool
      */
-    public function delete($id)
+    public function delete($id): bool
     {
         if ( ! $this->used($id)) {
             $custom_field = $this->get_by_id($id);

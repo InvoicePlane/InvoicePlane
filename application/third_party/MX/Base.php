@@ -46,6 +46,9 @@ require_once dirname(__FILE__) . '/Config.php';
 #[AllowDynamicProperties]
 class CI extends CI_Controller
 {
+    /**
+     * @var $this
+     */
     public static $APP;
 
     public function __construct()
