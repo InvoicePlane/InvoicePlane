@@ -44,7 +44,7 @@ class MX_Router extends CI_Router
 {
     public $module;
 
-    private $located = 0;
+    private int $located = 0;
 
     public function fetch_module()
     {

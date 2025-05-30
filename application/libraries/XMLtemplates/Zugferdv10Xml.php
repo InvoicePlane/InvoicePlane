@@ -28,7 +28,7 @@ class Zugferdv10Xml
 
     public $root;
 
-    public function __construct($params)
+    public function __construct(array $params)
     {
         $CI                 = &get_instance();
         $this->invoice      = $params['invoice'];
@@ -52,7 +52,10 @@ class Zugferdv10Xml
         // return $this->doc->saveXML();
     }
 
-    public function itemsSubtotalGroupedByTaxPercent()
+    /**
+     * @return float[]|int[]
+     */
+    public function itemsSubtotalGroupedByTaxPercent(): array
     {
         $result = [];
         foreach ($this->items as $item) {
@@ -88,7 +91,7 @@ class Zugferdv10Xml
         return '';
     }
 
-    public function formattedFloat($amount, $nb_decimals = 2)
+    public function formattedFloat($amount, $nb_decimals = 2): string
     {
         return number_format((float) $amount, $nb_decimals, '.', '');
     }

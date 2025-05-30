@@ -15,10 +15,8 @@ if ( ! defined('BASEPATH')) {
 
 /**
  * Returns the invoice image.
- *
- * @return string
  */
-function invoice_logo()
+function invoice_logo(): string
 {
     $CI = &get_instance();
 
@@ -31,10 +29,8 @@ function invoice_logo()
 
 /**
  * Returns the invoice logo for PDF files.
- *
- * @return string
  */
-function invoice_logo_pdf()
+function invoice_logo_pdf(): string
 {
     $CI = &get_instance();
 
@@ -51,15 +47,12 @@ function invoice_logo_pdf()
  * Returns a Swiss IS / IS+ code line
  * Documentation: https://www.postfinance.ch/binp/postfinance/public/dam.M26m_i6_6ceYcN2XtAN4w8OHMynQG7FKxJVK8TtQzr0.spool/content/dam/pf/de/doc/consult/manual/dlserv/inpayslip_isr_man_en.pdf.
  *
- * @param string $slipType
  * @param        $amount
  * @param string $rnumb
  *
- * @return string
- *
  * @throws Error
  */
-function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
+function invoice_genCodeline(string $slipType, $amount, $rnumb, $subNumb): string
 {
     $isEur = false;
 
@@ -97,10 +90,8 @@ function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
  * Page 5.
  *
  * @param string $in
- *
- * @return int
  */
-function invoice_recMod10($in)
+function invoice_recMod10($in): int
 {
     $line  = [0, 9, 4, 6, 8, 2, 7, 1, 3, 5];
     $carry = 0;
@@ -117,10 +108,8 @@ function invoice_recMod10($in)
  * Returns a QR code for invoice payments.
  *
  * @param number invoice-id
- *
- * @return string
  */
-function invoice_qrcode($invoice_id)
+function invoice_qrcode($invoice_id): string
 {
     $CI = &get_instance();
 

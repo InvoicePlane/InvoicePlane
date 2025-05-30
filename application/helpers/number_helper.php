@@ -17,10 +17,8 @@ if ( ! defined('BASEPATH')) {
  * Return a formated amount as a currency based on the system settings, e.g. 1.234,56 €.
  *
  * @param $amount
- *
- * @return string
  */
-function format_currency($amount)
+function format_currency($amount): string
 {
     $CI                        = & get_instance();
     $currency_symbol           = $CI->mdl_settings->setting('currency_symbol');
@@ -83,10 +81,8 @@ function format_quantity($amount = null)
  * Return a standardized amount for database based on the system settings, e.g. 1234.56.
  *
  * @param $amount
- *
- * @return mixed
  */
-function standardize_amount($amount)
+function standardize_amount($amount): float|int|string|array|false|null
 {
     if ($amount && ! is_numeric($amount)) {
         $CI                  = & get_instance();

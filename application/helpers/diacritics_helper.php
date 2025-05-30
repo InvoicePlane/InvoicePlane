@@ -15,10 +15,8 @@ if ( ! defined('BASEPATH')) {
 
 /**
  * @param string $str
- *
- * @return bool
  */
-function diacritics_seems_utf8($str)
+function diacritics_seems_utf8($str): bool
 {
     $length = mb_strlen($str);
     for ($i = 0; $i < $length; $i++) {
@@ -198,10 +196,8 @@ function diacritics_remove_accents($string)
 
 /**
  * @param string $text
- *
- * @return string
  */
-function diacritics_remove_diacritics($text)
+function diacritics_remove_diacritics($text): string
 {
     $trans = [
         'À'  => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Ç' => 'C', 'È' => 'E',

@@ -130,10 +130,8 @@ class Mdl_Custom_Values extends MY_Model
 
     /**
      * @param $id
-     *
-     * @return bool
      */
-    public function delete($id)
+    public function delete($id): bool
     {
         if ( ! $this->used($id)) {
             parent::delete($id);

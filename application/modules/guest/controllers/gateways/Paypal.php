@@ -58,11 +58,10 @@ class Paypal extends Base_Controller
      * Capture the payment which is put on hold on PayPal
      * after the user has set the card details.
      *
-     * @param string $order_id
      *
      * @return void
      */
-    public function paypal_capture_payment($order_id)
+    public function paypal_capture_payment(string $order_id)
     {
         $paypal_response = $this->lib_paypal->captureOrder($order_id);
 

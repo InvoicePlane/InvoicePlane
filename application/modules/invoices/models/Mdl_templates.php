@@ -54,10 +54,8 @@ class Mdl_Templates extends CI_Model
 
     /**
      * @param $files
-     *
-     * @return mixed
      */
-    private function remove_extension($files)
+    private function remove_extension(array $files): array
     {
         foreach ($files as $key => $file) {
             $files[$key] = str_replace('.php', '', $file);

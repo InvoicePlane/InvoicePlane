@@ -21,7 +21,7 @@ if ( ! defined('BASEPATH')) {
  *
  * @return mixed
  */
-function get_country_list($cldr)
+function get_country_list(string $cldr)
 {
     if (file_exists(APPPATH . 'helpers/country-list/' . $cldr . '/country.php')) {
         return include APPPATH . 'helpers/country-list/' . $cldr . '/country.php';

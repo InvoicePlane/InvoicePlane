@@ -20,7 +20,7 @@ if ( ! defined('BASEPATH')) {
  *
  * @return string
  */
-function htmlsc($output)
+function htmlsc($output): ?string
 {
     if (null !== $output) {
         return htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
@@ -67,10 +67,8 @@ function _htmle($output)
  * @param string      $line
  * @param string      $id
  * @param null|string $default
- *
- * @return void
  */
-function _trans($line, $id = '', $default = null)
+function _trans($line, $id = '', $default = null): void
 {
     echo trans($line, $id, $default);
 }
@@ -81,20 +79,16 @@ function _trans($line, $id = '', $default = null)
  * @param        $str
  * @param string $type
  * @param bool   $popup
- *
- * @return void
  */
-function _auto_link($str, $type = 'both', $popup = false)
+function _auto_link($str, $type = 'both', $popup = false): void
 {
     echo auto_link(htmlsc($str), $type, $popup);
 }
 
 /**
  * Output the standard CSRF protection field.
- *
- * @return void
  */
-function _csrf_field()
+function _csrf_field(): void
 {
     $CI = & get_instance();
     echo '<input type="hidden" name="' . $CI->config->item('csrf_token_name');
@@ -106,10 +100,8 @@ function _csrf_field()
  * Also appends the current version to the asset to prevent browser caching issues.
  *
  * @param string $asset
- *
- * @return void
  */
-function _theme_asset($asset)
+function _theme_asset($asset): void
 {
     $asset = IP_DEBUG ? strtr($asset, ['.min.' => '.']) : $asset;
     echo base_url() . 'assets/' . get_setting('system_theme', 'invoiceplane');
@@ -121,10 +113,8 @@ function _theme_asset($asset)
  * Also appends the current version to the asset to prevent browser caching issues.
  *
  * @param string $asset
- *
- * @return void
  */
-function _core_asset($asset)
+function _core_asset($asset): void
 {
     $asset = IP_DEBUG ? strtr($asset, ['.min.' => '.']) : $asset;
     echo base_url() . 'assets/core/' . $asset . '?v=' . get_setting('current_version');

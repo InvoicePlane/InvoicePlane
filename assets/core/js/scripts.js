@@ -1,5 +1,28 @@
 "use strict";
 
+// Check JSON validity. No, show error in console and alert.
+function json_parse(data, debug) {
+    if (typeof(debug) != 'undefined' && debug) {
+        console.trace(data);
+    }
+    let response = data.search(/\{"success"\:/) > -1 ? {"success":0, "validation_errors":0} : {};
+    try {
+        response = JSON.parse(data);
+    } catch (e) {
+        var plus = '<h3>⚠ Parse JSON error! <a href="#js-error" data-toggle="collapse" class="btn btn-default">🛈</a></h3><div class="collapse" id="js-error">' + data + '</div>';
+        setTimeout(function() {
+            if($('#content .alert-danger').length) {
+                $('#content .alert-danger').prepend(plus);
+            } else {
+                $('#content').prepend('<div class="alert alert-danger">' + plus + '</div>');
+            }
+        }, 100);
+        console.error('Invalid JSON returned from server! data:', data);
+    } finally {
+        return response;
+    }
+}
+
 // Insert text into textarea at Caret Position
 function insert_at_caret(areaId, text) {
     var txtarea = document.getElementById(areaId),

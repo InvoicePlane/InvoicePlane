@@ -16,7 +16,7 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mailer extends Admin_Controller
 {
-    private $mailer_configured;
+    private bool $mailer_configured;
 
     /**
      * Mailer constructor.
@@ -137,7 +137,7 @@ class Mailer extends Admin_Controller
     /**
      * @param $invoice_id
      */
-    public function send_invoice($invoice_id)
+    public function send_invoice(string $invoice_id)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('invoices/view/' . $invoice_id);
@@ -182,7 +182,7 @@ class Mailer extends Admin_Controller
     /**
      * @param $quote_id
      */
-    public function send_quote($quote_id)
+    public function send_quote(string $quote_id)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('quotes/view/' . $quote_id);

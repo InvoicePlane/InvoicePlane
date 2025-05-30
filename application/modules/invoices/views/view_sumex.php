@@ -97,12 +97,10 @@ if ( ! $items) {
                     payment_method: $('#payment_method').val()
                 },
                 function (data) {
-                    <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
-                    var response = JSON.parse(data);
+                    var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
-                    }
-                    else {
+                    } else {
                         $('#fullpage-loader').hide();
                         $('.control-group').removeClass('has-error');
                         $('div.alert[class*="alert-"]').remove();
@@ -138,9 +136,7 @@ if ( ! $items) {
                         'item_id': item_id,
                     },
                     function (data) {
-                        <?php echo (IP_DEBUG ? 'console.log(data);' : '') . PHP_EOL; ?>
-                        var response = JSON.parse(data);
-
+                        var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                         if (response.success === 1) {
                             btn.parents('.item').remove();
                         } else {

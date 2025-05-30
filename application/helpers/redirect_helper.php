@@ -39,7 +39,7 @@ function redirect_to($fallback_url_string, $redirect = true)
 /**
  * Sets the current URL in the session.
  */
-function redirect_to_set()
+function redirect_to_set(): void
 {
     $CI = & get_instance();
     $CI->session->set_userdata('redirect_to', $CI->uri->uri_string());

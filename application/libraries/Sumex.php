@@ -87,16 +87,28 @@ class Sumex
 
     public $_storno = '0';
 
+    /**
+     * @var 'physician'|'physiotherapist'|'chiropractor'|'ergotherapist'|'nutritionist'|'midwife'|'logotherapist'|'hospital'|'pharmacist'|'dentist'|'labtechnician'|'dentaltechnician'|'othertechnician'|'psychologist'|'wholesaler'|'nursingstaff'|'transport'|'druggist'|'naturopathicdoctor'|'naturopathictherapist'|'other'
+     */
     public $_role = 'physiotherapist';
 
+    /**
+     * @var 'practice'|'hospital'|'lab'|'association'|'company'
+     */
     public $_place = 'practice';
 
     public $_currency = 'CHF';
 
     public $_paymentperiod = 'P30D';
 
+    /**
+     * @var 'AG'|'AI'|'AR'|'BE'|'BL'|'BS'|'FR'|'GE'|'GL'|'GR'|'JU'|'LU'|'NE'|'NW'|'OW'|'SG'|'SH'|'SO'|'SZ'|'TI'|'TG'|'UR'|'VD'|'VS'|'ZG'|'ZH'|'LI'|'A'|'D'|'F'|'I'
+     */
     public $_canton = 'TI';
 
+    /**
+     * @var '9'|'red'
+     */
     public $_esrType = '9';
 
     public $_patient = [
@@ -117,6 +129,9 @@ class Sumex
 
     public $_insuredid = '1234567';
 
+    /**
+     * @var array{start: mixed, end: mixed, reason: ('accident' | 'birthdefect' | 'disease' | 'maternity' | 'prevention' | 'unknown'), diagnosis: mixed, observations: mixed}
+     */
     public $_treatment = [
         'start'     => '',
         'end'       => '',
@@ -142,12 +157,15 @@ class Sumex
         'city'   => 'Lugano',
     ];
 
+    /**
+     * @var mixed[]
+     */
     public $_options = [
         'copy'   => '0',
         'storno' => '0',
     ];
 
-    public function __construct($params)
+    public function __construct(array $params)
     {
         $CI = &get_instance();
 
@@ -212,7 +230,7 @@ class Sumex
         $this->_canton      = self::CANTONS[$CI->mdl_settings->setting('sumex_canton')];
     }
 
-    public function pdf($invoice_template = null)
+    public function pdf($invoice_template = null): bool|string
     {
         $xml = $this->xml();
         // Make PDF with Sumex (embed)
@@ -317,7 +335,7 @@ class Sumex
         return file_get_contents($retval);
     }
 
-    public function xml()
+    public function xml(): string|false
     {
         $this->doc               = new DOMDocument('1.0', 'UTF-8');
         $this->doc->formatOutput = true;

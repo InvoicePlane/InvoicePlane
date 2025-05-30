@@ -18,10 +18,8 @@ if ( ! defined('BASEPATH')) {
  *
  * @param $base_url
  * @param $model
- *
- * @return string
  */
-function pager($base_url, $model)
+function pager(string $base_url, $model): string
 {
     $CI = &get_instance();
 

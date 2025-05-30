@@ -50,7 +50,7 @@ class Admin_Controller extends User_Controller
             $this->output->set_header('X-Frame-Options: ' . $xFrameOptions);
         }
 
-        if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', true) !== false) {
+        if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
             $this->output->set_header('X-Content-Type-Options: nosniff');
         }
     }

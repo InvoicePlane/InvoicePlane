@@ -272,12 +272,11 @@ class Setup extends MX_Controller
 
         $this->layout->buffer('content', 'setup/complete');
         $this->layout->render('setup');
+
+        $this->session->sess_destroy();
     }
 
-    /**
-     * @return array
-     */
-    private function check_basics()
+    private function check_basics(): array
     {
         $checks = [];
 
@@ -314,10 +313,7 @@ class Setup extends MX_Controller
         return $checks;
     }
 
-    /**
-     * @return array
-     */
-    private function check_writables()
+    private function check_writables(): array
     {
         $checks = [];
 
@@ -363,7 +359,7 @@ class Setup extends MX_Controller
     /**
      * @param int $port
      */
-    private function write_database_config($hostname, $username, $password, $database, $port = 3306)
+    private function write_database_config(string $hostname, string $username, string $password, string $database, $port = 3306)
     {
         $config = file_get_contents(IPCONFIG_FILE);
 
@@ -376,10 +372,7 @@ class Setup extends MX_Controller
         write_file(IPCONFIG_FILE, $config);
     }
 
-    /**
-     * @return array
-     */
-    private function check_database()
+    private function check_database(): array
     {
         // Reload the ipconfig.php file
         global $dotenv;

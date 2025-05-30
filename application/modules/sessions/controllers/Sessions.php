@@ -58,10 +58,8 @@ class Sessions extends Base_Controller
     /**
      * @param $email_address
      * @param $password
-     *
-     * @return bool
      */
-    public function authenticate($email_address, $password)
+    public function authenticate($email_address, $password): bool
     {
         $this->load->model('mdl_sessions');
         //check if user is banned

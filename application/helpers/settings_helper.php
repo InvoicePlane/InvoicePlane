@@ -59,10 +59,8 @@ function get_gateway_settings($gateway)
  * @param string|int|null $value2
  * @param string          $operator
  * @param bool            $checked
- *
- * @return void
  */
-function check_select($value1, $value2 = null, $operator = '==', $checked = false)
+function check_select($value1, $value2 = null, $operator = '==', $checked = false): void
 {
     $select = $checked ? 'checked="checked"' : 'selected="selected"';
 

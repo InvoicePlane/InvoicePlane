@@ -10,6 +10,9 @@ IP_URL=
 # Having problems? Enable debug by changing the value to 'true' to enable advanced logging
 ENABLE_DEBUG=false
 
+# To Show all PHP errors, change the value to 'development' (Or comment the following line)
+CI_ENV=production
+
 X_FRAME_OPTIONS=SAMEORIGIN
 ENABLE_X_CONTENT_TYPE_OPTIONS=true
 SESS_REGENERATE_DESTROY=false

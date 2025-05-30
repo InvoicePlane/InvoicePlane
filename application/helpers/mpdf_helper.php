@@ -19,7 +19,7 @@ if ( ! defined('BASEPATH')) {
  *
  * @param      $html
  * @param      $filename
- * @param bool $stream
+ * @param bool $stream           (show or download)
  * @param bool $embed_xml        (eInvoicing)
  * @param null $associated_files (eInvoicing)
  *
@@ -29,7 +29,7 @@ if ( ! defined('BASEPATH')) {
  */
 function pdf_create(
     $html,
-    $filename,
+    string $filename,
     bool $stream = true,
     $password = null,
     $isInvoice = null,
