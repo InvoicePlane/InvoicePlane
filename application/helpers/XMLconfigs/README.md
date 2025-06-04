@@ -66,6 +66,13 @@ _Optional_
 'options'     => ['Opt1' => 'param'], // Mixed (String|Array|Object) : If you need variables or specific codes transmit to generator (Optional)
 ```
 
+_Special_
+
+```
+'legacy_calculation' => true, // Bool   : Only if you need the Legacy Calculation (Optional)
+                              // Notes  : Need to Override the default lively set to false "when the client use eInvoice" (Scope: Invoice/Quote view & pdf generation)
+```
+
 <details>
 
 <summary>

@@ -3,7 +3,7 @@
 $its_mine = $this->session->__get('user_id') == $quote->user_id;
 $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
 // In change user toggle & After eInvoice (name) when user required field missing
-$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . htmlsc(PHP_EOL . format_user($quote->user_id));
+$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . PHP_EOL . htmlsc(format_user($quote->user_id));
 ?>
 
 <script>
@@ -65,6 +65,7 @@ if ($quote->quote_status_id == 1) {
                 items.push(row);
             });
             $.post("<?php echo site_url('quotes/ajax/save'); ?>", {
+                    legacy_calculation: <?php echo (int) $legacy_calculation; ?>,
                     quote_id: <?php echo $quote_id; ?>,
                     quote_number: $('#quote_number').val(),
                     quote_date_created: $('#quote_date_created').val(),
@@ -261,7 +262,8 @@ if ($legacy_calculation) {
                 </li>
                 <li>
                     <a href="#" id="btn_quote_to_invoice"
-                       data-quote-id="<?php echo $quote_id; ?>">
+                       data-quote-id="<?php echo $quote_id; ?>"
+                       data-legacy-calculation="<?php echo (int) $legacy_calculation; ?>">
                         <i class="fa fa-refresh fa-margin"></i>
                         <?php _trans('quote_to_invoice'); ?>
                     </a>
@@ -269,7 +271,8 @@ if ($legacy_calculation) {
                 <li>
                     <a href="#" id="btn_copy_quote"
                        data-quote-id="<?php echo $quote_id; ?>"
-                       data-client-id="<?php echo $quote->client_id; ?>">
+                       data-client-id="<?php echo $quote->client_id; ?>"
+                       data-legacy-calculation="<?php echo (int) $legacy_calculation; ?>">
                         <i class="fa fa-copy fa-margin"></i>
                         <?php _trans('copy_quote'); ?>
                     </a>
