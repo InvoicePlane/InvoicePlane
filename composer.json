@@ -38,12 +38,15 @@
             "pint"
         ],
         "rector": [
+            "Composer\\Config::disableProcessTimeout",
             "vendor/bin/rector process"
         ],
         "phpcs": [
+            "Composer\\Config::disableProcessTimeout",
             "vendor/bin/phpcbf -p --standard=phpcs.xml"
         ],
         "pint": [
+            "Composer\\Config::disableProcessTimeout",
             "vendor/bin/pint"
         ]
     }
