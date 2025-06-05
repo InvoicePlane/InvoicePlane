@@ -73,6 +73,7 @@ class Cron extends Base_Controller
             // Create the new invoice
             $db_array = [
                 'client_id'                => $invoice->client_id,
+                'payment_method'           => $invoice->payment_method,
                 'invoice_date_created'     => $invoice_recurring->recur_next_date,
                 'invoice_date_due'         => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date),
                 'invoice_group_id'         => $invoice->invoice_group_id,
