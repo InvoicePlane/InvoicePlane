@@ -289,8 +289,7 @@ if ($legacy_calculation && $invoice->is_read_only != 1) { // Legacy calculation 
 ?>
                 <li>
                     <a href="#" id="btn_create_credit"
-                       data-invoice-id="<?php echo $invoice_id; ?>"
-                       data-legacy-calculation="<?php echo (int) $legacy_calculation; ?>">
+                       data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
                     </a>
                 </li>
@@ -348,8 +347,7 @@ if ($einvoice->user) {
                 <li>
                     <a href="#" id="btn_copy_invoice"
                        data-invoice-id="<?php echo $invoice_id; ?>"
-                       data-client-id="<?php echo $invoice->client_id; ?>"
-                       data-legacy-calculation="<?php echo (int) $legacy_calculation; ?>">
+                       data-client-id="<?php echo $invoice->client_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
                         <?php _trans('copy_invoice'); ?>
                     </a>

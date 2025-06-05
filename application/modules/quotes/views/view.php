@@ -262,8 +262,7 @@ if ($legacy_calculation) {
                 </li>
                 <li>
                     <a href="#" id="btn_quote_to_invoice"
-                       data-quote-id="<?php echo $quote_id; ?>"
-                       data-legacy-calculation="<?php echo (int) $legacy_calculation; ?>">
+                       data-quote-id="<?php echo $quote_id; ?>">
                         <i class="fa fa-refresh fa-margin"></i>
                         <?php _trans('quote_to_invoice'); ?>
                     </a>
@@ -271,8 +270,7 @@ if ($legacy_calculation) {
                 <li>
                     <a href="#" id="btn_copy_quote"
                        data-quote-id="<?php echo $quote_id; ?>"
-                       data-client-id="<?php echo $quote->client_id; ?>"
-                       data-legacy-calculation="<?php echo (int) $legacy_calculation; ?>">
+                       data-client-id="<?php echo $quote->client_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
                         <?php _trans('copy_quote'); ?>
                     </a>
