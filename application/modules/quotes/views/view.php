@@ -339,7 +339,7 @@ if ($quote->quote_status_id == 1) {
 
                 <div class="col-xs-12 visible-xs"><br></div>
 
-                <div class="col-xs-12 col-sm-6 col-md-7">
+                <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-1">
                     <div class="details-box">
                         <div class="row">
 
