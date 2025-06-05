@@ -118,7 +118,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $associatedFiles = null;
     if (get_setting('einvoicing')) {
         $CI->load->helper('e-invoice');
-        // Get eInvoice name (version) and user checks
+        // Get eInvoice name (version), user checks & shift legacy_calculation mode
         $einvoice = get_einvoice_usage($invoice, $items, false);
         // Set eInvoice config (false if Client & User not Ok)
         $xml_id  = $einvoice->user ? $einvoice->name : false;
@@ -131,8 +131,6 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
             $XMLname   = $xml_setting['XMLname'];
             $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
             $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
-            // Shift calculation mode (false by default). Need true? See Dev Note on ipconfig example
-            $CI->config->set_item('legacy_calculation', ! empty($xml_setting['legacy_calculation']));
         }
 
         if ($xml_id && $embed_xml) {
@@ -307,18 +305,11 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         'user'   => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
     ];
 
-    // einvoice calculation mode
+    // Automatic calculation mode
     if (get_setting('einvoicing')) {
         $CI->load->helper('e-invoice');
-        // Get eInvoice name (version) and user checks
-        $einvoice = get_einvoice_usage($quote, $items, false);
-        // Set eInvoice config (false if Client & User not Ok)
-        $xml_id = $einvoice->user ? $einvoice->name : false;
-        $path   = APPPATH . 'helpers/XMLconfigs/';
-        if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
-            // Shift calculation mode (false by default). Need true? See Dev Note on ipconfig example
-            $CI->config->set_item('legacy_calculation', ! empty($xml_setting['legacy_calculation']));
-        }
+        // Only for shift the legacy_calculation mode
+        get_einvoice_usage($quote, $items, false);
     }
 
     $data = [

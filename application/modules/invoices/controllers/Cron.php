@@ -28,9 +28,11 @@ class Cron extends Base_Controller
             exit('Wrong cron key!');
         }
 
-        $this->load->model('invoices/mdl_invoices_recurring');
-        $this->load->model('invoices/mdl_invoices');
-        $this->load->model('invoices/mdl_invoice_amounts');
+        $this->load->model([
+            'invoices/mdl_invoices_recurring',
+            'invoices/mdl_invoices',
+            'invoices/mdl_invoice_amounts',
+        ]);
         $this->load->helper('mailer');
 
         // Gather a list of recurring invoices to generate
@@ -60,6 +62,13 @@ class Cron extends Base_Controller
 
             // This is the original invoice
             $invoice = $this->mdl_invoices->get_by_id($source_id);
+
+            // Automatic calculation mode
+            if (get_setting('einvoicing')) {
+                $this->load->helper('e-invoice');
+                // Only for shift legacy_calculation mode
+                get_einvoice_usage($invoice, [], false);
+            }
 
             // Create the new invoice
             $db_array = [
