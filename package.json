@@ -34,8 +34,8 @@
         "jquery-ui": "1.14",
         "js-cookie": "2.2",
         "load-grunt-tasks": "5.1",
-        "node-sass": "9.0",
         "postcss": "8.4",
+        "sass": "^1.89.2",
         "select2": "4.1.0-rc.0",
         "zxcvbn": "4.4"
     }
