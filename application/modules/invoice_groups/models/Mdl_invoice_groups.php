@@ -99,7 +99,7 @@ class Mdl_Invoice_Groups extends Response_Model
      *
      * @return mixed
      */
-    private function parse_identifier_format($identifier_format, $next_id, $left_pad)
+    private function parse_identifier_format($identifier_format, string $next_id, int $left_pad)
     {
         if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
             foreach ($template_vars[1] as $var) {

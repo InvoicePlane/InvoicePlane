@@ -6,7 +6,7 @@ if ($this->config->item('disable_read_only') == true) {
 $its_mine = $this->session->__get('user_id') == $invoice->user_id;
 $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
 // In change user toggle & After eInvoice (name) when user required field missing
-$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . htmlsc(PHP_EOL . format_user($invoice->user_id));
+$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . PHP_EOL . htmlsc(format_user($invoice->user_id));
 ?>
 
 <script>
@@ -87,6 +87,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                 items.push(row);
             });
             $.post("<?php echo site_url('invoices/ajax/save'); ?>", {
+                    legacy_calculation: <?php echo (int) $legacy_calculation; ?>,
                     invoice_id: <?php echo $invoice_id; ?>,
                     invoice_number: $('#invoice_number').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
@@ -287,7 +288,8 @@ if ($legacy_calculation && $invoice->is_read_only != 1) { // Legacy calculation 
 } // End if
 ?>
                 <li>
-                    <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
+                    <a href="#" id="btn_create_credit"
+                       data-invoice-id="<?php echo $invoice_id; ?>">
                         <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
                     </a>
                 </li>
