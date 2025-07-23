@@ -359,7 +359,7 @@ if ($client->client_einvoicing_active && $user_fields_nook) {
                             >
                                 <thead class="einvoice-users-check-lists">
                                     <tr><th colspan="3"><?php _trans('required_fields'); ?> (<?php _trans('user' . ($nb_users > 1 ? 's' : '')); ?>)</th></tr>
-                                    <tr><th><?php _trans('user'); ?></th><th>e-<?php _trans('invoice'); ?></th><th><?php _trans('errors'); ?></th></tr>
+                                    <tr><th><?php _trans('user'); ?></th><th class="text-nowrap">e-<?php _trans('invoice'); ?></th><th><?php _trans('errors'); ?></th></tr>
                                 </thead>
 <?php
     // eInvoicing panel User(s) checks table
@@ -381,12 +381,14 @@ if ($client->client_einvoicing_active && $user_fields_nook) {
             $reqs = []; // reuse
             foreach ($keys as $l => $key) {
                 if ($user->{$key}) {
-                    $reqs[] = '<i class="' . $class_checks[$user->{$key}] . '"></i>'
+                    $reqs[] = '<span class="text-nowrap"><i class="' . $class_checks[$user->{$key}] . '"></i>'
                             . anchor(
                                 '/users/form/' . $uid . '#user_' . $key,
                                 trans($lang[$l]),
+                                // ! Need add: "
                                 $title_tip . ' #' . trans($lang[$l]) . ' (' . mb_trim(trans('field')) . ' ' . htmlsc($user->user_name) . ')"'
-                            ); // ! Need add: "
+                            )
+                            . '</span>';
                 }
             }
         }

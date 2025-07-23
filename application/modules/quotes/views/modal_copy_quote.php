@@ -12,6 +12,7 @@
         $('#copy_quote_confirm').click(function () {
             show_loader(); // Show spinner
             $.post("<?php echo site_url('quotes/ajax/copy_quote'); ?>", {
+                    legacy_calculation: legacy_calculation, // Automatic. From meta (see script)
                     quote_id: <?php echo $quote_id; ?>,
                     client_id: $('#client_id').val(),
                     user_id: $('#user_id').val(),

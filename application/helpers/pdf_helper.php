@@ -118,7 +118,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $associatedFiles = null;
     if (get_setting('einvoicing')) {
         $CI->load->helper('e-invoice');
-        // Get eInvoice name (version) and user checks
+        // Get eInvoice name (version), user checks & shift legacy_calculation mode
         $einvoice = get_einvoice_usage($invoice, $items, false);
         // Set eInvoice config (false if Client & User not Ok)
         $xml_id  = $einvoice->user ? $einvoice->name : false;
@@ -304,6 +304,13 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         'client' => $CI->mdl_custom_fields->get_values_for_fields('mdl_client_custom', $quote->client_id),
         'user'   => $CI->mdl_custom_fields->get_values_for_fields('mdl_user_custom', $quote->user_id),
     ];
+
+    // Automatic calculation mode
+    if (get_setting('einvoicing')) {
+        $CI->load->helper('e-invoice');
+        // Only for shift the legacy_calculation mode
+        get_einvoice_usage($quote, $items, false);
+    }
 
     $data = [
         'quote'               => $quote,

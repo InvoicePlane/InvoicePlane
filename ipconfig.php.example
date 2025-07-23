@@ -37,13 +37,14 @@ DB_PORT=
 SESS_EXPIRATION=864000
 SESS_MATCH_IP=true
 
-# Global Amounts Calculation - Since 1.6.3
+# Default Global Amounts Calculation mode - Since 1.6.3
 # This change Taxes and discounts calcuation mode
-# true  : Taxes: Global Y, Item Y. Use classic calculation for Discounts & Taxes : Conserve same calculation as previous v1.6.3 (Default)
-# false : Taxes: Global N, Item Y. Use simple item tax calculation system : Apply Global discount before Item discount (without tax) and apply item tax on discounted total price
-# - Electronic Invoicing Notice:
-# - - Important to valid xml data on some models and configurations need use simple tax calculation system.
-# - - - Set to false when use Facturx10Xml and Ubl24Xml XMLtemplates based [Download here](https://github.com/InvoicePlane/e-invoices-examples)
+# true  : Taxes: Global Y, Item Y. Use classic calculation for Discounts & Taxes : Use same calculation as previous v1.6.3 (Default)
+# false : Taxes: Global N, Item Y. Use simple item tax calculation system : Calculate Global discount before Item discount (without tax) and apply item tax on discounted total price
+# Notes :
+#   • "when the client use e-invoice": This is automatically overriden to false by default to use "simple tax" calculation system. It for valid xml data for european models***
+#   • Dev Note: If you realy need to override by true, just add 'legacy_calculation' => true in `$xml_settings`. (See helpers/XMLconfigs/README.md)
+#   • *** When use Facturx10Xml and Ubl24Xml XMLtemplates based. Download here: https://github.com/InvoicePlane/InvoicePlane-e-invoices
 LEGACY_CALCULATION=true
 
 # Enable the deletion of invoices

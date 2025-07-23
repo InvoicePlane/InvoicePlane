@@ -14,6 +14,7 @@ if ( ! defined('BASEPATH')) {
  *
  * eInvoicing based on Verony Idea - since 1.6.3
  */
+
 /**
  * Returns path of invoice xml generated file.
  *
@@ -79,9 +80,12 @@ function get_xml_template_files(): array
 }
 
 /**
+ * Set the calculation mode for Quote/Invoice view & many more (tricks)
  * Returns the XML template (UBL/CII) fullname of a given client_e-invoice_version value.
  *
  * @param $xml_Id
+ *
+ * @used in get_einvoice_usage
  *
  * @scope modules/clients/views/(form|view).php
  *
@@ -91,6 +95,9 @@ function get_xml_full_name(string $xml_id)
 {
     if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
+        $CI = & get_instance();
+        // Shift calculation mode (false by default). Need true? See Dev Note on ipconfig example
+        $CI->config->set_item('legacy_calculation', ! empty($xml_setting['legacy_calculation']));
 
         return $xml_setting['full-name'] . ' - ' . get_country_name(trans('cldr'), $xml_setting['countrycode']);
     }
