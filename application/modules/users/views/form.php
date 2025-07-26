@@ -264,17 +264,16 @@ foreach ($custom_fields['ip_user_custom'] as $custom_field) {
                                            placeholder="{{{invoice_number}}} {{{invoice_date_due}}}"
                                            value="<?php echo $this->mdl_users->form_value('user_remittance_text', true); ?>">
                                 </div>
-                            </div>
 
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <?php _trans('qr_code_settings_remittance_text_tags'); ?>
-                                </div>
-                                <div class="panel-body">
-                                    <?php $this->layout->load_view('email_templates/template-tags-invoices'); ?>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <?php _trans('qr_code_settings_remittance_text_tags'); ?>
+                                    </div>
+                                    <div class="panel-body">
+                                        <?php $this->layout->load_view('email_templates/template-tags-invoices'); ?>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
 
 <?php
