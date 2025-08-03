@@ -76,6 +76,10 @@ button, input, optgroup, select {
       }
 
     }
+
+    .select2-selection__clear {
+      top: -3px;
+    }
   }
 
   &.select2-container--disabled {
