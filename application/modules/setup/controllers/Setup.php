@@ -178,8 +178,8 @@ class Setup extends MX_Controller
                 $this->session->set_userdata('install_step', 'create_user');
                 redirect('setup/create_user');
             } else {
-                $this->session->set_userdata('install_step', 'complete');
-                redirect('setup/complete');
+                $this->session->set_userdata('install_step', 'calculation_info');
+                redirect('setup/calculation_info');
             }
         }
 
@@ -223,8 +223,8 @@ class Setup extends MX_Controller
 
             $this->mdl_users->save(null, $db_array);
 
-            $this->session->set_userdata('install_step', 'complete');
-            redirect('setup/complete');
+            $this->session->set_userdata('install_step', 'calculation_info');
+            redirect('setup/calculation_info');
         }
 
         $this->layout->set(
@@ -234,6 +234,33 @@ class Setup extends MX_Controller
             ]
         );
         $this->layout->buffer('content', 'setup/create_user');
+        $this->layout->render('setup');
+    }
+
+    public function calculation_info(): void
+    {
+        if ($this->session->userdata('install_step') != 'calculation_info') {
+            redirect('setup/prerequisites');
+        }
+
+        if ($this->input->post('btn_continue')) {
+            $this->session->set_userdata('install_step', 'complete');
+            redirect('setup/complete');
+        } elseif ($this->input->post('btn_agree')) {
+            $this->write_calculation_config();
+
+            $this->session->set_userdata('install_step', 'complete');
+            redirect('setup/complete');
+        }
+
+        $checkCalculation = $this->check_calculation_config();
+        if ($checkCalculation['needs_config'] === false) {
+            $this->session->set_userdata('install_step', 'complete');
+            redirect('setup/complete');
+        }
+
+        $this->layout->set('calculation_check', $checkCalculation);
+        $this->layout->buffer('content', 'setup/calculation_info');
         $this->layout->render('setup');
     }
 
@@ -439,6 +466,52 @@ class Setup extends MX_Controller
         // Set SETUP_COMPLETED to true
         $config = file_get_contents(IPCONFIG_FILE);
         $config = preg_replace('/SETUP_COMPLETED=(.*)?/', 'SETUP_COMPLETED=true', $config);
+        write_file(IPCONFIG_FILE, $config);
+    }
+
+    private function check_calculation_config(): array
+    {
+        $this->load_ci_database();
+        $this->load->model('settings/mdl_versions');
+
+        $current_version = $this->mdl_versions->get_current_version();
+
+        if (version_compare($current_version, '1.6.3', '>=')) {
+            // Reload the ipconfig.php
+            global $dotenv;
+            $dotenv->load();
+
+            $legacy_calc = env('LEGACY_CALCULATION');
+
+            if ($legacy_calc === null) {
+                return [
+                    'needs_config' => true,
+                    'current_value' => 'not_set',
+                    'recommended' => 'false'
+                ];
+            } elseif ($legacy_calc === 'true' || $legacy_calc === true) {
+                return [
+                    'needs_config' => true,
+                    'current_value' => 'true',
+                    'recommended' => 'false'
+                ];
+            } else {
+                return [
+                    'needs_config' => false,
+                    'current_value' => 'false'
+                ];
+            }
+        }
+
+        return ['needs_config' => false];
+    }
+
+    private function write_calculation_config()
+    {
+        $config = file_get_contents(IPCONFIG_FILE);
+
+        $config .= PHP_EOL . 'LEGACY_CALCULATION=false';
+
         write_file(IPCONFIG_FILE, $config);
     }
 }
