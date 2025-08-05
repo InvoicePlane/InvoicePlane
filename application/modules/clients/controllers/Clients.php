@@ -52,7 +52,10 @@ class Clients extends Admin_Controller
             $this->load->helper('e-invoice'); // eInvoicing++
 
             foreach ($clients as &$client) {
-                $client = $this->check_client_einvoice_active($client);
+                // Get a check of filled Required (client and users) fields for eInvoicing
+                $req_einvoicing = get_req_fields_einvoice($client);
+
+                $client = $this->check_client_einvoice_active($client, $req_einvoicing);
             }
             unset($client);
         }
@@ -243,7 +246,11 @@ class Clients extends Admin_Controller
         $req_einvoicing = get_setting('einvoicing');
         if ($req_einvoicing) {
             $this->load->helper('e-invoice'); // eInvoicing++
-            $client = $this->check_client_einvoice_active($client);
+
+            // Get a check of filled Required (client and users) fields for eInvoicing
+            $req_einvoicing = get_req_fields_einvoice($client);
+
+            $client = $this->check_client_einvoice_active($client, $req_einvoicing);
         }
 
         // Change page only for one url (tab) system
@@ -337,10 +344,7 @@ class Clients extends Admin_Controller
         );
     }
 
-    private function check_client_einvoice_active($client) {
-        // Get a check of filled Required (client and users) fields for eInvoicing
-        $req_einvoicing = get_req_fields_einvoice($client);
-
+    private function check_client_einvoice_active($client, $req_einvoicing) {
         // Update active eInvoicing client
         $o = $client->client_einvoicing_active;
         if ( ! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
