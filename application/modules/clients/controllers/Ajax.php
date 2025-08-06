@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
-
     public $ajax_controller = true;
 
     public function name_query()
@@ -27,7 +26,7 @@ class Ajax extends Admin_Controller
         $response = [];
 
         // Get the post input
-        $query = $this->input->get('query');
+        $query                   = $this->input->get('query');
         $permissiveSearchClients = $this->input->get('permissive_search_clients');
 
         if (empty($query)) {
@@ -36,24 +35,25 @@ class Ajax extends Admin_Controller
         }
 
         // Search for chars "in the middle" of clients names
-        $permissiveSearchClients ? $moreClientsQuery = '%' : $moreClientsQuery = '';
+        $moreClientsQuery = $permissiveSearchClients ? '%' : '';
 
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
-        $escapedQuery = str_replace("%", "", $escapedQuery);
+        $escapedQuery = str_replace('%', '', $escapedQuery);
+
         $clients = $this->mdl_clients
             ->where('client_active', 1)
-            ->having('client_name LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_surname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_fullname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->having("client_name LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
+            ->or_having("client_surname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
+            ->or_having("client_fullname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
             ->order_by('client_name')
             ->get()
             ->result();
 
         foreach ($clients as $client) {
             $response[] = [
-                'id' => $client->client_id,
-                'text' => (format_client($client)),
+                'id'   => $client->client_id,
+                'text' => htmlsc(format_client($client, false)),
             ];
         }
 
@@ -62,7 +62,7 @@ class Ajax extends Admin_Controller
     }
 
     /**
-     * Get the latest clients
+     * Get the latest clients.
      */
     public function get_latest()
     {
@@ -80,8 +80,8 @@ class Ajax extends Admin_Controller
 
         foreach ($clients as $client) {
             $response[] = [
-                'id' => $client->client_id,
-                'text' => htmlsc(format_client($client)),
+                'id'   => $client->client_id,
+                'text' => htmlsc(format_client($client, false)),
             ];
         }
 
@@ -94,7 +94,7 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_settings');
         $permissiveSearchClients = $this->input->get('permissive_search_clients');
 
-        if (!preg_match('!^[0-1]{1}$!', $permissiveSearchClients)) {
+        if ( ! preg_match('!^[0-1]{1}$!', $permissiveSearchClients)) {
             exit;
         }
 
@@ -102,17 +102,16 @@ class Ajax extends Admin_Controller
     }
 
     /**
-     * Delete client note id
+     * Delete client note id.
      */
     public function delete_client_note()
     {
-        $success = 0;
+        $success        = 0;
         $client_note_id = $this->input->post('client_note_id');
         $this->load->model('mdl_client_notes');
 
         // Only continue if the note exists or no item id was provided
         if ($this->mdl_client_notes->get_by_id($client_note_id) || empty($client_note_id)) {
-
             // Delete invoice item
             $this->load->model('mdl_client_notes');
             $item = $this->mdl_client_notes->delete($client_note_id);
@@ -121,7 +120,6 @@ class Ajax extends Admin_Controller
             if ($item) {
                 $success = 1;
             }
-
         }
 
         // Return the response
@@ -129,8 +127,6 @@ class Ajax extends Admin_Controller
             'success' => $success,
         ]);
     }
-
-
 
     public function save_client_note()
     {
@@ -140,14 +136,14 @@ class Ajax extends Admin_Controller
             $this->mdl_client_notes->save();
 
             $response = [
-                'success' => 1,
+                'success'   => 1,
                 'new_token' => $this->security->get_csrf_hash(),
             ];
         } else {
             $this->load->helper('json_error');
             $response = [
-                'success' => 0,
-                'new_token' => $this->security->get_csrf_hash(),
+                'success'           => 0,
+                'new_token'         => $this->security->get_csrf_hash(),
                 'validation_errors' => json_errors(),
             ];
         }
@@ -159,11 +155,12 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('clients/mdl_client_notes');
         $data = [
-            'client_notes' => $this->mdl_client_notes->where('client_id',
-                $this->input->post('client_id'))->get()->result(),
+            'client_notes' => $this->mdl_client_notes->where(
+                'client_id',
+                $this->input->post('client_id')
+            )->get()->result(),
         ];
 
         $this->layout->load_view('clients/partial_notes', $data);
     }
-
 }

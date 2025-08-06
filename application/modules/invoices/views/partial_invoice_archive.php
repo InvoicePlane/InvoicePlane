@@ -20,7 +20,7 @@
                 </td>
 
                 <td>
-                    <?php echo date("F d Y H:i:s.", filemtime($invoice)); ?>
+                    <?php echo date('F d Y H:i:s.', filemtime($invoice)); ?>
                 </td>
 
             </tr>

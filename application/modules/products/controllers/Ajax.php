@@ -1,16 +1,16 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -21,18 +21,18 @@ class Ajax extends Admin_Controller
     public function modal_product_lookups()
     {
         $filter_product = $this->input->get('filter_product', true);
-        $filter_family = $this->input->get('filter_family', true);
-        $reset_table = $this->input->get('reset_table', true);
+        $filter_family  = $this->input->get('filter_family', true);
+        $reset_table    = $this->input->get('reset_table', true);
 
         $this->load->model('mdl_products');
         $this->load->model('families/mdl_families');
 
-        if (!empty($filter_family)) {
+        if ( ! empty($filter_family)) {
             $this->mdl_products->by_family($filter_family);
             $filter_family = $this->security->xss_clean($filter_family);
         }
 
-        if (!empty($filter_product)) {
+        if ( ! empty($filter_product)) {
             $this->mdl_products->by_product($filter_product);
             $filter_product = $this->security->xss_clean($filter_product);
         }
@@ -43,13 +43,13 @@ class Ajax extends Admin_Controller
         $default_item_tax_rate = get_setting('default_item_tax_rate');
         $default_item_tax_rate = $default_item_tax_rate !== '' ?: 0;
 
-        $data = array(
-            'products' => $products,
-            'families' => $families,
-            'filter_product' => $filter_product,
-            'filter_family' => $filter_family,
+        $data = [
+            'products'              => $products,
+            'families'              => $families,
+            'filter_product'        => $filter_product,
+            'filter_family'         => $filter_family,
             'default_item_tax_rate' => $default_item_tax_rate,
-        );
+        ];
 
         if ($filter_product || $filter_family || $reset_table) {
             $this->layout->load_view('products/partial_product_table_modal', $data);
@@ -70,5 +70,4 @@ class Ajax extends Admin_Controller
 
         echo json_encode($products);
     }
-
 }

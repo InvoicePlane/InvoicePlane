@@ -8,7 +8,9 @@
 
         // Creates the invoice
         $('#quote_to_invoice_confirm').click(function () {
+            show_loader(); // Show spinner
             $.post("<?php echo site_url('quotes/ajax/quote_to_invoice'); ?>", {
+                    legacy_calculation: legacy_calculation, // Automatic. From meta (see script)
                     quote_id: <?php echo $quote_id; ?>,
                     client_id: $('#client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
@@ -18,19 +20,20 @@
                     user_id: $('#user_id').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-                    var response = JSON.parse(data);
+                    var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + response.invoice_id;
                     }
                     else {
                         // The validation was not successful
+                        close_loader();
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().parent().addClass('has-error');
                         }
                     }
-                });
+                }
+            );
         });
     });
 </script>

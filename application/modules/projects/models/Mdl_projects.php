@@ -1,22 +1,23 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Mdl_Projects extends Response_Model
 {
     public $table = 'ip_projects';
+
     public $primary_key = 'ip_projects.project_id';
 
     public function default_select()
@@ -37,6 +38,7 @@ class Mdl_Projects extends Response_Model
     public function get_latest()
     {
         $this->db->order_by('ip_projects.project_id', 'DESC');
+
         return $this;
     }
 
@@ -45,31 +47,29 @@ class Mdl_Projects extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'project_name' => array(
+        return [
+            'project_name' => [
                 'field' => 'project_name',
                 'label' => trans('project_name'),
-                'rules' => 'required'
-            ),
-            'client_id' => array(
+                'rules' => 'required',
+            ],
+            'client_id' => [
                 'field' => 'client_id',
                 'label' => trans('client'),
-            )
-        );
+            ],
+        ];
     }
 
     public function get_tasks($project_id)
     {
-        $result = array();
+        $result = [];
 
-        if (!$project_id) {
+        if ( ! $project_id) {
             return $result;
         }
 
         $this->load->model('tasks/mdl_tasks');
-        $query = $this->mdl_tasks
-            ->where('ip_tasks.project_id', $project_id)
-            ->get();
+        $query = $this->mdl_tasks->where('ip_tasks.project_id', $project_id)->get();
 
         foreach ($query->result() as $row) {
             $result[] = $row;
@@ -77,5 +77,4 @@ class Mdl_Projects extends Response_Model
 
         return $result;
     }
-
 }

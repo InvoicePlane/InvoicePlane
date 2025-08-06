@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Setup extends MX_Controller
 {
-
     public $errors = 0;
 
     /**
@@ -40,11 +39,12 @@ class Setup extends MX_Controller
         $this->load->helper('settings');
         $this->load->helper('echo');
 
-        $this->load->model('mdl_setup');
+        $this->load->model('settings/mdl_settings'); // For get_setting() in echo_helper
+        $this->load->model('setup/mdl_setup');
 
         $this->load->module('layout');
 
-        if (!$this->session->userdata('ip_lang')) {
+        if ( ! $this->session->userdata('ip_lang')) {
             $this->session->set_userdata('ip_lang', 'english');
         } else {
             set_language($this->session->userdata('ip_lang'));
@@ -53,12 +53,12 @@ class Setup extends MX_Controller
         $this->lang->load('ip', $this->session->userdata('ip_lang'));
     }
 
-    public function index()
+    public function index(): void
     {
         redirect('setup/language');
     }
 
-    public function language()
+    public function language(): void
     {
         if ($this->input->post('btn_continue')) {
             $this->session->set_userdata('ip_lang', $this->input->post('ip_lang'));
@@ -78,9 +78,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
-    public function prerequisites()
+    public function prerequisites(): void
     {
-        if ($this->session->userdata('install_step') <> 'prerequisites') {
+        if ($this->session->userdata('install_step') != 'prerequisites') {
             redirect('setup/language');
         }
 
@@ -91,9 +91,9 @@ class Setup extends MX_Controller
 
         $this->layout->set(
             [
-                'basics' => $this->check_basics(),
+                'basics'    => $this->check_basics(),
                 'writables' => $this->check_writables(),
-                'errors' => $this->errors,
+                'errors'    => $this->errors,
             ]
         );
 
@@ -101,87 +101,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
-    /**
-     * @return array
-     */
-    private function check_basics()
+    public function configure_database(): void
     {
-        $checks = [];
-
-        $php_required = '5.6';
-        $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
-
-        if ($php_installed < $php_required) {
-            $this->errors += 1;
-
-            $checks[] = [
-                'message' => sprintf(trans('php_version_fail'), $php_installed, $php_required),
-                'success' => 0,
-            ];
-        } else {
-            $checks[] = [
-                'message' => trans('php_version_success'),
-                'success' => 1,
-            ];
-        }
-
-        if (!ini_get('date.timezone')) {
-            $checks[] = [
-                'message' => sprintf(trans('php_timezone_fail'), date_default_timezone_get()),
-                'success' => 1,
-                'warning' => 1,
-            ];
-        } else {
-            $checks[] = [
-                'message' => trans('php_timezone_success'),
-                'success' => 1,
-            ];
-        }
-
-        return $checks;
-    }
-
-    /**
-     * @return array
-     */
-    private function check_writables()
-    {
-        $checks = [];
-
-        $writables = [
-            IPCONFIG_FILE,
-            UPLOADS_FOLDER,
-            UPLOADS_ARCHIVE_FOLDER,
-            UPLOADS_CFILES_FOLDER,
-            UPLOADS_TEMP_FOLDER,
-            UPLOADS_TEMP_MPDF_FOLDER,
-            LOGS_FOLDER,
-        ];
-
-        foreach ($writables as $writable) {
-            $writable_check = [
-                'message' => '<code>' . str_replace(FCPATH, '', $writable) . '</code>&nbsp;',
-                'success' => 1,
-            ];
-
-            if (!is_writable($writable)) {
-                $writable_check['message'] .= trans('is_not_writable');
-                $writable_check['success'] .= 0;
-
-                $this->errors += 1;
-            } else {
-                $writable_check['message'] .= trans('is_writable');
-            }
-
-            $checks[] = $writable_check;
-        }
-
-        return $checks;
-    }
-
-    public function configure_database()
-    {
-        if ($this->session->userdata('install_step') <> 'configure_database') {
+        if ($this->session->userdata('install_step') != 'configure_database') {
             redirect('setup/prerequisites');
         }
 
@@ -189,7 +111,7 @@ class Setup extends MX_Controller
             $this->load_ci_database();
 
             // This might be an upgrade - check if it is
-            if (!$this->db->table_exists('ip_versions')) {
+            if ( ! $this->db->table_exists('ip_versions')) {
                 // This appears to be an install
                 $this->session->set_userdata('install_step', 'install_tables');
                 redirect('setup/install_tables');
@@ -221,84 +143,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
-    /**
-     * Load the database connection trough CodeIgniter
-     */
-    private function load_ci_database()
+    public function install_tables(): void
     {
-        $this->load->database();
-    }
-
-    /**
-     * @param $hostname
-     * @param $username
-     * @param $password
-     * @param $database
-     * @param int $port
-     */
-    private function write_database_config($hostname, $username, $password, $database, $port = 3306)
-    {
-        $config = file_get_contents(IPCONFIG_FILE);
-
-        $config = preg_replace("/DB_HOSTNAME=(.*)?/", "DB_HOSTNAME='" . $hostname . "'", $config);
-        $config = preg_replace("/DB_USERNAME=(.*)?/", "DB_USERNAME='" . $username . "'", $config);
-        $config = preg_replace("/DB_PASSWORD=(.*)?/", "DB_PASSWORD='" . $password . "'", $config);
-        $config = preg_replace("/DB_DATABASE=(.*)?/", "DB_DATABASE='" . $database . "'", $config);
-        $config = preg_replace("/DB_PORT=(.*)?/", "DB_PORT=" . $port, $config);
-
-        write_file(IPCONFIG_FILE, $config);
-    }
-
-    /**
-     * @return array
-     */
-    private function check_database()
-    {
-        // Reload the ipconfig.php file
-        global $dotenv;
-        $dotenv->load();
-
-        // Load the database config and configure it to test the connection
-        include(APPPATH . 'config/database.php');
-        $db = $db['default'];
-        $db['autoinit'] = false;
-        $db['db_debug'] = false;
-
-        // Check if there is some configuration set
-        if (empty($db['hostname'])) {
-            $this->errors += 1;
-
-            return [
-                'message' => trans('setup_database_message'),
-                'success' => false,
-            ];
-        }
-
-        // Initialize the database connection, turn off automatic error reporting to display connection issues manually
-        error_reporting(0);
-        $db_object = $this->load->database($db, true);
-
-        // Try to initialize the database connection
-        $can_connect = $db_object->conn_id ? true : false;
-
-        if (!$can_connect) {
-            $this->errors += 1;
-
-            return [
-                'message' => trans('setup_db_cannot_connect'),
-                'success' => false,
-            ];
-        }
-
-        return [
-            'message' => trans('database_properly_configured'),
-            'success' => true,
-        ];
-    }
-
-    public function install_tables()
-    {
-        if ($this->session->userdata('install_step') <> 'install_tables') {
+        if ($this->session->userdata('install_step') != 'install_tables') {
             redirect('setup/prerequisites');
         }
 
@@ -312,7 +159,7 @@ class Setup extends MX_Controller
         $this->layout->set(
             [
                 'success' => $this->mdl_setup->install_tables(),
-                'errors' => $this->mdl_setup->errors,
+                'errors'  => $this->mdl_setup->errors,
             ]
         );
 
@@ -320,19 +167,19 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
-    public function upgrade_tables()
+    public function upgrade_tables(): void
     {
-        if ($this->session->userdata('install_step') <> 'upgrade_tables') {
+        if ($this->session->userdata('install_step') != 'upgrade_tables') {
             redirect('setup/prerequisites');
         }
 
         if ($this->input->post('btn_continue')) {
-            if (!$this->session->userdata('is_upgrade')) {
+            if ( ! $this->session->userdata('is_upgrade')) {
                 $this->session->set_userdata('install_step', 'create_user');
                 redirect('setup/create_user');
             } else {
-                $this->session->set_userdata('install_step', 'complete');
-                redirect('setup/complete');
+                $this->session->set_userdata('install_step', 'calculation_info');
+                redirect('setup/calculation_info');
             }
         }
 
@@ -350,7 +197,7 @@ class Setup extends MX_Controller
         $this->layout->set(
             [
                 'success' => $this->mdl_setup->upgrade_tables(),
-                'errors' => $this->mdl_setup->errors,
+                'errors'  => $this->mdl_setup->errors,
             ]
         );
 
@@ -358,27 +205,9 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
-    /**
-     * Set a new encryption key in the ipconfig.php file
-     */
-    private function set_encryption_key()
+    public function create_user(): void
     {
-        $length = (env('ENCRYPTION_CIPHER') == 'AES-256' ? 32 : 16);
-
-        if (function_exists('random_bytes')) {
-            $key = 'base64:' . base64_encode(random_bytes($length));
-        } else {
-            $key = 'base64:' . base64_encode(openssl_random_pseudo_bytes($length));
-        }
-
-        $config = file_get_contents(IPCONFIG_FILE);
-        $config = preg_replace("/ENCRYPTION_KEY=(.*)?/", "ENCRYPTION_KEY=" . $key, $config);
-        write_file(IPCONFIG_FILE, $config);
-    }
-
-    public function create_user()
-    {
-        if ($this->session->userdata('install_step') <> 'create_user') {
+        if ($this->session->userdata('install_step') != 'create_user') {
             redirect('setup/prerequisites');
         }
 
@@ -389,13 +218,13 @@ class Setup extends MX_Controller
         $this->load->helper('country');
 
         if ($this->mdl_users->run_validation()) {
-            $db_array = $this->mdl_users->db_array();
+            $db_array              = $this->mdl_users->db_array();
             $db_array['user_type'] = 1;
 
             $this->mdl_users->save(null, $db_array);
 
-            $this->session->set_userdata('install_step', 'complete');
-            redirect('setup/complete');
+            $this->session->set_userdata('install_step', 'calculation_info');
+            redirect('setup/calculation_info');
         }
 
         $this->layout->set(
@@ -408,9 +237,36 @@ class Setup extends MX_Controller
         $this->layout->render('setup');
     }
 
-    public function complete()
+    public function calculation_info(): void
     {
-        if ($this->session->userdata('install_step') <> 'complete') {
+        if ($this->session->userdata('install_step') != 'calculation_info') {
+            redirect('setup/prerequisites');
+        }
+
+        if ($this->input->post('btn_continue')) {
+            $this->session->set_userdata('install_step', 'complete');
+            redirect('setup/complete');
+        } elseif ($this->input->post('btn_agree')) {
+            $this->write_calculation_config();
+
+            $this->session->set_userdata('install_step', 'complete');
+            redirect('setup/complete');
+        }
+
+        $checkCalculation = $this->check_calculation_config();
+        if ($checkCalculation['needs_config'] === false) {
+            $this->session->set_userdata('install_step', 'complete');
+            redirect('setup/complete');
+        }
+
+        $this->layout->set('calculation_check', $checkCalculation);
+        $this->layout->buffer('content', 'setup/calculation_info');
+        $this->layout->render('setup');
+    }
+
+    public function complete(): void
+    {
+        if ($this->session->userdata('install_step') != 'complete') {
             redirect('setup/prerequisites');
         }
 
@@ -430,29 +286,232 @@ class Setup extends MX_Controller
         // First get all version entries from the database and format them
         $versions = $this->db->query('SELECT * FROM ip_versions');
         if ($versions->num_rows() > 0) {
-            foreach ($versions->result() as $row):
+            foreach ($versions->result() as $row) {
                 $data[] = $row;
-            endforeach;
+            }
         }
 
         // Then check if the first version entry is less than 30 minutes old
         // If yes we assume that the user ran the setup a few minutes ago
-        if ($data[0]->version_date_applied < (time() - 1800)) {
-            $update = true;
-        } else {
-            $update = false;
-        }
+        $update = $data[0]->version_date_applied < time() - 1800;
+
         $this->layout->set('update', $update);
 
         $this->layout->buffer('content', 'setup/complete');
         $this->layout->render('setup');
+
+        $this->session->sess_destroy();
+    }
+
+    private function check_basics(): array
+    {
+        $checks = [];
+
+        $php_required  = '5.6';
+        $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+
+        if ($php_installed < $php_required) {
+            $this->errors += 1;
+
+            $checks[] = [
+                'message' => sprintf(trans('php_version_fail'), $php_installed, $php_required),
+                'success' => 0,
+            ];
+        } else {
+            $checks[] = [
+                'message' => trans('php_version_success'),
+                'success' => 1,
+            ];
+        }
+
+        if ( ! ini_get('date.timezone')) {
+            $checks[] = [
+                'message' => sprintf(trans('php_timezone_fail'), date_default_timezone_get()),
+                'success' => 1,
+                'warning' => 1,
+            ];
+        } else {
+            $checks[] = [
+                'message' => trans('php_timezone_success'),
+                'success' => 1,
+            ];
+        }
+
+        return $checks;
+    }
+
+    private function check_writables(): array
+    {
+        $checks = [];
+
+        $writables = [
+            IPCONFIG_FILE,
+            UPLOADS_FOLDER,
+            UPLOADS_ARCHIVE_FOLDER,
+            UPLOADS_CFILES_FOLDER,
+            UPLOADS_TEMP_FOLDER,
+            UPLOADS_TEMP_MPDF_FOLDER,
+            LOGS_FOLDER,
+        ];
+
+        foreach ($writables as $writable) {
+            $writable_check = [
+                'message' => '<code>' . str_replace(FCPATH, '', $writable) . '</code>&nbsp;',
+                'success' => 1,
+            ];
+
+            if ( ! is_writable($writable)) {
+                $writable_check['message'] .= trans('is_not_writable');
+                $writable_check['success'] .= 0;
+
+                $this->errors += 1;
+            } else {
+                $writable_check['message'] .= trans('is_writable');
+            }
+
+            $checks[] = $writable_check;
+        }
+
+        return $checks;
+    }
+
+    /**
+     * Load the database connection trough CodeIgniter.
+     */
+    private function load_ci_database()
+    {
+        $this->load->database();
+    }
+
+    /**
+     * @param int $port
+     */
+    private function write_database_config(string $hostname, string $username, string $password, string $database, $port = 3306)
+    {
+        $config = file_get_contents(IPCONFIG_FILE);
+
+        $config = preg_replace('/DB_HOSTNAME=(.*)?/', "DB_HOSTNAME='" . $hostname . "'", $config);
+        $config = preg_replace('/DB_USERNAME=(.*)?/', "DB_USERNAME='" . $username . "'", $config);
+        $config = preg_replace('/DB_PASSWORD=(.*)?/', "DB_PASSWORD='" . $password . "'", $config);
+        $config = preg_replace('/DB_DATABASE=(.*)?/', "DB_DATABASE='" . $database . "'", $config);
+        $config = preg_replace('/DB_PORT=(.*)?/', 'DB_PORT=' . $port, $config);
+
+        write_file(IPCONFIG_FILE, $config);
+    }
+
+    private function check_database(): array
+    {
+        // Reload the ipconfig.php file
+        global $dotenv;
+        $dotenv->load();
+
+        // Load the database config and configure it to test the connection
+        include APPPATH . 'config/database.php';
+        $db             = $db['default'];
+        $db['autoinit'] = false;
+        $db['db_debug'] = false;
+
+        // Check if there is some configuration set
+        if (empty($db['hostname'])) {
+            $this->errors += 1;
+
+            return [
+                'message' => trans('setup_database_message'),
+                'success' => false,
+            ];
+        }
+
+        // Initialize the database connection, turn off automatic error reporting to display connection issues manually
+        error_reporting(0);
+        $db_object = $this->load->database($db, true);
+
+        // Try to initialize the database connection
+        $can_connect = (bool) $db_object->conn_id;
+
+        if ( ! $can_connect) {
+            $this->errors += 1;
+
+            return [
+                'message' => trans('setup_db_cannot_connect'),
+                'success' => false,
+            ];
+        }
+
+        return [
+            'message' => trans('database_properly_configured'),
+            'success' => true,
+        ];
+    }
+
+    /**
+     * Set a new encryption key in the ipconfig.php file.
+     */
+    private function set_encryption_key()
+    {
+        $length = (env('ENCRYPTION_CIPHER') == 'AES-256' ? 32 : 16);
+
+        if (function_exists('random_bytes')) {
+            $key = 'base64:' . base64_encode(random_bytes($length));
+        } else {
+            $key = 'base64:' . base64_encode(openssl_random_pseudo_bytes($length));
+        }
+
+        $config = file_get_contents(IPCONFIG_FILE);
+        $config = preg_replace('/ENCRYPTION_KEY=(.*)?/', 'ENCRYPTION_KEY=' . $key, $config);
+        write_file(IPCONFIG_FILE, $config);
     }
 
     private function post_setup_tasks()
     {
         // Set SETUP_COMPLETED to true
         $config = file_get_contents(IPCONFIG_FILE);
-        $config = preg_replace("/SETUP_COMPLETED=(.*)?/", "SETUP_COMPLETED=true", $config);
+        $config = preg_replace('/SETUP_COMPLETED=(.*)?/', 'SETUP_COMPLETED=true', $config);
+        write_file(IPCONFIG_FILE, $config);
+    }
+
+    private function check_calculation_config(): array
+    {
+        $this->load_ci_database();
+        $this->load->model('settings/mdl_versions');
+
+        $current_version = $this->mdl_versions->get_current_version();
+
+        if (version_compare($current_version, '1.6.3', '>=')) {
+            // Reload the ipconfig.php
+            global $dotenv;
+            $dotenv->load();
+
+            $legacy_calc = env('LEGACY_CALCULATION');
+
+            if ($legacy_calc === null) {
+                return [
+                    'needs_config' => true,
+                    'current_value' => 'not_set',
+                    'recommended' => 'false'
+                ];
+            } elseif ($legacy_calc === 'true' || $legacy_calc === true) {
+                return [
+                    'needs_config' => true,
+                    'current_value' => 'true',
+                    'recommended' => 'false'
+                ];
+            } else {
+                return [
+                    'needs_config' => false,
+                    'current_value' => 'false'
+                ];
+            }
+        }
+
+        return ['needs_config' => false];
+    }
+
+    private function write_calculation_config()
+    {
+        $config = file_get_contents(IPCONFIG_FILE);
+
+        $config .= PHP_EOL . 'LEGACY_CALCULATION=false';
+
         write_file(IPCONFIG_FILE, $config);
     }
 }

@@ -1,5 +1,6 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+
+defined('BASEPATH') || exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------
@@ -10,8 +11,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-$config['payment_gateways'] = array(
-/*     'AuthorizeNet_AIM' => array(
+$config['payment_gateways'] = [
+    /*     'AuthorizeNet_AIM' => array(
         'apiLoginId' => array(
             'type' => 'text',
             'label' => 'Api Login Id',
@@ -37,7 +38,7 @@ $config['payment_gateways'] = array(
         //    'label' => 'Developer Endpoint',
         //),
     ),*/
-/*     'AuthorizeNet_SIM' => array(
+    /*     'AuthorizeNet_SIM' => array(
         'apiLoginId' => array(
             'type' => 'text',
             'label' => 'Api Login Id',
@@ -54,18 +55,18 @@ $config['payment_gateways'] = array(
             'type' => 'checkbox',
             'label' => 'Developer Mode',
         ), */
-        //'liveEndpoint' => array(
-        //    'type' => 'text',
-        //    'label' => 'Live Endpoint',
-        //),
-        //'developerEndpoint' => array(
-        //    'type' => 'text',
-        //    'label' => 'Developer Endpoint',
-        //),
-        //'hashSecret' => array(
-        //    'type' => 'text',
-        //    'label' => 'Hash Secret',
-        //),
+    //'liveEndpoint' => array(
+    //    'type' => 'text',
+    //    'label' => 'Live Endpoint',
+    //),
+    //'developerEndpoint' => array(
+    //    'type' => 'text',
+    //    'label' => 'Developer Endpoint',
+    //),
+    //'hashSecret' => array(
+    //    'type' => 'text',
+    //    'label' => 'Hash Secret',
+    //),
     /* ),
     'Buckaroo_Ideal' => array(
         'websiteKey' => array(
@@ -389,7 +390,7 @@ $config['payment_gateways'] = array(
             'label' => 'Test Mode',
         ),
     ), */
-/*     'Pin' => array(
+    /*     'Pin' => array(
         'secretKey' => array(
             'type' => 'password',
             'label' => 'Secret Key',
@@ -441,30 +442,30 @@ $config['payment_gateways'] = array(
             'label' => 'Test Mode',
         ),
     ), */
-    'Stripe' => array(
-        'apiKey' => array(
-            'type' => 'password',
-            'label' => 'Secret key',
-        ),
-        'apiKeyPublic' => array(
-            'type' => 'text',
-            'label' => 'Publishable key'
-        ),
-    ),
-    'PayPal' => array(
-        'clientId' => array(
-            'type'  => 'text',
-            'label' => 'Client ID'
-        ),
-        'clientSecret' => array(
+    'Stripe' => [
+        'apiKey' => [
             'type'  => 'password',
-            'label' => 'Secret'
-        ),
-        'testMode' => array(
-            'type' => 'checkbox',
+            'label' => 'Secret key',
+        ],
+        'apiKeyPublic' => [
+            'type'  => 'text',
+            'label' => 'Publishable key',
+        ],
+    ],
+    'PayPal' => [
+        'clientId' => [
+            'type'  => 'text',
+            'label' => 'Client ID',
+        ],
+        'clientSecret' => [
+            'type'  => 'password',
+            'label' => 'Secret',
+        ],
+        'testMode' => [
+            'type'  => 'checkbox',
             'label' => 'Test Mode',
-        ),
-    ),
+        ],
+    ],
     /* 'TargetPay_Directebanking' => array(
         'subAccountId' => array(
             'type' => 'text',
@@ -477,7 +478,7 @@ $config['payment_gateways'] = array(
             'label' => 'Sub Account Id',
         ),
     ), */
-/*     'TargetPay_Mrcash' => array(
+    /*     'TargetPay_Mrcash' => array(
         'subAccountId' => array(
             'type' => 'text',
             'label' => 'Sub Account Id',
@@ -519,4 +520,4 @@ $config['payment_gateways'] = array(
             'label' => 'Test Mode',
         ),
     ), */
-);
+];

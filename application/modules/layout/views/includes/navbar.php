@@ -77,7 +77,7 @@
                     </ul>
                 </li>
 
-                <li class="dropdown <?php echo get_setting('projects_enabled') == 1 ?: 'hidden'; ?>">
+                <li class="dropdown<?php echo get_setting('projects_enabled') == 1 ? '' : ' hidden'; ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;
                         <span class="hidden-md"><?php _trans('tasks'); ?></span>
@@ -86,7 +86,7 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('tasks/form', trans('create_task')); ?></li>
                         <li><?php echo anchor('tasks/index', trans('view_tasks')); ?></li>
-						<li role="separator" class="divider"></li>
+                        <li role="separator" class="divider"></li>
                         <li><?php echo anchor('projects/form', trans('create_project')); ?></li>
                         <li><?php echo anchor('projects/index', trans('view_projects')); ?></li>
                     </ul>
@@ -103,16 +103,17 @@
                         <li><?php echo anchor('reports/payment_history', trans('payment_history')); ?></li>
                         <li><?php echo anchor('reports/sales_by_client', trans('sales_by_client')); ?></li>
                         <li><?php echo anchor('reports/sales_by_year', trans('sales_by_date')); ?></li>
+                        <li><?php echo anchor('reports/invoices_per_client', trans('invoices_per_client')); ?></li>
                     </ul>
                 </li>
 
             </ul>
 
-            <?php if (isset($filter_display) and $filter_display == true) { ?>
+            <?php if (isset($filter_display) && $filter_display == true) { ?>
                 <?php $this->layout->load_view('filter/jquery_filter'); ?>
                 <form class="navbar-form navbar-left" role="search" onsubmit="return false;">
                     <div class="form-group">
-                        <input id="filter" type="text" class="search-query form-control input-sm"
+                        <input id="filter" type="text" class="search-query form-control"
                                placeholder="<?php echo $filter_placeholder; ?>">
                     </div>
                 </form>
@@ -156,18 +157,18 @@
                         $this->session->userdata('user_id')); ?>"
                        class="tip icon" data-placement="bottom"
                        title="<?php
-                       _htmlsc($this->session->userdata('user_name'));
-                       if ($this->session->userdata('user_company')) {
-                           print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
-                       }
-                       ?>">
+                        _htmlsc($this->session->userdata('user_name'));
+                        if ($this->session->userdata('user_company')) {
+                            echo ' (' . htmlsc($this->session->userdata('user_company')) . ')';
+                        }
+                        ?>">
                         <i class="fa fa-user"></i>
                         <span class="visible-xs">&nbsp;<?php
                             _htmlsc($this->session->userdata('user_name'));
-                            if ($this->session->userdata('user_company')) {
-                                print(" (" . htmlsc($this->session->userdata('user_company')) . ")");
-                            }
-                            ?></span>
+                        if ($this->session->userdata('user_company')) {
+                            echo ' (' . htmlsc($this->session->userdata('user_company')) . ')';
+                        }
+                        ?></span>
                     </a>
                 </li>
                 <li>

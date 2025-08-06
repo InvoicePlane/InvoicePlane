@@ -1,26 +1,28 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
 class Mdl_Invoice_Custom extends Validator
 {
-    public static $positions = array(
+    public static $positions = [
         'custom_fields',
-        'properties'
-    );
+        'properties',
+    ];
+
     public $table = 'ip_invoice_custom';
+
     public $primary_key = 'ip_invoice_custom.invoice_custom_id';
 
     public function default_select()
@@ -42,25 +44,27 @@ class Mdl_Invoice_Custom extends Validator
     {
         $result = $this->validate($db_array);
         if ($result === true) {
-            $form_data = isset($this->_formdata) ? $this->_formdata : null;
+            $form_data = property_exists($this, '_formdata') && $this->_formdata !== null ? $this->_formdata : null;
 
-            if (is_null($form_data)) {
+            if (null === $form_data) {
                 return true;
             }
 
             $invoice_custom_id = null;
 
             foreach ($form_data as $key => $value) {
-                $db_array = array(
-                    'invoice_id' => $invoice_id,
-                    'invoice_custom_fieldid' => $key,
-                    'invoice_custom_fieldvalue' => $value
-                );
+                $db_array = [
+                    'invoice_id'                => $invoice_id,
+                    'invoice_custom_fieldid'    => $key,
+                    'invoice_custom_fieldvalue' => $value,
+                ];
                 $invoice_custom = $this->where('invoice_id', $invoice_id)->where('invoice_custom_fieldid', $key)->get();
 
                 if ($invoice_custom->num_rows()) {
                     $invoice_custom_id = $invoice_custom->row()->invoice_custom_id;
                 }
+
+                // why not delete when it empty value (clean db)
 
                 parent::save($invoice_custom_id, $db_array);
             }
@@ -74,7 +78,7 @@ class Mdl_Invoice_Custom extends Validator
     public function by_id($invoice_id)
     {
         $this->db->where('ip_invoice_custom.invoice_id', $invoice_id);
+
         return $this;
     }
-
 }

@@ -1,0 +1,50 @@
+/*
+|   =========================================================
+|   InvoicePlane Stamp Styles: Imported in template & style
+|   https://invoiceplane.com
+|   =========================================================
+|   The following styles are needed to display html stamps in
+|   Invoice templates for pdf print and public (guest) view.
+|   =========================================================
+*/
+
+.stamp {
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  font-size: 24px;
+  color: #777;
+  border: 3px solid #777;
+  padding: 10px;
+  border-radius: 10px;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+
+  &.rotate {
+    position: absolute;
+    transform: rotate(20deg); // mpdf only work with img (sorry)
+
+    &.bottom {
+      bottom: 20px;
+      left: -20px;
+    }
+
+  }
+
+  &.paid {
+    color: $color_green;
+    border-color: $color_green;
+  }
+
+  &.overdue {
+    color: $color_red;
+    border-color: $color_red;
+  }
+}
+
+// For Legacy templates (copied from _core) - Deprecated
+.paid-stamp, .overdue-stamp {
+  position: absolute;
+  bottom: 0;
+  left: -20px;
+  transform: rotate(22deg);
+}

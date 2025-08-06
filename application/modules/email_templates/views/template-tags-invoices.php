@@ -43,7 +43,9 @@
 <!--                     <?php _trans('payment_method'); ?> -->
 <!--                 </option> -->
         </optgroup>
-
+<?php
+if ($custom_fields['ip_invoice_custom']) {
+?>
         <optgroup label="<?php _trans('custom_fields'); ?>">
             <?php if(isset($custom_fields['ip_invoice_custom'])) {
                 foreach ($custom_fields['ip_invoice_custom'] as $custom) { ?>
@@ -53,5 +55,8 @@
                 <?php } ?>
             <?php } ?>
         </optgroup>
+<?php
+}
+?>
     </select>
 </div>

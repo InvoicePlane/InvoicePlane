@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,6 +17,7 @@ if (! defined('BASEPATH')) {
 class Mdl_Families extends Response_Model
 {
     public $table = 'ip_families';
+
     public $primary_key = 'ip_families.family_id';
 
     public function default_select()
@@ -34,13 +35,12 @@ class Mdl_Families extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'family_name' => array(
+        return [
+            'family_name' => [
                 'field' => 'family_name',
                 'label' => trans('family_name'),
-                'rules' => 'required'
-            )
-        );
+                'rules' => 'required',
+            ],
+        ];
     }
-
 }

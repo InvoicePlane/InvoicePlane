@@ -1,34 +1,36 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 /**
- * Shorthand for htmlspecialchars()
+ * Shorthand for htmlspecialchars().
  *
  * @param $output
  *
  * @return string
  */
-function htmlsc($output)
+function htmlsc($output): ?string
 {
-    if(!is_null($output))
-    return htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
+    if (null !== $output) {
+        return htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
+    }
+
     return $output;
 }
 
 /**
- * Echo something with escaped HTML special chars
+ * Echo something with escaped HTML special chars.
  *
  * @param mixed $output
  *
@@ -36,12 +38,15 @@ function htmlsc($output)
  */
 function _htmlsc($output)
 {
-    if ($output==null) return '';
+    if ($output == null) {
+        return '';
+    }
+
     echo htmlspecialchars($output, ENT_QUOTES | ENT_IGNORE);
 }
 
 /**
- * Echo something with escaped HTML entities
+ * Echo something with escaped HTML entities.
  *
  * @param mixed $output
  *
@@ -49,73 +54,68 @@ function _htmlsc($output)
  */
 function _htmle($output)
 {
-    if ($output==null) return '';
+    if ($output == null) {
+        return '';
+    }
+
     echo htmlentities($output, ENT_COMPAT);
 }
 
 /**
- * Echo a language string with the trans helper
+ * Echo a language string with the trans helper.
  *
- * @param string $line
- * @param string $id
+ * @param string      $line
+ * @param string      $id
  * @param null|string $default
- *
- * @return void
  */
-function _trans($line, $id = '', $default = null)
+function _trans($line, $id = '', $default = null): void
 {
     echo trans($line, $id, $default);
 }
 
 /**
- * Echo for the auto link function with special chars handling
+ * Echo for the auto link function with special chars handling.
  *
- * @param $str
+ * @param        $str
  * @param string $type
- * @param bool $popup
- *
- * @return void
+ * @param bool   $popup
  */
-function _auto_link($str, $type = 'both', $popup = false)
+function _auto_link($str, $type = 'both', $popup = false): void
 {
     echo auto_link(htmlsc($str), $type, $popup);
 }
 
 /**
- * Output the standard CSRF protection field
- *
- * @return void
+ * Output the standard CSRF protection field.
  */
-function _csrf_field()
+function _csrf_field(): void
 {
-    $CI = &get_instance();
+    $CI = & get_instance();
     echo '<input type="hidden" name="' . $CI->config->item('csrf_token_name');
     echo '" value="' . $CI->security->get_csrf_hash() . '">';
 }
 
 /**
  * Returns the correct URL for a asset within the theme directory
- * Also appends the current version to the asset to prevent browser caching issues
+ * Also appends the current version to the asset to prevent browser caching issues.
  *
  * @param string $asset
- *
- * @return void
  */
-function _theme_asset($asset)
+function _theme_asset($asset): void
 {
+    $asset = IP_DEBUG ? strtr($asset, ['.min.' => '.']) : $asset;
     echo base_url() . 'assets/' . get_setting('system_theme', 'invoiceplane');
     echo '/' . $asset . '?v=' . get_setting('current_version');
 }
 
 /**
  * Returns the correct URL for a asset within the core directory
- * Also appends the current version to the asset to prevent browser caching issues
+ * Also appends the current version to the asset to prevent browser caching issues.
  *
  * @param string $asset
- *
- * @return void
  */
-function _core_asset($asset)
+function _core_asset($asset): void
 {
+    $asset = IP_DEBUG ? strtr($asset, ['.min.' => '.']) : $asset;
     echo base_url() . 'assets/core/' . $asset . '?v=' . get_setting('current_version');
 }

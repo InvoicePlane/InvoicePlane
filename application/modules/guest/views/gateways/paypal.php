@@ -28,7 +28,7 @@
                     .then((response) => window.location.replace('<?php echo site_url('guest/view/invoice/' . $invoice_url_key); ?>'));
             },
             onError: function (error) {
-                console.log(error)
+                console.log('error on initPayPal', error)
                 window.location.replace('<?php echo site_url('guest/payment_information/form/' . $invoice_url_key . '/paypal'); ?>')
             }
         }).render('#paypal-buttons');

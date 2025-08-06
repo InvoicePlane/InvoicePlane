@@ -11,7 +11,7 @@
                 user_id: '<?php echo $user_id; ?>',
                 client_id: $('#client_id').val()
             }, function (data) {
-                <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
+                <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                 $('#div_user_client_table').load('<?php echo site_url('users/ajax/load_user_client_table'); ?>', {
                     user_id: '<?php echo $user_id; ?>'
                 });
@@ -35,12 +35,11 @@
             <div class="form-group">
                 <label for="client_id"><?php _trans('client'); ?></label>
                 <select name="client_id" id="client_id" class="form-control simple-select" autofocus="autofocus">
-                    <?php
+<?php
                     foreach ($clients as $client) {
-                        echo "<option value=\"" . $client->client_id . "\" ";
-                        echo ">" . htmlsc(format_client($client)) . "</option>";
+                        echo '<option value="' . $client->client_id . '">' . htmlsc(format_client($client)) . '</option>';
                     }
-                    ?>
+?>
                 </select>
             </div>
 
