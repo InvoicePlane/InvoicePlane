@@ -809,13 +809,6 @@ $lang = [
     'professor' => 'professor',
     'custom'    => 'custom',
 
-    // Clients/Enums/ClientTitleEnum
-    'mr'                                           => 'mr',
-    'mrs'                                          => 'mrs',
-    'doctor'                                       => 'doctor',
-    'professor'                                    => 'professor',
-    'custom'                                       => 'custom',
-
     // Errors
     'validator_fail' => 'Unable to process field %s: %s',
 
