@@ -3,7 +3,7 @@
 $its_mine = $this->session->__get('user_id') == $quote->user_id;
 $my_class = $its_mine ? 'success' : 'warning'; // visual: work with text-* alert-*
 // In change user toggle & After eInvoice (name) when user required field missing
-$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . htmlsc(PHP_EOL . format_user($quote->user_id));
+$edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing') . '): ' . PHP_EOL . htmlsc(format_user($quote->user_id));
 ?>
 
 <script>
@@ -65,6 +65,7 @@ if ($quote->quote_status_id == 1) {
                 items.push(row);
             });
             $.post("<?php echo site_url('quotes/ajax/save'); ?>", {
+                    legacy_calculation: <?php echo (int) $legacy_calculation; ?>,
                     quote_id: <?php echo $quote_id; ?>,
                     quote_number: $('#quote_number').val(),
                     quote_date_created: $('#quote_date_created').val(),
@@ -338,7 +339,7 @@ if ($quote->quote_status_id == 1) {
 
                 <div class="col-xs-12 visible-xs"><br></div>
 
-                <div class="col-xs-12 col-sm-6 col-md-7">
+                <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-1">
                     <div class="details-box">
                         <div class="row">
 

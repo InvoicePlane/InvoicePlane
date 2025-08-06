@@ -47,6 +47,19 @@ class Clients extends Admin_Controller
         $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
         $clients = $this->mdl_clients->result();
 
+        $req_einvoicing = get_setting('einvoicing');
+        if ($req_einvoicing) {
+            $this->load->helper('e-invoice'); // eInvoicing++
+
+            foreach ($clients as &$client) {
+                // Get a check of filled Required (client and users) fields for eInvoicing
+                $req_einvoicing = get_req_fields_einvoice($client);
+
+                $client = $this->check_client_einvoice_active($client, $req_einvoicing);
+            }
+            unset($client);
+        }
+
         $this->layout->set(
             [
                 'records'            => $clients,
@@ -233,23 +246,11 @@ class Clients extends Admin_Controller
         $req_einvoicing = get_setting('einvoicing');
         if ($req_einvoicing) {
             $this->load->helper('e-invoice'); // eInvoicing++
+
             // Get a check of filled Required (client and users) fields for eInvoicing
             $req_einvoicing = get_req_fields_einvoice($client);
 
-            // Update active eInvoicing client
-            $o = $client->client_einvoicing_active;
-            if ( ! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
-                $client->client_einvoicing_active = 1; // update view
-            } else {
-                $client->client_einvoicing_active = 0; // update view
-            }
-
-            // Update db if need
-            if ($o != $client->client_einvoicing_active) {
-                $this->db->where('client_id', $client_id);
-                $this->db->set('client_einvoicing_active', $client->client_einvoicing_active);
-                $this->db->update('ip_clients');
-            }
+            $client = $this->check_client_einvoice_active($client, $req_einvoicing);
         }
 
         // Change page only for one url (tab) system
@@ -341,5 +342,24 @@ class Clients extends Admin_Controller
             fn ($clientTitleEnum) => $clientTitleEnum->value,
             ClientTitleEnum::cases()
         );
+    }
+
+    private function check_client_einvoice_active($client, $req_einvoicing) {
+        // Update active eInvoicing client
+        $o = $client->client_einvoicing_active;
+        if ( ! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
+            $client->client_einvoicing_active = 1; // update view
+        } else {
+            $client->client_einvoicing_active = 0; // update view
+        }
+
+        // Update db if need
+        if ($o != $client->client_einvoicing_active) {
+            $this->db->where('client_id', $client->client_id);
+            $this->db->set('client_einvoicing_active', $client->client_einvoicing_active);
+            $this->db->update('ip_clients');
+        }
+
+        return $client;
     }
 }

@@ -59,6 +59,12 @@ class Ajax extends Admin_Controller
                 'items_subtotal' => $items_subtotal,
             ];
 
+            // Automatic calculation mode
+            if (get_setting('einvoicing')) {
+                // Shift to false (by default). Need true? See Dev Note on ipconfig example
+                $this->config->set_item('legacy_calculation', ! empty($this->input->post('legacy_calculation')));
+            }
+
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
                 if ( ! empty($item->item_name)) {
@@ -259,6 +265,12 @@ class Ajax extends Admin_Controller
         ]);
 
         if ($this->mdl_quotes->run_validation()) {
+            // Automatic calculation mode
+            if (get_setting('einvoicing')) {
+                // Shift to false (by default). Need true? See Dev Note on ipconfig example
+                $this->config->set_item('legacy_calculation', ! empty($this->input->post('legacy_calculation')));
+            }
+
             $target_id = $this->mdl_quotes->save();
             $source_id = $this->input->post('quote_id');
 
@@ -474,6 +486,12 @@ class Ajax extends Admin_Controller
             unset($quote); // Free memory
 
             $quote_items = $this->mdl_quote_items->where('quote_id', $this->input->post('quote_id'))->get()->result();
+
+            // Automatic calculation mode
+            if (get_setting('einvoicing')) {
+                // Shift to false (by default). Need true? See Dev Note on ipconfig example
+                $this->config->set_item('legacy_calculation', ! empty($this->input->post('legacy_calculation')));
+            }
 
             foreach ($quote_items as $quote_item) {
                 $db_array = [

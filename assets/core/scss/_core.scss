@@ -430,6 +430,7 @@ div#item_table {
   max-width: 100%;
   flex-direction: row;
   padding: 0;
+  min-height: calc(100vh - 52px);
 }
 
 #main-content {
