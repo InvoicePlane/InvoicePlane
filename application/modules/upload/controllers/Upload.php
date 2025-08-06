@@ -129,6 +129,7 @@ class Upload extends Admin_Controller
         if ( ! in_array($mimeType, $allowedTypes, true)) {
             $this->respond_message(415, 'upload_error_unsupported_file_type', $mimeType);
         }
+        return false;
     }
 
     private function save_file_metadata(int $customerId, string $url_key, string $filename): void

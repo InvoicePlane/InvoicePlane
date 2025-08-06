@@ -158,15 +158,15 @@ brace-expansion@^1.1.7:
 braces@^3.0.2:
   version "3.0.2"
   dependencies:
-    fill-range "^7.0.1"
+    fill-range "^7.1.1"
 
 browserslist@^4.12.0, "browserslist@>= 4.21.0":
   version "4.22.1"
   dependencies:
-    caniuse-lite "^1.0.30001541"
-    electron-to-chromium "^1.4.535"
-    node-releases "^2.0.13"
-    update-browserslist-db "^1.0.13"
+    caniuse-lite "^1.0.30001669"
+    electron-to-chromium "^1.5.41"
+    node-releases "^2.0.18"
+    update-browserslist-db "^1.1.1"
 
 bytes@1:
   version "1.0.0"
@@ -176,9 +176,11 @@ bytes@1:
 call-bind@^1.0.0:
   version "1.0.5"
   dependencies:
+    es-define-property "^1.0.0"
+    es-errors "^1.3.0"
     function-bind "^1.1.2"
-    get-intrinsic "^1.2.1"
-    set-function-length "^1.1.1"
+    get-intrinsic "^1.2.4"
+    set-function-length "^1.2.1"
 
 caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001541:
   version "1.0.30001561"
@@ -281,9 +283,9 @@ debug@^3.1.0:
 define-data-property@^1.1.1:
   version "1.1.1"
   dependencies:
-    get-intrinsic "^1.2.1"
+    es-define-property "^1.0.0"
+    es-errors "^1.3.0"
     gopd "^1.0.1"
-    has-property-descriptors "^1.0.0"
 
 delegate@^3.1.2:
   version "3.2.0"
@@ -464,6 +466,7 @@ gaze@^1.1.0:
 get-intrinsic@^1.0.2, get-intrinsic@^1.1.3, get-intrinsic@^1.2.1, get-intrinsic@^1.2.2:
   version "1.2.2"
   dependencies:
+    es-errors "^1.3.0"
     function-bind "^1.1.2"
     has-proto "^1.0.1"
     has-symbols "^1.0.3"
@@ -549,7 +552,7 @@ good-listener@^1.2.2:
 gopd@^1.0.1:
   version "1.0.1"
   dependencies:
-    get-intrinsic "^1.1.3"
+    get-intrinsic "^1.2.4"
 
 grunt-cli@~1.4.3:
   version "1.4.3"
@@ -703,7 +706,7 @@ has-flag@^4.0.0:
 has-property-descriptors@^1.0.0:
   version "1.0.1"
   dependencies:
-    get-intrinsic "^1.2.2"
+    es-define-property "^1.0.0"
 
 has-proto@^1.0.1:
   version "1.0.1"
@@ -786,7 +789,7 @@ is-absolute@^1.0.0:
 is-core-module@^2.13.0:
   version "2.13.1"
   dependencies:
-    hasown "^2.0.0"
+    hasown "^2.0.2"
 
 is-extglob@^2.1.1:
   version "2.1.1"
@@ -938,7 +941,7 @@ maxmin@^3.0.0:
 micromatch@^4.0.2, micromatch@^4.0.4, micromatch@^4.0.5:
   version "4.0.5"
   dependencies:
-    braces "^3.0.2"
+    braces "^3.0.3"
     picomatch "^2.3.1"
 
 minimatch@^3.0.4, minimatch@^3.1.1:
@@ -1167,6 +1170,15 @@ postcss-value-parser@^4.1.0:
   resolved "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
 
+postcss@8.4:
+  version "8.4.49"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.49.tgz#4ea479048ab059ab3ae61d082190fabfd994fe19"
+  integrity sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==
+  dependencies:
+    nanoid "^3.3.7"
+    picocolors "^1.1.1"
+    source-map-js "^1.2.1"
+
 postcss@^6.0.11:
   version "6.0.23"
   resolved "https://registry.npmjs.org/postcss/-/postcss-6.0.23.tgz"
@@ -1199,7 +1211,7 @@ pretty-bytes@^5.3.0:
 qs@^6.4.0:
   version "6.11.2"
   dependencies:
-    side-channel "^1.0.4"
+    side-channel "^1.0.6"
 
 raw-body@~1.1.0:
   version "1.1.7"
@@ -1296,17 +1308,20 @@ select2@4.1.0-rc.0:
 set-function-length@^1.1.1:
   version "1.1.1"
   dependencies:
-    define-data-property "^1.1.1"
-    get-intrinsic "^1.2.1"
+    define-data-property "^1.1.4"
+    es-errors "^1.3.0"
+    function-bind "^1.1.2"
+    get-intrinsic "^1.2.4"
     gopd "^1.0.1"
-    has-property-descriptors "^1.0.0"
+    has-property-descriptors "^1.0.2"
 
 side-channel@^1.0.4:
   version "1.0.4"
   dependencies:
-    call-bind "^1.0.0"
-    get-intrinsic "^1.0.2"
-    object-inspect "^1.9.0"
+    call-bind "^1.0.7"
+    es-errors "^1.3.0"
+    get-intrinsic "^1.2.4"
+    object-inspect "^1.13.1"
 
 source-map-js@^1.2.1, "source-map-js@>=0.6.2 <2.0.0":
   version "1.2.1"
@@ -1417,8 +1432,8 @@ underscore.string@~3.3.5:
 update-browserslist-db@^1.0.13:
   version "1.0.13"
   dependencies:
-    escalade "^3.1.1"
-    picocolors "^1.0.0"
+    escalade "^3.2.0"
+    picocolors "^1.1.0"
 
 uri-path@^1.0.0:
   version "1.0.0"

@@ -13,6 +13,8 @@ if ( ! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
+
+
 /**
  * Returns a printable pagination.
  *
