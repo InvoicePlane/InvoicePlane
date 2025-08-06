@@ -2,6 +2,7 @@
     <div id="paypal-buttons" class="col-xs-12 col-md-8 col-md-offset-2"></div>
 
     <?php $adv_enabled = !empty($advanced_credit_cards); ?>
+    <?php $venmo_enabled = !empty($venmo); ?>
     <?php if ($adv_enabled): ?>
         <div id="card-fields" class="col-xs-12 col-md-8 col-md-offset-2" style="margin-top:20px;">
             <h4 style="margin-bottom:10px;">Pay with credit or debit card</h4>
@@ -13,12 +14,12 @@
 
             <button id="card-submit" type="button" class="btn btn-primary">Pay with Card</button>
             <span id="card-spinner" style="display:none; margin-left:10px;" role="status" aria-live="polite" aria-label="Processing…">
-          <span style="
-            display:inline-block; width:16px; height:16px; border:2px solid #ccc; border-top-color:#333; border-radius:50%;
-            animation: ip-spin 0.7s linear infinite; vertical-align:middle;">
-          </span>
-          <span style="margin-left:6px; vertical-align:middle;">Processing…</span>
-        </span>
+              <span style="
+                display:inline-block; width:16px; height:16px; border:2px solid #ccc; border-top-color:#333; border-radius:50%;
+                animation: ip-spin 0.7s linear infinite; vertical-align:middle;">
+              </span>
+              <span style="margin-left:6px; vertical-align:middle;">Processing…</span>
+            </span>
             <div id="card-errors" class="text-danger" style="margin-top:10px;"></div>
         </div>
     <?php endif; ?>
@@ -27,14 +28,19 @@
     @keyframes ip-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 </style>
 <script>
-    // Setting flags from PHP
+    // Flags from PHP
     const ADV_ENABLED = <?php echo $adv_enabled ? 'true' : 'false'; ?>;
+    const VENMO_ENABLED = <?php echo $venmo_enabled ? 'true' : 'false'; ?>;
 
     // Decide which SDK components to request
     const SDK_COMPONENTS = "<?php echo $adv_enabled ? 'buttons,card-fields' : 'buttons'; ?>";
 
+    // Build SDK URL conditionally with Venmo
+    const sdkBase = "https://www.paypal.com/sdk/js?client-id=<?php echo $paypal_client_id; ?>&currency=<?php echo $currency; ?>&intent=capture&components=" + SDK_COMPONENTS;
+    const sdkUrl = VENMO_ENABLED ? (sdkBase + "&enable-funding=venmo") : sdkBase;
+
     $.ajax({
-        url: "https://www.paypal.com/sdk/js?client-id=<?php echo $paypal_client_id; ?>&enable-funding=venmo&currency=<?php echo $currency; ?>&intent=capture&components=" + SDK_COMPONENTS,
+        url: sdkUrl,
         dataType: "script",
         cache: true,
         success: () => { initPayPal(); }
