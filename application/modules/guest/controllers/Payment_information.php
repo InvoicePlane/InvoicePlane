@@ -123,6 +123,7 @@ class Payment_Information extends Base_Controller
             'paypal_client_id' => get_setting('gateway_paypal_clientId'),
             'invoice_url_key'  => $invoice_url_key,
             'currency'         => $this->mdl_settings->setting('gateway_paypal_currency'),
+            'advanced_credit_cards'  => (int) get_setting('gateway_paypal_advancedCreditCards') === 1,
         ];
         $this->load->view('guest/gateways/paypal', $data);
     }
