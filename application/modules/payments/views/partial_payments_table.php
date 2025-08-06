@@ -7,7 +7,7 @@
             <th><?php _trans('invoice_date'); ?></th>
             <th><?php _trans('invoice'); ?></th>
             <th><?php _trans('client'); ?></th>
-            <th><?php _trans('amount'); ?></th>
+            <th class="amount last"><?php _trans('amount'); ?></th>
             <th><?php _trans('payment_method'); ?></th>
             <th><?php _trans('note'); ?></th>
             <th><?php _trans('options'); ?></th>
@@ -15,7 +15,9 @@
         </thead>
 
         <tbody>
-        <?php foreach ($payments as $payment) { ?>
+<?php
+foreach ($payments as $payment) {
+?>
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>
                 <td><?php echo date_from_mysql($payment->invoice_date_created); ?></td>
@@ -26,7 +28,7 @@
                         <?php _htmlsc(format_client($payment)); ?>
                     </a>
                 </td>
-                <td class="amount"><?php echo format_currency($payment->payment_amount); ?></td>
+                <td class="amount last"><?php echo format_currency($payment->payment_amount); ?></td>
                 <td><?php _htmlsc($payment->payment_method_name); ?></td>
                 <td><?php _htmlsc($payment->payment_note); ?></td>
                 <td>
@@ -55,7 +57,9 @@
                     </div>
                 </td>
             </tr>
-        <?php } ?>
+<?php
+} // End foreach
+?>
         </tbody>
 
     </table>

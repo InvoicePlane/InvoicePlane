@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        node: ['16', '18']
+        node: ['14', '16', '18']
     name: Node ${{ matrix.node }} build testing
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +19,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+          cache: 'yarn'
       - name: Install frontend dependencies
-        run: npm install
+        run: yarn install --frozen-lockfile
       - name: Try to build the assets
-        run: npm run build
+        run: yarn build

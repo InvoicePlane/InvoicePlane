@@ -1,28 +1,23 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
-
-#[AllowDynamicProperties]
 /**
  * @param $from
  * @param $to
  * @param $subject
  * @param $message
- * @param null $attachment_path
- * @param null $cc
- * @param null $bcc
- * @param null $more_attachments
+ *
  * @return bool
  */
 function phpmail_send(
@@ -39,9 +34,12 @@ function phpmail_send(
     $CI->load->library('crypt');
 
     // Create the basic mailer object
-    $mail = new \PHPMailer\PHPMailer\PHPMailer();
+    $mail          = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
+
+    // Set msg from PHPMailer in user lang. Only work with 2 letters. See phpmailer.lang-fr.php (in vendor dir).
+    $mail->setLanguage(trans('cldr')); // Default ($langcode = 'en', $lang_path = '')
 
     switch (get_setting('email_send_method')) {
         case 'smtp':
@@ -69,20 +67,18 @@ function phpmail_send(
             }
 
             // Check if certificates should not be verified
-            if (!get_setting('smtp_verify_certs', true)) {
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true
-                    )
-                );
+            if ( ! get_setting('smtp_verify_certs', true)) {
+                $mail->SMTPOptions = [
+                    'ssl' => [
+                        'verify_peer'       => false,
+                        'verify_peer_name'  => false,
+                        'allow_self_signed' => true,
+                    ],
+                ];
             }
 
             break;
         case 'sendmail':
-            $mail->IsMail();
-            break;
         case 'phpmail':
         case 'default':
             $mail->IsMail();
@@ -90,7 +86,7 @@ function phpmail_send(
     }
 
     $mail->Subject = $subject;
-    $mail->Body = $message;
+    $mail->Body    = $message;
     $mail->AltBody = $mail->normalizeBreaks($mail->html2text($message));
 
     if (is_array($from)) {
@@ -102,7 +98,7 @@ function phpmail_send(
     }
 
     // Allow multiple recipients delimited by comma or semicolon
-    $to = (strpos($to, ',')) ? explode(',', $to) : explode(';', $to);
+    $to = (mb_strpos($to, ',')) ? explode(',', $to) : explode(';', $to);
 
     // Add the addresses
     foreach ($to as $address) {
@@ -111,7 +107,7 @@ function phpmail_send(
 
     if ($cc) {
         // Allow multiple CC's delimited by comma or semicolon
-        $cc = (strpos($cc, ',')) ? explode(',', $cc) : explode(';', $cc);
+        $cc = (mb_strpos($cc, ',')) ? explode(',', $cc) : explode(';', $cc);
 
         // Add the CC's
         foreach ($cc as $address) {
@@ -121,7 +117,7 @@ function phpmail_send(
 
     if ($bcc) {
         // Allow multiple BCC's delimited by comma or semicolon
-        $bcc = (strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
+        $bcc = (mb_strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
         // Add the BCC's
         foreach ($bcc as $address) {
             $mail->addBCC($address);
@@ -136,10 +132,30 @@ function phpmail_send(
         $mail->addBCC($admin->user_email);
     }
 
-    // Add the attachment if supplied
+    $xml_del = false;
+    // Add the attachments if needed
     if ($attachment_path && get_setting('email_pdf_attachment')) {
         $mail->addAttachment($attachment_path);
+
+        // eInvoicing replace ARCHIVE (pdf) to TEMP (xml) for no embed_xml - since 1.6.3
+        $attachment_path = strtr($attachment_path, [UPLOADS_ARCHIVE_FOLDER => UPLOADS_TEMP_FOLDER]);
+
+        // The XML eInvoicing file exist in temporary?
+        $xml_file = mb_rtrim($attachment_path, '.pdf') . '.xml';
+        if (file_exists($xml_file)) {
+            // Attach eInvoicing temp file
+            if ( ! empty($_SERVER['CIIname'])) {
+                // Need Specific eInvoice filename? (see mailer helper)
+                $mail->addAttachment($xml_file, $_SERVER['CIIname']); // phpmailer-sent-attachment-as-other-name
+            } else {
+                $mail->addAttachment($xml_file);
+            }
+
+            // Need Delete
+            $xml_del = true;
+        }
     }
+
     // Add the other attachments if supplied
     if ($more_attachments) {
         foreach ($more_attachments as $paths) {
@@ -148,12 +164,17 @@ function phpmail_send(
     }
 
     // And away it goes...
-    if ($mail->send()) {
-        $CI->session->set_flashdata('alert_success', 'The email has been sent');
-        return true;
-    } else {
-        // Or not...
-        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
-        return false;
+    $ok = $mail->send();
+
+    // Delete the tmp CII-XML file
+    if ($xml_del) {
+        unlink($xml_file);
     }
+
+    // Only Notify the error. The success is in mailer controller.
+    if ( ! $ok) {
+        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+    }
+
+    return $ok;
 }
