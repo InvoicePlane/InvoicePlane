@@ -1,0 +1,37 @@
+{
+    "name": "invoiceplane/fatturapa",
+    "description": "FatturaPA einvoice generator for InvoicePlane 1.6.3",
+    "type": "metapackage",
+    "keywords": [
+        "fatturapa",
+        "InvoicePlane",
+        "fattura",
+        "e-invoice",
+        "CII",
+        "xml",
+        "php",
+        "fattura electronica"
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "https://github.com/s2software/fatturapa.git"
+        }
+    ],
+    "require": {
+        "s2software/fatturapa": "dev-master"
+    },
+    "autoload": {
+        "classmap": [
+            "vendor/s2software/fatturapa/fatturapa.php"
+        ]
+    },
+    "license": "lgpl",
+    "authors": [
+        {
+            "name": "Thomas Ingles",
+            "email": "thomas@sudwebdesign.fr"
+        }
+    ],
+    "minimum-stability": "dev"
+}

@@ -1,0 +1,79 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "0330c49382c620d3ffd3382cdcca422a",
+    "packages": [
+        {
+            "name": "josemmo/facturae-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/josemmo/Facturae-PHP.git",
+                "reference": "edb213c1fb3d799515fcc588fae5b6aa3bda4779"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/josemmo/Facturae-PHP/zipball/edb213c1fb3d799515fcc588fae5b6aa3bda4779",
+                "reference": "edb213c1fb3d799515fcc588fae5b6aa3bda4779",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "*"
+            },
+            "suggest": {
+                "ext-curl": "For communicating with remote TSA Servers and SOAP Web Services",
+                "ext-fileinfo": "For getting MIME types when using FacturaeFile",
+                "ext-openssl": "For signing and timestamping both invoices and SOAP requests",
+                "lib-libxml": "For parsing SOAP XML responses for FACe and FACeB2B"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "josemmo\\Facturae\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "josemmo",
+                    "email": "josemmo@pm.me",
+                    "homepage": "https://github.com/josemmo"
+                }
+            ],
+            "description": "Librería para la generación, firma y envío de facturas electrónicas",
+            "homepage": "https://github.com/josemmo/Facturae-PHP",
+            "keywords": [
+                "face",
+                "faceb2b",
+                "facturae",
+                "xades"
+            ],
+            "support": {
+                "issues": "https://github.com/josemmo/Facturae-PHP/issues",
+                "source": "https://github.com/josemmo/Facturae-PHP/tree/v1.8.2"
+            },
+            "time": "2024-11-23T18:14:23+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "josemmo/facturae-php": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}

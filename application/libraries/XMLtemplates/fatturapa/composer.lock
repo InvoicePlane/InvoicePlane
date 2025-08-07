@@ -1,0 +1,53 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "5743859b072f10a57b2054bfb8fe78d2",
+    "packages": [
+        {
+            "name": "s2software/fatturapa",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/s2software/fatturapa.git",
+                "reference": "b1979e8d504fe9e851ecfa54fd4748c6847c855d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/s2software/fatturapa/zipball/b1979e8d504fe9e851ecfa54fd4748c6847c855d",
+                "reference": "b1979e8d504fe9e851ecfa54fd4748c6847c855d",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stefano Storti",
+                    "email": "s.storti@s2software.it",
+                    "homepage": "https://www.s2software.it/"
+                }
+            ],
+            "description": "Libreria PHP per la generazione della fattura elettronica italiana in XML (formato FatturaPA)",
+            "support": {
+                "source": "https://github.com/s2software/fatturapa/tree/v0.3.3"
+            },
+            "time": "2022-09-13T15:19:25+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "s2software/fatturapa": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}
