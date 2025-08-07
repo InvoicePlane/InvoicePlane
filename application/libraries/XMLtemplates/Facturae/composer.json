@@ -1,0 +1,25 @@
+{
+    "name": "invoiceplane/facturae",
+    "description": "Facturae einvoice generator for InvoicePlane 1.6.3",
+    "type": "metapackage",
+    "keywords": [
+        "facturae",
+        "InvoicePlane",
+        "e-invoice",
+        "CII",
+        "xml",
+        "facturae-php",
+        "factura electronica"
+    ],
+    "require": {
+        "josemmo/facturae-php": "dev-master"
+    },
+    "license": "lgpl",
+    "authors": [
+        {
+            "name": "Thomas Ingles",
+            "email": "thomas@sudwebdesign.fr"
+        }
+    ],
+    "minimum-stability": "dev"
+}
