@@ -93,7 +93,11 @@ function standardize_amount($amount): float|int|string|array|false|null
             $amount[mb_strrpos($amount, '.')] = ','; // Replace last position of dot to comma
         }
 
-        $amount = strtr($amount, [$thousands_separator => '', $decimal_point => '.']);
+        if ($thousands_separator) {
+            $amount = strtr($amount, [$thousands_separator => '', $decimal_point => '.']);
+        } else {
+            $amount = strtr($amount, [$decimal_point => '.']);
+        }
     }
 
     return $amount;
