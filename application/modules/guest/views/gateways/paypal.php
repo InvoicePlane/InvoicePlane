@@ -1,12 +1,27 @@
 <link rel="stylesheet" href="<?php _core_asset('css/payment-forms.css'); ?>" type="text/css">
 <div class="container">
-    <div id="paypal-buttons" class="col-xs-12 col-md-8 col-md-offset-2"></div>
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+        <div class="payment-button-container">
+            <div id="paypal-buttons"></div>
+        </div>
+    </div>
+</div>
+<?php $adv_enabled = !empty($advanced_credit_cards); ?>
+<?php $venmo_enabled = !empty($venmo); ?>
+<?php if ($adv_enabled): ?>
+<!-- OR Divider -->
+<div class="col-xs-12 col-md-6 col-md-offset-3">
+    <div class="payment-or-container">
+        <div class="payment-or-divider">
+            <span class="or-text">OR</span>
+        </div>
+    </div>
+</div>
 
-    <?php $adv_enabled = !empty($advanced_credit_cards); ?>
-    <?php $venmo_enabled = !empty($venmo); ?>
-    <?php if ($adv_enabled): ?>
-        <div id="card-fields" class="col-xs-12 col-md-8 col-md-offset-2">
-            <h4>Pay with credit or debit card</h4>
+<div class="col-xs-12 col-md-6 col-md-offset-3">
+    <div class="payment-form-container">
+        <div id="card-fields">
+            <h4>Pay with Credit / Debit Card</h4>
 
             <!-- Validation Error Display -->
             <div id="card-error-container" class="alert alert-danger">
@@ -23,12 +38,13 @@
             <div id="card-expiry-field-container" class="form-group"></div>
             <div id="card-cvv-field-container" class="form-group"></div>
 
-            <button id="card-submit" type="button" class="btn btn-primary">Pay with Card</button>
+            <button id="card-submit" type="button" class="btn btn-primary">Process Card Payment</button>
             <span id="card-spinner" role="status" aria-live="polite" aria-label="Processing…">
                 <span class="spinner-icon"></span>
                 <span class="spinner-text">Processing…</span>
             </span>
         </div>
+    </div>
     <?php endif; ?>
 </div>
 <script>

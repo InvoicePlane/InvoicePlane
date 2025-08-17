@@ -1,6 +1,10 @@
 @keyframes ip-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Card fields section */
@@ -10,6 +14,7 @@
 
 #card-fields h4 {
     margin-bottom: 10px;
+    text-align: center;
 }
 
 /* Error styling */
@@ -28,6 +33,11 @@
 
 .error-header .fa {
     margin-right: 8px;
+}
+
+#card-submit {
+    display: block;
+    margin: 20px auto 0 auto;
 }
 
 #card-error-list {
@@ -79,4 +89,43 @@
 #card-spinner .spinner-text {
     margin-left: 6px;
     vertical-align: middle;
+}
+
+.payment-button-container,
+.payment-form-container {
+    max-width: 400px;
+    margin: 0 auto 40px auto;
+}
+
+/* OR Divider styling */
+.payment-or-container {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.payment-or-divider {
+    position: relative;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.payment-or-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #ddd;
+    z-index: 1;
+}
+
+.or-text {
+    display: inline-block;
+    background-color: #fff;
+    padding: 0 15px;
+    color: #666;
+    font-weight: 500;
+    position: relative;
+    z-index: 2;
 }
