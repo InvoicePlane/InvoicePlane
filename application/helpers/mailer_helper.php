@@ -88,19 +88,6 @@ function email_invoice(
         $errors[] = 'from_email';
     }
 
-    /*
-    if ( ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'to_email';
-    }
-
-    if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'cc_email';
-    }
-
-    if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'bcc_email';
-    }
-    */
     check_mail_errors($errors, 'mailer/invoice/' . $invoice_id);
 
     $message = (empty($message) ? ' ' : $message);
@@ -150,21 +137,12 @@ function email_quote(
     $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
     // Check parsed emails before phpmail - since v1.6.3
+    /**
+     * 1.6.4 / 1.7.0: EXCEPT FOR email addresses with a "," in them, since you can send "to, cc and bcc to multiple addresses".
+     */
     $errors = [];
     if ( ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'to_email';
-    }
-
-    if ( ! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'from_email';
-    }
-
-    if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'cc_email';
-    }
-
-    if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'bcc_email';
     }
 
     check_mail_errors($errors, 'mailer/quote/' . $quote_id);
