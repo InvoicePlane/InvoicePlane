@@ -226,12 +226,12 @@ function email_quote_status(string $quote_id, $status)
  * @return boolean returs true if all emails are valid otherwise false.
  */
 function validate_email_address(string $email) : string|bool {
-    $email[] = $email;
+    $emails[] = $email;
     if(strpos($email,',') !== false) {
-        $email = explode(',', $email);
+        $emails = explode(',', $email);
     }
 
-    foreach ($email as $emailItem) {
+    foreach ($emails as $emailItem) {
         if(!filter_var($emailItem, FILTER_VALIDATE_EMAIL))
             return false;
     }
