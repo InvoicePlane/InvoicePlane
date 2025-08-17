@@ -83,9 +83,20 @@ function email_invoice(
      * 1.6.4 / 1.7.0: EXCEPT FOR email addresses with a "," in them, since you can send "to, cc and bcc to multiple addresses".
      */
     $errors = [];
+    if ( ! validate_email_address($to)) {
+        $errors[] = 'to_email';
+    }
 
-    if ( ! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($from[0])) {
         $errors[] = 'from_email';
+    }
+
+    if ($cc && ! validate_email_address($cc)) {
+        $errors[] = 'cc_email';
+    }
+
+    if ($bcc && ! validate_email_address($bcc)) {
+        $errors[] = 'bcc_email';
     }
 
     check_mail_errors($errors, 'mailer/invoice/' . $invoice_id);
@@ -141,8 +152,20 @@ function email_quote(
      * 1.6.4 / 1.7.0: EXCEPT FOR email addresses with a "," in them, since you can send "to, cc and bcc to multiple addresses".
      */
     $errors = [];
-    if ( ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
+    }
+
+    if ( ! validate_email_address($from[0])) {
+        $errors[] = 'from_email';
+    }
+
+    if ($cc && ! validate_email_address($cc)) {
+        $errors[] = 'cc_email';
+    }
+
+    if ($bcc && ! validate_email_address($bcc)) {
+        $errors[] = 'bcc_email';
     }
 
     check_mail_errors($errors, 'mailer/quote/' . $quote_id);
@@ -192,6 +215,28 @@ function email_quote_status(string $quote_id, $status)
     );
 
     return phpmail_send($user_email, $user_email, $subject, $body);
+}
+
+/**
+ * Validate email address syntax
+ * $email string can be a single email or a list of emails.
+ * The emails list must be comma separated.
+ *
+ * @param string $email
+ * @return boolean returs true if all emails are valid otherwise false.
+ */
+function validate_email_address(string $email) : string|bool {
+    $email[] = $email;
+    if(strpos($email,',') !== false) {
+        $email = explode(',', $email);
+    }
+
+    foreach ($email as $emailItem) {
+        if(!filter_var($emailItem, FILTER_VALIDATE_EMAIL))
+            return false;
+    }
+
+    return true;
 }
 
 /**
