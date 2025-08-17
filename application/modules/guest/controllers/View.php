@@ -68,16 +68,17 @@ class View extends Base_Controller
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
 
         $data = [
-            'invoice'            => $invoice,
-            'items'              => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_tax_rates'  => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_url_key'    => $invoice_url_key,
-            'flash_message'      => $this->session->flashdata('flash_message'),
-            'payment_method'     => $payment_method,
-            'is_overdue'         => $is_overdue,
-            'attachments'        => $attachments,
-            'custom_fields'      => $custom_fields,
-            'legacy_calculation' => config_item('legacy_calculation'),
+            'invoice'             => $invoice,
+            'items'               => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_tax_rates'   => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_url_key'     => $invoice_url_key,
+            'flash_message'       => $this->session->flashdata('flash_message'),
+            'payment_method'      => $payment_method,
+            'is_overdue'          => $is_overdue,
+            'attachments'         => $attachments,
+            'custom_fields'       => $custom_fields,
+            'legacy_calculation'  => config_item('legacy_calculation'),
+            'show_item_discounts' => get_setting('show_item_discounts'),
         ];
 
         $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
