@@ -1,0 +1,82 @@
+@keyframes ip-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Card fields section */
+#card-fields {
+    margin-top: 20px;
+}
+
+#card-fields h4 {
+    margin-bottom: 10px;
+}
+
+/* Error styling */
+#card-error-container {
+    border-left: 4px solid #dc3545;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    display: none;
+    margin-bottom: 20px;
+}
+
+.error-header {
+    font-weight: 500;
+}
+
+.error-header .fa {
+    margin-right: 8px;
+}
+
+#card-error-list {
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+#card-error-list li {
+    margin-bottom: 5px;
+}
+
+#card-error-message {
+    margin-top: 10px;
+    display: none;
+}
+
+/* Card field containers */
+#card-name-field-container,
+#card-number-field-container,
+#card-expiry-field-container,
+#card-cvv-field-container {
+    margin-bottom: 10px;
+}
+
+/* Field validation states */
+.field-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+/* Spinner styling */
+#card-spinner {
+    display: none;
+    margin-left: 10px;
+}
+
+#card-spinner .spinner-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-top-color: #333;
+    border-radius: 50%;
+    animation: ip-spin 0.7s linear infinite;
+    vertical-align: middle;
+}
+
+#card-spinner .spinner-text {
+    margin-left: 6px;
+    vertical-align: middle;
+}

@@ -1,63 +1,36 @@
+<link rel="stylesheet" href="<?php _core_asset('css/payment-forms.css'); ?>" type="text/css">
 <div class="container">
     <div id="paypal-buttons" class="col-xs-12 col-md-8 col-md-offset-2"></div>
 
     <?php $adv_enabled = !empty($advanced_credit_cards); ?>
     <?php $venmo_enabled = !empty($venmo); ?>
     <?php if ($adv_enabled): ?>
-        <div id="card-fields" class="col-xs-12 col-md-8 col-md-offset-2" style="margin-top:20px;">
-            <h4 style="margin-bottom:10px;">Pay with credit or debit card</h4>
+        <div id="card-fields" class="col-xs-12 col-md-8 col-md-offset-2">
+            <h4>Pay with credit or debit card</h4>
 
             <!-- Validation Error Display -->
-            <div id="card-error-container" class="alert alert-danger" style="display:none; margin-bottom:20px;">
+            <div id="card-error-container" class="alert alert-danger">
                 <div class="error-header">
-                    <i class="fa fa-exclamation-circle" style="margin-right:8px;"></i>
+                    <i class="fa fa-exclamation-circle"></i>
                     <strong>Please correct the following errors:</strong>
                 </div>
-                <ul id="card-error-list" style="margin-top:10px; margin-bottom:0; padding-left:20px;"></ul>
-                <div id="card-error-message" style="margin-top:10px; display:none;"></div>
+                <ul id="card-error-list"></ul>
+                <div id="card-error-message"></div>
             </div>
 
-            <div id="card-name-field-container" class="form-group" style="margin-bottom:10px;"></div>
-            <div id="card-number-field-container" class="form-group" style="margin-bottom:10px;"></div>
-            <div id="card-expiry-field-container" class="form-group" style="margin-bottom:10px;"></div>
-            <div id="card-cvv-field-container" class="form-group" style="margin-bottom:10px;"></div>
+            <div id="card-name-field-container" class="form-group"></div>
+            <div id="card-number-field-container" class="form-group"></div>
+            <div id="card-expiry-field-container" class="form-group"></div>
+            <div id="card-cvv-field-container" class="form-group"></div>
 
             <button id="card-submit" type="button" class="btn btn-primary">Pay with Card</button>
-            <span id="card-spinner" style="display:none; margin-left:10px;" role="status" aria-live="polite" aria-label="Processing…">
-              <span style="
-                display:inline-block; width:16px; height:16px; border:2px solid #ccc; border-top-color:#333; border-radius:50%;
-                animation: ip-spin 0.7s linear infinite; vertical-align:middle;">
-              </span>
-              <span style="margin-left:6px; vertical-align:middle;">Processing…</span>
+            <span id="card-spinner" role="status" aria-live="polite" aria-label="Processing…">
+                <span class="spinner-icon"></span>
+                <span class="spinner-text">Processing…</span>
             </span>
         </div>
     <?php endif; ?>
 </div>
-<style>
-    @keyframes ip-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-    /* Error styling */
-    #card-error-container {
-        border-left: 4px solid #dc3545;
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-        color: #721c24;
-    }
-
-    .error-header {
-        font-weight: 500;
-    }
-
-    #card-error-list li {
-        margin-bottom: 5px;
-    }
-
-    /* Field validation states */
-    .field-error {
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
-    }
-</style>
 <script>
     // Flags from PHP
     const ADV_ENABLED = <?php echo $adv_enabled ? 'true' : 'false'; ?>;
