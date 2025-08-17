@@ -370,13 +370,8 @@ if ($invoice->invoice_terms) {
 <?php
 }
 ?>
-</div>
-
-<htmlpagefooter name="footer">
-    <footer>
-        <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number; ?> - <?php _trans('page'); ?> {PAGENO} / {nbpg}
-    </footer>
-</htmlpagefooter>
-
+<sethtmlpagefooter name="defaultFooter" value="on" />
+<!-- To use the template with page numbering, uncomment the following line -->
+<!-- <sethtmlpagefooter name="footerWithPageNumbers" value="on" /> -->
 </body>
 </html>
