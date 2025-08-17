@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?php _core_asset('css/payment-forms.css'); ?>" type="text/css">
+<link rel="stylesheet" href="<?php _core_asset('css/paypal.css'); ?>" type="text/css">
 <div class="container">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
         <div class="payment-button-container">
@@ -63,4 +63,4 @@
         errorUrl: '<?php echo site_url('guest/payment_information/form/' . $invoice_url_key . '/paypal'); ?>'
     };
 </script>
-<script src="<?php _core_asset('js/payment-forms.js'); ?>"></script>
+<script src="<?php _core_asset('js/paypal.js'); ?>"></script>
