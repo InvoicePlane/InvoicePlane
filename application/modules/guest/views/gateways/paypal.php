@@ -38,11 +38,13 @@
             <div id="card-expiry-field-container" class="form-group"></div>
             <div id="card-cvv-field-container" class="form-group"></div>
 
-            <button id="card-submit" type="button" class="btn btn-primary">Process Card Payment</button>
-            <span id="card-spinner" role="status" aria-live="polite" aria-label="Processing…">
-                <span class="spinner-icon"></span>
-                <span class="spinner-text">Processing…</span>
-            </span>
+            <div class="card-submit-container">
+                <button id="card-submit" type="button" class="btn btn-primary">Process Card Payment</button>
+                <span id="card-spinner" role="status" aria-live="polite" aria-label="Processing…">
+                    <span class="spinner-icon"></span>
+                    <span class="spinner-text">Processing…</span>
+                </span>
+            </div>
         </div>
     </div>
     <?php endif; ?>

@@ -35,9 +35,21 @@
     margin-right: 8px;
 }
 
+/* Center align the card submit button and spinner container */
+.card-submit-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
 #card-submit {
-    display: block;
-    margin: 20px auto 0 auto;
+    display: inline-block;
+    margin: 0;
+}
+
+/* Spinner styling */
+#card-spinner {
+    display: none;
+    margin-left: 10px;
 }
 
 #card-error-list {
