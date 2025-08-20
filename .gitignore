@@ -20,3 +20,4 @@ adminer.php
 *.bak
 npm-debug.log
 yarn-error.log
+.temp

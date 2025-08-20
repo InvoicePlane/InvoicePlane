@@ -20,6 +20,8 @@ class PaypalLib
 
     protected string $bearer_token;
 
+    protected string $partner_attribution_id = 'ANGELLFREEInc_SP'; // Partner attribution.
+
     public function __construct(array $params)
     {
         $params['demo'] && $this->endpoint = 'https://api-m.sandbox.paypal.com';
@@ -37,6 +39,42 @@ class PaypalLib
         $this->authorize();
     }
 
+    /** Centralized headers for PayPal REST calls. */
+    protected function buildHeaders(array $options = []): array
+    {
+        // $options: ['request_id' => string, 'content_type' => string, 'prefer' => string]
+        $headers = [
+            'Content-Type'                  => $options['content_type'] ?? 'application/json',
+            'Authorization'                 => 'Bearer ' . $this->bearer_token,
+            'PayPal-Partner-Attribution-Id' => $this->partner_attribution_id,
+        ];
+
+        if (!empty($options['request_id'])) {
+            // Unique idempotency key per API attempt (reuse only for retries of the same call)
+            $headers['PayPal-Request-Id'] = $options['request_id'];
+        }
+
+        if (!empty($options['prefer'])) {
+            // e.g., 'return=representation' - provides more detailed response object.
+            $headers['Prefer'] = $options['prefer'];
+        }
+
+        return $headers;
+    }
+
+    /** UUID v4 id generator for PayPal-Request-Id. */
+    protected function generateRequestId(string $context = ''): string
+    {
+        $data = random_bytes(16);
+        // version 4
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        // variant RFC 4122
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+        $uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+        return 'ip' . ($context ? "-{$context}" : '') . '-' . $uuid;
+    }
+
     /**
      * Create an order on paypal.
      *
@@ -49,10 +87,10 @@ class PaypalLib
         log_message('debug', 'Paypal library order creation started');
         try {
             $response = $this->client->request('POST', 'v2/checkout/orders', [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->bearer_token,
-                ],
+                'headers' => $this->buildHeaders([
+                    'request_id'   => $this->generateRequestId('create'),
+                    'content_type' => 'application/json',
+                ]),
                 'body' => json_encode([
                     'purchase_units' => [[
                         'invoice_id' => $order_information['invoice_id'],
@@ -85,10 +123,10 @@ class PaypalLib
         log_message('debug', 'Paypal library order capturing started');
         try {
             $response = $this->client->request('POST', 'v2/checkout/orders/' . $order_id . '/capture', [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->bearer_token,
-                ],
+                'headers' => $this->buildHeaders([
+                    'request_id'   => $this->generateRequestId('capture'),
+                    'content_type' => 'application/json',
+                ]),
             ]);
             log_message('debug', 'Paypal library order capturing completed');
 
@@ -110,10 +148,10 @@ class PaypalLib
         log_message('debug', 'Paypal library show order started');
         try {
             $response = $this->client->request('GET', 'v2/checkout/orders/' . $order_id, [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->bearer_token,
-                ],
+                'headers' => $this->buildHeaders([
+                    'content_type' => 'application/json',
+                    'prefer' => 'return=representation', // returns more detailed response object.
+                ]),
             ]);
             log_message('debug', 'Paypal library show order completed');
 
