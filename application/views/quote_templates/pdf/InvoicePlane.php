@@ -277,12 +277,8 @@ if ($quote->notes) {
 }
 ?>
 </div>
-
-<htmlpagefooter name="footer">
-    <footer>
-        <?php _trans('quote'); ?> <?php echo $quote->quote_number; ?> - <?php _trans('page'); ?> {PAGENO} / {nbpg}
-    </footer>
-</htmlpagefooter>
-
+<sethtmlpagefooter name="defaultFooter" value="on" />
+<!-- To use the template with page numbering, uncomment the following line -->
+<!-- <sethtmlpagefooter name="footerWithPageNumbers" value="on" /> -->
 </body>
 </html>
