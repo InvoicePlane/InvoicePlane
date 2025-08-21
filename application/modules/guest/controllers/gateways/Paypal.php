@@ -70,7 +70,7 @@ class Paypal extends Base_Controller
             $paypal_object = json_decode($paypal_response['response']->getBody());
 
             // Set the status of the actual transaction (not just the API call result.)
-            $capture_status = strtoupper($paypal_object->purchase_units[0]->payments->captures[0]->status) ?? null;
+            $capture_status = mb_strtoupper($paypal_object->purchase_units[0]->payments->captures[0]->status) ?? null;
 
             // If either Completed or Pending, we're treating it as completed from the buyer's perspective.
             if ($capture_status === 'COMPLETED' || $capture_status === 'PENDING') {
@@ -96,7 +96,7 @@ class Paypal extends Base_Controller
                 $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
                 $this->session->keep_flashdata('alert_success');
 
-                /**
+                /*
                  * merchant_response_success will be set to true for both completed and pending,
                  * so that it will show up as green in the logs.
                  *
@@ -120,9 +120,9 @@ class Paypal extends Base_Controller
                 $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
 
                 // If we can't get invoice_id from captures, try to get it from order details
-                if (!$invoice_id) {
+                if ( ! $invoice_id) {
                     $order_details = json_decode($this->lib_paypal->showOrderDetails($order_id));
-                    $invoice_id = $order_details->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
+                    $invoice_id    = $order_details->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
                 }
 
                 // Get processor response code if available.
