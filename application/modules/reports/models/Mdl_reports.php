@@ -214,11 +214,12 @@ class Mdl_Reports extends CI_Model
         if ($minQuantity == '') {
             $minQuantity = 0;
         }
+        // Sanitize minQuantity and maxQuantity to prevent SQL injection
+        $minQuantity = (int) $minQuantity;
+        $maxQuantity = (int) $maxQuantity;
 
-        $from_date = $from_date == '' ? date('Y-m-d') : date_to_mysql($from_date);
-
-        $to_date = $to_date == '' ? date('Y-m-d') : date_to_mysql($to_date);
-
+        $from_date      = $from_date == '' ? date('Y-m-d') : date_to_mysql($from_date);
+        $to_date        = $to_date   == '' ? date('Y-m-d') : date_to_mysql($to_date);
         $from_date_year = (int) (mb_substr($from_date, 0, 4));
         $to_date_year   = (int) (mb_substr($to_date, 0, 4));
 
