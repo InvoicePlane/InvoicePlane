@@ -45,25 +45,27 @@ class Get extends Base_Controller
     public function get_file($filename): void
     {
         $filename = urldecode($filename);
-        if ( ! file_exists($this->targetPath . $filename)) {
+        // Prevent directory traversal
+        $safeFilename = basename($filename); // Remove any path components
+        $fullPath     = $this->targetPath . $safeFilename;
+        $realBase     = realpath($this->targetPath);
+        $realFile     = realpath($fullPath);
+        // Check that the file exists and is within the allowed directory
+        if ($realFile === false || ! str_starts_with($realFile, $realBase) || ! file_exists($realFile)) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-            $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $filename . $ref);
+            $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
         }
-
-        $path_parts = pathinfo($this->targetPath . $filename);
+        $path_parts = pathinfo($realFile);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
-
-        $file_size = filesize($this->targetPath . $filename);
-
+        $file_size  = filesize($realFile);
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Disposition: attachment; filename="' . $safeFilename . '"');
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
-
-        readfile($this->targetPath . $filename);
+        readfile($realFile);
     }
 
     private function respond_message(int $httpCode, string $messageKey, string $dynamicLogValue = ''): void
