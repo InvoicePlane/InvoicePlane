@@ -6,8 +6,8 @@
         </div>
     </div>
 </div>
-<?php $adv_enabled = !empty($advanced_credit_cards); ?>
-<?php $venmo_enabled = !empty($venmo); ?>
+<?php $adv_enabled   = ! empty($advanced_credit_cards); ?>
+<?php $venmo_enabled = ! empty($venmo); ?>
 <?php if ($adv_enabled): ?>
 <!-- OR Divider -->
 <div class="col-xs-12 col-md-6 col-md-offset-3">
