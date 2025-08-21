@@ -22,6 +22,15 @@ class Upload extends Admin_Controller
 
     public $content_types = [];
 
+    private $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+    private $allowed_mime_types = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+    ];
+
     /**
      * Upload constructor.
      */
@@ -38,20 +47,30 @@ class Upload extends Admin_Controller
             $this->respond_message(400, 'upload_error_no_file');
         }
 
-        $filename = $this->sanitize_file_name($_FILES['file']['name']);
-        $filePath = $this->get_target_file_path($url_key, $filename);
+        $originalFilename = $_FILES['file']['name'];
+        $file_ext         = mb_strtolower(pathinfo($originalFilename, PATHINFO_EXTENSION));
+        $tempFile         = $_FILES['file']['tmp_name'];
+        $mimeType         = mime_content_type($tempFile);
 
-        if (file_exists($filePath)) {
-            $this->respond_message(409, 'upload_error_duplicate_file', $filename);
+        // Strict extension and MIME type check
+        if ( ! in_array($file_ext, $this->allowed_extensions, true)) {
+            $this->respond_message(400, 'upload_error_invalid_extension', $file_ext);
+        }
+        if ( ! in_array($mimeType, $this->allowed_mime_types, true)) {
+            $this->respond_message(400, 'upload_error_invalid_mime', $mimeType);
         }
 
-        $tempFile = $_FILES['file']['tmp_name'];
-        $this->validate_mime_type(mime_content_type($tempFile));
-        $this->move_uploaded_file($tempFile, $filePath, $filename);
+        // Generate a random filename to avoid collisions and direct access
+        $randomName = bin2hex(random_bytes(16)) . '.' . $file_ext;
+        $filePath   = $this->get_target_file_path($url_key, $randomName);
 
-        $this->save_file_metadata($customerId, $url_key, $filename);
+        if (file_exists($filePath)) {
+            $this->respond_message(409, 'upload_error_duplicate_file', $randomName);
+        }
 
-        $this->respond_message(200, 'upload_file_uploaded_successfully', $filename);
+        $this->move_uploaded_file($tempFile, $filePath, $randomName);
+        $this->save_file_metadata($customerId, $url_key, $randomName);
+        $this->respond_message(200, 'upload_file_uploaded_successfully', $randomName);
     }
 
     public function create_dir($path, $chmod = '0755'): bool
@@ -90,37 +109,46 @@ class Upload extends Admin_Controller
 
     public function get_file($filename): void
     {
-        $filename = urldecode($filename);
-        if ( ! file_exists($this->targetPath . $filename)) {
+        $filename    = urldecode($filename);
+        $archivePath = FCPATH . 'uploads/archive/';
+        $fullPath    = $archivePath . $filename;
+        if ( ! file_exists($fullPath)) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-            $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $filename . $ref);
+            $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
         }
-
-        $path_parts = pathinfo($this->targetPath . $filename);
+        $path_parts = pathinfo($fullPath);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
-
-        $file_size = filesize($this->targetPath . $filename);
-
+        $file_size  = filesize($fullPath);
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
-
-        readfile($this->targetPath . $filename);
+        readfile($fullPath);
     }
 
+    /**
+     * Allow only safe characters: letters, numbers, spaces, dashes, underscores, dots.
+     */
     private function sanitize_file_name(string $filename): string
     {
-        // Clean filename (same in dropzone script)
-        return preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', mb_trim($filename));
+        $filename = preg_replace('/[^\w\s\-.]/u', '', $filename);
+        $file_ext = mb_strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if ( ! in_array($file_ext, $this->allowed_extensions, true)) {
+            $filename = pathinfo($filename, PATHINFO_FILENAME) . '.txt'; // Force safe extension
+        }
+
+        return $filename;
     }
 
     private function get_target_file_path(string $url_key, string $filename): string
     {
-        return $this->targetPath . $url_key . '_' . $filename;
+        $archivePath = FCPATH . 'uploads/archive/';
+        $this->create_dir($archivePath);
+
+        return $archivePath . $url_key . '_' . $filename;
     }
 
     private function validate_mime_type(string $mimeType): void
