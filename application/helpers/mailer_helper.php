@@ -78,21 +78,20 @@ function email_invoice(
     $bcc     = parse_template($db_invoice, $bcc);
     $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
-    // Check parsed emails before phpmail - since v1.6.3
     $errors = [];
-    if ( ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
     }
 
-    if ( ! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($from[0])) {
         $errors[] = 'from_email';
     }
 
-    if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
+    if ($cc && ! validate_email_address($cc)) {
         $errors[] = 'cc_email';
     }
 
-    if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
+    if ($bcc && ! validate_email_address($bcc)) {
         $errors[] = 'bcc_email';
     }
 
@@ -144,21 +143,21 @@ function email_quote(
     $bcc     = parse_template($db_quote, $bcc);
     $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
-    // Check parsed emails before phpmail - since v1.6.3
+
     $errors = [];
-    if ( ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
     }
 
-    if ( ! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($from[0])) {
         $errors[] = 'from_email';
     }
 
-    if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
+    if ($cc && ! validate_email_address($cc)) {
         $errors[] = 'cc_email';
     }
 
-    if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
+    if ($bcc && ! validate_email_address($bcc)) {
         $errors[] = 'bcc_email';
     }
 
@@ -209,6 +208,28 @@ function email_quote_status(string $quote_id, $status)
     );
 
     return phpmail_send($user_email, $user_email, $subject, $body);
+}
+
+/**
+ * Validate email address syntax
+ * $email string can be a single email or a list of emails.
+ * The emails list must be comma separated.
+ *
+ * @param string $email
+ * @return boolean returs true if all emails are valid otherwise false.
+ */
+function validate_email_address(string $email) : bool {
+    $emails[] = $email;
+    if(strpos($email,',') !== false) {
+        $emails = explode(',', $email);
+    }
+
+    foreach ($emails as $emailItem) {
+        if(!filter_var($emailItem, FILTER_VALIDATE_EMAIL))
+            return false;
+    }
+
+    return true;
 }
 
 /**
