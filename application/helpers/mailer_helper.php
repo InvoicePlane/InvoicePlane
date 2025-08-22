@@ -78,10 +78,6 @@ function email_invoice(
     $bcc     = parse_template($db_invoice, $bcc);
     $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
-    // Check parsed emails before phpmail - since v1.6.3
-    /**
-     * 1.6.4 / 1.7.0: EXCEPT FOR email addresses with a "," in them, since you can send "to, cc and bcc to multiple addresses".
-     */
     $errors = [];
     if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
@@ -147,10 +143,7 @@ function email_quote(
     $bcc     = parse_template($db_quote, $bcc);
     $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
-    // Check parsed emails before phpmail - since v1.6.3
-    /**
-     * 1.6.4 / 1.7.0: EXCEPT FOR email addresses with a "," in them, since you can send "to, cc and bcc to multiple addresses".
-     */
+
     $errors = [];
     if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
@@ -225,7 +218,7 @@ function email_quote_status(string $quote_id, $status)
  * @param string $email
  * @return boolean returs true if all emails are valid otherwise false.
  */
-function validate_email_address(string $email) : string|bool {
+function validate_email_address(string $email) : bool {
     $emails[] = $email;
     if(strpos($email,',') !== false) {
         $emails = explode(',', $email);
