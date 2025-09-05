@@ -53,11 +53,13 @@ class Get extends Base_Controller
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $ref);
         }
+        // Ensure $realBase ends with a separator for robust comparison
+        $realBaseWithSep = rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $realFile     = realpath($fullPath);
         // Check that the file exists and is within the allowed directory
         if (
             $realFile === false ||
-            ! str_starts_with($realFile, $realBase . DIRECTORY_SEPARATOR) ||
+            (substr($realFile, 0, strlen($realBaseWithSep)) !== $realBaseWithSep) ||
             ! file_exists($realFile)
         ) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
