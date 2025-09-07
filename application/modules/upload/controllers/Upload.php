@@ -44,10 +44,11 @@ class Upload extends Admin_Controller
         $file_ext         = mb_strtolower(pathinfo($originalFilename, PATHINFO_EXTENSION));
         $tempFile         = $_FILES['file']['tmp_name'];
 
+        if (extension_loaded('fileinfo')) {
+            $this->validate_mime_type(mime_content_type($tempFile));
+        }
         if ( ! in_array($file_ext, $this->allowed_extensions, true)) {
-            if (extension_loaded('fileinfo')) {
-                $this->validate_mime_type(finfo_open(FILEINFO_MIME_TYPE));
-            }
+
             $this->respond_message(400, 'upload_error_invalid_extension', $file_ext);
         }
 
