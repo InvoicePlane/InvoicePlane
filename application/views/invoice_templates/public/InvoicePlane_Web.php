@@ -272,7 +272,8 @@ foreach ($invoice_tax_rates as $invoice_tax_rate) {
 ?>
 
 <?php
-if ($legacy_calculation) {
+if($show_item_discounts) {
+    if ($legacy_calculation) {
 ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
@@ -286,6 +287,7 @@ if ($legacy_calculation) {
                                     ?></td>
                                 </tr>
 <?php
+    }
 }
 ?>
 
