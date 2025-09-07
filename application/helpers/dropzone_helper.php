@@ -139,7 +139,7 @@ const
 site_url        = '<?php echo $site_url; ?>',
 client_id       = '/<?php echo $client_id; ?>',
 url_key         = '/<?php echo $url_key; ?>',
-url_get_file    = site_url + 'get_file'    + url_key,
+url_get_file    = site_url + 'get_file' + '/',    // Added later on!
 url_show_file   = site_url + 'show_files'  + url_key,
 url_delete_file = site_url + 'delete_file' + url_key,
 url_upload_file = site_url + 'upload_file' + client_id + url_key,
@@ -259,10 +259,27 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
         if (typeof response === 'string') {
             try { response = JSON.parse(response); } catch (e) { response = {}; }
         }
-        if (response && response.name) {
-            file.serverName = response.name;
+
+        console.log('response' + ' ' + response);
+
+        if (response && response.url_key) {
+            console.log('file (url key) url_key' + ' ' + response.url_key);
+            file.url_key = response.url_key;
         }
+
+        //if (response && response.file_name_new) {
+        //    console.log('file (just testing!) name (server) Name' + ' ' + response.file_name_new);
+        //    console.log('file file.serverName Name' + ' ' + file.serverName);
+        //    file.serverName = response.file_name_new;
+        //}
+
+        if (response && response.name) {
+            console.log('file name (response name) (server) Name' + ' ' + response.name);
+            file.serverName = response.original;
+        }
+
         if (response && response.original) {
+            console.log('file original (display) name' + ' ' + response.original);
             file.displayName = response.original;
         }
 
@@ -366,7 +383,7 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
             null, // crossOrigin
             false // resizeThumbnail
         );
-        myDropzone.files.push(mockFile); // Important (Need for delete attachements)
+        myDropzone.files.push(mockFile); // Important (Need for delete attachments)
         myDropzone.emit('success', mockFile); // Hide progress
     }
 
@@ -376,16 +393,25 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
         for (var node of file.previewElement.querySelectorAll('[data-dz-name]')) {
             node.textContent = sanitizeName(display);
         }
+        console.log('node textcontent' + ' ' + node.textContent);
     }
 
     // Set download button
     function createDownloadButton(file) {
         var serverName = file.serverName || file.name;
+
+        console.log('file (server (really? almost?)) Name' + ' ' + file.serverName);
+        console.log('file (display) name' + ' ' + file.displayName);
+        console.log('almost, almost' + ' ' + url_get_file + '_' + encodeURIComponent(file.serverName));
+
         for (var node of file.previewElement.querySelectorAll('[data-dz-download]')) {
             node.onclick = function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                location.href = url_get_file + '_' + encodeURIComponent(serverName);
+                location.href = url_get_file + '_' + encodeURIComponent(file.serverName);
+                console.log('url_get_file' + ' ' + url_get_file);
+                console.log('download serverName' + ' ' + serverName);
+                console.log('download duplicate' + ' ' + location.href);
                 return false;
             };
         }

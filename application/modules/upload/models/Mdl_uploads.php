@@ -150,8 +150,10 @@ class Mdl_Uploads extends Response_Model
                 continue;
             }
             $result[] = [
-                'name'     => $row->file_name_original,
                 'fullname' => $row->file_name_new,
+                'name'     => $row->file_name_original,
+                'original' => $row->file_name_original,
+                'url_key'  => $row->url_key,
                 'size'     => $size,
             ];
         }

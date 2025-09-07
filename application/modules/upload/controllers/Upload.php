@@ -57,12 +57,19 @@ class Upload extends Admin_Controller
         $this->move_uploaded_file($tempFile, $filePath, $randomName);
         $this->save_file_metadata($customerId, $url_key, $originalFilename, $randomName);
 
+        log_message('debug', 'original file ' . $originalFilename);
+        log_message('debug', 'name file ' . $randomName);
+
+        $file_name_new = $url_key . '_' . $randomName;
+
         // Return JSON with both original and new filename
         header('Content-Type: application/json');
         echo json_encode([
-            'success'  => true,
-            'original' => $originalFilename,
-            'name'     => $randomName,
+            'success'   => true,
+            'full_name' => $file_name_new,
+            'name'      => $originalFilename,
+            'original'  => $originalFilename,
+            'url_key'   => $url_key,
         ]);
         exit;
     }
@@ -76,13 +83,6 @@ class Upload extends Admin_Controller
         return true;
     }
 
-    private function get_target_file_path(string $url_key, string $filename): string
-    {
-        $basePath = UPLOADS_CFILES_FOLDER;
-        $this->create_dir($basePath);
-        return $basePath . $url_key . '_' . $filename;
-    }
-
     public function show_files($url_key = null): void
     {
         header('Content-Type: application/json; charset=utf-8');
@@ -92,35 +92,35 @@ class Upload extends Admin_Controller
             exit(json_encode([]));
         }
 
-        $files = [];
-        foreach ($result as $file) {
-            $files[] = [
-                'name'     => $file['file_name_original'] ?? '',
-                'fullname' => $file['file_name_new'] ?? '',
-                'size'     => isset($file['file_name_new']) ? filesize(UPLOADS_CFILES_FOLDER . $file['file_name_new']) : 0,
-            ];
-        }
-        exit(json_encode($files));
+        // The model already returns the correct structure and size using UPLOADS_CFILES_FOLDER
+        exit(json_encode($result));
     }
 
     public function delete_file(string $url_key): void
     {
-        $filename = urldecode($this->input->post('name'));
+        $filename  = urldecode($this->input->post('name'));
         $finalPath = UPLOADS_CFILES_FOLDER . $url_key . '_' . $filename;
         if (realpath(UPLOADS_CFILES_FOLDER) === mb_substr(realpath($finalPath), 0, mb_strlen(realpath(UPLOADS_CFILES_FOLDER))) && ( ! file_exists($finalPath) || @unlink($finalPath))) {
             $this->mdl_uploads->delete_file($url_key, $filename);
             $this->respond_message(200, 'upload_file_deleted_successfully', $filename);
         }
+
         $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
         $this->respond_message(410, 'upload_error_file_delete', $finalPath . $ref);
     }
 
     public function get_file($filename): void
     {
-        $filename    = urldecode($filename);
-        $fullPath    = UPLOADS_CFILES_FOLDER . $filename;
+        log_message('debug', 'getting file ' . $filename);
+
+        $filename = urldecode($filename);
+        $fullPath = UPLOADS_CFILES_FOLDER . $filename;
+
+        log_message('debug', 'fullPath ' . $fullPath);
+
         if ( ! file_exists($fullPath)) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
+            log_message('debug', 'function get_file: shit: ' . $fullPath);
             $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
         }
         $path_parts = pathinfo($fullPath);
@@ -134,6 +134,14 @@ class Upload extends Admin_Controller
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
         readfile($fullPath);
+    }
+
+    private function get_target_file_path(string $url_key, string $filename): string
+    {
+        $basePath = UPLOADS_CFILES_FOLDER;
+        $this->create_dir($basePath);
+
+        return $basePath . $url_key . '_' . $filename;
     }
 
     /**
