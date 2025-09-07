@@ -118,6 +118,12 @@ class Upload extends Admin_Controller
      */
     private function sanitize_file_name(string $filename): string
     {
+        // Remove path separators and directory traversal sequences
+        $filename = str_replace(['/', '\\'], '', $filename);
+        // Remove any leading/trailing dots and collapse multiple dots
+        $filename = preg_replace('/\.+/', '.', $filename);
+        $filename = trim($filename, '.');
+        // Remove any remaining unsafe characters
         $filename = preg_replace('/[^\w\s\-.]/u', '', $filename);
         $file_ext = mb_strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if ( ! in_array($file_ext, $this->allowed_extensions, true)) {
