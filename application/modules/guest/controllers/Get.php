@@ -52,6 +52,8 @@ class Get extends Base_Controller
         if ($realBase === false) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $ref);
+
+            return;
         }
 
         $realBaseWithSep = mb_rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
