@@ -45,26 +45,29 @@ class Get extends Base_Controller
     public function get_file($filename): void
     {
         $filename = urldecode($filename);
-        // Prevent directory traversal
-        $safeFilename = basename($filename); // Remove any path components
+
+        $safeFilename = basename($filename);
         $fullPath     = $this->targetPath . $safeFilename;
         $realBase     = realpath($this->targetPath);
         if ($realBase === false) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $ref);
         }
-        // Ensure $realBase ends with a separator for robust comparison
-        $realBaseWithSep = rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $realFile     = realpath($fullPath);
-        // Check that the file exists and is within the allowed directory
+
+        $realBaseWithSep = mb_rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $realFile        = realpath($fullPath);
+
         if (
             $realFile === false ||
-            (strpos($realFile, $realBaseWithSep) !== 0) ||
+            ( ! str_starts_with($realFile, $realBaseWithSep)) ||
             ! file_exists($realFile)
         ) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
+
+            return;
         }
+
         $path_parts = pathinfo($realFile);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
