@@ -211,10 +211,6 @@ class Mdl_Reports extends CI_Model
         $maxQuantity = null,
         $taxChecked = false
     ) {
-        if ($minQuantity == '') {
-            $minQuantity = 0;
-        }
-        // Sanitize minQuantity and maxQuantity to prevent SQL injection
         $minQuantity = (int) $minQuantity;
         $maxQuantity = (int) $maxQuantity;
 
@@ -337,7 +333,7 @@ class Mdl_Reports extends CI_Model
                                                         AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created
                                                         AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created
                                             )
-                                    ) AND ' . $this->db->escape($maxQuantity) . ' >=
+                                    ) AND ' . $maxQuantity . ' >=
                                     (
                                         SELECT SUM(amounts3.invoice_item_subtotal) FROM ip_invoice_amounts amounts3
                                             WHERE amounts3.invoice_id IN
