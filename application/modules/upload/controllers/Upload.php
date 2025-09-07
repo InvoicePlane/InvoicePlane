@@ -165,10 +165,10 @@ class Upload extends Admin_Controller
 
     private function move_uploaded_file(string $tempFile, string $filePath, string $filename): void
     {
-        $this->create_dir($this->targetPath);
+        $this->create_dir(dirname($filePath));
 
-        if ( ! is_writable($this->targetPath)) {
-            $this->respond_message(410, 'upload_error_folder_not_writable', $this->targetPath);
+        if ( ! is_writable(dirname($filePath))) {
+            $this->respond_message(410, 'upload_error_folder_not_writable', dirname($filePath));
         } elseif ( ! move_uploaded_file($tempFile, $filePath)) {
             $this->respond_message(400, 'upload_error_invalid_move_uploaded_file', $filename);
         }
