@@ -38,47 +38,26 @@ class Upload extends Admin_Controller
     {
         if (empty($_FILES['file']['name'])) {
             $this->respond_message(400, 'upload_error_no_file');
-
-            return;
         }
 
-        $originalFilename = $this->sanitize_file_name($_FILES['file']['name']);
+        $originalFilename = $_FILES['file']['name'];
         $file_ext         = mb_strtolower(pathinfo($originalFilename, PATHINFO_EXTENSION));
         $tempFile         = $_FILES['file']['tmp_name'];
-        $randomName       = bin2hex(random_bytes(16)) . '.' . $file_ext;
-        $filePath         = $this->get_target_file_path($url_key, $randomName);
-
-        if ( ! $this->validate_upload($tempFile, $originalFilename)) {
-            return;
-        }
 
         if (extension_loaded('fileinfo')) {
-            $fileType = mime_content_type($tempFile);
-            if ( ! $this->validate_mime_type($fileType)) {
-                return;
-            }
+            $this->validate_mime_type(mime_content_type($tempFile));
         }
         if ( ! in_array($file_ext, $this->allowed_extensions, true)) {
-            $this->respond_error(400, 'upload_error_invalid_extension', 'upload_error_invalid_extension', $file_ext);
-
-            return;
+            $this->respond_message(400, 'upload_error_invalid_extension', $file_ext);
         }
 
-        if (file_exists($filePath)) {
-            $this->respond_error(409, 'error_duplicate_file', 'log_info_duplicate_file', $randomName);
+        $randomName = bin2hex(random_bytes(16)) . '.' . $file_ext;
+        $filePath   = $this->get_target_file_path($url_key, $randomName);
 
-            return;
-        }
+        $this->move_uploaded_file($tempFile, $filePath, $randomName);
+        $this->save_file_metadata($customerId, $url_key, $originalFilename, $randomName);
 
-        if ( ! $this->save_file_metadata($customerId, $url_key, $randomName)) {
-            return;
-        }
-
-        if ( ! $this->move_uploaded_file($tempFile, $filePath, $randomName)) {
-            return;
-        }
-
-        log_message('info', sprintf(_trans('log_info_file_uploaded'), $originalFilename));
+        // Return JSON with both original and new filename
         header('Content-Type: application/json');
         echo json_encode([
             'success'  => true,
@@ -135,6 +114,8 @@ class Upload extends Admin_Controller
 
     public function get_file($filename): void
     {
+dd($filename);
+
         $filename    = urldecode($filename);
         $archivePath = FCPATH . 'uploads/archive/';
         $fullPath    = $archivePath . $filename;
@@ -193,17 +174,17 @@ class Upload extends Admin_Controller
         }
     }
 
-    private function save_file_metadata(int $customerId, string $url_key, string $filename): void
+    private function save_file_metadata(int $customerId, string $url_key, string $originalFilename, string $randomName): void
     {
         $data = [
             'client_id'          => $customerId,
             'url_key'            => $url_key,
-            'file_name_original' => $filename,
-            'file_name_new'      => $url_key . '_' . $filename,
+            'file_name_original' => $originalFilename,
+            'file_name_new'      => $url_key . '_' . $originalFilename,
         ];
 
         if ( ! $this->mdl_uploads->create($data)) {
-            $this->respond_message(500, 'upload_error_database', $filename);
+            $this->respond_message(500, 'upload_error_database', $originalFilename);
         }
     }
 
@@ -218,17 +199,6 @@ class Upload extends Admin_Controller
         }
     }
 
-    private function validate_upload(string $tempFile, string $fileName): bool
-    {
-        if ( ! is_uploaded_file($tempFile)) {
-            $this->respond_error(400, 'error_invalid_file_upload', 'log_error_invalid_file_upload', $fileName);
-
-            return false;
-        }
-
-        return true;
-    }
-
     private function respond_message(int $httpCode, string $messageKey, string $dynamicLogValue = ''): void
     {
         log_message('debug', trans($messageKey) . ': (status ' . $httpCode . ') ' . $dynamicLogValue);
@@ -239,12 +209,5 @@ class Upload extends Admin_Controller
         }
 
         exit;
-    }
-
-    private function respond_error(int $httpCode, string $messageKey, string $logKey, string $dynamicValue = '')
-    {
-        log_message('error', sprintf(_trans($logKey), $dynamicValue));
-        http_response_code($httpCode);
-        echo json_encode(['success' => false, 'message' => _trans($messageKey)]);
     }
 }
