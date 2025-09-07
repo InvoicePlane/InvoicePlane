@@ -64,10 +64,6 @@ class Upload extends Admin_Controller
         $randomName = bin2hex(random_bytes(16)) . '.' . $file_ext;
         $filePath   = $this->get_target_file_path($url_key, $randomName);
 
-        if (file_exists($filePath)) {
-            $this->respond_message(409, 'upload_error_duplicate_file', $randomName);
-        }
-
         $this->move_uploaded_file($tempFile, $filePath, $randomName);
         $this->save_file_metadata($customerId, $url_key, $randomName);
         $this->respond_message(200, 'upload_file_uploaded_successfully', $randomName);
