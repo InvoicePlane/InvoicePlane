@@ -201,7 +201,7 @@ foreach ($items as $item) {
 <?php if($show_item_discounts) {?>
                                     <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
 <?php } ?>
-                                    <td class="amount"><?php echo format_currency($item->item_total); ?></td>
+                                    <td class="amount"><?php echo format_currency($item->item_subtotal-$item->item_discount); ?></td>
                                 </tr>
 <?php
 }
@@ -209,7 +209,7 @@ foreach ($items as $item) {
 
 <?php
 $colspan = $show_item_discounts ? 4 : 3;
-if($show_item_discounts) {
+if($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
     if ( ! $legacy_calculation) {
 ?>
                                 <tr>
@@ -261,7 +261,7 @@ foreach ($quote_tax_rates as $quote_tax_rate) {
 ?>
 
 <?php
-if($show_item_discounts) {
+if($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
     if ($legacy_calculation) {
 ?>
                                 <tr>
