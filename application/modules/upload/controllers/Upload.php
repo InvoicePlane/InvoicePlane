@@ -76,22 +76,28 @@ class Upload extends Admin_Controller
         return true;
     }
 
+    private function get_target_file_path(string $url_key, string $filename): string
+    {
+        $basePath = UPLOADS_CFILES_FOLDER;
+        $this->create_dir($basePath);
+        return $basePath . $url_key . '_' . $filename;
+    }
+
     public function show_files($url_key = null): void
     {
         header('Content-Type: application/json; charset=utf-8');
-
         $result = $this->mdl_uploads->get_files($url_key);
+
         if ( ! $result) {
             exit(json_encode([]));
         }
 
-        // Ensure each file entry has both original and new filename
         $files = [];
         foreach ($result as $file) {
             $files[] = [
                 'name'     => $file['file_name_original'] ?? '',
                 'fullname' => $file['file_name_new'] ?? '',
-                'size'     => isset($file['file_name_new']) ? filesize(FCPATH . 'uploads/archive/' . $file['file_name_new']) : 0,
+                'size'     => isset($file['file_name_new']) ? filesize(UPLOADS_CFILES_FOLDER . $file['file_name_new']) : 0,
             ];
         }
         exit(json_encode($files));
@@ -100,31 +106,23 @@ class Upload extends Admin_Controller
     public function delete_file(string $url_key): void
     {
         $filename = urldecode($this->input->post('name'));
-
-        $finalPath = $this->targetPath . $url_key . '_' . $filename;
-
-        if (realpath($this->targetPath) === mb_substr(realpath($finalPath), 0, mb_strlen(realpath($this->targetPath))) && ( ! file_exists($finalPath) || @unlink($finalPath))) {
+        $finalPath = UPLOADS_CFILES_FOLDER . $url_key . '_' . $filename;
+        if (realpath(UPLOADS_CFILES_FOLDER) === mb_substr(realpath($finalPath), 0, mb_strlen(realpath(UPLOADS_CFILES_FOLDER))) && ( ! file_exists($finalPath) || @unlink($finalPath))) {
             $this->mdl_uploads->delete_file($url_key, $filename);
             $this->respond_message(200, 'upload_file_deleted_successfully', $filename);
         }
-
         $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
         $this->respond_message(410, 'upload_error_file_delete', $finalPath . $ref);
     }
 
     public function get_file($filename): void
     {
-dd($filename);
-
         $filename    = urldecode($filename);
-        $archivePath = FCPATH . 'uploads/archive/';
-        $fullPath    = $archivePath . $filename;
-
+        $fullPath    = UPLOADS_CFILES_FOLDER . $filename;
         if ( ! file_exists($fullPath)) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
         }
-
         $path_parts = pathinfo($fullPath);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
@@ -158,14 +156,6 @@ dd($filename);
         return $filename;
     }
 
-    private function get_target_file_path(string $url_key, string $filename): string
-    {
-        $archivePath = FCPATH . 'uploads/archive/';
-        $this->create_dir($archivePath);
-
-        return $archivePath . $url_key . '_' . $filename;
-    }
-
     private function validate_mime_type(string $mimeType): void
     {
         $allowedTypes = array_values($this->content_types);
@@ -180,7 +170,7 @@ dd($filename);
             'client_id'          => $customerId,
             'url_key'            => $url_key,
             'file_name_original' => $originalFilename,
-            'file_name_new'      => $url_key . '_' . $originalFilename,
+            'file_name_new'      => $url_key . '_' . $randomName,
         ];
 
         if ( ! $this->mdl_uploads->create($data)) {

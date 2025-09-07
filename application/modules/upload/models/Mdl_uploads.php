@@ -124,23 +124,38 @@ class Mdl_Uploads extends Response_Model
     public function get_files($url_key)
     {
         $result = [];
-        if ($url_key && $rows = $this->where('url_key', $url_key)->get()->result()) {
-            foreach ($rows as $row) {
-                $filepath = UPLOADS_CFILES_FOLDER . $row->file_name_new;
-                $size     = @filesize($filepath);
-                if ($size === false) {
-                    // File missing or unreadable, remove DB entry
-                    $this->delete_file($url_key, $row->file_name_original);
-                    continue;
-                }
+        if ( ! $url_key) {
+            log_message('debug', 'get_files: No url_key provided');
 
-                $result[] = [
-                    'name'     => $row->file_name_original,
-                    'fullname' => $row->file_name_new,
-                    'size'     => $size,
-                ];
-            }
+            return $result;
         }
+
+        $rows = $this->where('url_key', $url_key)->get()->result();
+        if ( ! $rows || ! is_array($rows) || count($rows) === 0) {
+            log_message('debug', 'get_files: No records found for url_key: ' . print_r($url_key, true));
+
+            return $result;
+        }
+
+        foreach ($rows as $row) {
+            if ( ! isset($row->file_name_new) || ! isset($row->file_name_original)) {
+                log_message('debug', 'get_files: Skipping row with missing fields: ' . print_r($row, true));
+                continue;
+            }
+            $filepath = UPLOADS_CFILES_FOLDER . $row->file_name_new;
+            $size     = @filesize($filepath);
+            if ($size === false) {
+                log_message('debug', 'get_files: File missing or unreadable, removing DB entry. File: ' . $filepath);
+                $this->delete_file($url_key, $row->file_name_original);
+                continue;
+            }
+            $result[] = [
+                'name'     => $row->file_name_original,
+                'fullname' => $row->file_name_new,
+                'size'     => $size,
+            ];
+        }
+        log_message('debug', 'get_files: Returning result for url_key ' . print_r($url_key, true) . ' => ' . print_r($result, true));
 
         return $result;
     }
