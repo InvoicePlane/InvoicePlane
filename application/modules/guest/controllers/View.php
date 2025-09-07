@@ -277,8 +277,9 @@ class View extends Base_Controller
      */
     private function has_discounts(array $items) : bool {
         foreach ($items as $item) {
-            if ($item->item_discount > 0)
+            if ($item->item_discount > 0) {
                 return true;
+            }
         }
         return false;
     }

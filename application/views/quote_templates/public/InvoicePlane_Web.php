@@ -177,7 +177,7 @@ if ($logo = invoice_logo()) {
                                     <th><?php _trans('description'); ?></th>
                                     <th class="amount"><?php _trans('qty'); ?></th>
                                     <th class="amount"><?php _trans('price'); ?></th>
-<?php if($show_item_discounts) {?>
+<?php if ($show_item_discounts) {?>
                                         <th class="amount"><?php _trans('discount'); ?></th>
 <?php } ?>
                                     <th class="amount"><?php _trans('total'); ?></th>
@@ -198,7 +198,7 @@ foreach ($items as $item) {
                                         <?php endif; ?>
                                     </td>
                                     <td class="amount"><?php echo format_currency($item->item_price); ?></td>
-<?php if($show_item_discounts) {?>
+<?php if ($show_item_discounts) {?>
                                     <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
 <?php } ?>
                                     <td class="amount"><?php echo format_currency($item->item_subtotal-$item->item_discount); ?></td>
@@ -209,7 +209,7 @@ foreach ($items as $item) {
 
 <?php
 $colspan = $show_item_discounts ? 4 : 3;
-if($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
+if ($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
     if ( ! $legacy_calculation) {
 ?>
                                 <tr>
@@ -261,7 +261,7 @@ foreach ($quote_tax_rates as $quote_tax_rate) {
 ?>
 
 <?php
-if($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
+if ($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
     if ($legacy_calculation) {
 ?>
                                 <tr>

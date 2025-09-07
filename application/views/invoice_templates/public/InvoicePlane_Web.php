@@ -220,7 +220,7 @@ foreach ($items as $item) {
 
 <?php
 $colspan = $show_item_discounts ? 4 : 3;
-if($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
+if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
     if ( ! $legacy_calculation) {
 ?>
                                 <tr>
@@ -272,7 +272,7 @@ foreach ($invoice_tax_rates as $invoice_tax_rate) {
 ?>
 
 <?php
-if($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
+if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
     if ($legacy_calculation) {
 ?>
                                 <tr>
