@@ -126,16 +126,18 @@ class Mdl_Uploads extends Response_Model
         $result = [];
         if ($url_key && $rows = $this->where('url_key', $url_key)->get()->result()) {
             foreach ($rows as $row) {
-                $size = @filesize(UPLOADS_CFILES_FOLDER . $row->file_name_new);
+                $filepath = UPLOADS_CFILES_FOLDER . $row->file_name_new;
+                $size     = @filesize($filepath);
                 if ($size === false) {
-                    // Probably Deleted, remove it
+                    // File missing or unreadable, remove DB entry
                     $this->delete_file($url_key, $row->file_name_original);
                     continue;
                 }
 
                 $result[] = [
-                    'name' => $row->file_name_original,
-                    'size' => $size,
+                    'name'     => $row->file_name_original,
+                    'fullname' => $row->file_name_new,
+                    'size'     => $size,
                 ];
             }
         }
