@@ -654,6 +654,7 @@ $lang = [
     'upload_error_file_not_found'                  => 'Error: File not found on server.',
     'upload_error_folder_not_writable'             => 'Error: File not uploaded to server. The folder missing or unwritable! Please try again. If this error persists, check presence or rights of this folder:',
     'upload_error_invalid_move_uploaded_file'      => 'Error: Invalid file upload method.',
+    'upload_error_invalid_extension'               => 'Error: Invalid extension.',
     'upload_error_no_file'                         => 'Error: No file uploaded to server.',
     'upload_error_unsupported_file_type'           => 'Error: This file type is forbidden on the server.',
     'upload_file_deleted_successfully'             => 'File successfully deleted from server.',

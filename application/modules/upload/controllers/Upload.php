@@ -22,14 +22,7 @@ class Upload extends Admin_Controller
 
     public $content_types = [];
 
-    private $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-    private $allowed_mime_types = [
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        'image/webp',
-    ];
+    private $allowed_extensions = ['jpg', 'jpeg', 'png', 'pdf', 'gif', 'webp'];
 
     /**
      * Upload constructor.
@@ -50,17 +43,11 @@ class Upload extends Admin_Controller
         $originalFilename = $_FILES['file']['name'];
         $file_ext         = mb_strtolower(pathinfo($originalFilename, PATHINFO_EXTENSION));
         $tempFile         = $_FILES['file']['tmp_name'];
-        $mimeType         = mime_content_type($tempFile);
 
-        // Strict extension and MIME type check
         if ( ! in_array($file_ext, $this->allowed_extensions, true)) {
             $this->respond_message(400, 'upload_error_invalid_extension', $file_ext);
         }
-        if ( ! in_array($mimeType, $this->allowed_mime_types, true)) {
-            $this->respond_message(400, 'upload_error_invalid_mime', $mimeType);
-        }
 
-        // Generate a random filename to avoid collisions and direct access
         $randomName = bin2hex(random_bytes(16)) . '.' . $file_ext;
         $filePath   = $this->get_target_file_path($url_key, $randomName);
 
@@ -112,6 +99,7 @@ class Upload extends Admin_Controller
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
         }
+
         $path_parts = pathinfo($fullPath);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
@@ -133,7 +121,7 @@ class Upload extends Admin_Controller
         $filename = preg_replace('/[^\w\s\-.]/u', '', $filename);
         $file_ext = mb_strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if ( ! in_array($file_ext, $this->allowed_extensions, true)) {
-            $filename = pathinfo($filename, PATHINFO_FILENAME) . '.txt'; // Force safe extension
+            $filename = pathinfo($filename, PATHINFO_FILENAME) . '.txt';
         }
 
         return $filename;
@@ -171,15 +159,11 @@ class Upload extends Admin_Controller
 
     private function move_uploaded_file(string $tempFile, string $filePath, string $filename): void
     {
-        // Create the target dir (if unexist)
         $this->create_dir($this->targetPath);
 
-        // Checks to ensure that the target dir is writable
         if ( ! is_writable($this->targetPath)) {
             $this->respond_message(410, 'upload_error_folder_not_writable', $this->targetPath);
-        }
-        // Checks to ensure that the tempFile is a valid upload file AND it was uploaded via PHP's HTTP POST upload.
-        elseif ( ! move_uploaded_file($tempFile, $filePath)) {
+        } elseif ( ! move_uploaded_file($tempFile, $filePath)) {
             $this->respond_message(400, 'upload_error_invalid_move_uploaded_file', $filename);
         }
     }
