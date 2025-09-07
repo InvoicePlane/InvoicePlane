@@ -59,7 +59,7 @@ class Get extends Base_Controller
         // Check that the file exists and is within the allowed directory
         if (
             $realFile === false ||
-            (substr($realFile, 0, strlen($realBaseWithSep)) !== $realBaseWithSep) ||
+            (strpos($realFile, $realBaseWithSep) !== 0) ||
             ! file_exists($realFile)
         ) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
