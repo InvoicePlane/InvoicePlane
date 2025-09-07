@@ -48,7 +48,6 @@ class Upload extends Admin_Controller
             $this->validate_mime_type(mime_content_type($tempFile));
         }
         if ( ! in_array($file_ext, $this->allowed_extensions, true)) {
-
             $this->respond_message(400, 'upload_error_invalid_extension', $file_ext);
         }
 
@@ -57,7 +56,15 @@ class Upload extends Admin_Controller
 
         $this->move_uploaded_file($tempFile, $filePath, $randomName);
         $this->save_file_metadata($customerId, $url_key, $randomName);
-        $this->respond_message(200, 'upload_file_uploaded_successfully', $randomName);
+
+        // Return JSON with both original and new filename
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success'  => true,
+            'original' => $originalFilename,
+            'name'     => $randomName,
+        ]);
+        exit;
     }
 
     public function create_dir($path, $chmod = '0755'): bool
@@ -72,11 +79,22 @@ class Upload extends Admin_Controller
     public function show_files($url_key = null): void
     {
         header('Content-Type: application/json; charset=utf-8');
-        if ($url_key && ! $result = $this->mdl_uploads->get_files($url_key)) {
-            exit('{}');
+
+        $result = $this->mdl_uploads->get_files($url_key);
+        if ( ! $result) {
+            exit(json_encode([]));
         }
 
-        exit(json_encode($result));
+        // Ensure each file entry has both original and new filename
+        $files = [];
+        foreach ($result as $file) {
+            $files[] = [
+                'name'     => $file['file_name_original'] ?? '',
+                'fullname' => $file['file_name_new'] ?? '',
+                'size'     => isset($file['file_name_new']) ? filesize(FCPATH . 'uploads/archive/' . $file['file_name_new']) : 0,
+            ];
+        }
+        exit(json_encode($files));
     }
 
     public function delete_file(string $url_key): void
@@ -99,6 +117,7 @@ class Upload extends Admin_Controller
         $filename    = urldecode($filename);
         $archivePath = FCPATH . 'uploads/archive/';
         $fullPath    = $archivePath . $filename;
+
         if ( ! file_exists($fullPath)) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
@@ -126,7 +145,7 @@ class Upload extends Admin_Controller
         $filename = str_replace(['/', '\\'], '', $filename);
         // Remove any leading/trailing dots and collapse multiple dots
         $filename = preg_replace('/\.+/', '.', $filename);
-        $filename = trim($filename, '.');
+        $filename = mb_trim($filename, '.');
         // Remove any remaining unsafe characters
         $filename = preg_replace('/[^\w\s\-.]/u', '', $filename);
         $file_ext = mb_strtolower(pathinfo($filename, PATHINFO_EXTENSION));

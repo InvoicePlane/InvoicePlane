@@ -120,7 +120,7 @@ function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acce
 {
     $site_url = site_url(empty($site_url) ? 'upload/' : (mb_rtrim($site_url, '/') . '/'));
 
-    // Allow extentions system
+    // Allow extensions system
     $content_types = [];
     if ($acceptedExts === null) {
         // Default
@@ -128,7 +128,7 @@ function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acce
         $CI->load->model('upload/mdl_uploads');
         $content_types = array_keys($CI->mdl_uploads->content_types);
     } elseif (is_array($acceptedExts)) {
-        // User Overide
+        // User Override
         $content_types = $acceptedExts;
     }
 
@@ -196,6 +196,7 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
 
     const is_guest = <?php echo $guest; ?>;
     const removeAllFilesButton = document.querySelector('.removeAllFiles-button');
+
     // Get the template HTML and remove it from the document
     var previewNode = document.querySelector('#template');
     previewNode.id = '';
@@ -229,9 +230,10 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
             );
         },
     });
+
     // Uploading process complete
     myDropzone.on('complete', function (file) {
-        // Check if logged out (303) redirected to sessions/login. .
+        // Check if logged out (303, 302) redirected to sessions/login. .
         if(file.xhr && file.xhr.responseURL.match(/sessions\/login/) !== null) {
             this.emit('error', file, `<?php _trans('upload_dz_disconnected'); ?>`);
         }
@@ -251,6 +253,21 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
         changeTextName(file);
         createDownloadButton(file);
         this.emit('thumbnail', file, getIcon(file.name));
+    });
+
+    myDropzone.on('success', function(file, response) {
+        if (typeof response === 'string') {
+            try { response = JSON.parse(response); } catch (e) { response = {}; }
+        }
+        if (response && response.name) {
+            file.serverName = response.name;
+        }
+        if (response && response.original) {
+            file.displayName = response.original;
+        }
+
+        changeTextName(file);
+        createDownloadButton(file);
     });
 
     // Update the total progress bar
@@ -327,15 +344,18 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
 ?>
 
     function displayExistingFile(val) {
-        var name = sanitizeName(val.name);
+        var name = val.name;
+        var serverName = val.fullname;
         var imageUrl = ! name.match(/\.(avif|gif|jpe?g|png|svg|webp)$/i)
             ? getIcon(name)
-            : url_get_file + '_'  + encodeURIComponent(name);
+            : url_get_file + '_'  + encodeURIComponent(serverName);
 
         var mockFile = {
             size: val.size,
             name: name,
-            imageUrl: url_get_file + '_' + encodeURIComponent(name)
+            serverName: serverName,
+            displayName: name,
+            imageUrl: url_get_file + '_' + encodeURIComponent(serverName)
         };
 
         // mockFile needs to have these attributes { name: 'name', size: 12345, imageUrl: '' }
@@ -352,22 +372,22 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
 
     // Update the name to reflect same after sanitized by php
     function changeTextName(file) {
+        var display = file.displayName || file.name;
         for (var node of file.previewElement.querySelectorAll('[data-dz-name]')) {
-            node.textContent = sanitizeName(file.name);
+            node.textContent = sanitizeName(display);
         }
     }
 
     // Set download button
     function createDownloadButton(file) {
+        var serverName = file.serverName || file.name;
         for (var node of file.previewElement.querySelectorAll('[data-dz-download]')) {
-            node.addEventListener('click',
-                function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    location.href = url_get_file + '_' + encodeURIComponent(sanitizeName(file.name));
-                    return false;
-                }
-            );
+            node.onclick = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                location.href = url_get_file + '_' + encodeURIComponent(serverName);
+                return false;
+            };
         }
     }
 </script>
