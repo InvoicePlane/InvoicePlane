@@ -143,7 +143,6 @@ function email_quote(
     $bcc     = parse_template($db_quote, $bcc);
     $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
-
     $errors = [];
     if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
@@ -216,17 +215,20 @@ function email_quote_status(string $quote_id, $status)
  * The emails list must be comma separated.
  *
  * @param string $email
- * @return boolean returs true if all emails are valid otherwise false.
+ *
+ * @return bool returs true if all emails are valid otherwise false
  */
-function validate_email_address(string $email) : bool {
+function validate_email_address(string $email): bool
+{
     $emails[] = $email;
-    if(strpos($email,',') !== false) {
+    if (str_contains($email, ',')) {
         $emails = explode(',', $email);
     }
 
     foreach ($emails as $emailItem) {
-        if(!filter_var($emailItem, FILTER_VALIDATE_EMAIL))
+        if ( ! filter_var($emailItem, FILTER_VALIDATE_EMAIL)) {
             return false;
+        }
     }
 
     return true;
