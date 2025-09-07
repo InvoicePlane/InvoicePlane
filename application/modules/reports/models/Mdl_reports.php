@@ -571,7 +571,7 @@ class Mdl_Reports extends CI_Model
                                                         AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created
                                                         AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created
                                             )
-                                    ) AND ' . $this->db->escape($maxQuantity) . ' >=
+                                    ) AND ' . (int)$maxQuantity . ' >=
                                     (
                                         SELECT SUM(amounts3.invoice_total) FROM ip_invoice_amounts amounts3
                                             WHERE amounts3.invoice_id IN
