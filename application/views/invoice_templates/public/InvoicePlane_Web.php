@@ -220,18 +220,12 @@ foreach ($items as $item) {
 
 <?php
 $colspan = $show_item_discounts ? 4 : 3;
-
-if ( ! $legacy_calculation) {
+if($show_item_discounts) {
+    if ( ! $legacy_calculation) {
 ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
-                                    <?php
-                                    if ($show_item_discounts) {
-                                    ?>
                                     <td class="amount"><?php _trans('discount'); ?></td>
-                                    <?php
-                                    }
-                                    ?>
                                     <td class="amount"><?php
                                         if ($invoice->invoice_discount_percent > 0) {
                                             echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
@@ -241,6 +235,7 @@ if ( ! $legacy_calculation) {
                                     ?></td>
                                 </tr>
 <?php
+    }
 }
 ?>
 
