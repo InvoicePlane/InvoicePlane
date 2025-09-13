@@ -41,8 +41,8 @@ class Upload extends Admin_Controller
         }
 
         $originalFilename = $_FILES['file']['name'];
-        $file_ext         = mb_strtolower(pathinfo($originalFilename, PATHINFO_EXTENSION));
-        $fileName         = $this->sanitize_file_name($_FILES['file']['name']);
+        $fileName         = $this->sanitize_file_name($originalFilename);
+        $file_ext         = mb_strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $filePath         = $this->get_target_file_path($url_key, $fileName);
 
         if (file_exists($filePath)) {
