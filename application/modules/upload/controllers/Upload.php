@@ -101,7 +101,7 @@ class Upload extends Admin_Controller
 
     public function get_file($filename): void
     {
-        $filename = urldecode($filename);
+        $filename = $this->sanitize_file_name(urldecode($filename));
 
         $underscorePos = mb_strpos($filename, '_');
         if ($underscorePos === false) {
@@ -131,7 +131,8 @@ class Upload extends Admin_Controller
     private function sanitize_file_name(string $filename): string
     {
         // Clean filename (same in dropzone script)
-        return preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', mb_trim($filename));
+        $sanitizedFileName = preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', mb_trim($filename));
+        return str_replace('..','',$sanitizedFileName);
     }
 
     private function get_target_file_path(string $url_key, string $filename): string
