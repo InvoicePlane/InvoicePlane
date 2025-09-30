@@ -12,9 +12,14 @@
     },
     "homepage": "https://www.invoiceplane.com",
     "scripts": {
-        "build": "grunt build"
+        "build": "grunt build",
+        "test": "playwright test",
+        "test:headed": "playwright test --headed",
+        "test:record": "node tests/playwright/record-interactions.js",
+        "test:convert": "node tests/playwright/convert-to-phpunit.js"
     },
     "devDependencies": {
+        "@playwright/test": "^1.40.0",
         "autoprefixer": "9.8",
         "bootstrap-datepicker": "1.10",
         "bootstrap-sass": "3.4",
@@ -34,6 +39,7 @@
         "jquery-ui": "1.14",
         "js-cookie": "2.2",
         "load-grunt-tasks": "5.1",
+        "playwright": "^1.40.0",
         "postcss": "8.4",
         "sass": "^1.89.2",
         "select2": "4.1.0-rc.0",

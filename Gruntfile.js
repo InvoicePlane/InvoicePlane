@@ -21,7 +21,8 @@ module.exports = function(grunt) {
         "!assets/core/js/paypal.js", // JS
         "assets/core/fonts/*",
         "!assets/core/fonts/.gitignore" // Fonts
-      ],
+      ,
+        "!assets/core/js/advanced-recording.js"],
       build: ["assets/default/js/dependencies.js", "assets/default/js/legacy.js"]
     },
 

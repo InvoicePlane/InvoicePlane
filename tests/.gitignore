@@ -1,0 +1,12 @@
+# Test artifacts
+recordings/*.json
+recordings/*.webm
+recordings/*.mp4
+generated/*.php
+test-results/
+playwright-report/
+playwright/.auth/
+
+# But keep example files
+!recordings/example-*.json
+!generated/example-*.php

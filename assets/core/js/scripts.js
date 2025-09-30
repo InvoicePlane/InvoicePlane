@@ -201,6 +201,100 @@ function check_items_tax_usages(e) {
      }
 }
 
+// Advanced Recorder Integration
+// Auto-loads the advanced recorder when recording parameters are present
+(function() {
+    'use strict';
+    
+    // Check if recording should be enabled
+    const urlParams = new URLSearchParams(window.location.search);
+    const enableRecording = urlParams.has('record') || 
+                           localStorage.getItem('ip_recording_enabled') === 'true' ||
+                           window.IP_RECORDING_ENABLED === true;
+    
+    if (enableRecording) {
+        // Load the advanced recorder script dynamically
+        const script = document.createElement('script');
+        script.src = './advanced-recording.js';
+        script.onload = function() {
+            console.log('Advanced Recorder loaded');
+            
+            // Initialize the recorder with InvoicePlane-specific settings
+            if (typeof AdvancedRecorder !== 'undefined') {
+                window.advancedRecorder = new AdvancedRecorder({
+                    enabled: true,
+                    debugMode: urlParams.has('debug') || localStorage.getItem('ip_debug') === 'true',
+                    autoStart: urlParams.has('autostart'),
+                    maxEvents: 2000,
+                    excludeSelectors: [
+                        '.advanced-recorder',
+                        '[data-no-record]',
+                        '.select2-container', // Exclude Select2 dropdowns
+                        '.datepicker', // Exclude datepicker popups
+                        '.tooltip', // Exclude tooltips
+                        '.popover' // Exclude popovers
+                    ],
+                    includeFormData: true,
+                    captureScreenshots: false
+                });
+                
+                // Integrate with InvoicePlane's existing AJAX handling
+                $(document).ajaxComplete(function(event, xhr, settings) {
+                    if (window.advancedRecorder && window.advancedRecorder.recording) {
+                        window.advancedRecorder.recordEvent('ajax_complete', {
+                            url: settings.url,
+                            type: settings.type,
+                            status: xhr.status,
+                            responseType: xhr.responseType
+                        });
+                    }
+                });
+                
+                // Integrate with form submissions
+                $('form').on('submit', function() {
+                    if (window.advancedRecorder && window.advancedRecorder.recording) {
+                        const form = this;
+                        window.advancedRecorder.recordEvent('form_submit_enhanced', {
+                            selector: window.advancedRecorder.generateSelector(form),
+                            action: form.action,
+                            method: form.method,
+                            hasFiles: $(form).find('input[type="file"]').length > 0,
+                            csrf_token: $(form).find('input[name="' + csrf_token_name + '"]').val()
+                        });
+                    }
+                });
+                
+                // Integrate with modal events
+                $(document).on('shown.bs.modal', '.modal', function() {
+                    if (window.advancedRecorder && window.advancedRecorder.recording) {
+                        window.advancedRecorder.recordEvent('modal_shown', {
+                            selector: window.advancedRecorder.generateSelector(this),
+                            id: this.id,
+                            backdrop: $(this).data('backdrop'),
+                            keyboard: $(this).data('keyboard')
+                        });
+                    }
+                });
+                
+                $(document).on('hidden.bs.modal', '.modal', function() {
+                    if (window.advancedRecorder && window.advancedRecorder.recording) {
+                        window.advancedRecorder.recordEvent('modal_hidden', {
+                            selector: window.advancedRecorder.generateSelector(this),
+                            id: this.id
+                        });
+                    }
+                });
+            }
+        };
+        
+        script.onerror = function() {
+            console.warn('Could not load Advanced Recorder script');
+        };
+        
+        document.head.appendChild(script);
+    }
+})();
+
 $(function () {
     // Automatical CSRF protection for
     // All jquery POST requests

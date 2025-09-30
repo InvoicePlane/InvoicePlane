@@ -1,0 +1,197 @@
+{
+  "sessionId": "ip_example_abc123",
+  "startTime": 1703123456789,
+  "endTime": 1703123496789,
+  "duration": 40000,
+  "events": [
+    {
+      "id": "evt_001",
+      "type": "session_start",
+      "timestamp": 0,
+      "data": {
+        "url": "http://localhost:8080/",
+        "title": "InvoicePlane",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        }
+      },
+      "url": "http://localhost:8080/",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_002",
+      "type": "click",
+      "timestamp": 2500,
+      "data": {
+        "selector": "a:has-text(\"Enter\")",
+        "tagName": "a",
+        "className": "btn btn-default",
+        "text": "Enter",
+        "position": {
+          "x": 960,
+          "y": 400
+        },
+        "href": "http://localhost:8080/sessions/login",
+        "context": {
+          "form": null,
+          "table": null,
+          "modal": null,
+          "panel": null
+        }
+      },
+      "url": "http://localhost:8080/",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_003",
+      "type": "navigation",
+      "timestamp": 3200,
+      "data": {
+        "url": "http://localhost:8080/sessions/login",
+        "title": "Login - InvoicePlane"
+      },
+      "url": "http://localhost:8080/sessions/login",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_004",
+      "type": "input",
+      "timestamp": 8500,
+      "data": {
+        "selector": "#email",
+        "type": "email",
+        "name": "email",
+        "value": "admin@example.com",
+        "placeholder": "Email Address"
+      },
+      "url": "http://localhost:8080/sessions/login",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_005",
+      "type": "input",
+      "timestamp": 12800,
+      "data": {
+        "selector": "#password",
+        "type": "password",
+        "name": "password",
+        "value": "[FILTERED]",
+        "placeholder": "Password"
+      },
+      "url": "http://localhost:8080/sessions/login",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_006",
+      "type": "form_submit",
+      "timestamp": 15200,
+      "data": {
+        "selector": "#login-form",
+        "action": "http://localhost:8080/sessions/login",
+        "method": "post",
+        "formData": {
+          "email": "admin@example.com",
+          "password": "[FILTERED]",
+          "_ip_csrf": "abc123csrf456"
+        },
+        "csrfToken": "abc123csrf456"
+      },
+      "url": "http://localhost:8080/sessions/login",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_007",
+      "type": "navigation",
+      "timestamp": 16500,
+      "data": {
+        "url": "http://localhost:8080/dashboard",
+        "title": "Dashboard - InvoicePlane"
+      },
+      "url": "http://localhost:8080/dashboard",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_008",
+      "type": "click",
+      "timestamp": 25000,
+      "data": {
+        "selector": ".create-invoice",
+        "tagName": "button",
+        "className": "btn btn-success create-invoice",
+        "text": "Create Invoice",
+        "position": {
+          "x": 200,
+          "y": 150
+        },
+        "context": {
+          "form": null,
+          "table": null,
+          "modal": null,
+          "panel": null
+        }
+      },
+      "url": "http://localhost:8080/dashboard",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_009",
+      "type": "ajax_request",
+      "timestamp": 25200,
+      "data": {
+        "method": "GET",
+        "url": "http://localhost:8080/invoices/ajax/modal_create_invoice",
+        "status": 200,
+        "responseType": ""
+      },
+      "url": "http://localhost:8080/dashboard",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_010",
+      "type": "modal_shown",
+      "timestamp": 25800,
+      "data": {
+        "selector": "#modal-create-invoice",
+        "id": "modal-create-invoice",
+        "backdrop": "static",
+        "keyboard": true
+      },
+      "url": "http://localhost:8080/dashboard",
+      "sessionId": "ip_example_abc123"
+    },
+    {
+      "id": "evt_011",
+      "type": "session_end",
+      "timestamp": 40000,
+      "data": {
+        "duration": 40000,
+        "totalEvents": 10
+      },
+      "url": "http://localhost:8080/dashboard",
+      "sessionId": "ip_example_abc123"
+    }
+  ],
+  "metadata": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "url": "http://localhost:8080/",
+    "title": "InvoicePlane",
+    "recordingOptions": {
+      "enabled": true,
+      "debugMode": true,
+      "autoStart": true,
+      "maxEvents": 2000,
+      "excludeSelectors": [
+        ".advanced-recorder",
+        "[data-no-record]",
+        ".select2-container",
+        ".datepicker",
+        ".tooltip",
+        ".popover"
+      ],
+      "includeFormData": true,
+      "captureScreenshots": false
+    }
+  }
+}
