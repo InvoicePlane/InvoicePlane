@@ -53,15 +53,17 @@ class Get extends Base_Controller
         $safeFilename = basename($filename);
         $fullPath = $this->targetPath . $safeFilename;
 
+        if (!file_exists($fullPath)) {
+            $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
+            $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
+        }
+
         $realBase = realpath($this->targetPath);
         $realFile = realpath($fullPath);
         if ($realBase === false || $realFile === false || strpos($realFile, $realBase) !== 0) {
             $this->respond_message(403, 'upload_error_unauthorized_access', $filename);
         }
-        if (!file_exists($realFile)) {
-            $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-            $this->respond_message(404, 'upload_error_file_not_found', $realFile . $ref);
-        }
+
         $path_parts = pathinfo($realFile);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
