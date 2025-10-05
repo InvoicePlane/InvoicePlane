@@ -45,8 +45,8 @@ class Get extends Base_Controller
     public function get_file($filename): void
     {
         $filename = urldecode($filename);
-        // Reject empty, absolute, or traversal attempts
-        if (empty($filename) || strpos($filename, '../') !== false || strpos($filename, '..\\') !== false || strpos($filename, '/') === 0 || strpos($filename, '\\') === 0) {
+
+        if (empty($filename) || str_contains($filename, '../') || str_contains($filename, '..\\') || str_starts_with($filename, '/') || str_starts_with($filename, '\\')) {
             $this->respond_message(400, 'upload_error_invalid_filename', $filename);
         }
 
