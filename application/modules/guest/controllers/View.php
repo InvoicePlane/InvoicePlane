@@ -68,17 +68,20 @@ class View extends Base_Controller
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
 
         $data = [
-            'invoice'            => $invoice,
-            'items'              => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_tax_rates'  => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_url_key'    => $invoice_url_key,
-            'flash_message'      => $this->session->flashdata('flash_message'),
-            'payment_method'     => $payment_method,
-            'is_overdue'         => $is_overdue,
-            'attachments'        => $attachments,
-            'custom_fields'      => $custom_fields,
-            'legacy_calculation' => config_item('legacy_calculation'),
+            'invoice'             => $invoice,
+            'items'               => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_tax_rates'   => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_url_key'     => $invoice_url_key,
+            'flash_message'       => $this->session->flashdata('flash_message'),
+            'payment_method'      => $payment_method,
+            'is_overdue'          => $is_overdue,
+            'attachments'         => $attachments,
+            'custom_fields'       => $custom_fields,
+            'legacy_calculation'  => config_item('legacy_calculation'),
         ];
+
+        $data['show_item_discounts'] = $this->has_discounts($data['items']);
+
 
         $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
     }
@@ -184,6 +187,7 @@ class View extends Base_Controller
             'custom_fields'      => $custom_fields,
             'legacy_calculation' => config_item('legacy_calculation'),
         ];
+        $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
         $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
     }
@@ -261,5 +265,22 @@ class View extends Base_Controller
         }
 
         return $names;
+    }
+
+    /**
+     * Determine if in the array of items
+     * that are provided, one or more items
+     * have a discount.
+     *
+     * @param array $items
+     * @return boolean
+     */
+    private function has_discounts(array $items) : bool {
+        foreach ($items as $item) {
+            if ($item->item_discount > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 }
