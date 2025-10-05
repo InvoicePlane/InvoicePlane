@@ -61,8 +61,7 @@ class Get extends Base_Controller
 
         if (
             $realFile === false ||
-            ( ! str_starts_with($realFile, $realBaseWithSep)) ||
-            ! file_exists($realFile)
+            ( ! str_starts_with($realFile, $realBaseWithSep))
         ) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
