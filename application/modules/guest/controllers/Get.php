@@ -49,10 +49,10 @@ class Get extends Base_Controller
         if (empty($filename) || strpos($filename, '../') !== false || strpos($filename, '..\\') !== false || strpos($filename, '/') === 0 || strpos($filename, '\\') === 0) {
             $this->respond_message(400, 'upload_error_invalid_filename', $filename);
         }
-        // Use basename to further sanitize
+
         $safeFilename = basename($filename);
         $fullPath = $this->targetPath . $safeFilename;
-        // Optionally, resolve realpath and check directory
+
         $realBase = realpath($this->targetPath);
         $realFile = realpath($fullPath);
         if ($realBase === false || $realFile === false || strpos($realFile, $realBase) !== 0) {
