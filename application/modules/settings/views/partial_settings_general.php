@@ -145,7 +145,7 @@
                                 <?php _trans('default_reverse_logo'); ?>
                             </label>
                             <select name="settings[default_reverse_logo]" class="form-control simple-select"
-                                id="settings[default_reverse_logo']" data-minimum-results-for-search="Infinity">
+                                id="settings[default_reverse_logo]" data-minimum-results-for-search="Infinity">
                                 <option value="0">
                                     <?php _trans('no'); ?>
                                 </option>
