@@ -100,7 +100,7 @@ class Sessions extends Base_Controller
             //prevent brute force attacks by counting times a token is used
             $login_log_check = $this->_login_log_check($token);
             if ( ! empty($login_log_check) && $login_log_check->log_count > 10) {
-                redirect($_SERVER['HTTP_REFERER']);
+                redirect($this->_get_safe_referer());
             } else {
                 //the use of a token counts as a failure
                 $this->_login_log_addfailure($token);
@@ -135,7 +135,7 @@ class Sessions extends Base_Controller
 
             if (empty($user_id) || empty($new_password)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
-                redirect($_SERVER['HTTP_REFERER']);
+                redirect($this->_get_safe_referer());
             }
 
             $this->load->model('users/mdl_users');
@@ -145,12 +145,12 @@ class Sessions extends Base_Controller
 
             if (empty($user)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
-                redirect($_SERVER['HTTP_REFERER']);
+                redirect($this->_get_safe_referer());
             }
 
             if (empty($user->user_passwordreset_token) || $this->input->post('token') !== $user->user_passwordreset_token) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_wrong_auth_code'));
-                redirect($_SERVER['HTTP_REFERER']);
+                redirect($this->_get_safe_referer());
             }
 
             // Call the save_change_password() function from users model
@@ -471,5 +471,34 @@ class Sessions extends Base_Controller
     private function _login_log_reset($username)
     {
         $this->db->delete('ip_login_log', ['login_name' => $username]);
+    }
+
+    /**
+     * Validates that a referer URL is from the same domain
+     * to prevent open redirect vulnerabilities
+     *
+     * @param string $referer
+     * @return string Safe redirect URL
+     */
+    private function _get_safe_referer($referer = '')
+    {
+        // Use provided referer or HTTP_REFERER
+        $referer = empty($referer) ? ($_SERVER['HTTP_REFERER'] ?? '') : $referer;
+        
+        // If no referer, use default
+        if (empty($referer)) {
+            return 'sessions/passwordreset';
+        }
+        
+        // Get base URL
+        $base_url = base_url();
+        
+        // Check if referer starts with base URL (same domain)
+        if (strpos($referer, $base_url) === 0) {
+            return $referer;
+        }
+        
+        // Referer is external or invalid, use safe default
+        return 'sessions/passwordreset';
     }
 }
