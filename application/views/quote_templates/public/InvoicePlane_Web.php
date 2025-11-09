@@ -315,7 +315,7 @@ if (count($attachments) > 0) {
                                     <tr class="attachments">
                                         <td><?php echo $attachment['name']; ?></td>
                                         <td>
-                                            <a href="<?php echo site_url('guest/get/attachment/' . $attachment['fullname']); ?>"
+                                            <a href="<?php echo site_url('guest/get/get_file/' . $attachment['fullname']); ?>"
                                                class="btn btn-primary btn-sm">
                                                 <i class="fa fa-download"></i> <?php _trans('download') ?>
                                             </a>
