@@ -46,33 +46,28 @@ class Get extends Base_Controller
     {
         $filename = urldecode($filename);
 
-        $safeFilename = basename($filename);
-        $fullPath     = $this->targetPath . $safeFilename;
-        $realBase     = realpath($this->targetPath);
-        if ($realBase === false) {
-            $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-            $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $ref);
-
-            return;
+        if (empty($filename) || str_contains($filename, '../') || str_contains($filename, '..\\') || str_starts_with($filename, '/') || str_starts_with($filename, '\\')) {
+            $this->respond_message(400, 'upload_error_invalid_filename', $filename);
         }
 
-        $realBaseWithSep = mb_rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $realFile        = realpath($fullPath);
+        $safeFilename = basename($filename);
+        $fullPath = $this->targetPath . $safeFilename;
 
-        if (
-            $realFile === false ||
-            ( ! str_starts_with($realFile, $realBaseWithSep))
-        ) {
+        if (!file_exists($fullPath)) {
             $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
             $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
+        }
 
-            return;
+        $realBase = realpath($this->targetPath);
+        $realFile = realpath($fullPath);
+        if ($realBase === false || $realFile === false || strpos($realFile, $realBase) !== 0) {
+            $this->respond_message(403, 'upload_error_unauthorized_access', $filename);
         }
 
         $path_parts = pathinfo($realFile);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
-        $file_size  = filesize($realFile);
+        $file_size = filesize($realFile);
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
