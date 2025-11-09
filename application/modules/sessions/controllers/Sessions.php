@@ -321,7 +321,7 @@ class Sessions extends Base_Controller
     }
 
     /**
-     * Check if IP address has exceeded rate limit for password resets using session storage
+     * Check if IP address has exceeded rate limit for password resets using database storage
      *
      * @param int $max_attempts Maximum attempts allowed per hour
      * @param int $window_minutes Time window in minutes
@@ -331,24 +331,21 @@ class Sessions extends Base_Controller
     private function _is_ip_rate_limited_password_reset($max_attempts, $window_minutes)
     {
         $ip_address = $this->input->ip_address();
-        $session_key = 'password_reset_attempts_' . md5($ip_address);
-        
-        // Get current attempts from session
-        $attempts = $this->session->userdata($session_key);
-        
-        if (!$attempts) {
-            $attempts = [];
-        }
-        
-        // Clean up old attempts outside the time window
         $cutoff_time = time() - ($window_minutes * 60);
-        $attempts = array_filter($attempts, function($timestamp) use ($cutoff_time) {
-            return $timestamp > $cutoff_time;
-        });
+        
+        // Clean up old attempts outside the time window first
+        $this->db->where('attempt_time <', $cutoff_time);
+        $this->db->where('ip_address', $ip_address);
+        $this->db->delete('ip_password_reset_attempts');
+        
+        // Count attempts within the time window from database
+        $this->db->where('ip_address', $ip_address);
+        $this->db->where('attempt_time >=', $cutoff_time);
+        $count = $this->db->count_all_results('ip_password_reset_attempts');
         
         // Check if rate limited
-        if (count($attempts) >= $max_attempts) {
-            log_message('info', trans('log_ip_rate_limit_check') . ': ' . count($attempts) . ' attempts from IP: ' . $ip_address);
+        if ($count >= $max_attempts) {
+            log_message('info', trans('log_ip_rate_limit_check') . ': ' . $count . ' attempts from IP: ' . $ip_address);
             return true;
         }
         
@@ -356,29 +353,22 @@ class Sessions extends Base_Controller
     }
 
     /**
-     * Record a password reset attempt for the current IP
+     * Record a password reset attempt for the current IP in database
      */
     private function _record_password_reset_attempt()
     {
         $ip_address = $this->input->ip_address();
-        $session_key = 'password_reset_attempts_' . md5($ip_address);
         
-        // Get current attempts from session
-        $attempts = $this->session->userdata($session_key);
-        
-        if (!$attempts) {
-            $attempts = [];
-        }
-        
-        // Add current timestamp
-        $attempts[] = time();
-        
-        // Store back to session
-        $this->session->set_userdata($session_key, $attempts);
+        // Insert new attempt record into database
+        $this->db->insert('ip_password_reset_attempts', [
+            'ip_address' => $ip_address,
+            'attempt_time' => time(),
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
     }
 
     /**
-     * Check if email-based rate limit exceeded for password resets using session storage
+     * Check if email-based rate limit exceeded for password resets using database storage
      *
      * @param string $email Email address to check
      * @param int $max_attempts Maximum attempts allowed
@@ -388,24 +378,21 @@ class Sessions extends Base_Controller
      */
     private function _is_email_rate_limited_password_reset($email, $max_attempts, $window_hours)
     {
-        $session_key = 'password_reset_email_' . md5($email);
-        
-        // Get current attempts from session
-        $attempts = $this->session->userdata($session_key);
-        
-        if (!$attempts) {
-            $attempts = [];
-        }
-        
-        // Clean up old attempts outside the time window
         $cutoff_time = time() - ($window_hours * 3600);
-        $attempts = array_filter($attempts, function($timestamp) use ($cutoff_time) {
-            return $timestamp > $cutoff_time;
-        });
+        
+        // Clean up old attempts outside the time window first
+        $this->db->where('attempt_time <', $cutoff_time);
+        $this->db->where('email', $email);
+        $this->db->delete('ip_password_reset_attempts');
+        
+        // Count attempts within the time window from database
+        $this->db->where('email', $email);
+        $this->db->where('attempt_time >=', $cutoff_time);
+        $count = $this->db->count_all_results('ip_password_reset_attempts');
         
         // Check if rate limited
-        if (count($attempts) >= $max_attempts) {
-            log_message('info', trans('log_email_rate_limit_check') . ': ' . count($attempts) . ' attempts for email: ' . $email);
+        if ($count >= $max_attempts) {
+            log_message('info', trans('log_email_rate_limit_check') . ': ' . $count . ' attempts for email: ' . $email);
             return true;
         }
         
@@ -413,26 +400,21 @@ class Sessions extends Base_Controller
     }
 
     /**
-     * Record a password reset attempt for a specific email
+     * Record a password reset attempt for a specific email in database
      *
      * @param string $email Email address
      */
     private function _record_email_password_reset_attempt($email)
     {
-        $session_key = 'password_reset_email_' . md5($email);
+        $ip_address = $this->input->ip_address();
         
-        // Get current attempts from session
-        $attempts = $this->session->userdata($session_key);
-        
-        if (!$attempts) {
-            $attempts = [];
-        }
-        
-        // Add current timestamp
-        $attempts[] = time();
-        
-        // Store back to session
-        $this->session->set_userdata($session_key, $attempts);
+        // Insert new attempt record into database
+        $this->db->insert('ip_password_reset_attempts', [
+            'ip_address' => $ip_address,
+            'email' => $email,
+            'attempt_time' => time(),
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
     }
 
     /**
