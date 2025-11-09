@@ -197,13 +197,13 @@ class Sessions extends Base_Controller
             }
 
             // Security: Check IP-based rate limiting first (prevents email enumeration)
-            if ($this->_is_ip_rate_limited_password_reset(env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5), env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60))) {
+            if ($this->_is_ip_rate_limited_password_reset() {
                 log_message('warning', trans('log_password_reset_ip_rate_limit') . ' from: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
             // Security: Prevent brute force attacks by counting password reset attempts per email
-            if ($this->_is_email_rate_limited_password_reset($email, env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3), env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1))) {
+            if ($this->_is_email_rate_limited_password_reset($email) {
                 log_message('warning', trans('log_password_reset_email_rate_limit') . ' for: ' . $email . ' from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
@@ -328,8 +328,11 @@ class Sessions extends Base_Controller
      *
      * @return bool True if rate limited, false otherwise
      */
-    private function _is_ip_rate_limited_password_reset($max_attempts, $window_minutes)
+    private function _is_ip_rate_limited_password_reset()
     {
+        $attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3),
+        $window_minutes = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1))
+        
         $ip_address = $this->input->ip_address();
         $session_key = 'password_reset_attempts_' . md5($ip_address);
         
@@ -386,8 +389,11 @@ class Sessions extends Base_Controller
      *
      * @return bool True if rate limited, false otherwise
      */
-    private function _is_email_rate_limited_password_reset($email, $max_attempts, $window_hours)
+    private function _is_email_rate_limited_password_reset($email)
     {
+        $attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3),
+        $window_minutes = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1))
+    
         $session_key = 'password_reset_email_' . md5($email);
         
         // Get current attempts from session
