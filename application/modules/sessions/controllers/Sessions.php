@@ -181,12 +181,12 @@ class Sessions extends Base_Controller
 
             // Validate email format first
             if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                log_message('error', 'Invalid email format in password reset: ' . $email . ' from IP: ' . $this->input->ip_address());
+                log_message('error', trans('log_invalid_email_format') . ': ' . $email . ' from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
             if (empty($email)) {
-                log_message('warning', 'Empty email submitted in password reset from IP: ' . $this->input->ip_address());
+                log_message('warning', trans('log_empty_email_submitted') . ' from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
@@ -198,13 +198,13 @@ class Sessions extends Base_Controller
 
             // Security: Check IP-based rate limiting first (prevents email enumeration)
             if ($this->_is_ip_rate_limited_password_reset($ip_max_attempts, $ip_window_minutes)) {
-                log_message('warning', 'Password reset IP rate limit exceeded from: ' . $this->input->ip_address());
+                log_message('warning', trans('log_password_reset_ip_rate_limit') . ' from: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
             // Security: Prevent brute force attacks by counting password reset attempts per email
             if ($this->_is_email_rate_limited_password_reset($email, $email_max_attempts, $email_window_hours)) {
-                log_message('warning', 'Password reset email rate limit exceeded for: ' . $email . ' from IP: ' . $this->input->ip_address());
+                log_message('warning', trans('log_password_reset_email_rate_limit') . ' for: ' . $email . ' from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
@@ -283,7 +283,7 @@ class Sessions extends Base_Controller
                 // User doesn't exist - show same success message to prevent enumeration
                 // DO NOT send email to prevent abuse and RBL issues
                 $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
-                log_message('info', 'Password reset attempted for non-existent email: ' . $email . ' from IP: ' . $this->input->ip_address());
+                log_message('info', trans('log_password_reset_nonexistent_email') . ': ' . $email . ' from IP: ' . $this->input->ip_address());
             }
 
             redirect('sessions/login');
@@ -348,7 +348,7 @@ class Sessions extends Base_Controller
         
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
-            log_message('info', 'IP rate limit check: ' . count($attempts) . ' attempts from IP: ' . $ip_address);
+            log_message('info', trans('log_ip_rate_limit_check') . ': ' . count($attempts) . ' attempts from IP: ' . $ip_address);
             return true;
         }
         
@@ -405,7 +405,7 @@ class Sessions extends Base_Controller
         
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
-            log_message('info', 'Email rate limit check: ' . count($attempts) . ' attempts for email: ' . $email);
+            log_message('info', trans('log_email_rate_limit_check') . ': ' . count($attempts) . ' attempts for email: ' . $email);
             return true;
         }
         

@@ -27,8 +27,8 @@ function generate_xml_invoice_file($invoice, $items, string $xml_lib, string $fi
         str_contains($xml_lib, '..') ||
         str_contains($xml_lib, '/') ||
         str_contains($xml_lib, '\\')) {
-        log_message('error', 'Invalid XML library name: ' . $xml_lib);
-        throw new Exception('Invalid XML library name');
+        log_message('error', trans('log_invalid_xml_library_name') . ': ' . $xml_lib);
+        throw new Exception(trans('log_invalid_xml_library_name'));
     }
     
     $CI = &get_instance();
@@ -104,7 +104,7 @@ function get_xml_template_files(): array
         
         // Security: Validate XML config ID before including
         if (!is_valid_xml_config_id($xml_config_files[$key])) {
-            log_message('error', 'Invalid XML config ID detected: ' . $xml_config_files[$key]);
+            log_message('error', trans('log_invalid_xml_config_id') . ': ' . $xml_config_files[$key]);
             continue;
         }
 
@@ -144,7 +144,7 @@ function get_xml_full_name(string $xml_id)
 {
     // Security: Validate XML config ID to prevent path traversal
     if (!is_valid_xml_config_id($xml_id)) {
-        log_message('error', 'Invalid XML config ID in get_xml_full_name: ' . $xml_id);
+        log_message('error', trans('log_invalid_xml_config_id_get_full_name') . ': ' . $xml_id);
         return null;
     }
     

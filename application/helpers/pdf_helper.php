@@ -134,7 +134,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
             $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
             $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
         } elseif ($xml_id && !is_valid_xml_config_id($xml_id)) {
-            log_message('error', 'Invalid XML config ID in pdf_helper: ' . $xml_id);
+            log_message('error', trans('log_invalid_xml_config_id_pdf_helper') . ': ' . $xml_id);
         }
 
         if ($xml_id && $embed_xml) {
