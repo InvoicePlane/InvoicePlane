@@ -179,33 +179,35 @@ class Sessions extends Base_Controller
         if ($this->input->post('btn_reset', true)) {
             $email = $this->input->post('email', true);
 
+            // Validate email format first
             if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 log_message('error', 'Incoming email is not a valid email address in passwordreset ' . $email);
-                redirect('/');
+                $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
+                redirect('sessions/login');
             }
 
             if (empty($email)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
-                redirect($_SERVER['HTTP_REFERER']);
+                redirect('sessions/login');
             }
 
             // Security: Check IP-based rate limiting first (prevents email enumeration)
-            if ($this->_is_ip_rate_limited('password_reset', 5)) {
+            if ($this->_is_ip_rate_limited_password_reset(5, 60)) {
                 $this->session->set_flashdata('alert_error', trans('password_reset_rate_limit_ip'));
+                log_message('warning', 'Password reset IP rate limit exceeded from: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
             // Security: Prevent brute force attacks by counting password reset attempts per email
-            $login_log_check = $this->_login_log_check($email, 'password_reset');
-            if ( ! empty($login_log_check) && $login_log_check->log_count > 3) {
-                // More strict limit for password resets (3 attempts vs 10 for login)
+            if ($this->_is_email_rate_limited_password_reset($email, 3, 1)) {
                 $this->session->set_flashdata('alert_error', trans('password_reset_rate_limit_email'));
-                log_message('warning', 'Password reset rate limit exceeded for email: ' . $email);
+                log_message('warning', 'Password reset email rate limit exceeded for: ' . $email);
                 redirect('sessions/login');
             }
 
-            // Record the password reset attempt
-            $this->_login_log_addfailure($email, 'password_reset');
+            // Record the password reset attempt (both IP and email)
+            $this->_record_password_reset_attempt();
+            $this->_record_email_password_reset_attempt($email);
 
             // Test if a user with this email exists
             $this->db->where('user_email', $email);
@@ -215,18 +217,11 @@ class Sessions extends Base_Controller
             // This prevents email enumeration attacks
             if ($user) {
                 // User exists - send actual reset email
-                $email = $this->input->post('email', true);
-
-                if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    log_message('error', 'Incoming email is not a valid email address in passwordreset ' . $email);
-                    redirect('/');
-                }
-
                 //use salt to prevent predictability of the reset token (CVE-2021-29023)
                 $this->load->library('crypt');
                 $token = md5(time() . $email . $this->crypt->salt());
 
-                // Save the token to the database and set the user to inactive
+                // Save the token to the database
                 $db_array = [
                     'user_passwordreset_token' => $token,
                 ];
@@ -248,7 +243,7 @@ class Sessions extends Base_Controller
                     $email_from = 'system@' . preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/", '$1', base_url());
                 }
 
-                // Mail the invoice with the pre-configured mailer if possible
+                // Mail the reset link with the pre-configured mailer if possible
                 if (mailer_configured()) {
                     $this->load->helper('mailer/phpmailer');
 
@@ -275,7 +270,7 @@ class Sessions extends Base_Controller
                     }
                 }
 
-                // Redirect back to the login screen with an alert
+                // Show appropriate message
                 if (isset($email_failed)) {
                     $this->session->set_flashdata('alert_error', trans('password_reset_failed'));
                 } else {
@@ -283,9 +278,9 @@ class Sessions extends Base_Controller
                 }
             } else {
                 // User doesn't exist - show same success message to prevent enumeration
-                // But don't send email
+                // DO NOT send email to prevent abuse and RBL issues
                 $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
-                log_message('info', 'Password reset attempted for non-existent email: ' . $email);
+                log_message('info', 'Password reset attempted for non-existent email: ' . $email . ' from IP: ' . $this->input->ip_address());
             }
 
             redirect('sessions/login');
@@ -296,20 +291,15 @@ class Sessions extends Base_Controller
 
     /**
      * Checks if the login_log table has records for the
-     * given username/email and optionally IP address.
+     * given.
      *
-     * @param string $username Username or email to check
-     * @param string $log_type Type of log (login, password_reset, etc.)
+     * @param string $username
      *
-     * @return object|null
+     * @return object
      */
-    private function _login_log_check($username, $log_type = 'login')
+    private function _login_log_check($username)
     {
-        $login_log_query = $this->db
-            ->where('login_name', $username)
-            ->where('log_type', $log_type)
-            ->get('ip_login_log')
-            ->row();
+        $login_log_query = $this->db->where('login_name', $username)->get('ip_login_log')->row();
 
         if ( ! empty($login_log_query) && $login_log_query->log_count > 10) {
             $current_time = new DateTime();
@@ -318,9 +308,9 @@ class Sessions extends Base_Controller
             //the fails are only counted up to 11, this means that the account is also unlocked
             //if the last failed 11th login attempt is over 12 hours ago.
             if ($interval->h > 12) {
-                $this->_login_log_reset($username, $log_type);
+                $this->_login_log_reset($username);
 
-                return null;
+                return;
             }
         }
 
@@ -328,39 +318,116 @@ class Sessions extends Base_Controller
     }
 
     /**
-     * Check if IP address has exceeded rate limit for a specific action
+     * Check if IP address has exceeded rate limit for password resets using session storage
      *
-     * @param string $log_type Type of action being rate limited
-     * @param int $max_attempts Maximum attempts allowed (default: 5)
+     * @param int $max_attempts Maximum attempts allowed per hour (default: 5)
+     * @param int $window_minutes Time window in minutes (default: 60)
      *
      * @return bool True if rate limited, false otherwise
      */
-    private function _is_ip_rate_limited($log_type = 'password_reset', $max_attempts = 5)
+    private function _is_ip_rate_limited_password_reset($max_attempts = 5, $window_minutes = 60)
     {
         $ip_address = $this->input->ip_address();
+        $session_key = 'password_reset_attempts_' . md5($ip_address);
         
-        // Query for IP-based rate limiting
-        $query = $this->db->query(
-            "SELECT SUM(log_count) as total_count, MAX(log_create_timestamp) as last_attempt 
-             FROM ip_login_log 
-             WHERE log_ip_address = ? AND log_type = ?",
-            [$ip_address, $log_type]
-        );
+        // Get current attempts from session
+        $attempts = $this->session->userdata($session_key);
         
-        $result = $query->row();
+        if (!$attempts) {
+            $attempts = [];
+        }
         
-        if ($result && $result->total_count >= $max_attempts) {
-            $current_time = new DateTime();
-            $last_attempt = new DateTime($result->last_attempt);
-            $interval = $current_time->diff($last_attempt);
-            
-            // Allow retry after 1 hour
-            if ($interval->h < 1) {
-                return true;
-            }
+        // Clean up old attempts outside the time window
+        $cutoff_time = time() - ($window_minutes * 60);
+        $attempts = array_filter($attempts, function($timestamp) use ($cutoff_time) {
+            return $timestamp > $cutoff_time;
+        });
+        
+        // Check if rate limited
+        if (count($attempts) >= $max_attempts) {
+            return true;
         }
         
         return false;
+    }
+
+    /**
+     * Record a password reset attempt for the current IP
+     */
+    private function _record_password_reset_attempt()
+    {
+        $ip_address = $this->input->ip_address();
+        $session_key = 'password_reset_attempts_' . md5($ip_address);
+        
+        // Get current attempts from session
+        $attempts = $this->session->userdata($session_key);
+        
+        if (!$attempts) {
+            $attempts = [];
+        }
+        
+        // Add current timestamp
+        $attempts[] = time();
+        
+        // Store back to session
+        $this->session->set_userdata($session_key, $attempts);
+    }
+
+    /**
+     * Check if email-based rate limit exceeded for password resets using session storage
+     *
+     * @param string $email Email address to check
+     * @param int $max_attempts Maximum attempts allowed (default: 3)
+     * @param int $window_hours Time window in hours (default: 1)
+     *
+     * @return bool True if rate limited, false otherwise
+     */
+    private function _is_email_rate_limited_password_reset($email, $max_attempts = 3, $window_hours = 1)
+    {
+        $session_key = 'password_reset_email_' . md5($email);
+        
+        // Get current attempts from session
+        $attempts = $this->session->userdata($session_key);
+        
+        if (!$attempts) {
+            $attempts = [];
+        }
+        
+        // Clean up old attempts outside the time window
+        $cutoff_time = time() - ($window_hours * 3600);
+        $attempts = array_filter($attempts, function($timestamp) use ($cutoff_time) {
+            return $timestamp > $cutoff_time;
+        });
+        
+        // Check if rate limited
+        if (count($attempts) >= $max_attempts) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Record a password reset attempt for a specific email
+     *
+     * @param string $email Email address
+     */
+    private function _record_email_password_reset_attempt($email)
+    {
+        $session_key = 'password_reset_email_' . md5($email);
+        
+        // Get current attempts from session
+        $attempts = $this->session->userdata($session_key);
+        
+        if (!$attempts) {
+            $attempts = [];
+        }
+        
+        // Add current timestamp
+        $attempts[] = time();
+        
+        // Store back to session
+        $this->session->set_userdata($session_key, $attempts);
     }
 
     /**
@@ -368,19 +435,14 @@ class Sessions extends Base_Controller
      * table the count is incremented by 1, otherwise
      * a record for the given user is created.
      *
-     * @param string $username Username or email
-     * @param string $log_type Type of log entry (login, password_reset, etc.)
+     * @param string $username
      */
-    private function _login_log_addfailure($username, $log_type = 'login')
+    private function _login_log_addfailure($username)
     {
-        $ip_address = $this->input->ip_address();
-        
-        if (empty($login_log_check = $this->_login_log_check($username, $log_type))) {
+        if (empty($login_log_check = $this->_login_log_check($username))) {
             //create the log
             $this->db->insert('ip_login_log', [
                 'login_name'           => $username,
-                'log_ip_address'       => $ip_address,
-                'log_type'             => $log_type,
                 'log_count'            => 1,
                 'log_create_timestamp' => date('c'),
             ]);
@@ -388,11 +450,9 @@ class Sessions extends Base_Controller
             //update the log
             $this->db->set([
                 'log_count'            => $login_log_check->log_count + 1,
-                'log_ip_address'       => $ip_address,
                 'log_create_timestamp' => date('c'),
             ])
                 ->where('login_name', $username)
-                ->where('log_type', $log_type)
                 ->update('ip_login_log');
         }
     }
@@ -401,14 +461,10 @@ class Sessions extends Base_Controller
      * The record of the given user is deleted from the
      * login_log table.
      *
-     * @param string $username Username or email
-     * @param string $log_type Type of log entry (login, password_reset, etc.)
+     * @param string $username
      */
-    private function _login_log_reset($username, $log_type = 'login')
+    private function _login_log_reset($username)
     {
-        $this->db->delete('ip_login_log', [
-            'login_name' => $username,
-            'log_type'   => $log_type,
-        ]);
+        $this->db->delete('ip_login_log', ['login_name' => $username]);
     }
 }
