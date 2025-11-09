@@ -192,18 +192,18 @@ class Sessions extends Base_Controller
 
             // Security: Block automated tools and bots
             if ($this->_is_bot_request()) {
-                log_message('warning', 'Password reset blocked: Automated tool/bot detected from IP: ' . $this->input->ip_address() . ' User-Agent: ' . $this->input->user_agent());
+                log_message('warning', trans('log_password_reset_bot_detected') . ': ' . $this->input->ip_address() . ' User-Agent: ' . $this->input->user_agent());
                 redirect('sessions/login');
             }
 
             // Security: Check IP-based rate limiting first (prevents email enumeration)
-            if ($this->_is_ip_rate_limited_password_reset() {
+            if ($this->_is_ip_rate_limited_password_reset()) {
                 log_message('warning', trans('log_password_reset_ip_rate_limit') . ' from: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
             // Security: Prevent brute force attacks by counting password reset attempts per email
-            if ($this->_is_email_rate_limited_password_reset($email) {
+            if ($this->_is_email_rate_limited_password_reset($email)) {
                 log_message('warning', trans('log_password_reset_email_rate_limit') . ' for: ' . $email . ' from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
@@ -330,8 +330,8 @@ class Sessions extends Base_Controller
      */
     private function _is_ip_rate_limited_password_reset()
     {
-        $attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3),
-        $window_minutes = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1))
+        $max_attempts = env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
+        $window_minutes = env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
         
         $ip_address = $this->input->ip_address();
         $session_key = 'password_reset_attempts_' . md5($ip_address);
@@ -391,8 +391,8 @@ class Sessions extends Base_Controller
      */
     private function _is_email_rate_limited_password_reset($email)
     {
-        $attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3),
-        $window_minutes = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1))
+        $max_attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3);
+        $window_hours = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
     
         $session_key = 'password_reset_email_' . md5($email);
         

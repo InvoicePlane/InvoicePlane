@@ -417,6 +417,7 @@ $lang = [
     'log_password_reset_ip_rate_limit'             => 'Password reset IP rate limit exceeded',
     'log_password_reset_email_rate_limit'          => 'Password reset email rate limit exceeded',
     'log_password_reset_nonexistent_email'         => 'Password reset attempted for non-existent email',
+    'log_password_reset_bot_detected'              => 'Password reset blocked: Automated tool/bot detected from IP',
     'log_ip_rate_limit_check'                      => 'IP rate limit check',
     'log_invalid_xml_library_name'                 => 'Invalid XML library name',
     'log_invalid_xml_config_id'                    => 'Invalid XML config ID detected',
