@@ -1,19 +1,38 @@
-<?php defined('BASEPATH') || exit('No direct script access allowed'); ?>
+<?php 
+defined('BASEPATH') || exit('No direct script access allowed'); 
 
-A PHP Error was encountered
+// Simple translation function for error pages
+function error_trans($key) {
+    static $translations = null;
+    if ($translations === null) {
+        $lang_file = APPPATH . 'language/english/ip_lang.php';
+        if (file_exists($lang_file)) {
+            include $lang_file;
+            if (isset($lang) && is_array($lang)) {
+                $translations = $lang;
+            }
+        }
+        if ($translations === null) {
+            $translations = [];
+        }
+    }
+    return isset($translations[$key]) ? $translations[$key] : $key;
+}
 
-Severity:    <?php echo $severity, "\n"; ?>
-Message:     <?php echo $message, "\n"; ?>
-Filename:    <?php echo $filepath, "\n"; ?>
-Line Number: <?php echo $line; ?>
+echo "\n", error_trans('error_php_encountered'), "\n\n";
+echo error_trans('error_severity'), ":    ", $severity, "\n";
+echo error_trans('error_message'), ":     ", $message, "\n";
+echo error_trans('error_filename'), ":    ", $filepath, "\n";
+echo error_trans('error_line_number'), ": ", $line;
 
-<?php if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) : ?>
-    Backtrace:
+if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) : ?>
+
+    <?php echo error_trans('error_backtrace'); ?>:
     <?php foreach (debug_backtrace() as $error) : ?>
         <?php if (isset($error['file']) && ! str_starts_with($error['file'], realpath(BASEPATH))) : ?>
-            File: <?php echo $error['file'], "\n"; ?>
-            Line: <?php echo $error['line'], "\n"; ?>
-            Function: <?php echo $error['function'], "\n\n"; ?>
+            <?php echo error_trans('error_file'); ?>: <?php echo $error['file'], "\n"; ?>
+            <?php echo error_trans('error_line'); ?>: <?php echo $error['line'], "\n"; ?>
+            <?php echo error_trans('error_function'); ?>: <?php echo $error['function'], "\n\n"; ?>
         <?php endif ?>
     <?php endforeach ?>
 

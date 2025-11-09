@@ -824,7 +824,20 @@ $lang = [
     'custom'    => 'custom',
 
     // Errors
-    'validator_fail' => 'Unable to process field %s: %s',
+    'validator_fail'                => 'Unable to process field %s: %s',
+    'error_exception_encountered'   => 'An uncaught Exception was encountered',
+    'error_php_encountered'         => 'A PHP Error was encountered',
+    'error_type'                    => 'Type',
+    'error_severity'                => 'Severity',
+    'error_message'                 => 'Message',
+    'error_filename'                => 'Filename',
+    'error_line_number'             => 'Line Number',
+    'error_backtrace'               => 'Backtrace',
+    'error_file'                    => 'File',
+    'error_line'                    => 'Line',
+    'error_function'                => 'Function',
+    'error_prefix'                  => 'ERROR',
+    'error_database'                => 'Database error',
 
     // Types
     'true'  => 'True',
