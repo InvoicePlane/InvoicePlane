@@ -181,27 +181,30 @@ class Sessions extends Base_Controller
 
             // Validate email format first
             if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                log_message('error', 'Incoming email is not a valid email address in passwordreset ' . $email);
-                $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
+                log_message('error', 'Invalid email format in password reset: ' . $email . ' from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
             if (empty($email)) {
-                $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
+                log_message('warning', 'Empty email submitted in password reset from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
+            // Get configuration values for rate limiting
+            $ip_max_attempts = defined('PASSWORD_RESET_IP_MAX_ATTEMPTS') ? PASSWORD_RESET_IP_MAX_ATTEMPTS : 5;
+            $ip_window_minutes = defined('PASSWORD_RESET_IP_WINDOW_MINUTES') ? PASSWORD_RESET_IP_WINDOW_MINUTES : 60;
+            $email_max_attempts = defined('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS') ? PASSWORD_RESET_EMAIL_MAX_ATTEMPTS : 3;
+            $email_window_hours = defined('PASSWORD_RESET_EMAIL_WINDOW_HOURS') ? PASSWORD_RESET_EMAIL_WINDOW_HOURS : 1;
+
             // Security: Check IP-based rate limiting first (prevents email enumeration)
-            if ($this->_is_ip_rate_limited_password_reset(5, 60)) {
-                $this->session->set_flashdata('alert_error', trans('password_reset_rate_limit_ip'));
+            if ($this->_is_ip_rate_limited_password_reset($ip_max_attempts, $ip_window_minutes)) {
                 log_message('warning', 'Password reset IP rate limit exceeded from: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
             // Security: Prevent brute force attacks by counting password reset attempts per email
-            if ($this->_is_email_rate_limited_password_reset($email, 3, 1)) {
-                $this->session->set_flashdata('alert_error', trans('password_reset_rate_limit_email'));
-                log_message('warning', 'Password reset email rate limit exceeded for: ' . $email);
+            if ($this->_is_email_rate_limited_password_reset($email, $email_max_attempts, $email_window_hours)) {
+                log_message('warning', 'Password reset email rate limit exceeded for: ' . $email . ' from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
@@ -320,12 +323,12 @@ class Sessions extends Base_Controller
     /**
      * Check if IP address has exceeded rate limit for password resets using session storage
      *
-     * @param int $max_attempts Maximum attempts allowed per hour (default: 5)
-     * @param int $window_minutes Time window in minutes (default: 60)
+     * @param int $max_attempts Maximum attempts allowed per hour
+     * @param int $window_minutes Time window in minutes
      *
      * @return bool True if rate limited, false otherwise
      */
-    private function _is_ip_rate_limited_password_reset($max_attempts = 5, $window_minutes = 60)
+    private function _is_ip_rate_limited_password_reset($max_attempts, $window_minutes)
     {
         $ip_address = $this->input->ip_address();
         $session_key = 'password_reset_attempts_' . md5($ip_address);
@@ -345,6 +348,7 @@ class Sessions extends Base_Controller
         
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
+            log_message('info', 'IP rate limit check: ' . count($attempts) . ' attempts from IP: ' . $ip_address);
             return true;
         }
         
@@ -377,12 +381,12 @@ class Sessions extends Base_Controller
      * Check if email-based rate limit exceeded for password resets using session storage
      *
      * @param string $email Email address to check
-     * @param int $max_attempts Maximum attempts allowed (default: 3)
-     * @param int $window_hours Time window in hours (default: 1)
+     * @param int $max_attempts Maximum attempts allowed
+     * @param int $window_hours Time window in hours
      *
      * @return bool True if rate limited, false otherwise
      */
-    private function _is_email_rate_limited_password_reset($email, $max_attempts = 3, $window_hours = 1)
+    private function _is_email_rate_limited_password_reset($email, $max_attempts, $window_hours)
     {
         $session_key = 'password_reset_email_' . md5($email);
         
@@ -401,6 +405,7 @@ class Sessions extends Base_Controller
         
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
+            log_message('info', 'Email rate limit check: ' . count($attempts) . ' attempts for email: ' . $email);
             return true;
         }
         
