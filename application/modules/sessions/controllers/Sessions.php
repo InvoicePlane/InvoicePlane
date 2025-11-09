@@ -190,20 +190,20 @@ class Sessions extends Base_Controller
                 redirect('sessions/login');
             }
 
-            // Get configuration values for rate limiting
-            $ip_max_attempts = defined('PASSWORD_RESET_IP_MAX_ATTEMPTS') ? PASSWORD_RESET_IP_MAX_ATTEMPTS : 5;
-            $ip_window_minutes = defined('PASSWORD_RESET_IP_WINDOW_MINUTES') ? PASSWORD_RESET_IP_WINDOW_MINUTES : 60;
-            $email_max_attempts = defined('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS') ? PASSWORD_RESET_EMAIL_MAX_ATTEMPTS : 3;
-            $email_window_hours = defined('PASSWORD_RESET_EMAIL_WINDOW_HOURS') ? PASSWORD_RESET_EMAIL_WINDOW_HOURS : 1;
+            // Security: Block automated tools and bots
+            if ($this->_is_bot_request()) {
+                log_message('warning', trans('log_password_reset_bot_detected') . ': ' . $this->input->ip_address() . ' User-Agent: ' . $this->input->user_agent());
+                redirect('sessions/login');
+            }
 
             // Security: Check IP-based rate limiting first (prevents email enumeration)
-            if ($this->_is_ip_rate_limited_password_reset($ip_max_attempts, $ip_window_minutes)) {
+            if ($this->_is_ip_rate_limited_password_reset()) {
                 log_message('warning', trans('log_password_reset_ip_rate_limit') . ' from: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
             // Security: Prevent brute force attacks by counting password reset attempts per email
-            if ($this->_is_email_rate_limited_password_reset($email, $email_max_attempts, $email_window_hours)) {
+            if ($this->_is_email_rate_limited_password_reset($email)) {
                 log_message('warning', trans('log_password_reset_email_rate_limit') . ' for: ' . $email . ' from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
@@ -328,8 +328,11 @@ class Sessions extends Base_Controller
      *
      * @return bool True if rate limited, false otherwise
      */
-    private function _is_ip_rate_limited_password_reset($max_attempts, $window_minutes)
+    private function _is_ip_rate_limited_password_reset()
     {
+        $max_attempts = env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
+        $window_minutes = env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
+        
         $ip_address = $this->input->ip_address();
         $session_key = 'password_reset_attempts_' . md5($ip_address);
         
@@ -386,8 +389,11 @@ class Sessions extends Base_Controller
      *
      * @return bool True if rate limited, false otherwise
      */
-    private function _is_email_rate_limited_password_reset($email, $max_attempts, $window_hours)
+    private function _is_email_rate_limited_password_reset($email)
     {
+        $max_attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3);
+        $window_hours = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
+    
         $session_key = 'password_reset_email_' . md5($email);
         
         // Get current attempts from session
@@ -433,6 +439,50 @@ class Sessions extends Base_Controller
         
         // Store back to session
         $this->session->set_userdata($session_key, $attempts);
+    }
+
+    /**
+     * Check if the current request is from an automated tool or bot
+     *
+     * @return bool True if bot/automated tool detected, false otherwise
+     */
+    private function _is_bot_request()
+    {
+        $user_agent = $this->input->user_agent();
+        
+        // List of common automated tools and bots
+        $bot_signatures = [
+            'curl',
+            'wget',
+            'python-requests',
+            'go-http-client',
+            'java/',
+            'apache-httpclient',
+            'okhttp',
+            'httpclient',
+            'bot',
+            'spider',
+            'crawler',
+            'scraper',
+            'postman',
+            'insomnia',
+            'paw/',
+        ];
+        
+        // Check if user agent is empty (common with automated tools)
+        if (empty($user_agent)) {
+            return true;
+        }
+        
+        // Check if user agent contains any bot signatures (case-insensitive)
+        $user_agent_lower = strtolower($user_agent);
+        foreach ($bot_signatures as $signature) {
+            if (strpos($user_agent_lower, $signature) !== false) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     /**
