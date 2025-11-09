@@ -87,6 +87,13 @@ class Upload extends Admin_Controller
     public function delete_file(string $url_key): void
     {
         $filename = urldecode($this->input->post('name'));
+        
+        // Security: Sanitize filename to prevent path traversal
+        $filename = $this->sanitize_file_name($filename);
+        
+        if (empty($filename)) {
+            $this->respond_message(400, 'upload_error_invalid_filename', $filename);
+        }
 
         $finalPath = $this->targetPath . $url_key . '_' . $filename;
 
@@ -130,9 +137,25 @@ class Upload extends Admin_Controller
 
     private function sanitize_file_name(string $filename): string
     {
+        // Security: Remove any path components
+        $filename = basename($filename);
+        
+        // Security: Check for path traversal attempts before sanitization
+        if (str_contains($filename, '..') || 
+            str_contains($filename, '/') || 
+            str_contains($filename, '\\') ||
+            str_contains($filename, "\0")) {
+            log_message('error', 'Path traversal attempt detected in filename: ' . $filename);
+            return '';
+        }
+        
         // Clean filename (same in dropzone script)
         $sanitizedFileName = preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', mb_trim($filename));
-        return str_replace('..','',$sanitizedFileName);
+        
+        // Security: Additional check to ensure no path traversal sequences remain
+        $sanitizedFileName = str_replace('..', '', $sanitizedFileName);
+        
+        return $sanitizedFileName;
     }
 
     private function get_target_file_path(string $url_key, string $filename): string
