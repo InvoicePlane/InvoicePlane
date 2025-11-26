@@ -87,7 +87,7 @@ function pdf_create(
     if ($isInvoice && ! empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div><div><p align="center">' . str_replace('_', ' ', $filename) . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
-
+        $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
     }
 
@@ -95,6 +95,7 @@ function pdf_create(
     if ( ! $isInvoice && ! empty($CI->mdl_settings->settings['pdf_quote_footer'])) {
         $mpdf->setAutoBottomMargin = 'stretch';
         $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div><div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
+        $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
     }
 
@@ -105,7 +106,12 @@ function pdf_create(
 
     $mpdf->SetHTMLFooterByName('defaultFooter');
 
-    $mpdf->WriteHTML((string) $html);
+    try {
+        $mpdf->WriteHTML((string) $html);
+    } catch (Exception $e) {
+        log_message('error', $e->getMessage());
+        show_error($e->getMessage());
+    }
 
     if ($isInvoice) {
         $pdfFiles = glob(UPLOADS_ARCHIVE_FOLDER . '*' . $filename . '.pdf');
