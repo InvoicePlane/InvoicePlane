@@ -22,6 +22,15 @@ if ( ! defined('BASEPATH')) {
  */
 function generate_xml_invoice_file($invoice, $items, string $xml_lib, string $filename, $options): string
 {
+    // Security: Validate xml_lib to prevent path traversal in library loading
+    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $xml_lib) ||
+        str_contains($xml_lib, '..') ||
+        str_contains($xml_lib, '/') ||
+        str_contains($xml_lib, '\\')) {
+        log_message('error', trans('log_invalid_xml_library_name') . ': ' . $xml_lib);
+        throw new Exception(trans('log_invalid_xml_library_name'));
+    }
+    
     $CI = &get_instance();
 
     $CI->load->library('XMLtemplates/' . $xml_lib . 'Xml', [
@@ -46,6 +55,40 @@ function include_rdf(string $embedXml, string $urn = 'factur-x'): string
 }
 
 /**
+ * Validates XML config ID to prevent path traversal attacks
+ *
+ * @param string $xml_id The XML config ID to validate
+ * @return bool True if valid, false otherwise
+ */
+function is_valid_xml_config_id(string $xml_id): bool
+{
+    // Prevent path traversal attacks
+    if (empty($xml_id) || 
+        str_contains($xml_id, '..') || 
+        str_contains($xml_id, '/') || 
+        str_contains($xml_id, '\\') ||
+        str_contains($xml_id, "\0")) {
+        return false;
+    }
+    
+    // Only allow alphanumeric characters, hyphens, and underscores
+    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $xml_id)) {
+        return false;
+    }
+    
+    // Verify the file exists in the correct directory
+    $safe_path = APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
+    $real_path = realpath(dirname($safe_path));
+    $expected_dir = realpath(APPPATH . 'helpers/XMLconfigs');
+    
+    if ($real_path !== $expected_dir) {
+        return false;
+    }
+    
+    return file_exists($safe_path);
+}
+
+/**
  * Returns all available xml-template items.
  *
  * @scope  modules/clients/controllers/Clients.php
@@ -58,6 +101,12 @@ function get_xml_template_files(): array
 
     foreach ($xml_config_files as $key => $xml_config_file) {
         $xml_config_files[$key] = str_replace('.php', '', $xml_config_file);
+        
+        // Security: Validate XML config ID before including
+        if (!is_valid_xml_config_id($xml_config_files[$key])) {
+            log_message('error', trans('log_invalid_xml_config_id') . ': ' . $xml_config_files[$key]);
+            continue;
+        }
 
         if (file_exists($path . $xml_config_files[$key] . '.php') && include $path . $xml_config_files[$key] . '.php') {
             // By default config filename
@@ -93,6 +142,12 @@ function get_xml_template_files(): array
  */
 function get_xml_full_name(string $xml_id)
 {
+    // Security: Validate XML config ID to prevent path traversal
+    if (!is_valid_xml_config_id($xml_id)) {
+        log_message('error', trans('log_invalid_xml_config_id_get_full_name') . ': ' . $xml_id);
+        return null;
+    }
+    
     if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
         $CI = & get_instance();
