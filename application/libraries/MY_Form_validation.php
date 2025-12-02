@@ -31,12 +31,9 @@ class MY_Form_validation extends CI_Form_validation
         return $query->num_rows() === 0;
     }
 
-    public function run($config = null, &$data = null)
+    function run($config = null, &$data = null)
     {
-        if (is_object($config)) {
-            $this->CI = &$config;
-        }
-
+        (is_object($config)) AND $this->CI = &$config;
         return parent::run($data);
     }
 }

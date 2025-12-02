@@ -11,7 +11,7 @@
         }
     },
     "require": {
-        "codeigniter/framework": "3.1.13",
+        "pocketarc/codeigniter": "3.3",
         "endroid/qr-code": "^4.8",
         "guzzlehttp/guzzle": "^7.9",
         "moneyphp/money": "^4.7",

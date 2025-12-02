@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "16ec29d674456761958ca1c78513c3c5",
+    "content-hash": "043b1d172ba2c160eaaf88799b2acc5b",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -59,46 +59,6 @@
                 "source": "https://github.com/Bacon/BaconQrCode/tree/2.0.8"
             },
             "time": "2022-12-07T17:46:57+00:00"
-        },
-        {
-            "name": "codeigniter/framework",
-            "version": "3.1.13",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bcit-ci/CodeIgniter.git",
-                "reference": "bcb17eb8ba53a85de154439d0ab8ff1bed047bc9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/bcb17eb8ba53a85de154439d0ab8ff1bed047bc9",
-                "reference": "bcb17eb8ba53a85de154439d0ab8ff1bed047bc9",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.7"
-            },
-            "require-dev": {
-                "mikey179/vfsstream": "1.6.*",
-                "phpunit/phpunit": "4.* || 5.* || 9.*"
-            },
-            "suggest": {
-                "paragonie/random_compat": "Provides better randomness in PHP 5.x"
-            },
-            "type": "project",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "The CodeIgniter framework",
-            "homepage": "https://codeigniter.com",
-            "support": {
-                "forum": "http://forum.codeigniter.com/",
-                "issues": "https://github.com/bcit-ci/CodeIgniter/issues",
-                "slack": "https://codeigniterchat.slack.com",
-                "source": "https://github.com/bcit-ci/CodeIgniter",
-                "wiki": "https://github.com/bcit-ci/CodeIgniter/wiki"
-            },
-            "time": "2022-03-03T13:21:49+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -1144,6 +1104,43 @@
                 }
             ],
             "time": "2024-07-20T21:41:07+00:00"
+        },
+        {
+            "name": "pocketarc/codeigniter",
+            "version": "3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pocketarc/codeigniter.git",
+                "reference": "d310726565c12ba99b8037e8fb231ed739258e6e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pocketarc/codeigniter/zipball/d310726565c12ba99b8037e8fb231ed739258e6e",
+                "reference": "d310726565c12ba99b8037e8fb231ed739258e6e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.8"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "1.6.*",
+                "phpunit/phpunit": "4.* || 5.* || 9.*"
+            },
+            "suggest": {
+                "paragonie/random_compat": "Provides better randomness in PHP 5.x"
+            },
+            "type": "project",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "The CodeIgniter framework",
+            "homepage": "https://github.com/pocketarc/codeigniter",
+            "support": {
+                "issues": "https://github.com/pocketarc/codeigniter/issues",
+                "source": "https://github.com/pocketarc/codeigniter"
+            },
+            "time": "2024-10-29T12:34:00+00:00"
         },
         {
             "name": "psr/http-client",
