@@ -107,6 +107,7 @@ class Mdl_Clients extends Response_Model
             ],
             'client_einvoicing_version' => [
                 'field' => 'client_einvoicing_version',
+                'rules' => 'callback_validate_einvoicing_version',
             ],
             'client_einvoicing_active' => [
                 'field' => 'client_einvoicing_active',
@@ -177,6 +178,31 @@ class Mdl_Clients extends Response_Model
         }
 
         return date_to_mysql($input);
+    }
+
+    /**
+     * Validates the e-invoicing version to prevent path traversal attacks
+     *
+     * @param string $version The e-invoicing version to validate
+     * @return bool
+     */
+    public function validate_einvoicing_version($version)
+    {
+        // Empty is allowed (no e-invoicing)
+        if (empty($version)) {
+            return true;
+        }
+
+        // Load helper to access validation function
+        $this->load->helper('e-invoice');
+        
+        // Validate using the helper function
+        if (!is_valid_xml_config_id($version)) {
+            $this->form_validation->set_message('validate_einvoicing_version', trans('einvoicing_version_invalid'));
+            return false;
+        }
+
+        return true;
     }
 
     public function db_array()
