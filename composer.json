@@ -11,24 +11,25 @@
         }
     },
     "require": {
-        "pocketarc/codeigniter": "3.3",
-        "endroid/qr-code": "^4.8",
-        "guzzlehttp/guzzle": "^7.9",
+        "endroid/qr-code": "^4.8.5",
+        "guzzlehttp/guzzle": "^7.9.3",
         "moneyphp/money": "^4.7",
-        "mpdf/mpdf": "^8.2",
-        "paragonie/random_compat": "^2.0",
+        "mpdf/mpdf": "^8.2.5",
+        "paragonie/random_compat": "^2.0.21",
         "phpmailer/phpmailer": "^6.10",
-        "setasign/fpdf": "^1.8",
+        "pocketarc/codeigniter": "3.3",
+        "setasign/fpdf": "^1.8.6",
+        "setasign/fpdi": "^2.6",
         "smhg/sepa-qr-data": "^1.2",
         "stripe/stripe-php": "^14.10",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6.2"
     },
     "require-dev": {
-        "filp/whoops": "^2.18",
-        "laravel/pint": "^1.20",
+        "filp/whoops": "^2.18.1",
+        "laravel/pint": "^1.22.1",
         "squizlabs/php_codesniffer": "^3.13",
-        "rector/rector": "^2.0",
-        "symfony/var-dumper": "^6.4"
+        "rector/rector": "^2.0.17",
+        "symfony/var-dumper": "^6.4.21"
     },
     "scripts": {
         "check": [
