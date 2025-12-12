@@ -65,7 +65,8 @@ class Reports extends Admin_Controller
 
             $this->load->helper('mpdf');
 
-            pdf_create($html, trans('customer_statement') . '_' . $client->client_name, true);
+            $safe_name = preg_replace('/[^\pL\pN._-]+/u', '_', (string) $client->client_name);
+            pdf_create($html, trans('customer_statement') . '_' . $safe_name, true);
             return;
         }
 
