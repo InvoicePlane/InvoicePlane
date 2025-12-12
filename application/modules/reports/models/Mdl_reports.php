@@ -16,6 +16,86 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Reports extends CI_Model
 {
+    public function get_customer_statement($client_id, $from_date, $to_date)
+    {
+        $from_date = date_to_mysql($from_date);
+        $to_date = date_to_mysql($to_date);
+
+        // 1. Calculate Opening Balance (Invoices - Payments before from_date)
+        
+        // Sum Invoices before start date
+        $this->db->select_sum('invoice_total');
+        $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_invoice_amounts.invoice_id');
+        $this->db->where('ip_invoices.client_id', $client_id);
+        $this->db->where('ip_invoices.invoice_date_created <', $from_date);
+        $this->db->where_in('ip_invoices.invoice_status_id', [2, 3, 4]); // Sent, Viewed, Paid
+        $inv_open = $this->db->get('ip_invoice_amounts')->row()->invoice_total;
+
+        // Sum Payments before start date
+        $this->db->select_sum('payment_amount');
+        $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id');
+        $this->db->where('ip_invoices.client_id', $client_id);
+        $this->db->where('ip_payments.payment_date <', $from_date);
+        $pay_open = $this->db->get('ip_payments')->row()->payment_amount;
+
+        $opening_balance = ($inv_open ?? 0) - ($pay_open ?? 0);
+
+        // 2. Fetch Invoices in range
+        $this->db->select('ip_invoices.*, ip_invoice_amounts.invoice_total, ip_invoice_amounts.invoice_paid, ip_invoice_amounts.invoice_balance');
+        $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id');
+        $this->db->where('client_id', $client_id);
+        $this->db->where('invoice_date_created >=', $from_date);
+        $this->db->where('invoice_date_created <=', $to_date);
+        $this->db->where_in('ip_invoices.invoice_status_id', [2, 3, 4]); 
+        $invoices = $this->db->get('ip_invoices')->result_array();
+
+        // 3. Fetch Payments in range
+        $this->db->select('ip_payments.*, ip_invoices.invoice_number, ip_payment_methods.payment_method_name');
+        $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id');
+        $this->db->join('ip_payment_methods', 'ip_payments.payment_method_id = ip_payment_methods.payment_method_id', 'left');
+        $this->db->where('ip_invoices.client_id', $client_id);
+        $this->db->where('payment_date >=', $from_date);
+        $this->db->where('payment_date <=', $to_date);
+        $payments = $this->db->get('ip_payments')->result_array();
+
+        // 4. Merge and Sort
+        $transactions = [];
+
+        foreach ($invoices as $inv) {
+            $transactions[] = [
+                'date' => $inv['invoice_date_created'],
+                'type' => 'invoice',
+                'number' => $inv['invoice_number'],
+                'description' => trans('invoice') . ' #' . $inv['invoice_number'],
+                'amount' => $inv['invoice_total'], // Debit
+                'id' => $inv['invoice_id']
+            ];
+        }
+
+        foreach ($payments as $pay) {
+            $transactions[] = [
+                'date' => $pay['payment_date'],
+                'type' => 'payment',
+                'number' => $pay['invoice_number'],
+                'description' => trans('payment') . ' (' . ($pay['payment_method_name'] ?? trans('payment')) . ') - ' . trans('invoice') . ' #' . $pay['invoice_number'],
+                'amount' => $pay['payment_amount'] * -1, // Credit
+                'id' => $pay['payment_id']
+            ];
+        }
+
+        // Sort by date
+        usort($transactions, function ($a, $b) {
+            $t1 = strtotime($a['date']);
+            $t2 = strtotime($b['date']);
+            return $t1 - $t2;
+        });
+
+        return [
+            'opening_balance' => $opening_balance,
+            'transactions' => $transactions
+        ];
+    }
+
     /**
      * @return mixed
      */
@@ -211,11 +291,14 @@ class Mdl_Reports extends CI_Model
         $maxQuantity = null,
         $taxChecked = false
     ) {
-        $minQuantity = (int) $minQuantity;
-        $maxQuantity = (int) $maxQuantity;
+        if ($minQuantity == '') {
+            $minQuantity = 0;
+        }
 
-        $from_date      = $from_date == '' ? date('Y-m-d') : date_to_mysql($from_date);
-        $to_date        = $to_date   == '' ? date('Y-m-d') : date_to_mysql($to_date);
+        $from_date = $from_date == '' ? date('Y-m-d') : date_to_mysql($from_date);
+
+        $to_date = $to_date == '' ? date('Y-m-d') : date_to_mysql($to_date);
+
         $from_date_year = (int) (mb_substr($from_date, 0, 4));
         $to_date_year   = (int) (mb_substr($to_date, 0, 4));
 
@@ -452,9 +535,9 @@ class Mdl_Reports extends CI_Model
                                             WHERE amounts2.invoice_id IN
                                             (
                                                 SELECT inv2.invoice_id FROM ip_invoices inv2
-                                                WHERE inv2.client_id=ip_clients.client_id
-                                                    AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created
-                                                    AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created
+                                                    WHERE inv2.client_id=ip_clients.client_id
+                                                        AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created
+                                                        AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created
                                             )
                                     )
                         )
@@ -561,17 +644,17 @@ class Mdl_Reports extends CI_Model
                                 WHERE inv.client_id=ip_clients.client_id
                                     AND ' . $this->db->escape($from_date) . ' <= inv.invoice_date_created
                                     AND ' . $this->db->escape($to_date) . ' >= inv.invoice_date_created
-                                    AND ' . (int)$minQuantity . ' <=
+                                    AND ' . $minQuantity . ' <=
                                     (
                                         SELECT SUM(amounts2.invoice_total) FROM ip_invoice_amounts amounts2
                                             WHERE amounts2.invoice_id IN
                                             (
                                                 SELECT inv2.invoice_id FROM ip_invoices inv2
-                                                    WHERE inv2.client_id=ip_clients.client_id
-                                                        AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created
-                                                        AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created
+                                                WHERE inv2.client_id=ip_clients.client_id
+                                                    AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created
+                                                    AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created
                                             )
-                                    ) AND ' . $this->db->escape($maxQuantity) . ' >=
+                                    ) AND ' . $maxQuantity . ' >=
                                     (
                                         SELECT SUM(amounts3.invoice_total) FROM ip_invoice_amounts amounts3
                                             WHERE amounts3.invoice_id IN
@@ -684,7 +767,7 @@ class Mdl_Reports extends CI_Model
                                 WHERE inv.client_id=ip_clients.client_id
                                     AND ' . $this->db->escape($from_date) . ' <= inv.invoice_date_created
                                     AND ' . $this->db->escape($to_date) . ' >= inv.invoice_date_created
-                                    AND ' . $this->db->escape($minQuantity) . ' <=
+                                    AND ' . $minQuantity . ' <=
                                     (
                                         SELECT SUM(amounts2.invoice_total) FROM ip_invoice_amounts amounts2
                                             WHERE amounts2.invoice_id IN

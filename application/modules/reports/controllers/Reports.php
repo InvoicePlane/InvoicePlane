@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -24,6 +24,58 @@ class Reports extends Admin_Controller
         parent::__construct();
 
         $this->load->model('mdl_reports');
+    }
+
+    public function customer_statement($client_id = null)
+    {
+        // Handle Direct Link (GET) or Form Submit (POST)
+        if ($this->input->post('btn_submit') || $client_id) {
+            
+            // Determine Client ID
+            $target_client_id = $client_id ? $client_id : $this->input->post('client_id');
+
+            // Determine Dates (Default to This Year if direct link)
+            if ($client_id) {
+                $from_date = date_from_mysql(date('Y-01-01'));
+                $to_date = date_from_mysql(date('Y-12-31'));
+            } else {
+                $from_date = $this->input->post('from_date');
+                $to_date = $this->input->post('to_date');
+            }
+
+            $this->load->model('clients/mdl_clients');
+            $this->load->model('users/mdl_users');
+
+            $client = $this->mdl_clients->get_by_id($target_client_id);
+            // Fetch current user for "Company" details on PDF
+            $user = $this->mdl_users->get_by_id($this->session->userdata('user_id'));
+
+            if (!$client) {
+                show_404();
+            }
+
+            $data = $this->mdl_reports->get_customer_statement($target_client_id, $from_date, $to_date);
+            
+            $data['client'] = $client;
+            $data['user'] = $user;
+            $data['from_date'] = $from_date;
+            $data['to_date'] = $to_date;
+
+            $html = $this->load->view('reports/customer_statement', $data, true);
+
+            $this->load->helper('mpdf');
+
+            pdf_create($html, trans('customer_statement') . '_' . $client->client_name, true);
+            return;
+        }
+
+        $this->load->model('clients/mdl_clients');
+        $data = [
+            'clients' => $this->mdl_clients->get()->result()
+        ];
+        
+        $this->layout->set($data);
+        $this->layout->buffer('content', 'reports/customer_statement_index')->render();
     }
 
     public function sales_by_client()

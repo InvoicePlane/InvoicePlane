@@ -76,6 +76,10 @@ foreach ($custom_fields as $custom_field) {
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
+            <a href="<?php echo site_url('reports/customer_statement/' . $client->client_id); ?>" class="btn btn-default" target="_blank">
+                <i class="fa fa-list-alt"></i> View Statement
+            </a>
+
             <a href="#" class="btn btn-default client-create-quote"
                data-client-id="<?php echo $client->client_id; ?>">
                 <i class="fa fa-file"></i> <?php _trans('create_quote'); ?>
@@ -263,7 +267,6 @@ foreach ($custom_fields as $custom_field) {
 <?php
 if ($req_einvoicing) {
 ?>
-                <!-- eInvoicing panel -->
                 <div class="<?php echo $colClass; ?>">
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading">
@@ -410,8 +413,7 @@ if ($client->client_einvoicing_active && $user_fields_nook) {
                         </div>
                     </div>
                 </div>
-                <!-- /eInvoicing panel -->
-<?php
+                <?php
 }
 ?>
             </div>
