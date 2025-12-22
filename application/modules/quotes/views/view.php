@@ -76,7 +76,8 @@ if ($quote->quote_status_id == 1) {
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
-                    custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
+		    custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
+		    service_id: $('#service_id').val(),
                 },
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
@@ -316,7 +317,27 @@ if ($quote->quote_status_id == 1) {
 ?>
                     </h3>
                     <br>
-                    <div class="client-address">
+		    <div class="client-address">
+                       <label for="service_id">
+                          <?php
+                              echo ' <span class="small">(' . trans('service_name') . ')</span>';
+                          ?>
+                       </label>
+		       <select name="service_id" id="service_id"
+                               class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
+                               <option value="0" selected><?php _trans('select service'); ?></option>
+                               <?php
+                                 foreach($services as $service)
+				 {
+				     if ($service['service_name']) {
+                                         echo '<option value="' . $service['service_id'] .'" ';
+                                         if ($service['service_id'] == $quote->service_id)
+                                            echo 'selected';
+                                         echo '>' . $service['service_name'] .'</option>';
+				     }
+                                 }
+                               ?>
+                       </select><br>
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
                     </div>
 <?php if ($quote->client_phone || $quote->client_email) : ?>

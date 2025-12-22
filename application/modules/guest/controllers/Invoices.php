@@ -58,6 +58,15 @@ class Invoices extends Guest_Controller
 
         $invoices = $this->mdl_invoices->result();
 
+
+	foreach ($invoices as $invoice) {
+	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $invoice->service_id)->result_array();
+            if ($service && $service[0] && $service[0]['service_name'])
+               $invoice->service_name = $service[0]['service_name'];
+	    else
+	       $invoice->service_name = null;
+	}
+
         $this->layout->set(
             [
                 'invoices'               => $invoices,
