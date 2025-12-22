@@ -127,6 +127,8 @@ class PaypalLib
         }
     }
 
+<<<<<<< HEAD
+=======
     /** Centralized headers for PayPal REST calls. */
     protected function buildHeaders(array $options = []): array
     {
@@ -164,6 +166,7 @@ class PaypalLib
         return 'ip' . ($context ? "-{$context}" : '') . '-' . $uuid;
     }
 
+>>>>>>> upstream/development
     /**
      * Generate the authentication token.
      *
