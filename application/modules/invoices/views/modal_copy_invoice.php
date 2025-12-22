@@ -20,7 +20,7 @@
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
-                    payment_method: $('#payment_method').val()
+                    payment_method: $('#payment_method').val(),
                     service_id: $('#service_id').val(),
                 },
                 function (data) {

@@ -67,23 +67,20 @@
 	    </div>
 
             <div class="form-group has-feedback">
-                <label for="service_id"><?php _trans('service'); ?></label>
+		<label for="service_id"><?php _trans('service'); ?></label>
                 <div class="input-group" style="width: 100%;">
                     <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
-			    autofocus="autofocus">
-                               <?php
-                                 foreach($services as $service)
-				 {
-				     $value = _trans('select service');
-				     if ($service['service_name']) {
-					 $value = $service['service_name'];
-                                         echo '<option value="' . $service['service_id'] .'">' . $value .'</option>';
-				     }
-				     else {
-                                         echo '<option value="' . $service['service_id'] .'" selected>' . $value .'</option>';
-				     }
-                                 }
-                               ?>
+                            autofocus="autofocus">
+                        <option value="0"><?php _trans('select_service'); ?></option>
+                        <?php
+                            foreach($services as $service) {
+			       if (!empty($service['service_name'])) {
+			           echo '<option value="' . htmlspecialchars($service['service_id'], ENT_QUOTES) . '">';
+				   echo htmlspecialchars($service['service_name'], ENT_QUOTES);
+				   echo '</option>';
+			       }
+			    }
+                        ?>
                     </select>
                 </div>
             </div>

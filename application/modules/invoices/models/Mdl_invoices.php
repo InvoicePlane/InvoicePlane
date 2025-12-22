@@ -82,7 +82,7 @@ class Mdl_Invoices extends Response_Model
     public function default_join()
     {
 	$this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
-	$this->db->join('ip_services', 'ip_services.service_id = ip_invoices.service_id');
+	$this->db->join('ip_services', 'ip_services.service_id = ip_invoices.service_id', 'left');
         $this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
@@ -378,10 +378,19 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('clients/mdl_clients');
 
         $this->load->model('services/mdl_services');
-        $cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
-        // $sid = $this->mdl_services->where('ip_services.service_id', $db_array['service_id'])->get()->row()->service_id;
+	$cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
+
+        // Handle service_id - default to 0 if not provided or not found
+        $sid = 0;
+        if (!empty($db_array['service_id'])) {
+            $service_row = $this->mdl_services->where('ip_services.service_id', $db_array['service_id'])->get()->row();
+            if ($service_row) {
+                $sid = $service_row->service_id;
+            }
+        }
+
         $db_array['client_id'] = $cid;
-        $db_array['service_id'] = 0; //$sid;
+        $db_array['service_id'] = $sid;
 
         // Check if is SUMEX
         $this->load->model('invoice_groups/mdl_invoice_groups');
