@@ -61,7 +61,8 @@ class Invoices extends Guest_Controller
 	$service_ids = array_unique(array_filter(array_column($invoices, 'service_id')));
 	
 	// Fetch all services in one query
-	$services = []; + if (!empty($service_ids)) {
+	$services = [];
+	if (!empty($service_ids)) {
 	   $this->db->where_in('service_id', $service_ids);
 	   $result = $this->db->get('ip_services')->result_array();
 	   foreach ($result as $row) {
