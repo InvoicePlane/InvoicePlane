@@ -16,7 +16,7 @@ $edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing
             if ($(this).val().length > 0) {
                 $('#invoice_change_client').hide();
                 return false;
-            }
+             }
         });
 
         $('.btn_add_product').click(function () {

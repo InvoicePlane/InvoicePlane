@@ -22,6 +22,8 @@ class Upload extends Admin_Controller
 
     public $content_types = [];
 
+    private $allowed_extensions = ['jpg', 'jpeg', 'png', 'pdf', 'gif', 'webp'];
+
     /**
      * Upload constructor.
      */
@@ -38,20 +40,29 @@ class Upload extends Admin_Controller
             $this->respond_message(400, 'upload_error_no_file');
         }
 
-        $filename = $this->sanitize_file_name($_FILES['file']['name']);
-        $filePath = $this->get_target_file_path($url_key, $filename);
+        $originalFilename = $_FILES['file']['name'];
+        $fileName         = $this->sanitize_file_name($originalFilename);
+        $file_ext         = mb_strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $filePath         = $this->get_target_file_path($url_key, $fileName);
 
         if (file_exists($filePath)) {
-            $this->respond_message(409, 'upload_error_duplicate_file', $filename);
+            $this->respond_message(409, 'upload_error_duplicate_file', $fileName);
         }
 
         $tempFile = $_FILES['file']['tmp_name'];
-        $this->validate_mime_type(mime_content_type($tempFile));
-        $this->move_uploaded_file($tempFile, $filePath, $filename);
+        if (extension_loaded('fileinfo')) {
+            $this->validate_mime_type(mime_content_type($tempFile));
+        }
 
-        $this->save_file_metadata($customerId, $url_key, $filename);
+        if ( ! in_array($file_ext, $this->allowed_extensions, true)) {
+            $this->respond_message(400, 'upload_error_invalid_extension', $file_ext);
+        }
 
-        $this->respond_message(200, 'upload_file_uploaded_successfully', $filename);
+        $this->move_uploaded_file($tempFile, $filePath, $fileName);
+
+        $this->save_file_metadata($customerId, $url_key, $fileName);
+
+        $this->respond_message(200, 'upload_file_uploaded_successfully', $fileName);
     }
 
     public function create_dir($path, $chmod = '0755'): bool
@@ -76,6 +87,13 @@ class Upload extends Admin_Controller
     public function delete_file(string $url_key): void
     {
         $filename = urldecode($this->input->post('name'));
+        
+        // Security: Sanitize filename to prevent path traversal
+        $filename = $this->sanitize_file_name($filename);
+        
+        if (empty($filename)) {
+            $this->respond_message(400, 'upload_error_invalid_filename', $filename);
+        }
 
         $finalPath = $this->targetPath . $url_key . '_' . $filename;
 
@@ -90,32 +108,54 @@ class Upload extends Admin_Controller
 
     public function get_file($filename): void
     {
-        $filename = urldecode($filename);
-        if ( ! file_exists($this->targetPath . $filename)) {
-            $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-            $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $filename . $ref);
+        $filename = $this->sanitize_file_name(urldecode($filename));
+
+        $underscorePos = mb_strpos($filename, '_');
+        if ($underscorePos === false) {
+            $this->respond_message(400, 'upload_error_invalid_filename', $filename);
         }
 
-        $path_parts = pathinfo($this->targetPath . $filename);
+        $url_key       = mb_substr($filename, 0, $underscorePos);
+        $real_filename = mb_substr($filename, $underscorePos + 1);
+        $fullPath      = $this->get_target_file_path($url_key, $real_filename);
+        if ( ! file_exists($fullPath)) {
+            $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
+            $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
+        }
+        $path_parts = pathinfo($fullPath);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
-
-        $file_size = filesize($this->targetPath . $filename);
-
+        $file_size  = filesize($fullPath);
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Disposition: attachment; filename="' . $real_filename . '"');
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
-
-        readfile($this->targetPath . $filename);
+        readfile($fullPath);
     }
 
     private function sanitize_file_name(string $filename): string
     {
+        // Security: Remove any path components
+        $filename = basename($filename);
+        
+        // Security: Check for path traversal attempts before sanitization
+        if (str_contains($filename, '..') || 
+            str_contains($filename, '/') || 
+            str_contains($filename, '\\') ||
+            str_contains($filename, "\0")) {
+            log_message('error', 'Path traversal attempt detected in filename: ' . $filename);
+            return '';
+        }
+        
         // Clean filename (same in dropzone script)
-        return preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', mb_trim($filename));
+        $sanitizedFileName = preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', mb_trim($filename));
+        
+        // Security: Additional check to ensure no path traversal sequences remain
+        $sanitizedFileName = str_replace('..', '', $sanitizedFileName);
+        
+        return $sanitizedFileName;
     }
 
     private function get_target_file_path(string $url_key, string $filename): string
@@ -147,15 +187,11 @@ class Upload extends Admin_Controller
 
     private function move_uploaded_file(string $tempFile, string $filePath, string $filename): void
     {
-        // Create the target dir (if unexist)
-        $this->create_dir($this->targetPath);
+        $this->create_dir(dirname($filePath));
 
-        // Checks to ensure that the target dir is writable
-        if ( ! is_writable($this->targetPath)) {
-            $this->respond_message(410, 'upload_error_folder_not_writable', $this->targetPath);
-        }
-        // Checks to ensure that the tempFile is a valid upload file AND it was uploaded via PHP's HTTP POST upload.
-        elseif ( ! move_uploaded_file($tempFile, $filePath)) {
+        if ( ! is_writable(dirname($filePath))) {
+            $this->respond_message(410, 'upload_error_folder_not_writable', dirname($filePath));
+        } elseif ( ! move_uploaded_file($tempFile, $filePath)) {
             $this->respond_message(400, 'upload_error_invalid_move_uploaded_file', $filename);
         }
     }
