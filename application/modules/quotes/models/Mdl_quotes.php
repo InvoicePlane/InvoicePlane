@@ -278,7 +278,6 @@ class Mdl_Quotes extends Response_Model
 	    }
 	}
 
-	$sid = $this->mdl_services->where('ip_services.service_id', $db_array['service_id'])->get()->row()->service_id;
 	$db_array['client_id'] = $cid;
 	$db_array['service_id'] = $sid;
 
