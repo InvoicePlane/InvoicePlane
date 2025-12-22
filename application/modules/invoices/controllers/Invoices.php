@@ -59,13 +59,23 @@ class Invoices extends Admin_Controller
         $this->mdl_invoices->paginate(site_url('invoices/status/' . $status), $page);
         $invoices = $this->mdl_invoices->result();
 
+        $serviceIds = array_unique(array_filter(array_column($invoices, 'service_id')));
+
+        $servicesById = [];
+
+        if (!empty($serviceIds)) {
+            $services = $this->db
+                             ->select('service_id, service_name')
+                             ->from('ip_services')
+                             ->where_in('service_id', $serviceIds)
+                             ->get()
+                             ->result_array();
+            $servicesById = array_column($services, 'service_name', 'service_id');
+        }
+
         foreach ($invoices as $invoice) {
-	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $invoice->service_id)->result_array();
-            if ($service && $service[0] && $service[0]['service_name'])
-               $invoice->service_name = $service[0]['service_name'];
-	    else
-	       $invoice->service_name = null;
-	}
+            $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
+        }
 
         $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
 
