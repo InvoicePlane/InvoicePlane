@@ -62,6 +62,16 @@ class Quotes extends Admin_Controller
         $this->mdl_quotes->paginate(site_url('quotes/status/' . $status), $page);
         $quotes = $this->mdl_quotes->result();
 
+	foreach ($quotes as $quote) {
+	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $quote->service_id)->result_array();
+            if ($service && $service[0] && $service[0]['service_name'])
+               $quote->service_name = $service[0]['service_name'];
+	    else
+	       $quote->service_name = null;
+	}
+
+        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
+
         $this->layout->set(
             [
                 'quotes'             => $quotes,
@@ -69,7 +79,8 @@ class Quotes extends Admin_Controller
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_quotes'),
                 'filter_method'      => 'filter_quotes',
-                'quote_statuses'     => $this->mdl_quotes->statuses(),
+		'quote_statuses'     => $this->mdl_quotes->statuses(),
+                'services'           => $services,
             ]
         );
 
@@ -140,6 +151,16 @@ class Quotes extends Admin_Controller
             }
         }
 
+        $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $quote->service_id)->result_array();
+
+	if ($service && $service[0] && $service[0]['service_name'])
+            $quote->service_name = $service[0]['service_name'];
+	else
+            $quote->service_name = null;
+
+        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
+
+
         $items = $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
 
         // Get eInvoice library name and user checks
@@ -159,7 +180,8 @@ class Quotes extends Admin_Controller
                 'units'           => $this->mdl_units->get()->result(),
                 'tax_rates'       => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-                'quote_statuses'  => $this->mdl_quotes->statuses(),
+		'quote_statuses'  => $this->mdl_quotes->statuses(),
+		'services'        => $services,
                 'custom_fields'   => $custom_fields,
                 'custom_values'   => $custom_values,
                 'custom_js_vars'  => [

@@ -34,6 +34,14 @@ class Payments extends Admin_Controller
         $this->mdl_payments->paginate(site_url('payments/index'), $page);
         $payments = $this->mdl_payments->result();
 
+        foreach ($payments as $payment) {
+	    $service = $this->db->query('SELECT service_name FROM ip_services, ip_invoices WHERE ip_services.service_id = ip_invoices.service_id AND ip_invoices.invoice_id = ?', $payment->invoice_id)->result_array();
+            if ($service && $service[0] && $service[0]['service_name'])
+               $payment->service_name = $service[0]['service_name'];
+	    else
+	       $payment->service_name = null;
+        }
+
         $this->layout->set(
             [
                 'filter_display'     => true,
@@ -125,7 +133,12 @@ class Payments extends Admin_Controller
 
         $amounts                 = [];
         $invoice_payment_methods = [];
-        foreach ($open_invoices as $open_invoice) {
+	foreach ($open_invoices as $open_invoice) {
+	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $open_invoice->service_id)->result_array();
+            if ($service && $service[0] && $service[0]['service_name'])
+               $open_invoice->service_name = $service[0]['service_name'];
+	    else
+	       $open_invoice->service_name = null;
             $amounts['invoice' . $open_invoice->invoice_id]                 = format_amount($open_invoice->invoice_balance);
             $invoice_payment_methods['invoice' . $open_invoice->invoice_id] = $open_invoice->payment_method;
         }

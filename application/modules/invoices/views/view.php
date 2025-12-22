@@ -99,7 +99,8 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
                     invoice_terms: $('#invoice_terms').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
-                    payment_method: $('#payment_method').val(),
+		    payment_method: $('#payment_method').val(),
+		    service_id: $('#service_id').val(),
                 },
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
@@ -422,7 +423,30 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
 ?>
                     </h2>
                     <br>
-                    <div class="client-address">
+		    <div class="client-address">
+                       <label for="service_id">
+                          <?php
+                              echo ' <span class="small">(' . trans('service_name') . ')</span>';
+                          ?>
+                       </label>
+		       <select name="service_id" id="service_id"
+                               class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity"
+                          <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                              echo 'disabled="disabled"';
+                          } ?>>
+                               <option value="0" selected><?php _trans('select service'); ?></option>
+                               <?php
+                                 foreach($services as $service)
+				 {
+				     if ($service['service_name']) {
+                                         echo '<option value="' . $service['service_id'] .'" ';
+                                         if ($service['service_id'] == $invoice->service_id)
+                                            echo 'selected';
+                                         echo '>' . $service['service_name'] .'</option>';
+				     }
+                                 }
+                               ?>
+                       </select><br>
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
                     </div>
 <?php if ($invoice->client_phone || $invoice->client_email) : ?>

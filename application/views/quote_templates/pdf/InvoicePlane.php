@@ -61,7 +61,14 @@ if ($quote->client_phone) {
 
     </div>
     <div id="company">
-        <div><b><?php _htmlsc($quote->user_name); ?></b></div>
+        <div><b><?php _htmlsc($quote->user_name); ?></b>
+            <?php
+                   if (isset ($quote->service_name) && $quote->service_name) {
+                      echo '<br>';
+                      _htmlsc($quote->service_name);
+                   }
+            ?>
+        </div>
 <?php
 if ($quote->user_vat_id) {
     echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($quote->user_vat_id) . '</div>';
