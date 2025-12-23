@@ -80,7 +80,7 @@
                                      foreach($services as $service)
 				     {
 					 if ($service['service_name']) {
-					     echo '<option value="' . htmlspecialchars($service['service_id']) .'">' + . htmlspecialchars($service['service_name']) . '</option>';
+					     echo '<option value="' . htmlspecialchars($service['service_id']) . '">' . htmlspecialchars($service['service_name']) . '</option>';
 				         }
 				     }
                                  }
