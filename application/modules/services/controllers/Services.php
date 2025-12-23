@@ -11,12 +11,12 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Tax_Rates
+ * Class Services
  */
 class Services extends Admin_Controller
 {
     /**
-     * Tax_Rates constructor.
+     * Services constructor.
      */
     public function __construct()
     {
