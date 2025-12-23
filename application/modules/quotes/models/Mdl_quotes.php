@@ -213,8 +213,6 @@ class Mdl_Quotes extends Response_Model
 
 	$quote_items = $this->mdl_quote_items->where('quote_id', $source_id)->get()->result();
 
-	$services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
-
         foreach ($quote_items as $quote_item) {
             $db_array = [
 		'quote_id'             => $target_id,
@@ -552,7 +550,7 @@ class Mdl_Quotes extends Response_Model
     }
 
     /**
-      * Reset the quote and due date to there former values
+      * Update the service association for a quote
       * @param $quote_id
       * @param $service_id
       */
