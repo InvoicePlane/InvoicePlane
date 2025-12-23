@@ -11,10 +11,7 @@ RUN apt-get update && apt-get install -y \
     mariadb-client \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
-    libmcrypt-dev \
     libpng-dev \
-    libcurl4-nss-dev \
-    libc-client-dev \
     libkrb5-dev \
     firebird-dev \
     libicu-dev \
@@ -28,8 +25,7 @@ RUN apt-get update && apt-get install -y \
     git \
     libzip-dev \
     locales-all \
-    libonig-dev \
-    wkhtmltopdf
+    libonig-dev
 
 RUN install-php-extensions \
     bcmath \
@@ -74,7 +70,7 @@ RUN apt-get -y autoclean && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* && \
-    rm /var/log/lastlog /var/log/faillog
+    rm -rf /var/log/lastlog /var/log/faillog
 
 # Configure non-root user.
 ARG PUID=1000
