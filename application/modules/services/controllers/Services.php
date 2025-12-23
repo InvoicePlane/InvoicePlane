@@ -106,7 +106,7 @@ class Services extends Admin_Controller
             }
 	}
 
-	$this->layout->buffer('content', 'services/form/');
+	$this->layout->buffer('content', 'services/form');
         $this->layout->render();
     }
 
