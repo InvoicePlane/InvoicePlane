@@ -61,7 +61,7 @@ foreach ($invoices as $invoice) {
                     <?php
 	                 _htmlsc(format_client($invoice));
 	                 if ($invoice->service_name) {
-	     	             echo '&nbsp(';
+	     	             echo '&nbsp;(';
 			     _htmlsc($invoice->service_name);
 			     echo ')';
       			}
