@@ -212,7 +212,7 @@ function email_quote_status(string $quote_id, $status)
 /**
  * Validate email address syntax
  * $email string can be a single email or a list of emails.
- * The emails list must be comma separated.
+ * The emails can either be comma (,) or semicolon (;) separated.
  *
  * @param string $email
  *
@@ -220,10 +220,7 @@ function email_quote_status(string $quote_id, $status)
  */
 function validate_email_address(string $email): bool
 {
-    $emails[] = $email;
-    if (str_contains($email, ',')) {
-        $emails = explode(',', $email);
-    }
+    $emails = (mb_strpos($email, ',')) ? explode(',', $email) : explode(';', $email);
 
     foreach ($emails as $emailItem) {
         if ( ! filter_var($emailItem, FILTER_VALIDATE_EMAIL)) {
