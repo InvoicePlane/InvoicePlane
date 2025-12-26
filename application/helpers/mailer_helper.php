@@ -220,7 +220,7 @@ function email_quote_status(string $quote_id, $status)
  */
 function validate_email_address(string $email): bool
 {
-    $emails = (mb_strpos($email, ',')) ? explode(',', $email) : explode(';', $email);
+    $emails = (str_contains($email, ',')) ? explode(',', $email) : explode(';', $email);
 
     foreach ($emails as $emailItem) {
         if ( ! filter_var($emailItem, FILTER_VALIDATE_EMAIL)) {

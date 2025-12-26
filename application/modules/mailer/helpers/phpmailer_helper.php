@@ -98,7 +98,7 @@ function phpmail_send(
     }
 
     // Allow multiple recipients delimited by comma or semicolon
-    $to = (mb_strpos($to, ',')) ? explode(',', $to) : explode(';', $to);
+    $to = (str_contains($to, ',')) ? explode(',', $to) : explode(';', $to);
 
     // Add the addresses
     foreach ($to as $address) {
@@ -107,7 +107,7 @@ function phpmail_send(
 
     if ($cc) {
         // Allow multiple CC's delimited by comma or semicolon
-        $cc = (mb_strpos($cc, ',')) ? explode(',', $cc) : explode(';', $cc);
+        $cc = (str_contains($cc, ',')) ? explode(',', $cc) : explode(';', $cc);
 
         // Add the CC's
         foreach ($cc as $address) {
@@ -117,7 +117,7 @@ function phpmail_send(
 
     if ($bcc) {
         // Allow multiple BCC's delimited by comma or semicolon
-        $bcc = (mb_strpos($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
+        $bcc = (str_contains($bcc, ',')) ? explode(',', $bcc) : explode(';', $bcc);
         // Add the BCC's
         foreach ($bcc as $address) {
             $mail->addBCC($address);
