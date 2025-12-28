@@ -434,7 +434,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                           <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
                               echo 'disabled="disabled"';
                           } ?>>
-                               <option value="0" selected><?php _trans('select service'); ?></option>
+                               <option value="0" selected><?php _trans('select_service'); ?></option>
                                <?php
                                  foreach($services as $service)
 				 {
