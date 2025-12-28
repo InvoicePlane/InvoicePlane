@@ -31,24 +31,6 @@ class Mdl_Services extends Response_Model
     /**
      * @return array
      */
-    public function validation_client_rules()
-    {
-        return array(
-            'service_name' => array(
-                'field' => 'service_name',
-                'label' => trans('service_name'),
-                'rules' => 'required'
-            ),
-            'client_id' => array(
-                'field' => 'client_id',
-                'label' => trans('client_id'),
-                'rules' => 'required'
-            ),
-        );
-    }
-    /**
-     * @return array
-     */
     public function validation_rules()
     {
         return array(
