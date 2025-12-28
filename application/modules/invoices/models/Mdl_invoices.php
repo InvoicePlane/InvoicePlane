@@ -240,12 +240,10 @@ class Mdl_Invoices extends Response_Model
         // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
 
-        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
-
         foreach ($invoice_items as $invoice_item) {
             $db_array = [
-		'invoice_id'           => $target_id,
-		'service_id'           => $invoice_item->service_id,
+                'invoice_id'           => $target_id,
+                'service_id'           => $invoice_item->service_id,
                 'item_tax_rate_id'     => $invoice_item->item_tax_rate_id,
                 'item_product_id'      => $invoice_item->item_product_id,
                 'item_task_id'         => $invoice_item->item_task_id,
@@ -257,8 +255,7 @@ class Mdl_Invoices extends Response_Model
                 'item_order'           => $invoice_item->item_order,
                 'item_is_recurring'    => $invoice_item->item_is_recurring,
                 'item_product_unit'    => $invoice_item->item_product_unit,
-		'item_product_unit_id' => $invoice_item->item_product_unit_id,
-		'services'             => $services,
+                'item_product_unit_id' => $invoice_item->item_product_unit_id,
             ];
 
             if ( ! $copy_recurring_items_only || $invoice_item->item_is_recurring) {
