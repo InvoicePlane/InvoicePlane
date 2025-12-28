@@ -325,7 +325,7 @@ if ($quote->quote_status_id == 1) {
                        </label>
 		       <select name="service_id" id="service_id"
                                class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
-                               <option value="0" selected><?php _trans('select service'); ?></option>
+                               <option value="0" selected><?php _trans('select_service'); ?></option>
                                <?php
                                  foreach($services as $service)
 				 {
