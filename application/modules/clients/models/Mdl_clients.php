@@ -311,9 +311,20 @@ class Mdl_Clients extends Response_Model
         return $this;
     }
 
-    public function service_by_client ()
+    public function get_all_services()
     {
         $query = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name');
         return $query->result_array();
+    }
+
+    /**
+     * @deprecated Use get_all_services() instead.
+     *
+     * Kept for backwards compatibility. This method returns all services
+     * and does not filter by client.
+     */
+    public function service_by_client()
+    {
+        return $this->get_all_services();
     }
 }
