@@ -77,7 +77,7 @@
                 <div class="input-group" style="width: 100%;">
                     <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
 			    autofocus="autofocus">
-                               <option value="0" selected><?php _trans('select service'); ?></option>
+                               <option value="0" selected><?php _trans('select_service'); ?></option>
                                <?php
                                  foreach($services as $service)
 				 {
