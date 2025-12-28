@@ -58,7 +58,7 @@ class Services extends Admin_Controller
             if (!$this->mdl_services->prep_form($id)) {
                 show_404();
             }
-	}
+        }
 
         $this->layout->buffer('content', 'services/form');
         $this->layout->render();
@@ -80,9 +80,9 @@ class Services extends Admin_Controller
 
         if ($this->input->post('client_id') && $id) {
             $this->db->insert('ip_client_services', [
-		    'client_id' => $this->input->post('client_id'), 
-		    'service_id' => $id + ]);
-	}
+                    'client_id' => $this->input->post('client_id'), 
+                    'service_id' => $id + ]);
+        }
 
         if ($this->mdl_services->run_validation()) {
             $db_array = $this->mdl_services->db_array();
@@ -104,9 +104,9 @@ class Services extends Admin_Controller
             if (!$this->mdl_services->prep_form($id)) {
                 show_404();
             }
-	}
+        }
 
-	$this->layout->buffer('content', 'services/form');
+        $this->layout->buffer('content', 'services/form');
         $this->layout->render();
     }
 
