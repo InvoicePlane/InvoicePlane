@@ -63,7 +63,7 @@ if ($quote->client_phone) {
     <div id="company">
         <div><b><?php _htmlsc($quote->user_name); ?></b>
             <?php
-                   if (isset ($quote->service_name) && $quote->service_name) {
+                   if (isset($quote->service_name) && $quote->service_name) {
                       echo '<br>';
                       _htmlsc($quote->service_name);
                    }
