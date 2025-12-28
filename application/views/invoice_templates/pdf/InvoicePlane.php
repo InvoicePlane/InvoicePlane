@@ -55,7 +55,7 @@ switch ($invoice_mode) {
         <div>
 	    <b><?php _htmlsc(format_client($invoice)); ?></b>
                 <?php
-                   if (isset ($invoice->service_name) && $invoice->service_name) {
+                   if (isset($invoice->service_name) && $invoice->service_name) {
                       echo '<br>';
                       _htmlsc($invoice->service_name);
                    }
