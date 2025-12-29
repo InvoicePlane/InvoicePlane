@@ -5,9 +5,9 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * InvoicePlane
  *
  * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2024 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @copyright		Copyright (c) 2012 - 2024 InvoicePlane.com
+ * @license             https://invoiceplane.com/license.txt
+ * @link                https://invoiceplane.com
  */
 
 /**
@@ -26,6 +26,18 @@ class Mdl_Services extends Response_Model
     public function default_order_by()
     {
         $this->db->order_by('ip_services.service_name');
+    }
+
+    public function get_names_by_ids(array $serviceIds)
+    {
+        $services = $this->db
+                         ->select('service_id, service_name')
+                         ->where_in('service_id', $serviceIds)
+                         ->order_by('service_name')
+                         ->get($this->table)
+                         ->result_array();
+
+        return array_column($services, 'service_name', 'service_id');
     }
 
     /**

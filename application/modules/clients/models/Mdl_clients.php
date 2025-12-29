@@ -313,8 +313,8 @@ class Mdl_Clients extends Response_Model
 
     public function get_all_services()
     {
-        $query = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name');
-        return $query->result_array();
+        $this->load->model('Mdl_services');
+        return $this->Mdl_services->get()->result_array();
     }
 
     /**

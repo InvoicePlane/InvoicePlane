@@ -62,15 +62,14 @@ class Quotes extends Admin_Controller
         $this->mdl_quotes->paginate(site_url('quotes/status/' . $status), $page);
         $quotes = $this->mdl_quotes->result();
 
-	foreach ($quotes as $quote) {
-	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $quote->service_id)->result_array();
-            if ($service && $service[0] && $service[0]['service_name'])
-               $quote->service_name = $service[0]['service_name'];
-	    else
-	       $quote->service_name = null;
-	}
+        $this->load->model('services/mdl_services');
 
-        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
+	foreach ($quotes as $quote) {
+	    $servicesById = $this->mdl_services->get_names_by_ids([$quote->service_id]);
+            $quote->service_name = $servicesById[$quote->service_id] ?? null;
+	}
+	
+        $services = $this->mdl_services->get()->result_array();
 
         $this->layout->set(
             [
@@ -103,6 +102,7 @@ class Quotes extends Admin_Controller
                 'custom_values/mdl_custom_values',
                 'custom_fields/mdl_quote_custom',
                 'upload/mdl_uploads',
+                'services/mdl_services',
             ]
         );
 
@@ -151,15 +151,10 @@ class Quotes extends Admin_Controller
             }
         }
 
-        $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $quote->service_id)->result_array();
+	$servicesById = $this->mdl_services->get_names_by_ids([$quote->service_id]);
+        $quote->service_name = $servicesById[$quote->service_id] ?? null;
 
-	if ($service && $service[0] && $service[0]['service_name'])
-            $quote->service_name = $service[0]['service_name'];
-	else
-            $quote->service_name = null;
-
-        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
-
+        $services = $this->mdl_services->get()->result_array();
 
         $items = $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
 

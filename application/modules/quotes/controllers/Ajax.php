@@ -250,7 +250,7 @@ class Ajax extends Admin_Controller
 	    'services/mdl_services',
 	]);
 
-        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
+        $services = $this->mdl_services->get()->result_array();
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
@@ -407,10 +407,11 @@ class Ajax extends Admin_Controller
         $this->load->model([
             'invoice_groups/mdl_invoice_groups',
             'tax_rates/mdl_tax_rates',
-            'clients/mdl_clients',
+	    'clients/mdl_clients',
+            'services/mdl_services',
         ]);
 
-	$services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
+	$services = $this->mdl_services->get()->result_array();
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),

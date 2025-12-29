@@ -61,23 +61,20 @@ class Invoices extends Admin_Controller
 
         $serviceIds = array_unique(array_filter(array_column($invoices, 'service_id')));
 
-        $servicesById = [];
+        $this->load->model('Mdl_services');
 
-        if (!empty($serviceIds)) {
-            $services = $this->db
-                             ->select('service_id, service_name')
-                             ->from('ip_services')
-                             ->where_in('service_id', $serviceIds)
-                             ->get()
-                             ->result_array();
-            $servicesById = array_column($services, 'service_name', 'service_id');
+	$servicesById = [];
+
+	if (!empty($serviceIds)) {
+            $servicesById = $this->mdl_services->get_names_by_ids([$serviceId]);
         }
+
 
         foreach ($invoices as $invoice) {
             $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
         }
 
-        $services = $this->db->query('SELECT service_id, service_name FROM ip_services WHERE 1 ORDER BY service_name')->result_array();
+        $services = $this->Mdl_services->get()->result_array();
 
         $this->layout->set(
             [

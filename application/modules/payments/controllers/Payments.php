@@ -102,6 +102,7 @@ class Payments extends Admin_Controller
             'payment_methods/mdl_payment_methods',
             'custom_fields/mdl_custom_fields',
             'custom_values/mdl_custom_values',
+            'services/mdl_services',
         ]);
 
         $open_invoices = $this->mdl_invoices->is_open()->get()->result();
@@ -134,11 +135,8 @@ class Payments extends Admin_Controller
         $amounts                 = [];
         $invoice_payment_methods = [];
 	foreach ($open_invoices as $open_invoice) {
-	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $open_invoice->service_id)->result_array();
-            if ($service && $service[0] && $service[0]['service_name'])
-               $open_invoice->service_name = $service[0]['service_name'];
-	    else
-	       $open_invoice->service_name = null;
+	    $servicesById = $this->mdl_services->get_names_by_ids([$open_invoice->service_id]);
+            $open_invoice->service_name = $servicesById[$quote->service_id] ?? null;
             $amounts['invoice' . $open_invoice->invoice_id]                 = format_amount($open_invoice->invoice_balance);
             $invoice_payment_methods['invoice' . $open_invoice->invoice_id] = $open_invoice->payment_method;
         }

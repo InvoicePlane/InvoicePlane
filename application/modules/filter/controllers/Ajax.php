@@ -35,9 +35,8 @@ class Ajax extends Admin_Controller
 	$invoices = $this->mdl_invoices->get()->result();
 
 	foreach ($invoices as $invoice) {
-	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $invoice->service_id)->result_array();
-            if ($service && $service[0] && $service[0]['service_name'])
-               $invoice->service_name = $service[0]['service_name'];
+            $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
+            $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
 	}
 
         $data = [
@@ -65,9 +64,8 @@ class Ajax extends Admin_Controller
         $quotes = $this->mdl_quotes->get()->result();
 
 	foreach ($quotes as $quote) {
-	    $service = $this->db->query('SELECT service_name FROM ip_services WHERE service_id = ?', $quote->service_id)->result_array();
-            if ($service && $service[0] && $service[0]['service_name'])
-               $quote->service_name = $service[0]['service_name'];
+            $servicesById = $this->mdl_services->get_names_by_ids([$quote->service_id]);
+            $quote->service_name = $servicesById[$quote->service_id] ?? null;
 	}
 
         $data = [
