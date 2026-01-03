@@ -307,6 +307,7 @@ if (($client->client_einvoicing_active ?? 0) && ! $user_fields_nook) {
                                 <tr>
                                     <th>e-<?php _htmlsc(trans('invoice') . ' ' . trans('version') . ' (' . trans('send')); ?>)</th>
                                     <td><?php 
+                                        // Handle missing einvoicing fields for pre-1.6.3 databases
                                         $einvoicing_version = $client->client_einvoicing_version ?? '';
                                         echo (($client->client_einvoicing_active ?? 0) && $einvoicing_version) ? get_xml_full_name($einvoicing_version) : trans('none'); 
                                     ?></td>
