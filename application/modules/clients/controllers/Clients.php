@@ -352,6 +352,7 @@ class Clients extends Admin_Controller
             // Fields don't exist - database hasn't been migrated to 1.6.3+
             $this->load->model('settings/mdl_versions');
             $current_version = $this->mdl_versions->get_current_version();
+            $current_version = $current_version ?: 'unknown';
             
             log_message('warning', '[eInvoicing] Database version mismatch detected in check_client_einvoice_active: Running source code 1.6.3+ with database version ' . $current_version);
             log_message('warning', '[eInvoicing] Missing fields: client_einvoicing_active and client_einvoicing_version not found in client object (client_id=' . $client->client_id . ')');

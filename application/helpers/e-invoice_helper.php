@@ -302,6 +302,7 @@ function get_einvoice_usage($invoice, array $items, $full = true): object
         $CI = &get_instance();
         $CI->load->model('settings/mdl_versions');
         $current_version = $CI->mdl_versions->get_current_version();
+        $current_version = $current_version ?: 'unknown';
         
         log_message('warning', '[eInvoicing] Database version mismatch detected: Running source code 1.6.3+ with database version ' . $current_version);
         log_message('warning', '[eInvoicing] Missing fields: client_einvoicing_active and client_einvoicing_version not found in invoice object');
