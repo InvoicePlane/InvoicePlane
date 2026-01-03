@@ -32,14 +32,14 @@ foreach ($records as $client) {
 <?php
 if ($einvoicing) {
 ?>
-                <td><?php _htmlsc($client->client_einvoicing_version); ?></td>
+                <td><?php _htmlsc($client->client_einvoicing_version ?? ''); ?></td>
                 <td>
 <?php
-    if ($client->client_einvoicing_active == 1) {
+    if (($client->client_einvoicing_active ?? 0) == 1) {
 ?>
                     <i class="<?php echo $class_checks[0] ?>"></i>
 <?php
-    } elseif ($client->client_einvoicing_version != '') {
+    } elseif (($client->client_einvoicing_version ?? '') != '') {
 ?>
                     <i class="<?php echo $class_checks[1] ?>"></i>
 <?php
