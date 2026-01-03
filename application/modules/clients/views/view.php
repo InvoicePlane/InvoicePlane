@@ -283,9 +283,9 @@ $class_checks     = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edi
 $base             = 'address_1 zip city country company tax_code vat_id'; // Field names
 $keys             = explode(' ', $base); // to array
 $lang             = explode(' ', strtr($base, ['_1' => '']));
-$user_fields_nook = ($req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields > 0 && $client->client_einvoicing_version != '');
+$user_fields_nook = ($req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields > 0 && ($client->client_einvoicing_version ?? '') != '');
 // eInvoicing button toggle users table checking
-if ($client->client_einvoicing_active && ! $user_fields_nook) {
+if (($client->client_einvoicing_active ?? 0) && ! $user_fields_nook) {
 ?>
                             <span class="pull-right cursor-pointer btn btn-xs btn-default alert-<?php echo $user_toggle; ?>"
                                   data-toggle="collapse" data-target=".einvoice-users-check"
@@ -306,13 +306,13 @@ if ($client->client_einvoicing_active && ! $user_fields_nook) {
                             <table class="table no-margin">
                                 <tr>
                                     <th>e-<?php _htmlsc(trans('invoice') . ' ' . trans('version') . ' (' . trans('send')); ?>)</th>
-                                    <td><?php echo ($client->client_einvoicing_active && $client->client_einvoicing_version) ? get_xml_full_name($client->client_einvoicing_version) : trans('none'); ?></td>
+                                    <td><?php echo (($client->client_einvoicing_active ?? 0) && ($client->client_einvoicing_version ?? '')) ? get_xml_full_name($client->client_einvoicing_version ?? '') : trans('none'); ?></td>
                                 </tr>
                             </table>
 
 <?php
 // eInvoicing panel Client checks table
-if ($client->client_einvoicing_active && $user_fields_nook) {
+if (($client->client_einvoicing_active ?? 0) && $user_fields_nook) {
 ?>
                             <div class="alert alert-warning small" style="margin: 0px 10px 10px;">
                                 <table>

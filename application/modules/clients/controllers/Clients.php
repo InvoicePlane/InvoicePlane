@@ -346,8 +346,9 @@ class Clients extends Admin_Controller
 
     private function check_client_einvoice_active($client, $req_einvoicing) {
         // Update active eInvoicing client
-        $o = $client->client_einvoicing_active;
-        if ( ! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
+        // Use null coalescing to handle cases where database hasn't been migrated yet
+        $o = $client->client_einvoicing_active ?? 0;
+        if ( ! empty($client->client_einvoicing_version ?? '') && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
             $client->client_einvoicing_active = 1; // update view
         } else {
             $client->client_einvoicing_active = 0; // update view

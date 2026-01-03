@@ -58,7 +58,8 @@
 
 <?php
 // e-invoice alert when client or user empty required field
-if ($invoice->client_einvoicing_version != '' && $invoice->client_einvoicing_active == 0) {
+// Use null coalescing to handle cases where database hasn't been migrated yet
+if (($invoice->client_einvoicing_version ?? '') != '' && ($invoice->client_einvoicing_active ?? 0) == 0) {
 ?>
                 <div class="alert alert-warning">
                     <table style="margin-left: auto; margin-right: auto;">

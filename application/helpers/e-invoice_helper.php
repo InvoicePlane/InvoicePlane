@@ -288,10 +288,14 @@ function get_einvoice_usage($invoice, array $items, $full = true): object
     }
 
     // eInvoice activated for client
-    $on = ($invoice->client_einvoicing_active > 0 && $invoice->client_einvoicing_version != '');
+    // Use null coalescing to handle cases where database hasn't been migrated yet
+    $client_einvoicing_active = $invoice->client_einvoicing_active ?? 0;
+    $client_einvoicing_version = $invoice->client_einvoicing_version ?? '';
+    
+    $on = ($client_einvoicing_active > 0 && $client_einvoicing_version != '');
     if ($on) {
         // Set eInvoice name
-        $einvoice->name = $invoice->client_einvoicing_version;
+        $einvoice->name = $client_einvoicing_version;
         if ($full) {
             $einvoice->name = get_xml_full_name($einvoice->name);
             // Good item tax usage? Legacy calculation false: Alert if not standard taxes
