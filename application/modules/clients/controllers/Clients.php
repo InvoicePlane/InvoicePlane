@@ -346,16 +346,38 @@ class Clients extends Admin_Controller
 
     private function check_client_einvoice_active($client, $req_einvoicing) {
         // Update active eInvoicing client
-        // Use null coalescing to handle cases where database hasn't been migrated yet
-        $o = $client->client_einvoicing_active ?? 0;
-        if ( ! empty($client->client_einvoicing_version ?? '') && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
+        // Check if database has been migrated to 1.6.3+ (where einvoicing fields were added)
+        
+        if (!property_exists($client, 'client_einvoicing_active') || !property_exists($client, 'client_einvoicing_version')) {
+            // Fields don't exist - database hasn't been migrated to 1.6.3+
+            $this->load->model('settings/mdl_versions');
+            $current_version = $this->mdl_versions->get_current_version();
+            
+            log_message('warning', '[eInvoicing] Database version mismatch detected in check_client_einvoice_active: Running source code 1.6.3+ with database version ' . $current_version);
+            log_message('warning', '[eInvoicing] Missing fields: client_einvoicing_active and client_einvoicing_version not found in client object (client_id=' . $client->client_id . ')');
+            log_message('warning', '[eInvoicing] Please run database migration 039_1.6.3.sql to add these fields');
+            
+            // Set default values on the client object to prevent further errors
+            $client->client_einvoicing_active = 0;
+            $client->client_einvoicing_version = '';
+            
+            return $client;
+        }
+        
+        $o = $client->client_einvoicing_active;
+        log_message('debug', '[eInvoicing] check_client_einvoice_active: client_id=' . $client->client_id . ', current_active=' . $o . ', version=' . $client->client_einvoicing_version);
+        
+        if ( ! empty($client->client_einvoicing_version) && $req_einvoicing->clients[$client->client_id]->einvoicing_empty_fields == 0) {
             $client->client_einvoicing_active = 1; // update view
+            log_message('debug', '[eInvoicing] Setting client_einvoicing_active=1 for client_id=' . $client->client_id);
         } else {
             $client->client_einvoicing_active = 0; // update view
+            log_message('debug', '[eInvoicing] Setting client_einvoicing_active=0 for client_id=' . $client->client_id);
         }
 
         // Update db if need
         if ($o != $client->client_einvoicing_active) {
+            log_message('info', '[eInvoicing] Updating database: client_id=' . $client->client_id . ', client_einvoicing_active changed from ' . $o . ' to ' . $client->client_einvoicing_active);
             $this->db->where('client_id', $client->client_id);
             $this->db->set('client_einvoicing_active', $client->client_einvoicing_active);
             $this->db->update('ip_clients');

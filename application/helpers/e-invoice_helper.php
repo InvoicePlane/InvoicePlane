@@ -288,9 +288,26 @@ function get_einvoice_usage($invoice, array $items, $full = true): object
     }
 
     // eInvoice activated for client
-    // Use null coalescing to handle cases where database hasn't been migrated yet
-    $client_einvoicing_active = $invoice->client_einvoicing_active ?? 0;
-    $client_einvoicing_version = $invoice->client_einvoicing_version ?? '';
+    // Check if database has been migrated to 1.6.3+ (where einvoicing fields were added)
+    $client_einvoicing_active = 0;
+    $client_einvoicing_version = '';
+    
+    if (property_exists($invoice, 'client_einvoicing_active') && property_exists($invoice, 'client_einvoicing_version')) {
+        // Fields exist - database is migrated to 1.6.3 or higher
+        $client_einvoicing_active = $invoice->client_einvoicing_active;
+        $client_einvoicing_version = $invoice->client_einvoicing_version;
+        log_message('debug', '[eInvoicing] Fields found: client_einvoicing_active=' . $client_einvoicing_active . ', client_einvoicing_version=' . $client_einvoicing_version);
+    } else {
+        // Fields don't exist - database hasn't been migrated to 1.6.3+
+        $CI = &get_instance();
+        $CI->load->model('settings/mdl_versions');
+        $current_version = $CI->mdl_versions->get_current_version();
+        
+        log_message('warning', '[eInvoicing] Database version mismatch detected: Running source code 1.6.3+ with database version ' . $current_version);
+        log_message('warning', '[eInvoicing] Missing fields: client_einvoicing_active and client_einvoicing_version not found in invoice object');
+        log_message('warning', '[eInvoicing] Using default values: client_einvoicing_active=0, client_einvoicing_version=""');
+        log_message('warning', '[eInvoicing] Please run database migration 039_1.6.3.sql to add these fields');
+    }
     
     $on = ($client_einvoicing_active > 0 && $client_einvoicing_version != '');
     if ($on) {
