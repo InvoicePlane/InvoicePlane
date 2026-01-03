@@ -296,7 +296,16 @@ function get_einvoice_usage($invoice, array $items, $full = true): object
         // Fields exist - database is migrated to 1.6.3 or higher
         $client_einvoicing_active = $invoice->client_einvoicing_active;
         $client_einvoicing_version = $invoice->client_einvoicing_version;
-        log_message('debug', '[eInvoicing] Fields found: client_einvoicing_active=' . $client_einvoicing_active . ', client_einvoicing_version=' . $client_einvoicing_version);
+
+        // Sanitize values before logging to prevent log injection via control characters
+        $sanitized_client_einvoicing_active = preg_replace('/[\r\n]+/', '', (string) $client_einvoicing_active);
+        $sanitized_client_einvoicing_version = preg_replace('/[\r\n]+/', '', (string) $client_einvoicing_version);
+
+        log_message(
+            'debug',
+            '[eInvoicing] Fields found: client_einvoicing_active=' . $sanitized_client_einvoicing_active .
+            ', client_einvoicing_version=' . $sanitized_client_einvoicing_version
+        );
     } else {
         // Fields don't exist - database hasn't been migrated to 1.6.3+
         $CI = &get_instance();
