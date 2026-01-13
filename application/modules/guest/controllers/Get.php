@@ -44,6 +44,9 @@ class Get extends Base_Controller
 
     public function get_file($filename): void
     {
+        // Security: Compute hash once for logging (prevents log injection)
+        $filenameHash = hash('sha256', $filename);
+        
         // Security: Validate filename before any processing
         // Note: CodeIgniter already URL-decodes parameters during routing
         if (empty($filename) || 
@@ -52,8 +55,7 @@ class Get extends Base_Controller
             str_contains($filename, "\0") ||
             str_starts_with($filename, '/') || 
             str_starts_with($filename, '\\')) {
-            // Security: Use hash for logging to prevent log injection
-            log_message('error', 'guest/get: Path traversal or invalid character attempt detected (hash: ' . hash('sha256', $filename) . ')');
+            log_message('error', 'guest/get: Path traversal or invalid character attempt detected (hash: ' . $filenameHash . ')');
             $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
         }
 
@@ -61,8 +63,7 @@ class Get extends Base_Controller
         
         // Security: Verify basename extraction didn't result in empty string
         if (empty($safeFilename)) {
-            // Security: Use hash for logging to prevent log injection
-            log_message('error', 'guest/get: basename() returned empty (hash: ' . hash('sha256', $filename) . ')');
+            log_message('error', 'guest/get: basename() returned empty (hash: ' . $filenameHash . ')');
             $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
         }
         
@@ -77,9 +78,12 @@ class Get extends Base_Controller
         // Security: Validate that resolved path is within the allowed directory
         $realBase = realpath($this->targetPath);
         $realFile = realpath($fullPath);
-        if ($realBase === false || $realFile === false || strpos($realFile, $realBase) !== 0) {
-            // Security: Use hash for logging to prevent log injection
-            log_message('error', 'guest/get: Path traversal detected - file outside base directory (hash: ' . hash('sha256', $filename) . ')');
+        
+        // Ensure realBase ends with directory separator for accurate comparison
+        $realBaseWithSep = rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        
+        if ($realBase === false || $realFile === false || !str_starts_with($realFile, $realBaseWithSep)) {
+            log_message('error', 'guest/get: Path traversal detected - file outside base directory (hash: ' . $filenameHash . ')');
             $this->respond_message(403, 'upload_error_unauthorized_access', 'Unauthorized access');
         }
 
