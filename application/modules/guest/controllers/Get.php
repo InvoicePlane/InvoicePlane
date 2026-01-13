@@ -52,7 +52,8 @@ class Get extends Base_Controller
             str_contains($filename, "\0") ||
             str_starts_with($filename, '/') || 
             str_starts_with($filename, '\\')) {
-            log_message('error', 'guest/get: Path traversal or invalid character attempt detected: ' . $filename);
+            // Security: Use hash for logging to prevent log injection
+            log_message('error', 'guest/get: Path traversal or invalid character attempt detected (hash: ' . hash('sha256', $filename) . ')');
             $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
         }
 
@@ -60,22 +61,25 @@ class Get extends Base_Controller
         
         // Security: Verify basename extraction didn't result in empty string
         if (empty($safeFilename)) {
-            log_message('error', 'guest/get: basename() returned empty for: ' . $filename);
+            // Security: Use hash for logging to prevent log injection
+            log_message('error', 'guest/get: basename() returned empty (hash: ' . hash('sha256', $filename) . ')');
             $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
         }
         
         $fullPath = $this->targetPath . $safeFilename;
 
         if (!file_exists($fullPath)) {
-            $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-            $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
+            // Security: Log sanitized info only - don't include user-controlled data
+            log_message('debug', 'guest/get: File not found in customer files directory');
+            $this->respond_message(404, 'upload_error_file_not_found', 'File not found');
         }
 
         // Security: Validate that resolved path is within the allowed directory
         $realBase = realpath($this->targetPath);
         $realFile = realpath($fullPath);
         if ($realBase === false || $realFile === false || strpos($realFile, $realBase) !== 0) {
-            log_message('error', 'guest/get: Path traversal detected - file outside base directory: ' . $filename);
+            // Security: Use hash for logging to prevent log injection
+            log_message('error', 'guest/get: Path traversal detected - file outside base directory (hash: ' . hash('sha256', $filename) . ')');
             $this->respond_message(403, 'upload_error_unauthorized_access', 'Unauthorized access');
         }
 
