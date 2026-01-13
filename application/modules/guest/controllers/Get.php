@@ -94,7 +94,8 @@ class Get extends Base_Controller
         $file_size = filesize($realFile);
         
         // Security: Sanitize filename for Content-Disposition header to prevent header injection
-        $sanitizedFilename = str_replace(['"', "\r", "\n"], ['\"', '', ''], $safeFilename);
+        // Remove all control characters (0x00-0x1F, 0x7F) and quotes to prevent header injection
+        $sanitizedFilename = preg_replace('/[\x00-\x1F\x7F"]/', '', $safeFilename);
         
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
