@@ -76,6 +76,7 @@ class Get extends Base_Controller
         }
 
         // Security: Validate that resolved path is within the allowed directory
+        // Note: targetPath is a constant defined at application startup, so it's trusted
         $realBase = realpath($this->targetPath);
         $realFile = realpath($fullPath);
         
@@ -91,10 +92,14 @@ class Get extends Base_Controller
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
         $file_size = filesize($realFile);
+        
+        // Security: Sanitize filename for Content-Disposition header to prevent header injection
+        $sanitizedFilename = str_replace(['"', "\r", "\n"], ['\"', '', ''], $safeFilename);
+        
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
-        header('Content-Disposition: attachment; filename="' . $safeFilename . '"');
+        header('Content-Disposition: attachment; filename="' . $sanitizedFilename . '"');
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
         readfile($realFile);
