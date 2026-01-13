@@ -44,13 +44,26 @@ class Get extends Base_Controller
 
     public function get_file($filename): void
     {
-        $filename = urldecode($filename);
-
-        if (empty($filename) || str_contains($filename, '../') || str_contains($filename, '..\\') || str_starts_with($filename, '/') || str_starts_with($filename, '\\')) {
-            $this->respond_message(400, 'upload_error_invalid_filename', $filename);
+        // Security: Validate filename before any processing
+        // Note: CodeIgniter already URL-decodes parameters during routing
+        if (empty($filename) || 
+            str_contains($filename, '../') || 
+            str_contains($filename, '..\\') || 
+            str_contains($filename, "\0") ||
+            str_starts_with($filename, '/') || 
+            str_starts_with($filename, '\\')) {
+            log_message('error', 'guest/get: Path traversal or invalid character attempt detected: ' . $filename);
+            $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
         }
 
         $safeFilename = basename($filename);
+        
+        // Security: Verify basename extraction didn't result in empty string
+        if (empty($safeFilename)) {
+            log_message('error', 'guest/get: basename() returned empty for: ' . $filename);
+            $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
+        }
+        
         $fullPath = $this->targetPath . $safeFilename;
 
         if (!file_exists($fullPath)) {
@@ -58,10 +71,12 @@ class Get extends Base_Controller
             $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
         }
 
+        // Security: Validate that resolved path is within the allowed directory
         $realBase = realpath($this->targetPath);
         $realFile = realpath($fullPath);
         if ($realBase === false || $realFile === false || strpos($realFile, $realBase) !== 0) {
-            $this->respond_message(403, 'upload_error_unauthorized_access', $filename);
+            log_message('error', 'guest/get: Path traversal detected - file outside base directory: ' . $filename);
+            $this->respond_message(403, 'upload_error_unauthorized_access', 'Unauthorized access');
         }
 
         $path_parts = pathinfo($realFile);
