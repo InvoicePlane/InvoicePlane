@@ -116,6 +116,7 @@ class Upload extends Admin_Controller
     public function get_file($filename): void
     {
         // Security: Removed urldecode() - CodeIgniter already handles URL decoding
+        // First sanitize to handle the url_key_filename format
         $filename = $this->sanitize_file_name($filename);
 
         $underscorePos = mb_strpos($filename, '_');
@@ -127,18 +128,29 @@ class Upload extends Admin_Controller
 
         $url_key       = mb_substr($filename, 0, $underscorePos);
         $real_filename = mb_substr($filename, $underscorePos + 1);
-        $fullPath      = $this->get_target_file_path($url_key, $real_filename);
         
-        if ( ! file_exists($fullPath)) {
-            log_message('debug', 'upload: File not found in uploads directory');
-            $this->respond_message(404, 'upload_error_file_not_found', 'File not found');
-        }
+        // Security: Use comprehensive validation on the real filename component
+        $validation = validate_file_access($real_filename, $this->targetPath);
         
-        // Security: Validate file is within allowed directory
-        if (!validate_file_in_directory($fullPath, $this->targetPath)) {
-            $filenameHash = hash_for_logging($filename);
-            log_message('error', 'upload: Path traversal detected (hash: ' . $filenameHash . ')');
-            $this->respond_message(403, 'upload_error_unauthorized_access', 'Unauthorized access');
+        // For uploads, we need to check the actual path with url_key prefix
+        if (!$validation['valid'] || $validation['error'] === 'file_not_found') {
+            // Try with the url_key prefix (uploads use url_key_filename format)
+            $fullPath = $this->get_target_file_path($url_key, $real_filename);
+            
+            if (!file_exists($fullPath)) {
+                log_message('debug', 'upload: File not found in uploads directory');
+                $this->respond_message(404, 'upload_error_file_not_found', 'File not found');
+            }
+            
+            // Validate the actual path is within allowed directory
+            if (!validate_file_in_directory($fullPath, $this->targetPath)) {
+                $filenameHash = hash_for_logging($filename);
+                log_message('error', 'upload: Path traversal detected (hash: ' . $filenameHash . ')');
+                $this->respond_message(403, 'upload_error_unauthorized_access', 'Unauthorized access');
+            }
+        } else {
+            // Use validated path from helper
+            $fullPath = $this->get_target_file_path($url_key, $real_filename);
         }
         
         $path_parts = pathinfo($fullPath);

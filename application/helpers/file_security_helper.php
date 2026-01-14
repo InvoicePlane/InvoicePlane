@@ -36,8 +36,15 @@ function validate_safe_filename(string $filename): array
         return ['valid' => false, 'hash' => $hash, 'error' => 'empty_filename'];
     }
 
-    // Check for path traversal sequences
-    if (str_contains($filename, '../') || str_contains($filename, '..\\')) {
+    // Check for path traversal sequences (including standalone ..)
+    // Matches: ../, ..\, /.. and standalone ..
+    if (str_contains($filename, '../') || 
+        str_contains($filename, '..\\') || 
+        str_contains($filename, '/..') ||
+        str_contains($filename, '\\..') ||
+        $filename === '..' ||
+        str_starts_with($filename, '../') ||
+        str_starts_with($filename, '..\\')) {
         return ['valid' => false, 'hash' => $hash, 'error' => 'path_traversal'];
     }
 
@@ -91,9 +98,16 @@ function validate_file_in_directory(string $filePath, string $baseDirectory): bo
  */
 function sanitize_filename_for_header(string $filename): string
 {
-    // Remove all control characters (0x00-0x1F, 0x7F) and quotes
-    // This prevents CRLF injection and response splitting attacks
-    return preg_replace('/[\x00-\x1F\x7F"]/', '', $filename);
+    // Remove all control characters (0x00-0x1F, 0x7F), quotes, and backslashes
+    // This prevents CRLF injection and response splitting attacks, including backslash-based bypasses
+    $sanitized = preg_replace('/[\x00-\x1F\x7F"\\\\]/', '', $filename);
+    
+    // If sanitization results in empty string, use safe fallback
+    if (empty($sanitized)) {
+        return 'attachment.bin';
+    }
+    
+    return $sanitized;
 }
 
 /**
