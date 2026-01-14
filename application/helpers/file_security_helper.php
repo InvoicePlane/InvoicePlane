@@ -42,9 +42,7 @@ function validate_safe_filename(string $filename): array
         str_contains($filename, '..\\') || 
         str_contains($filename, '/..') ||
         str_contains($filename, '\\..') ||
-        $filename === '..' ||
-        str_starts_with($filename, '../') ||
-        str_starts_with($filename, '..\\')) {
+        $filename === '..') {
         return ['valid' => false, 'hash' => $hash, 'error' => 'path_traversal'];
     }
 
