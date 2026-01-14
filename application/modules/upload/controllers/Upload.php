@@ -30,6 +30,7 @@ class Upload extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('file_security');
         $this->load->model('upload/mdl_uploads');
         $this->content_types = $this->mdl_uploads->content_types;
     }
@@ -86,13 +87,18 @@ class Upload extends Admin_Controller
 
     public function delete_file(string $url_key): void
     {
-        $filename = urldecode($this->input->post('name'));
+        // Security: Get POST data (CodeIgniter already handles basic decoding)
+        // Note: Removed urldecode() to prevent double-decoding vulnerability
+        $filename = $this->input->post('name');
         
         // Security: Sanitize filename to prevent path traversal
         $filename = $this->sanitize_file_name($filename);
         
         if (empty($filename)) {
-            $this->respond_message(400, 'upload_error_invalid_filename', $filename);
+            // Use hash for secure logging
+            $filenameHash = hash_for_logging($this->input->post('name') ?? '');
+            log_message('error', 'upload: Invalid filename in delete request (hash: ' . $filenameHash . ')');
+            $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
         }
 
         $finalPath = $this->targetPath . $url_key . '_' . $filename;
@@ -102,34 +108,51 @@ class Upload extends Admin_Controller
             $this->respond_message(200, 'upload_file_deleted_successfully', $filename);
         }
 
-        $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-        $this->respond_message(410, 'upload_error_file_delete', $finalPath . $ref);
+        // Security: Don't leak file paths or referrer in logs
+        log_message('debug', 'upload: File delete failed');
+        $this->respond_message(410, 'upload_error_file_delete', 'File delete failed');
     }
 
     public function get_file($filename): void
     {
-        $filename = $this->sanitize_file_name(urldecode($filename));
+        // Security: Removed urldecode() - CodeIgniter already handles URL decoding
+        $filename = $this->sanitize_file_name($filename);
 
         $underscorePos = mb_strpos($filename, '_');
         if ($underscorePos === false) {
-            $this->respond_message(400, 'upload_error_invalid_filename', $filename);
+            $filenameHash = hash_for_logging($filename);
+            log_message('error', 'upload: Invalid filename format (hash: ' . $filenameHash . ')');
+            $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
         }
 
         $url_key       = mb_substr($filename, 0, $underscorePos);
         $real_filename = mb_substr($filename, $underscorePos + 1);
         $fullPath      = $this->get_target_file_path($url_key, $real_filename);
+        
         if ( ! file_exists($fullPath)) {
-            $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-            $this->respond_message(404, 'upload_error_file_not_found', $fullPath . $ref);
+            log_message('debug', 'upload: File not found in uploads directory');
+            $this->respond_message(404, 'upload_error_file_not_found', 'File not found');
         }
+        
+        // Security: Validate file is within allowed directory
+        if (!validate_file_in_directory($fullPath, $this->targetPath)) {
+            $filenameHash = hash_for_logging($filename);
+            log_message('error', 'upload: Path traversal detected (hash: ' . $filenameHash . ')');
+            $this->respond_message(403, 'upload_error_unauthorized_access', 'Unauthorized access');
+        }
+        
         $path_parts = pathinfo($fullPath);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
         $file_size  = filesize($fullPath);
+        
+        // Security: Sanitize filename for header to prevent header injection
+        $sanitizedFilename = sanitize_filename_for_header($real_filename);
+        
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
-        header('Content-Disposition: attachment; filename="' . $real_filename . '"');
+        header('Content-Disposition: attachment; filename="' . $sanitizedFilename . '"');
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
         readfile($fullPath);

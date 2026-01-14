@@ -27,6 +27,7 @@ class Get extends Base_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('file_security');
         $this->load->model('upload/mdl_uploads');
         $this->content_types = $this->mdl_uploads->content_types;
     }
@@ -44,58 +45,32 @@ class Get extends Base_Controller
 
     public function get_file($filename): void
     {
-        // Security: Compute hash once for logging (prevents log injection)
-        $filenameHash = hash('sha256', $filename);
-        
-        // Security: Validate filename before any processing
+        // Security: Use comprehensive file security validation helper
         // Note: CodeIgniter already URL-decodes parameters during routing
-        if (empty($filename) || 
-            str_contains($filename, '../') || 
-            str_contains($filename, '..\\') || 
-            str_contains($filename, "\0") ||
-            str_starts_with($filename, '/') || 
-            str_starts_with($filename, '\\')) {
-            log_message('error', 'guest/get: Path traversal or invalid character attempt detected (hash: ' . $filenameHash . ')');
-            $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
+        $validation = validate_file_access($filename, $this->targetPath);
+        
+        if (!$validation['valid']) {
+            $errorMap = [
+                'file_not_found' => [404, 'upload_error_file_not_found', 'File not found'],
+                'path_outside_directory' => [403, 'upload_error_unauthorized_access', 'Unauthorized access'],
+            ];
+            
+            $error = $validation['error'] ?? 'unknown';
+            $response = $errorMap[$error] ?? [400, 'upload_error_invalid_filename', 'Invalid filename'];
+            
+            $this->respond_message($response[0], $response[1], $response[2]);
         }
 
-        $safeFilename = basename($filename);
+        $realFile = $validation['path'];
+        $safeFilename = $validation['basename'];
         
-        // Security: Verify basename extraction didn't result in empty string
-        if (empty($safeFilename)) {
-            log_message('error', 'guest/get: basename() returned empty (hash: ' . $filenameHash . ')');
-            $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
-        }
-        
-        $fullPath = $this->targetPath . $safeFilename;
-
-        if (!file_exists($fullPath)) {
-            // Security: Log sanitized info only - don't include user-controlled data
-            log_message('debug', 'guest/get: File not found in customer files directory');
-            $this->respond_message(404, 'upload_error_file_not_found', 'File not found');
-        }
-
-        // Security: Validate that resolved path is within the allowed directory
-        // Note: targetPath is a constant defined at application startup, so it's trusted
-        $realBase = realpath($this->targetPath);
-        $realFile = realpath($fullPath);
-        
-        // Ensure realBase ends with directory separator for accurate comparison
-        $realBaseWithSep = rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        
-        if ($realBase === false || $realFile === false || !str_starts_with($realFile, $realBaseWithSep)) {
-            log_message('error', 'guest/get: Path traversal detected - file outside base directory (hash: ' . $filenameHash . ')');
-            $this->respond_message(403, 'upload_error_unauthorized_access', 'Unauthorized access');
-        }
-
         $path_parts = pathinfo($realFile);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
         $file_size = filesize($realFile);
         
         // Security: Sanitize filename for Content-Disposition header to prevent header injection
-        // Remove all control characters (0x00-0x1F, 0x7F) and quotes to prevent header injection
-        $sanitizedFilename = preg_replace('/[\x00-\x1F\x7F"]/', '', $safeFilename);
+        $sanitizedFilename = sanitize_filename_for_header($safeFilename);
         
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
