@@ -142,14 +142,14 @@ function validate_file_access(string $filename, string $baseDirectory): array
     // Step 1: Validate filename doesn't contain malicious sequences
     $validation = validate_safe_filename($filename);
     if (!$validation['valid']) {
-        log_message('error', 'File security: Invalid filename detected (hash: ' . $validation['hash'] . ', error: ' . $validation['error'] . ')');
+        log_message('error', sprintf('File security: Invalid filename detected (hash: %s, error: %s)', $validation['hash'], $validation['error']));
         return $validation;
     }
 
     // Step 2: Extract basename to remove directory components
     $basename = extract_safe_basename($filename);
     if (!$basename['valid']) {
-        log_message('error', 'File security: Basename extraction failed (hash: ' . $basename['hash'] . ')');
+        log_message('error', sprintf('File security: Basename extraction failed (hash: %s)', $basename['hash']));
         return $basename;
     }
 
@@ -164,7 +164,7 @@ function validate_file_access(string $filename, string $baseDirectory): array
 
     // Step 5: Validate resolved path is within base directory
     if (!validate_file_in_directory($fullPath, $baseDirectory)) {
-        log_message('error', 'File security: Path traversal detected - file outside base directory (hash: ' . $validation['hash'] . ')');
+        log_message('error', sprintf('File security: Path traversal detected - file outside base directory (hash: %s)', $validation['hash']));
         return ['valid' => false, 'hash' => $validation['hash'], 'error' => 'path_outside_directory'];
     }
 

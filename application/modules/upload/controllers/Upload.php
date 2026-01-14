@@ -96,7 +96,7 @@ class Upload extends Admin_Controller
         
         if (empty($filename)) {
             // Use hash for secure logging
-            $filenameHash = hash_for_logging($this->input->post('name') ?? '');
+            $filenameHash = hash_for_logging($this->input->post('name') ?: '');
             log_message('error', 'upload: Invalid filename in delete request (hash: ' . $filenameHash . ')');
             $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
         }
