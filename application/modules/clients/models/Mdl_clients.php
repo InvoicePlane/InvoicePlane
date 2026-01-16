@@ -313,8 +313,8 @@ class Mdl_Clients extends Response_Model
 
     public function get_all_services()
     {
-        $this->load->model('Mdl_services');
-        return $this->Mdl_services->get()->result_array();
+        $this->load->model('services/mdl_services');
+        return $this->mdl_services->get()->result_array();
     }
 
     /**
