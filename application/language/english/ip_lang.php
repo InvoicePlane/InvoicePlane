@@ -228,6 +228,7 @@ $lang = [
     'enable_debug_mode'                            => 'Enable the Debug Mode',
     'enable_permissive_search_clients'             => 'Enable permissive search',
     'enable_permissive_search_users'               => 'Enable permissive search',
+    'enable_services'                              => 'Enable services on invoices and quotes',
     'end_date'                                     => 'End Date',
     'enter_payment'                                => 'Enter Payment',
     'errors'                                       => 'Errors',

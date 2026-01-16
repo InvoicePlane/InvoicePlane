@@ -318,12 +318,15 @@ if ($quote->quote_status_id == 1) {
                     </h3>
                     <br>
 		    <div class="client-address">
-                       <label for="service_id">
-                          <?php
-                              echo ' <span class="small">(' . trans('service_name') . ')</span>';
-                          ?>
-                       </label>
-		       <select name="service_id" id="service_id"
+                       <?php
+                          if (get_setting('enable_services') == 1) {
+                       ?>
+                            <label for="service_id">
+                              <?php
+                                  echo ' <span class="small">(' . trans('service_name') . ')</span>';
+                              ?>
+                            </label>
+		            <select name="service_id" id="service_id"
                                class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
                                <option value="0" selected><?php _trans('select_service'); ?></option>
                                <?php
@@ -337,8 +340,16 @@ if ($quote->quote_status_id == 1) {
 				     }
                                  }
                                ?>
-                       </select><br>
-                        <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
+                            </select><br>
+                       <?php
+			  }
+			  else {
+		       ?>
+		            <input type="hidden" name="service_id" id="service_id" value="0">
+                       <?php
+			  }
+			  $this->layout->load_view('clients/partial_client_address', ['client' => $quote]);
+                       ?>
                     </div>
 <?php if ($quote->client_phone || $quote->client_email) : ?>
                         <hr>

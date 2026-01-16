@@ -70,6 +70,9 @@
                 </div>
             </div>
 
+       <?php
+          if (get_setting('enable_services') == 1) {
+       ?>
            <div class="form-group has-feedback">
                 <label for="service_id"><?php _trans('service'); ?></label>
                 <div class="input-group" style="width: 100%;">
@@ -87,6 +90,14 @@
                     </select>
                 </div>
 	    </div>
+       <?php
+	  }
+	  else {
+       ?>
+            <input type="hidden" name="service_id" id="service_id" value="0">
+       <?php
+	  }
+       ?>
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created"><?php _trans('invoice_date'); ?></label>
