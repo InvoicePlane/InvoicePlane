@@ -30,6 +30,7 @@
                     }
                     else {
                         // The validation was not successful
+                        close_loader();
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().parent().addClass('has-error');
@@ -38,7 +39,6 @@
                 });
         });
     });
-
 </script>
 
 <div id="create-invoice" class="modal modal-lg"
@@ -76,12 +76,11 @@
                     <select name="service_id" id="service_id" class="form-control" style="width: 100%;">
                                <option value="0"><?php _trans('select_service'); ?></option>
                                <?php
-                                 if (isset($services) && is_array($services)) {
-                                     foreach($services as $service)
-				     {
-					 if ($service['service_name']) {
-					     echo '<option value="' . htmlspecialchars($service['service_id']) . '">' . htmlspecialchars($service['service_name']) . '</option>';
-				         }
+                                 foreach($services as $service) {
+			             if (!empty($service['service_name'])) {
+			                 echo '<option value="' . htmlspecialchars($service['service_id'], ENT_QUOTES) . '">';
+				         echo htmlspecialchars($service['service_name'], ENT_QUOTES);
+				         echo '</option>';
 				     }
                                  }
                                ?>

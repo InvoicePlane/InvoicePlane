@@ -474,7 +474,6 @@ class Ajax extends Admin_Controller
             'quotes/mdl_quotes',
             'quotes/mdl_quote_items',
 	    'quotes/mdl_quote_tax_rates',
-	    'services/mdl_services',
         ]);
 
         if ($this->mdl_invoices->run_validation()) {

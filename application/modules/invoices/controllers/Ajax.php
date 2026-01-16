@@ -140,7 +140,7 @@ class Ajax extends Admin_Controller
                 'payment_method'           => $this->security->xss_clean($this->input->post('payment_method')),
                 'invoice_discount_amount'  => standardize_amount($invoice_discount_amount),
 		'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
-		'service_id'               => $this->security->xss_clean($this->input->post('service_id'),
+		'service_id'               => $this->security->xss_clean($this->input->post('service_id')),
             ];
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
@@ -162,6 +162,7 @@ class Ajax extends Admin_Controller
                     'sumex_casedate'       => date_to_mysql($this->input->post('invoice_sumex_casedate')),
                     'sumex_casenumber'     => $this->input->post('invoice_sumex_casenumber'),
                     'sumex_observations'   => $this->input->post('invoice_sumex_observations'),
+                    'service_id'           => $this->security->xss_clean($this->input->post('service_id')),
                 ];
 
                 $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
@@ -301,6 +302,7 @@ class Ajax extends Admin_Controller
             'invoice_id'     => $this->security->xss_clean($this->input->post('invoice_id')),
             'invoice'        => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->security->xss_clean($this->input->post('invoice_id')))->get()->row(),
 	    'client'         => $this->mdl_clients->get_by_id($this->input->post('client_id')),
+	    'service_id'     => $this->security->xss_clean($this->input->post('service_id')),
 	    'services'       => $services,
         ];
 
@@ -398,9 +400,9 @@ class Ajax extends Admin_Controller
 
         $data = [
             'client_id'  => $this->security->xss_clean($this->input->post('client_id')),
+            'service_id' => $this->security->xss_clean($this->input->post('service_id')),
             'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
 	    'clients'    => $this->mdl_clients->get_latest(),
-	    'services'   => $this->mdl_clients->service_by_client(),
         ];
 
         $this->layout->load_view('layout/ajax/modal_change_user_client', $data);
@@ -415,6 +417,7 @@ class Ajax extends Admin_Controller
 
         // Get the client ID
         $client_id = $this->security->xss_clean($this->input->post('client_id'));
+        $service_id = $this->security->xss_clean($this->input->post('service_id'));
         $client    = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
         if ( ! empty($client)) {
@@ -422,6 +425,7 @@ class Ajax extends Admin_Controller
 
             $db_array = [
                 'client_id' => $client_id,
+                'service_id' => $service_id,
             ];
             $this->db->where('invoice_id', $invoice_id);
             $this->db->update('ip_invoices', $db_array);
@@ -448,13 +452,17 @@ class Ajax extends Admin_Controller
             'invoice_groups/mdl_invoice_groups',
             'tax_rates/mdl_tax_rates',
             'clients/mdl_clients',
+            'services/mdl_services',
         ]);
+
+	$services = $this->mdl_services->get()->result_array();
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates'      => $this->mdl_tax_rates->get()->result(),
             'client'         => $this->mdl_clients->get_by_id($this->input->post('client_id')),
             'clients'        => $this->mdl_clients->get_latest(),
+            'services'       => $services,
         ];
 
         $this->layout->load_view('invoices/modal_create_invoice', $data);
@@ -533,18 +541,13 @@ class Ajax extends Admin_Controller
             'invoice_groups/mdl_invoice_groups',
 	    'tax_rates/mdl_tax_rates',
 	    'clients/mdl_clients',
-            'services/mdl_services',
 	]);
-
-        $services = $this->mdl_services->get()->result_array();
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates'      => $this->mdl_tax_rates->get()->result(),
             'invoice_id'     => $this->security->xss_clean($this->input->post('invoice_id')),
 	    'invoice'        => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->security->xss_clean($this->input->post('invoice_id')))->get()->row(),
-	    'service_id'     => intval($this->input->post('service_id')),
-            'services'       => $services,
         ];
 
         $this->layout->load_view('invoices/modal_create_credit', $data);

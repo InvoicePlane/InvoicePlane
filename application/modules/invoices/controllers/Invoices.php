@@ -61,20 +61,14 @@ class Invoices extends Admin_Controller
 
         $serviceIds = array_unique(array_filter(array_column($invoices, 'service_id')));
 
-        $this->load->model('Mdl_services');
-
-	$servicesById = [];
-
-	if (!empty($serviceIds)) {
-            $servicesById = $this->mdl_services->get_names_by_ids([$serviceId]);
-        }
-
+        $this->load->model('services/mdl_services');
 
         foreach ($invoices as $invoice) {
+            $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
             $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
         }
 
-        $services = $this->Mdl_services->get()->result_array();
+        $services = $this->mdl_services->get()->result_array();
 
         $this->layout->set(
             [
@@ -148,6 +142,7 @@ class Invoices extends Admin_Controller
                 'custom_fields/mdl_invoice_custom',
                 'units/mdl_units',
                 'upload/mdl_uploads',
+                'services/mdl_services',
             ]
         );
         $this->load->helper(['custom_values', 'dropzone', 'e-invoice']);
@@ -196,6 +191,11 @@ class Invoices extends Admin_Controller
             }
         }
 
+        $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
+        $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
+
+        $services = $this->mdl_services->get()->result_array();
+
         // Check whether there are payment custom fields
         $payment_cf       = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
         $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
@@ -218,6 +218,7 @@ class Invoices extends Admin_Controller
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
                 'units'             => $this->mdl_units->get()->result(),
                 'payment_methods'   => $this->mdl_payment_methods->get()->result(),
+                'services'          => $services,
                 'custom_fields'     => $custom_fields,
                 'custom_values'     => $custom_values,
                 'custom_js_vars'    => [

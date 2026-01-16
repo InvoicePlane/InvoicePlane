@@ -104,7 +104,7 @@ class Mdl_Quotes extends Response_Model
 	    ],
 	    'service_id' => [
                 'field' => 'service_id',
-                'label' => trans('service')
+                'label' => trans('service'),
 	    ],
             'quote_date_created' => [
                 'field' => 'quote_date_created',
@@ -202,6 +202,7 @@ class Mdl_Quotes extends Response_Model
             'percent'        => $quote->quote_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for quote_item_subtotal calculation in Mdl_quote_amounts)
             'items_subtotal' => $this->mdl_quote_items->get_items_subtotal($source_id),
+            'service'        => $quote->service_id,
         ];
         unset($quote); // Free memory
 
@@ -209,6 +210,7 @@ class Mdl_Quotes extends Response_Model
         $this->where('quote_id', $target_id)->update('ip_quotes', [
             'quote_discount_percent' => $global_discount['percent'],
             'quote_discount_amount'  => $global_discount['amount'],
+            'service_id'             => $global_discount['service'],
         ]);
 
         $quote_items = $this->mdl_quote_items->where('quote_id', $source_id)->get()->result();
@@ -216,7 +218,6 @@ class Mdl_Quotes extends Response_Model
         foreach ($quote_items as $quote_item) {
             $db_array = [
                 'quote_id'             => $target_id,
-                'service_id'           => $quote_item->service_id,
                 'item_tax_rate_id'     => $quote_item->item_tax_rate_id,
                 'item_product_id'      => $quote_item?->item_product_id,
                 'item_name'            => $quote_item->item_name,

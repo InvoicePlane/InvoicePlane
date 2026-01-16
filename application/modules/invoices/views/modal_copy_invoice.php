@@ -21,7 +21,6 @@
                     invoice_password: $('#invoice_password').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
                     payment_method: $('#payment_method').val(),
-                    service_id: $('#service_id').val(),
                 },
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
@@ -71,25 +70,6 @@
                     </select>
                 </div>
             </div>
-
-           <div class="form-group has-feedback">
-                <label for="service_id"><?php _trans('service'); ?></label>
-                <div class="input-group" style="width: 100%;">
-                    <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
-			    autofocus="autofocus">
-                               <option value="0" selected><?php _trans('select_service'); ?></option>
-                               <?php
-                                 foreach($services as $service)
-				 {
-				     if ($service['service_name']) {
-					 $value = $service['service_name'];
-                                         echo '<option value="' . $service['service_id'] .'">' . $value .'</option>';
-				     }
-                                 }
-                               ?>
-                    </select>
-                </div>
-	    </div>
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created_modal"><?php _trans('invoice_date'); ?>: </label>

@@ -228,6 +228,7 @@ class Mdl_Invoices extends Response_Model
             'percent'        => $invoice->invoice_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
             'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
+            'service'        => $invoice->service_id,
         ];
         unset($invoice); // Free memory
 
@@ -235,6 +236,7 @@ class Mdl_Invoices extends Response_Model
         $this->where('invoice_id', $target_id)->update('ip_invoices', [
             'invoice_discount_percent' => $global_discount['percent'],
             'invoice_discount_amount'  => $global_discount['amount'],
+            'service_id'               => $global_discount['service'],
         ]);
 
         // Copy the items
@@ -243,7 +245,6 @@ class Mdl_Invoices extends Response_Model
         foreach ($invoice_items as $invoice_item) {
             $db_array = [
                 'invoice_id'           => $target_id,
-                'service_id'           => $invoice_item->service_id,
                 'item_tax_rate_id'     => $invoice_item->item_tax_rate_id,
                 'item_product_id'      => $invoice_item->item_product_id,
                 'item_task_id'         => $invoice_item->item_task_id,
@@ -307,12 +308,14 @@ class Mdl_Invoices extends Response_Model
             'percent'        => $invoice->invoice_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
             'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
+            'service'        => $invoice->service_id,
         ];
 
         // Update the discounts - since v1.6.3
         $this->where('invoice_id', $target_id)->update('ip_invoices', [
             'invoice_discount_percent' => $global_discount['percent'],
             'invoice_discount_amount'  => $global_discount['amount'],
+            'service_id'               => $global_discount['service'],
         ]);
 
         unset($invoice); // Free memory
@@ -375,7 +378,7 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('clients/mdl_clients');
 
         $this->load->model('services/mdl_services');
-	$cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
+        $cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
 
         // Handle service_id - default to 0 if not provided or not found
         $sid = 0;
@@ -688,6 +691,22 @@ class Mdl_Invoices extends Response_Model
             $current_date = date_to_mysql(date(date_format_setting()));
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_date_due', $this->get_date_due($current_date));
+            $this->db->update('ip_invoices');
+        }
+    }
+
+    /**
+      * Update the service association for a invoice
+      * @param $invoice_id
+      * @param $service_id
+      */
+    public function set_invoice_service($invoice_id, $service_id)
+    {
+        $invoice = $this->get_by_id($invoice_id);
+
+        if (!empty($invoice)) {
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->set('service_id', $service_id);
             $this->db->update('ip_invoices');
         }
     }
