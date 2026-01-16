@@ -81,7 +81,8 @@ class Services extends Admin_Controller
         if ($this->input->post('client_id') && $id) {
             $this->db->insert('ip_client_services', [
                     'client_id' => $this->input->post('client_id'), 
-                    'service_id' => $id + ]);
+		    'service_id' => $id,
+	    ]);
         }
 
         if ($this->mdl_services->run_validation()) {
@@ -92,7 +93,7 @@ class Services extends Admin_Controller
             if ($this->input->post('client_id')) {
 		$this->db->insert('ip_client_services', [
 			'client_id' => $this->input->post('client_id'),
-			'service_id' => $this->db->insert_id()
+			'service_id' => $this->db->insert_id(),
 		]);
 		redirect('clients/form/'. $this->input->post('client_id'));
 	    }
