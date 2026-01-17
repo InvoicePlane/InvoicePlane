@@ -47,11 +47,11 @@ switch ($invoice_mode) {
 <body>
 <header class="clearfix">
 
-    <div id="logo<?php if (get_setting('default_reverse_logo') == 1) echo '-invert'; ?>">
+    <div id="logo<?php if (get_setting('default_reverse_logo') === '1') echo '-invert'; ?>">
         <?php echo invoice_logo_pdf(); ?>
     </div>
 
-    <div id="client<?php if (get_setting('default_reverse_customer_company') == 1) echo '-invert'; ?>">
+    <div id="client<?php if (get_setting('default_reverse_customer_company') === '1') echo '-invert'; ?>">
         <div>
             <b><?php _htmlsc(format_client($invoice)); ?></b>
         </div>
@@ -92,7 +92,7 @@ if ($invoice->client_phone) {
 }
 ?>
     </div>
-    <div id="company<?php if (get_setting('default_reverse_customer_company') == 1) echo '-invert'; ?>">
+    <div id="company<?php if (get_setting('default_reverse_customer_company') === '1') echo '-invert'; ?>">
         <div><b><?php _htmlsc($invoice->user_name); ?></b></div>
 <?php
 if ($invoice->user_vat_id) {
