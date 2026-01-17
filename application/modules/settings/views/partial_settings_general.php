@@ -125,7 +125,7 @@
                         <div class="form-group">
                             <label name="label_reverse_customer_company" id="label_reverse_customer_company" for="settings[default_reverse_customer_company]">
                                 <?php _trans('default_reverse_customer_company'); ?>
-			    </label>
+                            </label>
 
                             <select name="settings[default_reverse_customer_company]" class="form-control simple-select"
                                 id="settings[default_reverse_customer_company]" data-minimum-results-for-search="Infinity">
@@ -154,7 +154,7 @@
                                 </option>
                             </select>
                         </div>
-		    </div>
+                    </div>
                 </div>
             </div>
         </div>
