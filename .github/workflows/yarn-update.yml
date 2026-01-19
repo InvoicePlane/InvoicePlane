@@ -69,7 +69,7 @@ jobs:
             echo "lockfile_conflict=true" >> $GITHUB_OUTPUT
             
             # Show when it was last modified
-            echo "📅 package-lock.json last modified: $(stat -c %y package-lock.json 2>/dev/null || stat -f '%Sm' package-lock.json 2>/dev/null || echo 'unknown')"
+            echo "package-lock.json last modified: $(stat -c %y package-lock.json 2>/dev/null || stat -f '%Sm' package-lock.json 2>/dev/null || echo 'unknown')"
             echo ""
           else
             echo "✓ No package-lock.json conflict detected"
@@ -79,7 +79,7 @@ jobs:
           if [ -f "yarn.lock" ]; then
             echo "✓ yarn.lock present (correct for this project)"
           else
-            echo "❌ ERROR: yarn.lock is missing!"
+            echo "ERROR: yarn.lock is missing!"
             exit 1
           fi
           echo "========================================="
@@ -116,13 +116,13 @@ jobs:
           
           # Note: Yarn v1 doesn't have 'audit fix', so we identify and upgrade vulnerable packages
           if [ -f audit-report.json ]; then
-            echo "📋 Audit report generated. Checking for fixable vulnerabilities..."
+            echo "Audit report generated. Checking for fixable vulnerabilities..."
             
             # Extract vulnerable package names and upgrade them
             VULNERABLE_PACKAGES=$(grep -o '"module_name":"[^"]*"' audit-report.json | cut -d'"' -f4 | sort -u || echo "")
             
             if [ -n "$VULNERABLE_PACKAGES" ]; then
-              echo "🔒 Upgrading packages with security vulnerabilities:"
+              echo "Upgrading packages with security vulnerabilities:"
               echo "$VULNERABLE_PACKAGES"
               for pkg in $VULNERABLE_PACKAGES; do
                 echo "  Upgrading $pkg..."
@@ -182,10 +182,10 @@ jobs:
           
           # Try to build assets (wrapped in conditional to handle errors)
           if yarn build; then
-            echo "✓ Build completed successfully"
+            echo "Build completed successfully"
             echo "build_success=true" >> $GITHUB_OUTPUT
           else
-            echo "❌ Build failed, but continuing to commit yarn.lock changes"
+            echo "Build failed, but continuing to commit yarn.lock changes"
             echo "build_success=false" >> $GITHUB_OUTPUT
           fi
           
