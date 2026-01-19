@@ -27,11 +27,24 @@
                 try {
                     var items = JSON.parse(data);
                     
-                    // Use first item (array index 0) instead of for..in loop
-                    if (items && items[0]) {
-                        $('#invoice_quote_number').val(items[0].quote_number || '');
-                        $('#invoice_work_order').val(items[0].quote_work_order || '');
-                        $('#invoice_agreement').val(items[0].quote_agreement || '');
+                    // Handle both array and object formats
+                    var quote_data = null;
+                    if (Array.isArray(items) && items.length > 0) {
+                        quote_data = items[0];
+                    } else if (typeof items === 'object' && items !== null) {
+                        // If it's an object, get the first property value
+                        for (var key in items) {
+                            if (items.hasOwnProperty(key)) {
+                                quote_data = items[key];
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (quote_data) {
+                        $('#invoice_quote_number').val(quote_data.quote_number || '');
+                        $('#invoice_work_order').val(quote_data.quote_work_order || '');
+                        $('#invoice_agreement').val(quote_data.quote_agreement || '');
                     }
                     
                     $('#modal-choose-quote').modal('hide');

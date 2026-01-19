@@ -100,8 +100,10 @@ function sanitizeHtml(html) {
     
     // Handle <a> tags specially to allow href but sanitize it
     escaped = escaped.replace(/&lt;a\s+href=&quot;([^&quot;]+)&quot;&gt;/gi, function(match, href) {
-        // Only allow http, https, and mailto URLs
-        if (href.match(/^(https?:\/\/|mailto:)/i)) {
+        // Only allow http, https, and mailto URLs with proper validation
+        // Ensure javascript: or data: URIs are not allowed
+        if (href.match(/^https?:\/\/[a-zA-Z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+$/i) || 
+            href.match(/^mailto:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i)) {
             return '<a href="' + href + '">';
         }
         return '&lt;a href="' + href + '"&gt;';

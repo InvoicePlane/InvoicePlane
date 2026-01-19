@@ -21,11 +21,10 @@ class ClientTitleEnum
     {
         $values = self::getValues();
 
-        $searchResult = array_search($value, $values, true);
-
-        if ($searchResult !== false) {
+        // Use in_array with strict comparison for cleaner logic
+        if (in_array($value, $values, true)) {
             $returnObject        = new StdClass();
-            $returnObject->value = $values[$searchResult];
+            $returnObject->value = $value;
 
             return $returnObject;
         }
