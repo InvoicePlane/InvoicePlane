@@ -515,7 +515,7 @@ class Ajax extends Admin_Controller
             foreach ($quote_items as $quote_item) {
                 $db_array = [
 		    'invoice_id'           => $invoice_id,
-		    'service_id'           => $this->input->post('service_id'),
+		    'service_id'           => $this->security->xss_clean($this->input->post('service_id')),
                     'item_tax_rate_id'     => $quote_item->item_tax_rate_id,
                     'item_product_id'      => $quote_item->item_product_id,
                     'item_name'            => $quote_item->item_name,

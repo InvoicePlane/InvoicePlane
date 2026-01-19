@@ -136,7 +136,7 @@ class Payments extends Admin_Controller
         $invoice_payment_methods = [];
 	foreach ($open_invoices as $open_invoice) {
 	    $servicesById = $this->mdl_services->get_names_by_ids([$open_invoice->service_id]);
-            $open_invoice->service_name = $servicesById[$quote->service_id] ?? null;
+            $open_invoice->service_name = $servicesById[$open_invoice->service_id] ?? null;
             $amounts['invoice' . $open_invoice->invoice_id]                 = format_amount($open_invoice->invoice_balance);
             $invoice_payment_methods['invoice' . $open_invoice->invoice_id] = $open_invoice->payment_method;
         }
