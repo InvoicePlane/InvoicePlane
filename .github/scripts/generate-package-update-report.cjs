@@ -30,8 +30,9 @@ function parseYarnLock(content) {
   let currentVersion = null;
 
   for (const line of lines) {
-    // Match package declaration lines (e.g., "package-name@^1.0.0:" or "@scope/package@^1.0.0:")
-    // Handles regular packages, scoped packages (@scope/package), and various quoting patterns
+    // Match package declaration lines in yarn.lock format
+    // Handles: regular packages (package@^1.0.0:), scoped packages (@scope/package@^1.0.0:)
+    // With or without quotes around the declaration
     const packageMatch = line.match(/^"?(@?[^@\s]+)@[^"]*"?:/);
     if (packageMatch) {
       currentPackage = packageMatch[1];
@@ -84,7 +85,8 @@ function generateReport() {
     try {
       oldLockContent = execSync('git show HEAD:yarn.lock', { encoding: 'utf8' });
     } catch (error) {
-      // If we can't get the old yarn.lock, create an empty one
+      // If we can't get the old yarn.lock from git, use an empty string
+      // This happens on initial setup or when yarn.lock wasn't previously committed
       oldLockContent = '';
     }
 
