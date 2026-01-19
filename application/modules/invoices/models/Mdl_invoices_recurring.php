@@ -130,12 +130,24 @@ class Mdl_Invoices_Recurring extends Response_Model
 
     /**
      * Sets filter to only recurring invoices which should be generated now.
+     * When generate_recurring_if_unpaid setting is disabled (0), this will also
+     * filter out recurring invoices where the client has unpaid invoices.
      *
      * @return \Mdl_Invoices_Recurring
      */
     public function active()
     {
         $this->filter_where('recur_next_date <= date(NOW()) AND (recur_end_date > date(NOW()) OR recur_end_date IS NULL)');
+
+        // Check if we should filter out recurring invoices with unpaid invoices
+        if (get_setting('generate_recurring_if_unpaid') == '0') {
+            // Join with invoice_amounts to check for unpaid invoices
+            // Only include recurring invoices where the client has no outstanding balance
+            $this->db->join('ip_invoices AS recent_invoices', 'recent_invoices.client_id = ip_invoices.client_id', 'left');
+            $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = recent_invoices.invoice_id', 'left');
+            $this->db->group_by('ip_invoices_recurring.invoice_recurring_id');
+            $this->db->having('SUM(IFNULL(ip_invoice_amounts.invoice_balance, 0)) = 0');
+        }
 
         return $this;
     }
