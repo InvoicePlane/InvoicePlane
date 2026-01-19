@@ -48,6 +48,20 @@
                            value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_left_pad'); ?>" required>
                 </div>
 
+                <div class="form-group">
+                    <label class="control-label" for="invoice_group_reset_monthly">
+                        <?php _trans('reset_monthly'); ?>
+                    </label>
+                    <select name="invoice_group_reset_monthly" id="invoice_group_reset_monthly" class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                        <option value="0" <?php check_select($this->mdl_invoice_groups->form_value('invoice_group_reset_monthly'), '0'); ?>>
+                            <?php _trans('no'); ?>
+                        </option>
+                        <option value="1" <?php check_select($this->mdl_invoice_groups->form_value('invoice_group_reset_monthly'), '1'); ?>>
+                            <?php _trans('yes'); ?>
+                        </option>
+                    </select>
+                </div>
+
                 <hr>
 
                 <div class="form-group no-margin">

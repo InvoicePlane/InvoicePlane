@@ -536,6 +536,7 @@ $lang = [
     'required_field'                               => 'Required field',
     'required_fields'                              => 'Required fields',
     'reset'                                        => 'Reset',
+    'reset_monthly'                                => 'Reset Invoice Number Monthly',
     'reset_password'                               => 'Reset password',
     'run_report'                                   => 'Run Report',
     'search_product'                               => 'Search product',

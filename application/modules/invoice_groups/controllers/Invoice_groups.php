@@ -59,6 +59,7 @@ class Invoice_Groups extends Admin_Controller
         } elseif ( ! $id) {
             $this->mdl_invoice_groups->set_form_value('invoice_group_left_pad', 0);
             $this->mdl_invoice_groups->set_form_value('invoice_group_next_id', 1);
+            $this->mdl_invoice_groups->set_form_value('invoice_group_reset_monthly', 0);
         }
 
         $this->layout->buffer('content', 'invoice_groups/form');

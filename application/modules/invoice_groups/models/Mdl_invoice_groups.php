@@ -56,6 +56,11 @@ class Mdl_Invoice_Groups extends Response_Model
                 'label' => trans('left_pad'),
                 'rules' => 'required',
             ],
+            'invoice_group_reset_monthly' => [
+                'field' => 'invoice_group_reset_monthly',
+                'label' => trans('reset_monthly'),
+                'rules' => 'required|in_list[0,1]',
+            ],
         ];
     }
 
@@ -68,6 +73,18 @@ class Mdl_Invoice_Groups extends Response_Model
     public function generate_invoice_number($invoice_group_id, $set_next = true)
     {
         $invoice_group = $this->get_by_id($invoice_group_id);
+
+        // Check if monthly reset is enabled and reset if needed
+        if ($invoice_group->invoice_group_reset_monthly == 1) {
+            $current_month = date('Y-m');
+            
+            // If last reset month is different from current month, reset the counter
+            if ($invoice_group->invoice_group_last_reset_month !== $current_month) {
+                $this->reset_invoice_number($invoice_group_id, $current_month);
+                // Refresh the invoice group data after reset
+                $invoice_group = $this->get_by_id($invoice_group_id);
+            }
+        }
 
         $invoice_identifier = $this->parse_identifier_format(
             $invoice_group->invoice_group_identifier_format,
@@ -89,6 +106,20 @@ class Mdl_Invoice_Groups extends Response_Model
     {
         $this->db->where($this->primary_key, $invoice_group_id);
         $this->db->set('invoice_group_next_id', 'invoice_group_next_id+1', false);
+        $this->db->update($this->table);
+    }
+
+    /**
+     * Reset invoice number to 1 and update last reset month
+     *
+     * @param $invoice_group_id
+     * @param $current_month
+     */
+    public function reset_invoice_number($invoice_group_id, $current_month)
+    {
+        $this->db->where($this->primary_key, $invoice_group_id);
+        $this->db->set('invoice_group_next_id', 1);
+        $this->db->set('invoice_group_last_reset_month', $current_month);
         $this->db->update($this->table);
     }
 
