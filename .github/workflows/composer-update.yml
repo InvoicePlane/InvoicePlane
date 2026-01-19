@@ -77,12 +77,11 @@ jobs:
       - name: Check for changes
         id: check-changes
         run: |
-          if git diff --quiet composer.lock; then
+          if git diff --quiet -- composer.lock composer.json; then
             echo "changes_detected=false" >> $GITHUB_OUTPUT
           else
             echo "changes_detected=true" >> $GITHUB_OUTPUT
           fi
-
       - name: Run smoke tests
         if: steps.check-changes.outputs.changes_detected == 'true'
         run: |

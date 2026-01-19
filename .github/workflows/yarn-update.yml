@@ -126,7 +126,7 @@ jobs:
               echo "$VULNERABLE_PACKAGES"
               for pkg in $VULNERABLE_PACKAGES; do
                 echo "  Upgrading $pkg..."
-                yarn upgrade "$pkg" --latest || true
+                yarn upgrade "$pkg" || true
               done
             else
               echo "✓ No vulnerable packages found to upgrade"
