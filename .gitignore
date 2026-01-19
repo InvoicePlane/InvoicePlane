@@ -7,6 +7,11 @@
 /node_modules
 /vendor
 
+# Workflow artifacts
+audit-report.json
+updated-packages.txt
+pint_output.log
+
 # Other files
 .htaccess
 .idea
