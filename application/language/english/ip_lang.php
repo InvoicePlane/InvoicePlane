@@ -410,8 +410,6 @@ $lang = [
     'password_reset_email'                         => 'You requested a new password for your Installation of InvoicePlane. Please click the following link to reset your password:',
     'password_reset_info'                          => 'You will get an Email with a link to reset your password.',
     'password_reset_failed'                        => 'An error occurred while trying to send your password reset Email. Please review the application logs or contact the system administrator.',
-<<<<<<< HEAD
-=======
     'password_reset_rate_limit_ip'                 => 'Too many password reset attempts from your IP address. Please try again in 1 hour.',
     'password_reset_rate_limit_email'              => 'Too many password reset attempts for this email address. Please try again later or contact support.',
     'log_invalid_email_format'                     => 'Invalid email format in password reset',
@@ -426,7 +424,6 @@ $lang = [
     'log_invalid_xml_config_id_get_full_name'      => 'Invalid XML config ID in get_xml_full_name',
     'log_invalid_xml_config_id_pdf_helper'         => 'Invalid XML config ID in pdf_helper',
     'log_email_rate_limit_check'                   => 'Email rate limit check',
->>>>>>> upstream/development
     'pay_now'                                      => 'Pay Now',
     'payment'                                      => 'Payment',
     'payment_cannot_exceed_balance'                => 'Payment amount cannot exceed invoice balance.',
