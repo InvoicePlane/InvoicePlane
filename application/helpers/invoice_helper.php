@@ -15,10 +15,8 @@ if ( ! defined('BASEPATH')) {
 
 /**
  * Returns the invoice image.
- *
- * @return string
  */
-function invoice_logo()
+function invoice_logo(): string
 {
     $CI = &get_instance();
 
@@ -31,10 +29,8 @@ function invoice_logo()
 
 /**
  * Returns the invoice logo for PDF files.
- *
- * @return string
  */
-function invoice_logo_pdf()
+function invoice_logo_pdf(): string
 {
     $CI = &get_instance();
 
@@ -47,19 +43,16 @@ function invoice_logo_pdf()
     return '';
 }
 
-
 /**
  * Returns a Swiss IS / IS+ code line
  * Documentation: https://www.postfinance.ch/binp/postfinance/public/dam.M26m_i6_6ceYcN2XtAN4w8OHMynQG7FKxJVK8TtQzr0.spool/content/dam/pf/de/doc/consult/manual/dlserv/inpayslip_isr_man_en.pdf.
  *
- * @param string $slipType
+ * @param        $amount
  * @param string $rnumb
- *
- * @return string
  *
  * @throws Error
  */
-function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
+function invoice_genCodeline(string $slipType, $amount, $rnumb, $subNumb): string
 {
     $isEur = false;
 
@@ -72,11 +65,12 @@ function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
     if ( ! $isEur && $amount > 99999999.95) {
         throw new Error('Invalid amount');
     }
+
     if ($isEur && $amount > 99999999.99) {
         throw new Error('Invalid amount');
     }
 
-    $amountLine = sprintf('%010d', $amount * 100);
+    $amountLine    = sprintf('%010d', $amount * 100);
     $checkSlAmount = invoice_recMod10($slipType . $amountLine);
 
     if ( ! preg_match("/\d{2}-\d{1,6}-\d{1}/", $subNumb)) {
@@ -85,7 +79,7 @@ function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
 
     $subNumb = explode('-', $subNumb);
     $fullSub = $subNumb[0] . sprintf('%06d', $subNumb[1]) . $subNumb[2];
-    $rnumb = preg_replace('/\s+/', '', $rnumb);
+    $rnumb   = preg_replace('/\s+/', '', $rnumb);
 
     return $slipType . $amountLine . $checkSlAmount . '>' . $rnumb . '+ ' . $fullSub . '>';
 }
@@ -96,12 +90,10 @@ function invoice_genCodeline($slipType, $amount, $rnumb, $subNumb)
  * Page 5.
  *
  * @param string $in
- *
- * @return int
  */
-function invoice_recMod10($in)
+function invoice_recMod10($in): int
 {
-    $line = [0, 9, 4, 6, 8, 2, 7, 1, 3, 5];
+    $line  = [0, 9, 4, 6, 8, 2, 7, 1, 3, 5];
     $carry = 0;
     $chars = mb_str_split($in);
 
@@ -116,10 +108,8 @@ function invoice_recMod10($in)
  * Returns a QR code for invoice payments.
  *
  * @param number invoice-id
- *
- * @return string
  */
-function invoice_qrcode($invoice_id)
+function invoice_qrcode($invoice_id): string
 {
     $CI = &get_instance();
 
@@ -129,45 +119,14 @@ function invoice_qrcode($invoice_id)
         && $CI->mdl_settings->setting('qr_code_bic')
     ) {
         $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-        $CI->load->library('QrCode', ['invoice' => $invoice]);
-        $qrcode_data_uri = $CI->qrcode->generate();
 
-        return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+        if ((float) $invoice->invoice_balance) {
+            $CI->load->library('QrCode', ['invoice' => $invoice]);
+            $qrcode_data_uri = $CI->qrcode->generate();
+
+            return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+        }
     }
 
     return '';
-}
-/**
- * Returns a QR Swiss code for invoice payments.
- *
- * @param number invoice-id
- *
- * @return object QrBill
- */
-function invoice_qr_code_swiss($invoice_id)
-{
-    $CI = &get_instance();
-
-    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-    $CI->load->library('QrCodeSwiss', ['invoice' => $invoice]);
-    $qrcode = $CI->qrcodeswiss->generate();
-
-    return $qrcode;
-}
-/**
- * Returns a QR Swiss code for invoice payments.
- *
- * @param number invoice-id
- *
- * @return object QrBill
- */
-function invoice_qr_code_swiss($invoice_id)
-{
-    $CI = &get_instance();
-
-    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-    $CI->load->library('QrCodeSwiss', ['invoice' => $invoice]);
-    $qrcode = $CI->qrcodeswiss->generate();
-
-    return $qrcode;
 }

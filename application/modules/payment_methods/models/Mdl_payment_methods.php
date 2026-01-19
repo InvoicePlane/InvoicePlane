@@ -1,6 +1,5 @@
 <?php
 
-
 if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
@@ -14,6 +13,7 @@ if ( ! defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
+#[AllowDynamicProperties]
 class Mdl_Payment_Methods extends Response_Model
 {
     public $table = 'ip_payment_methods';
@@ -66,11 +66,6 @@ class Mdl_Payment_Methods extends Response_Model
             'payment_method_name' => [
                 'field' => 'payment_method_name',
                 'label' => trans('payment_method'),
-                'rules' => 'required',
-            ],
-            'payment_method_type_id' => [
-                'field' => 'payment_method_type_id',
-                'label' => trans('payment_method_type'),
                 'rules' => 'required',
             ],
         ];
