@@ -1,5 +1,8 @@
 name: Build & Push Nginx Docker Image
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
