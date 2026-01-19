@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -16,7 +16,6 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Guest_Controller extends User_Controller
 {
-
     /** @var array */
     public $user_clients = [];
 
@@ -31,7 +30,7 @@ class Guest_Controller extends User_Controller
 
         $user_clients = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
 
-        if (!$user_clients) {
+        if ( ! $user_clients) {
             show_error(trans('guest_account_denied'), 403);
             exit;
         }
@@ -40,5 +39,4 @@ class Guest_Controller extends User_Controller
             $this->user_clients[$user_client->client_id] = $user_client->client_id;
         }
     }
-
 }

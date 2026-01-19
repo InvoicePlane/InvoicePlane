@@ -1,10 +1,12 @@
+<?php
+$is_update = $this->mdl_families->form_value('is_update');
+?>
 <form method="post">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
-        <h1 class="headerbar-title"><?php _trans('add_family'); ?></h1>
+        <h1 class="headerbar-title"><?php _trans($is_update ? 'family' : 'add_family'); ?></h1>
         <?php $this->layout->load_view('layout/header_buttons'); ?>
     </div>
 
@@ -15,12 +17,7 @@
 
                 <?php $this->layout->load_view('layout/alerts'); ?>
 
-                <input class="hidden" name="is_update" type="hidden"
-                    <?php if ($this->mdl_families->form_value('is_update')) {
-                        echo 'value="1"';
-                    } else {
-                        echo 'value="0"';
-                    } ?>>
+                <input class="hidden" name="is_update" type="hidden" value="<?php echo $is_update ? '1' : '0'; ?>">
 
                 <div class="form-group">
                     <label for="family_name">
