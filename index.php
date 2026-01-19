@@ -107,7 +107,7 @@ switch (ENVIRONMENT) {
  * This variable must contain the name of your "system" directory.
  * Set the path if it is not in the same directory as this file.
  */
-$system_path = 'vendor/codeigniter/framework/system';
+$system_path = 'vendor/pocketarc/codeigniter/system';
 
 /*
  *---------------------------------------------------------------
@@ -206,7 +206,7 @@ if (($_temp = realpath($system_path)) !== false) {
 } else {
     // Ensure there's a trailing slash
     $system_path = strtr(
-        mb_rtrim($system_path, '/\\'),
+        rtrim($system_path, '/\\'),
         '/\\',
         DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
     ) . DIRECTORY_SEPARATOR;
@@ -245,7 +245,7 @@ if (is_dir($application_folder)) {
         $application_folder = $_temp;
     } else {
         $application_folder = strtr(
-            mb_rtrim($application_folder, '/\\'),
+            rtrim($application_folder, '/\\'),
             '/\\',
             DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
         );
@@ -272,7 +272,7 @@ if ( ! isset($view_folder[0]) && is_dir(APPPATH . 'views' . DIRECTORY_SEPARATOR)
         $view_folder = $_temp;
     } else {
         $view_folder = strtr(
-            mb_rtrim($view_folder, '/\\'),
+            rtrim($view_folder, '/\\'),
             '/\\',
             DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
         );

@@ -20,9 +20,9 @@ function mailer_configured(): bool
 {
     $CI = &get_instance();
 
-    return ($CI->mdl_settings->setting('email_send_method') == 'phpmail') ||
-        ($CI->mdl_settings->setting('email_send_method') == 'sendmail') ||
-        (($CI->mdl_settings->setting('email_send_method') == 'smtp') && ($CI->mdl_settings->setting('smtp_server_address')));
+    return ($CI->mdl_settings->setting('email_send_method') == 'phpmail')
+        || ($CI->mdl_settings->setting('email_send_method') == 'sendmail')
+        || (($CI->mdl_settings->setting('email_send_method') == 'smtp') && ($CI->mdl_settings->setting('smtp_server_address')));
 }
 
 /**
@@ -244,19 +244,40 @@ function check_mail_errors(array $errors = [], $redirect = ''): void
         }
 
         $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
-        
+
         // Use provided redirect, or validate HTTP_REFERER against base_url
         if (empty($redirect)) {
-            $referer = $_SERVER['HTTP_REFERER'] ?? '';
-            $base_url = base_url();
-            // Only use referer if it's from same domain
-            if (!empty($referer) && strpos($referer, $base_url) === 0) {
+            $referer  = $_SERVER['HTTP_REFERER'] ?? '';
+            
+            // Treat root-relative referers (starting with "/") as safe
+            if ( ! empty($referer) && str_starts_with($referer, '/')) {
                 $redirect = $referer;
             } else {
-                $redirect = base_url(); // Safe default
+                // Parse and compare URL components for same-origin check
+                $base_url = base_url();
+                $base_parts = parse_url($base_url);
+                $referer_parts = parse_url($referer);
+                
+                // Check if scheme, host, and port match (normalize default ports)
+                $base_scheme = $base_parts['scheme'] ?? 'http';
+                $base_host = $base_parts['host'] ?? '';
+                $base_port = $base_parts['port'] ?? ($base_scheme === 'https' ? 443 : 80);
+                
+                $referer_scheme = $referer_parts['scheme'] ?? '';
+                $referer_host = $referer_parts['host'] ?? '';
+                $referer_port = $referer_parts['port'] ?? ($referer_scheme === 'https' ? 443 : 80);
+                
+                if ( ! empty($referer) && 
+                     $base_scheme === $referer_scheme && 
+                     $base_host === $referer_host && 
+                     $base_port === $referer_port) {
+                    $redirect = $referer;
+                } else {
+                    $redirect = base_url(); // Safe default
+                }
             }
         }
-        
+
         redirect($redirect);
     }
 }

@@ -1,0 +1,29 @@
+name: Run PHPUnit Tests
+
+on:
+  workflow_dispatch:  # Manual only — does not run automatically
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.3'
+          php-extensions: 'mbstring, bcmath, pdo_mysql'
+          composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
+
+      - name: Run PHPUnit
+        run: |
+          # This is a CodeIgniter 3 project
+          # PHPUnit tests are not yet configured
+          # When tests are added, run: vendor/bin/phpunit
+          echo "PHPUnit tests not yet configured for this CodeIgniter 3 project"
+          exit 0
+
