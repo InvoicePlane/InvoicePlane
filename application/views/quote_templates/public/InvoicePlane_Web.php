@@ -201,7 +201,7 @@
                                 <?php if ($show_item_discounts) {?>
                                     <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
                                 <?php } ?>
-                                <td class="amount"><?php echo format_currency($item->item_subtotal-$item->item_discount); ?></td>
+                                <td class="amount"><?php echo format_currency($item->item_subtotal - $item->item_discount); ?></td>
                             </tr>
                             <?php
                         }

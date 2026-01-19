@@ -15,7 +15,7 @@ $text_class_balance = '';
 $watermark          = '';
 $stamp              = '';
 $show_qrcode        = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
-$invoice_mode       ??= 'default'; // from template - overdue / paid.php
+$invoice_mode ??= 'default'; // from template - overdue / paid.php
 
 switch ($invoice_mode) {
     case 'overdue':

@@ -212,7 +212,7 @@ foreach ($items as $item) {
                                     <?php
                                     }
                                     ?>
-                                    <td class="amount"><?php echo format_currency($item->item_subtotal-$item->item_discount); ?></td>
+                                    <td class="amount"><?php echo format_currency($item->item_subtotal - $item->item_discount); ?></td>
                                 </tr>
 <?php
 } // End foreach

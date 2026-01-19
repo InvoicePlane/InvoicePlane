@@ -131,7 +131,7 @@ class Upload extends Admin_Controller
 
         // Security: Validate the real filename component for security issues
         $filenameValidation = validate_safe_filename($real_filename);
-        if (!$filenameValidation['valid']) {
+        if ( ! $filenameValidation['valid']) {
             $error = $filenameValidation['error'];
             log_message('error', sprintf('upload: Invalid filename - %s (hash: %s)', $error, $filenameValidation['hash']));
             $this->respond_message(400, 'upload_error_invalid_filename', 'Invalid filename');
@@ -140,13 +140,13 @@ class Upload extends Admin_Controller
         // Construct the full path with url_key prefix
         $fullPath = $this->get_target_file_path($url_key, $real_filename);
 
-        if (!file_exists($fullPath)) {
+        if ( ! file_exists($fullPath)) {
             log_message('debug', 'upload: File not found in uploads directory');
             $this->respond_message(404, 'upload_error_file_not_found', 'File not found');
         }
 
         // Security: Validate the resolved path is within allowed directory
-        if (!validate_file_in_directory($fullPath, $this->targetPath)) {
+        if ( ! validate_file_in_directory($fullPath, $this->targetPath)) {
             $filenameHash = hash_for_logging($filename);
             log_message('error', 'upload: Path traversal detected (hash: ' . $filenameHash . ')');
             $this->respond_message(403, 'upload_error_unauthorized_access', 'Unauthorized access');
@@ -175,11 +175,12 @@ class Upload extends Admin_Controller
         $filename = basename($filename);
 
         // Security: Check for path traversal attempts before sanitization
-        if (str_contains($filename, '..') ||
-            str_contains($filename, '/') ||
-            str_contains($filename, '\\') ||
-            str_contains($filename, "\0")) {
+        if (str_contains($filename, '..')
+            || str_contains($filename, '/')
+            || str_contains($filename, '\\')
+            || str_contains($filename, "\0")) {
             log_message('error', 'Path traversal attempt detected in filename: ' . $filename);
+
             return '';
         }
 
