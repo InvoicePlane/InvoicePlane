@@ -1,0 +1,374 @@
+name: Setup & Install with Error Handling
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_yarn_install:
+        description: 'Run yarn install'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      run_composer_install:
+        description: 'Run composer install'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      run_env_setup:
+        description: 'Copy .env.example to .env'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      run_key_generate:
+        description: 'Run php artisan key:generate'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      run_migrate:
+        description: 'Run php artisan migrate'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      run_seed:
+        description: 'Run php artisan db:seed'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  setup:
+    name: Setup & Install Application
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mariadb:10.6
+        env:
+          MYSQL_DATABASE: ivplv2
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_CONNECTION: mysql
+      DB_DATABASE: ivplv2
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_HOST: 127.0.0.1
+      APP_ENV: local
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, json, pdo, mysql
+          coverage: none
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Initialize error tracking
+        id: init
+        run: |
+          # Create error log file
+          : > /tmp/setup_errors.log
+          echo "errors_found=false" >> $GITHUB_OUTPUT
+          echo "::notice::Starting setup with error tracking enabled"
+      # Step 1: Yarn Install
+      - name: Step 1 - Yarn Install
+        id: yarn_install
+        if: inputs.run_yarn_install == 'true'
+        run: |
+          set +e  # Don't exit on error
+          echo "::group::Running yarn install"
+          
+          # Try yarn install
+          yarn install --frozen-lockfile 2>&1
+          EXIT_CODE=$?
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::Yarn install failed with exit code $EXIT_CODE"
+            echo "STEP: Yarn Install" >> /tmp/setup_errors.log
+            echo "ERROR: Failed with exit code $EXIT_CODE" >> /tmp/setup_errors.log
+            echo "See step logs for detailed error output" >> /tmp/setup_errors.log
+            echo "---" >> /tmp/setup_errors.log
+            echo "yarn_failed=true" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::Yarn install completed successfully"
+            echo "yarn_failed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "::endgroup::"
+          
+          # Continue regardless of error
+          exit 0
+
+      # Step 2: Composer Install
+      - name: Step 2 - Composer Install
+        id: composer_install
+        if: inputs.run_composer_install == 'true'
+        run: |
+          set +e  # Don't exit on error
+          echo "::group::Running composer install"
+          
+          # Try composer install
+          composer install --prefer-dist --no-interaction 2>&1
+          EXIT_CODE=$?
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::Composer install failed with exit code $EXIT_CODE"
+            echo "STEP: Composer Install" >> /tmp/setup_errors.log
+            echo "ERROR: Failed with exit code $EXIT_CODE" >> /tmp/setup_errors.log
+            echo "See step logs for detailed error output" >> /tmp/setup_errors.log
+            echo "---" >> /tmp/setup_errors.log
+            echo "composer_failed=true" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::Composer install completed successfully"
+            echo "composer_failed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "::endgroup::"
+          
+          # Continue regardless of error
+          exit 0
+
+      # Step 3: Environment Setup
+      - name: Step 3 - Copy .env.example to .env
+        id: env_setup
+        if: inputs.run_env_setup == 'true'
+        run: |
+          set +e  # Don't exit on error
+          echo "::group::Setting up environment file"
+          
+          # Try to copy .env.example to .env
+          cp .env.example .env 2>&1
+          EXIT_CODE=$?
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::Failed to copy .env.example to .env with exit code $EXIT_CODE"
+            echo "STEP: Environment Setup (.env)" >> /tmp/setup_errors.log
+            echo "ERROR: Failed to copy .env.example to .env with exit code $EXIT_CODE" >> /tmp/setup_errors.log
+            echo "Possible causes: .env.example doesn't exist or permission issues" >> /tmp/setup_errors.log
+            echo "---" >> /tmp/setup_errors.log
+            echo "env_failed=true" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::Environment file created successfully"
+            echo "env_failed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "::endgroup::"
+          
+          # Continue regardless of error
+          exit 0
+
+      # Step 4: Generate Application Key
+      - name: Step 4 - Generate Application Key
+        id: key_generate
+        if: inputs.run_key_generate == 'true'
+        run: |
+          set +e  # Don't exit on error
+          echo "::group::Generating application key"
+          
+          # Try to generate key
+          php artisan key:generate 2>&1
+          EXIT_CODE=$?
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::Key generation failed with exit code $EXIT_CODE"
+            echo "STEP: Key Generation" >> /tmp/setup_errors.log
+            echo "ERROR: php artisan key:generate failed with exit code $EXIT_CODE" >> /tmp/setup_errors.log
+            echo "Possible causes: .env file missing, composer dependencies not installed" >> /tmp/setup_errors.log
+            echo "---" >> /tmp/setup_errors.log
+            echo "key_failed=true" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::Application key generated successfully"
+            echo "key_failed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "::endgroup::"
+          
+          # Continue regardless of error
+          exit 0
+
+      # Step 5: Run Migrations
+      - name: Step 5 - Run Database Migrations
+        id: migrate
+        if: inputs.run_migrate == 'true'
+        run: |
+          set +e  # Don't exit on error
+          echo "::group::Running database migrations"
+          
+          # Try to run migrations
+          php artisan migrate --force 2>&1
+          EXIT_CODE=$?
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::Database migration failed with exit code $EXIT_CODE"
+            echo "STEP: Database Migration" >> /tmp/setup_errors.log
+            echo "ERROR: php artisan migrate failed with exit code $EXIT_CODE" >> /tmp/setup_errors.log
+            echo "Possible causes: Database connection issues, invalid migrations, missing dependencies" >> /tmp/setup_errors.log
+            echo "---" >> /tmp/setup_errors.log
+            echo "migrate_failed=true" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::Database migrations completed successfully"
+            echo "migrate_failed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "::endgroup::"
+          
+          # Continue regardless of error
+          exit 0
+
+      # Step 6: Run Database Seeding
+      - name: Step 6 - Run Database Seeding
+        id: seed
+        if: inputs.run_seed == 'true'
+        run: |
+          set +e  # Don't exit on error
+          echo "::group::Running database seeding"
+          
+          # Try to run seeding
+          php artisan db:seed 2>&1
+          EXIT_CODE=$?
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::Database seeding failed with exit code $EXIT_CODE"
+            echo "STEP: Database Seeding" >> /tmp/setup_errors.log
+            echo "ERROR: php artisan db:seed failed with exit code $EXIT_CODE" >> /tmp/setup_errors.log
+            echo "Possible causes: Seeder errors, missing required data, database constraints, foreign key violations" >> /tmp/setup_errors.log
+            echo "---" >> /tmp/setup_errors.log
+            echo "seed_failed=true" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::Database seeding completed successfully"
+            echo "seed_failed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "::endgroup::"
+          
+          # Continue regardless of error
+          exit 0
+
+      # Final Step: Report All Errors
+      - name: Final Report - Summary of Errors
+        if: always()
+        run: |
+          echo "::group::Setup Summary"
+          
+          # Check if any errors were recorded
+          if [ -s /tmp/setup_errors.log ]; then
+            echo "::error::Some steps failed during setup. See details below:"
+            echo ""
+            echo "================================================"
+            echo "           SETUP ERROR REPORT"
+            echo "================================================"
+            echo ""
+            cat /tmp/setup_errors.log
+            echo ""
+            echo "================================================"
+            echo ""
+            
+            # Also output to GitHub Actions summary
+            echo "## ⚠️ Setup Completed with Errors" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The following steps encountered errors:" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat /tmp/setup_errors.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Review the individual step logs above for detailed error information." >> $GITHUB_STEP_SUMMARY
+            
+            # Check individual step outputs
+            if [ "${{ steps.yarn_install.outputs.yarn_failed }}" == "true" ]; then
+              echo "❌ Yarn Install: FAILED" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ inputs.run_yarn_install }}" == "true" ]; then
+              echo "✅ Yarn Install: SUCCESS" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [ "${{ steps.composer_install.outputs.composer_failed }}" == "true" ]; then
+              echo "❌ Composer Install: FAILED" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ inputs.run_composer_install }}" == "true" ]; then
+              echo "✅ Composer Install: SUCCESS" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [ "${{ steps.env_setup.outputs.env_failed }}" == "true" ]; then
+              echo "❌ Environment Setup: FAILED" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ inputs.run_env_setup }}" == "true" ]; then
+              echo "✅ Environment Setup: SUCCESS" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [ "${{ steps.key_generate.outputs.key_failed }}" == "true" ]; then
+              echo "❌ Key Generation: FAILED" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ inputs.run_key_generate }}" == "true" ]; then
+              echo "✅ Key Generation: SUCCESS" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [ "${{ steps.migrate.outputs.migrate_failed }}" == "true" ]; then
+              echo "❌ Database Migration: FAILED" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ inputs.run_migrate }}" == "true" ]; then
+              echo "✅ Database Migration: SUCCESS" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [ "${{ steps.seed.outputs.seed_failed }}" == "true" ]; then
+              echo "❌ Database Seeding: FAILED" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ inputs.run_seed }}" == "true" ]; then
+              echo "✅ Database Seeding: SUCCESS" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            exit 1
+          else
+            echo "::notice::All enabled setup steps completed successfully! 🎉"
+            echo ""
+            echo "================================================"
+            echo "         ALL SETUP STEPS SUCCESSFUL"
+            echo "================================================"
+            echo ""
+            
+            echo "## ✅ Setup Completed Successfully" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "All enabled setup steps completed without errors:" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            [ "${{ inputs.run_yarn_install }}" == "true" ] && echo "✅ Yarn Install" >> $GITHUB_STEP_SUMMARY
+            [ "${{ inputs.run_composer_install }}" == "true" ] && echo "✅ Composer Install" >> $GITHUB_STEP_SUMMARY
+            [ "${{ inputs.run_env_setup }}" == "true" ] && echo "✅ Environment Setup" >> $GITHUB_STEP_SUMMARY
+            [ "${{ inputs.run_key_generate }}" == "true" ] && echo "✅ Key Generation" >> $GITHUB_STEP_SUMMARY
+            [ "${{ inputs.run_migrate }}" == "true" ] && echo "✅ Database Migration" >> $GITHUB_STEP_SUMMARY
+            [ "${{ inputs.run_seed }}" == "true" ] && echo "✅ Database Seeding" >> $GITHUB_STEP_SUMMARY
+            
+            exit 0
+          fi
+          
+          echo "::endgroup::"

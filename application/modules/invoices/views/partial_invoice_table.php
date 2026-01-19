@@ -109,8 +109,8 @@ foreach ($invoices as $invoice) {
                             </li>
 <?php
     if (
-        $invoice->invoice_status_id == 1 ||
-        ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
+        $invoice->invoice_status_id == 1
+        || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
     ) {
 ?>
                             <li>

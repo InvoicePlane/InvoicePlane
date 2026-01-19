@@ -23,14 +23,14 @@ if ( ! defined('BASEPATH')) {
 function generate_xml_invoice_file($invoice, $items, string $xml_lib, string $filename, $options): string
 {
     // Security: Validate xml_lib to prevent path traversal in library loading
-    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $xml_lib) ||
-        str_contains($xml_lib, '..') ||
-        str_contains($xml_lib, '/') ||
-        str_contains($xml_lib, '\\')) {
+    if ( ! preg_match('/^[a-zA-Z0-9_-]+$/', $xml_lib)
+        || str_contains($xml_lib, '..')
+        || str_contains($xml_lib, '/')
+        || str_contains($xml_lib, '\\')) {
         log_message('error', trans('log_invalid_xml_library_name') . ': ' . $xml_lib);
         throw new Exception(trans('log_invalid_xml_library_name'));
     }
-    
+
     $CI = &get_instance();
 
     $CI->load->library('XMLtemplates/' . $xml_lib . 'Xml', [
@@ -55,36 +55,37 @@ function include_rdf(string $embedXml, string $urn = 'factur-x'): string
 }
 
 /**
- * Validates XML config ID to prevent path traversal attacks
+ * Validates XML config ID to prevent path traversal attacks.
  *
  * @param string $xml_id The XML config ID to validate
+ *
  * @return bool True if valid, false otherwise
  */
 function is_valid_xml_config_id(string $xml_id): bool
 {
     // Prevent path traversal attacks
-    if (empty($xml_id) || 
-        str_contains($xml_id, '..') || 
-        str_contains($xml_id, '/') || 
-        str_contains($xml_id, '\\') ||
-        str_contains($xml_id, "\0")) {
+    if (empty($xml_id)
+        || str_contains($xml_id, '..')
+        || str_contains($xml_id, '/')
+        || str_contains($xml_id, '\\')
+        || str_contains($xml_id, "\0")) {
         return false;
     }
-    
+
     // Only allow alphanumeric characters, hyphens, and underscores
-    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $xml_id)) {
+    if ( ! preg_match('/^[a-zA-Z0-9_-]+$/', $xml_id)) {
         return false;
     }
-    
+
     // Verify the file exists in the correct directory
-    $safe_path = APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
-    $real_path = realpath(dirname($safe_path));
+    $safe_path    = APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
+    $real_path    = realpath(dirname($safe_path));
     $expected_dir = realpath(APPPATH . 'helpers/XMLconfigs');
-    
+
     if ($real_path !== $expected_dir) {
         return false;
     }
-    
+
     return file_exists($safe_path);
 }
 
@@ -101,9 +102,9 @@ function get_xml_template_files(): array
 
     foreach ($xml_config_files as $key => $xml_config_file) {
         $xml_config_files[$key] = str_replace('.php', '', $xml_config_file);
-        
+
         // Security: Validate XML config ID before including
-        if (!is_valid_xml_config_id($xml_config_files[$key])) {
+        if ( ! is_valid_xml_config_id($xml_config_files[$key])) {
             log_message('error', trans('log_invalid_xml_config_id') . ': ' . $xml_config_files[$key]);
             continue;
         }
@@ -143,11 +144,12 @@ function get_xml_template_files(): array
 function get_xml_full_name(string $xml_id)
 {
     // Security: Validate XML config ID to prevent path traversal
-    if (!is_valid_xml_config_id($xml_id)) {
+    if ( ! is_valid_xml_config_id($xml_id)) {
         log_message('error', trans('log_invalid_xml_config_id_get_full_name') . ': ' . $xml_id);
-        return null;
+
+        return;
     }
-    
+
     if (file_exists(APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php')) {
         include APPPATH . 'helpers/XMLconfigs/' . $xml_id . '.php';
         $CI = & get_instance();
@@ -288,10 +290,41 @@ function get_einvoice_usage($invoice, array $items, $full = true): object
     }
 
     // eInvoice activated for client
-    $on = ($invoice->client_einvoicing_active > 0 && $invoice->client_einvoicing_version != '');
+    // Check if database has been migrated to 1.6.3+ (where einvoicing fields were added)
+    $client_einvoicing_active  = 0;
+    $client_einvoicing_version = '';
+
+    if (property_exists($invoice, 'client_einvoicing_active') && property_exists($invoice, 'client_einvoicing_version')) {
+        // Fields exist - database is migrated to 1.6.3 or higher
+        $client_einvoicing_active  = $invoice->client_einvoicing_active;
+        $client_einvoicing_version = $invoice->client_einvoicing_version;
+
+        // Sanitize values before logging to prevent log injection via control characters
+        $sanitized_client_einvoicing_active  = preg_replace('/[\r\n]+/', '', (string) $client_einvoicing_active);
+        $sanitized_client_einvoicing_version = preg_replace('/[\r\n]+/', '', (string) $client_einvoicing_version);
+
+        log_message(
+            'debug',
+            '[eInvoicing] Fields found: client_einvoicing_active=' . $sanitized_client_einvoicing_active
+            . ', client_einvoicing_version=' . $sanitized_client_einvoicing_version
+        );
+    } else {
+        // Fields don't exist - database hasn't been migrated to 1.6.3+
+        $CI = &get_instance();
+        $CI->load->model('settings/mdl_versions');
+        $current_version = $CI->mdl_versions->get_current_version();
+        $current_version = $current_version ?: 'unknown';
+
+        log_message('warning', '[eInvoicing] Database version mismatch detected: Running source code 1.6.3+ with database version ' . $current_version);
+        log_message('warning', '[eInvoicing] Missing fields: client_einvoicing_active and client_einvoicing_version not found in invoice object');
+        log_message('warning', '[eInvoicing] Using default values: client_einvoicing_active=0, client_einvoicing_version=""');
+        log_message('warning', '[eInvoicing] Please run database migration 039_1.6.3.sql to add these fields');
+    }
+
+    $on = ($client_einvoicing_active > 0 && $client_einvoicing_version != '');
     if ($on) {
         // Set eInvoice name
-        $einvoice->name = $invoice->client_einvoicing_version;
+        $einvoice->name = $client_einvoicing_version;
         if ($full) {
             $einvoice->name = get_xml_full_name($einvoice->name);
             // Good item tax usage? Legacy calculation false: Alert if not standard taxes

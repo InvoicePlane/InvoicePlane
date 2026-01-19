@@ -20,9 +20,9 @@ function mailer_configured(): bool
 {
     $CI = &get_instance();
 
-    return ($CI->mdl_settings->setting('email_send_method') == 'phpmail') ||
-        ($CI->mdl_settings->setting('email_send_method') == 'sendmail') ||
-        (($CI->mdl_settings->setting('email_send_method') == 'smtp') && ($CI->mdl_settings->setting('smtp_server_address')));
+    return ($CI->mdl_settings->setting('email_send_method') == 'phpmail')
+        || ($CI->mdl_settings->setting('email_send_method') == 'sendmail')
+        || (($CI->mdl_settings->setting('email_send_method') == 'smtp') && ($CI->mdl_settings->setting('smtp_server_address')));
 }
 
 /**
@@ -212,7 +212,7 @@ function email_quote_status(string $quote_id, $status)
 /**
  * Validate email address syntax
  * $email string can be a single email or a list of emails.
- * The emails list must be comma separated.
+ * The emails can either be comma (,) or semicolon (;) separated.
  *
  * @param string $email
  *
@@ -220,10 +220,7 @@ function email_quote_status(string $quote_id, $status)
  */
 function validate_email_address(string $email): bool
 {
-    $emails[] = $email;
-    if (str_contains($email, ',')) {
-        $emails = explode(',', $email);
-    }
+    $emails = (str_contains($email, ',')) ? explode(',', $email) : explode(';', $email);
 
     foreach ($emails as $emailItem) {
         if ( ! filter_var($emailItem, FILTER_VALIDATE_EMAIL)) {
@@ -247,19 +244,19 @@ function check_mail_errors(array $errors = [], $redirect = ''): void
         }
 
         $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
-        
+
         // Use provided redirect, or validate HTTP_REFERER against base_url
         if (empty($redirect)) {
-            $referer = $_SERVER['HTTP_REFERER'] ?? '';
+            $referer  = $_SERVER['HTTP_REFERER'] ?? '';
             $base_url = base_url();
             // Only use referer if it's from same domain
-            if (!empty($referer) && strpos($referer, $base_url) === 0) {
+            if ( ! empty($referer) && str_starts_with($referer, $base_url)) {
                 $redirect = $referer;
             } else {
                 $redirect = base_url(); // Safe default
             }
         }
-        
+
         redirect($redirect);
     }
 }

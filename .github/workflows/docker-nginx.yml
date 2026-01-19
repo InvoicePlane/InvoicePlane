@@ -1,14 +1,10 @@
 name: Build & Push Nginx Docker Image
 
+permissions:
+  contents: read
+
 on:
-  push:
-    branches:
-      - development
-    paths:
-      - 'resources/docker/nginx/Dockerfile'
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
   build-test-push:

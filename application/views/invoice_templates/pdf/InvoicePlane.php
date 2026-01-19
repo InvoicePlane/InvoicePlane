@@ -15,7 +15,7 @@ $text_class_balance = '';
 $watermark          = '';
 $stamp              = '';
 $show_qrcode        = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
-$invoice_mode       ??= 'default'; // from template - overdue / paid.php
+$invoice_mode ??= 'default'; // from template - overdue / paid.php
 
 switch ($invoice_mode) {
     case 'overdue':
@@ -206,19 +206,19 @@ foreach ($items as $item) {
                     <?php } ?>
                 </td>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_price); ?>
+                    <?php echo format_currency(htmlsc($item->item_price)); ?>
                 </td>
 <?php
     if ($show_item_discounts) {
 ?>
                     <td class="text-right">
-                        <?php echo format_currency($item->item_discount); ?>
+                        <?php echo format_currency(htmlsc($item->item_discount)); ?>
                     </td>
 <?php
     }
 ?>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_total); ?>
+                    <?php echo format_currency(htmlsc($item->item_total)); ?>
                 </td>
             </tr>
 <?php
@@ -259,7 +259,7 @@ if ( ! $legacy_calculation) {
             <td class="text-right" colspan="<?php echo $colspan ?>">
                 <?php _trans('subtotal'); ?>
             </td>
-            <td class="text-right"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
+            <td class="text-right"><?php echo format_currency(htmlsc($invoice->invoice_item_subtotal)); ?></td>
         </tr>
 
 <?php
@@ -303,7 +303,7 @@ if ($legacy_calculation) {
                 <b><?php _trans('total'); ?></b>
             </td>
             <td class="text-right">
-                <b><?php echo format_currency($invoice->invoice_total); ?></b>
+                <b><?php echo format_currency(htmlsc($invoice->invoice_total)); ?></b>
             </td>
         </tr>
         <tr>
@@ -311,7 +311,7 @@ if ($legacy_calculation) {
                 <?php _trans('paid'); ?>
             </td>
             <td class="text-right">
-                <?php echo format_currency($invoice->invoice_paid); ?>
+                <?php echo format_currency(htmlsc($invoice->invoice_paid)); ?>
             </td>
         </tr>
         <tr>
