@@ -38,7 +38,7 @@ class Mollie extends Base_Controller
 
         // Check if the invoice is payable
         if ($invoice->invoice_balance <= 0) {
-            $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
+            $this->session->set_userdata('alert_error', trans('invoice_already_paid'));
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
         }
 
@@ -112,10 +112,15 @@ class Mollie extends Base_Controller
             if ($paid) {
                 // Save the payment
                 $this->load->model('payments/mdl_payments');
+                $payment_data  = $payment->getData();
+                $payment_amount = isset($payment_data['amount']['value'])
+                    ? (float) $payment_data['amount']['value']
+                    : (float) $invoice->invoice_balance;
+
                 $this->mdl_payments->save(null, [
                     'invoice_id'        => $invoice->invoice_id,
                     'payment_date'      => date('Y-m-d'),
-                    'payment_amount'    => $payment->getData()['amount']['value'] ?? $invoice->invoice_balance,
+                    'payment_amount'    => $payment_amount,
                     'payment_method_id' => get_setting('gateway_mollie_payment_method'),
                     'payment_note'      => trans('online_payment_intent_id') . ': ' . $transaction_ref,
                 ]);
