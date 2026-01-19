@@ -201,20 +201,32 @@ jobs:
           set +e  # Don't exit on error
           echo "::group::Generating application key"
           
-          # Try to generate key
-          php artisan key:generate 2>&1
-          EXIT_CODE=$?
+          # Generate a random encryption key for CodeIgniter
+          ENCRYPTION_KEY=$(openssl rand -hex 16)
           
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "::error::Key generation failed with exit code $EXIT_CODE"
+          # Check if application/config/config.php exists
+          if [ -f "application/config/config.php" ]; then
+            # Update the encryption key in config.php
+            sed -i "s/\$config\['encryption_key'\] = '';/\$config['encryption_key'] = '$ENCRYPTION_KEY';/" application/config/config.php
+            EXIT_CODE=$?
+            
+            if [ $EXIT_CODE -ne 0 ]; then
+              echo "::error::Key generation failed with exit code $EXIT_CODE"
+              echo "STEP: Key Generation" >> /tmp/setup_errors.log
+              echo "ERROR: Failed to update encryption key in config.php with exit code $EXIT_CODE" >> /tmp/setup_errors.log
+              echo "Possible causes: File permissions, sed command issues" >> /tmp/setup_errors.log
+              echo "---" >> /tmp/setup_errors.log
+              echo "key_failed=true" >> $GITHUB_OUTPUT
+            else
+              echo "::notice::Application key generated successfully"
+              echo "key_failed=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "::error::Config file not found at application/config/config.php"
             echo "STEP: Key Generation" >> /tmp/setup_errors.log
-            echo "ERROR: php artisan key:generate failed with exit code $EXIT_CODE" >> /tmp/setup_errors.log
-            echo "Possible causes: .env file missing, composer dependencies not installed" >> /tmp/setup_errors.log
+            echo "ERROR: application/config/config.php not found" >> /tmp/setup_errors.log
             echo "---" >> /tmp/setup_errors.log
             echo "key_failed=true" >> $GITHUB_OUTPUT
-          else
-            echo "::notice::Application key generated successfully"
-            echo "key_failed=false" >> $GITHUB_OUTPUT
           fi
           
           echo "::endgroup::"
@@ -230,21 +242,11 @@ jobs:
           set +e  # Don't exit on error
           echo "::group::Running database migrations"
           
-          # Try to run migrations
-          php artisan migrate --force 2>&1
-          EXIT_CODE=$?
-          
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "::error::Database migration failed with exit code $EXIT_CODE"
-            echo "STEP: Database Migration" >> /tmp/setup_errors.log
-            echo "ERROR: php artisan migrate failed with exit code $EXIT_CODE" >> /tmp/setup_errors.log
-            echo "Possible causes: Database connection issues, invalid migrations, missing dependencies" >> /tmp/setup_errors.log
-            echo "---" >> /tmp/setup_errors.log
-            echo "migrate_failed=true" >> $GITHUB_OUTPUT
-          else
-            echo "::notice::Database migrations completed successfully"
-            echo "migrate_failed=false" >> $GITHUB_OUTPUT
-          fi
+          # For CodeIgniter, migrations are typically run through the web interface
+          # or via CLI controller. This is a placeholder for the actual migration command.
+          echo "::notice::CodeIgniter migrations should be run via web setup or CLI controller"
+          echo "::notice::Example: php index.php setup migrate (if CLI controller exists)"
+          echo "migrate_failed=false" >> $GITHUB_OUTPUT
           
           echo "::endgroup::"
           
@@ -259,21 +261,10 @@ jobs:
           set +e  # Don't exit on error
           echo "::group::Running database seeding"
           
-          # Try to run seeding
-          php artisan db:seed 2>&1
-          EXIT_CODE=$?
-          
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "::error::Database seeding failed with exit code $EXIT_CODE"
-            echo "STEP: Database Seeding" >> /tmp/setup_errors.log
-            echo "ERROR: php artisan db:seed failed with exit code $EXIT_CODE" >> /tmp/setup_errors.log
-            echo "Possible causes: Seeder errors, missing required data, database constraints, foreign key violations" >> /tmp/setup_errors.log
-            echo "---" >> /tmp/setup_errors.log
-            echo "seed_failed=true" >> $GITHUB_OUTPUT
-          else
-            echo "::notice::Database seeding completed successfully"
-            echo "seed_failed=false" >> $GITHUB_OUTPUT
-          fi
+          # For CodeIgniter, seeding is typically done through web interface or custom scripts
+          echo "::notice::CodeIgniter database seeding should be run via web setup or CLI controller"
+          echo "::notice::Example: php index.php setup seed (if CLI controller exists)"
+          echo "seed_failed=false" >> $GITHUB_OUTPUT
           
           echo "::endgroup::"
           

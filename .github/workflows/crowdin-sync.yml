@@ -48,7 +48,7 @@ jobs:
           upload_sources: true
           upload_translations: false
           download_translations: false
-          localization_branch_name: master
+          localization_branch_name: development
           config: 'crowdin.yml'
           project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
           token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
@@ -60,7 +60,7 @@ jobs:
           upload_sources: false
           upload_translations: false
           download_translations: true
-          localization_branch_name: master
+          localization_branch_name: development
           create_pull_request: true
           pull_request_title: 'chore(i18n): update translations from Crowdin'
           pull_request_body: |
