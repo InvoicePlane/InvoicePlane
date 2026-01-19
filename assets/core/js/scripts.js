@@ -73,8 +73,48 @@ function inject_email_template(template_fields, email_template) {
     });
 }
 
+// Sanitize HTML content for safe rendering in email template preview
+function sanitizeHtml(html) {
+    // Create a temporary div to parse HTML
+    var temp = document.createElement('div');
+    temp.textContent = html; // This escapes all HTML
+    var escaped = temp.innerHTML;
+    
+    // Allowed safe tags that should render as HTML
+    var allowedTags = {
+        'b': true, 'strong': true, 'i': true, 'em': true, 'u': true,
+        'p': true, 'br': true, 'h1': true, 'h2': true, 'h3': true, 'h4': true,
+        'ul': true, 'ol': true, 'li': true, 'a': true, 'span': true, 'div': true,
+        'table': true, 'tr': true, 'td': true, 'th': true, 'thead': true, 'tbody': true
+    };
+    
+    // Replace escaped versions of allowed tags back to HTML
+    // But only for closing tags and simple opening tags without attributes
+    escaped = escaped.replace(/&lt;(\/?)(b|strong|i|em|u|p|br|h1|h2|h3|h4|ul|ol|li|span|div|table|tr|td|th|thead|tbody)&gt;/gi, 
+        function(match, slash, tag) {
+            if (allowedTags[tag.toLowerCase()]) {
+                return '<' + slash + tag + '>';
+            }
+            return match;
+        });
+    
+    // Handle <a> tags specially to allow href but sanitize it
+    escaped = escaped.replace(/&lt;a\s+href=&quot;([^&quot;]+)&quot;&gt;/gi, function(match, href) {
+        // Only allow http, https, and mailto URLs
+        if (href.match(/^(https?:\/\/|mailto:)/i)) {
+            return '<a href="' + href + '">';
+        }
+        return '&lt;a href="' + href + '"&gt;';
+    });
+    escaped = escaped.replace(/&lt;\/a&gt;/gi, '</a>');
+    
+    return escaped;
+}
+
 function update_email_template_preview() {
-    $('#email-template-preview').contents().find("body").text($('.email-template-body').val());
+    var templateBody = $('.email-template-body').val();
+    var sanitizedHtml = sanitizeHtml(templateBody);
+    $('#email-template-preview').contents().find("body").html(sanitizedHtml);
 }
 
 // Insert HTML tags into textarea
