@@ -130,6 +130,12 @@ We welcome contributions from the community! To get involved:
 
 For detailed contribution guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+### Developer Resources
+
+- **[Development Guidelines](.junie/guidelines.md)** - Comprehensive guide for developers
+- **[Copilot Instructions](.github/copilot-instructions.md)** - GitHub Copilot context and patterns
+- **[Docker Setup](resources/docker/README.md)** - Docker configuration and usage guide
+
 ---
 
 ## Security Vulnerabilities
