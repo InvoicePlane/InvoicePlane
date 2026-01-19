@@ -264,7 +264,7 @@ Docker provides the easiest and most consistent development environment for Invo
    cp ipconfig.php.example ipconfig.php
    ```
    Edit `ipconfig.php` with these settings for Docker:
-   ```php
+   ```ini
    # Database settings
    DB_HOSTNAME=invoiceplane-db
    DB_USERNAME=ipdevdb

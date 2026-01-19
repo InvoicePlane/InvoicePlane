@@ -11,7 +11,6 @@ RUN apt-get update && apt-get install -y \
     mariadb-client \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
-    libmcrypt-dev \
     libpng-dev \
     libcurl4-nss-dev \
     libc-client-dev \
