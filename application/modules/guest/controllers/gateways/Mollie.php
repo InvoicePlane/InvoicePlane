@@ -211,10 +211,10 @@ class Mollie extends Base_Controller
                 ]);
             }
 
-            // Provide more specific error message
+            // Provide more specific error message based on exception type
             $error_message = trans('online_payment_error');
-            if (str_contains($e->getMessage(), 'not found')) {
-                $error_message .= ' ' . trans('invoice_not_found');
+            if ($e instanceof InvalidArgumentException || strpos($e->getMessage(), 'not found') !== false) {
+                $error_message .= ' ' . trans('please_try_again');
             }
             $this->session->set_flashdata('alert_error', $error_message);
         } finally {
