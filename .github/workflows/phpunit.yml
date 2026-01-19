@@ -1,0 +1,47 @@
+name: Run PHPUnit Tests
+
+on:
+  workflow_dispatch:  # Manual only — does not run automatically
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+
+    # MySQL service commented out - tests use SQLite in-memory instead
+    # services:
+    #   mysql:
+    #     image: mysql:8
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: root
+    #       MYSQL_DATABASE: testing
+    #     ports:
+    #       - 3306:3306
+    #     options: >-
+    #       --health-cmd="mysqladmin ping --silent"
+    #       --health-interval=10s
+    #       --health-timeout=5s
+    #       --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.3'
+          php-extensions: 'mbstring, bcmath, pdo_mysql'
+          composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.testing.example .env.testing
+          php artisan key:generate --env=testing
+
+      #- name: Run Laravel migrations
+      #  run: php artisan migrate --force --env=testing
+
+      #- name: Run Laravel seeds (optional)
+      #  run: php artisan db:seed --force --env=testing
+
+      - name: Run PHPUnit
+        run: php artisan test --env=testing
