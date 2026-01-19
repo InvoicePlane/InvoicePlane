@@ -75,7 +75,7 @@ class Mdl_Invoice_Groups extends Response_Model
         $invoice_group = $this->get_by_id($invoice_group_id);
 
         // Check if monthly reset is enabled and reset if needed
-        if ($invoice_group->invoice_group_reset_monthly == 1) {
+        if ($invoice_group->invoice_group_reset_monthly === 1) {
             $current_month = date('Y-m');
             
             // If last reset month is different from current month, reset the counter
