@@ -1,18 +1,22 @@
 <script>
     $(function () {
         $('#quote_tax_submit').click(function () {
+            var tax_rate_id = $('#tax_rate_id').val();
+            if ('0' == tax_rate_id) return;
+            show_loader(); // Show spinner
             $.post("<?php echo site_url('quotes/ajax/save_quote_tax_rate'); ?>", {
                     quote_id: <?php echo $quote_id; ?>,
-                    tax_rate_id: $('#tax_rate_id').val(),
+                    tax_rate_id: tax_rate_id,
                     include_item_tax: $('#include_item_tax').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-                    var response = JSON.parse(data);
+                    var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
                     }
-                });
+                    // close_loader(); No error returned (show go to wiki if not success after 10s)  Todo: else // The validation was not successful
+                }
+            );
         });
     });
 </script>
@@ -31,7 +35,7 @@
                 </label>
 
                 <div class="controls">
-                    <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
+                    <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select" required>
                         <option value="0"><?php _trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
                             <option value="<?php echo $tax_rate->tax_rate_id; ?>">
@@ -48,7 +52,7 @@
                 </label>
 
                 <div class="controls">
-                    <select name="include_item_tax" id="include_item_tax" class="form-control simple-select">
+                    <select name="include_item_tax" id="include_item_tax" class="form-control simple-select" required>
                         <option value="0">
                             <?php _trans('apply_before_item_tax'); ?>
                         </option>

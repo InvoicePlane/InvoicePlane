@@ -171,7 +171,7 @@
                             </label>
                             <select name="settings[currency_code]"
                                 id="settings[currency_code]"
-                                class="input-sm form-control simple-select">
+                                class="form-control simple-select">
                                 <?php foreach ($gateway_currency_codes as $val => $key) { ?>
                                     <option value="<?php echo $val; ?>"
                                         <?php check_select(get_setting('currency_code', '', true), $val); ?>>
@@ -196,6 +196,8 @@
                                     3
                                 </option>
                             </select>
+                            <p class="help-block"><?php _trans('tax_rate_decimal_places_hint'); ?></p>
+
                         </div>
                     </div>
                 </div>
@@ -210,11 +212,32 @@
                                 class="form-control simple-select"
                                 data-minimum-results-for-search="Infinity">
                                 <?php foreach ($number_formats as $key => $value) { ?>
-                                    <option value="<?php print($key); ?>"
+                                    <option value="<?php echo $key; ?>"
                                         <?php check_select(get_setting('number_format'), $value['label']); ?>>
                                         <?php _trans($value['label']); ?>
                                     </option>
                                 <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[default_item_decimals]">
+                                <?php _trans('default_item_decimals'); ?>
+                            </label>
+                            <?php $current_default_item_decimals = get_setting('default_item_decimals'); ?>
+                            <select name="settings[default_item_decimals]" id="settings[default_item_decimals]"
+                                class="form-control simple-select"
+                                data-minimum-results-for-search="Infinity">
+                                <option value="1" <?php check_select($current_default_item_decimals, '1'); ?>>1</option>
+                                <option value="2" <?php check_select($current_default_item_decimals, '2'); ?>>2</option>
+                                <option value="3" <?php check_select($current_default_item_decimals, '3'); ?>>3</option>
+                                <option value="4" <?php check_select($current_default_item_decimals, '4'); ?>>4</option>
+                                <option value="5" <?php check_select($current_default_item_decimals, '5'); ?>>5</option>
+                                <option value="6" <?php check_select($current_default_item_decimals, '6'); ?>>6</option>
+                                <option value="7" <?php check_select($current_default_item_decimals, '7'); ?>>7</option>
+                                <option value="8" <?php check_select($current_default_item_decimals, '8'); ?>>8</option>
                             </select>
                         </div>
                     </div>
@@ -350,7 +373,6 @@
 
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="monospace_amounts">
                                 <?php _trans('monospaced_font_for_amounts'); ?>
@@ -366,11 +388,12 @@
                             <p class="help-block">
                                 <?php _trans('example'); ?>:
                                 <span style="font-family: Monaco, Lucida Console, monospace">
-                        <?php echo format_currency(123456.78); ?>
-                    </span>
+                                    <?php echo format_currency(123456.78); ?>
+                                </span>
                             </p>
                         </div>
-
+                    </div>
+                    <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="login_logo">
                                 <?php _trans('login_logo'); ?>
@@ -383,10 +406,11 @@
                             <?php } ?>
                             <input type="file" name="login_logo" id="login_logo" class="form-control"/>
                         </div>
-
                     </div>
-                    <div class="col-xs-12 col-md-6">
+                </div>
 
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[reports_in_new_tab]">
                                 <?php _trans('open_reports_in_new_tab'); ?>
@@ -399,8 +423,22 @@
                                 </option>
                             </select>
                         </div>
-
-
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[show_responsive_itemlist]">
+                                <?php _trans('show_responsive_itemlist'); ?>
+                            </label>
+                            <select name="settings[show_responsive_itemlist]" id="settings[show_responsive_itemlist]"
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0">
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('show_responsive_itemlist'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 

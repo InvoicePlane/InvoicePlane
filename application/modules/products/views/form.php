@@ -1,7 +1,6 @@
 <form method="post">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('products_form'); ?></h1>
@@ -10,20 +9,20 @@
 
     <div id="content">
 
+        <?php $this->layout->load_view('layout/alerts'); ?>
+
         <div class="row">
             <div class="col-xs-12 col-md-6">
-
-                <?php $this->layout->load_view('layout/alerts'); ?>
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
 
-                        <?php if ($this->mdl_products->form_value('product_id')) : ?>
-                            #<?php echo $this->mdl_products->form_value('product_id'); ?>&nbsp;
-                            <?php echo $this->mdl_products->form_value('product_name', true); ?>
-                        <?php else : ?>
-                            <?php _trans('new_product'); ?>
-                        <?php endif; ?>
+<?php if ($this->mdl_products->form_value('product_id')) : ?>
+                        #<?php echo $this->mdl_products->form_value('product_id'); ?>&nbsp;
+                        <?php echo $this->mdl_products->form_value('product_name', true); ?>
+<?php else : ?>
+                        <?php _trans('new_product'); ?>
+<?php endif; ?>
 
                     </div>
                     <div class="panel-body">
@@ -35,11 +34,11 @@
 
                             <select name="family_id" id="family_id" class="form-control simple-select">
                                 <option value="0"><?php _trans('select_family'); ?></option>
-                                <?php foreach ($families as $family) { ?>
-                                    <option value="<?php echo $family->family_id; ?>"
-                                        <?php check_select($this->mdl_products->form_value('family_id'), $family->family_id) ?>
-                                    ><?php echo $family->family_name; ?></option>
-                                <?php } ?>
+<?php foreach ($families as $family) { ?>
+                                <option value="<?php echo $family->family_id; ?>"
+                                    <?php check_select($this->mdl_products->form_value('family_id'), $family->family_id) ?>
+                                ><?php echo $family->family_name; ?></option>
+<?php } ?>
                             </select>
                         </div>
 
@@ -58,7 +57,7 @@
                             </label>
 
                             <input type="text" name="product_name" id="product_name" class="form-control" required
-                                   value="<?php echo $this->mdl_products->form_value('product_name', true); ?>">
+                                   value="<?php echo $this->mdl_products->form_value('product_name', true); ?>" required>
                         </div>
 
                         <div class="form-group">
@@ -77,7 +76,7 @@
 
                             <div class="input-group has-feedback">
                                 <input type="text" name="product_price" id="product_price" class="form-control"
-                                       value="<?php echo format_amount($this->mdl_products->form_value('product_price')); ?>">
+                                       value="<?php echo format_amount($this->mdl_products->form_value('product_price')); ?>" required>
                                 <span class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></span>
                             </div>
                         </div>
@@ -89,11 +88,11 @@
 
                             <select name="unit_id" id="unit_id" class="form-control simple-select">
                                 <option value="0"><?php _trans('select_unit'); ?></option>
-                                <?php foreach ($units as $unit) { ?>
-                                    <option value="<?php echo $unit->unit_id; ?>"
-                                        <?php check_select($this->mdl_products->form_value('unit_id'), $unit->unit_id); ?>
-                                    ><?php echo $unit->unit_name . '/' . $unit->unit_name_plrl; ?></option>
-                                <?php } ?>
+<?php foreach ($units as $unit) { ?>
+                                <option value="<?php echo $unit->unit_id; ?>"
+                                    <?php check_select($this->mdl_products->form_value('unit_id'), $unit->unit_id); ?>
+                                ><?php echo $unit->unit_name . '/' . $unit->unit_name_plrl; ?></option>
+<?php } ?>
                             </select>
                         </div>
 
@@ -104,13 +103,11 @@
 
                             <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
                                 <option value="0"><?php _trans('none'); ?></option>
-                                <?php foreach ($tax_rates as $tax_rate) { ?>
-                                    <option value="<?php echo $tax_rate->tax_rate_id; ?>"
-                                        <?php check_select($this->mdl_products->form_value('tax_rate_id'), $tax_rate->tax_rate_id); ?>>
-                                        <?php echo $tax_rate->tax_rate_name
-                                            . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?>
-                                    </option>
-                                <?php } ?>
+<?php foreach ($tax_rates as $tax_rate) { ?>
+                                <option value="<?php echo $tax_rate->tax_rate_id; ?>"
+                                    <?php check_select($this->mdl_products->form_value('tax_rate_id'), $tax_rate->tax_rate_id); ?>
+                                ><?php echo $tax_rate->tax_rate_name . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?></option>
+<?php } ?>
                             </select>
                         </div>
 
@@ -149,6 +146,7 @@
 
                     </div>
                 </div>
+<?php if (get_setting('sumex') == '1') { ?>
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -167,7 +165,7 @@
 
                     </div>
                 </div>
-
+<?php } ?>
             </div>
         </div>
 

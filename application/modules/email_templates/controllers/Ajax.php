@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Ajax
- */
+#[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
@@ -25,5 +26,4 @@ class Ajax extends Admin_Controller
 
         echo json_encode($this->mdl_email_templates->get_by_id($id));
     }
-
 }
