@@ -332,7 +332,7 @@ if ($quote->quote_status_id == 1) {
                                <?php
                                  foreach($services as $service)
 				 {
-				     if ($service['service_name']) {
+				     if (!empty($service['service_name'])) {
                                          echo '<option value="' . $service['service_id'] .'" ';
                                          if ($service['service_id'] == $quote->service_id)
                                             echo 'selected';
