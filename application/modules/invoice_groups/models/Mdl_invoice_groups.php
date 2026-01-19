@@ -75,7 +75,7 @@ class Mdl_Invoice_Groups extends Response_Model
         $invoice_group = $this->get_by_id($invoice_group_id);
 
         // Check if monthly reset is enabled and reset if needed
-        if ($invoice_group->invoice_group_reset_monthly === 1) {
+        if ($invoice_group->invoice_group_reset_monthly == 1) {
             if ($this->should_reset_monthly($invoice_group_id)) {
                 $this->reset_invoice_number($invoice_group_id);
                 // Refresh the invoice group data after reset
