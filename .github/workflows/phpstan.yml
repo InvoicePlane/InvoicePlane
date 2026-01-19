@@ -69,20 +69,20 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            
+
             try {
               if (!fs.existsSync('phpstan-report.md')) {
                 console.log('PHPStan report file "phpstan-report.md" not found. Skipping PR comment.');
                 return;
               }
-            
+
               const report = fs.readFileSync('phpstan-report.md', 'utf8');
-            
+
               if (!report || report.trim().length === 0) {
                 console.log('PHPStan report is empty. Skipping PR comment.');
                 return;
               }
-            
+
               await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,

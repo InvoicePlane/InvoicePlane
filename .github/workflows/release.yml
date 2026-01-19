@@ -73,8 +73,8 @@ jobs:
           LOG_FILE="${{ env.LOG_DIR }}/translations.log"
           
           echo "Validating translations structure..." | tee -a "$LOG_FILE"
-          if [ ! -d "resources/lang/en" ]; then
-            echo "ERROR: Missing required language directory: resources/lang/en" | tee -a "$LOG_FILE"
+          if [ ! -d "application/language/english" ]; then
+            echo "ERROR: Missing required language directory: application/language/english" | tee -a "$LOG_FILE"
             exit 1
           fi
           echo "✓ Translations structure validated" | tee -a "$LOG_FILE"
