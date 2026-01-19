@@ -35,7 +35,42 @@ _A libre self-hosted web application designed to help you manage invoices, clien
 
 ## Getting Started
 
-To get started with InvoicePlane:
+To get started with InvoicePlane, you have several options depending on your needs:
+
+### Quick Start with Docker (Recommended for Development)
+
+The easiest way to get InvoicePlane running locally is with Docker:
+
+```bash
+# Clone the repository
+git clone https://github.com/InvoicePlane/InvoicePlane.git
+cd InvoicePlane
+
+# Install dependencies
+composer install
+yarn install
+yarn build
+
+# Configure the application
+cp ipconfig.php.example ipconfig.php
+# Edit ipconfig.php to set your database connection (use settings from docker-compose.yml)
+
+# Start Docker containers (PHP 8.1, MariaDB, nginx, phpMyAdmin)
+docker-compose up -d
+
+# Access the application
+# InvoicePlane: http://localhost
+# phpMyAdmin: http://localhost:8081
+```
+
+**Switching to PHP 8.2+**: To use PHP 8.2+ instead of PHP 8.1:
+```bash
+docker-compose -f docker-compose.php82.yml up -d
+```
+
+### Production Installation
+
+For production deployments:
 
 1. **Download the Latest Version:**
    - Visit the [InvoicePlane website](https://www.invoiceplane.com/) to download the latest release.
@@ -45,7 +80,7 @@ To get started with InvoicePlane:
 
 3. **Configuration:**
    - Duplicate `ipconfig.php.example` and rename it to `ipconfig.php`.
-   - Open `ipconfig.php` in a text editor and set your base URL.
+   - Open `ipconfig.php` in a text editor and set your base URL and database credentials.
 
 4. **Run the Installer:**
    - Navigate to `http://your-domain.com/index.php/setup` in your browser and follow the on-screen instructions to complete the installation.
