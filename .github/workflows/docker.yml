@@ -8,6 +8,9 @@ name: Docker Compose Check (Disabled)
 on:
   workflow_dispatch:  # Manual only — does not run automatically
 
+permissions:
+  contents: read
+
 jobs:
   docker-compose:
     name: Docker Integration Test
