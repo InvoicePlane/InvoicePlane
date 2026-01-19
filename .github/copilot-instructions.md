@@ -4,11 +4,11 @@ This document provides context and guidelines for GitHub Copilot when working on
 
 ## Project Context
 
-InvoicePlane is a self-hosted invoicing application built with PHP and the CodeIgniter 3.x framework. The project is actively maintained and follows modern PHP standards while maintaining compatibility with legacy code.
+InvoicePlane is a simple self-hosted invoicing application built with CodeIgniter 3.x framework. This application is fully compatible with PHP 8.2+ and follows modern PHP standards within the CodeIgniter 3.x architecture.
 
 ## Technology Stack
 
-- **Backend**: PHP 8.1+ (CodeIgniter 3.x framework)
+- **Backend**: PHP 8.1, 8.2, 8.3+ (CodeIgniter 3.x framework)
 - **Frontend**: Bootstrap 3.4, jQuery 3.7+, jQuery UI 1.14
 - **Database**: MariaDB
 - **Build Tools**: Grunt (frontend assets), Composer (PHP dependencies), Yarn (JavaScript dependencies)
@@ -25,6 +25,7 @@ InvoicePlane is a self-hosted invoicing application built with PHP and the CodeI
 - Use **type hints** where possible (PHP 8.1+ features)
 - Follow **CodeIgniter 3.x conventions** for controllers, models, and views
 - Use **CodeIgniter's built-in security features** (XSS filtering, CSRF protection)
+- **PHP 8.2+ Compatible**: Ensure all code works with PHP 8.2 and 8.3+
 
 ### File Structure
 
@@ -193,12 +194,32 @@ grunt watch
 
 ## Testing
 
+### Linting and Code Quality
+
+Before committing, always run:
+```bash
+composer check  # Runs rector, phpcs, and pint
+```
+
+### Building Assets
+
+Test that assets build successfully:
+```bash
+yarn build
+```
+
 ### Manual Testing
 
 - Test all affected features thoroughly
 - Check for regressions in related functionality
 - Test in different browsers when making UI changes
 - Verify responsive behavior on mobile devices
+
+### Note on Testing Tools
+
+- **PHPStan**: Not required for this CodeIgniter 3 application
+- **PHPUnit**: Not required for this CodeIgniter 3 application
+- Focus on **linting** and **manual testing**
 
 ### Reporting Issues
 
@@ -217,11 +238,13 @@ grunt watch
 
 ## Key Reminders
 
-- This is a **CodeIgniter 3.x** application (not Laravel or modern CI4)
+- This is a **simple CodeIgniter 3.x** application
+- **PHP 8.2+ compatible** - ensure all code works with PHP 8.2 and 8.3+
 - Follow **PSR-12** coding standards for PHP
 - Use **CodeIgniter's built-in security features**
 - Always **sanitize input and escape output**
 - Run **linters before committing** (`composer check`)
+- Build **assets** before committing (`yarn build`)
 - Test **thoroughly** - manual testing is critical
 - Keep changes **focused and minimal**
 - Follow **existing code patterns** in the project

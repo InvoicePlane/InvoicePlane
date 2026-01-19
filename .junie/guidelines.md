@@ -16,23 +16,24 @@ This document provides comprehensive guidelines for developers working on Invoic
 
 ## Project Overview
 
-InvoicePlane is a self-hosted open source application for managing invoices, clients, and payments. The project is built with PHP and uses the CodeIgniter framework (legacy v1) with an ongoing migration path to modern PHP practices.
+InvoicePlane is a self-hosted open source application for managing invoices, clients, and payments. This is a simple application built with CodeIgniter 3.x framework that is fully compatible with PHP 8.2+.
 
 ### Key Characteristics
 
-- **Legacy Framework**: InvoicePlane v1 uses CodeIgniter 3.x
-- **PHP Version**: Requires PHP 8.1 or higher (PHP 8.2+ supported)
+- **Framework**: CodeIgniter 3.x - A simple and lightweight PHP framework
+- **PHP Compatibility**: PHP 8.1, 8.2, and 8.3+ supported
 - **Database**: MariaDB
 - **Frontend**: Bootstrap 3, jQuery, custom JavaScript
 - **Build Tools**: Grunt for asset compilation
+- **Simplicity**: Straightforward architecture focusing on core invoicing functionality
 
 ---
 
 ## Technology Stack
 
 ### Backend
-- **PHP**: 8.1+ (8.2+ compatible)
-- **Framework**: CodeIgniter 3.x (via pocketarc/codeigniter)
+- **PHP**: 8.1, 8.2, 8.3+ (fully compatible)
+- **Framework**: CodeIgniter 3.x (simple, lightweight framework)
 - **Composer Dependencies**: See `composer.json` for full list
 
 ### Frontend
@@ -193,6 +194,35 @@ composer pint
 
 ## Testing Guidelines
 
+### Linting and Code Quality
+
+The project uses automated linting tools to maintain code quality:
+
+1. **Run All Checks**:
+   ```bash
+   composer check
+   ```
+   This runs Rector, PHP_CodeSniffer, and Laravel Pint
+
+2. **Individual Tools**:
+   ```bash
+   composer rector    # Automated refactoring
+   composer phpcs     # PHP CodeSniffer
+   composer pint      # Laravel Pint (PSR-12)
+   ```
+
+### Building Assets
+
+When modifying frontend files (CSS/JavaScript):
+
+```bash
+# One-time build
+yarn build
+
+# Watch mode for development
+grunt watch
+```
+
 ### Manual Testing
 
 During active development (especially beta phases):
@@ -209,12 +239,12 @@ If you find issues during testing:
 2. Discuss in Discord or Community Forums
 3. Create a GitHub issue with detailed reproduction steps
 
-### Future: Automated Testing
+### Note on Automated Testing
 
-The project is working towards implementing automated tests. When contributing tests:
-- Follow existing test patterns
-- Use descriptive test names
-- Test both happy path and edge cases
+PHPStan and PHPUnit are not currently required for this CodeIgniter 3 application. The focus is on:
+- Code linting (Pint, PHPCS, Rector)
+- Manual testing of functionality
+- Building and verifying assets
 
 ---
 
