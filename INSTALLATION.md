@@ -130,8 +130,8 @@ docker-compose down
 ```
 
 **Access Points:**
-- **InvoicePlane**: http://localhost
-- **phpMyAdmin**: http://localhost:8081
+- **InvoicePlane**: <http://localhost>
+- **phpMyAdmin**: <http://localhost:8081>
   - Username: `ipdevdb`
   - Password: `ipdevdb`
 
@@ -177,7 +177,7 @@ The **Workflow** phase covers your day-to-day development activities.
    ```
 
 5. **Test Your Changes:**
-   - Access http://localhost in your browser
+   - Access <http://localhost> in your browser
    - Manually test the features you changed
    - Check for any console errors or warnings
 
@@ -286,7 +286,7 @@ Docker provides the easiest and most consistent development environment for Invo
    ```
 
 5. **Complete Setup:**
-   - Navigate to http://localhost/index.php/setup
+   - Navigate to <http://localhost/index.php/setup>
    - Follow the setup wizard
    - Use the database credentials from step 3
 

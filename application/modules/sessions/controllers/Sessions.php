@@ -543,6 +543,11 @@ class Sessions extends Base_Controller
             return 'sessions/passwordreset';
         }
 
+        // Reject scheme-relative URLs like "//evil.com"
+        if (str_starts_with($referer, '//')) {
+            return 'sessions/passwordreset';
+        }
+
         // Treat root-relative referers (starting with "/") as safe
         if (str_starts_with($referer, '/')) {
             return $referer;
@@ -553,6 +558,12 @@ class Sessions extends Base_Controller
         $base_parts = parse_url($base_url);
         $referer_parts = parse_url($referer);
         
+        // Validate parse_url results
+        if ($base_parts === false || ! is_array($base_parts) || 
+            $referer_parts === false || ! is_array($referer_parts)) {
+            return 'sessions/passwordreset';
+        }
+        
         // Check if scheme, host, and port match (normalize default ports)
         $base_scheme = $base_parts['scheme'] ?? 'http';
         $base_host = $base_parts['host'] ?? '';
@@ -561,6 +572,11 @@ class Sessions extends Base_Controller
         $referer_scheme = $referer_parts['scheme'] ?? '';
         $referer_host = $referer_parts['host'] ?? '';
         $referer_port = $referer_parts['port'] ?? ($referer_scheme === 'https' ? 443 : 80);
+        
+        // Ensure all required components are present
+        if (empty($base_host) || empty($referer_host) || empty($referer_scheme)) {
+            return 'sessions/passwordreset';
+        }
         
         if ($base_scheme === $referer_scheme && 
             $base_host === $referer_host && 

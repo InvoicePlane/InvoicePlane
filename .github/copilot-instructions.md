@@ -230,11 +230,11 @@ yarn build
 
 ## Resources
 
-- **Documentation**: https://wiki.invoiceplane.com/
-- **Community**: https://community.invoiceplane.com/
-- **Discord**: https://discord.gg/PPzD2hTrXt
-- **Issue Tracker**: https://github.com/InvoicePlane/InvoicePlane/issues
-- **CodeIgniter 3 Docs**: https://codeigniter.com/userguide3/
+- **[Documentation](https://wiki.invoiceplane.com/)**
+- **[Community](https://community.invoiceplane.com/)**
+- **[Discord](https://discord.gg/PPzD2hTrXt)**
+- **[Issue Tracker](https://github.com/InvoicePlane/InvoicePlane/issues)**
+- **[CodeIgniter 3 Docs](https://codeigniter.com/userguide3/)**
 
 ## Key Reminders
 

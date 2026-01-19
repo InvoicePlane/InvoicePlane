@@ -16,7 +16,7 @@ This document provides comprehensive guidelines for developers working on Invoic
 
 ## Project Overview
 
-InvoicePlane is a self-hosted open source application for managing invoices, clients, and payments. This is a simple application built with CodeIgniter 3.x framework that is fully compatible with PHP 8.2+.
+InvoicePlane is a self-hosted open-source application for managing invoices, clients, and payments. This is a simple application built with CodeIgniter 3.x framework that is fully compatible with PHP 8.2+.
 
 ### Key Characteristics
 
@@ -265,7 +265,7 @@ PHPStan and PHPUnit are not currently required for this CodeIgniter 3 applicatio
 - Keep subject line under 72 characters
 
 **Examples**:
-```
+```text
 Add invoice export feature (#123)
 Fix payment gateway integration bug
 Update README with Docker instructions
@@ -321,10 +321,10 @@ Email **mail@invoiceplane.com** before public disclosure.
 
 ## Additional Resources
 
-- **Wiki**: https://wiki.invoiceplane.com/
-- **Community Forums**: https://community.invoiceplane.com/
-- **Discord**: https://discord.gg/PPzD2hTrXt
-- **Issue Tracker**: https://github.com/InvoicePlane/InvoicePlane/issues
+- **[Wiki](https://wiki.invoiceplane.com/)**
+- **[Community Forums](https://community.invoiceplane.com/)**
+- **[Discord](https://discord.gg/PPzD2hTrXt)**
+- **[Issue Tracker](https://github.com/InvoicePlane/InvoicePlane/issues)**
 
 ---
 

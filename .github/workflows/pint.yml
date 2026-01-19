@@ -30,6 +30,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
