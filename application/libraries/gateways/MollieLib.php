@@ -4,8 +4,10 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-use Omnipay\Omnipay;
+use Omnipay\Common\Exception\InvalidRequestException;
+use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Mollie\Gateway;
+use Omnipay\Omnipay;
 
 #[AllowDynamicProperties]
 class MollieLib
@@ -67,6 +69,20 @@ class MollieLib
                     'message' => $response->getMessage(),
                 ];
             }
+        } catch (InvalidRequestException $e) {
+            log_message('error', 'Mollie library payment creation - invalid request: ' . $e->getMessage());
+
+            return [
+                'status'  => false,
+                'message' => 'Invalid payment request: ' . $e->getMessage(),
+            ];
+        } catch (InvalidResponseException $e) {
+            log_message('error', 'Mollie library payment creation - invalid response: ' . $e->getMessage());
+
+            return [
+                'status'  => false,
+                'message' => 'Invalid response from Mollie: ' . $e->getMessage(),
+            ];
         } catch (Exception $e) {
             log_message('error', 'Mollie library payment creation exception: ' . $e->getMessage());
 
@@ -95,6 +111,20 @@ class MollieLib
             return [
                 'status'   => true,
                 'response' => $response,
+            ];
+        } catch (InvalidRequestException $e) {
+            log_message('error', 'Mollie library get payment - invalid request: ' . $e->getMessage());
+
+            return [
+                'status'  => false,
+                'message' => 'Invalid payment fetch request: ' . $e->getMessage(),
+            ];
+        } catch (InvalidResponseException $e) {
+            log_message('error', 'Mollie library get payment - invalid response: ' . $e->getMessage());
+
+            return [
+                'status'  => false,
+                'message' => 'Invalid response from Mollie: ' . $e->getMessage(),
             ];
         } catch (Exception $e) {
             log_message('error', 'Mollie library get payment failed: ' . $e->getMessage());
