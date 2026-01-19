@@ -24,6 +24,13 @@ class Ajax extends Admin_Controller
 
         $client_id = $this->security->xss_clean($client_id);
 
+        // Initialize $data with default values
+        $data = array(
+            'related_quotes' => array(),
+            'client_id' => $client_id,
+            'quote_statuses' => array(),
+        );
+
         if (!empty($client_id)) {
             $this->mdl_quotes->by_client($client_id);
             $this->mdl_quotes->related_is_open();
@@ -32,11 +39,8 @@ class Ajax extends Admin_Controller
             $quotes = $this->mdl_quotes->get()->result();
             $quote_statuses = $this->mdl_quotes->statuses();
 
-            $data = array(
-                'related_quotes' => $quotes,
-                'client_id' => $client_id,
-                'quote_statuses' => $quote_statuses,
-            );
+            $data['related_quotes'] = $quotes;
+            $data['quote_statuses'] = $quote_statuses;
         }
 
         $this->layout->load_view('quotes/modal_quote_lookups', $data);
@@ -164,6 +168,8 @@ class Ajax extends Admin_Controller
                 'notes'                  => $this->input->post('notes'),
                 'quote_discount_amount'  => standardize_amount($quote_discount_amount),
                 'quote_discount_percent' => standardize_amount($quote_discount_percent),
+                'quote_work_order'       => $quote_work_order,
+                'quote_agreement'        => $quote_agreement,
             ];
 
             $this->mdl_quotes->save($quote_id, $db_array, $global_discount);

@@ -2,6 +2,11 @@ name: Build & Push PHPMyAdmin Docker Image
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - development
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build-test-push:

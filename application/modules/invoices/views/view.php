@@ -477,24 +477,18 @@ if ($invoice->invoice_sign == -1) {
 
                                     <?php } ?>
                                     <input type="text" id="invoice_quote_number" class="form-control input-sm"  
-                                        <?php if ($invoice->invoice_quote_number) : ?>
-                                            value="<?php echo $invoice->invoice_quote_number; ?>"
-                                        <?php endif; ?>>
+                                        value="<?php echo htmlsc($invoice->invoice_quote_number ?? ''); ?>">
                                 </div>
                                 <div class="invoice-properties">
                                     <label><?php _trans('work_order'); ?></label>
                                     <input type="text" id="invoice_work_order" class="form-control input-sm"
-                                        <?php if ($invoice->invoice_work_order) : ?>
-                                            value="<?php echo $invoice->invoice_work_order; ?>"
-                                        <?php endif; ?>>
+                                        value="<?php echo htmlsc($invoice->invoice_work_order ?? ''); ?>">
 
                                 </div>
                                 <div class="invoice-properties">
                                     <label><?php _trans('agreement'); ?></label>
                                     <input type="text" id="invoice_agreement" class="form-control input-sm"
-                                        <?php if ($invoice->invoice_agreement) : ?>
-                                            value="<?php echo $invoice->invoice_agreement; ?>"
-                                        <?php endif; ?>>
+                                        value="<?php echo htmlsc($invoice->invoice_agreement ?? ''); ?>">
                                 </div>
                             </div>
 

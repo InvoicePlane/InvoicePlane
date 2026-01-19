@@ -424,7 +424,7 @@ jobs:
 
       # Step 9: Create GitHub Draft Pre-Release
       - name: Create GitHub Draft Pre-Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.NEW_TAG }}
           name: Release ${{ env.NEW_TAG }}
