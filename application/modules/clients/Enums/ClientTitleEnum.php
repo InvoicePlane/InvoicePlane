@@ -25,7 +25,7 @@ class ClientTitleEnum
 
         if ($searchResult !== false) {
             $returnObject        = new StdClass();
-            $returnObject->value = $values[$searchResult];
+            $returnObject->value = $value;
 
             return $returnObject;
         }
