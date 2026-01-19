@@ -7,10 +7,10 @@ if ( ! defined('BASEPATH')) {
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -24,16 +24,12 @@ class Mdl_Clients extends Response_Model
 
     public $date_modified_field = 'client_date_modified';
 
-    public function default_select()
+    public function default_select(): void
     {
-        $this->db->select(
-            'SQL_CALC_FOUND_ROWS ' . $this->table . '.*, ' .
-            'CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname',
-            false
-        );
+        $this->db->select('SQL_CALC_FOUND_ROWS ' . $this->table . '.*, CONCAT(' . $this->table . '.client_name, " ", ' . $this->table . '.client_surname) as client_fullname', false);
     }
 
-    public function default_order_by()
+    public function default_order_by(): void
     {
         $this->db->order_by('ip_clients.client_name');
     }
@@ -96,11 +92,25 @@ class Mdl_Clients extends Response_Model
             'client_web' => [
                 'field' => 'client_web',
             ],
+            'client_company' => [
+                'field' => 'client_company',
+            ],
             'client_vat_id' => [
                 'field' => 'client_vat_id',
             ],
             'client_tax_code' => [
                 'field' => 'client_tax_code',
+            ],
+            'client_invoicing_contact' => [
+                'field' => 'client_invoicing_contact',
+                'rules' => 'trim',
+            ],
+            'client_einvoicing_version' => [
+                'field' => 'client_einvoicing_version',
+                'rules' => 'callback_validate_einvoicing_version',
+            ],
+            'client_einvoicing_active' => [
+                'field' => 'client_einvoicing_active',
             ],
             // SUMEX
             'client_birthdate' => [
@@ -150,6 +160,7 @@ class Mdl_Clients extends Response_Model
             if (preg_match('/(\d{3})\.(\d{4})\.(\d{4})\.(\d{2})/', $input, $matches)) {
                 return $matches[1] . $matches[2] . $matches[3] . $matches[4];
             }
+
             if (preg_match('/^\d{13}$/', $input)) {
                 return $input;
             }
@@ -169,6 +180,33 @@ class Mdl_Clients extends Response_Model
         return date_to_mysql($input);
     }
 
+    /**
+     * Validates the e-invoicing version to prevent path traversal attacks.
+     *
+     * @param string $version The e-invoicing version to validate
+     *
+     * @return bool
+     */
+    public function validate_einvoicing_version($version)
+    {
+        // Empty is allowed (no e-invoicing)
+        if (empty($version)) {
+            return true;
+        }
+
+        // Load helper to access validation function
+        $this->load->helper('e-invoice');
+
+        // Validate using the helper function
+        if ( ! is_valid_xml_config_id($version)) {
+            $this->form_validation->set_message('validate_einvoicing_version', trans('einvoicing_version_invalid'));
+
+            return false;
+        }
+
+        return true;
+    }
+
     public function db_array()
     {
         $db_array = parent::db_array();
@@ -183,7 +221,7 @@ class Mdl_Clients extends Response_Model
     /**
      * @param int $id
      */
-    public function delete($id)
+    public function delete($id): void
     {
         parent::delete($id);
 
@@ -259,7 +297,7 @@ class Mdl_Clients extends Response_Model
             $assigned_clients[] = $client->client_id;
         }
 
-        if (count($assigned_clients) > 0) {
+        if ($assigned_clients !== []) {
             $this->where_not_in('ip_clients.client_id', $assigned_clients);
         }
 

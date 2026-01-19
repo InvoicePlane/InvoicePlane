@@ -1,16 +1,16 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
 #[AllowDynamicProperties]
@@ -34,14 +34,16 @@ class Families extends Admin_Controller
         $this->mdl_families->paginate(site_url('families/index'), $page);
         $families = $this->mdl_families->result();
 
-        $this->layout->set('families', $families);
+        $this->layout->set([
+            'filter_display'     => true,
+            'filter_placeholder' => trans('filter_families'),
+            'filter_method'      => 'filter_families',
+            'families'           => $families,
+        ]);
         $this->layout->buffer('content', 'families/index');
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -51,7 +53,7 @@ class Families extends Admin_Controller
         $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         if ($this->input->post('is_update') == 0 && $this->input->post('family_name') != '') {
-            $check = $this->db->get_where('ip_families', array('family_name' => $this->input->post('family_name')))->result();
+            $check = $this->db->get_where('ip_families', ['family_name' => $this->input->post('family_name')])->result();
 
             if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('family_already_exists'));
