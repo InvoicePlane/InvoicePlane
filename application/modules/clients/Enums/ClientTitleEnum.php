@@ -1,51 +1,40 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 #[AllowDynamicProperties]
 class ClientTitleEnum
 {
-    const MISTER    = 'mr';
-    const MISSUS    = 'mrs';
-    const DOCTOR    = 'doctor';
-    const PROFESSOR = 'professor';
-    const CUSTOM    = 'custom';
+    public const MISTER = 'mr';
 
-    private static function getValues() {
-        return [
-            self::MISTER,
-            self::MISSUS,
-            self::DOCTOR,
-            self::PROFESSOR,
-            self::CUSTOM
-        ];
+    public const MISSUS = 'mrs';
 
-    }
+    public const DOCTOR = 'doctor';
 
-    public static function tryFrom($value) {
+    public const PROFESSOR = 'professor';
 
+    public const CUSTOM = 'custom';
+
+    public static function tryFrom($value)
+    {
         $values = self::getValues();
 
-        $searchResult = array_search($value,$values);
+        $searchResult = array_search($value, $values, true);
 
-        if($searchResult) {
-
-            $returnObject = new StdClass();
-            $returnObject->value = $searchResult;
+        if ($searchResult !== false) {
+            $returnObject        = new StdClass();
+            $returnObject->value = $values[$searchResult];
 
             return $returnObject;
-
-        } else {
-
-            return null;
-
         }
+        
+        return null;
     }
 
-    public static function cases() {
-
+    public static function cases()
+    {
         $values = self::getValues();
 
         $returnArray = [];
@@ -58,5 +47,16 @@ class ClientTitleEnum
         }
 
         return $returnArray;
+    }
+
+    private static function getValues()
+    {
+        return [
+            self::MISTER,
+            self::MISSUS,
+            self::DOCTOR,
+            self::PROFESSOR,
+            self::CUSTOM,
+        ];
     }
 }

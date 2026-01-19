@@ -1,0 +1,94 @@
+name: PHPStan Analysis
+
+on:
+  workflow_dispatch:  # Manual only — does not run automatically
+  pull_request:       # Also runs on pull requests
+
+jobs:
+  phpstan:
+    name: Static Analysis with PHPStan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.4'
+          php-extensions: 'json'
+          composer-flags: '--prefer-dist --no-interaction --no-progress'
+
+      - name: Run PHPStan (JSON output)
+        id: phpstan-analysis
+        run: |
+          vendor/bin/phpstan analyse --memory-limit=1G --error-format=json > phpstan.json
+          cat phpstan.json
+        continue-on-error: true
+
+      - name: Parse and format PHPStan results
+        id: parse-results
+        run: |
+          if [ ! -f phpstan.json ]; then
+            echo "PHPStan JSON output not found"
+            exit 1
+          fi
+          php .github/scripts/parse-phpstan-results.php phpstan.json > phpstan-report.md
+          exit_code=$?
+          if [ $exit_code -ne 0 ]; then
+            echo "Failed to parse PHPStan results"
+            exit $exit_code
+          fi
+
+      - name: Display formatted report
+        if: always() && steps.parse-results.outcome == 'success'
+        run: cat phpstan-report.md
+
+      - name: Check for errors and fail if found
+        if: steps.phpstan-analysis.outcome == 'failure'
+        run: |
+          echo "PHPStan found errors in the codebase"
+          exit 1
+
+      - name: Upload PHPStan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phpstan-results
+          path: |
+            phpstan.json
+            phpstan-report.md
+
+      - name: Comment on PR (if available)
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              if (!fs.existsSync('phpstan-report.md')) {
+                console.log('PHPStan report file "phpstan-report.md" not found. Skipping PR comment.');
+                return;
+              }
+            
+              const report = fs.readFileSync('phpstan-report.md', 'utf8');
+            
+              if (!report || report.trim().length === 0) {
+                console.log('PHPStan report is empty. Skipping PR comment.');
+                return;
+              }
+            
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: report
+              });
+            } catch (error) {
+              console.log('Failed to create PHPStan PR comment:', error && error.message ? error.message : error);
+            }

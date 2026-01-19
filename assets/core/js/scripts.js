@@ -74,7 +74,7 @@ function inject_email_template(template_fields, email_template) {
 }
 
 function update_email_template_preview() {
-    $('#email-template-preview').contents().find("body").html($('.email-template-body').val());
+    $('#email-template-preview').contents().find("body").text($('.email-template-body').val());
 }
 
 // Insert HTML tags into textarea
@@ -392,6 +392,22 @@ $(function () {
         checkboxQrCode.addEventListener('click', () => {
             panelQrCodeSettings.querySelectorAll('.row').forEach((row) => {
                 if (checkboxQrCode.checked) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        });
+    }
+
+    // Open/close PDF417 barcode settings depending on checked barcode checkbox
+    const checkboxPDF417Barcode = document.getElementById('settings[pdf417_barcode]');
+    const panelPDF417BarcodeSettings = document.getElementById('panel-pdf417-barcode-settings');
+
+    if (checkboxPDF417Barcode && panelPDF417BarcodeSettings) {
+        checkboxPDF417Barcode.addEventListener('click', () => {
+            panelPDF417BarcodeSettings.querySelectorAll('.row').forEach((row) => {
+                if (checkboxPDF417Barcode.checked) {
                     row.classList.remove('hidden');
                 } else {
                     row.classList.add('hidden');

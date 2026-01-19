@@ -48,30 +48,30 @@ class Get extends Base_Controller
         // Security: Use comprehensive file security validation helper
         // Note: CodeIgniter already URL-decodes parameters during routing
         $validation = validate_file_access($filename, $this->targetPath);
-        
-        if (!$validation['valid']) {
+
+        if ( ! $validation['valid']) {
             $errorMap = [
-                'file_not_found' => [404, 'upload_error_file_not_found', 'File not found'],
+                'file_not_found'         => [404, 'upload_error_file_not_found', 'File not found'],
                 'path_outside_directory' => [403, 'upload_error_unauthorized_access', 'Unauthorized access'],
             ];
-            
-            $error = $validation['error'] ?? 'unknown';
+
+            $error    = $validation['error'] ?? 'unknown';
             $response = $errorMap[$error] ?? [400, 'upload_error_invalid_filename', 'Invalid filename'];
-            
+
             $this->respond_message($response[0], $response[1], $response[2]);
         }
 
-        $realFile = $validation['path'];
+        $realFile     = $validation['path'];
         $safeFilename = $validation['basename'];
-        
+
         $path_parts = pathinfo($realFile);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
-        $file_size = filesize($realFile);
-        
+        $file_size  = filesize($realFile);
+
         // Security: Sanitize filename for Content-Disposition header to prevent header injection
         $sanitizedFilename = sanitize_filename_for_header($safeFilename);
-        
+
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');

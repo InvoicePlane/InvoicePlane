@@ -20,9 +20,9 @@ function mailer_configured(): bool
 {
     $CI = &get_instance();
 
-    return ($CI->mdl_settings->setting('email_send_method') == 'phpmail') ||
-        ($CI->mdl_settings->setting('email_send_method') == 'sendmail') ||
-        (($CI->mdl_settings->setting('email_send_method') == 'smtp') && ($CI->mdl_settings->setting('smtp_server_address')));
+    return ($CI->mdl_settings->setting('email_send_method') == 'phpmail')
+        || ($CI->mdl_settings->setting('email_send_method') == 'sendmail')
+        || (($CI->mdl_settings->setting('email_send_method') == 'smtp') && ($CI->mdl_settings->setting('smtp_server_address')));
 }
 
 /**
@@ -244,19 +244,41 @@ function check_mail_errors(array $errors = [], $redirect = ''): void
         }
 
         $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
-        
+
         // Use provided redirect, or validate HTTP_REFERER against base_url
         if (empty($redirect)) {
-            $referer = $_SERVER['HTTP_REFERER'] ?? '';
+            $referer  = $_SERVER['HTTP_REFERER'] ?? '';
             $base_url = base_url();
-            // Only use referer if it's from same domain
-            if (!empty($referer) && strpos($referer, $base_url) === 0) {
-                $redirect = $referer;
+            
+            // Parse both URLs and compare scheme, host, and port for same-origin validation
+            if ( ! empty($referer)) {
+                $referer_parts  = parse_url($referer);
+                $base_url_parts = parse_url($base_url);
+                
+                // Reject if either URL is invalid or missing required components
+                if ($referer_parts === false || $base_url_parts === false ||
+                    ! isset($referer_parts['scheme']) || ! isset($referer_parts['host']) ||
+                    ! isset($base_url_parts['scheme']) || ! isset($base_url_parts['host'])) {
+                    $redirect = base_url(); // Safe default
+                } else {
+                    // Normalize ports (default to 80 for http, 443 for https if not specified)
+                    $referer_port  = $referer_parts['port'] ?? ($referer_parts['scheme'] === 'https' ? 443 : 80);
+                    $base_url_port = $base_url_parts['port'] ?? ($base_url_parts['scheme'] === 'https' ? 443 : 80);
+                    
+                    // Compare scheme, host, and port
+                    if ($referer_parts['scheme'] === $base_url_parts['scheme'] &&
+                        $referer_parts['host'] === $base_url_parts['host'] &&
+                        $referer_port === $base_url_port) {
+                        $redirect = $referer;
+                    } else {
+                        $redirect = base_url(); // Safe default
+                    }
+                }
             } else {
                 $redirect = base_url(); // Safe default
             }
         }
-        
+
         redirect($redirect);
     }
 }

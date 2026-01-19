@@ -188,8 +188,7 @@ class Setup extends MX_Controller
         // Set a new encryption key if none exists
         if (
             env('ENCRYPTION_KEY') === null
-            ||
-            env('ENCRYPTION_KEY') === ''
+            || env('ENCRYPTION_KEY') === ''
         ) {
             $this->set_encryption_key();
         }
@@ -485,22 +484,23 @@ class Setup extends MX_Controller
 
             if ($legacy_calc === null) {
                 return [
-                    'needs_config' => true,
+                    'needs_config'  => true,
                     'current_value' => 'not_set',
-                    'recommended' => 'false'
-                ];
-            } elseif ($legacy_calc === 'true' || $legacy_calc === true) {
-                return [
-                    'needs_config' => true,
-                    'current_value' => 'true',
-                    'recommended' => 'false'
-                ];
-            } else {
-                return [
-                    'needs_config' => false,
-                    'current_value' => 'false'
+                    'recommended'   => 'false',
                 ];
             }
+            if ($legacy_calc === 'true' || $legacy_calc === true) {
+                return [
+                    'needs_config'  => true,
+                    'current_value' => 'true',
+                    'recommended'   => 'false',
+                ];
+            }
+
+                return [
+                    'needs_config'  => false,
+                    'current_value' => 'false',
+                ];
         }
 
         return ['needs_config' => false];

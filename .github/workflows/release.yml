@@ -1,0 +1,484 @@
+name: Build Production Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type (alpha, beta, stable)'
+        required: true
+        default: 'alpha'
+        type: choice
+        options:
+          - alpha
+          - beta
+          - stable
+
+env:
+  RELEASE_TYPE: ${{ github.event.inputs.release_type || 'alpha' }}
+  LOG_DIR: 'workflow_logs'
+
+jobs:
+  build-release:
+    name: Build and Package Production Release
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Required for creating releases and tags
+      actions: write   # Required for uploading artifacts
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for proper tag management
+          fetch-tags: true  # Fetch tags for versioning
+
+      # Create log directory
+      - name: Create log directory
+        run: |
+          mkdir -p ${{ env.LOG_DIR }}
+          echo "Log directory created at: ${{ env.LOG_DIR }}"
+
+      # Step 1: Download translations from Crowdin (optional - continues on error)
+      - name: Download translations from Crowdin
+        id: crowdin
+        continue-on-error: true
+        uses: crowdin/github-action@v2
+        with:
+          download_translations: true
+          localization_branch_name: master
+          create_pull_request: false
+          crowdin_branch_name: master
+          config: 'crowdin.yml'
+        env:
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Log Crowdin result
+        run: |
+          LOG_FILE="${{ env.LOG_DIR }}/crowdin.log"
+          
+          if [ "${{ steps.crowdin.outcome }}" == "success" ]; then
+            echo "✓ Crowdin translations downloaded successfully" | tee -a "$LOG_FILE"
+          else
+            echo "⚠ Crowdin step skipped or failed - continuing without translations" | tee -a "$LOG_FILE"
+          fi
+
+      # Step 2: Validate translations
+      - name: Validate translations directory
+        run: |
+          set -e  # Exit on error
+          set -o pipefail  # Catch errors in pipes
+          
+          LOG_FILE="${{ env.LOG_DIR }}/translations.log"
+          
+          echo "Validating translations structure..." | tee -a "$LOG_FILE"
+          if [ ! -d "application/language/english" ]; then
+            echo "ERROR: Missing required language directory: application/language/english" | tee -a "$LOG_FILE"
+            exit 1
+          fi
+          echo "✓ Translations structure validated" | tee -a "$LOG_FILE"
+
+      # Step 3: Set up PHP and Composer (before frontend build)
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: gd, bcmath, dom, intl, xml, zip, mbstring, pdo_mysql
+          coverage: none
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies (production)
+        run: |
+          set -e
+          set -o pipefail
+          
+          LOG_FILE="${{ env.LOG_DIR }}/composer-install.log"
+          
+          echo "Installing Composer dependencies (production mode)..." | tee -a "$LOG_FILE"
+          composer install --no-dev --optimize-autoloader \
+            --no-interaction --prefer-dist 2>&1 | tee -a "$LOG_FILE"
+          echo "✓ Composer dependencies installed" | tee -a "$LOG_FILE"
+
+      # Step 4: Set up Node.js for frontend build
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Display tool versions
+        run: |
+          LOG_FILE="${{ env.LOG_DIR }}/tool-versions.log"
+          
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "Tool Versions" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "PHP version: $(php -v | head -n 1)" | tee -a "$LOG_FILE"
+          echo "Composer version: $(composer --version)" | tee -a "$LOG_FILE"
+          echo "Node.js version: $(node -v)" | tee -a "$LOG_FILE"
+          echo "npm version: $(npm -v)" | tee -a "$LOG_FILE"
+          echo "Yarn version: $(yarn -v)" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+
+      - name: Install frontend dependencies (production mode)
+        run: |
+          set -e
+          set -o pipefail
+          
+          LOG_FILE="${{ env.LOG_DIR }}/yarn-install.log"
+          
+          echo "Installing frontend dependencies..." | tee -a "$LOG_FILE"
+          yarn install --frozen-lockfile --production=false 2>&1 | tee -a "$LOG_FILE"
+          echo "✓ Frontend dependencies installed" | tee -a "$LOG_FILE"
+
+      - name: Build frontend assets for production
+        run: |
+          set -e
+          set -o pipefail
+          
+          LOG_FILE="${{ env.LOG_DIR }}/yarn-build.log"
+          
+          echo "Building frontend assets..." | tee -a "$LOG_FILE"
+          yarn build 2>&1 | tee -a "$LOG_FILE"
+          echo "✓ Frontend assets built successfully" | tee -a "$LOG_FILE"
+
+      - name: Install vendor cleaner and optimize
+        run: |
+          set -e
+          set -o pipefail
+          
+          LOG_FILE="${{ env.LOG_DIR }}/vendor-cleanup.log"
+          
+          echo "Configuring composer to allow vendor-cleaner plugin..." | tee -a "$LOG_FILE"
+          composer config --no-plugins allow-plugins.liborm85/composer-vendor-cleaner true
+          
+          echo "Installing composer-vendor-cleaner..." | tee -a "$LOG_FILE"
+          composer require liborm85/composer-vendor-cleaner \
+            --no-interaction --no-update 2>&1 | tee -a "$LOG_FILE"
+          
+          echo "Configuring vendor-cleaner exclusions..." | tee -a "$LOG_FILE"
+          composer config extra.vendor-cleaner.exclude-dir '["doc", "docs", "example", "examples", "Test", "test", "Tests", "tests"]'
+          composer config extra.vendor-cleaner.exclude-file '["CHANGELOG.md", "changelog.md", "CONTRIBUTING.md", "LICENSE", "LICENCE", "README.md", "readme.md", "phpunit.xml", "phpunit.xml.dist", ".gitignore"]'
+          
+          echo "Running composer update (vendor cleaner will run automatically)..." | tee -a "$LOG_FILE"
+          composer update liborm85/composer-vendor-cleaner --no-dev --no-interaction 2>&1 | tee -a "$LOG_FILE"
+          echo "✓ Vendor directory optimized (cleaner ran automatically during update)" | tee -a "$LOG_FILE"
+
+      # Step 5: Cleanup workspace
+      - name: Clean workspace
+        run: |
+          set -e
+          set -o pipefail
+          
+          LOG_FILE="${{ env.LOG_DIR }}/cleanup.log"
+          
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "Cleaning Workspace" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          
+          echo "Removing npm dependencies (node_modules)..." | tee -a "$LOG_FILE"
+          rm -rf node_modules
+          
+          echo "Removing .DS_Store files..." | tee -a "$LOG_FILE"
+          find . -type f -name '.DS_Store' -delete
+          
+          echo "Cleaning mPDF fonts (keeping only DejaVu)..." | tee -a "$LOG_FILE"
+          find vendor/mpdf/mpdf/ttfonts -type f ! -name "DejaVu*" \
+            -delete 2>/dev/null || true
+          
+          echo "Cleaning mPDF QR code data..." | tee -a "$LOG_FILE"
+          rm -rf vendor/mpdf/mpdf/src/QrCode/data/* 2>/dev/null || true
+          
+          echo "Removing .git directories from vendor..." | tee -a "$LOG_FILE"
+          find vendor -name '.git' -type d -exec rm -rf {} + 2>/dev/null || true
+          
+          echo "Removing .github directories..." | tee -a "$LOG_FILE"
+          rm -rf .github
+          
+          echo "✓ Workspace cleaned successfully" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+
+      # Step 6: Generate version tag and release notes
+      - name: Generate version tag and release notes
+        id: version
+        run: |
+          set -e
+          set -o pipefail
+          
+          LOG_FILE="${{ env.LOG_DIR }}/version.log"
+          
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "Generating Version Tag" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          
+          # Get the latest tag or start with v2.0.0-alpha.1
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v2.0.0-alpha.1")
+          echo "Previous tag: ${PREVIOUS_TAG}" | tee -a "$LOG_FILE"
+          
+          # Extract version numbers and suffix
+          VERSION=${PREVIOUS_TAG#v}
+          
+          # Parse version with alpha/beta suffix
+          if [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)-alpha\.([0-9]+)$ ]]; then
+            MAJOR="${BASH_REMATCH[1]}"
+            MINOR="${BASH_REMATCH[2]}"
+            PATCH="${BASH_REMATCH[3]}"
+            ALPHA_NUM="${BASH_REMATCH[4]}"
+          elif [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)-beta\.([0-9]+)$ ]]; then
+            MAJOR="${BASH_REMATCH[1]}"
+            MINOR="${BASH_REMATCH[2]}"
+            PATCH="${BASH_REMATCH[3]}"
+            BETA_NUM="${BASH_REMATCH[4]}"
+          elif [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            MAJOR="${BASH_REMATCH[1]}"
+            MINOR="${BASH_REMATCH[2]}"
+            PATCH="${BASH_REMATCH[3]}"
+          else
+            # Default to 2.0.0 if parsing fails
+            MAJOR=2
+            MINOR=0
+            PATCH=0
+          fi
+          
+          # Increment version based on release type
+          case "${{ env.RELEASE_TYPE }}" in
+            alpha)
+              # Validate not downgrading from beta
+              if [ -n "$BETA_NUM" ]; then
+                echo "ERROR: Cannot switch from beta to alpha. Current version is beta, use beta or stable release type." | tee -a "$LOG_FILE"
+                exit 1
+              fi
+              if [ -n "$ALPHA_NUM" ]; then
+                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-alpha.$((ALPHA_NUM + 1))"
+              else
+                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-alpha.1"
+              fi
+              ;;
+            beta)
+              # Validate not downgrading from stable
+              if [ -z "$ALPHA_NUM" ] && [ -z "$BETA_NUM" ] && [ "$PREVIOUS_TAG" != "v2.0.0-alpha.1" ]; then
+                echo "ERROR: Cannot switch from stable to beta. Current version is stable, use stable release type." | tee -a "$LOG_FILE"
+                exit 1
+              fi
+              if [ -n "$BETA_NUM" ]; then
+                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-beta.$((BETA_NUM + 1))"
+              else
+                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-beta.1"
+              fi
+              ;;
+            stable)
+              # Validate not skipping beta (strict progression: alpha → beta → stable)
+              if [ -n "$ALPHA_NUM" ]; then
+                echo "ERROR: Cannot switch directly from alpha to stable. Current version is alpha, use beta release type first." | tee -a "$LOG_FILE"
+                exit 1
+              fi
+              # If current version is a pre-release (beta), promote it to stable without bumping
+              if [ -n "$BETA_NUM" ]; then
+                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+              else
+                # From an already-stable version, bump MINOR and reset PATCH
+                MINOR=$((MINOR + 1))
+                NEW_VERSION="${MAJOR}.${MINOR}.0"
+              fi
+              ;;
+            *)
+              echo "ERROR: Invalid RELEASE_TYPE: ${{ env.RELEASE_TYPE }}" | tee -a "$LOG_FILE"
+              exit 1
+              ;;
+          esac
+          
+          NEW_TAG="v${NEW_VERSION}"
+          echo "New tag: ${NEW_TAG}" | tee -a "$LOG_FILE"
+          
+          # Store for later steps
+          echo "NEW_TAG=${NEW_TAG}" >> $GITHUB_ENV
+          echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
+          echo "PREVIOUS_TAG=${PREVIOUS_TAG}" >> $GITHUB_ENV
+          echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
+          
+          echo "✓ Version tag generated" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          
+          # Generate release notes between tags
+          echo "Generating release notes..." | tee -a "$LOG_FILE"
+          echo "# Release ${NEW_TAG}" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "**Release Type:** ${{ env.RELEASE_TYPE }}" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          if [ "$PREVIOUS_TAG" = "v2.0.0-alpha.1" ]; then
+            echo "## Initial Release" >> RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
+            echo "This is the first release of InvoicePlane v2." >> RELEASE_NOTES.md
+          else
+            echo "## Changes since ${PREVIOUS_TAG}" >> RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
+            
+            # Fetch previous tag for comparison
+            git fetch origin tag ${PREVIOUS_TAG} 2>/dev/null || true
+            
+            # Generate changelog
+            git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s (%h)" >> RELEASE_NOTES.md 2>/dev/null || \
+              echo "- Initial release" >> RELEASE_NOTES.md
+          fi
+          
+          echo "" >> RELEASE_NOTES.md
+          echo "---" >> RELEASE_NOTES.md
+          echo "Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> RELEASE_NOTES.md
+          
+          echo "✓ Release notes generated" | tee -a "$LOG_FILE"
+          cat RELEASE_NOTES.md | tee -a "$LOG_FILE"
+
+      # Step 7: Create release archive
+      - name: Package InvoicePlane
+        run: |
+          set -e
+          set -o pipefail
+          
+          LOG_FILE="${{ env.LOG_DIR }}/packaging.log"
+          
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "Creating Release Package" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          
+          # Use the version tag for the release name
+          RELEASE_FILE="ip-${{ env.NEW_VERSION }}.zip"
+          
+          echo "Package name: ${RELEASE_FILE}" | tee -a "$LOG_FILE"
+          
+          # Create zip excluding unnecessary files
+          echo "Creating ZIP archive (this may take a moment)..." | tee -a "$LOG_FILE"
+          zip -q -r -9 "${RELEASE_FILE}" . \
+            -x "*.git*" \
+            -x "node_modules/*" \
+            -x "tests/*" \
+            -x ".env*" \
+            -x "*.sqlite" \
+            -x "storage/logs/*" \
+            -x "storage/framework/cache/*" \
+            -x "storage/framework/sessions/*" \
+            -x "storage/framework/views/*" \
+            -x ".phpunit*" \
+            -x "phpunit.xml" \
+            -x "phpstan.neon" \
+            -x "phpstan-baseline.neon" \
+            -x "pint.json" \
+            -x "rector.php" \
+            -x ".editorconfig" \
+            -x ".prettierrc" \
+            -x "docker-compose.yml" \
+            -x "yarn.lock" \
+            -x "package.json" \
+            -x "vite.config.js" \
+            -x "tailwind.config.js" \
+            -x ".DS_Store" \
+            -x "${{ env.LOG_DIR }}/*"
+          
+          echo "✓ Package created successfully" | tee -a "$LOG_FILE"
+          
+          echo "Generating checksums..." | tee -a "$LOG_FILE"
+          sha256sum "${RELEASE_FILE}" > sha256.txt
+          md5sum "${RELEASE_FILE}" > md5.txt
+          
+          SHA256_HASH=$(awk '{print $1}' sha256.txt)
+          MD5_HASH=$(awk '{print $1}' md5.txt)
+          
+          echo "SHA256: ${SHA256_HASH}" | tee -a "$LOG_FILE"
+          echo "MD5: ${MD5_HASH}" | tee -a "$LOG_FILE"
+          echo "✓ Checksums generated" | tee -a "$LOG_FILE"
+          
+          echo "RELEASE_FILE=${RELEASE_FILE}" >> $GITHUB_ENV
+          echo "SHA256_HASH=${SHA256_HASH}" >> $GITHUB_ENV
+          echo "MD5_HASH=${MD5_HASH}" >> $GITHUB_ENV
+          
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "Package Details" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          ls -lh "${RELEASE_FILE}" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+
+      # Step 8: Upload release artifact
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ip-${{ env.NEW_VERSION }}
+          path: |
+            ${{ env.RELEASE_FILE }}
+            sha256.txt
+            md5.txt
+            RELEASE_NOTES.md
+            ${{ env.LOG_DIR }}/**
+          retention-days: 90
+
+      # Step 9: Create GitHub Draft Pre-Release
+      - name: Create GitHub Draft Pre-Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.NEW_TAG }}
+          name: Release ${{ env.NEW_TAG }}
+          body_path: RELEASE_NOTES.md
+          files: |
+            ${{ env.RELEASE_FILE }}
+            sha256.txt
+            md5.txt
+          draft: true
+          prerelease: ${{ env.RELEASE_TYPE != 'stable' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 10: Workflow complete
+      - name: Workflow summary
+        run: |
+          LOG_FILE="${{ env.LOG_DIR }}/summary.log"
+          
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "INVOICEPLANE V2 WORKFLOW COMPLETED" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "Release: ${{ env.NEW_TAG }}" | tee -a "$LOG_FILE"
+          echo "Type: ${{ env.RELEASE_TYPE }}" | tee -a "$LOG_FILE"
+          echo "Package: ${{ env.RELEASE_FILE }}" | tee -a "$LOG_FILE"
+          echo "Artifact name: ip-${{ env.NEW_VERSION }}" | tee -a "$LOG_FILE"
+          echo "" | tee -a "$LOG_FILE"
+          echo "Checksums:" | tee -a "$LOG_FILE"
+          echo "  SHA256: ${{ env.SHA256_HASH }}" | tee -a "$LOG_FILE"
+          echo "  MD5: ${{ env.MD5_HASH }}" | tee -a "$LOG_FILE"
+          echo "" | tee -a "$LOG_FILE"
+          echo "Release notes: RELEASE_NOTES.md" | tee -a "$LOG_FILE"
+          echo "Logs directory: ${{ env.LOG_DIR }}" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "GitHub Draft Pre-Release created successfully!" | tee -a "$LOG_FILE"
+          echo "Review the draft release and publish when ready." | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          
+          # Add to GitHub Actions summary
+          echo "## Release Build Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** \`${{ env.NEW_TAG }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Type:** ${{ env.RELEASE_TYPE }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Package:** \`${{ env.RELEASE_FILE }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Download" >> $GITHUB_STEP_SUMMARY
+          echo "- Artifact: \`ip-${{ env.NEW_VERSION }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Checksums" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "SHA256: ${{ env.SHA256_HASH }}" >> $GITHUB_STEP_SUMMARY
+          echo "MD5: ${{ env.MD5_HASH }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review the draft release in GitHub" >> $GITHUB_STEP_SUMMARY
+          echo "2. Test the package if needed" >> $GITHUB_STEP_SUMMARY
+          echo "3. Publish the release when ready" >> $GITHUB_STEP_SUMMARY

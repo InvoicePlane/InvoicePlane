@@ -215,7 +215,7 @@ class Sessions extends Base_Controller
             // Test if a user with this email exists
             $this->db->where('user_email', $email);
             $user = $this->db->get('ip_users')->row();
-            
+
             // Security: Always show the same message regardless of whether email exists
             // This prevents email enumeration attacks
             if ($user) {
@@ -321,71 +321,72 @@ class Sessions extends Base_Controller
     }
 
     /**
-     * Check if IP address has exceeded rate limit for password resets using session storage
+     * Check if IP address has exceeded rate limit for password resets using session storage.
      *
-     * @param int $max_attempts Maximum attempts allowed per hour
+     * @param int $max_attempts   Maximum attempts allowed per hour
      * @param int $window_minutes Time window in minutes
      *
      * @return bool True if rate limited, false otherwise
      */
     private function _is_ip_rate_limited_password_reset()
     {
-        $max_attempts = env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
+        $max_attempts   = env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
         $window_minutes = env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
-        
-        $ip_address = $this->input->ip_address();
+
+        $ip_address  = $this->input->ip_address();
         $session_key = 'password_reset_attempts_' . md5($ip_address);
-        
+
         // Get current attempts from session
         $attempts = $this->session->userdata($session_key);
-        
-        if (!$attempts) {
+
+        if ( ! $attempts) {
             $attempts = [];
         }
-        
+
         // Clean up old attempts outside the time window
         $cutoff_time = time() - ($window_minutes * 60);
-        $attempts = array_filter($attempts, function($timestamp) use ($cutoff_time) {
+        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
             return $timestamp > $cutoff_time;
         });
-        
+
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
             log_message('info', trans('log_ip_rate_limit_check') . ': ' . count($attempts) . ' attempts from IP: ' . $ip_address);
+
             return true;
         }
-        
+
         return false;
     }
 
     /**
-     * Record a password reset attempt for the current IP
+     * Record a password reset attempt for the current IP.
      */
     private function _record_password_reset_attempt()
     {
-        $ip_address = $this->input->ip_address();
+        $ip_address  = $this->input->ip_address();
         $session_key = 'password_reset_attempts_' . md5($ip_address);
-        
+
         // Get current attempts from session
         $attempts = $this->session->userdata($session_key);
-        
-        if (!$attempts) {
+
+        if ( ! $attempts) {
             $attempts = [];
         }
-        
+
         // Add current timestamp
         $attempts[] = time();
-        
+
         // Store back to session
         $this->session->set_userdata($session_key, $attempts);
     }
 
     /**
-     * Check if email-based rate limit exceeded for password resets using session storage
+     * Check if email-based rate limit exceeded for password resets using session storage.
      *
-     * @param string $email Email address to check
-     * @param int $max_attempts Maximum attempts allowed
-     * @param int $window_hours Time window in hours
+     * @param string $email        Email address to check
+     * @param int    $max_attempts Maximum attempts allowed
+     * @param int    $window_hours Time window in hours
      *
      * @return bool True if rate limited, false otherwise
      */
@@ -393,63 +394,64 @@ class Sessions extends Base_Controller
     {
         $max_attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3);
         $window_hours = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
-    
+
         $session_key = 'password_reset_email_' . md5($email);
-        
+
         // Get current attempts from session
         $attempts = $this->session->userdata($session_key);
-        
-        if (!$attempts) {
+
+        if ( ! $attempts) {
             $attempts = [];
         }
-        
+
         // Clean up old attempts outside the time window
         $cutoff_time = time() - ($window_hours * 3600);
-        $attempts = array_filter($attempts, function($timestamp) use ($cutoff_time) {
+        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
             return $timestamp > $cutoff_time;
         });
-        
+
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
             log_message('info', trans('log_email_rate_limit_check') . ': ' . count($attempts) . ' attempts for email: ' . $email);
+
             return true;
         }
-        
+
         return false;
     }
 
     /**
-     * Record a password reset attempt for a specific email
+     * Record a password reset attempt for a specific email.
      *
      * @param string $email Email address
      */
     private function _record_email_password_reset_attempt($email)
     {
         $session_key = 'password_reset_email_' . md5($email);
-        
+
         // Get current attempts from session
         $attempts = $this->session->userdata($session_key);
-        
-        if (!$attempts) {
+
+        if ( ! $attempts) {
             $attempts = [];
         }
-        
+
         // Add current timestamp
         $attempts[] = time();
-        
+
         // Store back to session
         $this->session->set_userdata($session_key, $attempts);
     }
 
     /**
-     * Check if the current request is from an automated tool or bot
+     * Check if the current request is from an automated tool or bot.
      *
      * @return bool True if bot/automated tool detected, false otherwise
      */
     private function _is_bot_request()
     {
         $user_agent = $this->input->user_agent();
-        
+
         // List of common automated tools and bots
         $bot_signatures = [
             'curl',
@@ -468,20 +470,20 @@ class Sessions extends Base_Controller
             'insomnia',
             'paw/',
         ];
-        
+
         // Check if user agent is empty (common with automated tools)
         if (empty($user_agent)) {
             return true;
         }
-        
+
         // Check if user agent contains any bot signatures (case-insensitive)
-        $user_agent_lower = strtolower($user_agent);
+        $user_agent_lower = mb_strtolower($user_agent);
         foreach ($bot_signatures as $signature) {
-            if (strpos($user_agent_lower, $signature) !== false) {
+            if (str_contains($user_agent_lower, $signature)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -525,29 +527,30 @@ class Sessions extends Base_Controller
 
     /**
      * Validates that a referer URL is from the same domain
-     * to prevent open redirect vulnerabilities
+     * to prevent open redirect vulnerabilities.
      *
      * @param string $referer
+     *
      * @return string Safe redirect URL
      */
     private function _get_safe_referer($referer = '')
     {
         // Use provided referer or HTTP_REFERER
         $referer = empty($referer) ? ($_SERVER['HTTP_REFERER'] ?? '') : $referer;
-        
+
         // If no referer, use default
         if (empty($referer)) {
             return 'sessions/passwordreset';
         }
-        
+
         // Get base URL
         $base_url = base_url();
-        
+
         // Check if referer starts with base URL (same domain)
-        if (strpos($referer, $base_url) === 0) {
+        if (str_starts_with($referer, $base_url)) {
             return $referer;
         }
-        
+
         // Referer is external or invalid, use safe default
         return 'sessions/passwordreset';
     }
