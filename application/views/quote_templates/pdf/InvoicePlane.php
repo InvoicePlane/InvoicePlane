@@ -175,12 +175,6 @@ foreach ($items as $item) {
     }
 ?>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_discount); ?>
-                </td>
-<?php
-    }
-?>
-                <td class="text-right">
                     <?php echo format_currency(htmlsc($item->item_total)); ?>
                 </td>
             </tr>
