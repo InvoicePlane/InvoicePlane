@@ -143,10 +143,11 @@ class Mdl_Invoices_Recurring extends Response_Model
         if (get_setting('generate_recurring_if_unpaid') == '0') {
             // Subquery to check if client has any unpaid invoices
             // Only generate next recurring invoice if client has no outstanding balance
-            $this->filter_where('ip_invoices.client_id NOT IN (
-                SELECT DISTINCT i.client_id 
-                FROM ip_invoices i
-                INNER JOIN ip_invoice_amounts ia ON i.invoice_id = ia.invoice_id
+            // Use ip_clients.client_id which is already joined in default_join()
+            $this->filter_where('ip_clients.client_id NOT IN (
+                SELECT DISTINCT inv.client_id 
+                FROM ip_invoices inv
+                INNER JOIN ip_invoice_amounts ia ON inv.invoice_id = ia.invoice_id
                 WHERE ia.invoice_balance > 0
             )');
         }
