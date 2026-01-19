@@ -21,10 +21,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build and start containers (if docker-compose.yml is ready)
-        run: docker-compose up -d --build
+        run: docker compose up -d --build
 
       - name: Check running services
-        run: docker-compose ps
+        run: docker compose ps
 
       #- name:
       #    Optional: Run health checks or tests

@@ -468,7 +468,7 @@ $qr_code = get_setting('qr_code');
 
         <div class="panel panel-default" id="panel-pdf417-barcode-settings">
             <div class="panel-heading">
-                <?php _trans('417_barcode_settings'); ?>
+                <?php _trans('pdf_417_barcode_settings'); ?>
             </div>
             <div class="panel-body">
 
@@ -487,38 +487,38 @@ $qr_code = get_setting('qr_code');
                                 value="1"
                                 <?php check_select(get_setting('417_barcode'), 1, '==', true) ?>
                             >
-                            <?php _trans('417_barcode_settings_enable'); ?>
+                            <?php _trans('pdf_417_barcode_settings_enable'); ?>
                         </label>
-                        <p class="help-block"><?php _trans('417_barcode_settings_enable_hint'); ?></p>
+                        <p class="help-block"><?php _trans('pdf_417_barcode_settings_enable_hint'); ?></p>
                     </div>
                 </div>
 
                 <div class="row <?php echo ! get_setting('417_barcode') ? 'hidden' : ''; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[417_barcode_settings_recipient_street_name]">
-                                <?php _trans('417_barcode_settings_recipient_street_name'); ?>
+                            <label for="settings[pdf_417_barcode_settings_recipient_street_name]">
+                                <?php _trans('pdf_417_barcode_settings_recipient_street_name'); ?>
                             </label>
                             <input
                                 type="text"
-                                name="settings[417_barcode_settings_recipient_street_name]"
-                                id="settings[417_barcode_settings_recipient_street_name]"
+                                name="settings[pdf_417_barcode_settings_recipient_street_name]"
+                                id="settings[pdf_417_barcode_settings_recipient_street_name]"
                                 class="form-control"
-                                value="<?php echo get_setting('417_barcode_settings_recipient_street_name'); ?>"
+                                value="<?php echo get_setting('pdf_417_barcode_settings_recipient_street_name'); ?>"
                             >
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[417_barcode_settings_recipient_name]">
-                                <?php _trans('417_barcode_settings_recipient_name'); ?>
+                            <label for="settings[pdf_417_barcode_settings_recipient_name]">
+                                <?php _trans('pdf_417_barcode_settings_recipient_name'); ?>
                             </label>
                             <input
                                 type="text"
-                                name="settings[417_barcode_settings_recipient_name]"
-                                id="settings[417_barcode_settings_recipient_name]"
+                                name="settings[pdf_417_barcode_settings_recipient_name]"
+                                id="settings[pdf_417_barcode_settings_recipient_name]"
                                 class="form-control"
-                                value="<?php echo get_setting('417_barcode_settings_recipient_name'); ?>"
+                                value="<?php echo get_setting('pdf_417_barcode_settings_recipient_name'); ?>"
                             >
                         </div>
                     </div>
@@ -528,29 +528,29 @@ $qr_code = get_setting('qr_code');
                 <div class="row <?php echo ! get_setting('417_barcode') ? 'hidden' : ''; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[417_barcode_settings_recipient_street_number]">
-                                <?php _trans('417_barcode_settings_recipient_street_number'); ?>
+                            <label for="settings[pdf_417_barcode_settings_recipient_street_number]">
+                                <?php _trans('pdf_417_barcode_settings_recipient_street_number'); ?>
                             </label>
                             <input
                                 type="text"
-                                name="settings[417_barcode_settings_recipient_street_number]"
-                                id="settings[417_barcode_settings_recipient_street_number]"
+                                name="settings[pdf_417_barcode_settings_recipient_street_number]"
+                                id="settings[pdf_417_barcode_settings_recipient_street_number]"
                                 class="form-control"
-                                value="<?php echo get_setting('417_barcode_settings_recipient_street_number'); ?>"
+                                value="<?php echo get_setting('pdf_417_barcode_settings_recipient_street_number'); ?>"
                             >
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[417_barcode_settings_recipient_iban]">
-                                <?php _trans('417_barcode_settings_recipient_iban'); ?>
+                            <label for="settings[pdf_417_barcode_settings_recipient_iban]">
+                                <?php _trans('pdf_417_barcode_settings_recipient_iban'); ?>
                             </label>
                             <input
                                 type="text"
-                                name="settings[417_barcode_settings_recipient_iban]"
-                                id="settings[417_barcode_settings_recipient_iban]"
+                                name="settings[pdf_417_barcode_settings_recipient_iban]"
+                                id="settings[pdf_417_barcode_settings_recipient_iban]"
                                 class="form-control"
-                                value="<?php echo get_setting('417_barcode_settings_recipient_iban'); ?>"
+                                value="<?php echo get_setting('pdf_417_barcode_settings_recipient_iban'); ?>"
                             >
                         </div>
                     </div>
@@ -559,29 +559,29 @@ $qr_code = get_setting('qr_code');
                 <div class="row <?php echo ! get_setting('417_barcode') ? 'hidden' : ''; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[417_barcode_settings_recipient_city]">
-                                <?php _trans('417_barcode_settings_recipient_city'); ?>
+                            <label for="settings[pdf_417_barcode_settings_recipient_city]">
+                                <?php _trans('pdf_417_barcode_settings_recipient_city'); ?>
                             </label>
                             <input
                                 type="text"
-                                name="settings[417_barcode_settings_recipient_city]"
-                                id="settings[417_barcode_settings_recipient_city]"
+                                name="settings[pdf_417_barcode_settings_recipient_city]"
+                                id="settings[pdf_417_barcode_settings_recipient_city]"
                                 class="form-control"
-                                value="<?php echo get_setting('417_barcode_settings_recipient_city'); ?>"
+                                value="<?php echo get_setting('pdf_417_barcode_settings_recipient_city'); ?>"
                             >
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[417_barcode_settings_recipient_bic]">
-                                <?php _trans('417_barcode_settings_recipient_bic'); ?>
+                            <label for="settings[pdf_417_barcode_settings_recipient_bic]">
+                                <?php _trans('pdf_417_barcode_settings_recipient_bic'); ?>
                             </label>
                             <input
                                 type="text"
-                                name="settings[417_barcode_settings_recipient_bic]"
-                                id="settings[417_barcode_settings_recipient_bic]"
+                                name="settings[pdf_417_barcode_settings_recipient_bic]"
+                                id="settings[pdf_417_barcode_settings_recipient_bic]"
                                 class="form-control"
-                                value="<?php echo get_setting('417_barcode_settings_recipient_bic'); ?>"
+                                value="<?php echo get_setting('pdf_417_barcode_settings_recipient_bic'); ?>"
                             >
                         </div>
                     </div>
@@ -592,15 +592,15 @@ $qr_code = get_setting('qr_code');
                 <div class="row <?php echo ! get_setting('417_barcode') ? 'hidden' : ''; ?>">
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[417_barcode_settings_recipient_zip_code]">
-                                <?php _trans('417_barcode_settings_recipient_zip_code'); ?>
+                            <label for="settings[pdf_417_barcode_settings_recipient_zip_code]">
+                                <?php _trans('pdf_417_barcode_settings_recipient_zip_code'); ?>
                             </label>
                             <input
                                 type="text"
-                                name="settings[417_barcode_settings_recipient_zip_code]"
-                                id="settings[417_barcode_settings_recipient_zip_code]"
+                                name="settings[pdf_417_barcode_settings_recipient_zip_code]"
+                                id="settings[pdf_417_barcode_settings_recipient_zip_code]"
                                 class="form-control"
-                                value="<?php echo get_setting('417_barcode_settings_recipient_zip_code'); ?>"
+                                value="<?php echo get_setting('pdf_417_barcode_settings_recipient_zip_code'); ?>"
                             >
                         </div>
                     </div>
@@ -608,22 +608,22 @@ $qr_code = get_setting('qr_code');
 
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
-                            <label for="settings[417_barcode_settings_remittance_text]">
-                                <?php _trans('417_barcode_settings_remittance_text'); ?>
+                            <label for="settings[pdf_417_barcode_settings_remittance_text]">
+                                <?php _trans('pdf_417_barcode_settings_remittance_text'); ?>
                             </label>
                             <input
                                 type="text"
-                                name="settings[417_barcode_settings_remittance_text]"
-                                id="settings[417_barcode_settings_remittance_text]"
+                                name="settings[pdf_417_barcode_settings_remittance_text]"
+                                id="settings[pdf_417_barcode_settings_remittance_text]"
                                 class="form-control taggable"
-                                value="<?php echo get_setting('417_barcode_settings_remittance_text'); ?>"
+                                value="<?php echo get_setting('pdf_417_barcode_settings_remittance_text'); ?>"
                                 placeholder="{{{invoice_number}}}"
                             >
                         </div>
 
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <?php _trans('417_barcode_settings_remittance_text_tags'); ?>
+                                <?php _trans('pdf_417_barcode_settings_remittance_text_tags'); ?>
                             </div>
                             <div class="panel-body">
                                 <?php $this->layout->load_view('email_templates/template-tags-invoices'); ?>
