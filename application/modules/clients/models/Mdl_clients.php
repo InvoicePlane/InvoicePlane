@@ -318,10 +318,12 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
-     * @deprecated Use get_all_services() instead.
+     * Legacy alias for get_all_services().
      *
      * Kept for backwards compatibility. This method returns all services
      * and does not filter by client.
+     *
+     * @return array
      */
     public function service_by_client()
     {
