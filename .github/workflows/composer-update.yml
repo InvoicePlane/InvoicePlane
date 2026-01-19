@@ -81,6 +81,9 @@ jobs:
       - name: Check for changes
         id: check-changes
         run: |
+          # Check both composer.lock and composer.json separately
+          # Both conditions must be true (no changes) for changes_detected to be false
+          # This ensures we detect changes to either file
           if git diff --quiet composer.lock && git diff --quiet composer.json; then
             echo "changes_detected=false" >> $GITHUB_OUTPUT
           else

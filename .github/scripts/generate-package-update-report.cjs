@@ -30,8 +30,9 @@ function parseYarnLock(content) {
   let currentVersion = null;
 
   for (const line of lines) {
-    // Match package declaration lines (e.g., "package-name@^1.0.0:")
-    const packageMatch = line.match(/^"?([^@\s]+)@[^"]*"?:/);
+    // Match package declaration lines (e.g., "package-name@^1.0.0:" or "@scope/package@^1.0.0:")
+    // Handles regular packages, scoped packages (@scope/package), and various quoting patterns
+    const packageMatch = line.match(/^"?(@?[^@\s]+)@[^"]*"?:/);
     if (packageMatch) {
       currentPackage = packageMatch[1];
       currentVersion = null;
