@@ -69,43 +69,92 @@ class Paypal extends Base_Controller
         if ($paypal_response['status']) {
             $paypal_object = json_decode($paypal_response['response']->getBody());
 
-            $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id;
-            $amount     = $paypal_object->purchase_units[0]->payments->captures[0]->amount->value;
+            // Set the status of the actual transaction (not just the API call result.)
+            $capture_status = mb_strtoupper($paypal_object->purchase_units[0]->payments->captures[0]->status) ?? null;
 
-            //record the payment
-            $this->load->model('payments/mdl_payments');
+            // If either Completed or Pending, we're treating it as completed from the buyer's perspective.
+            if ($capture_status === 'COMPLETED' || $capture_status === 'PENDING') {
+                $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id;
+                $amount     = $paypal_object->purchase_units[0]->payments->captures[0]->amount->value;
 
-            $this->mdl_payments->save(null, [
-                'invoice_id'        => $invoice_id,
-                'payment_date'      => date('Y-m-d'),
-                'payment_amount'    => $amount,
-                'payment_method_id' => get_setting('gateway_paypal_payment_method'),
-                'payment_note'      => '', // why is empty?
-            ]);
+                //record the payment
+                $this->load->model('payments/mdl_payments');
 
-            $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                // If the payment status is pending, set a note accordingly.
+                $payment_note = ($capture_status === 'PENDING') ? 'Payment Pending!  Check PayPal for details.' : '';
 
-            $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
-            $this->session->keep_flashdata('alert_success');
+                $this->mdl_payments->save(null, [
+                    'invoice_id'        => $invoice_id,
+                    'payment_date'      => date('Y-m-d'),
+                    'payment_amount'    => $amount,
+                    'payment_method_id' => get_setting('gateway_paypal_payment_method'),
+                    'payment_note'      => $payment_note,
+                ]);
 
-            $this->db->insert('ip_merchant_responses', [
-                'invoice_id'                   => $invoice_id,
-                'merchant_response_successful' => true,
-                'merchant_response_date'       => date('Y-m-d'),
-                'merchant_response_driver'     => 'paypal',
-                'merchant_response'            => $paypal_object->status,
-                'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
-            ]);
+                $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+
+                $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
+                $this->session->keep_flashdata('alert_success');
+
+                /*
+                 * merchant_response_success will be set to true for both completed and pending,
+                 * so that it will show up as green in the logs.
+                 *
+                 * In the future we could include a "pending" status, and maybe show it
+                 * as blue..??
+                 *
+                 * TODO Add Pending Status
+                 *
+                 * merchant_response is now the actual capture status.
+                 */
+                $this->db->insert('ip_merchant_responses', [
+                    'invoice_id'                   => $invoice_id,
+                    'merchant_response_successful' => true,
+                    'merchant_response_date'       => date('Y-m-d'),
+                    'merchant_response_driver'     => 'paypal',
+                    'merchant_response'            => $capture_status,
+                    'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
+                ]);
+            } else {
+                // Payment failed (DECLINED or any other non-success status)
+                $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
+
+                // If we can't get invoice_id from captures, try to get it from order details
+                if ( ! $invoice_id) {
+                    $order_details = json_decode($this->lib_paypal->showOrderDetails($order_id));
+                    $invoice_id    = $order_details->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
+                }
+
+                // Get processor response code if available.
+                $processor_response_code = $paypal_object->purchase_units[0]->payments->captures[0]->processor_response->response_code ?? 'Unknown error';
+
+                // Record the failed transaction in the logs along with processor response code.
+                $this->db->insert('ip_merchant_responses', [
+                    'invoice_id'                   => $invoice_id,
+                    'merchant_response_successful' => false,
+                    'merchant_response_date'       => date('Y-m-d'),
+                    'merchant_response_driver'     => 'paypal',
+                    'merchant_response'            => $capture_status . ': ' . $processor_response_code,
+                    'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
+                ]);
+
+                //set error message to be flashed
+                $this->session->set_flashdata(
+                    'alert_error',
+                    trans('online_payment_payment_failed')
+                );
+                $this->session->keep_flashdata('alert_error');
+            }
         } else {
             $response_error = json_decode($paypal_response['error']->getResponse()->getBody());
 
             //get the order details to have the invoice id from paypal
-            $order_details = json_decode($this->paypal->showOrderDetails($order_id));
+            $order_details = json_decode($this->lib_paypal->showOrderDetails($order_id));
 
             //record the failed transaction in the logs
             $this->db->insert('ip_merchant_responses', [
                 'invoice_id'                   => $order_details->purchase_units[0]->payments->captures[0]->invoice_id,
-                'merchant_response_successful' => true,
+                'merchant_response_successful' => false,
                 'merchant_response_date'       => date('Y-m-d'),
                 'merchant_response_driver'     => 'paypal',
                 'merchant_response'            => 'name: ' . $response_error->name . '; details: ' . $response_error->details[0]->description,
@@ -115,7 +164,7 @@ class Paypal extends Base_Controller
             //set error message to be flashed
             $this->session->set_flashdata(
                 'alert_error',
-                trans('online_payment_payment_failed') . '<br>' . $response_error->details[0]->description
+                trans('online_payment_payment_failed')
             );
             $this->session->keep_flashdata('alert_error');
         }

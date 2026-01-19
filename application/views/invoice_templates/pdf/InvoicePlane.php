@@ -15,7 +15,7 @@ $text_class_balance = '';
 $watermark          = '';
 $stamp              = '';
 $show_qrcode        = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
-$invoice_mode ??= 'default'; // from template - overdue / paid.php
+$invoice_mode       ??= 'default'; // from template - overdue / paid.php
 
 switch ($invoice_mode) {
     case 'overdue':
@@ -371,12 +371,8 @@ if ($invoice->invoice_terms) {
 }
 ?>
 </div>
-
-<htmlpagefooter name="footer">
-    <footer>
-        <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number; ?> - <?php _trans('page'); ?> {PAGENO} / {nbpg}
-    </footer>
-</htmlpagefooter>
-
+<sethtmlpagefooter name="defaultFooter" value="on" />
+<!-- To use the template with page numbering, uncomment the following line -->
+<!-- <sethtmlpagefooter name="footerWithPageNumbers" value="on" /> -->
 </body>
 </html>

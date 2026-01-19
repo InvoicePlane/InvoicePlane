@@ -22,7 +22,8 @@ class Invoices extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
-
+        
+        $this->load->helper('file_security');
         $this->load->model('mdl_invoices');
     }
 
@@ -91,27 +92,25 @@ class Invoices extends Admin_Controller
 
     public function download($invoice): void
     {
-        $safeBaseDir = realpath(UPLOADS_ARCHIVE_FOLDER);
-
-        $fileName = urldecode(basename($invoice)); // Strip directory traversal sequences
-        $filePath = realpath($safeBaseDir . DIRECTORY_SEPARATOR . $fileName);
-
-        if ($filePath === false || ! str_starts_with($filePath, $safeBaseDir)) {
-            log_message('error', 'Invalid file access attempt: ' . $fileName);
+        // Security: Use comprehensive file security validation
+        // Note: Removed urldecode() - CodeIgniter already handles this
+        $validation = validate_file_access($invoice, UPLOADS_ARCHIVE_FOLDER);
+        
+        if (!$validation['valid']) {
+            $error = $validation['error'] ?? 'unknown';
+            log_message('error', 'invoices: Invalid file access attempt during download (error: ' . $error . ', hash: ' . $validation['hash'] . ')');
             show_404();
-
             return;
         }
 
-        if ( ! file_exists($filePath)) {
-            log_message('error', 'While downloading: File not found: ' . $filePath);
-            show_404();
-
-            return;
-        }
+        $filePath = $validation['path'];
+        $safeFilename = $validation['basename'];
+        
+        // Security: Sanitize filename for header
+        $sanitizedFilename = sanitize_filename_for_header($safeFilename);
 
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+        header('Content-Disposition: attachment; filename="' . $sanitizedFilename . '"');
         header('Content-Length: ' . filesize($filePath));
         readfile($filePath);
         exit;

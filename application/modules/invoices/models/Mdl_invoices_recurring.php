@@ -61,6 +61,11 @@ class Mdl_Invoices_Recurring extends Response_Model
             IF(recur_end_date > date(NOW()) OR recur_end_date IS NULL, "active", "inactive") AS recur_status', false);
     }
 
+    public function default_order_by()
+    {
+      $this->db->order_by( 'recur_status ASC, recur_next_date ASC' );
+    }
+    
     public function default_join()
     {
         $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_invoices_recurring.invoice_id');

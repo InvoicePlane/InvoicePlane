@@ -14,9 +14,11 @@ module.exports = function(grunt) {
         "assets/**/*.css.map",
         "!assets/core/css/custom.css",
         "!assets/core/css/custom-pdf.css", // CSS
+        "!assets/core/css/paypal.css", // CSS
         "assets/core/js/*.js",
         "!assets/core/js/scripts.js",
         "!assets/core/js/jquery-ui.js", // JS
+        "!assets/core/js/paypal.js", // JS
         "assets/core/fonts/*",
         "!assets/core/fonts/.gitignore" // Fonts
       ],

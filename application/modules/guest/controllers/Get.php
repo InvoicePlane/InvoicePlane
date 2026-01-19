@@ -27,6 +27,7 @@ class Get extends Base_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('file_security');
         $this->load->model('upload/mdl_uploads');
         $this->content_types = $this->mdl_uploads->content_types;
     }
@@ -44,26 +45,40 @@ class Get extends Base_Controller
 
     public function get_file($filename): void
     {
-        $filename = urldecode($filename);
-        if ( ! file_exists($this->targetPath . $filename)) {
-            $ref = isset($_SERVER['HTTP_REFERER']) ? ', Referer:' . $_SERVER['HTTP_REFERER'] : '';
-            $this->respond_message(404, 'upload_error_file_not_found', $this->targetPath . $filename . $ref);
+        // Security: Use comprehensive file security validation helper
+        // Note: CodeIgniter already URL-decodes parameters during routing
+        $validation = validate_file_access($filename, $this->targetPath);
+        
+        if (!$validation['valid']) {
+            $errorMap = [
+                'file_not_found' => [404, 'upload_error_file_not_found', 'File not found'],
+                'path_outside_directory' => [403, 'upload_error_unauthorized_access', 'Unauthorized access'],
+            ];
+            
+            $error = $validation['error'] ?? 'unknown';
+            $response = $errorMap[$error] ?? [400, 'upload_error_invalid_filename', 'Invalid filename'];
+            
+            $this->respond_message($response[0], $response[1], $response[2]);
         }
 
-        $path_parts = pathinfo($this->targetPath . $filename);
+        $realFile = $validation['path'];
+        $safeFilename = $validation['basename'];
+        
+        $path_parts = pathinfo($realFile);
         $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
         $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
-
-        $file_size = filesize($this->targetPath . $filename);
-
+        $file_size = filesize($realFile);
+        
+        // Security: Sanitize filename for Content-Disposition header to prevent header injection
+        $sanitizedFilename = sanitize_filename_for_header($safeFilename);
+        
         header('Expires: -1');
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Disposition: attachment; filename="' . $sanitizedFilename . '"');
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
-
-        readfile($this->targetPath . $filename);
+        readfile($realFile);
     }
 
     private function respond_message(int $httpCode, string $messageKey, string $dynamicLogValue = ''): void
