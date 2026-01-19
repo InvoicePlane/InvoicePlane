@@ -1,17 +1,53 @@
 {
-  "name": "invoiceplane/invoiceplane",
-  "version": "1.5.12",
-  "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
-  "homepage": "https://invoiceplane.com",
-  "license": "MIT",
-  "type": "project",
-  "require": {
-    "codeigniter/framework": "3.1.13",
-    "phpmailer/phpmailer": "^6.5",
-    "mpdf/mpdf": "^8.0.15",
-    "vlucas/phpdotenv": "^2.6",
-    "setasign/fpdf": "^1.8",
-    "league/omnipay": "~2.3",
-    "paragonie/random_compat": "^2.0"
-  }
+    "name": "invoiceplane/invoiceplane",
+    "description": "InvoicePlane is a self-hosted open source application for managing your invoices, clients and payments",
+    "homepage": "https://invoiceplane.com",
+    "license": "MIT",
+    "type": "project",
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "require": {
+        "endroid/qr-code": "^4.8",
+        "guzzlehttp/guzzle": "^7.10",
+        "moneyphp/money": "^4.8",
+        "mpdf/mpdf": "^8.2",
+        "paragonie/random_compat": "^2.0",
+        "phpmailer/phpmailer": "^6.12",
+        "pocketarc/codeigniter": "3.3",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi": "^2.6",
+        "smhg/sepa-qr-data": "^1.2",
+        "stripe/stripe-php": "^14.10",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "require-dev": {
+        "filp/whoops": "^2.18",
+        "laravel/pint": "^1.26",
+        "squizlabs/php_codesniffer": "^3.13",
+        "rector/rector": "^2.2",
+        "symfony/var-dumper": "^6.4"
+    },
+    "scripts": {
+        "check": [
+            "rector",
+            "phpcs",
+            "pint"
+        ],
+        "rector": [
+            "Composer\\Config::disableProcessTimeout",
+            "vendor/bin/rector process"
+        ],
+        "phpcs": [
+            "Composer\\Config::disableProcessTimeout",
+            "vendor/bin/phpcbf -p --standard=phpcs.xml"
+        ],
+        "pint": [
+            "Composer\\Config::disableProcessTimeout",
+            "vendor/bin/pint"
+        ]
+    }
 }

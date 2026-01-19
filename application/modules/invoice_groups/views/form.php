@@ -1,7 +1,6 @@
 <form method="post">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('invoice_group_form'); ?></h1>
@@ -20,7 +19,7 @@
                         <?php _trans('name'); ?>
                     </label>
                     <input type="text" name="invoice_group_name" id="invoice_group_name" class="form-control"
-                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_name', true); ?>">
+                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_name', true); ?>" required>
                 </div>
 
                 <div class="form-group">
@@ -30,7 +29,7 @@
                     <input type="text" class="form-control taggable"
                            name="invoice_group_identifier_format" id="invoice_group_identifier_format"
                            value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_identifier_format', true); ?>"
-                           placeholder="INV-{{{id}}}">
+                           placeholder="INV-{{{id}}}" required>
                 </div>
 
                 <div class="form-group">
@@ -38,7 +37,7 @@
                         <?php _trans('next_id'); ?>
                     </label>
                     <input type="number" name="invoice_group_next_id" id="invoice_group_next_id" class="form-control"
-                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_next_id'); ?>">
+                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_next_id'); ?>" required>
                 </div>
 
                 <div class="form-group">
@@ -46,7 +45,7 @@
                         <?php _trans('left_pad'); ?>
                     </label>
                     <input type="number" name="invoice_group_left_pad" id="invoice_group_left_pad" class="form-control"
-                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_left_pad'); ?>">
+                           value="<?php echo $this->mdl_invoice_groups->form_value('invoice_group_left_pad'); ?>" required>
                 </div>
 
                 <hr>

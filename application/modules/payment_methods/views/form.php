@@ -1,7 +1,6 @@
 <form method="post" class="form-horizontal">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('payment_method_form'); ?></h1>
@@ -28,7 +27,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="payment_method_name" id="payment_method_name" class="form-control"
-                       value="<?php echo $this->mdl_payment_methods->form_value('payment_method_name', true); ?>">
+                       value="<?php echo $this->mdl_payment_methods->form_value('payment_method_name', true); ?>" required>
             </div>
         </div>
 

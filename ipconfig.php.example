@@ -1,4 +1,4 @@
-<?php exit('No direct script access allowed'); ?>
+# <?php exit('No direct script access allowed'); ?>
 # InvoicePlane Configuration File
 
 ### START HERE
@@ -9,6 +9,13 @@ IP_URL=
 
 # Having problems? Enable debug by changing the value to 'true' to enable advanced logging
 ENABLE_DEBUG=false
+
+# To Show all PHP errors, change the value to 'development' (Or comment the following line)
+CI_ENV=production
+
+X_FRAME_OPTIONS=SAMEORIGIN
+ENABLE_X_CONTENT_TYPE_OPTIONS=true
+SESS_REGENERATE_DESTROY=false
 
 # Set this setting to 'true' if you want to disable the setup for security purposes
 DISABLE_SETUP=false
@@ -28,12 +35,40 @@ DB_PORT=
 # The number represents the amount of minutes after that IP will automatically log out users,
 # the default is 10 days.
 SESS_EXPIRATION=864000
+SESS_MATCH_IP=true
+
+# Default Global Amounts Calculation mode - Since 1.6.3
+# This change Taxes and discounts calcuation mode
+# true  : Taxes: Global Y, Item Y. Use classic calculation for Discounts & Taxes : Use same calculation as previous v1.6.3 (Default)
+# false : Taxes: Global N, Item Y. Use simple item tax calculation system : Calculate Global discount before Item discount (without tax) and apply item tax on discounted total price
+# Notes :
+#   • "when the client use e-invoice": This is automatically overriden to false by default to use "simple tax" calculation system. It for valid xml data for european models***
+#   • Dev Note: If you realy need to override by true, just add 'legacy_calculation' => true in `$xml_settings`. (See helpers/XMLconfigs/README.md)
+#   • *** When use Facturx10Xml and Ubl24Xml XMLtemplates based. Download here: https://github.com/InvoicePlane/InvoicePlane-e-invoices
+LEGACY_CALCULATION=true
 
 # Enable the deletion of invoices
 ENABLE_INVOICE_DELETION=false
 
 # Disable the read-only mode for invoices
 DISABLE_READ_ONLY=false
+
+# Password reset rate limiting settings (since v1.6.4)
+# Maximum password reset attempts per IP address within the time window
+PASSWORD_RESET_IP_MAX_ATTEMPTS=5
+# Time window in minutes for IP-based rate limiting
+PASSWORD_RESET_IP_WINDOW_MINUTES=60
+# Maximum password reset attempts per email address within the time window
+PASSWORD_RESET_EMAIL_MAX_ATTEMPTS=3
+# Time window in hours for email-based rate limiting
+PASSWORD_RESET_EMAIL_WINDOW_HOURS=1
+
+# Sumex Customizations (Swiss Medical Invoices)
+# Need one (or more) Name containing "sumex" in invoice groups
+# Settings panel: true to Enable - Since v-1.6.3
+SUMEX_SETTINGS=false
+# Set the url where post the xml to get a generated pdf - Since v-1.5.0. See https://github.com/InvoicePlane/InvoicePlane/pull/453
+SUMEX_URL=
 
 ##
 ## DO NOT CHANGE ANY CONFIGURATION VALUES BELOW THIS LINE!
