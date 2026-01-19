@@ -106,6 +106,10 @@ class Mollie extends Base_Controller
             $this->load->model('invoices/mdl_invoices');
             $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
+            if (!$invoice) {
+                throw new Exception('Invoice not found');
+            }
+
             // Check if payment was successful
             $paid = $payment->isSuccessful();
 
