@@ -2,6 +2,7 @@ name: PHPStan Analysis
 
 on:
   workflow_dispatch:  # Manual only — does not run automatically
+  pull_request:       # Also runs on pull requests
 
 jobs:
   phpstan:

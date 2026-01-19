@@ -45,6 +45,27 @@ jobs:
             # PRs always run in dirty mode (only check changed files)
             PINT_MODE="dirty"
             echo "Running Laravel Pint in dirty mode (checking only changed files)..."
+            
+            # Fetch the base branch to compare against
+            git fetch origin ${{ github.base_ref }}
+            
+            # Get list of changed PHP files
+            CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRTUXB origin/${{ github.base_ref }}...HEAD | grep -E '\.(php|blade\.php)$' || true)
+            
+            if [ -z "$CHANGED_FILES" ]; then
+              echo "No PHP files changed in this PR"
+              echo "exit_code=0" >> $GITHUB_OUTPUT
+              echo "parse_errors=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+            
+            set +e  # Don't exit on error
+            echo "$CHANGED_FILES" | xargs vendor/bin/pint 2>&1 | tee pint_output.log
+            PINT_EXIT_CODE=${PIPESTATUS[0]}
+            set -e  # Re-enable exit on error
           else
             # Manual runs use the selected mode (default to dirty if not set)
             PINT_MODE="${{ github.event.inputs.mode || 'dirty' }}"
@@ -53,16 +74,16 @@ jobs:
             else
               echo "Running Laravel Pint in dirty mode (checking only changed files)..."
             fi
+            
+            set +e  # Don't exit on error
+            if [[ "$PINT_MODE" == "dirty" ]]; then
+              vendor/bin/pint --dirty 2>&1 | tee pint_output.log
+            else
+              vendor/bin/pint 2>&1 | tee pint_output.log
+            fi
+            PINT_EXIT_CODE=${PIPESTATUS[0]}
+            set -e  # Re-enable exit on error
           fi
-          
-          set +e  # Don't exit on error
-          if [[ "$PINT_MODE" == "dirty" ]]; then
-            vendor/bin/pint --dirty 2>&1 | tee pint_output.log
-          else
-            vendor/bin/pint 2>&1 | tee pint_output.log
-          fi
-          PINT_EXIT_CODE=${PIPESTATUS[0]}
-          set -e  # Re-enable exit on error
           
           # Store exit code for later steps
           echo "exit_code=$PINT_EXIT_CODE" >> $GITHUB_OUTPUT
@@ -91,7 +112,7 @@ jobs:
           fi
 
       - name: Commit and Push Changes
-        if: steps.verify_diff.outputs.has_changes == 'true'
+        if: steps.verify_diff.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
