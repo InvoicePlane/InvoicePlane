@@ -180,7 +180,13 @@ if ($payment_method) {
                                     <th><?php _trans('description'); ?></th>
                                     <th class="amount"><?php _trans('qty'); ?></th>
                                     <th class="amount"><?php _trans('price'); ?></th>
-                                    <th class="amount"><?php _trans('discount'); ?></th>
+                                    <?php
+                                    if ($show_item_discounts) {
+                                        ?>
+                                        <th class="amount"><?php _trans('discount'); ?></th>
+                                        <?php
+                                    }
+                                    ?>
                                     <th class="amount"><?php _trans('total'); ?></th>
                                 </tr>
                             </thead>
@@ -199,18 +205,26 @@ foreach ($items as $item) {
                                         <?php endif; ?>
                                     </td>
                                     <td class="amount"><?php echo format_currency($item->item_price); ?></td>
+                                    <?php
+                                    if ($show_item_discounts) {
+                                    ?>
                                     <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
-                                    <td class="amount"><?php echo format_currency($item->item_subtotal); ?></td>
+                                    <?php
+                                    }
+                                    ?>
+                                    <td class="amount"><?php echo format_currency($item->item_subtotal-$item->item_discount); ?></td>
                                 </tr>
 <?php
 } // End foreach
 ?>
 
 <?php
-if ( ! $legacy_calculation) {
+$colspan = $show_item_discounts ? 4 : 3;
+if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
+    if ( ! $legacy_calculation) {
 ?>
                                 <tr>
-                                    <td class="no-bottom-border" colspan="4"></td>
+                                    <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount"><?php _trans('discount'); ?></td>
                                     <td class="amount"><?php
                                         if ($invoice->invoice_discount_percent > 0) {
@@ -221,11 +235,12 @@ if ( ! $legacy_calculation) {
                                     ?></td>
                                 </tr>
 <?php
+    }
 }
 ?>
 
                                 <tr>
-                                    <td colspan="4"></td>
+                                    <td colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount"><?php _trans('subtotal'); ?>:</td>
                                     <td class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
                                 </tr>
@@ -234,7 +249,7 @@ if ( ! $legacy_calculation) {
 if ($invoice->invoice_item_tax_total > 0) {
 ?>
                                 <tr>
-                                    <td class="no-bottom-border" colspan="4"></td>
+                                    <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount"><?php _trans('item_tax'); ?></td>
                                     <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
                                 </tr>
@@ -246,7 +261,7 @@ if ($invoice->invoice_item_tax_total > 0) {
 foreach ($invoice_tax_rates as $invoice_tax_rate) {
 ?>
                                 <tr>
-                                    <td class="no-bottom-border" colspan="4"></td>
+                                    <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount">
                                         <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '&nbsp;%'; ?>
                                     </td>
@@ -257,7 +272,8 @@ foreach ($invoice_tax_rates as $invoice_tax_rate) {
 ?>
 
 <?php
-if ($legacy_calculation) {
+if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
+    if ($legacy_calculation) {
 ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
@@ -271,22 +287,23 @@ if ($legacy_calculation) {
                                     ?></td>
                                 </tr>
 <?php
+    }
 }
 ?>
 
                                 <tr>
-                                    <td class="no-bottom-border" colspan="4"></td>
+                                    <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount"><?php _trans('total'); ?>:</td>
                                     <td class="amount"><?php echo format_currency($invoice->invoice_total); ?></td>
                                 </tr>
 
                                 <tr>
-                                    <td class="no-bottom-border" colspan="4"></td>
+                                    <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount"><?php _trans('paid'); ?></td>
                                     <td class="amount"><?php echo format_currency($invoice->invoice_paid) ?></td>
                                 </tr>
                                 <tr class="<?php echo ($invoice->invoice_balance > 0) ? 'overdue' : 'text-success'; ?>">
-                                    <td class="no-bottom-border" colspan="4"></td>
+                                    <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount"><?php _trans('balance'); ?></td>
                                     <td class="amount">
                                         <b><?php echo format_currency($invoice->invoice_balance) ?></b>
@@ -368,7 +385,7 @@ if (count($attachments) > 0) {
                                 <tr class="attachments">
                                     <td><?php echo $attachment['name']; ?></td>
                                     <td>
-                                        <a href="<?php echo site_url('guest/get/attachment/' . $attachment['fullname']); ?>"
+                                        <a href="<?php echo site_url('guest/get/get_file/' . $attachment['fullname']); ?>"
                                            class="btn btn-primary btn-sm">
                                             <i class="fa fa-download"></i> <?php _trans('download') ?>
                                         </a>

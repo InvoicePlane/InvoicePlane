@@ -78,21 +78,20 @@ function email_invoice(
     $bcc     = parse_template($db_invoice, $bcc);
     $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
-    // Check parsed emails before phpmail - since v1.6.3
     $errors = [];
-    if ( ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
     }
 
-    if ( ! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($from[0])) {
         $errors[] = 'from_email';
     }
 
-    if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
+    if ($cc && ! validate_email_address($cc)) {
         $errors[] = 'cc_email';
     }
 
-    if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
+    if ($bcc && ! validate_email_address($bcc)) {
         $errors[] = 'bcc_email';
     }
 
@@ -144,21 +143,20 @@ function email_quote(
     $bcc     = parse_template($db_quote, $bcc);
     $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
-    // Check parsed emails before phpmail - since v1.6.3
     $errors = [];
-    if ( ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
     }
 
-    if ( ! filter_var($from[0], FILTER_VALIDATE_EMAIL)) {
+    if ( ! validate_email_address($from[0])) {
         $errors[] = 'from_email';
     }
 
-    if ($cc && ! filter_var($cc, FILTER_VALIDATE_EMAIL)) {
+    if ($cc && ! validate_email_address($cc)) {
         $errors[] = 'cc_email';
     }
 
-    if ($bcc && ! filter_var($bcc, FILTER_VALIDATE_EMAIL)) {
+    if ($bcc && ! validate_email_address($bcc)) {
         $errors[] = 'bcc_email';
     }
 
@@ -212,6 +210,28 @@ function email_quote_status(string $quote_id, $status)
 }
 
 /**
+ * Validate email address syntax
+ * $email string can be a single email or a list of emails.
+ * The emails can either be comma (,) or semicolon (;) separated.
+ *
+ * @param string $email
+ *
+ * @return bool returs true if all emails are valid otherwise false
+ */
+function validate_email_address(string $email): bool
+{
+    $emails = (str_contains($email, ',')) ? explode(',', $email) : explode(';', $email);
+
+    foreach ($emails as $emailItem) {
+        if ( ! filter_var($emailItem, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
  * @param []  $errors
  * @param string $redirect
  */
@@ -224,7 +244,19 @@ function check_mail_errors(array $errors = [], $redirect = ''): void
         }
 
         $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
-        $redirect = empty($redirect) ? (empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER']) : $redirect;
+        
+        // Use provided redirect, or validate HTTP_REFERER against base_url
+        if (empty($redirect)) {
+            $referer = $_SERVER['HTTP_REFERER'] ?? '';
+            $base_url = base_url();
+            // Only use referer if it's from same domain
+            if (!empty($referer) && strpos($referer, $base_url) === 0) {
+                $redirect = $referer;
+            } else {
+                $redirect = base_url(); // Safe default
+            }
+        }
+        
         redirect($redirect);
     }
 }

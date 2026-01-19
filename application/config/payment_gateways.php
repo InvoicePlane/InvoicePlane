@@ -461,6 +461,14 @@ $config['payment_gateways'] = [
             'type'  => 'password',
             'label' => 'Secret',
         ],
+        'advancedCreditCards' => [
+            'type'  => 'checkbox',
+            'label' => 'Advanced Credit Cards',
+        ],
+        'venmo' => [
+            'type'  => 'checkbox',
+            'label' => 'Venmo',
+        ],
         'testMode' => [
             'type'  => 'checkbox',
             'label' => 'Test Mode',

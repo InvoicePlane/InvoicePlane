@@ -10,6 +10,9 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: read
+
 jobs:
   build-test-push:
     runs-on: ubuntu-latest

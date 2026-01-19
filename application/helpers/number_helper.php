@@ -52,7 +52,7 @@ function format_amount($amount = null)
         $thousands_separator = $CI->mdl_settings->setting('thousands_separator');
         $decimal_point       = $CI->mdl_settings->setting('decimal_point');
         $decimals            = $decimal_point ? (int) $CI->mdl_settings->setting('tax_rate_decimal_places') : 0;
-        $amount              = is_numeric($amount) ? $amount : standardize_amount($amount);
+        $amount              = (float) (is_numeric($amount) ? $amount : standardize_amount($amount));
 
         return number_format($amount, $decimals, $decimal_point, $thousands_separator);
     }
@@ -93,7 +93,11 @@ function standardize_amount($amount): float|int|string|array|false|null
             $amount[mb_strrpos($amount, '.')] = ','; // Replace last position of dot to comma
         }
 
-        $amount = strtr($amount, [$thousands_separator => '', $decimal_point => '.']);
+        if ($thousands_separator) {
+            $amount = strtr($amount, [$thousands_separator => '', $decimal_point => '.']);
+        } else {
+            $amount = strtr($amount, [$decimal_point => '.']);
+        }
     }
 
     return $amount;
