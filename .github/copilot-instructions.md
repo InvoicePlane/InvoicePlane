@@ -4,11 +4,11 @@ This document provides context and guidelines for GitHub Copilot when working on
 
 ## Project Context
 
-InvoicePlane is a simple self-hosted invoicing application built with CodeIgniter 3.x framework. This application is fully compatible with PHP 8.2+ and follows modern PHP standards within the CodeIgniter 3.x architecture.
+InvoicePlane is a simple self-hosted invoicing application built with CodeIgniter 3.x framework. This application is fully compatible with PHP 8.3+ and follows modern PHP standards within the CodeIgniter 3.x architecture.
 
 ## Technology Stack
 
-- **Backend**: PHP 8.1, 8.2, 8.3+ (CodeIgniter 3.x framework)
+- **Backend**: PHP 8.3 and 8.4 (CodeIgniter 3.x framework, PHP 8.1 is deprecated)
 - **Frontend**: Bootstrap 3.4, jQuery 3.7+, jQuery UI 1.14
 - **Database**: MariaDB
 - **Build Tools**: Grunt (frontend assets), Composer (PHP dependencies), Yarn (JavaScript dependencies)
@@ -22,10 +22,10 @@ InvoicePlane is a simple self-hosted invoicing application built with CodeIgnite
 - Use **short array syntax** (`[]` instead of `array()`)
 - Use **single quotes** for strings (unless interpolation needed)
 - **No closing PHP tags** (`?>`) in PHP-only files
-- Use **type hints** where possible (PHP 8.1+ features)
+- Use **type hints** where possible (PHP 8.3+ features)
 - Follow **CodeIgniter 3.x conventions** for controllers, models, and views
 - Use **CodeIgniter's built-in security features** (XSS filtering, CSRF protection)
-- **PHP 8.2+ Compatible**: Ensure all code works with PHP 8.2 and 8.3+
+- **PHP 8.3+ Compatible**: Ensure all code works with PHP 8.3 and 8.4
 
 ### File Structure
 
@@ -239,7 +239,7 @@ yarn build
 ## Key Reminders
 
 - This is a **simple CodeIgniter 3.x** application
-- **PHP 8.2+ compatible** - ensure all code works with PHP 8.2 and 8.3+
+- **PHP 8.3+ compatible** - ensure all code works with PHP 8.3 and 8.4 (PHP 8.1 is deprecated)
 - Follow **PSR-12** coding standards for PHP
 - Use **CodeIgniter's built-in security features**
 - Always **sanitize input and escape output**

@@ -55,7 +55,7 @@ yarn build
 cp ipconfig.php.example ipconfig.php
 # Edit ipconfig.php to set your database connection (use settings from docker-compose.yml)
 
-# Start Docker containers (PHP 8.1, MariaDB, nginx, phpMyAdmin)
+# Start Docker containers (PHP 8.3, MariaDB, nginx, phpMyAdmin)
 docker-compose up -d
 
 # Access the application
@@ -63,9 +63,9 @@ docker-compose up -d
 # phpMyAdmin: http://localhost:8081
 ```
 
-**Switching to PHP 8.2+**: To use PHP 8.2+ instead of PHP 8.1:
+**Switching to PHP 8.4**: To use PHP 8.4 instead of PHP 8.3:
 ```bash
-docker-compose -f docker-compose.php82.yml up -d
+docker-compose -f docker-compose.php84.yml up -d
 ```
 
 ### Production Installation

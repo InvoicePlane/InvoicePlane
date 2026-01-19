@@ -25,7 +25,7 @@ Follow the instructions below to install InvoicePlane on your preferred platform
 ## Prerequisites
 
 - **Web Server:** Apache or Nginx
-- **PHP:** Version **8.1 or higher** (PHP 8.2+ supported)
+- **PHP:** Version **8.3 or higher** (PHP 8.4 supported, PHP 8.1 is deprecated)
 - **Database:** MariaDB
 - **For Development:** Docker (recommended), Composer, Yarn/npm
 
@@ -109,14 +109,14 @@ The **StartMeUp** phase launches your development environment.
 
 Docker provides a consistent development environment with PHP, MariaDB, nginx, and phpMyAdmin.
 
-**For PHP 8.1 (default):**
+**For PHP 8.3 (default):**
 ```bash
 docker-compose up -d
 ```
 
-**For PHP 8.2+:**
+**For PHP 8.4:**
 ```bash
-docker-compose -f docker-compose.php82.yml up -d
+docker-compose -f docker-compose.php84.yml up -d
 ```
 
 **View Logs:**
@@ -138,7 +138,7 @@ docker-compose down
 #### Without Docker (Alternative)
 
 If you're not using Docker, ensure you have:
-- PHP 8.1+ installed and configured
+- PHP 8.3+ installed and configured
 - MariaDB running locally
 - Nginx or Apache configured to serve the project directory
 
@@ -190,17 +190,17 @@ The **Workflow** phase covers your day-to-day development activities.
 
 **Switching PHP Versions:**
 
-To switch between PHP 8.1 and PHP 8.2+:
+To switch between PHP 8.3 and PHP 8.4:
 
 ```bash
 # Stop current containers
 docker-compose down
 
-# Start with PHP 8.1 (default)
+# Start with PHP 8.3 (default)
 docker-compose up -d
 
-# OR start with PHP 8.2+
-docker-compose -f docker-compose.php82.yml up -d
+# OR start with PHP 8.4
+docker-compose -f docker-compose.php84.yml up -d
 ```
 
 ---
