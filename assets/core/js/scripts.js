@@ -74,7 +74,7 @@ function inject_email_template(template_fields, email_template) {
 }
 
 function update_email_template_preview() {
-    $('#email-template-preview').contents().find("body").html($('.email-template-body').val());
+    $('#email-template-preview').contents().find("body").text($('.email-template-body').val());
 }
 
 // Insert HTML tags into textarea
