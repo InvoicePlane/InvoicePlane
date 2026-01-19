@@ -56,13 +56,11 @@ jobs:
       - name: Build frontend assets
         run: yarn build
 
-      - name: Prepare Laravel environment
+      # CodeIgniter 3 does not use Laravel artisan commands
+      # Smoke tests not yet configured for this project
+      - name: Verify build
         run: |
-          cp .env.testing.example .env
-          php artisan key:generate
+          echo "Frontend assets built successfully"
+          echo "CodeIgniter 3 project - Laravel artisan commands not applicable"
+          ls -la assets/
 
-      - name: Run database migrations
-        run: php artisan migrate --force
-
-      - name: Run smoke tests
-        run: php artisan test --group=smoke
