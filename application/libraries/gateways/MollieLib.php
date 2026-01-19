@@ -16,6 +16,9 @@ class MollieLib
 
     public function __construct(array $params)
     {
+        if (empty($params['api_key'])) {
+            throw new InvalidArgumentException('Mollie API key is required');
+        }
         $this->api_key = $params['api_key'];
 
         log_message('debug', 'Mollie library initialization started');
