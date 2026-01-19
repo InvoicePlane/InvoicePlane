@@ -6,6 +6,8 @@ on:
 jobs:
   phpunit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     # MySQL service commented out - tests use SQLite in-memory instead
     # services:
