@@ -888,10 +888,8 @@ $.fn.position = function( options ) {
 	// Ensure that string values for options.of are treated strictly as selectors
 	// and are not interpreted as HTML by the jQuery constructor.
 	if ( typeof options.of === "string" ) {
-		// Interpret options.of only as a CSS selector within the document context.
 		target = $( document ).find( options.of );
 	} else {
-		// Non-string values (elements, events, window, etc.) are safe to wrap.
 		target = $( options.of );
 	}
 
