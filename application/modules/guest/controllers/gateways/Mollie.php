@@ -36,6 +36,12 @@ class Mollie extends Base_Controller
 
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
+        // Check if invoice exists
+        if ( ! $invoice) {
+            $this->session->set_flashdata('alert_error', trans('invoice_not_found'));
+            redirect(site_url('guest/view/invoices'));
+        }
+
         // Check if the invoice is payable
         if ($invoice->invoice_balance <= 0) {
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
