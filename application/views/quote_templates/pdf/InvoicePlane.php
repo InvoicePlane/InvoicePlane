@@ -163,7 +163,7 @@ foreach ($items as $item) {
 ?>
                 </td>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_price); ?>
+                    <?php echo format_currency(htmlsc($item->item_price)); ?>
                 </td>
 <?php
     if ($show_item_discounts) {
@@ -175,7 +175,13 @@ foreach ($items as $item) {
     }
 ?>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_total); ?>
+                    <?php echo format_currency($item->item_discount); ?>
+                </td>
+<?php
+    }
+?>
+                <td class="text-right">
+                    <?php echo format_currency(htmlsc($item->item_total)); ?>
                 </td>
             </tr>
 <?php
@@ -258,7 +264,7 @@ if ($legacy_calculation) {
                 <b><?php _trans('total'); ?></b>
             </td>
             <td class="text-right">
-                <b><?php echo format_currency($quote->quote_total); ?></b>
+                <b><?php echo format_currency(htmlsc($quote->quote_total)); ?></b>
             </td>
         </tr>
         </tbody>
