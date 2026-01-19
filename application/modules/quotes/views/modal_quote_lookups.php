@@ -10,6 +10,12 @@
 
             var quote_id = parseInt($("input[name='quote_id']:checked").val());
 
+            // Validate that a quote is selected
+            if (!quote_id || isNaN(quote_id)) {
+                alert('<?php _trans('select_quote'); ?>');
+                return;
+            }
+
             //$.post("<?php echo site_url('quotes/ajax/process_product_selections'); ?>", {
             //$.post("<?php echo site_url('quotes/ajax/modal_quote_lookups_select'); ?>", {
 
@@ -17,15 +23,25 @@
                 quote_id: quote_id
             }, function (data) {
                 <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-                var items = JSON.parse(data);
-
-                for (var key in items) {
-                    $('#invoice_quote_number').val(items[key].quote_number);
-                    $('#invoice_work_order').val(items[key].quote_work_order);
-                    $('#invoice_agreement').val(items[key].quote_agreement);
-
+                
+                try {
+                    var items = JSON.parse(data);
+                    
+                    // Use first item (array index 0) instead of for..in loop
+                    if (items && items[0]) {
+                        $('#invoice_quote_number').val(items[0].quote_number || '');
+                        $('#invoice_work_order').val(items[0].quote_work_order || '');
+                        $('#invoice_agreement').val(items[0].quote_agreement || '');
+                    }
+                    
                     $('#modal-choose-quote').modal('hide');
+                } catch (error) {
+                    console.error('Error parsing quote data:', error);
+                    alert('<?php _trans('error_processing_request'); ?>');
                 }
+            }).fail(function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                alert('<?php _trans('error_processing_request'); ?>');
             });
         });
 

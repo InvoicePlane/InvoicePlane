@@ -348,17 +348,13 @@ if ($quote->quote_status_id == 1) {
                                 <div class="quote-properties">
                                     <label><?php _trans('work_order'); ?></label>
                                     <input type="text" id="quote_work_order" class="form-control input-sm"
-                                        <?php if ($quote->quote_work_order) : ?>
-                                            value="<?php echo $quote->quote_work_order; ?>"
-                                        <?php endif; ?>>
+                                        value="<?php echo htmlsc($quote->quote_work_order ?? ''); ?>">
 
                                 </div>
                                 <div class="quote-properties">
                                     <label><?php _trans('agreement'); ?></label>
                                     <input type="text" id="quote_agreement" class="form-control input-sm"
-                                        <?php if ($quote->quote_agreement) : ?>
-                                            value="<?php echo $quote->quote_agreement; ?>"
-                                        <?php endif; ?>>
+                                        value="<?php echo htmlsc($quote->quote_agreement ?? ''); ?>">
                                 </div>
                             </div>
 
