@@ -59,7 +59,7 @@ class Mdl_Invoice_Groups extends Response_Model
             'invoice_group_reset_monthly' => [
                 'field' => 'invoice_group_reset_monthly',
                 'label' => trans('reset_monthly'),
-                'rules' => 'is_natural',
+                'rules' => 'boolean',
             ],
         ];
     }
