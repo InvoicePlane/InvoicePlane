@@ -38,7 +38,7 @@ function discount_global_print_in_pdf($obj, $show_item_discounts, string $is = '
 ?>
             <tr>
                 <td class="text-right" colspan="<?php echo $show_item_discounts ? '5' : '4'; ?>"><?php
-                    echo mb_rtrim(trans('discount'), ' '); // Rem not space char (in French ip_lang & maybe other)
+                    echo rtrim(trans('discount'), ' '); // Rem not space char (in French ip_lang & maybe other)
                 ?></td>
                 <td class="text-right"><?php echo $discount; ?></td>
             </tr>
