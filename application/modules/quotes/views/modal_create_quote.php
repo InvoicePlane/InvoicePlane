@@ -14,7 +14,8 @@
             // Posts the data to validate and create the quote;
             // will create the new client if necessary
             $.post("<?php echo site_url('quotes/ajax/create'); ?>", {
-                    client_id: $('#create_quote_client_id').val(),
+	            client_id: $('#create_quote_client_id').val(),
+		    service_id: $('#service_id').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     quote_password: $('#quote_password').val(),
                     user_id: '<?php echo $this->session->userdata('user_id'); ?>',
@@ -63,7 +64,37 @@
                         <?php endif; ?>
                     </select>
                 </div>
+	    </div>
+
+       <?php
+          if (get_setting('enable_services') == 1) {
+       ?>
+            <div class="form-group has-feedback">
+		<label for="service_id"><?php _trans('service'); ?></label>
+                <div class="input-group" style="width: 100%;">
+                    <select name="service_id" id="service_id" class="form-control" style="width: 100%;"
+                            autofocus="autofocus">
+                        <option value="0"><?php _trans('select_service'); ?></option>
+                        <?php
+                            foreach($services as $service) {
+			       if (!empty($service['service_name'])) {
+			           echo '<option value="' . htmlspecialchars($service['service_id'], ENT_QUOTES) . '">';
+				   echo htmlspecialchars($service['service_name'], ENT_QUOTES);
+				   echo '</option>';
+			       }
+			    }
+                        ?>
+                    </select>
+                </div>
             </div>
+       <?php
+	  }
+	  else {
+       ?>
+            <input type="hidden" name="service_id" id="service_id" value="0">
+       <?php
+	  }
+       ?>
 
             <div class="form-group has-feedback">
                 <label for="quote_date_created">

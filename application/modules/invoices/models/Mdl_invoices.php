@@ -57,7 +57,8 @@ class Mdl_Invoices extends Response_Model
             SQL_CALC_FOUND_ROWS
             ip_quotes.*,
             ip_users.*,
-            ip_clients.*,
+	    ip_clients.*,
+            ip_services.*,
             ip_invoice_sumex.*,
             ip_invoice_amounts.invoice_amount_id,
             IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
@@ -80,7 +81,8 @@ class Mdl_Invoices extends Response_Model
 
     public function default_join()
     {
-        $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+	$this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+	$this->db->join('ip_services', 'ip_services.service_id = ip_invoices.service_id', 'left');
         $this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
@@ -97,7 +99,11 @@ class Mdl_Invoices extends Response_Model
                 'field' => 'client_id',
                 'label' => trans('client'),
                 'rules' => 'required',
-            ],
+	    ],
+	    'service_id' => [
+                'field' => 'service_id',
+                'label' => trans('service'),
+	    ],
             'invoice_date_created' => [
                 'field' => 'invoice_date_created',
                 'label' => trans('invoice_date'),
@@ -222,6 +228,7 @@ class Mdl_Invoices extends Response_Model
             'percent'        => $invoice->invoice_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
             'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
+            'service'        => $invoice->service_id,
         ];
         unset($invoice); // Free memory
 
@@ -229,6 +236,7 @@ class Mdl_Invoices extends Response_Model
         $this->where('invoice_id', $target_id)->update('ip_invoices', [
             'invoice_discount_percent' => $global_discount['percent'],
             'invoice_discount_amount'  => $global_discount['amount'],
+            'service_id'               => $global_discount['service'],
         ]);
 
         // Copy the items
@@ -300,12 +308,14 @@ class Mdl_Invoices extends Response_Model
             'percent'        => $invoice->invoice_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
             'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
+            'service'        => $invoice->service_id,
         ];
 
         // Update the discounts - since v1.6.3
         $this->where('invoice_id', $target_id)->update('ip_invoices', [
             'invoice_discount_percent' => $global_discount['percent'],
             'invoice_discount_amount'  => $global_discount['amount'],
+            'service_id'               => $global_discount['service'],
         ]);
 
         unset($invoice); // Free memory
@@ -366,6 +376,21 @@ class Mdl_Invoices extends Response_Model
 
         // Get the client id for the submitted invoice
         $this->load->model('clients/mdl_clients');
+
+        $this->load->model('services/mdl_services');
+        $cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
+
+        // Handle service_id - default to 0 if not provided or not found
+        $sid = 0;
+        if (!empty($db_array['service_id'])) {
+            $service_row = $this->mdl_services->where('ip_services.service_id', $db_array['service_id'])->get()->row();
+            if ($service_row) {
+                $sid = $service_row->service_id;
+            }
+        }
+
+        $db_array['client_id'] = $cid;
+        $db_array['service_id'] = $sid;
 
         // Check if is SUMEX
         $this->load->model('invoice_groups/mdl_invoice_groups');
@@ -666,6 +691,22 @@ class Mdl_Invoices extends Response_Model
             $current_date = date_to_mysql(date(date_format_setting()));
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_date_due', $this->get_date_due($current_date));
+            $this->db->update('ip_invoices');
+        }
+    }
+
+    /**
+      * Update the service association for a invoice
+      * @param $invoice_id
+      * @param $service_id
+      */
+    public function set_invoice_service($invoice_id, $service_id)
+    {
+        $invoice = $this->get_by_id($invoice_id);
+
+        if (!empty($invoice)) {
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->set('service_id', $service_id);
             $this->db->update('ip_invoices');
         }
     }
