@@ -10,10 +10,10 @@
 <html class="no-js" lang="<?php _trans('cldr'); ?>"> <!--<![endif]-->
 
 <head>
-    <?php
+<?php
     // Get the page head content
     $this->layout->load_view('layout/includes/head');
-    ?>
+?>
 </head>
 <body class="<?php echo get_setting('disable_sidebar') ? 'hidden-sidebar' : ''; ?>">
 
@@ -26,27 +26,31 @@
 $this->layout->load_view('layout/includes/navbar');
 ?>
 
-<div id="main-area">
-    <?php
-    // Display the sidebar if enabled
-    if (get_setting('disable_sidebar') != 1) {
-        $this->layout->load_view('layout/includes/sidebar');
-    }
-    ?>
-    <div id="main-content">
-        <?php echo $content; ?>
+    <div id="main-area">
+<?php
+        // Display the sidebar if enabled
+if (get_setting('disable_sidebar') != 1) {
+    $this->layout->load_view('layout/includes/sidebar');
+}
+?>
+         <div id="main-content">
+<?php echo $content; ?>
+         </div>
+
     </div>
 
-</div>
-
-<div id="modal-placeholder"></div>
+    <div id="modal-placeholder"></div>
 
 <?php echo $this->layout->load_view('layout/includes/fullpage-loader'); ?>
 
-<script defer src="<?php echo base_url(); ?>assets/core/js/scripts.js"></script>
-<?php if (trans('cldr') != 'en') { ?>
-    <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
-<?php } ?>
+    <script defer src="<?php _core_asset('js/scripts.min.js'); ?>"></script>
+<?php
+if (trans('cldr') != 'en') {
+?>
+    <script src="<?php _core_asset('js/locales/bootstrap-datepicker.' . trans('cldr') . '.js'); ?>"></script>
+<?php
+}
+?>
 
 </body>
 </html>

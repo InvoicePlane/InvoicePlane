@@ -2,6 +2,7 @@
     $(function () {
         $('#modal-create-credit-invoice').modal('show');
         $('#create-credit-confirm').click(function () {
+            show_loader(); // Show spinner
             $.post("<?php echo site_url('invoices/ajax/create_credit'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
                     client_id: $('#client_id').val(),
@@ -12,19 +13,20 @@
                     user_id: $('#user_id').val()
                 },
                 function (data) {
-                    <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
-                    var response = JSON.parse(data);
+                    var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
                         window.location = "<?php echo site_url('invoices/view'); ?>/" + response.invoice_id;
                     }
                     else {
                         // The validation was not successful
+                        close_loader();
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().parent().addClass('has-error');
                         }
                     }
-                });
+                }
+            );
         });
     });
 </script>
@@ -49,7 +51,7 @@
 
             <input type="hidden" name="invoice_date_created_modal" id="invoice_date_created_modal"
                    value="<?php $credit_date = date_from_mysql(date('Y-m-d', time()), true);
-                   echo $credit_date; ?>">
+                    echo $credit_date; ?>">
 
             <div class="form-group">
                 <label for="invoice_password"><?php _trans('invoice_password'); ?></label>

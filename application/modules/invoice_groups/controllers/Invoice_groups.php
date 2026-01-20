@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -39,9 +39,6 @@ class Invoice_Groups extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -76,5 +73,4 @@ class Invoice_Groups extends Admin_Controller
         $this->mdl_invoice_groups->delete($id);
         redirect('invoice_groups');
     }
-
 }
