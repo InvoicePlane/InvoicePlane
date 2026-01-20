@@ -108,7 +108,7 @@ function generateReport() {
 
     // Track changes
     const directChanges = [];
-    const transientChanges = [];
+    const transitiveChanges = [];
 
     // Check for new and updated packages
     for (const [name, newVersion] of newPackages) {
@@ -120,7 +120,7 @@ function generateReport() {
         if (isDirect) {
           directChanges.push(change);
         } else {
-          transientChanges.push(change);
+          transitiveChanges.push(change);
         }
       } else if (oldPackages.get(name) !== newVersion) {
         // Updated package
@@ -129,7 +129,7 @@ function generateReport() {
         if (isDirect) {
           directChanges.push(change);
         } else {
-          transientChanges.push(change);
+          transitiveChanges.push(change);
         }
       }
     }
@@ -142,7 +142,7 @@ function generateReport() {
         if (isDirect) {
           directChanges.push(change);
         } else {
-          transientChanges.push(change);
+          transitiveChanges.push(change);
         }
       }
     }
@@ -150,7 +150,7 @@ function generateReport() {
     // Generate output
     let output = '';
 
-    if (directChanges.length === 0 && transientChanges.length === 0) {
+    if (directChanges.length === 0 && transitiveChanges.length === 0) {
       output = 'No package changes detected\n';
     } else {
       if (directChanges.length > 0) {
@@ -160,12 +160,12 @@ function generateReport() {
         });
       }
 
-      if (transientChanges.length > 0) {
+      if (transitiveChanges.length > 0) {
         if (directChanges.length > 0) {
           output += '\n';
         }
         output += '## Transient Dependencies (indirect)\n\n';
-        transientChanges.forEach(change => {
+        transitiveChanges.forEach(change => {
           output += `${change}\n`;
         });
       }
