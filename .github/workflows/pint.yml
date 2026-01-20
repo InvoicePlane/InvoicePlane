@@ -90,7 +90,7 @@ jobs:
           echo "exit_code=$PINT_EXIT_CODE" >> $GITHUB_OUTPUT
 
           # Check if there were parse errors
-          if grep -q "Parse error" pint_output.log || grep -q "!" pint_output.log; then
+          if [[ $PINT_EXIT_CODE -ne 0 ]] || grep -qE "Parse error|Error: Failed to parse" pint_output.log; then
             echo "parse_errors=true" >> $GITHUB_OUTPUT
             echo "WARNING: Parse errors detected in one or more files"
           else
