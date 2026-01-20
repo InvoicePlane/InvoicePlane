@@ -96,6 +96,7 @@ $lang = [
     'client_surname'                               => 'Client Surname',
     'client_surname_optional'                      => 'Client Surname (Optional)',
     'clients'                                      => 'Clients',
+    'sort_clients_by_surname'                      => 'Sort Clients by Surname',
     'close'                                        => 'Close',
     'closed'                                       => 'Closed',
     'column'                                       => 'Column',

@@ -442,6 +442,25 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[sort_clients_by_surname]">
+                                <?php _trans('sort_clients_by_surname'); ?>
+                            </label>
+                            <select name="settings[sort_clients_by_surname]" id="settings[sort_clients_by_surname]"
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0">
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('sort_clients_by_surname'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
