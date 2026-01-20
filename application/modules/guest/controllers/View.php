@@ -98,6 +98,12 @@ class View extends Base_Controller
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
+          /*
+            if (!$invoice_template) {
+                $invoice_template = get_setting('pdf_invoice_template');
+            }
+          */
+          
             if ( ! $invoice_template) {
                 $this->load->helper('template');
                 $invoice_template = select_pdf_invoice_template($invoice);

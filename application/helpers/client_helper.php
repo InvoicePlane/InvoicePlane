@@ -34,6 +34,12 @@ function format_client($client, $show_title = true): string
         return '';
     }
 
+  /*
+    if ($client->client_surname != "") {
+        return $client->client_surname . " " . $client->client_name;
+    }
+  */
+
     $client_title = '';
     if ($show_title && ! empty($client->client_title)) {
         $client_title = ucfirst(in_array($client->client_title, ClientTitleEnum::VALUES, true) ? trans($client->client_title) : $client->client_title) . ' ';

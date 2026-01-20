@@ -31,7 +31,7 @@ class Mdl_Clients extends Response_Model
 
     public function default_order_by(): void
     {
-        $this->db->order_by('ip_clients.client_name');
+        $this->db->order_by('ip_clients.client_surname');
     }
 
     public function validation_rules()
