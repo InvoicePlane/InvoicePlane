@@ -17,11 +17,8 @@
 <?php
 $quote_idx        = 1;
 $quote_count      = count($quotes);
-$quote_list_split = $quote_count > 3 ? $quote_count / 2 : 9999;
 
 foreach ($quotes as $quote) {
-    // Convert the dropdown menu to a dropup if quote is after the invoice split
-    $dropup = $quote_idx > $quote_list_split;
 ?>
             <tr>
                 <td>
@@ -51,7 +48,7 @@ foreach ($quotes as $quote) {
                     <?php echo format_currency($quote->quote_total); ?>
                 </td>
                 <td>
-                    <div class="options btn-group<?php echo $dropup ? ' dropup' : ''; ?>">
+                    <div class="options btn-group">
                         <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
                            href="#">
                             <i class="fa fa-cog"></i> <?php _trans('options'); ?>
@@ -100,7 +97,24 @@ foreach ($quotes as $quote) {
         $("#quote-table").DataTable({
             "paging": false,
             "searching": false,
-            "info": false
+            "info": false,
+            "order": []
+        });
+
+        // Dynamic dropup positioning
+        $('#quote-table').on('show.bs.dropdown', '.options', function() {
+            var $dropdown = $(this);
+            var $menu = $dropdown.find('.dropdown-menu');
+            var offset = $dropdown.offset();
+            var menuHeight = $menu.outerHeight();
+            var viewportBottom = $(window).scrollTop() + $(window).height();
+            
+            // Check if dropdown would go off bottom of viewport
+            if (offset.top + $dropdown.outerHeight() + menuHeight > viewportBottom) {
+                $dropdown.addClass('dropup');
+            } else {
+                $dropdown.removeClass('dropup');
+            }
         });
     });
 </script>
