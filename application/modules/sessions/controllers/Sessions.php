@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Sessions
- */
+#[AllowDynamicProperties]
 class Sessions extends Base_Controller
 {
     public function index()
@@ -22,43 +23,33 @@ class Sessions extends Base_Controller
 
     public function login()
     {
-        $view_data = array(
-            'login_logo' => get_setting('login_logo')
-        );
+        $view_data = [
+            'login_logo' => get_setting('login_logo'),
+        ];
 
         if ($this->input->post('btn_login')) {
-
             $this->db->where('user_email', $this->input->post('email'));
             $query = $this->db->get('ip_users');
-            $user = $query->row();
+            $user  = $query->row();
 
             // Check if the user exists
             if (empty($user)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
                 redirect('sessions/login');
-            } else {
-
-                // Check if the user is marked as active
-                if ($user->user_active == 0) {
-                    $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
-                    redirect('sessions/login');
-                } else {
-
-                    if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
-                        if ($this->session->userdata('user_type') == 1) {
-                            redirect('dashboard');
-                        } elseif ($this->session->userdata('user_type') == 2) {
-                            redirect('guest');
-                        }
-                    } else {
-                        $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
-                        redirect('sessions/login');
-                    }
-
+            } elseif ($user->user_active == 0) {
+                // Check if the user is marked as active (not implemented: Todo?)
+                $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
+                redirect('sessions/login');
+            } elseif ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
+                if ($this->session->userdata('user_type') == 1) {
+                    redirect('dashboard');
+                } elseif ($this->session->userdata('user_type') == 2) {
+                    redirect('guest');
                 }
-
+            } else {
+                $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
+                redirect('sessions/login');
             }
-
         }
 
         $this->load->view('session_login', $view_data);
@@ -67,25 +58,23 @@ class Sessions extends Base_Controller
     /**
      * @param $email_address
      * @param $password
-     * @return bool
      */
-    public function authenticate($email_address, $password)
+    public function authenticate($email_address, $password): bool
     {
         $this->load->model('mdl_sessions');
         //check if user is banned
         $login_log = $this->_login_log_check($email_address);
-        if(empty($login_log)||$login_log->log_count < 10)
-        {
+        if (empty($login_log) || $login_log->log_count < 10) {
             if ($this->mdl_sessions->auth($email_address, $password)) {
                 $this->_login_log_reset($email_address);
+
                 return true;
             }
-            else
-            {
-                //track failed attempt
-                $this->_login_log_addfailure($email_address);
-            }
+
+            //track failed attempt
+            $this->_login_log_addfailure($email_address);
         }
+
         return false;
     }
 
@@ -97,26 +86,26 @@ class Sessions extends Base_Controller
     }
 
     /**
-     * @param null $token
      * @return mixed
      */
     public function passwordreset($token = null)
     {
         // Check if a token was provided
         if ($token) {
+            if (preg_match("/[^[:alnum:]\-_]/", $token)) {
+                log_message('error', 'Incoming token is not alphanumeric ' . $token);
+                redirect('/');
+            }
 
             //prevent brute force attacks by counting times a token is used
             $login_log_check = $this->_login_log_check($token);
-            if(!empty($login_log_check) && $login_log_check->log_count>10)
-            {
-                redirect($_SERVER['HTTP_REFERER']);
-            }
-            else
-            {
+            if ( ! empty($login_log_check) && $login_log_check->log_count > 10) {
+                redirect($this->_get_safe_referer());
+            } else {
                 //the use of a token counts as a failure
                 $this->_login_log_addfailure($token);
             }
-            
+
             $this->db->where('user_passwordreset_token', $token);
             $user = $this->db->get('ip_users');
             $user = $user->row();
@@ -125,30 +114,28 @@ class Sessions extends Base_Controller
                 // Redirect back to the login screen with an alert
                 $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
                 redirect('sessions/passwordreset');
-            }
-            else
-            {
+            } else {
                 //if token is valid, delete the failure attempt from
                 //the login_log table
                 $this->_login_log_reset($token);
             }
 
-            $formdata = array(
-                'token' => $token,
+            $formdata = [
+                'token'   => $token,
                 'user_id' => $user->user_id,
-            );
+            ];
 
             return $this->load->view('session_new_password', $formdata);
         }
 
         // Check if the form for a new password was used
         if ($this->input->post('btn_new_password')) {
-            $new_password = $this->input->post('new_password');
-            $user_id = $this->input->post('user_id');
+            $new_password = $this->input->post('new_password', true);
+            $user_id      = $this->input->post('user_id', true);
 
             if (empty($user_id) || empty($new_password)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
-                redirect($_SERVER['HTTP_REFERER']);
+                redirect($this->_get_safe_referer());
             }
 
             $this->load->model('users/mdl_users');
@@ -158,26 +145,27 @@ class Sessions extends Base_Controller
 
             if (empty($user)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
-                redirect($_SERVER['HTTP_REFERER']);
+                redirect($this->_get_safe_referer());
             }
 
             if (empty($user->user_passwordreset_token) || $this->input->post('token') !== $user->user_passwordreset_token) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_wrong_auth_code'));
-                redirect($_SERVER['HTTP_REFERER']);
+                redirect($this->_get_safe_referer());
             }
 
             // Call the save_change_password() function from users model
             $this->mdl_users->save_change_password(
-                $user_id, $new_password
+                $user_id,
+                $new_password
             );
 
             // Update the user and set him active again
-            $db_array = array(
+            $db_array = [
                 'user_passwordreset_token' => '',
-            );
+            ];
 
             //delete failed attempts from login_log table
-            $user = $this->db->where('user_id',$user_id)->get('ip_users')->row();
+            $user = $this->db->where('user_id', $user_id)->get('ip_users')->row();
             $this->_login_log_reset($user->user_email);
 
             $this->db->where('user_id', $user_id);
@@ -185,42 +173,61 @@ class Sessions extends Base_Controller
 
             // Redirect back to the login form
             redirect('sessions/login');
-
         }
 
         // Check if the password reset form was used
-        if ($this->input->post('btn_reset')) {
-            $email = $this->input->post('email');
+        if ($this->input->post('btn_reset', true)) {
+            $email = $this->input->post('email', true);
+
+            // Validate email format first
+            if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                log_message('error', trans('log_invalid_email_format') . ': ' . $email . ' from IP: ' . $this->input->ip_address());
+                redirect('sessions/login');
+            }
 
             if (empty($email)) {
-                $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
-                redirect($_SERVER['HTTP_REFERER']);
+                log_message('warning', trans('log_empty_email_submitted') . ' from IP: ' . $this->input->ip_address());
+                redirect('sessions/login');
             }
 
-            //prevent brute force attacks by counting password resets
-            $login_log_check = $this->_login_log_check($email);
-            if(!empty($login_log_check) && $login_log_check->log_count>10)
-            {
-                redirect($_SERVER['HTTP_REFERER']);
+            // Security: Block automated tools and bots
+            if ($this->_is_bot_request()) {
+                log_message('warning', trans('log_password_reset_bot_detected') . ': ' . $this->input->ip_address() . ' User-Agent: ' . $this->input->user_agent());
+                redirect('sessions/login');
             }
-            else
-            {
-                //a password recovery attempt counts as failed login
-                $this->_login_log_addfailure($email);
+
+            // Security: Check IP-based rate limiting first (prevents email enumeration)
+            if ($this->_is_ip_rate_limited_password_reset()) {
+                log_message('warning', trans('log_password_reset_ip_rate_limit') . ' from: ' . $this->input->ip_address());
+                redirect('sessions/login');
             }
+
+            // Security: Prevent brute force attacks by counting password reset attempts per email
+            if ($this->_is_email_rate_limited_password_reset($email)) {
+                log_message('warning', trans('log_password_reset_email_rate_limit') . ' for: ' . $email . ' from IP: ' . $this->input->ip_address());
+                redirect('sessions/login');
+            }
+
+            // Record the password reset attempt (both IP and email)
+            $this->_record_password_reset_attempt();
+            $this->_record_email_password_reset_attempt($email);
 
             // Test if a user with this email exists
-            if ($recovery_result = $this->db->where('user_email', $email)) {
-                // Create a passwordreset token. 
-                $email = $this->input->post('email');
-                //use salt to prevent predictability of the reset token (CVE-2021-29023)
-                $this->load->library('crypt'); 
-                $token = md5(time() . $email . $this->crypt->salt()); 
+            $this->db->where('user_email', $email);
+            $user = $this->db->get('ip_users')->row();
 
-                // Save the token to the database and set the user to inactive
-                $db_array = array(
+            // Security: Always show the same message regardless of whether email exists
+            // This prevents email enumeration attacks
+            if ($user) {
+                // User exists - send actual reset email
+                //use salt to prevent predictability of the reset token (CVE-2021-29023)
+                $this->load->library('crypt');
+                $token = md5(time() . $email . $this->crypt->salt());
+
+                // Save the token to the database
+                $db_array = [
                     'user_passwordreset_token' => $token,
-                );
+                ];
 
                 $this->db->where('user_email', $email);
                 $this->db->update('ip_users', $db_array);
@@ -228,28 +235,25 @@ class Sessions extends Base_Controller
                 // Send the email with reset link
                 $this->load->helper('mailer');
 
-                // Preprare some variables for the email
+                // Prepare some variables for the email
                 $email_resetlink = site_url('sessions/passwordreset/' . $token);
-                $email_message = $this->load->view('emails/passwordreset', array(
-                    'resetlink' => $email_resetlink
-                ), true);
+                $email_message   = $this->load->view('emails/passwordreset', [
+                    'resetlink' => $email_resetlink,
+                ], true);
 
                 $email_from = get_setting('smtp_mail_from');
                 if (empty($email_from)) {
-                    $email_from = 'system@' . preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/", "$1", base_url());
+                    $email_from = 'system@' . preg_replace("/^[\w]{2,6}:\/\/([\w\d\.\-]+).*$/", '$1', base_url());
                 }
 
-                // Mail the invoice with the pre-configured mailer if possible
+                // Mail the reset link with the pre-configured mailer if possible
                 if (mailer_configured()) {
-
                     $this->load->helper('mailer/phpmailer');
 
-                    if (!phpmail_send($email_from, $email, trans('password_reset'), $email_message)) {
+                    if ( ! phpmail_send($email_from, $email, trans('password_reset'), $email_message)) {
                         $email_failed = true;
                     }
-
                 } else {
-
                     $this->load->library('email');
 
                     // Set email configuration
@@ -263,21 +267,26 @@ class Sessions extends Base_Controller
                     $this->email->message($email_message);
 
                     // Send the reset email
-                    if (!$this->email->send()) {
+                    if ( ! $this->email->send()) {
                         $email_failed = true;
                         log_message('error', $this->email->print_debugger());
                     }
                 }
 
-                // Redirect back to the login screen with an alert
+                // Show appropriate message
                 if (isset($email_failed)) {
                     $this->session->set_flashdata('alert_error', trans('password_reset_failed'));
                 } else {
                     $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
                 }
-
-                redirect('sessions/login');
+            } else {
+                // User doesn't exist - show same success message to prevent enumeration
+                // DO NOT send email to prevent abuse and RBL issues
+                $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
+                log_message('info', trans('log_password_reset_nonexistent_email') . ': ' . $email . ' from IP: ' . $this->input->ip_address());
             }
+
+            redirect('sessions/login');
         }
 
         return $this->load->view('session_passwordreset');
@@ -285,29 +294,197 @@ class Sessions extends Base_Controller
 
     /**
      * Checks if the login_log table has records for the
-     * given
+     * given.
      *
      * @param string $username
+     *
      * @return object
      */
     private function _login_log_check($username)
     {
-        $login_log_query =  $this->db->where('login_name',$username)->get('ip_login_log')->row();
-        
-        if(!empty($login_log_query) && $login_log_query->log_count > 10)
-        {
+        $login_log_query = $this->db->where('login_name', $username)->get('ip_login_log')->row();
+
+        if ( ! empty($login_log_query) && $login_log_query->log_count > 10) {
             $current_time = new DateTime();
-            $interval = $current_time->diff(new DateTime($login_log_query->log_create_timestamp));
+            $interval     = $current_time->diff(new DateTime($login_log_query->log_create_timestamp));
             //if the last recorded failed attempt is over 12 hours ago, then unlock the account
             //the fails are only counted up to 11, this means that the account is also unlocked
             //if the last failed 11th login attempt is over 12 hours ago.
-            if($interval->h>12)
-            {
+            if ($interval->h > 12) {
                 $this->_login_log_reset($username);
-                return null;
+
+                return;
             }
         }
+
         return $login_log_query;
+    }
+
+    /**
+     * Check if IP address has exceeded rate limit for password resets using session storage.
+     *
+     * @param int $max_attempts   Maximum attempts allowed per hour
+     * @param int $window_minutes Time window in minutes
+     *
+     * @return bool True if rate limited, false otherwise
+     */
+    private function _is_ip_rate_limited_password_reset()
+    {
+        $max_attempts   = env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
+        $window_minutes = env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
+
+        $ip_address  = $this->input->ip_address();
+        $session_key = 'password_reset_attempts_' . md5($ip_address);
+
+        // Get current attempts from session
+        $attempts = $this->session->userdata($session_key);
+
+        if ( ! $attempts) {
+            $attempts = [];
+        }
+
+        // Clean up old attempts outside the time window
+        $cutoff_time = time() - ($window_minutes * 60);
+        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
+            return $timestamp > $cutoff_time;
+        });
+
+        // Check if rate limited
+        if (count($attempts) >= $max_attempts) {
+            log_message('info', trans('log_ip_rate_limit_check') . ': ' . count($attempts) . ' attempts from IP: ' . $ip_address);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Record a password reset attempt for the current IP.
+     */
+    private function _record_password_reset_attempt()
+    {
+        $ip_address  = $this->input->ip_address();
+        $session_key = 'password_reset_attempts_' . md5($ip_address);
+
+        // Get current attempts from session
+        $attempts = $this->session->userdata($session_key);
+
+        if ( ! $attempts) {
+            $attempts = [];
+        }
+
+        // Add current timestamp
+        $attempts[] = time();
+
+        // Store back to session
+        $this->session->set_userdata($session_key, $attempts);
+    }
+
+    /**
+     * Check if email-based rate limit exceeded for password resets using session storage.
+     *
+     * @param string $email        Email address to check
+     * @param int    $max_attempts Maximum attempts allowed
+     * @param int    $window_hours Time window in hours
+     *
+     * @return bool True if rate limited, false otherwise
+     */
+    private function _is_email_rate_limited_password_reset($email)
+    {
+        $max_attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3);
+        $window_hours = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
+
+        $session_key = 'password_reset_email_' . md5($email);
+
+        // Get current attempts from session
+        $attempts = $this->session->userdata($session_key);
+
+        if ( ! $attempts) {
+            $attempts = [];
+        }
+
+        // Clean up old attempts outside the time window
+        $cutoff_time = time() - ($window_hours * 3600);
+        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
+            return $timestamp > $cutoff_time;
+        });
+
+        // Check if rate limited
+        if (count($attempts) >= $max_attempts) {
+            log_message('info', trans('log_email_rate_limit_check') . ': ' . count($attempts) . ' attempts for email: ' . $email);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Record a password reset attempt for a specific email.
+     *
+     * @param string $email Email address
+     */
+    private function _record_email_password_reset_attempt($email)
+    {
+        $session_key = 'password_reset_email_' . md5($email);
+
+        // Get current attempts from session
+        $attempts = $this->session->userdata($session_key);
+
+        if ( ! $attempts) {
+            $attempts = [];
+        }
+
+        // Add current timestamp
+        $attempts[] = time();
+
+        // Store back to session
+        $this->session->set_userdata($session_key, $attempts);
+    }
+
+    /**
+     * Check if the current request is from an automated tool or bot.
+     *
+     * @return bool True if bot/automated tool detected, false otherwise
+     */
+    private function _is_bot_request()
+    {
+        $user_agent = $this->input->user_agent();
+
+        // List of common automated tools and bots
+        $bot_signatures = [
+            'curl',
+            'wget',
+            'python-requests',
+            'go-http-client',
+            'java/',
+            'apache-httpclient',
+            'okhttp',
+            'httpclient',
+            'bot',
+            'spider',
+            'crawler',
+            'scraper',
+            'postman',
+            'insomnia',
+            'paw/',
+        ];
+
+        // Check if user agent is empty (common with automated tools)
+        if (empty($user_agent)) {
+            return true;
+        }
+
+        // Check if user agent contains any bot signatures (case-insensitive)
+        $user_agent_lower = mb_strtolower($user_agent);
+        foreach ($bot_signatures as $signature) {
+            if (str_contains($user_agent_lower, $signature)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -319,24 +496,21 @@ class Sessions extends Base_Controller
      */
     private function _login_log_addfailure($username)
     {
-        if(empty($login_log_check = $this->_login_log_check($username)))
-        {
+        if (empty($login_log_check = $this->_login_log_check($username))) {
             //create the log
-            $this->db->insert('ip_login_log',[
-                'login_name' => $username,
-                'log_count' => 1,
-                'log_create_timestamp' => date('c')
+            $this->db->insert('ip_login_log', [
+                'login_name'           => $username,
+                'log_count'            => 1,
+                'log_create_timestamp' => date('c'),
             ]);
-        }
-        else
-        {
+        } else {
             //update the log
             $this->db->set([
-                'log_count'=>$login_log_check->log_count+1,
-                'log_create_timestamp' => date('c')
+                'log_count'            => $login_log_check->log_count + 1,
+                'log_create_timestamp' => date('c'),
             ])
-            ->where('login_name',$username)
-            ->update('ip_login_log');
+                ->where('login_name', $username)
+                ->update('ip_login_log');
         }
     }
 
@@ -348,6 +522,36 @@ class Sessions extends Base_Controller
      */
     private function _login_log_reset($username)
     {
-        $this->db->delete('ip_login_log',['login_name'=>$username]);
+        $this->db->delete('ip_login_log', ['login_name' => $username]);
+    }
+
+    /**
+     * Validates that a referer URL is from the same domain
+     * to prevent open redirect vulnerabilities.
+     *
+     * @param string $referer
+     *
+     * @return string Safe redirect URL
+     */
+    private function _get_safe_referer($referer = '')
+    {
+        // Use provided referer or HTTP_REFERER
+        $referer = empty($referer) ? ($_SERVER['HTTP_REFERER'] ?? '') : $referer;
+
+        // If no referer, use default
+        if (empty($referer)) {
+            return 'sessions/passwordreset';
+        }
+
+        // Get base URL
+        $base_url = base_url();
+
+        // Check if referer starts with base URL (same domain)
+        if (str_starts_with($referer, $base_url)) {
+            return $referer;
+        }
+
+        // Referer is external or invalid, use safe default
+        return 'sessions/passwordreset';
     }
 }

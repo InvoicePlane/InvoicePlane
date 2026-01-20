@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return [
     'AF' => 'Afganistan',
     'ZA' => 'Afrika e Jugut',
     'DZ' => 'Algjeri',
@@ -156,4 +158,4 @@
     'ZW' => 'Zimbabve',
     'CH' => 'Zvicër',
     'TD' => 'Çad',
-);
+];

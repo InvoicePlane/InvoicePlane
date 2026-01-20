@@ -1,7 +1,6 @@
 <form method="post">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('add_unit'); ?></h1>
@@ -28,7 +27,7 @@
                         <?php _trans('unit_name'); ?>
                     </label>
                     <input type="text" name="unit_name" id="unit_name" class="form-control"
-                           value="<?php echo $this->mdl_units->form_value('unit_name', true); ?>">
+                           value="<?php echo $this->mdl_units->form_value('unit_name', true); ?>" required>
                 </div>
 
                 <div class="form-group">
@@ -36,7 +35,7 @@
                         <?php _trans('unit_name_plrl'); ?>
                     </label>
                     <input type="text" name="unit_name_plrl" id="unit_name_plrl" class="form-control"
-                           value="<?php echo $this->mdl_units->form_value('unit_name_plrl', true); ?>">
+                           value="<?php echo $this->mdl_units->form_value('unit_name_plrl', true); ?>" required>
                 </div>
 
             </div>

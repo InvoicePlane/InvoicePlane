@@ -1,0 +1,32 @@
+name: Docker Compose Check (Disabled)
+
+# This workflow is DISABLED by default.
+# To enable it:
+# - Remove/comment out the line: `workflow_dispatch:`
+# - Add triggers like `push` or `pull_request` as needed
+
+on:
+  workflow_dispatch:  # Manual only — does not run automatically
+
+permissions:
+  contents: read
+
+jobs:
+  docker-compose:
+    name: Docker Integration Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and start containers (if docker-compose.yml is ready)
+        run: docker-compose up -d --build
+
+      - name: Check running services
+        run: docker-compose ps
+
+      #- name:
+      #    Optional: Run health checks or tests
+      #  run:
+      #    echo "TODO: insert test commands after containers are up"
