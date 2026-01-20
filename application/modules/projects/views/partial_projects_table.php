@@ -54,7 +54,7 @@ foreach ($projects as $project) {
         $("#project-table").DataTable({
             "paging": false,
             "searching": false,
-            "info": false,
+            "info": false
         });
     });
 </script>

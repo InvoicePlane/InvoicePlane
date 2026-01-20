@@ -100,7 +100,7 @@ foreach ($quotes as $quote) {
         $("#quote-table").DataTable({
             "paging": false,
             "searching": false,
-            "info": false,
+            "info": false
         });
     });
 </script>

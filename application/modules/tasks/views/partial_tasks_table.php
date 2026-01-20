@@ -81,7 +81,7 @@ foreach ($tasks as $task) {
         $("#task-table").DataTable({
             "paging": false,
             "searching": false,
-            "info": false,
+            "info": false
         });
     });
 </script>

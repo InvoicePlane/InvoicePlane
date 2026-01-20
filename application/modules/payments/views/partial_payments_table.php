@@ -69,7 +69,7 @@ foreach ($payments as $payment) {
         $("#payment-table").DataTable({
             "paging": false,
             "searching": false,
-            "info": false,
+            "info": false
         });
     });
 </script>
