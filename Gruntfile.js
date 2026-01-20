@@ -82,7 +82,9 @@ module.exports = function(grunt) {
           "node_modules/bootstrap-datepicker/js/bootstrap-datepicker.js",
           "node_modules/select2/dist/js/select2.full.js",
           "node_modules/dropzone/dist/dropzone.js",
-          "node_modules/clipboard/dist/clipboard.js"
+          "node_modules/clipboard/dist/clipboard.js",
+          "node_modules/datatables.net/js/jquery.dataTables.js",
+          "node_modules/datatables.net-bs/js/dataTables.bootstrap.js"
         ],
         dest: "assets/core/js/dependencies.js"
       },

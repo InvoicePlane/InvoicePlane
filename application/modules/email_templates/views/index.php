@@ -16,7 +16,7 @@
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped" id="email-template-table">
 
         <thead>
         <tr>
@@ -61,3 +61,12 @@
     </table>
 
 </div>
+<script>
+    $(document).ready(function() {
+        $("#email-template-table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false,
+        });
+    });
+</script>
