@@ -43,6 +43,8 @@
 <!--                     <?php _trans('payment_method'); ?> -->
 <!--                 </option> -->
         </optgroup>
+
+        <?php if (!empty($custom_fields['ip_invoice_custom'])) { ?>
 <?php
 if ($custom_fields['ip_invoice_custom']) {
 ?>
@@ -55,6 +57,7 @@ if ($custom_fields['ip_invoice_custom']) {
                 <?php } ?>
             <?php } ?>
         </optgroup>
+        <?php } ?>
 <?php
 }
 ?>
