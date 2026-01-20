@@ -611,6 +611,7 @@ class Mdl_Invoices extends Response_Model
     public function is_archived()
     {
         $this->filter_where('invoice_status_id', 99);
+
         return $this;
     }
 
