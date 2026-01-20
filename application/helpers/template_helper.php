@@ -125,7 +125,7 @@ function select_pdf_invoice_template($invoice)
         // Use the Partial template
         return $partialTemplate;
     } elseif ($invoice->invoice_status_id == 7) {
-        // Use the unpiad template
+        // Use the unpaid template
         return $unpaidTemplate;
     } else {
         // Use the default template
