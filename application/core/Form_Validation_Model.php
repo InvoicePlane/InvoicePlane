@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,12 +13,9 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Form_Validation_Model
- */
+#[AllowDynamicProperties]
 class Form_Validation_Model extends MY_Model
 {
-
     /**
      * Form_Validation_Model constructor.
      */
@@ -26,6 +24,6 @@ class Form_Validation_Model extends MY_Model
         parent::__construct();
 
         $this->load->library('form_validation');
-        $this->form_validation->CI =& $this;
+        $this->form_validation->CI = & $this;
     }
 }

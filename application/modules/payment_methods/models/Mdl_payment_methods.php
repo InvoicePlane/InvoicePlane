@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,12 +13,11 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Payment_Methods
- */
+#[AllowDynamicProperties]
 class Mdl_Payment_Methods extends Response_Model
 {
     public $table = 'ip_payment_methods';
+
     public $primary_key = 'ip_payment_methods.payment_method_id';
 
     public function default_select()
@@ -33,13 +35,12 @@ class Mdl_Payment_Methods extends Response_Model
      */
     public function validation_rules()
     {
-        return array(
-            'payment_method_name' => array(
+        return [
+            'payment_method_name' => [
                 'field' => 'payment_method_name',
                 'label' => trans('payment_method'),
-                'rules' => 'required'
-            )
-        );
+                'rules' => 'required',
+            ],
+        ];
     }
-
 }

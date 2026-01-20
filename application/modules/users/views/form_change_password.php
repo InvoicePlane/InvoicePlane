@@ -1,9 +1,8 @@
-<script src="<?php echo base_url(); ?>assets/core/js/zxcvbn.js"></script>
+<script src="<?php _core_asset('js/zxcvbn.js'); ?>"></script>
 
 <form method="post">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('change_password'); ?></h1>
@@ -28,7 +27,7 @@
                                 <?php _trans('password'); ?>
                             </label>
                             <input type="password" name="user_password" id="user_password"
-                                   class="form-control passwordmeter-input">
+                                   class="form-control passwordmeter-input" required>
                             <div class="progress" style="height:3px;">
                                 <div class="progress-bar progress-bar-danger passmeter passmeter-1"
                                      style="width: 33%"></div>
@@ -44,7 +43,7 @@
                                 <?php _trans('verify_password'); ?>
                             </label>
                             <input type="password" name="user_passwordv" id="user_passwordv"
-                                   class="form-control">
+                                   class="form-control" required>
                         </div>
                     </div>
 

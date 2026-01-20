@@ -8,10 +8,18 @@
 /vendor
 
 # Other files
-/.htaccess
+.htaccess
 .idea
+.todo
 .sass-cache
 adminer.php
 /nbproject
+/patches
 /.php_cs.cache
 /doc
+*.bak
+npm-debug.log
+yarn-error.log
+.temp
+/stan.txt
+/phpunit.txt
