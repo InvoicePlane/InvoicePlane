@@ -123,7 +123,7 @@
                 <!--- Quoted To Section --->
                 <div class="row">
                     <div class="col-sm-12 col-md-6 col-lg-5">
-                        <h2 class="text-bold"> <?php echo ('Inovoiced To'); ?> </h2>
+                        <h2 class="text-bold"> <?php _trans('bill_to'); ?> </h2>
                     </div>
                     <div class="col-lg-2"><!-- This is empty space --></div>
                     <div class="col-sm-12 col-md-6 col-lg-5 text-right">

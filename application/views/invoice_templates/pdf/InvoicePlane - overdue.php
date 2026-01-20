@@ -163,8 +163,8 @@
                         <?php
                         foreach ($items as $item) { ?>
                             <tr>
-                                <td class="py-2 px-1 bt"><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                                 <td class="py-2 px-1 bt"><?php _htmlsc($item->item_name); ?></td>
+                                <td class="py-2 px-1 bt"><?php echo nl2br(htmlsc($item->item_description)); ?></td>
                                 <td class="text-right py-2 px-1 bt">
                                     <?php echo format_amount($item->item_quantity); ?>
                                     <?php if ($item->item_product_unit) : ?>

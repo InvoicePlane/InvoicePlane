@@ -169,7 +169,7 @@
                         }
                         if ($quote->user_zip) {
                             echo htmlsc($quote->user_zip) . '<br>';
-                        } ?>
+                        } ?></p>
                         <?php if ($quote->user_phone) { ?>
                             <?php echo htmlsc($quote->user_phone); ?>
                             <br>
@@ -177,7 +177,6 @@
                             <?php if ($quote->user_mobile) { ?>
                                 <?php echo htmlsc($quote->user_mobile); ?>
                             <?php } ?>
-                                </p>
                     </div>
                 </div>
                 <!--- Ends --->
@@ -557,35 +556,6 @@
                     ?>
 
                 </div>
-            </div>
-            <!--- No Idea what this does either --->
-            <div class="row">
-                <?php if ($quote->notes) { ?>
-                    <div class="col-xs-12 col-md-6">
-                        <h4><?php echo trans('notes'); ?></h4>
-                        <p><?php echo nl2br(htmlsc($quote->notes)); ?></p>
-                    </div>
-                <?php } ?>
-                <?php if (count($attachments) > 0) { ?>
-                    <div class="col-xs-12 col-md-6">
-                        <h4><?php echo trans('attachments'); ?></h4>
-                        <div class="table-responsive">
-                            <table class="table table-condensed">
-                                <?php foreach ($attachments as $attachment) { ?>
-                                    <tr class="attachments">
-                                        <td><?php echo $attachment['name']; ?></td>
-                                        <td>
-                                            <a href="<?php echo site_url('guest/get/attachment/' . $attachment['fullname']); ?>" class="btn btn-primary btn-sm">
-                                                <i class="fa fa-download"></i>
-                                                <?php _trans('download') ?>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
-                            </table>
-                        </div>
-                    </div>
-                <?php } ?>
             </div>
             <!--- Ends --->
         </div>
