@@ -181,7 +181,7 @@
                                     </td>
                                 <?php endif; ?>
                                 <td class="text-right py-2 px-1 bt">
-                                    <?php echo format_currency($item->item_total); ?>
+                                    <?php echo format_currency($item->item_subtotal); ?>
                                 </td>
                             </tr>
                         <?php } ?>
