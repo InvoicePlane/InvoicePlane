@@ -12,7 +12,7 @@
  * - Removed packages
  * 
  * Output is formatted as a markdown-compatible report with sections for
- * direct dependencies (from package.json) and transient dependencies.
+ * direct dependencies (from package.json) and transitive dependencies.
  */
 
 const fs = require('fs');
