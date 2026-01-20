@@ -1,7 +1,6 @@
 ---
 # Docker Compose configuration for InvoicePlane
-# This file uses PHP 8.3
-# To use PHP 8.4, run: docker-compose -f docker-compose.php84.yml up -d
+# Uses PHP 8.2
 version: "3"
 
 networks:
@@ -19,11 +18,11 @@ volumes:
     driver: "local"
 
 services:
-  # --- PHP 8.3
+  # --- PHP 8.2
   php:
     container_name: "invoiceplane-php"
     build:
-      context: ./resources/docker/php-fpm-8.3
+      context: ./resources/docker/php-fpm
       args:
         - PUID=1000
         - PGID=1000
@@ -40,7 +39,7 @@ services:
         ipv4_address: 172.25.0.11
     volumes:
       - .:/var/www/projects/invoiceplane:delegated
-      - ./resources/docker/php-fpm-8.3/php-dev.ini:/usr/local/etc/php/php.ini
+      - ./resources/docker/php-fpm/php-dev.ini:/usr/local/etc/php/php.ini
 
   # --- nginx 1.23
   nginx:

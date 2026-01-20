@@ -55,17 +55,12 @@ yarn build
 cp ipconfig.php.example ipconfig.php
 # Edit ipconfig.php to set your database connection (use settings from docker-compose.yml)
 
-# Start Docker containers (PHP 8.3, MariaDB, nginx, phpMyAdmin)
+# Start Docker containers (PHP 8.2, MariaDB, nginx, phpMyAdmin)
 docker-compose up -d
 
 # Access the application
 # InvoicePlane: http://localhost
 # phpMyAdmin: http://localhost:8081
-```
-
-**Switching to PHP 8.4**: To use PHP 8.4 instead of PHP 8.3:
-```bash
-docker-compose -f docker-compose.php84.yml up -d
 ```
 
 ### Production Installation

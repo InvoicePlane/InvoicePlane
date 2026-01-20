@@ -16,12 +16,12 @@ This document provides comprehensive guidelines for developers working on Invoic
 
 ## Project Overview
 
-InvoicePlane is a self-hosted open-source application for managing invoices, clients, and payments. This is a simple application built with CodeIgniter 3.x framework that is fully compatible with PHP 8.3+.
+InvoicePlane is a self-hosted open-source application for managing invoices, clients, and payments. This is a simple application built with CodeIgniter 3.x framework that is fully compatible with PHP 8.2+.
 
 ### Key Characteristics
 
 - **Framework**: CodeIgniter 3.x - A simple and lightweight PHP framework
-- **PHP Compatibility**: PHP 8.3 and 8.4 supported (PHP 8.1 is deprecated)
+- **PHP Compatibility**: PHP 8.2, 8.3, and 8.4 supported
 - **Database**: MariaDB
 - **Frontend**: Bootstrap 3, jQuery, custom JavaScript
 - **Build Tools**: Grunt for asset compilation
@@ -32,7 +32,7 @@ InvoicePlane is a self-hosted open-source application for managing invoices, cli
 ## Technology Stack
 
 ### Backend
-- **PHP**: 8.3 and 8.4 (fully compatible, 8.1 is deprecated)
+- **PHP**: 8.2, 8.3, and 8.4 (fully compatible)
 - **Framework**: CodeIgniter 3.x (simple, lightweight framework)
 - **Composer Dependencies**: See `composer.json` for full list
 
@@ -87,7 +87,7 @@ InvoicePlane is a self-hosted open-source application for managing invoices, cli
 #### Using Docker (Recommended)
 
 ```bash
-# Start all services (PHP 8.3, MariaDB, nginx, phpMyAdmin)
+# Start all services (PHP 8.2, MariaDB, nginx, phpMyAdmin)
 docker-compose up -d
 
 # View logs
@@ -100,10 +100,6 @@ docker-compose down
 The application will be available at:
 - **InvoicePlane**: http://localhost
 - **phpMyAdmin**: http://localhost:8081
-
-#### Using PHP 8.4
-
-To switch to PHP 8.4, see [Docker PHP Version Switching](#docker-php-version-switching).
 
 ### Daily Workflow
 
@@ -133,15 +129,6 @@ To switch to PHP 8.4, see [Docker PHP Version Switching](#docker-php-version-swi
    git commit -m "Brief description of changes"
    git push
    ```
-
-### Docker PHP Version Switching
-
-The project includes Docker configurations for both PHP 8.3 and PHP 8.4:
-
-- **PHP 8.3**: Default configuration in `docker-compose.yml`
-- **PHP 8.4**: Available in `resources/docker/php-fpm-8.4/Dockerfile`
-
-To switch PHP versions, modify the `docker-compose.yml` file to reference the desired Dockerfile.
 
 ---
 
