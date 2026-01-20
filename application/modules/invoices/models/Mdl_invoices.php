@@ -587,12 +587,14 @@ class Mdl_Invoices extends Response_Model
     public function is_partial()
     {
         $this->filter_where('invoice_status_id', 5);
+
         return $this;
     }
 
     public function is_unpaid()
     {
         $this->filter_where('invoice_status_id', 7);
+
         return $this;
     }
 
