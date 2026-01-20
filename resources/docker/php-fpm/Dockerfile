@@ -11,10 +11,7 @@ RUN apt-get update && apt-get install -y \
     mariadb-client \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
-    libmcrypt-dev \
     libpng-dev \
-    libcurl4-nss-dev \
-    libc-client-dev \
     libkrb5-dev \
     firebird-dev \
     libicu-dev \
@@ -28,11 +25,11 @@ RUN apt-get update && apt-get install -y \
     git \
     libzip-dev \
     locales-all \
-    libonig-dev \
-    wkhtmltopdf
+    libonig-dev
 
 RUN install-php-extensions \
     bcmath \
+    dom \
     exif \
     gd \
     imagick \
@@ -43,6 +40,7 @@ RUN install-php-extensions \
     redis \
     soap \
     xdebug \
+    xml \
     xsl \
     zip
 
@@ -63,7 +61,7 @@ COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Copy the php-fpm config
 COPY ./fpm.conf /usr/local/etc/php-fpm.d/
-COPY ./php-dev.ini /usr/local/etc/php/conf.d/
+COPY ./php-dev.ini /usr/local/etc/php/conf.d/php.ini
 
 USER root
 
@@ -72,7 +70,7 @@ RUN apt-get -y autoclean && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* && \
-    rm /var/log/lastlog /var/log/faillog
+    rm -f /var/log/lastlog /var/log/faillog
 
 # Configure non-root user.
 ARG PUID=1000

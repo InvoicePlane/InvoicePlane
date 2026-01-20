@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -15,15 +18,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * If there is no translated country list, return the english one.
  *
  * @param $cldr
+ *
  * @return mixed
  */
-function get_country_list($cldr)
+function get_country_list(string $cldr)
 {
     if (file_exists(APPPATH . 'helpers/country-list/' . $cldr . '/country.php')) {
-        return (include APPPATH . 'helpers/country-list/' . $cldr . '/country.php');
-    } else {
-        return (include APPPATH . 'helpers/country-list/en/country.php');
+        return include APPPATH . 'helpers/country-list/' . $cldr . '/country.php';
     }
+
+    return include APPPATH . 'helpers/country-list/en/country.php';
 }
 
 /**
@@ -31,10 +35,12 @@ function get_country_list($cldr)
  *
  * @param $cldr
  * @param $countrycode
+ *
  * @return mixed
  */
 function get_country_name($cldr, $countrycode)
 {
     $countries = get_country_list($cldr);
-    return (isset($countries[$countrycode]) ? $countries[$countrycode] : $countrycode);
+
+    return $countries[$countrycode] ?? $countrycode;
 }

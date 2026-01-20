@@ -97,7 +97,7 @@
 <div id="content" class="table-content">
 
     <div id="filter_results">
-        <?php $this->layout->load_view('quotes/partial_quote_table', array('quotes' => $quotes)); ?>
+        <?php $this->layout->load_view('quotes/partial_quote_table'); ?>
     </div>
 
 </div>

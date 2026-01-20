@@ -3,16 +3,43 @@
         $('#btn-submit').click(function () {
             $('#form-settings').submit();
         });
-        $("[name='settings[default_country]']").select2({
-            placeholder: "<?php _trans('country'); ?>",
+        $('[name="settings[default_country]"]').select2({
+            placeholder: '<?php _trans('country'); ?>',
             allowClear: true
         });
+        if(window.ls) {
+            // Memorise active tab
+            $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+                localStorage.setItem(window.ls, $(e.target).attr('href'));
+            });
+            var activeTab = localStorage.getItem(window.ls);
+            if(activeTab) {
+                $('#settings-tabs a[href="' + activeTab + '"]').tab('show');
+            }
+        }
     });
+
+    window.ls = typeof(localStorage) != 'undefined' ? 'activeTab-settings' : '';
+    if(window.ls) {
+        const lsother = window.ls + '-other';
+        // Become from other page, Return to general tab (Clear memory)
+        if(document.referrer != '<?php echo site_url('settings'); ?>') {
+            // Note: when become from other page & refresh it, the originaly referrer is returned but show last choosen tab
+            localStorage.setItem(lsother, (localStorage.getItem(lsother) ? parseInt(localStorage.getItem(lsother)) : 0) + 1);
+            if(localStorage.getItem(lsother) == 1 && localStorage.getItem(window.ls)) {
+                localStorage.removeItem(window.ls); // Clear tab memory
+            }
+        } else {
+            $(window).on('unload', function() {
+                localStorage.removeItem(lsother); // Clear memory
+            });
+        }
+    }
 </script>
 
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _trans('settings'); ?></h1>
-    <?php $this->layout->load_view('layout/header_buttons', array('hide_cancel_button' => true)); ?>
+    <?php $this->layout->load_view('layout/header_buttons', ['hide_cancel_button' => true]); ?>
 </div>
 
 <ul id="settings-tabs" class="nav nav-tabs nav-tabs-noborder">
@@ -44,8 +71,7 @@
 
 <form method="post" id="form-settings" enctype="multipart/form-data">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div class="tabbable tabs-below">
 
