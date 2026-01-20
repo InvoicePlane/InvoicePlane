@@ -22,7 +22,7 @@ class Invoices extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->load->helper('file_security');
         $this->load->model('mdl_invoices');
     }
@@ -95,17 +95,18 @@ class Invoices extends Admin_Controller
         // Security: Use comprehensive file security validation
         // Note: Removed urldecode() - CodeIgniter already handles this
         $validation = validate_file_access($invoice, UPLOADS_ARCHIVE_FOLDER);
-        
-        if (!$validation['valid']) {
+
+        if ( ! $validation['valid']) {
             $error = $validation['error'] ?? 'unknown';
             log_message('error', 'invoices: Invalid file access attempt during download (error: ' . $error . ', hash: ' . $validation['hash'] . ')');
             show_404();
+
             return;
         }
 
-        $filePath = $validation['path'];
+        $filePath     = $validation['path'];
         $safeFilename = $validation['basename'];
-        
+
         // Security: Sanitize filename for header
         $sanitizedFilename = sanitize_filename_for_header($safeFilename);
 
