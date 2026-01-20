@@ -20,6 +20,14 @@
                class="btn  <?php echo $status == 'rejected' ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('rejected'); ?>
             </a>
+            <a href="<?php echo site_url('guest/quotes/status/viewed'); ?>"
+               class="btn  <?php echo $status == 'viewed' ? 'btn-primary' : 'btn-default' ?>">
+                <?php _trans('viewed'); ?>
+            </a>
+            <a href="<?php echo site_url('guest/quotes/status/all'); ?>"
+               class="btn  <?php echo $status == 'all' ? 'btn-primary' : 'btn-default' ?>">
+                <?php _trans('all'); ?>
+            </a>
         </div>
     </div>
 
@@ -27,9 +35,9 @@
 
 <div id="content" class="table-content">
 
-    <div id="filter_results">
+    <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-        <?php echo $this->layout->load_view('layout/alerts'); ?>
+    <div id="filter_results">
 
         <?php echo $this->layout->load_view('guest/partial_quotes_table'); ?>
 

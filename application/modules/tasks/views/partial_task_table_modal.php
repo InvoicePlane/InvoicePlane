@@ -6,8 +6,7 @@
             <th><?php echo lang('task_name'); ?></th>
             <th><?php echo lang('task_finish_date'); ?></th>
             <th><?php echo lang('task_description'); ?></th>
-            <th class="text-right">
-                <?php echo lang('task_price'); ?></th>
+            <th class="amount"><?php echo lang('task_price'); ?></th>
         </tr>
 
         <?php foreach ($tasks as $task) { ?>
