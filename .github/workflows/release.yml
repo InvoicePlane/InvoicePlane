@@ -169,8 +169,7 @@ jobs:
             --no-interaction --no-update 2>&1 | tee -a "$LOG_FILE"
           
           echo "Configuring vendor-cleaner exclusions..." | tee -a "$LOG_FILE"
-          composer config extra.vendor-cleaner.exclude-dir '["doc", "docs", "example", "examples", "Test", "test", "Tests", "tests"]'
-          composer config extra.vendor-cleaner.exclude-file '["CHANGELOG.md", "changelog.md", "CONTRIBUTING.md", "LICENSE", "LICENCE", "README.md", "readme.md", "phpunit.xml", "phpunit.xml.dist", ".gitignore"]'
+          composer config --json extra.dev-files./ '["doc/", "docs/", "example/", "examples/", "Test/", "test/", "Tests/", "tests/", "CHANGELOG.md", "changelog.md", "CONTRIBUTING.md", "LICENSE", "LICENCE", "README.md", "readme.md", "phpunit.xml", "phpunit.xml.dist", ".gitignore"]'
           
           echo "Running composer update (vendor cleaner will run automatically)..." | tee -a "$LOG_FILE"
           composer update liborm85/composer-vendor-cleaner --no-dev --no-interaction 2>&1 | tee -a "$LOG_FILE"
@@ -424,7 +423,7 @@ jobs:
 
       # Step 9: Create GitHub Draft Pre-Release
       - name: Create GitHub Draft Pre-Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.NEW_TAG }}
           name: Release ${{ env.NEW_TAG }}

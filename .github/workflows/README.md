@@ -174,9 +174,10 @@ The default `GITHUB_TOKEN` has restricted permissions and cannot create pull req
 4. **Creates pull request** - Automated PR with update details
 
 **Update Types:**
-- `security-only` - Only security fixes (default for scheduled runs)
+- `security-updates` - Only security fixes (default for scheduled runs)
+- `common-packages` - Common packages that typically need updates
 - `patch-minor` - Patch and minor version updates
-- `all-dependencies` - All updates including major versions
+- `all-latest-with-build` - All updates including major versions with build verification
 
 **Required Secrets:**
 
