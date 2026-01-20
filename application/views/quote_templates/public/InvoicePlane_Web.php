@@ -68,6 +68,63 @@ if ($logo) {
 }
 ?>
 
+        <?php
+        if ($flash_message) {
+            ?>
+            <div class="alert alert-info">
+                <?php echo $flash_message; ?>
+            </div>
+            <?php
+        } else {
+            echo '<br>';
+        }
+        ?>
+
+        <div class="quote">
+
+            <?php
+            if ($logo = invoice_logo()) {
+                echo $logo . '<br><br>';
+            }
+            ?>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6 col-lg-5">
+
+                    <h4><?php _htmlsc(format_client($quote)); ?></h4>
+                    <p><?php
+                        if ($quote->user_vat_id) {
+                            echo lang('vat_id_short') . ': ' . $quote->user_vat_id . '<br>';
+                        }
+                        if ($quote->user_tax_code) {
+                            echo lang('tax_code_short') . ': ' . $quote->user_tax_code . '<br>';
+                        }
+                        if ($quote->user_address_1) {
+                            echo htmlsc($quote->user_address_1) . '<br>';
+                        }
+                        if ($quote->user_address_2) {
+                            echo htmlsc($quote->user_address_2) . '<br>';
+                        }
+                        if ($quote->user_city) {
+                            echo htmlsc($quote->user_city) . ' ';
+                        }
+                        if ($quote->user_state) {
+                            echo htmlsc($quote->user_state) . ' ';
+                        }
+                        if ($quote->user_zip) {
+                            echo htmlsc($quote->user_zip) . '<br>';
+                        } ?></p>
+                        <?php if ($quote->user_phone) { ?>
+                            <?php echo htmlsc($quote->user_phone); ?>
+                            <br>
+                            <?php } ?>
+                            <?php if ($quote->user_mobile) { ?>
+                                <?php echo htmlsc($quote->user_mobile); ?>
+                            <?php } ?>
+                    </div>
+                </div>
+                <!--- Ends --->
+                <!--- Quote Section --->
                 <div class="row">
                     <div class="col-xs-12 col-md-6 col-lg-5">
 
@@ -295,6 +352,28 @@ if ($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
 
                 </div><!-- .quote-items -->
 
+                </div>
+            </div>
+            <!--- Ends --->
+        </div>
+        <!--- Ends --->
+        <?php if ($quote->notes) { ?>
+            <table class="w-10 table item-table bt">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-2"><?php echo trans('notes'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="py-2 px-2 bt">
+                            <?php echo nl2br(strip_tags($quote->notes, '<p><br><a><strong><em><ul><li><ol><h1><h2><h3><h4><h5><h6>')); ?>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        <?php } ?>
+    </body>
                 <hr>
 
                 <div class="row">
