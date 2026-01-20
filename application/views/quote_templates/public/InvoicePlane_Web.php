@@ -94,10 +94,10 @@ if ($logo) {
                     <h4><?php _htmlsc(format_client($quote)); ?></h4>
                     <p><?php
                         if ($quote->user_vat_id) {
-                            echo lang('vat_id_short') . ': ' . $quote->user_vat_id . '<br>';
+                            echo trans('vat_id_short') . ': ' . $quote->user_vat_id . '<br>';
                         }
                         if ($quote->user_tax_code) {
-                            echo lang('tax_code_short') . ': ' . $quote->user_tax_code . '<br>';
+                            echo trans('tax_code_short') . ': ' . $quote->user_tax_code . '<br>';
                         }
                         if ($quote->user_address_1) {
                             echo htmlsc($quote->user_address_1) . '<br>';

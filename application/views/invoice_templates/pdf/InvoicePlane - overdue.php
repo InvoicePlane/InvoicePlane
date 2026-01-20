@@ -27,10 +27,10 @@
                         <td class="w-5 text-right">
                             <h4><?php _htmlsc($invoice->user_name); ?></h4>
                             <?php if ($invoice->user_vat_id) {
-                                echo lang('vat_id_short') . ': ' . $invoice->user_vat_id . '<br>';
+                                echo trans('vat_id_short') . ': ' . $invoice->user_vat_id . '<br>';
                             } ?>
                             <?php if ($invoice->user_tax_code) {
-                                echo lang('tax_code_short') . ': ' . $invoice->user_tax_code . '<br>';
+                                echo trans('tax_code_short') . ': ' . $invoice->user_tax_code . '<br>';
                             } ?>
                             <?php if ($invoice->user_address_1) {
                                 echo htmlsc($invoice->user_address_1) . '<br>';
@@ -96,7 +96,7 @@
                 <!-- Invoiced To Section -->
                 <table class="w-10 mt-4">
                     <tr>
-                        <td class="w-4 text-bold"><h3><?php echo ('Invoiced To'); ?></h3></td>
+                        <td class="w-4 text-bold"><h3><?php _trans('bill_to'); ?></h3></td>
                         <td class="w-2"></td>
                         <td class="w-4 text-right text-bold mt-3">
                             <h3><?php _htmlsc($invoice->client_name); ?></h3>
@@ -113,10 +113,10 @@
                             <br>
                             <!-- Client Details -->
                             <?php if ($invoice->client_vat_id) {
-                                echo lang('vat_id_short') . ': ' . $invoice->client_vat_id . '<br>';
+                                echo trans('vat_id_short') . ': ' . $invoice->client_vat_id . '<br>';
                             } ?>
                             <?php if ($invoice->client_tax_code) {
-                                echo lang('tax_code_short') . ': ' . $invoice->client_tax_code . '<br>';
+                                echo trans('tax_code_short') . ': ' . $invoice->client_tax_code . '<br>';
                             } ?>
                             <?php if ($invoice->client_address_1) {
                                 echo htmlsc($invoice->client_address_1) . '<br>';

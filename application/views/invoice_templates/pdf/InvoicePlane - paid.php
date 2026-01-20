@@ -27,10 +27,10 @@
                         <td class="w-5 text-right">
                             <h4><?php _htmlsc($invoice->user_name); ?></h4>
                             <?php if ($invoice->user_vat_id) {
-                                echo lang('vat_id_short') . ': ' . $invoice->user_vat_id . '<br>';
+                                echo trans('vat_id_short') . ': ' . $invoice->user_vat_id . '<br>';
                             } ?>
                             <?php if ($invoice->user_tax_code) {
-                                echo lang('tax_code_short') . ': ' . $invoice->user_tax_code . '<br>';
+                                echo trans('tax_code_short') . ': ' . $invoice->user_tax_code . '<br>';
                             } ?>
                             <?php if ($invoice->user_address_1) {
                                 echo htmlsc($invoice->user_address_1) . '<br>';
@@ -67,7 +67,26 @@
                         <td class="w-1"></td>
                         <!-- Invoice Table -->
                         <td class="w-4 pt-3">
-                        <!--- Empty Space --->
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td class="text-bold bt py-1 px-1"><?php echo trans('invoice_date') . ':'; ?></td>
+                                    <td class="text-right bt py-1 px-1"><?php echo date_from_mysql($invoice->invoice_date_created, true); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-bold bt py-1 px-1"><?php echo trans('due_date') . ': '; ?></td>
+                                    <td class="text-right bt py-1 px-1"><?php echo date_from_mysql($invoice->invoice_date_due, true); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-bold bt py-1 px-1"><?php echo trans('amount_due') . ': '; ?></td>
+                                    <td class="text-right bt py-1 px-1"><?php echo format_currency($invoice->invoice_balance); ?></td>
+                                </tr>
+                                <?php if ($payment_method): ?>
+                                <tr>
+                                    <td class="text-bold bt py-1 px-1"><?php echo trans('payment_method') . ': '; ?></td>
+                                    <td class="text-right bt py-1 px-1"><?php _htmlsc($payment_method->payment_method_name); ?></td>
+                                </tr>
+                                <?php endif; ?>
+                            </table>
                         </td>
                     </tr>
                 </table>
@@ -93,10 +112,10 @@
                             <br>
                             <!-- Client Details -->
                             <?php if ($invoice->client_vat_id) {
-                                echo lang('vat_id_short') . ': ' . $invoice->client_vat_id . '<br>';
+                                echo trans('vat_id_short') . ': ' . $invoice->client_vat_id . '<br>';
                             } ?>
                             <?php if ($invoice->client_tax_code) {
-                                echo lang('tax_code_short') . ': ' . $invoice->client_tax_code . '<br>';
+                                echo trans('tax_code_short') . ': ' . $invoice->client_tax_code . '<br>';
                             } ?>
                             <?php if ($invoice->client_address_1) {
                                 echo htmlsc($invoice->client_address_1) . '<br>';
