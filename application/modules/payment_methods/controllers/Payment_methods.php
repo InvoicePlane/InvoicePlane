@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -39,9 +39,6 @@ class Payment_Methods extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
@@ -67,6 +64,7 @@ class Payment_Methods extends Admin_Controller
             if ( ! $this->mdl_payment_methods->prep_form($id)) {
                 show_404();
             }
+
             $this->mdl_payment_methods->set_form_value('is_update', true);
         }
 
@@ -82,5 +80,4 @@ class Payment_Methods extends Admin_Controller
         $this->mdl_payment_methods->delete($id);
         redirect('payment_methods');
     }
-
 }
