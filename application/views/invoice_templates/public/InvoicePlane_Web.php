@@ -152,7 +152,7 @@ if ($logo) {
                             <tbody>
                                 <tr>
                                     <?php if ($invoice->invoice_sign == -1) { ?>
-                                        <td><?php echo trans('credit_invoice_date'); ?></td>
+                                        <td><?php _trans('credit_invoice_date'); ?></td>
                                     <?php } else { ?>
                                         <td><?php _trans('invoice_date'); ?></td>
                                     <?php } ?>

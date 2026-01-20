@@ -143,7 +143,7 @@ if ($invoice->user_fax) {
 
     <div class="invoice-details clearfix">
         <?php if ($invoice->invoice_sign == -1) { ?>
-        <table>
+        <table class="large">
             <tr>
                 <td><?php echo trans('credit_invoice_date') . ':'; ?></td>
                 <td><?php echo date_from_mysql($invoice->invoice_date_created, true); ?></td>
