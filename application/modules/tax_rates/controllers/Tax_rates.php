@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Tax_Rates
- */
+#[AllowDynamicProperties]
 class Tax_Rates extends Admin_Controller
 {
     /**
@@ -38,20 +39,19 @@ class Tax_Rates extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('tax_rates');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_tax_rates->run_validation()) {
             $this->mdl_tax_rates->form_values['tax_rate_percent'] = standardize_amount($this->mdl_tax_rates->form_values['tax_rate_percent']);
 
             // We need to use the correct decimal point for sql IPT-310
-            $db_array = $this->mdl_tax_rates->db_array();
+            $db_array                     = $this->mdl_tax_rates->db_array();
             $db_array['tax_rate_percent'] = standardize_amount($this->input->post('tax_rate_percent'));
 
             $this->mdl_tax_rates->save($id, $db_array);
@@ -59,10 +59,8 @@ class Tax_Rates extends Admin_Controller
             redirect('tax_rates');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_tax_rates->prep_form($id)) {
-                show_404();
-            }
+        if ($id && ! $this->input->post('btn_submit') && ! $this->mdl_tax_rates->prep_form($id)) {
+            show_404();
         }
 
         $this->layout->buffer('content', 'tax_rates/form');
@@ -77,5 +75,4 @@ class Tax_Rates extends Admin_Controller
         $this->mdl_tax_rates->delete($id);
         redirect('tax_rates');
     }
-
 }

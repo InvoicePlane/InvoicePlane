@@ -23,15 +23,15 @@
                 <?php _trans('all'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/draft'); ?>"
-               class="btn  <?php echo $status == 'draft' ? 'btn-primary' : 'btn-default' ?>">
+               class="btn <?php echo $status == 'draft' ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('draft'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/sent'); ?>"
-               class="btn  <?php echo $status == 'sent' ? 'btn-primary' : 'btn-default' ?>">
+               class="btn <?php echo $status == 'sent' ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('sent'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/viewed'); ?>"
-               class="btn  <?php echo $status == 'viewed' ? 'btn-primary' : 'btn-default' ?>">
+               class="btn <?php echo $status == 'viewed' ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('viewed'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/partial'); ?>"
@@ -39,7 +39,7 @@
                 <?php _trans('partially paid'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/paid'); ?>"
-               class="btn  <?php echo $status == 'paid' ? 'btn-primary' : 'btn-default' ?>">
+               class="btn <?php echo $status == 'paid' ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('paid'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/unpaid'); ?>"
@@ -47,7 +47,7 @@
                 <?php _trans('unpaid'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/overdue'); ?>"
-               class="btn  <?php echo $status == 'overdue' ? 'btn-primary' : 'btn-default' ?>">
+               class="btn <?php echo $status == 'overdue' ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('overdue'); ?>
             </a>
             <a href="<?php echo site_url('invoices/status/archived'); ?>"
@@ -112,6 +112,6 @@
 
 <div id="content" class="table-content">
     <div id="filter_results">
-        <?php $this->layout->load_view('invoices/partial_invoice_table', array('invoices' => $invoices)); ?>
+        <?php $this->layout->load_view('invoices/partial_invoice_table'); ?>
     </div>
 </div>
