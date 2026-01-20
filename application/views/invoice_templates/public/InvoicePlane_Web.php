@@ -7,6 +7,12 @@
 
     <title>
         <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
+        - 
+        <?php if ($invoice->invoice_sign == -1) {
+            echo trans('credit_invoice') . ' ' . $invoice->invoice_number;
+          } else {
+            echo trans('invoice') . ' ' . $invoice->invoice_number;
+          } ?> 
         - <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number; ?>
     </title>
 
@@ -21,6 +27,13 @@
 
             <div class="webpreview-header">
 
+            <h2>
+                <?php if ($invoice->invoice_sign == -1) {
+                    echo trans('credit_invoice') . ' ' . $invoice->invoice_number;
+                } else {
+                    echo trans('invoice') . ' ' . $invoice->invoice_number;
+                } ?> 
+            </h2>
                 <h2><?php _trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
 
                 <div class="btn-group">
@@ -54,6 +67,70 @@ if (get_setting('enable_online_payments') == 1 && $invoice->invoice_balance > 0)
 
             <hr>
 
+                </div>
+                <div class="col-lg-2"></div>
+                <div class="col-xs-12 col-md-6 col-lg-5 text-right">
+
+                    <h4><?php _htmlsc(format_client($invoice)); ?></h4>
+                    <p><?php if ($invoice->client_vat_id) {
+                            echo lang("vat_id_short") . ": " . $invoice->client_vat_id . '<br>';
+                        } ?>
+                        <?php if ($invoice->client_tax_code) {
+                            echo lang("tax_code_short") . ": " . $invoice->client_tax_code . '<br>';
+                        } ?>
+                        <?php if ($invoice->client_address_1) {
+                            echo htmlsc($invoice->client_address_1) . '<br>';
+                        } ?>
+                        <?php if ($invoice->client_address_2) {
+                            echo htmlsc($invoice->client_address_2) . '<br>';
+                        } ?>
+                        <?php if ($invoice->client_city) {
+                            echo htmlsc($invoice->client_city) . ' ';
+                        } ?>
+                        <?php if ($invoice->client_state) {
+                            echo htmlsc($invoice->client_state) . ' ';
+                        } ?>
+                        <?php if ($invoice->client_zip) {
+                            echo htmlsc($invoice->client_zip) . '<br>';
+                        } ?>
+                        <?php if ($invoice->client_phone) {
+                            echo trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone); ?>
+                            <br>
+                        <?php } ?>
+                    </p>
+
+                    <br>
+
+                    <table class="table table-condensed">
+                        <tbody>
+                        <tr>
+                            <?php if ($invoice->invoice_sign == -1) { ?>
+                                <td><?php echo trans('credit_invoice_date'); ?></td>
+                            <?php } else { ?>
+                            <td><?php echo trans('invoice_date'); ?></td>
+                            <?php } ?>  
+                            <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
+                        </tr>
+                        <?php if ($invoice->invoice_sign != -1) { ?>
+                        <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
+                            <td><?php echo trans('due_date'); ?></td>
+                            <td class="text-right">
+                                <?php echo date_from_mysql($invoice->invoice_date_due); ?>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                        <tr class="<?php echo($is_overdue ? 'overdue' : '') ?>">
+                            <td><?php echo trans('amount_due'); ?></td>
+                            <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
+                        </tr>
+                        <?php if ($payment_method) { ?>
+                            <tr>
+                                <td><?php echo trans('payment_method') . ': '; ?></td>
+                                <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
+                            </tr>
+                        <?php } ?>
+                        </tbody>
+                    </table>
             <?php echo $this->layout->load_view('layout/alerts'); ?>
 
             <div class="invoice">

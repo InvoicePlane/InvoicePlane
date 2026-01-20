@@ -243,6 +243,14 @@ echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation ha
 ?>
 <div id="headerbar">
     <h1 class="headerbar-title">
+        <?php
+        if ($invoice->invoice_sign == -1) {
+            echo trans('credit_invoice') . ' ';
+        } else {
+        echo trans('invoice') . ' ';
+        }
+        echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
+        ?>
         <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing'); ?>: <?php _htmlsc(PHP_EOL . format_user($invoice->user_id)); ?>">
             <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : trans('id') . ': ' . $invoice->invoice_id); ?>
         </span>
@@ -276,6 +284,14 @@ if ($change_user) {
                 <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
             <ul class="dropdown-menu">
+                <?php if ($invoice->is_read_only != 1 && $invoice->invoice_sign != -1) { ?>
+                    <li>
+                        <a href="#add-invoice-tax" data-toggle="modal">
+                            <i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
+                        </a>
+                    </li>
+                <?php } ?>
+                <?php if ($invoice->invoice_sign != -1) { ?>
 <?php
 if ($legacy_calculation && $invoice->is_read_only != 1) { // Legacy calculation have global taxes - since v1.6.3
 ?>
@@ -293,6 +309,19 @@ if ($legacy_calculation && $invoice->is_read_only != 1) { // Legacy calculation 
                         <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
                     </a>
                 </li>
+                <?php } ?>
+                <?php if ($invoice->invoice_balance != 0) : ?>
+                    <li>
+                        <a href="#" class="invoice-add-payment"
+                           data-invoice-id="<?php echo $invoice_id; ?>"
+                           data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
+                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
+                           data-payment-cf-exist="<?php echo $payment_cf_exist ?? ''; ?>">
+                            <i class="fa fa-credit-card fa-margin"></i>
+                            <?php _trans('enter_payment'); ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
 <?php
 if ($invoice->invoice_balance != 0) {
 ?>
@@ -442,6 +471,16 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                 <div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-1">
                     <div class="details-box panel panel-default panel-body">
                         <div class="row">
+
+                            <?php if ($invoice->invoice_sign == -1) { ?>
+                                <div class="col-xs-12">
+                                    <div class="alert alert-warning small">
+                                        <i class="fa fa-credit-invoice"></i>&nbsp;
+                                        <?php echo trans('credit_invoice_for_invoice') . ' ';
+                                        $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
+                                        echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $parent_invoice_number);
+                                        ?>
+                                    </div>
 <?php
 if ($invoice->invoice_sign == -1) {
     $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
@@ -459,6 +498,22 @@ if ($invoice->invoice_sign == -1) {
                             <div class="col-xs-12 col-md-6">
 
                                 <div class="invoice-properties">
+                                    <label>
+                                        <?php if ($invoice->invoice_sign == -1) {
+                                                echo trans('credit_invoice');
+                                            } else {
+                                                echo trans('invoice');
+                                        } ?> #
+                                    </label>
+                                    <input type="text" id="invoice_number" class="form-control input-sm"
+                                        <?php if ($invoice->invoice_number) { ?>
+                                            value="<?php echo $invoice->invoice_number; ?>"
+                                        <?php } else { ?>
+                                            placeholder="<?php _trans('not_set'); ?>"
+                                        <?php } ?>
+                                        <?php if ($invoice->is_read_only == 1) {
+                                            echo 'disabled="disabled"';
+                                        } ?>>
 <?php
 if ($einvoice->name) {
 ?>
@@ -519,6 +574,12 @@ if ($einvoice->name) {
                                         <input name="invoice_date_due" id="invoice_date_due"
                                                class="form-control datepicker"
                                                value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
+                                            <?php if ($invoice->is_read_only == 1 || $invoice->invoice_sign == -1) {
+                                                echo 'disabled="disabled"';
+                                            } ?>>
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </span>
                                                <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>>
                                         <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
                                     </div>
@@ -621,6 +682,11 @@ if ($invoice->invoice_status_id != 1) {
 
             <br>
 
+            <?php if (get_setting('show_responsive_itemlist') == 1) {
+                    $this->layout->load_view('invoices/partial_itemlist_responsive');
+                  } else {
+                    $this->layout->load_view('invoices/partial_itemlist_table');
+                  } ?>
 <?php $this->layout->load_view('invoices/partial_itemlist_' . (get_setting('show_responsive_itemlist') ? 'responsive' : 'table')); ?>
 
             <hr>
@@ -630,7 +696,11 @@ if ($invoice->invoice_status_id != 1) {
 
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading">
-                            <?php _trans('invoice_terms'); ?>
+                            <?php if ($invoice->invoice_sign == -1) {
+                                    _trans('credit_invoice_terms');
+                                } else {
+                                    _trans('invoice_terms');
+                                } ?>
                         </div>
                         <div class="panel-body">
                             <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
@@ -649,6 +719,43 @@ if ($invoice->invoice_status_id != 1) {
                 </div>
             </div>
 
+            <?php if ($custom_fields) { ?>
+                <div class="row">
+                    <div class="col-xs-12">
+
+                        <hr>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php _trans('custom_fields'); ?>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <?php $i = 0; ?>
+                                        <?php foreach ($custom_fields as $custom_field): ?>
+                                            <?php if ($custom_field->custom_field_location != 0) {
+                                                continue;
+                                            } ?>
+                                            <?php $i++; ?>
+                                            <?php if ($i % 2 != 0) { ?>
+                                                <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                            <?php } ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <?php $i = 0; ?>
+                                        <?php foreach ($custom_fields as $custom_field) { ?>
+                                            <?php if ($custom_field->custom_field_location != 0) {
+                                                continue;
+                                            } ?>
+                                            <?php $i++; ?>
+                                            <?php if ($i % 2 == 0) { ?>
+                                                <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                            <?php } ?>
+                                        <?php } ?>
+                                    </div>
 <?php
 if ($default_custom) {
 ?>
@@ -674,6 +781,7 @@ if ($default_custom) {
                     </div>
 
                 </div>
+            <?php } ?>
             </div>
 <?php
 } // End if custom_fields
