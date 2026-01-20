@@ -59,7 +59,53 @@ class Mdl_Setup extends CI_Model
 
         $this->db->insert('ip_payment_methods', [
             'payment_method_name' => 'Credit Card',
-        ]);
+        ));
+    }
+
+    /**
+     *
+     */
+    private function install_default_settings()
+    {
+        $this->load->helper('string');
+
+        $default_settings = array(
+            'default_language' => $this->session->userdata('ip_lang'),
+            'date_format' => 'm/d/Y',
+            'currency_symbol' => '$',
+            'currency_symbol_placement' => 'before',
+            'currency_code' => 'USD',
+            'invoices_due_after' => 30,
+            'quotes_expire_after' => 15,
+            'default_invoice_group' => 3,
+            'default_quote_group' => 4,
+            'thousands_separator' => ',',
+            'decimal_point' => '.',
+            'cron_key' => random_string('alnum', 16),
+            'tax_rate_decimal_places' => 2,
+            'pdf_invoice_template' => 'InvoicePlane',
+            'pdf_invoice_template_paid' => 'InvoicePlane - paid',
+            'pdf_invoice_template_unpaid' => 'InvoicePlane - unpaid',
+            'pdf_invoice_template_partial' => 'InvoicePlane - partial',
+            'pdf_invoice_template_overdue' => 'InvoicePlane - overdue',
+            'pdf_quote_template' => 'InvoicePlane',
+            'public_invoice_template' => 'InvoicePlane_Web',
+            'public_quote_template' => 'InvoicePlane_Web',
+            'disable_sidebar' => 1,
+        );
+
+        foreach ($default_settings as $setting_key => $setting_value) {
+            $this->db->where('setting_key', $setting_key);
+
+            if (!$this->db->get('ip_settings')->num_rows()) {
+                $db_array = array(
+                    'setting_key' => $setting_key,
+                    'setting_value' => $setting_value
+                );
+
+                $this->db->insert('ip_settings', $db_array);
+            }
+        }
     }
 
     /**
