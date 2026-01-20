@@ -472,28 +472,16 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                     <div class="details-box panel panel-default panel-body">
                         <div class="row">
 
-                            <?php if ($invoice->invoice_sign == -1) { ?>
+                            <?php if ($invoice->invoice_sign == -1) {
+                                $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
+                            ?>
                                 <div class="col-xs-12">
                                     <div class="alert alert-warning small">
                                         <i class="fa fa-credit-invoice"></i>&nbsp;
-                                        <?php echo trans('credit_invoice_for_invoice') . ' ';
-                                        $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
-                                        echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $parent_invoice_number);
-                                        ?>
+                                        <?php echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . $parent_invoice_number); ?>
                                     </div>
-<?php
-if ($invoice->invoice_sign == -1) {
-    $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
-    $view_link             = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . $parent_invoice_number);
-?>
-                            <div class="col-xs-12">
-                                <div class="alert alert-warning small">
-                                    <i class="fa fa-credit-invoice"></i>&nbsp;<?php echo $view_link; ?>
                                 </div>
-                            </div>
-<?php
-} // End if
-?>
+                            <?php } ?>
 
                             <div class="col-xs-12 col-md-6">
 

@@ -87,10 +87,6 @@ if ($invoice->client_country) {
 
 echo '<br>';
 
-        if ($invoice->client_phone) {
-            echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '</div>';
-        } ?>
-
 if ($invoice->client_phone) {
     echo '<div>' . trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '</div>';
 }
@@ -146,17 +142,18 @@ if ($invoice->user_fax) {
 <main>
 
     <div class="invoice-details clearfix">
-        <table>
-            <?php if ($invoice->invoice_sign == -1) { ?>
-                <tr>
-                    <td><?php echo trans('credit_invoice_date') . ':'; ?></td>
-                    <td><?php echo date_from_mysql($invoice->invoice_date_created, true); ?></td>
-                </tr>
-                <tr>
-                    <td><?php echo trans('amount_due') . ': '; ?></td>
-                    <td><?php echo format_currency($invoice->invoice_balance); ?></td>
-                </tr>
-            <?php } else { ?>
+        <?php if ($invoice->invoice_sign == -1) { ?>
+        <table class="large">
+            <tr>
+                <td><?php echo trans('credit_invoice_date') . ':'; ?></td>
+                <td><?php echo date_from_mysql($invoice->invoice_date_created, true); ?></td>
+            </tr>
+            <tr>
+                <td><?php echo trans('amount_due') . ': '; ?></td>
+                <td><?php echo format_currency($invoice->invoice_balance); ?></td>
+            </tr>
+        </table>
+        <?php } else { ?>
         <table class="large">
             <tr>
                 <td rowspan="<?php echo $payment_method ? 5 : 4 ?>" style="width:40%;text-align:left;"><?php echo $stamp ?></td>
@@ -179,31 +176,17 @@ if ($invoice->user_fax) {
                     <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
                 </tr>
             <?php } ?>
-            <?php } ?>
         </table>
+        <?php } ?>
     </div>
 
-    <h1 class="invoice-title">
-    <?php if ($invoice->invoice_sign == -1) {
+    <h1 class="invoice-title <?php echo $text_class ?>">
+        <?php if ($invoice->invoice_sign == -1) {
             echo trans('credit_invoice') . ' ' . htmlsc($invoice->invoice_number);
-          } else {
+        } else {
             echo trans('invoice') . ' ' . htmlsc($invoice->invoice_number);
-          } ?>    
-    </h1>        
-<?php
-if ($payment_method) {
-?>
-            <tr>
-                <td><?php _trans('payment_method'); ?>:</td>
-                <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
-            </tr>
-<?php
-}
-?>
-        </table>
-    </div>
-
-    <h1 class="invoice-title <?php echo $text_class ?>"><?php _trans('invoice') ?> <?php _htmlsc($invoice->invoice_number) ?></h1>
+        } ?>
+    </h1>
 
     <table class="item-table">
         <thead>
