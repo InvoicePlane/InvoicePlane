@@ -22,7 +22,7 @@ permissions:
 
 # Note: This workflow requires a Personal Access Token (PAT) to create pull requests.
 # The default GITHUB_TOKEN has restricted permissions and cannot create PRs that trigger other workflows.
-# 
+#
 # To configure the required secret:
 # 1. Create a Personal Access Token (classic) with 'repo' and 'workflow' scopes
 #    at https://github.com/settings/tokens
@@ -34,7 +34,7 @@ permissions:
 jobs:
   update-composer-dependencies:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,8 +51,14 @@ jobs:
         id: audit
         run: |
           composer audit --format=json > audit-report.json || true
-          if [ -s audit-report.json ]; then
-            echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
+          # Parse the JSON to check if advisories array has entries
+          if [ -f audit-report.json ]; then
+            advisory_count=$(jq '.advisories | length' audit-report.json 2>/dev/null || echo "0")
+            if [ "$advisory_count" -gt 0 ]; then
+              echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
+            else
+              echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
+            fi
           else
             echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
           fi
@@ -98,12 +104,12 @@ jobs:
           # Get the old version first
           EMPTY_LOCK='{"packages":[],"packages-dev":[]}'
           git show HEAD:composer.lock > /tmp/composer.lock.old 2>/dev/null || echo "$EMPTY_LOCK" > /tmp/composer.lock.old
-          
+
           # Parse both old and new composer.lock files to get package changes
           php -r '
           $old = json_decode(file_get_contents("/tmp/composer.lock.old"), true);
           $new = json_decode(file_get_contents("composer.lock"), true);
-          
+
           // Read and parse composer.json with error handling
           if (file_exists("composer.json")) {
               $composerJson = json_decode(file_get_contents("composer.json"), true);
@@ -113,28 +119,28 @@ jobs:
           } else {
               $composerJson = ["require" => [], "require-dev" => []];
           }
-          
+
           // Get direct dependencies from composer.json
           $directDeps = array_keys($composerJson["require"] ?? []);
           $directDevDeps = array_keys($composerJson["require-dev"] ?? []);
-          
+
           $oldPackages = [];
           foreach (array_merge($old["packages"] ?? [], $old["packages-dev"] ?? []) as $pkg) {
               $oldPackages[$pkg["name"]] = $pkg["version"];
           }
-          
+
           $newPackages = [];
           foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $pkg) {
               $newPackages[$pkg["name"]] = $pkg["version"];
           }
-          
+
           $directChanges = [];
           $transientChanges = [];
-          
+
           // Check for new and updated packages
           foreach ($newPackages as $name => $newVersion) {
               $isDirect = in_array($name, $directDeps) || in_array($name, $directDevDeps);
-              
+
               if (!isset($oldPackages[$name])) {
                   $change = "$name: (new) → $newVersion";
                   if ($isDirect) {
@@ -151,7 +157,7 @@ jobs:
                   }
               }
           }
-          
+
           // Check for removed packages using array key lookup
           foreach ($oldPackages as $name => $version) {
               if (!isset($newPackages[$name])) {
@@ -164,7 +170,7 @@ jobs:
                   }
               }
           }
-          
+
           if (empty($directChanges) && empty($transientChanges)) {
               echo "No package changes detected\n";
           } else {
@@ -174,7 +180,7 @@ jobs:
                       echo "$change\n";
                   }
               }
-              
+
               if (!empty($transientChanges)) {
                   if (!empty($directChanges)) {
                       echo "\n";
@@ -186,7 +192,7 @@ jobs:
               }
           }
           ' > updated-packages.txt
-          
+
           echo "UPDATED_PACKAGES<<EOF" >> $GITHUB_OUTPUT
           cat updated-packages.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -202,38 +208,38 @@ jobs:
           title: "chore(deps): Update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
           body: |
             ## Composer Dependency Update
-            
+
             This PR updates Composer dependencies.
-            
+
             **Update Type:** ${{ github.event.inputs.update_type }}
             **Triggered by:** ${{ github.event_name }}
-            
+
             ### Updated Packages
-            
+
             ```
             ${{ steps.updated-packages.outputs.UPDATED_PACKAGES }}
             ```
-            
+
             ### Checks Performed
-            
+
             - [ ] ~~Unit tests passed~~ (commented out until further notice)
             - [ ] ~~Static analysis completed~~ (commented out until further notice)
             - [ ] ~~Code formatting checked~~ (commented out until further notice)
-            
+
             ### Security Audit
-            
+
             ${{ steps.audit.outputs.vulnerabilities_found == 'true' && 'Security vulnerabilities detected. Please review audit-report.json.' || 'No security vulnerabilities detected.' }}
-            
+
             ### Review Checklist
-            
+
             - [ ] Review updated packages and their changelogs
             - [ ] Verify all tests pass
             - [ ] Check for breaking changes
             - [ ] Update documentation if needed
             - [ ] Test manually in development environment
-            
+
             ---
-            
+
             *This PR was automatically created by the Composer Update workflow.*
           labels: |
             dependencies

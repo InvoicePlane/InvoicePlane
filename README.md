@@ -35,7 +35,37 @@ _A libre self-hosted web application designed to help you manage invoices, clien
 
 ## Getting Started
 
-To get started with InvoicePlane:
+To get started with InvoicePlane, you have several options depending on your needs:
+
+### Quick Start with Docker (Recommended for Development)
+
+The easiest way to get InvoicePlane running locally is with Docker:
+
+```bash
+# Clone the repository
+git clone https://github.com/InvoicePlane/InvoicePlane.git
+cd InvoicePlane
+
+# Install dependencies
+composer install
+yarn install
+yarn build
+
+# Configure the application
+cp ipconfig.php.example ipconfig.php
+# Edit ipconfig.php to set your database connection (use settings from docker-compose.yml)
+
+# Start Docker containers (PHP 8.2, MariaDB, nginx, phpMyAdmin)
+docker-compose up -d
+
+# Access the application
+# InvoicePlane: http://localhost
+# phpMyAdmin: http://localhost:8081
+```
+
+### Production Installation
+
+For production deployments:
 
 1. **Download the Latest Version:**
    - Visit the [InvoicePlane website](https://www.invoiceplane.com/) to download the latest release.
@@ -45,7 +75,7 @@ To get started with InvoicePlane:
 
 3. **Configuration:**
    - Duplicate `ipconfig.php.example` and rename it to `ipconfig.php`.
-   - Open `ipconfig.php` in a text editor and set your base URL.
+   - Open `ipconfig.php` in a text editor and set your base URL and database credentials.
 
 4. **Run the Installer:**
    - Navigate to `http://your-domain.com/index.php/setup` in your browser and follow the on-screen instructions to complete the installation.
@@ -94,6 +124,12 @@ We welcome contributions from the community! To get involved:
 - **Translate InvoicePlane:** Help translate the application into your language. Also see [Translations.md](TRANSLATIONS.md)
 
 For detailed contribution guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Developer Resources
+
+- **[Development Guidelines](.junie/guidelines.md)** - Comprehensive guide for developers
+- **[Copilot Instructions](.github/copilot-instructions.md)** - GitHub Copilot context and patterns
+- **[Docker Setup](resources/docker/README.md)** - Docker configuration and usage guide
 
 ---
 

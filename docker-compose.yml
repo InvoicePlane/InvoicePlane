@@ -1,4 +1,6 @@
 ---
+# Docker Compose configuration for InvoicePlane
+# Uses PHP 8.2
 version: "3"
 
 networks:
@@ -16,7 +18,7 @@ volumes:
     driver: "local"
 
 services:
-  # --- PHP 8.1
+  # --- PHP 8.2
   php:
     container_name: "invoiceplane-php"
     build:

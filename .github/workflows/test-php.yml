@@ -2,6 +2,7 @@ name: PHP Testing
 
 on:
   workflow_dispatch:
+  pull_request:
 
 jobs:
   run:
@@ -11,7 +12,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['8.2']
+        php-versions: ['8.2', '8.3', '8.4']
 
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
 
@@ -35,5 +36,16 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
 
+      - name: Check for PHP Syntax Errors
+        run: |
+          echo "Checking for PHP syntax errors..."
+          find application -name "*.php" -print0 | xargs -0 -n1 php -l
+          find index.php -name "*.php" -print0 | xargs -0 -n1 php -l
+          echo "PHP syntax check passed!"
+
       - name: Install Dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Code Quality Checks
+        run: composer check
+

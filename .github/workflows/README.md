@@ -37,7 +37,7 @@ A reusable composite action that sets up PHP and installs Composer dependencies 
 
 ### 1. Production Release (`release.yml`)
 
-**Trigger:** Manual dispatch only (workflow_dispatch)
+**Trigger:** Triggered manually via workflow_dispatch
 
 **Purpose:** Creates a production-ready release package of InvoicePlane v2 and publishes it as a GitHub Release
 
