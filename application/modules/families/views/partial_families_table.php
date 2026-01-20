@@ -1,5 +1,5 @@
     <div class="table-responsive">
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped" id="family-table">
 
             <thead>
             <tr>
@@ -47,3 +47,12 @@ foreach ($families as $family) {
 
         </table>
     </div>
+<script>
+    $(document).ready(function() {
+        $("#family-table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false
+        });
+    });
+</script>

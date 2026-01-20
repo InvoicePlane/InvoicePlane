@@ -18,7 +18,7 @@
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div class="table-responsive">
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped" id="invoice-group-table">
 
             <thead>
             <tr>
@@ -68,3 +68,12 @@
     </div>
 
 </div>
+<script>
+    $(document).ready(function() {
+        $("#invoice-group-table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false
+        });
+    });
+</script>

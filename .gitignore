@@ -6,6 +6,7 @@
 # Dependencies
 /node_modules
 /vendor
+package-lock.json
 
 # Other files
 .htaccess

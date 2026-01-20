@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover table-striped" id="sort">
+    <table class="table table-hover table-striped" id="client-table">
         <thead>
         <tr>
             <th><?php _trans('active'); ?></th>
@@ -99,16 +99,12 @@ if ($einvoicing) {
         </tbody>
     </table>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
-<script src "https://cdn.datatables.net/plug-ins/1.10.15/sorting/stringMonthYear.js"></script>
-
 <script>
     $(document).ready(function() {
-        $("#sort").DataTable({
+        $("#client-table").DataTable({
             "paging": false,
             "searching": false,
-            "info": false,
+            "info": false
         });
     });
 </script>

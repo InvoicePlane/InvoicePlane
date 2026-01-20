@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped" id="quote-table">
 
         <thead>
         <tr>
@@ -95,3 +95,12 @@ foreach ($quotes as $quote) {
 
     </table>
 </div>
+<script>
+    $(document).ready(function() {
+        $("#quote-table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false
+        });
+    });
+</script>
