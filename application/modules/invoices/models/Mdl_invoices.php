@@ -47,28 +47,28 @@ class Mdl_Invoices extends Response_Model
                 'label' => trans('paid'),
                 'class' => 'paid',
                 'href' => 'invoices/status/paid'
-            ),
-            '5' => array(
+            ],
+            '5' => [
                 'label' => trans('partial'),
                 'class' => 'partial',
                 'href' => 'invoices/status/partial'
-            ),
-            '6' => array(
+            ],
+            '6' => [
                 'label' => trans('overdue'),
                 'class' => 'overdue',
                 'href' => 'invoices/status/overdue'
-            ),
-            '7' => array(
+            ],
+            '7' => [
                 'label' => trans('unpaid'),
                 'class' => 'unpaid',
                 'href' => 'invoices/status/unpaid'
-            ),
-            '99' => array(
+            ],
+            '99' => [
                 'label' => trans('archived'),
                 'class' => 'archived',
                 'href' => 'invoices/status/archived'
-            ),
-        );
+            ],
+        ];
     }
 
     public function default_select()
@@ -600,6 +600,17 @@ class Mdl_Invoices extends Response_Model
     {   // DO NOT change the ID it causes issues on dashboard filter
         $this->filter_having('is_overdue', 1);
 
+        return $this;
+    }
+
+    /**
+     * Filter invoices by archived status.
+     *
+     * @return $this
+     */
+    public function is_archived()
+    {
+        $this->filter_where('invoice_status_id', 99);
         return $this;
     }
 
