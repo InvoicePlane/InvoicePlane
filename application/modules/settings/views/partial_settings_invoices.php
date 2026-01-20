@@ -491,6 +491,27 @@ $qr_code = get_setting('qr_code');
                         </div>
 
                     </div>
+                    <div class="col-xs-12 col-md-6">
+
+                        <div class="form-group">
+                            <label for="settings[generate_recurring_if_unpaid]">
+                                <?php _trans('generate_recurring_if_unpaid'); ?>
+                            </label>
+                            <select name="settings[generate_recurring_if_unpaid]" id="settings[generate_recurring_if_unpaid]"
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0" <?php check_select(get_setting('generate_recurring_if_unpaid'), '0'); ?>>
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('generate_recurring_if_unpaid'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                            <p class="help-block">
+                                <?php _trans('generate_recurring_if_unpaid_help'); ?>
+                            </p>
+                        </div>
+
+                    </div>
                 </div>
 
             </div>
