@@ -526,13 +526,7 @@ if (get_setting('qr_code') && $invoice->invoice_balance > 0) {
                     <tbody>
                         <tr>
                             <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right"><?php echo trans('paid'); ?></td>
-                            <td class="amount"><?php echo format_currency($invoice->invoice_paid) ?></td>
-                        </tr>
-                        <tr class="<?php echo ($invoice->invoice_balance > 0); ?>">
-                            <td class="no-bottom-border" colspan="4"></td>
-                            <td class="text-right"><?php echo trans('balance'); ?></td>
-                            <td>
+                            <td class="text-right">
                                 <div>
                                     <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
                                     <?php echo $invoice->user_company ?: get_setting('qr_code_recipient'); ?>
@@ -554,19 +548,6 @@ if (get_setting('qr_code') && $invoice->invoice_balance > 0) {
                                 <?php echo invoice_qrcode($invoice->invoice_id); ?>
                             </td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!--- No Idea what this does either --->
-            <div class="row">
-                <?php if ($invoice->notes) { ?>
-                    <div class="col-xs-12 col-md-6">
-                        <h4><?php echo trans('notes'); ?></h4>
-                        <p><?php echo nl2br(htmlsc($invoice->notes)); ?></p>
-                    </div>
-                <?php } ?>
-                <?php if (count($attachments) > 0) { ?>
                     </tbody>
                 </table>
 
@@ -606,30 +587,6 @@ if (count($attachments) > 0) {
                                         </td>
                                     </tr>
                                 <?php } ?>
-                            </table>
-                        </div>
-                    </div>
-                <?php } ?>
-            </div>
-            <!--- Ends --->
-        </div>
-        <!--- Ends --->
-    </body>
-<?php
-    foreach ($attachments as $attachment) {
-?>
-                                <tr class="attachments">
-                                    <td><?php echo $attachment['name']; ?></td>
-                                    <td>
-                                        <a href="<?php echo site_url('guest/get/get_file/' . $attachment['fullname']); ?>"
-                                           class="btn btn-primary btn-sm">
-                                            <i class="fa fa-download"></i> <?php _trans('download') ?>
-                                        </a>
-                                    </td>
-                                </tr>
-<?php
-    }
-?>
                             </table>
                         </div>
                     </div>
