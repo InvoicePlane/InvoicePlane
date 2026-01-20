@@ -104,7 +104,8 @@ if ($einvoicing) {
         $("#client-table").DataTable({
             "paging": false,
             "searching": false,
-            "info": false
+            "info": false,
+            "order": []
         });
     });
 </script>

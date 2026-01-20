@@ -66,10 +66,13 @@ foreach ($payments as $payment) {
 </div>
 <script>
     $(document).ready(function() {
-        $("#payment-table").DataTable({
-            "paging": false,
-            "searching": false,
-            "info": false
-        });
+        if (!$.fn.DataTable.isDataTable("#payment-table")) {
+            $("#payment-table").DataTable({
+                "paging": false,
+                "searching": false,
+                "info": false,
+                "order": []
+            });
+        }
     });
 </script>

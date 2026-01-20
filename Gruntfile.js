@@ -125,6 +125,12 @@ module.exports = function(grunt) {
         src: ["node_modules/font-awesome/fonts/*"],
         dest: "assets/core/fonts"
       },
+      datatablescss: {
+        expand: true,
+        flatten: true,
+        src: ["node_modules/datatables.net-bs/css/dataTables.bootstrap.css"],
+        dest: "assets/core/css/"
+      },
       devjs: {
         files: [
           {
@@ -166,6 +172,7 @@ module.exports = function(grunt) {
     "copy:datepickerlocale",
     "copy:select2locale",
     "copy:fontawesome",
+    "copy:datatablescss",
     "copy:devjs"
   ]);
 
@@ -179,6 +186,7 @@ module.exports = function(grunt) {
     "copy:datepickerlocale",
     "copy:select2locale",
     "copy:fontawesome",
+    "copy:datatablescss",
     "copy:devjs",
     "watch"
   ]);
@@ -194,6 +202,7 @@ module.exports = function(grunt) {
     "clean:build",
     "copy:datepickerlocale",
     "copy:select2locale",
-    "copy:fontawesome"
+    "copy:fontawesome",
+    "copy:datatablescss"
   ]);
 };

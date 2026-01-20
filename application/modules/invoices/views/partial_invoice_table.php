@@ -18,14 +18,11 @@
 <?php
 $invoice_idx        = 1;
 $invoice_count      = count($invoices);
-$invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
 foreach ($invoices as $invoice) {
     // Disable read-only if not applicable
     if ($this->config->item('disable_read_only') == true) {
         $invoice->is_read_only = 0;
     }
-    // Convert the dropdown menu to a dropup if invoice is after the invoice split
-    $dropup = $invoice_idx > $invoice_list_split;
 ?>
             <tr>
                 <td>
@@ -71,7 +68,7 @@ foreach ($invoices as $invoice) {
                 </td>
 
                 <td>
-                    <div class="options btn-group<?php echo $dropup ? ' dropup' : ''; ?>">
+                    <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-cog"></i> <?php _trans('options'); ?>
                         </a>
@@ -143,7 +140,24 @@ foreach ($invoices as $invoice) {
         $("#invoice-table").DataTable({
             "paging": false,
             "searching": false,
-            "info": false
+            "info": false,
+            "order": []
+        });
+
+        // Dynamic dropup positioning
+        $('#invoice-table').on('show.bs.dropdown', '.options', function() {
+            var $dropdown = $(this);
+            var $menu = $dropdown.find('.dropdown-menu');
+            var offset = $dropdown.offset();
+            var menuHeight = $menu.outerHeight();
+            var viewportBottom = $(window).scrollTop() + $(window).height();
+            
+            // Check if dropdown would go off bottom of viewport
+            if (offset.top + $dropdown.outerHeight() + menuHeight > viewportBottom) {
+                $dropdown.addClass('dropup');
+            } else {
+                $dropdown.removeClass('dropup');
+            }
         });
     });
 </script>
