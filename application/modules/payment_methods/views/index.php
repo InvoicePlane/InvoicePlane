@@ -23,6 +23,7 @@
             <thead>
             <tr>
                 <th><?php _trans('payment_method'); ?></th>
+                <th><?php _trans('payment_method_type'); ?></th>
                 <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
@@ -31,6 +32,7 @@
             <?php foreach ($payment_methods as $payment_method) { ?>
                 <tr>
                     <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
+                    <td><?= _htmlsc($payment_method_types[$payment_method->payment_method_type_id]['label']); ?></td>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"

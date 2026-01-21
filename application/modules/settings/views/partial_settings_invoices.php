@@ -7,13 +7,12 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="settings[default_invoice_group]">
                                 <?php _trans('default_invoice_group'); ?>
                             </label>
                             <select name="settings[default_invoice_group]" id="settings[default_invoice_group]"
-                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($invoice_groups as $invoice_group) {
@@ -39,13 +38,12 @@ foreach ($invoice_groups as $invoice_group) {
 
                     </div>
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="settings[invoice_default_payment_method]">
                                 <?php _trans('default_payment_method'); ?>
                             </label>
                             <select name="settings[invoice_default_payment_method]" class="form-control simple-select"
-                                id="settings[invoice_default_payment_method]" data-minimum-results-for-search="Infinity">
+                                    id="settings[invoice_default_payment_method]" data-minimum-results-for-search="Infinity">
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($payment_methods as $payment_method) {
@@ -67,7 +65,6 @@ foreach ($payment_methods as $payment_method) {
                             <input type="number" name="settings[invoices_due_after]" id="settings[invoices_due_after]"
                                    class="form-control" value="<?php echo get_setting('invoices_due_after'); ?>">
                         </div>
-
                         <div class="form-group">
                             <label for="settings[generate_invoice_number_for_draft]">
                                 <?php _trans('generate_invoice_number_for_draft'); ?>
@@ -106,16 +103,13 @@ foreach ($payment_methods as $payment_method) {
                 </div>
             </div>
         </div>
-
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('pdf_settings'); ?>
             </div>
             <div class="panel-body">
-
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-
                         <div class="form-group">
                             <label for="settings[mark_invoices_sent_pdf]">
                                 <?php _trans('mark_invoices_sent_pdf'); ?>
@@ -130,7 +124,6 @@ foreach ($payment_methods as $payment_method) {
                                 </option>
                             </select>
                         </div>
-
                         <div class="form-group">
                             <label for="settings[invoice_pre_password]">
                                 <?php _trans('invoice_pre_password'); ?>
@@ -139,7 +132,6 @@ foreach ($payment_methods as $payment_method) {
                                    class="form-control"
                                    value="<?php echo get_setting('invoice_pre_password', '', true); ?>">
                         </div>
-
                     </div>
                     <div class="col-xs-12 col-md-6">
 
@@ -466,6 +458,66 @@ $qr_code = get_setting('qr_code');
             </div>
         </div>
 
+        <?php foreach ($payment_method_types as $key => $type) { ?>
+            <div class="panel panel-default" id="panel-qr-code-swiss-settings">
+                <div class="panel-heading">
+                    <?php _trans('qr_code_swiss_settings'); ?>
+                </div>
+                <div class="panel-body">
+
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input
+                                    type="hidden"
+                                    name="settings[qr_code_swiss]"
+                                    value="0"
+                                >
+                                <input
+                                    type="checkbox"
+                                    name="settings[qr_code_swiss]"
+                                    id="settings[qr_code_swiss]"
+                                    value="1"
+                                    <?php check_select(get_setting('qr_code_swiss'), 1, '==', true) ?>
+                                >
+                                <?php _trans('qr_code_swiss_settings_enable'); ?>
+                            </label>
+                            <p class="help-block"><?php _trans('qr_code_swiss_settings_enable_hint'); ?></p>
+                        </div>
+                    </div>
+                    <div class="row <?php echo ! get_setting('qr_code_swiss') ? 'hidden' : ''; ?>">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label for="settings[qr_code_swiss_besrid]">
+                                    <?php _trans('qr_code_swiss_settings_besrid'); ?>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="settings[qr_code_swiss_besrid]"
+                                    id="settings[qr_code_swiss_besrid]"
+                                    class="form-control"
+                                    value="<?php echo get_setting('qr_code_swiss_besrid'); ?>"
+                                >
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label for="settings[qr_code_swiss_currency]">
+                                    <?php _trans('qr_code_swiss_settings_currency'); ?>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="settings[qr_code_swiss_currency]"
+                                    id="settings[qr_code_swiss_currency]"
+                                    class="form-control"
+                                    value="<?php echo get_setting('qr_code_swiss_currency', 'CHF', true); ?>"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php _trans('email_settings'); ?>

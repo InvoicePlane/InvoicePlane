@@ -570,6 +570,11 @@ foreach ($payment_methods as $payment_method) {
 ?>
                                     </select>
                                 </div>
+                                <div class="invoice-properties">
+                                    <a href="#payment_method_options" class="btn btn-sm btn-default" data-toggle="modal">
+                                        <?php _trans('payment_method_type_invoice_options'); ?>
+                                    </a>
+                                </div>
 
                                 <div class="invoice-properties">
                                     <label><?php _trans('invoice_password'); ?></label>

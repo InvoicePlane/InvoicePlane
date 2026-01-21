@@ -49,6 +49,11 @@
     </div>
     <?php endif; ?>
 </div>
+<div id="paypal-buttons"></div>
+
+<div class="container">
+    <div id="paypal-buttons" class="col-xs-12 col-md-8 col-md-offset-2"></div>
+</div>
 <script>
     // Prep PHP vars for use in JS
     window.PayPalConfig = {
