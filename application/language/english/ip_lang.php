@@ -2,6 +2,13 @@
 
 $lang = [
     'account_information'                          => 'Account Information',
+    'client_number'                                => 'Customer No',
+    'quote_number'                                 => 'Quote No',
+    'related_quote_number'                         => 'Related Quote',
+    'change_related_quote'                         => 'Change',
+    'select_related_quote'                         => 'Select Related Quote',
+    'work_order'                                   => 'Work Order',
+    'agreement'                                    => 'Agreement',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
     'add_client'                                   => 'Add Client',

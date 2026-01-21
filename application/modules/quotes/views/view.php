@@ -72,6 +72,8 @@ if ($quote->quote_status_id == 1) {
                     quote_date_expires: $('#quote_date_expires').val(),
                     quote_status_id: $('#quote_status_id').val(),
                     quote_password: $('#quote_password').val(),
+                    quote_work_order: $('#quote_work_order').val(),
+                    quote_agreement: $('#quote_agreement').val(),
                     items: JSON.stringify(items),
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
@@ -299,8 +301,7 @@ if ($legacy_calculation) {
         <div class="quote">
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-5">
-
+                <div class="col-xs-12 col-sm-6 col-md-3">
                     <h3>
                         <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>">
                             <?php _htmlsc(format_client($quote)) ?>
@@ -343,7 +344,21 @@ if ($quote->quote_status_id == 1) {
                     <div class="details-box">
                         <div class="row">
 
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="quote-properties">
+                                    <label><?php _trans('work_order'); ?></label>
+                                    <input type="text" id="quote_work_order" class="form-control input-sm"
+                                        value="<?php echo htmlsc($quote->quote_work_order ?? ''); ?>">
+
+                                </div>
+                                <div class="quote-properties">
+                                    <label><?php _trans('agreement'); ?></label>
+                                    <input type="text" id="quote_agreement" class="form-control input-sm"
+                                        value="<?php echo htmlsc($quote->quote_agreement ?? ''); ?>">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-4">
 
                                 <div class="quote-properties">
 <?php
@@ -412,7 +427,7 @@ if ($einvoice->name) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-4">
 
                                 <div class="quote-properties">
                                     <label for="quote_status_id">
