@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped" id="client-table">
         <thead>
         <tr>
             <th><?php _trans('active'); ?></th>
@@ -99,3 +99,13 @@ if ($einvoicing) {
         </tbody>
     </table>
 </div>
+<script>
+    $(document).ready(function() {
+        $("#client-table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "order": []
+        });
+    });
+</script>
