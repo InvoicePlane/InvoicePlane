@@ -89,7 +89,7 @@ if ($quote->client_email) {
                 <table class="table table-bordered">
                     <tr>
                         <td><?php _trans('quote'); ?> #</td>
-                        <td><?php echo $quote->quote_number; ?></td>
+                        <td><?php echo htmlsc($quote->quote_number); ?></td>
                     </tr>
                     <tr>
                         <td><?php _trans('date'); ?></td>

@@ -79,7 +79,7 @@ if ($invoice->client_email) {
                     <table class="table table-bordered">
                         <tr>
                             <td><?php _trans('invoice'); ?> #</td>
-                            <td><?php echo $invoice->invoice_number; ?></td>
+                            <td><?php echo htmlsc($invoice->invoice_number); ?></td>
                         </tr>
                         <tr>
                             <td><?php _trans('date'); ?></td>
