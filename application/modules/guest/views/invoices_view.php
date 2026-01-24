@@ -10,7 +10,7 @@ if ($invoice_tax_rates) {
 }
 ?>
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php _trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?></h1>
+    <h1 class="headerbar-title"><?php _trans('invoice'); ?> #<?php echo htmlsc($invoice->invoice_number); ?></h1>
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">

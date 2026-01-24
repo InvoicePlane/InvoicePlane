@@ -10,7 +10,7 @@ if ($quote_tax_rates) {
 }
 ?>
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php _trans('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
+    <h1 class="headerbar-title"><?php _trans('quote'); ?> #<?php echo htmlsc($quote->quote_number); ?></h1>
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
