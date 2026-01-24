@@ -154,7 +154,7 @@ foreach ($items as $i => $item) {
                             <td>
                                 <span class="pull-left"><?php _trans('tax'); ?></span>
                                 <span class="pull-right amount"><?php
-                                    echo $item->item_tax_rate_percent ? $item->item_tax_rate_name . ' (' . format_amount($item->item_tax_rate_percent) . '%): ' : '';
+                                    echo $item->item_tax_rate_percent ? htmlsc($item->item_tax_rate_name) . ' (' . format_amount($item->item_tax_rate_percent) . '%): ' : '';
                                     echo format_currency($item->item_tax_total);
                                 ?></span>
                             </td>

@@ -122,7 +122,7 @@ foreach ($payment_methods as $payment_method) {
 ?>
                     <option value="<?php echo $payment_method->payment_method_id; ?>"
                         <?php echo $this->mdl_payments->form_value('payment_method_id') == $payment_method->payment_method_id ? 'selected="selected"' : ''; ?>>
-                        <?php echo $payment_method->payment_method_name; ?>
+                        <?php echo htmlsc($payment_method->payment_method_name); ?>
                     </option>
 <?php
 }
