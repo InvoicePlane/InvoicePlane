@@ -81,7 +81,7 @@ class Settings extends Admin_Controller
 
             $upload_config = [
                 'upload_path'   => './uploads/',
-                'allowed_types' => 'gif|jpg|jpeg|png|svg', // Invoice quote logo image :Todo: Add webp avif? (& test imgs in pdf)
+                'allowed_types' => 'gif|jpg|jpeg|png', // Invoice quote logo image - SVG removed for security
                 'max_size'      => '9999',
                 'max_width'     => '9999',
                 'max_height'    => '9999',

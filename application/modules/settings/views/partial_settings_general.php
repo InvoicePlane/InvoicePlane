@@ -401,7 +401,7 @@
                             <?php if (get_setting('login_logo')) { ?>
                                 <br/>
                                 <img class="personal_logo"
-                                    src="<?php echo base_url(); ?>uploads/<?php echo get_setting('login_logo'); ?>"><br>
+                                    src="<?php echo base_url(); ?>uploads/<?php echo htmlsc(get_setting('login_logo')); ?>"><br>
                                 <?php echo anchor('settings/remove_logo/login', trans('remove_logo')); ?><br/>
                             <?php } ?>
                             <input type="file" name="login_logo" id="login_logo" class="form-control"/>

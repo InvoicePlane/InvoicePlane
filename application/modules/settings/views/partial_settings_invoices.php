@@ -165,7 +165,7 @@ if (get_setting('invoice_logo')) {
 ?>
                                 <br/>
                                 <img class="personal_logo"
-                                     src="<?php echo base_url(); ?>uploads/<?php echo get_setting('invoice_logo'); ?>">
+                                     src="<?php echo base_url(); ?>uploads/<?php echo htmlsc(get_setting('invoice_logo')); ?>">
                                 <br>
                                 <?php echo anchor('settings/remove_logo/invoice', trans('remove_logo')); ?><br/>
 <?php
