@@ -7,7 +7,12 @@
 
     <title>
         <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
-        - <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number; ?>
+        - 
+        <?php if ($invoice->invoice_sign == -1) {
+            echo trans('credit_invoice') . ' ' . $invoice->invoice_number;
+        } else {
+            echo trans('invoice') . ' ' . $invoice->invoice_number;
+        } ?>
     </title>
 
     <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
@@ -21,7 +26,13 @@
 
             <div class="webpreview-header">
 
-                <h2><?php _trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
+                <h2>
+                    <?php if ($invoice->invoice_sign == -1) {
+                        echo trans('credit_invoice') . ' ' . $invoice->invoice_number;
+                    } else {
+                        echo trans('invoice') . ' ' . $invoice->invoice_number;
+                    } ?>
+                </h2>
 
                 <div class="btn-group">
 <?php
@@ -140,15 +151,21 @@ if ($logo) {
                         <table class="table table-condensed">
                             <tbody>
                                 <tr>
-                                    <td><?php _trans('invoice_date'); ?></td>
+                                    <?php if ($invoice->invoice_sign == -1) { ?>
+                                        <td><?php _trans('credit_invoice_date'); ?></td>
+                                    <?php } else { ?>
+                                        <td><?php _trans('invoice_date'); ?></td>
+                                    <?php } ?>
                                     <td style="text-align:right;"><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
                                 </tr>
+                                <?php if ($invoice->invoice_sign != -1) { ?>
                                 <tr class="<?php echo $is_overdue ? 'overdue' : '' ?>">
                                     <td><?php _trans('due_date'); ?></td>
                                     <td class="amount">
                                         <?php echo date_from_mysql($invoice->invoice_date_due); ?>
                                     </td>
                                 </tr>
+                                <?php } ?>
                                 <tr class="<?php echo $is_overdue ? 'overdue' : '' ?>">
                                     <td><?php _trans('amount_due'); ?></td>
                                     <td style="text-align:right;"><?php echo format_currency($invoice->invoice_balance); ?></td>
