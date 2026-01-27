@@ -124,8 +124,8 @@ class Ajax extends Admin_Controller
                 'quote_status_id'        => $quote_status_id,
                 'quote_date_created'     => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires'     => date_to_mysql($this->input->post('quote_date_expires')),
-                'quote_password'         => $this->input->post('quote_password'),
-                'notes'                  => $this->input->post('notes'),
+                'quote_password'         => $this->security->xss_clean($this->input->post('quote_password')),
+                'notes'                  => $this->security->xss_clean($this->input->post('notes')),
                 'quote_discount_amount'  => standardize_amount($quote_discount_amount),
                 'quote_discount_percent' => standardize_amount($quote_discount_percent),
             ];
