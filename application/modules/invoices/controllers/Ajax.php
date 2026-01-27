@@ -115,6 +115,11 @@ class Ajax extends Admin_Controller
 
             // Generate new invoice number if needed
             $invoice_number = $this->input->post('invoice_number');
+            
+            // Sanitize invoice_number to prevent XSS: only allow alphanumeric, dash, underscore, slash, period
+            if (!empty($invoice_number)) {
+                $invoice_number = preg_replace('/[^a-zA-Z0-9\-_\/\.]/', '', $invoice_number);
+            }
 
             if (empty($invoice_number) && $invoice_status_id != 1) {
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);

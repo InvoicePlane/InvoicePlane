@@ -101,6 +101,11 @@ class Ajax extends Admin_Controller
 
             // Generate new quote number if needed
             $quote_number = $this->input->post('quote_number');
+            
+            // Sanitize quote_number to prevent XSS: only allow alphanumeric, dash, underscore, slash, period
+            if (!empty($quote_number)) {
+                $quote_number = preg_replace('/[^a-zA-Z0-9\-_\/\.]/', '', $quote_number);
+            }
 
             if (empty($quote_number) && $quote_status_id != 1) {
                 $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
