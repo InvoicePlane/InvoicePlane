@@ -113,13 +113,22 @@ class Ajax extends Admin_Controller
 
             $invoice_status_id = $this->input->post('invoice_status_id');
 
-            // Generate new invoice number if needed
+            // Read invoice number from input
             $invoice_number = $this->input->post('invoice_number');
-            
-            // Sanitize invoice_number: only allow safe characters (alphanumeric, dash, underscore, slash, period)
-            // This prevents malicious input while preserving common invoice number formats
-            if (!empty($invoice_number)) {
-                $invoice_number = preg_replace('/[^a-zA-Z0-9\-_\/\.]/', '', $invoice_number);
+
+            // Validate invoice_number: only allow safe characters (alphanumeric, dash, underscore, slash, period).
+            // If invalid characters are present, return a clear validation error instead of silently modifying input.
+            if ($invoice_number !== null && $invoice_number !== '') {
+                if ( ! preg_match('/^[a-zA-Z0-9\-_\/\.]+$/', $invoice_number)) {
+                    $response = [
+                        'success'           => 0,
+                        'validation_errors' => [
+                            'invoice_number' => trans('invoice_number') . ' ' . trans('contains_invalid_characters'),
+                        ],
+                    ];
+
+                    exit(json_encode($response));
+                }
             }
 
             if (empty($invoice_number) && $invoice_status_id != 1) {

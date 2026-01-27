@@ -101,11 +101,28 @@ class Ajax extends Admin_Controller
 
             // Generate new quote number if needed
             $quote_number = $this->input->post('quote_number');
-            
-            // Sanitize quote_number: only allow safe characters (alphanumeric, dash, underscore, slash, period)
-            // This prevents malicious input while preserving common invoice number formats
-            if (!empty($quote_number)) {
-                $quote_number = preg_replace('/[^a-zA-Z0-9\-_\/\.]/', '', $quote_number);
+
+            // Validate quote_number instead of silently sanitizing it.
+            // Allow alphanumeric characters, dash, underscore, slash, period and spaces.
+            // If invalid characters are present, return a validation error without mutating the input.
+            if ($quote_number !== null) {
+                $this->load->library('form_validation');
+                $this->form_validation->set_rules(
+                    'quote_number',
+                    trans('quote'),
+                    'regex_match[/^[a-zA-Z0-9\-_\/\.\s]*$/]'
+                );
+
+                if ($this->form_validation->run() === false) {
+                    $response = [
+                        'success'           => 0,
+                        'validation_errors' => [
+                            'quote_number' => form_error('quote_number', '', ''),
+                        ],
+                    ];
+
+                    exit(json_encode($response));
+                }
             }
 
             if (empty($quote_number) && $quote_status_id != 1) {
@@ -124,8 +141,8 @@ class Ajax extends Admin_Controller
                 'quote_status_id'        => $quote_status_id,
                 'quote_date_created'     => date_to_mysql($this->input->post('quote_date_created')),
                 'quote_date_expires'     => date_to_mysql($this->input->post('quote_date_expires')),
-                'quote_password'         => $this->security->xss_clean($this->input->post('quote_password')),
-                'notes'                  => $this->security->xss_clean($this->input->post('notes')),
+                'quote_password'         => $this->input->post('quote_password'),
+                'notes'                  => $this->input->post('notes'),
                 'quote_discount_amount'  => standardize_amount($quote_discount_amount),
                 'quote_discount_percent' => standardize_amount($quote_discount_percent),
             ];
