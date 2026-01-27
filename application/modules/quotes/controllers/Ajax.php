@@ -102,7 +102,8 @@ class Ajax extends Admin_Controller
             // Generate new quote number if needed
             $quote_number = $this->input->post('quote_number');
             
-            // Sanitize quote_number to prevent XSS: only allow alphanumeric, dash, underscore, slash, period
+            // Sanitize quote_number: only allow safe characters (alphanumeric, dash, underscore, slash, period)
+            // This prevents malicious input while preserving common invoice number formats
             if (!empty($quote_number)) {
                 $quote_number = preg_replace('/[^a-zA-Z0-9\-_\/\.]/', '', $quote_number);
             }

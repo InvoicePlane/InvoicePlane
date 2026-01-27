@@ -116,7 +116,8 @@ class Ajax extends Admin_Controller
             // Generate new invoice number if needed
             $invoice_number = $this->input->post('invoice_number');
             
-            // Sanitize invoice_number to prevent XSS: only allow alphanumeric, dash, underscore, slash, period
+            // Sanitize invoice_number: only allow safe characters (alphanumeric, dash, underscore, slash, period)
+            // This prevents malicious input while preserving common invoice number formats
             if (!empty($invoice_number)) {
                 $invoice_number = preg_replace('/[^a-zA-Z0-9\-_\/\.]/', '', $invoice_number);
             }
