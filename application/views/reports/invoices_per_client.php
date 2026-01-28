@@ -25,7 +25,7 @@ foreach ($results as $result) {
 ?>
         <tr>
             <td><?php echo date_from_mysql($result->invoice_date_created, true); ?></td>
-            <td><?php echo $result->invoice_number; ?></td>
+            <td><?php echo htmlsc($result->invoice_number); ?></td>
             <td class="amount"><?php echo format_currency($result->invoice_total); ?></td>
         </tr>
 <?php

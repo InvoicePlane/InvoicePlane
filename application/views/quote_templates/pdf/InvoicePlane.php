@@ -237,7 +237,7 @@ foreach ($quote_tax_rates as $quote_tax_rate) {
 ?>
         <tr>
             <td class="text-right" colspan="<?php echo $colspan ?>">
-                <?php echo $quote_tax_rate->quote_tax_rate_name . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%)'; ?>
+                <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%)'; ?>
             </td>
             <td class="text-right">
                 <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>

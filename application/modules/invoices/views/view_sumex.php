@@ -202,7 +202,7 @@ echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation ha
 <div id="headerbar">
     <h1 class="headerbar-title">
         <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing'); ?>: <?php _htmlsc(PHP_EOL . format_user($invoice->user_id)); ?>">
-            <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : trans('id') . ': ' . $invoice->invoice_id); ?>
+            <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . htmlsc($invoice->invoice_number) : trans('id') . ': ' . $invoice->invoice_id); ?>
         </span>
 <?php
 // Nb Admins > 1 only
@@ -369,12 +369,12 @@ if ($invoice->invoice_status_id == 1) {
 ?>
                         </h2><br>
                         <span>
-                            <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
-                            <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
-                            <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
-                            <?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
-                            <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
-                            <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
+                            <?php echo ($invoice->client_address_1) ? htmlsc($invoice->client_address_1) . '<br>' : ''; ?>
+                            <?php echo ($invoice->client_address_2) ? htmlsc($invoice->client_address_2) . '<br>' : ''; ?>
+                            <?php echo ($invoice->client_city) ? htmlsc($invoice->client_city) : ''; ?>
+                            <?php echo ($invoice->client_state) ? htmlsc($invoice->client_state) : ''; ?>
+                            <?php echo ($invoice->client_zip) ? htmlsc($invoice->client_zip) : ''; ?>
+                            <?php echo ($invoice->client_country) ? '<br>' . htmlsc($invoice->client_country) : ''; ?>
                         </span>
 <?php if ($invoice->client_phone || $invoice->client_email) : ?>
                             <hr>
@@ -546,7 +546,7 @@ foreach ($invoice_statuses as $key => $status) {
                                     <input type="text" id="invoice_number"
                                            class="form-control"
                                         <?php if ($invoice->invoice_number) : ?>
-                                            value="<?php echo $invoice->invoice_number; ?>"
+                                            value="<?php echo htmlsc($invoice->invoice_number); ?>"
                                         <?php else : ?>
                                             placeholder="<?php _trans('not_set'); ?>"
                                         <?php endif; ?>
@@ -666,7 +666,7 @@ if ($invoice->invoice_status_id != 1) {
                         <div class="panel-body">
                             <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control" rows="3"
                                       <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>
-                            ><?php echo $invoice->sumex_observations; ?></textarea>
+                            ><?php echo htmlsc($invoice->sumex_observations); ?></textarea>
                         </div>
                     </div>
 

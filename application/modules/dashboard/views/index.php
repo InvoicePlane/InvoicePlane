@@ -157,7 +157,7 @@ foreach ($quotes as $quote) {
                                     <?php echo date_from_mysql($quote->quote_date_created); ?>
                                 </td>
                                 <td>
-                                    <?php echo anchor('quotes/view/' . $quote->quote_id, ($quote->quote_number ? $quote->quote_number : $quote->quote_id)); ?>
+                                    <?php echo anchor('quotes/view/' . $quote->quote_id, ($quote->quote_number ? htmlsc($quote->quote_number) : $quote->quote_id)); ?>
                                 </td>
                                 <td>
                                     <?php echo anchor('clients/view/' . $quote->client_id, htmlsc(format_client($quote))); ?>
@@ -230,7 +230,7 @@ foreach ($invoices as $invoice) {
                                     </span>
                                 </td>
                                 <td>
-                                    <?php echo anchor('invoices/view/' . $invoice->invoice_id, ($invoice->invoice_number ? $invoice->invoice_number : $invoice->invoice_id)); ?>
+                                    <?php echo anchor('invoices/view/' . $invoice->invoice_id, ($invoice->invoice_number ? htmlsc($invoice->invoice_number) : $invoice->invoice_id)); ?>
                                 </td>
                                 <td>
                                     <?php echo anchor('clients/view/' . $invoice->client_id, htmlsc(format_client($invoice))); ?>

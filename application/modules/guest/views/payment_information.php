@@ -43,7 +43,7 @@
     <div class="container">
 
         <div class="navbar-brand">
-            <?php _trans('online_payment_for_invoice'); ?> #<?php echo $invoice->invoice_number; ?>
+            <?php _trans('online_payment_for_invoice'); ?> #<?php echo htmlsc($invoice->invoice_number); ?>
         </div>
 
         <ul class="nav navbar-nav navbar-right">

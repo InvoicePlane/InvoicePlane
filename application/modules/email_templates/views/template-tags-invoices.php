@@ -50,7 +50,7 @@ if ($custom_fields['ip_invoice_custom']) {
             <?php if(isset($custom_fields['ip_invoice_custom'])) {
                 foreach ($custom_fields['ip_invoice_custom'] as $custom) { ?>
                     <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
-                        <?php echo $custom->custom_field_label . ' (ID ' . $custom->custom_field_id . ')'; ?>
+                        <?php echo htmlsc($custom->custom_field_label) . ' (ID ' . $custom->custom_field_id . ')'; ?>
                     </option>
                 <?php } ?>
             <?php } ?>

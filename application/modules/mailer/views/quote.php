@@ -106,7 +106,7 @@ foreach ($email_templates as $email_template) {
                 <div class="form-group">
                     <label for="subject"><?php _trans('subject'); ?></label>
                     <input type="text" name="subject" id="subject" class="form-control"
-                           value="<?php _trans('quote'); ?> #<?php echo $quote->quote_number; ?>">
+                           value="<?php _trans('quote'); ?> #<?php echo htmlsc($quote->quote_number); ?>">
                 </div>
 
                 <div class="form-group">

@@ -106,7 +106,7 @@
 <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                     <?php check_select($this->mdl_products->form_value('tax_rate_id'), $tax_rate->tax_rate_id); ?>
-                                ><?php echo $tax_rate->tax_rate_name . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?></option>
+                                ><?php echo htmlsc($tax_rate->tax_rate_name) . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?></option>
 <?php } ?>
                             </select>
                         </div>
