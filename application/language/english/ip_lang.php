@@ -540,6 +540,7 @@ $lang = [
     'reset_password'                               => 'Reset password',
     'run_report'                                   => 'Run Report',
     'svg_logo_blocked_security'                    => 'SVG logo files are blocked for security reasons. Please remove this logo and upload a PNG, JPG, or GIF file instead.',
+    'svg_upload_blocked_security'                  => 'SVG file upload blocked for security reasons. Please upload a PNG, JPG, or GIF file instead.',
     'search_product'                               => 'Search product',
     'sales'                                        => 'Sales',
     'sales_by_client'                              => 'Sales by Client',
