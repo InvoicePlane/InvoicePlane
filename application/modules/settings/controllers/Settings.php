@@ -27,6 +27,31 @@ class Settings extends Admin_Controller
         $this->load->library('crypt');
         $this->load->library('form_validation');
         $this->load->helper('payments_helper');
+        
+        // Security: Check for SVG logos and display warnings
+        $this->check_svg_logos();
+    }
+    
+    /**
+     * Check for SVG logos and display security warnings
+     * This provides a soft migration path for existing SVG logos
+     */
+    private function check_svg_logos()
+    {
+        $logos_to_check = ['login_logo', 'invoice_logo'];
+        
+        foreach ($logos_to_check as $logo_setting) {
+            $logo_file = get_setting($logo_setting);
+            if ($logo_file) {
+                $extension = strtolower(pathinfo($logo_file, PATHINFO_EXTENSION));
+                if ($extension === 'svg') {
+                    $this->session->set_flashdata('alert_warning', 
+                        trans('svg_logo_blocked_security') . ' ' . 
+                        trans('please_remove_and_reupload')
+                    );
+                }
+            }
+        }
     }
 
     public function index()

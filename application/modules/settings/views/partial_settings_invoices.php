@@ -162,13 +162,27 @@ foreach ($payment_methods as $payment_method) {
                             <label><?php _trans('invoice_logo'); ?></label>
 <?php
 if (get_setting('invoice_logo')) {
+    $invoice_logo_file = get_setting('invoice_logo');
+    $extension = strtolower(pathinfo($invoice_logo_file, PATHINFO_EXTENSION));
+    if ($extension === 'svg') {
+        // Security: SVG files are blocked
+?>
+                                <br/>
+                                <div class="alert alert-danger">
+                                    <strong><?php _trans('warning'); ?>:</strong> 
+                                    <?php _trans('svg_logo_blocked_security'); ?> 
+                                    <?php echo anchor('settings/remove_logo/invoice', trans('remove_logo')); ?>
+                                </div>
+<?php
+    } else {
 ?>
                                 <br/>
                                 <img class="personal_logo"
-                                     src="<?php echo base_url(); ?>uploads/<?php echo htmlsc(get_setting('invoice_logo')); ?>">
+                                     src="<?php echo base_url(); ?>uploads/<?php echo htmlsc($invoice_logo_file); ?>">
                                 <br>
                                 <?php echo anchor('settings/remove_logo/invoice', trans('remove_logo')); ?><br/>
 <?php
+    }
 }
 ?>
                             <input type="file" name="invoice_logo" size="40" class="form-control"/>
