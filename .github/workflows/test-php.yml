@@ -1,6 +1,7 @@
 name: PHP Testing
 
 on:
+  pull_request:
   workflow_dispatch:
 
 jobs:

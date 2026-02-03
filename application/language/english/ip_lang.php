@@ -284,6 +284,7 @@ $lang = [
     'inactive'                                     => 'Inactive',
     'interface'                                    => 'Interface',
     'invalid_date'                                 => 'Invalid date',
+    'contains_invalid_characters'                  => 'contains invalid characters',
     'invoice'                                      => 'Invoice',
     'invoice_aging'                                => 'Invoice Aging',
     'invoice_aging_16_30'                          => '16 - 30 Days',

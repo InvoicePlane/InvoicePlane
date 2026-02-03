@@ -21,14 +21,16 @@ class ClientTitleEnum
     {
         $values = self::getValues();
 
-        $searchResult = array_search($value, $values);
+        $searchResult = array_search($value, $values, true);
 
-        if ($searchResult) {
+        if ($searchResult !== false) {
             $returnObject        = new StdClass();
-            $returnObject->value = $searchResult;
+            $returnObject->value = $values[$searchResult];
 
             return $returnObject;
         }
+
+        return null;
     }
 
     public static function cases()
