@@ -37,7 +37,7 @@
 <?php foreach ($families as $family) { ?>
                                 <option value="<?php echo $family->family_id; ?>"
                                     <?php check_select($this->mdl_products->form_value('family_id'), $family->family_id) ?>
-                                ><?php echo $family->family_name; ?></option>
+                                ><?php echo htmlsc($family->family_name); ?></option>
 <?php } ?>
                             </select>
                         </div>
