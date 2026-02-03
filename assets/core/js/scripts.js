@@ -90,15 +90,17 @@ function sanitize_email_template_html(html) {
     
     // Recursively clean all elements
     function cleanNode(node) {
+        var tagName = node.tagName ? node.tagName.toLowerCase() : null;
+        
         // Remove script, object, embed, and iframe tags that could execute code
-        if (node.tagName && (node.tagName.toLowerCase() === 'script' || node.tagName.toLowerCase() === 'object' || 
-            node.tagName.toLowerCase() === 'embed' || node.tagName.toLowerCase() === 'iframe')) {
+        if (tagName && (tagName === 'script' || tagName === 'object' || 
+            tagName === 'embed' || tagName === 'iframe' || tagName === 'style')) {
             node.remove();
             return;
         }
         
         // Remove disallowed tags (keep their content)
-        if (node.tagName && allowedTags.indexOf(node.tagName.toLowerCase()) === -1) {
+        if (tagName && allowedTags.indexOf(tagName) === -1) {
             var parent = node.parentNode;
             while (node.firstChild) {
                 parent.insertBefore(node.firstChild, node);
