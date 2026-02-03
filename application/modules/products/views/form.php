@@ -91,7 +91,7 @@
 <?php foreach ($units as $unit) { ?>
                                 <option value="<?php echo $unit->unit_id; ?>"
                                     <?php check_select($this->mdl_products->form_value('unit_id'), $unit->unit_id); ?>
-                                ><?php echo $unit->unit_name . '/' . $unit->unit_name_plrl; ?></option>
+                                ><?php echo htmlsc($unit->unit_name) . '/' . htmlsc($unit->unit_name_plrl); ?></option>
 <?php } ?>
                             </select>
                         </div>
