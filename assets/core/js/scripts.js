@@ -82,7 +82,7 @@ function sanitize_email_template_html(html) {
     
     // List of allowed tags (only safe formatting tags)
     var allowedTags = ['b', 'strong', 'em', 'i', 'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
-                       'code', 'pre', 'hr', 'span', 'div', 'style', 'a', 'ul', 'ol', 'li', 
+                       'code', 'pre', 'hr', 'span', 'div', 'a', 'ul', 'ol', 'li', 
                        'table', 'tr', 'td', 'th', 'thead', 'tbody'];
     
     // List of allowed attributes (only safe, non-executable attributes)
@@ -113,9 +113,21 @@ function sanitize_email_template_html(html) {
             for (var i = 0; i < node.attributes.length; i++) {
                 var attr = node.attributes[i];
                 var attrNameLower = attr.name.toLowerCase();
+                var attrValue = attr.value.toLowerCase().trim();
+                
                 // Remove event handlers (onclick, onload, etc.)
-                if (attrNameLower.indexOf('on') === 0 || 
-                    allowedAttrs.indexOf(attrNameLower) === -1) {
+                if (attrNameLower.indexOf('on') === 0) {
+                    attrsToRemove.push(attr.name);
+                }
+                // Remove attributes not in the allowlist
+                else if (allowedAttrs.indexOf(attrNameLower) === -1) {
+                    attrsToRemove.push(attr.name);
+                }
+                // Check for dangerous protocols in href attributes
+                else if (attrNameLower === 'href' && 
+                        (attrValue.indexOf('javascript:') === 0 || 
+                         attrValue.indexOf('data:') === 0 || 
+                         attrValue.indexOf('vbscript:') === 0)) {
                     attrsToRemove.push(attr.name);
                 }
             }
