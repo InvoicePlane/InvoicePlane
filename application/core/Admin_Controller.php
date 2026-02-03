@@ -36,17 +36,23 @@ class Admin_Controller extends User_Controller
         $xss_log_entries = [];
 
         foreach ($input as $key => $value) {
-            // Skip arrays and bypass fields
-            if (is_array($value) || in_array($key, $bypass_fields)) {
+            // Skip bypass fields
+            if (in_array($key, $bypass_fields)) {
+                continue;
+            }
+
+            // Recursively sanitize arrays
+            if (is_array($value)) {
+                $_POST[$key] = $this->sanitize_array($value);
                 continue;
             }
 
             $original_value = $value;
             
-            // Apply XSS cleaning and sanitization
+            // Apply XSS cleaning and strip dangerous tags
+            // Note: We don't use html_escape here to avoid double-encoding at output
             $cleaned_value = $this->security->xss_clean($value);
             $cleaned_value = strip_tags($cleaned_value);
-            $cleaned_value = html_escape($cleaned_value);
 
             // Check if value was modified (XSS detected)
             if ($original_value !== $cleaned_value) {
@@ -60,7 +66,8 @@ class Admin_Controller extends User_Controller
                 ];
             }
 
-            // Update the actual POST data via CodeIgniter's Input class
+            // Update the actual POST data
+            // Note: Direct modification needed as Input class caches POST data
             $_POST[$key] = $cleaned_value;
         }
 
@@ -73,6 +80,21 @@ class Admin_Controller extends User_Controller
                 'fields' => $xss_log_entries,
             ]));
         }
+    }
+
+    /**
+     * Recursively sanitize array values
+     */
+    private function sanitize_array(array $data): array
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = $this->sanitize_array($value);
+            } else {
+                $data[$key] = strip_tags($this->security->xss_clean($value));
+            }
+        }
+        return $data;
     }
 
     protected function setCacheHeaders()
