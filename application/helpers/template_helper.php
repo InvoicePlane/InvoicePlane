@@ -232,8 +232,9 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pub
     }
     
     // Security: Verify the template exists in the allowed list
+    // Note: get_*_templates() returns an array of template names without .php extension
     if (!in_array($template_name, $valid_templates, true)) {
-        log_message('error', 'Template validation failed: Template not in allowed list');
+        log_message('error', 'Template validation failed: Template not in allowed list: ' . $template_name);
         return false;
     }
     
