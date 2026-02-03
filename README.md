@@ -23,19 +23,19 @@ _A libre self-hosted web application designed to help you manage invoices, clien
 
 ---
 
-## 🎉 What's New in Version 1.7.0
+## What's New in Version 1.7.0
 
 **InvoicePlane 1.7.0** brings PHP 8.2+ compatibility and critical security enhancements to keep your financial data safe.
 
 ### Major Improvements
 
-- **✅ PHP 8.2+ Compatibility:** Full support for modern PHP versions (8.1, 8.2, 8.3+)
-- **🔒 Enhanced Security:** Multiple security vulnerabilities have been addressed:
+- * PHP 8.2+ Compatibility:** Full support for modern PHP versions (8.1, 8.2, 8.3+)
+- ** Enhanced Security:** Multiple security vulnerabilities have been addressed:
   - Fixed Cross-Site Scripting (XSS) vulnerabilities across templates and user inputs
   - Resolved Local File Inclusion (LFI) vulnerabilities in PDF generation
   - Patched log poisoning vulnerability in file upload handling
-- **🛡️ SVG Logo Protection:** SVG uploads are now blocked to prevent embedded script execution (see details below)
-- **📦 Updated Dependencies:** All PHP packages updated for compatibility and security
+- ** SVG Logo Protection:** SVG uploads are now blocked to prevent embedded script execution (see details below)
+- ** Updated Dependencies:** All PHP packages updated for compatibility and security
 
 ### Upgrading from Version 1.6.x
 
@@ -49,7 +49,7 @@ If you're upgrading from InvoicePlane 1.6.x:
 
 For detailed upgrade instructions, visit the [InvoicePlane Wiki](https://wiki.invoiceplane.com/).
 
-> **📋 Full Release Notes:** See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes, security fixes, and improvements.
+> ** Full Release Notes:** See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes, security fixes, and improvements.
 
 ---
 
