@@ -63,8 +63,6 @@ class Admin_Controller extends User_Controller
                     'field' => $key,
                     'original_length' => strlen($original_value),
                     'cleaned_length' => strlen($cleaned_value),
-                    'ip_address' => $this->input->ip_address(),
-                    'user_agent' => $this->input->user_agent(),
                 ];
             }
 
@@ -79,6 +77,8 @@ class Admin_Controller extends User_Controller
                 'timestamp' => date('Y-m-d H:i:s'),
                 'user_id'   => $this->session->userdata('user_id'),
                 'uri'       => uri_string(),
+                'ip_address' => $this->input->ip_address(),
+                'user_agent' => $this->input->user_agent(),
                 'fields'    => $xss_log_entries,
             ];
 
