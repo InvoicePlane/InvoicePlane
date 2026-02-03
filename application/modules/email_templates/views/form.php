@@ -200,7 +200,7 @@ foreach ($quote_templates as $template) {
 
 <script>
     $(function () {
-        var email_template_type = "<?php echo $this->mdl_email_templates->form_value('email_template_type'); ?>";
+        var email_template_type = <?php echo json_encode($this->mdl_email_templates->form_value('email_template_type')); ?>;
         var $email_template_type_options = $("[name=email_template_type]");
 
         $email_template_type_options.click(function () {
