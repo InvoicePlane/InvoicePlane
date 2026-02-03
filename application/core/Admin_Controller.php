@@ -26,8 +26,10 @@ class Admin_Controller extends User_Controller
     {
         // Fields that should bypass XSS sanitization
         $bypass_fields = [
-            'user_password',      // Password fields need to allow special characters
-            'user_passwordv',     // Password verification field
+            'user_password',      // User password fields need to allow special characters
+            'user_passwordv',     // User password verification field
+            'invoice_password',   // Invoice PDF password protection
+            'quote_password',     // Quote PDF password protection
             'email_template_body', // Email templates can contain HTML
         ];
 
