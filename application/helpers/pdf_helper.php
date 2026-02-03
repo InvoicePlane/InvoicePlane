@@ -76,9 +76,21 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     // Override system language with client language
     set_language($invoice->client_language);
 
+    // Always load template helper and validate the template name, regardless of source
+    $CI->load->helper('template');
+
     if ( ! $invoice_template) {
-        $CI->load->helper('template');
+        // Fallback to template from settings when none is provided
         $invoice_template = select_pdf_invoice_template($invoice);
+    } else {
+        // Security: Validate template name from parameter to prevent LFI
+        $validated = validate_template_name($invoice_template, 'invoice', 'pdf');
+        if ($validated === false) {
+            log_message('error', 'Invalid PDF invoice template parameter: ' . $invoice_template . ', using default');
+            $invoice_template = 'InvoicePlane'; // Safe default
+        } else {
+            $invoice_template = $validated;
+        }
     }
 
     $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
