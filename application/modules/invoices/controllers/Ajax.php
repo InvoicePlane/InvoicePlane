@@ -113,8 +113,23 @@ class Ajax extends Admin_Controller
 
             $invoice_status_id = $this->input->post('invoice_status_id');
 
-            // Generate new invoice number if needed
+            // Read invoice number from input
             $invoice_number = $this->input->post('invoice_number');
+
+            // Validate invoice_number: only allow safe characters (alphanumeric, dash, underscore, slash, period).
+            // If invalid characters are present, return a clear validation error instead of silently modifying input.
+            if ($invoice_number !== null && $invoice_number !== '') {
+                if ( ! preg_match('/^[a-zA-Z0-9\-_\/\.]+$/', $invoice_number)) {
+                    $response = [
+                        'success'           => 0,
+                        'validation_errors' => [
+                            'invoice_number' => trans('invoice_number') . ' ' . trans('contains_invalid_characters'),
+                        ],
+                    ];
+
+                    exit(json_encode($response));
+                }
+            }
 
             if (empty($invoice_number) && $invoice_status_id != 1) {
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
@@ -151,13 +166,13 @@ class Ajax extends Admin_Controller
             if ($sumexInvoice >= 1) {
                 $sumex_array = [
                     'sumex_invoice'        => $invoice_id,
-                    'sumex_reason'         => $this->input->post('invoice_sumex_reason'),
-                    'sumex_diagnosis'      => $this->input->post('invoice_sumex_diagnosis'),
+                    'sumex_reason'         => $this->security->xss_clean($this->input->post('invoice_sumex_reason')),
+                    'sumex_diagnosis'      => $this->security->xss_clean($this->input->post('invoice_sumex_diagnosis')),
                     'sumex_treatmentstart' => date_to_mysql($this->input->post('invoice_sumex_treatmentstart')),
                     'sumex_treatmentend'   => date_to_mysql($this->input->post('invoice_sumex_treatmentend')),
                     'sumex_casedate'       => date_to_mysql($this->input->post('invoice_sumex_casedate')),
-                    'sumex_casenumber'     => $this->input->post('invoice_sumex_casenumber'),
-                    'sumex_observations'   => $this->input->post('invoice_sumex_observations'),
+                    'sumex_casenumber'     => $this->security->xss_clean($this->input->post('invoice_sumex_casenumber')),
+                    'sumex_observations'   => $this->security->xss_clean($this->input->post('invoice_sumex_observations')),
                 ];
 
                 $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);

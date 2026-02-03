@@ -102,6 +102,29 @@ class Ajax extends Admin_Controller
             // Generate new quote number if needed
             $quote_number = $this->input->post('quote_number');
 
+            // Validate quote_number instead of silently sanitizing it.
+            // Allow alphanumeric characters, dash, underscore, slash, period and spaces.
+            // If invalid characters are present, return a validation error without mutating the input.
+            if ($quote_number !== null) {
+                $this->load->library('form_validation');
+                $this->form_validation->set_rules(
+                    'quote_number',
+                    trans('quote'),
+                    'regex_match[/^[a-zA-Z0-9\-_\/\.\s]*$/]'
+                );
+
+                if ($this->form_validation->run() === false) {
+                    $response = [
+                        'success'           => 0,
+                        'validation_errors' => [
+                            'quote_number' => form_error('quote_number', '', ''),
+                        ],
+                    ];
+
+                    exit(json_encode($response));
+                }
+            }
+
             if (empty($quote_number) && $quote_status_id != 1) {
                 $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
                 $quote_number   = $this->mdl_quotes->get_quote_number($quote_group_id);

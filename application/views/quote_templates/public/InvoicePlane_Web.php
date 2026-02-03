@@ -7,7 +7,7 @@
 
     <title>
         <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
-        - <?php _trans('quote'); ?> <?php echo $quote->quote_number; ?>
+        - <?php _trans('quote'); ?> <?php echo htmlsc($quote->quote_number); ?>
     </title>
 
     <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
@@ -21,9 +21,7 @@
     <div id="content">
 
         <div class="webpreview-header">
-
-            <h2><?php _trans('quote'); ?>&nbsp;<?php echo $quote->quote_number; ?></h2>
-
+                <h2><?php _trans('quote'); ?>&nbsp;<?php echo htmlsc($quote->quote_number); ?></h2>
             <div class="btn-group">
                 <?php if (isset($_SESSION['user_id'], $_SESSION['user_type'])) { ?>
                     <a href="<?php echo site_url($_SESSION['user_type'] > 1 ? 'guest' : ''); ?>"

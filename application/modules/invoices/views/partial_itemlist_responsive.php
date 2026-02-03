@@ -94,7 +94,7 @@ foreach ($tax_rates as $tax_rate) {
 ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                         <?php check_select(get_setting('default_item_tax_rate'), $tax_rate->tax_rate_id); ?>>
-                                        <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
+                                        <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                                     </option>
 <?php
 }
@@ -271,7 +271,7 @@ foreach ($items as $item) {
 ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                         <?php check_select($item->item_tax_rate_id, $tax_rate->tax_rate_id); ?>>
-                                        <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . $tax_rate->tax_rate_name; ?>
+                                        <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                                     </option>
 <?php
     }
