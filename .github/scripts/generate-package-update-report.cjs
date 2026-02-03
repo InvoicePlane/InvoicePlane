@@ -26,11 +26,17 @@ function parseYarnLock(content) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
-    // Match package declaration lines (e.g., "package-name@^1.0.0:")
+    // Match package declaration lines (e.g., "package-name@^1.0.0:" or package-name@^1.0.0:)
     // Handle both quoted and unquoted package names
-    const packageMatch = line.match(/^"?([^"@]+)@[^"]*"?:\s*$/);
-    if (packageMatch) {
-      currentPackage = packageMatch[1];
+    const quotedMatch = line.match(/^"([^"@]+)@[^"]*":\s*$/);
+    const unquotedMatch = !quotedMatch ? line.match(/^([^"@]+)@[^:]*:\s*$/) : null;
+    
+    if (quotedMatch) {
+      currentPackage = quotedMatch[1];
+      currentVersion = null;
+      continue;
+    } else if (unquotedMatch) {
+      currentPackage = unquotedMatch[1];
       currentVersion = null;
       continue;
     }
