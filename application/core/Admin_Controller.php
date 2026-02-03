@@ -43,7 +43,7 @@ class Admin_Controller extends User_Controller
 
             // Recursively sanitize arrays
             if (is_array($value)) {
-                $_POST[$key] = $this->sanitize_array($value);
+                $_POST[$key] = $this->sanitize_array($value, $bypass_fields);
                 continue;
             }
 
@@ -84,13 +84,22 @@ class Admin_Controller extends User_Controller
 
     /**
      * Recursively sanitize array values
+     * 
+     * @param array $data The array to sanitize
+     * @param array $bypass_keys Keys that should bypass sanitization
      */
-    private function sanitize_array(array $data): array
+    private function sanitize_array(array $data, array $bypass_keys = []): array
     {
         foreach ($data as $key => $value) {
+            // Skip bypass fields
+            if (in_array($key, $bypass_keys)) {
+                continue;
+            }
+            
             if (is_array($value)) {
-                $data[$key] = $this->sanitize_array($value);
+                $data[$key] = $this->sanitize_array($value, $bypass_keys);
             } else {
+                // Use same order as filter_input: xss_clean then strip_tags
                 $data[$key] = strip_tags($this->security->xss_clean($value));
             }
         }
