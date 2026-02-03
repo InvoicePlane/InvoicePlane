@@ -24,18 +24,55 @@ class Admin_Controller extends User_Controller
 
     protected function filter_input(): void
     {
-        $input = $this->input->post();
+        // Fields that should bypass XSS sanitization
+        $bypass_fields = [
+            'user_password',      // Password fields need to allow special characters
+            'user_passwordv',     // Password verification field
+            'email_template_body', // Email templates can contain HTML
+        ];
 
-        array_walk(
-            $input,
-            function (&$value, $key): void {
-                if ( ! is_array($value)) {
-                    $value = $this->security->xss_clean($value);
-                    $value = strip_tags($value);
-                    $value = html_escape($value);   // <<<=== that's a CodeIgniter helper
-                }
+        $input = $this->input->post();
+        $xss_detected = false;
+        $xss_log_entries = [];
+
+        foreach ($input as $key => $value) {
+            // Skip arrays and bypass fields
+            if (is_array($value) || in_array($key, $bypass_fields)) {
+                continue;
             }
-        );
+
+            $original_value = $value;
+            
+            // Apply XSS cleaning and sanitization
+            $cleaned_value = $this->security->xss_clean($value);
+            $cleaned_value = strip_tags($cleaned_value);
+            $cleaned_value = html_escape($cleaned_value);
+
+            // Check if value was modified (XSS detected)
+            if ($original_value !== $cleaned_value) {
+                $xss_detected = true;
+                $xss_log_entries[] = [
+                    'field' => $key,
+                    'original_length' => strlen($original_value),
+                    'cleaned_length' => strlen($cleaned_value),
+                    'ip_address' => $this->input->ip_address(),
+                    'user_agent' => $this->input->user_agent(),
+                ];
+            }
+
+            // Update the actual POST data via CodeIgniter's Input class
+            $_POST[$key] = $cleaned_value;
+        }
+
+        // Log XSS detection
+        if ($xss_detected) {
+            log_message('error', 'XSS attempt detected and cleaned: ' . json_encode([
+                'timestamp' => date('Y-m-d H:i:s'),
+                'user_id' => $this->session->userdata('user_id'),
+                'uri' => uri_string(),
+                'fields' => $xss_log_entries,
+            ]));
+        }
     }
 
     protected function setCacheHeaders()
