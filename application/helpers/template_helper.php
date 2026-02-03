@@ -145,8 +145,6 @@ function get_invoice_status($id)
 function select_pdf_invoice_template($invoice)
 {
     $CI = & get_instance();
-
-    $template_name = null;
     
     if ($invoice->is_overdue) {
         // Use the overdue template
@@ -271,8 +269,8 @@ function validate_pdf_template($template_name, $type = 'invoice', $default_setti
             $CI = & get_instance();
             $template_name = $CI->mdl_settings->setting($default_setting);
         } else {
-            // Use default template names
-            $template_name = $type === 'invoice' ? 'InvoicePlane' : 'InvoicePlane';
+            // Use default template name (InvoicePlane is the default for both types)
+            return 'InvoicePlane';
         }
     }
     
@@ -281,8 +279,8 @@ function validate_pdf_template($template_name, $type = 'invoice', $default_setti
     
     if ($validated === false) {
         log_message('error', 'Invalid PDF template: ' . $template_name . ', using default');
-        // Return safe default
-        return $type === 'invoice' ? 'InvoicePlane' : 'InvoicePlane';
+        // Return safe default (InvoicePlane is the default template for both invoice and quote PDFs)
+        return 'InvoicePlane';
     }
     
     return $validated;
