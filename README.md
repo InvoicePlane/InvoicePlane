@@ -23,6 +23,67 @@ _A libre self-hosted web application designed to help you manage invoices, clien
 
 ---
 
+## What's New in Version 1.7.0
+
+**InvoicePlane 1.7.0** brings PHP 8.2+ compatibility and critical security enhancements to keep your financial data safe.
+
+### Major Improvements
+
+- **PHP 8.2+ Compatibility:** Full support for modern PHP versions (8.1, 8.2, 8.3+)
+- **Enhanced Security:** Multiple security vulnerabilities have been addressed:
+  - Fixed Cross-Site Scripting (XSS) vulnerabilities across templates and user inputs
+  - Resolved Local File Inclusion (LFI) vulnerabilities in PDF generation
+  - Patched log poisoning vulnerability in file upload handling
+- **SVG Logo Protection:** SVG uploads are now blocked to prevent embedded script execution (see details below)
+- **Updated Dependencies:** All PHP packages updated for compatibility and security
+
+### Issues Fixed in Version 1.7.0
+
+**Security Fixes:**
+- #1433 - Local File Inclusion (LFI) vulnerabilities in PDF template handling (Post-v1.7.0 tag)
+- #1388, #1387 - Unsafe jQuery plugin vulnerabilities (Code scanning alerts)
+- #1383 - File access vulnerabilities across all controllers
+- Security fixes for XSS vulnerabilities (multiple fields sanitized - see CHANGELOG.md)
+- Security fix for log poisoning in file upload handling
+
+**Bug Fixes and Improvements:**
+- #1389 - Workflow permissions in GitHub Actions
+- #1381 - E-invoicing field migration and version checking
+- #1380 - Dependency update (qs package bump)
+- #1377 - QR code image width reduced to 100px
+- #1375 - Email address verification now supports comma and semicolon separators
+- #1373 - Removed deprecated library dependencies
+- #1367, #1368 - Various bug fixes
+
+### Fields Sanitized for Security
+
+The following fields have been sanitized to prevent XSS attacks:
+- Quote and invoice number fields (all templates)
+- Tax rate names
+- Payment method names
+- Custom field labels
+- Client addresses
+- Sumex observations
+- Quote notes and passwords
+- Email template content
+- File names in upload logging (prevents log poisoning)
+
+### Upgrading from Version 1.6.x
+
+If you're upgrading from InvoicePlane 1.6.x:
+
+1. **Backup your data** - Create a full backup of your database and files
+2. **Check PHP version** - Ensure your server runs PHP 8.1 or higher
+3. **Update files** - Replace all application files with the new version
+4. **Run migrations** - Visit `/index.php/setup` to apply database updates
+5. **Review logo settings** - If using an SVG logo, convert it to PNG/JPG (see SVG notice below)
+
+For detailed upgrade instructions, visit the [InvoicePlane Wiki](https://wiki.invoiceplane.com/).
+
+> **Full Release Notes:** See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes, security fixes, and improvements.
+
+---
+
 ## Key Features
 
 - **Invoice & Quote Management:** Create, send, and manage professional invoices and quotes effortlessly.
