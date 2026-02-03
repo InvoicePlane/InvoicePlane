@@ -90,7 +90,7 @@ function sanitize_email_template_html(html) {
     
     // Recursively clean all elements
     function cleanNode(node) {
-        // Remove script and style tags that could contain malicious code
+        // Remove script, object, embed, and iframe tags that could execute code
         if (node.tagName && (node.tagName.toLowerCase() === 'script' || node.tagName.toLowerCase() === 'object' || 
             node.tagName.toLowerCase() === 'embed' || node.tagName.toLowerCase() === 'iframe')) {
             node.remove();
@@ -112,9 +112,10 @@ function sanitize_email_template_html(html) {
             var attrsToRemove = [];
             for (var i = 0; i < node.attributes.length; i++) {
                 var attr = node.attributes[i];
+                var attrNameLower = attr.name.toLowerCase();
                 // Remove event handlers (onclick, onload, etc.)
-                if (attr.name.toLowerCase().startsWith('on') || 
-                    allowedAttrs.indexOf(attr.name.toLowerCase()) === -1) {
+                if (attrNameLower.indexOf('on') === 0 || 
+                    allowedAttrs.indexOf(attrNameLower) === -1) {
                     attrsToRemove.push(attr.name);
                 }
             }
