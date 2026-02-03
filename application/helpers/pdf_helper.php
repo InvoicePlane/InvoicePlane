@@ -288,7 +288,16 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     set_language($quote->client_language);
 
     if ( ! $quote_template) {
+        $CI->load->helper('template');
         $quote_template = $CI->mdl_settings->setting('pdf_quote_template');
+        // Security: Validate template from settings
+        $validated = validate_template_name($quote_template, 'quote', 'pdf');
+        if ($validated === false) {
+            log_message('error', 'Invalid PDF quote template from settings: ' . $quote_template . ', using default');
+            $quote_template = 'InvoicePlane'; // Safe default
+        } else {
+            $quote_template = $validated;
+        }
     }
 
     // Determine if discounts should be displayed

@@ -106,8 +106,11 @@ class View extends Base_Controller
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
-            if ( ! $invoice_template) {
-                $this->load->helper('template');
+            // Security: Validate PDF template to prevent LFI
+            $this->load->helper('template');
+            if ($invoice_template) {
+                $invoice_template = validate_pdf_template($invoice_template, 'invoice');
+            } else {
                 $invoice_template = select_pdf_invoice_template($invoice);
             }
 
@@ -221,9 +224,9 @@ class View extends Base_Controller
             show_404();
         }
 
-        if ( ! $quote_template) {
-            $quote_template = get_setting('pdf_quote_template');
-        }
+        // Security: Validate PDF template to prevent LFI
+        $this->load->helper('template');
+        $quote_template = validate_pdf_template($quote_template, 'quote', 'pdf_quote_template');
 
         $this->load->helper('pdf');
 

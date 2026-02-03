@@ -136,26 +136,37 @@ function get_invoice_status($id)
 /**
  * Returns the appropriate PDF template for the given invoice.
  *
+ * Security: This function now validates template names from settings to prevent LFI attacks.
+ *
  * @param $invoice
  *
- * @return mixed
+ * @return string
  */
 function select_pdf_invoice_template($invoice)
 {
     $CI = & get_instance();
 
+    $template_name = null;
+    
     if ($invoice->is_overdue) {
         // Use the overdue template
-        return $CI->mdl_settings->setting('pdf_invoice_template_overdue');
-    }
-
-    if ($invoice->invoice_status_id == 4) {
+        $template_name = $CI->mdl_settings->setting('pdf_invoice_template_overdue');
+    } elseif ($invoice->invoice_status_id == 4) {
         // Use the paid template
-        return $CI->mdl_settings->setting('pdf_invoice_template_paid');
+        $template_name = $CI->mdl_settings->setting('pdf_invoice_template_paid');
+    } else {
+        // Use the default template
+        $template_name = $CI->mdl_settings->setting('pdf_invoice_template');
     }
-
-    // Use the default template
-    return $CI->mdl_settings->setting('pdf_invoice_template');
+    
+    // Security: Validate the template name
+    $validated = validate_template_name($template_name, 'invoice', 'pdf');
+    if ($validated === false) {
+        log_message('error', 'Invalid PDF invoice template from settings: ' . $template_name . ', using default');
+        return 'InvoicePlane'; // Safe default
+    }
+    
+    return $validated;
 }
 
 /**
@@ -239,4 +250,40 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pub
     }
     
     return $template_name;
+}
+
+/**
+ * Validates a PDF template name and returns a safe default if validation fails.
+ * 
+ * Security: This function is specifically for PDF templates loaded from settings or URL parameters.
+ * It validates the template name and falls back to the appropriate default template.
+ *
+ * @param string|null $template_name The template name to validate
+ * @param string $type The template type ('invoice' or 'quote')
+ * @param string $default_setting The setting key for the default template (optional)
+ * @return string Returns the validated template name or a safe default
+ */
+function validate_pdf_template($template_name, $type = 'invoice', $default_setting = null)
+{
+    // If no template provided, use the setting or default
+    if (empty($template_name)) {
+        if ($default_setting) {
+            $CI = & get_instance();
+            $template_name = $CI->mdl_settings->setting($default_setting);
+        } else {
+            // Use default template names
+            $template_name = $type === 'invoice' ? 'InvoicePlane' : 'InvoicePlane';
+        }
+    }
+    
+    // Validate the template name
+    $validated = validate_template_name($template_name, $type, 'pdf');
+    
+    if ($validated === false) {
+        log_message('error', 'Invalid PDF template: ' . $template_name . ', using default');
+        // Return safe default
+        return $type === 'invoice' ? 'InvoicePlane' : 'InvoicePlane';
+    }
+    
+    return $validated;
 }

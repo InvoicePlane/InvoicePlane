@@ -252,11 +252,16 @@ class Invoices extends Admin_Controller
      */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null): void
     {
-        $this->load->helper('pdf');
+        $this->load->helper(['pdf', 'template']);
 
         if (get_setting('mark_invoices_sent_pdf') == 1) {
             $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
             $this->mdl_invoices->mark_sent($invoice_id);
+        }
+
+        // Security: Validate PDF template to prevent LFI
+        if ($invoice_template) {
+            $invoice_template = validate_pdf_template($invoice_template, 'invoice');
         }
 
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
