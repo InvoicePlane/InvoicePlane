@@ -41,7 +41,7 @@ foreach ($invoices as $invoice) {
                 <td>
                     <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>"
                        title="<?php _trans('edit'); ?>">
-                        <?php echo $invoice->invoice_number ? $invoice->invoice_number : $invoice->invoice_id; ?>
+                        <?php echo $invoice->invoice_number ? htmlsc($invoice->invoice_number) : $invoice->invoice_id; ?>
                     </a>
                 </td>
 
@@ -109,8 +109,8 @@ foreach ($invoices as $invoice) {
                             </li>
 <?php
     if (
-        $invoice->invoice_status_id == 1 ||
-        ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
+        $invoice->invoice_status_id == 1
+        || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
     ) {
 ?>
                             <li>

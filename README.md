@@ -101,6 +101,51 @@ For detailed contribution guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.
 
 If you discover a security vulnerability, please email **[mail@invoiceplane.com](mailto:mail@invoiceplane.com)** before disclosing it publicly. We will address all security concerns promptly.
 
+### Important Security Notice: SVG Logo Files
+
+**As of this version, SVG (Scalable Vector Graphics) files are no longer supported for logo uploads due to security concerns.**
+
+#### Why were SVG files disabled?
+
+SVG files can contain embedded JavaScript code that could be exploited to perform Cross-Site Scripting (XSS) attacks. Since InvoicePlane handles sensitive financial data, we have taken a proactive security measure by blocking SVG uploads entirely.
+
+#### What file formats are supported?
+
+You can upload logos in the following safe image formats:
+- **PNG** (recommended for logos with transparency)
+- **JPG/JPEG** (recommended for photographs)
+- **GIF** (recommended for simple graphics)
+
+#### What happens to my existing SVG logo?
+
+If you previously uploaded an SVG logo:
+- It will not display in the application (blocked for security)
+- A warning message will appear in the settings page
+- You can easily remove it and upload a replacement in a supported format
+
+#### How do I convert my SVG logo?
+
+You can convert your SVG logo to PNG using free tools:
+
+1. **Online converters:**
+   - [CloudConvert](https://cloudconvert.com/svg-to-png)
+   - [Convertio](https://convertio.co/svg-png/)
+
+2. **Desktop software:**
+   - [Inkscape](https://inkscape.org/) (free, open-source)
+   - Adobe Illustrator
+   - GIMP
+
+3. **Conversion steps in Inkscape:**
+   - Open your SVG file in Inkscape
+   - Go to File → Export PNG Image
+   - Set your desired resolution (300 DPI recommended)
+   - Click Export
+
+#### Need help?
+
+If you have questions about logo formats or need assistance, please visit our [Community Forums](https://community.invoiceplane.com/).
+
 ---
 
 ## License & Copyright

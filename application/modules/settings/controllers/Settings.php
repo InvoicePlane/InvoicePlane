@@ -27,6 +27,31 @@ class Settings extends Admin_Controller
         $this->load->library('crypt');
         $this->load->library('form_validation');
         $this->load->helper('payments_helper');
+        
+        // Security: Check for SVG logos and display warnings
+        $this->check_svg_logos();
+    }
+    
+    /**
+     * Check for SVG logos and display security warnings
+     * This provides a soft migration path for existing SVG logos
+     */
+    private function check_svg_logos()
+    {
+        $logos_to_check = ['login_logo', 'invoice_logo'];
+        
+        foreach ($logos_to_check as $logo_setting) {
+            $logo_file = get_setting($logo_setting);
+            if ($logo_file) {
+                $extension = strtolower(pathinfo($logo_file, PATHINFO_EXTENSION));
+                if ($extension === 'svg') {
+                    $this->session->set_flashdata('alert_warning', 
+                        trans('svg_logo_blocked_security') . ' ' . 
+                        trans('please_remove_and_reupload')
+                    );
+                }
+            }
+        }
     }
 
     public function index()
@@ -81,7 +106,7 @@ class Settings extends Admin_Controller
 
             $upload_config = [
                 'upload_path'   => './uploads/',
-                'allowed_types' => 'gif|jpg|jpeg|png|svg', // Invoice quote logo image :Todo: Add webp avif? (& test imgs in pdf)
+                'allowed_types' => 'gif|jpg|jpeg|png', // Invoice quote logo image - SVG removed for security
                 'max_size'      => '9999',
                 'max_width'     => '9999',
                 'max_height'    => '9999',
@@ -89,6 +114,14 @@ class Settings extends Admin_Controller
 
             // Check for invoice logo upload
             if ($_FILES['invoice_logo']['name']) {
+                // Security: Check for SVG files before attempting upload
+                $file_extension = strtolower(pathinfo($_FILES['invoice_logo']['name'], PATHINFO_EXTENSION));
+                if ($file_extension === 'svg') {
+                    log_message('warning', 'SVG upload attempt blocked for invoice_logo by user ' . $this->session->userdata('user_id') . ': ' . $_FILES['invoice_logo']['name']);
+                    $this->session->set_flashdata('alert_error', trans('svg_upload_blocked_security'));
+                    redirect('settings');
+                }
+                
                 $this->load->library('upload', $upload_config);
 
                 if ( ! $this->upload->do_upload('invoice_logo')) {
@@ -103,6 +136,14 @@ class Settings extends Admin_Controller
 
             // Check for login logo upload
             if ($_FILES['login_logo']['name']) {
+                // Security: Check for SVG files before attempting upload
+                $file_extension = strtolower(pathinfo($_FILES['login_logo']['name'], PATHINFO_EXTENSION));
+                if ($file_extension === 'svg') {
+                    log_message('warning', 'SVG upload attempt blocked for login_logo by user ' . $this->session->userdata('user_id') . ': ' . $_FILES['login_logo']['name']);
+                    $this->session->set_flashdata('alert_error', trans('svg_upload_blocked_security'));
+                    redirect('settings');
+                }
+                
                 $this->load->library('upload', $upload_config);
 
                 if ( ! $this->upload->do_upload('login_logo')) {

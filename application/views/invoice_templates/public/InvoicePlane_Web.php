@@ -7,7 +7,7 @@
 
     <title>
         <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
-        - <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number; ?>
+        - <?php _trans('invoice'); ?> <?php echo htmlsc($invoice->invoice_number); ?>
     </title>
 
     <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
@@ -21,7 +21,7 @@
 
             <div class="webpreview-header">
 
-                <h2><?php _trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
+                <h2><?php _trans('invoice'); ?>&nbsp;<?php echo htmlsc($invoice->invoice_number); ?></h2>
 
                 <div class="btn-group">
 <?php
@@ -212,7 +212,7 @@ foreach ($items as $item) {
                                     <?php
                                     }
                                     ?>
-                                    <td class="amount"><?php echo format_currency($item->item_subtotal-$item->item_discount); ?></td>
+                                    <td class="amount"><?php echo format_currency($item->item_subtotal - $item->item_discount); ?></td>
                                 </tr>
 <?php
 } // End foreach
