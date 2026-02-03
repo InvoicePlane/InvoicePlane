@@ -177,7 +177,7 @@ foreach ($quote_templates as $template) {
                                     </span>
                                 </div>
                                 <div class="panel-body">
-                                    <iframe id="email-template-preview"></iframe>
+                                    <iframe id="email-template-preview" sandbox="allow-same-origin"></iframe>
                                 </div>
                             </div>
 
