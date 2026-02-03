@@ -177,8 +177,8 @@ class MX_Loader extends CI_Loader
     public function database($params = '', $return = false, $query_builder = null)
     {
         if (
-            $return === false && $query_builder === null &&
-            isset(CI::$APP->db) && is_object(CI::$APP->db) && ! empty(CI::$APP->db->conn_id)
+            $return === false && $query_builder === null
+            && isset(CI::$APP->db) && is_object(CI::$APP->db) && ! empty(CI::$APP->db->conn_id)
         ) {
             return false;
         }

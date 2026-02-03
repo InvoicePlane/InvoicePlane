@@ -126,14 +126,14 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         // Same name of config & library(+Xml) by default
         $generator = $xml_id;
         $path      = APPPATH . 'helpers/XMLconfigs/';
-        
+
         // Security: Validate XML config ID to prevent path traversal
         if ($xml_id && is_valid_xml_config_id($xml_id) && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
             $embed_xml = $xml_setting['embedXML'];
             $XMLname   = $xml_setting['XMLname'];
             $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
             $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
-        } elseif ($xml_id && !is_valid_xml_config_id($xml_id)) {
+        } elseif ($xml_id && ! is_valid_xml_config_id($xml_id)) {
             log_message('error', trans('log_invalid_xml_config_id_pdf_helper') . ': ' . $xml_id);
         }
 
