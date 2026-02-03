@@ -287,19 +287,22 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     // Override language with system language
     set_language($quote->client_language);
 
+    // Always load template helper and validate the template name, regardless of source
+    $CI->load->helper('template');
+
     if ( ! $quote_template) {
-        $CI->load->helper('template');
+        // Fallback to template from settings when none is provided
         $quote_template = $CI->mdl_settings->setting('pdf_quote_template');
-        // Security: Validate template from settings
-        $validated = validate_template_name($quote_template, 'quote', 'pdf');
-        if ($validated === false) {
-            log_message('error', 'Invalid PDF quote template from settings: ' . $quote_template . ', using default');
-            $quote_template = 'InvoicePlane'; // Safe default
-        } else {
-            $quote_template = $validated;
-        }
     }
 
+    // Security: Validate template name (from settings or parameter)
+    $validated = validate_template_name($quote_template, 'quote', 'pdf');
+    if ($validated === false) {
+        log_message('error', 'Invalid PDF quote template: ' . $quote_template . ', using default');
+        $quote_template = 'InvoicePlane'; // Safe default
+    } else {
+        $quote_template = $validated;
+    }
     // Determine if discounts should be displayed
     $items = $CI->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
 

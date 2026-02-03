@@ -200,6 +200,7 @@ class View extends Base_Controller
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
         // Security: Validate template name to prevent Local File Inclusion
+        $this->load->helper('template');
         $requested_template = get_setting('public_quote_template');
         $template_name = validate_template_name($requested_template, 'quote', 'public');
         if ($template_name === false) {
