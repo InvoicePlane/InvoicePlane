@@ -73,8 +73,79 @@ function inject_email_template(template_fields, email_template) {
     });
 }
 
+// Sanitize HTML for email template preview
+// Allows only safe formatting tags and strips scripts, event handlers, and dangerous attributes
+function sanitize_email_template_html(html) {
+    // Create a temporary DOM element to parse the HTML
+    var temp = document.createElement('div');
+    temp.innerHTML = html;
+    
+    // List of allowed tags (only safe formatting tags)
+    var allowedTags = ['b', 'strong', 'em', 'i', 'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
+                       'code', 'pre', 'hr', 'span', 'div', 'style', 'a', 'ul', 'ol', 'li', 
+                       'table', 'tr', 'td', 'th', 'thead', 'tbody'];
+    
+    // List of allowed attributes (only safe, non-executable attributes)
+    var allowedAttrs = ['class', 'style', 'href', 'title', 'alt', 'target'];
+    
+    // Recursively clean all elements
+    function cleanNode(node) {
+        // Remove script and style tags that could contain malicious code
+        if (node.tagName && (node.tagName.toLowerCase() === 'script' || node.tagName.toLowerCase() === 'object' || 
+            node.tagName.toLowerCase() === 'embed' || node.tagName.toLowerCase() === 'iframe')) {
+            node.remove();
+            return;
+        }
+        
+        // Remove disallowed tags (keep their content)
+        if (node.tagName && allowedTags.indexOf(node.tagName.toLowerCase()) === -1) {
+            var parent = node.parentNode;
+            while (node.firstChild) {
+                parent.insertBefore(node.firstChild, node);
+            }
+            node.remove();
+            return;
+        }
+        
+        // Remove dangerous attributes from allowed tags
+        if (node.attributes) {
+            var attrsToRemove = [];
+            for (var i = 0; i < node.attributes.length; i++) {
+                var attr = node.attributes[i];
+                // Remove event handlers (onclick, onload, etc.)
+                if (attr.name.toLowerCase().startsWith('on') || 
+                    allowedAttrs.indexOf(attr.name.toLowerCase()) === -1) {
+                    attrsToRemove.push(attr.name);
+                }
+            }
+            attrsToRemove.forEach(function(attrName) {
+                node.removeAttribute(attrName);
+            });
+        }
+        
+        // Recursively clean child nodes
+        var children = Array.from(node.childNodes);
+        children.forEach(function(child) {
+            if (child.nodeType === 1) { // Element node
+                cleanNode(child);
+            }
+        });
+    }
+    
+    // Clean all child nodes
+    Array.from(temp.childNodes).forEach(function(child) {
+        if (child.nodeType === 1) {
+            cleanNode(child);
+        }
+    });
+    
+    return temp.innerHTML;
+}
+
 function update_email_template_preview() {
-    $('#email-template-preview').contents().find("body").html($('.email-template-body').val());
+    var rawHtml = $('.email-template-body').val();
+    var sanitizedHtml = sanitize_email_template_html(rawHtml);
+    $('#email-template-preview').contents().find("body").html(sanitizedHtml);
 }
 
 // Insert HTML tags into textarea
