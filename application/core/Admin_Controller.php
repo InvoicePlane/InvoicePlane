@@ -39,7 +39,7 @@ class Admin_Controller extends User_Controller
 
         foreach ($input as $key => $value) {
             // Skip bypass fields
-            if (in_array($key, $bypass_fields)) {
+            if (in_array($key, $bypass_fields, true)) {
                 continue;
             }
 
@@ -75,12 +75,25 @@ class Admin_Controller extends User_Controller
 
         // Log XSS detection
         if ($xss_detected) {
-            log_message('error', 'XSS attempt detected and cleaned: ' . json_encode([
+            $log_context = [
                 'timestamp' => date('Y-m-d H:i:s'),
-                'user_id' => $this->session->userdata('user_id'),
-                'uri' => uri_string(),
-                'fields' => $xss_log_entries,
-            ]));
+                'user_id'   => $this->session->userdata('user_id'),
+                'uri'       => uri_string(),
+                'fields'    => $xss_log_entries,
+            ];
+
+            $json_flags = JSON_PARTIAL_OUTPUT_ON_ERROR;
+            if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+                $json_flags |= JSON_INVALID_UTF8_SUBSTITUTE;
+            }
+
+            $log_payload = json_encode($log_context, $json_flags);
+
+            if ($log_payload === false) {
+                $log_payload = 'JSON_ENCODE_ERROR: ' . json_last_error_msg() . ' | CONTEXT: ' . print_r($log_context, true);
+            }
+
+            log_message('error', 'XSS attempt detected and cleaned: ' . $log_payload);
         }
     }
 
@@ -94,7 +107,7 @@ class Admin_Controller extends User_Controller
     {
         foreach ($data as $key => $value) {
             // Skip bypass fields
-            if (in_array($key, $bypass_keys)) {
+            if (in_array($key, $bypass_keys, true)) {
                 continue;
             }
             
