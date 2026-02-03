@@ -82,8 +82,14 @@ class View extends Base_Controller
 
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
+        // Security: Validate template name to prevent Local File Inclusion
+        $template_name = validate_template_name(get_setting('public_invoice_template'), 'invoice', 'public');
+        if ($template_name === false) {
+            log_message('error', 'Invalid invoice template setting, using default');
+            $template_name = 'InvoicePlane_Web'; // Fallback to default template
+        }
 
-        $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
+        $this->load->view('invoice_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
@@ -189,7 +195,14 @@ class View extends Base_Controller
         ];
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
+        // Security: Validate template name to prevent Local File Inclusion
+        $template_name = validate_template_name(get_setting('public_quote_template'), 'quote', 'public');
+        if ($template_name === false) {
+            log_message('error', 'Invalid quote template setting, using default');
+            $template_name = 'InvoicePlane_Web'; // Fallback to default template
+        }
+
+        $this->load->view('quote_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
