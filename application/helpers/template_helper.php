@@ -229,10 +229,13 @@ function select_email_invoice_template($invoice)
  */
 function validate_pdf_template($template_name, $type = 'invoice', $default_setting = null)
 {
+    // Load file_security_helper to access sanitize_for_logging function
+    $CI = & get_instance();
+    $CI->load->helper('file_security');
+    
     // If no template provided, use the setting or default
     if (empty($template_name)) {
         if ($default_setting) {
-            $CI = & get_instance();
             $template_name = $CI->mdl_settings->setting($default_setting);
         } else {
             // Use default template name (InvoicePlane is the default for both types)
@@ -244,7 +247,8 @@ function validate_pdf_template($template_name, $type = 'invoice', $default_setti
     $validated = validate_template_name($template_name, $type, 'pdf');
     
     if ($validated === false) {
-        log_message('error', 'Invalid PDF template: ' . $template_name . ', using default');
+        $safe_template_name = sanitize_for_logging((string) $template_name);
+        log_message('error', 'Invalid PDF template: ' . $safe_template_name . ', using default');
         // Return safe default (InvoicePlane is the default template for both invoice and quote PDFs)
         return 'InvoicePlane';
     }
