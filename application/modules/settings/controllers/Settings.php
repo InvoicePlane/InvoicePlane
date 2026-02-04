@@ -117,7 +117,8 @@ class Settings extends Admin_Controller
                 // Security: Check for SVG files before attempting upload
                 $file_extension = strtolower(pathinfo($_FILES['invoice_logo']['name'], PATHINFO_EXTENSION));
                 if ($file_extension === 'svg') {
-                    log_message('warning', 'SVG upload attempt blocked for invoice_logo by user ' . $this->session->userdata('user_id') . ': ' . $_FILES['invoice_logo']['name']);
+                    $safe_name = str_replace(["\r", "\n"], '', basename($_FILES['invoice_logo']['name']));
+                    log_message('warning', 'SVG upload attempt blocked for invoice_logo by user ' . $this->session->userdata('user_id') . ': ' . $safe_name);
                     $this->session->set_flashdata('alert_error', trans('svg_upload_blocked_security'));
                     redirect('settings');
                 }
@@ -139,7 +140,8 @@ class Settings extends Admin_Controller
                 // Security: Check for SVG files before attempting upload
                 $file_extension = strtolower(pathinfo($_FILES['login_logo']['name'], PATHINFO_EXTENSION));
                 if ($file_extension === 'svg') {
-                    log_message('warning', 'SVG upload attempt blocked for login_logo by user ' . $this->session->userdata('user_id') . ': ' . $_FILES['login_logo']['name']);
+                    $safe_name = str_replace(["\r", "\n"], '', basename($_FILES['login_logo']['name']));
+                    log_message('warning', 'SVG upload attempt blocked for login_logo by user ' . $this->session->userdata('user_id') . ': ' . $safe_name);
                     $this->session->set_flashdata('alert_error', trans('svg_upload_blocked_security'));
                     redirect('settings');
                 }

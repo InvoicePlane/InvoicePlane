@@ -45,7 +45,13 @@ class Admin_Controller extends User_Controller
 
             // Recursively sanitize arrays
             if (is_array($value)) {
-                $_POST[$key] = $this->sanitize_array($value, $bypass_fields);
+                $_POST[$key] = $this->sanitize_array(
+                    $value,
+                    $bypass_fields,
+                    $key,
+                    $xss_detected,
+                    $xss_log_entries
+                );
                 continue;
             }
 
@@ -102,8 +108,17 @@ class Admin_Controller extends User_Controller
      * 
      * @param array $data The array to sanitize
      * @param array $bypass_keys Keys that should bypass sanitization
+     * @param string $path_prefix Prefix for tracking nested field paths
+     * @param bool $xss_detected Reference to XSS detection flag
+     * @param array $xss_log_entries Reference to XSS log entries array
      */
-    private function sanitize_array(array $data, array $bypass_keys = []): array
+    private function sanitize_array(
+        array $data,
+        array $bypass_keys = [],
+        string $path_prefix = '',
+        bool &$xss_detected = false,
+        array &$xss_log_entries = []
+    ): array
     {
         foreach ($data as $key => $value) {
             // Skip bypass fields
@@ -112,10 +127,25 @@ class Admin_Controller extends User_Controller
             }
             
             if (is_array($value)) {
-                $data[$key] = $this->sanitize_array($value, $bypass_keys);
+                $data[$key] = $this->sanitize_array(
+                    $value,
+                    $bypass_keys,
+                    $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key,
+                    $xss_detected,
+                    $xss_log_entries
+                );
             } else {
-                // Use same order as filter_input: xss_clean then strip_tags
-                $data[$key] = strip_tags($this->security->xss_clean($value));
+                $original_value = $value;
+                $cleaned_value = strip_tags($this->security->xss_clean($value));
+                if ($original_value !== $cleaned_value) {
+                    $xss_detected = true;
+                    $xss_log_entries[] = [
+                        'field' => $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key,
+                        'original_length' => strlen((string) $original_value),
+                        'cleaned_length' => strlen((string) $cleaned_value),
+                    ];
+                }
+                $data[$key] = $cleaned_value;
             }
         }
         return $data;

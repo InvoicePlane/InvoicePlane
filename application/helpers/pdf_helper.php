@@ -86,9 +86,8 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         // Security: Validate template name from parameter to prevent LFI
         $validated = validate_template_name($invoice_template, 'invoice', 'pdf');
         if ($validated === false) {
-            // Sanitize template name before logging to prevent log injection
-            $safe_invoice_template = preg_replace('/[[:^print:]]/', '', (string) $invoice_template);
-            log_message('error', 'Invalid PDF invoice template parameter: ' . $safe_invoice_template . ', using default');
+            $safe_template = str_replace(["\r", "\n"], '', (string) $invoice_template);
+            log_message('error', 'Invalid PDF invoice template parameter: ' . $safe_template . ', using default');
             $invoice_template = 'InvoicePlane'; // Safe default
         } else {
             $invoice_template = $validated;
@@ -312,7 +311,8 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     // Security: Validate template name (from settings or parameter)
     $validated = validate_template_name($quote_template, 'quote', 'pdf');
     if ($validated === false) {
-        log_message('error', 'Invalid PDF quote template: ' . hash_for_logging($quote_template) . ', using default');
+        $safe_template = str_replace(["\r", "\n"], '', (string) $quote_template);
+        log_message('error', 'Invalid PDF quote template: ' . $safe_template . ', using default');
         $quote_template = 'InvoicePlane'; // Safe default
     } else {
         $quote_template = $validated;
