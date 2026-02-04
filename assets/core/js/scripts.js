@@ -76,9 +76,11 @@ function inject_email_template(template_fields, email_template) {
 // Sanitize HTML for email template preview
 // Allows only safe formatting tags and strips scripts, event handlers, and dangerous attributes
 function sanitize_email_template_html(html) {
-    // Create a detached container to parse and sanitize HTML.
-    var temp = document.createElement('div');
-    temp.innerHTML = html || '';
+    // Create a detached container to parse and sanitize HTML in an isolated context.
+    // Using DOMParser prevents immediate script execution during parsing.
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(html || '', 'text/html');
+    var temp = doc.body;
     
     // List of allowed tags (only safe formatting tags)
     var allowedTags = ['b', 'strong', 'em', 'i', 'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
