@@ -76,11 +76,9 @@ function inject_email_template(template_fields, email_template) {
 // Sanitize HTML for email template preview
 // Allows only safe formatting tags and strips scripts, event handlers, and dangerous attributes
 function sanitize_email_template_html(html) {
-    // Create a detached container to hold only text content.
-    // This avoids interpreting untrusted input as HTML.
+    // Create a detached container to parse and sanitize HTML.
     var temp = document.createElement('div');
-    var textNode = document.createTextNode(html || '');
-    temp.appendChild(textNode);
+    temp.innerHTML = html || '';
     
     // List of allowed tags (only safe formatting tags)
     var allowedTags = ['b', 'strong', 'em', 'i', 'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
@@ -88,7 +86,8 @@ function sanitize_email_template_html(html) {
                        'table', 'tr', 'td', 'th', 'thead', 'tbody'];
     
     // List of allowed attributes (only safe, non-executable attributes)
-    var allowedAttrs = ['class', 'style', 'href', 'title', 'alt', 'target'];
+    // Note: 'style' attribute removed to prevent CSS-based attacks
+    var allowedAttrs = ['class', 'href', 'title', 'alt', 'target'];
     
     // Recursively clean all elements
     function cleanNode(node) {
@@ -157,8 +156,8 @@ function sanitize_email_template_html(html) {
         }
     });
     
-    // Return only text content so that no HTML from user input is reinterpreted.
-    return temp.textContent;
+    // Return sanitized HTML.
+    return temp.innerHTML;
 }
 
 function update_email_template_preview() {

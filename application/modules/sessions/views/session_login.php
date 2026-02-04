@@ -41,7 +41,7 @@ if ($login_logo) {
     $extension = strtolower(pathinfo($login_logo, PATHINFO_EXTENSION));
     if ($extension !== 'svg') {
 ?>
-            <img src="<?php echo base_url(); ?>uploads/<?php echo $login_logo; ?>" class="login-logo img-responsive">
+            <img src="<?php echo base_url(); ?>uploads/<?php echo htmlsc($login_logo); ?>" class="login-logo img-responsive">
 <?php
     } else {
         // SVG logo detected, show title instead

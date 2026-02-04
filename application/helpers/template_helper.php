@@ -244,7 +244,8 @@ function validate_pdf_template($template_name, $type = 'invoice', $default_setti
     $validated = validate_template_name($template_name, $type, 'pdf');
     
     if ($validated === false) {
-        log_message('error', 'Invalid PDF template: ' . $template_name . ', using default');
+        $safe_template_name = sanitize_for_logging((string) $template_name);
+        log_message('error', 'Invalid PDF template: ' . $safe_template_name . ', using default');
         // Return safe default (InvoicePlane is the default template for both invoice and quote PDFs)
         return 'InvoicePlane';
     }
