@@ -160,7 +160,9 @@ function select_pdf_invoice_template($invoice)
     // Security: Validate the template name
     $validated = validate_template_name($template_name, 'invoice', 'pdf');
     if ($validated === false) {
-        log_message('error', 'Invalid PDF invoice template from settings: ' . $template_name . ', using default');
+        // Sanitize template name before logging to avoid log injection
+        $safe_template_name = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $template_name);
+        log_message('error', 'Invalid PDF invoice template from settings: ' . $safe_template_name . ', using default');
         return 'InvoicePlane'; // Safe default
     }
     

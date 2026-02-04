@@ -86,7 +86,9 @@ class View extends Base_Controller
         $requested_template = get_setting('public_invoice_template');
         $template_name = validate_template_name($requested_template, 'invoice', 'public');
         if ($template_name === false) {
-            log_message('error', 'Invalid invoice template setting: ' . $requested_template . ', using default');
+            // Sanitize template name for logging to prevent log injection / poisoning
+            $safe_template_for_log = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
+            log_message('error', 'Invalid invoice template setting: ' . $safe_template_for_log . ', using default');
             $template_name = 'InvoicePlane_Web'; // Fallback to default template
         }
 
@@ -204,7 +206,9 @@ class View extends Base_Controller
         $requested_template = get_setting('public_quote_template');
         $template_name = validate_template_name($requested_template, 'quote', 'public');
         if ($template_name === false) {
-            log_message('error', 'Invalid quote template setting: ' . $requested_template . ', using default');
+            // Security: sanitize template name before logging to prevent log injection
+            $safe_requested_template = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
+            log_message('error', 'Invalid quote template setting: ' . $safe_requested_template . ', using default');
             $template_name = 'InvoicePlane_Web'; // Fallback to default template
         }
 

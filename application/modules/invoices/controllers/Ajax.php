@@ -116,10 +116,10 @@ class Ajax extends Admin_Controller
             // Read invoice number from input
             $invoice_number = $this->input->post('invoice_number');
 
-            // Validate invoice_number: only allow safe characters (alphanumeric, dash, underscore, slash, period).
+            // Validate invoice_number: only allow safe characters (alphanumeric, dash, underscore, slash, period, space).
             // If invalid characters are present, return a clear validation error instead of silently modifying input.
             if ($invoice_number !== null && $invoice_number !== '') {
-                if ( ! preg_match('/^[a-zA-Z0-9\-_\/\.]+$/', $invoice_number)) {
+                if ( ! preg_match('/^[a-zA-Z0-9\-_\/\.\s]+$/', $invoice_number)) {
                     $response = [
                         'success'           => 0,
                         'validation_errors' => [
