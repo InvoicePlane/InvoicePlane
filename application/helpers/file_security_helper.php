@@ -145,6 +145,22 @@ function extract_safe_basename(string $filename): array
 }
 
 /**
+ * Sanitize a string for logging by removing control characters.
+ *
+ * Prevents log injection attacks by stripping newlines and other control characters
+ * while preserving the original content for debugging purposes.
+ *
+ * @param string $value The value to sanitize for logging
+ *
+ * @return string The sanitized string safe for logging
+ */
+function sanitize_for_logging(string $value): string
+{
+    // Remove carriage return and line feed characters to prevent log injection
+    return str_replace(["\r", "\n"], '', $value);
+}
+
+/**
  * Comprehensive file security validation.
  *
  * Performs all security checks in one function for convenience.

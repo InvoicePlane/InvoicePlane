@@ -29,6 +29,8 @@ function parseYarnLock(content) {
     // Match package declaration lines (e.g., "package-name@^1.0.0:" or package-name@^1.0.0:)
     // Handle scoped packages, multi-selector keys, and both quoted and unquoted package names
     const keyLine = line.trim();
+    // Package declarations in yarn.lock are non-indented lines ending with ':'
+    // Indented lines are properties (version, resolution, dependencies, etc.)
     if (!/^\s/.test(line) && keyLine.endsWith(':')) {
       const raw = keyLine.slice(0, -1);
       const selectors = raw.startsWith('"')
