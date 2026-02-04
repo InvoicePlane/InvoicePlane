@@ -27,18 +27,22 @@ function parseYarnLock(content) {
     const line = lines[i];
 
     // Match package declaration lines (e.g., "package-name@^1.0.0:" or package-name@^1.0.0:)
-    // Handle both quoted and unquoted package names
-    const quotedMatch = line.match(/^"([^"@]+)@[^"]*":\s*$/);
-    const unquotedMatch = !quotedMatch ? line.match(/^([^"@\s]+)@[^\s:]+:\s*$/) : null;
-    
-    if (quotedMatch) {
-      currentPackage = quotedMatch[1];
-      currentVersion = null;
-      continue;
-    } else if (unquotedMatch) {
-      currentPackage = unquotedMatch[1];
-      currentVersion = null;
-      continue;
+    // Handle scoped packages, multi-selector keys, and both quoted and unquoted package names
+    const keyLine = line.trim();
+    // Package declarations in yarn.lock are non-indented lines ending with ':'
+    // Indented lines are properties (version, resolution, dependencies, etc.)
+    if (!/^\s/.test(line) && keyLine.endsWith(':')) {
+      const raw = keyLine.slice(0, -1);
+      const selectors = raw.startsWith('"')
+        ? raw.split(/",\s*"/).map(s => s.replace(/^"/, '').replace(/"$/, ''))
+        : raw.split(/,\s*/);
+      const firstSelector = selectors[0];
+      const at = firstSelector.lastIndexOf('@');
+      if (at > 0) {
+        currentPackage = firstSelector.slice(0, at);
+        currentVersion = null;
+        continue;
+      }
     }
 
     // Match version lines (e.g., "  version "1.0.0"")
