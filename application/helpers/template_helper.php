@@ -205,47 +205,11 @@ function select_email_invoice_template($invoice)
  * @param string $scope The template scope ('public' or 'pdf')
  * @return string|false Returns the validated template name or false if validation fails
  */
-function validate_template_name($template_name, $type = 'invoice', $scope = 'public')
-{
-    // Security: Reject empty template names
-    if (empty($template_name)) {
-        log_message('error', 'Template validation failed: Empty template name');
-        return false;
-    }
-    
-    // Security: Check for path traversal attempts
-    if (str_contains($template_name, '..') || 
-        str_contains($template_name, '/') || 
-        str_contains($template_name, '\\') ||
-        str_contains($template_name, "\0")) {
-        log_message('error', 'Template validation failed: Path traversal detected in template name');
-        return false;
-    }
-    
-    // Security: Validate template name contains only allowed characters
-    // Allow alphanumeric, underscore, hyphen, and space
-    if (!preg_match('/^[a-zA-Z0-9_\-\s]+$/', $template_name)) {
-        log_message('error', 'Template validation failed: Invalid characters in template name');
-        return false;
-    }
-    
-    // Get list of valid templates
-    $CI = & get_instance();
-    $CI->load->model('invoices/mdl_templates');
-    
-    if ($type === 'invoice') {
-        $valid_templates = $CI->mdl_templates->get_invoice_templates($scope);
-    } elseif ($type === 'quote') {
-        $valid_templates = $CI->mdl_templates->get_quote_templates($scope);
-    } else {
-        log_message('error', 'Template validation failed: Invalid template type');
-        return false;
-    }
-    
     // Security: Verify the template exists in the allowed list
     // Note: get_*_templates() returns an array of template names without .php extension
     if (!in_array($template_name, $valid_templates, true)) {
-        log_message('error', 'Template validation failed: Template not in allowed list: ' . $template_name);
+        $safe_template_name = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $template_name);
+        log_message('error', 'Template validation failed: Template not in allowed list: ' . $safe_template_name);
         return false;
     }
     
