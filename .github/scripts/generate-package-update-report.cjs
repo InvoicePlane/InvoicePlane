@@ -15,7 +15,7 @@ const { execSync } = require('child_process');
 /**
  * Parse yarn.lock file and extract package versions
  * @param {string} content - yarn.lock file content
- * @returns {Map<string, string>} - Map of package name to version
+ * @returns {Map<string, Set<string>>} - Map of package name to set of versions
  */
 function parseYarnLock(content) {
   const packages = new Map();
@@ -45,7 +45,11 @@ function parseYarnLock(content) {
     const versionMatch = line.match(/^\s+version\s+"([^"]+)"/);
     if (versionMatch && currentPackage) {
       currentVersion = versionMatch[1];
-      packages.set(currentPackage, currentVersion);
+      // Add version to Set for this package
+      if (!packages.has(currentPackage)) {
+        packages.set(currentPackage, new Set());
+      }
+      packages.get(currentPackage).add(currentVersion);
       currentPackage = null;
       currentVersion = null;
     }
@@ -91,22 +95,33 @@ function generateReport() {
     const removed = [];
 
     // Check for added and updated packages
-    for (const [name, version] of currentPackages) {
+    for (const [name, currentVersions] of currentPackages) {
       if (!previousPackages.has(name)) {
-        added.push({ name, version });
-      } else if (previousPackages.get(name) !== version) {
-        updated.push({
-          name,
-          oldVersion: previousPackages.get(name),
-          newVersion: version
-        });
+        // Package is entirely new
+        added.push({ name, versions: Array.from(currentVersions).sort() });
+      } else {
+        // Package exists, check if versions changed
+        const previousVersions = previousPackages.get(name);
+        
+        // Check if the version sets are different (check both directions)
+        const hasChanges = currentVersions.size !== previousVersions.size ||
+          Array.from(currentVersions).some(v => !previousVersions.has(v)) ||
+          Array.from(previousVersions).some(v => !currentVersions.has(v));
+        
+        if (hasChanges) {
+          updated.push({
+            name,
+            oldVersions: Array.from(previousVersions).sort(),
+            newVersions: Array.from(currentVersions).sort()
+          });
+        }
       }
     }
 
     // Check for removed packages
-    for (const [name, version] of previousPackages) {
+    for (const [name, versions] of previousPackages) {
       if (!currentPackages.has(name)) {
-        removed.push({ name, version });
+        removed.push({ name, versions: Array.from(versions).sort() });
       }
     }
 
@@ -120,7 +135,7 @@ function generateReport() {
         report += '## Updated Packages\n\n';
         updated.sort((a, b) => a.name.localeCompare(b.name));
         for (const pkg of updated) {
-          report += `${pkg.name}: ${pkg.oldVersion} → ${pkg.newVersion}\n`;
+          report += `${pkg.name}: ${pkg.oldVersions.join(', ')} → ${pkg.newVersions.join(', ')}\n`;
         }
       }
 
@@ -129,7 +144,7 @@ function generateReport() {
         report += '## Added Packages\n\n';
         added.sort((a, b) => a.name.localeCompare(b.name));
         for (const pkg of added) {
-          report += `${pkg.name}: (new) → ${pkg.version}\n`;
+          report += `${pkg.name}: (new) → ${pkg.versions.join(', ')}\n`;
         }
       }
 
@@ -138,7 +153,7 @@ function generateReport() {
         report += '## Removed Packages\n\n';
         removed.sort((a, b) => a.name.localeCompare(b.name));
         for (const pkg of removed) {
-          report += `${pkg.name}: ${pkg.version} → (removed)\n`;
+          report += `${pkg.name}: ${pkg.versions.join(', ')} → (removed)\n`;
         }
       }
     }
