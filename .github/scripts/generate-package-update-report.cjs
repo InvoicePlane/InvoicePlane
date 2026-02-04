@@ -102,12 +102,10 @@ function generateReport() {
       } else {
         // Package exists, check if versions changed
         const previousVersions = previousPackages.get(name);
-        const currentSet = new Set(currentVersions);
-        const previousSet = new Set(previousVersions);
         
         // Check if the version sets are different
-        const hasChanges = currentSet.size !== previousSet.size ||
-          Array.from(currentSet).some(v => !previousSet.has(v));
+        const hasChanges = currentVersions.size !== previousVersions.size ||
+          Array.from(currentVersions).some(v => !previousVersions.has(v));
         
         if (hasChanges) {
           updated.push({
