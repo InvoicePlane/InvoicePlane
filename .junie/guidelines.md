@@ -5,7 +5,7 @@ This document outlines the security principles, code quality standards, and best
 ## Table of Contents
 
 1. [Security Principles](#security-principles)
-2. [DRY (Don't Repeat Yourself) Programming](#dry-dont-repeat-yourself-programming)
+2. [DRY Programming](#dry-programming)
 3. [Input Validation and Sanitization](#input-validation-and-sanitization)
 4. [Output Encoding](#output-encoding)
 5. [File Security](#file-security)
@@ -32,9 +32,12 @@ InvoicePlane follows a **defense-in-depth** security approach with multiple laye
 // Layer 1: Global XSS sanitization for all POST fields
 protected function filter_input(): void
 {
-    $cleaned_value = $this->security->xss_clean($value);
-    $cleaned_value = strip_tags($cleaned_value);
-    $_POST[$key] = $cleaned_value;
+    $input = $this->input->post();
+    foreach ($input as $key => $value) {
+        $cleaned_value = $this->security->xss_clean($value);
+        $cleaned_value = strip_tags($cleaned_value);
+        $_POST[$key] = $cleaned_value;
+    }
 }
 
 // Layer 2: Additional validation in controllers
@@ -59,7 +62,7 @@ InvoicePlane has addressed the following vulnerability types:
 
 ---
 
-## DRY (Don't Repeat Yourself) Programming
+## DRY Programming
 
 ### The DRY Principle
 
@@ -217,8 +220,12 @@ Different contexts require different encoding:
 var data = <?php echo json_encode($value, JSON_HEX_TAG | JSON_HEX_AMP); ?>;
 </script>
 
-// URL context
-<a href="?id=<?php echo urlencode($value); ?>">Link</a>
+// URL context (validate base URL and encode parameters)
+<?php
+$base_url = site_url('invoices/view'); // Safe base URL
+$query_param = urlencode($invoice_id);
+?>
+<a href="<?php echo $base_url . '/' . $query_param; ?>">Link</a>
 
 // HTML attribute context
 <input type="text" value="<?php echo html_escape($value); ?>">
