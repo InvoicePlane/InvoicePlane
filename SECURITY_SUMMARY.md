@@ -28,6 +28,14 @@
 - **Additional:** `application/modules/payments/views/form.php` lines 57, 64 (discovered during audit)  
 **Status:** ✅ FIXED
 
+### 4. Invoice Group Identifier Format XSS
+**CVE/Reference:** Stored Cross-Site Scripting (XSS) in Invoice Group Identifier Format  
+**Severity:** High (CVSS 3.1: 6.5)  
+**Vector:** CVSS:3.1/AV:N/AC:L/PR:H/UI:R/S:C/C:H/I:L/A:N  
+**Reported Location:**
+- `application/modules/invoices/views/view.php` line 448 (parent invoice number in credit invoice view)  
+**Status:** ✅ FIXED
+
 ## Overall Status: ✅ ALL VULNERABILITIES MITIGATED
 
 All reported vulnerabilities have been **fully mitigated**. Most locations were already protected, and one additional vulnerability was discovered and fixed during the security audit.
@@ -47,6 +55,10 @@ The `unit_name` and `unit_name_plrl` fields were already using proper HTML encod
 The `invoice_number` field was mostly protected, but **two instances** in the payment form were missing HTML encoding. These have been fixed:
 - `application/modules/payments/views/form.php` line 57 - Added `htmlsc()`
 - `application/modules/payments/views/form.php` line 64 - Added `htmlsc()`
+
+### 4. Invoice Group Identifier Format (Fixed)
+The Invoice Group's "Identifier Format" field allows users to create custom invoice number templates (e.g., `INV-{{{id}}}`). A vulnerability existed where an attacker could inject malicious content into this format (e.g., `<script>alert(1)</script>{{{id}}}`), which would then be stored as part of the generated invoice number. **One instance** in the credit invoice view was missing HTML encoding:
+- `application/modules/invoices/views/view.php` line 448 - Added `htmlsc()` to parent invoice number display
 
 All other locations (dashboard, invoice views, guest views, etc.) were already using proper encoding.
 
@@ -158,32 +170,49 @@ All payloads are properly neutralized and displayed as harmless text.
 
 ## Code Changes Required
 
-**Files Modified:** 1
+**Files Modified:** 2
 - `application/modules/payments/views/form.php` (2 lines changed)
+- `application/modules/invoices/views/view.php` (1 line changed)
 
 ### Changes Made
 
-#### Before (Line 57):
+#### Payment Form (Lines 57, 64)
+
+##### Before (Line 57):
 ```php
 <?php echo $invoice->invoice_number . ' - ' . htmlsc(format_client($invoice)) . ' - ' . format_currency($invoice->invoice_balance); ?>
 ```
 
-#### After (Line 57):
+##### After (Line 57):
 ```php
 <?php echo htmlsc($invoice->invoice_number) . ' - ' . htmlsc(format_client($invoice)) . ' - ' . format_currency($invoice->invoice_balance); ?>
 ```
 
-#### Before (Line 64):
+##### Before (Line 64):
 ```php
 <?php echo $payment->invoice_number . ' - ' . htmlsc(format_client($payment)) . ' - ' . format_currency($payment->invoice_balance); ?>
 ```
 
-#### After (Line 64):
+##### After (Line 64):
 ```php
 <?php echo htmlsc($payment->invoice_number) . ' - ' . htmlsc(format_client($payment)) . ' - ' . format_currency($payment->invoice_balance); ?>
 ```
 
 **Summary:** Added `htmlsc()` wrapper to properly escape `invoice_number` and `payment->invoice_number` fields in the payment form dropdown.
+
+#### Credit Invoice View (Line 448)
+
+##### Before:
+```php
+$view_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . $parent_invoice_number);
+```
+
+##### After:
+```php
+$view_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . htmlsc($parent_invoice_number));
+```
+
+**Summary:** Added `htmlsc()` wrapper to properly escape `$parent_invoice_number` in the credit invoice warning message, preventing XSS when viewing credit invoices.
 
 ## Documentation Added
 
@@ -255,13 +284,20 @@ All reported Stored XSS vulnerabilities have been **fully mitigated** through a 
 4. ✅ Verified protection against common XSS payloads
 5. ✅ **Fixed 2 locations** in payment form that were missing encoding
 
-**Total Vulnerabilities Reported:** 3 attack vectors  
+### Invoice Group Identifier Format
+1. ✅ Automatic input sanitization on all POST requests
+2. ✅ Proper output encoding at most display locations
+3. ✅ XSS attempt detection and logging
+4. ✅ Verified protection against common XSS payloads
+5. ✅ **Fixed 1 location** in credit invoice view that was missing encoding
+
+**Total Vulnerabilities Reported:** 4 attack vectors  
 **Already Protected:** Most locations (18+ files)  
-**Code Changes Required:** 2 lines in 1 file  
+**Code Changes Required:** 3 lines in 2 files  
 **Security Status:** VERIFIED SECURE ✅
 
 ---
 
 **Audited by:** GitHub Copilot Security Agent  
-**Date:** 2026-02-04  
+**Date:** 2026-02-04, 2026-02-13  
 **Status:** VERIFIED SECURE ✅
