@@ -71,10 +71,10 @@ if ($logo) {
                         <h4><?php _htmlsc($invoice->user_name); ?></h4>
                         <p><?php
                             if ($invoice->user_vat_id) {
-                                echo trans('vat_id_short') . ': ' . $invoice->user_vat_id . '<br>';
+                                echo trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '<br>';
                             }
                             if ($invoice->user_tax_code) {
-                                echo trans('tax_code_short') . ': ' . $invoice->user_tax_code . '<br>';
+                                echo trans('tax_code_short') . ': ' . htmlsc($invoice->user_tax_code) . '<br>';
                             }
                             if ($invoice->user_address_1) {
                                 echo htmlsc($invoice->user_address_1) . '<br>';
@@ -109,11 +109,11 @@ if ($logo) {
                         <p><?php
                             if ($invoice->client_vat_id) {
                                 _trans('vat_id_short');
-                                echo ': ' . $invoice->client_vat_id . '<br>';
+                                echo ': ' . htmlsc($invoice->client_vat_id) . '<br>';
                             }
                             if ($invoice->client_tax_code) {
                                 _trans('tax_code_short');
-                                echo ': ' . $invoice->client_tax_code . '<br>';
+                                echo ': ' . htmlsc($invoice->client_tax_code) . '<br>';
                             }
                             if ($invoice->client_address_1) {
                                 echo htmlsc($invoice->client_address_1) . '<br>';

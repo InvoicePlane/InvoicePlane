@@ -75,10 +75,10 @@
                     <h4><?php _htmlsc(format_client($quote)); ?></h4>
                     <p><?php
                         if ($quote->user_vat_id) {
-                            echo lang('vat_id_short') . ': ' . $quote->user_vat_id . '<br>';
+                            echo lang('vat_id_short') . ': ' . htmlsc($quote->user_vat_id) . '<br>';
                         }
                         if ($quote->user_tax_code) {
-                            echo lang('tax_code_short') . ': ' . $quote->user_tax_code . '<br>';
+                            echo lang('tax_code_short') . ': ' . htmlsc($quote->user_tax_code) . '<br>';
                         }
                         if ($quote->user_address_1) {
                             echo htmlsc($quote->user_address_1) . '<br>';
@@ -113,11 +113,11 @@
                     <p><?php
                         if ($quote->client_vat_id) {
                             _trans('vat_id_short');
-                            echo ': ' . $quote->client_vat_id . '<br>';
+                            echo ': ' . htmlsc($quote->client_vat_id) . '<br>';
                         }
                         if ($quote->client_tax_code) {
                             _trans('tax_code_short');
-                            echo ': ' . $quote->client_tax_code . '<br>';
+                            echo ': ' . htmlsc($quote->client_tax_code) . '<br>';
                         }
                         if ($quote->client_address_1) {
                             echo htmlsc($quote->client_address_1) . '<br>';
