@@ -357,7 +357,7 @@ if ($invoice->is_read_only == 1) {
                 <div class="col-xs-12 col-md-8">
                     <div class="col-md-6">
                         <h2>
-                            <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo format_client($invoice) ?></a>
+                            <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php _htmlsc(format_client($invoice)); ?></a>
 <?php
 if ($invoice->invoice_status_id == 1) {
 ?>
