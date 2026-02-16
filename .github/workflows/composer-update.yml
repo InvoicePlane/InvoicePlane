@@ -51,7 +51,9 @@ jobs:
         id: audit
         run: |
           composer audit --format=json > audit-report.json || true
-          if [ -s audit-report.json ]; then
+          # Parse JSON to check advisories array length
+          ADVISORY_COUNT=$(jq '.advisories | length' audit-report.json 2>/dev/null || echo "0")
+          if [ "$ADVISORY_COUNT" -gt 0 ]; then
             echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
           else
             echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
@@ -77,12 +79,14 @@ jobs:
       - name: Check for changes
         id: check-changes
         run: |
-          if git diff --quiet composer.lock; then
+          # Check both composer.lock and composer.json separately
+          # Both conditions must be true (no changes) for changes_detected to be false
+          # This ensures we detect changes to either file
+          if git diff --quiet composer.lock && git diff --quiet composer.json; then
             echo "changes_detected=false" >> $GITHUB_OUTPUT
           else
             echo "changes_detected=true" >> $GITHUB_OUTPUT
           fi
-
       - name: Run smoke tests
         if: steps.check-changes.outputs.changes_detected == 'true'
         run: |

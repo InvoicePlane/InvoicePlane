@@ -446,7 +446,7 @@ if ($client->client_surname != '') { // Client is not a company
 ?>
                                 <tr>
                                     <th><?php _trans('sumex_ssn'); ?></th>
-                                    <td><?php echo format_avs($client->client_avs) ?></td>
+                                    <td><?php _htmlsc(format_avs($client->client_avs)); ?></td>
                                 </tr>
 
                                 <tr>

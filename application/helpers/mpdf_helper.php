@@ -82,6 +82,10 @@ function pdf_create(
 
     //Set the default footer that shall always be available for mPDF
     $mpdf->DefHTMLFooterByName('defaultFooter', '');
+    
+    // Define html_footer to prevent "Undefined array key 'footer'" error in PHP 8.3+
+    // This footer name is referenced by the CSS @page directive in templates
+    $mpdf->DefHTMLFooterByName('html_footer', '');
 
     // Set the footer if voucher is invoice and if set in settings
     if ($isInvoice && ! empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
@@ -89,6 +93,7 @@ function pdf_create(
         $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div><div><p align="center">' . str_replace('_', ' ', $filename) . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
         $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
+        $mpdf->DefHTMLFooterByName('html_footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
     }
 
     // Set the footer if voucher is quote and if set in settings
@@ -97,6 +102,7 @@ function pdf_create(
         $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div><div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
         $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
+        $mpdf->DefHTMLFooterByName('html_footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
     }
 
     // Watermark (eInvoicing++ PDFA and PDFX do not permit transparency, so mPDF does not allow Watermarks!)
