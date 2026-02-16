@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4956672e03102b2848d1756740b7342d",
+    "content-hash": "fc44706b9062e361d8fbd269cee1efab",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -59,6 +59,46 @@
                 "source": "https://github.com/Bacon/BaconQrCode/tree/2.0.8"
             },
             "time": "2022-12-07T17:46:57+00:00"
+        },
+        {
+            "name": "codeigniter/framework",
+            "version": "3.1.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bcit-ci/CodeIgniter.git",
+                "reference": "bcb17eb8ba53a85de154439d0ab8ff1bed047bc9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/bcb17eb8ba53a85de154439d0ab8ff1bed047bc9",
+                "reference": "bcb17eb8ba53a85de154439d0ab8ff1bed047bc9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.7"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "1.6.*",
+                "phpunit/phpunit": "4.* || 5.* || 9.*"
+            },
+            "suggest": {
+                "paragonie/random_compat": "Provides better randomness in PHP 5.x"
+            },
+            "type": "project",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "The CodeIgniter framework",
+            "homepage": "https://codeigniter.com",
+            "support": {
+                "forum": "http://forum.codeigniter.com/",
+                "issues": "https://github.com/bcit-ci/CodeIgniter/issues",
+                "slack": "https://codeigniterchat.slack.com",
+                "source": "https://github.com/bcit-ci/CodeIgniter",
+                "wiki": "https://github.com/bcit-ci/CodeIgniter/wiki"
+            },
+            "time": "2022-03-03T13:21:49+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -1106,43 +1146,6 @@
             "time": "2025-12-27T19:41:33+00:00"
         },
         {
-            "name": "pocketarc/codeigniter",
-            "version": "3.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pocketarc/codeigniter.git",
-                "reference": "d310726565c12ba99b8037e8fb231ed739258e6e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pocketarc/codeigniter/zipball/d310726565c12ba99b8037e8fb231ed739258e6e",
-                "reference": "d310726565c12ba99b8037e8fb231ed739258e6e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.8"
-            },
-            "require-dev": {
-                "mikey179/vfsstream": "1.6.*",
-                "phpunit/phpunit": "4.* || 5.* || 9.*"
-            },
-            "suggest": {
-                "paragonie/random_compat": "Provides better randomness in PHP 5.x"
-            },
-            "type": "project",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "The CodeIgniter framework",
-            "homepage": "https://github.com/pocketarc/codeigniter",
-            "support": {
-                "issues": "https://github.com/pocketarc/codeigniter/issues",
-                "source": "https://github.com/pocketarc/codeigniter"
-            },
-            "time": "2024-10-29T12:34:00+00:00"
-        },
-        {
             "name": "psr/http-client",
             "version": "1.0.3",
             "source": {
@@ -2095,16 +2098,16 @@
         },
         {
             "name": "laravel/pint",
-            "version": "v1.27.1",
+            "version": "v1.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "54cca2de13790570c7b6f0f94f37896bee4abcb5"
+                "reference": "53072e8ea22213a7ed168a8a15b96fbb8b82d44b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/54cca2de13790570c7b6f0f94f37896bee4abcb5",
-                "reference": "54cca2de13790570c7b6f0f94f37896bee4abcb5",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/53072e8ea22213a7ed168a8a15b96fbb8b82d44b",
+                "reference": "53072e8ea22213a7ed168a8a15b96fbb8b82d44b",
                 "shasum": ""
             },
             "require": {
@@ -2112,16 +2115,16 @@
                 "ext-mbstring": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "php": "^8.2.0"
+                "php": "^8.1.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.93.1",
-                "illuminate/view": "^12.51.0",
-                "larastan/larastan": "^3.9.2",
-                "laravel-zero/framework": "^12.0.5",
+                "friendsofphp/php-cs-fixer": "^3.66.0",
+                "illuminate/view": "^10.48.25",
+                "larastan/larastan": "^2.9.12",
+                "laravel-zero/framework": "^10.48.25",
                 "mockery/mockery": "^1.6.12",
-                "nunomaduro/termwind": "^2.3.3",
-                "pestphp/pest": "^3.8.5"
+                "nunomaduro/termwind": "^1.17.0",
+                "pestphp/pest": "^2.36.0"
             },
             "bin": [
                 "builds/pint"
@@ -2147,7 +2150,6 @@
             "description": "An opinionated code formatter for PHP.",
             "homepage": "https://laravel.com",
             "keywords": [
-                "dev",
                 "format",
                 "formatter",
                 "lint",
@@ -2158,7 +2160,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2026-02-10T20:00:20+00:00"
+            "time": "2025-01-14T16:20:53+00:00"
         },
         {
             "name": "phpstan/phpstan",

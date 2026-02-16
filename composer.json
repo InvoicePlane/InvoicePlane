@@ -17,7 +17,7 @@
         "mpdf/mpdf": "^8.2.7",
         "paragonie/random_compat": "^2.0.21",
         "phpmailer/phpmailer": "^6.12",
-        "pocketarc/codeigniter": "3.3",
+        "codeigniter/framework": "3.1.13",
         "setasign/fpdf": "^1.8.6",
         "setasign/fpdi": "^2.6.4",
         "smhg/sepa-qr-data": "^1.2",
@@ -26,7 +26,7 @@
     },
     "require-dev": {
         "filp/whoops": "^2.18.4",
-        "laravel/pint": "^1.27.1",
+        "laravel/pint": ">=1.20",
         "squizlabs/php_codesniffer": "^3.13.5",
         "rector/rector": "^2.3.6",
         "symfony/var-dumper": "^6.4.32"
