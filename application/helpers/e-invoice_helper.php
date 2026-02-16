@@ -102,6 +102,12 @@ function get_xml_template_files(): array
 
     foreach ($xml_config_files as $key => $xml_config_file) {
         $xml_config_files[$key] = str_replace('.php', '', $xml_config_file);
+        
+        // Security: Validate XML config ID before including
+        if (!is_valid_xml_config_id($xml_config_files[$key])) {
+            log_message('error', trans('log_invalid_xml_config_id') . ': ' . $xml_config_files[$key]);
+            continue;
+        }
 
         // Security: Validate XML config ID before including
         if ( ! is_valid_xml_config_id($xml_config_files[$key])) {
