@@ -33,9 +33,7 @@ class MY_Form_validation extends CI_Form_validation
 
     public function run($config = null, &$data = null)
     {
-        if (is_object($config)) {
-            $this->CI = &$config;
-        }
+        (is_object($config)) && $this->CI = &$config;
 
         return parent::run($data);
     }
