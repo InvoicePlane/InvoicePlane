@@ -13,12 +13,12 @@
             <h3><i class="fa fa-file-pdf-o"></i><?php echo '  ' . trans('quote') . ': #' . $quote->quote_number ; ?></h3>            
         </div>
         <div class="modal-body" style="padding: 0; margin: 0; background-color: #ededf0;">
-            <object 
-                data="<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>#view=FitH&zoom=page-width" 
-                width="100%" 
-                height="70%" 
-                scrolling="no" 
-                style="scrollable:false; overflow:hidden; border: none; height: 70vh; content: ''; clear: both; display: table;"
+            <object
+                data="<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>#view=FitH&zoom=page-width"
+                type="application/pdf"
+                width="100%"
+                height="70%"
+                style="overflow:hidden; border: none; height: 70vh; display: table;"
             >
             </object>
         </div>
