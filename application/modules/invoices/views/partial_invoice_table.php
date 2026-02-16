@@ -1,8 +1,9 @@
 <script>
     $(function () {
-				$(document).on('click', '#invoice_preview_pdf', function () {
+				$(document).on('click', '.invoice_preview_pdf', function () {
             var invoice_id = $(this).data('invoice-id');
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_preview_pdf'); ?>", {invoice_id: invoice_id});
+        });
         });
     });
 </script>
