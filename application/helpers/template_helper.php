@@ -209,6 +209,7 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf
 {
     // Load necessary dependencies
     $CI = & get_instance();
+    $CI->load->helper('file_security');
     $CI->load->model('invoices/mdl_templates');
     
     // Get the list of valid templates for the requested type and scope
@@ -217,14 +218,17 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf
     } elseif ($type === 'quote') {
         $valid_templates = $CI->mdl_templates->get_quote_templates($scope);
     } else {
-        log_message('error', 'Template validation failed: Invalid template type: ' . $type);
+        // Security: Sanitize type parameter before logging to prevent log injection
+        $safe_type = sanitize_for_logging((string) $type);
+        log_message('error', 'Template validation failed: Invalid template type: ' . $safe_type);
         return false;
     }
     
     // Security: Verify the template exists in the allowed list
     // Note: get_*_templates() returns an array of template names without .php extension
     if (!in_array($template_name, $valid_templates, true)) {
-        $safe_template_name = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $template_name);
+        // Security: Sanitize template name before logging to prevent log injection
+        $safe_template_name = sanitize_for_logging((string) $template_name);
         log_message('error', 'Template validation failed: Template not in allowed list: ' . $safe_template_name);
         return false;
     }
