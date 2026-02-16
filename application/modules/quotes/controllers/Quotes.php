@@ -200,11 +200,16 @@ class Quotes extends Admin_Controller
      */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
-        $this->load->helper('pdf');
+        $this->load->helper(['pdf', 'template']);
 
         if (get_setting('mark_quotes_sent_pdf') == 1) {
             $this->mdl_quotes->generate_quote_number_if_applicable($quote_id);
             $this->mdl_quotes->mark_sent($quote_id);
+        }
+
+        // Security: Validate PDF template to prevent LFI
+        if ($quote_template) {
+            $quote_template = validate_pdf_template($quote_template, 'quote', 'pdf_quote_template');
         }
 
         generate_quote_pdf($quote_id, $stream, $quote_template);
