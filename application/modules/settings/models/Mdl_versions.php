@@ -38,12 +38,12 @@ class Mdl_Versions extends Response_Model
     public function get_current_version()
     {
         $result = $this->limit(1)->get();
-        
+
         // Check if any rows were returned to avoid null dereference
         if ($result->query->num_rows() === 0) {
-            return null;
+            return;
         }
-        
+
         $current_version = $result->query->row()->version_file;
 
         return str_replace('.sql', '', mb_substr($current_version, mb_strpos($current_version, '_') + 1));

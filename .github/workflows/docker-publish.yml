@@ -1,8 +1,7 @@
 name: Deploy container to ghcr.io
 
 on:
-  push:
-    tags: [ 'v*.*.*' ]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io

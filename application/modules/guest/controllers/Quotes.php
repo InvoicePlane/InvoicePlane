@@ -118,7 +118,7 @@ class Quotes extends Guest_Controller
      */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
-        $this->load->helper('pdf');
+        $this->load->helper(['pdf', 'template']);
 
         $this->mdl_quotes->mark_viewed($quote_id);
 
@@ -126,6 +126,11 @@ class Quotes extends Guest_Controller
 
         if ( ! $quote) {
             show_404();
+        }
+
+        // Security: Validate PDF template to prevent LFI
+        if ($quote_template) {
+            $quote_template = validate_pdf_template($quote_template, 'quote', 'pdf_quote_template');
         }
 
         generate_quote_pdf($quote_id, $stream, $quote_template);

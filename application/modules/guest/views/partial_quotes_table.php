@@ -20,7 +20,7 @@ foreach ($quotes as $quote) {
                 <td>
                     <a href="<?php echo site_url('guest/quotes/view/' . $quote->quote_id); ?>"
                        title="<?php _trans('edit'); ?>">
-                        <?php echo $quote->quote_number; ?>
+                        <?php echo htmlsc($quote->quote_number); ?>
                     </a>
 <?php
     if ($quote->quote_status_id == 4) {

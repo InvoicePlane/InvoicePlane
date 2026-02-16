@@ -68,22 +68,31 @@ class View extends Base_Controller
         $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
 
         $data = [
-            'invoice'             => $invoice,
-            'items'               => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_tax_rates'   => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_url_key'     => $invoice_url_key,
-            'flash_message'       => $this->session->flashdata('flash_message'),
-            'payment_method'      => $payment_method,
-            'is_overdue'          => $is_overdue,
-            'attachments'         => $attachments,
-            'custom_fields'       => $custom_fields,
-            'legacy_calculation'  => config_item('legacy_calculation'),
+            'invoice'            => $invoice,
+            'items'              => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_tax_rates'  => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_url_key'    => $invoice_url_key,
+            'flash_message'      => $this->session->flashdata('flash_message'),
+            'payment_method'     => $payment_method,
+            'is_overdue'         => $is_overdue,
+            'attachments'        => $attachments,
+            'custom_fields'      => $custom_fields,
+            'legacy_calculation' => config_item('legacy_calculation'),
         ];
 
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
+        // Security: Validate template name to prevent Local File Inclusion
+        $requested_template = get_setting('public_invoice_template');
+        $template_name = validate_template_name($requested_template, 'invoice', 'public');
+        if ($template_name === false) {
+            // Sanitize template name for logging to prevent log injection / poisoning
+            $safe_template_for_log = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
+            log_message('error', 'Invalid invoice template setting: ' . $safe_template_for_log . ', using default');
+            $template_name = 'InvoicePlane_Web'; // Fallback to default template
+        }
 
-        $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
+        $this->load->view('invoice_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
@@ -99,8 +108,11 @@ class View extends Base_Controller
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
-            if ( ! $invoice_template) {
-                $this->load->helper('template');
+            // Security: Validate PDF template to prevent LFI
+            $this->load->helper('template');
+            if ($invoice_template) {
+                $invoice_template = validate_pdf_template($invoice_template, 'invoice');
+            } else {
                 $invoice_template = select_pdf_invoice_template($invoice);
             }
 
@@ -189,7 +201,18 @@ class View extends Base_Controller
         ];
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
+        // Security: Validate template name to prevent Local File Inclusion
+        $this->load->helper('template');
+        $requested_template = get_setting('public_quote_template');
+        $template_name = validate_template_name($requested_template, 'quote', 'public');
+        if ($template_name === false) {
+            // Security: sanitize template name before logging to prevent log injection
+            $safe_requested_template = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
+            log_message('error', 'Invalid quote template setting: ' . $safe_requested_template . ', using default');
+            $template_name = 'InvoicePlane_Web'; // Fallback to default template
+        }
+
+        $this->load->view('quote_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
@@ -206,9 +229,9 @@ class View extends Base_Controller
             show_404();
         }
 
-        if ( ! $quote_template) {
-            $quote_template = get_setting('pdf_quote_template');
-        }
+        // Security: Validate PDF template to prevent LFI
+        $this->load->helper('template');
+        $quote_template = validate_pdf_template($quote_template, 'quote', 'pdf_quote_template');
 
         $this->load->helper('pdf');
 
@@ -251,7 +274,7 @@ class View extends Base_Controller
     private function get_attachments(string $url_key): array
     {
         // Security: Use query binding to prevent SQL injection
-        $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?", [$url_key]);
+        $query = $this->db->query('SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?', [$url_key]);
 
         $names = [];
 
@@ -274,14 +297,17 @@ class View extends Base_Controller
      * have a discount.
      *
      * @param array $items
-     * @return boolean
+     *
+     * @return bool
      */
-    private function has_discounts(array $items) : bool {
+    private function has_discounts(array $items): bool
+    {
         foreach ($items as $item) {
             if ($item->item_discount > 0) {
                 return true;
             }
         }
+
         return false;
     }
 }

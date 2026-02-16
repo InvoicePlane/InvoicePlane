@@ -10,7 +10,7 @@ if ($quote_tax_rates) {
 }
 ?>
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php _trans('quote'); ?> #<?php echo $quote->quote_number; ?></h1>
+    <h1 class="headerbar-title"><?php _trans('quote'); ?> #<?php echo htmlsc($quote->quote_number); ?></h1>
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
@@ -89,7 +89,7 @@ if ($quote->client_email) {
                 <table class="table table-bordered">
                     <tr>
                         <td><?php _trans('quote'); ?> #</td>
-                        <td><?php echo $quote->quote_number; ?></td>
+                        <td><?php echo htmlsc($quote->quote_number); ?></td>
                     </tr>
                     <tr>
                         <td><?php _trans('date'); ?></td>
@@ -164,7 +164,7 @@ foreach ($items as $i => $item) {
                     <td>
                         <span class="pull-left"><?php _trans('tax'); ?></span>
                         <span class="pull-right amount"><?php
-                            echo $item->item_tax_rate_percent ? $item->item_tax_rate_name . ' (' . format_amount($item->item_tax_rate_percent) . '%): ' : '';
+                            echo $item->item_tax_rate_percent ? htmlsc($item->item_tax_rate_name) . ' (' . format_amount($item->item_tax_rate_percent) . '%): ' : '';
                             echo format_currency($item->item_tax_total);
                         ?></span>
                     </td>

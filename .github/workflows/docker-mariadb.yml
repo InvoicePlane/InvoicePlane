@@ -1,14 +1,7 @@
 name: Build & Push MariaDB Docker Image
 
 on:
-  push:
-    branches:
-      - development
-    paths:
-      - 'resources/docker/mariadb/Dockerfile'
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
 
 permissions:
   contents: read

@@ -204,7 +204,7 @@ echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have
 <div id="headerbar">
     <h1 class="headerbar-title">
         <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing'); ?>: <?php _htmlsc(PHP_EOL . format_user($quote->user_id)); ?>">
-            <?php echo trans('quote') . ' ' . ($quote->quote_number ? '#' . $quote->quote_number : trans('id') . ': ' . $quote->quote_id); ?>
+            <?php echo trans('quote') . ' ' . ($quote->quote_number ? '#' . htmlsc($quote->quote_number) : trans('id') . ': ' . $quote->quote_id); ?>
         </span>
 <?php
 // Nb Admins > 1 only
@@ -379,7 +379,7 @@ if ($einvoice->name) {
                                     <label for="quote_number"><?php _trans('quote'); ?> #</label>
                                     <input type="text" id="quote_number" class="form-control"
 <?php if ($quote->quote_number) : ?>
-                                           value="<?php echo $quote->quote_number; ?>"
+                                           value="<?php echo htmlsc($quote->quote_number); ?>"
 <?php else : ?>
                                            placeholder="<?php _trans('not_set'); ?>"
 <?php endif; ?>

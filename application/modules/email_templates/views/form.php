@@ -177,7 +177,7 @@ foreach ($quote_templates as $template) {
                                     </span>
                                 </div>
                                 <div class="panel-body">
-                                    <iframe id="email-template-preview"></iframe>
+                                    <iframe id="email-template-preview" sandbox="allow-same-origin"></iframe>
                                 </div>
                             </div>
 
@@ -200,7 +200,7 @@ foreach ($quote_templates as $template) {
 
 <script>
     $(function () {
-        var email_template_type = "<?php echo $this->mdl_email_templates->form_value('email_template_type'); ?>";
+        var email_template_type = <?php echo json_encode($this->mdl_email_templates->form_value('email_template_type'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         var $email_template_type_options = $("[name=email_template_type]");
 
         $email_template_type_options.click(function () {

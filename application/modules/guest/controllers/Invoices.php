@@ -122,7 +122,12 @@ class Invoices extends Guest_Controller
 
         $this->mdl_invoices->mark_viewed($invoice_id);
 
-        $this->load->helper('pdf');
+        $this->load->helper(['pdf', 'template']);
+
+        // Security: Validate PDF template to prevent LFI
+        if ($invoice_template) {
+            $invoice_template = validate_pdf_template($invoice_template, 'invoice');
+        }
 
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, true);
     }

@@ -32,7 +32,7 @@ foreach ($quotes as $quote) {
                 <td>
                     <a href="<?php echo site_url('quotes/view/' . $quote->quote_id); ?>"
                        title="<?php _trans('edit'); ?>">
-                        <?php echo $quote->quote_number ? $quote->quote_number : $quote->quote_id; ?>
+                        <?php echo $quote->quote_number ? htmlsc($quote->quote_number) : $quote->quote_id; ?>
                     </a>
                 </td>
                 <td>
