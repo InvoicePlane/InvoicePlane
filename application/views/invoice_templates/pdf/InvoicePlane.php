@@ -15,7 +15,7 @@ $text_class_balance = '';
 $watermark          = '';
 $stamp              = '';
 $show_qrcode        = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
-$invoice_mode       ??= 'default'; // from template - overdue / paid.php
+$invoice_mode ??= 'default'; // from template - overdue / paid.php
 
 switch ($invoice_mode) {
     case 'overdue':
@@ -333,19 +333,19 @@ if ($show_qrcode) {
             <td>
                 <div>
                     <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
-                    <?php echo $invoice->user_company ?: get_setting('qr_code_recipient'); ?>
+                    <?php _htmlsc($invoice->user_company ?: get_setting('qr_code_recipient')); ?>
                 </div>
                 <div>
                     <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
-                    <?php echo $invoice->user_iban ?: get_setting('qr_code_iban'); ?>
+                    <?php _htmlsc($invoice->user_iban ?: get_setting('qr_code_iban')); ?>
                 </div>
                 <div>
                     <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
-                    <?php echo $invoice->user_bic ?: get_setting('qr_code_bic'); ?>
+                    <?php _htmlsc($invoice->user_bic ?: get_setting('qr_code_bic')); ?>
                 </div>
                 <div>
                     <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
-                    <?php echo parse_template($invoice, $invoice->user_remittance_text ?: get_setting('qr_code_remittance_text')); ?>
+                    <?php _htmlsc(parse_template($invoice, $invoice->user_remittance_text ?: get_setting('qr_code_remittance_text'))); ?>
                 </div>
             </td>
             <td class="text-right">

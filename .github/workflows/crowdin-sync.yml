@@ -1,0 +1,105 @@
+name: Crowdin Translation Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        type: choice
+        options:
+          - upload-sources
+          - download-translations
+          - sync-bidirectional
+        default: 'download-translations'
+  schedule:
+    # Run weekly on Sundays at 2:00 AM UTC
+    - cron: '0 2 * * 0'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Note: This workflow requires a Personal Access Token (PAT) to create pull requests.
+# The default GITHUB_TOKEN has restricted permissions and cannot create PRs that trigger other workflows.
+# 
+# To configure the required secret:
+# 1. Create a Personal Access Token (classic) with 'repo' and 'workflow' scopes
+#    at https://github.com/settings/tokens
+# 2. Add the token as a repository secret named 'PAT_TOKEN'
+#    at https://github.com/OWNER/REPO/settings/secrets/actions
+#
+# See: https://github.com/crowdin/github-action
+
+jobs:
+  crowdin-sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Upload sources to Crowdin
+        if: github.event.inputs.action == 'upload-sources' || github.event.inputs.action == 'sync-bidirectional'
+        uses: crowdin/github-action@v2
+        with:
+          upload_sources: true
+          upload_translations: false
+          download_translations: false
+          localization_branch_name: master
+          config: 'crowdin.yml'
+          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
+          token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Download translations from Crowdin
+        if: github.event.inputs.action == 'download-translations' || github.event.inputs.action == 'sync-bidirectional' || github.event_name == 'schedule'
+        uses: crowdin/github-action@v2
+        with:
+          upload_sources: false
+          upload_translations: false
+          download_translations: true
+          localization_branch_name: master
+          create_pull_request: true
+          pull_request_title: 'chore(i18n): update translations from Crowdin'
+          pull_request_body: |
+            ## Translation Update
+            
+            This PR updates translations downloaded from Crowdin.
+            
+            **Triggered by:** ${{ github.event_name }}
+            **Action:** ${{ github.event.inputs.action || 'download-translations' }}
+            
+            ### Review Checklist
+            
+            - [ ] Review translation changes for accuracy
+            - [ ] Check for any formatting issues
+            - [ ] Verify no code is affected
+            - [ ] Test translations in UI if possible
+            
+            ---
+            
+            *This PR was automatically created by the Crowdin Sync workflow.*
+          pull_request_labels: |
+            i18n
+            translations
+            crowdin
+            automated-pr
+          config: 'crowdin.yml'
+          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
+          token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+      - name: Workflow summary
+        run: |
+          echo "## Crowdin Sync Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** ${{ github.event.inputs.action || 'download-translations' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Triggered by:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "- Review the created pull request (if any)" >> $GITHUB_STEP_SUMMARY
+          echo "- Verify translation changes" >> $GITHUB_STEP_SUMMARY
+          echo "- Merge when ready" >> $GITHUB_STEP_SUMMARY

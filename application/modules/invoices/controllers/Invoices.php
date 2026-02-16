@@ -22,7 +22,7 @@ class Invoices extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->load->helper('file_security');
         $this->load->model('mdl_invoices');
     }
@@ -95,17 +95,18 @@ class Invoices extends Admin_Controller
         // Security: Use comprehensive file security validation
         // Note: Removed urldecode() - CodeIgniter already handles this
         $validation = validate_file_access($invoice, UPLOADS_ARCHIVE_FOLDER);
-        
-        if (!$validation['valid']) {
+
+        if ( ! $validation['valid']) {
             $error = $validation['error'] ?? 'unknown';
             log_message('error', 'invoices: Invalid file access attempt during download (error: ' . $error . ', hash: ' . $validation['hash'] . ')');
             show_404();
+
             return;
         }
 
-        $filePath = $validation['path'];
+        $filePath     = $validation['path'];
         $safeFilename = $validation['basename'];
-        
+
         // Security: Sanitize filename for header
         $sanitizedFilename = sanitize_filename_for_header($safeFilename);
 
@@ -252,11 +253,16 @@ class Invoices extends Admin_Controller
      */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null): void
     {
-        $this->load->helper('pdf');
+        $this->load->helper(['pdf', 'template']);
 
         if (get_setting('mark_invoices_sent_pdf') == 1) {
             $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
             $this->mdl_invoices->mark_sent($invoice_id);
+        }
+
+        // Security: Validate PDF template to prevent LFI
+        if ($invoice_template) {
+            $invoice_template = validate_pdf_template($invoice_template, 'invoice');
         }
 
         generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
