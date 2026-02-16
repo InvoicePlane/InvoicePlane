@@ -179,7 +179,9 @@ class Upload extends Admin_Controller
             || str_contains($filename, '/')
             || str_contains($filename, '\\')
             || str_contains($filename, "\0")) {
-            log_message('error', 'Path traversal attempt detected in filename: ' . $filename);
+            // Security: Use hash to prevent log poisoning
+            $filenameHash = hash_for_logging($filename);
+            log_message('error', 'Path traversal attempt detected in filename (hash: ' . $filenameHash . ')');
 
             return '';
         }

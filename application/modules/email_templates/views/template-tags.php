@@ -80,7 +80,7 @@ if ($custom_fields['ip_client_custom']) {
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_client_custom'] as $custom) { ?>
                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
-                            <?php echo $custom->custom_field_label . ' (ID ' . $custom->custom_field_id . ')'; ?>
+                            <?php echo htmlsc($custom->custom_field_label) . ' (ID ' . $custom->custom_field_id . ')'; ?>
                         </option>
                     <?php } ?>
                 </optgroup>
@@ -176,7 +176,7 @@ if ($custom_fields['ip_user_custom']) {
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_user_custom'] as $custom) { ?>
                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
-                            <?php echo $custom->custom_field_label . ' (ID ' . $custom->custom_field_id . ')'; ?>
+                            <?php echo htmlsc($custom->custom_field_label) . ' (ID ' . $custom->custom_field_id . ')'; ?>
                         </option>
                     <?php } ?>
                 </optgroup>
@@ -229,7 +229,7 @@ if ($custom_fields['ip_quote_custom']) {
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_quote_custom'] as $custom) { ?>
                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
-                            <?php echo $custom->custom_field_label . ' (ID ' . $custom->custom_field_id . ')'; ?>
+                            <?php echo htmlsc($custom->custom_field_label) . ' (ID ' . $custom->custom_field_id . ')'; ?>
                         </option>
                     <?php } ?>
                 </optgroup>

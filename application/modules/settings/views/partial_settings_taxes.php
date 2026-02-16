@@ -20,7 +20,7 @@
 <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                     <?php check_select(get_setting('default_invoice_tax_rate'), $tax_rate->tax_rate_id); ?>>
-                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
+                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                                 </option>
 <?php } ?>
                             </select>
@@ -36,7 +36,7 @@
 <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                     <?php check_select(get_setting('default_item_tax_rate'), $tax_rate->tax_rate_id); ?>>
-                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
+                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                                 </option>
 <?php } ?>
                             </select>

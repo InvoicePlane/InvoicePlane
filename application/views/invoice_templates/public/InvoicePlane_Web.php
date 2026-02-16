@@ -7,7 +7,7 @@
 
     <title>
         <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
-        - <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number; ?>
+        - <?php _trans('invoice'); ?> <?php echo htmlsc($invoice->invoice_number); ?>
     </title>
 
     <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
@@ -21,7 +21,7 @@
 
             <div class="webpreview-header">
 
-                <h2><?php _trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
+                <h2><?php _trans('invoice'); ?>&nbsp;<?php echo htmlsc($invoice->invoice_number); ?></h2>
 
                 <div class="btn-group">
 <?php
@@ -71,10 +71,10 @@ if ($logo) {
                         <h4><?php _htmlsc($invoice->user_name); ?></h4>
                         <p><?php
                             if ($invoice->user_vat_id) {
-                                echo trans('vat_id_short') . ': ' . $invoice->user_vat_id . '<br>';
+                                echo trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '<br>';
                             }
                             if ($invoice->user_tax_code) {
-                                echo trans('tax_code_short') . ': ' . $invoice->user_tax_code . '<br>';
+                                echo trans('tax_code_short') . ': ' . htmlsc($invoice->user_tax_code) . '<br>';
                             }
                             if ($invoice->user_address_1) {
                                 echo htmlsc($invoice->user_address_1) . '<br>';
@@ -109,11 +109,11 @@ if ($logo) {
                         <p><?php
                             if ($invoice->client_vat_id) {
                                 _trans('vat_id_short');
-                                echo ': ' . $invoice->client_vat_id . '<br>';
+                                echo ': ' . htmlsc($invoice->client_vat_id) . '<br>';
                             }
                             if ($invoice->client_tax_code) {
                                 _trans('tax_code_short');
-                                echo ': ' . $invoice->client_tax_code . '<br>';
+                                echo ': ' . htmlsc($invoice->client_tax_code) . '<br>';
                             }
                             if ($invoice->client_address_1) {
                                 echo htmlsc($invoice->client_address_1) . '<br>';
@@ -332,19 +332,19 @@ if (get_setting('qr_code') && $invoice->invoice_balance > 0) {
                             <td>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
-                                    <?php echo $invoice->user_company ?: get_setting('qr_code_recipient'); ?>
+                                    <?php _htmlsc($invoice->user_company ?: get_setting('qr_code_recipient')); ?>
                                 </div>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
-                                    <?php echo $invoice->user_iban ?: get_setting('qr_code_iban'); ?>
+                                    <?php _htmlsc($invoice->user_iban ?: get_setting('qr_code_iban')); ?>
                                 </div>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
-                                    <?php echo $invoice->user_bic ?: get_setting('qr_code_bic'); ?>
+                                    <?php _htmlsc($invoice->user_bic ?: get_setting('qr_code_bic')); ?>
                                 </div>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
-                                    <?php echo parse_template($invoice, $invoice->user_remittance_text ?: get_setting('qr_code_remittance_text')); ?>
+                                    <?php _htmlsc(parse_template($invoice, $invoice->user_remittance_text ?: get_setting('qr_code_remittance_text'))); ?>
                                 </div>
                             </td>
                             <td class="amount">

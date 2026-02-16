@@ -82,7 +82,17 @@ class View extends Base_Controller
 
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
+        // Security: Validate template name to prevent Local File Inclusion
+        $requested_template = get_setting('public_invoice_template');
+        $template_name = validate_template_name($requested_template, 'invoice', 'public');
+        if ($template_name === false) {
+            // Sanitize template name for logging to prevent log injection / poisoning
+            $safe_template_for_log = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
+            log_message('error', 'Invalid invoice template setting: ' . $safe_template_for_log . ', using default');
+            $template_name = 'InvoicePlane_Web'; // Fallback to default template
+        }
+
+        $this->load->view('invoice_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
@@ -98,8 +108,11 @@ class View extends Base_Controller
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
-            if ( ! $invoice_template) {
-                $this->load->helper('template');
+            // Security: Validate PDF template to prevent LFI
+            $this->load->helper('template');
+            if ($invoice_template) {
+                $invoice_template = validate_pdf_template($invoice_template, 'invoice');
+            } else {
                 $invoice_template = select_pdf_invoice_template($invoice);
             }
 
@@ -188,7 +201,18 @@ class View extends Base_Controller
         ];
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
+        // Security: Validate template name to prevent Local File Inclusion
+        $this->load->helper('template');
+        $requested_template = get_setting('public_quote_template');
+        $template_name = validate_template_name($requested_template, 'quote', 'public');
+        if ($template_name === false) {
+            // Security: sanitize template name before logging to prevent log injection
+            $safe_requested_template = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
+            log_message('error', 'Invalid quote template setting: ' . $safe_requested_template . ', using default');
+            $template_name = 'InvoicePlane_Web'; // Fallback to default template
+        }
+
+        $this->load->view('quote_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
@@ -205,9 +229,9 @@ class View extends Base_Controller
             show_404();
         }
 
-        if ( ! $quote_template) {
-            $quote_template = get_setting('pdf_quote_template');
-        }
+        // Security: Validate PDF template to prevent LFI
+        $this->load->helper('template');
+        $quote_template = validate_pdf_template($quote_template, 'quote', 'pdf_quote_template');
 
         $this->load->helper('pdf');
 
