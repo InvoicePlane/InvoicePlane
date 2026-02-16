@@ -19,7 +19,7 @@
                 width="100%"
                 height="70%"
                 scrolling="no"
-                style="scrollable:false; overflow:hidden; border: none; height: 70vh; content: ''; clear: both; display: table;"
+                style="overflow:hidden; border: none; height: 70vh; display: table;"
             >
             </object>
         </div>
