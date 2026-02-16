@@ -51,11 +51,9 @@ jobs:
         id: audit
         run: |
           composer audit --format=json > audit-report.json || true
-          
-          # Parse the JSON and check if advisories array has any entries
-          ADVISORIES_COUNT=$(jq '.advisories | length' audit-report.json 2>/dev/null || echo "0")
-          
-          if [ "$ADVISORIES_COUNT" -gt 0 ]; then
+          # Parse JSON to check advisories array length
+          ADVISORY_COUNT=$(jq '.advisories | length' audit-report.json 2>/dev/null || echo "0")
+          if [ "$ADVISORY_COUNT" -gt 0 ]; then
             echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
           else
             echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT

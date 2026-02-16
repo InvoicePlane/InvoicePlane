@@ -175,9 +175,9 @@ The default `GITHUB_TOKEN` has restricted permissions and cannot create pull req
 
 **Update Types:**
 - `security-updates` - Only security fixes (default for scheduled runs)
-- `common-packages` - Common packages that typically need updates
+- `common-packages` - Updates commonly changed packages (vite, laravel-vite-plugin, tailwindcss, etc.)
 - `patch-minor` - Patch and minor version updates
-- `all-latest-with-build` - All updates including major versions with build verification
+- `all-latest-with-build` - All updates to latest versions including major versions
 
 **Required Secrets:**
 

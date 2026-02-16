@@ -84,7 +84,7 @@ function validate_file_in_directory(string $filePath, string $baseDirectory): bo
     }
 
     // Ensure base directory ends with separator for exact matching
-    $realBaseWithSep = mb_rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    $realBaseWithSep = rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
     // Validate file is within base directory
     return str_starts_with($realFile, $realBaseWithSep);
@@ -145,6 +145,22 @@ function extract_safe_basename(string $filename): array
 }
 
 /**
+ * Sanitize a string for logging by removing control characters.
+ *
+ * Prevents log injection attacks by stripping newlines and other control characters
+ * while preserving the original content for debugging purposes.
+ *
+ * @param string $value The value to sanitize for logging
+ *
+ * @return string The sanitized string safe for logging
+ */
+function sanitize_for_logging(string $value): string
+{
+    // Remove carriage return and line feed characters to prevent log injection
+    return str_replace(["\r", "\n"], '', $value);
+}
+
+/**
  * Comprehensive file security validation.
  *
  * Performs all security checks in one function for convenience.
@@ -174,7 +190,7 @@ function validate_file_access(string $filename, string $baseDirectory): array
     }
 
     // Step 3: Construct full path
-    $fullPath = mb_rtrim($baseDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $basename['filename'];
+    $fullPath = rtrim($baseDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $basename['filename'];
 
     // Step 4: Check if file exists
     if ( ! file_exists($fullPath)) {

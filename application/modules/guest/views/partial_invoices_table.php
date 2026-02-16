@@ -21,7 +21,7 @@ foreach ($invoices as $invoice) {
                     <tr>
                         <td>
                             <a href="<?php echo site_url('guest/invoices/view/' . $invoice->invoice_id); ?>">
-                                <?php echo $invoice->invoice_number; ?>
+                                <?php echo htmlsc($invoice->invoice_number); ?>
                             </a>
                         </td>
                         <td><?php echo date_from_mysql($invoice->invoice_date_created); ?></td>
