@@ -144,6 +144,16 @@ class Quotes extends Guest_Controller
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
 
+        // Verify quote belongs to one of the guest user's assigned clients
+        $quote = $this->mdl_quotes->guest_visible()
+            ->where('ip_quotes.quote_id', $quote_id)
+            ->where_in('ip_quotes.client_id', $this->user_clients)
+            ->get()->row();
+
+        if ( ! $quote) {
+            show_404();
+        }
+
         $this->mdl_quotes->approve_quote_by_id($quote_id);
         email_quote_status($quote_id, 'approved');
 
@@ -157,6 +167,16 @@ class Quotes extends Guest_Controller
     {
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
+
+        // Verify quote belongs to one of the guest user's assigned clients
+        $quote = $this->mdl_quotes->guest_visible()
+            ->where('ip_quotes.quote_id', $quote_id)
+            ->where_in('ip_quotes.client_id', $this->user_clients)
+            ->get()->row();
+
+        if ( ! $quote) {
+            show_404();
+        }
 
         $this->mdl_quotes->reject_quote_by_id($quote_id);
         email_quote_status($quote_id, 'rejected');
