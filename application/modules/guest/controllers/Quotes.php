@@ -141,11 +141,16 @@ class Quotes extends Guest_Controller
      */
     public function approve(string $quote_id)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
 
-        // Verify quote belongs to one of the guest user's assigned clients
-        $quote = $this->mdl_quotes->guest_visible()
+        // Verify quote belongs to one of the guest user's assigned clients and is open (status 2-3)
+        $quote = $this->mdl_quotes->is_open()
             ->where('ip_quotes.quote_id', $quote_id)
             ->where_in('ip_quotes.client_id', $this->user_clients)
             ->get()->row();
@@ -155,7 +160,11 @@ class Quotes extends Guest_Controller
         }
 
         $this->mdl_quotes->approve_quote_by_id($quote_id);
-        email_quote_status($quote_id, 'approved');
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote_id, 'approved');
+        }
 
         redirect_to('guest/quotes');
     }
@@ -165,11 +174,16 @@ class Quotes extends Guest_Controller
      */
     public function reject(string $quote_id)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
 
-        // Verify quote belongs to one of the guest user's assigned clients
-        $quote = $this->mdl_quotes->guest_visible()
+        // Verify quote belongs to one of the guest user's assigned clients and is open (status 2-3)
+        $quote = $this->mdl_quotes->is_open()
             ->where('ip_quotes.quote_id', $quote_id)
             ->where_in('ip_quotes.client_id', $this->user_clients)
             ->get()->row();
@@ -179,7 +193,11 @@ class Quotes extends Guest_Controller
         }
 
         $this->mdl_quotes->reject_quote_by_id($quote_id);
-        email_quote_status($quote_id, 'rejected');
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote_id, 'rejected');
+        }
 
         redirect_to('guest/quotes');
     }
