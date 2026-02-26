@@ -155,7 +155,7 @@ class Quotes extends Guest_Controller
             ->where_in('ip_quotes.client_id', $this->user_clients)
             ->get()->row();
 
-        if ( ! $quote) {
+        if ($quote === null) {
             show_404();
         }
 
@@ -188,7 +188,7 @@ class Quotes extends Guest_Controller
             ->where_in('ip_quotes.client_id', $this->user_clients)
             ->get()->row();
 
-        if ( ! $quote) {
+        if ($quote === null) {
             show_404();
         }
 
