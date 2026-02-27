@@ -49,12 +49,18 @@ foreach ($quotes as $quote) {
 <?php
     if (in_array($quote->quote_status_id, [2, 3])) {
 ?>
-                        <a class="btn btn-success" href="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>">
-                            <i class="fa fa-check"></i> <?php _trans('approve'); ?>
-                        </a>
-                        <a class="btn btn-danger" href="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>">
-                            <i class="fa fa-ban"></i> <?php _trans('reject'); ?>
-                        </a>
+                        <form method="post" action="<?php echo htmlsc(site_url('guest/quotes/approve/' . $quote->quote_id)); ?>" style="display: inline;">
+                            <input type="hidden" name="<?php echo htmlsc($this->security->get_csrf_token_name()); ?>" value="<?php echo htmlsc($this->security->get_csrf_hash()); ?>">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-check"></i> <?php _trans('approve'); ?>
+                            </button>
+                        </form>
+                        <form method="post" action="<?php echo htmlsc(site_url('guest/quotes/reject/' . $quote->quote_id)); ?>" style="display: inline;">
+                            <input type="hidden" name="<?php echo htmlsc($this->security->get_csrf_token_name()); ?>" value="<?php echo htmlsc($this->security->get_csrf_hash()); ?>">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa fa-ban"></i> <?php _trans('reject'); ?>
+                            </button>
+                        </form>
 <?php
     }
 ?>
