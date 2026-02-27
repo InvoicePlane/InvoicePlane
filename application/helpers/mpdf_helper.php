@@ -83,9 +83,11 @@ function pdf_create(
     //Set the default footer that shall always be available for mPDF
     $mpdf->DefHTMLFooterByName('defaultFooter', '');
     
-    // Define html_footer to prevent "Undefined array key 'footer'" error in PHP 8.3+
-    // This footer name is referenced by the CSS @page directive in templates
+    // Define common footer names to prevent "Undefined array key" errors in PHP 8.3+
+    // These footer names may be referenced by CSS @page directives or <sethtmlpagefooter> tags in templates
     $mpdf->DefHTMLFooterByName('html_footer', '');
+    $mpdf->DefHTMLFooterByName('footer', '');
+    $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '');
 
     // Set the footer if voucher is invoice and if set in settings
     if ($isInvoice && ! empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
