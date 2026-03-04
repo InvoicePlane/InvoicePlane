@@ -47,17 +47,24 @@ class Get extends Base_Controller
      * Alternative method for downloading attachments via /guest/get/attachment/ URLs.
      * Provides support for the /guest/get/attachment/ URL path.
      *
-     * @param string $filename The filename to download
+     * @param string|null $filename The filename to download
      *
      * @return void
      */
-    public function attachment($filename): void
+    public function attachment(?string $filename = null): void
     {
         $this->get_file($filename);
     }
 
-    public function get_file($filename): void
+    public function get_file(?string $filename = null): void
     {
+        if ($filename === null || $filename === '') {
+            $this->respond_message(
+                400,
+                'upload_error_invalid_filename',
+                'Missing filename for guest file download request'
+            );
+        }
         // Security: Use comprehensive file security validation helper
         // Note: CodeIgniter already URL-decodes parameters during routing
         $validation = validate_file_access($filename, $this->targetPath);
