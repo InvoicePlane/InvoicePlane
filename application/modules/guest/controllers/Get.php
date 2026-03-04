@@ -44,8 +44,8 @@ class Get extends Base_Controller
     }
 
     /**
-     * Alias method for downloading attachments via /guest/get/attachment/ URLs.
-     * This method provides backward compatibility for attachment download URLs.
+     * Alternative method for downloading attachments via /guest/get/attachment/ URLs.
+     * Provides support for the /guest/get/attachment/ URL path.
      *
      * @param string $filename The filename to download
      *
