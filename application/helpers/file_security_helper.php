@@ -214,3 +214,30 @@ function validate_file_access(string $filename, string $baseDirectory): array
         'hash'     => $validation['hash'],
     ];
 }
+
+/**
+ * Respond with an HTTP error message and exit.
+ *
+ * Centralized function for handling file operation error responses.
+ * Logs the error, sets HTTP status code, outputs translated message, and exits.
+ *
+ * @param int    $httpCode         HTTP status code (e.g., 400, 404, 403)
+ * @param string $messageKey       Translation key for the error message
+ * @param string $dynamicLogValue  Optional additional context for logging (default: '')
+ * @param string $contextPrefix    Optional prefix for log messages (e.g., 'guest/get: ', 'upload: ')
+ * @param string $additionalOutput Optional additional output for specific status codes (default: '')
+ *
+ * @return void This function never returns (calls exit)
+ */
+function respond_file_message(int $httpCode, string $messageKey, string $dynamicLogValue = '', string $contextPrefix = '', string $additionalOutput = ''): void
+{
+    log_message('debug', $contextPrefix . trans($messageKey) . ': (status ' . $httpCode . ') ' . $dynamicLogValue);
+    http_response_code($httpCode);
+    _trans($messageKey);
+
+    if ( ! empty($additionalOutput)) {
+        echo $additionalOutput;
+    }
+
+    exit;
+}
