@@ -227,6 +227,7 @@ class Upload extends Admin_Controller
         $this->create_dir(dirname($filePath));
 
         if ( ! is_writable(dirname($filePath))) {
+            // Special handling for 410 status: include folder path in output for user feedback
             respond_file_message(410, 'upload_error_folder_not_writable', dirname($filePath), '', PHP_EOL . PHP_EOL . '"' . basename(UPLOADS_FOLDER) . DIRECTORY_SEPARATOR . basename($this->targetPath) . '"');
         } elseif ( ! move_uploaded_file($tempFile, $filePath)) {
             respond_file_message(400, 'upload_error_invalid_move_uploaded_file', $filename);
