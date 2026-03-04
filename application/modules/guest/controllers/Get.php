@@ -43,6 +43,14 @@ class Get extends Base_Controller
         exit;
     }
 
+    /**
+     * Alias method for downloading attachments via /guest/get/attachment/ URLs.
+     * This method provides backward compatibility for attachment download URLs.
+     *
+     * @param string $filename The filename to download
+     *
+     * @return void
+     */
     public function attachment($filename): void
     {
         $this->get_file($filename);
