@@ -43,6 +43,11 @@ class Get extends Base_Controller
         exit;
     }
 
+    public function attachment($filename): void
+    {
+        $this->get_file($filename);
+    }
+
     public function get_file($filename): void
     {
         // Security: Use comprehensive file security validation helper
