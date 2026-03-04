@@ -110,7 +110,13 @@ class Upload extends Admin_Controller
 
         // Security: Don't leak file paths or referrer in logs
         log_message('debug', 'upload: File delete failed');
-        respond_file_message(410, 'upload_error_file_delete', 'File delete failed');
+        respond_file_message(
+            410,
+            'upload_error_file_delete',
+            'File delete failed',
+            '',
+            PHP_EOL . PHP_EOL . '"' . basename(UPLOADS_FOLDER) . DIRECTORY_SEPARATOR . basename($this->targetPath) . '"'
+        );
     }
 
     public function get_file($filename): void

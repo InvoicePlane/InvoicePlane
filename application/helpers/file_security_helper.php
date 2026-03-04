@@ -216,13 +216,13 @@ function validate_file_access(string $filename, string $baseDirectory): array
 }
 
 /**
- * Respond with an HTTP error message and exit.
+ * Respond with an HTTP message and exit.
  *
- * Centralized function for handling file operation error responses.
- * Logs the error, sets HTTP status code, outputs translated message, and exits.
+ * Centralized function for handling file operation responses (success or error).
+ * Logs the message, sets the HTTP status code, outputs the translated message, and exits.
  *
- * @param int    $httpCode         HTTP status code (e.g., 400, 404, 403)
- * @param string $messageKey       Translation key for the error message
+ * @param int    $httpCode         HTTP status code (e.g., 200, 400, 404, 403)
+ * @param string $messageKey       Translation key for the response message
  * @param string $dynamicLogValue  Optional additional context for logging (default: '')
  * @param string $contextPrefix    Optional prefix for log messages (e.g., 'guest/get: ', 'upload: ')
  * @param string $additionalOutput Optional additional output for specific status codes (default: '')
@@ -231,7 +231,9 @@ function validate_file_access(string $filename, string $baseDirectory): array
  */
 function respond_file_message(int $httpCode, string $messageKey, string $dynamicLogValue = '', string $contextPrefix = '', string $additionalOutput = ''): void
 {
-    log_message('debug', $contextPrefix . trans($messageKey) . ': (status ' . $httpCode . ') ' . $dynamicLogValue);
+    // Security: Sanitize dynamic log value to prevent log injection
+    $sanitizedLogValue = sanitize_for_logging($dynamicLogValue);
+    log_message('debug', $contextPrefix . trans($messageKey) . ': (status ' . $httpCode . ') ' . $sanitizedLogValue);
     http_response_code($httpCode);
     _trans($messageKey);
 
