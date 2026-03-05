@@ -78,9 +78,10 @@ class Settings extends Admin_Controller
                 if ($decimal_places < 2 || $decimal_places > 3) {
                     $this->session->set_flashdata('alert_error', trans('invalid_tax_rate_decimal_places'));
                     redirect('settings');
-                    return;
                 }
                 
+                // Note: ALTER TABLE requires direct query execution as Query Builder
+                // does not support DDL statements. Integer casting prevents SQL injection.
                 $this->db->query("
                     ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent`
                     DECIMAL( 5, {$decimal_places} ) NOT null");
