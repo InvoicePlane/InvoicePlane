@@ -38,6 +38,55 @@ class Mdl_Settings extends CI_Model
     }
 
     /**
+     * Batch save multiple settings in a single query
+     * This is much more efficient than calling save() in a loop
+     *
+     * @param array $settings Associative array of setting_key => setting_value pairs
+     * @return void
+     */
+    public function save_batch(array $settings)
+    {
+        if (empty($settings)) {
+            return;
+        }
+
+        // Load all existing settings once to determine which are updates vs inserts
+        $existing_keys = [];
+        $query         = $this->db->select('setting_key')->get('ip_settings');
+        foreach ($query->result() as $row) {
+            $existing_keys[$row->setting_key] = true;
+        }
+
+        // Separate into updates and inserts
+        $to_update = [];
+        $to_insert = [];
+
+        foreach ($settings as $key => $value) {
+            $data = [
+                'setting_key'   => $key,
+                'setting_value' => $value,
+            ];
+
+            if (isset($existing_keys[$key])) {
+                $to_update[] = $data;
+            } else {
+                $to_insert[] = $data;
+            }
+        }
+
+        // Perform batch insert for new settings
+        if ( ! empty($to_insert)) {
+            $this->db->insert_batch('ip_settings', $to_insert);
+        }
+
+        // Perform batch update for existing settings
+        // Note: CodeIgniter's update_batch requires a key field to match on
+        if ( ! empty($to_update)) {
+            $this->db->update_batch('ip_settings', $to_update, 'setting_key');
+        }
+    }
+
+    /**
      * @param $key
      */
     public function get($key)
