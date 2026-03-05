@@ -38,7 +38,10 @@ class Mdl_Settings extends CI_Model
     }
 
     /**
-     * Batch save multiple settings in a single query
+     * Batch save multiple settings in a single operation
+     * Automatically handles both inserts and updates based on existing settings
+     * 
+     * Performance: Executes at most 3 queries (1 SELECT + 1 INSERT batch + 1 UPDATE batch)
      * This is much more efficient than calling save() in a loop
      *
      * @param array $settings Associative array of setting_key => setting_value pairs
