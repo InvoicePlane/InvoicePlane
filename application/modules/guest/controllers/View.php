@@ -252,9 +252,8 @@ class View extends Base_Controller
         $this->load->helper('mailer');
 
         // Verify quote exists and is in open status before approving
-        $quote = $this->mdl_quotes->guest_visible()
+        $quote = $this->mdl_quotes->is_open()
             ->where('ip_quotes.quote_url_key', $quote_url_key)
-            ->where_in('ip_quotes.quote_status_id', [2, 3])
             ->get()->row();
 
         if (!$quote) {
@@ -285,9 +284,8 @@ class View extends Base_Controller
         $this->load->helper('mailer');
 
         // Verify quote exists and is in open status before rejecting
-        $quote = $this->mdl_quotes->guest_visible()
+        $quote = $this->mdl_quotes->is_open()
             ->where('ip_quotes.quote_url_key', $quote_url_key)
-            ->where_in('ip_quotes.quote_status_id', [2, 3])
             ->get()->row();
 
         if (!$quote) {
