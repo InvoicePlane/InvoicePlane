@@ -243,11 +243,30 @@ class View extends Base_Controller
      */
     public function approve_quote(string $quote_url_key)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
 
+        // Verify quote exists and is in open status before approving
+        $quote = $this->mdl_quotes->guest_visible()
+            ->where('ip_quotes.quote_url_key', $quote_url_key)
+            ->where_in('ip_quotes.quote_status_id', [2, 3])
+            ->get()->row();
+
+        if (!$quote) {
+            show_404();
+        }
+
         $this->mdl_quotes->approve_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, 'approved');
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote->quote_id, 'approved');
+        }
 
         redirect('guest/view/quote/' . $quote_url_key);
     }
@@ -257,11 +276,30 @@ class View extends Base_Controller
      */
     public function reject_quote(string $quote_url_key)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $this->load->model('quotes/mdl_quotes');
         $this->load->helper('mailer');
 
+        // Verify quote exists and is in open status before rejecting
+        $quote = $this->mdl_quotes->guest_visible()
+            ->where('ip_quotes.quote_url_key', $quote_url_key)
+            ->where_in('ip_quotes.quote_status_id', [2, 3])
+            ->get()->row();
+
+        if (!$quote) {
+            show_404();
+        }
+
         $this->mdl_quotes->reject_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, 'rejected');
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote->quote_id, 'rejected');
+        }
 
         redirect('guest/view/quote/' . $quote_url_key);
     }
