@@ -243,7 +243,7 @@ class View extends Base_Controller
      */
     public function approve_quote(string $quote_url_key)
     {
-        // Require POST request to prevent CSRF attacks
+        // Require POST so CodeIgniter's CSRF token validation is enforced
         if ($this->input->method() !== 'post') {
             show_404();
         }
