@@ -71,9 +71,19 @@ class Settings extends Admin_Controller
 
             // Only execute if the setting is different
             if ($settings['tax_rate_decimal_places'] != get_setting('tax_rate_decimal_places')) {
+                // Cast to integer to prevent SQL injection
+                $decimal_places = (int) $settings['tax_rate_decimal_places'];
+                
+                // Validate range (2-3 decimal places)
+                if ($decimal_places < 2 || $decimal_places > 3) {
+                    $this->session->set_flashdata('alert_error', trans('invalid_tax_rate_decimal_places'));
+                    redirect('settings');
+                    return;
+                }
+                
                 $this->db->query("
                     ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent`
-                    DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null");
+                    DECIMAL( 5, {$decimal_places} ) NOT null");
             }
 
             // Save the submitted settings :todo:improve: Save In One SQL query : $db_array[$key] = val; •••& @end mdl save $db_array.
