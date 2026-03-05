@@ -89,7 +89,7 @@ class Settings extends Admin_Controller
 
             // Build array of all settings to save in a single batch operation
             $batch_settings = [];
-            
+
             foreach ($settings as $key => $value) {
                 if (str_contains($key, 'field_is_password') || str_contains($key, 'field_is_amount')) {
                     // Skip all meta fields
@@ -117,7 +117,7 @@ class Settings extends Admin_Controller
                     $batch_settings['thousands_separator'] = $number_formats[$value]['thousands_separator'];
                 }
             }
-            
+
             // Save all settings in a single batch operation (reduces ~30-40 queries to 2-3 queries)
             $this->mdl_settings->save_batch($batch_settings);
 
