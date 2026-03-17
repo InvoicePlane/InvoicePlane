@@ -15,6 +15,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 | ISO 80000-1 with decimal comma.... 1 000 000,00
 | Compact with decimal point........   1000000.00
 | Compact with decimal comma........   1000000,00
+| JP format......................... 1,000,000
 |
 */
 
@@ -48,5 +49,9 @@ $config['number_formats'] = [
         'label'               => 'number_format_compact_comma',
         'decimal_point'       => ',',
         'thousands_separator' => '',
+    ],
+    'number_format_ja' => [
+        'label'               => 'number_format_ja',
+        'thousands_separator' => ',',
     ],
 ];
