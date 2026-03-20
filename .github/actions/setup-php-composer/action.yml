@@ -38,11 +38,23 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
+    - name: Resolve composer.lock path
+      id: composer-lock
+      shell: bash
+      run: |
+        wd="${{ inputs.working-directory }}"
+        if [ -z "$wd" ] || [ "$wd" = "." ]; then
+          echo "lockfile=composer.lock" >> "$GITHUB_OUTPUT"
+        else
+          wd="${wd%/}"
+          echo "lockfile=${wd}/composer.lock" >> "$GITHUB_OUTPUT"
+        fi
+
     - name: Cache Composer dependencies
       uses: actions/cache@v4
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles(format('{0}/composer.lock', inputs.working-directory)) }}
+        key: ${{ runner.os }}-composer-${{ hashFiles(steps.composer-lock.outputs.lockfile) }}
         restore-keys: |
           ${{ runner.os }}-composer-
 

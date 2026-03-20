@@ -118,6 +118,9 @@ function sanitize_email_template_html(html) {
         }
 
         // Remove control/format chars (including zero-width and BOM), trim, and lowercase.
+        // Ranges: C0 controls (\u0000-\u001F), C1 controls (\u007F-\u009F),
+        // zero-width/RTL markers (\u200B-\u200F, \u202A-\u202E, \u2060-\u206F),
+        // and BOM (\uFEFF).
         normalized = normalized.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFEFF]+/g, '').trim();
         return normalized.toLowerCase();
     }
