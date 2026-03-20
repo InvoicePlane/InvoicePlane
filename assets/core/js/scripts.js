@@ -165,7 +165,7 @@ function sanitize_email_template_html(html) {
                 }
                 // Check for dangerous protocols in href attributes
                 else if (attrNameLower === 'href' &&
-                        (/^(javascript|data|vbscript|file|about|blob):/i.test(attrValueNoSpaces))) {
+                        (/^\s*(javascript|data|vbscript|file|about|blob)\s*:/i.test(attrValueNormalized))) {
                     attrsToRemove.push(attr.name);
                 }
                 // Enforce opener-safe behavior for links opened in a new tab
