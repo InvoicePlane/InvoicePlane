@@ -74,9 +74,13 @@ PY
         else
           set -o noglob
           mapfile -t composer_flags < <(python - <<'PY'
-import os, shlex
+import os, shlex, sys
 raw = os.environ.get('COMPOSER_FLAGS_INPUT', '')
-parts = shlex.split(raw)
+try:
+    parts = shlex.split(raw)
+except ValueError as exc:
+    print(f"Invalid composer-flags '{raw}': {exc}", file=sys.stderr)
+    sys.exit(1)
 for part in parts:
     print(part)
 PY
