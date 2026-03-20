@@ -75,7 +75,7 @@ raw = os.environ.get('COMPOSER_ARGS_INPUT', '')
 try:
     parts = shlex.split(raw)
 except ValueError as exc:
-    safe_raw = repr(raw)
+    safe_raw = raw.replace("\n", "\\n").replace("\r", "\\r")
     print(f"Invalid composer-args {safe_raw}: {exc}", file=sys.stderr)
     sys.exit(1)
 for part in parts:
@@ -92,7 +92,7 @@ raw = os.environ.get('COMPOSER_FLAGS_INPUT', '')
 try:
     parts = shlex.split(raw)
 except ValueError as exc:
-    safe_raw = repr(raw)
+    safe_raw = raw.replace("\n", "\\n").replace("\r", "\\r")
     print(f"Invalid composer-flags {safe_raw}: {exc}", file=sys.stderr)
     sys.exit(1)
 for part in parts:

@@ -153,7 +153,6 @@ function sanitize_email_template_html(html) {
                 var attr = node.attributes[i];
                 var attrNameLower = attr.name.toLowerCase();
                 var attrValueNormalized = normalizeAttrValue(attr.value);
-                var attrValueNoSpaces = attrValueNormalized.replace(/\s+/g, '');
                 
                 // Remove event handlers (onclick, onload, etc.)
                 if (attrNameLower.indexOf('on') === 0) {
