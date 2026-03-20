@@ -108,9 +108,11 @@ function sanitize_email_template_html(html) {
     function normalizeAttrValue(value) {
         var normalized = value || '';
         try {
-            var decoder = document.createElement('div');
-            decoder.innerHTML = normalized;
-            normalized = decoder.textContent || '';
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(normalized, 'text/html');
+            if (doc && doc.documentElement) {
+                normalized = doc.documentElement.textContent || '';
+            }
         } catch (e) {
             normalized = value || '';
         }
@@ -160,7 +162,7 @@ function sanitize_email_template_html(html) {
                 }
                 // Check for dangerous protocols in href attributes
                 else if (attrNameLower === 'href' &&
-                        (/^(javascript|data|vbscript|file|about|blob):/.test(protocolValue))) {
+                        (/^(javascript|data|vbscript|file|about|blob):/i.test(protocolValue))) {
                     attrsToRemove.push(attr.name);
                 }
                 // Enforce opener-safe behavior for links opened in a new tab

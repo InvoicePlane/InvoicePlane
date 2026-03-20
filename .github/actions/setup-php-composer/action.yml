@@ -51,26 +51,28 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         set -euo pipefail
-        set -o noglob
         COMPOSER_ARGS_INPUT="${{ inputs.composer-args }}"
         COMPOSER_FLAGS_INPUT="${{ inputs.composer-flags }}"
         export COMPOSER_ARGS_INPUT COMPOSER_FLAGS_INPUT
 
         if [ -n "$COMPOSER_ARGS_INPUT" ]; then
+          set -o noglob
           mapfile -t composer_args < <(python - <<'PY'
 import os, shlex, sys
 raw = os.environ.get('COMPOSER_ARGS_INPUT', '')
 try:
     parts = shlex.split(raw)
 except ValueError as exc:
-    print(f"Invalid composer-args: {exc}", file=sys.stderr)
+    print(f"Invalid composer-args '{raw}': {exc}", file=sys.stderr)
     sys.exit(1)
 for part in parts:
     print(part)
 PY
 )
+          set +o noglob
           composer install "${composer_args[@]}"
         else
+          set -o noglob
           mapfile -t composer_flags < <(python - <<'PY'
 import os, shlex
 raw = os.environ.get('COMPOSER_FLAGS_INPUT', '')
@@ -79,6 +81,6 @@ for part in parts:
     print(part)
 PY
 )
+          set +o noglob
           composer install "${composer_flags[@]}"
         fi
-        set +o noglob
