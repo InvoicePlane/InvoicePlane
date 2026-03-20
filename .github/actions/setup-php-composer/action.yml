@@ -54,12 +54,31 @@ runs:
         set -o noglob
         COMPOSER_ARGS_INPUT="${{ inputs.composer-args }}"
         COMPOSER_FLAGS_INPUT="${{ inputs.composer-flags }}"
+        export COMPOSER_ARGS_INPUT COMPOSER_FLAGS_INPUT
 
         if [ -n "$COMPOSER_ARGS_INPUT" ]; then
-          read -r -a composer_args <<< "$COMPOSER_ARGS_INPUT"
+          mapfile -t composer_args < <(python - <<'PY'
+import os, shlex, sys
+raw = os.environ.get('COMPOSER_ARGS_INPUT', '')
+try:
+    parts = shlex.split(raw)
+except ValueError as exc:
+    print(f"Invalid composer-args: {exc}", file=sys.stderr)
+    sys.exit(1)
+for part in parts:
+    print(part)
+PY
+)
           composer install "${composer_args[@]}"
         else
-          read -r -a composer_flags <<< "$COMPOSER_FLAGS_INPUT"
+          mapfile -t composer_flags < <(python - <<'PY'
+import os, shlex
+raw = os.environ.get('COMPOSER_FLAGS_INPUT', '')
+parts = shlex.split(raw)
+for part in parts:
+    print(part)
+PY
+)
           composer install "${composer_flags[@]}"
         fi
         set +o noglob

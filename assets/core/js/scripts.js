@@ -108,17 +108,15 @@ function sanitize_email_template_html(html) {
     function normalizeAttrValue(value) {
         var normalized = value || '';
         try {
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(normalized, 'text/html');
-            if (doc && doc.documentElement) {
-                normalized = doc.documentElement.textContent || '';
-            }
+            var decoder = document.createElement('div');
+            decoder.innerHTML = normalized;
+            normalized = decoder.textContent || '';
         } catch (e) {
             normalized = value || '';
         }
 
-        // Remove control chars, trim, collapse whitespace, and lowercase.
-        normalized = normalized.replace(/[\u0000-\u001F\u007F]+/g, '').trim();
+        // Remove control/format chars (including zero-width and BOM), trim, and lowercase.
+        normalized = normalized.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFEFF]+/g, '').trim();
         return normalized.toLowerCase();
     }
     
@@ -162,7 +160,7 @@ function sanitize_email_template_html(html) {
                 }
                 // Check for dangerous protocols in href attributes
                 else if (attrNameLower === 'href' &&
-                        (/^(javascript|data|vbscript):/.test(protocolValue))) {
+                        (/^(javascript|data|vbscript|file|about|blob):/.test(protocolValue))) {
                     attrsToRemove.push(attr.name);
                 }
                 // Enforce opener-safe behavior for links opened in a new tab
