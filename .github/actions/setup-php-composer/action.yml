@@ -54,7 +54,7 @@ runs:
       uses: actions/cache@v4
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles(steps.composer-lock.outputs.lockfile) }}
+        key: ${{ runner.os }}-composer-${{ hashFiles(format('{0}', steps.composer-lock.outputs.lockfile)) }}
         restore-keys: |
           ${{ runner.os }}-composer-
 

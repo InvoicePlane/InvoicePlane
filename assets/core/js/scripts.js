@@ -153,7 +153,7 @@ function sanitize_email_template_html(html) {
                 var attr = node.attributes[i];
                 var attrNameLower = attr.name.toLowerCase();
                 var attrValueNormalized = normalizeAttrValue(attr.value);
-                var protocolValue = attrValueNormalized.replace(/\s+/g, '');
+                var attrValueNoSpaces = attrValueNormalized.replace(/\s+/g, '');
                 
                 // Remove event handlers (onclick, onload, etc.)
                 if (attrNameLower.indexOf('on') === 0) {
@@ -165,7 +165,7 @@ function sanitize_email_template_html(html) {
                 }
                 // Check for dangerous protocols in href attributes
                 else if (attrNameLower === 'href' &&
-                        (/^(javascript|data|vbscript|file|about|blob):/i.test(protocolValue))) {
+                        (/^(javascript|data|vbscript|file|about|blob):/i.test(attrValueNoSpaces))) {
                     attrsToRemove.push(attr.name);
                 }
                 // Enforce opener-safe behavior for links opened in a new tab
