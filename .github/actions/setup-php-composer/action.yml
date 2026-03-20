@@ -42,7 +42,7 @@ runs:
       uses: actions/cache@v4
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-composer-${{ hashFiles(format('{0}/composer.lock', inputs.working-directory)) }}
         restore-keys: |
           ${{ runner.os }}-composer-
 
@@ -50,8 +50,14 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        if [ -n "${{ inputs.composer-args }}" ]; then
-          composer install ${{ inputs.composer-args }}
+        set -euo pipefail
+        COMPOSER_ARGS_INPUT="${{ inputs.composer-args }}"
+        COMPOSER_FLAGS_INPUT="${{ inputs.composer-flags }}"
+
+        if [ -n "$COMPOSER_ARGS_INPUT" ]; then
+          read -r -a composer_args <<< "$COMPOSER_ARGS_INPUT"
+          composer install "${composer_args[@]}"
         else
-          composer install ${{ inputs.composer-flags }}
+          read -r -a composer_flags <<< "$COMPOSER_FLAGS_INPUT"
+          composer install "${composer_flags[@]}"
         fi

@@ -102,7 +102,23 @@ function sanitize_email_template_html(html) {
     
     // List of allowed attributes (only safe, non-executable attributes)
     // Note: 'style' attribute removed to prevent CSS-based attacks
-    var allowedAttrs = ['class', 'href', 'title', 'alt', 'target'];
+    var allowedAttrs = ['class', 'href', 'title', 'alt', 'target', 'rel'];
+
+    // Decode HTML entities and normalize attribute values before validation.
+    function normalizeAttrValue(value) {
+        var normalized = '';
+        try {
+            var textarea = document.createElement('textarea');
+            textarea.innerHTML = value || '';
+            normalized = textarea.value;
+        } catch (e) {
+            normalized = value || '';
+        }
+
+        // Remove control chars, trim, collapse whitespace, and lowercase.
+        normalized = normalized.replace(/[\u0000-\u001F\u007F]+/g, '').trim();
+        return normalized.toLowerCase();
+    }
     
     // Recursively clean all elements
     function cleanNode(node) {
@@ -131,7 +147,8 @@ function sanitize_email_template_html(html) {
             for (var i = 0; i < node.attributes.length; i++) {
                 var attr = node.attributes[i];
                 var attrNameLower = attr.name.toLowerCase();
-                var attrValue = attr.value.toLowerCase().trim();
+                var attrValueNormalized = normalizeAttrValue(attr.value);
+                var protocolValue = attrValueNormalized.replace(/\s+/g, '');
                 
                 // Remove event handlers (onclick, onload, etc.)
                 if (attrNameLower.indexOf('on') === 0) {
@@ -142,11 +159,21 @@ function sanitize_email_template_html(html) {
                     attrsToRemove.push(attr.name);
                 }
                 // Check for dangerous protocols in href attributes
-                else if (attrNameLower === 'href' && 
-                        (attrValue.indexOf('javascript:') === 0 || 
-                         attrValue.indexOf('data:') === 0 || 
-                         attrValue.indexOf('vbscript:') === 0)) {
+                else if (attrNameLower === 'href' &&
+                        (/^(javascript|data|vbscript):/.test(protocolValue))) {
                     attrsToRemove.push(attr.name);
+                }
+                // Enforce opener-safe behavior for links opened in a new tab
+                else if (attrNameLower === 'target' && attrValueNormalized === '_blank') {
+                    var relValue = node.getAttribute('rel') || '';
+                    var relParts = relValue.split(/\s+/).filter(Boolean);
+                    if (relParts.indexOf('noopener') === -1) {
+                        relParts.push('noopener');
+                    }
+                    if (relParts.indexOf('noreferrer') === -1) {
+                        relParts.push('noreferrer');
+                    }
+                    node.setAttribute('rel', relParts.join(' '));
                 }
             }
             attrsToRemove.forEach(function(attrName) {
