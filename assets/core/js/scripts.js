@@ -106,11 +106,13 @@ function sanitize_email_template_html(html) {
 
     // Decode HTML entities and normalize attribute values before validation.
     function normalizeAttrValue(value) {
-        var normalized = '';
+        var normalized = value || '';
         try {
-            var textarea = document.createElement('textarea');
-            textarea.innerHTML = value || '';
-            normalized = textarea.value;
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(normalized, 'text/html');
+            if (doc && doc.documentElement) {
+                normalized = doc.documentElement.textContent || '';
+            }
         } catch (e) {
             normalized = value || '';
         }

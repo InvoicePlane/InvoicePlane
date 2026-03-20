@@ -51,6 +51,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         set -euo pipefail
+        set -o noglob
         COMPOSER_ARGS_INPUT="${{ inputs.composer-args }}"
         COMPOSER_FLAGS_INPUT="${{ inputs.composer-flags }}"
 
@@ -61,3 +62,4 @@ runs:
           read -r -a composer_flags <<< "$COMPOSER_FLAGS_INPUT"
           composer install "${composer_flags[@]}"
         fi
+        set +o noglob
