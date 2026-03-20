@@ -89,11 +89,11 @@ function encodeHtml(str) {
 // Sanitize HTML for email template preview
 // Allows only safe formatting tags and strips scripts, event handlers, and dangerous attributes
 function sanitize_email_template_html(html) {
-    // Create a detached container to parse and sanitize HTML in an isolated context.
-    // Using DOMParser prevents immediate script execution during parsing.
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(html || '', 'text/html');
-    var temp = doc.body;
+    // Parse HTML inside an inert <template> so scripts are never executed while
+    // the content is being sanitized.
+    var template = document.createElement('template');
+    template.innerHTML = html || '';
+    var temp = template.content;
     
     // List of allowed tags (only safe formatting tags)
     var allowedTags = ['b', 'strong', 'em', 'i', 'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
@@ -171,8 +171,13 @@ function sanitize_email_template_html(html) {
         }
     });
     
-    // Return sanitized HTML.
-    return temp.innerHTML;
+    // Move the sanitized fragment into a container to return its HTML string.
+    var container = document.createElement('div');
+    while (temp.firstChild) {
+        container.appendChild(temp.firstChild);
+    }
+    
+    return container.innerHTML;
 }
 
 function update_email_template_preview() {
