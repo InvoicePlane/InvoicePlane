@@ -634,7 +634,6 @@ $lang = [
     'tax_rate'                                     => 'Tax Rate',
     'tax_rate_decimal_places'                      => 'Tax Rate Decimal Places',
     'tax_rate_decimal_places_hint'                 => 'Sets decimal places for amounts',
-    'invalid_tax_rate_decimal_places'              => 'Tax rate decimal places must be 2 or 3.',
     'failed_to_update_tax_rate_decimal_places'     => 'Unable to update tax rate decimal places. Please try again or contact the administrator.',
     'tax_rate_form'                                => 'Tax Rate Form',
     'tax_rate_name'                                => 'Tax Rate Name',
