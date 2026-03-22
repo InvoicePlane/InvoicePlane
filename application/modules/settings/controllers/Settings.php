@@ -222,8 +222,8 @@ class Settings extends Admin_Controller
             return $settings;
         }
 
-        require_once(APPPATH . 'modules/settings/libraries/TaxRateDecimalPlacesProcessor.php');
-        $processor            = new TaxRateDecimalPlacesProcessor();
+        $this->load->library('settings/TaxRateDecimalPlacesProcessor', [], 'tax_rate_decimal_places_processor');
+        $processor            = $this->tax_rate_decimal_places_processor;
         $decimal_places_input = $settings['tax_rate_decimal_places'];
 
         try {
