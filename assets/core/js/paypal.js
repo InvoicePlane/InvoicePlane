@@ -207,45 +207,41 @@
     }
 
     function initPayPal() {
-        // Get CSRF token from cookie or meta tag
-        function getCsrfToken() {
-            // Try to get from cookie first
-            const cookieMatch = document.cookie.match(/ip_csrf_cookie=([^;]+)/);
-            if (cookieMatch) return cookieMatch[1];
-            
-            // Fallback to meta tag if available
-            const metaTag = document.querySelector('meta[name="csrf-token"]');
-            return metaTag ? metaTag.getAttribute('content') : '';
+        // Validate CSRF token is available
+        if (!config.csrfTokenName || !config.csrfTokenValue) {
+            console.error('CSRF token not available - payment operations will fail');
+            showCardError('Security token not available. Please refresh the page and try again.');
+            return;
         }
-
-        const csrfToken = getCsrfToken();
 
         // Standard PayPal buttons
         paypal.Buttons({
             createOrder() {
+                const csrfData = {};
+                csrfData[config.csrfTokenName] = config.csrfTokenValue;
+                
                 return fetch(config.createOrderUrl, { 
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify({
-                        '_ip_csrf': csrfToken
-                    })
+                    body: JSON.stringify(csrfData)
                 })
                     .then(response => response.json())
                     .then(order => order.id);
             },
             onApprove: function(data) {
+                const csrfData = {};
+                csrfData[config.csrfTokenName] = config.csrfTokenValue;
+                
                 return fetch(config.capturePaymentUrl + data.orderID, { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify({
-                        '_ip_csrf': csrfToken
-                    })
+                    body: JSON.stringify(csrfData)
                 })
                     .then(response => {
                         if (!response.ok) throw new Error('Capture failed with HTTP ' + response.status);
@@ -273,29 +269,31 @@
 
             const cardFields = paypal.CardFields({
                 createOrder() {
+                    const csrfData = {};
+                    csrfData[config.csrfTokenName] = config.csrfTokenValue;
+                    
                     return fetch(config.createOrderUrl, { 
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
-                        body: JSON.stringify({
-                            '_ip_csrf': csrfToken
-                        })
+                        body: JSON.stringify(csrfData)
                     })
                         .then(res => res.json())
                         .then(order => order.id);
                 },
                 onApprove(data) {
+                    const csrfData = {};
+                    csrfData[config.csrfTokenName] = config.csrfTokenValue;
+                    
                     return fetch(config.capturePaymentUrl + data.orderID, { 
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
-                        body: JSON.stringify({
-                            '_ip_csrf': csrfToken
-                        })
+                        body: JSON.stringify(csrfData)
                     })
                         .then(res => {
                             if (!res.ok) throw new Error('Capture failed with HTTP ' + res.status);
