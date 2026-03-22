@@ -219,9 +219,18 @@
 
         // Helper function to update CSRF token from server response
         function updateCsrfToken(order) {
+            // Validate order response has required ID
+            if (!order.id) {
+                throw new Error('Invalid order response - missing order ID');
+            }
+            
+            // Update CSRF token if server sent a new one
             if (order.csrf_token) {
                 currentCsrfToken = order.csrf_token;
+            } else {
+                console.warn('Server did not return refreshed CSRF token - subsequent requests may fail');
             }
+            
             return order.id;
         }
 

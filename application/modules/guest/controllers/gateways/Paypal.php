@@ -62,7 +62,17 @@ class Paypal extends Base_Controller
         
         // Handle JSON decode errors
         if (json_last_error() !== JSON_ERROR_NONE) {
-            log_message('error', 'PayPal createOrder JSON decode error: ' . sanitize_for_logging(json_last_error_msg()));
+            log_message('error', 'PayPal createOrder JSON decode error for invoice ' . sanitize_for_logging($invoice_url_key) . ': ' . sanitize_for_logging(json_last_error_msg()));
+            $this->output
+                ->set_status_header(500)
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['error' => 'Invalid response from payment gateway']));
+            return;
+        }
+        
+        // Validate required fields from PayPal response
+        if (empty($paypal_response['id'])) {
+            log_message('error', 'PayPal createOrder missing order ID for invoice ' . sanitize_for_logging($invoice_url_key));
             $this->output
                 ->set_status_header(500)
                 ->set_content_type('application/json')
@@ -72,7 +82,7 @@ class Paypal extends Base_Controller
         
         // Add refreshed CSRF token to response (token regenerates on each POST)
         $response = [
-            'id' => $paypal_response['id'] ?? null,
+            'id' => $paypal_response['id'],
             'status' => $paypal_response['status'] ?? null,
             'csrf_token' => $this->security->get_csrf_hash()
         ];
