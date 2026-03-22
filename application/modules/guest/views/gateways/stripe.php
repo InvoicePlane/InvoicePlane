@@ -13,7 +13,14 @@
     async function loadStripe() {
         const fetchClientSecret = async () => {
             const response = await fetch('<?php echo site_url('guest/gateways/stripe/create_checkout_session/' . $invoice_url_key); ?>', {
-                method: 'GET'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                })
             })
                 .then((response) => response.json())
 

@@ -207,15 +207,46 @@
     }
 
     function initPayPal() {
+        // Get CSRF token from cookie or meta tag
+        function getCsrfToken() {
+            // Try to get from cookie first
+            const cookieMatch = document.cookie.match(/ip_csrf_cookie=([^;]+)/);
+            if (cookieMatch) return cookieMatch[1];
+            
+            // Fallback to meta tag if available
+            const metaTag = document.querySelector('meta[name="csrf-token"]');
+            return metaTag ? metaTag.getAttribute('content') : '';
+        }
+
+        const csrfToken = getCsrfToken();
+
         // Standard PayPal buttons
         paypal.Buttons({
             createOrder() {
-                return fetch(config.createOrderUrl, { method: "GET" })
+                return fetch(config.createOrderUrl, { 
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        '_ip_csrf': csrfToken
+                    })
+                })
                     .then(response => response.json())
                     .then(order => order.id);
             },
             onApprove: function(data) {
-                return fetch(config.capturePaymentUrl + data.orderID, { method: 'GET' })
+                return fetch(config.capturePaymentUrl + data.orderID, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        '_ip_csrf': csrfToken
+                    })
+                })
                     .then(response => {
                         if (!response.ok) throw new Error('Capture failed with HTTP ' + response.status);
                         window.location.replace(config.successUrl);
@@ -242,12 +273,30 @@
 
             const cardFields = paypal.CardFields({
                 createOrder() {
-                    return fetch(config.createOrderUrl, { method: 'GET' })
+                    return fetch(config.createOrderUrl, { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            '_ip_csrf': csrfToken
+                        })
+                    })
                         .then(res => res.json())
                         .then(order => order.id);
                 },
                 onApprove(data) {
-                    return fetch(config.capturePaymentUrl + data.orderID, { method: 'GET' })
+                    return fetch(config.capturePaymentUrl + data.orderID, { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            '_ip_csrf': csrfToken
+                        })
+                    })
                         .then(res => {
                             if (!res.ok) throw new Error('Capture failed with HTTP ' + res.status);
                             window.location.replace(config.successUrl);

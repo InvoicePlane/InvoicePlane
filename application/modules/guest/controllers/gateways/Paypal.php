@@ -32,6 +32,11 @@ class Paypal extends Base_Controller
      */
     public function paypal_create_order($invoice_url_key)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         // Check if the invoice exists and is billable
         $this->load->model('invoices/mdl_invoices');
 
@@ -63,6 +68,11 @@ class Paypal extends Base_Controller
      */
     public function paypal_capture_payment(string $order_id)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $paypal_response = $this->lib_paypal->captureOrder($order_id);
 
         //handle the payment
