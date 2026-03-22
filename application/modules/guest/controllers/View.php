@@ -245,7 +245,7 @@ class View extends Base_Controller
      * @param string $quote_url_key The quote URL key
      * @return object The quote object
      */
-    private function validate_guest_quote_access(string $quote_url_key)
+    private function validate_guest_quote_access(string $quote_url_key): object
     {
         // Require POST request to prevent CSRF attacks
         if ($this->input->method() !== 'post') {
