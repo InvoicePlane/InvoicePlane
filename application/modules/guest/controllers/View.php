@@ -253,7 +253,7 @@ class View extends Base_Controller
         }
 
         // Require authentication as a guest user
-        if (!$this->session->userdata('user_id') || $this->session->userdata('user_type') !== 2) {
+        if (!$this->session->userdata('user_id') || (int)$this->session->userdata('user_type') !== 2) {
             show_error(trans('guest_account_denied'), 403);
         }
 

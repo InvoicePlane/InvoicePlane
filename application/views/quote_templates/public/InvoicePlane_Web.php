@@ -32,11 +32,13 @@
                 <?php if (in_array($quote->quote_status_id, [2, 3])) { ?>
                     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_type'] === 2) { ?>
                         <form method="post" action="<?php echo site_url('guest/view/approve_quote/' . $quote_url_key); ?>" style="display: inline;">
+                            <?php _csrf_field(); ?>
                             <button type="submit" class="btn btn-success">
                                 <i class="fa fa-check"></i><?php _trans('approve_this_quote'); ?>
                             </button>
                         </form>
                         <form method="post" action="<?php echo site_url('guest/view/reject_quote/' . $quote_url_key); ?>" style="display: inline;">
+                            <?php _csrf_field(); ?>
                             <button type="submit" class="btn btn-danger">
                                 <i class="fa fa-times-circle"></i><?php _trans('reject_this_quote'); ?>
                             </button>
