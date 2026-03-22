@@ -217,6 +217,14 @@
         // Track current CSRF token (will be updated after createOrder)
         let currentCsrfToken = config.csrfTokenValue;
 
+        // Helper function to update CSRF token from server response
+        function updateCsrfToken(order) {
+            if (order.csrfToken) {
+                currentCsrfToken = order.csrfToken;
+            }
+            return order.id;
+        }
+
         // Standard PayPal buttons
         paypal.Buttons({
             createOrder() {
@@ -232,13 +240,7 @@
                     body: formData
                 })
                     .then(response => response.json())
-                    .then(order => {
-                        // Update CSRF token if server sent a new one
-                        if (order.csrfToken) {
-                            currentCsrfToken = order.csrfToken;
-                        }
-                        return order.id;
-                    });
+                    .then(updateCsrfToken);
             },
             onApprove: function(data) {
                 const formData = new URLSearchParams();
@@ -290,13 +292,7 @@
                         body: formData
                     })
                         .then(res => res.json())
-                        .then(order => {
-                            // Update CSRF token if server sent a new one
-                            if (order.csrfToken) {
-                                currentCsrfToken = order.csrfToken;
-                            }
-                            return order.id;
-                        });
+                        .then(updateCsrfToken);
                 },
                 onApprove(data) {
                     const formData = new URLSearchParams();
