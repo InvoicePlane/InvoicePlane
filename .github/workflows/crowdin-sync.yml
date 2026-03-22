@@ -12,9 +12,9 @@ on:
           - download-translations
           - sync-bidirectional
         default: 'download-translations'
-  schedule:
+  # schedule:
     # Run weekly on Sundays at 2:00 AM UTC
-    - cron: '0 2 * * 0'
+    # - cron: '0 2 * * 0'
 
 permissions:
   contents: write
