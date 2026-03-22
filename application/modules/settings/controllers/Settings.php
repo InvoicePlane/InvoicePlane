@@ -249,6 +249,8 @@ class Settings extends Admin_Controller
         // Only execute if the setting is different
         $current_decimal_places = (int) $this->mdl_settings->setting('tax_rate_decimal_places', self::MIN_TAX_RATE_DECIMALS);
         if ($processor->shouldAlterSchema($current_decimal_places, $decimal_places)) {
+            $this->db->trans_begin();
+
             // Note: ALTER TABLE requires direct query execution as Query Builder
             // does not support DDL statements. The integer validation above combined with
             // sprintf using %d ensures the value cannot alter the SQL structure.
@@ -260,6 +262,7 @@ class Settings extends Admin_Controller
             $ddl_result = $this->db->query($ddl_query);
             $ddl_error  = $this->db->error();
             if ($ddl_result === false || (isset($ddl_error['code']) && (int) $ddl_error['code'] !== 0)) {
+                $this->db->trans_rollback();
                 log_message(
                     'error',
                     sprintf(
@@ -274,6 +277,22 @@ class Settings extends Admin_Controller
             }
 
             $this->mdl_settings->save('tax_rate_decimal_places', (string) $decimal_places);
+
+            $save_error = $this->db->error();
+            if (isset($save_error['code']) && (int) $save_error['code'] !== 0) {
+                $this->db->trans_rollback();
+                log_message(
+                    'error',
+                    sprintf(
+                        'Failed to save tax_rate_decimal_places after schema change: %s',
+                        isset($save_error['message']) ? sanitize_for_logging($save_error['message']) : 'unknown'
+                    )
+                );
+                $this->session->set_flashdata('alert_error', trans('failed_to_update_tax_rate_decimal_places'));
+                redirect('settings');
+            }
+
+            $this->db->trans_commit();
         }
 
         // Remove the entry to avoid double-processing in the general settings loop.
