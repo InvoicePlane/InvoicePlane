@@ -219,8 +219,8 @@
 
         // Helper function to update CSRF token from server response
         function updateCsrfToken(order) {
-            if (order.csrfToken) {
-                currentCsrfToken = order.csrfToken;
+            if (order.csrf_token) {
+                currentCsrfToken = order.csrf_token;
             }
             return order.id;
         }

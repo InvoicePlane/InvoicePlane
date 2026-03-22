@@ -19,6 +19,7 @@ class Paypal extends Base_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('file_security');
         $this->_create_client();
     }
 
@@ -61,7 +62,7 @@ class Paypal extends Base_Controller
         
         // Handle JSON decode errors
         if (json_last_error() !== JSON_ERROR_NONE) {
-            log_message('error', 'PayPal createOrder JSON decode error: ' . json_last_error_msg());
+            log_message('error', 'PayPal createOrder JSON decode error: ' . sanitize_for_logging(json_last_error_msg()));
             $this->output
                 ->set_status_header(500)
                 ->set_content_type('application/json')
@@ -73,7 +74,7 @@ class Paypal extends Base_Controller
         $response = [
             'id' => $paypal_response['id'] ?? null,
             'status' => $paypal_response['status'] ?? null,
-            'csrfToken' => $this->security->get_csrf_hash()
+            'csrf_token' => $this->security->get_csrf_hash()
         ];
         
         // Preserve any additional fields from PayPal response
