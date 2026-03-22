@@ -56,7 +56,26 @@ class Paypal extends Base_Controller
             'custom_id'     => $invoice_url_key,
         ]);
 
-        return $this->output->set_output($paypal_client); //TODO: make proper response
+        // Decode the PayPal response
+        $paypal_response = json_decode($paypal_client);
+        
+        // Add refreshed CSRF token to response (token regenerates on each POST)
+        $response = [
+            'id' => $paypal_response->id ?? null,
+            'status' => $paypal_response->status ?? null,
+            'csrfToken' => $this->security->get_csrf_hash()
+        ];
+        
+        // Preserve any additional fields from PayPal response
+        foreach ($paypal_response as $key => $value) {
+            if (!isset($response[$key])) {
+                $response[$key] = $value;
+            }
+        }
+
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
     }
 
     /**

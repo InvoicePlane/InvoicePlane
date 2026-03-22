@@ -214,34 +214,43 @@
             return;
         }
 
+        // Track current CSRF token (will be updated after createOrder)
+        let currentCsrfToken = config.csrfTokenValue;
+
         // Standard PayPal buttons
         paypal.Buttons({
             createOrder() {
-                const csrfData = {};
-                csrfData[config.csrfTokenName] = config.csrfTokenValue;
+                const formData = new URLSearchParams();
+                formData.append(config.csrfTokenName, currentCsrfToken);
                 
                 return fetch(config.createOrderUrl, { 
                     method: "POST",
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify(csrfData)
+                    body: formData
                 })
                     .then(response => response.json())
-                    .then(order => order.id);
+                    .then(order => {
+                        // Update CSRF token if server sent a new one
+                        if (order.csrfToken) {
+                            currentCsrfToken = order.csrfToken;
+                        }
+                        return order.id;
+                    });
             },
             onApprove: function(data) {
-                const csrfData = {};
-                csrfData[config.csrfTokenName] = config.csrfTokenValue;
+                const formData = new URLSearchParams();
+                formData.append(config.csrfTokenName, currentCsrfToken);
                 
                 return fetch(config.capturePaymentUrl + data.orderID, { 
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify(csrfData)
+                    body: formData
                 })
                     .then(response => {
                         if (!response.ok) throw new Error('Capture failed with HTTP ' + response.status);
@@ -269,31 +278,37 @@
 
             const cardFields = paypal.CardFields({
                 createOrder() {
-                    const csrfData = {};
-                    csrfData[config.csrfTokenName] = config.csrfTokenValue;
+                    const formData = new URLSearchParams();
+                    formData.append(config.csrfTokenName, currentCsrfToken);
                     
                     return fetch(config.createOrderUrl, { 
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
-                        body: JSON.stringify(csrfData)
+                        body: formData
                     })
                         .then(res => res.json())
-                        .then(order => order.id);
+                        .then(order => {
+                            // Update CSRF token if server sent a new one
+                            if (order.csrfToken) {
+                                currentCsrfToken = order.csrfToken;
+                            }
+                            return order.id;
+                        });
                 },
                 onApprove(data) {
-                    const csrfData = {};
-                    csrfData[config.csrfTokenName] = config.csrfTokenValue;
+                    const formData = new URLSearchParams();
+                    formData.append(config.csrfTokenName, currentCsrfToken);
                     
                     return fetch(config.capturePaymentUrl + data.orderID, { 
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
-                        body: JSON.stringify(csrfData)
+                        body: formData
                     })
                         .then(res => {
                             if (!res.ok) throw new Error('Capture failed with HTTP ' + res.status);
