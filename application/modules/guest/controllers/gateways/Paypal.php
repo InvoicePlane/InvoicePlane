@@ -19,6 +19,7 @@ class Paypal extends Base_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('file_security');
         $this->_create_client();
     }
 
@@ -32,6 +33,11 @@ class Paypal extends Base_Controller
      */
     public function paypal_create_order($invoice_url_key)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         // Check if the invoice exists and is billable
         $this->load->model('invoices/mdl_invoices');
 
@@ -51,7 +57,46 @@ class Paypal extends Base_Controller
             'custom_id'     => $invoice_url_key,
         ]);
 
-        return $this->output->set_output($paypal_client); //TODO: make proper response
+        // Decode the PayPal response
+        $paypal_response = json_decode($paypal_client, true);
+        
+        // Handle JSON decode errors
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            log_message('error', 'PayPal createOrder JSON decode error for invoice ' . sanitize_for_logging($invoice_url_key) . ': ' . sanitize_for_logging(json_last_error_msg()));
+            $this->output
+                ->set_status_header(500)
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['error' => 'Invalid response from payment gateway']));
+            return;
+        }
+        
+        // Validate required fields from PayPal response
+        if (empty($paypal_response['id'])) {
+            log_message('error', 'PayPal createOrder missing order ID for invoice ' . sanitize_for_logging($invoice_url_key));
+            $this->output
+                ->set_status_header(500)
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['error' => 'Invalid response from payment gateway']));
+            return;
+        }
+        
+        // Add refreshed CSRF token to response (token regenerates on each POST)
+        $response = [
+            'id' => $paypal_response['id'],
+            'status' => $paypal_response['status'] ?? null,
+            'csrf_token' => $this->security->get_csrf_hash()
+        ];
+        
+        // Preserve any additional fields from PayPal response
+        foreach ($paypal_response as $key => $value) {
+            if (!isset($response[$key])) {
+                $response[$key] = $value;
+            }
+        }
+
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
     }
 
     /**
@@ -63,6 +108,11 @@ class Paypal extends Base_Controller
      */
     public function paypal_capture_payment(string $order_id)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $paypal_response = $this->lib_paypal->captureOrder($order_id);
 
         //handle the payment

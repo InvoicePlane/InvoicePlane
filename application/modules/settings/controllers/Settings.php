@@ -16,6 +16,9 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Settings extends Admin_Controller
 {
+    private const MIN_TAX_RATE_DECIMALS = 2;
+    private const MAX_TAX_RATE_DECIMALS = 3;
+
     /**
      * Settings constructor.
      */
@@ -69,14 +72,11 @@ class Settings extends Admin_Controller
         if ($this->input->post('settings')) {
             $settings = $this->input->post('settings');
 
-            // Only execute if the setting is different
-            if ($settings['tax_rate_decimal_places'] != get_setting('tax_rate_decimal_places')) {
-                $this->db->query("
-                    ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent`
-                    DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null");
-            }
+            $settings = $this->handleTaxRateDecimalPlaces($settings);
 
-            // Save the submitted settings :todo:improve: Save In One SQL query : $db_array[$key] = val; •••& @end mdl save $db_array.
+            // Build array of all settings to save in a single batch operation
+            $batch_settings = [];
+
             foreach ($settings as $key => $value) {
                 if (str_contains($key, 'field_is_password') || str_contains($key, 'field_is_amount')) {
                     // Skip all meta fields
@@ -88,22 +88,25 @@ class Settings extends Admin_Controller
                     continue;
                 }
 
-                if (isset($settings[$key . '_field_is_password']) && $value != '') {
+                if (isset($settings[$key . '_field_is_password']) && $value !== '') {
                     // Encrypt passwords but don't save empty passwords
-                    $this->mdl_settings->save($key, $this->crypt->encode(mb_trim($value)));
+                    $batch_settings[$key] = $this->crypt->encode(mb_trim($value));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
-                    $this->mdl_settings->save($key, standardize_amount($value));
+                    $batch_settings[$key] = standardize_amount($value);
                 } else {
-                    $this->mdl_settings->save($key, $value);
+                    $batch_settings[$key] = $value;
                 }
 
-                if ($key == 'number_format') {
+                if ($key === 'number_format') {
                     // Set thousands_separator and decimal_point according to number_format
-                    $this->mdl_settings->save('decimal_point', $number_formats[$value]['decimal_point']);
-                    $this->mdl_settings->save('thousands_separator', $number_formats[$value]['thousands_separator']);
+                    $batch_settings['decimal_point']       = $number_formats[$value]['decimal_point'];
+                    $batch_settings['thousands_separator'] = $number_formats[$value]['thousands_separator'];
                 }
             }
+
+            // Save all settings in a single batch operation (reduces ~30-40 queries to 2-3 queries)
+            $this->mdl_settings->save_batch($batch_settings);
 
             $upload_config = [
                 'upload_path'   => './uploads/',
@@ -210,6 +213,97 @@ class Settings extends Admin_Controller
 
         $this->layout->buffer('content', 'settings/index');
         $this->layout->render();
+    }
+
+    /**
+     * Validate and persist tax rate decimal places setting, including schema changes.
+     *
+     * @param array $settings
+     * @return array Settings array, with tax_rate_decimal_places removed if it was processed.
+     */
+    private function handleTaxRateDecimalPlaces(array $settings): array
+    {
+        if (!array_key_exists('tax_rate_decimal_places', $settings)) {
+            return $settings;
+        }
+
+        $this->load->library('settings/TaxRateDecimalPlacesProcessor', [], 'tax_rate_decimal_places_processor');
+        $processor            = $this->tax_rate_decimal_places_processor;
+        $decimal_places_input = $settings['tax_rate_decimal_places'];
+
+        try {
+            $decimal_places = $processor->validateAndNormalize(
+                $decimal_places_input,
+                self::MIN_TAX_RATE_DECIMALS,
+                self::MAX_TAX_RATE_DECIMALS
+            );
+        } catch (InvalidArgumentException $exception) {
+            log_message(
+                'error',
+                sprintf(
+                    'Invalid tax rate decimal places (must be %d-%d): %s',
+                    self::MIN_TAX_RATE_DECIMALS,
+                    self::MAX_TAX_RATE_DECIMALS,
+                    sanitize_for_logging((string) $decimal_places_input)
+                )
+            );
+            $this->session->set_flashdata('alert_error', trans('invalid_tax_rate_decimal_places'));
+            redirect('settings');
+        }
+
+        // Only execute if the setting is different
+        $current_decimal_places = (int) $this->mdl_settings->setting('tax_rate_decimal_places', self::MIN_TAX_RATE_DECIMALS);
+        if ($processor->shouldAlterSchema($current_decimal_places, $decimal_places)) {
+            $this->db->trans_begin();
+
+            // Note: ALTER TABLE requires direct query execution as Query Builder
+            // does not support DDL statements. The integer validation above combined with
+            // sprintf using %d ensures the value cannot alter the SQL structure.
+            $ddl_query = sprintf(
+                'ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent` DECIMAL(5, %d) NOT NULL',
+                $decimal_places
+            );
+
+            $ddl_result = $this->db->query($ddl_query);
+            $ddl_error  = $this->db->error();
+            if ($ddl_result === false || (isset($ddl_error['code']) && (int) $ddl_error['code'] !== 0)) {
+                $this->db->trans_rollback();
+                log_message(
+                    'error',
+                    sprintf(
+                        'Failed to alter ip_tax_rates for tax_rate_decimal_places=%s (code %s): %s',
+                        sanitize_for_logging((string) $decimal_places),
+                        isset($ddl_error['code']) ? sanitize_for_logging((string) $ddl_error['code']) : 'unknown',
+                        isset($ddl_error['message']) ? sanitize_for_logging($ddl_error['message']) : 'unknown'
+                    )
+                );
+                $this->session->set_flashdata('alert_error', trans('failed_to_update_tax_rate_decimal_places'));
+                redirect('settings');
+            }
+
+            $this->mdl_settings->save('tax_rate_decimal_places', (string) $decimal_places);
+
+            $save_error = $this->db->error();
+            if (isset($save_error['code']) && (int) $save_error['code'] !== 0) {
+                $this->db->trans_rollback();
+                log_message(
+                    'error',
+                    sprintf(
+                        'Failed to save tax_rate_decimal_places after schema change: %s',
+                        isset($save_error['message']) ? sanitize_for_logging($save_error['message']) : 'unknown'
+                    )
+                );
+                $this->session->set_flashdata('alert_error', trans('failed_to_update_tax_rate_decimal_places'));
+                redirect('settings');
+            }
+
+            $this->db->trans_commit();
+        }
+
+        // Remove the entry to avoid double-processing in the general settings loop.
+        unset($settings['tax_rate_decimal_places']);
+
+        return $settings;
     }
 
     /**

@@ -123,8 +123,9 @@ function invoice_recMod10($in): int
  * Returns a QR code for invoice payments.
  *
  * @param number invoice-id
+ * @param number width
  */
-function invoice_qrcode($invoice_id): string
+function invoice_qrcode($invoice_id, $width = 64): string
 {
     $CI = &get_instance();
 
@@ -139,7 +140,13 @@ function invoice_qrcode($invoice_id): string
             $CI->load->library('QrCode', ['invoice' => $invoice]);
             $qrcode_data_uri = $CI->qrcode->generate();
 
-            return '<img src="' . $qrcode_data_uri . '" alt="QR Code" id="invoice-qr-code">';
+            $numeric_width = intval($width);
+            $width = '';
+            if ($numeric_width > 0) {
+                $width = ' width="' . strval($numeric_width) . '"';
+            }
+
+            return '<img src="' . $qrcode_data_uri . '"' . $width . ' alt="QR Code" id="invoice-qr-code">';
         }
     }
 
