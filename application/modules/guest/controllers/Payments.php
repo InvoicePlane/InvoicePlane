@@ -44,8 +44,8 @@ class Payments extends Guest_Controller
         if (!empty($invoice_ids)) {
             $this->mdl_payments->where_in('ip_payments.invoice_id', $invoice_ids);
         } else {
-            // No invoices for this user, so no payments will match
-            $this->mdl_payments->where('1=0');
+            // No invoices for this user, ensure no payments are returned
+            $this->mdl_payments->where('1=0'); // Always false condition - no results
         }
         
         $this->mdl_payments->paginate(site_url('guest/payments/index'), $page);

@@ -17,14 +17,14 @@ if ($quote_tax_rates) {
 <?php
 if (in_array($quote->quote_status_id, [2, 3])) {
 ?>
-            <form method="post" action="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>" style="display: inline;">
+            <form method="post" action="<?php echo site_url('guest/quotes/approve/' . (int)$quote->quote_id); ?>" style="display: inline;">
                 <?php _csrf_field(); ?>
                 <button type="submit" class="btn btn-success">
                     <i class="fa fa-check"></i>
                     <?php _trans('approve_this_quote'); ?>
                 </button>
             </form>
-            <form method="post" action="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>" style="display: inline;">
+            <form method="post" action="<?php echo site_url('guest/quotes/reject/' . (int)$quote->quote_id); ?>" style="display: inline;">
                 <?php _csrf_field(); ?>
                 <button type="submit" class="btn btn-danger">
                     <i class="fa fa-times-circle"></i>
