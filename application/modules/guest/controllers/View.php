@@ -239,15 +239,66 @@ class View extends Base_Controller
     }
 
     /**
+     * Validate guest user has access to a quote by URL key
+     * Returns the quote object if valid, or shows error/404
+     *
+     * @param string $quote_url_key The quote URL key
+     * @return object The quote object
+     */
+    private function validate_guest_quote_access(string $quote_url_key): object
+    {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        // Require authentication as a guest user
+        if (!$this->session->userdata('user_id') || (int)$this->session->userdata('user_type') !== 2) {
+            show_error(trans('guest_account_denied'), 403);
+        }
+
+        $this->load->model('quotes/mdl_quotes');
+        $this->load->model('user_clients/mdl_user_clients');
+
+        // Get guest user's assigned clients
+        $user_clients_result = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
+        $user_clients = [];
+        foreach ($user_clients_result as $user_client) {
+            $user_clients[$user_client->client_id] = $user_client->client_id;
+        }
+
+        if (empty($user_clients)) {
+            show_error(trans('guest_account_denied'), 403);
+        }
+
+        // Verify quote belongs to one of the guest user's assigned clients and is open (status 2-3)
+        $quote = $this->mdl_quotes->is_open()
+            ->where('ip_quotes.quote_url_key', $quote_url_key)
+            ->where_in('ip_quotes.client_id', $user_clients)
+            ->get()->row();
+
+        if ($quote === null) {
+            show_404();
+        }
+
+        return $quote;
+    }
+
+    /**
      * @param $quote_url_key
      */
     public function approve_quote(string $quote_url_key)
     {
-        $this->load->model('quotes/mdl_quotes');
+        $quote = $this->validate_guest_quote_access($quote_url_key);
+
         $this->load->helper('mailer');
 
         $this->mdl_quotes->approve_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, 'approved');
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote->quote_id, 'approved');
+        }
 
         redirect('guest/view/quote/' . $quote_url_key);
     }
@@ -257,11 +308,16 @@ class View extends Base_Controller
      */
     public function reject_quote(string $quote_url_key)
     {
-        $this->load->model('quotes/mdl_quotes');
+        $quote = $this->validate_guest_quote_access($quote_url_key);
+
         $this->load->helper('mailer');
 
         $this->mdl_quotes->reject_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, 'rejected');
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote->quote_id, 'rejected');
+        }
 
         redirect('guest/view/quote/' . $quote_url_key);
     }

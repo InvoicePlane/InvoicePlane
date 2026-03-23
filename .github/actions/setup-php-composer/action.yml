@@ -38,23 +38,11 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-    - name: Resolve composer.lock path
-      id: composer-lock
-      shell: bash
-      run: |
-        wd="${{ inputs.working-directory }}"
-        if [ -z "$wd" ] || [ "$wd" = "." ]; then
-          echo "lockfile=composer.lock" >> "$GITHUB_OUTPUT"
-        else
-          wd="${wd%/}"
-          echo "lockfile=${wd}/composer.lock" >> "$GITHUB_OUTPUT"
-        fi
-
     - name: Cache Composer dependencies
       uses: actions/cache@v4
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles(format('{0}', steps.composer-lock.outputs.lockfile)) }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-composer-
 
@@ -62,43 +50,8 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        set -euo pipefail
-        COMPOSER_ARGS_INPUT="${{ inputs.composer-args }}"
-        COMPOSER_FLAGS_INPUT="${{ inputs.composer-flags }}"
-        export COMPOSER_ARGS_INPUT COMPOSER_FLAGS_INPUT
-
-        if [ -n "$COMPOSER_ARGS_INPUT" ]; then
-          set -o noglob
-          mapfile -t composer_args < <(python - <<'PY'
-import os, shlex, sys
-raw = os.environ.get('COMPOSER_ARGS_INPUT', '')
-try:
-    parts = shlex.split(raw)
-except ValueError as exc:
-    safe_raw = raw.replace("\n", "\\n").replace("\r", "\\r")
-    print(f"Invalid composer-args {safe_raw}: {exc}", file=sys.stderr)
-    sys.exit(1)
-for part in parts:
-    print(part)
-PY
-)
-          set +o noglob
-          composer install "${composer_args[@]}"
+        if [ -n "${{ inputs.composer-args }}" ]; then
+          composer install ${{ inputs.composer-args }}
         else
-          set -o noglob
-          mapfile -t composer_flags < <(python - <<'PY'
-import os, shlex, sys
-raw = os.environ.get('COMPOSER_FLAGS_INPUT', '')
-try:
-    parts = shlex.split(raw)
-except ValueError as exc:
-    safe_raw = raw.replace("\n", "\\n").replace("\r", "\\r")
-    print(f"Invalid composer-flags {safe_raw}: {exc}", file=sys.stderr)
-    sys.exit(1)
-for part in parts:
-    print(part)
-PY
-)
-          set +o noglob
-          composer install "${composer_flags[@]}"
+          composer install ${{ inputs.composer-flags }}
         fi
