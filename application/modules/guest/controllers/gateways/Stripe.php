@@ -41,6 +41,11 @@ class Stripe extends Base_Controller
      */
     public function create_checkout_session($invoice_url_key)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
         // Check if the invoice is payable
