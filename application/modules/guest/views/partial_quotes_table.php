@@ -49,14 +49,14 @@ foreach ($quotes as $quote) {
 <?php
     if (in_array($quote->quote_status_id, [2, 3])) {
 ?>
-                        <form method="post" action="<?php echo htmlsc(site_url('guest/quotes/approve/' . $quote->quote_id)); ?>" style="display: inline;">
-                            <input type="hidden" name="<?php echo htmlsc($this->security->get_csrf_token_name()); ?>" value="<?php echo htmlsc($this->security->get_csrf_hash()); ?>">
+                        <form method="post" action="<?php echo site_url('guest/quotes/approve/' . $quote->quote_id); ?>" style="display: inline;">
+                            <?php _csrf_field(); ?>
                             <button type="submit" class="btn btn-success">
                                 <i class="fa fa-check"></i> <?php _trans('approve'); ?>
                             </button>
                         </form>
-                        <form method="post" action="<?php echo htmlsc(site_url('guest/quotes/reject/' . $quote->quote_id)); ?>" style="display: inline;">
-                            <input type="hidden" name="<?php echo htmlsc($this->security->get_csrf_token_name()); ?>" value="<?php echo htmlsc($this->security->get_csrf_hash()); ?>">
+                        <form method="post" action="<?php echo site_url('guest/quotes/reject/' . $quote->quote_id); ?>" style="display: inline;">
+                            <?php _csrf_field(); ?>
                             <button type="submit" class="btn btn-danger">
                                 <i class="fa fa-ban"></i> <?php _trans('reject'); ?>
                             </button>
