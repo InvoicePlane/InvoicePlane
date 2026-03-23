@@ -74,7 +74,9 @@ class Settings extends Admin_Controller
 
             $settings = $this->handleTaxRateDecimalPlaces($settings);
 
-            // Save the submitted settings :todo:improve: Save In One SQL query : $db_array[$key] = val; •••& @end mdl save $db_array.
+            // Build array of all settings to save in a single batch operation
+            $batch_settings = [];
+
             foreach ($settings as $key => $value) {
                 if (str_contains($key, 'field_is_password') || str_contains($key, 'field_is_amount')) {
                     // Skip all meta fields
@@ -86,22 +88,25 @@ class Settings extends Admin_Controller
                     continue;
                 }
 
-                if (isset($settings[$key . '_field_is_password']) && $value != '') {
+                if (isset($settings[$key . '_field_is_password']) && $value !== '') {
                     // Encrypt passwords but don't save empty passwords
-                    $this->mdl_settings->save($key, $this->crypt->encode(mb_trim($value)));
+                    $batch_settings[$key] = $this->crypt->encode(mb_trim($value));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
-                    $this->mdl_settings->save($key, standardize_amount($value));
+                    $batch_settings[$key] = standardize_amount($value);
                 } else {
-                    $this->mdl_settings->save($key, $value);
+                    $batch_settings[$key] = $value;
                 }
 
-                if ($key == 'number_format') {
+                if ($key === 'number_format') {
                     // Set thousands_separator and decimal_point according to number_format
-                    $this->mdl_settings->save('decimal_point', $number_formats[$value]['decimal_point']);
-                    $this->mdl_settings->save('thousands_separator', $number_formats[$value]['thousands_separator']);
+                    $batch_settings['decimal_point']       = $number_formats[$value]['decimal_point'];
+                    $batch_settings['thousands_separator'] = $number_formats[$value]['thousands_separator'];
                 }
             }
+
+            // Save all settings in a single batch operation (reduces ~30-40 queries to 2-3 queries)
+            $this->mdl_settings->save_batch($batch_settings);
 
             $upload_config = [
                 'upload_path'   => './uploads/',
