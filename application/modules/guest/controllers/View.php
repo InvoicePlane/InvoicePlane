@@ -299,15 +299,6 @@ class View extends Base_Controller
 
         $this->load->helper('mailer');
 
-        // Verify quote exists and is in open status before approving
-        $quote = $this->mdl_quotes->is_open()
-            ->where('ip_quotes.quote_url_key', $quote_url_key)
-            ->get()->row();
-
-        if (!$quote) {
-            show_404();
-        }
-
         $this->mdl_quotes->approve_quote_by_key($quote_url_key);
 
         // Only send email if the update actually changed the quote status
@@ -332,15 +323,6 @@ class View extends Base_Controller
         $quote = $this->validate_guest_quote_access($quote_url_key);
 
         $this->load->helper('mailer');
-
-        // Verify quote exists and is in open status before rejecting
-        $quote = $this->mdl_quotes->is_open()
-            ->where('ip_quotes.quote_url_key', $quote_url_key)
-            ->get()->row();
-
-        if (!$quote) {
-            show_404();
-        }
 
         $this->mdl_quotes->reject_quote_by_key($quote_url_key);
 
