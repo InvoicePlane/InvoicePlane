@@ -15,6 +15,33 @@ if ( ! defined('BASEPATH')) {
  * eInvoicing add-ons by Verony
  */
 /**
+ * Sanitize PDF footer content to prevent remote resource fetching (SSRF) during rendering.
+ *
+ * @param string|null $footer
+ *
+ * @return string
+ */
+function sanitize_pdf_footer_content(?string $footer): string
+{
+    if ($footer === null) {
+        return '';
+    }
+
+    $footer     = str_ireplace(['<br>', '<br/>', '<br />'], "\n", $footer);
+    $normalized = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $footer);
+    $stripped   = strip_tags($normalized);
+    $trimmed    = trim($stripped);
+
+    if ($trimmed === '') {
+        return '';
+    }
+
+    $escaped = htmlspecialchars($trimmed, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+    return nl2br($escaped);
+}
+
+/**
  * Create a PDF.
  *
  * @param      $html
@@ -80,6 +107,9 @@ function pdf_create(
         throw new \RuntimeException(sprintf('Directory "%s" was not created', UPLOADS_ARCHIVE_FOLDER));
     }
 
+    $invoiceFooter = sanitize_pdf_footer_content($CI->mdl_settings->settings['pdf_invoice_footer'] ?? '');
+    $quoteFooter   = sanitize_pdf_footer_content($CI->mdl_settings->settings['pdf_quote_footer'] ?? '');
+
     //Set the default footer that shall always be available for mPDF
     $mpdf->DefHTMLFooterByName('defaultFooter', '');
 
@@ -90,21 +120,21 @@ function pdf_create(
     $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '');
 
     // Set the footer if voucher is invoice and if set in settings
-    if ($isInvoice && ! empty($CI->mdl_settings->settings['pdf_invoice_footer'])) {
+    if ($isInvoice && $invoiceFooter !== '') {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div><div><p align="center">' . str_replace('_', ' ', $filename) . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
-        $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
-        $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
-        $mpdf->DefHTMLFooterByName('html_footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div>');
+        $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $invoiceFooter . '</div><div><p align="center">' . str_replace('_', ' ', $filename) . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
+        $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $invoiceFooter . '</div>');
+        $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $invoiceFooter . '</div>');
+        $mpdf->DefHTMLFooterByName('html_footer', '<div id="footer">' . $invoiceFooter . '</div>');
     }
 
     // Set the footer if voucher is quote and if set in settings
-    if ( ! $isInvoice && ! empty($CI->mdl_settings->settings['pdf_quote_footer'])) {
+    if ( ! $isInvoice && $quoteFooter !== '') {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $CI->mdl_settings->settings['pdf_invoice_footer'] . '</div><div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
-        $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
-        $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
-        $mpdf->DefHTMLFooterByName('html_footer', '<div id="footer">' . $CI->mdl_settings->settings['pdf_quote_footer'] . '</div>');
+        $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $invoiceFooter . '</div><div id="footer">' . $quoteFooter . '</div>');
+        $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $quoteFooter . '</div>');
+        $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $quoteFooter . '</div>');
+        $mpdf->DefHTMLFooterByName('html_footer', '<div id="footer">' . $quoteFooter . '</div>');
     }
 
     // Watermark (eInvoicing++ PDFA and PDFX do not permit transparency, so mPDF does not allow Watermarks!)
