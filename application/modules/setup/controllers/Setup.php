@@ -130,7 +130,7 @@ class Setup extends MX_Controller
             if ($setupCompleted) {
                 $this->errors += 1;
                 $check_database = [
-                    'message' => trans('setup_db_cannot_connect') . ' (setup locked: configuration changes disabled after completion)',
+                    'message' => 'Setup is locked: configuration changes are disabled after completion.',
                     'success' => false,
                 ];
             } else {
@@ -139,7 +139,7 @@ class Setup extends MX_Controller
                 if ($port === null) {
                     $this->errors += 1;
                     $check_database = [
-                        'message' => trans('setup_db_cannot_connect') . ' (port must be between 1-65535)',
+                        'message' => 'Invalid database port: must be between 1 and 65535.',
                         'success' => false,
                     ];
                 } else {
