@@ -16,13 +16,17 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Setup extends MX_Controller
 {
-    public $errors = 0;
+    public int $errors = 0;
 
     /**
      * Setup constructor.
      */
     public function __construct()
     {
+        if (env_bool('SETUP_COMPLETED', false)) {
+            show_error('Setup is already completed. To reconfigure, set SETUP_COMPLETED=false in your environment configuration.', 403);
+        }
+
         if (env_bool('DISABLE_SETUP', false)) {
             show_error('The setup is disabled.', 403);
         }
@@ -33,6 +37,7 @@ class Setup extends MX_Controller
 
         $this->load->helper('file');
         $this->load->helper('directory');
+        $this->load->helper('file_security');
         $this->load->helper('url');
         $this->load->helper('language');
         $this->load->helper('trans');
@@ -124,18 +129,39 @@ class Setup extends MX_Controller
         }
 
         if ($this->input->post('db_hostname')) {
-            // Write a new database configuration to the ipconfig.php file
-            $this->write_database_config(
-                $this->input->post('db_hostname'),
-                $this->input->post('db_username'),
-                $this->input->post('db_password'),
-                $this->input->post('db_database'),
-                $this->input->post('db_port')
-            );
-        }
+            $port = sanitize_database_port($this->input->post('db_port'));
 
-        // Check if the set credentials are correct
-        $check_database = $this->check_database();
+            if ($port === null) {
+                $this->errors += 1;
+                $check_database = [
+                    'message' => trans('setup_db_cannot_connect') . ' (port must be between 1-65535)',
+                    'success' => false,
+                ];
+            } else {
+                $submitted_configuration = [
+                    'hostname' => sanitize_database_config_value($this->input->post('db_hostname')),
+                    'username' => sanitize_database_config_value($this->input->post('db_username')),
+                    'password' => sanitize_database_config_value($this->input->post('db_password')),
+                    'database' => sanitize_database_config_value($this->input->post('db_database')),
+                    'port'     => $port,
+                ];
+
+                $check_database = $this->check_database($submitted_configuration);
+            }
+
+            if ($check_database['success']) {
+                // Write a new database configuration to the ipconfig.php file
+                $this->write_database_config(
+                    $submitted_configuration['hostname'],
+                    $submitted_configuration['username'],
+                    $submitted_configuration['password'],
+                    $submitted_configuration['database'],
+                    $submitted_configuration['port']
+                );
+            }
+        } else {
+            $check_database = $this->check_database();
+        }
 
         $this->layout->set('database', $check_database);
         $this->layout->set('errors', $this->errors);
@@ -398,15 +424,21 @@ class Setup extends MX_Controller
         write_file(IPCONFIG_FILE, $config);
     }
 
-    private function check_database(): array
+    private function check_database(?array $configuration = null): array
     {
-        // Reload the ipconfig.php file
-        global $dotenv;
-        $dotenv->load();
-
-        // Load the database config and configure it to test the connection
         include APPPATH . 'config/database.php';
-        $db             = $db['default'];
+
+        if ($configuration === null) {
+            // Reload the ipconfig.php file
+            global $dotenv;
+            $dotenv->load();
+
+            // Load the database config and configure it to test the connection
+            $db = $db['default'];
+        } else {
+            $db = array_merge($db['default'], $configuration);
+        }
+
         $db['autoinit'] = false;
         $db['db_debug'] = false;
 
