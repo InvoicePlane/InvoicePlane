@@ -143,11 +143,16 @@ class Setup extends MX_Controller
                         'success' => false,
                     ];
                 } else {
+                    $hostname = sanitize_database_config_value(trim((string) $this->input->post('db_hostname')));
+                    $username = sanitize_database_config_value(trim((string) $this->input->post('db_username')));
+                    $password = sanitize_database_config_value($this->input->post('db_password'));
+                    $database = sanitize_database_config_value(trim((string) $this->input->post('db_database')));
+
                     $submitted_configuration = [
-                        'hostname' => sanitize_database_config_value($this->input->post('db_hostname')),
-                        'username' => sanitize_database_config_value($this->input->post('db_username')),
-                        'password' => sanitize_database_config_value($this->input->post('db_password')),
-                        'database' => sanitize_database_config_value($this->input->post('db_database')),
+                        'hostname' => $hostname,
+                        'username' => $username,
+                        'password' => $password,
+                        'database' => $database,
                         'port'     => $port,
                     ];
 
@@ -421,29 +426,48 @@ class Setup extends MX_Controller
     {
         $config = file_get_contents(IPCONFIG_FILE);
 
-        $config = preg_replace('/DB_HOSTNAME=(.*)?/', "DB_HOSTNAME='" . $hostname . "'", $config);
-        $config = preg_replace('/DB_USERNAME=(.*)?/', "DB_USERNAME='" . $username . "'", $config);
-        $config = preg_replace('/DB_PASSWORD=(.*)?/', "DB_PASSWORD='" . $password . "'", $config);
-        $config = preg_replace('/DB_DATABASE=(.*)?/', "DB_DATABASE='" . $database . "'", $config);
-        $config = preg_replace('/DB_PORT=(.*)?/', 'DB_PORT=' . $port, $config);
+        $config = preg_replace_callback(
+            '/^DB_HOSTNAME=.*$/m',
+            static fn () => 'DB_HOSTNAME="' . addcslashes($hostname, "\\\"$") . '"',
+            $config
+        );
+        $config = preg_replace_callback(
+            '/^DB_USERNAME=.*$/m',
+            static fn () => 'DB_USERNAME="' . addcslashes($username, "\\\"$") . '"',
+            $config
+        );
+        $config = preg_replace_callback(
+            '/^DB_PASSWORD=.*$/m',
+            static fn () => 'DB_PASSWORD="' . addcslashes($password, "\\\"$") . '"',
+            $config
+        );
+        $config = preg_replace_callback(
+            '/^DB_DATABASE=.*$/m',
+            static fn () => 'DB_DATABASE="' . addcslashes($database, "\\\"$") . '"',
+            $config
+        );
+        $config = preg_replace_callback(
+            '/^DB_PORT=.*$/m',
+            static fn () => 'DB_PORT=' . $port,
+            $config
+        );
 
         write_file(IPCONFIG_FILE, $config);
     }
 
     private function check_database(?array $configuration = null): array
     {
+        // Reload the ipconfig.php file before resolving env-dependent config
+        global $dotenv;
+        if (isset($dotenv)) {
+            $dotenv->load();
+        }
+
         include APPPATH . 'config/database.php';
 
-        if ($configuration === null) {
-            // Reload the ipconfig.php file
-            global $dotenv;
-            $dotenv->load();
-
-            // Load the database config and configure it to test the connection
-            $db = $db['default'];
-        } else {
-            $db = array_merge($db['default'], $configuration);
-        }
+        $db = $configuration === null
+            ? $db['default']
+            : array_merge($db['default'], $configuration);
 
         $db['autoinit'] = false;
         $db['db_debug'] = false;

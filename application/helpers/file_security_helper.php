@@ -165,7 +165,7 @@ function sanitize_for_logging(string $value): string
 /**
  * Sanitize configuration values written to configuration files.
  *
- * Removes control characters and trims whitespace to prevent injection issues.
+ * Removes control characters to prevent injection issues.
  *
  * @param string|null $value
  *
@@ -173,9 +173,7 @@ function sanitize_for_logging(string $value): string
  */
 function sanitize_database_config_value(?string $value): string
 {
-    $trimmed = trim((string) $value);
-
-    return preg_replace('/[\x00-\x1F\x7F]+/', '', $trimmed);
+    return preg_replace('/[\x00-\x1F\x7F]+/', '', (string) $value);
 }
 
 /**
@@ -193,17 +191,22 @@ function sanitize_database_port(string|int|null $value): ?int
         return DEFAULT_DATABASE_PORT;
     }
 
-    if (!is_numeric($value)) {
+    $validated = filter_var(
+        $value,
+        FILTER_VALIDATE_INT,
+        [
+            'options' => [
+                'min_range' => 1,
+                'max_range' => 65535,
+            ],
+        ]
+    );
+
+    if ($validated === false) {
         return null;
     }
 
-    $port = (int) $value;
-
-    if ($port < 1 || $port > 65535) {
-        return null;
-    }
-
-    return $port;
+    return (int) $validated;
 }
 
 /**
@@ -289,4 +292,3 @@ function respond_file_message(int $httpCode, string $messageKey, string $dynamic
 
     exit;
 }
-const DEFAULT_DATABASE_PORT = 3306;
