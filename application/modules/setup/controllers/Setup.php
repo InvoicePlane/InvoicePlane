@@ -23,10 +23,6 @@ class Setup extends MX_Controller
      */
     public function __construct()
     {
-        if (env_bool('SETUP_COMPLETED', false)) {
-            show_error('Setup is already completed. To reconfigure, set SETUP_COMPLETED=false in your environment configuration.', 403);
-        }
-
         if (env_bool('DISABLE_SETUP', false)) {
             show_error('The setup is disabled.', 403);
         }
@@ -112,6 +108,8 @@ class Setup extends MX_Controller
             redirect('setup/prerequisites');
         }
 
+        $setupCompleted = env_bool('SETUP_COMPLETED', false);
+
         if ($this->input->post('btn_continue')) {
             $this->load_ci_database();
 
@@ -129,24 +127,32 @@ class Setup extends MX_Controller
         }
 
         if ($this->input->post('db_hostname')) {
-            $port = sanitize_database_port($this->input->post('db_port'));
-
-            if ($port === null) {
+            if ($setupCompleted) {
                 $this->errors += 1;
                 $check_database = [
-                    'message' => trans('setup_db_cannot_connect') . ' (port must be between 1-65535)',
+                    'message' => trans('setup_db_cannot_connect') . ' (setup locked: configuration changes disabled after completion)',
                     'success' => false,
                 ];
             } else {
-                $submitted_configuration = [
-                    'hostname' => sanitize_database_config_value($this->input->post('db_hostname')),
-                    'username' => sanitize_database_config_value($this->input->post('db_username')),
-                    'password' => sanitize_database_config_value($this->input->post('db_password')),
-                    'database' => sanitize_database_config_value($this->input->post('db_database')),
-                    'port'     => $port,
-                ];
+                $port = sanitize_database_port($this->input->post('db_port'));
 
-                $check_database = $this->check_database($submitted_configuration);
+                if ($port === null) {
+                    $this->errors += 1;
+                    $check_database = [
+                        'message' => trans('setup_db_cannot_connect') . ' (port must be between 1-65535)',
+                        'success' => false,
+                    ];
+                } else {
+                    $submitted_configuration = [
+                        'hostname' => sanitize_database_config_value($this->input->post('db_hostname')),
+                        'username' => sanitize_database_config_value($this->input->post('db_username')),
+                        'password' => sanitize_database_config_value($this->input->post('db_password')),
+                        'database' => sanitize_database_config_value($this->input->post('db_database')),
+                        'port'     => $port,
+                    ];
+
+                    $check_database = $this->check_database($submitted_configuration);
+                }
             }
 
             if ($check_database['success']) {
