@@ -29,16 +29,54 @@ function sanitize_pdf_footer_content(?string $footer): string
 
     $footer     = str_ireplace(['<br>', '<br/>', '<br />'], "\n", $footer);
     $normalized = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $footer);
-    $stripped   = strip_tags($normalized);
-    $trimmed    = trim($stripped);
 
-    if ($trimmed === '') {
-        return '';
+    $allowedTags = ['b', 'strong', 'i', 'em', 'u', 'p', 'br', 'small', 'span', 'div'];
+
+    $previousInternalErrors = libxml_use_internal_errors(true);
+    $dom                    = new DOMDocument('1.0', 'UTF-8');
+
+    $dom->loadHTML('<?xml encoding="utf-8"?><div id="ip-footer-wrapper">' . $normalized . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+    $cleanNode = static function (DOMNode $node) use (&$cleanNode, $allowedTags): void {
+        /** @var DOMNode $child */
+        foreach (iterator_to_array($node->childNodes) as $child) {
+            if ($child instanceof DOMElement) {
+                $tagName = strtolower($child->tagName);
+
+                if ( ! in_array($tagName, $allowedTags, true)) {
+                    $node->removeChild($child);
+                    continue;
+                }
+
+                while ($child->attributes->length > 0) {
+                    $child->removeAttributeNode($child->attributes->item(0));
+                }
+
+                $cleanNode($child);
+            }
+        }
+    };
+
+    $container = $dom->getElementById('ip-footer-wrapper');
+
+    if ($container !== null) {
+        $cleanNode($container);
     }
 
-    $escaped = htmlspecialchars($trimmed, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $sanitized = '';
 
-    return nl2br($escaped);
+    if ($container !== null) {
+        foreach ($container->childNodes as $child) {
+            $sanitized .= $dom->saveHTML($child);
+        }
+    }
+
+    libxml_clear_errors();
+    libxml_use_internal_errors($previousInternalErrors);
+
+    $trimmed = trim($sanitized);
+
+    return $trimmed === '' ? '' : $trimmed;
 }
 
 /**
