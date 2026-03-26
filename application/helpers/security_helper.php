@@ -40,7 +40,14 @@ function generate_secure_token(int $length = 32): string
         return bin2hex($randomBytes);
     } catch (Exception $e) {
         // This should never happen with PHP 7.0+ or random_compat library
-        log_message('error', 'Failed to generate secure random token: ' . $e->getMessage());
+        // Load file_security_helper for sanitization
+        if (function_exists('sanitize_for_logging')) {
+            $safeMessage = sanitize_for_logging($e->getMessage());
+        } else {
+            // Fallback if helper not loaded - remove control characters
+            $safeMessage = str_replace(["\r", "\n"], '', $e->getMessage());
+        }
+        log_message('error', 'Failed to generate secure random token: ' . $safeMessage);
         throw new RuntimeException('Unable to generate secure random token');
     }
 }
@@ -80,7 +87,14 @@ function generate_secure_salt(): string
 
         return substr($base64, 0, 22);
     } catch (Exception $e) {
-        log_message('error', 'Failed to generate secure salt: ' . $e->getMessage());
+        // Load file_security_helper for sanitization
+        if (function_exists('sanitize_for_logging')) {
+            $safeMessage = sanitize_for_logging($e->getMessage());
+        } else {
+            // Fallback if helper not loaded - remove control characters
+            $safeMessage = str_replace(["\r", "\n"], '', $e->getMessage());
+        }
+        log_message('error', 'Failed to generate secure salt: ' . $safeMessage);
         throw new RuntimeException('Unable to generate secure salt');
     }
 }
