@@ -32,6 +32,7 @@ function phpmail_send(
 ) {
     $CI = &get_instance();
     $CI->load->library('crypt');
+    $CI->load->helper('file_security');
 
     // Create the basic mailer object
     $mail          = new \PHPMailer\PHPMailer\PHPMailer();
@@ -41,11 +42,29 @@ function phpmail_send(
     // Set msg from PHPMailer in user lang. Only work with 2 letters. See phpmailer.lang-fr.php (in vendor dir).
     $mail->setLanguage(trans('cldr')); // Default ($langcode = 'en', $lang_path = '')
 
+    // Log email sending attempt when debug is enabled
+    if (env_bool('ENABLE_DEBUG')) {
+        $to_log = is_array($to) ? implode(', ', $to) : $to;
+        log_message('debug', '[PHPMailer] Initiating email send to: ' . sanitize_for_logging($to_log));
+    }
+
     switch (get_setting('email_send_method')) {
         case 'smtp':
             $mail->isSMTP();
-            $mail->SMTPDebug   = env_bool('ENABLE_DEBUG') ? 2 : 0;
-            $mail->Debugoutput = env_bool('ENABLE_DEBUG') ? 'echo' : 'error_log';
+            
+            // Configure SMTP debugging to use CodeIgniter logging
+            if (env_bool('ENABLE_DEBUG')) {
+                $mail->SMTPDebug   = 2; // Verbose SMTP debugging
+                // Use a custom callable to log SMTP debug output to CodeIgniter logs
+                $mail->Debugoutput = function($str, $level) {
+                    // PHPMailer debug levels: 1=client, 2=client+server, 3=client+server+connection, 4=low-level
+                    // Map to CodeIgniter log levels
+                    $log_level = ($level <= 2) ? 'debug' : 'info';
+                    log_message($log_level, '[PHPMailer SMTP] ' . trim($str));
+                };
+            } else {
+                $mail->SMTPDebug   = 0;
+            }
 
             // Set the basic properties
             $mail->Host = get_setting('smtp_server_address');
@@ -75,6 +94,17 @@ function phpmail_send(
                         'allow_self_signed' => true,
                     ],
                 ];
+            }
+
+            // Log SMTP configuration when debug is enabled
+            if (env_bool('ENABLE_DEBUG')) {
+                log_message('debug', sprintf(
+                    '[PHPMailer] SMTP Configuration - Host: %s, Port: %s, Security: %s, Auth: %s',
+                    sanitize_for_logging($mail->Host),
+                    sanitize_for_logging((string)$mail->Port),
+                    sanitize_for_logging($mail->SMTPSecure ?: 'none'),
+                    $mail->SMTPAuth ? 'enabled' : 'disabled'
+                ));
             }
 
             break;
@@ -171,9 +201,18 @@ function phpmail_send(
         unlink($xml_file);
     }
 
-    // Only Notify the error. The success is in mailer controller.
+    // Log the result
     if ( ! $ok) {
+        // Log error with details for debugging
+        log_message('error', sprintf(
+            '[PHPMailer] Failed to send email. Error: %s',
+            sanitize_for_logging($mail->ErrorInfo)
+        ));
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+    } elseif (env_bool('ENABLE_DEBUG')) {
+        // Log success only when debug is enabled to avoid cluttering logs
+        $to_log = is_array($to) ? implode(', ', $to) : $to;
+        log_message('debug', '[PHPMailer] Email sent successfully to: ' . sanitize_for_logging($to_log));
     }
 
     return $ok;
