@@ -205,28 +205,31 @@ function phpmail_send(
         unlink($xml_file);
     }
 
-    // Log the result
-    if ($ok) {
-        if (env_bool('ENABLE_DEBUG')) {
-            // Format recipient list for logging
-            $recipient_list = 'unknown';
-            if (is_array($to)) {
-                $recipient_list = implode(', ', $to);
-            } elseif (is_string($to)) {
-                $recipient_list = $to;
-            }
-            
-            log_message('debug', 'PHPMailer: Email sent successfully to ' . 
-                sanitize_for_logging($recipient_list));
-        }
-    } else {
+    // Log the result - handle failure case first (early return pattern)
+    if ( ! $ok) {
         // Log the error with sanitized ErrorInfo
         log_message('error', 'PHPMailer: Email sending failed - ' . 
             sanitize_for_logging($mail->ErrorInfo));
         
         // Set flashdata for user notification
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+        
+        return false;
+    }
+    
+    // Log success if debug is enabled
+    if (env_bool('ENABLE_DEBUG')) {
+        // Format recipient list for logging
+        $recipient_list = 'unknown';
+        if (is_array($to)) {
+            $recipient_list = implode(', ', $to);
+        } elseif (is_string($to)) {
+            $recipient_list = $to;
+        }
+        
+        log_message('debug', 'PHPMailer: Email sent successfully to ' . 
+            sanitize_for_logging($recipient_list));
     }
 
-    return $ok;
+    return true;
 }
