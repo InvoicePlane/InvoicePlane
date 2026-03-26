@@ -21,6 +21,24 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
+ * Sanitize exception message for logging to prevent log injection.
+ *
+ * @param string $message The exception message to sanitize
+ *
+ * @return string The sanitized message
+ */
+function sanitize_exception_for_logging(string $message): string
+{
+    // Try to use file_security_helper if loaded
+    if (function_exists('sanitize_for_logging')) {
+        return sanitize_for_logging($message);
+    }
+
+    // Fallback: Remove control characters to prevent log injection
+    return str_replace(["\r", "\n"], '', $message);
+}
+
+/**
  * Generate a cryptographically secure random token.
  *
  * Uses PHP's random_bytes() with fallback to paragonie/random_compat for older PHP versions.
@@ -38,15 +56,10 @@ function generate_secure_token(int $length = 32): string
 
         // Convert to hexadecimal for safe storage and transmission
         return bin2hex($randomBytes);
-    } catch (Exception $e) {
+    } catch (Exception | Error $e) {
         // This should never happen with PHP 7.0+ or random_compat library
-        // Load file_security_helper for sanitization
-        if (function_exists('sanitize_for_logging')) {
-            $safeMessage = sanitize_for_logging($e->getMessage());
-        } else {
-            // Fallback if helper not loaded - remove control characters
-            $safeMessage = str_replace(["\r", "\n"], '', $e->getMessage());
-        }
+        // Catch both Exception and Error for comprehensive coverage
+        $safeMessage = sanitize_exception_for_logging($e->getMessage());
         log_message('error', 'Failed to generate secure random token: ' . $safeMessage);
         throw new RuntimeException('Unable to generate secure random token');
     }
@@ -86,14 +99,9 @@ function generate_secure_salt(): string
         $base64 = base64_encode($randomBytes);
 
         return substr($base64, 0, 22);
-    } catch (Exception $e) {
-        // Load file_security_helper for sanitization
-        if (function_exists('sanitize_for_logging')) {
-            $safeMessage = sanitize_for_logging($e->getMessage());
-        } else {
-            // Fallback if helper not loaded - remove control characters
-            $safeMessage = str_replace(["\r", "\n"], '', $e->getMessage());
-        }
+    } catch (Exception | Error $e) {
+        // Catch both Exception and Error for comprehensive coverage
+        $safeMessage = sanitize_exception_for_logging($e->getMessage());
         log_message('error', 'Failed to generate secure salt: ' . $safeMessage);
         throw new RuntimeException('Unable to generate secure salt');
     }
