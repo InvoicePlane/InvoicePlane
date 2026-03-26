@@ -938,6 +938,30 @@ div.table-content {
       font-size: $font-size-large;
       margin-bottom: 1rem;
     }
+    
+    #loader-error-icon {
+      width: 200px;
+      height: 200px;
+      display: none;
+    }
+    
+    .loader-error-message {
+      .alert {
+        display: inline-block;
+        max-width: 600px;
+        margin: 20px auto;
+        text-align: left;
+        
+        strong {
+          display: block;
+          margin-bottom: 0;
+        }
+        
+        > div {
+          margin-top: 15px;
+        }
+      }
+    }
   }
 
   .fullpage-loader-close {
