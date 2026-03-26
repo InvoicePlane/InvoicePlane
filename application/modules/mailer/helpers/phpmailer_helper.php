@@ -206,7 +206,7 @@ function phpmail_send(
     }
 
     // Log the result - handle failure case first (early return pattern)
-    if ( ! $ok) {
+    if (!$ok) {
         // Log the error with sanitized ErrorInfo
         log_message('error', 'PHPMailer: Email sending failed - ' . 
             sanitize_for_logging($mail->ErrorInfo));
