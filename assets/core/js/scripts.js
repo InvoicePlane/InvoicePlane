@@ -456,9 +456,11 @@ $(function () {
     window.fullpage_loader = $('#fullpage-loader');
     window.loader_error = $('#loader-error');
     window.loader_icon = $('#loader-icon');
+    window.loader_error_icon = $('#loader-error-icon');
     window.reset_loader = function () {
         loader_error.hide();
-        loader_icon.addClass('fa-spin').removeClass('text-danger');
+        loader_error_icon.hide();
+        loader_icon.show().addClass('fa-spin').removeClass('text-danger');
         clearTimeout(window.fullpageloaderTimeout);
     }
     window.close_loader = function () {
@@ -472,8 +474,9 @@ $(function () {
         // Show
         fullpage_loader.fadeIn(200);
         window.fullpageloaderTimeout = window.setTimeout(function () {
+            loader_icon.hide();
+            loader_error_icon.fadeIn(200);
             loader_error.fadeIn(200);
-            loader_icon.removeClass('fa-spin').addClass('text-danger');
         }, timeout);
     }
 
