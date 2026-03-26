@@ -18,6 +18,9 @@ if ( ! defined('BASEPATH')) {
  * Logs debug messages to CodeIgniter's log files instead of echoing to output
  * This prevents AJAX requests from breaking due to unexpected output
  *
+ * Note: The file_security helper must be loaded before PHPMailer is configured.
+ * This is handled in phpmail_send() which loads the helper at initialization.
+ *
  * @param string $str   Debug message from PHPMailer
  * @param int    $level Debug level (not currently used by PHPMailer)
  *
@@ -25,11 +28,9 @@ if ( ! defined('BASEPATH')) {
  */
 function phpmailer_debug_output(string $str, int $level = 0): void
 {
-    // Load the file_security_helper to use sanitize_for_logging
-    $CI = &get_instance();
-    $CI->load->helper('file_security');
-    
     // Sanitize the debug output before logging to prevent log injection
+    // Note: sanitize_for_logging is available because file_security helper
+    // is loaded at the start of phpmail_send()
     $sanitized = sanitize_for_logging($str);
     
     // Log with 'debug' level so it respects log_threshold setting
@@ -207,8 +208,16 @@ function phpmail_send(
     // Log the result
     if ($ok) {
         if (env_bool('ENABLE_DEBUG')) {
+            // Format recipient list for logging
+            $recipient_list = 'unknown';
+            if (is_array($to)) {
+                $recipient_list = implode(', ', $to);
+            } elseif (is_string($to)) {
+                $recipient_list = $to;
+            }
+            
             log_message('debug', 'PHPMailer: Email sent successfully to ' . 
-                sanitize_for_logging(is_array($to) ? implode(', ', $to) : $to));
+                sanitize_for_logging($recipient_list));
         }
     } else {
         // Log the error with sanitized ErrorInfo
