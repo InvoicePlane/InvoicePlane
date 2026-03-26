@@ -11,6 +11,9 @@
 // For: fieldset, quick-actions, sidebar, #main-content, #headerbar & div.table .file-row > div
 $ip_border_base: 1px solid #ddd;
 
+// Fullpage loader error message maximum width
+$loader-error-max-width: 600px;
+
 /*
 |   =========================================================
 |   BS3 fix block table .collapse.in e-invoice in client view
@@ -948,7 +951,7 @@ div.table-content {
     .loader-error-message {
       .alert {
         display: inline-block;
-        max-width: 600px;
+        max-width: $loader-error-max-width;
         margin: 20px auto;
         text-align: left;
         
