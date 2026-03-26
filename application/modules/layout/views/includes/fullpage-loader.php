@@ -6,7 +6,7 @@
         <div id="loader-error" class="loader-error-message" style="display: none">
             <div class="alert alert-danger">
                 <strong><i class="fa fa-exclamation-triangle"></i> <?php _trans('loading_error'); ?></strong>
-                <div>
+                <div class="loader-error-actions">
                     <a href="https://wiki.invoiceplane.com/<?php _trans('cldr'); ?>/1.0/general/faq"
                        class="btn btn-primary btn-sm" target="_blank">
                         <i class="fa fa-support"></i> <?php _trans('loading_error_help'); ?>
