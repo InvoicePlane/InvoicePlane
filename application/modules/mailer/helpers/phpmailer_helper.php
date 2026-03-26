@@ -59,6 +59,7 @@ function phpmail_send(
                 $mail->Debugoutput = function($str, $level) {
                     // PHPMailer debug levels: 1=client, 2=client+server, 3=connection, 4=low-level
                     // All SMTP debug output is logged as 'debug' level since it's only enabled in debug mode
+                    // The $level parameter is required by PHPMailer but not used here
                     // Sanitize debug output to prevent log injection
                     log_message('debug', '[PHPMailer SMTP] ' . sanitize_for_logging(trim($str)));
                 };
