@@ -211,8 +211,8 @@ function phpmail_send(
         log_message('error', 'PHPMailer: Email sending failed - ' . 
             sanitize_for_logging($mail->ErrorInfo));
         
-        // Set flashdata for user notification
-        $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
+        // Sanitize error message before storing in flashdata to prevent XSS
+        $CI->session->set_flashdata('alert_error', html_escape($mail->ErrorInfo));
         
         return false;
     }
