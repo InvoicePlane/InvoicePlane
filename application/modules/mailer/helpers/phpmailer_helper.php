@@ -12,6 +12,30 @@ if ( ! defined('BASEPATH')) {
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
+
+/**
+ * Custom debug output function for PHPMailer
+ * Logs debug messages to CodeIgniter's log files instead of echoing to output
+ * This prevents AJAX requests from breaking due to unexpected output
+ *
+ * @param string $str   Debug message from PHPMailer
+ * @param int    $level Debug level (not currently used by PHPMailer)
+ *
+ * @return void
+ */
+function phpmailer_debug_output(string $str, int $level = 0): void
+{
+    // Load the file_security_helper to use sanitize_for_logging
+    $CI = &get_instance();
+    $CI->load->helper('file_security');
+    
+    // Sanitize the debug output before logging to prevent log injection
+    $sanitized = sanitize_for_logging($str);
+    
+    // Log with 'debug' level so it respects log_threshold setting
+    log_message('debug', 'PHPMailer: ' . $sanitized);
+}
+
 /**
  * @param $from
  * @param $to
@@ -32,6 +56,7 @@ function phpmail_send(
 ) {
     $CI = &get_instance();
     $CI->load->library('crypt');
+    $CI->load->helper('file_security');
 
     // Create the basic mailer object
     $mail          = new \PHPMailer\PHPMailer\PHPMailer();
@@ -44,12 +69,20 @@ function phpmail_send(
     switch (get_setting('email_send_method')) {
         case 'smtp':
             $mail->isSMTP();
+            // Enable debug output: 0 = off, 1 = client messages, 2 = client and server messages
             $mail->SMTPDebug   = env_bool('ENABLE_DEBUG') ? 2 : 0;
-            $mail->Debugoutput = env_bool('ENABLE_DEBUG') ? 'echo' : 'error_log';
+            // Use custom callable function to log to CodeIgniter logs instead of echo/error_log
+            $mail->Debugoutput = 'phpmailer_debug_output';
 
             // Set the basic properties
             $mail->Host = get_setting('smtp_server_address');
             $mail->Port = get_setting('smtp_port');
+            
+            // Log SMTP connection attempt
+            if (env_bool('ENABLE_DEBUG')) {
+                log_message('debug', 'PHPMailer: Attempting SMTP connection to ' . 
+                    sanitize_for_logging($mail->Host) . ':' . $mail->Port);
+            }
 
             // Is SMTP authentication required?
             if (get_setting('smtp_authentication')) {
@@ -171,8 +204,18 @@ function phpmail_send(
         unlink($xml_file);
     }
 
-    // Only Notify the error. The success is in mailer controller.
-    if ( ! $ok) {
+    // Log the result
+    if ($ok) {
+        if (env_bool('ENABLE_DEBUG')) {
+            log_message('debug', 'PHPMailer: Email sent successfully to ' . 
+                sanitize_for_logging(is_array($to) ? implode(', ', $to) : $to));
+        }
+    } else {
+        // Log the error with sanitized ErrorInfo
+        log_message('error', 'PHPMailer: Email sending failed - ' . 
+            sanitize_for_logging($mail->ErrorInfo));
+        
+        // Set flashdata for user notification
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
     }
 
