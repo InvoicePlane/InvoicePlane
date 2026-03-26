@@ -220,9 +220,9 @@ class Sessions extends Base_Controller
             // This prevents email enumeration attacks
             if ($user) {
                 // User exists - send actual reset email
-                //use salt to prevent predictability of the reset token (CVE-2021-29023)
-                $this->load->library('crypt');
-                $token = md5(time() . $email . $this->crypt->salt());
+                // Use cryptographically secure token generation (fixes CVE-2021-29023)
+                $this->load->helper('security');
+                $token = generate_password_reset_token();
 
                 // Save the token to the database
                 $db_array = [

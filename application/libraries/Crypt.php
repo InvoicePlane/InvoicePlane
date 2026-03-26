@@ -18,7 +18,11 @@ class Crypt
 {
     public function salt(): string
     {
-        return substr(sha1(mt_rand()), 0, 22);
+        // Load security helper for cryptographically secure token generation
+        $CI = &get_instance();
+        $CI->load->helper('security');
+
+        return generate_secure_salt();
     }
 
     /**
