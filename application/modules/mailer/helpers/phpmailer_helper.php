@@ -57,11 +57,10 @@ function phpmail_send(
                 $mail->SMTPDebug   = 2; // Verbose SMTP debugging
                 // Use a custom callable to log SMTP debug output to CodeIgniter logs
                 $mail->Debugoutput = function($str, $level) {
-                    // PHPMailer debug levels: 1=client, 2=client+server, 3=client+server+connection, 4=low-level
-                    // Higher levels (3-4) are more verbose and should be logged as debug
-                    $log_level = ($level >= 3) ? 'debug' : 'info';
+                    // PHPMailer debug levels: 1=client, 2=client+server, 3=connection, 4=low-level
+                    // All SMTP debug output is logged as 'debug' level since it's only enabled in debug mode
                     // Sanitize debug output to prevent log injection
-                    log_message($log_level, '[PHPMailer SMTP] ' . sanitize_for_logging(trim($str)));
+                    log_message('debug', '[PHPMailer SMTP] ' . sanitize_for_logging(trim($str)));
                 };
             } else {
                 $mail->SMTPDebug   = 0;
