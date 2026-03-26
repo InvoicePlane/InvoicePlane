@@ -2,7 +2,7 @@
     <div class="loader-content">
         <i id="loader-icon" class="fa fa-cog fa-spin"></i>
         <img id="loader-error-icon" src="<?php echo base_url('assets/core/img/loader-error.svg'); ?>" 
-             alt="Error">
+             alt="Loading failed - an error occurred">
         <div id="loader-error" class="loader-error-message" style="display: none">
             <div class="alert alert-danger">
                 <strong><i class="fa fa-exclamation-triangle"></i> <?php _trans('loading_error'); ?></strong>
