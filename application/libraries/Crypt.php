@@ -18,9 +18,9 @@ class Crypt
 {
     public function salt(): string
     {
-        // Load security helper for cryptographically secure token generation
+        // Load project-specific crypto helper for cryptographically secure token generation
         $CI = &get_instance();
-        $CI->load->helper('security');
+        $CI->load->helper('ip_security');
 
         return generate_secure_salt();
     }

@@ -94,9 +94,11 @@ function generate_secure_salt(): string
         // Generate 16 bytes (128 bits) of random data
         $randomBytes = random_bytes(16);
 
-        // Encode to base64 and take first 22 characters for bcrypt compatibility
-        // bcrypt requires exactly 22 characters of base64-encoded salt
+        // Encode to base64, normalize to bcrypt's allowed alphabet, and take first 22 characters
+        // bcrypt expects the "crypt" base64 alphabet: ./0-9A-Za-z and no '=' padding
         $base64 = base64_encode($randomBytes);
+        // Translate '+' to '.' for crypt-style base64 and remove '=' padding
+        $base64 = rtrim(strtr($base64, '+', '.'), '=');
 
         return substr($base64, 0, 22);
     } catch (Exception | Error $e) {
