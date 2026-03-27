@@ -46,16 +46,26 @@ class Crypt
     }
 
     /**
-     * @param string $data
+     * Get the encryption key, decoding if it's base64-encoded.
+     * 
+     * @return string The encryption key
      */
-    public function encode($data): string
+    private function getEncryptionKey(): string
     {
         $key = getenv('ENCRYPTION_KEY');
         if (preg_match('/^base64:(.*)$/', $key, $matches)) {
             $key = base64_decode($matches[1]);
         }
 
-        return Cryptor::Encrypt($data, $key);
+        return $key;
+    }
+
+    /**
+     * @param string $data
+     */
+    public function encode($data): string
+    {
+        return Cryptor::Encrypt($data, $this->getEncryptionKey());
     }
 
     /**
@@ -67,11 +77,6 @@ class Crypt
             return '';
         }
 
-        $key = getenv('ENCRYPTION_KEY');
-        if (preg_match('/^base64:(.*)$/', $key, $matches)) {
-            $key = base64_decode($matches[1]);
-        }
-
-        return Cryptor::Decrypt($data, $key);
+        return Cryptor::Decrypt($data, $this->getEncryptionKey());
     }
 }
