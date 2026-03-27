@@ -34,7 +34,7 @@ function phpmailer_debug_output(string $str, int $level = 0): void
     $sanitized = sanitize_for_logging($str);
     
     // Log with 'debug' level so it respects log_threshold setting
-    log_message('debug', 'PHPMailer: ' . $sanitized);
+    log_message('debug', 'PHPMailer [level ' . (int) $level . ']: ' . $sanitized);
 }
 
 /**
@@ -214,14 +214,8 @@ function phpmail_send(
         // Set flashdata for user notification
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
         
-        return false;
-    }
-    
-    // Log success if debug is enabled
-    if (env_bool('ENABLE_DEBUG')) {
-        // Format recipient list for logging
+        // Format recipient list for logging - $to has already been normalized to an array
         $recipient_list = implode(', ', $to);
-        
         log_message('debug', 'PHPMailer: Email sent successfully to ' . 
             sanitize_for_logging($recipient_list));
     }
