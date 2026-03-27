@@ -8,7 +8,7 @@
                 <strong><i class="fa fa-exclamation-triangle"></i> <?php _trans('loading_error'); ?></strong>
                 <div class="loader-error-actions">
                     <a href="https://wiki.invoiceplane.com/<?php _trans('cldr'); ?>/1.0/general/faq"
-                       class="btn btn-primary btn-sm" target="_blank">
+                       class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
                         <i class="fa fa-support"></i> <?php _trans('loading_error_help'); ?>
                     </a>
                 </div>
