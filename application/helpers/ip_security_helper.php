@@ -14,10 +14,13 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * Security Helper.
+ * InvoicePlane Security Helper.
  *
  * Provides cryptographically secure functions for token generation, password reset tokens,
- * and other security-critical operations.
+ * and other security-critical operations. This helper uses PHP's random_bytes() for CSPRNG.
+ *
+ * Note: This helper is named 'ip_security' to avoid conflicts with CodeIgniter's core
+ * 'security' helper which provides different functionality (XSS filtering, CSRF, etc).
  */
 
 /**
@@ -45,11 +48,20 @@ function sanitize_exception_for_logging(string $message): string
  * Provides 128+ bits of entropy for security-critical operations like password resets.
  *
  * @param int $length The length of the raw token in bytes (default: 32 bytes = 256 bits)
+ *                    Must be greater than 0. The returned hex string will be twice this length.
  *
  * @return string The token as a hexadecimal string (twice the byte length)
+ *
+ * @throws InvalidArgumentException If $length is less than or equal to 0
+ * @throws RuntimeException If random_bytes() fails (should never happen with PHP 7.0+)
  */
 function generate_secure_token(int $length = 32): string
 {
+    // Validate input: length must be positive
+    if ($length <= 0) {
+        throw new InvalidArgumentException('Token length must be greater than 0, got: ' . $length);
+    }
+
     try {
         // Generate cryptographically secure random bytes
         $randomBytes = random_bytes($length);
@@ -71,7 +83,10 @@ function generate_secure_token(int $length = 32): string
  * Creates a token with 256 bits of entropy (32 bytes), suitable for password reset operations.
  * This replaces the previous insecure implementation that used md5(time() + email + mt_rand()).
  *
- * @return string A 64-character hexadecimal token
+ * Note: The old implementation generated 32-character tokens (md5 output).
+ *       This new implementation generates 64-character hexadecimal tokens for increased security.
+ *
+ * @return string A 64-character hexadecimal token (32 bytes of randomness = 256 bits entropy)
  */
 function generate_password_reset_token(): string
 {

@@ -221,7 +221,7 @@ class Sessions extends Base_Controller
             if ($user) {
                 // User exists - send actual reset email
                 // Use cryptographically secure token generation (fixes CVE-2021-29023)
-                $this->load->helper('crypto');
+                $this->load->helper('ip_security');
                 $token = generate_password_reset_token();
 
                 // Save the token to the database
