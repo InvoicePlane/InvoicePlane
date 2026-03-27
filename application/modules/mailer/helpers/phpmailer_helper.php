@@ -220,12 +220,7 @@ function phpmail_send(
     // Log success if debug is enabled
     if (env_bool('ENABLE_DEBUG')) {
         // Format recipient list for logging
-        $recipient_list = 'unknown';
-        if (is_array($to)) {
-            $recipient_list = implode(', ', $to);
-        } elseif (is_string($to)) {
-            $recipient_list = $to;
-        }
+        $recipient_list = implode(', ', $to);
         
         log_message('debug', 'PHPMailer: Email sent successfully to ' . 
             sanitize_for_logging($recipient_list));
