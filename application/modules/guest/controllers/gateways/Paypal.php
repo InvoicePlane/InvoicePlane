@@ -124,14 +124,30 @@ class Paypal extends Base_Controller
 
             // If either Completed or Pending, we're treating it as completed from the buyer's perspective.
             if ($capture_status === 'COMPLETED' || $capture_status === 'PENDING') {
-                $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id;
-                $amount     = $paypal_object->purchase_units[0]->payments->captures[0]->amount->value;
-                $capture_id = (string) $paypal_object->purchase_units[0]->payments->captures[0]->id; // Unique capture ID
+                // Extract payment data with null safety checks
+                $capture_data = $paypal_object->purchase_units[0]->payments->captures[0] ?? null;
+                
+                if (!$capture_data) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid PayPal response structure: missing capture data');
+                    throw new Exception('Invalid PayPal response structure');
+                }
+                
+                $invoice_id = $capture_data->invoice_id ?? null;
+                $amount     = $capture_data->amount->value ?? null;
+                $capture_id = $capture_data->id ?? null;
+                
+                // Validate required fields
+                if (empty($invoice_id) || empty($amount) || empty($capture_id)) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Missing required PayPal data fields');
+                    throw new Exception('Missing required PayPal data');
+                }
+                
+                $capture_id = (string) $capture_id; // Ensure string type
 
                 // Validate and sanitize the capture_id
-                if (empty($capture_id) || strlen($capture_id) > 255) {
-                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid PayPal capture ID format');
-                    throw new Exception('Invalid capture ID');
+                if (strlen($capture_id) > 255) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - PayPal capture ID too long: ' . sanitize_for_logging(strlen($capture_id)) . ' characters');
+                    throw new Exception('Invalid capture ID length');
                 }
 
                 //record the payment
@@ -160,7 +176,7 @@ class Paypal extends Base_Controller
                         $this->session->keep_flashdata('alert_info');
                     } else {
                         // If the payment status is pending, set a note accordingly.
-                        $payment_note = ($capture_status === 'PENDING') ? 'Payment Pending!  Check PayPal for details.' : '';
+                        $payment_note = ($capture_status === 'PENDING') ? trans('online_payment_pending') : '';
 
                         $this->mdl_payments->save(null, [
                             'invoice_id'           => $invoice_id,
