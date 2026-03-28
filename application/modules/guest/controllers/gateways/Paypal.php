@@ -126,25 +126,49 @@ class Paypal extends Base_Controller
             if ($capture_status === 'COMPLETED' || $capture_status === 'PENDING') {
                 $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id;
                 $amount     = $paypal_object->purchase_units[0]->payments->captures[0]->amount->value;
+                $capture_id = $paypal_object->purchase_units[0]->payments->captures[0]->id; // Unique capture ID
 
                 //record the payment
                 $this->load->model('payments/mdl_payments');
 
-                // If the payment status is pending, set a note accordingly.
-                $payment_note = ($capture_status === 'PENDING') ? 'Payment Pending!  Check PayPal for details.' : '';
+                // Check if this capture_id has already been processed (deduplication check)
+                $existing_payment = $this->db
+                    ->where('payment_external_id', $capture_id)
+                    ->get('ip_payments')
+                    ->row();
 
-                $this->mdl_payments->save(null, [
-                    'invoice_id'        => $invoice_id,
-                    'payment_date'      => date('Y-m-d'),
-                    'payment_amount'    => $amount,
-                    'payment_method_id' => get_setting('gateway_paypal_payment_method'),
-                    'payment_note'      => $payment_note,
-                ]);
+                if ($existing_payment) {
+                    // Duplicate payment attempt detected
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. PayPal capture ID: ' . $capture_id . ' already exists as payment_id: ' . $existing_payment->payment_id);
+                    
+                    $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                    $this->session->set_flashdata('alert_info', trans('online_payment_already_processed'));
+                    $this->session->keep_flashdata('alert_info');
+                } else {
+                    // Check if invoice is already fully paid
+                    $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                    
+                    if ($invoice->invoice_balance <= 0) {
+                        log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . $invoice->invoice_number . ' already fully paid. Balance: ' . $invoice->invoice_balance);
+                        $this->session->set_flashdata('alert_info', trans('invoice_already_paid'));
+                        $this->session->keep_flashdata('alert_info');
+                    } else {
+                        // If the payment status is pending, set a note accordingly.
+                        $payment_note = ($capture_status === 'PENDING') ? 'Payment Pending!  Check PayPal for details.' : '';
 
-                $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                        $this->mdl_payments->save(null, [
+                            'invoice_id'           => $invoice_id,
+                            'payment_date'         => date('Y-m-d'),
+                            'payment_amount'       => $amount,
+                            'payment_method_id'    => get_setting('gateway_paypal_payment_method'),
+                            'payment_note'         => $payment_note,
+                            'payment_external_id'  => $capture_id,
+                        ]);
 
-                $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
-                $this->session->keep_flashdata('alert_success');
+                        $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
+                        $this->session->keep_flashdata('alert_success');
+                    }
+                }
 
                 /*
                  * merchant_response_success will be set to true for both completed and pending,
