@@ -106,15 +106,35 @@ class Stripe extends Base_Controller
 
             // Is paid? (intent flow 'succeeded')
             if ($paid) {
-                // Save the payment (visible in guest user)
                 $this->load->model('payments/mdl_payments');
-                $this->mdl_payments->save(null, [
-                    'invoice_id'        => $invoice->invoice_id,
-                    'payment_date'      => date('Y-m-d'),
-                    'payment_amount'    => $session->amount_total / 100,
-                    'payment_method_id' => get_setting('gateway_stripe_payment_method'),
-                    'payment_note'      => trans('online_payment_intent_id') . ': ' . $session->payment_intent,
-                ]);
+                
+                // Check if this payment_intent has already been processed (deduplication check)
+                $existing_payment = $this->db
+                    ->where('payment_external_id', $session->payment_intent)
+                    ->get('ip_payments')
+                    ->row();
+                
+                if ($existing_payment) {
+                    // Duplicate payment attempt detected
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. Payment intent: ' . $session->payment_intent . ' already exists as payment_id: ' . $existing_payment->payment_id);
+                    $paid = false; // Mark as not paid to show info message instead of success
+                    $user_msg = trans('online_payment_already_processed');
+                } elseif ($invoice->invoice_balance <= 0) {
+                    // Invoice is already fully paid
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . $invoice->invoice_number . ' already fully paid. Balance: ' . $invoice->invoice_balance);
+                    $paid = false; // Mark as not paid to show info message instead of success
+                    $user_msg = trans('invoice_already_paid');
+                } else {
+                    // Save the payment (visible in guest user)
+                    $this->mdl_payments->save(null, [
+                        'invoice_id'           => $invoice->invoice_id,
+                        'payment_date'         => date('Y-m-d'),
+                        'payment_amount'       => $session->amount_total / 100,
+                        'payment_method_id'    => get_setting('gateway_stripe_payment_method'),
+                        'payment_note'         => trans('online_payment_intent_id') . ': ' . $session->payment_intent,
+                        'payment_external_id'  => $session->payment_intent,
+                    ]);
+                }
             }
 
             // paid / cancel (+other flow)

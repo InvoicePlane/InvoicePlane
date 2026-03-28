@@ -388,6 +388,7 @@ $lang = [
     'number_format_iso80k1_comma'                  => '1 000 000,00 (ISO 80000-1 with decimal comma)',
     'number_format_compact_point'                  => '1000000.00 (Compact format with decimal point)',
     'number_format_compact_comma'                  => '1000000,00 (Compact format with decimal comma)',
+    'online_payment_already_processed'             => 'This payment has already been processed and recorded.',
     'online_payment_error'                         => 'Payment system error detected! If this message persists, please contact us.',
     'online_payment_failed'                        => 'Payment failed',
     'online_payment_incomplete'                    => 'Payment was not completed. %s session status: %s', // 1st param is the operator, ex. stripe (ready for paypal & others)
