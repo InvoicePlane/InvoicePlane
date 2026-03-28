@@ -124,8 +124,11 @@ class Paypal extends Base_Controller
 
             // If either Completed or Pending, we're treating it as completed from the buyer's perspective.
             if ($capture_status === 'COMPLETED' || $capture_status === 'PENDING') {
-                // Extract payment data with null safety checks
-                $capture_data = $paypal_object->purchase_units[0]->payments->captures[0] ?? null;
+                // Extract payment data with defensive null safety checks at each level
+                $purchase_units = $paypal_object->purchase_units ?? null;
+                $payments = $purchase_units[0]->payments ?? null;
+                $captures = $payments->captures ?? null;
+                $capture_data = $captures[0] ?? null;
                 
                 if (!$capture_data) {
                     log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid PayPal response structure: missing capture data');
@@ -146,7 +149,7 @@ class Paypal extends Base_Controller
 
                 // Validate and sanitize the capture_id
                 if (strlen($capture_id) > 255) {
-                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - PayPal capture ID too long: ' . sanitize_for_logging(strlen($capture_id)) . ' characters');
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - PayPal capture ID too long: ' . strlen($capture_id) . ' characters');
                     throw new Exception('Invalid capture ID length');
                 }
 
