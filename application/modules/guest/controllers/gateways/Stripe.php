@@ -27,6 +27,7 @@ class Stripe extends Base_Controller
         parent::__construct();
         $this->load->library('crypt');
         $this->load->model('invoices/mdl_invoices');
+        $this->load->helper('file_security');
 
         $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
     }
@@ -108,20 +109,27 @@ class Stripe extends Base_Controller
             if ($paid) {
                 $this->load->model('payments/mdl_payments');
                 
+                // Validate and sanitize the payment_intent ID
+                $payment_intent = (string) $session->payment_intent;
+                if (empty($payment_intent) || strlen($payment_intent) > 255) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid payment_intent ID format');
+                    throw new Exception('Invalid payment intent ID');
+                }
+                
                 // Check if this payment_intent has already been processed (deduplication check)
                 $existing_payment = $this->db
-                    ->where('payment_external_id', $session->payment_intent)
+                    ->where('payment_external_id', $payment_intent)
                     ->get('ip_payments')
                     ->row();
                 
                 if ($existing_payment) {
                     // Duplicate payment attempt detected
-                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. Payment intent: ' . $session->payment_intent . ' already exists as payment_id: ' . $existing_payment->payment_id);
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. Payment intent: ' . sanitize_for_logging($payment_intent) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
                     $paid = false; // Mark as not paid to show info message instead of success
                     $user_msg = trans('online_payment_already_processed');
                 } elseif ($invoice->invoice_balance <= 0) {
                     // Invoice is already fully paid
-                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . $invoice->invoice_number . ' already fully paid. Balance: ' . $invoice->invoice_balance);
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
                     $paid = false; // Mark as not paid to show info message instead of success
                     $user_msg = trans('invoice_already_paid');
                 } else {
@@ -131,8 +139,8 @@ class Stripe extends Base_Controller
                         'payment_date'         => date('Y-m-d'),
                         'payment_amount'       => $session->amount_total / 100,
                         'payment_method_id'    => get_setting('gateway_stripe_payment_method'),
-                        'payment_note'         => trans('online_payment_intent_id') . ': ' . $session->payment_intent,
-                        'payment_external_id'  => $session->payment_intent,
+                        'payment_note'         => trans('online_payment_intent_id') . ': ' . $payment_intent,
+                        'payment_external_id'  => $payment_intent,
                     ]);
                 }
             }

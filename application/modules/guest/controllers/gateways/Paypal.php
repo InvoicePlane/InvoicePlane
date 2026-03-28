@@ -126,7 +126,13 @@ class Paypal extends Base_Controller
             if ($capture_status === 'COMPLETED' || $capture_status === 'PENDING') {
                 $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id;
                 $amount     = $paypal_object->purchase_units[0]->payments->captures[0]->amount->value;
-                $capture_id = $paypal_object->purchase_units[0]->payments->captures[0]->id; // Unique capture ID
+                $capture_id = (string) $paypal_object->purchase_units[0]->payments->captures[0]->id; // Unique capture ID
+
+                // Validate and sanitize the capture_id
+                if (empty($capture_id) || strlen($capture_id) > 255) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid PayPal capture ID format');
+                    throw new Exception('Invalid capture ID');
+                }
 
                 //record the payment
                 $this->load->model('payments/mdl_payments');
@@ -139,7 +145,7 @@ class Paypal extends Base_Controller
 
                 if ($existing_payment) {
                     // Duplicate payment attempt detected
-                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. PayPal capture ID: ' . $capture_id . ' already exists as payment_id: ' . $existing_payment->payment_id);
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. PayPal capture ID: ' . sanitize_for_logging($capture_id) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
                     
                     $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
                     $this->session->set_flashdata('alert_info', trans('online_payment_already_processed'));
@@ -149,7 +155,7 @@ class Paypal extends Base_Controller
                     $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
                     
                     if ($invoice->invoice_balance <= 0) {
-                        log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . $invoice->invoice_number . ' already fully paid. Balance: ' . $invoice->invoice_balance);
+                        log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
                         $this->session->set_flashdata('alert_info', trans('invoice_already_paid'));
                         $this->session->keep_flashdata('alert_info');
                     } else {
