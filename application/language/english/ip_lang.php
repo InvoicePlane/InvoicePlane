@@ -393,6 +393,7 @@ $lang = [
     'online_payment_failed'                        => 'Payment failed',
     'online_payment_incomplete'                    => 'Payment was not completed. %s session status: %s', // 1st param is the operator, ex. stripe (ready for paypal & others)
     'online_payment_intent_id'                     => 'Payment (intent ID)',
+    'online_payment_pending'                       => 'Payment Pending! Check PayPal for details.',
     'online_payment_successful'                    => 'Payment successful for invoice %s',
     'online_payment_transaction_not_completed'     => 'Transaction not completed or canceled',
     'open'                                         => 'Open',
