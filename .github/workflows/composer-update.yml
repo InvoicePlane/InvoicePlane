@@ -12,9 +12,9 @@ on:
           - patch-minor
           - all-dependencies
         default: 'security-patch'
-  schedule:
+  # schedule:
     # Run weekly on Monday at 9:00 AM UTC
-    - cron: '0 9 * * 1'
+   # - cron: '0 9 * * 1'
 
 permissions:
   contents: write
