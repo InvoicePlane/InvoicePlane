@@ -13,9 +13,9 @@ on:
           - patch-minor
           - all-latest-with-build
         default: 'security-updates'
-  schedule:
+  #schedule:
     # Run weekly on Monday at 10:00 AM UTC
-    - cron: '0 10 * * 1'
+    #- cron: '0 10 * * 1'
 
 permissions:
   contents: write
