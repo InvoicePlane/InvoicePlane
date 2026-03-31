@@ -90,7 +90,10 @@ function phpmail_send(
                 v1.7.2:
                 Adding the "From" since that somehow never happened
             */
-            $mail->setFrom(get_setting('smtp_mail_from'), $from);
+            $fromMail = $from[0];
+            $fromName = $from[1];
+
+            $mail->setFrom($fromMail, $fromName);
 
             // Is SMTP authentication required?
             if (get_setting('smtp_authentication')) {
