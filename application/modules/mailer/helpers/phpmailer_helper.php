@@ -73,18 +73,24 @@ function phpmail_send(
             // Enable debug output: 0 = off, 1 = client messages, 2 = client and server messages
             $mail->SMTPDebug   = env_bool('ENABLE_DEBUG') ? 2 : 0;
             // Use custom callable function to log to CodeIgniter logs instead of echo/error_log
-            $mail->Debugoutput = 'phpmailer_debug_output';
+            if (env_bool('ENABLE_DEBUG')) {
+                $mail->SMTPDebug = 3;
+
+                $mail->Debugoutput = function ($str, $level) {
+                    log_message('debug', 'phpMailer Debugging: ' . $str);
+                };
+            }
 
             // Set the basic properties
             $mail->Host = get_setting('smtp_server_address');
             $mail->Port = get_setting('smtp_port');
-            $mail->setFrom(get_setting('smtp_mail_from'), $from);    
 
-           // Log SMTP connection attempt
-            if (env_bool('ENABLE_DEBUG')) {
-                log_message('debug', 'PHPMailer: Attempting SMTP connection to ' . 
-                    sanitize_for_logging($mail->Host) . ':' . $mail->Port);
-            }
+        
+            /**
+                v1.7.2:
+                Adding the "From" since that somehow never happened
+            */
+            $mail->setFrom(get_setting('smtp_mail_from'), $from);
 
             // Is SMTP authentication required?
             if (get_setting('smtp_authentication')) {
