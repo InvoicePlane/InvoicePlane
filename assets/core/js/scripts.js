@@ -214,7 +214,22 @@ function sanitize_email_template_html(html) {
 function update_email_template_preview() {
     var rawHtml = $('.email-template-body').val();
     var sanitizedHtml = sanitize_email_template_html(rawHtml);
-    $('#email-template-preview').contents().find("body").html(sanitizedHtml);
+    var iframe = $('#email-template-preview')[0];
+    
+    // Initialize iframe with a proper HTML document if needed
+    if (iframe && iframe.contentDocument) {
+        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        
+        // If the iframe doesn't have a proper document structure, create one
+        if (!iframeDoc.body) {
+            iframeDoc.open();
+            iframeDoc.write('<!DOCTYPE html><html><head><meta charset="utf-8"></head><body></body></html>');
+            iframeDoc.close();
+        }
+        
+        // Now set the sanitized HTML content
+        iframeDoc.body.innerHTML = sanitizedHtml;
+    }
 }
 
 // Insert HTML tags into textarea
@@ -440,7 +455,7 @@ $(function () {
     // Email Template Preview handling
     var email_template_body_id = $('.email-template-body').attr('id');
 
-    if ($('#email_template_preview').empty()) {
+    if ($('#email-template-preview').length) {
         update_email_template_preview();
     }
 
