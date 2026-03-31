@@ -78,8 +78,9 @@ function phpmail_send(
             // Set the basic properties
             $mail->Host = get_setting('smtp_server_address');
             $mail->Port = get_setting('smtp_port');
-            
-            // Log SMTP connection attempt
+            $mail->setFrom(get_setting('smtp_mail_from'), $from);    
+
+           // Log SMTP connection attempt
             if (env_bool('ENABLE_DEBUG')) {
                 log_message('debug', 'PHPMailer: Attempting SMTP connection to ' . 
                     sanitize_for_logging($mail->Host) . ':' . $mail->Port);
