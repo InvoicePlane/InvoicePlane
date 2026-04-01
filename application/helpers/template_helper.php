@@ -14,6 +14,45 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
+ * Load a template view, checking the custom templates folder first.
+ *
+ * When CUSTOM_TEMPLATES_FOLDER is configured, files in that directory take
+ * precedence over the built-in views for the given sub-path.  Falls back to
+ * CodeIgniter's standard view loader when no custom file is found.
+ *
+ * @param string $template_subpath  Relative path used with $CI->load->view(),
+ *                                  e.g. 'invoice_templates/pdf/MyTemplate'
+ * @param array  $data              Variables to make available inside the template
+ * @param bool   $return            Return rendered HTML instead of appending to output
+ *
+ * @return string|void
+ */
+function render_template_view(string $template_subpath, array $data, bool $return = false)
+{
+    if (CUSTOM_TEMPLATES_FOLDER) {
+        $has_ext   = (bool) pathinfo($template_subpath, PATHINFO_EXTENSION);
+        $file_path = CUSTOM_TEMPLATES_FOLDER . $template_subpath . ($has_ext ? '' : '.php');
+        if (file_exists($file_path)) {
+            extract($data);
+            ob_start();
+            include $file_path;
+            $output = ob_get_clean();
+            if ($return) {
+                return $output;
+            }
+            $CI = &get_instance();
+            $CI->output->append_output($output);
+
+            return;
+        }
+    }
+
+    $CI = &get_instance();
+
+    return $CI->load->view($template_subpath, $data, $return);
+}
+
+/**
  * Parse a template by predefined template tags.
  *
  * @param $object

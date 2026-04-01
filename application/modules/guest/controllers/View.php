@@ -92,7 +92,7 @@ class View extends Base_Controller
             $template_name = 'InvoicePlane_Web'; // Fallback to default template
         }
 
-        $this->load->view('invoice_templates/public/' . $template_name . '.php', $data);
+        render_template_view('invoice_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
@@ -169,6 +169,7 @@ class View extends Base_Controller
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quote_tax_rates');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->helper('template');
 
         $quote = $quote->row();
 
@@ -202,7 +203,6 @@ class View extends Base_Controller
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
         // Security: Validate template name to prevent Local File Inclusion
-        $this->load->helper('template');
         $requested_template = get_setting('public_quote_template');
         $template_name = validate_template_name($requested_template, 'quote', 'public');
         if ($template_name === false) {
@@ -212,7 +212,7 @@ class View extends Base_Controller
             $template_name = 'InvoicePlane_Web'; // Fallback to default template
         }
 
-        $this->load->view('quote_templates/public/' . $template_name . '.php', $data);
+        render_template_view('quote_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
