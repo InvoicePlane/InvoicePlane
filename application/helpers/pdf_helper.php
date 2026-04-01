@@ -172,7 +172,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         'legacy_calculation'  => config_item('legacy_calculation'),
     ];
 
-    $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
+    $html = render_template_view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
     // Create PDF with or without an embedded XML
     $CI->load->helper('mpdf');
@@ -219,6 +219,18 @@ function generate_invoice_sumex($invoice_id, $stream = true, $invoice_template =
 
     $CI->load->model('invoices/mdl_items');
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+
+    if ($invoice_template) {
+        $CI->load->helper('template');
+        $validated = validate_template_name($invoice_template, 'invoice', 'pdf');
+        if ($validated === false) {
+            log_message('error', 'Invalid PDF invoice template parameter: ' . sanitize_for_logging($invoice_template) . ', using default');
+            $invoice_template = null; // Let Sumex::pdf() select the default via select_pdf_invoice_template()
+        } else {
+            $invoice_template = $validated;
+        }
+    }
+
     $CI->load->library('Sumex', [
         'invoice' => $invoice,
         'items'   => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
@@ -350,7 +362,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         'legacy_calculation'  => config_item('legacy_calculation'),
     ];
 
-    $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);
+    $html = render_template_view('quote_templates/pdf/' . $quote_template, $data, true);
 
     $CI->load->helper('mpdf');
 
