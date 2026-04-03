@@ -142,9 +142,16 @@ class Cron extends Base_Controller
                 // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
                 // The sanitized HTML from the database is now used directly.
 
-                $from = empty($tpl->email_template_from_email)
-                    ? [$invoice->user_email, '']
-                    : [$tpl->email_template_from_email, $tpl->email_template_from_name];
+                // Determine sender email: use template value, then smtp_mail_from setting, then fall back to user email
+                if (!empty($tpl->email_template_from_email)) {
+                    $from = [$tpl->email_template_from_email, $tpl->email_template_from_name];
+                } else {
+                    $default_from_email = get_setting('smtp_mail_from');
+                    if (empty($default_from_email)) {
+                        $default_from_email = $invoice->user_email;
+                    }
+                    $from = [$default_from_email, ''];
+                }
 
                 $subject = empty($tpl->email_template_subject)
                     ? trans('invoice') . ' #' . $new_invoice->invoice_number

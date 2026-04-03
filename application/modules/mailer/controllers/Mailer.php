@@ -70,6 +70,12 @@ class Mailer extends Admin_Controller
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
 
+        // Determine default sender email: use smtp_mail_from setting if configured, otherwise fall back to user email
+        $default_from_email = get_setting('smtp_mail_from');
+        if (empty($default_from_email)) {
+            $default_from_email = $invoice->user_email;
+        }
+
         $this->layout->set(
             [
                 'selected_email_template' => $email_template_id,
@@ -79,6 +85,7 @@ class Mailer extends Admin_Controller
                 'custom_fields'           => $custom_fields,
                 'pdf_templates'           => $this->mdl_templates->get_invoice_templates(),
                 'invoice'                 => $invoice,
+                'default_from_email'      => $default_from_email,
             ]
         );
         $this->layout->buffer('content', 'mailer/invoice');
@@ -119,6 +126,14 @@ class Mailer extends Admin_Controller
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
         }
 
+        $quote = $this->mdl_quotes->get_by_id($quote_id);
+
+        // Determine default sender email: use smtp_mail_from setting if configured, otherwise fall back to user email
+        $default_from_email = get_setting('smtp_mail_from');
+        if (empty($default_from_email)) {
+            $default_from_email = $quote->user_email;
+        }
+
         $this->layout->set(
             [
                 'selected_email_template' => $email_template_id,
@@ -127,7 +142,8 @@ class Mailer extends Admin_Controller
                 'email_template'          => $email_template,
                 'custom_fields'           => $custom_fields,
                 'pdf_templates'           => $this->mdl_templates->get_quote_templates(),
-                'quote'                   => $this->mdl_quotes->get_by_id($quote_id),
+                'quote'                   => $quote,
+                'default_from_email'      => $default_from_email,
             ]
         );
         $this->layout->buffer('content', 'mailer/quote');
