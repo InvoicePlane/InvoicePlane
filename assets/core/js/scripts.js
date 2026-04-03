@@ -213,7 +213,15 @@ function sanitize_email_template_html(html) {
 
 function update_email_template_preview() {
     var rawHtml = $('.email-template-body').val();
-    var sanitizedHtml = sanitize_email_template_html(rawHtml);
+    
+    // Decode HTML entities that might be present in the textarea
+    // This is needed because content may be HTML-entity-encoded for safe display in forms
+    var textarea = document.createElement('textarea');
+    textarea.innerHTML = rawHtml;
+    var decodedHtml = textarea.value;
+    
+    // Sanitize the decoded HTML to ensure only safe tags are rendered
+    var sanitizedHtml = sanitize_email_template_html(decodedHtml);
     var iframe = $('#email-template-preview')[0];
     
     // Initialize iframe with a proper HTML document if needed
