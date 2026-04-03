@@ -45,7 +45,6 @@ class Units extends Admin_Controller
             redirect('units');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         if (
             $this->input->post('is_update') == 0

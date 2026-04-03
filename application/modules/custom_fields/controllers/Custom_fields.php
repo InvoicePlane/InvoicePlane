@@ -71,7 +71,6 @@ class Custom_Fields extends Admin_Controller
             redirect('custom_fields');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         if ($this->mdl_custom_fields->run_validation()) {
             $this->mdl_custom_fields->save($id);
