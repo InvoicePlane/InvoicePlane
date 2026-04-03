@@ -46,53 +46,56 @@ function is_plain_text(string $content): bool
  * @param string $html The HTML content to sanitize
  * @return string The sanitized HTML content
  */
-function sanitize_email_template_html(string $html): string
-{
-    // Load HTML Purifier library
-    require_once FCPATH . 'vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
-    
-    // Create HTML Purifier configuration
-    $config = HTMLPurifier_Config::createDefault();
-    
-    // Set cache directory (use CodeIgniter's cache directory)
-    $cache_dir = APPPATH . 'cache/htmlpurifier';
-    if (is_dir($cache_dir)) {
-        $config->set('Cache.SerializerPath', $cache_dir);
-    } elseif (mkdir($cache_dir, 0755, true) || is_dir($cache_dir)) {
-        $config->set('Cache.SerializerPath', $cache_dir);
-    } else {
-        log_message('error', 'Failed to create HTMLPurifier cache directory: ' . $cache_dir);
-        // Disable cache if directory creation fails
-        $config->set('Cache.SerializerPath', null);
+    /** @var HTMLPurifier|null $purifier */
+    static $purifier = null;
+
+    if ($purifier === null) {
+        // Create HTML Purifier configuration once per request
+        $config = HTMLPurifier_Config::createDefault();
+
+        // Set cache directory (use CodeIgniter's cache directory)
+        $cache_dir = APPPATH . 'cache/htmlpurifier';
+        if ( ! is_dir($cache_dir)) {
+            if ( ! mkdir($cache_dir, 0755, true)) {
+                log_message('error', 'Failed to create HTMLPurifier cache directory: ' . $cache_dir);
+                // Disable cache if directory creation fails
+                $config->set('Cache.SerializerPath', null);
+            } else {
+                $config->set('Cache.SerializerPath', $cache_dir);
+            }
+        } else {
+            $config->set('Cache.SerializerPath', $cache_dir);
+        }
+
+        // Allow safe HTML tags for email templates
+        // This is a whitelist approach - only these tags are allowed
+        $config->set(
+            'HTML.Allowed',
+            'p,br,strong,b,em,i,u,h1,h2,h3,h4,h5,h6,' .
+            'ul,ol,li,a[href|title|target],' .
+            'span[style],div[style],' .
+            'table,thead,tbody,tr,th,td,' .
+            'img[src|alt|width|height],' .
+            'hr,code,pre,blockquote'
+        );
+
+        // Allow safe CSS properties in style attributes
+        $config->set(
+            'CSS.AllowedProperties',
+            'color,background-color,font-size,font-weight,font-family,' .
+            'text-align,text-decoration,margin,padding,' .
+            'border,border-color,border-width,border-style'
+        );
+
+        // Ensure UTF-8 encoding
+        $config->set('Core.Encoding', 'UTF-8');
+
+        // Disable external resources (prevent SSRF attacks)
+        $config->set('URI.DisableExternalResources', true);
+
+        // Create purifier instance once and reuse it
+        $purifier = new HTMLPurifier($config);
     }
-    
-    // Allow safe HTML tags for email templates
-    // This is a whitelist approach - only these tags are allowed
-    $config->set('HTML.Allowed', 
-        'p,br,strong,b,em,i,u,h1,h2,h3,h4,h5,h6,' .
-        'ul,ol,li,a[href|title|target],' .
-        'span[style],div[style],' .
-        'table,thead,tbody,tr,th,td,' .
-        'img[src|alt|width|height],' .
-        'hr,code,pre,blockquote'
-    );
-    
-    // Allow safe CSS properties in style attributes
-    $config->set('CSS.AllowedProperties', 
-        'color,background-color,font-size,font-weight,font-family,' .
-        'text-align,text-decoration,margin,padding,' .
-        'border,border-color,border-width,border-style'
-    );
-    
-    // Ensure UTF-8 encoding
-    $config->set('Core.Encoding', 'UTF-8');
-    
-    // Disable external resources (prevent SSRF attacks)
-    $config->set('URI.DisableExternalResources', true);
-    
-    // Create purifier instance
-    $purifier = new HTMLPurifier($config);
-    
     // Sanitize and return
     return $purifier->purify($html);
 }
