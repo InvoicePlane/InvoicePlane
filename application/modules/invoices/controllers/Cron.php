@@ -129,12 +129,15 @@ class Cron extends Base_Controller
                 $attachment_files = $this->mdl_uploads->get_invoice_uploads($target_id);
 
                 // Prepare the body
+                // The body is already sanitized by HTML Purifier during save.
+                // We only need to add line breaks if the content is plain text (no HTML tags).
                 $body = $tpl->email_template_body;
-                if (mb_strlen($body) != mb_strlen(strip_tags($body))) {
-                    $body = htmlspecialchars_decode($body, ENT_COMPAT);
-                } else {
-                    $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
+                if (mb_strlen($body) === mb_strlen(strip_tags($body))) {
+                    // Plain text - convert line breaks to <br> tags
+                    $body = nl2br($body);
                 }
+                // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
+                // The sanitized HTML from the database is now used directly.
 
                 $from = empty($tpl->email_template_from_email)
                     ? [$invoice->user_email, '']

@@ -156,11 +156,13 @@ class Mailer extends Admin_Controller
         $subject      = $this->input->post('subject');
         $body         = $this->input->post('body');
 
-        if (mb_strlen($body) != mb_strlen(strip_tags($body))) {
-            $body = htmlspecialchars_decode($body, ENT_COMPAT);
-        } else {
-            $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
+        // The body is already sanitized by HTML Purifier in filter_input().
+        // We only need to add line breaks if the content is plain text (no HTML tags).
+        if (mb_strlen($body) === mb_strlen(strip_tags($body))) {
+            // Plain text - convert line breaks to <br> tags
+            $body = nl2br($body);
         }
+        // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
         $cc  = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
@@ -199,12 +201,15 @@ class Mailer extends Admin_Controller
 
         $pdf_template = $this->input->post('pdf_template');
         $subject      = $this->input->post('subject');
+        $body         = $this->input->post('body');
 
-        if (mb_strlen($this->input->post('body')) != mb_strlen(strip_tags($this->input->post('body')))) {
-            $body = htmlspecialchars_decode($this->input->post('body'), ENT_COMPAT);
-        } else {
-            $body = htmlspecialchars_decode(nl2br($this->input->post('body')), ENT_COMPAT);
+        // The body is already sanitized by HTML Purifier in filter_input().
+        // We only need to add line breaks if the content is plain text (no HTML tags).
+        if (mb_strlen($body) === mb_strlen(strip_tags($body))) {
+            // Plain text - convert line breaks to <br> tags
+            $body = nl2br($body);
         }
+        // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
         $cc  = $this->input->post('cc');
         $bcc = $this->input->post('bcc');

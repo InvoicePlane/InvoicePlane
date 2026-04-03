@@ -12,6 +12,7 @@
     },
     "require": {
         "endroid/qr-code": "^4.8.5",
+        "ezyang/htmlpurifier": "^4.19",
         "guzzlehttp/guzzle": "^7.10",
         "moneyphp/money": "^4.8",
         "mpdf/mpdf": "^8.2.7",

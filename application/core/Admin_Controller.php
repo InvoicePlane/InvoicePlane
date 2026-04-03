@@ -30,7 +30,12 @@ class Admin_Controller extends User_Controller
             'user_passwordv',     // User password verification field
             //'invoice_password',   // Invoice PDF password protection
             //'quote_password',     // Quote PDF password protection
-            'email_template_body', // Email templates can contain HTML
+        ];
+        
+        // Fields that require special HTML sanitization (not bypass, but custom handling)
+        $html_fields = [
+            'email_template_body', // Email templates can contain HTML but need HTML Purifier
+            'body',                // Email body when sending invoices/quotes
         ];
 
         $input = $this->input->post();
@@ -40,6 +45,27 @@ class Admin_Controller extends User_Controller
         foreach ($input as $key => $value) {
             // Skip bypass fields
             if (in_array($key, $bypass_fields, true)) {
+                continue;
+            }
+            
+            // Handle HTML fields with HTML Purifier
+            if (in_array($key, $html_fields, true)) {
+                $this->load->helper('html_sanitizer');
+                $original_value = $value;
+                $cleaned_value = sanitize_email_template_html($value);
+                
+                // Check if value was modified (potential XSS detected)
+                if ($original_value !== $cleaned_value) {
+                    $xss_detected = true;
+                    $xss_log_entries[] = [
+                        'field' => $key,
+                        'original_length' => strlen($original_value),
+                        'cleaned_length' => strlen($cleaned_value),
+                        'type' => 'html_purifier',
+                    ];
+                }
+                
+                $_POST[$key] = $cleaned_value;
                 continue;
             }
 
