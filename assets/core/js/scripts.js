@@ -323,9 +323,14 @@ function insert_html_tag(tag_type, destination_id) {
     }
 }
 
-// Get crsf names from ipconfig (config_item) on meta tags - since v1.6.3
+// Get CSRF configuration from meta tags - since v1.6.3
 const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content');   // Default: _ip_csrf
 const csrf_cookie_name = document.querySelector('meta[name="csrf_cookie_name"]').getAttribute('content'); // Default: ip_csrf_cookie
+
+// Get CSRF token value from meta tag instead of reading HttpOnly cookie
+// This allows the cookie to have HttpOnly=true for XSS protection while still providing
+// the token to JavaScript for AJAX requests. The server rotates this value on each page load.
+let csrf_token_value = document.querySelector('meta[name="csrf_token_value"]').getAttribute('content');
 
 const legacy_calculation = parseInt(document.querySelector('meta[name="legacy_calculation"]').getAttribute('content')); // Default: 1 (legacy on)
 
@@ -365,23 +370,33 @@ function check_items_tax_usages(e) {
 }
 
 $(function () {
-    // Automatical CSRF protection for
-    // All jquery POST requests
+    // Automatic CSRF protection for all jQuery POST requests
+    // Uses meta tag value instead of reading HttpOnly cookie directly
     $.ajaxPrefilter(function (options) {
         if (options.type === 'post' || options.type === 'POST' || options.type === 'Post') {
             if (options.data === '') {
-                options.data += '?' + csrf_token_name + '=' + Cookies.get(csrf_cookie_name);
+                options.data += '?' + csrf_token_name + '=' + csrf_token_value;
             } else {
-                options.data += '&' + csrf_token_name + '=' + Cookies.get(csrf_cookie_name);
+                options.data += '&' + csrf_token_name + '=' + csrf_token_value;
             }
         }
     });
-    $(document).ajaxComplete(function () {
-        $('[name="' + csrf_token_name + '"]').val(Cookies.get(csrf_cookie_name));
+
+    // Update CSRF token value after each AJAX request completes
+    // The server may rotate the token, so we refresh it from response headers or page updates
+    $(document).ajaxComplete(function (event, xhr, settings) {
+        // Check if server returned a new token in response headers
+        var newToken = xhr.getResponseHeader('X-CSRF-Token');
+        if (newToken) {
+            csrf_token_value = newToken;
+        }
+        // Update all CSRF hidden inputs with current token value
+        $('[name="' + csrf_token_name + '"]').val(csrf_token_value);
     });
-    // Update crsf on all submit way's
+
+    // Update CSRF token on all form submissions
     $('form').on('submit', function(){
-        $('input[name="' + csrf_token_name + '"]').prop('value', Cookies.get(csrf_cookie_name));
+        $('input[name="' + csrf_token_name + '"]').prop('value', csrf_token_value);
     });
 
     // Set the default options for all instances of Select2

@@ -165,11 +165,11 @@ foreach ($quote_templates as $template) {
                                 id="email_template_body"
                                 rows="8"
                                 class="email-template-body form-control taggable"
-                            ><?php 
+                            ><?php
                                 // Escape output to prevent stored XSS when displaying database content in forms.
                                 // This protects against malicious content that may have been stored before
                                 // HTML Purifier sanitization was implemented.
-                                echo htmlspecialchars($this->mdl_email_templates->form_value('email_template_body'), ENT_QUOTES, 'UTF-8');
+                                echo html_escape($this->mdl_email_templates->form_value('email_template_body'));
                             ?></textarea>
 
                             <br>

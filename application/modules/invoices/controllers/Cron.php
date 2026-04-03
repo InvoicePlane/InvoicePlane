@@ -132,15 +132,18 @@ class Cron extends Base_Controller
                 $this->load->helper('html_sanitizer');
 
                 // Prepare the body
-                // The body is already sanitized by HTML Purifier during save.
-                // We only need to add line breaks if the content is plain text (no HTML tags).
-                $body = $tpl->email_template_body;
+                // Re-sanitize template body to ensure legacy DB rows are cleaned.
+                // This provides defense-in-depth protection against any templates that may have
+                // been stored before HTML Purifier sanitization was implemented.
+                $body = sanitize_email_template_html($tpl->email_template_body);
+
+                // Apply nl2br only to plain text content (after sanitization)
                 if (is_plain_text($body)) {
                     // Plain text - convert line breaks to <br> tags
                     $body = nl2br($body);
                 }
                 // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
-                // The sanitized HTML from the database is now used directly.
+                // The sanitized HTML is used directly without decoding.
 
                 // Determine sender email: use template value, then smtp_mail_from setting, then fall back to user email
                 if (!empty($tpl->email_template_from_email)) {

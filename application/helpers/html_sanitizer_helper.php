@@ -38,7 +38,7 @@ function is_plain_text(string $content): bool
 
 /**
  * Sanitize HTML content for email templates using HTML Purifier.
- * 
+ *
  * This function provides defense-in-depth protection against XSS attacks in email templates.
  * It allows safe HTML tags (p, br, strong, em, h1-h4, etc.) while removing all JavaScript,
  * event handlers, and dangerous attributes.
@@ -46,6 +46,8 @@ function is_plain_text(string $content): bool
  * @param string $html The HTML content to sanitize
  * @return string The sanitized HTML content
  */
+function sanitize_email_template_html(string $html): string
+{
     /** @var HTMLPurifier|null $purifier */
     static $purifier = null;
 
