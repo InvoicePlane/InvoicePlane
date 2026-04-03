@@ -463,7 +463,7 @@ $config['cookie_prefix']   = '';
 $config['cookie_domain']   = '';
 $config['cookie_path']     = '/';
 $config['cookie_secure']   = env('COOKIE_SECURE', false);
-$config['cookie_httponly'] = false;
+$config['cookie_httponly'] = true; // Changed from false to true for XSS protection
 
 /*
 |--------------------------------------------------------------------------
