@@ -18,6 +18,9 @@ if ( ! defined('BASEPATH')) {
  * 
  * This helper function checks if the given content contains HTML tags.
  * Used to determine whether to add nl2br() conversion for plain text emails.
+ * 
+ * Note: Returns false for empty strings to avoid unnecessary nl2br() processing,
+ * treating them as non-plain-text for optimization purposes.
  *
  * @param string $content The content to check
  * @return bool True if plain text (no HTML), false if contains HTML or empty
@@ -53,9 +56,16 @@ function sanitize_email_template_html(string $html): string
     // Set cache directory (use CodeIgniter's cache directory)
     $cache_dir = APPPATH . 'cache/htmlpurifier';
     if ( ! is_dir($cache_dir)) {
-        mkdir($cache_dir, 0755, true);
+        if ( ! mkdir($cache_dir, 0755, true)) {
+            log_message('error', 'Failed to create HTMLPurifier cache directory: ' . $cache_dir);
+            // Disable cache if directory creation fails
+            $config->set('Cache.SerializerPath', null);
+        } else {
+            $config->set('Cache.SerializerPath', $cache_dir);
+        }
+    } else {
+        $config->set('Cache.SerializerPath', $cache_dir);
     }
-    $config->set('Cache.SerializerPath', $cache_dir);
     
     // Allow safe HTML tags for email templates
     // This is a whitelist approach - only these tags are allowed

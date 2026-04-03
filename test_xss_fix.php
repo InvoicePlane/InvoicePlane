@@ -69,11 +69,11 @@ foreach ($test_cases as $test) {
         // Use str_contains() if available (PHP 8+), otherwise fall back to strpos()
         $has_should_contain = function_exists('str_contains') 
             ? str_contains($output, $test['should_contain'])
-            : strpos($output, $test['should_contain']) !== false;
+            : ($test['should_contain'] !== null && strpos($output, $test['should_contain']) !== false);
             
         $has_should_not_contain = function_exists('str_contains')
             ? str_contains($output, $test['should_not_contain'])
-            : strpos($output, $test['should_not_contain']) !== false;
+            : ($test['should_not_contain'] !== null && strpos($output, $test['should_not_contain']) !== false);
         
         if ($test['should_contain'] !== null && !$has_should_contain) {
             echo "❌ FAILED: Output should contain '{$test['should_contain']}'\n";

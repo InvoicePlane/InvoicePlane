@@ -41,6 +41,9 @@ class Admin_Controller extends User_Controller
         $input = $this->input->post();
         $xss_detected = false;
         $xss_log_entries = [];
+        
+        // Load HTML sanitizer helper once before processing HTML fields
+        $html_sanitizer_loaded = false;
 
         foreach ($input as $key => $value) {
             // Skip bypass fields
@@ -50,7 +53,11 @@ class Admin_Controller extends User_Controller
             
             // Handle HTML fields with HTML Purifier
             if (in_array($key, $html_fields, true)) {
-                $this->load->helper('html_sanitizer');
+                if (!$html_sanitizer_loaded) {
+                    $this->load->helper('html_sanitizer');
+                    $html_sanitizer_loaded = true;
+                }
+                
                 $original_value = $value;
                 $cleaned_value = sanitize_email_template_html($value);
                 
