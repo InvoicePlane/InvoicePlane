@@ -128,11 +128,14 @@ class Cron extends Base_Controller
                 $this->load->model('upload/mdl_uploads');
                 $attachment_files = $this->mdl_uploads->get_invoice_uploads($target_id);
 
+                // Load helper for email body processing
+                $this->load->helper('html_sanitizer');
+
                 // Prepare the body
                 // The body is already sanitized by HTML Purifier during save.
                 // We only need to add line breaks if the content is plain text (no HTML tags).
                 $body = $tpl->email_template_body;
-                if (mb_strlen($body) === mb_strlen(strip_tags($body))) {
+                if (is_plain_text($body)) {
                     // Plain text - convert line breaks to <br> tags
                     $body = nl2br($body);
                 }

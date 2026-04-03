@@ -156,9 +156,12 @@ class Mailer extends Admin_Controller
         $subject      = $this->input->post('subject');
         $body         = $this->input->post('body');
 
+        // Load helper for email body processing
+        $this->load->helper('html_sanitizer');
+
         // The body is already sanitized by HTML Purifier in filter_input().
         // We only need to add line breaks if the content is plain text (no HTML tags).
-        if (mb_strlen($body) === mb_strlen(strip_tags($body))) {
+        if (is_plain_text($body)) {
             // Plain text - convert line breaks to <br> tags
             $body = nl2br($body);
         }
@@ -203,9 +206,12 @@ class Mailer extends Admin_Controller
         $subject      = $this->input->post('subject');
         $body         = $this->input->post('body');
 
+        // Load helper for email body processing
+        $this->load->helper('html_sanitizer');
+
         // The body is already sanitized by HTML Purifier in filter_input().
         // We only need to add line breaks if the content is plain text (no HTML tags).
-        if (mb_strlen($body) === mb_strlen(strip_tags($body))) {
+        if (is_plain_text($body)) {
             // Plain text - convert line breaks to <br> tags
             $body = nl2br($body);
         }

@@ -14,6 +14,20 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
+ * Check if content is plain text (no HTML tags).
+ * 
+ * This helper function checks if the given content contains HTML tags.
+ * Used to determine whether to add nl2br() conversion for plain text emails.
+ *
+ * @param string $content The content to check
+ * @return bool True if plain text (no HTML), false if contains HTML
+ */
+function is_plain_text(string $content): bool
+{
+    return mb_strlen($content) === mb_strlen(strip_tags($content));
+}
+
+/**
  * Sanitize HTML content for email templates using HTML Purifier.
  * 
  * This function provides defense-in-depth protection against XSS attacks in email templates.
