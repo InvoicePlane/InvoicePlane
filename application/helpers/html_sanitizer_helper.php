@@ -56,16 +56,14 @@ function sanitize_email_template_html(string $html): string
     
     // Set cache directory (use CodeIgniter's cache directory)
     $cache_dir = APPPATH . 'cache/htmlpurifier';
-    if ( ! is_dir($cache_dir)) {
-        if ( ! mkdir($cache_dir, 0755, true)) {
-            log_message('error', 'Failed to create HTMLPurifier cache directory: ' . $cache_dir);
-            // Disable cache if directory creation fails
-            $config->set('Cache.SerializerPath', null);
-        } else {
-            $config->set('Cache.SerializerPath', $cache_dir);
-        }
-    } else {
+    if (is_dir($cache_dir)) {
         $config->set('Cache.SerializerPath', $cache_dir);
+    } elseif (mkdir($cache_dir, 0755, true) || is_dir($cache_dir)) {
+        $config->set('Cache.SerializerPath', $cache_dir);
+    } else {
+        log_message('error', 'Failed to create HTMLPurifier cache directory: ' . $cache_dir);
+        // Disable cache if directory creation fails
+        $config->set('Cache.SerializerPath', null);
     }
     
     // Allow safe HTML tags for email templates
