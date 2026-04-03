@@ -82,20 +82,3 @@ function sanitize_email_template_html(string $html): string
     // Sanitize and return
     return $purifier->purify($html);
 }
-
-/**
- * Prepare email template body for display in forms.
- * 
- * This function escapes the email template body for safe display in HTML form fields.
- * It prevents stored XSS by ensuring any malicious scripts stored in the database
- * cannot execute when the template is edited.
- *
- * @param string $html The HTML content to escape
- * @return string The escaped HTML content safe for display in form fields
- */
-function escape_email_template_for_form(string $html): string
-{
-    // Use htmlspecialchars with ENT_QUOTES to escape both single and double quotes
-    // This prevents breaking out of the textarea context
-    return htmlspecialchars($html, ENT_QUOTES, 'UTF-8');
-}
