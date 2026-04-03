@@ -296,6 +296,15 @@ foreach ($custom_fields as $custom_field) {
                         </div>
 
                         <div class="form-group">
+                            <label for="client_invoice_email"><?php _trans('invoice_email_address'); ?></label>
+
+                            <div class="controls">
+                                <input type="text" name="client_invoice_email" id="client_invoice_email" class="form-control"
+                                       value="<?php echo $this->mdl_clients->form_value('client_invoice_email', true); ?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="client_web"><?php _trans('web_address'); ?></label>
 
                             <div class="controls">

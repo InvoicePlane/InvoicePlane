@@ -145,7 +145,7 @@ class Cron extends Base_Controller
                     : $tpl->email_template_subject;
 
                 $pdf_template = $tpl->email_template_pdf_template;
-                $to           = $invoice->client_email;
+                $to           = $invoice->client_invoice_email ?: $invoice->client_email;
                 $cc           = $tpl->email_template_cc;
                 $bcc          = $tpl->email_template_bcc;
 

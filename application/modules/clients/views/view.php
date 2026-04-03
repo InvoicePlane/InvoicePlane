@@ -168,6 +168,12 @@ $colClass = 'col-xs-12 col-sm-6' . ($req_einvoicing ? ' col-lg-4' : '');
                                     <td><?php _auto_link($client->client_email, 'email'); ?></td>
                                 </tr>
 <?php } ?>
+<?php if ($client->client_invoice_email) { ?>
+                                <tr>
+                                    <th><?php _trans('invoice_email_address'); ?></th>
+                                    <td><?php _auto_link($client->client_invoice_email, 'email'); ?></td>
+                                </tr>
+<?php } ?>
 <?php if ($client->client_phone) { ?>
                                 <tr>
                                     <th><?php _trans('phone'); ?></th>

@@ -202,6 +202,7 @@ $lang = [
     'elements'                                     => 'Elements',
     'email'                                        => 'Email',
     'email_address'                                => 'Email Address',
+    'invoice_email_address'                        => 'Invoice Email Address',
     'email_invoice'                                => 'Email Invoice',
     'email_not_configured'                         => 'Before you can send Email, you have to configure your Email settings in the System Settings area.',
     'email_pdf_attachment'                         => 'Attach Quote/Invoice on Email?',

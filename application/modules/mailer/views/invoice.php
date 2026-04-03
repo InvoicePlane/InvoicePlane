@@ -76,7 +76,7 @@ if (($invoice->client_einvoicing_version ?? '') != '' && ($invoice->client_einvo
                 <div class="form-group">
                     <label for="to_email"><?php _trans('to_email'); ?></label>
                     <input type="email" multiple name="to_email" id="to_email" class="form-control" required
-                           value="<?php echo $invoice->client_email; ?>">
+                           value="<?php echo $invoice->client_invoice_email ?: $invoice->client_email; ?>">
                 </div>
 
                 <hr>

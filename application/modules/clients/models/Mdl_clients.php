@@ -89,6 +89,9 @@ class Mdl_Clients extends Response_Model
             'client_email' => [
                 'field' => 'client_email',
             ],
+            'client_invoice_email' => [
+                'field' => 'client_invoice_email',
+            ],
             'client_web' => [
                 'field' => 'client_web',
             ],
