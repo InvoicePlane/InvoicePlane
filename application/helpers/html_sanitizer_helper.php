@@ -20,10 +20,15 @@ if ( ! defined('BASEPATH')) {
  * Used to determine whether to add nl2br() conversion for plain text emails.
  *
  * @param string $content The content to check
- * @return bool True if plain text (no HTML), false if contains HTML
+ * @return bool True if plain text (no HTML), false if contains HTML or empty
  */
 function is_plain_text(string $content): bool
 {
+    // Return false for empty strings to avoid unnecessary nl2br() processing
+    if (trim($content) === '') {
+        return false;
+    }
+    
     return mb_strlen($content) === mb_strlen(strip_tags($content));
 }
 
