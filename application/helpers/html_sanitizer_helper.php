@@ -14,16 +14,17 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * Check if content is plain text (no HTML tags).
+ * Check if content should have line breaks converted to HTML <br> tags.
  * 
- * This helper function checks if the given content contains HTML tags.
- * Used to determine whether to add nl2br() conversion for plain text emails.
+ * This is a convenience function for email processing that determines whether
+ * nl2br() should be applied. Returns true only for non-empty plain text content
+ * (no HTML tags). Returns false for empty strings (optimization) or HTML content.
  * 
- * Note: Returns false for empty strings to avoid unnecessary nl2br() processing,
- * treating them as non-plain-text for optimization purposes.
+ * Note: Semantically, an empty string IS plain text, but we return false to
+ * avoid unnecessary nl2br() processing in email workflows.
  *
  * @param string $content The content to check
- * @return bool True if plain text (no HTML), false if contains HTML or empty
+ * @return bool True if nl2br() should be applied, false otherwise
  */
 function is_plain_text(string $content): bool
 {

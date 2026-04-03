@@ -66,8 +66,8 @@ class Admin_Controller extends User_Controller
                     $xss_detected = true;
                     $xss_log_entries[] = [
                         'field' => $key,
-                        'original_length' => strlen($original_value),
-                        'cleaned_length' => strlen($cleaned_value),
+                        'original_length' => mb_strlen($original_value),
+                        'cleaned_length' => mb_strlen($cleaned_value),
                         'type' => 'html_purifier',
                     ];
                 }
@@ -100,8 +100,8 @@ class Admin_Controller extends User_Controller
                 $xss_detected = true;
                 $xss_log_entries[] = [
                     'field' => $key,
-                    'original_length' => strlen($original_value),
-                    'cleaned_length' => strlen($cleaned_value),
+                    'original_length' => mb_strlen($original_value),
+                    'cleaned_length' => mb_strlen($cleaned_value),
                 ];
             }
 
@@ -174,8 +174,8 @@ class Admin_Controller extends User_Controller
                     $xss_detected = true;
                     $xss_log_entries[] = [
                         'field' => $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key,
-                        'original_length' => strlen((string) $original_value),
-                        'cleaned_length' => strlen((string) $cleaned_value),
+                        'original_length' => mb_strlen((string) $original_value),
+                        'cleaned_length' => mb_strlen((string) $cleaned_value),
                     ];
                 }
                 $data[$key] = $cleaned_value;
