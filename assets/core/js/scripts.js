@@ -235,12 +235,22 @@ function decodeHtmlEntities(text) {
         }
     }
     
-    // Handle numeric entities (&#123; and &#xAB; formats)
+    // Handle numeric entities (&#123; and &#xAB; formats) with bounds checking
     decoded = decoded.replace(/&#(\d+);/g, function(match, dec) {
-        return String.fromCharCode(dec);
+        var code = parseInt(dec, 10);
+        // Only decode if within valid Unicode range and not in surrogate pair range
+        if (code >= 0 && code <= 0x10FFFF && (code < 0xD800 || code > 0xDFFF)) {
+            return String.fromCharCode(code);
+        }
+        return match; // Return original if invalid
     });
     decoded = decoded.replace(/&#x([0-9A-Fa-f]+);/g, function(match, hex) {
-        return String.fromCharCode(parseInt(hex, 16));
+        var code = parseInt(hex, 16);
+        // Only decode if within valid Unicode range and not in surrogate pair range
+        if (code >= 0 && code <= 0x10FFFF && (code < 0xD800 || code > 0xDFFF)) {
+            return String.fromCharCode(code);
+        }
+        return match; // Return original if invalid
     });
     
     return decoded;
@@ -256,11 +266,11 @@ function update_email_template_preview() {
     
     // Improved regex patterns to detect complete encoded and real HTML tags
     // Requires closing bracket to ensure these are actual tags, not just < or &lt; characters
-    var hasEncodedTags = /&lt;\s*\/?[a-zA-Z][\w:.-]*[^>]*&gt;/.test(rawHtml);
-    var hasRealTags = /<\s*\/?[a-zA-Z][\w:.-]*[^>]*>/.test(rawHtml);
+    var containsEncodedHtmlTags = /&lt;\s*\/?[a-zA-Z][\w:.-]*[^>]*&gt;/.test(rawHtml);
+    var containsRawHtmlTags = /<\s*\/?[a-zA-Z][\w:.-]*[^>]*>/.test(rawHtml);
     
     // Only decode if we have encoded tags but no real tags (indicating double-encoding)
-    if (hasEncodedTags && !hasRealTags) {
+    if (containsEncodedHtmlTags && !containsRawHtmlTags) {
         // Safer entity decoding using a dedicated function
         htmlToRender = decodeHtmlEntities(rawHtml);
     }
