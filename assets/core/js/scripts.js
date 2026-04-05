@@ -216,17 +216,17 @@ function sanitize_email_template_html(html) {
  * Uses a map of common entities and regex replacement
  */
 function decodeHtmlEntities(text) {
-    // Unicode constants for validation
-    var MAX_UNICODE_CODEPOINT = 0x10FFFF;
-    var SURROGATE_MIN = 0xD800;
-    var SURROGATE_MAX = 0xDFFF;
+    // Unicode constants for validation (using JavaScript camelCase convention)
+    var maxUnicodeCodepoint = 0x10FFFF;
+    var surrogateMin = 0xD800;
+    var surrogateMax = 0xDFFF;
     
     /**
      * Check if a codepoint is valid Unicode and not in the surrogate pair range
      */
     function isValidUnicodeCodepoint(code) {
-        return code >= 0 && code <= MAX_UNICODE_CODEPOINT && 
-               (code < SURROGATE_MIN || code > SURROGATE_MAX);
+        return code >= 0 && code <= maxUnicodeCodepoint && 
+               (code < surrogateMin || code > surrogateMax);
     }
     
     // Map of HTML entities to their character equivalents
@@ -249,18 +249,28 @@ function decodeHtmlEntities(text) {
     }
     
     // Handle decimal numeric entities (&#123;) with bounds checking
+    // Use String.fromCodePoint for proper Unicode support including supplementary planes
     decoded = decoded.replace(/&#(\d+);/g, function(match, dec) {
         var code = parseInt(dec, 10);
         if (isValidUnicodeCodepoint(code)) {
+            // Use fromCodePoint if available (modern browsers), fallback to fromCharCode
+            if (String.fromCodePoint) {
+                return String.fromCodePoint(code);
+            }
             return String.fromCharCode(code);
         }
         return match; // Return original if invalid
     });
     
     // Handle hexadecimal numeric entities (&#xAB;) with bounds checking
+    // Use String.fromCodePoint for proper Unicode support including supplementary planes
     decoded = decoded.replace(/&#x([0-9A-Fa-f]+);/g, function(match, hex) {
         var code = parseInt(hex, 16);
         if (isValidUnicodeCodepoint(code)) {
+            // Use fromCodePoint if available (modern browsers), fallback to fromCharCode
+            if (String.fromCodePoint) {
+                return String.fromCodePoint(code);
+            }
             return String.fromCharCode(code);
         }
         return match; // Return original if invalid
