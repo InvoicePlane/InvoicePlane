@@ -459,17 +459,11 @@ $(function () {
         }
     });
 
-    // Update CSRF token value after each AJAX request completes
-    // The server may rotate the token, so we refresh it from response headers or page updates
-    $(document).ajaxComplete(function (event, xhr, settings) {
-        // Check if server returned a new token in response headers
-        var newToken = xhr.getResponseHeader('X-CSRF-Token');
-        if (newToken) {
-            csrf_token_value = newToken;
-        }
-        // Update all CSRF hidden inputs with current token value
-        $('[name="' + csrf_token_name + '"]').val(csrf_token_value);
-    });
+    // Note: CSRF token regeneration is enabled (csrf_regenerate = true in config)
+    // The token changes after each POST request, but we don't have server-side code
+    // to return the new token in response headers. The token is refreshed on page loads
+    // via the meta tag. For AJAX-heavy workflows, consider disabling csrf_regenerate
+    // or implementing server-side token refresh in response headers.
 
     // Update CSRF token on all form submissions
     $('form').on('submit', function(){

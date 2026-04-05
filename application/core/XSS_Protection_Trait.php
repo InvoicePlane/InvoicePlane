@@ -105,8 +105,9 @@ trait XSS_Protection_Trait
             // Check if value was modified (XSS detected)
             if ($original_value !== $cleaned_value) {
                 $xss_detected = true;
+                // Sanitize field name to prevent log injection
                 $xss_log_entries[] = [
-                    'field' => $key,
+                    'field' => sanitize_for_logging($key),
                     'original_length' => mb_strlen($original_value),
                     'cleaned_length' => mb_strlen($cleaned_value),
                 ];
@@ -121,12 +122,15 @@ trait XSS_Protection_Trait
         if ($xss_detected) {
             $controller_type = $this instanceof Admin_Controller ? 'Admin' : 'Guest';
             
+            // Sanitize user-influenced values to prevent log injection
+            $this->load->helper('file_security');
+            
             $log_context = [
                 'timestamp' => date('Y-m-d H:i:s'),
                 'user_id'   => $this->session->userdata('user_id'),
-                'uri'       => uri_string(),
+                'uri'       => sanitize_for_logging(uri_string()),
                 'ip_address' => $this->input->ip_address(),
-                'user_agent' => $this->input->user_agent(),
+                'user_agent' => sanitize_for_logging($this->input->user_agent()),
                 'fields'    => $xss_log_entries,
             ];
 
@@ -182,8 +186,10 @@ trait XSS_Protection_Trait
                 $cleaned_value = strip_tags($this->security->xss_clean($value));
                 if ($original_value !== $cleaned_value) {
                     $xss_detected = true;
+                    // Sanitize field path to prevent log injection
+                    $field_path = $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key;
                     $xss_log_entries[] = [
-                        'field' => $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key,
+                        'field' => sanitize_for_logging($field_path),
                         'original_length' => mb_strlen((string) $original_value),
                         'cleaned_length' => mb_strlen((string) $cleaned_value),
                     ];
