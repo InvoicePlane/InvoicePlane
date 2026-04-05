@@ -219,16 +219,17 @@ function update_email_template_preview() {
     // This prevents changing intentionally entity-encoded content meant to display literally
     var htmlToRender = rawHtml;
     
-    // Check if content contains HTML entity-encoded tags (e.g., &lt;p&gt;, &lt;strong&gt;)
-    // but does NOT contain actual HTML tags (e.g., <p>, <strong>)
-    var hasEncodedTags = /&lt;\s*\/?\s*\w+/.test(rawHtml);
-    var hasRealTags = /<\s*\/?\s*\w+/.test(rawHtml);
+    // Improved regex patterns to detect encoded and real HTML tags
+    // Handles self-closing tags, attributes, and various tag formats
+    var hasEncodedTags = /&lt;\s*\/?[a-zA-Z][\w:.-]*/.test(rawHtml);
+    var hasRealTags = /<\s*\/?[a-zA-Z][\w:.-]*/.test(rawHtml);
     
     // Only decode if we have encoded tags but no real tags (indicating double-encoding)
     if (hasEncodedTags && !hasRealTags) {
-        var textarea = document.createElement('textarea');
-        textarea.innerHTML = rawHtml;
-        htmlToRender = textarea.value;
+        // Safer entity decoding using DOMParser to avoid DOM-based XSS
+        var parser = new DOMParser();
+        var doc = parser.parseFromString('<!doctype html><body>' + rawHtml, 'text/html');
+        htmlToRender = doc.body.textContent || '';
     }
     
     // Sanitize the HTML to ensure only safe tags are rendered
