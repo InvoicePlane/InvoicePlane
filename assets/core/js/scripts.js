@@ -211,6 +211,41 @@ function sanitize_email_template_html(html) {
     return container.innerHTML;
 }
 
+/**
+ * Safely decode HTML entities without DOM-based XSS risks
+ * Uses a map of common entities and regex replacement
+ */
+function decodeHtmlEntities(text) {
+    // Map of HTML entities to their character equivalents
+    var entities = {
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&quot;': '"',
+        '&#39;': "'",
+        '&#x27;': "'",
+        '&apos;': "'"
+    };
+    
+    // Replace known entities
+    var decoded = text;
+    for (var entity in entities) {
+        if (entities.hasOwnProperty(entity)) {
+            decoded = decoded.split(entity).join(entities[entity]);
+        }
+    }
+    
+    // Handle numeric entities (&#123; and &#xAB; formats)
+    decoded = decoded.replace(/&#(\d+);/g, function(match, dec) {
+        return String.fromCharCode(dec);
+    });
+    decoded = decoded.replace(/&#x([0-9A-Fa-f]+);/g, function(match, hex) {
+        return String.fromCharCode(parseInt(hex, 16));
+    });
+    
+    return decoded;
+}
+
 function update_email_template_preview() {
     var rawHtml = $('.email-template-body').val();
     
@@ -219,17 +254,15 @@ function update_email_template_preview() {
     // This prevents changing intentionally entity-encoded content meant to display literally
     var htmlToRender = rawHtml;
     
-    // Improved regex patterns to detect encoded and real HTML tags
-    // Handles self-closing tags, attributes, and various tag formats
-    var hasEncodedTags = /&lt;\s*\/?[a-zA-Z][\w:.-]*/.test(rawHtml);
-    var hasRealTags = /<\s*\/?[a-zA-Z][\w:.-]*/.test(rawHtml);
+    // Improved regex patterns to detect complete encoded and real HTML tags
+    // Requires closing bracket to ensure these are actual tags, not just < or &lt; characters
+    var hasEncodedTags = /&lt;\s*\/?[a-zA-Z][\w:.-]*[^>]*&gt;/.test(rawHtml);
+    var hasRealTags = /<\s*\/?[a-zA-Z][\w:.-]*[^>]*>/.test(rawHtml);
     
     // Only decode if we have encoded tags but no real tags (indicating double-encoding)
     if (hasEncodedTags && !hasRealTags) {
-        // Safer entity decoding using DOMParser to avoid DOM-based XSS
-        var parser = new DOMParser();
-        var doc = parser.parseFromString('<!doctype html><body>' + rawHtml, 'text/html');
-        htmlToRender = doc.body.textContent || '';
+        // Safer entity decoding using a dedicated function
+        htmlToRender = decodeHtmlEntities(rawHtml);
     }
     
     // Sanitize the HTML to ensure only safe tags are rendered
