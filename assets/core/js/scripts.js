@@ -214,14 +214,25 @@ function sanitize_email_template_html(html) {
 function update_email_template_preview() {
     var rawHtml = $('.email-template-body').val();
     
-    // Decode HTML entities that might be present in the textarea
-    // This is needed because content may be HTML-entity-encoded for safe display in forms
-    var textarea = document.createElement('textarea');
-    textarea.innerHTML = rawHtml;
-    var decodedHtml = textarea.value;
+    // Only decode HTML entities if the content appears to be double-encoded
+    // (i.e., contains encoded HTML tags like &lt;strong&gt; instead of actual <strong> tags)
+    // This prevents changing intentionally entity-encoded content meant to display literally
+    var htmlToRender = rawHtml;
     
-    // Sanitize the decoded HTML to ensure only safe tags are rendered
-    var sanitizedHtml = sanitize_email_template_html(decodedHtml);
+    // Check if content contains HTML entity-encoded tags (e.g., &lt;p&gt;, &lt;strong&gt;)
+    // but does NOT contain actual HTML tags (e.g., <p>, <strong>)
+    var hasEncodedTags = /&lt;\s*\/?\s*\w+/.test(rawHtml);
+    var hasRealTags = /<\s*\/?\s*\w+/.test(rawHtml);
+    
+    // Only decode if we have encoded tags but no real tags (indicating double-encoding)
+    if (hasEncodedTags && !hasRealTags) {
+        var textarea = document.createElement('textarea');
+        textarea.innerHTML = rawHtml;
+        htmlToRender = textarea.value;
+    }
+    
+    // Sanitize the HTML to ensure only safe tags are rendered
+    var sanitizedHtml = sanitize_email_template_html(htmlToRender);
     var iframe = $('#email-template-preview')[0];
     
     // Initialize iframe with a proper HTML document if needed
