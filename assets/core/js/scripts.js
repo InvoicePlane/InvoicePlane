@@ -402,8 +402,7 @@ function insert_html_tag(tag_type, destination_id) {
 }
 
 // Get CSRF configuration from meta tags - since v1.6.3
-const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content');   // Default: _ip_csrf
-const csrf_cookie_name = document.querySelector('meta[name="csrf_cookie_name"]').getAttribute('content'); // Default: ip_csrf_cookie
+const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content'); // Default: _ip_csrf
 
 // Get CSRF token value from meta tag instead of reading HttpOnly cookie
 // This allows the cookie to have HttpOnly=true for XSS protection while still providing
