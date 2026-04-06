@@ -83,32 +83,11 @@ class View extends Base_Controller
 
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        // Security: Validate template name to prevent Local File Inclusion
+        // Security: Validate and get template path with defense-in-depth
         $requested_template = get_setting('public_invoice_template');
-        $template_name = validate_template_name($requested_template, 'invoice', 'public');
-        if ($template_name === false) {
-            // Sanitize template name for logging to prevent log injection / poisoning
-            $safe_template_for_log = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
-            log_message('error', 'Invalid invoice template setting: ' . $safe_template_for_log . ', using default');
-            $template_name = 'InvoicePlane_Web'; // Fallback to default template
-        }
+        $template_info = get_validated_template_path($requested_template, 'invoice', 'public', 'InvoicePlane_Web');
 
-        // Security: Additional verification - ensure template file actually exists
-        // This is defense-in-depth: even if whitelist is somehow bypassed, we verify the file exists
-        $template_path = APPPATH . 'views/invoice_templates/public/' . $template_name . '.php';
-        if (!file_exists($template_path)) {
-            log_message('error', 'Template file not found: ' . sanitize_for_logging($template_name) . ', using default');
-            $template_name = 'InvoicePlane_Web';
-            $template_path = APPPATH . 'views/invoice_templates/public/' . $template_name . '.php';
-            
-            // If even the default doesn't exist, show error instead of potentially including arbitrary files
-            if (!file_exists($template_path)) {
-                log_message('error', 'Critical: Default template file not found');
-                show_error('Template system error. Please contact administrator.', 500);
-            }
-        }
-
-        $this->load->view('invoice_templates/public/' . $template_name . '.php', $data);
+        $this->load->view($template_info['path'], $data);
     }
 
     /**
@@ -217,32 +196,12 @@ class View extends Base_Controller
         ];
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        // Security: Validate template name to prevent Local File Inclusion
+        // Security: Validate and get template path with defense-in-depth
         $this->load->helper('template');
         $requested_template = get_setting('public_quote_template');
-        $template_name = validate_template_name($requested_template, 'quote', 'public');
-        if ($template_name === false) {
-            // Security: sanitize template name before logging to prevent log injection
-            $safe_requested_template = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
-            log_message('error', 'Invalid quote template setting: ' . $safe_requested_template . ', using default');
-            $template_name = 'InvoicePlane_Web'; // Fallback to default template
-        }
+        $template_info = get_validated_template_path($requested_template, 'quote', 'public', 'InvoicePlane_Web');
 
-        // Security: Additional verification - ensure template file actually exists
-        $template_path = APPPATH . 'views/quote_templates/public/' . $template_name . '.php';
-        if (!file_exists($template_path)) {
-            log_message('error', 'Quote template file not found: ' . sanitize_for_logging($template_name) . ', using default');
-            $template_name = 'InvoicePlane_Web';
-            $template_path = APPPATH . 'views/quote_templates/public/' . $template_name . '.php';
-            
-            // If even the default doesn't exist, show error instead of potentially including arbitrary files
-            if (!file_exists($template_path)) {
-                log_message('error', 'Critical: Default quote template file not found');
-                show_error('Template system error. Please contact administrator.', 500);
-            }
-        }
-
-        $this->load->view('quote_templates/public/' . $template_name . '.php', $data);
+        $this->load->view($template_info['path'], $data);
     }
 
     /**

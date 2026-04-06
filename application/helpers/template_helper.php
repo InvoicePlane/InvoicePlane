@@ -282,6 +282,56 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf
 }
 
 /**
+ * Constructs and validates a template path with defense-in-depth security.
+ * 
+ * Security: This helper function centralizes template path construction and validation,
+ * ensuring consistent security checks across all template loading operations.
+ * 
+ * @param string $template_name The validated template name (without .php extension)
+ * @param string $type The template type ('invoice' or 'quote')
+ * @param string $scope The template scope ('public' or 'pdf')
+ * @param string $default_template The default template to use if validation fails
+ * @return array Returns ['path' => string, 'name' => string] with validated path and name
+ */
+function get_validated_template_path($template_name, $type = 'invoice', $scope = 'public', $default_template = 'InvoicePlane_Web')
+{
+    // Load file_security helper if not already loaded
+    $CI = & get_instance();
+    $CI->load->helper('file_security');
+    
+    // Validate the template name
+    $validated_name = validate_template_name($template_name, $type, $scope);
+    if ($validated_name === false) {
+        // Sanitize for logging
+        $safe_template_for_log = sanitize_for_logging((string) $template_name);
+        log_message('error', 'Invalid template setting: ' . $safe_template_for_log . ', using default: ' . $default_template);
+        $validated_name = $default_template;
+    }
+    
+    // Construct the template path
+    $template_dir = $type . '_templates/' . $scope;
+    $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
+    
+    // Defense-in-depth: Verify template file exists
+    if (!file_exists($template_path)) {
+        log_message('error', 'Template file not found: ' . sanitize_for_logging($validated_name) . ', using default: ' . $default_template);
+        $validated_name = $default_template;
+        $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
+        
+        // Critical: If even default doesn't exist, throw error
+        if (!file_exists($template_path)) {
+            log_message('error', 'Critical: Default template file not found for ' . $type . '/' . $scope);
+            show_error('Template system error. Please contact administrator.', 500);
+        }
+    }
+    
+    return [
+        'path' => $template_dir . '/' . $validated_name . '.php',
+        'name' => $validated_name,
+    ];
+}
+
+/**
  * Validates a PDF template name and returns a safe default if validation fails.
  * 
  * Security: This function is specifically for PDF templates loaded from settings or URL parameters.
