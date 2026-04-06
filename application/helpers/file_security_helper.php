@@ -243,3 +243,128 @@ function respond_file_message(int $httpCode, string $messageKey, string $dynamic
 
     exit;
 }
+
+/**
+ * Strip EXIF metadata from an image file to protect user privacy.
+ *
+ * Removes GPS coordinates, timestamps, device information, and other metadata
+ * that could expose sensitive information. Supports JPEG, PNG, GIF, and WEBP formats.
+ *
+ * @param string $filePath The full path to the image file to process
+ *
+ * @return array Array with 'success' (bool), 'message' (string), and optional 'error' keys
+ */
+function strip_exif_metadata(string $filePath): array
+{
+    // Validate file exists
+    if ( ! file_exists($filePath)) {
+        return [
+            'success' => false,
+            'message' => 'File does not exist',
+            'error'   => 'file_not_found',
+        ];
+    }
+
+    // Get file extension
+    $extension = mb_strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+
+    // Only process image files that can contain EXIF data
+    $processableFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    if ( ! in_array($extension, $processableFormats, true)) {
+        // Not an image or not a format that typically contains EXIF - skip processing
+        return [
+            'success' => true,
+            'message' => 'File format does not require EXIF stripping',
+            'skipped' => true,
+        ];
+    }
+
+    // Check if GD extension is available
+    if ( ! extension_loaded('gd')) {
+        log_message('warning', 'GD extension not available for EXIF stripping');
+
+        return [
+            'success' => false,
+            'message' => 'GD extension not available',
+            'error'   => 'gd_not_available',
+        ];
+    }
+
+    try {
+        // Load the image based on its type
+        $image = false;
+        switch ($extension) {
+            case 'jpg':
+            case 'jpeg':
+                $image = @imagecreatefromjpeg($filePath);
+                break;
+            case 'png':
+                $image = @imagecreatefrompng($filePath);
+                break;
+            case 'gif':
+                $image = @imagecreatefromgif($filePath);
+                break;
+            case 'webp':
+                if (function_exists('imagecreatefromwebp')) {
+                    $image = @imagecreatefromwebp($filePath);
+                }
+                break;
+        }
+
+        if ($image === false) {
+            log_message('error', 'Failed to load image for EXIF stripping: ' . sanitize_for_logging(basename($filePath)));
+
+            return [
+                'success' => false,
+                'message' => 'Failed to load image',
+                'error'   => 'image_load_failed',
+            ];
+        }
+
+        // Save the image back to the same file, which strips EXIF metadata
+        $saveSuccess = false;
+        switch ($extension) {
+            case 'jpg':
+            case 'jpeg':
+                $saveSuccess = @imagejpeg($image, $filePath, 90); // 90 quality to maintain good image quality
+                break;
+            case 'png':
+                $saveSuccess = @imagepng($image, $filePath, 6); // 6 compression level (balanced)
+                break;
+            case 'gif':
+                $saveSuccess = @imagegif($image, $filePath);
+                break;
+            case 'webp':
+                if (function_exists('imagewebp')) {
+                    $saveSuccess = @imagewebp($image, $filePath, 90); // 90 quality
+                }
+                break;
+        }
+
+        // Free up memory
+        imagedestroy($image);
+
+        if ( ! $saveSuccess) {
+            log_message('error', 'Failed to save image after EXIF stripping: ' . sanitize_for_logging(basename($filePath)));
+
+            return [
+                'success' => false,
+                'message' => 'Failed to save processed image',
+                'error'   => 'image_save_failed',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'EXIF metadata stripped successfully',
+        ];
+    } catch (Exception $e) {
+        log_message('error', 'Exception during EXIF stripping: ' . sanitize_for_logging($e->getMessage()));
+
+        return [
+            'success' => false,
+            'message' => 'Exception during processing',
+            'error'   => 'exception',
+        ];
+    }
+}
