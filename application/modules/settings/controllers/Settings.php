@@ -340,10 +340,10 @@ class Settings extends Admin_Controller
 
         if ( ! $result['success'] && ! isset($result['skipped'])) {
             // Log the error but don't fail the upload - the file is already uploaded
-            log_message('warning', 'Failed to strip EXIF metadata from ' . $logoType . ': ' . $result['error']);
+            log_message('warning', 'Failed to strip EXIF metadata from ' . sanitize_for_logging($logoType) . ': ' . $result['error']);
         } elseif ($result['success'] && ! isset($result['skipped'])) {
             // Successfully stripped EXIF metadata
-            log_message('debug', 'EXIF metadata stripped from ' . $logoType);
+            log_message('debug', 'EXIF metadata stripped from ' . sanitize_for_logging($logoType));
         }
     }
 }
