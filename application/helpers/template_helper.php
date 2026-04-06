@@ -309,7 +309,13 @@ function get_validated_template_path($template_name, $type = 'invoice', $scope =
         // Sanitize for logging
         $safe_template_for_log = sanitize_for_logging((string) $template_name);
         log_message('error', 'Invalid template setting: ' . $safe_template_for_log . ', using default: ' . $default_template);
-        $validated_name = $default_template;
+        // Validate default template as well (defense-in-depth)
+        $validated_default = validate_template_name($default_template, $type, $scope);
+        if ($validated_default === false) {
+            log_message('error', 'Critical: Default template also invalid: ' . $default_template);
+            show_error('Template system error. Please contact administrator.', 500);
+        }
+        $validated_name = $validated_default;
     }
     
     // Construct the template path
