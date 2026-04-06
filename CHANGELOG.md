@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced security logging for file uploads and template operations
 - Comprehensive input validation for template parameters
 - Security warnings in admin interface for SVG logo files
+- Optional EXIF metadata stripping from uploaded images (disabled by default)
+  - Configurable via `SEC_STRIP_EXIF_FROM_IMAGES` setting in `ipconfig.php`
+  - Removes GPS coordinates, timestamps, camera info, and device information
+  - Supports JPEG, PNG, GIF, and WEBP formats
+  - Preserves image quality while protecting user privacy
 
 ### Changed
 - Updated all PHP dependencies for PHP 8.2+ compatibility

@@ -250,12 +250,28 @@ function respond_file_message(int $httpCode, string $messageKey, string $dynamic
  * Removes GPS coordinates, timestamps, device information, and other metadata
  * that could expose sensitive information. Supports JPEG, PNG, GIF, and WEBP formats.
  *
+ * This function respects the SEC_STRIP_EXIF_FROM_IMAGES configuration setting.
+ * If the setting is disabled (false), the function returns success without processing.
+ *
  * @param string $filePath The full path to the image file to process
  *
  * @return array Array with 'success' (bool), 'message' (string), and optional 'error' keys
  */
 function strip_exif_metadata(string $filePath): array
 {
+    // Check if EXIF stripping is enabled via configuration
+    // Default to false if not set
+    $stripExifEnabled = env_bool('SEC_STRIP_EXIF_FROM_IMAGES', 'false');
+
+    if ( ! $stripExifEnabled) {
+        // Feature is disabled, return success without processing
+        return [
+            'success' => true,
+            'message' => 'EXIF stripping is disabled',
+            'skipped' => true,
+        ];
+    }
+
     // Validate file exists
     if ( ! file_exists($filePath)) {
         return [
