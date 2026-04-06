@@ -5,6 +5,66 @@ All notable changes to InvoicePlane will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2026-04-06
+
+### Security
+
+**CRITICAL: Fixed Remote Code Execution (RCE) vulnerability in template system - CVSSv3 9.9**
+
+This is a patch bypass of the v1.7.1 LFI fix. The vulnerability allowed authenticated administrators to achieve Remote Code Execution as any unauthenticated visitor.
+
+**Root Cause:**
+The v1.7.1 template validation system used `directory_map()` to dynamically construct the whitelist at runtime. Because template directories were writable by the web server, attackers could:
+1. Write a PHP webshell to the templates directory
+2. Have it automatically added to the "trusted" whitelist on next scan
+3. Set it as the active template via admin settings
+4. Trigger execution by any unauthenticated visitor accessing a public invoice URL
+
+**Fix Implementation:**
+- **Replaced dynamic whitelist with static hardcoded constants** (CWE-693 fix)
+  - Template names are now defined in code constants, NEVER scanned from filesystem
+  - Even if attacker writes evil.php to templates directory, it will NOT be in the whitelist
+  - Primary defense against RCE attacks
+  
+- **Enhanced validation with 7 security layers** (defense-in-depth)
+  1. Empty/non-string value rejection
+  2. Path traversal detection using `validate_safe_filename()`
+  3. Type parameter validation (invoice/quote only)
+  4. Scope parameter validation (pdf/public only)
+  5. Static whitelist validation (CRITICAL - blocks any file not in hardcoded list)
+  6. Character validation (alphanumeric, spaces, hyphens, underscores only)
+  7. Comprehensive security logging
+  
+- **Added file existence verification before template inclusion** (CWE-98 mitigation)
+  - Verifies template file exists before including it
+  - Falls back to default template if configured template is invalid
+  - Shows error if even default template is missing
+  - Prevents arbitrary file inclusion even if whitelist is somehow bypassed
+  
+- **Added template directory permission checking** (CWE-732 monitoring)
+  - New `check_template_directory_permissions()` method in Mdl_templates
+  - Detects if template directories are writable by web server
+  - Allows administrators to audit and fix permission issues
+
+**Files Changed:**
+- `application/modules/invoices/models/Mdl_templates.php` - Static whitelist implementation
+- `application/helpers/template_helper.php` - Enhanced multi-layer validation
+- `application/modules/guest/controllers/View.php` - File existence verification
+
+**Documentation:**
+- `SECURITY_ADVISORY_RCE_FIX.md` - Complete vulnerability and fix details
+- `MIGRATION_GUIDE_v1.7.2.md` - Upgrade and security hardening guide
+
+**Impact:**
+- **Before:** Attacker with admin access could execute arbitrary PHP code
+- **After:** Only templates explicitly defined in code constants can be loaded
+- **Scope:** CRITICAL - Allows escape from web application to operating system
+
+**Affected Versions:** InvoicePlane v1.7.0, v1.7.1  
+**Recommended Action:** **UPGRADE IMMEDIATELY** and audit template directories for malicious files
+
+See `SECURITY_ADVISORY_RCE_FIX.md` for full details and verification procedures.
+
 ## [1.7.0] - 2025-12-02
 
 ### Added
