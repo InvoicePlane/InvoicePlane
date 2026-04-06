@@ -62,7 +62,7 @@ function get_safe_referer($referer = '', $default_url = '')
     }
     
     // Referer is external or invalid, use safe default
-    log_message('debug', 'External referer blocked: ' . parse_url($referer, PHP_URL_HOST));
+    log_message('debug', 'External referer blocked: ' . sanitize_for_logging(parse_url($referer, PHP_URL_HOST)));
     return empty($default_url) ? base_url() : $default_url;
 }
 
@@ -96,7 +96,7 @@ function validate_redirect_url($url, $default_url = '')
     }
     
     // External URL - reject
-    log_message('debug', 'External redirect URL blocked: ' . parse_url($url, PHP_URL_HOST));
+    log_message('debug', 'External redirect URL blocked: ' . sanitize_for_logging(parse_url($url, PHP_URL_HOST)));
     return empty($default_url) ? base_url() : $default_url;
 }
 
