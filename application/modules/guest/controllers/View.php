@@ -43,6 +43,7 @@ class View extends Base_Controller
             ]
         );
         $this->load->helper('template');
+        $this->load->helper('file_security');
 
         $invoice = $invoice->row();
 
@@ -90,6 +91,21 @@ class View extends Base_Controller
             $safe_template_for_log = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
             log_message('error', 'Invalid invoice template setting: ' . $safe_template_for_log . ', using default');
             $template_name = 'InvoicePlane_Web'; // Fallback to default template
+        }
+
+        // Security: Additional verification - ensure template file actually exists
+        // This is defense-in-depth: even if whitelist is somehow bypassed, we verify the file exists
+        $template_path = APPPATH . 'views/invoice_templates/public/' . $template_name . '.php';
+        if (!file_exists($template_path)) {
+            log_message('error', 'Template file not found: ' . sanitize_for_logging($template_name) . ', using default');
+            $template_name = 'InvoicePlane_Web';
+            $template_path = APPPATH . 'views/invoice_templates/public/' . $template_name . '.php';
+            
+            // If even the default doesn't exist, show error instead of potentially including arbitrary files
+            if (!file_exists($template_path)) {
+                log_message('error', 'Critical: Default template file not found');
+                show_error('Template system error. Please contact administrator.', 500);
+            }
         }
 
         $this->load->view('invoice_templates/public/' . $template_name . '.php', $data);
@@ -210,6 +226,20 @@ class View extends Base_Controller
             $safe_requested_template = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
             log_message('error', 'Invalid quote template setting: ' . $safe_requested_template . ', using default');
             $template_name = 'InvoicePlane_Web'; // Fallback to default template
+        }
+
+        // Security: Additional verification - ensure template file actually exists
+        $template_path = APPPATH . 'views/quote_templates/public/' . $template_name . '.php';
+        if (!file_exists($template_path)) {
+            log_message('error', 'Quote template file not found: ' . sanitize_for_logging($template_name) . ', using default');
+            $template_name = 'InvoicePlane_Web';
+            $template_path = APPPATH . 'views/quote_templates/public/' . $template_name . '.php';
+            
+            // If even the default doesn't exist, show error instead of potentially including arbitrary files
+            if (!file_exists($template_path)) {
+                log_message('error', 'Critical: Default quote template file not found');
+                show_error('Template system error. Please contact administrator.', 500);
+            }
         }
 
         $this->load->view('quote_templates/public/' . $template_name . '.php', $data);
