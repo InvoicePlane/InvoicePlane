@@ -114,14 +114,10 @@ echo "\nStep 4: Checking View.php defense-in-depth...\n";
 
 $view_controller_content = file_get_contents(APPPATH . 'modules/guest/controllers/View.php');
 
-if (strpos($view_controller_content, 'file_exists($template_path)') !== false) {
-    echo "  " . green("✓") . " File existence verification present\n";
+if (strpos($view_controller_content, 'get_validated_template_path') !== false) {
+    echo "  " . green("✓") . " Template validation and path construction present\n";
     $passed++;
-} else {
-    echo "  " . yellow("⚠") . " File existence verification might be missing\n";
-}
-
-if (strpos($view_controller_content, 'validate_template_name') !== false) {
+} elseif (strpos($view_controller_content, 'validate_template_name') !== false) {
     echo "  " . green("✓") . " Template validation called before inclusion\n";
     $passed++;
 } else {
