@@ -324,13 +324,32 @@ function get_validated_template_path($template_name, $type = 'invoice', $scope =
     // This prevents path traversal attacks through the type/scope parameters.
     $template_dir = $type . '_templates/' . $scope;
     $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
-    
+
+    // Defense-in-depth: Validate template path is within allowed directory before checking existence
+    $base_directory = APPPATH . 'views/' . $template_dir;
+    if (!validate_file_in_directory($template_path, $base_directory)) {
+        log_message('error', 'Template path validation failed: ' . sanitize_for_logging($validated_name));
+        show_error('Template system error. Please contact administrator.', 500);
+    }
+
     // Defense-in-depth: Verify template file exists
     if (!file_exists($template_path)) {
-        log_message('error', 'Template file not found: ' . sanitize_for_logging($validated_name) . ', using default: ' . $default_template);
-        $validated_name = $default_template;
+        log_message('error', 'Template file not found: ' . sanitize_for_logging($validated_name) . ', using default: ' . sanitize_for_logging($default_template));
+        // Validate the default template before using it
+        $validated_default = validate_template_name($default_template, $type, $scope);
+        if ($validated_default === false) {
+            log_message('error', 'Critical: Default template validation failed: ' . sanitize_for_logging($default_template));
+            show_error('Template system error. Please contact administrator.', 500);
+        }
+        $validated_name = $validated_default;
         $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
-        
+
+        // Validate fallback template path is within allowed directory before checking existence
+        if (!validate_file_in_directory($template_path, $base_directory)) {
+            log_message('error', 'Default template path validation failed: ' . sanitize_for_logging($validated_name));
+            show_error('Template system error. Please contact administrator.', 500);
+        }
+
         // Critical: If even default doesn't exist, throw error
         if (!file_exists($template_path)) {
             log_message('error', 'Critical: Default template file not found for ' . $type . '/' . $scope);

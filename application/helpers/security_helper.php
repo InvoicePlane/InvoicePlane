@@ -148,38 +148,38 @@ function escape_url_for_javascript($url)
 function user_has_invoice_access($invoice_id)
 {
     $CI = & get_instance();
-    
+
     // Admin users have access to all invoices
-    if ($CI->session->userdata('user_type') == 1) {
+    if ($CI->session->userdata('user_type') === 1) {
         return true;
     }
-    
+
     // Guest users - check if invoice belongs to their assigned clients
-    if ($CI->session->userdata('user_type') == 2) {
+    if ($CI->session->userdata('user_type') === 2) {
         $CI->load->model('invoices/mdl_invoices');
         $CI->load->model('user_clients/mdl_user_clients');
-        
+
         $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
         if (!$invoice) {
             return false;
         }
-        
+
         // Get user's assigned clients
         $user_clients = $CI->mdl_user_clients->assigned_to($CI->session->userdata('user_id'))->get()->result();
         $client_ids = array_column($user_clients, 'client_id');
-        
-        return in_array($invoice->client_id, $client_ids);
+
+        return in_array($invoice->client_id, $client_ids, true);
     }
-    
+
     // Regular users - check if they created the invoice
     $CI->load->model('invoices/mdl_invoices');
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-    
+
     if (!$invoice) {
         return false;
     }
-    
-    return $invoice->user_id == $CI->session->userdata('user_id');
+
+    return $invoice->user_id === $CI->session->userdata('user_id');
 }
 
 /**
@@ -193,71 +193,87 @@ function user_has_invoice_access($invoice_id)
 function user_has_quote_access($quote_id)
 {
     $CI = & get_instance();
-    
+
     // Admin users have access to all quotes
-    if ($CI->session->userdata('user_type') == 1) {
+    if ($CI->session->userdata('user_type') === 1) {
         return true;
     }
-    
+
     // Guest users - check if quote belongs to their assigned clients
-    if ($CI->session->userdata('user_type') == 2) {
+    if ($CI->session->userdata('user_type') === 2) {
         $CI->load->model('quotes/mdl_quotes');
         $CI->load->model('user_clients/mdl_user_clients');
-        
+
         $quote = $CI->mdl_quotes->get_by_id($quote_id);
         if (!$quote) {
             return false;
         }
-        
+
         // Get user's assigned clients
         $user_clients = $CI->mdl_user_clients->assigned_to($CI->session->userdata('user_id'))->get()->result();
         $client_ids = array_column($user_clients, 'client_id');
-        
-        return in_array($quote->client_id, $client_ids);
+
+        return in_array($quote->client_id, $client_ids, true);
     }
-    
+
     // Regular users - check if they created the quote
     $CI->load->model('quotes/mdl_quotes');
     $quote = $CI->mdl_quotes->get_by_id($quote_id);
-    
+
     if (!$quote) {
         return false;
     }
-    
-    return $quote->user_id == $CI->session->userdata('user_id');
+
+    return $quote->user_id === $CI->session->userdata('user_id');
 }
 
 /**
  * Verify CSRF token for state-changing operations.
- * 
+ *
  * Security: Protects against Cross-Site Request Forgery attacks.
  * Should be called at the beginning of any POST/PUT/DELETE controller action.
  *
  * @return bool True if CSRF token is valid, false otherwise
  */
-function verify_csrf_token()
+function verify_csrf_token(): bool
 {
     $CI = & get_instance();
-    
+
     // Check if CSRF protection is enabled
     if (!config_item('csrf_protection')) {
         return true;
     }
-    
+
     // Get CSRF token from POST data
     $token_name = config_item('csrf_token_name');
     $submitted_token = $CI->input->post($token_name);
-    
+
     // Get CSRF token from cookie
     $cookie_name = config_item('csrf_cookie_name');
     $expected_token = $CI->input->cookie($cookie_name);
-    
-    // Compare tokens
-    if ($submitted_token === $expected_token) {
+
+    // Security: Enforce non-empty string tokens to prevent bypass when both are null
+    if (!is_string($submitted_token) || empty($submitted_token)) {
+        log_message('error', 'CSRF validation failed: Missing or invalid submitted token');
+        return false;
+    }
+
+    if (!is_string($expected_token) || empty($expected_token)) {
+        log_message('error', 'CSRF validation failed: Missing or invalid expected token');
+        return false;
+    }
+
+    // Security: Use timing-safe comparison to prevent timing attacks
+    if (hash_equals($expected_token, $submitted_token)) {
         return true;
     }
-    
-    // Token mismatch - log and return false
-    log_message('error', 'CSRF token mismatch from IP: ' . $CI->input->ip_address());
+
+    // Token mismatch - sanitize IP before logging to prevent log injection
+    $ip_address = $CI->input->ip_address();
+    $safe_ip = filter_var($ip_address, FILTER_VALIDATE_IP);
+    if ($safe_ip === false) {
+        $safe_ip = 'invalid-ip';
+    }
+    log_message('error', 'CSRF token mismatch from IP: ' . $safe_ip);
     return false;
 }
