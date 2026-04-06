@@ -271,6 +271,10 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf
     
     // Security Layer 7: Additional character validation - only allow safe characters
     // Template names should only contain alphanumeric, spaces, hyphens, and underscores
+    // Note: Spaces are allowed to support existing templates like "InvoicePlane - paid"
+    // While spaces in filenames can be problematic in some environments, they are safe here
+    // because: (1) template names are validated against a static whitelist, (2) they are
+    // never used in shell commands, and (3) they match existing production templates
     if (!preg_match('/^[a-zA-Z0-9_\- ]+$/', $template_name)) {
         $safe_template_name = sanitize_for_logging($template_name);
         log_message('error', 'Template validation failed: Template name contains invalid characters: ' . $safe_template_name);
@@ -309,6 +313,9 @@ function get_validated_template_path($template_name, $type = 'invoice', $scope =
     }
     
     // Construct the template path
+    // Security: Both $type and $scope have been validated in layers 3-4 above (lines 242-251)
+    // to ensure they only contain the values 'invoice'/'quote' and 'pdf'/'public' respectively.
+    // This prevents path traversal attacks through the type/scope parameters.
     $template_dir = $type . '_templates/' . $scope;
     $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
     

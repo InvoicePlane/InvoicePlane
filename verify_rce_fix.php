@@ -11,9 +11,13 @@
  * Requirements:
  * - Run from InvoicePlane root directory
  * - PHP 8.1+ with CodeIgniter loaded
+ * 
+ * Note: This script assumes CodeIgniter is installed via Composer in vendor/pocketarc/codeigniter.
+ * If your installation differs, update the BASEPATH constant below.
  */
 
 // Define BASEPATH to allow loading CodeIgniter helpers
+// Note: Assumes standard Composer installation. Update if your path differs.
 define('BASEPATH', __DIR__ . '/vendor/pocketarc/codeigniter/system/');
 define('APPPATH', __DIR__ . '/application/');
 
