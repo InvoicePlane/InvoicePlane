@@ -49,6 +49,52 @@ class Cli extends MX_Controller
     }
 
     /**
+     * Create a default admin user if no users exist.
+     *
+     * Reads DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASSWORD, and DEFAULT_ADMIN_NAME
+     * from the environment. Falls back to admin@localhost, a random password,
+     * and "admin" respectively. The generated password is printed to stdout.
+     * Skips creation when any user already exists in the database.
+     *
+     * Usage: php index.php setup/cli/create_default_user
+     */
+    public function create_default_user(): void
+    {
+        $this->load->database();
+
+        if ($this->db->count_all('ip_users') > 0) {
+            echo 'Users already exist — skipping default user creation.' . PHP_EOL;
+            return;
+        }
+
+        $email           = getenv('DEFAULT_ADMIN_EMAIL')    ?: 'admin@localhost';
+        $name            = getenv('DEFAULT_ADMIN_NAME')     ?: 'admin';
+        $plain_password  = getenv('DEFAULT_ADMIN_PASSWORD') ?: bin2hex(random_bytes(12));
+        $generated       = ! getenv('DEFAULT_ADMIN_PASSWORD');
+
+        $this->load->library('crypt');
+
+        $salt = $this->crypt->salt();
+        $now  = date('Y-m-d H:i:s');
+
+        $this->db->insert('ip_users', [
+            'user_type'          => 1,
+            'user_date_created'  => $now,
+            'user_date_modified' => $now,
+            'user_name'          => $name,
+            'user_email'         => $email,
+            'user_password'      => $this->crypt->generate_password($plain_password, $salt),
+            'user_psalt'         => $salt,
+        ]);
+
+        echo 'Default admin user created.' . PHP_EOL;
+        echo '  Email:    ' . $email . PHP_EOL;
+        if ($generated) {
+            echo '  Password: ' . $plain_password . ' (generated — please change this)' . PHP_EOL;
+        }
+    }
+
+    /**
      * Run pending database migrations.
      *
      * Usage: php index.php setup/cli/migrate
