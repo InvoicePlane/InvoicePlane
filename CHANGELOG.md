@@ -65,6 +65,85 @@ The v1.7.1 template validation system used `directory_map()` to dynamically cons
 
 See `SECURITY_ADVISORY_RCE_FIX.md` for full details and verification procedures.
 
+---
+
+**HIGH: Fixed Open Redirect vulnerabilities - CVSSv3 6.1 (CWE-601)**
+
+Multiple locations used unvalidated `HTTP_REFERER` headers for redirects, allowing attackers to redirect users to malicious external sites for phishing attacks.
+
+**Vulnerable Locations:**
+1. `application/modules/payments/views/modal_add_payment.php` - Payment completion redirect
+2. `application/modules/custom_fields/controllers/Custom_fields.php` - Custom field deletion redirect
+3. `application/modules/filter/controllers/Ajax.php` - Multiple AJAX filter operations (3 locations)
+
+**Fix Implementation:**
+- Created `application/helpers/security_helper.php` with comprehensive URL validation functions
+- Implemented `get_safe_referer()` function that validates URLs belong to application domain
+- All redirect URLs now validated to be internal-only
+- External URLs explicitly blocked and replaced with safe defaults
+- Added security logging for suspicious redirect attempts
+
+**New Security Functions:**
+- `get_safe_referer($referer, $default_url)` - Validates referer URLs are internal
+- `validate_redirect_url($url, $default_url)` - Validates redirect parameters
+- `escape_url_for_output($url)` - Escapes URLs for HTML context
+- `escape_url_for_javascript($url)` - Escapes URLs for JavaScript context
+- `user_has_invoice_access($invoice_id)` - Prevents IDOR vulnerabilities
+- `user_has_quote_access($quote_id)` - Prevents IDOR vulnerabilities
+- `verify_csrf_token()` - CSRF token validation
+
+**Impact:**
+- **Before:** Users could be redirected to attacker-controlled phishing sites
+- **After:** Only internal URLs allowed for redirects
+- **Attack Prevention:** Blocks phishing, credential theft, and social engineering attacks
+
+---
+
+**MEDIUM: Hardened SQL query construction in guest payments - CVSSv3 6.5 (CWE-89)**
+
+Guest payment queries used string concatenation with `implode()` which, while currently safe, set a dangerous pattern that could become vulnerable if data source changes.
+
+**File:** `application/modules/guest/controllers/Payments.php`
+
+**Fix Implementation:**
+- Added explicit integer type casting using `array_map('intval', ...)`
+- Added check for empty client list
+- Added security documentation explaining the hardening
+- Prevents potential SQL injection if data source ever changes
+
+**Impact:**
+- **Before:** Fragile pattern that relied on database-sourced data being safe
+- **After:** Explicit sanitization ensures safety regardless of data source
+
+---
+
+**MEDIUM: Validated HTTP_REFERER usage in AJAX filters - CVSSv3 5.3 (CWE-20)**
+
+AJAX filter controllers extracted values from `HTTP_REFERER` without proper validation.
+
+**File:** `application/modules/filter/controllers/Ajax.php` (3 locations)
+
+**Fix Implementation:**
+- Added regex validation for table names (alphanumeric and underscores only)
+- Added explicit integer casting for numeric ID values
+- Set safe defaults when validation fails
+- Prevents injection of malicious values into database queries
+
+**Documentation:**
+- `ADDITIONAL_SECURITY_FIXES_v1.7.2.md` - Complete details of additional vulnerabilities and fixes
+
+**Summary of Security Improvements:**
+- ✅ RCE vulnerability completely eliminated via static whitelist
+- ✅ Open redirect attacks prevented via URL validation
+- ✅ SQL query construction hardened
+- ✅ HTTP_REFERER usage secured across application
+- ✅ Comprehensive security helper library added
+- ✅ Defense-in-depth approach implemented
+- ✅ Extensive security documentation provided
+
+**Verification:**
+Run `php verify_rce_fix.php` to validate all security fixes are in place.
+
 ## [1.7.0] - 2025-12-02
 
 ### Added
