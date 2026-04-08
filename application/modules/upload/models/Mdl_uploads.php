@@ -22,6 +22,15 @@ class Mdl_Uploads extends Response_Model
 
     public $date_modified_field = 'uploaded_date';
 
+    /**
+     * Constructor - load file security helper for validation
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('file_security');
+    }
+
     public $content_types = [
         'avif' => 'image/avif',
         'gif'  => 'image/gif',

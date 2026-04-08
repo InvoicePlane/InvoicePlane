@@ -283,6 +283,19 @@ function validate_db_filename(string $filename, string $base_dir): ?array
     $safe_filename = $basename_result['filename'];
     $full_path = rtrim($base_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $safe_filename;
     
+    // Step 4: If file exists, validate it's within the base directory
+    // This prevents symlink attacks or other filesystem tricks
+    if (file_exists($full_path)) {
+        $real_path = realpath($full_path);
+        if ($real_path === false || !validate_file_in_directory($real_path, $base_dir)) {
+            log_message('error', sprintf(
+                'File outside base directory (hash: %s)',
+                $validation['hash']
+            ));
+            return null;
+        }
+    }
+    
     return [
         'path' => $full_path,
         'basename' => $safe_filename,

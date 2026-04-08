@@ -365,10 +365,20 @@ class View extends Base_Controller
                     continue;
                 }
                 
+                // Get file size with error handling
+                $file_size = @filesize($validated['path']);
+                if ($file_size === false) {
+                    log_message('warning', sprintf(
+                        'Failed to get file size for guest attachment (hash: %s)',
+                        $validated['hash']
+                    ));
+                    continue;
+                }
+                
                 $names[] = [
-                    'name'     => $row->file_name_original,
+                    'name'     => html_escape($row->file_name_original),
                     'fullname' => $validated['basename'],
-                    'size'     => filesize($validated['path']),
+                    'size'     => $file_size,
                 ];
             }
         }

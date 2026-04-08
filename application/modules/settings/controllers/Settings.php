@@ -377,13 +377,16 @@ class Settings extends Admin_Controller
         if (file_exists($validation['path'])) {
             $deleted = unlink($validation['path']);
             if (!$deleted) {
-                log_message('error', sprintf(
-                    'Failed to remove logo file for type=%s by user %s',
-                    sanitize_for_logging($type),
-                    sanitize_for_logging((string) $this->session->userdata('user_id'))
-                ));
-                $this->session->set_flashdata('alert_error', trans('failure'));
-                redirect('settings');
+                // Re-check file existence - if file is gone (race delete), proceed with cleanup
+                if (file_exists($validation['path'])) {
+                    log_message('error', sprintf(
+                        'Failed to remove logo file for type=%s by user %s',
+                        sanitize_for_logging($type),
+                        sanitize_for_logging((string) $this->session->userdata('user_id'))
+                    ));
+                    $this->session->set_flashdata('alert_error', trans('failure'));
+                    redirect('settings');
+                }
             }
         }
 
