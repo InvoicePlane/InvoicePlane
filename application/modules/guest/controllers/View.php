@@ -329,6 +329,9 @@ class View extends Base_Controller
      */
     private function get_attachments(string $url_key): array
     {
+        // Security: Load file security helper for validation
+        $this->load->helper('file_security');
+        
         // Security: Use query binding to prevent SQL injection
         $query = $this->db->query('SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?', [$url_key]);
 
@@ -336,10 +339,44 @@ class View extends Base_Controller
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
+                // Security: Validate filename from database before using in file path
+                $validation = validate_safe_filename($row->file_name_new);
+                if (!$validation['valid']) {
+                    log_message('error', sprintf(
+                        'Invalid filename from database in guest attachments (hash: %s, error: %s)',
+                        $validation['hash'],
+                        $validation['error'] ?? 'unknown'
+                    ));
+                    // Skip invalid filenames
+                    continue;
+                }
+                
+                // Extract basename for extra safety
+                $basename_result = extract_safe_basename($row->file_name_new);
+                if (!$basename_result['valid']) {
+                    log_message('error', sprintf(
+                        'Invalid basename from database in guest attachments (hash: %s)',
+                        $basename_result['hash']
+                    ));
+                    continue;
+                }
+                
+                $safe_filename = $basename_result['filename'];
+                $full_path = UPLOADS_CFILES_FOLDER . $safe_filename;
+                
+                // Check file exists before getting size
+                if (!file_exists($full_path)) {
+                    log_message('warning', sprintf(
+                        'File not found for guest attachment: %s',
+                        $validation['hash']
+                    ));
+                    continue;
+                }
+                
                 $names[] = [
                     'name'     => $row->file_name_original,
-                    'fullname' => $row->file_name_new,
-                    'size'     => filesize(UPLOADS_CFILES_FOLDER . $row->file_name_new),
+                    'fullname' => $safe_filename,
+                    'size'     => filesize($full_path),
                 ];
             }
         }
