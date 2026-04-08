@@ -342,7 +342,9 @@ class Settings extends Admin_Controller
         $validation = validate_file_access($logo_filename, $uploads_dir);
         
         if (!$validation['valid']) {
-            // Special case: If file doesn't exist, allow clearing the stale setting
+            // Special case: File not found is a legitimate scenario (manual deletion, disk cleanup)
+            // Allow clearing the stale database setting to prevent DB/disk inconsistency
+            // This is distinct from security validation failures which indicate attack attempts
             if ($validation['error'] === 'file_not_found') {
                 log_message('info', sprintf(
                     'Clearing stale logo setting for type=%s (file not found) by user %s',
@@ -369,8 +371,9 @@ class Settings extends Admin_Controller
         
         // Security: Use the validated path from validation result
         // Attempt to delete the file and verify success
-        // Note: file_exists() check is defensive against TOCTOU race conditions
-        // (file could be deleted between validation and unlink)
+        // Note: file_exists() check serves dual purpose:
+        //   1. TOCTOU protection - file could be deleted between validation and unlink
+        //   2. Graceful handling - allows DB cleanup if file already removed
         if (file_exists($validation['path'])) {
             $deleted = unlink($validation['path']);
             if (!$deleted) {
