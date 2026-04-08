@@ -316,8 +316,26 @@ class Settings extends Admin_Controller
      */
     public function remove_logo(string $type)
     {
+        // Security: Validate type parameter against allowed values
+        $allowed_types = ['invoice', 'login'];
+        if (!in_array($type, $allowed_types, true)) {
+            log_message('error', sprintf(
+                'Invalid logo type specified: %s by user %s',
+                sanitize_for_logging($type),
+                $this->session->userdata('user_id')
+            ));
+            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
+            redirect('settings');
+        }
+        
         // Get the logo filename from settings
         $logo_filename = get_setting($type . '_logo');
+        
+        // If no logo is configured, nothing to delete
+        if (empty($logo_filename)) {
+            $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
+            redirect('settings');
+        }
         
         // Security: Validate the logo filename is safe and within uploads directory
         $uploads_dir = './uploads/';
@@ -338,7 +356,10 @@ class Settings extends Admin_Controller
         }
         
         // Security: Use the validated path from validation result
-        unlink($validation['path']);
+        // Note: validate_file_access already checks file_exists, but double-check for safety
+        if (file_exists($validation['path'])) {
+            unlink($validation['path']);
+        }
 
         $this->mdl_settings->save($type . '_logo', '');
 
