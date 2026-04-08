@@ -333,7 +333,7 @@ class Settings extends Admin_Controller
         
         // If no logo is configured, nothing to delete
         if (empty($logo_filename)) {
-            $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
+            $this->session->set_flashdata('alert_success', trans($type . '_logo_removed'));
             redirect('settings');
         }
         
@@ -356,14 +356,14 @@ class Settings extends Admin_Controller
         }
         
         // Security: Use the validated path from validation result
-        // Note: validate_file_access already checks file_exists, but double-check for safety
+        // Extra safety: Defensive check in case helper implementation changes in future
         if (file_exists($validation['path'])) {
             unlink($validation['path']);
         }
 
         $this->mdl_settings->save($type . '_logo', '');
 
-        $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
+        $this->session->set_flashdata('alert_success', trans($type . '_logo_removed'));
 
         redirect('settings');
     }
