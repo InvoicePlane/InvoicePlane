@@ -1,0 +1,236 @@
+<?php
+
+/**
+ * Unit tests for file_security_helper.php functions
+ * 
+ * Note: These tests require PHPUnit to be installed.
+ * To run: vendor/bin/phpunit tests/Unit/Helpers/FileSecurityHelperTest.php
+ * 
+ * To add PHPUnit to the project:
+ * composer require --dev phpunit/phpunit
+ */
+
+use PHPUnit\Framework\TestCase;
+
+class FileSecurityHelperTest extends TestCase
+{
+    private string $testBaseDir;
+    private string $testFile;
+    
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        // Load CodeIgniter helpers
+        define('BASEPATH', true);
+        require_once __DIR__ . '/../../../application/helpers/file_security_helper.php';
+        
+        // Create temporary test directory
+        $this->testBaseDir = sys_get_temp_dir() . '/ip_test_' . uniqid();
+        mkdir($this->testBaseDir);
+        
+        // Create a test file
+        $this->testFile = 'test_file.txt';
+        file_put_contents($this->testBaseDir . '/' . $this->testFile, 'test content');
+    }
+    
+    protected function tearDown(): void
+    {
+        // Clean up test files
+        if (file_exists($this->testBaseDir . '/' . $this->testFile)) {
+            unlink($this->testBaseDir . '/' . $this->testFile);
+        }
+        if (is_dir($this->testBaseDir)) {
+            rmdir($this->testBaseDir);
+        }
+        
+        parent::tearDown();
+    }
+    
+    /**
+     * Test that valid filenames are accepted and normalized
+     */
+    public function test_validate_db_filename_accepts_valid_filename(): void
+    {
+        $result = validate_db_filename($this->testFile, $this->testBaseDir);
+        
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('path', $result);
+        $this->assertArrayHasKey('basename', $result);
+        $this->assertArrayHasKey('hash', $result);
+        $this->assertEquals($this->testFile, $result['basename']);
+        $this->assertEquals($this->testBaseDir . '/' . $this->testFile, $result['path']);
+    }
+    
+    /**
+     * Test that path traversal attempts are rejected
+     */
+    public function test_validate_db_filename_rejects_path_traversal(): void
+    {
+        $traversalAttempts = [
+            '../../../etc/passwd',
+            '../../config/database.php',
+            'dir/../../../secret.txt',
+            './../../sensitive.conf',
+        ];
+        
+        foreach ($traversalAttempts as $attempt) {
+            $result = validate_db_filename($attempt, $this->testBaseDir);
+            $this->assertNull($result, "Should reject path traversal: $attempt");
+        }
+    }
+    
+    /**
+     * Test that absolute paths are rejected
+     */
+    public function test_validate_db_filename_rejects_absolute_paths(): void
+    {
+        $absolutePaths = [
+            '/etc/passwd',
+            '/var/www/config.php',
+            '/home/user/secret.txt',
+        ];
+        
+        foreach ($absolutePaths as $path) {
+            $result = validate_db_filename($path, $this->testBaseDir);
+            $this->assertNull($result, "Should reject absolute path: $path");
+        }
+    }
+    
+    /**
+     * Test that null bytes are rejected
+     */
+    public function test_validate_db_filename_rejects_null_bytes(): void
+    {
+        $nullByteAttempts = [
+            "file\x00.png",
+            "test\x00.txt",
+            "upload\x00../../../etc/passwd",
+        ];
+        
+        foreach ($nullByteAttempts as $attempt) {
+            $result = validate_db_filename($attempt, $this->testBaseDir);
+            $this->assertNull($result, "Should reject null byte: " . bin2hex($attempt));
+        }
+    }
+    
+    /**
+     * Test that basename normalization works correctly
+     */
+    public function test_validate_db_filename_normalizes_basename(): void
+    {
+        // Create test file with complex name
+        $complexName = 'dir/subdir/actual_file.txt';
+        $expectedBasename = 'actual_file.txt';
+        
+        file_put_contents($this->testBaseDir . '/' . $expectedBasename, 'test');
+        
+        $result = validate_db_filename($complexName, $this->testBaseDir);
+        
+        $this->assertIsArray($result);
+        $this->assertEquals($expectedBasename, $result['basename']);
+        
+        // Clean up
+        unlink($this->testBaseDir . '/' . $expectedBasename);
+    }
+    
+    /**
+     * Test handling of multiple directory separators
+     */
+    public function test_validate_db_filename_handles_multiple_separators(): void
+    {
+        $multiSeparatorNames = [
+            'dir//subdir///file.txt',
+            'dir\\\\subdir\\\\file.txt',
+            'dir/./subdir/./file.txt',
+        ];
+        
+        foreach ($multiSeparatorNames as $name) {
+            $expectedBasename = 'file.txt';
+            file_put_contents($this->testBaseDir . '/' . $expectedBasename, 'test');
+            
+            $result = validate_db_filename($name, $this->testBaseDir);
+            
+            if ($result !== null) {
+                $this->assertEquals($expectedBasename, $result['basename']);
+            }
+            
+            if (file_exists($this->testBaseDir . '/' . $expectedBasename)) {
+                unlink($this->testBaseDir . '/' . $expectedBasename);
+            }
+        }
+    }
+    
+    /**
+     * Test base_dir with trailing slash
+     */
+    public function test_validate_db_filename_handles_trailing_slash(): void
+    {
+        $baseDirWithSlash = $this->testBaseDir . '/';
+        $baseDirWithoutSlash = $this->testBaseDir;
+        
+        $result1 = validate_db_filename($this->testFile, $baseDirWithSlash);
+        $result2 = validate_db_filename($this->testFile, $baseDirWithoutSlash);
+        
+        $this->assertIsArray($result1);
+        $this->assertIsArray($result2);
+        $this->assertEquals($result1['path'], $result2['path']);
+    }
+    
+    /**
+     * Test that symlinks outside base directory are rejected
+     */
+    public function test_validate_db_filename_rejects_symlink_escape(): void
+    {
+        // Skip test on Windows as symlink behavior differs
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $this->markTestSkipped('Symlink test not supported on Windows');
+        }
+        
+        // Create a symlink pointing outside the base directory
+        $symlinkName = 'evil_symlink.txt';
+        $targetFile = '/etc/passwd'; // File outside base directory
+        
+        // Only test if /etc/passwd exists (Unix-like systems)
+        if (file_exists($targetFile)) {
+            $symlinkPath = $this->testBaseDir . '/' . $symlinkName;
+            
+            if (symlink($targetFile, $symlinkPath)) {
+                $result = validate_db_filename($symlinkName, $this->testBaseDir);
+                
+                // Should reject because resolved path is outside base directory
+                $this->assertNull($result, 'Should reject symlink pointing outside base directory');
+                
+                // Clean up
+                unlink($symlinkPath);
+            }
+        }
+    }
+    
+    /**
+     * Test that validation hash is preserved
+     */
+    public function test_validate_db_filename_preserves_hash(): void
+    {
+        $result = validate_db_filename($this->testFile, $this->testBaseDir);
+        
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('hash', $result);
+        $this->assertIsString($result['hash']);
+        $this->assertEquals(64, strlen($result['hash'])); // SHA256 hash length
+    }
+    
+    /**
+     * Test that non-existent files are handled (path still returned for creation)
+     */
+    public function test_validate_db_filename_handles_nonexistent_file(): void
+    {
+        $nonExistentFile = 'nonexistent_' . uniqid() . '.txt';
+        
+        $result = validate_db_filename($nonExistentFile, $this->testBaseDir);
+        
+        // Should still return a result (for file creation scenarios)
+        $this->assertIsArray($result);
+        $this->assertEquals($nonExistentFile, $result['basename']);
+    }
+}
