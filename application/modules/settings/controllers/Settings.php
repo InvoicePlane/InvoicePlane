@@ -307,11 +307,38 @@ class Settings extends Admin_Controller
     }
 
     /**
-     * @param $type
+     * Remove a logo file with security validation.
+     * 
+     * Security: Validates that the logo file path is safe and within the uploads directory
+     * to prevent arbitrary file deletion attacks.
+     * 
+     * @param string $type Logo type ('invoice' or 'login')
      */
     public function remove_logo(string $type)
     {
-        unlink('./uploads/' . get_setting($type . '_logo'));
+        // Get the logo filename from settings
+        $logo_filename = get_setting($type . '_logo');
+        
+        // Security: Validate the logo filename is safe and within uploads directory
+        $uploads_dir = './uploads/';
+        $validation = validate_file_access($logo_filename, $uploads_dir);
+        
+        if (!$validation['valid']) {
+            // Security: Log the invalid attempt with hash for investigation
+            log_message('error', sprintf(
+                'Invalid logo removal attempt for type=%s (hash: %s, error: %s) by user %s',
+                sanitize_for_logging($type),
+                $validation['hash'],
+                $validation['error'] ?? 'unknown',
+                $this->session->userdata('user_id')
+            ));
+            
+            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
+            redirect('settings');
+        }
+        
+        // Security: Use the validated path from validation result
+        unlink($validation['path']);
 
         $this->mdl_settings->save($type . '_logo', '');
 

@@ -284,6 +284,7 @@ $lang = [
     'inactive'                                     => 'Inactive',
     'interface'                                    => 'Interface',
     'invalid_date'                                 => 'Invalid date',
+    'invalid_file_path'                            => 'Invalid file path. Operation not permitted.',
     'invalid_tax_rate_decimal_places'              => 'Invalid tax rate decimal places. Must be 2 or 3.',
     'contains_invalid_characters'                  => 'contains invalid characters',
     'invoice'                                      => 'Invoice',
