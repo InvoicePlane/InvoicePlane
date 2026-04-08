@@ -368,9 +368,11 @@ class View extends Base_Controller
                 // Get file size with error handling
                 $file_size = @filesize($validated['path']);
                 if ($file_size === false) {
+                    $error = error_get_last();
                     log_message('warning', sprintf(
-                        'Failed to get file size for guest attachment (hash: %s)',
-                        $validated['hash']
+                        'Failed to get file size for guest attachment (hash: %s, error: %s)',
+                        $validated['hash'],
+                        $error['message'] ?? 'unknown'
                     ));
                     continue;
                 }
