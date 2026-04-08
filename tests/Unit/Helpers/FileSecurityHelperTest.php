@@ -195,12 +195,15 @@ class FileSecurityHelperTest extends TestCase
             $this->markTestSkipped('Symlink test not supported on Windows');
         }
         
-        // Create a symlink pointing outside the base directory
-        $symlinkName = 'evil_symlink.txt';
-        $targetFile = '/etc/passwd'; // File outside base directory
+        // Create a temporary file outside the test directory to use as symlink target
+        $outsideDir = sys_get_temp_dir() . '/ip_test_outside_' . uniqid();
+        mkdir($outsideDir);
+        $targetFile = $outsideDir . '/sensitive.txt';
+        file_put_contents($targetFile, 'sensitive content');
         
-        // Only test if /etc/passwd exists (Unix-like systems)
-        if (file_exists($targetFile)) {
+        try {
+            // Create a symlink inside test directory pointing to file outside
+            $symlinkName = 'evil_symlink.txt';
             $symlinkPath = $this->testBaseDir . '/' . $symlinkName;
             
             if (symlink($targetFile, $symlinkPath)) {
@@ -209,8 +212,16 @@ class FileSecurityHelperTest extends TestCase
                 // Should reject because resolved path is outside base directory
                 $this->assertNull($result, 'Should reject symlink pointing outside base directory');
                 
-                // Clean up
+                // Clean up symlink
                 unlink($symlinkPath);
+            }
+        } finally {
+            // Clean up temp file and directory
+            if (file_exists($targetFile)) {
+                unlink($targetFile);
+            }
+            if (is_dir($outsideDir)) {
+                rmdir($outsideDir);
             }
         }
     }

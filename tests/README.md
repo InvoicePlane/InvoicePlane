@@ -54,16 +54,17 @@ Follow these guidelines when writing tests:
 Example:
 ```php
 #[Test]
-public function it_validates_safe_filename(): void
+public function it_validates_db_filename(): void
 {
     // Arrange
     $filename = '../../../etc/passwd';
+    $base_dir = './uploads/';
     
     // Act
-    $result = validate_safe_filename($filename);
+    $result = validate_db_filename($filename, $base_dir);
     
     // Assert
-    $this->assertFalse($result['valid']);
+    $this->assertNull($result);
 }
 ```
 
