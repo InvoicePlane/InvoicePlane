@@ -321,7 +321,7 @@ class Settings extends Admin_Controller
         if (!in_array($type, $allowed_types, true)) {
             log_message('error', sprintf(
                 'Invalid logo type specified: %s by user %s',
-                sanitize_for_logging($type),
+                $type,
                 $this->session->userdata('user_id')
             ));
             $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
@@ -345,7 +345,7 @@ class Settings extends Admin_Controller
             // Security: Log the invalid attempt with hash for investigation
             log_message('error', sprintf(
                 'Invalid logo removal attempt for type=%s (hash: %s, error: %s) by user %s',
-                sanitize_for_logging($type),
+                $type,
                 $validation['hash'],
                 $validation['error'] ?? 'unknown',
                 $this->session->userdata('user_id')
