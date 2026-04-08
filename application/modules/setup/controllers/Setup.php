@@ -27,6 +27,10 @@ class Setup extends MX_Controller
             show_error('The setup is disabled.', 403);
         }
 
+        if (env_bool('SETUP_COMPLETED', false)) {
+            show_error('The setup has already been completed. To re-run the setup, set SETUP_COMPLETED=false in ipconfig.php.', 403);
+        }
+
         parent::__construct();
 
         $this->load->library('session');

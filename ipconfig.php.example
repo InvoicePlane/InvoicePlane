@@ -90,5 +90,6 @@ CUSTOM_TEMPLATES_FOLDER=
 ENCRYPTION_KEY=
 ENCRYPTION_CIPHER=AES-256
 
-# Set to true after the initial setup
+# Set to true after the initial setup. Access to the setup wizard is blocked when this is true.
+# To re-run the setup (e.g. after an upgrade), temporarily set this to false.
 SETUP_COMPLETED=false
