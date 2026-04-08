@@ -17,6 +17,15 @@ if ( ! defined('BASEPATH')) {
 class View extends Base_Controller
 {
     /**
+     * Constructor - load file security helper for validation
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('file_security');
+    }
+
+    /**
      * @param $invoice_url_key
      */
     public function invoice($invoice_url_key = '')
@@ -329,9 +338,6 @@ class View extends Base_Controller
      */
     private function get_attachments(string $url_key): array
     {
-        // Security: Load file security helper for validation
-        $this->load->helper('file_security');
-        
         // Security: Use query binding to prevent SQL injection
         $query = $this->db->query('SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?', [$url_key]);
 

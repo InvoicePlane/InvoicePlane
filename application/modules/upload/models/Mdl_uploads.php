@@ -84,7 +84,11 @@ class Mdl_Uploads extends Response_Model
                 // Security: Validate filename from database before using in file path
                 $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
                 if ($validated === null) {
-                    // Skip invalid filenames
+                    // Skip invalid filenames - log for investigation
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in quote uploads for url_key=%s',
+                        sanitize_for_logging($quote->quote_url_key)
+                    ));
                     continue;
                 }
                 
@@ -116,7 +120,11 @@ class Mdl_Uploads extends Response_Model
                 // Security: Validate filename from database before using in file path
                 $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
                 if ($validated === null) {
-                    // Skip invalid filenames
+                    // Skip invalid filenames - log for investigation
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in invoice uploads for url_key=%s',
+                        sanitize_for_logging($invoice->invoice_url_key)
+                    ));
                     continue;
                 }
                 
