@@ -340,43 +340,29 @@ class View extends Base_Controller
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 // Security: Validate filename from database before using in file path
-                $validation = validate_safe_filename($row->file_name_new);
-                if (!$validation['valid']) {
-                    log_message('error', sprintf(
-                        'Invalid filename from database in guest attachments (hash: %s, error: %s)',
-                        $validation['hash'],
-                        $validation['error'] ?? 'unknown'
-                    ));
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
                     // Skip invalid filenames
-                    continue;
-                }
-                
-                // Extract basename for extra safety
-                $basename_result = extract_safe_basename($row->file_name_new);
-                if (!$basename_result['valid']) {
-                    log_message('error', sprintf(
-                        'Invalid basename from database in guest attachments (hash: %s)',
-                        $basename_result['hash']
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in guest attachments for url_key=%s',
+                        sanitize_for_logging($url_key)
                     ));
                     continue;
                 }
-                
-                $safe_filename = $basename_result['filename'];
-                $full_path = UPLOADS_CFILES_FOLDER . $safe_filename;
                 
                 // Check file exists before getting size
-                if (!file_exists($full_path)) {
+                if (!file_exists($validated['path'])) {
                     log_message('warning', sprintf(
-                        'File not found for guest attachment: %s',
-                        $validation['hash']
+                        'File not found for guest attachment (hash: %s)',
+                        $validated['hash']
                     ));
                     continue;
                 }
                 
                 $names[] = [
                     'name'     => $row->file_name_original,
-                    'fullname' => $safe_filename,
-                    'size'     => filesize($full_path),
+                    'fullname' => $validated['basename'],
+                    'size'     => filesize($validated['path']),
                 ];
             }
         }

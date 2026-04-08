@@ -67,49 +67,6 @@ class Mdl_Uploads extends Response_Model
     }
 
     /**
-     * Validate and construct safe file path from database filename.
-     * 
-     * Security: Defense-in-depth validation to ensure database values
-     * don't contain path traversal sequences even if upload validation failed.
-     * 
-     * @param string $filename The filename from database
-     * @param string $base_dir The base directory (default: UPLOADS_CFILES_FOLDER)
-     * 
-     * @return array|null Array with 'path' and 'basename' on success, null on failure
-     */
-    private function validate_db_filename(string $filename, string $base_dir = UPLOADS_CFILES_FOLDER): ?array
-    {
-        // Security: Validate filename doesn't contain path traversal
-        $validation = validate_safe_filename($filename);
-        if (!$validation['valid']) {
-            log_message('error', sprintf(
-                'Invalid filename from database (hash: %s, error: %s)',
-                $validation['hash'],
-                $validation['error'] ?? 'unknown'
-            ));
-            return null;
-        }
-        
-        // Extract basename for extra safety
-        $basename_result = extract_safe_basename($filename);
-        if (!$basename_result['valid']) {
-            log_message('error', sprintf(
-                'Invalid basename from database (hash: %s)',
-                $basename_result['hash']
-            ));
-            return null;
-        }
-        
-        $safe_filename = $basename_result['filename'];
-        $full_path = rtrim($base_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $safe_filename;
-        
-        return [
-            'path' => $full_path,
-            'basename' => $safe_filename
-        ];
-    }
-
-    /**
      * @return int|null
      */
     public function create($db_array = null)
@@ -133,7 +90,7 @@ class Mdl_Uploads extends Response_Model
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 // Security: Validate filename from database before using in file path
-                $validated = $this->validate_db_filename($row->file_name_new);
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
                 if ($validated === null) {
                     // Skip invalid filenames
                     continue;
@@ -165,7 +122,7 @@ class Mdl_Uploads extends Response_Model
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 // Security: Validate filename from database before using in file path
-                $validated = $this->validate_db_filename($row->file_name_new);
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
                 if ($validated === null) {
                     // Skip invalid filenames
                     continue;
@@ -192,7 +149,7 @@ class Mdl_Uploads extends Response_Model
         if ($url_key && $rows = $this->where('url_key', $url_key)->get()->result()) {
             foreach ($rows as $row) {
                 // Security: Validate filename from database before using in file path
-                $validated = $this->validate_db_filename($row->file_name_new);
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
                 if ($validated === null) {
                     // Skip invalid filenames - likely corrupted database entry
                     log_message('warning', sprintf(
