@@ -8,7 +8,7 @@
 
 // Define constants that CodeIgniter expects
 if (!defined('BASEPATH')) {
-    define('BASEPATH', __DIR__ . '/../system/');
+    define('BASEPATH', __DIR__ . '/../vendor/pocketarc/codeigniter/system/');
 }
 
 if (!defined('APPPATH')) {

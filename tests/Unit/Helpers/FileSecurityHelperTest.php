@@ -11,6 +11,7 @@
  */
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class FileSecurityHelperTest extends TestCase
 {
@@ -22,7 +23,6 @@ class FileSecurityHelperTest extends TestCase
         parent::setUp();
         
         // Load CodeIgniter helpers
-        define('BASEPATH', true);
         require_once __DIR__ . '/../../../application/helpers/file_security_helper.php';
         
         // Create temporary test directory
@@ -50,7 +50,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test that valid filenames are accepted and normalized
      */
-    public function test_validate_db_filename_accepts_valid_filename(): void
+    #[Test]
+    public function it_accepts_valid_filename(): void
     {
         $result = validate_db_filename($this->testFile, $this->testBaseDir);
         
@@ -65,7 +66,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test that path traversal attempts are rejected
      */
-    public function test_validate_db_filename_rejects_path_traversal(): void
+    #[Test]
+    public function it_rejects_path_traversal(): void
     {
         $traversalAttempts = [
             '../../../etc/passwd',
@@ -83,7 +85,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test that absolute paths are rejected
      */
-    public function test_validate_db_filename_rejects_absolute_paths(): void
+    #[Test]
+    public function it_rejects_absolute_paths(): void
     {
         $absolutePaths = [
             '/etc/passwd',
@@ -100,7 +103,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test that null bytes are rejected
      */
-    public function test_validate_db_filename_rejects_null_bytes(): void
+    #[Test]
+    public function it_rejects_null_bytes(): void
     {
         $nullByteAttempts = [
             "file\x00.png",
@@ -117,7 +121,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test that basename normalization works correctly
      */
-    public function test_validate_db_filename_normalizes_basename(): void
+    #[Test]
+    public function it_normalizes_basename(): void
     {
         // Create test file with complex name
         $complexName = 'dir/subdir/actual_file.txt';
@@ -137,7 +142,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test handling of multiple directory separators
      */
-    public function test_validate_db_filename_handles_multiple_separators(): void
+    #[Test]
+    public function it_handles_multiple_separators(): void
     {
         $multiSeparatorNames = [
             'dir//subdir///file.txt',
@@ -164,7 +170,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test base_dir with trailing slash
      */
-    public function test_validate_db_filename_handles_trailing_slash(): void
+    #[Test]
+    public function it_handles_trailing_slash(): void
     {
         $baseDirWithSlash = $this->testBaseDir . '/';
         $baseDirWithoutSlash = $this->testBaseDir;
@@ -180,7 +187,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test that symlinks outside base directory are rejected
      */
-    public function test_validate_db_filename_rejects_symlink_escape(): void
+    #[Test]
+    public function it_rejects_symlink_escape(): void
     {
         // Skip test on Windows as symlink behavior differs
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
@@ -210,7 +218,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test that validation hash is preserved
      */
-    public function test_validate_db_filename_preserves_hash(): void
+    #[Test]
+    public function it_preserves_hash(): void
     {
         $result = validate_db_filename($this->testFile, $this->testBaseDir);
         
@@ -223,7 +232,8 @@ class FileSecurityHelperTest extends TestCase
     /**
      * Test that non-existent files are handled (path still returned for creation)
      */
-    public function test_validate_db_filename_handles_nonexistent_file(): void
+    #[Test]
+    public function it_handles_nonexistent_file(): void
     {
         $nonExistentFile = 'nonexistent_' . uniqid() . '.txt';
         

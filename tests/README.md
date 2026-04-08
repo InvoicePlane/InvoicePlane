@@ -47,9 +47,25 @@ Follow these guidelines when writing tests:
 
 1. **Naming**: Test files should be named `*Test.php`
 2. **Structure**: Tests should extend `PHPUnit\Framework\TestCase`
-3. **Method naming**: Test methods should start with `test_` and use snake_case
-4. **Annotations**: Use PHPUnit 10+ attributes where possible
-5. **Arrange-Act-Assert**: Structure tests in the AAA pattern
+3. **Method naming**: Test methods should start with `it_`, use snake_case, and make sense grammatically
+4. **Annotations**: All tests must be annotated with `#[Test]`
+5. **Arrange-Act-Assert**: Structure tests in the "Arrange, Act, Assert" form where applicable
+
+Example:
+```php
+#[Test]
+public function it_validates_safe_filename(): void
+{
+    // Arrange
+    $filename = '../../../etc/passwd';
+    
+    // Act
+    $result = validate_safe_filename($filename);
+    
+    // Assert
+    $this->assertFalse($result['valid']);
+}
+```
 
 ## Current Test Coverage
 
