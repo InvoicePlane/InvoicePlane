@@ -344,6 +344,11 @@ class Settings extends Admin_Controller
         if (!$validation['valid']) {
             // Special case: If file doesn't exist, allow clearing the stale setting
             if ($validation['error'] === 'file_not_found') {
+                log_message('info', sprintf(
+                    'Clearing stale logo setting for type=%s (file not found) by user %s',
+                    sanitize_for_logging($type),
+                    sanitize_for_logging((string) $this->session->userdata('user_id'))
+                ));
                 $this->mdl_settings->save($type . '_logo', '');
                 $this->session->set_flashdata('alert_success', trans($type . '_logo_removed'));
                 redirect('settings');
@@ -364,6 +369,8 @@ class Settings extends Admin_Controller
         
         // Security: Use the validated path from validation result
         // Attempt to delete the file and verify success
+        // Note: file_exists() check is defensive against TOCTOU race conditions
+        // (file could be deleted between validation and unlink)
         if (file_exists($validation['path'])) {
             $deleted = unlink($validation['path']);
             if (!$deleted) {
