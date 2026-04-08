@@ -16,14 +16,6 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Uploads extends Response_Model
 {
-    /**
-     * Constructor - load file security helper for defensive validation
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->load->helper('file_security');
-    }
     public $table = 'ip_uploads';
 
     public $primary_key = 'ip_uploads.upload_id';
