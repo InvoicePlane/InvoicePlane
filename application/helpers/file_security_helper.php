@@ -243,3 +243,150 @@ function respond_file_message(int $httpCode, string $messageKey, string $dynamic
 
     exit;
 }
+
+/**
+ * Validate database configuration parameter to prevent injection attacks.
+ *
+ * Ensures that configuration values don't contain newline characters or other
+ * malicious sequences that could be used for configuration injection attacks.
+ *
+ * @param string $value The configuration value to validate
+ * @param string $type  The type of parameter being validated ('hostname', 'username', 'password', 'database', 'port')
+ *
+ * @return array Array with 'valid' (bool), 'error' (string), and 'sanitized' (string) keys
+ */
+function validate_db_config_parameter(string $value, string $type): array
+{
+    // Check for empty value
+    if (empty($value) && $type !== 'password') {
+        return [
+            'valid'     => false,
+            'error'     => 'empty_value',
+            'sanitized' => '',
+        ];
+    }
+
+    // Check for newline characters (CR, LF) - prevents configuration injection
+    if (str_contains($value, "\n") || str_contains($value, "\r")) {
+        log_message('error', sprintf('Configuration injection attempt detected in %s parameter', $type));
+
+        return [
+            'valid'     => false,
+            'error'     => 'newline_detected',
+            'sanitized' => '',
+        ];
+    }
+
+    // Check for null bytes
+    if (str_contains($value, "\0")) {
+        log_message('error', sprintf('Null byte detected in %s parameter', $type));
+
+        return [
+            'valid'     => false,
+            'error'     => 'null_byte',
+            'sanitized' => '',
+        ];
+    }
+
+    // Type-specific validation
+    switch ($type) {
+        case 'hostname':
+            // Hostname can contain: alphanumeric, dots, hyphens, underscores, colons (for IPv6 or port)
+            // Also allows square brackets for IPv6 addresses
+            if ( ! preg_match('/^[a-zA-Z0-9.\-_:\[\]]+$/', $value)) {
+                log_message('error', 'Invalid characters in hostname parameter');
+
+                return [
+                    'valid'     => false,
+                    'error'     => 'invalid_hostname_format',
+                    'sanitized' => '',
+                ];
+            }
+            break;
+
+        case 'username':
+            // Username can contain: alphanumeric, dots, hyphens, underscores, @
+            if ( ! preg_match('/^[a-zA-Z0-9.\-_@]+$/', $value)) {
+                log_message('error', 'Invalid characters in username parameter');
+
+                return [
+                    'valid'     => false,
+                    'error'     => 'invalid_username_format',
+                    'sanitized' => '',
+                ];
+            }
+            break;
+
+        case 'password':
+            // Password can contain most printable characters, but no control characters
+            // We allow empty passwords (some databases allow this)
+            if (preg_match('/[\x00-\x1F\x7F]/', $value)) {
+                log_message('error', 'Control characters detected in password parameter');
+
+                return [
+                    'valid'     => false,
+                    'error'     => 'invalid_password_format',
+                    'sanitized' => '',
+                ];
+            }
+            break;
+
+        case 'database':
+            // Database name can contain: alphanumeric, underscores, hyphens
+            if ( ! preg_match('/^[a-zA-Z0-9_\-]+$/', $value)) {
+                log_message('error', 'Invalid characters in database parameter');
+
+                return [
+                    'valid'     => false,
+                    'error'     => 'invalid_database_format',
+                    'sanitized' => '',
+                ];
+            }
+            break;
+
+        case 'port':
+            // Port must be a valid number between 1 and 65535
+            if ( ! preg_match('/^\d+$/', $value) || (int) $value < 1 || (int) $value > 65535) {
+                log_message('error', 'Invalid port number');
+
+                return [
+                    'valid'     => false,
+                    'error'     => 'invalid_port',
+                    'sanitized' => '',
+                ];
+            }
+            break;
+
+        default:
+            log_message('error', sprintf('Unknown parameter type: %s', $type));
+
+            return [
+                'valid'     => false,
+                'error'     => 'unknown_type',
+                'sanitized' => '',
+            ];
+    }
+
+    return [
+        'valid'     => true,
+        'error'     => '',
+        'sanitized' => $value,
+    ];
+}
+
+/**
+ * Sanitize database configuration value for safe writing to config file.
+ *
+ * This function escapes single quotes to prevent breaking out of quoted strings
+ * in the configuration file format.
+ *
+ * @param string $value The value to sanitize
+ *
+ * @return string The sanitized value
+ */
+function sanitize_db_config_value(string $value): string
+{
+    // Escape single quotes by doubling them
+    // This prevents breaking out of the DB_HOSTNAME='value' format
+    return str_replace("'", "''", $value);
+}
