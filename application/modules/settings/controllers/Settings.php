@@ -95,6 +95,17 @@ class Settings extends Admin_Controller
                     // Format amount inputs
                     $batch_settings[$key] = standardize_amount($value);
                 } else {
+                    // Security: Validate logo filename settings to prevent path traversal
+                    if ($key === 'invoice_logo' || $key === 'login_logo') {
+                        if (!empty($value)) {
+                            $validation = validate_safe_filename($value);
+                            if (!$validation['valid']) {
+                                log_message('error', sprintf('Path traversal attempt blocked in %s setting (hash: %s, error: %s)', $key, $validation['hash'], $validation['error']));
+                                $this->session->set_flashdata('alert_error', trans('invalid_filename'));
+                                redirect('settings');
+                            }
+                        }
+                    }
                     $batch_settings[$key] = $value;
                 }
 
@@ -307,14 +318,47 @@ class Settings extends Admin_Controller
     }
 
     /**
-     * @param $type
+     * Remove a logo file securely.
+     *
+     * @param string $type The logo type (e.g., 'invoice' or 'login')
      */
     public function remove_logo(string $type)
     {
-        unlink('./uploads/' . get_setting($type . '_logo'));
+        $logoFilename = get_setting($type . '_logo');
 
+        // Security: Validate filename before attempting deletion
+        if (empty($logoFilename)) {
+            log_message('debug', sprintf('Logo removal: No %s logo configured', sanitize_for_logging($type)));
+            $this->session->set_flashdata('alert_error', trans('no_logo_to_remove'));
+            redirect('settings');
+        }
+
+        // Security: Comprehensive file validation using file_security_helper
+        $uploadsDir = './uploads/';
+        $validation = validate_file_access($logoFilename, $uploadsDir);
+
+        if (!$validation['valid']) {
+            log_message('error', sprintf(
+                'Logo removal blocked: Invalid file path for %s (hash: %s, error: %s)',
+                sanitize_for_logging($type),
+                $validation['hash'],
+                $validation['error'] ?? 'unknown'
+            ));
+            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
+            redirect('settings');
+        }
+
+        // Delete the validated file
+        if (!unlink($validation['path'])) {
+            log_message('error', sprintf('Failed to delete %s logo file (hash: %s)', sanitize_for_logging($type), $validation['hash']));
+            $this->session->set_flashdata('alert_error', trans('failed_to_delete_logo'));
+            redirect('settings');
+        }
+
+        // Clear the setting in database
         $this->mdl_settings->save($type . '_logo', '');
 
+        log_message('info', sprintf('Successfully removed %s logo (hash: %s)', sanitize_for_logging($type), $validation['hash']));
         $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
 
         redirect('settings');
