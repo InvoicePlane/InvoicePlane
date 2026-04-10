@@ -100,7 +100,7 @@ class Settings extends Admin_Controller
                         if (!empty($value)) {
                             $validation = validate_safe_filename($value);
                             if (!$validation['valid']) {
-                                log_message('error', sprintf('Path traversal attempt blocked in %s setting (hash: %s, error: %s)', $key, $validation['hash'], $validation['error']));
+                                log_message('error', sprintf('Path traversal attempt blocked in %s setting (hash: %s, error: %s)', $key, $validation['hash'], sanitize_for_logging($validation['error'])));
                                 $this->session->set_flashdata('alert_error', trans('invalid_filename'));
                                 redirect('settings');
                             }
@@ -342,7 +342,7 @@ class Settings extends Admin_Controller
                 'Logo removal blocked: Invalid file path for %s (hash: %s, error: %s)',
                 sanitize_for_logging($type),
                 $validation['hash'],
-                $validation['error'] ?? 'unknown'
+                sanitize_for_logging($validation['error'] ?? 'unknown')
             ));
             $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
             redirect('settings');
