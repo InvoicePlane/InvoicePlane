@@ -328,7 +328,8 @@ function validate_db_config_parameter(string $value, string $type): array
 
         case 'password':
             // Password can contain most printable characters, but no control characters
-            // We allow empty passwords (some databases allow this)
+            // Empty passwords are allowed (already checked at line 268 to skip password validation)
+            // Note: preg_match() returns 0 for empty strings, so we don't need to check again here
             if (preg_match('/[\x00-\x1F\x7F]/', $value)) {
                 log_message('error', 'Control characters detected in password parameter');
 
@@ -387,7 +388,13 @@ function validate_db_config_parameter(string $value, string $type): array
  * Sanitize database configuration value for safe writing to config file.
  *
  * This function escapes single quotes to prevent breaking out of quoted strings
- * in the configuration file format.
+ * in the configuration file format (ipconfig.php).
+ *
+ * Note: This is a defense-in-depth measure. The configuration file uses a simple
+ * key=value format that is parsed by phpdotenv, not eval(). The primary defense
+ * is the strict input validation in validate_db_config_parameter() which rejects
+ * newlines and control characters. This escaping provides an additional layer
+ * in case validation is bypassed.
  *
  * @param string $value The value to sanitize
  *

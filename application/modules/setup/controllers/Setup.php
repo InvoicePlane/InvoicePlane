@@ -413,6 +413,33 @@ class Setup extends MX_Controller
      *
      * @return array Array with 'valid' (bool) and validated parameters
      */
+    /**
+     * Get user-friendly error message for database configuration validation error.
+     *
+     * @param string $error_code The internal error code from validate_db_config_parameter()
+     * @param string $param_type The parameter type (hostname, username, etc.)
+     *
+     * @return string User-friendly error message
+     */
+    private function get_validation_error_message(string $error_code, string $param_type): string
+    {
+        // Map internal error codes to user-friendly messages
+        // This prevents exposing internal validation logic to potential attackers
+        $messages = [
+            'empty_value'               => 'This field is required.',
+            'newline_detected'          => 'Invalid format. Please check your input.',
+            'null_byte'                 => 'Invalid format. Please check your input.',
+            'invalid_hostname_format'   => 'Invalid hostname format. Please use a valid hostname or IP address.',
+            'invalid_username_format'   => 'Invalid username format. Only alphanumeric characters, dots, hyphens, underscores, and @ are allowed.',
+            'invalid_password_format'   => 'Invalid password format. Please check your password.',
+            'invalid_database_format'   => 'Invalid database name format. Only alphanumeric characters, underscores, and hyphens are allowed.',
+            'invalid_port'              => 'Invalid port number. Please enter a number between 1 and 65535.',
+        ];
+
+        // Return the user-friendly message or a generic error
+        return $messages[$error_code] ?? 'Invalid ' . $param_type . ' format.';
+    }
+
     private function validate_database_config(string $hostname, string $username, string $password, string $database, $port): array
     {
         // Validate hostname
@@ -420,7 +447,7 @@ class Setup extends MX_Controller
         if ( ! $hostname_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid hostname: ' . $hostname_validation['error'],
+                'error' => $this->get_validation_error_message($hostname_validation['error'], 'hostname'),
             ];
         }
 
@@ -429,7 +456,7 @@ class Setup extends MX_Controller
         if ( ! $username_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid username: ' . $username_validation['error'],
+                'error' => $this->get_validation_error_message($username_validation['error'], 'username'),
             ];
         }
 
@@ -438,7 +465,7 @@ class Setup extends MX_Controller
         if ( ! $password_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid password: ' . $password_validation['error'],
+                'error' => $this->get_validation_error_message($password_validation['error'], 'password'),
             ];
         }
 
@@ -447,7 +474,7 @@ class Setup extends MX_Controller
         if ( ! $database_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid database name: ' . $database_validation['error'],
+                'error' => $this->get_validation_error_message($database_validation['error'], 'database'),
             ];
         }
 
@@ -456,7 +483,7 @@ class Setup extends MX_Controller
         if ( ! $port_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid port: ' . $port_validation['error'],
+                'error' => $this->get_validation_error_message($port_validation['error'], 'port'),
             ];
         }
 
@@ -472,9 +499,15 @@ class Setup extends MX_Controller
 
 
     /**
-     * @param int $port
+     * Write database configuration to ipconfig.php file.
+     *
+     * @param string $hostname Database hostname
+     * @param string $username Database username
+     * @param string $password Database password
+     * @param string $database Database name
+     * @param int    $port     Database port (default: 3306)
      */
-    private function write_database_config(string $hostname, string $username, string $password, string $database, $port = 3306)
+    private function write_database_config(string $hostname, string $username, string $password, string $database, int $port = 3306)
     {
         $config = file_get_contents(IPCONFIG_FILE);
 
