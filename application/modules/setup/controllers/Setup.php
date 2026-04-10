@@ -403,17 +403,6 @@ class Setup extends MX_Controller
     }
 
     /**
-     * Validate database configuration parameters to prevent injection attacks.
-     *
-     * @param string     $hostname Database hostname
-     * @param string     $username Database username
-     * @param string     $password Database password
-     * @param string     $database Database name
-     * @param string|int $port     Database port
-     *
-     * @return array Array with 'valid' (bool) and validated parameters
-     */
-    /**
      * Get user-friendly error message for database configuration validation error.
      *
      * @param string $error_code The internal error code from validate_db_config_parameter()
@@ -440,6 +429,17 @@ class Setup extends MX_Controller
         return $messages[$error_code] ?? 'Invalid ' . $param_type . ' format.';
     }
 
+    /**
+     * Validate database configuration parameters to prevent injection attacks.
+     *
+     * @param string     $hostname Database hostname
+     * @param string     $username Database username
+     * @param string     $password Database password
+     * @param string     $database Database name
+     * @param string|int $port     Database port
+     *
+     * @return array Array with 'valid' (bool) and validated parameters
+     */
     private function validate_database_config(string $hostname, string $username, string $password, string $database, $port): array
     {
         // Validate hostname
@@ -496,7 +496,6 @@ class Setup extends MX_Controller
             'port'     => (int) $port_validation['sanitized'],
         ];
     }
-
 
     /**
      * Write database configuration to ipconfig.php file.
