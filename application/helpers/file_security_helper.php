@@ -328,8 +328,13 @@ function validate_db_config_parameter(string $value, string $type): array
 
         case 'password':
             // Password can contain most printable characters, but no control characters
-            // Empty passwords are allowed (already checked at line 268 to skip password validation)
-            // Note: preg_match() returns 0 for empty strings, so we don't need to check again here
+            // Empty passwords are explicitly allowed (some databases support passwordless auth)
+            if ($value === '') {
+                // Empty password is valid - return early to skip control character check
+                break;
+            }
+
+            // Check for control characters in non-empty passwords
             if (preg_match('/[\x00-\x1F\x7F]/', $value)) {
                 log_message('error', 'Control characters detected in password parameter');
 

@@ -510,8 +510,10 @@ class Setup extends MX_Controller
     {
         $config = file_get_contents(IPCONFIG_FILE);
 
-        // Additional sanitization: escape single quotes to prevent breaking out of quoted strings
-        // This is a defense-in-depth measure; validation should have already caught malicious input
+        // Apply quote escaping to prevent breaking out of quoted strings in config file
+        // Note: validate_database_config() validates format but doesn't escape quotes
+        // This escaping is the only sanitization applied before writing to the config file
+        // It's a defense-in-depth measure in case validation is bypassed
         $hostname = sanitize_db_config_value($hostname);
         $username = sanitize_db_config_value($username);
         $password = sanitize_db_config_value($password);
