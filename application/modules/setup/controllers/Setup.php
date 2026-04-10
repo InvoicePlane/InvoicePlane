@@ -36,6 +36,7 @@ class Setup extends MX_Controller
         $this->load->library('session');
 
         $this->load->helper('file');
+        $this->load->helper('file_security');
         $this->load->helper('directory');
         $this->load->helper('url');
         $this->load->helper('language');
@@ -128,14 +129,29 @@ class Setup extends MX_Controller
         }
 
         if ($this->input->post('db_hostname')) {
-            // Write a new database configuration to the ipconfig.php file
-            $this->write_database_config(
+            // Validate all database configuration parameters before writing
+            $validation_result = $this->validate_database_config(
                 $this->input->post('db_hostname'),
                 $this->input->post('db_username'),
                 $this->input->post('db_password'),
                 $this->input->post('db_database'),
                 $this->input->post('db_port')
             );
+
+            if ($validation_result['valid']) {
+                // Write a new database configuration to the ipconfig.php file
+                $this->write_database_config(
+                    $validation_result['hostname'],
+                    $validation_result['username'],
+                    $validation_result['password'],
+                    $validation_result['database'],
+                    $validation_result['port']
+                );
+            } else {
+                // Set error counter and store validation error
+                $this->errors += 1;
+                $this->layout->set('validation_error', $validation_result['error']);
+            }
         }
 
         // Check if the set credentials are correct
@@ -387,11 +403,87 @@ class Setup extends MX_Controller
     }
 
     /**
+     * Validate database configuration parameters to prevent injection attacks.
+     *
+     * @param string     $hostname Database hostname
+     * @param string     $username Database username
+     * @param string     $password Database password
+     * @param string     $database Database name
+     * @param string|int $port     Database port
+     *
+     * @return array Array with 'valid' (bool) and validated parameters
+     */
+    private function validate_database_config(string $hostname, string $username, string $password, string $database, $port): array
+    {
+        // Validate hostname
+        $hostname_validation = validate_db_config_parameter($hostname, 'hostname');
+        if ( ! $hostname_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => 'Invalid hostname: ' . $hostname_validation['error'],
+            ];
+        }
+
+        // Validate username
+        $username_validation = validate_db_config_parameter($username, 'username');
+        if ( ! $username_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => 'Invalid username: ' . $username_validation['error'],
+            ];
+        }
+
+        // Validate password (can be empty, but must not contain control characters)
+        $password_validation = validate_db_config_parameter($password, 'password');
+        if ( ! $password_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => 'Invalid password: ' . $password_validation['error'],
+            ];
+        }
+
+        // Validate database name
+        $database_validation = validate_db_config_parameter($database, 'database');
+        if ( ! $database_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => 'Invalid database name: ' . $database_validation['error'],
+            ];
+        }
+
+        // Validate port
+        $port_validation = validate_db_config_parameter((string) $port, 'port');
+        if ( ! $port_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => 'Invalid port: ' . $port_validation['error'],
+            ];
+        }
+
+        return [
+            'valid'    => true,
+            'hostname' => $hostname_validation['sanitized'],
+            'username' => $username_validation['sanitized'],
+            'password' => $password_validation['sanitized'],
+            'database' => $database_validation['sanitized'],
+            'port'     => (int) $port_validation['sanitized'],
+        ];
+    }
+
+
+    /**
      * @param int $port
      */
     private function write_database_config(string $hostname, string $username, string $password, string $database, $port = 3306)
     {
         $config = file_get_contents(IPCONFIG_FILE);
+
+        // Additional sanitization: escape single quotes to prevent breaking out of quoted strings
+        // This is a defense-in-depth measure; validation should have already caught malicious input
+        $hostname = sanitize_db_config_value($hostname);
+        $username = sanitize_db_config_value($username);
+        $password = sanitize_db_config_value($password);
+        $database = sanitize_db_config_value($database);
 
         $config = preg_replace('/DB_HOSTNAME=(.*)?/', "DB_HOSTNAME='" . $hostname . "'", $config);
         $config = preg_replace('/DB_USERNAME=(.*)?/', "DB_USERNAME='" . $username . "'", $config);
