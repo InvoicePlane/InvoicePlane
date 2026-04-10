@@ -420,7 +420,7 @@ class Setup extends MX_Controller
         if ( ! $hostname_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid hostname: ' . html_escape($hostname_validation['error']),
+                'error' => 'Invalid hostname: ' . $hostname_validation['error'],
             ];
         }
 
@@ -429,7 +429,7 @@ class Setup extends MX_Controller
         if ( ! $username_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid username: ' . html_escape($username_validation['error']),
+                'error' => 'Invalid username: ' . $username_validation['error'],
             ];
         }
 
@@ -438,7 +438,7 @@ class Setup extends MX_Controller
         if ( ! $password_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid password: ' . html_escape($password_validation['error']),
+                'error' => 'Invalid password: ' . $password_validation['error'],
             ];
         }
 
@@ -447,7 +447,7 @@ class Setup extends MX_Controller
         if ( ! $database_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid database name: ' . html_escape($database_validation['error']),
+                'error' => 'Invalid database name: ' . $database_validation['error'],
             ];
         }
 
@@ -456,7 +456,7 @@ class Setup extends MX_Controller
         if ( ! $port_validation['valid']) {
             return [
                 'valid' => false,
-                'error' => 'Invalid port: ' . html_escape($port_validation['error']),
+                'error' => 'Invalid port: ' . $port_validation['error'],
             ];
         }
 
