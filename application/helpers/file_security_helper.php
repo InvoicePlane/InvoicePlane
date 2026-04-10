@@ -250,6 +250,11 @@ function respond_file_message(int $httpCode, string $messageKey, string $dynamic
  * Ensures that configuration values don't contain newline characters or other
  * malicious sequences that could be used for configuration injection attacks.
  *
+ * Note: Empty passwords are allowed as some database configurations permit
+ * passwordless authentication (e.g., local development, socket-based auth).
+ * Empty values for other parameters (hostname, username, database, port) are rejected
+ * as they are required for database connectivity.
+ *
  * @param string $value The configuration value to validate
  * @param string $type  The type of parameter being validated ('hostname', 'username', 'password', 'database', 'port')
  *
@@ -259,7 +264,10 @@ function validate_db_config_parameter(string $value, string $type): array
 {
     // Check for empty value
     // Use strict comparison to allow '0' as valid input (e.g., for hostnames like '0.0.0.0')
+    // Empty passwords are allowed for certain database configurations
     if ($value === '' && $type !== 'password') {
+        log_message('debug', sprintf('Empty value rejected for %s parameter', $type));
+
         return [
             'valid'     => false,
             'error'     => 'empty_value',
