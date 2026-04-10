@@ -258,7 +258,8 @@ function respond_file_message(int $httpCode, string $messageKey, string $dynamic
 function validate_db_config_parameter(string $value, string $type): array
 {
     // Check for empty value
-    if (empty($value) && $type !== 'password') {
+    // Use strict comparison to allow '0' as valid input (e.g., for hostnames like '0.0.0.0')
+    if ($value === '' && $type !== 'password') {
         return [
             'valid'     => false,
             'error'     => 'empty_value',
@@ -386,7 +387,7 @@ function validate_db_config_parameter(string $value, string $type): array
  */
 function sanitize_db_config_value(string $value): string
 {
-    // Escape single quotes by doubling them
+    // Escape single quotes using backslash for PHP string context
     // This prevents breaking out of the DB_HOSTNAME='value' format
-    return str_replace("'", "''", $value);
+    return str_replace("'", "\\'", $value);
 }
