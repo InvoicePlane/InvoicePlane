@@ -118,20 +118,32 @@ class Sessions extends Base_Controller
 
             // Check if token has expired
             if ( ! empty($user->user_passwordreset_token_expiry)) {
-                // Use UTC timezone for consistent timestamp comparison
-                $expiry_time = new DateTime($user->user_passwordreset_token_expiry, new DateTimeZone('UTC'));
-                $current_time = new DateTime('now', new DateTimeZone('UTC'));
-                
-                if ($current_time > $expiry_time) {
-                    // Token has expired, clear it from database
+                try {
+                    // Use UTC timezone for consistent timestamp comparison
+                    $expiry_time = new DateTime($user->user_passwordreset_token_expiry, new DateTimeZone('UTC'));
+                    $current_time = new DateTime('now', new DateTimeZone('UTC'));
+                    
+                    if ($current_time > $expiry_time) {
+                        // Token has expired, clear it from database
+                        $this->db->where('user_id', $user->user_id);
+                        $this->db->update('ip_users', [
+                            'user_passwordreset_token' => '',
+                            'user_passwordreset_token_expiry' => null,
+                        ]);
+                        
+                        log_message('info', 'Expired password reset token used for user ID: ' . (int)$user->user_id);
+                        $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
+                        redirect('sessions/passwordreset');
+                    }
+                } catch (Exception $e) {
+                    // Invalid datetime format in database, clear the token for safety
+                    log_message('error', 'Invalid password reset token expiry format for user ID: ' . (int)$user->user_id);
                     $this->db->where('user_id', $user->user_id);
                     $this->db->update('ip_users', [
                         'user_passwordreset_token' => '',
                         'user_passwordreset_token_expiry' => null,
                     ]);
-                    
-                    log_message('info', 'Expired password reset token used for user ID: ' . (int)$user->user_id);
-                    $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
+                    $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
                     redirect('sessions/passwordreset');
                 }
             }
@@ -248,7 +260,7 @@ class Sessions extends Base_Controller
                 // Calculate token expiry time (default: 15 minutes from now)
                 $expiry_minutes = (int)env('PASSWORD_RESET_TOKEN_EXPIRY_MINUTES', 15);
                 
-                // Validate expiry_minutes is a positive integer
+                // Validate expiry_minutes is a positive integer within acceptable range
                 if ($expiry_minutes <= 0 || $expiry_minutes > 1440) {
                     // Invalid value, use default of 15 minutes
                     // Max 1440 minutes (24 hours) for security
@@ -256,14 +268,21 @@ class Sessions extends Base_Controller
                     log_message('warning', 'Invalid PASSWORD_RESET_TOKEN_EXPIRY_MINUTES value, using default 15 minutes');
                 }
                 
-                // Use UTC timezone for consistent timestamp storage
-                $expiry_time = new DateTime('now', new DateTimeZone('UTC'));
-                $expiry_time->modify('+' . $expiry_minutes . ' minutes');
+                try {
+                    // Use UTC timezone for consistent timestamp storage
+                    $expiry_time = new DateTime('now', new DateTimeZone('UTC'));
+                    $expiry_time->modify('+' . $expiry_minutes . ' minutes');
+                    $expiry_timestamp = $expiry_time->format('Y-m-d H:i:s');
+                } catch (Exception $e) {
+                    // Fallback to simple timestamp calculation if DateTime fails
+                    log_message('error', 'DateTime creation failed, using fallback: ' . $e->getMessage());
+                    $expiry_timestamp = date('Y-m-d H:i:s', time() + ($expiry_minutes * 60));
+                }
 
                 // Save the token and expiry to the database
                 $db_array = [
                     'user_passwordreset_token' => $token,
-                    'user_passwordreset_token_expiry' => $expiry_time->format('Y-m-d H:i:s'),
+                    'user_passwordreset_token_expiry' => $expiry_timestamp,
                 ];
 
                 $this->db->where('user_email', $email);
