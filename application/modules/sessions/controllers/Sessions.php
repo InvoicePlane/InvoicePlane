@@ -114,11 +114,30 @@ class Sessions extends Base_Controller
                 // Redirect back to the login screen with an alert
                 $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
                 redirect('sessions/passwordreset');
-            } else {
-                //if token is valid, delete the failure attempt from
-                //the login_log table
-                $this->_login_log_reset($token);
             }
+
+            // Check if token has expired
+            if ( ! empty($user->user_passwordreset_token_expiry)) {
+                $expiry_time = new DateTime($user->user_passwordreset_token_expiry);
+                $current_time = new DateTime();
+                
+                if ($current_time > $expiry_time) {
+                    // Token has expired, clear it from database
+                    $this->db->where('user_id', $user->user_id);
+                    $this->db->update('ip_users', [
+                        'user_passwordreset_token' => '',
+                        'user_passwordreset_token_expiry' => null,
+                    ]);
+                    
+                    log_message('info', 'Expired password reset token used for user ID: ' . $user->user_id);
+                    $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
+                    redirect('sessions/passwordreset');
+                }
+            }
+
+            //if token is valid, delete the failure attempt from
+            //the login_log table
+            $this->_login_log_reset($token);
 
             $formdata = [
                 'token'   => $token,
@@ -162,6 +181,7 @@ class Sessions extends Base_Controller
             // Update the user and set him active again
             $db_array = [
                 'user_passwordreset_token' => '',
+                'user_passwordreset_token_expiry' => null,
             ];
 
             //delete failed attempts from login_log table
@@ -224,9 +244,15 @@ class Sessions extends Base_Controller
                 $this->load->helper('ip_security');
                 $token = generate_password_reset_token();
 
-                // Save the token to the database
+                // Calculate token expiry time (default: 15 minutes from now)
+                $expiry_minutes = env('PASSWORD_RESET_TOKEN_EXPIRY_MINUTES', 15);
+                $expiry_time = new DateTime();
+                $expiry_time->modify('+' . $expiry_minutes . ' minutes');
+
+                // Save the token and expiry to the database
                 $db_array = [
                     'user_passwordreset_token' => $token,
+                    'user_passwordreset_token_expiry' => $expiry_time->format('Y-m-d H:i:s'),
                 ];
 
                 $this->db->where('user_email', $email);
