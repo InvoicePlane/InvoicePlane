@@ -261,9 +261,9 @@ class Sessions extends Base_Controller
                 $expiry_minutes = (int)env('PASSWORD_RESET_TOKEN_EXPIRY_MINUTES', 15);
                 
                 // Validate expiry_minutes is a positive integer within acceptable range
+                // Maximum is 1440 minutes (24 hours) for security reasons
                 if ($expiry_minutes <= 0 || $expiry_minutes > 1440) {
                     // Invalid value, use default of 15 minutes
-                    // Max 1440 minutes (24 hours) for security
                     $expiry_minutes = 15;
                     log_message('warning', 'Invalid PASSWORD_RESET_TOKEN_EXPIRY_MINUTES value, using default 15 minutes');
                 }
@@ -275,8 +275,9 @@ class Sessions extends Base_Controller
                     $expiry_timestamp = $expiry_time->format('Y-m-d H:i:s');
                 } catch (Exception $e) {
                     // Fallback to simple timestamp calculation if DateTime fails
+                    // Use gmdate() to maintain UTC consistency
                     log_message('error', 'DateTime creation failed, using fallback: ' . $e->getMessage());
-                    $expiry_timestamp = date('Y-m-d H:i:s', time() + ($expiry_minutes * 60));
+                    $expiry_timestamp = gmdate('Y-m-d H:i:s', time() + ($expiry_minutes * 60));
                 }
 
                 // Save the token and expiry to the database
