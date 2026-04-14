@@ -16,6 +16,14 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Sessions extends Base_Controller
 {
+    /**
+     * UTC timezone instance for consistent timestamp handling
+     * Reused across password reset operations to avoid repeated instantiation
+     *
+     * @var DateTimeZone
+     */
+    private static $utc_timezone;
+
     public function index()
     {
         redirect('sessions/login');
@@ -119,9 +127,14 @@ class Sessions extends Base_Controller
             // Check if token has expired
             if ( ! empty($user->user_passwordreset_token_expiry)) {
                 try {
+                    // Initialize UTC timezone if not already done
+                    if ( ! isset(self::$utc_timezone)) {
+                        self::$utc_timezone = new DateTimeZone('UTC');
+                    }
+                    
                     // Use UTC timezone for consistent timestamp comparison
-                    $expiry_time = new DateTime($user->user_passwordreset_token_expiry, new DateTimeZone('UTC'));
-                    $current_time = new DateTime('now', new DateTimeZone('UTC'));
+                    $expiry_time = new DateTime($user->user_passwordreset_token_expiry, self::$utc_timezone);
+                    $current_time = new DateTime('now', self::$utc_timezone);
                     
                     if ($current_time > $expiry_time) {
                         // Token has expired, clear it from database
@@ -269,8 +282,13 @@ class Sessions extends Base_Controller
                 }
                 
                 try {
+                    // Initialize UTC timezone if not already done
+                    if ( ! isset(self::$utc_timezone)) {
+                        self::$utc_timezone = new DateTimeZone('UTC');
+                    }
+                    
                     // Use UTC timezone for consistent timestamp storage
-                    $expiry_time = new DateTime('now', new DateTimeZone('UTC'));
+                    $expiry_time = new DateTime('now', self::$utc_timezone);
                     $expiry_time->modify('+' . $expiry_minutes . ' minutes');
                     $expiry_timestamp = $expiry_time->format('Y-m-d H:i:s');
                 } catch (Exception $e) {
