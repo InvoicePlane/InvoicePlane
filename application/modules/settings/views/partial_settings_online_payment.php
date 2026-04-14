@@ -94,7 +94,7 @@
                                     name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     id="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     <?php if ($setting['type'] == 'password') { ?>
-                                        value="<?php echo $this->crypt->decode(get_setting('gateway_' . $d . '_' . $key)); ?>"
+                                        value="" autocomplete="new-password"
                                     <?php } else { ?>
                                         value="<?php echo get_setting('gateway_' . $d . '_' . $key); ?>"
                                     <?php } ?>
