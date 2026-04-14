@@ -17,6 +17,12 @@ if ( ! defined('BASEPATH')) {
 class Sessions extends Base_Controller
 {
     /**
+     * Maximum allowed password reset token expiry time in minutes (24 hours)
+     * This enforces a security upper limit on how long tokens can remain valid
+     */
+    private const MAX_PASSWORD_RESET_EXPIRY_MINUTES = 1440;
+
+    /**
      * UTC timezone instance for consistent timestamp handling
      * Reused across password reset operations to avoid repeated instantiation
      *
@@ -140,13 +146,15 @@ class Sessions extends Base_Controller
                         // Token has expired, clear it from database
                         $this->_clear_password_reset_token($user->user_id);
                         
-                        log_message('info', 'Expired password reset token used for user ID: ' . (int)$user->user_id);
+                        $this->load->helper('file_security');
+                        log_message('info', 'Expired password reset token used for user ID: ' . sanitize_for_logging($user->user_id));
                         $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
                         redirect('sessions/passwordreset');
                     }
                 } catch (Exception $e) {
                     // Invalid datetime format in database, clear the token for safety
-                    log_message('error', 'Invalid password reset token expiry format for user ID: ' . (int)$user->user_id);
+                    $this->load->helper('file_security');
+                    log_message('error', 'Invalid password reset token expiry format for user ID: ' . sanitize_for_logging($user->user_id));
                     $this->_clear_password_reset_token($user->user_id);
                     $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
                     redirect('sessions/passwordreset');
@@ -260,8 +268,8 @@ class Sessions extends Base_Controller
                 $expiry_minutes = (int)env('PASSWORD_RESET_TOKEN_EXPIRY_MINUTES', 15);
                 
                 // Validate expiry_minutes is within acceptable range (1-1440 minutes)
-                // Maximum is 1440 minutes (24 hours) for security reasons
-                if ($expiry_minutes < 1 || $expiry_minutes > 1440) {
+                // Maximum is defined by MAX_PASSWORD_RESET_EXPIRY_MINUTES (24 hours) for security
+                if ($expiry_minutes < 1 || $expiry_minutes > self::MAX_PASSWORD_RESET_EXPIRY_MINUTES) {
                     // Invalid value, use default of 15 minutes
                     $expiry_minutes = 15;
                     log_message('warning', 'Invalid PASSWORD_RESET_TOKEN_EXPIRY_MINUTES value, using default 15 minutes');
