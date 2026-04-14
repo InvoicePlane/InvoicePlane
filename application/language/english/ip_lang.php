@@ -420,6 +420,7 @@ $lang = [
     'password_reset_failed'                        => 'An error occurred while trying to send your password reset Email. Please review the application logs or contact the system administrator.',
     'password_reset_rate_limit_ip'                 => 'Too many password reset attempts from your IP address. Please try again in 1 hour.',
     'password_reset_rate_limit_email'              => 'Too many password reset attempts for this email address. Please try again later or contact support.',
+    'password_reset_token_expired'                 => 'This password reset link has expired. Please request a new password reset.',
     'log_invalid_email_format'                     => 'Invalid email format in password reset',
     'log_empty_email_submitted'                    => 'Empty email submitted in password reset',
     'log_password_reset_ip_rate_limit'             => 'Password reset IP rate limit exceeded',
