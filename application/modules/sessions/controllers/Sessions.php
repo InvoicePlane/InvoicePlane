@@ -138,11 +138,7 @@ class Sessions extends Base_Controller
                     
                     if ($current_time > $expiry_time) {
                         // Token has expired, clear it from database
-                        $this->db->where('user_id', $user->user_id);
-                        $this->db->update('ip_users', [
-                            'user_passwordreset_token' => '',
-                            'user_passwordreset_token_expiry' => null,
-                        ]);
+                        $this->_clear_password_reset_token($user->user_id);
                         
                         log_message('info', 'Expired password reset token used for user ID: ' . (int)$user->user_id);
                         $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
@@ -151,11 +147,7 @@ class Sessions extends Base_Controller
                 } catch (Exception $e) {
                     // Invalid datetime format in database, clear the token for safety
                     log_message('error', 'Invalid password reset token expiry format for user ID: ' . (int)$user->user_id);
-                    $this->db->where('user_id', $user->user_id);
-                    $this->db->update('ip_users', [
-                        'user_passwordreset_token' => '',
-                        'user_passwordreset_token_expiry' => null,
-                    ]);
+                    $this->_clear_password_reset_token($user->user_id);
                     $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
                     redirect('sessions/passwordreset');
                 }
@@ -204,18 +196,12 @@ class Sessions extends Base_Controller
                 $new_password
             );
 
-            // Update the user and set him active again
-            $db_array = [
-                'user_passwordreset_token' => '',
-                'user_passwordreset_token_expiry' => null,
-            ];
+            // Clear the password reset token and expiry
+            $this->_clear_password_reset_token($user_id);
 
-            //delete failed attempts from login_log table
+            // Delete failed login attempts from login_log table
             $user = $this->db->where('user_id', $user_id)->get('ip_users')->row();
             $this->_login_log_reset($user->user_email);
-
-            $this->db->where('user_id', $user_id);
-            $this->db->update('ip_users', $db_array);
 
             // Redirect back to the login form
             redirect('sessions/login');
@@ -598,6 +584,21 @@ class Sessions extends Base_Controller
     private function _login_log_reset($username)
     {
         $this->db->delete('ip_login_log', ['login_name' => $username]);
+    }
+
+    /**
+     * Clears the password reset token and expiry for a user.
+     * Helper method to avoid code duplication.
+     *
+     * @param int $user_id The user ID
+     */
+    private function _clear_password_reset_token($user_id): void
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->update('ip_users', [
+            'user_passwordreset_token' => '',
+            'user_passwordreset_token_expiry' => null,
+        ]);
     }
 
     /**
