@@ -598,10 +598,13 @@ class Sessions extends Base_Controller
      * Clears the password reset token and expiry for a user.
      * Helper method to avoid code duplication.
      *
-     * @param int $user_id The user ID
+     * @param int $user_id The user ID (will be type-cast to ensure it's an integer)
      */
     private function _clear_password_reset_token($user_id): void
     {
+        // Ensure user_id is an integer for safety
+        $user_id = (int)$user_id;
+        
         $this->db->where('user_id', $user_id);
         $this->db->update('ip_users', [
             'user_passwordreset_token' => '',
