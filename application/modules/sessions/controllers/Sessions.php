@@ -260,9 +260,9 @@ class Sessions extends Base_Controller
                 // Calculate token expiry time (default: 15 minutes from now)
                 $expiry_minutes = (int)env('PASSWORD_RESET_TOKEN_EXPIRY_MINUTES', 15);
                 
-                // Validate expiry_minutes is a positive integer within acceptable range
+                // Validate expiry_minutes is within acceptable range (1-1440 minutes)
                 // Maximum is 1440 minutes (24 hours) for security reasons
-                if ($expiry_minutes <= 0 || $expiry_minutes > 1440) {
+                if ($expiry_minutes < 1 || $expiry_minutes > 1440) {
                     // Invalid value, use default of 15 minutes
                     $expiry_minutes = 15;
                     log_message('warning', 'Invalid PASSWORD_RESET_TOKEN_EXPIRY_MINUTES value, using default 15 minutes');
