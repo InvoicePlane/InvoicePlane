@@ -491,7 +491,7 @@
                             </label>
                             <div class="input-group">
                                 <input type="text" name="settings[cron_key]" id="cron_key" class="form-control" readonly
-                                    value="<?php echo get_setting('cron_key'); ?>">
+                                    value="<?php echo get_setting('cron_key', '', true); ?>">
                                 <div class="input-group-btn">
                                     <button id="btn_generate_cron_key" type="button" class="btn btn-primary btn-block">
                                         <i class="fa fa-recycle fa-margin"></i> <?php _trans('generate'); ?>
