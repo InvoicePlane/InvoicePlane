@@ -50,9 +50,9 @@
         <div class="modal-body">
 
             <input class="hidden" id="payment_method_id"
-                   value="<?php echo get_setting('invoice_default_payment_method'); ?>">
+                   value="<?php echo get_setting('invoice_default_payment_method', '', true); ?>">
             <input class="hidden" id="input_permissive_search_clients"
-                   value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
+                   value="<?php echo get_setting('enable_permissive_search_clients', '', true); ?>">
 
             <div class="form-group has-feedback">
                 <label for="create_invoice_client_id"><?php _trans('client'); ?></label>
@@ -85,7 +85,7 @@
             <div class="form-group">
                 <label for="invoice_password"><?php _trans('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php echo get_setting('invoice_pre_password') == '' ? '' : get_setting('invoice_pre_password'); ?>"
+                       value="<?php echo get_setting('invoice_pre_password') == '' ? '' : get_setting('invoice_pre_password', '', true); ?>"
                        style="margin: 0 auto;" autocomplete="off">
             </div>
 

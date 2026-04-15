@@ -43,7 +43,7 @@ if ( ! empty($project->client_id)) {
         </div>
 
         <input class="hidden" id="input_permissive_search_clients"
-               value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
+               value="<?php echo get_setting('enable_permissive_search_clients', '', true); ?>">
     </div>
 
 </form>
