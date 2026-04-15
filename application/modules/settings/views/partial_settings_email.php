@@ -124,7 +124,7 @@
                                     </label>
                                     <input type="number" name="settings[smtp_port]" id="settings[smtp_port]"
                                         class="form-control"
-                                        value="<?php echo get_setting('smtp_port', '', true); ?>">
+                                        value="<?php echo html_escape(get_setting('smtp_port')); ?>">
                                 </div>
                             </div>
 

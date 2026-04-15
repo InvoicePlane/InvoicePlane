@@ -20,7 +20,7 @@ foreach ($invoice_groups as $invoice_group) {
 ?>
                                 <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                                     <?php check_select(get_setting('default_invoice_group'), $invoice_group->invoice_group_id); ?>>
-                                    <?php echo htmlsc($invoice_group->invoice_group_name); ?>
+                                    <?php echo html_escape($invoice_group->invoice_group_name); ?>
                                 </option>
 <?php
 }
