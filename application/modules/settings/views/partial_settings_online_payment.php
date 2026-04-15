@@ -96,7 +96,7 @@
                                     <?php if ($setting['type'] == 'password') { ?>
                                         value="" autocomplete="new-password"
                                     <?php } else { ?>
-                                        value="<?php echo get_setting('gateway_' . $d . '_' . $key); ?>"
+                                        value="<?php echo get_setting('gateway_' . $d . '_' . $key, '', true); ?>"
                                     <?php } ?>
                                 >
                                 <?php if ($setting['type'] == 'password') { ?>
