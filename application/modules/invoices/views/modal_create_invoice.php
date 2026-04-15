@@ -85,7 +85,7 @@
             <div class="form-group">
                 <label for="invoice_password"><?php _trans('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php echo get_setting('invoice_pre_password') == '' ? '' : get_setting('invoice_pre_password', '', true); ?>"
+                       value="<?php echo get_setting('invoice_pre_password') === '' ? '' : get_setting('invoice_pre_password', '', true); ?>"
                        style="margin: 0 auto;" autocomplete="off">
             </div>
 
