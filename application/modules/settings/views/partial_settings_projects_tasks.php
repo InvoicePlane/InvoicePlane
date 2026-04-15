@@ -36,7 +36,7 @@
                                 <input type="text" name="settings[default_hourly_rate]" id="settings[default_hourly_rate]"
                                     class="form-control amount"
                                     value="<?php echo get_setting('default_hourly_rate') ? htmlsc(format_amount(get_setting('default_hourly_rate'))) : get_setting('default_hourly_rate', '', true); ?>">
-                                <span class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></span>
+                                <span class="input-group-addon"><?php echo get_setting('currency_symbol', '', true); ?></span>
                                 <input type="hidden" name="settings[default_hourly_rate_field_is_amount]" value="1">
                             </div>
                         </div>
