@@ -143,7 +143,7 @@
         <div class="panel-body">
 
             <div class="form-group">
-                <input type="text" class="form-control" value="<?php echo get_setting('current_version', '', true); ?>" readonly="readonly">
+                <input type="text" class="form-control" value="<?php echo html_escape(get_setting('current_version')); ?>" readonly="readonly">
             </div>
             <div id="updatecheck-results">
                 <div id="updatecheck-loading" class="btn btn-default btn-sm disabled">
