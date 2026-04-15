@@ -20,7 +20,7 @@
                                 <?php foreach ($invoice_groups as $invoice_group) { ?>
                                     <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                                         <?php check_select(get_setting('default_quote_group'), $invoice_group->invoice_group_id); ?>>
-                                        <?php echo $invoice_group->invoice_group_name; ?>
+                                        <?php echo htmlsc($invoice_group->invoice_group_name); ?>
                                     </option>
                                 <?php } ?>
                             </select>
@@ -160,7 +160,7 @@
                                 <?php foreach ($email_templates_quote as $email_template) { ?>
                                     <option value="<?php echo $email_template->email_template_id; ?>"
                                         <?php check_select(get_setting('email_quote_template'), $email_template->email_template_id); ?>>
-                                        <?php echo $email_template->email_template_title; ?>
+                                        <?php echo htmlsc($email_template->email_template_title); ?>
                                     </option>
                                 <?php } ?>
                             </select>

@@ -20,7 +20,7 @@ foreach ($invoice_groups as $invoice_group) {
 ?>
                                 <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                                     <?php check_select(get_setting('default_invoice_group'), $invoice_group->invoice_group_id); ?>>
-                                    <?php echo $invoice_group->invoice_group_name; ?>
+                                    <?php echo htmlsc($invoice_group->invoice_group_name); ?>
                                 </option>
 <?php
 }
@@ -52,7 +52,7 @@ foreach ($payment_methods as $payment_method) {
 ?>
                                 <option value="<?php echo $payment_method->payment_method_id; ?>"
                                     <?php check_select($payment_method->payment_method_id, get_setting('invoice_default_payment_method')) ?>>
-                                    <?php echo $payment_method->payment_method_name; ?>
+                                    <?php echo htmlsc($payment_method->payment_method_name); ?>
                                 </option>
 <?php
 }
@@ -299,7 +299,7 @@ foreach ($email_templates_invoice as $email_template) {
 ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
                                     <?php check_select(get_setting('email_invoice_template'), $email_template->email_template_id); ?>>
-                                    <?php echo $email_template->email_template_title; ?>
+                                    <?php echo htmlsc($email_template->email_template_title); ?>
                                 </option>
 <?php
 }
@@ -319,7 +319,7 @@ foreach ($email_templates_invoice as $email_template) {
 ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
                                     <?php check_select(get_setting('email_invoice_template_paid'), $email_template->email_template_id); ?>>
-                                    <?php echo $email_template->email_template_title; ?>
+                                    <?php echo htmlsc($email_template->email_template_title); ?>
                                 </option>
 <?php
 }
@@ -339,7 +339,7 @@ foreach ($email_templates_invoice as $email_template) {
 ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
                                     <?php check_select(get_setting('email_invoice_template_overdue'), $email_template->email_template_id); ?>>
-                                    <?php echo $email_template->email_template_title; ?>
+                                    <?php echo htmlsc($email_template->email_template_title); ?>
                                 </option>
 <?php
 }
