@@ -43,7 +43,7 @@
                             </label>
                             <input type="number" name="settings[quotes_expire_after]" id="settings[quotes_expire_after]"
                                 class="form-control"
-                                value="<?php echo get_setting('quotes_expire_after'); ?>">
+                                value="<?php echo get_setting('quotes_expire_after', '', true); ?>">
                         </div>
 
                         <div class="form-group">

@@ -65,7 +65,7 @@ foreach ($payment_methods as $payment_method) {
                                 <?php _trans('invoices_due_after'); ?>
                             </label>
                             <input type="number" name="settings[invoices_due_after]" id="settings[invoices_due_after]"
-                                   class="form-control" value="<?php echo get_setting('invoices_due_after'); ?>">
+                                   class="form-control" value="<?php echo get_setting('invoices_due_after', '', true); ?>">
                         </div>
 
                         <div class="form-group">
@@ -417,7 +417,7 @@ $qr_code = get_setting('qr_code');
                                 id="settings[qr_code_recipient]"
                                 class="form-control"
                                 placeholder="<?php _htmlsc(trans('company')); ?>"
-                                value="<?php echo get_setting('qr_code_recipient'); ?>"
+                                value="<?php echo get_setting('qr_code_recipient', '', true); ?>"
                             >
                         </div>
                     </div>
@@ -431,7 +431,7 @@ $qr_code = get_setting('qr_code');
                                 name="settings[qr_code_iban]"
                                 id="settings[qr_code_iban]"
                                 class="form-control"
-                                value="<?php echo get_setting('qr_code_iban'); ?>"
+                                value="<?php echo get_setting('qr_code_iban', '', true); ?>"
                             >
                         </div>
                     </div>
@@ -448,7 +448,7 @@ $qr_code = get_setting('qr_code');
                                 name="settings[qr_code_bic]"
                                 id="settings[qr_code_bic]"
                                 class="form-control"
-                                value="<?php echo get_setting('qr_code_bic'); ?>"
+                                value="<?php echo get_setting('qr_code_bic', '', true); ?>"
                             >
                         </div>
                     </div>
@@ -462,7 +462,7 @@ $qr_code = get_setting('qr_code');
                                 name="settings[qr_code_remittance_text]"
                                 id="settings[qr_code_remittance_text]"
                                 class="form-control taggable"
-                                value="<?php echo get_setting('qr_code_remittance_text'); ?>"
+                                value="<?php echo get_setting('qr_code_remittance_text', '', true); ?>"
                                 placeholder="{{{invoice_number}}}"
                             >
                         </div>
