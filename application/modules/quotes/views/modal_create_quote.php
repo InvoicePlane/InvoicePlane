@@ -83,7 +83,7 @@
             <div class="form-group">
                 <label for="quote_password"><?php _trans('quote_password'); ?></label>
                 <input type="text" name="quote_password" id="quote_password" class="form-control"
-                       value="<?php echo get_setting('quote_pre_password') ? '' : get_setting('quote_pre_password', '', true) ?>"
+                       value="<?php echo get_setting('quote_pre_password') ? get_setting('quote_pre_password', '', true) : '' ?>"
                        autocomplete="off">
             </div>
 
