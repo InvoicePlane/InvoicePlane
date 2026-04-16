@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: resources/docker/Containerfile
+    image: c8n.io/mpldr/invoiceplane
+    ports:
+      - "4895:80"
+    environment:
+      IP_URL: http://localhost:4895
+      DB_HOSTNAME: db
+      DB_USERNAME: invoiceplane
+      DB_PASSWORD: invoiceplane
+      DB_DATABASE: invoiceplane
+      ENCRYPTION_KEY: dev-key-change-me-in-production-00
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: invoiceplane
+      MARIADB_USER: invoiceplane
+      MARIADB_PASSWORD: invoiceplane
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 5

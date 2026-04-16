@@ -16,7 +16,7 @@ if ( ! defined('BASEPATH')) {
 /**
  * Custom debug output function for PHPMailer
  * Logs debug messages to CodeIgniter's log files instead of echoing to output
- * This prevents AJAX requests from breaking due to unexpected output
+ * This prevents AJAX requests from breaking due to unexpected output.
  *
  * Note: The file_security helper must be loaded before PHPMailer is configured.
  * This is handled in phpmail_send() which loads the helper at initialization.
@@ -32,7 +32,7 @@ function phpmailer_debug_output(string $str, int $level = 0): void
     // Note: sanitize_for_logging is available because file_security helper
     // is loaded at the start of phpmail_send()
     $sanitized = sanitize_for_logging($str);
-    
+
     // Log with 'debug' level so it respects log_threshold setting
     log_message('debug', 'PHPMailer [level ' . (int) $level . ']: ' . $sanitized);
 }
@@ -71,7 +71,7 @@ function phpmail_send(
         case 'smtp':
             $mail->isSMTP();
             // Enable debug output: 0 = off, 1 = client messages, 2 = client and server messages
-            $mail->SMTPDebug   = env_bool('ENABLE_DEBUG') ? 2 : 0;
+            $mail->SMTPDebug = env_bool('ENABLE_DEBUG') ? 2 : 0;
             // Use custom callable function to log to CodeIgniter logs instead of echo/error_log
             if (env_bool('ENABLE_DEBUG')) {
                 $mail->SMTPDebug = 3;
@@ -85,11 +85,10 @@ function phpmail_send(
             $mail->Host = get_setting('smtp_server_address');
             $mail->Port = get_setting('smtp_port');
 
-        
             /**
-                v1.7.2:
-                Adding the "From" since that somehow never happened
-            */
+             * v1.7.2:
+             * Adding the "From" since that somehow never happened
+             */
             $fromMail = $from[0];
             $fromName = $from[1];
 
@@ -216,18 +215,18 @@ function phpmail_send(
     }
 
     // Log the result - handle failure case first (early return pattern)
-    if (!$ok) {
+    if ( ! $ok) {
         // Log the error with sanitized ErrorInfo
-        log_message('error', 'PHPMailer: Email sending failed - ' . 
-            sanitize_for_logging($mail->ErrorInfo));
-        
+        log_message('error', 'PHPMailer: Email sending failed - '
+            . sanitize_for_logging($mail->ErrorInfo));
+
         // Set flashdata for user notification
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
-        
+
         // Format recipient list for logging - $to has already been normalized to an array
         $recipient_list = implode(', ', $to);
-        log_message('debug', 'PHPMailer: Email sent successfully to ' . 
-            sanitize_for_logging($recipient_list));
+        log_message('debug', 'PHPMailer: Email sent successfully to '
+            . sanitize_for_logging($recipient_list));
     }
 
     return true;

@@ -27,11 +27,16 @@ class Setup extends MX_Controller
             show_error('The setup is disabled.', 403);
         }
 
+        if (env_bool('SETUP_COMPLETED', false)) {
+            show_error('The setup has already been completed. To re-run the setup, set SETUP_COMPLETED=false in ipconfig.php.', 403);
+        }
+
         parent::__construct();
 
         $this->load->library('session');
 
         $this->load->helper('file');
+        $this->load->helper('file_security');
         $this->load->helper('directory');
         $this->load->helper('url');
         $this->load->helper('language');
@@ -124,14 +129,29 @@ class Setup extends MX_Controller
         }
 
         if ($this->input->post('db_hostname')) {
-            // Write a new database configuration to the ipconfig.php file
-            $this->write_database_config(
+            // Validate all database configuration parameters before writing
+            $validation_result = $this->validate_database_config(
                 $this->input->post('db_hostname'),
                 $this->input->post('db_username'),
                 $this->input->post('db_password'),
                 $this->input->post('db_database'),
                 $this->input->post('db_port')
             );
+
+            if ($validation_result['valid']) {
+                // Write a new database configuration to the ipconfig.php file
+                $this->write_database_config(
+                    $validation_result['hostname'],
+                    $validation_result['username'],
+                    $validation_result['password'],
+                    $validation_result['database'],
+                    $validation_result['port']
+                );
+            } else {
+                // Set error counter and store validation error
+                $this->errors += 1;
+                $this->layout->set('validation_error', $validation_result['error']);
+            }
         }
 
         // Check if the set credentials are correct
@@ -383,11 +403,121 @@ class Setup extends MX_Controller
     }
 
     /**
-     * @param int $port
+     * Get user-friendly error message for database configuration validation error.
+     *
+     * @param string $error_code The internal error code from validate_db_config_parameter()
+     * @param string $param_type The parameter type (hostname, username, etc.)
+     *
+     * @return string User-friendly error message
      */
-    private function write_database_config(string $hostname, string $username, string $password, string $database, $port = 3306)
+    private function get_validation_error_message(string $error_code, string $param_type): string
+    {
+        // Map internal error codes to user-friendly messages
+        // This prevents exposing internal validation logic to potential attackers
+        $messages = [
+            'empty_value'             => 'This field is required.',
+            'newline_detected'        => 'Invalid format. Please check your input.',
+            'null_byte'               => 'Invalid format. Please check your input.',
+            'invalid_hostname_format' => 'Invalid hostname format. Please use a valid hostname or IP address.',
+            'invalid_username_format' => 'Invalid username format. Only alphanumeric characters, dots, hyphens, underscores, and @ are allowed.',
+            'invalid_password_format' => 'Invalid password format. Please check your password.',
+            'invalid_database_format' => 'Invalid database name format. Only alphanumeric characters, underscores, and hyphens are allowed.',
+            'invalid_port'            => 'Invalid port number. Please enter a number between 1 and 65535.',
+        ];
+
+        // Return the user-friendly message or a generic error
+        return $messages[$error_code] ?? 'Invalid ' . $param_type . ' format.';
+    }
+
+    /**
+     * Validate database configuration parameters to prevent injection attacks.
+     *
+     * @param string     $hostname Database hostname
+     * @param string     $username Database username
+     * @param string     $password Database password
+     * @param string     $database Database name
+     * @param string|int $port     Database port
+     *
+     * @return array Array with 'valid' (bool) and validated parameters
+     */
+    private function validate_database_config(string $hostname, string $username, string $password, string $database, $port): array
+    {
+        // Validate hostname
+        $hostname_validation = validate_db_config_parameter($hostname, 'hostname');
+        if ( ! $hostname_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($hostname_validation['error'], 'hostname'),
+            ];
+        }
+
+        // Validate username
+        $username_validation = validate_db_config_parameter($username, 'username');
+        if ( ! $username_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($username_validation['error'], 'username'),
+            ];
+        }
+
+        // Validate password (can be empty, but must not contain control characters)
+        $password_validation = validate_db_config_parameter($password, 'password');
+        if ( ! $password_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($password_validation['error'], 'password'),
+            ];
+        }
+
+        // Validate database name
+        $database_validation = validate_db_config_parameter($database, 'database');
+        if ( ! $database_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($database_validation['error'], 'database'),
+            ];
+        }
+
+        // Validate port
+        $port_validation = validate_db_config_parameter((string) $port, 'port');
+        if ( ! $port_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($port_validation['error'], 'port'),
+            ];
+        }
+
+        return [
+            'valid'    => true,
+            'hostname' => $hostname_validation['sanitized'],
+            'username' => $username_validation['sanitized'],
+            'password' => $password_validation['sanitized'],
+            'database' => $database_validation['sanitized'],
+            'port'     => (int) $port_validation['sanitized'],
+        ];
+    }
+
+    /**
+     * Write database configuration to ipconfig.php file.
+     *
+     * @param string $hostname Database hostname
+     * @param string $username Database username
+     * @param string $password Database password
+     * @param string $database Database name
+     * @param int    $port     Database port (default: 3306)
+     */
+    private function write_database_config(string $hostname, string $username, string $password, string $database, int $port = 3306)
     {
         $config = file_get_contents(IPCONFIG_FILE);
+
+        // Apply quote escaping to prevent breaking out of quoted strings in config file
+        // Note: validate_database_config() validates format but doesn't escape quotes
+        // This escaping is the only sanitization applied before writing to the config file
+        // It's a defense-in-depth measure in case validation is bypassed
+        $hostname = sanitize_db_config_value($hostname);
+        $username = sanitize_db_config_value($username);
+        $password = sanitize_db_config_value($password);
+        $database = sanitize_db_config_value($database);
 
         $config = preg_replace('/DB_HOSTNAME=(.*)?/', "DB_HOSTNAME='" . $hostname . "'", $config);
         $config = preg_replace('/DB_USERNAME=(.*)?/', "DB_USERNAME='" . $username . "'", $config);
@@ -497,10 +627,10 @@ class Setup extends MX_Controller
                 ];
             }
 
-                return [
-                    'needs_config'  => false,
-                    'current_value' => 'false',
-                ];
+            return [
+                'needs_config'  => false,
+                'current_value' => 'false',
+            ];
         }
 
         return ['needs_config' => false];

@@ -11,7 +11,7 @@
                     <tbody>
 <?php
 foreach ($elements as $element) {
-?>
+    ?>
                         <tr>
                             <td><?php echo $element->custom_values_id; ?></td>
                             <td><?php _htmlsc($element->custom_values_value); ?></td>
@@ -44,7 +44,7 @@ foreach ($elements as $element) {
                         </tr>
 <?php
 }
-?>
+                            ?>
                     </tbody>
 
                 </table>

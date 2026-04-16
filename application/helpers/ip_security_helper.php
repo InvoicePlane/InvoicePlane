@@ -53,7 +53,7 @@ function sanitize_exception_for_logging(string $message): string
  * @return string The token as a hexadecimal string (twice the byte length)
  *
  * @throws InvalidArgumentException If $length is less than or equal to 0
- * @throws RuntimeException If random_bytes() fails (should never happen with PHP 7.0+)
+ * @throws RuntimeException         If random_bytes() fails (should never happen with PHP 7.0+)
  */
 function generate_secure_token(int $length = 32): string
 {
@@ -68,7 +68,7 @@ function generate_secure_token(int $length = 32): string
 
         // Convert to hexadecimal for safe storage and transmission
         return bin2hex($randomBytes);
-    } catch (Exception | Error $e) {
+    } catch (Exception|Error $e) {
         // This should never happen with PHP 7.0+ or random_compat library
         // Catch both Exception and Error for comprehensive coverage
         $safeMessage = sanitize_exception_for_logging($e->getMessage());
@@ -115,8 +115,8 @@ function generate_secure_salt(): string
         // Translate '+' to '.' for crypt-style base64 and remove '=' padding
         $base64 = rtrim(strtr($base64, '+', '.'), '=');
 
-        return substr($base64, 0, 22);
-    } catch (Exception | Error $e) {
+        return mb_substr($base64, 0, 22);
+    } catch (Exception|Error $e) {
         // Catch both Exception and Error for comprehensive coverage
         $safeMessage = sanitize_exception_for_logging($e->getMessage());
         log_message('error', 'Failed to generate secure salt: ' . $safeMessage);

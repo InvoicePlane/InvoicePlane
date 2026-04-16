@@ -17,7 +17,7 @@ $custom_field_type  = $this->mdl_custom_fields->form_value('custom_field_type');
     </div>
 <?php
 if ($disabled) {
-?>
+    ?>
     <input type="hidden" name="custom_field_table" value="<?php echo $custom_field_table; ?>">
     <input type="hidden" name="custom_field_type" value="<?php echo $custom_field_type; ?>">
 <?php
@@ -42,7 +42,7 @@ if ($disabled) {
 // New field? Auto select (work if come from custom_fields/table/*)
 $custom_field_table = $custom_field_table ?: (isset($_SERVER['HTTP_REFERER']) ? 'ip_' . basename($_SERVER['HTTP_REFERER']) . '_custom' : '');
 foreach ($custom_field_tables as $table => $label) {
-?>
+    ?>
                     <option value="<?php echo $table; ?>" <?php check_select($custom_field_table, $table); ?>><?php _trans($label); ?></option>
 <?php
 }
@@ -62,7 +62,7 @@ foreach ($custom_field_tables as $table => $label) {
 
 foreach ($custom_field_types as $type) {
     $alpha = str_replace('-', '_', mb_strtolower($type));
-?>
+    ?>
                         <option value="<?php echo $type; ?>" <?php check_select($custom_field_type, $type); ?>><?php _trans($alpha); ?></option>
 <?php
 }

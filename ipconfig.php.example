@@ -76,6 +76,17 @@ SUMEX_URL=
 # Default: false (disabled)
 SEC_STRIP_EXIF_FROM_IMAGES=false
 
+# Path to a directory containing custom templates (optional)
+# Useful for persistent custom templates when running in a container.
+# Set an absolute path; the directory should mirror the built-in structure:
+#   <path>/invoice_templates/pdf/
+#   <path>/invoice_templates/public/
+#   <path>/quote_templates/pdf/
+#   <path>/quote_templates/public/
+# Templates here are shown alongside the built-in ones and, when selected,
+# take precedence over any built-in template with the same name.
+CUSTOM_TEMPLATES_FOLDER=
+
 ##
 ## DO NOT CHANGE ANY CONFIGURATION VALUES BELOW THIS LINE!
 ## =======================================================
@@ -85,5 +96,6 @@ SEC_STRIP_EXIF_FROM_IMAGES=false
 ENCRYPTION_KEY=
 ENCRYPTION_CIPHER=AES-256
 
-# Set to true after the initial setup
+# Set to true after the initial setup. Access to the setup wizard is blocked when this is true.
+# To re-run the setup (e.g. after an upgrade), temporarily set this to false.
 SETUP_COMPLETED=false

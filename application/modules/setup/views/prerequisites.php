@@ -17,8 +17,8 @@ foreach ($basics as $basic) {
 <?php } elseif ($basic['success'] == 1) { ?>
             <p><i class="fa fa-check text-success fa-margin"></i> <?php echo $basic['message']; ?></p>
 <?php } else {
-        $errors = true;
-?>
+    $errors = true;
+    ?>
             <p><i class="fa fa-close text-danger fa-margin"></i> <?php echo $basic['message']; ?></p>
 <?php }
 } ?>
