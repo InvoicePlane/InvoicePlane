@@ -145,51 +145,50 @@ function generateReport() {
     transitiveUpdates.sort((a, b) => a.pkg.localeCompare(b.pkg));
     
     // Generate report header
-    report += '╔═══════════════════════════════════════════════════════════════╗\n';
-    report += '║                    Package Update Report                     ║\n';
-    report += '╚═══════════════════════════════════════════════════════════════╝\n\n';
+    report += 'Package Update Report\n';
+    report += '='.repeat(65) + '\n\n';
     
     // Direct dependencies section
     if (directUpdates.length > 0) {
-        report += '📦 DIRECT DEPENDENCIES (from package.json)\n';
-        report += '─'.repeat(65) + '\n\n';
-        
+        report += 'Direct dependencies (from package.json)\n';
+        report += '-'.repeat(65) + '\n\n';
+
         for (const { pkg, from, to } of directUpdates) {
-            report += `  ✓ ${pkg}\n`;
-            report += `    ${from} → ${to}\n\n`;
+            report += `  ${pkg}\n`;
+            report += `    ${from} -> ${to}\n\n`;
         }
     } else {
-        report += '📦 DIRECT DEPENDENCIES (from package.json)\n';
-        report += '─'.repeat(65) + '\n';
+        report += 'Direct dependencies (from package.json)\n';
+        report += '-'.repeat(65) + '\n';
         report += '  No direct dependencies updated.\n\n';
     }
-    
+
     // Transitive dependencies section
     if (transitiveUpdates.length > 0) {
-        report += '\n🔗 TRANSITIVE DEPENDENCIES (dependencies of dependencies)\n';
-        report += '─'.repeat(65) + '\n\n';
-        
+        report += '\nTransitive dependencies (dependencies of dependencies)\n';
+        report += '-'.repeat(65) + '\n\n';
+
         for (const { pkg, from, to } of transitiveUpdates) {
-            report += `  └─ ${pkg}\n`;
-            report += `     ${from} → ${to}\n\n`;
+            report += `  ${pkg}\n`;
+            report += `    ${from} -> ${to}\n\n`;
         }
     }
     
     // Summary
-    report += '\n' + '═'.repeat(65) + '\n';
-    report += `SUMMARY: ${directUpdates.length} direct, ${transitiveUpdates.length} transitive (${updates.size} total)\n`;
-    report += '═'.repeat(65) + '\n';
-    
+    report += '\n' + '='.repeat(65) + '\n';
+    report += `Summary: ${directUpdates.length} direct, ${transitiveUpdates.length} transitive (${updates.size} total)\n`;
+    report += '='.repeat(65) + '\n';
+
     return report;
 }
 
 // Main execution
 try {
     const report = generateReport();
-    
+
     // Write to file
     fs.writeFileSync('updated-packages.txt', report);
-    console.log('✓ Report saved to updated-packages.txt');
+    console.log('Report saved to updated-packages.txt');
 } catch (error) {
     console.error('Fatal error:', error.message);
     process.exit(1);

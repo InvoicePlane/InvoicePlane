@@ -12,7 +12,7 @@ This guide provides instructions for upgrading InvoicePlane to newer versions.
 
 ## Instructions to upgrade to 1.7.2 from 1.7.0 / 1.7.1
 
-> ⚠️ **This is a critical security release.** v1.7.0 and v1.7.1 contain a Remote Code
+> **This is a critical security release.** v1.7.0 and v1.7.1 contain a Remote Code
 > Execution vulnerability (CVSSv3 9.9). Upgrade immediately. Consult
 > [MIGRATION_GUIDE_v1.7.2.md](MIGRATION_GUIDE_v1.7.2.md) for a full pre-upgrade security
 > audit checklist.

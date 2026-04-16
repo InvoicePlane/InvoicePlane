@@ -142,17 +142,17 @@ AJAX filter controllers extracted values from `HTTP_REFERER` without proper vali
 - `ADDITIONAL_SECURITY_FIXES_v1.7.2.md` - Complete details of additional vulnerabilities and fixes
 
 **Summary of Security Improvements:**
-- ✅ RCE vulnerability completely eliminated via static whitelist
-- ✅ Open redirect attacks prevented via URL validation
-- ✅ SQL query construction hardened
-- ✅ HTTP_REFERER usage secured across application
-- ✅ Comprehensive security helper library added
-- ✅ Defense-in-depth approach implemented
-- ✅ Extensive security documentation provided
-- ✅ PHPMailer SMTP debug output sanitized (log injection prevention)
-- ✅ Email send failures now correctly propagated to callers
-- ✅ Cryptographic binary data handling corrected
-- ✅ GitHub Actions workflow token permissions restricted
+- RCE vulnerability completely eliminated via static whitelist
+- Open redirect attacks prevented via URL validation
+- SQL query construction hardened
+- HTTP_REFERER usage secured across application
+- Comprehensive security helper library added
+- Defense-in-depth approach implemented
+- Extensive security documentation provided
+- PHPMailer SMTP debug output sanitized (log injection prevention)
+- Email send failures now correctly propagated to callers
+- Cryptographic binary data handling corrected
+- GitHub Actions workflow token permissions restricted
 
 ---
 
@@ -180,7 +180,7 @@ successfully" log line to appear inside the failure branch.
 **Fix:** Function now returns the actual `bool` result of `$mail->send()`. The success log
 message was moved to the success branch and the failure branch sets flash error data only.
 
-> ⚠️ **Breaking change for custom integrations:** Any code that called `phpmail_send()` and
+> **Breaking change for custom integrations:** Any code that called `phpmail_send()` and
 > treated the return value as always-truthy must be updated. Check the return value and handle
 > `false` as a send failure.
 
