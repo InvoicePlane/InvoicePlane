@@ -592,22 +592,22 @@ class Setup extends MX_Controller
 
     private function post_setup_tasks()
     {
-        // Set SETUP_COMPLETED to true
-        // Note: DISABLE_SETUP is NOT automatically set here. Admins will be warned
-        // via the security check in Admin_Controller::check_setup_security() to manually set both flags.
+        // Set both SETUP_COMPLETED and DISABLE_SETUP to true for security
+        // If file write fails, admins will be warned via the security check in Admin_Controller::check_setup_security()
         $config = @file_get_contents(IPCONFIG_FILE);
         if ($config === false) {
             $error = error_get_last();
-            log_message('error', 'Failed to read ipconfig.php during post-setup tasks. SETUP_COMPLETED flag may not be set correctly. Error: ' . ($error['message'] ?? 'Unknown error'));
+            log_message('error', 'Failed to read ipconfig.php during post-setup tasks. Setup flags may not be set correctly. Error: ' . ($error['message'] ?? 'Unknown error'));
             return;
         }
         
         $config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config);
+        $config = preg_replace('/^DISABLE_SETUP\s*=\s*.*$/m', 'DISABLE_SETUP=true', $config);
         
         $result = @write_file(IPCONFIG_FILE, $config);
         if (!$result) {
             $error = error_get_last();
-            log_message('error', 'Failed to write to ipconfig.php during post-setup tasks. SETUP_COMPLETED flag may not be set correctly. Error: ' . ($error['message'] ?? 'Unknown error'));
+            log_message('error', 'Failed to write to ipconfig.php during post-setup tasks. Setup flags may not be set correctly. Error: ' . ($error['message'] ?? 'Unknown error'));
         }
     }
 
