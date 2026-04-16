@@ -125,6 +125,9 @@ class Settings extends Admin_Controller
 
                 $upload_data = $this->upload->data();
 
+                // Security: Strip EXIF metadata from uploaded logo
+                $this->strip_logo_metadata($upload_data['full_path'], 'invoice_logo');
+
                 $this->mdl_settings->save('invoice_logo', $upload_data['file_name']);
             }
 
@@ -146,6 +149,9 @@ class Settings extends Admin_Controller
                 }
 
                 $upload_data = $this->upload->data();
+
+                // Security: Strip EXIF metadata from uploaded logo
+                $this->strip_logo_metadata($upload_data['full_path'], 'login_logo');
 
                 $this->mdl_settings->save('login_logo', $upload_data['file_name']);
             }
@@ -366,5 +372,40 @@ class Settings extends Admin_Controller
         unset($settings['tax_rate_decimal_places']);
 
         return $settings;
+    }
+
+    /**
+     * @param $type
+     */
+    public function remove_logo(string $type)
+    {
+        unlink('./uploads/' . get_setting($type . '_logo'));
+
+        $this->mdl_settings->save($type . '_logo', '');
+
+        $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
+
+        redirect('settings');
+    }
+
+    /**
+     * Strip EXIF metadata from uploaded logo file.
+     *
+     * @param string $filePath The full path to the uploaded file
+     * @param string $logoType The type of logo (invoice_logo or login_logo)
+     *
+     * @return void
+     */
+    private function strip_logo_metadata(string $filePath, string $logoType): void
+    {
+        $result = strip_exif_metadata($filePath);
+
+        if ( ! $result['success'] && ! isset($result['skipped'])) {
+            // Log the error but don't fail the upload - the file is already uploaded
+            log_message('warning', 'Failed to strip EXIF metadata from ' . sanitize_for_logging($logoType) . ': ' . $result['error']);
+        } elseif ($result['success'] && ! isset($result['skipped'])) {
+            // Successfully stripped EXIF metadata
+            log_message('debug', 'EXIF metadata stripped from ' . sanitize_for_logging($logoType));
+        }
     }
 }
