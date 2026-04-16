@@ -595,9 +595,18 @@ class Setup extends MX_Controller
         // Set SETUP_COMPLETED to true
         // Note: DISABLE_SETUP is NOT automatically set here. Admins will be warned
         // via the security check in Admin_Controller to manually set both flags.
-        $config = file_get_contents(IPCONFIG_FILE);
+        $config = @file_get_contents(IPCONFIG_FILE);
+        if ($config === false) {
+            log_message('error', 'Failed to read ipconfig.php during post-setup tasks. SETUP_COMPLETED flag may not be set correctly.');
+            return;
+        }
+        
         $config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config);
-        write_file(IPCONFIG_FILE, $config);
+        
+        $result = @write_file(IPCONFIG_FILE, $config);
+        if (!$result) {
+            log_message('error', 'Failed to write to ipconfig.php during post-setup tasks. SETUP_COMPLETED flag may not be set correctly.');
+        }
     }
 
     private function check_calculation_config(): array
