@@ -31,7 +31,23 @@ class Payments extends Guest_Controller
      */
     public function index($page = 0)
     {
-        $this->mdl_payments->where('(ip_payments.invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE client_id IN (' . implode(',', $this->user_clients) . ')))');
+        // Security: Use a subquery with proper parameter binding instead of string concatenation
+        // Get invoice IDs for this user's clients
+        $invoice_ids = $this->db->select('invoice_id')
+            ->from('ip_invoices')
+            ->where_in('client_id', $this->user_clients)
+            ->get()
+            ->result_array();
+        
+        $invoice_ids = array_column($invoice_ids, 'invoice_id');
+        
+        if (!empty($invoice_ids)) {
+            $this->mdl_payments->where_in('ip_payments.invoice_id', $invoice_ids);
+        } else {
+            // No invoices for this user, ensure no payments are returned
+            $this->mdl_payments->where('1=0'); // Always false condition - no results
+        }
+        
         $this->mdl_payments->paginate(site_url('guest/payments/index'), $page);
 
         $payments = $this->mdl_payments->result();

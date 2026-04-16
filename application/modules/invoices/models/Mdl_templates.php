@@ -57,8 +57,8 @@ class Mdl_Templates extends CI_Model
      * when configured, the custom templates folder.  Custom templates are listed
      * first so that duplicates (same filename) are deduplicated in their favour.
      *
-     * @param string $subpath    Relative sub-path, e.g. 'invoice_templates/pdf'
-     * @param string $builtin    Absolute path to the built-in template directory
+     * @param string $subpath Relative sub-path, e.g. 'invoice_templates/pdf'
+     * @param string $builtin Absolute path to the built-in template directory
      *
      * @return array
      */

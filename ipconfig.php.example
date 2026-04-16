@@ -63,12 +63,23 @@ PASSWORD_RESET_EMAIL_MAX_ATTEMPTS=3
 # Time window in hours for email-based rate limiting
 PASSWORD_RESET_EMAIL_WINDOW_HOURS=1
 
+# Password reset token expiration (since v1.7.3)
+# Time in minutes before a password reset token expires (default: 15 minutes)
+# This prevents indefinite token validity and reduces account takeover risk
+PASSWORD_RESET_TOKEN_EXPIRY_MINUTES=15
+
 # Sumex Customizations (Swiss Medical Invoices)
 # Need one (or more) Name containing "sumex" in invoice groups
 # Settings panel: true to Enable - Since v-1.6.3
 SUMEX_SETTINGS=false
 # Set the url where post the xml to get a generated pdf - Since v-1.5.0. See https://github.com/InvoicePlane/InvoicePlane/pull/453
 SUMEX_URL=
+
+# Security: Strip EXIF metadata from uploaded images
+# When enabled, removes GPS coordinates, timestamps, camera info, and other metadata from uploaded images
+# This protects user privacy but may slightly reduce image quality
+# Default: false (disabled)
+SEC_STRIP_EXIF_FROM_IMAGES=false
 
 # Path to a directory containing custom templates (optional)
 # Useful for persistent custom templates when running in a container.
@@ -90,5 +101,6 @@ CUSTOM_TEMPLATES_FOLDER=
 ENCRYPTION_KEY=
 ENCRYPTION_CIPHER=AES-256
 
-# Set to true after the initial setup
+# Set to true after the initial setup. Access to the setup wizard is blocked when this is true.
+# To re-run the setup (e.g. after an upgrade), temporarily set this to false.
 SETUP_COMPLETED=false

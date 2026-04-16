@@ -24,7 +24,7 @@
         <div class="col-xs-12 col-md-4">
 <?php
 if ( ! empty($project->client_name)) {
-?>
+    ?>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <strong><?php _htmlsc(format_client($project)); ?></strong>
@@ -37,11 +37,11 @@ if ( ! empty($project->client_name)) {
             </div>
 <?php
 } else {
-?>
+    ?>
             <div class="alert alert-info"><?php _trans('alert_no_client_assigned'); ?></div>
 <?php
 }
-?>
+    ?>
         </div>
         <div class="col-xs-12 col-md-8">
 
@@ -66,7 +66,7 @@ if ( ! empty($project->client_name)) {
                             <tbody>
 <?php
 foreach ($tasks as $task) {
-?>
+    ?>
                                 <tr>
                                     <td><?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?></td>
                                     <td>
@@ -83,20 +83,20 @@ foreach ($tasks as $task) {
                                 </tr>
 <?php
 }
-?>
+    ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
 <?php
 if (empty($tasks)) {
-?>
+    ?>
                 <div class="panel-body">
                     <div class="alert alert-info no-margin"><?php echo trans('alert_no_tasks_found') ?></div>
                 </div>
 <?php
 }
-?>
+    ?>
             </div>
         </div>
     </div>

@@ -1,39 +1,37 @@
-name: Feature Request
-description: Suggest a new feature or improvement for InvoicePlane.
-labels: ["enhancement"]
+name: "Feature Request"
+description: "Propose a new feature or improvement"
+title: "[FEATURE] "
+labels: [enhancement]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to suggest a feature or enhancement.
+
   - type: input
-    id: title
+    id: area
     attributes:
-      label: Title
-      description: Provide a short, descriptive summary of the feature.
-      placeholder: "Brief summary of the feature"
+      label: Affected Area or Handler
+      placeholder: e.g. invoices, quotes, dashboard, API
+    validations:
+      required: true
 
   - type: textarea
-    id: feature_description
+    id: problem
     attributes:
-      label: Feature Description
-      description: Provide a detailed description of the feature or improvement.
-      placeholder: "Explain what this feature does and why it's needed."
+      label: Problem Statement
+      placeholder: Explain what problem this feature would solve.
 
   - type: textarea
-    id: use_case
+    id: solution
     attributes:
-      label: Use Case
-      description: Provide examples of how this feature will be used.
-      placeholder: "Describe the specific scenarios where this feature would be beneficial."
+      label: Proposed Solution
+      placeholder: Describe your proposed implementation.
+    validations:
+      required: true
 
   - type: textarea
-    id: additional_context
+    id: notes
     attributes:
-      label: Additional Context (Optional)
-      description: Include any additional information or context to support the request.
-
-  - type: dropdown
-    id: priority
-    attributes:
-      label: Priority Level
-      options:
-        - Low
-        - Medium
-        - High
+      label: Notes or context
+      placeholder: Links, screenshots, alternatives, etc.

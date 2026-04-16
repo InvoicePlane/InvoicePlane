@@ -65,9 +65,9 @@
             <br>
 <?php
             $logo = invoice_logo();
-            if ($logo) {
-                echo $logo . '<br><br>';
-            }
+if ($logo) {
+    echo $logo . '<br><br>';
+}
 ?>
 
             <div class="form-group">
@@ -113,7 +113,7 @@
                                         </tr>
 <?php
 if ($payment_method) {
-?>
+    ?>
                                         <tr>
                                             <td><?php echo trans('payment_method') . ': '; ?></td>
                                             <td class="text-right"><?php _htmlsc($payment_method->payment_method_name); ?></td>
@@ -127,7 +127,7 @@ if ($payment_method) {
                         </div>
 <?php
 if ( ! empty($invoice->invoice_terms)) {
-?>
+    ?>
                         <div class="col-xs-12 text-muted">
                             <br>
                             <h4><?php _trans('terms'); ?></h4>
@@ -142,18 +142,18 @@ if ( ! empty($invoice->invoice_terms)) {
             </div>
 <?php
 if ($payment_provider == null && ! $disable_form) {
-?>
+    ?>
                 <div>
                     <p><?php echo trans('select_payment_method'); ?></p>
                 </div>
                 <ul class="list-group">
 <?php
-    foreach ($gateways as $gateway) {
-?>
+        foreach ($gateways as $gateway) {
+            ?>
                     <a class="list-group-item list-group-item-action" href="<?php echo site_url('guest/payment_information/form/' . $invoice->invoice_url_key . '/' . $gateway); ?>"><?php echo ucwords(str_replace('_', ' ', $gateway)); ?></a>
 <?php
-    }
-?>
+        }
+    ?>
                 </ul>
 <?php
 }
