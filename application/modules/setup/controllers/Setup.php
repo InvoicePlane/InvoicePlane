@@ -592,29 +592,12 @@ class Setup extends MX_Controller
 
     private function post_setup_tasks()
     {
-        // Attempt to set SETUP_COMPLETED to true and DISABLE_SETUP to true for security
-        // If this fails (e.g., due to file permissions), the admin warning system will
-        // alert the user when they log in
-        try {
-            $config = @file_get_contents(IPCONFIG_FILE);
-            if ($config === false) {
-                log_message('error', 'Failed to read ipconfig.php for post-setup security update. Please manually set DISABLE_SETUP=true and SETUP_COMPLETED=true.');
-                return;
-            }
-            
-            $config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config);
-            $config = preg_replace('/^DISABLE_SETUP\s*=\s*.*$/m', 'DISABLE_SETUP=true', $config);
-            
-            $result = @write_file(IPCONFIG_FILE, $config);
-            if (!$result) {
-                log_message('error', 'Failed to write security updates to ipconfig.php. File may be read-only (e.g., chmod 0600). Please manually set DISABLE_SETUP=true and SETUP_COMPLETED=true.');
-            }
-        } catch (RuntimeException $e) {
-            log_message('error', 'Runtime exception during post-setup security update: ' . sanitize_for_logging($e->getMessage()) . '. Please manually set DISABLE_SETUP=true and SETUP_COMPLETED=true in ipconfig.php.');
-        } catch (Exception $e) {
-            // Catch any other unexpected exceptions to prevent setup failure
-            log_message('error', 'Unexpected exception during post-setup security update: ' . sanitize_for_logging($e->getMessage()) . '. Please manually set DISABLE_SETUP=true and SETUP_COMPLETED=true in ipconfig.php.');
-        }
+        // Set SETUP_COMPLETED to true
+        // Note: DISABLE_SETUP is NOT automatically set here. Admins will be warned
+        // via the security check in Admin_Controller to manually set both flags.
+        $config = file_get_contents(IPCONFIG_FILE);
+        $config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config);
+        write_file(IPCONFIG_FILE, $config);
     }
 
     private function check_calculation_config(): array
