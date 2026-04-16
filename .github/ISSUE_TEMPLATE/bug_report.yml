@@ -1,59 +1,43 @@
-name: Bug Report
-description: Report a problem with InvoicePlane.
-labels: ["bug"]
+name: "Bug Report"
+description: "Report a reproducible bug or unexpected behavior"
+title: "[BUG] "
+labels: [bug]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please provide as much detail as possible.
+
   - type: input
-    id: title
+    id: module
     attributes:
-      label: Title
-      description: Provide a short, descriptive summary of the issue.
-      placeholder: "Brief summary of the bug"
+      label: Affected Handler
+      placeholder: e.g. invoices, quotes, payments
+    validations:
+      required: true
 
   - type: textarea
-    id: expected_behavior
+    id: description
     attributes:
-      label: Expected Behavior
-      description: What should happen under normal circumstances?
-      placeholder: "Describe the expected result"
+      label: What happened?
+      placeholder: Describe the issue clearly and include expected vs. actual behavior.
+    validations:
+      required: true
 
   - type: textarea
-    id: current_behavior
-    attributes:
-      label: Current Behavior
-      description: What actually happens instead of the expected behavior?
-      placeholder: "Explain the current result"
-
-  - type: textarea
-    id: steps_to_reproduce
+    id: steps
     attributes:
       label: Steps to Reproduce
-      description: Provide steps to reproduce the issue.
+      description: Provide a numbered list.
       placeholder: |
-        1. Go to '...'
-        2. Click on '...'
-        3. See error...
+        1. Go to...
+        2. Click on...
+        3. See the error
+    validations:
+      required: true
 
-  - type: textarea
-    id: screenshots
+  - type: input
+    id: environment
     attributes:
-      label: Screenshots (Optional)
-      description: Attach relevant screenshots if applicable.
-      render: textarea
-
-  - type: textarea
-    id: possible_solution
-    attributes:
-      label: Possible Solution (Optional)
-      description: Suggest a potential fix if you have one.
-
-  - type: textarea
-    id: context
-    attributes:
-      label: Context (Environment)
-      description: Describe the context (OS, InvoicePlane version, etc.) where the issue occurs.
-
-  - type: textarea
-    id: failure_logs
-    attributes:
-      label: Failure Logs (Optional)
-      description: Include any relevant logs or pastebin links.
+      label: Your Environment
+      placeholder: e.g. Docker, Herd, XAMPP on Windows

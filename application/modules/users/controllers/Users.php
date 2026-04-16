@@ -53,7 +53,6 @@ class Users extends Admin_Controller
             redirect('users');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
             $id = $this->mdl_users->save($id);

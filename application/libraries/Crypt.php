@@ -18,12 +18,15 @@ class Crypt
 {
     public function salt(): string
     {
-        return substr(sha1(mt_rand()), 0, 22);
+        // Load project-specific crypto helper for cryptographically secure token generation
+        $CI = &get_instance();
+        $CI->load->helper('ip_security');
+
+        return generate_secure_salt();
     }
 
     /**
      * @param string $password
-     *
      */
     public function generate_password($password, string $salt): string
     {
@@ -46,12 +49,7 @@ class Crypt
      */
     public function encode($data): string
     {
-        $key = getenv('ENCRYPTION_KEY');
-        if (preg_match('/^base64:(.*)$/', $key, $matches)) {
-            $key = base64_decode($matches[1]);
-        }
-
-        return Cryptor::Encrypt($data, $key);
+        return Cryptor::Encrypt($data, $this->getEncryptionKey());
     }
 
     /**
@@ -63,11 +61,21 @@ class Crypt
             return '';
         }
 
+        return Cryptor::Decrypt($data, $this->getEncryptionKey());
+    }
+
+    /**
+     * Get the encryption key, decoding if it's base64-encoded.
+     *
+     * @return string The encryption key
+     */
+    private function getEncryptionKey(): string
+    {
         $key = getenv('ENCRYPTION_KEY');
         if (preg_match('/^base64:(.*)$/', $key, $matches)) {
             $key = base64_decode($matches[1]);
         }
 
-        return Cryptor::Decrypt($data, $key);
+        return $key;
     }
 }
