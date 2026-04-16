@@ -247,25 +247,6 @@ function decodeHtmlEntities(text) {
 
 function update_email_template_preview() {
     var rawHtml = $('.email-template-body').val();
-    
-    // Only decode HTML entities if the content appears to be double-encoded
-    // (i.e., contains encoded HTML tags like &lt;strong&gt; instead of actual <strong> tags)
-    // This prevents changing intentionally entity-encoded content meant to display literally
-    var htmlToRender = rawHtml;
-    
-    // Improved regex patterns to detect complete encoded and real HTML tags
-    // Requires closing bracket to ensure these are actual tags, not just < or &lt; characters
-    var containsEncodedHtmlTags = /&lt;\s*\/?[a-zA-Z][\w:.-]*[^>]*&gt;/.test(rawHtml);
-    var containsRawHtmlTags = /<\s*\/?[a-zA-Z][\w:.-]*[^>]*>/.test(rawHtml);
-    
-    // Only decode if we have encoded tags but no real tags (indicating double-encoding)
-    if (containsEncodedHtmlTags && !containsRawHtmlTags) {
-        // Safer entity decoding using a dedicated function
-        htmlToRender = decodeHtmlEntities(rawHtml);
-    }
-    
-    // Sanitize the HTML to ensure only safe tags are rendered
-    var sanitizedBody = sanitize_email_template_html(htmlToRender);
     var iframe = $('#email-template-preview')[0];
     
     // Initialize iframe with a proper HTML document if needed
@@ -279,15 +260,8 @@ function update_email_template_preview() {
             iframeDoc.close();
         }
         
-        // Clear the iframe body first
-        while (iframeDoc.body.firstChild) {
-            iframeDoc.body.removeChild(iframeDoc.body.firstChild);
-        }
-        
-        // Import sanitized nodes directly — avoids innerHTML assignment with user-derived content
-        Array.from(sanitizedBody.childNodes).forEach(function(child) {
-            iframeDoc.body.appendChild(iframeDoc.importNode(child, true));
-        });
+        // Render as plain text to avoid interpreting untrusted DOM text as HTML.
+        iframeDoc.body.textContent = rawHtml || '';
     }
 }
 
