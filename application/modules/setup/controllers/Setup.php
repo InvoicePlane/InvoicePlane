@@ -597,36 +597,36 @@ class Setup extends MX_Controller
         $config = @file_get_contents(IPCONFIG_FILE);
         if ($config === false) {
             $error = error_get_last();
-            log_message('error', 'Failed to read ipconfig.php during post-setup tasks. Setup flags may not be set correctly. Error: ' . ($error['message'] ?? 'Unknown error'));
+            log_message('error', trans('log_setup_failed_read_ipconfig') . ': ' . ($error['message'] ?? 'Unknown error'));
             return;
         }
         
         // Set SETUP_COMPLETED flag
         $config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config, 1, $count_completed);
         if ($config === null) {
-            log_message('error', 'preg_replace failed for SETUP_COMPLETED flag. Possible PCRE error.');
+            log_message('error', trans('log_setup_preg_replace_failed_setup_completed'));
             return;
         }
         if ($count_completed === 0) {
-            log_message('error', 'SETUP_COMPLETED flag not found in ipconfig.php. Setup may be misconfigured.');
+            log_message('error', trans('log_setup_flag_not_found_setup_completed'));
             return;
         }
         
         // Set DISABLE_SETUP flag
         $config = preg_replace('/^DISABLE_SETUP\s*=\s*.*$/m', 'DISABLE_SETUP=true', $config, 1, $count_disable);
         if ($config === null) {
-            log_message('error', 'preg_replace failed for DISABLE_SETUP flag. Possible PCRE error.');
+            log_message('error', trans('log_setup_preg_replace_failed_disable_setup'));
             return;
         }
         if ($count_disable === 0) {
-            log_message('error', 'DISABLE_SETUP flag not found in ipconfig.php. Setup may be misconfigured.');
+            log_message('error', trans('log_setup_flag_not_found_disable_setup'));
             return;
         }
         
         $result = @write_file(IPCONFIG_FILE, $config);
         if (!$result) {
             $error = error_get_last();
-            log_message('error', 'Failed to write to ipconfig.php during post-setup tasks. Setup flags may not be set correctly. Error: ' . ($error['message'] ?? 'Unknown error'));
+            log_message('error', trans('log_setup_failed_write_ipconfig') . ': ' . ($error['message'] ?? 'Unknown error'));
         }
     }
 
