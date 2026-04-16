@@ -35,6 +35,7 @@ class Admin_Controller extends User_Controller
             return;
         }
 
+        // Default to false (insecure) if flags are not set - this ensures we warn about missing config
         $setup_completed = env_bool('SETUP_COMPLETED', false);
         $disable_setup = env_bool('DISABLE_SETUP', false);
 
@@ -50,6 +51,7 @@ class Admin_Controller extends User_Controller
                 $warning_parts[] = 'DISABLE_SETUP is set to false';
             }
 
+            // Format: "Security Warning: [flags]. [description] [instructions]"
             $warning_message = sprintf(
                 '%s: %s. %s %s',
                 trans('security_warning'),
