@@ -65,7 +65,11 @@ class View extends Base_Controller
         // Attachments
         $attachments = $this->get_attachments($invoice_url_key);
 
-        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
+        // Security: Validate strtotime() result before comparison to avoid type juggling
+        $invoice_due_timestamp = strtotime($invoice->invoice_date_due);
+        $is_overdue = ($invoice->invoice_balance > 0 
+            && $invoice_due_timestamp !== false 
+            && $invoice_due_timestamp < time());
 
         $data = [
             'invoice'            => $invoice,
@@ -187,7 +191,9 @@ class View extends Base_Controller
         // Attachments
         $attachments = $this->get_attachments($quote_url_key);
 
-        $is_expired = (strtotime($quote->quote_date_expires) < time());
+        // Security: Validate strtotime() result before comparison to avoid type juggling
+        $quote_expires_timestamp = strtotime($quote->quote_date_expires);
+        $is_expired = ($quote_expires_timestamp !== false && $quote_expires_timestamp < time());
 
         $data = [
             'quote'              => $quote,
@@ -243,6 +249,12 @@ class View extends Base_Controller
      */
     public function approve_quote(string $quote_url_key)
     {
+        // Require POST so CodeIgniter's CSRF token validation is enforced
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        $this->load->model('quotes/mdl_quotes');
         $quote = $this->validate_guest_quote_access($quote_url_key);
 
         $this->load->helper('mailer');
@@ -262,6 +274,12 @@ class View extends Base_Controller
      */
     public function reject_quote(string $quote_url_key)
     {
+        // Require POST so CodeIgniter's CSRF token validation is enforced
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        $this->load->model('quotes/mdl_quotes');
         $quote = $this->validate_guest_quote_access($quote_url_key);
 
         $this->load->helper('mailer');
