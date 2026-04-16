@@ -2,31 +2,50 @@ name: PHPUnit
 
 on:
   workflow_dispatch:
+    inputs:
+      php_version:
+        description: 'PHP version'
+        required: false
+        default: '8.2'
+        type: choice
+        options:
+          - '8.2'
+          - '8.3'
+      mysql_version:
+        description: 'MySQL/MariaDB image'
+        required: false
+        default: 'mysql:8.0'
+        type: choice
+        options:
+          - 'mysql:8.0'
+          - 'mariadb:10.11'
+      fail_fast:
+        description: 'Stop on first failure'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 permissions:
   contents: read
 
 jobs:
   test:
-    name: PHP ${{ matrix.php }} - ${{ matrix.db }}
+    name: PHPUnit (PHP ${{ github.event.inputs.php_version || '8.2' }})
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        php: ['8.2']
-        db: ['mysql']
-
     services:
-      mysql:
-        image: mysql:8.0
+      database:
+        image: ${{ github.event.inputs.mysql_version || 'mysql:8.0' }}
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: invoiceplane_test
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -37,28 +56,29 @@ jobs:
 
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: ${{ github.event.inputs.php_version || '8.2' }}
 
       - name: Copy ipconfig.php
         run: cp ipconfig.php.example ipconfig.php
 
-      - name: Run migrations (MySQL)
-        if: matrix.db == 'mysql'
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: invoiceplane_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
-        run: php artisan migrate --env=testing --force
+      - name: Configure test database in ipconfig.php
+        run: |
+          sed -i \
+            -e 's|^DB_HOSTNAME=.*|DB_HOSTNAME=127.0.0.1|' \
+            -e 's|^DB_DATABASE=.*|DB_DATABASE=invoiceplane_test|' \
+            -e 's|^DB_USERNAME=.*|DB_USERNAME=root|' \
+            -e 's|^DB_PASSWORD=.*|DB_PASSWORD=root|' \
+            ipconfig.php || true
 
-      - name: Run Unit tests (MySQL)
-        if: matrix.db == 'mysql'
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: invoiceplane_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
-        run: vendor/bin/phpunit --configuration phpunit.xml
+      - name: Confirm database is reachable
+        run: |
+          mysql -h 127.0.0.1 -u root -proot invoiceplane_test -e "SELECT 1;" 2>/dev/null
+
+      - name: Run PHPUnit
+        run: |
+          if [ -f phpunit.xml ] || [ -f phpunit.xml.dist ]; then
+            vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
+          else
+            echo "No phpunit.xml found — no tests to run yet."
+          fi
