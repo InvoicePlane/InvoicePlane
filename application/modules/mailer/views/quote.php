@@ -70,14 +70,14 @@
                         <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($email_templates as $email_template) {
-?>
+    ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
                             <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
                             <?php _htmlsc($email_template->email_template_title); ?>
                         </option>
 <?php
 }
-?>
+            ?>
                     </select>
                 </div>
 
@@ -115,14 +115,14 @@ foreach ($email_templates as $email_template) {
                         <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($pdf_templates as $pdf_template) {
-?>
+    ?>
                         <option value="<?php echo $pdf_template; ?>"
                             <?php check_select($selected_pdf_template, $pdf_template); ?>>
                             <?php echo $pdf_template; ?>
                         </option>
 <?php
 }
-?>
+            ?>
                     </select>
                 </div>
 
@@ -227,4 +227,4 @@ foreach ($pdf_templates as $pdf_template) {
 </form>
 
 <?php
-_dropzone_script($quote->quote_url_key, $quote->client_id);
+            _dropzone_script($quote->quote_url_key, $quote->client_id);

@@ -14,6 +14,45 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
+ * Load a template view, checking the custom templates folder first.
+ *
+ * When CUSTOM_TEMPLATES_FOLDER is configured, files in that directory take
+ * precedence over the built-in views for the given sub-path.  Falls back to
+ * CodeIgniter's standard view loader when no custom file is found.
+ *
+ * @param string $template_subpath Relative path used with $CI->load->view(),
+ *                                 e.g. 'invoice_templates/pdf/MyTemplate'
+ * @param array  $data             Variables to make available inside the template
+ * @param bool   $return           Return rendered HTML instead of appending to output
+ *
+ * @return string|void
+ */
+function render_template_view(string $template_subpath, array $data, bool $return = false)
+{
+    if (CUSTOM_TEMPLATES_FOLDER) {
+        $has_ext   = (bool) pathinfo($template_subpath, PATHINFO_EXTENSION);
+        $file_path = CUSTOM_TEMPLATES_FOLDER . $template_subpath . ($has_ext ? '' : '.php');
+        if (file_exists($file_path)) {
+            extract($data);
+            ob_start();
+            include $file_path;
+            $output = ob_get_clean();
+            if ($return) {
+                return $output;
+            }
+            $CI = &get_instance();
+            $CI->output->append_output($output);
+
+            return;
+        }
+    }
+
+    $CI = &get_instance();
+
+    return $CI->load->view($template_subpath, $data, $return);
+}
+
+/**
  * Parse a template by predefined template tags.
  *
  * @param $object
@@ -145,7 +184,7 @@ function get_invoice_status($id)
 function select_pdf_invoice_template($invoice)
 {
     $CI = & get_instance();
-    
+
     if ($invoice->is_overdue) {
         // Use the overdue template
         $template_name = $CI->mdl_settings->setting('pdf_invoice_template_overdue');
@@ -156,16 +195,17 @@ function select_pdf_invoice_template($invoice)
         // Use the default template
         $template_name = $CI->mdl_settings->setting('pdf_invoice_template');
     }
-    
+
     // Security: Validate the template name
     $validated = validate_template_name($template_name, 'invoice', 'pdf');
     if ($validated === false) {
         // Sanitize template name before logging to avoid log injection
         $safe_template_name = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $template_name);
         log_message('error', 'Invalid PDF invoice template from settings: ' . $safe_template_name . ', using default');
+
         return 'InvoicePlane'; // Safe default
     }
-    
+
     return $validated;
 }
 
@@ -196,13 +236,14 @@ function select_email_invoice_template($invoice)
 
 /**
  * Validates and sanitizes a template name to prevent Local File Inclusion (LFI) attacks.
- * 
+ *
  * Security: This function ensures that only legitimate template files from the allowed
  * directory can be loaded, preventing path traversal and arbitrary file inclusion.
  *
  * @param string $template_name The template name from settings
- * @param string $type The template type ('invoice' or 'quote')
- * @param string $scope The template scope ('public' or 'pdf')
+ * @param string $type          The template type ('invoice' or 'quote')
+ * @param string $scope         The template scope ('public' or 'pdf')
+ *
  * @return string|false Returns the validated template name or false if validation fails
  */
 function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf')
@@ -211,7 +252,7 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf
     $CI = & get_instance();
     $CI->load->helper('file_security');
     $CI->load->model('invoices/mdl_templates');
-    
+
     // Get the list of valid templates for the requested type and scope
     if ($type === 'invoice') {
         $valid_templates = $CI->mdl_templates->get_invoice_templates($scope);
@@ -221,30 +262,33 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf
         // Security: Sanitize type parameter before logging to prevent log injection
         $safe_type = sanitize_for_logging((string) $type);
         log_message('error', 'Template validation failed: Invalid template type: ' . $safe_type);
+
         return false;
     }
-    
+
     // Security: Verify the template exists in the allowed list
     // Note: get_*_templates() returns an array of template names without .php extension
-    if (!in_array($template_name, $valid_templates, true)) {
+    if ( ! in_array($template_name, $valid_templates, true)) {
         // Security: Sanitize template name before logging to prevent log injection
         $safe_template_name = sanitize_for_logging((string) $template_name);
         log_message('error', 'Template validation failed: Template not in allowed list: ' . $safe_template_name);
+
         return false;
     }
-    
+
     return $template_name;
 }
 
 /**
  * Validates a PDF template name and returns a safe default if validation fails.
- * 
+ *
  * Security: This function is specifically for PDF templates loaded from settings or URL parameters.
  * It validates the template name and falls back to the appropriate default template.
  *
- * @param string|null $template_name The template name to validate
- * @param string $type The template type ('invoice' or 'quote')
- * @param string $default_setting The setting key for the default template (optional)
+ * @param string|null $template_name   The template name to validate
+ * @param string      $type            The template type ('invoice' or 'quote')
+ * @param string      $default_setting The setting key for the default template (optional)
+ *
  * @return string Returns the validated template name or a safe default
  */
 function validate_pdf_template($template_name, $type = 'invoice', $default_setting = null)
@@ -252,7 +296,7 @@ function validate_pdf_template($template_name, $type = 'invoice', $default_setti
     // Load file_security_helper to access sanitize_for_logging function
     $CI = & get_instance();
     $CI->load->helper('file_security');
-    
+
     // If no template provided, use the setting or default
     if (empty($template_name)) {
         if ($default_setting) {
@@ -262,16 +306,17 @@ function validate_pdf_template($template_name, $type = 'invoice', $default_setti
             return 'InvoicePlane';
         }
     }
-    
+
     // Validate the template name
     $validated = validate_template_name($template_name, $type, 'pdf');
-    
+
     if ($validated === false) {
         $safe_template_name = sanitize_for_logging((string) $template_name);
         log_message('error', 'Invalid PDF template: ' . $safe_template_name . ', using default');
+
         // Return safe default (InvoicePlane is the default template for both invoice and quote PDFs)
         return 'InvoicePlane';
     }
-    
+
     return $validated;
 }

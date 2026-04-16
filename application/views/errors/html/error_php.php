@@ -12,12 +12,12 @@ defined('BASEPATH') || exit('No direct script access allowed');
     <p>Line Number: <?php echo $line; ?></p>
 <?php
 if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) {
-?>
+    ?>
     <p>Backtrace:</p>
 <?php
-    foreach (debug_backtrace() as $error) {
-        if (isset($error['file']) && ! str_starts_with($error['file'], realpath(BASEPATH))) {
-?>
+        foreach (debug_backtrace() as $error) {
+            if (isset($error['file']) && ! str_starts_with($error['file'], realpath(BASEPATH))) {
+                ?>
     <p style="margin-left:10px">
         File: <?php echo $error['file'] ?><br/>
         Line: <?php echo $error['line'] ?><br/>
@@ -25,8 +25,8 @@ if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) {
     </p>
 
 <?php
+            }
         }
-    }
 }
 ?>
 

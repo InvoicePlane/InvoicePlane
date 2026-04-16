@@ -82,7 +82,7 @@ function pdf_create(
 
     //Set the default footer that shall always be available for mPDF
     $mpdf->DefHTMLFooterByName('defaultFooter', '');
-    
+
     // Define common footer names to prevent "Undefined array key" errors in PHP 8.3+
     // These footer names may be referenced by CSS @page directives or <sethtmlpagefooter> tags in templates
     $mpdf->DefHTMLFooterByName('html_footer', '');
