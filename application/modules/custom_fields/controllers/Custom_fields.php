@@ -71,7 +71,6 @@ class Custom_Fields extends Admin_Controller
             redirect('custom_fields');
         }
 
-
         if ($this->mdl_custom_fields->run_validation()) {
             $this->mdl_custom_fields->save($id);
             redirect('custom_fields');

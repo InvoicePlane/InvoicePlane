@@ -53,7 +53,6 @@ class Payments extends Admin_Controller
             redirect('payments');
         }
 
-
         $this->load->model('custom_fields/mdl_payment_custom');
 
         if ($this->mdl_payments->run_validation()) {

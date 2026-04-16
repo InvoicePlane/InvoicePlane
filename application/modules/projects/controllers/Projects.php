@@ -52,7 +52,6 @@ class Projects extends Admin_Controller
             redirect('projects');
         }
 
-
         if ($this->mdl_projects->run_validation()) {
             $this->mdl_projects->save($id);
             redirect('projects');
