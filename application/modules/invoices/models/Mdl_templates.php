@@ -140,29 +140,6 @@ class Mdl_Templates extends CI_Model
     }
 
     /**
-     * Returns a merged list of template filenames from the built-in directory and,
-     * when configured, the custom templates folder.  Custom templates are listed
-     * first so that duplicates (same filename) are deduplicated in their favour.
-     *
-     * @param string $subpath Relative sub-path, e.g. 'invoice_templates/pdf'
-     * @param string $builtin Absolute path to the built-in template directory
-     *
-     * @return array
-     */
-    private function merge_custom_templates(string $subpath, string $builtin): array
-    {
-        $builtin_list = directory_map($builtin, true) ?: [];
-        $custom_list  = [];
-
-        if (CUSTOM_TEMPLATES_FOLDER) {
-            $custom_dir  = CUSTOM_TEMPLATES_FOLDER . $subpath;
-            $custom_list = is_array(directory_map($custom_dir, true)) ? directory_map($custom_dir, true) : [];
-        }
-
-        return array_values(array_unique(array_merge($custom_list, $builtin_list)));
-    }
-
-    /**
      * @param $files
      */
     private function remove_extension(array $files): array

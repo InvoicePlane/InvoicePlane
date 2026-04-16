@@ -92,11 +92,7 @@ function sanitize_email_template_html(html) {
     // Create a detached container to parse and sanitize HTML in an isolated context.
     // Using DOMParser prevents immediate script execution during parsing.
     var parser = new DOMParser();
-    // Encode incoming DOM text so that previously-escaped characters are not
-    // reinterpreted as HTML when parsing. This prevents "DOM text" from being
-    // unescaped back into active HTML.
-    var safeInput = encodeHtml(html || '');
-    var doc = parser.parseFromString(safeInput, 'text/html');
+    var doc = parser.parseFromString(html || '', 'text/html');
     var temp = doc.body;
     
     // List of allowed tags (only safe formatting tags)
