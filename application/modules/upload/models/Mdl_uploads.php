@@ -22,6 +22,15 @@ class Mdl_Uploads extends Response_Model
 
     public $date_modified_field = 'uploaded_date';
 
+    /**
+     * Constructor - load file security helper for validation
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('file_security');
+    }
+
     public $content_types = [
         'avif' => 'image/avif',
         'gif'  => 'image/gif',
@@ -81,8 +90,19 @@ class Mdl_Uploads extends Response_Model
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
+                // Security: Validate filename from database before using in file path
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
+                    // Skip invalid filenames - log for investigation
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in quote uploads for url_key=%s',
+                        sanitize_for_logging($quote->quote_url_key)
+                    ));
+                    continue;
+                }
+                
                 $names[] = [
-                    'path'     => UPLOADS_CFILES_FOLDER . $row->file_name_new,
+                    'path'     => $validated['path'],
                     'filename' => $row->file_name_original,
                 ];
             }
@@ -106,8 +126,19 @@ class Mdl_Uploads extends Response_Model
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
+                // Security: Validate filename from database before using in file path
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
+                    // Skip invalid filenames - log for investigation
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in invoice uploads for url_key=%s',
+                        sanitize_for_logging($invoice->invoice_url_key)
+                    ));
+                    continue;
+                }
+                
                 $names[] = [
-                    'path'     => UPLOADS_CFILES_FOLDER . $row->file_name_new,
+                    'path'     => $validated['path'],
                     'filename' => $row->file_name_original,
                 ];
             }
@@ -126,7 +157,18 @@ class Mdl_Uploads extends Response_Model
         $result = [];
         if ($url_key && $rows = $this->where('url_key', $url_key)->get()->result()) {
             foreach ($rows as $row) {
-                $size = @filesize(UPLOADS_CFILES_FOLDER . $row->file_name_new);
+                // Security: Validate filename from database before using in file path
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
+                    // Skip invalid filenames - likely corrupted database entry
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in uploads for url_key=%s',
+                        sanitize_for_logging($url_key)
+                    ));
+                    continue;
+                }
+                
+                $size = @filesize($validated['path']);
                 if ($size === false) {
                     // Probably Deleted, remove it
                     $this->delete_file($url_key, $row->file_name_original);

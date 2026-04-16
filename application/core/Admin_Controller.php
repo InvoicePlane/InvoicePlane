@@ -20,6 +20,51 @@ class Admin_Controller extends User_Controller
     {
         parent::__construct('user_type', 1);
         $this->setCacheHeaders();
+        $this->check_setup_security();
+    }
+
+    /**
+     * Check if setup wizard is properly disabled and warn admins if not.
+     * This security check helps detect misconfigurations that could allow
+     * unauthorized access to the setup wizard.
+     */
+    private function check_setup_security(): void
+    {
+        // Only check once per session to avoid repeated warnings
+        if ($this->session->userdata('setup_security_checked')) {
+            return;
+        }
+
+        // Default to false (insecure) if flags are not set - this ensures we warn about missing config
+        $setup_completed = env_bool('SETUP_COMPLETED', false);
+        $disable_setup = env_bool('DISABLE_SETUP', false);
+
+        // If either flag is not properly set, show a security warning
+        if (!$setup_completed || !$disable_setup) {
+            $warning_parts = [];
+            
+            if (!$setup_completed) {
+                $warning_parts[] = trans('setup_completed_flag_false');
+            }
+            
+            if (!$disable_setup) {
+                $warning_parts[] = trans('disable_setup_flag_false');
+            }
+
+            // Format: "Security Warning: [flags]. [description] [instructions]"
+            $warning_message = sprintf(
+                '%s: %s. %s %s',
+                trans('security_warning'),
+                implode(' and ', $warning_parts),
+                trans('setup_wizard_accessible'),
+                trans('please_update_ipconfig')
+            );
+
+            $this->session->set_flashdata('alert_warning', $warning_message);
+        }
+
+        // Mark as checked for this session
+        $this->session->set_userdata('setup_security_checked', true);
     }
 
     protected function filter_input(): void
@@ -33,8 +78,8 @@ class Admin_Controller extends User_Controller
             'email_template_body', // Email templates can contain HTML
         ];
 
-        $input = $this->input->post();
-        $xss_detected = false;
+        $input           = $this->input->post();
+        $xss_detected    = false;
         $xss_log_entries = [];
 
         foreach ($input as $key => $value) {
@@ -56,7 +101,7 @@ class Admin_Controller extends User_Controller
             }
 
             $original_value = $value;
-            
+
             // Apply XSS cleaning and strip dangerous tags
             // Note: We don't use html_escape here to avoid double-encoding at output
             $cleaned_value = $this->security->xss_clean($value);
@@ -64,11 +109,11 @@ class Admin_Controller extends User_Controller
 
             // Check if value was modified (XSS detected)
             if ($original_value !== $cleaned_value) {
-                $xss_detected = true;
+                $xss_detected      = true;
                 $xss_log_entries[] = [
-                    'field' => $key,
-                    'original_length' => strlen($original_value),
-                    'cleaned_length' => strlen($cleaned_value),
+                    'field'           => $key,
+                    'original_length' => mb_strlen($original_value),
+                    'cleaned_length'  => mb_strlen($cleaned_value),
                 ];
             }
 
@@ -80,12 +125,12 @@ class Admin_Controller extends User_Controller
         // Log XSS detection
         if ($xss_detected) {
             $log_context = [
-                'timestamp' => date('Y-m-d H:i:s'),
-                'user_id'   => $this->session->userdata('user_id'),
-                'uri'       => uri_string(),
+                'timestamp'  => date('Y-m-d H:i:s'),
+                'user_id'    => $this->session->userdata('user_id'),
+                'uri'        => uri_string(),
                 'ip_address' => $this->input->ip_address(),
                 'user_agent' => $this->input->user_agent(),
-                'fields'    => $xss_log_entries,
+                'fields'     => $xss_log_entries,
             ];
 
             $json_flags = JSON_PARTIAL_OUTPUT_ON_ERROR;
@@ -103,54 +148,6 @@ class Admin_Controller extends User_Controller
         }
     }
 
-    /**
-     * Recursively sanitize array values
-     * 
-     * @param array $data The array to sanitize
-     * @param array $bypass_keys Keys that should bypass sanitization
-     * @param string $path_prefix Prefix for tracking nested field paths
-     * @param bool $xss_detected Reference to XSS detection flag
-     * @param array $xss_log_entries Reference to XSS log entries array
-     */
-    private function sanitize_array(
-        array $data,
-        array $bypass_keys = [],
-        string $path_prefix = '',
-        bool &$xss_detected = false,
-        array &$xss_log_entries = []
-    ): array
-    {
-        foreach ($data as $key => $value) {
-            // Skip bypass fields
-            if (in_array($key, $bypass_keys, true)) {
-                continue;
-            }
-            
-            if (is_array($value)) {
-                $data[$key] = $this->sanitize_array(
-                    $value,
-                    $bypass_keys,
-                    $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key,
-                    $xss_detected,
-                    $xss_log_entries
-                );
-            } else {
-                $original_value = $value;
-                $cleaned_value = strip_tags($this->security->xss_clean($value));
-                if ($original_value !== $cleaned_value) {
-                    $xss_detected = true;
-                    $xss_log_entries[] = [
-                        'field' => $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key,
-                        'original_length' => strlen((string) $original_value),
-                        'cleaned_length' => strlen((string) $cleaned_value),
-                    ];
-                }
-                $data[$key] = $cleaned_value;
-            }
-        }
-        return $data;
-    }
-
     protected function setCacheHeaders()
     {
         $this->output
@@ -166,5 +163,53 @@ class Admin_Controller extends User_Controller
         if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
             $this->output->set_header('X-Content-Type-Options: nosniff');
         }
+    }
+
+    /**
+     * Recursively sanitize array values.
+     *
+     * @param array  $data            The array to sanitize
+     * @param array  $bypass_keys     Keys that should bypass sanitization
+     * @param string $path_prefix     Prefix for tracking nested field paths
+     * @param bool   $xss_detected    Reference to XSS detection flag
+     * @param array  $xss_log_entries Reference to XSS log entries array
+     */
+    private function sanitize_array(
+        array $data,
+        array $bypass_keys = [],
+        string $path_prefix = '',
+        bool &$xss_detected = false,
+        array &$xss_log_entries = []
+    ): array {
+        foreach ($data as $key => $value) {
+            // Skip bypass fields
+            if (in_array($key, $bypass_keys, true)) {
+                continue;
+            }
+
+            if (is_array($value)) {
+                $data[$key] = $this->sanitize_array(
+                    $value,
+                    $bypass_keys,
+                    $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key,
+                    $xss_detected,
+                    $xss_log_entries
+                );
+            } else {
+                $original_value = $value;
+                $cleaned_value  = strip_tags($this->security->xss_clean($value));
+                if ($original_value !== $cleaned_value) {
+                    $xss_detected      = true;
+                    $xss_log_entries[] = [
+                        'field'           => $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key,
+                        'original_length' => mb_strlen((string) $original_value),
+                        'cleaned_length'  => mb_strlen((string) $cleaned_value),
+                    ];
+                }
+                $data[$key] = $cleaned_value;
+            }
+        }
+
+        return $data;
     }
 }
