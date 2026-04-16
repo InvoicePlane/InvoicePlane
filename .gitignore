@@ -26,6 +26,9 @@ adminer.php
 npm-debug.log
 yarn-error.log
 .temp
+/deps-before.txt
+/outdated.txt
 /phpunit.txt
 /stan.txt
 /todo.txt
+/yarnpack.txt
