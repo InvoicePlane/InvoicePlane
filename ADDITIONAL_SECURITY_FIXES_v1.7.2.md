@@ -8,10 +8,10 @@ Following the critical RCE vulnerability fix, a comprehensive security audit was
 
 | Vulnerability | Severity | CWE | Files Affected | Status |
 |---------------|----------|-----|----------------|--------|
-| Open Redirect | HIGH | CWE-601 | 3 files | ✅ FIXED |
-| Unescaped HTTP_REFERER in Views | MEDIUM | CWE-79 | 2 files | ✅ FIXED |
-| SQL Query String Concatenation | MEDIUM | CWE-89 | 1 file | ✅ FIXED |
-| Unsafe HTTP_REFERER Usage | MEDIUM | CWE-601 | 3 files | ✅ FIXED |
+| Open Redirect | HIGH | CWE-601 | 3 files | Fixed |
+| Unescaped HTTP_REFERER in Views | MEDIUM | CWE-79 | 2 files | Fixed |
+| SQL Query String Concatenation | MEDIUM | CWE-89 | 1 file | Fixed |
+| Unsafe HTTP_REFERER Usage | MEDIUM | CWE-601 | 3 files | Fixed |
 
 ## Vulnerability Details and Fixes
 
