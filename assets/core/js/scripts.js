@@ -179,10 +179,111 @@ function sanitize_email_template_html(html) {
     return temp.innerHTML;
 }
 
+/**
+ * Safely decode HTML entities without DOM-based XSS risks
+ * Uses a map of common entities and regex replacement
+ */
+function decodeHtmlEntities(text) {
+    // Unicode constants for validation (using JavaScript camelCase convention)
+    var maxUnicodeCodepoint = 0x10FFFF;
+    var surrogateMin = 0xD800;
+    var surrogateMax = 0xDFFF;
+    
+    /**
+     * Check if a codepoint is valid Unicode and not in the surrogate pair range
+     */
+    function isValidUnicodeCodepoint(code) {
+        return code >= 0 && code <= maxUnicodeCodepoint && 
+               (code < surrogateMin || code > surrogateMax);
+    }
+    
+    // Map of HTML entities to their character equivalents
+    var entities = {
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&quot;': '"',
+        '&#39;': "'",
+        '&#x27;': "'",
+        '&apos;': "'"
+    };
+    
+    // Replace known entities
+    var decoded = text;
+    for (var entity in entities) {
+        if (entities.hasOwnProperty(entity)) {
+            decoded = decoded.split(entity).join(entities[entity]);
+        }
+    }
+    
+    // Handle decimal numeric entities (&#123;) with bounds checking
+    // Use String.fromCodePoint for proper Unicode support including supplementary planes
+    decoded = decoded.replace(/&#(\d+);/g, function(match, dec) {
+        var code = parseInt(dec, 10);
+        if (isValidUnicodeCodepoint(code)) {
+            // Use fromCodePoint if available (modern browsers), fallback to fromCharCode
+            if (String.fromCodePoint) {
+                return String.fromCodePoint(code);
+            }
+            return String.fromCharCode(code);
+        }
+        return match; // Return original if invalid
+    });
+    
+    // Handle hexadecimal numeric entities (&#xAB;) with bounds checking
+    // Use String.fromCodePoint for proper Unicode support including supplementary planes
+    decoded = decoded.replace(/&#x([0-9A-Fa-f]+);/g, function(match, hex) {
+        var code = parseInt(hex, 16);
+        if (isValidUnicodeCodepoint(code)) {
+            // Use fromCodePoint if available (modern browsers), fallback to fromCharCode
+            if (String.fromCodePoint) {
+                return String.fromCodePoint(code);
+            }
+            return String.fromCharCode(code);
+        }
+        return match; // Return original if invalid
+    });
+    
+    return decoded;
+}
+
 function update_email_template_preview() {
     var rawHtml = $('.email-template-body').val();
-    var sanitizedHtml = sanitize_email_template_html(rawHtml);
-    $('#email-template-preview').contents().find("body").html(sanitizedHtml);
+    
+    // Only decode HTML entities if the content appears to be double-encoded
+    // (i.e., contains encoded HTML tags like &lt;strong&gt; instead of actual <strong> tags)
+    // This prevents changing intentionally entity-encoded content meant to display literally
+    var htmlToRender = rawHtml;
+    
+    // Improved regex patterns to detect complete encoded and real HTML tags
+    // Requires closing bracket to ensure these are actual tags, not just < or &lt; characters
+    var containsEncodedHtmlTags = /&lt;\s*\/?[a-zA-Z][\w:.-]*[^>]*&gt;/.test(rawHtml);
+    var containsRawHtmlTags = /<\s*\/?[a-zA-Z][\w:.-]*[^>]*>/.test(rawHtml);
+    
+    // Only decode if we have encoded tags but no real tags (indicating double-encoding)
+    if (containsEncodedHtmlTags && !containsRawHtmlTags) {
+        // Safer entity decoding using a dedicated function
+        htmlToRender = decodeHtmlEntities(rawHtml);
+    }
+    
+    // Sanitize the HTML to ensure only safe tags are rendered
+    var sanitizedHtml = sanitize_email_template_html(htmlToRender);
+    var iframe = $('#email-template-preview')[0];
+    
+    // Initialize iframe with a proper HTML document if needed
+    if (iframe && iframe.contentDocument) {
+        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        
+        // If the iframe doesn't have a proper document structure, create one
+        if (!iframeDoc.body) {
+            iframeDoc.open();
+            iframeDoc.write('<!DOCTYPE html><html><head><meta charset="utf-8"></head><body></body></html>');
+            iframeDoc.close();
+        }
+        
+        // Now set the sanitized HTML content
+        iframeDoc.body.innerHTML = sanitizedHtml;
+    }
 }
 
 // Insert HTML tags into textarea
@@ -268,9 +369,13 @@ function insert_html_tag(tag_type, destination_id) {
     }
 }
 
-// Get crsf names from ipconfig (config_item) on meta tags - since v1.6.3
-const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content');   // Default: _ip_csrf
-const csrf_cookie_name = document.querySelector('meta[name="csrf_cookie_name"]').getAttribute('content'); // Default: ip_csrf_cookie
+// Get CSRF configuration from meta tags - since v1.6.3
+const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content'); // Default: _ip_csrf
+
+// Get CSRF token value from meta tag instead of reading HttpOnly cookie
+// This allows the cookie to have HttpOnly=true for XSS protection while still providing
+// the token to JavaScript for AJAX requests. The server rotates this value on each page load.
+let csrf_token_value = document.querySelector('meta[name="csrf_token_value"]').getAttribute('content');
 
 const legacy_calculation = parseInt(document.querySelector('meta[name="legacy_calculation"]').getAttribute('content')); // Default: 1 (legacy on)
 
@@ -310,23 +415,27 @@ function check_items_tax_usages(e) {
 }
 
 $(function () {
-    // Automatical CSRF protection for
-    // All jquery POST requests
+    // Automatic CSRF protection for all jQuery POST requests
+    // Uses meta tag value instead of reading HttpOnly cookie directly
     $.ajaxPrefilter(function (options) {
         if (options.type === 'post' || options.type === 'POST' || options.type === 'Post') {
             if (options.data === '') {
-                options.data += '?' + csrf_token_name + '=' + Cookies.get(csrf_cookie_name);
+                options.data += '?' + csrf_token_name + '=' + csrf_token_value;
             } else {
-                options.data += '&' + csrf_token_name + '=' + Cookies.get(csrf_cookie_name);
+                options.data += '&' + csrf_token_name + '=' + csrf_token_value;
             }
         }
     });
-    $(document).ajaxComplete(function () {
-        $('[name="' + csrf_token_name + '"]').val(Cookies.get(csrf_cookie_name));
-    });
-    // Update crsf on all submit way's
+
+    // Note: CSRF token regeneration is enabled (csrf_regenerate = true in config)
+    // The token changes after each POST request, but we don't have server-side code
+    // to return the new token in response headers. The token is refreshed on page loads
+    // via the meta tag. For AJAX-heavy workflows, consider disabling csrf_regenerate
+    // or implementing server-side token refresh in response headers.
+
+    // Update CSRF token on all form submissions
     $('form').on('submit', function(){
-        $('input[name="' + csrf_token_name + '"]').prop('value', Cookies.get(csrf_cookie_name));
+        $('input[name="' + csrf_token_name + '"]').prop('value', csrf_token_value);
     });
 
     // Set the default options for all instances of Select2

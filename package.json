@@ -16,11 +16,11 @@
         "build": "grunt build"
     },
     "devDependencies": {
-        "autoprefixer": "9.8",
+        "autoprefixer": "10.5",
         "bootstrap-datepicker": "1.10",
         "bootstrap-sass": "3.4",
         "clipboard": "2.0",
-        "dropzone": "5.9",
+        "dropzone": "6.0.0-beta.2",
         "font-awesome": "4.7",
         "grunt": "1.6",
         "grunt-contrib-clean": "2.0",
@@ -29,14 +29,14 @@
         "grunt-contrib-uglify": "5.2",
         "grunt-contrib-watch": "1.1",
         "grunt-postcss": "0.9",
-        "grunt-sass": "3.1",
+        "grunt-sass": "4.1",
         "html5shiv": "3.7",
-        "jquery": "3.7",
+        "jquery": "4.0",
         "jquery-ui": "1.14",
-        "js-cookie": "2.2",
+        "js-cookie": "3.0",
         "load-grunt-tasks": "5.1",
-        "postcss": "8.4",
-        "sass": "^1.97",
+        "postcss": "8.5",
+        "sass": "^1.99",
         "select2": "4.1.0-rc.0",
         "zxcvbn": "4.4"
     }

@@ -55,7 +55,7 @@
             <input type="hidden" name="payment_method" id="payment_method" class="form-control"
                    value="<?php echo $invoice->payment_method; ?>">
             <input class="hidden" id="input_permissive_search_clients"
-                   value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
+                   value="<?php echo html_escape(get_setting('enable_permissive_search_clients')); ?>">
 
             <div class="form-group has-feedback">
                 <label for="client_id"><?php _trans('client'); ?></label>
@@ -86,7 +86,7 @@
             <div class="form-group">
                 <label for="invoice_password"><?php _trans('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php echo get_setting('invoice_pre_password') == '' ? '' : get_setting('invoice_pre_password') ?>"
+                       value="<?php echo get_setting('invoice_pre_password') == '' ? '' : get_setting('invoice_pre_password', '', true) ?>"
                        style="margin: 0 auto;" autocomplete="off">
             </div>
 

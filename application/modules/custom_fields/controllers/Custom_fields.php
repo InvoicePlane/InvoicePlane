@@ -71,7 +71,6 @@ class Custom_Fields extends Admin_Controller
             redirect('custom_fields');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         if ($this->mdl_custom_fields->run_validation()) {
             $this->mdl_custom_fields->save($id);
@@ -106,7 +105,9 @@ class Custom_Fields extends Admin_Controller
         }
 
         // Return to page number of custom values or fields
-        $r = empty($_SERVER['HTTP_REFERER']) ? 'custom_fields' : $_SERVER['HTTP_REFERER'];
-        redirect($r);
+        // Security: Use safe referer to prevent open redirect attacks (CWE-601)
+        $this->load->helper('security');
+        $safe_referer = get_safe_referer('', 'custom_fields');
+        redirect($safe_referer);
     }
 }

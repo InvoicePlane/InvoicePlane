@@ -1,0 +1,55 @@
+name: Standard Pull Request
+description: Use this template for all code contributions to InvoicePlane V2
+title: "[PR] "
+labels: ["needs review", "status: pending"]
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for contributing to InvoicePlane V2!
+        Please complete all items below to ensure a clean and testable PR.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What does this PR do? Which module or feature does it affect?
+      placeholder: e.g. Adds create/update tests for Quotes
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Developer Checklist
+      options:
+        - label: References a row in `CHECKLIST.md`
+          required: true
+        - label: Includes appropriate test coverage
+          required: true
+        - label: Follows service/DTO/transformer structure (no inline logic)
+          required: true
+        - label: UI follows Filament & Livewire best practices
+          required: true
+        - label: Translations added or updated (if needed)
+        - label: Ran `php artisan test` and all tests pass
+        - label: Ran `vendor/bin/pint` to fix code formatting
+
+  - type: textarea
+    id: related-issues
+    attributes:
+      label: Related Issues
+      placeholder: |
+        - Closes #123
+        - Part of #456
+      description: List any related issues or tickets
+    validations:
+      required: false
+
+  - type: textarea
+    id: reviewer-notes
+    attributes:
+      label: Notes for Reviewers
+      placeholder: Optional context, reasoning, or unusual decisions
+      description: Help reviewers understand what to look for
