@@ -235,12 +235,25 @@ function select_email_invoice_template($invoice)
 }
 
 /**
- * Validates and sanitizes a template name to prevent Local File Inclusion (LFI) attacks.
+ * Validates and sanitizes a template name to prevent Local File Inclusion (LFI) and Remote Code Execution (RCE) attacks.
  *
- * Security: This function ensures that only legitimate template files from the allowed
- * directory can be loaded, preventing path traversal and arbitrary file inclusion.
+ * Security: This function provides defense-in-depth protection against template-based attacks:
  *
- * @param string $template_name The template name from settings
+ * 1. Static Whitelist Validation: Only templates in the hardcoded whitelist are allowed.
+ *    The whitelist is NEVER constructed by scanning the filesystem at runtime.
+ *    This prevents attackers from bypassing validation by writing malicious PHP files to the templates directory.
+ *
+ * 2. Path Traversal Protection: Rejects any template name containing directory traversal sequences.
+ *
+ * 3. Filename Sanitization: Validates that the template name contains only safe characters.
+ *
+ * Attack Prevention:
+ * - Prevents RCE by rejecting templates not in the static whitelist
+ * - Prevents LFI/path traversal attacks (../, ..\, etc.)
+ * - Prevents null byte injection
+ * - Prevents absolute path attacks
+ *
+ * @param string $template_name The template name from settings or user input
  * @param string $type          The template type ('invoice' or 'quote')
  * @param string $scope         The template scope ('public' or 'pdf')
  *
@@ -253,30 +266,139 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf
     $CI->load->helper('file_security');
     $CI->load->model('invoices/mdl_templates');
 
-    // Get the list of valid templates for the requested type and scope
-    if ($type === 'invoice') {
-        $valid_templates = $CI->mdl_templates->get_invoice_templates($scope);
-    } elseif ($type === 'quote') {
-        $valid_templates = $CI->mdl_templates->get_quote_templates($scope);
-    } else {
-        // Security: Sanitize type parameter before logging to prevent log injection
+    // Security Layer 1: Reject empty or non-string values
+    if (empty($template_name) || !is_string($template_name)) {
+        log_message('error', 'Template validation failed: Empty or invalid template name');
+        return false;
+    }
+
+    // Security Layer 2: Use file_security_helper to detect path traversal attacks
+    $validation = validate_safe_filename($template_name);
+    if (!$validation['valid']) {
+        log_message('error', 'Template validation failed: Unsafe filename detected (hash: ' . $validation['hash'] . ', error: ' . $validation['error'] . ')');
+        return false;
+    }
+
+    // Security Layer 3: Validate type parameter
+    if (!in_array($type, ['invoice', 'quote'], true)) {
         $safe_type = sanitize_for_logging((string) $type);
         log_message('error', 'Template validation failed: Invalid template type: ' . $safe_type);
 
         return false;
     }
 
-    // Security: Verify the template exists in the allowed list
-    // Note: get_*_templates() returns an array of template names without .php extension
-    if ( ! in_array($template_name, $valid_templates, true)) {
-        // Security: Sanitize template name before logging to prevent log injection
-        $safe_template_name = sanitize_for_logging((string) $template_name);
-        log_message('error', 'Template validation failed: Template not in allowed list: ' . $safe_template_name);
-
+    // Security Layer 4: Validate scope parameter
+    if (!in_array($scope, ['pdf', 'public'], true)) {
+        $safe_scope = sanitize_for_logging((string) $scope);
+        log_message('error', 'Template validation failed: Invalid template scope: ' . $safe_scope);
         return false;
     }
 
+    // Security Layer 5: Get the STATIC whitelist (NEVER scans filesystem)
+    if ($type === 'invoice') {
+        $valid_templates = $CI->mdl_templates->get_invoice_templates($scope);
+    } else { // $type === 'quote'
+        $valid_templates = $CI->mdl_templates->get_quote_templates($scope);
+    }
+
+    // Security Layer 6: Strict whitelist validation - CRITICAL SECURITY CONTROL
+    // This is the primary defense against RCE. The template name MUST be in the static whitelist.
+    // Even if an attacker writes evil.php to the templates directory, it will NOT be in this
+    // whitelist and will be rejected.
+    if ( ! in_array($template_name, $valid_templates, true)) {
+        $safe_template_name = sanitize_for_logging($template_name);
+        log_message('error', 'Template validation failed: Template not in static whitelist: ' . $safe_template_name . ' (type: ' . $type . ', scope: ' . $scope . ')');
+        return false;
+    }
+
+    // Security Layer 7: Additional character validation - only allow safe characters
+    // Template names should only contain alphanumeric, spaces, hyphens, and underscores
+    // Note: Spaces are allowed to support existing templates like "InvoicePlane - paid"
+    // While spaces in filenames can be problematic in some environments, they are safe here
+    // because: (1) template names are validated against a static whitelist, (2) they are
+    // never used in shell commands, and (3) they match existing production templates
+    if (!preg_match('/^[a-zA-Z0-9_\- ]+$/', $template_name)) {
+        $safe_template_name = sanitize_for_logging($template_name);
+        log_message('error', 'Template validation failed: Template name contains invalid characters: ' . $safe_template_name);
+        return false;
+    }
+
+    // All security layers passed - template name is safe
     return $template_name;
+}
+
+/**
+ * Constructs and validates a template path with defense-in-depth security.
+ *
+ * Security: This helper function centralizes template path construction and validation,
+ * ensuring consistent security checks across all template loading operations.
+ *
+ * @param string $template_name The validated template name (without .php extension)
+ * @param string $type The template type ('invoice' or 'quote')
+ * @param string $scope The template scope ('public' or 'pdf')
+ * @param string $default_template The default template to use if validation fails
+ * @return array Returns ['path' => string, 'name' => string] with validated path and name
+ */
+function get_validated_template_path($template_name, $type = 'invoice', $scope = 'public', $default_template = 'InvoicePlane_Web')
+{
+    // Load file_security helper if not already loaded
+    $CI = & get_instance();
+    $CI->load->helper('file_security');
+
+    // Security: Validate default template upfront to avoid using it if it's also invalid
+    $safe_default_for_log = sanitize_for_logging((string) $default_template);
+    $validated_default = validate_template_name($default_template, $type, $scope);
+    if ($validated_default === false) {
+        log_message('error', 'Critical: Default template also invalid: ' . $safe_default_for_log);
+        show_error('Template system error. Please contact administrator.', 500);
+    }
+
+    // Validate the template name
+    $validated_name = validate_template_name($template_name, $type, $scope);
+    if ($validated_name === false) {
+        // Sanitize for logging
+        $safe_template_for_log = sanitize_for_logging((string) $template_name);
+        log_message('error', 'Invalid template setting: ' . $safe_template_for_log . ', using default: ' . $safe_default_for_log);
+        $validated_name = $validated_default;
+    }
+
+    // Construct the template path
+    // Security: Both $type and $scope have been validated in layers 3-4 above (lines 242-251)
+    // to ensure they only contain the values 'invoice'/'quote' and 'pdf'/'public' respectively.
+    // This prevents path traversal attacks through the type/scope parameters.
+    $template_dir = $type . '_templates/' . $scope;
+    $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
+
+    // Defense-in-depth: Validate template path is within allowed directory before checking existence
+    $base_directory = APPPATH . 'views/' . $template_dir;
+    if (!validate_file_in_directory($template_path, $base_directory)) {
+        log_message('error', 'Template path validation failed: ' . sanitize_for_logging($validated_name));
+        show_error('Template system error. Please contact administrator.', 500);
+    }
+
+    // Defense-in-depth: Verify template file exists
+    if (!file_exists($template_path)) {
+        log_message('error', 'Template file not found: ' . sanitize_for_logging($validated_name) . ', using default: ' . $safe_default_for_log);
+        $validated_name = $validated_default;
+        $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
+
+        // Validate fallback template path is within allowed directory before checking existence
+        if (!validate_file_in_directory($template_path, $base_directory)) {
+            log_message('error', 'Default template path validation failed: ' . sanitize_for_logging($validated_name));
+            show_error('Template system error. Please contact administrator.', 500);
+        }
+
+        // Critical: If even default doesn't exist, throw error
+        if (!file_exists($template_path)) {
+            log_message('error', 'Critical: Default template file not found for ' . $type . '/' . $scope);
+            show_error('Template system error. Please contact administrator.', 500);
+        }
+    }
+
+    return [
+        'path' => $template_dir . '/' . $validated_name . '.php',
+        'name' => $validated_name,
+    ];
 }
 
 /**

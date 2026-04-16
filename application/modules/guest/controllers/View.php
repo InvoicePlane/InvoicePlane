@@ -52,6 +52,7 @@ class View extends Base_Controller
             ]
         );
         $this->load->helper('template');
+        $this->load->helper('file_security');
 
         $invoice = $invoice->row();
 
@@ -76,8 +77,8 @@ class View extends Base_Controller
 
         // Security: Validate strtotime() result before comparison to avoid type juggling
         $invoice_due_timestamp = strtotime($invoice->invoice_date_due);
-        $is_overdue = ($invoice->invoice_balance > 0 
-            && $invoice_due_timestamp !== false 
+        $is_overdue = ($invoice->invoice_balance > 0
+            && $invoice_due_timestamp !== false
             && $invoice_due_timestamp < time());
 
         $data = [
@@ -95,17 +96,11 @@ class View extends Base_Controller
 
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        // Security: Validate template name to prevent Local File Inclusion
+        // Security: Validate and get template path with defense-in-depth
         $requested_template = get_setting('public_invoice_template');
-        $template_name      = validate_template_name($requested_template, 'invoice', 'public');
-        if ($template_name === false) {
-            // Sanitize template name for logging to prevent log injection / poisoning
-            $safe_template_for_log = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
-            log_message('error', 'Invalid invoice template setting: ' . $safe_template_for_log . ', using default');
-            $template_name = 'InvoicePlane_Web'; // Fallback to default template
-        }
+        $template_info = get_validated_template_path($requested_template, 'invoice', 'public', 'InvoicePlane_Web');
 
-        render_template_view('invoice_templates/public/' . $template_name . '.php', $data);
+        render_template_view($template_info['path'], $data);
     }
 
     /**
@@ -217,17 +212,12 @@ class View extends Base_Controller
         ];
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        // Security: Validate template name to prevent Local File Inclusion
+        // Security: Validate and get template path with defense-in-depth
+        $this->load->helper('template');
         $requested_template = get_setting('public_quote_template');
-        $template_name      = validate_template_name($requested_template, 'quote', 'public');
-        if ($template_name === false) {
-            // Security: sanitize template name before logging to prevent log injection
-            $safe_requested_template = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
-            log_message('error', 'Invalid quote template setting: ' . $safe_requested_template . ', using default');
-            $template_name = 'InvoicePlane_Web'; // Fallback to default template
-        }
+        $template_info = get_validated_template_path($requested_template, 'quote', 'public', 'InvoicePlane_Web');
 
-        render_template_view('quote_templates/public/' . $template_name . '.php', $data);
+        render_template_view($template_info['path'], $data);
     }
 
     /**
@@ -374,7 +364,7 @@ class View extends Base_Controller
                     ));
                     continue;
                 }
-                
+
                 // Check file exists before getting size
                 if (!file_exists($validated['path'])) {
                     log_message('warning', sprintf(
@@ -383,7 +373,7 @@ class View extends Base_Controller
                     ));
                     continue;
                 }
-                
+
                 // Get file size with error handling
                 $file_size = @filesize($validated['path']);
                 if ($file_size === false) {
@@ -395,7 +385,7 @@ class View extends Base_Controller
                     ));
                     continue;
                 }
-                
+
                 $names[] = [
                     'name'     => html_escape($row->file_name_original),
                     'fullname' => $validated['basename'],

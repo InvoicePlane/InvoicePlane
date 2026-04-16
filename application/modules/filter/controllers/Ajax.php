@@ -86,8 +86,21 @@ class Ajax extends Admin_Controller
 
     public function filter_custom_fields()
     {
-        // custom table option name Normaly always here (it's ajax). Old school but work.
-        $name = empty($_SERVER['HTTP_REFERER']) ? 'all' : basename($_SERVER['HTTP_REFERER']); // Todo: With CI?
+        // Security: Extract table name from referer URL path basename for filtering
+        // Parse the URL path first so query strings do not affect basename extraction
+        $name = 'all'; // Default value
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $referer = $_SERVER['HTTP_REFERER'];
+            $referer_path = parse_url($referer, PHP_URL_PATH);
+            
+            if (is_string($referer_path) && $referer_path !== '') {
+                $referer_basename = basename($referer_path);
+                // Validate it matches expected pattern (alphanumeric and underscores only)
+                if (preg_match('/^[a-zA-Z0-9_]+$/', $referer_basename)) {
+                    $name = $referer_basename;
+                }
+            }
+        }
 
         $this->load->model('custom_fields/mdl_custom_fields');
 
@@ -123,8 +136,21 @@ class Ajax extends Admin_Controller
 
     public function filter_custom_values()
     {
-        // custom values id Normaly always here (it's ajax). Old school but work.
-        $id = empty($_SERVER['HTTP_REFERER']) ? 0 : basename($_SERVER['HTTP_REFERER']); // Todo: With CI?
+        // Security: Extract ID from referer URL path basename for filtering
+        // Parse the URL path first so query strings do not affect basename extraction
+        $id = 0; // Default value
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $referer = $_SERVER['HTTP_REFERER'];
+            $referer_path = parse_url($referer, PHP_URL_PATH);
+
+            if (is_string($referer_path) && $referer_path !== '') {
+                $referer_basename = basename($referer_path);
+
+                if (ctype_digit($referer_basename)) {
+                    $id = (int) $referer_basename;
+                }
+            }
+        }
 
         $this->load->model(
             [
@@ -159,8 +185,21 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('custom_values/mdl_custom_values');
 
-        // custom values id Normaly always here (it's ajax). Old school but work.
-        $id = empty($_SERVER['HTTP_REFERER']) ? 0 : basename($_SERVER['HTTP_REFERER']); // Todo: With CI?
+        // Security: Extract ID from referer URL path basename for filtering
+        // Parse the URL path first so query strings do not affect basename extraction
+        $id = 0; // Default value
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $referer = $_SERVER['HTTP_REFERER'];
+            $referer_path = parse_url($referer, PHP_URL_PATH);
+
+            if (is_string($referer_path) && $referer_path !== '') {
+                $referer_basename = basename($referer_path);
+
+                if (ctype_digit($referer_basename)) {
+                    $id = (int) $referer_basename;
+                }
+            }
+        }
 
         $query    = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
