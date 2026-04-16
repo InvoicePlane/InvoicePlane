@@ -1,11 +1,11 @@
 # InvoicePlane Development Guidelines
 
-This document outlines the security principles, code quality standards, and best practices for InvoicePlane development, with a focus on the lessons learned from security vulnerabilities and refactoring efforts.
+This document defines the security principles, coding standards, and development practices for InvoicePlane.
 
 ## Table of Contents
 
 1. [Security Principles](#security-principles)
-2. [DRY Programming](#dry-programming)
+2. [DRY Principle](#dry-principle)
 3. [Input Validation and Sanitization](#input-validation-and-sanitization)
 4. [Output Encoding](#output-encoding)
 5. [File Security](#file-security)
@@ -19,197 +19,124 @@ This document outlines the security principles, code quality standards, and best
 
 ### Defense in Depth
 
-InvoicePlane follows a **defense-in-depth** security approach with multiple layers of protection:
+InvoicePlane uses multiple independent security layers. No single layer is trusted exclusively.
 
-1. **Input Sanitization** - Clean all user input at the controller level
-2. **Output Encoding** - Escape data when rendering in views
-3. **Validation** - Validate format, type, and business rules
-4. **Access Control** - Verify user permissions at each layer
-5. **Secure Defaults** - Use safe defaults and fail securely
+1. **Input sanitization** — clean all user input at the controller level.
+2. **Output encoding** — escape data when rendering in views.
+3. **Validation** — enforce format, type, and business rules.
+4. **Access control** — verify user permissions at each layer.
+5. **Secure defaults** — fail safely; allow-list rather than block-list.
 
-**Example from Admin_Controller:**
 ```php
-// Layer 1: Global XSS sanitization for all POST fields
+// Global XSS sanitization for all POST fields (Admin_Controller)
 protected function filter_input(): void
 {
-    $input = $this->input->post();
-    foreach ($input as $key => $value) {
-        $cleaned_value = $this->security->xss_clean($value);
-        $cleaned_value = strip_tags($cleaned_value);
-        $_POST[$key] = $cleaned_value;
+    foreach ($this->input->post() as $key => $value) {
+        $cleaned = $this->security->xss_clean($value);
+        $cleaned = strip_tags($cleaned);
+        $_POST[$key] = $cleaned;
     }
 }
-
-// Layer 2: Additional validation in controllers
-if (!preg_match('/^[A-Z0-9-]+$/', $invoice_number)) {
-    // Reject invalid format
-}
-
-// Layer 3: Output encoding in views
-<?php echo html_escape($invoice_number); ?>
 ```
 
-### Security Vulnerability Categories
+### Vulnerability Categories Addressed
 
-InvoicePlane has addressed the following vulnerability types:
-
-1. **XSS (Cross-Site Scripting)** - Sanitize input, encode output
-2. **LFI (Local File Inclusion)** - Validate file paths, use whitelists
-3. **Path Traversal** - Check for `../` sequences, validate resolved paths
-4. **Log Injection** - Sanitize data before logging
-5. **Header Injection** - Sanitize filenames in HTTP headers
-6. **SVG XSS** - Block SVG uploads entirely
+| Category | Mitigation |
+|----------|-----------|
+| XSS | Sanitize input; encode output |
+| LFI / Path Traversal | Validate file paths; use hardcoded whitelists |
+| Log Injection | Sanitize data before logging |
+| Header Injection | Sanitize filenames in HTTP headers |
+| SVG XSS | Block SVG uploads entirely |
+| Open Redirect | Validate referer URLs with `get_safe_referer()` |
+| RCE via template | Static `ALLOWED_*_TEMPLATES` constants; never scan filesystem |
 
 ---
 
-## DRY Programming
+## DRY Principle
 
-### The DRY Principle
-
-**Key Rule:** Every piece of knowledge should have a single, unambiguous, authoritative representation within the system.
+Every piece of knowledge must have a single, authoritative representation.
 
 ### When to Extract a Helper Function
 
-Extract code into a reusable helper when:
+Extract logic into a reusable helper when:
 
-1. **The same logic appears 3+ times** across the codebase
-2. **The logic is complex** and would benefit from isolated testing
-3. **The logic addresses a specific security concern** (e.g., sanitization)
-4. **The logic might need to change** in the future (centralize changes)
+- The same logic appears in three or more places.
+- The logic addresses a security concern (sanitization, validation).
+- The logic is complex enough to benefit from isolated testing.
+- The logic may need to change in the future.
 
-### Example: Sanitize for Logging
+### Example: Logging Sanitization
 
-**Before (code duplication):**
 ```php
-// In Settings.php
-$safe_filename = preg_replace('/[[:^print:]]/', '', $_FILES['logo']['name']);
-log_message('warning', 'Upload blocked: ' . $safe_filename);
+// Bad — inconsistent, duplicated
+log_message('warning', 'Upload blocked: ' . $_FILES['logo']['name']);
+log_message('error', 'Invalid template: ' . $template_name);
 
-// In pdf_helper.php
-$safe_template = preg_replace('/[[:^print:]]/', '', $template_name);
-log_message('error', 'Invalid template: ' . $safe_template);
-
-// In Upload_Controller.php
-$safe_name = str_replace(["\r", "\n"], '', $upload_name);
-log_message('info', 'Processing: ' . $safe_name);
-```
-
-**After (DRY with helper function):**
-```php
-// In file_security_helper.php
-function sanitize_for_logging(string $value): string
-{
-    // Single source of truth for log sanitization
-    return str_replace(["\r", "\n"], '', $value);
-}
-
-// Usage everywhere
+// Good — single source of truth
 log_message('warning', 'Upload blocked: ' . sanitize_for_logging(basename($_FILES['logo']['name'])));
 log_message('error', 'Invalid template: ' . sanitize_for_logging($template_name));
-log_message('info', 'Processing: ' . sanitize_for_logging($upload_name));
 ```
 
-**Benefits:**
-- Single point of maintenance
-- Consistent security implementation
-- Easier to test and verify
-- Clear intent through naming
+### Helper File Conventions
 
-### Helper Organization
-
-Place helper functions in appropriate files:
-
-- `file_security_helper.php` - File access, path validation, logging sanitization
-- `pdf_helper.php` - PDF generation utilities
-- `invoice_helper.php` - Invoice-specific logic
-- `date_helper.php` - Date formatting and calculations
+| File | Responsibility |
+|------|---------------|
+| `file_security_helper.php` | File validation, path safety, log sanitization |
+| `security_helper.php` | URL validation, CSRF, access checks |
+| `template_helper.php` | Template name validation |
+| `pdf_helper.php` | PDF generation utilities |
+| `invoice_helper.php` | Invoice-specific rendering logic |
 
 ---
 
 ## Input Validation and Sanitization
 
-### Global Input Sanitization
+### Global Sanitization
 
-**All POST data** is automatically sanitized by `Admin_Controller::filter_input()`:
+`Admin_Controller::filter_input()` sanitizes all POST data automatically. This baseline covers the majority of user input.
 
-```php
-protected function filter_input(): void
-{
-    foreach ($input as $key => $value) {
-        // Apply XSS cleaning and strip dangerous tags
-        $cleaned_value = $this->security->xss_clean($value);
-        $cleaned_value = strip_tags($cleaned_value);
-        $_POST[$key] = $cleaned_value;
-    }
-}
-```
+### Additional Validation
 
-**Important:** This provides baseline protection for all 500+ POST fields.
+Use explicit regex validation for:
 
-### When Additional Validation is Needed
-
-Use **additional regex validation** for:
-
-1. **Format enforcement** (invoice numbers, tax codes, etc.)
-2. **Business rules** (allowed characters, length limits)
-3. **Type safety** (numeric IDs, dates, emails)
-
-**NOT for XSS protection** - that's already handled globally.
-
-### Bypass Fields
-
-Certain fields must bypass XSS sanitization:
+- Format rules (invoice number patterns, tax codes).
+- Business rules (allowed character sets, length limits).
+- Type safety (numeric IDs, dates, email addresses).
 
 ```php
-$bypass_fields = [
-    'user_password',        // Passwords need special characters
-    'user_passwordv',       // Password verification
-    'invoice_password',     // PDF password protection
-    'quote_password',       // PDF password protection
-    'email_template_body',  // HTML templates
-];
-```
-
-**Warning:** Bypass fields require special handling and output encoding.
-
-### Validation Examples
-
-```php
-// Invoice number format validation
-if (!preg_match('/^[A-Z0-9-]+$/i', $invoice_number)) {
-    $this->session->set_flashdata('alert_error', 'Invalid invoice number format');
+// Invoice number format
+if ( ! preg_match('/^[A-Z0-9-]+$/i', $invoice_number)) {
+    $this->session->set_flashdata('alert_error', 'Invalid invoice number format.');
     redirect('invoices/view/' . $invoice_id);
 }
 
-// Tax rate code validation
-if (!preg_match('/^[A-Z0-9_-]+$/i', $tax_rate_code)) {
-    // Reject invalid characters
-}
+// Integer ID
+$id = (int) $this->input->get('id');
 
-// Email validation
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    // Invalid email format
-}
+// Email
+if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) { ... }
+```
+
+### Bypass Fields
+
+Certain fields must bypass XSS sanitization and require special output handling:
+
+```php
+$bypass_fields = [
+    'user_password',
+    'user_passwordv',
+    'invoice_password',
+    'quote_password',
+    'email_template_body',
+];
 ```
 
 ---
 
 ## Output Encoding
 
-### Always Encode Output
-
-**Rule:** Never trust that input sanitization is enough. Always encode output.
-
-```php
-<!-- In views -->
-<h1><?php echo html_escape($invoice_number); ?></h1>
-<div><?php echo html_escape($client_name); ?></div>
-<textarea><?php echo html_escape($notes); ?></textarea>
-```
-
-### Context-Specific Encoding
-
-Different contexts require different encoding:
+Never assume that input sanitization is sufficient. Always encode output in the appropriate context.
 
 ```php
 // HTML context
@@ -220,14 +147,10 @@ Different contexts require different encoding:
 var data = <?php echo json_encode($value, JSON_HEX_TAG | JSON_HEX_AMP); ?>;
 </script>
 
-// URL context (validate base URL and encode parameters)
-<?php
-$base_url = site_url('invoices/view'); // Safe base URL
-$query_param = urlencode($invoice_id);
-?>
-<a href="<?php echo $base_url . '/' . $query_param; ?>">Link</a>
+// URL parameter
+<a href="<?php echo site_url('invoices/view/' . urlencode($invoice_id)); ?>">Link</a>
 
-// HTML attribute context
+// HTML attribute
 <input type="text" value="<?php echo html_escape($value); ?>">
 ```
 
@@ -237,128 +160,109 @@ $query_param = urlencode($invoice_id);
 
 ### Path Traversal Prevention
 
-**Always validate file paths** to prevent directory traversal attacks:
-
 ```php
-// Use helper functions from file_security_helper.php
 $validation = validate_safe_filename($filename);
-if (!$validation['valid']) {
+if ( ! $validation['valid']) {
     log_message('error', 'Invalid filename (hash: ' . $validation['hash'] . ')');
-    show_error('Invalid filename');
+    show_error('Invalid filename.');
 }
 
-// Validate resolved path is within allowed directory
-$fullPath = $baseDirectory . '/' . basename($filename);
-if (!validate_file_in_directory($fullPath, $baseDirectory)) {
-    log_message('error', 'Path traversal attempt detected');
-    show_error('Access denied');
+if ( ! validate_file_in_directory($fullPath, $baseDirectory)) {
+    log_message('error', 'Path traversal attempt detected.');
+    show_error('Access denied.');
 }
 ```
 
 ### File Upload Security
 
-1. **Validate file extensions** against a whitelist
-2. **Block dangerous file types** (SVG, PHP, executable files)
-3. **Sanitize filenames** before storage
-4. **Use secure directory permissions**
-5. **Log upload attempts** with hashed filenames
+1. Validate file extensions against an explicit allow-list.
+2. Block dangerous types (SVG, PHP, executable files).
+3. Sanitize filenames before storage.
+4. Set restrictive directory permissions.
+5. Log all upload attempts using hashed filenames.
 
 ```php
-// Check file extension
-$extension = strtolower(pathinfo($_FILES['upload']['name'], PATHINFO_EXTENSION));
-$allowed = ['png', 'jpg', 'jpeg', 'gif', 'pdf'];
+$allowed    = ['png', 'jpg', 'jpeg', 'gif', 'pdf'];
+$extension  = strtolower(pathinfo($_FILES['upload']['name'], PATHINFO_EXTENSION));
 
-if (!in_array($extension, $allowed, true)) {
+if ( ! in_array($extension, $allowed, true)) {
     log_message('warning', 'Blocked upload: ' . sanitize_for_logging(basename($_FILES['upload']['name'])));
-    show_error('File type not allowed');
+    show_error('File type not allowed.');
 }
 ```
 
-### Template Validation
+### Template Security
 
-For LFI prevention, validate template names:
+Template names are controlled by hardcoded constants in `Mdl_Templates`. The filesystem is **never** scanned to build the allowed list.
 
 ```php
-function validate_template_name(?string $template, string $type, string $format): string|false
-{
-    // Whitelist of allowed templates
-    $allowed_templates = ['InvoicePlane', 'Modern', 'Classic'];
-    
-    if ($template === null || !in_array($template, $allowed_templates, true)) {
-        return false;
-    }
-    
-    // Validate template file exists
-    $template_path = APPPATH . "views/{$type}_templates/{$format}/{$template}.php";
-    if (!file_exists($template_path)) {
-        return false;
-    }
-    
-    return $template;
-}
+private const ALLOWED_INVOICE_TEMPLATES = [
+    'pdf'    => ['InvoicePlane', 'InvoicePlane - paid', 'InvoicePlane - overdue'],
+    'public' => ['InvoicePlane_Web'],
+];
 ```
 
 ---
 
 ## Logging Best Practices
 
-### Log Injection Prevention
+### Prevent Log Injection
 
-**Never log untrusted data directly** - it can inject fake log entries:
+Never log untrusted data without sanitization.
 
 ```php
-// WRONG - Vulnerable to log injection
+// Bad — attacker can inject fake log lines
 log_message('error', 'Failed login: ' . $_POST['username']);
-// Attacker input: "admin\nSUCCESS: Admin logged in"
-// Creates fake log entry
 
-// CORRECT - Sanitize before logging
+// Good
 log_message('error', 'Failed login: ' . sanitize_for_logging($_POST['username']));
 ```
 
-### Use Hashes for Sensitive Data
+### Hash Sensitive Values
 
-For filenames and sensitive data, log **hashes instead of raw values**:
+For sensitive data such as filenames, log the hash rather than the raw value.
 
 ```php
-// Log the hash, not the actual filename
 $hash = hash('sha256', $filename);
 log_message('error', 'Invalid file access (hash: ' . $hash . ')');
 ```
 
-### Structured Logging
+### Structured Context
 
-Use structured data for complex log entries:
+For complex events, use structured JSON log entries.
 
 ```php
-$log_context = [
-    'timestamp' => date('Y-m-d H:i:s'),
-    'user_id' => $this->session->userdata('user_id'),
-    'uri' => uri_string(),
+$context = [
+    'timestamp'  => date('Y-m-d H:i:s'),
+    'user_id'    => $this->session->userdata('user_id'),
+    'uri'        => uri_string(),
     'ip_address' => $this->input->ip_address(),
-    'fields' => $xss_log_entries,
 ];
-
-$log_payload = json_encode($log_context, JSON_PARTIAL_OUTPUT_ON_ERROR);
-log_message('error', 'XSS attempt detected: ' . $log_payload);
+log_message('error', 'Security event: ' . json_encode($context, JSON_PARTIAL_OUTPUT_ON_ERROR));
 ```
 
 ---
 
 ## Testing Requirements
 
-### Security Testing
+### PHPUnit
 
-All security-critical functions must have tests:
+- Use plain PHPUnit (no Laravel TestCase).
+- Method names: `it_<snake_case>`.
+- Annotate with `#[Test]`.
+- Follow Arrange / Act / Assert.
 
 ```php
 #[Test]
 public function it_sanitizes_log_injection_attempts(): void
 {
-    $malicious = "test\nFAKE LOG ENTRY";
+    // Arrange
+    $malicious = "admin\nFAKE LOG ENTRY";
+
+    // Act
     $result = sanitize_for_logging($malicious);
-    
-    $this->assertEquals('testFAKE LOG ENTRY', $result);
+
+    // Assert
     $this->assertStringNotContainsString("\n", $result);
 }
 
@@ -366,69 +270,44 @@ public function it_sanitizes_log_injection_attempts(): void
 public function it_blocks_path_traversal(): void
 {
     $validation = validate_safe_filename('../../../etc/passwd');
-    
+
     $this->assertFalse($validation['valid']);
-    $this->assertEquals('path_traversal', $validation['error']);
+    $this->assertSame('path_traversal', $validation['error']);
 }
 ```
 
-### Test Naming Convention
+### Coverage Expectations
 
-- Use `it_` prefix for all test methods
-- Use snake_case for test method names
-- Make test names read like sentences
-- Annotate with `#[Test]` attribute
-
-```php
-#[Test]
-public function it_validates_invoice_number_format(): void
-{
-    // Arrange, Act, Assert
-}
-```
+- All security-critical helper functions must have unit tests.
+- Edge cases (empty input, null, boundary values) must be tested.
+- Tests must not depend on external services or a live database unless explicitly marked as integration tests.
 
 ---
 
 ## Code Review Checklist
 
-### Security Review
+### Security
 
-- [ ] All user input is sanitized (or explain bypass)
-- [ ] All output is encoded (context-appropriate)
-- [ ] File paths are validated (no path traversal)
-- [ ] Log messages are sanitized (no log injection)
-- [ ] SQL queries use parameterized statements (no SQL injection)
-- [ ] File uploads validate extensions and types
-- [ ] Headers are sanitized (no header injection)
-- [ ] Authentication/authorization checks are in place
+- [ ] All user input is sanitized (or the bypass is explicitly justified).
+- [ ] All output is encoded in the correct context.
+- [ ] File paths are validated with `validate_safe_filename()` / `validate_file_in_directory()`.
+- [ ] Log messages are sanitized with `sanitize_for_logging()`.
+- [ ] SQL queries use Active Record / parameterized statements; no string concatenation with user data.
+- [ ] File uploads validate extension and MIME type.
+- [ ] Redirects use `get_safe_referer()` or a validated internal URL.
 
-### Code Quality Review
+### Code Quality
 
-- [ ] No code duplication (DRY principle applied)
-- [ ] Helper functions are used for common operations
-- [ ] Functions have single responsibility
-- [ ] Complex logic is commented
-- [ ] Error handling is consistent
-- [ ] Tests cover critical paths
-- [ ] Documentation is updated
+- [ ] No duplicated logic (DRY principle applied).
+- [ ] Helper functions used for shared operations.
+- [ ] Single responsibility per function / method.
+- [ ] Complex logic is commented.
+- [ ] Error handling is consistent with the rest of the module.
+- [ ] Tests cover the critical paths.
 
-### Laravel/CodeIgniter Specific
+### CodeIgniter / InvoicePlane Specific
 
-- [ ] Using framework security features (xss_clean, html_escape)
-- [ ] Following PSR-12 coding standards
-- [ ] Using type hints where appropriate
-- [ ] Avoiding deprecated functions
-- [ ] Using environment variables for configuration
-
----
-
-## Summary
-
-Following these guidelines ensures:
-
-1. **Security:** Multiple layers of defense against common vulnerabilities
-2. **Maintainability:** DRY principle reduces code duplication
-3. **Reliability:** Consistent patterns reduce bugs
-4. **Clarity:** Clear intent through naming and organization
-
-When in doubt, ask: "Is this secure? Is it DRY? Is it clear?"
+- [ ] Views use `html_escape()` or `htmlsc()` for all user-controlled output.
+- [ ] Helpers are loaded explicitly with `$this->load->helper()`.
+- [ ] No direct use of `$_GET`, `$_POST`, or `$_SERVER` — use `$this->input->*()`.
+- [ ] No `php artisan` commands — InvoicePlane does not use Laravel.
