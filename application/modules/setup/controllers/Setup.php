@@ -609,6 +609,7 @@ class Setup extends MX_Controller
         }
         if ($count_completed === 0) {
             log_message('error', 'SETUP_COMPLETED flag not found in ipconfig.php. Setup may be misconfigured.');
+            return;
         }
         
         // Set DISABLE_SETUP flag
@@ -619,6 +620,7 @@ class Setup extends MX_Controller
         }
         if ($count_disable === 0) {
             log_message('error', 'DISABLE_SETUP flag not found in ipconfig.php. Setup may be misconfigured.');
+            return;
         }
         
         $result = @write_file(IPCONFIG_FILE, $config);
