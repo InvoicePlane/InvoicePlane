@@ -609,8 +609,11 @@ class Setup extends MX_Controller
             if (!$result) {
                 log_message('error', 'Failed to write security updates to ipconfig.php. File may be read-only (e.g., chmod 0600). Please manually set DISABLE_SETUP=true and SETUP_COMPLETED=true.');
             }
+        } catch (RuntimeException $e) {
+            log_message('error', 'Runtime exception during post-setup security update: ' . sanitize_for_logging($e->getMessage()) . '. Please manually set DISABLE_SETUP=true and SETUP_COMPLETED=true in ipconfig.php.');
         } catch (Exception $e) {
-            log_message('error', 'Exception during post-setup security update: ' . $e->getMessage() . '. Please manually set DISABLE_SETUP=true and SETUP_COMPLETED=true in ipconfig.php.');
+            // Catch any other unexpected exceptions to prevent setup failure
+            log_message('error', 'Unexpected exception during post-setup security update: ' . sanitize_for_logging($e->getMessage()) . '. Please manually set DISABLE_SETUP=true and SETUP_COMPLETED=true in ipconfig.php.');
         }
     }
 
