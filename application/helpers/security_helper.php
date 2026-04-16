@@ -18,8 +18,19 @@ if ( ! defined('BASEPATH')) {
  *
  * Provides reusable security functions for common security operations.
  * Protects against open redirects, XSS, and other web vulnerabilities.
+ *
+ * Compatibility note:
+ * This application helper shares its name with CodeIgniter's core `security`
+ * helper. To avoid changing the behavior of `$this->load->helper('security')`,
+ * load the core helper explicitly before defining the custom helper functions
+ * in this file.
  */
 
+$core_security_helper = BASEPATH . 'helpers/security_helper.php';
+
+if (is_file($core_security_helper)) {
+    require_once $core_security_helper;
+}
 /**
  * Get a safe referer URL, preventing open redirect attacks.
  * 

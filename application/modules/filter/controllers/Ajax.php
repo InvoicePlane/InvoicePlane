@@ -131,13 +131,20 @@ class Ajax extends Admin_Controller
 
     public function filter_custom_values()
     {
-        // Security: Extract ID from referer URL basename for filtering
-        // Using basename() and converting to int prevents injection
+        // Security: Extract ID from referer URL path basename for filtering
+        // Parse the URL path first so query strings do not affect basename extraction
         $id = 0; // Default value
         if (!empty($_SERVER['HTTP_REFERER'])) {
-            $referer_basename = basename($_SERVER['HTTP_REFERER']);
-            // Convert to integer to ensure it's numeric
-            $id = (int) $referer_basename;
+            $referer = $_SERVER['HTTP_REFERER'];
+            $referer_path = parse_url($referer, PHP_URL_PATH);
+
+            if (is_string($referer_path) && $referer_path !== '') {
+                $referer_basename = basename($referer_path);
+
+                if (ctype_digit($referer_basename)) {
+                    $id = (int) $referer_basename;
+                }
+            }
         }
 
         $this->load->model(
