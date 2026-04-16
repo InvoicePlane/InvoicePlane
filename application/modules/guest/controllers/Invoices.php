@@ -75,7 +75,7 @@ class Invoices extends Guest_Controller
      */
     public function view($invoice_id): void
     {
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->where_in('ip_invoices.client_id', $this->user_clients)->get()->row();
 
         if ( ! $invoice) {
             show_404();
