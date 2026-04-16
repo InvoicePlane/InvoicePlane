@@ -16,7 +16,7 @@ if ($quote_tax_rates) {
         <div class="btn-group btn-group-sm">
 <?php
 if (in_array($quote->quote_status_id, [2, 3])) {
-?>
+    ?>
             <form method="post" action="<?php echo htmlsc(site_url('guest/quotes/approve/' . $quote->quote_id)); ?>" style="display: inline;">
                 <input type="hidden" name="<?php echo htmlsc($this->security->get_csrf_token_name()); ?>" value="<?php echo htmlsc($this->security->get_csrf_hash()); ?>">
                 <button type="submit" class="btn btn-success">
@@ -33,14 +33,14 @@ if (in_array($quote->quote_status_id, [2, 3])) {
             </form>
 <?php
 } elseif ($quote->quote_status_id == 4) {
-?>
+    ?>
             <a href="#" class="btn btn-success disabled">
                 <i class="fa fa-check"></i>
                 <?php _trans('quote_approved'); ?>
             </a>
 <?php
 } elseif ($quote->quote_status_id == 5) {
-?>
+    ?>
             <a href="#" class="btn btn-danger disabled">
                 <i class="fa fa-times-circle"></i>
                 <?php _trans('quote_rejected'); ?>
@@ -75,12 +75,12 @@ if (in_array($quote->quote_status_id, [2, 3])) {
                     </div>
 <?php
 if ($quote->client_phone) {
-?>
+    ?>
                     <br><span><strong><?php _trans('phone'); ?>:</strong> <?php _htmlsc($quote->client_phone); ?></span>
 <?php
 }
 if ($quote->client_email) {
-?>
+    ?>
                     <br><span><strong><?php _trans('email'); ?>:</strong> <?php _htmlsc($quote->client_email); ?></span>
 <?php
 }
@@ -123,7 +123,7 @@ if ($quote->client_email) {
                 </thead>
 <?php
 foreach ($items as $i => $item) {
-?>
+    ?>
                 <tbody class="item">
                 <tr>
                     <td rowspan="2" style="width:20px;" class="text-center"><?php echo 1 + $i; ?></td>
@@ -150,10 +150,10 @@ foreach ($items as $i => $item) {
                                 <?php echo format_currency($item->item_discount); ?>
                             </span>
 <?php
-    // New Discount calculation - since v1.6.3
-    $item_global_discount = $legacy_calculation ? 0 : $item->item_subtotal - ($item->item_total - $item->item_tax_total + $item->item_discount);
+        // New Discount calculation - since v1.6.3
+        $item_global_discount = $legacy_calculation ? 0 : $item->item_subtotal - ($item->item_total - $item->item_tax_total + $item->item_discount);
     if ($item_global_discount) {
-?>
+        ?>
                             <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('global_discount'); ?>">
                                 + <?php echo format_currency($item_global_discount); ?>
                             </span>
@@ -162,15 +162,15 @@ foreach ($items as $i => $item) {
                             </span>
 <?php
     }
-?>
+    ?>
                         </span>
                     </td>
                     <td>
                         <span class="pull-left"><?php _trans('tax'); ?></span>
                         <span class="pull-right amount"><?php
-                            echo $item->item_tax_rate_percent ? htmlsc($item->item_tax_rate_name) . ' (' . format_amount($item->item_tax_rate_percent) . '%): ' : '';
-                            echo format_currency($item->item_tax_total);
-                        ?></span>
+                                echo $item->item_tax_rate_percent ? htmlsc($item->item_tax_rate_name) . ' (' . format_amount($item->item_tax_rate_percent) . '%): ' : '';
+    echo format_currency($item->item_tax_total);
+    ?></span>
                     </td>
                     <td>
                         <span class="pull-left"><?php _trans('total'); ?></span>

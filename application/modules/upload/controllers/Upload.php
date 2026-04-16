@@ -238,5 +238,21 @@ class Upload extends Admin_Controller
         } elseif ( ! move_uploaded_file($tempFile, $filePath)) {
             respond_file_message(400, 'upload_error_invalid_move_uploaded_file', $filename);
         }
+
+        // Security: Strip EXIF metadata from uploaded images to prevent privacy leaks
+        $this->strip_image_metadata($filePath, $filename);
+    }
+
+    private function strip_image_metadata(string $filePath, string $filename): void
+    {
+        $result = strip_exif_metadata($filePath);
+
+        if ( ! $result['success'] && ! isset($result['skipped'])) {
+            // Log the error but don't fail the upload - the file is already uploaded
+            log_message('warning', 'Failed to strip EXIF metadata from uploaded file: ' . sanitize_for_logging($filename) . ' - Error: ' . $result['error']);
+        } elseif ($result['success'] && ! isset($result['skipped'])) {
+            // Successfully stripped EXIF metadata
+            log_message('debug', 'EXIF metadata stripped from uploaded file: ' . sanitize_for_logging($filename));
+        }
     }
 }

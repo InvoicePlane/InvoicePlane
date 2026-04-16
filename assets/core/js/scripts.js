@@ -89,11 +89,15 @@ function encodeHtml(str) {
 // Sanitize HTML for email template preview
 // Allows only safe formatting tags and strips scripts, event handlers, and dangerous attributes
 function sanitize_email_template_html(html) {
-    // Parse HTML inside an inert <template> so scripts are never executed while
-    // the content is being sanitized.
-    var template = document.createElement('template');
-    template.innerHTML = html || '';
-    var temp = template.content;
+    // Create a detached container to parse and sanitize HTML in an isolated context.
+    // Using DOMParser prevents immediate script execution during parsing.
+    var parser = new DOMParser();
+    // Encode incoming DOM text so that previously-escaped characters are not
+    // reinterpreted as HTML when parsing. This prevents "DOM text" from being
+    // unescaped back into active HTML.
+    var safeInput = encodeHtml(html || '');
+    var doc = parser.parseFromString(safeInput, 'text/html');
+    var temp = doc.body;
     
     // List of allowed tags (only safe formatting tags)
     var allowedTags = ['b', 'strong', 'em', 'i', 'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
@@ -102,28 +106,7 @@ function sanitize_email_template_html(html) {
     
     // List of allowed attributes (only safe, non-executable attributes)
     // Note: 'style' attribute removed to prevent CSS-based attacks
-    var allowedAttrs = ['class', 'href', 'title', 'alt', 'target', 'rel'];
-
-    // Decode HTML entities and normalize attribute values before validation.
-    function normalizeAttrValue(value) {
-        var normalized = value || '';
-        try {
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(normalized, 'text/html');
-            if (doc && doc.documentElement) {
-                normalized = doc.documentElement.textContent || '';
-            }
-        } catch (e) {
-            normalized = value || '';
-        }
-
-        // Remove control/format chars (including zero-width and BOM), trim, and lowercase.
-        // Ranges: C0 controls (\u0000-\u001F), C1 controls (\u007F-\u009F),
-        // zero-width/RTL markers (\u200B-\u200F, \u202A-\u202E, \u2060-\u206F),
-        // and BOM (\uFEFF).
-        normalized = normalized.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFEFF]+/g, '').trim();
-        return normalized.toLowerCase();
-    }
+    var allowedAttrs = ['class', 'href', 'title', 'alt', 'target'];
     
     // Recursively clean all elements
     function cleanNode(node) {
@@ -152,7 +135,7 @@ function sanitize_email_template_html(html) {
             for (var i = 0; i < node.attributes.length; i++) {
                 var attr = node.attributes[i];
                 var attrNameLower = attr.name.toLowerCase();
-                var attrValueNormalized = normalizeAttrValue(attr.value);
+                var attrValue = attr.value.toLowerCase().trim();
                 
                 // Remove event handlers (onclick, onload, etc.)
                 if (attrNameLower.indexOf('on') === 0) {
@@ -163,21 +146,11 @@ function sanitize_email_template_html(html) {
                     attrsToRemove.push(attr.name);
                 }
                 // Check for dangerous protocols in href attributes
-                else if (attrNameLower === 'href' &&
-                        (/^\s*(javascript|data|vbscript|file|about|blob)\s*:/i.test(attrValueNormalized))) {
+                else if (attrNameLower === 'href' && 
+                        (attrValue.indexOf('javascript:') === 0 || 
+                         attrValue.indexOf('data:') === 0 || 
+                         attrValue.indexOf('vbscript:') === 0)) {
                     attrsToRemove.push(attr.name);
-                }
-                // Enforce opener-safe behavior for links opened in a new tab
-                else if (attrNameLower === 'target' && attrValueNormalized === '_blank') {
-                    var relValue = node.getAttribute('rel') || '';
-                    var relParts = relValue.split(/\s+/).filter(Boolean);
-                    if (relParts.indexOf('noopener') === -1) {
-                        relParts.push('noopener');
-                    }
-                    if (relParts.indexOf('noreferrer') === -1) {
-                        relParts.push('noreferrer');
-                    }
-                    node.setAttribute('rel', relParts.join(' '));
                 }
             }
             attrsToRemove.forEach(function(attrName) {
@@ -202,13 +175,8 @@ function sanitize_email_template_html(html) {
         }
     });
     
-    // Move the sanitized fragment into a container to return its HTML string.
-    var container = document.createElement('div');
-    while (temp.firstChild) {
-        container.appendChild(temp.firstChild);
-    }
-    
-    return container.innerHTML;
+    // Return sanitized HTML.
+    return temp.innerHTML;
 }
 
 function update_email_template_preview() {

@@ -1,12 +1,18 @@
 <div id="fullpage-loader" style="display: none">
     <div class="loader-content">
         <i id="loader-icon" class="fa fa-cog fa-spin"></i>
-        <div id="loader-error" style="display: none">
-            <?php _trans('loading_error'); ?><br/>
-            <a href="https://wiki.invoiceplane.com/<?php _trans('cldr'); ?>/1.0/general/faq"
-               class="btn btn-primary btn-sm" target="_blank">
-                <i class="fa fa-support"></i> <?php _trans('loading_error_help'); ?>
-            </a>
+        <img id="loader-error-icon" src="<?php echo base_url('assets/core/img/loader-error.svg'); ?>" 
+             alt="<?php echo html_escape(trans('loading_error')); ?>">
+        <div id="loader-error" class="loader-error-message" style="display: none">
+            <div class="alert alert-danger">
+                <strong><i class="fa fa-exclamation-triangle"></i> <?php _trans('loading_error'); ?></strong>
+                <div class="loader-error-actions">
+                    <a href="https://wiki.invoiceplane.com/<?php _trans('cldr'); ?>/1.0/general/faq"
+                       class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
+                        <i class="fa fa-support"></i> <?php _trans('loading_error_help'); ?>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="text-right">

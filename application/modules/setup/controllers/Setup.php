@@ -126,6 +126,8 @@ class Setup extends MX_Controller
             }
         }
 
+        $check_database = null;
+
         if ($this->input->post('db_hostname')) {
             if ($setupCompleted) {
                 $this->errors += 1;
@@ -133,44 +135,69 @@ class Setup extends MX_Controller
                     'message' => 'Setup is locked: configuration changes are disabled after completion.',
                     'success' => false,
                 ];
+                $this->layout->set('validation_error', $check_database['message']);
             } else {
-                $port = sanitize_database_port($this->input->post('db_port'));
+                // Validate all database configuration parameters before writing
+                $validation_result = $this->validate_database_config(
+                    $this->input->post('db_hostname'),
+                    $this->input->post('db_username'),
+                    $this->input->post('db_password'),
+                    $this->input->post('db_database'),
+                    $this->input->post('db_port')
+                );
 
-                if ($port === null) {
+                if ( ! $validation_result['valid']) {
+                    // Set error counter and store validation error
                     $this->errors += 1;
                     $check_database = [
-                        'message' => 'Invalid database port: must be between 1 and 65535.',
+                        'message' => $validation_result['error'],
                         'success' => false,
                     ];
+                    $this->layout->set('validation_error', $validation_result['error']);
                 } else {
-                    $hostname = sanitize_database_config_value(trim((string) $this->input->post('db_hostname')));
-                    $username = sanitize_database_config_value(trim((string) $this->input->post('db_username')));
-                    $password = sanitize_database_config_value($this->input->post('db_password'));
-                    $database = sanitize_database_config_value(trim((string) $this->input->post('db_database')));
+                    $port = sanitize_database_port($validation_result['port']);
 
-                    $submitted_configuration = [
-                        'hostname' => $hostname,
-                        'username' => $username,
-                        'password' => $password,
-                        'database' => $database,
-                        'port'     => $port,
-                    ];
+                    if ($port === null) {
+                        $this->errors += 1;
+                        $check_database = [
+                            'message' => 'Invalid database port: must be between 1 and 65535.',
+                            'success' => false,
+                        ];
+                        $this->layout->set('validation_error', $check_database['message']);
+                    } else {
+                        $hostname = sanitize_database_config_value(trim((string) $validation_result['hostname']));
+                        $username = sanitize_database_config_value(trim((string) $validation_result['username']));
+                        $password = sanitize_database_config_value($validation_result['password']);
+                        $database = sanitize_database_config_value(trim((string) $validation_result['database']));
 
-                    $check_database = $this->check_database($submitted_configuration);
+                        $submitted_configuration = [
+                            'hostname' => $hostname,
+                            'username' => $username,
+                            'password' => $password,
+                            'database' => $database,
+                            'port'     => $port,
+                        ];
+
+                        $check_database = $this->check_database($submitted_configuration);
+
+                        if ($check_database['success']) {
+                            // Write a new database configuration to the ipconfig.php file
+                            $this->write_database_config(
+                                $hostname,
+                                $username,
+                                $password,
+                                $database,
+                                $port
+                            );
+                        } else {
+                            $this->errors += 1;
+                        }
+                    }
                 }
             }
+        }
 
-            if ($check_database['success']) {
-                // Write a new database configuration to the ipconfig.php file
-                $this->write_database_config(
-                    $submitted_configuration['hostname'],
-                    $submitted_configuration['username'],
-                    $submitted_configuration['password'],
-                    $submitted_configuration['database'],
-                    $submitted_configuration['port']
-                );
-            }
-        } else {
+        if ($check_database === null) {
             $check_database = $this->check_database();
         }
 
@@ -420,9 +447,110 @@ class Setup extends MX_Controller
     }
 
     /**
-     * @param int $port
+     * Get user-friendly error message for database configuration validation error.
+     *
+     * @param string $error_code The internal error code from validate_db_config_parameter()
+     * @param string $param_type The parameter type (hostname, username, etc.)
+     *
+     * @return string User-friendly error message
      */
-    private function write_database_config(string $hostname, string $username, string $password, string $database, $port = 3306)
+    private function get_validation_error_message(string $error_code, string $param_type): string
+    {
+        // Map internal error codes to user-friendly messages
+        // This prevents exposing internal validation logic to potential attackers
+        $messages = [
+            'empty_value'             => 'This field is required.',
+            'newline_detected'        => 'Invalid format. Please check your input.',
+            'null_byte'               => 'Invalid format. Please check your input.',
+            'invalid_hostname_format' => 'Invalid hostname format. Please use a valid hostname or IP address.',
+            'invalid_username_format' => 'Invalid username format. Only alphanumeric characters, dots, hyphens, underscores, and @ are allowed.',
+            'invalid_password_format' => 'Invalid password format. Please check your password.',
+            'invalid_database_format' => 'Invalid database name format. Only alphanumeric characters, underscores, and hyphens are allowed.',
+            'invalid_port'            => 'Invalid port number. Please enter a number between 1 and 65535.',
+        ];
+
+        // Return the user-friendly message or a generic error
+        return $messages[$error_code] ?? 'Invalid ' . $param_type . ' format.';
+    }
+
+    /**
+     * Validate database configuration parameters to prevent injection attacks.
+     *
+     * @param string     $hostname Database hostname
+     * @param string     $username Database username
+     * @param string     $password Database password
+     * @param string     $database Database name
+     * @param string|int $port     Database port
+     *
+     * @return array Array with 'valid' (bool) and validated parameters
+     */
+    private function validate_database_config(string $hostname, string $username, string $password, string $database, $port): array
+    {
+        // Validate hostname
+        $hostname_validation = validate_db_config_parameter($hostname, 'hostname');
+        if ( ! $hostname_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($hostname_validation['error'], 'hostname'),
+            ];
+        }
+
+        // Validate username
+        $username_validation = validate_db_config_parameter($username, 'username');
+        if ( ! $username_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($username_validation['error'], 'username'),
+            ];
+        }
+
+        // Validate password (can be empty, but must not contain control characters)
+        $password_validation = validate_db_config_parameter($password, 'password');
+        if ( ! $password_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($password_validation['error'], 'password'),
+            ];
+        }
+
+        // Validate database name
+        $database_validation = validate_db_config_parameter($database, 'database');
+        if ( ! $database_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($database_validation['error'], 'database'),
+            ];
+        }
+
+        // Validate port
+        $port_validation = validate_db_config_parameter((string) $port, 'port');
+        if ( ! $port_validation['valid']) {
+            return [
+                'valid' => false,
+                'error' => $this->get_validation_error_message($port_validation['error'], 'port'),
+            ];
+        }
+
+        return [
+            'valid'    => true,
+            'hostname' => $hostname_validation['sanitized'],
+            'username' => $username_validation['sanitized'],
+            'password' => $password_validation['sanitized'],
+            'database' => $database_validation['sanitized'],
+            'port'     => (int) $port_validation['sanitized'],
+        ];
+    }
+
+    /**
+     * Write database configuration to ipconfig.php file.
+     *
+     * @param string $hostname Database hostname
+     * @param string $username Database username
+     * @param string $password Database password
+     * @param string $database Database name
+     * @param int    $port     Database port (default: 3306)
+     */
+    private function write_database_config(string $hostname, string $username, string $password, string $database, int $port = 3306)
     {
         $config = file_get_contents(IPCONFIG_FILE);
 
@@ -559,10 +687,10 @@ class Setup extends MX_Controller
                 ];
             }
 
-                return [
-                    'needs_config'  => false,
-                    'current_value' => 'false',
-                ];
+            return [
+                'needs_config'  => false,
+                'current_value' => 'false',
+            ];
         }
 
         return ['needs_config' => false];

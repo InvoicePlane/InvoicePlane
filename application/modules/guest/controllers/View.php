@@ -84,7 +84,7 @@ class View extends Base_Controller
 
         // Security: Validate template name to prevent Local File Inclusion
         $requested_template = get_setting('public_invoice_template');
-        $template_name = validate_template_name($requested_template, 'invoice', 'public');
+        $template_name      = validate_template_name($requested_template, 'invoice', 'public');
         if ($template_name === false) {
             // Sanitize template name for logging to prevent log injection / poisoning
             $safe_template_for_log = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
@@ -92,7 +92,7 @@ class View extends Base_Controller
             $template_name = 'InvoicePlane_Web'; // Fallback to default template
         }
 
-        $this->load->view('invoice_templates/public/' . $template_name . '.php', $data);
+        render_template_view('invoice_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
@@ -169,6 +169,7 @@ class View extends Base_Controller
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quote_tax_rates');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->helper('template');
 
         $quote = $quote->row();
 
@@ -202,9 +203,8 @@ class View extends Base_Controller
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
         // Security: Validate template name to prevent Local File Inclusion
-        $this->load->helper('template');
         $requested_template = get_setting('public_quote_template');
-        $template_name = validate_template_name($requested_template, 'quote', 'public');
+        $template_name      = validate_template_name($requested_template, 'quote', 'public');
         if ($template_name === false) {
             // Security: sanitize template name before logging to prevent log injection
             $safe_requested_template = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
@@ -212,7 +212,7 @@ class View extends Base_Controller
             $template_name = 'InvoicePlane_Web'; // Fallback to default template
         }
 
-        $this->load->view('quote_templates/public/' . $template_name . '.php', $data);
+        render_template_view('quote_templates/public/' . $template_name . '.php', $data);
     }
 
     /**
@@ -236,52 +236,6 @@ class View extends Base_Controller
         $this->load->helper('pdf');
 
         generate_quote_pdf($quote->quote_id, $stream, $quote_template);
-    }
-
-    /**
-     * Validate guest user has access to a quote by URL key
-     * Returns the quote object if valid, or shows error/404
-     *
-     * @param string $quote_url_key The quote URL key
-     * @return object The quote object
-     */
-    private function validate_guest_quote_access(string $quote_url_key): object
-    {
-        // Require POST request to prevent CSRF attacks
-        if ($this->input->method() !== 'post') {
-            show_404();
-        }
-
-        // Require authentication as a guest user
-        if (!$this->session->userdata('user_id') || (int)$this->session->userdata('user_type') !== 2) {
-            show_error(trans('guest_account_denied'), 403);
-        }
-
-        $this->load->model('quotes/mdl_quotes');
-        $this->load->model('user_clients/mdl_user_clients');
-
-        // Get guest user's assigned clients
-        $user_clients_result = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
-        $user_clients = [];
-        foreach ($user_clients_result as $user_client) {
-            $user_clients[$user_client->client_id] = $user_client->client_id;
-        }
-
-        if (empty($user_clients)) {
-            show_error(trans('guest_account_denied'), 403);
-        }
-
-        // Verify quote belongs to one of the guest user's assigned clients and is open (status 2-3)
-        $quote = $this->mdl_quotes->is_open()
-            ->where('ip_quotes.quote_url_key', $quote_url_key)
-            ->where_in('ip_quotes.client_id', $user_clients)
-            ->get()->row();
-
-        if ($quote === null) {
-            show_404();
-        }
-
-        return $quote;
     }
 
     /**
@@ -320,6 +274,53 @@ class View extends Base_Controller
         }
 
         redirect('guest/view/quote/' . $quote_url_key);
+    }
+
+    /**
+     * Validate guest user has access to a quote by URL key
+     * Returns the quote object if valid, or shows error/404.
+     *
+     * @param string $quote_url_key The quote URL key
+     *
+     * @return object The quote object
+     */
+    private function validate_guest_quote_access(string $quote_url_key): object
+    {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        // Require authentication as a guest user
+        if ( ! $this->session->userdata('user_id') || (int) $this->session->userdata('user_type') !== 2) {
+            show_error(trans('guest_account_denied'), 403);
+        }
+
+        $this->load->model('quotes/mdl_quotes');
+        $this->load->model('user_clients/mdl_user_clients');
+
+        // Get guest user's assigned clients
+        $user_clients_result = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
+        $user_clients        = [];
+        foreach ($user_clients_result as $user_client) {
+            $user_clients[$user_client->client_id] = $user_client->client_id;
+        }
+
+        if (empty($user_clients)) {
+            show_error(trans('guest_account_denied'), 403);
+        }
+
+        // Verify quote belongs to one of the guest user's assigned clients and is open (status 2-3)
+        $quote = $this->mdl_quotes->is_open()
+            ->where('ip_quotes.quote_url_key', $quote_url_key)
+            ->where_in('ip_quotes.client_id', $user_clients)
+            ->get()->row();
+
+        if ($quote === null) {
+            show_404();
+        }
+
+        return $quote;
     }
 
     /**

@@ -1,0 +1,16 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    tmpDir: null
+    level: 0
+    paths:
+        - application/modules/
+
+    excludePaths:
+        analyse:
+
+    ignoreErrors:
+
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false

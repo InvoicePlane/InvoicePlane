@@ -5,6 +5,18 @@ All notable changes to InvoicePlane will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Security
+
+**CRITICAL: Fixed Broken Authentication - Password reset tokens now expire (#TBD)**
+- Password reset tokens now expire after a configurable time (default: 15 minutes)
+- Added `user_passwordreset_token_expiry` database column to track token creation time
+- Tokens are automatically invalidated after expiration
+- Prevents indefinite token validity that could lead to account takeover
+- Expired tokens are automatically cleared from the database
+- Configuration option `PASSWORD_RESET_TOKEN_EXPIRY_MINUTES` added to ipconfig.php.example
+
 ## [1.7.0] - 2025-12-02
 
 ### Added
@@ -12,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced security logging for file uploads and template operations
 - Comprehensive input validation for template parameters
 - Security warnings in admin interface for SVG logo files
+- Optional EXIF metadata stripping from uploaded images (disabled by default)
+  - Configurable via `SEC_STRIP_EXIF_FROM_IMAGES` setting in `ipconfig.php`
+  - Removes GPS coordinates, timestamps, camera info, and device information
+  - Supports JPEG, PNG, GIF, and WEBP formats
+  - Preserves image quality while protecting user privacy
 
 ### Changed
 - Updated all PHP dependencies for PHP 8.2+ compatibility

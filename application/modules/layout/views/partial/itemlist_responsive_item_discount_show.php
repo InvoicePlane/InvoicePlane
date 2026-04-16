@@ -10,7 +10,7 @@ $item_value = isset($item) ? format_currency($item->item_discount) : '';
 <?php
 $item_global_discount = $item_value ? $item->item_subtotal - ($item->item_total - $item->item_tax_total + $item->item_discount) : 0;
 if ( ! $legacy_calculation && $item_global_discount) {
-?>
+    ?>
                                 <div class="row mb-1">
                                     <div class="col-xs-9 col-sm-8"><?php _trans('global_discount'); ?>:</div>
                                     <div class="col-xs-3 col-sm-4"><?php echo format_currency($item_global_discount); ?></div>
