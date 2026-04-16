@@ -601,8 +601,25 @@ class Setup extends MX_Controller
             return;
         }
         
-        $config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config);
-        $config = preg_replace('/^DISABLE_SETUP\s*=\s*.*$/m', 'DISABLE_SETUP=true', $config);
+        // Set SETUP_COMPLETED flag
+        $new_config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config, -1, $count_completed);
+        if ($new_config === null) {
+            log_message('error', 'preg_replace failed for SETUP_COMPLETED flag. Possible PCRE error.');
+            return;
+        }
+        if ($count_completed === 0) {
+            log_message('error', 'SETUP_COMPLETED flag not found in ipconfig.php. Setup may be misconfigured.');
+        }
+        
+        // Set DISABLE_SETUP flag
+        $config = preg_replace('/^DISABLE_SETUP\s*=\s*.*$/m', 'DISABLE_SETUP=true', $new_config, -1, $count_disable);
+        if ($config === null) {
+            log_message('error', 'preg_replace failed for DISABLE_SETUP flag. Possible PCRE error.');
+            return;
+        }
+        if ($count_disable === 0) {
+            log_message('error', 'DISABLE_SETUP flag not found in ipconfig.php. Setup may be misconfigured.');
+        }
         
         $result = @write_file(IPCONFIG_FILE, $config);
         if (!$result) {
