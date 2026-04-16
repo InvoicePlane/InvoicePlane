@@ -46,7 +46,7 @@ Quote Templates (PDF):
 - `InvoicePlane.php`
 - `.gitignore`
 
-**⚠️ If you find ANY other PHP files, they are potentially malicious and should be investigated immediately.**
+**WARNING: If you find ANY other PHP files, they are potentially malicious and should be investigated immediately.**
 
 ### 2. Check Database for Suspicious Template Settings
 
@@ -70,7 +70,7 @@ WHERE setting_key LIKE '%template%';
 - `email_invoice_template`: (various, should be from email templates)
 - `email_quote_template`: (various, should be from email templates)
 
-**⚠️ If any PDF or public template setting contains an unexpected value, investigate immediately.**
+**WARNING: If any PDF or public template setting contains an unexpected value, investigate immediately.**
 
 ### 3. Review Web Server Logs
 
