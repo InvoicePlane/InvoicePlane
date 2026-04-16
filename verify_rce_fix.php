@@ -63,28 +63,33 @@ foreach ($test_cases as $test) {
 echo "\nStep 2: Verifying static whitelist implementation...\n";
 
 // Check that Mdl_templates.php doesn't use directory_map
-$mdl_templates_content = file_get_contents(APPPATH . 'modules/invoices/models/Mdl_templates.php');
+$mdl_templates_path = APPPATH . 'modules/invoices/models/Mdl_templates.php';
+$mdl_templates_content = file_get_contents($mdl_templates_path);
 
-if (strpos($mdl_templates_content, 'directory_map') !== false) {
-    echo "  " . red("✗") . " FAIL: Mdl_templates.php still uses directory_map() - VULNERABLE!\n";
+if ($mdl_templates_content === false) {
+    echo "  " . red("✗") . " FAIL: Could not read {$mdl_templates_path}. Check that the file exists and is readable.\n";
     $failed++;
 } else {
-    echo "  " . green("✓") . " Mdl_templates.php does not use directory_map()\n";
-    $passed++;
-}
+    if (strpos($mdl_templates_content, 'directory_map') !== false) {
+        echo "  " . red("✗") . " FAIL: Mdl_templates.php still uses directory_map() - VULNERABLE!\n";
+        $failed++;
+    } else {
+        echo "  " . green("✓") . " Mdl_templates.php does not use directory_map()\n";
+        $passed++;
+    }
 
-if (strpos($mdl_templates_content, 'ALLOWED_INVOICE_TEMPLATES') !== false) {
-    echo "  " . green("✓") . " Static whitelist ALLOWED_INVOICE_TEMPLATES found\n";
-    $passed++;
-} else {
-    echo "  " . red("✗") . " FAIL: Static whitelist ALLOWED_INVOICE_TEMPLATES not found - VULNERABLE!\n";
-    $failed++;
-}
+    if (strpos($mdl_templates_content, 'ALLOWED_INVOICE_TEMPLATES') !== false) {
+        echo "  " . green("✓") . " Static whitelist ALLOWED_INVOICE_TEMPLATES found\n";
+        $passed++;
+    } else {
+        echo "  " . red("✗") . " FAIL: Static whitelist ALLOWED_INVOICE_TEMPLATES not found - VULNERABLE!\n";
+        $failed++;
+    }
 
-if (strpos($mdl_templates_content, 'ALLOWED_QUOTE_TEMPLATES') !== false) {
-    echo "  " . green("✓") . " Static whitelist ALLOWED_QUOTE_TEMPLATES found\n";
-    $passed++;
-} else {
+    if (strpos($mdl_templates_content, 'ALLOWED_QUOTE_TEMPLATES') !== false) {
+        echo "  " . green("✓") . " Static whitelist ALLOWED_QUOTE_TEMPLATES found\n";
+        $passed++;
+    } else {
     echo "  " . red("✗") . " FAIL: Static whitelist ALLOWED_QUOTE_TEMPLATES not found - VULNERABLE!\n";
     $failed++;
 }
