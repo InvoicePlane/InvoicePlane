@@ -35,8 +35,8 @@ $files       = $data['files'] ?? [];
 $totalErrors = $data['totals']['file_errors'] ?? 0;
 
 if ($totalErrors === 0) {
-    echo "## ✅ PHPStan Analysis - No Errors Found\n\n";
-    echo "All files passed static analysis!\n";
+    echo "## PHPStan Analysis: No Errors Found\n\n";
+    echo "All files passed static analysis.\n";
     exit(0);
 }
 
@@ -75,23 +75,22 @@ foreach ($files as $filePath => $fileData) {
 }
 
 // Generate markdown report
-echo "## 🔍 PHPStan Analysis Report\n\n";
-echo "**Total Errors:** {$totalErrors}\n\n";
+echo "## PHPStan Analysis Report\n\n";
+echo "**Total errors:** {$totalErrors}\n\n";
 
 // Summary by category
-echo "### 📊 Error Summary by Category\n\n";
+echo "### Error Summary by Category\n\n";
 foreach ($errorsByCategory as $category => $errors) {
     $count = count($errors);
     if ($count > 0) {
-        $emoji = getCategoryEmoji($category);
         $label = getCategoryLabel($category);
-        echo "- {$emoji} **{$label}**: {$count} error(s)\n";
+        echo "- **{$label}**: {$count} error(s)\n";
     }
 }
 echo "\n---\n\n";
 
 // Detailed errors grouped by file
-echo "### 📝 Detailed Errors by File\n\n";
+echo "### Detailed Errors by File\n\n";
 
 $fileCount = 0;
 foreach ($errorsByFile as $filePath => $errors) {
@@ -115,7 +114,7 @@ foreach ($errorsByFile as $filePath => $errors) {
 echo "---\n\n";
 
 // Generate actionable checklist
-echo "### ✅ Actionable Checklist\n\n";
+echo "### Actionable Checklist\n\n";
 echo "Use this checklist to track fixes:\n\n";
 
 foreach ($errorsByFile as $filePath => $errors) {
@@ -166,22 +165,6 @@ function categorizeError(string $message): string
     }
 
     return 'other_errors';
-}
-
-/**
- * Get emoji for error category.
- */
-function getCategoryEmoji(string $category): string
-{
-    $emojis = [
-        'type_errors'        => '🔢',
-        'method_errors'      => '🔧',
-        'property_errors'    => '📦',
-        'return_type_errors' => '↩️',
-        'other_errors'       => '⚠️',
-    ];
-
-    return $emojis[$category] ?? '❓';
 }
 
 /**
