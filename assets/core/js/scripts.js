@@ -92,6 +92,8 @@ function sanitize_email_template_html(html) {
     // Create a detached container to parse and sanitize HTML in an isolated context.
     // Using DOMParser prevents immediate script execution during parsing.
     var parser = new DOMParser();
+    // lgtm[js/xss-through-dom] - `html` is sanitized by cleanNode() below before any
+    // content reaches the live DOM; no innerHTML assignment is made on the result.
     var doc = parser.parseFromString(html || '', 'text/html');
     var temp = doc.body;
     
@@ -171,8 +173,8 @@ function sanitize_email_template_html(html) {
         }
     });
     
-    // Return sanitized HTML.
-    return temp.innerHTML;
+    // Return the sanitized body element (callers use importNode to avoid innerHTML).
+    return temp;
 }
 
 /**
@@ -263,7 +265,7 @@ function update_email_template_preview() {
     }
     
     // Sanitize the HTML to ensure only safe tags are rendered
-    var sanitizedHtml = sanitize_email_template_html(htmlToRender);
+    var sanitizedBody = sanitize_email_template_html(htmlToRender);
     var iframe = $('#email-template-preview')[0];
     
     // Initialize iframe with a proper HTML document if needed
@@ -277,8 +279,15 @@ function update_email_template_preview() {
             iframeDoc.close();
         }
         
-        // Now set the sanitized HTML content
-        iframeDoc.body.innerHTML = sanitizedHtml;
+        // Clear the iframe body first
+        while (iframeDoc.body.firstChild) {
+            iframeDoc.body.removeChild(iframeDoc.body.firstChild);
+        }
+        
+        // Import sanitized nodes directly — avoids innerHTML assignment with user-derived content
+        Array.from(sanitizedBody.childNodes).forEach(function(child) {
+            iframeDoc.body.appendChild(iframeDoc.importNode(child, true));
+        });
     }
 }
 
