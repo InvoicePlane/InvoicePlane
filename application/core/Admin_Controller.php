@@ -23,50 +23,6 @@ class Admin_Controller extends User_Controller
         $this->check_setup_security();
     }
 
-    /**
-     * Check if setup wizard is properly disabled and warn admins if not.
-     * This security check helps detect misconfigurations that could allow
-     * unauthorized access to the setup wizard.
-     */
-    private function check_setup_security(): void
-    {
-        // Only check once per session to avoid repeated warnings
-        if ($this->session->userdata('setup_security_checked')) {
-            return;
-        }
-
-        // Default to false (insecure) if flags are not set - this ensures we warn about missing config
-        $setup_completed = env_bool('SETUP_COMPLETED', false);
-        $disable_setup = env_bool('DISABLE_SETUP', false);
-
-        // If either flag is not properly set, show a security warning
-        if (!$setup_completed || !$disable_setup) {
-            $warning_parts = [];
-            
-            if (!$setup_completed) {
-                $warning_parts[] = trans('setup_completed_flag_false');
-            }
-            
-            if (!$disable_setup) {
-                $warning_parts[] = trans('disable_setup_flag_false');
-            }
-
-            // Format: "Security Warning: [flags]. [description] [instructions]"
-            $warning_message = sprintf(
-                '%s: %s. %s %s',
-                trans('security_warning'),
-                implode(' and ', $warning_parts),
-                trans('setup_wizard_accessible'),
-                trans('please_update_ipconfig')
-            );
-
-            $this->session->set_flashdata('alert_warning', $warning_message);
-        }
-
-        // Mark as checked for this session
-        $this->session->set_userdata('setup_security_checked', true);
-    }
-
     protected function filter_input(): void
     {
         // Fields that should bypass XSS sanitization
@@ -163,6 +119,50 @@ class Admin_Controller extends User_Controller
         if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
             $this->output->set_header('X-Content-Type-Options: nosniff');
         }
+    }
+
+    /**
+     * Check if setup wizard is properly disabled and warn admins if not.
+     * This security check helps detect misconfigurations that could allow
+     * unauthorized access to the setup wizard.
+     */
+    private function check_setup_security(): void
+    {
+        // Only check once per session to avoid repeated warnings
+        if ($this->session->userdata('setup_security_checked')) {
+            return;
+        }
+
+        // Default to false (insecure) if flags are not set - this ensures we warn about missing config
+        $setup_completed = env_bool('SETUP_COMPLETED', false);
+        $disable_setup   = env_bool('DISABLE_SETUP', false);
+
+        // If either flag is not properly set, show a security warning
+        if ( ! $setup_completed || ! $disable_setup) {
+            $warning_parts = [];
+
+            if ( ! $setup_completed) {
+                $warning_parts[] = trans('setup_completed_flag_false');
+            }
+
+            if ( ! $disable_setup) {
+                $warning_parts[] = trans('disable_setup_flag_false');
+            }
+
+            // Format: "Security Warning: [flags]. [description] [instructions]"
+            $warning_message = sprintf(
+                '%s: %s. %s %s',
+                trans('security_warning'),
+                implode(' and ', $warning_parts),
+                trans('setup_wizard_accessible'),
+                trans('please_update_ipconfig')
+            );
+
+            $this->session->set_flashdata('alert_warning', $warning_message);
+        }
+
+        // Mark as checked for this session
+        $this->session->set_userdata('setup_security_checked', true);
     }
 
     /**

@@ -22,15 +22,6 @@ class Mdl_Uploads extends Response_Model
 
     public $date_modified_field = 'uploaded_date';
 
-    /**
-     * Constructor - load file security helper for validation
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->load->helper('file_security');
-    }
-
     public $content_types = [
         'avif' => 'image/avif',
         'gif'  => 'image/gif',
@@ -61,6 +52,15 @@ class Mdl_Uploads extends Response_Model
         'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'odp'  => 'application/vnd.oasis.opendocument.presentation',
     ];
+
+    /**
+     * Constructor - load file security helper for validation.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('file_security');
+    }
 
     public function default_order_by()
     {
@@ -100,7 +100,7 @@ class Mdl_Uploads extends Response_Model
                     ));
                     continue;
                 }
-                
+
                 $names[] = [
                     'path'     => $validated['path'],
                     'filename' => $row->file_name_original,
@@ -136,7 +136,7 @@ class Mdl_Uploads extends Response_Model
                     ));
                     continue;
                 }
-                
+
                 $names[] = [
                     'path'     => $validated['path'],
                     'filename' => $row->file_name_original,
@@ -167,7 +167,7 @@ class Mdl_Uploads extends Response_Model
                     ));
                     continue;
                 }
-                
+
                 $size = @filesize($validated['path']);
                 if ($size === false) {
                     // Probably Deleted, remove it

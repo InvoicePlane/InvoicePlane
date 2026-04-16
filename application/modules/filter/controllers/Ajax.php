@@ -89,10 +89,10 @@ class Ajax extends Admin_Controller
         // Security: Extract table name from referer URL path basename for filtering
         // Parse the URL path first so query strings do not affect basename extraction
         $name = 'all'; // Default value
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            $referer = $_SERVER['HTTP_REFERER'];
+        if ( ! empty($_SERVER['HTTP_REFERER'])) {
+            $referer      = $_SERVER['HTTP_REFERER'];
             $referer_path = parse_url($referer, PHP_URL_PATH);
-            
+
             if (is_string($referer_path) && $referer_path !== '') {
                 $referer_basename = basename($referer_path);
                 // Validate it matches expected pattern (alphanumeric and underscores only)
@@ -139,8 +139,8 @@ class Ajax extends Admin_Controller
         // Security: Extract ID from referer URL path basename for filtering
         // Parse the URL path first so query strings do not affect basename extraction
         $id = 0; // Default value
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            $referer = $_SERVER['HTTP_REFERER'];
+        if ( ! empty($_SERVER['HTTP_REFERER'])) {
+            $referer      = $_SERVER['HTTP_REFERER'];
             $referer_path = parse_url($referer, PHP_URL_PATH);
 
             if (is_string($referer_path) && $referer_path !== '') {
@@ -188,8 +188,8 @@ class Ajax extends Admin_Controller
         // Security: Extract ID from referer URL path basename for filtering
         // Parse the URL path first so query strings do not affect basename extraction
         $id = 0; // Default value
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            $referer = $_SERVER['HTTP_REFERER'];
+        if ( ! empty($_SERVER['HTTP_REFERER'])) {
+            $referer      = $_SERVER['HTTP_REFERER'];
             $referer_path = parse_url($referer, PHP_URL_PATH);
 
             if (is_string($referer_path) && $referer_path !== '') {

@@ -73,7 +73,8 @@ class Mdl_Templates extends CI_Model
         // Security: Return static whitelist only - NEVER scan filesystem
         if ($type === 'pdf') {
             return self::ALLOWED_INVOICE_TEMPLATES['pdf'];
-        } elseif ($type === 'public') {
+        }
+        if ($type === 'public') {
             return self::ALLOWED_INVOICE_TEMPLATES['public'];
         }
 
@@ -95,36 +96,13 @@ class Mdl_Templates extends CI_Model
         // Security: Return static whitelist only - NEVER scan filesystem
         if ($type === 'pdf') {
             return self::ALLOWED_QUOTE_TEMPLATES['pdf'];
-        } elseif ($type === 'public') {
+        }
+        if ($type === 'public') {
             return self::ALLOWED_QUOTE_TEMPLATES['public'];
         }
 
         // Invalid type - return empty array
         return [];
-    }
-
-
-    /**
-     * Returns a merged list of template filenames from the built-in directory and,
-     * when configured, the custom templates folder.  Custom templates are listed
-     * first so that duplicates (same filename) are deduplicated in their favour.
-     *
-     * @param string $subpath Relative sub-path, e.g. 'invoice_templates/pdf'
-     * @param string $builtin Absolute path to the built-in template directory
-     *
-     * @return array
-     */
-    private function merge_custom_templates(string $subpath, string $builtin): array
-    {
-        $builtin_list = directory_map($builtin, true) ?: [];
-        $custom_list  = [];
-
-        if (CUSTOM_TEMPLATES_FOLDER) {
-            $custom_dir  = CUSTOM_TEMPLATES_FOLDER . $subpath;
-            $custom_list = is_array(directory_map($custom_dir, true)) ? directory_map($custom_dir, true) : [];
-        }
-
-        return array_values(array_unique(array_merge($custom_list, $builtin_list)));
     }
 
     /**
@@ -151,14 +129,37 @@ class Mdl_Templates extends CI_Model
             // Check if directory is writable
             if (is_writable($dir)) {
                 $warnings[] = [
-                    'directory' => $dir,
-                    'message' => 'Template directory is writable by web server. This is a security risk.',
+                    'directory'      => $dir,
+                    'message'        => 'Template directory is writable by web server. This is a security risk.',
                     'recommendation' => 'Set directory permissions to read-only (e.g., chmod 555)',
                 ];
             }
         }
 
         return $warnings;
+    }
+
+    /**
+     * Returns a merged list of template filenames from the built-in directory and,
+     * when configured, the custom templates folder.  Custom templates are listed
+     * first so that duplicates (same filename) are deduplicated in their favour.
+     *
+     * @param string $subpath Relative sub-path, e.g. 'invoice_templates/pdf'
+     * @param string $builtin Absolute path to the built-in template directory
+     *
+     * @return array
+     */
+    private function merge_custom_templates(string $subpath, string $builtin): array
+    {
+        $builtin_list = directory_map($builtin, true) ?: [];
+        $custom_list  = [];
+
+        if (CUSTOM_TEMPLATES_FOLDER) {
+            $custom_dir  = CUSTOM_TEMPLATES_FOLDER . $subpath;
+            $custom_list = is_array(directory_map($custom_dir, true)) ? directory_map($custom_dir, true) : [];
+        }
+
+        return array_values(array_unique(array_merge($custom_list, $builtin_list)));
     }
 
     /**

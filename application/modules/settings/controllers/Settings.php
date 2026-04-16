@@ -260,6 +260,98 @@ class Settings extends Admin_Controller
     }
 
     /**
+     * Remove a logo file with security validation.
+     *
+     * Security: Validates that the logo file path is safe and within the uploads directory
+     * to prevent arbitrary file deletion attacks.
+     *
+     * @param string $type Logo type ('invoice' or 'login')
+     */
+    public function remove_logo(string $type)
+    {
+        // Security: Validate type parameter against allowed values
+        $allowed_types = ['invoice', 'login'];
+        if ( ! in_array($type, $allowed_types, true)) {
+            log_message('error', sprintf(
+                'Invalid logo type specified: %s by user %s',
+                sanitize_for_logging($type),
+                sanitize_for_logging((string) $this->session->userdata('user_id'))
+            ));
+            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
+            redirect('settings');
+        }
+
+        // Get the logo filename from settings
+        $logo_filename = get_setting($type . '_logo');
+
+        // If no logo is configured, nothing to delete
+        if (empty($logo_filename)) {
+            $this->session->set_flashdata('alert_success', trans($type . '_logo_removed'));
+            redirect('settings');
+        }
+
+        // Security: Validate the logo filename is safe and within uploads directory
+        $uploads_dir = './uploads/';
+        $validation  = validate_file_access($logo_filename, $uploads_dir);
+
+        if ( ! $validation['valid']) {
+            // Special case: File not found is a legitimate scenario (manual deletion, disk cleanup)
+            // Allow clearing the stale database setting to prevent DB/disk inconsistency
+            // This is distinct from security validation failures which indicate attack attempts
+            if ($validation['error'] === 'file_not_found') {
+                log_message('info', sprintf(
+                    'Clearing stale logo setting for type=%s (file not found) by user %s',
+                    sanitize_for_logging($type),
+                    sanitize_for_logging((string) $this->session->userdata('user_id'))
+                ));
+                $this->mdl_settings->save($type . '_logo', '');
+                $this->session->set_flashdata('alert_success', trans($type . '_logo_removed'));
+                redirect('settings');
+            }
+
+            // Security: Log the invalid attempt with hash for investigation
+            log_message('error', sprintf(
+                'Invalid logo removal attempt for type=%s (hash: %s, error: %s) by user %s',
+                sanitize_for_logging($type),
+                sanitize_for_logging((string) $validation['hash']),
+                sanitize_for_logging((string) ($validation['error'] ?? 'unknown')),
+                sanitize_for_logging((string) $this->session->userdata('user_id'))
+            ));
+
+            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
+            redirect('settings');
+        }
+
+        // Security: Use the validated path from validation result
+        // Attempt to delete the file and verify success
+        // Note: file_exists() check serves dual purpose:
+        //   1. TOCTOU protection - file could be deleted between validation and unlink
+        //   2. Graceful handling - allows DB cleanup if file already removed
+        if (file_exists($validation['path'])) {
+            $deleted = unlink($validation['path']);
+            if ( ! $deleted) {
+                // Re-check file existence - if file is gone (race delete), proceed with cleanup
+                if (file_exists($validation['path'])) {
+                    log_message('error', sprintf(
+                        'Failed to remove logo file for type=%s by user %s',
+                        sanitize_for_logging($type),
+                        sanitize_for_logging((string) $this->session->userdata('user_id'))
+                    ));
+                    $this->session->set_flashdata('alert_error', trans('failure'));
+                    redirect('settings');
+                }
+            }
+        }
+
+        // Only clear DB setting after successful file deletion (or if file doesn't exist)
+        $this->mdl_settings->save($type . '_logo', '');
+
+        $this->session->set_flashdata('alert_success', trans($type . '_logo_removed'));
+
+        redirect('settings');
+    }
+
+    /**
      * Check for SVG logos and display security warnings
      * This provides a soft migration path for existing SVG logos.
      */
@@ -372,98 +464,6 @@ class Settings extends Admin_Controller
         unset($settings['tax_rate_decimal_places']);
 
         return $settings;
-    }
-
-    /**
-     * Remove a logo file with security validation.
-     * 
-     * Security: Validates that the logo file path is safe and within the uploads directory
-     * to prevent arbitrary file deletion attacks.
-     * 
-     * @param string $type Logo type ('invoice' or 'login')
-     */
-    public function remove_logo(string $type)
-    {
-        // Security: Validate type parameter against allowed values
-        $allowed_types = ['invoice', 'login'];
-        if (!in_array($type, $allowed_types, true)) {
-            log_message('error', sprintf(
-                'Invalid logo type specified: %s by user %s',
-                sanitize_for_logging($type),
-                sanitize_for_logging((string) $this->session->userdata('user_id'))
-            ));
-            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
-            redirect('settings');
-        }
-        
-        // Get the logo filename from settings
-        $logo_filename = get_setting($type . '_logo');
-        
-        // If no logo is configured, nothing to delete
-        if (empty($logo_filename)) {
-            $this->session->set_flashdata('alert_success', trans($type . '_logo_removed'));
-            redirect('settings');
-        }
-        
-        // Security: Validate the logo filename is safe and within uploads directory
-        $uploads_dir = './uploads/';
-        $validation = validate_file_access($logo_filename, $uploads_dir);
-        
-        if (!$validation['valid']) {
-            // Special case: File not found is a legitimate scenario (manual deletion, disk cleanup)
-            // Allow clearing the stale database setting to prevent DB/disk inconsistency
-            // This is distinct from security validation failures which indicate attack attempts
-            if ($validation['error'] === 'file_not_found') {
-                log_message('info', sprintf(
-                    'Clearing stale logo setting for type=%s (file not found) by user %s',
-                    sanitize_for_logging($type),
-                    sanitize_for_logging((string) $this->session->userdata('user_id'))
-                ));
-                $this->mdl_settings->save($type . '_logo', '');
-                $this->session->set_flashdata('alert_success', trans($type . '_logo_removed'));
-                redirect('settings');
-            }
-            
-            // Security: Log the invalid attempt with hash for investigation
-            log_message('error', sprintf(
-                'Invalid logo removal attempt for type=%s (hash: %s, error: %s) by user %s',
-                sanitize_for_logging($type),
-                sanitize_for_logging((string) $validation['hash']),
-                sanitize_for_logging((string) ($validation['error'] ?? 'unknown')),
-                sanitize_for_logging((string) $this->session->userdata('user_id'))
-            ));
-            
-            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
-            redirect('settings');
-        }
-        
-        // Security: Use the validated path from validation result
-        // Attempt to delete the file and verify success
-        // Note: file_exists() check serves dual purpose:
-        //   1. TOCTOU protection - file could be deleted between validation and unlink
-        //   2. Graceful handling - allows DB cleanup if file already removed
-        if (file_exists($validation['path'])) {
-            $deleted = unlink($validation['path']);
-            if (!$deleted) {
-                // Re-check file existence - if file is gone (race delete), proceed with cleanup
-                if (file_exists($validation['path'])) {
-                    log_message('error', sprintf(
-                        'Failed to remove logo file for type=%s by user %s',
-                        sanitize_for_logging($type),
-                        sanitize_for_logging((string) $this->session->userdata('user_id'))
-                    ));
-                    $this->session->set_flashdata('alert_error', trans('failure'));
-                    redirect('settings');
-                }
-            }
-        }
-
-        // Only clear DB setting after successful file deletion (or if file doesn't exist)
-        $this->mdl_settings->save($type . '_logo', '');
-
-        $this->session->set_flashdata('alert_success', trans($type . '_logo_removed'));
-
-        redirect('settings');
     }
 
     /**

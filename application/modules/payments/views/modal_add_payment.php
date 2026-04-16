@@ -29,11 +29,11 @@
                         else {
                             // There are no payment custom fields, return to invoice view
                             // Security: Use safe referer to prevent open redirect attacks (CWE-601)
-                            window.location = <?php 
+                            window.location = <?php
                                 $CI = &get_instance();
-                                $CI->load->helper('security');
-                                echo escape_url_for_javascript(get_safe_referer('', site_url('invoices')));
-                            ?>;
+            $CI->load->helper('security');
+            echo escape_url_for_javascript(get_safe_referer('', site_url('invoices')));
+            ?>;
                         }
                     }
                     else {

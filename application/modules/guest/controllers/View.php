@@ -17,7 +17,7 @@ if ( ! defined('BASEPATH')) {
 class View extends Base_Controller
 {
     /**
-     * Constructor - load file security helper for validation
+     * Constructor - load file security helper for validation.
      */
     public function __construct()
     {
@@ -77,7 +77,7 @@ class View extends Base_Controller
 
         // Security: Validate strtotime() result before comparison to avoid type juggling
         $invoice_due_timestamp = strtotime($invoice->invoice_date_due);
-        $is_overdue = ($invoice->invoice_balance > 0
+        $is_overdue            = ($invoice->invoice_balance > 0
             && $invoice_due_timestamp !== false
             && $invoice_due_timestamp < time());
 
@@ -98,7 +98,7 @@ class View extends Base_Controller
 
         // Security: Validate and get template path with defense-in-depth
         $requested_template = get_setting('public_invoice_template');
-        $template_info = get_validated_template_path($requested_template, 'invoice', 'public', 'InvoicePlane_Web');
+        $template_info      = get_validated_template_path($requested_template, 'invoice', 'public', 'InvoicePlane_Web');
 
         render_template_view($template_info['path'], $data);
     }
@@ -197,7 +197,7 @@ class View extends Base_Controller
 
         // Security: Validate strtotime() result before comparison to avoid type juggling
         $quote_expires_timestamp = strtotime($quote->quote_date_expires);
-        $is_expired = ($quote_expires_timestamp !== false && $quote_expires_timestamp < time());
+        $is_expired              = ($quote_expires_timestamp !== false && $quote_expires_timestamp < time());
 
         $data = [
             'quote'              => $quote,
@@ -215,7 +215,7 @@ class View extends Base_Controller
         // Security: Validate and get template path with defense-in-depth
         $this->load->helper('template');
         $requested_template = get_setting('public_quote_template');
-        $template_info = get_validated_template_path($requested_template, 'quote', 'public', 'InvoicePlane_Web');
+        $template_info      = get_validated_template_path($requested_template, 'quote', 'public', 'InvoicePlane_Web');
 
         render_template_view($template_info['path'], $data);
     }
@@ -366,7 +366,7 @@ class View extends Base_Controller
                 }
 
                 // Check file exists before getting size
-                if (!file_exists($validated['path'])) {
+                if ( ! file_exists($validated['path'])) {
                     log_message('warning', sprintf(
                         'File not found for guest attachment (hash: %s)',
                         $validated['hash']

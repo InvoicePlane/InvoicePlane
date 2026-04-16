@@ -18,13 +18,13 @@ class Sessions extends Base_Controller
 {
     /**
      * Maximum allowed password reset token expiry time in minutes (24 hours)
-     * This enforces a security upper limit on how long tokens can remain valid
+     * This enforces a security upper limit on how long tokens can remain valid.
      */
     private const MAX_PASSWORD_RESET_EXPIRY_MINUTES = 1440;
 
     /**
      * UTC timezone instance for consistent timestamp handling
-     * Reused across password reset operations to avoid repeated instantiation
+     * Reused across password reset operations to avoid repeated instantiation.
      *
      * @var DateTimeZone
      */
@@ -137,15 +137,15 @@ class Sessions extends Base_Controller
                     if ( ! isset(self::$utc_timezone)) {
                         self::$utc_timezone = new DateTimeZone('UTC');
                     }
-                    
+
                     // Use UTC timezone for consistent timestamp comparison
-                    $expiry_time = new DateTime($user->user_passwordreset_token_expiry, self::$utc_timezone);
+                    $expiry_time  = new DateTime($user->user_passwordreset_token_expiry, self::$utc_timezone);
                     $current_time = new DateTime('now', self::$utc_timezone);
-                    
+
                     if ($current_time > $expiry_time) {
                         // Token has expired, clear it from database
                         $this->_clear_password_reset_token($user->user_id);
-                        
+
                         $this->load->helper('file_security');
                         log_message('info', 'Expired password reset token used for user ID: ' . sanitize_for_logging($user->user_id));
                         $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
@@ -265,8 +265,8 @@ class Sessions extends Base_Controller
                 $token = generate_password_reset_token();
 
                 // Calculate token expiry time (default: 15 minutes from now)
-                $expiry_minutes = (int)env('PASSWORD_RESET_TOKEN_EXPIRY_MINUTES', 15);
-                
+                $expiry_minutes = (int) env('PASSWORD_RESET_TOKEN_EXPIRY_MINUTES', 15);
+
                 // Validate expiry_minutes is within acceptable range (1-1440 minutes)
                 // Maximum is defined by MAX_PASSWORD_RESET_EXPIRY_MINUTES (24 hours) for security
                 if ($expiry_minutes < 1 || $expiry_minutes > self::MAX_PASSWORD_RESET_EXPIRY_MINUTES) {
@@ -274,13 +274,13 @@ class Sessions extends Base_Controller
                     $expiry_minutes = 15;
                     log_message('warning', 'Invalid PASSWORD_RESET_TOKEN_EXPIRY_MINUTES value, using default 15 minutes');
                 }
-                
+
                 try {
                     // Initialize UTC timezone if not already done
                     if ( ! isset(self::$utc_timezone)) {
                         self::$utc_timezone = new DateTimeZone('UTC');
                     }
-                    
+
                     // Use UTC timezone for consistent timestamp storage
                     $expiry_time = new DateTime('now', self::$utc_timezone);
                     $expiry_time->modify('+' . $expiry_minutes . ' minutes');
@@ -294,7 +294,7 @@ class Sessions extends Base_Controller
 
                 // Save the token and expiry to the database
                 $db_array = [
-                    'user_passwordreset_token' => $token,
+                    'user_passwordreset_token'        => $token,
                     'user_passwordreset_token_expiry' => $expiry_timestamp,
                 ];
 
@@ -603,11 +603,11 @@ class Sessions extends Base_Controller
     private function _clear_password_reset_token($user_id): void
     {
         // Ensure user_id is an integer for safety
-        $user_id = (int)$user_id;
-        
+        $user_id = (int) $user_id;
+
         $this->db->where('user_id', $user_id);
         $this->db->update('ip_users', [
-            'user_passwordreset_token' => '',
+            'user_passwordreset_token'        => '',
             'user_passwordreset_token_expiry' => null,
         ]);
     }

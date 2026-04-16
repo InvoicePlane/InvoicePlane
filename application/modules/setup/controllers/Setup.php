@@ -556,22 +556,22 @@ class Setup extends MX_Controller
 
         $config = preg_replace_callback(
             '/^DB_HOSTNAME=.*$/m',
-            static fn () => 'DB_HOSTNAME="' . addcslashes($hostname, "\\\"$") . '"',
+            static fn () => 'DB_HOSTNAME="' . addcslashes($hostname, '\\"$') . '"',
             $config
         );
         $config = preg_replace_callback(
             '/^DB_USERNAME=.*$/m',
-            static fn () => 'DB_USERNAME="' . addcslashes($username, "\\\"$") . '"',
+            static fn () => 'DB_USERNAME="' . addcslashes($username, '\\"$') . '"',
             $config
         );
         $config = preg_replace_callback(
             '/^DB_PASSWORD=.*$/m',
-            static fn () => 'DB_PASSWORD="' . addcslashes($password, "\\\"$") . '"',
+            static fn () => 'DB_PASSWORD="' . addcslashes($password, '\\"$') . '"',
             $config
         );
         $config = preg_replace_callback(
             '/^DB_DATABASE=.*$/m',
-            static fn () => 'DB_DATABASE="' . addcslashes($database, "\\\"$") . '"',
+            static fn () => 'DB_DATABASE="' . addcslashes($database, '\\"$') . '"',
             $config
         );
         $config = preg_replace_callback(
@@ -658,33 +658,38 @@ class Setup extends MX_Controller
         if ($config === false) {
             $error = error_get_last();
             log_message('error', trans('log_setup_failed_read_ipconfig') . ': ' . ($error['message'] ?? 'Unknown error'));
+
             return;
         }
-        
+
         // Set SETUP_COMPLETED flag
         $config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config, 1, $count_completed);
         if ($config === null) {
             log_message('error', trans('log_setup_preg_replace_failed_setup_completed'));
+
             return;
         }
         if ($count_completed === 0) {
             log_message('error', trans('log_setup_flag_not_found_setup_completed'));
+
             return;
         }
-        
+
         // Set DISABLE_SETUP flag
         $config = preg_replace('/^DISABLE_SETUP\s*=\s*.*$/m', 'DISABLE_SETUP=true', $config, 1, $count_disable);
         if ($config === null) {
             log_message('error', trans('log_setup_preg_replace_failed_disable_setup'));
+
             return;
         }
         if ($count_disable === 0) {
             log_message('error', trans('log_setup_flag_not_found_disable_setup'));
+
             return;
         }
-        
+
         $result = @write_file(IPCONFIG_FILE, $config);
-        if (!$result) {
+        if ( ! $result) {
             $error = error_get_last();
             log_message('error', trans('log_setup_failed_write_ipconfig') . ': ' . ($error['message'] ?? 'Unknown error'));
         }

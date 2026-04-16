@@ -91,10 +91,10 @@ class Payment_Information extends Base_Controller
             'invoice_url_key'  => $invoice_url_key,
             'payment_provider' => $payment_provider,
         ];
-        
+
         // Security: Fix control flow logic - load view first, then conditionally load payment provider
         $this->load->view('guest/payment_information', $data);
-        
+
         if ($payment_provider) {
             $this->{$payment_provider}($invoice_url_key);
         }

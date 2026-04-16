@@ -41,7 +41,7 @@ function sanitize_pdf_footer_content(?string $footer): string
         /** @var DOMNode $child */
         foreach (iterator_to_array($node->childNodes) as $child) {
             if ($child instanceof DOMElement) {
-                $tagName = strtolower($child->tagName);
+                $tagName = mb_strtolower($child->tagName);
 
                 if ( ! in_array($tagName, $allowedTags, true)) {
                     $node->removeChild($child);
