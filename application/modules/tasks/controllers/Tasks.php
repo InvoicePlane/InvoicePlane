@@ -53,7 +53,6 @@ class Tasks extends Admin_Controller
             redirect('tasks');
         }
 
-
         if ($this->mdl_tasks->run_validation()) {
             $this->mdl_tasks->save($id);
             redirect('tasks');

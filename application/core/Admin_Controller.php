@@ -17,16 +17,16 @@ if ( ! defined('BASEPATH')) {
 class Admin_Controller extends User_Controller
 {
     use XSS_Protection_Trait;
-    
+
     public function __construct()
     {
         parent::__construct('user_type', 1);
         $this->setCacheHeaders();
         $this->check_setup_security();
-        
+
         // Automatically filter all POST input to prevent XSS attacks
         // This applies to all admin controllers and prevents the need to call filter_input() manually
-        if ($this->input->method() === 'post' && !empty($_POST)) {
+        if ($this->input->method() === 'post' && ! empty($_POST)) {
             $this->filter_input();
         }
     }

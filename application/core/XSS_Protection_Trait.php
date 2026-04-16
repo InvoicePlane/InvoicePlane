@@ -14,21 +14,21 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
- * XSS Protection Trait
- * 
+ * XSS Protection Trait.
+ *
  * Provides XSS filtering methods for controllers to prevent cross-site scripting attacks.
  * Used by Admin_Controller and Guest_Controller to ensure consistent input sanitization.
  */
 trait XSS_Protection_Trait
 {
     /**
-     * Filter and sanitize POST input to prevent XSS attacks
-     * 
+     * Filter and sanitize POST input to prevent XSS attacks.
+     *
      * This method processes all POST data and applies appropriate sanitization:
      * - HTML fields (email_template_body, body): Sanitized with HTML Purifier
      * - Bypass fields (passwords): No sanitization to allow special characters
      * - All other fields: XSS cleaned and tags stripped
-     * 
+     *
      * @return void
      */
     protected function filter_input(): void
@@ -38,17 +38,17 @@ trait XSS_Protection_Trait
             'user_password',      // User password fields need to allow special characters
             'user_passwordv',     // User password verification field
         ];
-        
+
         // Fields that require special HTML sanitization (not bypass, but custom handling)
         $html_fields = [
             'email_template_body', // Email templates can contain HTML but need HTML Purifier
             'body',                // Email body when sending invoices/quotes
         ];
 
-        $input = $this->input->post();
-        $xss_detected = false;
+        $input           = $this->input->post();
+        $xss_detected    = false;
         $xss_log_entries = [];
-        
+
         // Load HTML sanitizer helper once before processing HTML fields
         $html_sanitizer_loaded = false;
 
@@ -57,28 +57,28 @@ trait XSS_Protection_Trait
             if (in_array($key, $bypass_fields, true)) {
                 continue;
             }
-            
+
             // Handle HTML fields with HTML Purifier
             if (in_array($key, $html_fields, true)) {
-                if (!$html_sanitizer_loaded) {
+                if ( ! $html_sanitizer_loaded) {
                     $this->load->helper('html_sanitizer');
                     $html_sanitizer_loaded = true;
                 }
-                
+
                 $original_value = $value;
-                $cleaned_value = sanitize_email_template_html($value);
-                
+                $cleaned_value  = sanitize_email_template_html($value);
+
                 // Check if value was modified (potential XSS detected)
                 if ($original_value !== $cleaned_value) {
-                    $xss_detected = true;
+                    $xss_detected      = true;
                     $xss_log_entries[] = [
-                        'field' => $key,
+                        'field'           => $key,
                         'original_length' => mb_strlen($original_value),
-                        'cleaned_length' => mb_strlen($cleaned_value),
-                        'type' => 'html_purifier',
+                        'cleaned_length'  => mb_strlen($cleaned_value),
+                        'type'            => 'html_purifier',
                     ];
                 }
-                
+
                 $_POST[$key] = $cleaned_value;
                 continue;
             }
@@ -96,7 +96,7 @@ trait XSS_Protection_Trait
             }
 
             $original_value = $value;
-            
+
             // Apply XSS cleaning and strip dangerous tags
             // Note: We don't use html_escape here to avoid double-encoding at output
             $cleaned_value = $this->security->xss_clean($value);
@@ -107,9 +107,9 @@ trait XSS_Protection_Trait
                 $xss_detected = true;
                 // Sanitize field name to prevent log injection
                 $xss_log_entries[] = [
-                    'field' => sanitize_for_logging($key),
+                    'field'           => sanitize_for_logging($key),
                     'original_length' => mb_strlen($original_value),
-                    'cleaned_length' => mb_strlen($cleaned_value),
+                    'cleaned_length'  => mb_strlen($cleaned_value),
                 ];
             }
 
@@ -121,17 +121,17 @@ trait XSS_Protection_Trait
         // Log XSS detection
         if ($xss_detected) {
             $controller_type = $this instanceof Admin_Controller ? 'Admin' : 'Guest';
-            
+
             // Sanitize user-influenced values to prevent log injection
             $this->load->helper('file_security');
-            
+
             $log_context = [
-                'timestamp' => date('Y-m-d H:i:s'),
-                'user_id'   => $this->session->userdata('user_id'),
-                'uri'       => sanitize_for_logging(uri_string()),
+                'timestamp'  => date('Y-m-d H:i:s'),
+                'user_id'    => $this->session->userdata('user_id'),
+                'uri'        => sanitize_for_logging(uri_string()),
                 'ip_address' => $this->input->ip_address(),
                 'user_agent' => sanitize_for_logging($this->input->user_agent()),
-                'fields'    => $xss_log_entries,
+                'fields'     => $xss_log_entries,
             ];
 
             $json_flags = JSON_PARTIAL_OUTPUT_ON_ERROR;
@@ -150,13 +150,14 @@ trait XSS_Protection_Trait
     }
 
     /**
-     * Recursively sanitize array values
-     * 
-     * @param array $data The array to sanitize
-     * @param array $bypass_keys Keys that should bypass sanitization
-     * @param string $path_prefix Prefix for tracking nested field paths
-     * @param bool $xss_detected Reference to XSS detection flag
-     * @param array $xss_log_entries Reference to XSS log entries array
+     * Recursively sanitize array values.
+     *
+     * @param array  $data            The array to sanitize
+     * @param array  $bypass_keys     Keys that should bypass sanitization
+     * @param string $path_prefix     Prefix for tracking nested field paths
+     * @param bool   $xss_detected    Reference to XSS detection flag
+     * @param array  $xss_log_entries Reference to XSS log entries array
+     *
      * @return array Sanitized array
      */
     private function sanitize_array(
@@ -165,14 +166,13 @@ trait XSS_Protection_Trait
         string $path_prefix = '',
         bool &$xss_detected = false,
         array &$xss_log_entries = []
-    ): array
-    {
+    ): array {
         foreach ($data as $key => $value) {
             // Skip bypass fields
             if (in_array($key, $bypass_keys, true)) {
                 continue;
             }
-            
+
             if (is_array($value)) {
                 $data[$key] = $this->sanitize_array(
                     $value,
@@ -183,20 +183,21 @@ trait XSS_Protection_Trait
                 );
             } else {
                 $original_value = $value;
-                $cleaned_value = strip_tags($this->security->xss_clean($value));
+                $cleaned_value  = strip_tags($this->security->xss_clean($value));
                 if ($original_value !== $cleaned_value) {
                     $xss_detected = true;
                     // Sanitize field path to prevent log injection
-                    $field_path = $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key;
+                    $field_path        = $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key;
                     $xss_log_entries[] = [
-                        'field' => sanitize_for_logging($field_path),
+                        'field'           => sanitize_for_logging($field_path),
                         'original_length' => mb_strlen((string) $original_value),
-                        'cleaned_length' => mb_strlen((string) $cleaned_value),
+                        'cleaned_length'  => mb_strlen((string) $cleaned_value),
                     ];
                 }
                 $data[$key] = $cleaned_value;
             }
         }
+
         return $data;
     }
 }
