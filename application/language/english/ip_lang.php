@@ -569,7 +569,7 @@ $lang = [
     'setup_choose_language_message'                => 'Choose a language to continue the installation.',
     'setup_complete'                               => 'Installation Complete',
     'setup_complete_message'                       => 'InvoicePlane has been successfully installed. You may now log in.',
-    'setup_complete_secure_setup'                  => 'If you want to secure your installation, you may disable the setup for now. To do so, replace the line <code>DISABLE_SETUP=false</code> with <code>DISABLE_SETUP=true</code> in your <code>ipconfig.php</code> file.',
+    'setup_complete_secure_setup'                  => 'For your security, the setup wizard has been automatically disabled. To re-run the setup (e.g., after an upgrade), you will need to set both <code>DISABLE_SETUP=false</code> and <code>SETUP_COMPLETED=false</code> in your <code>ipconfig.php</code> file.',
     'setup_complete_support_note'                  => 'If you encounter any problems or you need help take a look at the <a href="https://wiki.invoiceplane.com">official wiki</a> or the <a href="https://community.invoiceplane.com/">community forum</a>.',
     'setup_create_user'                            => 'Create User Account',
     'setup_create_user_message'                    => 'This is the information you will need to log into InvoicePlane.',

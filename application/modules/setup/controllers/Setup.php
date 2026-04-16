@@ -592,9 +592,10 @@ class Setup extends MX_Controller
 
     private function post_setup_tasks()
     {
-        // Set SETUP_COMPLETED to true
+        // Set SETUP_COMPLETED to true and DISABLE_SETUP to true for security
         $config = file_get_contents(IPCONFIG_FILE);
         $config = preg_replace('/SETUP_COMPLETED=(.*)?/', 'SETUP_COMPLETED=true', $config);
+        $config = preg_replace('/DISABLE_SETUP=(.*)?/', 'DISABLE_SETUP=true', $config);
         write_file(IPCONFIG_FILE, $config);
     }
 
