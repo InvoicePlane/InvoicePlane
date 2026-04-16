@@ -3,6 +3,9 @@ name: Quickstart Smoke Test
 on:
   workflow_dispatch:  # Manual only — does not run automatically
 
+permissions:
+  contents: read
+
 jobs:
   quickstart:
     name: Quickstart Bootstrap & Smoke Tests

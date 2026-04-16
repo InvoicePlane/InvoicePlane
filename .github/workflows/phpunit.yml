@@ -3,6 +3,9 @@ name: PHPUnit
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: PHP ${{ matrix.php }} - ${{ matrix.db }}
