@@ -602,8 +602,8 @@ class Setup extends MX_Controller
         }
         
         // Set SETUP_COMPLETED flag
-        $new_config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config, -1, $count_completed);
-        if ($new_config === null) {
+        $config = preg_replace('/^SETUP_COMPLETED\s*=\s*.*$/m', 'SETUP_COMPLETED=true', $config, -1, $count_completed);
+        if ($config === null) {
             log_message('error', 'preg_replace failed for SETUP_COMPLETED flag. Possible PCRE error.');
             return;
         }
@@ -613,7 +613,7 @@ class Setup extends MX_Controller
         }
         
         // Set DISABLE_SETUP flag
-        $config = preg_replace('/^DISABLE_SETUP\s*=\s*.*$/m', 'DISABLE_SETUP=true', $new_config, -1, $count_disable);
+        $config = preg_replace('/^DISABLE_SETUP\s*=\s*.*$/m', 'DISABLE_SETUP=true', $config, -1, $count_disable);
         if ($config === null) {
             log_message('error', 'preg_replace failed for DISABLE_SETUP flag. Possible PCRE error.');
             return;
