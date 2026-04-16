@@ -149,11 +149,90 @@ AJAX filter controllers extracted values from `HTTP_REFERER` without proper vali
 - ✅ Comprehensive security helper library added
 - ✅ Defense-in-depth approach implemented
 - ✅ Extensive security documentation provided
+- ✅ PHPMailer SMTP debug output sanitized (log injection prevention)
+- ✅ Email send failures now correctly propagated to callers
+- ✅ Cryptographic binary data handling corrected
+- ✅ GitHub Actions workflow token permissions restricted
+
+---
+
+**MEDIUM: Sanitized PHPMailer SMTP debug output - log injection prevention (CWE-117)**
+
+SMTP debug strings (server banners, addresses, status responses) were logged verbatim.
+Because these strings can contain user-controlled data (e.g. SMTP `MAIL FROM` responses),
+they could be used to inject false log entries or control characters.
+
+**File:** `application/modules/mailer/helpers/phpmailer_helper.php`
+
+**Fix:** The `Debugoutput` callback now uses the existing `phpmailer_debug_output()` helper,
+which passes all strings through `sanitize_for_logging()` before writing to the CI log.
+
+---
+
+**MEDIUM: Fixed phpmail_send() always returning true on failure (CWE-252)**
+
+`phpmail_send()` always returned `true` regardless of whether the underlying `$mail->send()`
+call succeeded. This masked delivery failures from callers and caused the "Email sent
+successfully" log line to appear inside the failure branch.
+
+**File:** `application/modules/mailer/helpers/phpmailer_helper.php`
+
+**Fix:** Function now returns the actual `bool` result of `$mail->send()`. The success log
+message was moved to the success branch and the failure branch sets flash error data only.
+
+> ⚠️ **Breaking change for custom integrations:** Any code that called `phpmail_send()` and
+> treated the return value as always-truthy must be updated. Check the return value and handle
+> `false` as a send failure.
+
+---
+
+**LOW: Fixed binary data corruption in Cryptor::decryptString() (CWE-704)**
+
+`mb_strlen()` and `mb_substr()` were used to split raw binary ciphertext (IV + encrypted data).
+Under multibyte internal encodings these functions operate on characters, not bytes, which can
+corrupt the extracted IV and cause decryption failures or weaken integrity checks.
+
+**File:** `application/libraries/Cryptor.php`
+
+**Fix:** Replaced `mb_strlen()` / `mb_substr()` with the byte-safe `strlen()` / `substr()`.
+
+---
+
+**LOW: Restricted GitHub Actions GITHUB_TOKEN permissions (CWE-272)**
+
+The `phpunit.yml`, `quickstart.yml`, and `setup.yml` workflows did not declare explicit
+`permissions` blocks, granting the default broad token scope to all workflow jobs.
+
+**Fix:** Added `permissions: contents: read` at the workflow level in all three files.
+
+---
 
 **Verification:**
 Run `php verify_rce_fix.php` to validate all security fixes are in place.
 
-## [1.7.0] - 2025-12-02
+### Added
+
+- **Custom template discovery via `CUSTOM_TEMPLATES_FOLDER`**: When the
+  `CUSTOM_TEMPLATES_FOLDER` environment variable is configured, templates placed in that
+  directory are now discovered and listed alongside the built-in templates in the admin
+  template selectors. Custom template file names are validated against a strict allowlist
+  (alphanumeric characters, spaces, hyphens, and underscores only) before being included.
+  The application's own built-in template directories are never scanned (RCE fix preserved).
+  See `ipconfig.php.example` for configuration details.
+
+### Changed
+
+- **Email template preview** (`application/modules/email_templates/views/`): The live preview
+  panel now displays the raw template source as plain text instead of rendering it as HTML.
+  This eliminates a DOM-based XSS risk introduced when user-controlled template content was
+  set as `innerHTML` without sufficient sanitization. Existing templates are unaffected;
+  only the in-browser preview behavior changes.
+
+- **`phpmail_send()` return value**: This function now returns `false` when the underlying
+  email delivery fails (previously it always returned `true`). Any code that relied on the
+  return value must be updated to handle `false` as a failure signal.
+
+
 
 ### Added
 - Full PHP 8.2+ compatibility support (PHP 8.1, 8.2, 8.3+)
