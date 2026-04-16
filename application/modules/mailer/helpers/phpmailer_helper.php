@@ -76,9 +76,7 @@ function phpmail_send(
             if (env_bool('ENABLE_DEBUG')) {
                 $mail->SMTPDebug = 3;
 
-                $mail->Debugoutput = function ($str, $level) {
-                    log_message('debug', 'phpMailer Debugging: ' . $str);
-                };
+                $mail->Debugoutput = 'phpmailer_debug_output';
             }
 
             // Set the basic properties
@@ -222,12 +220,12 @@ function phpmail_send(
 
         // Set flashdata for user notification
         $CI->session->set_flashdata('alert_error', $mail->ErrorInfo);
-
+    } else {
         // Format recipient list for logging - $to has already been normalized to an array
         $recipient_list = implode(', ', $to);
         log_message('debug', 'PHPMailer: Email sent successfully to '
             . sanitize_for_logging($recipient_list));
     }
 
-    return true;
+    return $ok;
 }
