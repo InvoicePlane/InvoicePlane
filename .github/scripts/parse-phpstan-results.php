@@ -23,7 +23,7 @@ if ( ! file_exists($jsonFile)) {
 }
 
 $content = file_get_contents($jsonFile);
-$data    = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+$data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
 if (json_last_error() !== JSON_ERROR_NONE) {
     echo "Error: Invalid JSON in '{$jsonFile}': " . json_last_error_msg() . "\n";
@@ -31,7 +31,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 }
 
 // Extract errors from PHPStan JSON format
-$files       = $data['files'] ?? [];
+$files = $data['files'] ?? [];
 $totalErrors = $data['totals']['file_errors'] ?? 0;
 
 if ($totalErrors === 0) {
@@ -41,7 +41,7 @@ if ($totalErrors === 0) {
 }
 
 // Group errors by class/file
-$errorsByFile     = [];
+$errorsByFile = [];
 $errorsByCategory = [
     'type_errors'        => [],
     'method_errors'      => [],
@@ -55,7 +55,7 @@ foreach ($files as $filePath => $fileData) {
 
     foreach ($messages as $message) {
         $errorText = $message['message'] ?? '';
-        $line      = $message['line'] ?? 0;
+        $line = $message['line'] ?? 0;
 
         // Categorize errors
         $category = categorizeError($errorText);
@@ -95,14 +95,14 @@ echo "### Detailed Errors by File\n\n";
 $fileCount = 0;
 foreach ($errorsByFile as $filePath => $errors) {
     $fileCount++;
-    $shortPath  = getShortPath($filePath);
+    $shortPath = getShortPath($filePath);
     $errorCount = count($errors);
 
     echo "#### {$fileCount}. `{$shortPath}` ({$errorCount} error(s))\n\n";
 
     foreach ($errors as $error) {
-        $line     = $error['line'];
-        $message  = trimMessage($error['message']);
+        $line = $error['line'];
+        $message = trimMessage($error['message']);
         $category = getCategoryLabel($error['category']);
 
         echo "- **Line {$line}** [{$category}]: {$message}\n";
@@ -121,7 +121,7 @@ foreach ($errorsByFile as $filePath => $errors) {
     $shortPath = getShortPath($filePath);
 
     foreach ($errors as $error) {
-        $line    = $error['line'];
+        $line = $error['line'];
         $message = trimMessage($error['message'], 80);
 
         echo "- [ ] Fix error in `{$shortPath}:{$line}` - {$message}\n";
@@ -138,11 +138,11 @@ function categorizeError(string $message): string
     $normalizedMessage = mb_strtolower($message);
 
     $hasShouldReturn = str_contains($normalizedMessage, 'should return');
-    $hasMethod       = str_contains($normalizedMessage, 'method');
-    $hasCallTo       = str_contains($normalizedMessage, 'call to');
-    $hasProperty     = str_contains($normalizedMessage, 'property');
-    $hasType         = str_contains($normalizedMessage, 'type');
-    $hasExpects      = str_contains($normalizedMessage, 'expects');
+    $hasMethod = str_contains($normalizedMessage, 'method');
+    $hasCallTo = str_contains($normalizedMessage, 'call to');
+    $hasProperty = str_contains($normalizedMessage, 'property');
+    $hasType = str_contains($normalizedMessage, 'type');
+    $hasExpects = str_contains($normalizedMessage, 'expects');
 
     // Prioritize explicit "should return" wording for return type issues
     if ($hasShouldReturn) {
