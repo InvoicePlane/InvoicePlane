@@ -20,6 +20,45 @@ class Admin_Controller extends User_Controller
     {
         parent::__construct('user_type', 1);
         $this->setCacheHeaders();
+        $this->check_setup_security();
+    }
+
+    /**
+     * Check if setup wizard is properly disabled and warn admins if not.
+     * This security check helps detect misconfigurations that could allow
+     * unauthorized access to the setup wizard.
+     */
+    private function check_setup_security(): void
+    {
+        // Only check once per session to avoid repeated warnings
+        if ($this->session->userdata('setup_security_checked')) {
+            return;
+        }
+
+        $setup_completed = env_bool('SETUP_COMPLETED', 'false');
+        $disable_setup = env_bool('DISABLE_SETUP', 'false');
+
+        // If either flag is not properly set, show a security warning
+        if (!$setup_completed || !$disable_setup) {
+            $warning_parts = [];
+            
+            if (!$setup_completed) {
+                $warning_parts[] = 'SETUP_COMPLETED is set to false';
+            }
+            
+            if (!$disable_setup) {
+                $warning_parts[] = 'DISABLE_SETUP is set to false';
+            }
+
+            $warning_message = trans('security_warning') . ': ' . implode(' and ', $warning_parts) . '. ';
+            $warning_message .= trans('setup_wizard_accessible') . ' ';
+            $warning_message .= trans('please_update_ipconfig');
+
+            $this->session->set_flashdata('alert_warning', $warning_message);
+        }
+
+        // Mark as checked for this session
+        $this->session->set_userdata('setup_security_checked', true);
     }
 
     protected function filter_input(): void
