@@ -17,6 +17,15 @@ if ( ! defined('BASEPATH')) {
 class View extends Base_Controller
 {
     /**
+     * Constructor - load file security helper for validation
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('file_security');
+    }
+
+    /**
      * @param $invoice_url_key
      */
     public function invoice($invoice_url_key = '')
@@ -355,10 +364,42 @@ class View extends Base_Controller
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
+                // Security: Validate filename from database before using in file path
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
+                    // Skip invalid filenames
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in guest attachments for url_key=%s',
+                        sanitize_for_logging($url_key)
+                    ));
+                    continue;
+                }
+                
+                // Check file exists before getting size
+                if (!file_exists($validated['path'])) {
+                    log_message('warning', sprintf(
+                        'File not found for guest attachment (hash: %s)',
+                        $validated['hash']
+                    ));
+                    continue;
+                }
+                
+                // Get file size with error handling
+                $file_size = @filesize($validated['path']);
+                if ($file_size === false) {
+                    $error = error_get_last();
+                    log_message('warning', sprintf(
+                        'Failed to get file size for guest attachment (hash: %s, error: %s)',
+                        $validated['hash'],
+                        $error['message'] ?? 'unknown'
+                    ));
+                    continue;
+                }
+                
                 $names[] = [
-                    'name'     => $row->file_name_original,
-                    'fullname' => $row->file_name_new,
-                    'size'     => filesize(UPLOADS_CFILES_FOLDER . $row->file_name_new),
+                    'name'     => html_escape($row->file_name_original),
+                    'fullname' => $validated['basename'],
+                    'size'     => $file_size,
                 ];
             }
         }

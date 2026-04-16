@@ -294,6 +294,65 @@ function respond_file_message(int $httpCode, string $messageKey, string $dynamic
 }
 
 /**
+ * Validate database filename and construct safe file path.
+ * 
+ * Security: Defense-in-depth validation for filenames retrieved from database.
+ * Even though upload validation should prevent injection, this provides an additional
+ * security layer in case database is compromised or validation is bypassed.
+ * 
+ * @param string $filename The filename from database
+ * @param string $base_dir The base directory to construct path in
+ * 
+ * @return array|null Array with 'path' and 'basename' on success, null on failure
+ */
+function validate_db_filename(string $filename, string $base_dir): ?array
+{
+    // Step 1: Validate filename doesn't contain malicious sequences
+    $validation = validate_safe_filename($filename);
+    if (!$validation['valid']) {
+        log_message('error', sprintf(
+            'Invalid filename from database (hash: %s, error: %s)',
+            $validation['hash'],
+            $validation['error'] ?? 'unknown'
+        ));
+        return null;
+    }
+    
+    // Step 2: Extract basename to remove directory components
+    $basename_result = extract_safe_basename($filename);
+    if (!$basename_result['valid']) {
+        log_message('error', sprintf(
+            'Invalid basename from database (hash: %s)',
+            $basename_result['hash']
+        ));
+        return null;
+    }
+    
+    // Step 3: Construct full path
+    $safe_filename = $basename_result['filename'];
+    $full_path = rtrim($base_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $safe_filename;
+    
+    // Step 4: If file exists, validate it's within the base directory
+    // This prevents symlink attacks or other filesystem tricks
+    if (file_exists($full_path)) {
+        $real_path = realpath($full_path);
+        if ($real_path === false || !validate_file_in_directory($real_path, $base_dir)) {
+            log_message('error', sprintf(
+                'File outside base directory (hash: %s)',
+                $validation['hash']
+            ));
+            return null;
+        }
+    }
+    
+    return [
+        'path' => $full_path,
+        'basename' => $safe_filename,
+        'hash' => $validation['hash']
+    ];
+}
+
+/**
  * Strip EXIF metadata from an image file to protect user privacy.
  *
  * Removes GPS coordinates, timestamps, device information, and other metadata
