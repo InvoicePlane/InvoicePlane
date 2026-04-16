@@ -48,6 +48,7 @@ if (is_file($core_security_helper)) {
 function get_safe_referer($referer = '', $default_url = '')
 {
     $CI = & get_instance();
+    $CI->load->helper('file_security');
     
     // Use provided referer or HTTP_REFERER
     $referer = empty($referer) ? ($_SERVER['HTTP_REFERER'] ?? '') : $referer;
@@ -57,23 +58,48 @@ function get_safe_referer($referer = '', $default_url = '')
         return empty($default_url) ? base_url() : $default_url;
     }
     
-    // Get base URL
-    $base_url = base_url();
+    // Additional validation: ensure no control characters or XSS attempts
+    if (preg_match('/[\x00-\x1F\x7F<>]/', $referer)) {
+        log_message('error', 'Invalid characters in referer URL (hash: ' . hash('sha256', $referer) . ')');
+        return empty($default_url) ? base_url() : $default_url;
+    }
     
-    // Security: Check if referer starts with base URL (same domain)
-    // This prevents open redirect attacks by only allowing internal URLs
-    if (str_starts_with($referer, $base_url)) {
-        // Additional validation: ensure no control characters or XSS attempts
-        if (preg_match('/[\x00-\x1F\x7F<>]/', $referer)) {
-            log_message('error', 'Invalid characters in referer URL (hash: ' . hash('sha256', $referer) . ')');
-            return empty($default_url) ? base_url() : $default_url;
-        }
-        
+    // Parse the base URL and referer to compare host and port properly
+    $base_url = base_url();
+    $base_parts = parse_url($base_url);
+    $referer_parts = parse_url($referer);
+    
+    // Validate parse results
+    if ($base_parts === false || $referer_parts === false) {
+        log_message('error', 'Failed to parse URL for validation (hash: ' . hash('sha256', $referer) . ')');
+        return empty($default_url) ? base_url() : $default_url;
+    }
+    
+    // Extract and validate host
+    $base_host = $base_parts['host'] ?? '';
+    $referer_host = $referer_parts['host'] ?? '';
+    
+    if (empty($base_host) || empty($referer_host)) {
+        log_message('error', 'Missing host in URL validation (hash: ' . hash('sha256', $referer) . ')');
+        return empty($default_url) ? base_url() : $default_url;
+    }
+    
+    // Security: Compare host and scheme to ensure same domain
+    // This prevents false positives from prefix matching and handles scheme/port differences
+    $base_scheme = $base_parts['scheme'] ?? 'http';
+    $referer_scheme = $referer_parts['scheme'] ?? 'http';
+    $base_port = $base_parts['port'] ?? ($base_scheme === 'https' ? 443 : 80);
+    $referer_port = $referer_parts['port'] ?? ($referer_scheme === 'https' ? 443 : 80);
+    
+    // Check if host, scheme, and port match
+    if ($base_host === $referer_host && $base_scheme === $referer_scheme && $base_port === $referer_port) {
         return $referer;
     }
     
     // Referer is external or invalid, use safe default
-    log_message('debug', 'External referer blocked: ' . sanitize_for_logging(parse_url($referer, PHP_URL_HOST)));
+    // Sanitize the host before logging to prevent log injection
+    $safe_host = sanitize_for_logging($referer_host);
+    log_message('debug', 'External referer blocked: ' . $safe_host);
     return empty($default_url) ? base_url() : $default_url;
 }
 
@@ -89,6 +115,9 @@ function get_safe_referer($referer = '', $default_url = '')
  */
 function validate_redirect_url($url, $default_url = '')
 {
+    $CI = & get_instance();
+    $CI->load->helper('file_security');
+    
     // Empty URL - use default
     if (empty($url)) {
         return empty($default_url) ? base_url() : $default_url;
@@ -106,8 +135,10 @@ function validate_redirect_url($url, $default_url = '')
         return $url;
     }
     
-    // External URL - reject
-    log_message('debug', 'External redirect URL blocked: ' . sanitize_for_logging(parse_url($url, PHP_URL_HOST)));
+    // External URL - reject and sanitize host before logging
+    $url_host = parse_url($url, PHP_URL_HOST);
+    $safe_host = is_string($url_host) ? sanitize_for_logging($url_host) : 'invalid';
+    log_message('debug', 'External redirect URL blocked: ' . $safe_host);
     return empty($default_url) ? base_url() : $default_url;
 }
 
@@ -159,14 +190,19 @@ function escape_url_for_javascript($url)
 function user_has_invoice_access($invoice_id)
 {
     $CI = & get_instance();
+    
+    // Normalize to integer to prevent type juggling
+    $user_type = (int) $CI->session->userdata('user_type');
+    $user_id = (int) $CI->session->userdata('user_id');
+    $invoice_id = (int) $invoice_id;
 
     // Admin users have access to all invoices
-    if ($CI->session->userdata('user_type') === 1) {
+    if ($user_type === 1) {
         return true;
     }
 
     // Guest users - check if invoice belongs to their assigned clients
-    if ($CI->session->userdata('user_type') === 2) {
+    if ($user_type === 2) {
         $CI->load->model('invoices/mdl_invoices');
         $CI->load->model('user_clients/mdl_user_clients');
 
@@ -176,10 +212,11 @@ function user_has_invoice_access($invoice_id)
         }
 
         // Get user's assigned clients
-        $user_clients = $CI->mdl_user_clients->assigned_to($CI->session->userdata('user_id'))->get()->result();
-        $client_ids = array_column($user_clients, 'client_id');
+        $user_clients = $CI->mdl_user_clients->assigned_to($user_id)->get()->result();
+        // Ensure all client IDs are integers for strict comparison
+        $client_ids = array_map('intval', array_column($user_clients, 'client_id'));
 
-        return in_array($invoice->client_id, $client_ids, true);
+        return in_array((int) $invoice->client_id, $client_ids, true);
     }
 
     // Regular users - check if they created the invoice
@@ -190,7 +227,7 @@ function user_has_invoice_access($invoice_id)
         return false;
     }
 
-    return $invoice->user_id === $CI->session->userdata('user_id');
+    return (int) $invoice->user_id === $user_id;
 }
 
 /**
@@ -204,14 +241,19 @@ function user_has_invoice_access($invoice_id)
 function user_has_quote_access($quote_id)
 {
     $CI = & get_instance();
+    
+    // Normalize to integer to prevent type juggling
+    $user_type = (int) $CI->session->userdata('user_type');
+    $user_id = (int) $CI->session->userdata('user_id');
+    $quote_id = (int) $quote_id;
 
     // Admin users have access to all quotes
-    if ($CI->session->userdata('user_type') === 1) {
+    if ($user_type === 1) {
         return true;
     }
 
     // Guest users - check if quote belongs to their assigned clients
-    if ($CI->session->userdata('user_type') === 2) {
+    if ($user_type === 2) {
         $CI->load->model('quotes/mdl_quotes');
         $CI->load->model('user_clients/mdl_user_clients');
 
@@ -221,10 +263,11 @@ function user_has_quote_access($quote_id)
         }
 
         // Get user's assigned clients
-        $user_clients = $CI->mdl_user_clients->assigned_to($CI->session->userdata('user_id'))->get()->result();
-        $client_ids = array_column($user_clients, 'client_id');
+        $user_clients = $CI->mdl_user_clients->assigned_to($user_id)->get()->result();
+        // Ensure all client IDs are integers for strict comparison
+        $client_ids = array_map('intval', array_column($user_clients, 'client_id'));
 
-        return in_array($quote->client_id, $client_ids, true);
+        return in_array((int) $quote->client_id, $client_ids, true);
     }
 
     // Regular users - check if they created the quote
@@ -235,7 +278,7 @@ function user_has_quote_access($quote_id)
         return false;
     }
 
-    return $quote->user_id === $CI->session->userdata('user_id');
+    return (int) $quote->user_id === $user_id;
 }
 
 /**

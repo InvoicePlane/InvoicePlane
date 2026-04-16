@@ -303,18 +303,20 @@ function get_validated_template_path($template_name, $type = 'invoice', $scope =
     $CI = & get_instance();
     $CI->load->helper('file_security');
     
+    // Security: Validate default template upfront to avoid using it if it's also invalid
+    $safe_default_for_log = sanitize_for_logging((string) $default_template);
+    $validated_default = validate_template_name($default_template, $type, $scope);
+    if ($validated_default === false) {
+        log_message('error', 'Critical: Default template also invalid: ' . $safe_default_for_log);
+        show_error('Template system error. Please contact administrator.', 500);
+    }
+    
     // Validate the template name
     $validated_name = validate_template_name($template_name, $type, $scope);
     if ($validated_name === false) {
         // Sanitize for logging
         $safe_template_for_log = sanitize_for_logging((string) $template_name);
-        log_message('error', 'Invalid template setting: ' . $safe_template_for_log . ', using default: ' . $default_template);
-        // Validate default template as well (defense-in-depth)
-        $validated_default = validate_template_name($default_template, $type, $scope);
-        if ($validated_default === false) {
-            log_message('error', 'Critical: Default template also invalid: ' . $default_template);
-            show_error('Template system error. Please contact administrator.', 500);
-        }
+        log_message('error', 'Invalid template setting: ' . $safe_template_for_log . ', using default: ' . $safe_default_for_log);
         $validated_name = $validated_default;
     }
     
@@ -334,13 +336,7 @@ function get_validated_template_path($template_name, $type = 'invoice', $scope =
 
     // Defense-in-depth: Verify template file exists
     if (!file_exists($template_path)) {
-        log_message('error', 'Template file not found: ' . sanitize_for_logging($validated_name) . ', using default: ' . sanitize_for_logging($default_template));
-        // Validate the default template before using it
-        $validated_default = validate_template_name($default_template, $type, $scope);
-        if ($validated_default === false) {
-            log_message('error', 'Critical: Default template validation failed: ' . sanitize_for_logging($default_template));
-            show_error('Template system error. Please contact administrator.', 500);
-        }
+        log_message('error', 'Template file not found: ' . sanitize_for_logging($validated_name) . ', using default: ' . $safe_default_for_log);
         $validated_name = $validated_default;
         $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
 
