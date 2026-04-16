@@ -22,13 +22,13 @@ function invoice_logo(): string
 
     if ($CI->mdl_settings->setting('invoice_logo')) {
         $logo_file = $CI->mdl_settings->setting('invoice_logo');
-        
+
         // Security: Block SVG files to prevent XSS attacks
-        $extension = strtolower(pathinfo($logo_file, PATHINFO_EXTENSION));
+        $extension = mb_strtolower(pathinfo($logo_file, PATHINFO_EXTENSION));
         if ($extension === 'svg') {
             return '';
         }
-        
+
         return '<img src="' . base_url() . 'uploads/' . $logo_file . '">';
     }
 
@@ -43,11 +43,11 @@ function invoice_logo_pdf(): string
     $CI = &get_instance();
 
     if ($CI->mdl_settings->setting('invoice_logo')) {
-        $logo_file = $CI->mdl_settings->setting('invoice_logo');
+        $logo_file    = $CI->mdl_settings->setting('invoice_logo');
         $absolutePath = dirname(dirname(__DIR__));
-        
+
         // Security: Block SVG files to prevent XSS attacks
-        $extension = strtolower(pathinfo($logo_file, PATHINFO_EXTENSION));
+        $extension = mb_strtolower(pathinfo($logo_file, PATHINFO_EXTENSION));
         if ($extension === 'svg') {
             return '';
         }
@@ -140,10 +140,10 @@ function invoice_qrcode($invoice_id, $width = 64): string
             $CI->load->library('QrCode', ['invoice' => $invoice]);
             $qrcode_data_uri = $CI->qrcode->generate();
 
-            $numeric_width = intval($width);
-            $width = '';
+            $numeric_width = (int) $width;
+            $width         = '';
             if ($numeric_width > 0) {
-                $width = ' width="' . strval($numeric_width) . '"';
+                $width = ' width="' . (string) $numeric_width . '"';
             }
 
             return '<img src="' . $qrcode_data_uri . '"' . $width . ' alt="QR Code" id="invoice-qr-code">';

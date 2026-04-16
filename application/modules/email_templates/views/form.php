@@ -93,27 +93,27 @@
                         <optgroup label="<?php _trans('invoices'); ?>">
 <?php
 foreach ($invoice_templates as $template) {
-?>
+    ?>
                             <option class="hidden-invoice" value="<?php echo $template; ?>"
                                 <?php check_select($selected_pdf_template, $template); ?>>
                                 <?php echo $template; ?>
                             </option>
 <?php
 }
-?>
+    ?>
                         </optgroup>
 
                         <optgroup label="<?php _trans('quotes'); ?>">
 <?php
 foreach ($quote_templates as $template) {
-?>
+    ?>
                             <option class="hidden-quote" value="<?php echo $template; ?>"
                                 <?php check_select($selected_pdf_template, $template); ?>>
                                 <?php echo $template; ?>
                             </option>
 <?php
 }
-?>
+    ?>
                         </optgroup>
                     </select>
                 </div>

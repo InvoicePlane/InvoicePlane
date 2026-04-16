@@ -27,7 +27,6 @@ class Crypt
 
     /**
      * @param string $password
-     *
      */
     public function generate_password($password, string $salt): string
     {
@@ -43,21 +42,6 @@ class Crypt
         $new_hash = crypt($password, $hash);
 
         return $hash == $new_hash;
-    }
-
-    /**
-     * Get the encryption key, decoding if it's base64-encoded.
-     * 
-     * @return string The encryption key
-     */
-    private function getEncryptionKey(): string
-    {
-        $key = getenv('ENCRYPTION_KEY');
-        if (preg_match('/^base64:(.*)$/', $key, $matches)) {
-            $key = base64_decode($matches[1]);
-        }
-
-        return $key;
     }
 
     /**
@@ -78,5 +62,20 @@ class Crypt
         }
 
         return Cryptor::Decrypt($data, $this->getEncryptionKey());
+    }
+
+    /**
+     * Get the encryption key, decoding if it's base64-encoded.
+     *
+     * @return string The encryption key
+     */
+    private function getEncryptionKey(): string
+    {
+        $key = getenv('ENCRYPTION_KEY');
+        if (preg_match('/^base64:(.*)$/', $key, $matches)) {
+            $key = base64_decode($matches[1]);
+        }
+
+        return $key;
     }
 }

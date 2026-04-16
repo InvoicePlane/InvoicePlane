@@ -29,8 +29,6 @@ class ClientTitleEnum
 
             return $returnObject;
         }
-
-        return null;
     }
 
     public static function cases()

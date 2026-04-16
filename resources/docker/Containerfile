@@ -1,0 +1,68 @@
+FROM composer:2 AS composer-build
+
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --optimize-autoloader --no-progress --ignore-platform-reqs
+
+FROM node:22-slim AS asset-build
+
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+COPY Gruntfile.js ./
+COPY assets ./assets
+RUN yarn build
+
+FROM php:8.5-apache
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		libfreetype6-dev \
+		libjpeg62-turbo-dev \
+		libpng-dev \
+		libxml2-dev \
+		libonig-dev \
+		libzip-dev \
+	&& docker-php-ext-configure gd --with-freetype --with-jpeg \
+	&& docker-php-ext-install -j$(nproc) \
+		bcmath \
+		gd \
+		mbstring \
+		mysqli \
+		xml \
+		zip \
+	&& a2enmod rewrite \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer-build /app/vendor /var/www/html/vendor
+
+# Verify all required PHP extensions are installed
+COPY --from=composer-build /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer-build /app/composer.json /app/composer.lock /tmp/composer-check/
+RUN composer check-platform-reqs --no-dev --working-dir=/tmp/composer-check \
+	&& rm -rf /tmp/composer-check /usr/local/bin/composer
+COPY --from=asset-build   /app/assets /var/www/html/assets
+
+COPY application /var/www/html/application
+COPY storage /var/www/html/storage
+COPY uploads /var/www/html/uploads
+COPY favicon.ico index.php robots.txt /var/www/html/
+COPY htaccess /var/www/html/.htaccess
+
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' \
+	/etc/apache2/apache2.conf
+
+RUN chown -R www-data:www-data /var/www/html \
+	&& find /var/www/html -type d -exec chmod 755 {} \; \
+	&& find /var/www/html -type f -exec chmod 644 {} \;
+
+# Persistent user data and writable runtime directories.
+# Mount a custom templates directory and point CUSTOM_TEMPLATES_FOLDER at it.
+VOLUME ["/var/www/html/uploads", "/var/www/html/storage"]
+
+EXPOSE 80
+
+COPY resources/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["apache2-foreground"]

@@ -17,6 +17,15 @@ if ( ! defined('BASEPATH')) {
 class View extends Base_Controller
 {
     /**
+     * Constructor - load file security helper for validation.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('file_security');
+    }
+
+    /**
      * @param $invoice_url_key
      */
     public function invoice($invoice_url_key = '')
@@ -43,6 +52,7 @@ class View extends Base_Controller
             ]
         );
         $this->load->helper('template');
+        $this->load->helper('file_security');
 
         $invoice = $invoice->row();
 
@@ -65,7 +75,11 @@ class View extends Base_Controller
         // Attachments
         $attachments = $this->get_attachments($invoice_url_key);
 
-        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
+        // Security: Validate strtotime() result before comparison to avoid type juggling
+        $invoice_due_timestamp = strtotime($invoice->invoice_date_due);
+        $is_overdue            = ($invoice->invoice_balance > 0
+            && $invoice_due_timestamp !== false
+            && $invoice_due_timestamp < time());
 
         $data = [
             'invoice'            => $invoice,
@@ -82,17 +96,11 @@ class View extends Base_Controller
 
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        // Security: Validate template name to prevent Local File Inclusion
+        // Security: Validate and get template path with defense-in-depth
         $requested_template = get_setting('public_invoice_template');
-        $template_name = validate_template_name($requested_template, 'invoice', 'public');
-        if ($template_name === false) {
-            // Sanitize template name for logging to prevent log injection / poisoning
-            $safe_template_for_log = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
-            log_message('error', 'Invalid invoice template setting: ' . $safe_template_for_log . ', using default');
-            $template_name = 'InvoicePlane_Web'; // Fallback to default template
-        }
+        $template_info      = get_validated_template_path($requested_template, 'invoice', 'public', 'InvoicePlane_Web');
 
-        $this->load->view('invoice_templates/public/' . $template_name . '.php', $data);
+        render_template_view($template_info['path'], $data);
     }
 
     /**
@@ -169,6 +177,7 @@ class View extends Base_Controller
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quote_tax_rates');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->helper('template');
 
         $quote = $quote->row();
 
@@ -186,7 +195,9 @@ class View extends Base_Controller
         // Attachments
         $attachments = $this->get_attachments($quote_url_key);
 
-        $is_expired = (strtotime($quote->quote_date_expires) < time());
+        // Security: Validate strtotime() result before comparison to avoid type juggling
+        $quote_expires_timestamp = strtotime($quote->quote_date_expires);
+        $is_expired              = ($quote_expires_timestamp !== false && $quote_expires_timestamp < time());
 
         $data = [
             'quote'              => $quote,
@@ -201,18 +212,12 @@ class View extends Base_Controller
         ];
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        // Security: Validate template name to prevent Local File Inclusion
+        // Security: Validate and get template path with defense-in-depth
         $this->load->helper('template');
         $requested_template = get_setting('public_quote_template');
-        $template_name = validate_template_name($requested_template, 'quote', 'public');
-        if ($template_name === false) {
-            // Security: sanitize template name before logging to prevent log injection
-            $safe_requested_template = preg_replace('/[\x00-\x1F\x7F]/', '', (string) $requested_template);
-            log_message('error', 'Invalid quote template setting: ' . $safe_requested_template . ', using default');
-            $template_name = 'InvoicePlane_Web'; // Fallback to default template
-        }
+        $template_info      = get_validated_template_path($requested_template, 'quote', 'public', 'InvoicePlane_Web');
 
-        $this->load->view('quote_templates/public/' . $template_name . '.php', $data);
+        render_template_view($template_info['path'], $data);
     }
 
     /**
@@ -239,10 +244,61 @@ class View extends Base_Controller
     }
 
     /**
+     * @param $quote_url_key
+     */
+    public function approve_quote(string $quote_url_key)
+    {
+        // Require POST so CodeIgniter's CSRF token validation is enforced
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        $this->load->model('quotes/mdl_quotes');
+        $quote = $this->validate_guest_quote_access($quote_url_key);
+
+        $this->load->helper('mailer');
+
+        $this->mdl_quotes->approve_quote_by_key($quote_url_key);
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote->quote_id, 'approved');
+        }
+
+        redirect('guest/view/quote/' . $quote_url_key);
+    }
+
+    /**
+     * @param $quote_url_key
+     */
+    public function reject_quote(string $quote_url_key)
+    {
+        // Require POST so CodeIgniter's CSRF token validation is enforced
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        $this->load->model('quotes/mdl_quotes');
+        $quote = $this->validate_guest_quote_access($quote_url_key);
+
+        $this->load->helper('mailer');
+
+        $this->mdl_quotes->reject_quote_by_key($quote_url_key);
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote->quote_id, 'rejected');
+        }
+
+        redirect('guest/view/quote/' . $quote_url_key);
+    }
+
+    /**
      * Validate guest user has access to a quote by URL key
-     * Returns the quote object if valid, or shows error/404
+     * Returns the quote object if valid, or shows error/404.
      *
      * @param string $quote_url_key The quote URL key
+     *
      * @return object The quote object
      */
     private function validate_guest_quote_access(string $quote_url_key): object
@@ -253,7 +309,7 @@ class View extends Base_Controller
         }
 
         // Require authentication as a guest user
-        if (!$this->session->userdata('user_id') || (int)$this->session->userdata('user_type') !== 2) {
+        if ( ! $this->session->userdata('user_id') || (int) $this->session->userdata('user_type') !== 2) {
             show_error(trans('guest_account_denied'), 403);
         }
 
@@ -262,7 +318,7 @@ class View extends Base_Controller
 
         // Get guest user's assigned clients
         $user_clients_result = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
-        $user_clients = [];
+        $user_clients        = [];
         foreach ($user_clients_result as $user_client) {
             $user_clients[$user_client->client_id] = $user_client->client_id;
         }
@@ -285,44 +341,6 @@ class View extends Base_Controller
     }
 
     /**
-     * @param $quote_url_key
-     */
-    public function approve_quote(string $quote_url_key)
-    {
-        $quote = $this->validate_guest_quote_access($quote_url_key);
-
-        $this->load->helper('mailer');
-
-        $this->mdl_quotes->approve_quote_by_key($quote_url_key);
-
-        // Only send email if the update actually changed the quote status
-        if ($this->db->affected_rows() > 0) {
-            email_quote_status($quote->quote_id, 'approved');
-        }
-
-        redirect('guest/view/quote/' . $quote_url_key);
-    }
-
-    /**
-     * @param $quote_url_key
-     */
-    public function reject_quote(string $quote_url_key)
-    {
-        $quote = $this->validate_guest_quote_access($quote_url_key);
-
-        $this->load->helper('mailer');
-
-        $this->mdl_quotes->reject_quote_by_key($quote_url_key);
-
-        // Only send email if the update actually changed the quote status
-        if ($this->db->affected_rows() > 0) {
-            email_quote_status($quote->quote_id, 'rejected');
-        }
-
-        redirect('guest/view/quote/' . $quote_url_key);
-    }
-
-    /**
      * Retail since 1.6.3.
      *
      * @param $url_key
@@ -336,10 +354,42 @@ class View extends Base_Controller
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
+                // Security: Validate filename from database before using in file path
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
+                    // Skip invalid filenames
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in guest attachments for url_key=%s',
+                        sanitize_for_logging($url_key)
+                    ));
+                    continue;
+                }
+
+                // Check file exists before getting size
+                if ( ! file_exists($validated['path'])) {
+                    log_message('warning', sprintf(
+                        'File not found for guest attachment (hash: %s)',
+                        $validated['hash']
+                    ));
+                    continue;
+                }
+
+                // Get file size with error handling
+                $file_size = @filesize($validated['path']);
+                if ($file_size === false) {
+                    $error = error_get_last();
+                    log_message('warning', sprintf(
+                        'Failed to get file size for guest attachment (hash: %s, error: %s)',
+                        $validated['hash'],
+                        $error['message'] ?? 'unknown'
+                    ));
+                    continue;
+                }
+
                 $names[] = [
-                    'name'     => $row->file_name_original,
-                    'fullname' => $row->file_name_new,
-                    'size'     => filesize(UPLOADS_CFILES_FOLDER . $row->file_name_new),
+                    'name'     => html_escape($row->file_name_original),
+                    'fullname' => $validated['basename'],
+                    'size'     => $file_size,
                 ];
             }
         }

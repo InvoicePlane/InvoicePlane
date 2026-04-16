@@ -1,8 +1,5 @@
 name: Setup & Install with Error Handling
 
-permissions:
-  contents: read
-
 on:
   workflow_dispatch:
     inputs:
