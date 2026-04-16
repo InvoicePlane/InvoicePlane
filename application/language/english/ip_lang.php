@@ -550,6 +550,8 @@ $lang = [
     'svg_logo_blocked_security'                    => 'SVG logo files are blocked for security reasons. Please remove this logo and upload a PNG, JPG, or GIF file instead.',
     'svg_upload_blocked_security'                  => 'SVG file upload blocked for security reasons. Please upload a PNG, JPG, or GIF file instead.',
     'security_warning'                             => 'Security Warning',
+    'setup_completed_flag_false'                   => 'SETUP_COMPLETED is set to false',
+    'disable_setup_flag_false'                     => 'DISABLE_SETUP is set to false',
     'setup_wizard_accessible'                      => 'The setup wizard may be accessible to unauthenticated users, which could allow attackers to reconfigure your installation.',
     'please_update_ipconfig'                       => 'Please edit ipconfig.php and set both DISABLE_SETUP=true and SETUP_COMPLETED=true to secure your installation.',
     'search_product'                               => 'Search product',

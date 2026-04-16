@@ -44,11 +44,11 @@ class Admin_Controller extends User_Controller
             $warning_parts = [];
             
             if (!$setup_completed) {
-                $warning_parts[] = 'SETUP_COMPLETED is set to false';
+                $warning_parts[] = trans('setup_completed_flag_false');
             }
             
             if (!$disable_setup) {
-                $warning_parts[] = 'DISABLE_SETUP is set to false';
+                $warning_parts[] = trans('disable_setup_flag_false');
             }
 
             // Format: "Security Warning: [flags]. [description] [instructions]"
