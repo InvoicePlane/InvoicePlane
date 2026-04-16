@@ -20,6 +20,8 @@ if ( ! defined('BASEPATH')) {
  * Protects against path traversal, injection attacks, and other file-related vulnerabilities.
  */
 
+const DEFAULT_DATABASE_PORT = 3306;
+
 /**
  * Validate that a filename is safe and doesn't contain path traversal sequences.
  *
@@ -158,6 +160,53 @@ function sanitize_for_logging(string $value): string
 {
     // Remove carriage return and line feed characters to prevent log injection
     return str_replace(["\r", "\n"], '', $value);
+}
+
+/**
+ * Sanitize configuration values written to configuration files.
+ *
+ * Removes control characters to prevent injection issues.
+ *
+ * @param string|null $value
+ *
+ * @return string
+ */
+function sanitize_database_config_value(?string $value): string
+{
+    return preg_replace('/[\x00-\x1F\x7F]+/', '', (string) $value);
+}
+
+/**
+ * Validate and sanitize a database port value.
+ *
+ * Ensures the port is numeric and within the valid range of 1-65535.
+ *
+ * @param string|int|null $value
+ *
+ * @return int|null
+ */
+function sanitize_database_port(string|int|null $value): ?int
+{
+    if ($value === '' || $value === null) {
+        return DEFAULT_DATABASE_PORT;
+    }
+
+    $validated = filter_var(
+        $value,
+        FILTER_VALIDATE_INT,
+        [
+            'options' => [
+                'min_range' => 1,
+                'max_range' => 65535,
+            ],
+        ]
+    );
+
+    if ($validated === false) {
+        return null;
+    }
+
+    return (int) $validated;
 }
 
 /**
