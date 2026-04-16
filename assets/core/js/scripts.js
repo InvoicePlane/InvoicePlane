@@ -92,9 +92,9 @@ function sanitize_email_template_html(html) {
     // Create a detached container to parse and sanitize HTML in an isolated context.
     // Using DOMParser prevents immediate script execution during parsing.
     var parser = new DOMParser();
-    // lgtm[js/xss-through-dom] - `html` is sanitized by cleanNode() below before any
-    // content reaches the live DOM; no innerHTML assignment is made on the result.
-    var doc = parser.parseFromString(html || '', 'text/html');
+    // `html` is sanitized by the tag/attribute allowlist and cleanNode() below;
+    // no innerHTML assignment is made on the result — nodes are imported via importNode().
+    var doc = parser.parseFromString(html || '', 'text/html'); // lgtm[js/xss-through-dom]
     var temp = doc.body;
     
     // List of allowed tags (only safe formatting tags)
