@@ -32,18 +32,18 @@
                 <select name="client_id" id="client_id" class="client-id-select form-control" autofocus="autofocus">
 <?php
 $permissive = get_setting('enable_permissive_search_users');
-if ( ! empty($project->client_id)) {
-?>
+        if ( ! empty($project->client_id)) {
+            ?>
                     <option value="<?php echo $project->client_id; ?>"><?php _htmlsc(format_client($project)); ?></option>
 <?php
-}
-?>
+        }
+        ?>
                 </select>
             </div>
         </div>
 
         <input class="hidden" id="input_permissive_search_clients"
-               value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
+               value="<?php echo html_escape(get_setting('enable_permissive_search_clients')); ?>">
     </div>
 
 </form>

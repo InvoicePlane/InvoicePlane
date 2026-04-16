@@ -20,7 +20,7 @@
 <?php
 $sum = 0;
 foreach ($results as $result) {
-?>
+    ?>
         <tr>
             <td><?php echo date_from_mysql($result->payment_date, true); ?></td>
             <td><?php echo htmlsc($result->invoice_number); ?></td>
@@ -30,11 +30,11 @@ foreach ($results as $result) {
             <td class="amount"><?php echo format_currency($result->payment_amount); ?></td>
         </tr>
 <?php
-    $sum += $result->payment_amount;
+        $sum += $result->payment_amount;
 }
 
 if ( ! empty($results)) {
-?>
+    ?>
         <tr>
             <td colspan=5><?php _trans('total'); ?></td>
             <td class="amount"><?php echo format_currency($sum); ?></td>

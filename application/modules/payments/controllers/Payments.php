@@ -53,7 +53,6 @@ class Payments extends Admin_Controller
             redirect('payments');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         $this->load->model('custom_fields/mdl_payment_custom');
 

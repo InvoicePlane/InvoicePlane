@@ -13,7 +13,7 @@
             <tbody>
 <?php
 foreach ($users as $user) {
-?>
+    ?>
                 <tr>
                     <td><?php _htmlsc($user->user_name); ?></td>
                     <td><?php echo $user_types[$user->user_type]; ?></td>
@@ -21,15 +21,15 @@ foreach ($users as $user) {
                     <td>
                         <div class="options btn-group btn-group-sm">
 <?php
-    if ($user->user_type == 2) {
-?>
+        if ($user->user_type == 2) {
+            ?>
                         <a href="<?php echo site_url('user_clients/user/' . $user->user_id); ?>"
                            class="btn btn-default">
                             <i class="fa fa-list fa-margin"></i> <?php _trans('assigned_clients'); ?>
                         </a>
 <?php
-    } // Endif
-?>
+        } // Endif
+    ?>
                             <a class="btn btn-default dropdown-toggle"
                                data-toggle="dropdown" href="#">
                                 <i class="fa fa-cog"></i> <?php _trans('options'); ?>
@@ -41,8 +41,8 @@ foreach ($users as $user) {
                                     </a>
                                 </li>
 <?php
-    if ($user->user_id !== 1) {
-?>
+        if ($user->user_id !== 1) {
+            ?>
                                     <li>
                                         <form action="<?php echo site_url('users/delete/' . $user->user_id); ?>"
                                               method="POST">
@@ -54,15 +54,15 @@ foreach ($users as $user) {
                                         </form>
                                     </li>
 <?php
-    }
-?>
+        }
+    ?>
                             </ul>
                         </div>
                     </td>
                 </tr>
 <?php
 } // End foreach
-?>
+                ?>
             </tbody>
         </table>
     </div>

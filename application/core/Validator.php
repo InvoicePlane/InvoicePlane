@@ -161,19 +161,19 @@ class Validator extends MY_Model
 
             if ($model->num_rows()) {
                 $model = $model->row();
-/*
-                if (@$model->custom_field_required == '1') // Todo implement (Only here & Not in db! Oldies?)
-                {
-                    if ($value == '') {
-                        $errors[] = [
-                            'field'     => $model->custom_field_id,
-                            'label'     => $model->custom_field_label,
-                            'error_msg' => 'missing field required',
-                        ];
-                        continue;
-                    }
-                }
-*/
+                /*
+                                if (@$model->custom_field_required == '1') // Todo implement (Only here & Not in db! Oldies?)
+                                {
+                                    if ($value == '') {
+                                        $errors[] = [
+                                            'field'     => $model->custom_field_id,
+                                            'label'     => $model->custom_field_label,
+                                            'error_msg' => 'missing field required',
+                                        ];
+                                        continue;
+                                    }
+                                }
+                */
                 $result = $this->validate_type($model->custom_field_type, $value, $key);
 
                 if ($result === false) {

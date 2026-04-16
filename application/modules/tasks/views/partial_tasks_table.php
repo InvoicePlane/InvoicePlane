@@ -16,7 +16,7 @@
 <?php
 foreach ($tasks as $task) {
     $label_class = $task_statuses[$task->task_status]['class'] ?? '';
-?>
+    ?>
                 <tr>
                     <td>
                         <span class="label <?php echo $label_class; ?>">
@@ -49,8 +49,8 @@ foreach ($tasks as $task) {
                                     </a>
                                 </li>
 <?php
-    if ( ! ($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true)) {
-?>
+        if ( ! ($task->task_status == 4 && $this->config->item('enable_invoice_deletion') !== true)) {
+            ?>
                                 <li>
                                     <form action="<?php echo site_url('tasks/delete/' . $task->task_id); ?>"
                                           method="POST">
@@ -62,8 +62,8 @@ foreach ($tasks as $task) {
                                     </form>
                                 </li>
 <?php
-    } // end if
-?>
+        } // end if
+    ?>
                             </ul>
                         </div>
 
@@ -71,7 +71,7 @@ foreach ($tasks as $task) {
                 </tr>
 <?php
 }
-?>
+                ?>
             </tbody>
 
         </table>

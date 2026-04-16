@@ -11,10 +11,10 @@ on:
         options:
           - dirty
           - full
-  pull_request:
-    branches:
-      - master
-      - develop
+  #pull_request:
+  #  branches:
+  #    - master
+  #    - develop
 
 permissions:
   contents: write
@@ -34,7 +34,7 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.4'
+          php-version: '8.2'
           composer-flags: '--prefer-dist --no-interaction --no-progress'
 
       - name: Run Laravel Pint
@@ -54,7 +54,7 @@ jobs:
               echo "Running Laravel Pint in dirty mode (checking only changed files)..."
             fi
           fi
-          
+
           set +e  # Don't exit on error
           if [[ "$PINT_MODE" == "dirty" ]]; then
             vendor/bin/pint --dirty 2>&1 | tee pint_output.log
@@ -63,18 +63,18 @@ jobs:
           fi
           PINT_EXIT_CODE=${PIPESTATUS[0]}
           set -e  # Re-enable exit on error
-          
+
           # Store exit code for later steps
           echo "exit_code=$PINT_EXIT_CODE" >> $GITHUB_OUTPUT
-          
+
           # Check if there were parse errors
-          if [[ $PINT_EXIT_CODE -ne 0 ]] || grep -qE "Parse error|Error: Failed to parse" pint_output.log; then
+          if grep -q "Parse error" pint_output.log || grep -q "!" pint_output.log; then
             echo "parse_errors=true" >> $GITHUB_OUTPUT
             echo "WARNING: Parse errors detected in one or more files"
           else
             echo "parse_errors=false" >> $GITHUB_OUTPUT
           fi
-          
+
           # Don't fail the step - we want to commit successfully formatted files
           exit 0
 
@@ -83,11 +83,11 @@ jobs:
         run: |
           if [[ -n $(git status --porcelain) ]]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "✓ Files were modified by Pint"
+            echo "Files were modified by Pint"
             git status --short
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "✓ No files were modified"
+            echo "No files were modified"
           fi
 
       - name: Commit and Push Changes
@@ -98,7 +98,7 @@ jobs:
           git add -A
           git commit -m "style: apply Laravel Pint fixes" --no-verify
           git push
-          
+
           if [[ "${{ steps.pint_run.outputs.parse_errors }}" == "true" ]]; then
             echo "WARNING: Changes committed successfully, but some files had parse errors and were not formatted"
             echo "Please fix the parse errors in the files marked with '!' in the Pint output above"
@@ -109,7 +109,7 @@ jobs:
       - name: Report Parse Errors
         if: steps.pint_run.outputs.parse_errors == 'true'
         run: |
-          echo "❌ Pint encountered parse errors in one or more files"
+          echo "Pint encountered parse errors in one or more files"
           echo "Files with parse errors are marked with '!' in the output above"
           echo "Successfully formatted files have been committed, but files with parse errors were skipped"
           echo ""

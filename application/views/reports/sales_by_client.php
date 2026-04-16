@@ -17,7 +17,7 @@
         </tr>
 <?php
 foreach ($results as $result) {
-?>
+    ?>
         <tr>
             <td><?php _htmlsc(format_client($result)); ?></td>
             <td class="amount"><?php echo $result->invoice_count; ?></td>

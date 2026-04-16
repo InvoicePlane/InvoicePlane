@@ -17,7 +17,7 @@
 foreach ($custom_fields as $custom_field) {
     $alpha    = str_replace('-', '_', mb_strtolower($custom_field->custom_field_type));
     $position = $positions[$custom_field->custom_field_table][$custom_field->custom_field_location];
-?>
+    ?>
             <tr>
                 <td><?php _htmlsc($custom_field->custom_field_label); ?></td>
                 <td><?php _trans($custom_tables[$custom_field->custom_field_table]); ?></td>
@@ -30,15 +30,15 @@ foreach ($custom_fields as $custom_field) {
                             <i class="fa fa-cog"></i> <?php _trans('options'); ?>
                         </a>
 <?php
-    if (in_array($custom_field->custom_field_type, $custom_value_fields)) {
-?>
+        if (in_array($custom_field->custom_field_type, $custom_value_fields)) {
+            ?>
                         <a href="<?php echo site_url('custom_values/field/' . $custom_field->custom_field_id); ?>"
                            class="btn btn-default">
                             <i class="fa fa-list fa-margin"></i> <?php _trans('values'); ?>
                         </a>
 <?php
-    }
-?>
+        }
+    ?>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="<?php echo site_url('custom_fields/form/' . $custom_field->custom_field_id); ?>">
@@ -61,7 +61,7 @@ foreach ($custom_fields as $custom_field) {
             </tr>
 <?php
 }
-?>
+            ?>
         </tbody>
 
     </table>

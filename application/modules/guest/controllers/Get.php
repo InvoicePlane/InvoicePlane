@@ -43,8 +43,29 @@ class Get extends Base_Controller
         exit;
     }
 
-    public function get_file($filename): void
+    /**
+     * Alternative method for downloading attachments via /guest/get/attachment/ URLs.
+     * Provides support for the /guest/get/attachment/ URL path.
+     *
+     * @param string|null $filename The filename to download
+     *
+     * @return void
+     */
+    public function attachment(?string $filename = null): void
     {
+        $this->get_file($filename);
+    }
+
+    public function get_file(?string $filename = null): void
+    {
+        if ($filename === null || $filename === '') {
+            respond_file_message(
+                400,
+                'upload_error_invalid_filename',
+                'Missing filename for guest file download request',
+                'guest/get: '
+            );
+        }
         // Security: Use comprehensive file security validation helper
         // Note: CodeIgniter already URL-decodes parameters during routing
         $validation = validate_file_access($filename, $this->targetPath);
@@ -58,7 +79,7 @@ class Get extends Base_Controller
             $error    = $validation['error'] ?? 'unknown';
             $response = $errorMap[$error] ?? [400, 'upload_error_invalid_filename', 'Invalid filename'];
 
-            $this->respond_message($response[0], $response[1], $response[2]);
+            respond_file_message($response[0], $response[1], $response[2], 'guest/get: ');
         }
 
         $realFile     = $validation['path'];
@@ -79,13 +100,5 @@ class Get extends Base_Controller
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
         readfile($realFile);
-    }
-
-    private function respond_message(int $httpCode, string $messageKey, string $dynamicLogValue = ''): void
-    {
-        log_message('debug', 'guest/get: ' . trans($messageKey) . ': (status ' . $httpCode . ') ' . $dynamicLogValue);
-        http_response_code($httpCode);
-        _trans($messageKey);
-        exit;
     }
 }

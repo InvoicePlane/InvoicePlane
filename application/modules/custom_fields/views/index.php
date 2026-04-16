@@ -22,7 +22,7 @@ $active = $this->uri->segment(3);
             </a>
 <?php
 foreach ($custom_tables as $table) {
-?>
+    ?>
             <a href="<?php echo site_url('custom_fields/table/' . $table); ?>"
                class="btn <?php echo $active == $table ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans($table); ?>

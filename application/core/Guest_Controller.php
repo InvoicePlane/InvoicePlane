@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Guest_Controller extends User_Controller
 {
+    use XSS_Protection_Trait;
+    
     /** @var array */
     public $user_clients = [];
 
@@ -37,6 +39,12 @@ class Guest_Controller extends User_Controller
 
         foreach ($user_clients as $user_client) {
             $this->user_clients[$user_client->client_id] = $user_client->client_id;
+        }
+        
+        // Automatically filter all POST input to prevent XSS attacks
+        // This applies to all guest controllers
+        if ($this->input->method() === 'post' && !empty($_POST)) {
+            $this->filter_input();
         }
     }
 }

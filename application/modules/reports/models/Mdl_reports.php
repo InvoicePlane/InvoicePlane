@@ -215,7 +215,7 @@ class Mdl_Reports extends CI_Model
         $maxQuantity = (int) $maxQuantity;
 
         $from_date      = $from_date == '' ? date('Y-m-d') : date_to_mysql($from_date);
-        $to_date        = $to_date   == '' ? date('Y-m-d') : date_to_mysql($to_date);
+        $to_date        = $to_date == '' ? date('Y-m-d') : date_to_mysql($to_date);
         $from_date_year = (int) (mb_substr($from_date, 0, 4));
         $to_date_year   = (int) (mb_substr($to_date, 0, 4));
 
@@ -323,7 +323,7 @@ class Mdl_Reports extends CI_Model
                                 WHERE inv.client_id=ip_clients.client_id
                                     AND ' . $this->db->escape($from_date) . ' <= inv.invoice_date_created
                                     AND ' . $this->db->escape($to_date) . ' >= inv.invoice_date_created
-                                    AND ' . $this->db->escape($minQuantity) . ' <=
+                                    AND ' . $minQuantity . ' <=
                                     (
                                         SELECT SUM(amounts2.invoice_item_subtotal) FROM ip_invoice_amounts amounts2
                                             WHERE amounts2.invoice_id IN
@@ -333,7 +333,7 @@ class Mdl_Reports extends CI_Model
                                                         AND ' . $this->db->escape($from_date) . ' <= inv2.invoice_date_created
                                                         AND ' . $this->db->escape($to_date) . ' >= inv2.invoice_date_created
                                             )
-                                    ) AND ' . $this->db->escape($maxQuantity) . ' >=
+                                    ) AND ' . $maxQuantity . ' >=
                                     (
                                         SELECT SUM(amounts3.invoice_item_subtotal) FROM ip_invoice_amounts amounts3
                                             WHERE amounts3.invoice_id IN
@@ -446,7 +446,7 @@ class Mdl_Reports extends CI_Model
                                 WHERE inv.client_id=ip_clients.client_id
                                     AND ' . $this->db->escape($from_date) . ' <= inv.invoice_date_created
                                     AND ' . $this->db->escape($to_date) . ' >= inv.invoice_date_created
-                                    AND ' . $this->db->escape($minQuantity) . ' <=
+                                    AND ' . $minQuantity . ' <=
                                     (
                                         SELECT SUM(amounts2.invoice_item_subtotal) FROM ip_invoice_amounts amounts2
                                             WHERE amounts2.invoice_id IN
@@ -561,7 +561,7 @@ class Mdl_Reports extends CI_Model
                                 WHERE inv.client_id=ip_clients.client_id
                                     AND ' . $this->db->escape($from_date) . ' <= inv.invoice_date_created
                                     AND ' . $this->db->escape($to_date) . ' >= inv.invoice_date_created
-                                    AND ' . (int) $this->db->escape($minQuantity) . ' <=
+                                    AND ' . (int) $minQuantity . ' <=
                                     (
                                         SELECT SUM(amounts2.invoice_total) FROM ip_invoice_amounts amounts2
                                             WHERE amounts2.invoice_id IN

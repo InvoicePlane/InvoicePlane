@@ -38,23 +38,23 @@
 <?php
 if ($login_logo) {
     // Security: Block SVG files to prevent XSS attacks
-    $extension = strtolower(pathinfo($login_logo, PATHINFO_EXTENSION));
+    $extension = mb_strtolower(pathinfo($login_logo, PATHINFO_EXTENSION));
     if ($extension !== 'svg') {
-?>
+        ?>
             <img src="<?php echo base_url(); ?>uploads/<?php echo htmlsc($login_logo); ?>" class="login-logo img-responsive">
 <?php
     } else {
         // SVG logo detected, show title instead
-?>
+        ?>
             <h1><?php _trans('login'); ?></h1>
 <?php
     }
 } else {
-?>
+    ?>
             <h1><?php _trans('login'); ?></h1>
 <?php
 }
-?>
+    ?>
 
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
 

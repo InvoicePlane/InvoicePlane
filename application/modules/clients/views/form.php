@@ -94,7 +94,7 @@ $einvoicingOpt = $req_einvoicing ? $einvoicingTip . trans('optional') . ')"' : '
 <?php
 foreach ($languages as $language) {
     $client_lang = $this->mdl_clients->form_value('client_language');
-?>
+    ?>
                                 <option value="<?php echo $language; ?>"
                                     <?php check_select($client_lang, $language) ?>>
                                     <?php echo ucfirst($language); ?>
@@ -110,19 +110,19 @@ foreach ($languages as $language) {
             </div>
 <?php
 if ($req_einvoicing) {
-?>
+    ?>
             <div class="col-xs-12 col-sm-6"><!-- eInvoicing -->
                 <div class="panel panel-default">
 
                     <div class="panel-heading">
                         e-<?php _trans('invoicing'); ?>
                         <span class="<?php echo $xml_templates && $client_id ? 'pull-right' : 'hidden'; ?> toggle_einvoicing<?php
-                              echo $req_einvoicing->show_table
-                                   ? ' btn btn-xs btn-default cursor-pointer alert-' . $user_toggle . '"
+                                  echo $req_einvoicing->show_table
+                                       ? ' btn btn-xs btn-default cursor-pointer alert-' . $user_toggle . '"
                               data-toggle="collapse" data-target=".einvoice-user-check-lists"
                               onclick="switch_fa_toggle(\'einvoice_users_check_fa_toggle\')'
-                                   : '';
-                        ?>">
+                                       : '';
+    ?>">
                             <i class="fa fa-<?php echo $nb ? ($me ? 'ban' : 'warning') : 'check-square-o text-success'; ?>"></i>
                             <span data-toggle="tooltip" data-placement="bottom" title="<?php echo '🗸 ' . ($nb_users - $nb) . '/' . $nb_users . ' ' . trans('user' . ($nb_users > 1 ? 's' : '')); ?>">
                                 <?php echo ($nb ?: $nb_users) . ' ' . trans($ln); ?>
@@ -137,7 +137,7 @@ if ($req_einvoicing) {
         if ($client_id) {
             $this->layout->load_view('clients/partial_client_einvoicing');
         } else {
-?>
+            ?>
                         <div class="alert alert-warning small" style="font-size:medium;">
                             <i class="fa fa-exclamation-triangle fa-2x"></i>&nbsp;
                             <?php _trans('einvoicing_no_enabled_hint'); ?>
@@ -145,7 +145,7 @@ if ($req_einvoicing) {
 <?php
         } // End if client_id
     } else {
-?>
+        ?>
                         <div class="alert alert-info small" style="font-size:medium;">
                             <i class="fa fa-info"></i>&nbsp;
                             <?php _trans('einvoicing_how_enable_hint'); ?>
@@ -153,7 +153,7 @@ if ($req_einvoicing) {
                         </div>
 <?php
     } // End if xml_templates
-?>
+    ?>
                     </div>
                 </div>
 
@@ -375,7 +375,7 @@ $genders = [
 ];
 $client_gender = $this->mdl_clients->form_value('client_gender');
 foreach ($genders as $key => $val) {
-?>
+    ?>
                                     <option value=" <?php echo $key; ?>" <?php check_select($key, $client_gender) ?>>
                                         <?php echo $val; ?>
                                     </option>
@@ -394,7 +394,7 @@ $is_custom_title = null === ClientTitleEnum::tryFrom($client_title);
                             <select name="client_title" id="client_title" class="form-control simple-select">
 <?php
 foreach ($client_title_choices as $client_title_choice) {
-?>
+    ?>
                                 <option
                                     value="<?php echo $client_title_choice; ?>"
                                     <?php echo $client_title === $client_title_choice ? 'selected' : ''; ?>
@@ -438,7 +438,7 @@ if ($this->mdl_settings->setting('sumex') == '1') {
     $avs           = format_avs($this->mdl_clients->form_value('client_avs'));
     $insuredNumber = $this->mdl_clients->form_value('client_insurednumber');
     $veka          = $this->mdl_clients->form_value('client_veka');
-?>
+    ?>
 
                         <div class="form-group">
                             <label for="client_avs"><?php _trans('sumex_ssn'); ?></label>
@@ -489,7 +489,7 @@ foreach ($custom_fields as $custom_field) {
 
 <?php
 if ($default_custom) {
-?>
+    ?>
         <div class="row"><!-- Custom -->
             <div class="col-xs-12">
 
@@ -500,13 +500,13 @@ if ($default_custom) {
                     <div class="panel-body">
                         <div class="row">
 <?php
-$classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
-foreach ($custom_fields as $custom_field) {
-    if ( ! $custom_field->custom_field_location) { // == 0
-        print_field($this->mdl_clients, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
+    foreach ($custom_fields as $custom_field) {
+        if ( ! $custom_field->custom_field_location) { // == 0
+            print_field($this->mdl_clients, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
+        }
     }
-}
-?>
+    ?>
                         </div>
                     </div>
                 </div>

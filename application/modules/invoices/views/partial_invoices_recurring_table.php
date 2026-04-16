@@ -17,7 +17,7 @@
                 <tbody>
 <?php
 foreach ($recurring_invoices as $invoice) {
-?>
+    ?>
                     <tr>
                         <td>
                             <span class="label label-<?php echo $invoice->recur_status != 'active' ? 'default' : 'success'; ?>">
@@ -61,7 +61,7 @@ foreach ($recurring_invoices as $invoice) {
                     </tr>
 <?php
 }
-?>
+                    ?>
                 </tbody>
 
             </table>

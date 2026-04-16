@@ -69,7 +69,7 @@ if ($who_id) {
     $format = 'format_' . $who; // func name
     $name   = $who . '_name'; // user or client property
     $name   = empty(${$who}->{$name}) ? $format($who_id) : $user->{$name}
-?>
+    ?>
                         <option value="<?php echo $who_id; ?>"><?php _htmlsc($name); ?></option>
 <?php
 }

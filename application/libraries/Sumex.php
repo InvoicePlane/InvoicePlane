@@ -316,9 +316,9 @@ class Sumex
             'legacy_calculation'  => config_item('legacy_calculation'),
         ];
 
-        $CI->load->helper(['pdf', 'mpdf']);
+        $CI->load->helper(['pdf', 'mpdf', 'template']);
 
-        $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
+        $html = render_template_view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
         // Create PDF with embed XML
         $retval = pdf_create(

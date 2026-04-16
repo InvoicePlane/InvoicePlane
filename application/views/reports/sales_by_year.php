@@ -52,7 +52,7 @@ foreach ($results as $result) {
         $numRows += $numYears * 4;
         $contRows = 1;
     }
-?>
+    ?>
 
         <tr>
             <td style="border-bottom: none;text-align:center;"><?php echo $result->VAT_ID; ?></td>
@@ -63,36 +63,36 @@ foreach ($results as $result) {
         </tr>
 
 <?php
-    foreach ($result as $index => $value) {
-        $quarter = mb_substr($index, 8, 2);
-        $year    = mb_substr($index, 11, 4);
+        foreach ($result as $index => $value) {
+            $quarter = mb_substr($index, 8, 2);
+            $year    = mb_substr($index, 11, 4);
 
-        if (preg_match($pattern, $index)) {
-?>
+            if (preg_match($pattern, $index)) {
+                ?>
         <tr>
             <td style="border-bottom: none;">&nbsp;</td>
             <td style="border-bottom: none;text-align:center;"><?php
-            switch ($quarter) {
-                case 't1':
-                    echo trans('Q1') . '/' . $year;
-                    break;
-                case 't2':
-                    echo trans('Q2') . '/' . $year;
-                    break;
-                case 't3':
-                    echo trans('Q3') . '/' . $year;
-                    break;
-                case 't4':
-                    echo trans('Q4') . '/' . $year;
-                    break;
-            }
-            ?></td>
+                            switch ($quarter) {
+                                case 't1':
+                                    echo trans('Q1') . '/' . $year;
+                                    break;
+                                case 't2':
+                                    echo trans('Q2') . '/' . $year;
+                                    break;
+                                case 't3':
+                                    echo trans('Q3') . '/' . $year;
+                                    break;
+                                case 't4':
+                                    echo trans('Q4') . '/' . $year;
+                                    break;
+                            }
+                ?></td>
             <td style="border-bottom: none;text-align:center;"><?php echo ($value > 0) ? format_currency($value) : ''; ?></td>
         </tr>
 <?php
-        } // End if
-    } // End foreach result
-?>
+            } // End if
+        } // End foreach result
+    ?>
         <tr><td colspan="4" style="border-bottom: none;"><hr></td></tr>
 <?php
 } // End foreach results

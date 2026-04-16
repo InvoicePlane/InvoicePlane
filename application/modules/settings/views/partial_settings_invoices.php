@@ -17,14 +17,14 @@
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($invoice_groups as $invoice_group) {
-?>
+    ?>
                                 <option value="<?php echo $invoice_group->invoice_group_id; ?>"
                                     <?php check_select(get_setting('default_invoice_group'), $invoice_group->invoice_group_id); ?>>
-                                    <?php echo $invoice_group->invoice_group_name; ?>
+                                    <?php echo html_escape($invoice_group->invoice_group_name); ?>
                                 </option>
 <?php
 }
-?>
+                ?>
                             </select>
                         </div>
 
@@ -49,14 +49,14 @@ foreach ($invoice_groups as $invoice_group) {
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($payment_methods as $payment_method) {
-?>
+    ?>
                                 <option value="<?php echo $payment_method->payment_method_id; ?>"
                                     <?php check_select($payment_method->payment_method_id, get_setting('invoice_default_payment_method')) ?>>
-                                    <?php echo $payment_method->payment_method_name; ?>
+                                    <?php echo htmlsc($payment_method->payment_method_name); ?>
                                 </option>
 <?php
 }
-?>
+                ?>
                             </select>
                         </div>
 
@@ -65,7 +65,7 @@ foreach ($payment_methods as $payment_method) {
                                 <?php _trans('invoices_due_after'); ?>
                             </label>
                             <input type="number" name="settings[invoices_due_after]" id="settings[invoices_due_after]"
-                                   class="form-control" value="<?php echo get_setting('invoices_due_after'); ?>">
+                                   class="form-control" value="<?php echo get_setting('invoices_due_after', '', true); ?>">
                         </div>
 
                         <div class="form-group">
@@ -163,10 +163,10 @@ foreach ($payment_methods as $payment_method) {
 <?php
 if (get_setting('invoice_logo')) {
     $invoice_logo_file = get_setting('invoice_logo');
-    $extension = strtolower(pathinfo($invoice_logo_file, PATHINFO_EXTENSION));
+    $extension         = mb_strtolower(pathinfo($invoice_logo_file, PATHINFO_EXTENSION));
     if ($extension === 'svg') {
         // Security: SVG files are blocked
-?>
+        ?>
                                 <br/>
                                 <div class="alert alert-danger">
                                     <strong><?php _trans('warning'); ?>:</strong> 
@@ -175,7 +175,7 @@ if (get_setting('invoice_logo')) {
                                 </div>
 <?php
     } else {
-?>
+        ?>
                                 <br/>
                                 <img class="personal_logo"
                                      src="<?php echo base_url(); ?>uploads/<?php echo htmlsc($invoice_logo_file); ?>">
@@ -184,7 +184,7 @@ if (get_setting('invoice_logo')) {
 <?php
     }
 }
-?>
+                ?>
                             <input type="file" name="invoice_logo" size="40" class="form-control"/>
                         </div>
 
@@ -213,14 +213,14 @@ if (get_setting('invoice_logo')) {
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($pdf_invoice_templates as $invoice_template) {
-?>
+    ?>
                                 <option value="<?php echo $invoice_template; ?>"
                                     <?php check_select(get_setting('pdf_invoice_template'), $invoice_template); ?>>
                                     <?php echo $invoice_template; ?>
                                 </option>
 <?php
 }
-?>
+                ?>
                             </select>
                         </div>
 
@@ -233,14 +233,14 @@ foreach ($pdf_invoice_templates as $invoice_template) {
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($pdf_invoice_templates as $invoice_template) {
-?>
+    ?>
                                 <option value="<?php echo $invoice_template; ?>"
                                     <?php check_select(get_setting('pdf_invoice_template_paid'), $invoice_template); ?>>
                                     <?php echo $invoice_template; ?>
                                 </option>
 <?php
 }
-?>
+                ?>
                             </select>
                         </div>
 
@@ -253,14 +253,14 @@ foreach ($pdf_invoice_templates as $invoice_template) {
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($pdf_invoice_templates as $invoice_template) {
-?>
+    ?>
                                     <option value="<?php echo $invoice_template; ?>"
                                         <?php check_select(get_setting('pdf_invoice_template_overdue'), $invoice_template); ?>>
                                         <?php echo $invoice_template; ?>
                                     </option>
 <?php
 }
-?>
+                ?>
                             </select>
                         </div>
 
@@ -273,14 +273,14 @@ foreach ($pdf_invoice_templates as $invoice_template) {
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($public_invoice_templates as $invoice_template) {
-?>
+    ?>
                                 <option value="<?php echo $invoice_template; ?>"
                                     <?php check_select(get_setting('public_invoice_template'), $invoice_template); ?>>
                                     <?php echo $invoice_template; ?>
                                 </option>
 <?php
 }
-?>
+                ?>
                             </select>
                         </div>
 
@@ -296,14 +296,14 @@ foreach ($public_invoice_templates as $invoice_template) {
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($email_templates_invoice as $email_template) {
-?>
+    ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
                                     <?php check_select(get_setting('email_invoice_template'), $email_template->email_template_id); ?>>
-                                    <?php echo $email_template->email_template_title; ?>
+                                    <?php echo htmlsc($email_template->email_template_title); ?>
                                 </option>
 <?php
 }
-?>
+                ?>
                             </select>
                         </div>
 
@@ -316,14 +316,14 @@ foreach ($email_templates_invoice as $email_template) {
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($email_templates_invoice as $email_template) {
-?>
+    ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
                                     <?php check_select(get_setting('email_invoice_template_paid'), $email_template->email_template_id); ?>>
-                                    <?php echo $email_template->email_template_title; ?>
+                                    <?php echo htmlsc($email_template->email_template_title); ?>
                                 </option>
 <?php
 }
-?>
+                ?>
                             </select>
                         </div>
 
@@ -336,14 +336,14 @@ foreach ($email_templates_invoice as $email_template) {
                                 <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($email_templates_invoice as $email_template) {
-?>
+    ?>
                                 <option value="<?php echo $email_template->email_template_id; ?>"
                                     <?php check_select(get_setting('email_invoice_template_overdue'), $email_template->email_template_id); ?>>
-                                    <?php echo $email_template->email_template_title; ?>
+                                    <?php echo htmlsc($email_template->email_template_title); ?>
                                 </option>
 <?php
 }
-?>
+                ?>
                             </select>
                         </div>
 
@@ -374,8 +374,8 @@ foreach ($email_templates_invoice as $email_template) {
             <div class="panel-body">
 
 <?php
-$qr_code = get_setting('qr_code');
-?>
+                $qr_code = get_setting('qr_code');
+                ?>
                 <div class="form-group">
                     <div class="checkbox">
                         <label>
@@ -417,7 +417,7 @@ $qr_code = get_setting('qr_code');
                                 id="settings[qr_code_recipient]"
                                 class="form-control"
                                 placeholder="<?php _htmlsc(trans('company')); ?>"
-                                value="<?php echo get_setting('qr_code_recipient'); ?>"
+                                value="<?php echo get_setting('qr_code_recipient', '', true); ?>"
                             >
                         </div>
                     </div>
@@ -431,7 +431,7 @@ $qr_code = get_setting('qr_code');
                                 name="settings[qr_code_iban]"
                                 id="settings[qr_code_iban]"
                                 class="form-control"
-                                value="<?php echo get_setting('qr_code_iban'); ?>"
+                                value="<?php echo get_setting('qr_code_iban', '', true); ?>"
                             >
                         </div>
                     </div>
@@ -448,7 +448,7 @@ $qr_code = get_setting('qr_code');
                                 name="settings[qr_code_bic]"
                                 id="settings[qr_code_bic]"
                                 class="form-control"
-                                value="<?php echo get_setting('qr_code_bic'); ?>"
+                                value="<?php echo get_setting('qr_code_bic', '', true); ?>"
                             >
                         </div>
                     </div>
@@ -462,7 +462,7 @@ $qr_code = get_setting('qr_code');
                                 name="settings[qr_code_remittance_text]"
                                 id="settings[qr_code_remittance_text]"
                                 class="form-control taggable"
-                                value="<?php echo get_setting('qr_code_remittance_text'); ?>"
+                                value="<?php echo get_setting('qr_code_remittance_text', '', true); ?>"
                                 placeholder="{{{invoice_number}}}"
                             >
                         </div>
@@ -555,10 +555,10 @@ $qr_code = get_setting('qr_code');
             </div>
         </div>
 <?php
-$sumex = get_setting('sumex');
-// Set in ipconfig OR is 1 (in db)
-if (SUMEX_SETTINGS || $sumex == '1') {
-?>
+                $sumex = get_setting('sumex');
+                // Set in ipconfig OR is 1 (in db)
+                if (SUMEX_SETTINGS || $sumex == '1') {
+                    ?>
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -591,15 +591,15 @@ if (SUMEX_SETTINGS || $sumex == '1') {
                             <select name="settings[sumex_sliptype]" id="settings[sumex_sliptype]"
                                     class="form-control simple-select" data-minimum-results-for-search="Infinity">
 <?php
-    $slipTypes = ['esr9', 'esrRed'];
-    foreach ($slipTypes as $k => $v) {
-?>
+                        $slipTypes = ['esr9', 'esrRed'];
+                    foreach ($slipTypes as $k => $v) {
+                        ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_sliptype'), $k) ?>>
                                     <?php _trans('invoice_sumex_sliptype-' . $v); ?>
                                 </option>
 <?php
-    }
-?>
+                    }
+                    ?>
                             </select>
                             <p class="help-block"><?php _trans('invoice_sumex_sliptype_help'); ?></p>
                         </div>
@@ -612,15 +612,15 @@ if (SUMEX_SETTINGS || $sumex == '1') {
                             <select name="settings[sumex_role]" id="settings[sumex_role]"
                                     class="form-control simple-select">
 <?php
-    $roles = Sumex::ROLES;
-    foreach ($roles as $k => $v) {
-?>
+                        $roles = Sumex::ROLES;
+                    foreach ($roles as $k => $v) {
+                        ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_role'), $k) ?>>
                                     <?php _trans('invoice_sumex_role_' . $v); ?>
                                 </option>
 <?php
-    }
-?>
+                    }
+                    ?>
                             </select>
                         </div>
 
@@ -631,15 +631,15 @@ if (SUMEX_SETTINGS || $sumex == '1') {
                             <select name="settings[sumex_place]" id="settings[sumex_place]"
                                     class="form-control simple-select" data-minimum-results-for-search="Infinity">
 <?php
-    $places = Sumex::PLACES;
-    foreach ($places as $k => $v) {
-?>
+                        $places = Sumex::PLACES;
+                    foreach ($places as $k => $v) {
+                        ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_place'), $k); ?>>
                                     <?php _trans('invoice_sumex_place_' . $v); ?>
                                 </option>
 <?php
-    }
-?>
+                    }
+                    ?>
                             </select>
                         </div>
 
@@ -650,15 +650,15 @@ if (SUMEX_SETTINGS || $sumex == '1') {
                             <select name="settings[sumex_canton]" id="settings[sumex_canton]"
                                     class="form-control simple-select">
 <?php
-    $cantons = Sumex::CANTONS;
-    foreach ($cantons as $k => $v) {
-?>
+                        $cantons = Sumex::CANTONS;
+                    foreach ($cantons as $k => $v) {
+                        ?>
                                 <option value="<?php echo $k; ?>" <?php check_select(get_setting('sumex_canton'), $k); ?>>
                                     <?php echo $v; ?>
                                 </option>
 <?php
-    }
-?>
+                    }
+                    ?>
                             </select>
                         </div>
                     </div>
@@ -666,7 +666,7 @@ if (SUMEX_SETTINGS || $sumex == '1') {
             </div>
         </div>
 <?php
-} // End If Sumex
+                } // End If Sumex
 ?>
 
     </div>

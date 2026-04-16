@@ -16,25 +16,25 @@
 
         <tbody>
 <?php
-$invoice_idx        = 1;
-$invoice_count      = count($invoices);
-$invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
-foreach ($invoices as $invoice) {
-    // Disable read-only if not applicable
-    if ($this->config->item('disable_read_only') == true) {
-        $invoice->is_read_only = 0;
-    }
-    // Convert the dropdown menu to a dropup if invoice is after the invoice split
-    $dropup = $invoice_idx > $invoice_list_split;
-?>
+$invoice_idx                    = 1;
+            $invoice_count      = count($invoices);
+            $invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
+            foreach ($invoices as $invoice) {
+                // Disable read-only if not applicable
+                if ($this->config->item('disable_read_only') == true) {
+                    $invoice->is_read_only = 0;
+                }
+                // Convert the dropdown menu to a dropup if invoice is after the invoice split
+                $dropup = $invoice_idx > $invoice_list_split;
+                ?>
             <tr>
                 <td>
                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
                         <?php echo $invoice_statuses[$invoice->invoice_status_id]['label'];
-                            if ($invoice->invoice_sign == '-1') {?>&nbsp;<i class="fa fa-credit-invoice" title="<?php _trans('credit_invoice'); ?>"></i><?php }
-                            if ($invoice->is_read_only) {?>&nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only'); ?>"></i><?php }
-                            if ($invoice->invoice_is_recurring) {?>&nbsp;<i class="fa fa-refresh" title="<?php _trans('recurring'); ?>"></i><?php }
-                        ?>
+                if ($invoice->invoice_sign == '-1') {?>&nbsp;<i class="fa fa-credit-invoice" title="<?php _trans('credit_invoice'); ?>"></i><?php }
+                if ($invoice->is_read_only) {?>&nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only'); ?>"></i><?php }
+                if ($invoice->invoice_is_recurring) {?>&nbsp;<i class="fa fa-refresh" title="<?php _trans('recurring'); ?>"></i><?php }
+                ?>
                     </span>
                 </td>
 
@@ -78,7 +78,7 @@ foreach ($invoices as $invoice) {
                         <ul class="dropdown-menu">
 <?php
     if ($invoice->is_read_only != 1) {
-?>
+        ?>
                             <li>
                                 <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>">
                                     <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
@@ -86,7 +86,7 @@ foreach ($invoices as $invoice) {
                             </li>
 <?php
     }
-?>
+                ?>
                             <li>
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                    target="_blank">
@@ -108,11 +108,11 @@ foreach ($invoices as $invoice) {
                                 </a>
                             </li>
 <?php
-    if (
-        $invoice->invoice_status_id == 1
-        || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
-    ) {
-?>
+                    if (
+                        $invoice->invoice_status_id == 1
+                        || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
+                    ) {
+                        ?>
                             <li>
                                 <form action="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
                                       method="POST">
@@ -124,16 +124,16 @@ foreach ($invoices as $invoice) {
                                 </form>
                             </li>
 <?php
-    }
-?>
+                    }
+                ?>
                         </ul>
                     </div>
                 </td>
             </tr>
 <?php
-    $invoice_idx++;
-} // End foreach invoices
-?>
+                    $invoice_idx++;
+            } // End foreach invoices
+            ?>
         </tbody>
 
     </table>

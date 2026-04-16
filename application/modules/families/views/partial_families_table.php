@@ -11,7 +11,7 @@
             <tbody>
 <?php
 foreach ($families as $family) {
-?>
+    ?>
                 <tr>
                     <td><a href="<?php echo site_url('families/form/' . $family->family_id); ?>"><i class="fa fa-edit"></i> <?php _htmlsc($family->family_name); ?></a></td>
                     <td>
@@ -42,7 +42,7 @@ foreach ($families as $family) {
                 </tr>
 <?php
 }
-?>
+                ?>
             </tbody>
 
         </table>

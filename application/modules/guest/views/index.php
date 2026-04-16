@@ -16,11 +16,11 @@
 if ($open_quotes) {
     echo $this->layout->load_view('guest/partial_quotes_table', ['quotes' => $open_quotes]);
 } else {
-?>
+    ?>
             <div class="alert text-success no-margin"><?php _trans('no_quotes_requiring_approval'); ?></div>
 <?php
 }
-?>
+    ?>
 
         </div>
     </div>
@@ -32,11 +32,11 @@ if ($open_quotes) {
 if ($overdue_invoices) {
     echo $this->layout->load_view('guest/partial_invoices_table', ['invoices' => $overdue_invoices]);
 } else {
-?>
+    ?>
             <div class="alert text-success no-margin"><?php _trans('no_overdue_invoices'); ?></div>
 <?php
 }
-?>
+    ?>
 
         </div>
     </div>
@@ -51,11 +51,11 @@ if ($overdue_invoices) {
 if ($open_invoices) {
     echo $this->layout->load_view('guest/partial_invoices_table', ['invoices' => $open_invoices]);
 } else {
-?>
+    ?>
             <div class="alert text-success no-margin"><?php _trans('no_open_invoices'); ?></div>
 <?php
 }
-?>
+    ?>
 
         </div>
 

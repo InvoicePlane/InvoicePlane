@@ -81,7 +81,7 @@ $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
 
 <?php // New user
 if ( ! $id) {
-?>
+    ?>
                             <div class="form-group">
                                 <label for="user_password">
                                     <?php _trans('password'); ?>
@@ -97,7 +97,7 @@ if ( ! $id) {
                             </div>
 <?php
 } else { // Edit user
-?>
+    ?>
                             <div class="form-group">
                                 <a href="<?php echo site_url('users/change_password/' . $id); ?>"
                                    class="btn btn-default">
@@ -117,7 +117,7 @@ if ( ! $id) {
 <?php
 $usr_lang = $this->mdl_users->form_value('user_language');
 foreach ($languages as $language) {
-?>
+    ?>
                                     <option value="<?php echo $language; ?>" <?php check_select($usr_lang, $language); ?>>
                                         <?php echo ucfirst($language); ?>
                                     </option>
@@ -133,7 +133,7 @@ foreach ($languages as $language) {
 <?php
 $user_type = $this->mdl_users->form_value('user_type');
 foreach ($user_types as $key => $type) {
-?>
+    ?>
                                     <option value="<?php echo $key; ?>" <?php check_select($user_type, $key); ?>>
                                         <?php echo $type; ?>
                                     </option>
@@ -187,7 +187,7 @@ foreach ($user_types as $key => $type) {
                                         <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($countries as $cldr => $country) {
-?>
+    ?>
                                         <option value="<?php echo $cldr; ?>"
                                             <?php check_select($selected_country, $cldr); ?>>
                                             <?php echo $country ?>
@@ -278,7 +278,7 @@ foreach ($custom_fields['ip_user_custom'] as $custom_field) {
 
 <?php
 if ($this->mdl_settings->setting('sumex') == '1') {
-?>
+    ?>
                         <div class="panel panel-default">
                             <div class="panel-heading"><?php _trans('sumex_information'); ?></div>
 
@@ -361,7 +361,7 @@ foreach ($custom_fields['ip_user_custom'] as $custom_field) {
 
 <?php
 if ($default_custom) {
-?>
+    ?>
                         <div class="row">
                             <div class="col-xs-12">
 
@@ -372,13 +372,13 @@ if ($default_custom) {
                                     <div class="panel-body">
                                         <div class="row">
 <?php
-    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
+        $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
     foreach ($custom_fields['ip_user_custom'] as $custom_field) {
         if ( ! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_users, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }
-?>
+    ?>
                                         </div>
                                     </div>
                                 </div>

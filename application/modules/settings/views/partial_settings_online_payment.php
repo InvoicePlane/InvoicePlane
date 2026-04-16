@@ -94,9 +94,9 @@
                                     name="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     id="settings[gateway_<?php echo $d; ?>_<?php echo $key ?>]"
                                     <?php if ($setting['type'] == 'password') { ?>
-                                        value="<?php echo $this->crypt->decode(get_setting('gateway_' . $d . '_' . $key)); ?>"
+                                        value="" autocomplete="new-password"
                                     <?php } else { ?>
-                                        value="<?php echo get_setting('gateway_' . $d . '_' . $key); ?>"
+                                        value="<?php echo html_escape(get_setting('gateway_' . $d . '_' . $key)); ?>"
                                     <?php } ?>
                                 >
                                 <?php if ($setting['type'] == 'password') { ?>
@@ -137,7 +137,7 @@
                             <?php foreach ($payment_methods as $payment_method) { ?>
                                 <option value="<?php echo $payment_method->payment_method_id; ?>"
                                     <?php check_select(get_setting('gateway_' . $d . '_payment_method'), $payment_method->payment_method_id) ?>>
-                                    <?php echo $payment_method->payment_method_name; ?>
+                                    <?php echo htmlsc($payment_method->payment_method_name); ?>
                                 </option>
                             <?php } ?>
                         </select>

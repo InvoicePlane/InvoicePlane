@@ -96,7 +96,7 @@ if ($invoice->client_phone) {
         <div><b><?php _htmlsc($invoice->user_name); ?></b></div>
 <?php
 if ($invoice->user_vat_id) {
-   echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '</div>';
+    echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '</div>';
 }
 if ($invoice->user_tax_code) {
     echo '<div>' . trans('tax_code_short') . ': ' . htmlsc($invoice->user_tax_code) . '</div>';
@@ -160,7 +160,7 @@ if ($invoice->user_fax) {
             </tr>
 <?php
 if ($payment_method) {
-?>
+    ?>
             <tr>
                 <td><?php _trans('payment_method'); ?>:</td>
                 <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
@@ -182,7 +182,7 @@ if ($payment_method) {
             <th class="item-price text-right"><?php _trans('price'); ?></th>
 <?php
 if ($show_item_discounts) {
-?>
+    ?>
             <th class="item-discount text-right"><?php _trans('discount'); ?></th>
 <?php
 }
@@ -194,7 +194,7 @@ if ($show_item_discounts) {
 
 <?php
 foreach ($items as $item) {
-?>
+    ?>
             <tr>
                 <td><?php _htmlsc($item->item_name); ?></td>
                 <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
@@ -209,14 +209,14 @@ foreach ($items as $item) {
                     <?php echo format_currency(htmlsc($item->item_price)); ?>
                 </td>
 <?php
-    if ($show_item_discounts) {
-?>
+        if ($show_item_discounts) {
+            ?>
                     <td class="text-right">
                         <?php echo format_currency(htmlsc($item->item_discount)); ?>
                     </td>
 <?php
-    }
-?>
+        }
+    ?>
                 <td class="text-right">
                     <?php echo format_currency(htmlsc($item->item_total)); ?>
                 </td>
@@ -231,7 +231,7 @@ foreach ($items as $item) {
 // Fix for mpdf: table head of items printed on 2nd page
 if ($add_table_and_head_for_sums) {
     $colspan .= '" style="width:543px'; // little hackish
-?>
+    ?>
     </table>
 
     <table class="item-table">
@@ -264,7 +264,7 @@ if ( ! $legacy_calculation) {
 
 <?php
 if ($invoice->invoice_item_tax_total > 0) {
-?>
+    ?>
         <tr>
             <td class="text-right" colspan="<?php echo $colspan ?>">
                 <?php _trans('item_tax'); ?>
@@ -279,7 +279,7 @@ if ($invoice->invoice_item_tax_total > 0) {
 
 <?php
 foreach ($invoice_tax_rates as $invoice_tax_rate) {
-?>
+    ?>
         <tr>
             <td class="text-right" colspan="<?php echo $colspan ?>">
                 <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%)'; ?>
@@ -327,7 +327,7 @@ if ($legacy_calculation) {
 
 <?php
 if ($show_qrcode) {
-?>
+    ?>
     <table class="invoice-qr-code-table">
         <tr>
             <td>
@@ -362,7 +362,7 @@ if ($show_qrcode) {
 <div class="invoice-terms">
 <?php
 if ($invoice->invoice_terms) {
-?>
+    ?>
     <div class="notes">
         <b><?php _trans('terms'); ?></b><br/>
         <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>

@@ -63,7 +63,7 @@ class Mdl_Invoices_Recurring extends Response_Model
 
     public function default_order_by()
     {
-      $this->db->order_by('recur_status ASC, recur_next_date ASC');
+        $this->db->order_by('recur_status ASC, recur_next_date ASC');
     }
 
     public function default_join()

@@ -12,12 +12,12 @@
                 <th><?php _trans('tax_rate'); ?></th>
 <?php
 $sumex_active = get_setting('sumex') == '1';
-if ($sumex_active) {
-?>
+                if ($sumex_active) {
+                    ?>
                 <th><?php _trans('product_tariff'); ?></th>
 <?php
-}
-?>
+                }
+                ?>
                 <th><?php _trans('options'); ?></th>
             </tr>
             </thead>
@@ -25,7 +25,7 @@ if ($sumex_active) {
             <tbody>
 <?php
 foreach ($products as $product) {
-?>
+    ?>
                 <tr>
                     <td><a href="<?php echo site_url('families/form/' . $product->family_id); ?>"><i class="fa fa-edit"></i> <?php _htmlsc($product->family_name); ?></a></td>
                     <td><?php _htmlsc($product->product_sku); ?></td>
@@ -35,12 +35,12 @@ foreach ($products as $product) {
                     <td><?php _htmlsc($product->unit_name); ?></td>
                     <td><?php echo ($product->tax_rate_id) ? htmlsc($product->tax_rate_name) : trans('none'); ?></td>
 <?php
-    if ($sumex_active) {
-?>
+        if ($sumex_active) {
+            ?>
                     <td><?php _htmlsc($product->product_tariff); ?></td>
 <?php
-    } // endif
-?>
+        } // endif
+    ?>
                     <td>
                         <div class="options btn-group">
                             <a class="btn btn-default btn-sm dropdown-toggle"
@@ -69,7 +69,7 @@ foreach ($products as $product) {
                 </tr>
 <?php
 } // End foreach
-?>
+                ?>
             </tbody>
 
         </table>

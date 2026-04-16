@@ -41,13 +41,13 @@
                                     <option value="0"><?php _trans('none'); ?></option>
 <?php
 foreach ($units as $unit) {
-?>
+    ?>
                                     <option value="<?php echo $unit->unit_id; ?>">
                                         <?php echo htmlsc($unit->unit_name) . '/' . htmlsc($unit->unit_name_plrl); ?>
                                     </option>
 <?php
 }
-?>
+                            ?>
                                 </select>
                             </div>
                             <div class="input-group">
@@ -59,28 +59,28 @@ foreach ($units as $unit) {
 if ( ! $legacy_calculation) {
     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input');
 }
-?>
+                            ?>
                             <div class="input-group">
                                 <label for="item_tax_rate_id" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
                                 <select name="item_tax_rate_id" id="item_tax_rate_id" class="form-control">
                                     <option value="0"><?php _trans('none'); ?></option>
 <?php
 foreach ($tax_rates as $tax_rate) {
-?>
+    ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                         <?php check_select(get_setting('default_item_tax_rate'), $tax_rate->tax_rate_id); ?>>
                                         <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                                     </option>
 <?php
 }
-?>
+                            ?>
                                 </select>
                             </div>
 <?php
 if ($legacy_calculation) {
     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input');
 }
-?>
+                            ?>
                         </div>
 
                         <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
@@ -99,7 +99,7 @@ if ($legacy_calculation) {
 if ( ! $legacy_calculation) {
     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show');
 }
-?>
+                            ?>
                             <div class="row mb-1">
                                 <div class="col-xs-9 col-sm-8">
                                     <?php _trans('tax'); ?>:
@@ -112,7 +112,7 @@ if ( ! $legacy_calculation) {
 if ($legacy_calculation) {
     $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show');
 }
-?>
+                            ?>
                             <div class="row mb-1">
                                 <strong>
                                     <div class="col-xs-9 col-sm-8">
@@ -131,7 +131,7 @@ if ($legacy_calculation) {
 
 <?php
 foreach ($items as $item) {
-?>
+    ?>
         <div class="form-group details-box item">
             <div class="row">
                 <div class="col-xs-12 col-sm-7 col-md-6 col-lg-5">
@@ -189,31 +189,31 @@ foreach ($items as $item) {
                                 <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
                             </div>
 <?php
-    if ( ! $legacy_calculation) {
-        $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
-    }
-?>
+        if ( ! $legacy_calculation) {
+            $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
+        }
+    ?>
                             <div class="input-group">
                                 <label for="item_tax_rate_id_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('tax_rate'); ?></label>
                                 <select name="item_tax_rate_id" id="item_tax_rate_id_<?php echo $item->item_id; ?>" class="form-control">
                                     <option value="0"><?php _trans('none'); ?></option>
 <?php
-    foreach ($tax_rates as $tax_rate) {
-?>
+        foreach ($tax_rates as $tax_rate) {
+            ?>
                                     <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                         <?php check_select($item->item_tax_rate_id, $tax_rate->tax_rate_id); ?>>
                                         <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                                     </option>
 <?php
-    }
-?>
+        }
+    ?>
                                 </select>
                             </div>
 <?php
-    if ($legacy_calculation) {
-        $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
-    }
-?>
+        if ($legacy_calculation) {
+            $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_input', ['item' => $item]);
+        }
+    ?>
                         </div>
 
                         <div class="col-xs-12 col-md-6 text-right">
@@ -226,10 +226,10 @@ foreach ($items as $item) {
                                 </div>
                             </div>
 <?php
-    if ( ! $legacy_calculation) {
-        $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
-    }
-?>
+        if ( ! $legacy_calculation) {
+            $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
+        }
+    ?>
                             <div class="row mb-1">
                                 <div class="col-xs-9 col-sm-8">
                                     <?php _trans('tax'); ?>:
@@ -239,10 +239,10 @@ foreach ($items as $item) {
                                 </div>
                             </div>
 <?php
-    if ($legacy_calculation) {
-        $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
-    }
-?>
+        if ($legacy_calculation) {
+            $this->layout->load_view('layout/partial/itemlist_responsive_item_discount_show', ['item' => $item]);
+        }
+    ?>
                             <div class="row mb-1">
                                 <div class="col-xs-9 col-sm-8">
                                     <b><?php _trans('total'); ?>:</b>
@@ -258,7 +258,7 @@ foreach ($items as $item) {
         </div>
 <?php
 }
-?>
+                            ?>
     </div>
 </div>
 
@@ -285,7 +285,7 @@ foreach ($items as $item) {
 if ( ! $legacy_calculation) {
     $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
 }
-?>
+                            ?>
             <tr>
                 <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
                 <td style="width: 60%;"
@@ -297,14 +297,14 @@ if ( ! $legacy_calculation) {
             </tr>
 <?php
 if ($legacy_calculation) {
-?>
+    ?>
             <tr>
                 <td><?php _trans('quote_tax'); ?></td>
                 <td>
 <?php
-    if ($quote_tax_rates) {
-        foreach ($quote_tax_rates as $quote_tax_rate) {
-?>
+        if ($quote_tax_rates) {
+            foreach ($quote_tax_rates as $quote_tax_rate) {
+                ?>
                             <form method="post"
                                   action="<?php echo site_url('quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quote_tax_rate->quote_tax_rate_id) ?>">
                             <?php _csrf_field(); ?>
@@ -319,17 +319,17 @@ if ($legacy_calculation) {
                             </button>
                         </form>
 <?php
+            }
+        } else {
+            echo format_currency('0');
         }
-    } else {
-                echo format_currency('0');
-    }
-?>
+    ?>
                 </td>
             </tr>
 <?php
-    $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
+        $this->layout->load_view('quotes/partial_itemlist_table_quote_discount');
 }
-?>
+                            ?>
             <tr>
                 <td><b><?php _trans('total'); ?></b></td>
                 <td class="amount"><b><?php echo format_currency($quote->quote_total); ?></b></td>

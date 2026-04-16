@@ -20,7 +20,7 @@ $edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing
 
 <?php
 if ( ! $items) {
-?>
+    ?>
         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
 <?php
 }
@@ -30,7 +30,7 @@ if ( ! $items) {
         $(document).on('loaded', check_items_tax_usages());
 <?php
 if ($quote->quote_status_id == 1) {
-?>
+    ?>
     $('#quote_change_client').click(function () {
         $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
             quote_id: <?php echo $quote_id; ?>,
@@ -158,7 +158,7 @@ if ($quote->quote_status_id == 1) {
 
 <?php
 if (get_setting('show_responsive_itemlist') == 1) {
-?>
+    ?>
         function UpR(k) {
           var parent = k.parents('.item');
           var pos = parent.prev();
@@ -177,7 +177,7 @@ if (get_setting('show_responsive_itemlist') == 1) {
         });
 <?php
 } else {
-?>
+    ?>
         var fixHelper = function (e, tr) {
             var $originals = tr.children();
             var $helper = tr.clone();
@@ -209,7 +209,7 @@ echo $legacy_calculation ? $modal_add_quote_tax : ''; // Legacy calculation have
 <?php
 // Nb Admins > 1 only
 if ($change_user) {
-?>
+    ?>
         <a data-toggle="tooltip" data-placement="bottom"
            title="<?php echo $edit_user_title; ?>"
            href="<?php echo site_url('users/form/' . $quote->user_id); ?>">
@@ -217,13 +217,13 @@ if ($change_user) {
                 <span class="hidden-xs"><?php _htmlsc($quote->user_name); ?></span>
         </a>
 <?php
-    if ($quote->quote_status_id == 1) {
-?>
+        if ($quote->quote_status_id == 1) {
+            ?>
         <span id="quote_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
               data-toggle="tooltip" data-placement="bottom"
               title="<?php _trans('change_user'); ?>"></span>
 <?php
-    } // End if draft
+        } // End if draft
 } // End if change_user
 ?>
     </h1>
@@ -237,7 +237,7 @@ if ($change_user) {
 <?php
 // Legacy calculation have global taxes - since v1.6.3
 if ($legacy_calculation) {
-?>
+    ?>
                 <li>
                     <a href="#add-quote-tax" data-toggle="modal">
                         <i class="fa fa-plus fa-margin"></i>
@@ -307,7 +307,7 @@ if ($legacy_calculation) {
                         </a>
 <?php
 if ($quote->quote_status_id == 1) {
-?>
+    ?>
                         <span id="quote_change_client" class="fa fa-edit cursor-pointer small"
                               data-toggle="tooltip" data-placement="bottom"
                               title="<?php _trans('change_client'); ?>"></span>
@@ -348,7 +348,7 @@ if ($quote->quote_status_id == 1) {
                                 <div class="quote-properties">
 <?php
 if ($einvoice->name) {
-?>
+    ?>
                                     <label class="pull-right" id="e_invoice_active"
                                            data-toggle="tooltip" data-placement="bottom"
                                            title="e-<?php echo trans('invoice') . ' ' . ($einvoice->user ? trans('version') . ' ' . $einvoice->name . ' 🗸' : '🚫 ' . trans('einvoicing_user_fields_error')); ?>"
@@ -357,11 +357,11 @@ if ($einvoice->name) {
                                         <?php echo $einvoice->name; ?>
 <?php
     if ($einvoice->user) {
-?>
+        ?>
                                         <i class="fa fa-check-square-o text-success"></i>
 <?php
     } else {
-?>
+        ?>
                                         <a class="fa fa-user-times text-warning"
                                            href="<?php echo site_url('users/form/' . $quote->user_id); ?>"
                                            data-toggle="tooltip" data-placement="top"
@@ -369,7 +369,7 @@ if ($einvoice->name) {
                                         ></a>
 <?php
     }
-?>
+    ?>
 
                                     </label>
 <?php
@@ -423,7 +423,7 @@ if ($einvoice->name) {
 <?php
 foreach ($quote_statuses as $key => $status) {
     $is_selected = ($key == $quote->quote_status_id) ? ' selected="selected"' : '';
-?>
+    ?>
                                         <option value="<?php echo $key; ?>"<?php echo $is_selected; ?>>
                                             <?php echo $status['label']; ?>
                                         </option>
@@ -442,7 +442,7 @@ foreach ($quote_statuses as $key => $status) {
 
 <?php
 if ($quote->quote_status_id != 1) {
-?>
+    ?>
                                 <div class="quote-properties">
                                     <label for="quote-guest-url"><?php _trans('guest_url'); ?></label>
                                     <div class="input-group">
@@ -504,7 +504,7 @@ foreach ($custom_fields as $custom_field) {
         </div>
 <?php
 if ($default_custom) {
-?>
+    ?>
         <div class="row">
             <div class="col-xs-12 col-md-6">
 
@@ -515,13 +515,13 @@ if ($default_custom) {
                     <div class="panel-body">
                         <div class="row">
 <?php
-    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
+        $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
     foreach ($custom_fields as $custom_field) {
         if ( ! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_quotes, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }
-?>
+    ?>
                         </div>
                     </div>
                 </div>

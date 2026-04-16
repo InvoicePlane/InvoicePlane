@@ -14,13 +14,13 @@
             <select name="ip_lang" class="form-control simple-select">
 <?php
 foreach ($languages as $language) {
-?>
+    ?>
                 <option value="<?php echo $language; ?>"<?php echo $language == 'english' ? ' selected="selected"' : ''; ?>><?php
-                    echo ucfirst(str_replace('/', '', $language));
-                ?></option>
+                        echo ucfirst(str_replace('/', '', $language));
+    ?></option>
 <?php
 }
-?>
+        ?>
             </select>
 
             <br/>

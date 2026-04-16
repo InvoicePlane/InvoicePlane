@@ -1,49 +1,61 @@
-name: Run PHPUnit Tests
+name: PHPUnit
 
 on:
-  workflow_dispatch:  # Manual only — does not run automatically
+  workflow_dispatch:
 
 jobs:
-  phpunit:
+  test:
+    name: PHP ${{ matrix.php }} - ${{ matrix.db }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
-    # MySQL service commented out - tests use SQLite in-memory instead
-    # services:
-    #   mysql:
-    #     image: mysql:8
-    #     env:
-    #       MYSQL_ROOT_PASSWORD: root
-    #       MYSQL_DATABASE: testing
-    #     ports:
-    #       - 3306:3306
-    #     options: >-
-    #       --health-cmd="mysqladmin ping --silent"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=3
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2']
+        db: ['mysql']
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: invoiceplane_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
-        with:
-          php-version: '8.3'
-          php-extensions: 'mbstring, bcmath, pdo_mysql'
-          composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
 
-      - name: Prepare Laravel environment
-        run: |
-          cp .env.testing.example .env.testing
-          php artisan key:generate --env=testing
+      - name: Copy ipconfig.php
+        run: cp ipconfig.php.example ipconfig.php
 
-      #- name: Run Laravel migrations
-      #  run: php artisan migrate --force --env=testing
+      - name: Run migrations (MySQL)
+        if: matrix.db == 'mysql'
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: invoiceplane_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: php artisan migrate --env=testing --force
 
-      #- name: Run Laravel seeds (optional)
-      #  run: php artisan db:seed --force --env=testing
-
-      - name: Run PHPUnit
-        run: php artisan test --env=testing
+      - name: Run Unit tests (MySQL)
+        if: matrix.db == 'mysql'
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: invoiceplane_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: vendor/bin/phpunit --configuration phpunit.xml

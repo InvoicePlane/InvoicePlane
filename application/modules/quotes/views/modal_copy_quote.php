@@ -51,7 +51,7 @@
             <input type="hidden" name="user_id" id="user_id" value="<?php echo $quote->user_id; ?>">
 
             <input class="hidden" id="input_permissive_search_clients"
-                   value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
+                   value="<?php echo html_escape(get_setting('enable_permissive_search_clients')); ?>">
 
             <div class="form-group has-feedback">
                 <label for="client_id"><?php _trans('client'); ?></label>

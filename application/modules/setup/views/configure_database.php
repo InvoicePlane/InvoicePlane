@@ -9,6 +9,13 @@
 
             <legend><?php _trans('setup_database_details'); ?></legend>
 
+            <?php if (isset($validation_error) && $validation_error) { ?>
+                <div class="alert alert-danger">
+                    <b><?php _trans('failure'); ?></b><br>
+                    <?php echo html_escape($validation_error); ?>
+                </div>
+            <?php } ?>
+
             <?php if ( ! $database['success']) { ?>
                 <?php if ($database['message'] && $_POST) { ?>
                     <div class="alert alert-danger">

@@ -28,7 +28,12 @@
                         }
                         else {
                             // There are no payment custom fields, return to invoice view
-                            window.location = "<?php echo $_SERVER['HTTP_REFERER']; ?>";
+                            // Security: Use safe referer to prevent open redirect attacks (CWE-601)
+                            window.location = <?php
+                                $CI = &get_instance();
+            $CI->load->helper('security');
+            echo escape_url_for_javascript(get_safe_referer('', site_url('invoices')));
+            ?>;
                         }
                     }
                     else {
@@ -90,25 +95,25 @@
 <?php
 // Add a hidden input field if a payment method was set to pass the disabled attribute
 if ($this->mdl_payments->form_value('payment_method_id')) {
-?>
+    ?>
                         <input type="hidden" name="payment_method_id" class="hidden"
                                value="<?php echo $this->mdl_payments->form_value('payment_method_id'); ?>">
 <?php
 }
-?>
+            ?>
                         <select name="payment_method_id" id="payment_method_id" class="form-control simple-select"
                                 <?php echo empty($invoice_payment_method) ? '' : 'disabled="disabled"'; ?>>
                             <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($payment_methods as $payment_method) {
-?>
+    ?>
                             <option value="<?php echo $payment_method->payment_method_id; ?>"
                                     <?php check_select(isset($invoice_payment_method) && $invoice_payment_method == $payment_method->payment_method_id); ?>>
                                 <?php _htmlsc($payment_method->payment_method_name); ?>
                             </option>
 <?php
 } // End foreach
-?>
+            ?>
                         </select>
                     </div>
                 </div>
