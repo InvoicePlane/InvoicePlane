@@ -96,13 +96,13 @@
 <?php
 foreach ($invoice_groups as $invoice_group) {
     $is_selected = (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) ? ' selected="selected"' : '';
-?>
+    ?>
                     <option value="<?php echo $invoice_group->invoice_group_id; ?>"<?php echo $is_selected; ?>>
                         <?php _htmlsc($invoice_group->invoice_group_name); ?>
                     </option>
 <?php
 }
-?>
+        ?>
                 </select>
             </div>
 

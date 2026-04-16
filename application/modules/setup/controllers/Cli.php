@@ -64,13 +64,14 @@ class Cli extends MX_Controller
 
         if ($this->db->count_all('ip_users') > 0) {
             echo 'Users already exist — skipping default user creation.' . PHP_EOL;
+
             return;
         }
 
-        $email           = getenv('DEFAULT_ADMIN_EMAIL')    ?: 'admin@localhost';
-        $name            = getenv('DEFAULT_ADMIN_NAME')     ?: 'admin';
-        $plain_password  = getenv('DEFAULT_ADMIN_PASSWORD') ?: bin2hex(random_bytes(12));
-        $generated       = ! getenv('DEFAULT_ADMIN_PASSWORD');
+        $email          = getenv('DEFAULT_ADMIN_EMAIL') ?: 'admin@localhost';
+        $name           = getenv('DEFAULT_ADMIN_NAME') ?: 'admin';
+        $plain_password = getenv('DEFAULT_ADMIN_PASSWORD') ?: bin2hex(random_bytes(12));
+        $generated      = ! getenv('DEFAULT_ADMIN_PASSWORD');
 
         $this->load->library('crypt');
 

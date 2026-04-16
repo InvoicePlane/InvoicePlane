@@ -415,14 +415,14 @@ class Setup extends MX_Controller
         // Map internal error codes to user-friendly messages
         // This prevents exposing internal validation logic to potential attackers
         $messages = [
-            'empty_value'               => 'This field is required.',
-            'newline_detected'          => 'Invalid format. Please check your input.',
-            'null_byte'                 => 'Invalid format. Please check your input.',
-            'invalid_hostname_format'   => 'Invalid hostname format. Please use a valid hostname or IP address.',
-            'invalid_username_format'   => 'Invalid username format. Only alphanumeric characters, dots, hyphens, underscores, and @ are allowed.',
-            'invalid_password_format'   => 'Invalid password format. Please check your password.',
-            'invalid_database_format'   => 'Invalid database name format. Only alphanumeric characters, underscores, and hyphens are allowed.',
-            'invalid_port'              => 'Invalid port number. Please enter a number between 1 and 65535.',
+            'empty_value'             => 'This field is required.',
+            'newline_detected'        => 'Invalid format. Please check your input.',
+            'null_byte'               => 'Invalid format. Please check your input.',
+            'invalid_hostname_format' => 'Invalid hostname format. Please use a valid hostname or IP address.',
+            'invalid_username_format' => 'Invalid username format. Only alphanumeric characters, dots, hyphens, underscores, and @ are allowed.',
+            'invalid_password_format' => 'Invalid password format. Please check your password.',
+            'invalid_database_format' => 'Invalid database name format. Only alphanumeric characters, underscores, and hyphens are allowed.',
+            'invalid_port'            => 'Invalid port number. Please enter a number between 1 and 65535.',
         ];
 
         // Return the user-friendly message or a generic error
@@ -627,10 +627,10 @@ class Setup extends MX_Controller
                 ];
             }
 
-                return [
-                    'needs_config'  => false,
-                    'current_value' => 'false',
-                ];
+            return [
+                'needs_config'  => false,
+                'current_value' => 'false',
+            ];
         }
 
         return ['needs_config' => false];

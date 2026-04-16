@@ -17,6 +17,7 @@ if ( ! defined('BASEPATH')) {
 class Settings extends Admin_Controller
 {
     private const MIN_TAX_RATE_DECIMALS = 2;
+
     private const MAX_TAX_RATE_DECIMALS = 3;
 
     /**
@@ -31,31 +32,9 @@ class Settings extends Admin_Controller
         $this->load->library('form_validation');
         $this->load->helper('payments_helper');
         $this->load->helper('file_security');
-        
+
         // Security: Check for SVG logos and display warnings
         $this->check_svg_logos();
-    }
-    
-    /**
-     * Check for SVG logos and display security warnings
-     * This provides a soft migration path for existing SVG logos
-     */
-    private function check_svg_logos()
-    {
-        $logos_to_check = ['login_logo', 'invoice_logo'];
-        
-        foreach ($logos_to_check as $logo_setting) {
-            $logo_file = get_setting($logo_setting);
-            if ($logo_file) {
-                $extension = strtolower(pathinfo($logo_file, PATHINFO_EXTENSION));
-                if ($extension === 'svg') {
-                    $this->session->set_flashdata('alert_warning', 
-                        trans('svg_logo_blocked_security') . ' ' . 
-                        trans('please_remove_and_reupload')
-                    );
-                }
-            }
-        }
     }
 
     public function index()
@@ -97,9 +76,9 @@ class Settings extends Admin_Controller
                 } else {
                     // Security: Validate logo filename settings to prevent path traversal
                     if ($key === 'invoice_logo' || $key === 'login_logo') {
-                        if (!empty($value)) {
+                        if ( ! empty($value)) {
                             $validation = validate_safe_filename($value);
-                            if (!$validation['valid']) {
+                            if ( ! $validation['valid']) {
                                 log_message('error', sprintf('Path traversal attempt blocked in %s setting (hash: %s, error: %s)', sanitize_for_logging($key), $validation['hash'], sanitize_for_logging($validation['error'])));
                                 $this->session->set_flashdata('alert_error', trans('invalid_filename'));
                                 redirect('settings');
@@ -130,13 +109,13 @@ class Settings extends Admin_Controller
             // Check for invoice logo upload
             if ($_FILES['invoice_logo']['name']) {
                 // Security: Check for SVG files before attempting upload
-                $file_extension = strtolower(pathinfo($_FILES['invoice_logo']['name'], PATHINFO_EXTENSION));
+                $file_extension = mb_strtolower(pathinfo($_FILES['invoice_logo']['name'], PATHINFO_EXTENSION));
                 if ($file_extension === 'svg') {
                     log_message('warning', 'SVG upload attempt blocked for invoice_logo by user ' . $this->session->userdata('user_id') . ': ' . sanitize_for_logging(basename($_FILES['invoice_logo']['name'])));
                     $this->session->set_flashdata('alert_error', trans('svg_upload_blocked_security'));
                     redirect('settings');
                 }
-                
+
                 $this->load->library('upload', $upload_config);
 
                 if ( ! $this->upload->do_upload('invoice_logo')) {
@@ -152,13 +131,13 @@ class Settings extends Admin_Controller
             // Check for login logo upload
             if ($_FILES['login_logo']['name']) {
                 // Security: Check for SVG files before attempting upload
-                $file_extension = strtolower(pathinfo($_FILES['login_logo']['name'], PATHINFO_EXTENSION));
+                $file_extension = mb_strtolower(pathinfo($_FILES['login_logo']['name'], PATHINFO_EXTENSION));
                 if ($file_extension === 'svg') {
                     log_message('warning', 'SVG upload attempt blocked for login_logo by user ' . $this->session->userdata('user_id') . ': ' . sanitize_for_logging(basename($_FILES['login_logo']['name'])));
                     $this->session->set_flashdata('alert_error', trans('svg_upload_blocked_security'));
                     redirect('settings');
                 }
-                
+
                 $this->load->library('upload', $upload_config);
 
                 if ( ! $this->upload->do_upload('login_logo')) {
@@ -227,14 +206,86 @@ class Settings extends Admin_Controller
     }
 
     /**
+     * Remove a logo file securely.
+     *
+     * @param string $type The logo type (e.g., 'invoice' or 'login')
+     */
+    public function remove_logo(string $type)
+    {
+        $logoFilename = get_setting($type . '_logo');
+
+        // Security: Validate filename before attempting deletion
+        if (empty($logoFilename)) {
+            log_message('debug', sprintf('Logo removal: No %s logo configured', sanitize_for_logging($type)));
+            $this->session->set_flashdata('alert_error', trans('no_logo_to_remove'));
+            redirect('settings');
+        }
+
+        // Security: Comprehensive file validation using file_security_helper
+        $uploadsDir = './uploads/';
+        $validation = validate_file_access($logoFilename, $uploadsDir);
+
+        if ( ! $validation['valid']) {
+            // Note: validate_file_access always provides an error field, but we use defensive programming here
+            log_message('error', sprintf(
+                'Logo removal blocked: Invalid file path for %s (hash: %s, error: %s)',
+                sanitize_for_logging($type),
+                $validation['hash'],
+                sanitize_for_logging($validation['error'] ?? 'unknown')
+            ));
+            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
+            redirect('settings');
+        }
+
+        // Delete the validated file
+        if ( ! unlink($validation['path'])) {
+            log_message('error', sprintf('Failed to delete %s logo file (hash: %s)', sanitize_for_logging($type), $validation['hash']));
+            $this->session->set_flashdata('alert_error', trans('failed_to_delete_logo'));
+            redirect('settings');
+        }
+
+        // Clear the setting in database
+        $this->mdl_settings->save($type . '_logo', '');
+
+        log_message('info', sprintf('Successfully removed %s logo (hash: %s)', sanitize_for_logging($type), $validation['hash']));
+        $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
+
+        redirect('settings');
+    }
+
+    /**
+     * Check for SVG logos and display security warnings
+     * This provides a soft migration path for existing SVG logos.
+     */
+    private function check_svg_logos()
+    {
+        $logos_to_check = ['login_logo', 'invoice_logo'];
+
+        foreach ($logos_to_check as $logo_setting) {
+            $logo_file = get_setting($logo_setting);
+            if ($logo_file) {
+                $extension = mb_strtolower(pathinfo($logo_file, PATHINFO_EXTENSION));
+                if ($extension === 'svg') {
+                    $this->session->set_flashdata(
+                        'alert_warning',
+                        trans('svg_logo_blocked_security') . ' '
+                        . trans('please_remove_and_reupload')
+                    );
+                }
+            }
+        }
+    }
+
+    /**
      * Validate and persist tax rate decimal places setting, including schema changes.
      *
      * @param array $settings
-     * @return array Settings array, with tax_rate_decimal_places removed if it was processed.
+     *
+     * @return array settings array, with tax_rate_decimal_places removed if it was processed
      */
     private function handleTaxRateDecimalPlaces(array $settings): array
     {
-        if (!array_key_exists('tax_rate_decimal_places', $settings)) {
+        if ( ! array_key_exists('tax_rate_decimal_places', $settings)) {
             return $settings;
         }
 
@@ -315,53 +366,5 @@ class Settings extends Admin_Controller
         unset($settings['tax_rate_decimal_places']);
 
         return $settings;
-    }
-
-    /**
-     * Remove a logo file securely.
-     *
-     * @param string $type The logo type (e.g., 'invoice' or 'login')
-     */
-    public function remove_logo(string $type)
-    {
-        $logoFilename = get_setting($type . '_logo');
-
-        // Security: Validate filename before attempting deletion
-        if (empty($logoFilename)) {
-            log_message('debug', sprintf('Logo removal: No %s logo configured', sanitize_for_logging($type)));
-            $this->session->set_flashdata('alert_error', trans('no_logo_to_remove'));
-            redirect('settings');
-        }
-
-        // Security: Comprehensive file validation using file_security_helper
-        $uploadsDir = './uploads/';
-        $validation = validate_file_access($logoFilename, $uploadsDir);
-
-        if (!$validation['valid']) {
-            // Note: validate_file_access always provides an error field, but we use defensive programming here
-            log_message('error', sprintf(
-                'Logo removal blocked: Invalid file path for %s (hash: %s, error: %s)',
-                sanitize_for_logging($type),
-                $validation['hash'],
-                sanitize_for_logging($validation['error'] ?? 'unknown')
-            ));
-            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
-            redirect('settings');
-        }
-
-        // Delete the validated file
-        if (!unlink($validation['path'])) {
-            log_message('error', sprintf('Failed to delete %s logo file (hash: %s)', sanitize_for_logging($type), $validation['hash']));
-            $this->session->set_flashdata('alert_error', trans('failed_to_delete_logo'));
-            redirect('settings');
-        }
-
-        // Clear the setting in database
-        $this->mdl_settings->save($type . '_logo', '');
-
-        log_message('info', sprintf('Successfully removed %s logo (hash: %s)', sanitize_for_logging($type), $validation['hash']));
-        $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
-
-        redirect('settings');
     }
 }

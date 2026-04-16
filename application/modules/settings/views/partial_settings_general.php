@@ -398,12 +398,12 @@
                             <label for="login_logo">
                                 <?php _trans('login_logo'); ?>
                             </label>
-                            <?php if (get_setting('login_logo')) { 
+                            <?php if (get_setting('login_logo')) {
                                 $login_logo_file = get_setting('login_logo');
-                                $extension = strtolower(pathinfo($login_logo_file, PATHINFO_EXTENSION));
+                                $extension       = mb_strtolower(pathinfo($login_logo_file, PATHINFO_EXTENSION));
                                 if ($extension === 'svg') {
                                     // Security: SVG files are blocked
-                            ?>
+                                    ?>
                                 <br/>
                                 <div class="alert alert-danger">
                                     <strong><?php _trans('warning'); ?>:</strong> 
@@ -415,7 +415,7 @@
                                 <img class="personal_logo"
                                     src="<?php echo base_url(); ?>uploads/<?php echo htmlsc($login_logo_file); ?>"><br>
                                 <?php echo anchor('settings/remove_logo/login', trans('remove_logo')); ?><br/>
-                            <?php } 
+                            <?php }
                             } ?>
                             <input type="file" name="login_logo" id="login_logo" class="form-control"/>
                         </div>

@@ -24,7 +24,7 @@
     <div id="filter_results">
 <?php
 $this->layout->load_view('custom_values/partial_custom_values_table');
-?>
+    ?>
     </div>
 
 </div>
