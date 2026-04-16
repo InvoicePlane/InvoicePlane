@@ -35,8 +35,8 @@ class Admin_Controller extends User_Controller
             return;
         }
 
-        $setup_completed = env_bool('SETUP_COMPLETED', 'false');
-        $disable_setup = env_bool('DISABLE_SETUP', 'false');
+        $setup_completed = env_bool('SETUP_COMPLETED', false);
+        $disable_setup = env_bool('DISABLE_SETUP', false);
 
         // If either flag is not properly set, show a security warning
         if (!$setup_completed || !$disable_setup) {
@@ -50,9 +50,13 @@ class Admin_Controller extends User_Controller
                 $warning_parts[] = 'DISABLE_SETUP is set to false';
             }
 
-            $warning_message = trans('security_warning') . ': ' . implode(' and ', $warning_parts) . '. ';
-            $warning_message .= trans('setup_wizard_accessible') . ' ';
-            $warning_message .= trans('please_update_ipconfig');
+            $warning_message = sprintf(
+                '%s: %s. %s %s',
+                trans('security_warning'),
+                implode(' and ', $warning_parts),
+                trans('setup_wizard_accessible'),
+                trans('please_update_ipconfig')
+            );
 
             $this->session->set_flashdata('alert_warning', $warning_message);
         }
