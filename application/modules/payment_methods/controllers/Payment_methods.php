@@ -45,7 +45,6 @@ class Payment_Methods extends Admin_Controller
             redirect('payment_methods');
         }
 
-
         if ($this->input->post('is_update') == 0 && $this->input->post('payment_method_name') != '') {
             $check = $this->db->get_where('ip_payment_methods', ['payment_method_name' => $this->input->post('payment_method_name')])->result();
             if ( ! empty($check)) {

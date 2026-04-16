@@ -170,7 +170,7 @@ foreach ($quote_templates as $template) {
                                 // This protects against malicious content that may have been stored before
                                 // HTML Purifier sanitization was implemented.
                                 echo html_escape($this->mdl_email_templates->form_value('email_template_body'));
-                            ?></textarea>
+    ?></textarea>
 
                             <br>
 

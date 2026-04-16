@@ -107,7 +107,7 @@ foreach ($email_templates as $email_template) {
                 <div class="form-group">
                     <label for="from_email"><?php _trans('from_email'); ?></label>
                     <input type="text" name="from_email" id="from_email" class="form-control" required
-                           value="<?php echo html_escape(isset($default_from_email) ? $default_from_email : $invoice->user_email); ?>">
+                           value="<?php echo html_escape($default_from_email ?? $invoice->user_email); ?>">
                 </div>
 
                 <div class="form-group">

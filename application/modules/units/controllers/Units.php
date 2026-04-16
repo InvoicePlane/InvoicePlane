@@ -45,7 +45,6 @@ class Units extends Admin_Controller
             redirect('units');
         }
 
-
         if (
             $this->input->post('is_update') == 0
             && $this->input->post('unit_name') != ''

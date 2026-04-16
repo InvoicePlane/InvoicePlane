@@ -146,7 +146,7 @@ class Cron extends Base_Controller
                 // The sanitized HTML is used directly without decoding.
 
                 // Determine sender email: use template value, then smtp_mail_from setting, then fall back to user email
-                if (!empty($tpl->email_template_from_email)) {
+                if ( ! empty($tpl->email_template_from_email)) {
                     $from = [$tpl->email_template_from_email, $tpl->email_template_from_name];
                 } else {
                     $default_from_email = get_setting('smtp_mail_from');
