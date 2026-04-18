@@ -1,3 +1,12 @@
+<?php 
+
+    $currencySymbol = get_setting('currency_symbol');
+    if($invoice->client_currency_symbol != null){
+        $currencySymbol = $invoice->client_currency_symbol;
+    }
+
+?>
+
 <div id="headerbar">
 
     <h1 class="headerbar-title"><?php _trans('invoices'); ?></h1>

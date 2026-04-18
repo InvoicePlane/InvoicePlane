@@ -53,6 +53,8 @@ class Tasks extends Admin_Controller
             redirect('tasks');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_tasks->run_validation()) {
             $this->mdl_tasks->save($id);
             redirect('tasks');

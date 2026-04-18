@@ -52,6 +52,8 @@ class Products extends Admin_Controller
             redirect('products');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_products->run_validation()) {
             // Get the db array
             $db_array = $this->mdl_products->db_array();

@@ -59,7 +59,6 @@
         add_delete_client_notes_click_event();
     });
 </script>
-
 <?php
 $locations = [];
 foreach ($custom_fields as $custom_field) {

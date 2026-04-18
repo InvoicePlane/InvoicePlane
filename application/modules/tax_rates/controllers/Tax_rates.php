@@ -45,6 +45,8 @@ class Tax_Rates extends Admin_Controller
             redirect('tax_rates');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_tax_rates->run_validation()) {
             $this->mdl_tax_rates->form_values['tax_rate_percent'] = standardize_amount($this->mdl_tax_rates->form_values['tax_rate_percent']);
 

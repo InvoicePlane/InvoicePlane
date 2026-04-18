@@ -52,6 +52,8 @@ class Projects extends Admin_Controller
             redirect('projects');
         }
 
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
         if ($this->mdl_projects->run_validation()) {
             $this->mdl_projects->save($id);
             redirect('projects');
