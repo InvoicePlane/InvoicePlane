@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'UM' => 'ASV mazās aizjūras teritorijas',
     'AF' => 'Afganistāna',

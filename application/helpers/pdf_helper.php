@@ -50,11 +50,10 @@ function discount_global_print_in_pdf($obj, $show_item_discounts, string $is = '
  * Generate the PDF for an invoice.
  *
  * @param      $invoice_id
- * @param bool $stream
  *
  * @return string
  */
-function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = null, $is_guest = null)
+function generate_invoice_pdf($invoice_id, bool $stream = true, $invoice_template = null, $is_guest = null)
 {
     $CI = & get_instance();
 
@@ -281,13 +280,11 @@ function generate_invoice_sumex($invoice_id, $stream = true, $invoice_template =
  * Generate the PDF for a quote.
  *
  * @param      $quote_id
- * @param bool $stream
  *
  * @return string
- *
  * @throws \Mpdf\MpdfException
  */
-function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
+function generate_quote_pdf($quote_id, bool $stream = true, $quote_template = null)
 {
     $CI = &get_instance();
 

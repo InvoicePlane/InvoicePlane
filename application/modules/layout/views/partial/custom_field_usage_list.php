@@ -29,7 +29,7 @@ if ($custom_field_usage) {
                     <div class="panel-body">
 <?php
         $need_model = false;
-    if (in_array($what, ['invoice', 'quote'])) {
+    if (in_array($what, ['invoice', 'quote'], true)) {
         $need_model = true;
         $model      = 'mdl_' . $what . 's';
         $CI         = & get_instance();

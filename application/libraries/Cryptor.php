@@ -60,11 +60,11 @@ class Cryptor
         $this->hash_algo   = $hash_algo;
         $this->format      = $fmt;
 
-        if ( ! in_array($cipher_algo, openssl_get_cipher_methods(true))) {
+        if ( ! in_array($cipher_algo, openssl_get_cipher_methods(true), true)) {
             throw new \Exception('Cryptor:: - unknown cipher algo ' . $cipher_algo);
         }
 
-        if ( ! in_array($hash_algo, openssl_get_md_methods(true))) {
+        if ( ! in_array($hash_algo, openssl_get_md_methods(true), true)) {
             throw new \Exception('Cryptor:: - unknown hash algo ' . $hash_algo);
         }
 

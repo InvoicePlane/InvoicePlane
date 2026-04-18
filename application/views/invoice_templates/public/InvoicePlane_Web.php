@@ -220,22 +220,24 @@ foreach ($items as $item) {
 
 <?php
 $colspan = $show_item_discounts ? 4 : 3;
-if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
-    if ( ! $legacy_calculation) {
-        ?>
+if (($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) && ! $legacy_calculation) {
+    ?>
                                 <tr>
-                                    <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
-                                    <td class="amount"><?php _trans('discount'); ?></td>
-                                    <td class="amount"><?php
-                                                if ($invoice->invoice_discount_percent > 0) {
-                                                    echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
-                                                } else {
-                                                    echo format_currency($invoice->invoice_discount_amount);
-                                                }
-        ?></td>
+                                    <td class="no-bottom-border" colspan="<?php 
+    echo $colspan;
+    ?>"></td>
+                                    <td class="amount"><?php 
+    _trans('discount');
+    ?></td>
+                                    <td class="amount"><?php 
+    if ($invoice->invoice_discount_percent > 0) {
+                                                echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
+                                            } else {
+                                                echo format_currency($invoice->invoice_discount_amount);
+                                            }
+    ?></td>
                                 </tr>
-<?php
-    }
+<?php 
 }
 ?>
 
@@ -272,22 +274,22 @@ foreach ($invoice_tax_rates as $invoice_tax_rate) {
 ?>
 
 <?php
-if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
-    if ($legacy_calculation) {
-        ?>
+if (($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) && $legacy_calculation) {
+    ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
-                                    <td class="amount"><?php _trans('discount'); ?></td>
-                                    <td class="amount"><?php
-                                                if ($invoice->invoice_discount_percent > 0) {
-                                                    echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
-                                                } else {
-                                                    echo format_currency($invoice->invoice_discount_amount);
-                                                }
-        ?></td>
+                                    <td class="amount"><?php 
+    _trans('discount');
+    ?></td>
+                                    <td class="amount"><?php 
+    if ($invoice->invoice_discount_percent > 0) {
+                                                echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
+                                            } else {
+                                                echo format_currency($invoice->invoice_discount_amount);
+                                            }
+    ?></td>
                                 </tr>
-<?php
-    }
+<?php 
 }
 ?>
 

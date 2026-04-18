@@ -8,6 +8,7 @@ use Sprain\SwissQrBill as QrBill;
 
 class QrCodeSwiss
 {
+    public $paymentReference;
     public $invoice;
 
     public $creditor;
@@ -20,7 +21,7 @@ class QrCodeSwiss
 
     public $currency;
 
-    public function __construct($params)
+    public function __construct(array $params)
     {
         $CI = &get_instance();
 

@@ -323,7 +323,7 @@ class View extends Base_Controller
             $user_clients[$user_client->client_id] = $user_client->client_id;
         }
 
-        if (empty($user_clients)) {
+        if ($user_clients === []) {
             show_error(trans('guest_account_denied'), 403);
         }
 
@@ -402,9 +402,7 @@ class View extends Base_Controller
      * that are provided, one or more items
      * have a discount.
      *
-     * @param array $items
      *
-     * @return bool
      */
     private function has_discounts(array $items): bool
     {

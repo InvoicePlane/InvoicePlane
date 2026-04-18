@@ -43,7 +43,7 @@ class Guest_Controller extends User_Controller
 
         // Automatically filter all POST input to prevent XSS attacks
         // This applies to all guest controllers
-        if ($this->input->method() === 'post' && ! empty($_POST)) {
+        if ($this->input->method() === 'post' && $_POST !== []) {
             $this->filter_input();
         }
     }

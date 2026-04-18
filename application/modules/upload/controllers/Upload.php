@@ -22,7 +22,7 @@ class Upload extends Admin_Controller
 
     public $content_types = [];
 
-    private $allowed_extensions = ['jpg', 'jpeg', 'png', 'pdf', 'gif', 'webp'];
+    private array $allowed_extensions = ['jpg', 'jpeg', 'png', 'pdf', 'gif', 'webp'];
 
     /**
      * Upload constructor.
@@ -32,6 +32,7 @@ class Upload extends Admin_Controller
         parent::__construct();
         $this->load->helper('file_security');
         $this->load->model('upload/mdl_uploads');
+
         $this->content_types = $this->mdl_uploads->content_types;
     }
 
@@ -94,7 +95,7 @@ class Upload extends Admin_Controller
         // Security: Sanitize filename to prevent path traversal
         $filename = $this->sanitize_file_name($filename);
 
-        if (empty($filename)) {
+        if ($filename === '' || $filename === '0') {
             // Use hash for secure logging
             $filenameHash = hash_for_logging($this->input->post('name') ?: '');
             log_message('error', 'upload: Invalid filename in delete request (hash: ' . $filenameHash . ')');

@@ -41,7 +41,7 @@ class Payments extends Guest_Controller
 
         $invoice_ids = array_column($invoice_ids, 'invoice_id');
 
-        if ( ! empty($invoice_ids)) {
+        if ( $invoice_ids !== []) {
             $this->mdl_payments->where_in('ip_payments.invoice_id', $invoice_ids);
         } else {
             // No invoices for this user, ensure no payments are returned

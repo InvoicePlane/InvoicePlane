@@ -25,10 +25,8 @@ class Sessions extends Base_Controller
     /**
      * UTC timezone instance for consistent timestamp handling
      * Reused across password reset operations to avoid repeated instantiation.
-     *
-     * @var DateTimeZone
      */
-    private static $utc_timezone;
+    private static ?\DateTimeZone $utc_timezone = null;
 
     public function index()
     {
@@ -397,7 +395,7 @@ class Sessions extends Base_Controller
      *
      * @return bool True if rate limited, false otherwise
      */
-    private function _is_ip_rate_limited_password_reset()
+    private function _is_ip_rate_limited_password_reset(): bool
     {
         $max_attempts   = env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
         $window_minutes = env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
@@ -414,7 +412,7 @@ class Sessions extends Base_Controller
 
         // Clean up old attempts outside the time window
         $cutoff_time = time() - ($window_minutes * 60);
-        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
+        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time): bool {
             return $timestamp > $cutoff_time;
         });
 
@@ -459,7 +457,7 @@ class Sessions extends Base_Controller
      *
      * @return bool True if rate limited, false otherwise
      */
-    private function _is_email_rate_limited_password_reset($email)
+    private function _is_email_rate_limited_password_reset(string $email): bool
     {
         $max_attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3);
         $window_hours = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
@@ -475,7 +473,7 @@ class Sessions extends Base_Controller
 
         // Clean up old attempts outside the time window
         $cutoff_time = time() - ($window_hours * 3600);
-        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
+        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time): bool {
             return $timestamp > $cutoff_time;
         });
 
@@ -517,7 +515,7 @@ class Sessions extends Base_Controller
      *
      * @return bool True if bot/automated tool detected, false otherwise
      */
-    private function _is_bot_request()
+    private function _is_bot_request(): bool
     {
         $user_agent = $this->input->user_agent();
 

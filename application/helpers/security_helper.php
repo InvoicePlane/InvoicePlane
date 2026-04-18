@@ -30,6 +30,7 @@ $core_security_helper = BASEPATH . 'helpers/security_helper.php';
 if (is_file($core_security_helper)) {
     require_once $core_security_helper;
 }
+
 /**
  * Get a safe referer URL, preventing open redirect attacks.
  *
@@ -158,7 +159,7 @@ function validate_redirect_url($url, $default_url = '')
  *
  * @return string HTML-safe URL
  */
-function escape_url_for_output($url)
+function escape_url_for_output($url): string
 {
     // Validate it's a safe URL first
     $safe_url = get_safe_referer($url, base_url());
@@ -317,13 +318,13 @@ function verify_csrf_token(): bool
     $expected_token = $CI->input->cookie($cookie_name);
 
     // Security: Enforce non-empty string tokens to prevent bypass when both are null
-    if ( ! is_string($submitted_token) || empty($submitted_token)) {
+    if ( ! is_string($submitted_token) || ($submitted_token === '' || $submitted_token === '0')) {
         log_message('error', 'CSRF validation failed: Missing or invalid submitted token');
 
         return false;
     }
 
-    if ( ! is_string($expected_token) || empty($expected_token)) {
+    if ( ! is_string($expected_token) || ($expected_token === '' || $expected_token === '0')) {
         log_message('error', 'CSRF validation failed: Missing or invalid expected token');
 
         return false;
@@ -340,6 +341,7 @@ function verify_csrf_token(): bool
     if ($safe_ip === false) {
         $safe_ip = 'invalid-ip';
     }
+
     log_message('error', 'CSRF token mismatch from IP: ' . $safe_ip);
 
     return false;

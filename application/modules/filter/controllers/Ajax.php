@@ -96,7 +96,7 @@ class Ajax extends Admin_Controller
             if (is_string($referer_path) && $referer_path !== '') {
                 $referer_basename = basename($referer_path);
                 // Validate it matches expected pattern (alphanumeric and underscores only)
-                if (preg_match('/^[a-zA-Z0-9_]+$/', $referer_basename)) {
+                if (preg_match('/^\w+$/', $referer_basename)) {
                     $name = $referer_basename;
                 }
             }

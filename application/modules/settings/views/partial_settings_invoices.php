@@ -472,7 +472,7 @@ foreach ($email_templates_invoice as $email_template) {
             </div>
         </div>
 
-        <?php foreach ($payment_method_types as $key => $type) { ?>
+        <?php foreach ($payment_method_types as $type) { ?>
             <div class="panel panel-default" id="panel-qr-code-swiss-settings">
                 <div class="panel-heading">
                     <?php _trans('qr_code_swiss_settings'); ?>
@@ -499,7 +499,7 @@ foreach ($email_templates_invoice as $email_template) {
                             <p class="help-block"><?php _trans('qr_code_swiss_settings_enable_hint'); ?></p>
                         </div>
                     </div>
-                    <div class="row <?php echo ! get_setting('qr_code_swiss') ? 'hidden' : ''; ?>">
+                    <div class="row <?php echo get_setting('qr_code_swiss') ? '' : 'hidden'; ?>">
                         <div class="col-xs-12 col-md-6">
                             <div class="form-group">
                                 <label for="settings[qr_code_swiss_besrid]">

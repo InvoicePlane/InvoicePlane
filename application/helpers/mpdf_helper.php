@@ -17,9 +17,7 @@ if ( ! defined('BASEPATH')) {
 /**
  * Sanitize PDF footer content to prevent remote resource fetching (SSRF) during rendering.
  *
- * @param string|null $footer
  *
- * @return string
  */
 function sanitize_pdf_footer_content(?string $footer): string
 {
@@ -74,9 +72,7 @@ function sanitize_pdf_footer_content(?string $footer): string
     libxml_clear_errors();
     libxml_use_internal_errors($previousInternalErrors);
 
-    $trimmed = trim($sanitized);
-
-    return $trimmed === '' ? '' : $trimmed;
+    return trim($sanitized);
 }
 
 /**
@@ -184,9 +180,9 @@ function pdf_create(
 
     try {
         $mpdf->WriteHTML((string) $html);
-    } catch (Exception $e) {
-        log_message('error', $e->getMessage());
-        show_error($e->getMessage());
+    } catch (Exception $exception) {
+        log_message('error', $exception->getMessage());
+        show_error($exception->getMessage());
     }
 
     if (file_exists(UPLOADS_TEMP_MPDF_FOLDER . "qr_swiss.pdf")) {

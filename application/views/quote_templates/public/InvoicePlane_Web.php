@@ -213,22 +213,22 @@ foreach ($items as $item) {
 
                         <?php
 $colspan = $show_item_discounts ? 4 : 3;
-if ($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
-    if ( ! $legacy_calculation) {
-        ?>
+if (($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) && ! $legacy_calculation) {
+    ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
-                                    <td class="amount"><?php _trans('discount'); ?></td>
-                                    <td class="amount"><?php
-                if ($quote->quote_discount_percent > 0) {
-                    echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
-                } else {
-                    echo format_currency($quote->quote_discount_amount);
-                }
-        ?></td>
+                                    <td class="amount"><?php 
+    _trans('discount');
+    ?></td>
+                                    <td class="amount"><?php 
+    if ($quote->quote_discount_percent > 0) {
+                echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
+            } else {
+                echo format_currency($quote->quote_discount_amount);
+            }
+    ?></td>
                                 </tr>
-                                <?php
-    }
+                                <?php 
 }
 ?>
 
@@ -265,22 +265,22 @@ foreach ($quote_tax_rates as $quote_tax_rate) {
 ?>
 
                         <?php
-if ($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
-    if ($legacy_calculation) {
-        ?>
+if (($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) && $legacy_calculation) {
+    ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
-                                    <td class="amount"><?php _trans('discount'); ?></td>
-                                    <td class="amount"><?php
-                if ($quote->quote_discount_percent > 0) {
-                    echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
-                } else {
-                    echo format_currency($quote->quote_discount_amount);
-                }
-        ?></td>
+                                    <td class="amount"><?php 
+    _trans('discount');
+    ?></td>
+                                    <td class="amount"><?php 
+    if ($quote->quote_discount_percent > 0) {
+                echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
+            } else {
+                echo format_currency($quote->quote_discount_amount);
+            }
+    ?></td>
                                 </tr>
-                                <?php
-    }
+                                <?php 
 }
 ?>
 

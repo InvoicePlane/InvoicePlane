@@ -73,7 +73,7 @@ function generate_secure_token(int $length = 32): string
         // Catch both Exception and Error for comprehensive coverage
         $safeMessage = sanitize_exception_for_logging($e->getMessage());
         log_message('error', 'Failed to generate secure random token: ' . $safeMessage);
-        throw new RuntimeException('Unable to generate secure random token');
+        throw new RuntimeException('Unable to generate secure random token', $e->getCode(), $e);
     }
 }
 
@@ -120,6 +120,6 @@ function generate_secure_salt(): string
         // Catch both Exception and Error for comprehensive coverage
         $safeMessage = sanitize_exception_for_logging($e->getMessage());
         log_message('error', 'Failed to generate secure salt: ' . $safeMessage);
-        throw new RuntimeException('Unable to generate secure salt');
+        throw new RuntimeException('Unable to generate secure salt', $e->getCode(), $e);
     }
 }

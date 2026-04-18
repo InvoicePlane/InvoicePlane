@@ -111,7 +111,7 @@ class Stripe extends Base_Controller
 
                 // Validate and sanitize the payment_intent ID
                 $payment_intent = (string) $session->payment_intent;
-                if (empty($payment_intent) || mb_strlen($payment_intent) > 255) {
+                if ($payment_intent === '' || $payment_intent === '0' || mb_strlen($payment_intent) > 255) {
                     log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid payment_intent ID format');
                     throw new Exception('Invalid payment intent ID');
                 }

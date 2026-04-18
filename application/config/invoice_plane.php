@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 $config = [
     // Works in conjunction with MY_Model to provide pagination style
     'pagination_style' => [

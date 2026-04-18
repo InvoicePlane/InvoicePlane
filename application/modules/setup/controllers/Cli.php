@@ -114,6 +114,7 @@ class Cli extends MX_Controller
                 foreach ($this->mdl_setup->errors as $error) {
                     echo '  - ' . $error . PHP_EOL;
                 }
+
                 exit(1);
             }
 
@@ -129,6 +130,7 @@ class Cli extends MX_Controller
             foreach ($this->mdl_setup->errors as $error) {
                 echo '  - ' . $error . PHP_EOL;
             }
+
             exit(1);
         }
 

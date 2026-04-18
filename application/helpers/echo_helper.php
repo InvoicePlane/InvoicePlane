@@ -68,7 +68,7 @@ function _htmle($output)
  * @param string      $id
  * @param null|string $default
  */
-function _trans($line, $id = '', $default = null): void
+function _trans($line, ?string $id = '', $default = null): void
 {
     echo trans($line, $id, $default);
 }

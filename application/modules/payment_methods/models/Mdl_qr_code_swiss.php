@@ -67,6 +67,7 @@ class Mdl_qr_code_swiss extends Response_Model
                 )
             );
         }
+
         $qrBill->setPaymentReference($paymentReference);
 
         $qrBill->setAdditionalInformation(AdditionalInformation::create(
@@ -104,7 +105,8 @@ class Mdl_qr_code_swiss extends Response_Model
                 foreach ($qrBill->getViolations() as $violation) {
                     $errs .= $violation->getMessage() . "\n";
                 }
-                throw new Exception('Errors: ' . $errs);
+
+                throw new Exception('Errors: ' . $errs, $e->getCode(), $e);
             }
 
             $mpdf->AddPage();
@@ -115,6 +117,7 @@ class Mdl_qr_code_swiss extends Response_Model
 
             return;
         }
+
         if ($callType == 'html') {
             $output = new HtmlOutput($qrBill, 'en');
 
@@ -122,6 +125,7 @@ class Mdl_qr_code_swiss extends Response_Model
                 ->setPrintable(false)
                 ->getPaymentPart();
         }
+
         throw new Exception('Call format not supported by QR Code Swiss');
 
     }

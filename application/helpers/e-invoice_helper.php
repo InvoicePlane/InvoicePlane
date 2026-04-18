@@ -64,7 +64,7 @@ function include_rdf(string $embedXml, string $urn = 'factur-x'): string
 function is_valid_xml_config_id(string $xml_id): bool
 {
     // Prevent path traversal attacks
-    if (empty($xml_id)
+    if ($xml_id === '' || $xml_id === '0'
         || str_contains($xml_id, '..')
         || str_contains($xml_id, '/')
         || str_contains($xml_id, '\\')

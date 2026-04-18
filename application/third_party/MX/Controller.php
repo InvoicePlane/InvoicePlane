@@ -45,6 +45,9 @@ require dirname(__FILE__) . '/Base.php';
 #[AllowDynamicProperties]
 class MX_Controller
 {
+    /**
+     * @var object
+     */
     public $load;
 
     public $autoload = [];
@@ -68,7 +71,7 @@ class MX_Controller
         $this->load->_autoloader($this->autoload);
     }
 
-    public function __get($class)
+    public function __get(string $class): mixed
     {
         return CI::$APP->{$class};
     }

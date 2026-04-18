@@ -12,7 +12,6 @@ if ( ! defined('BASEPATH')) {
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
  */
-
 /**
  * Custom debug output function for PHPMailer
  * Logs debug messages to CodeIgniter's log files instead of echoing to output
@@ -23,8 +22,6 @@ if ( ! defined('BASEPATH')) {
  *
  * @param string $str   Debug message from PHPMailer
  * @param int    $level Debug level (not currently used by PHPMailer)
- *
- * @return void
  */
 function phpmailer_debug_output(string $str, int $level = 0): void
 {
@@ -34,7 +31,7 @@ function phpmailer_debug_output(string $str, int $level = 0): void
     $sanitized = sanitize_for_logging($str);
 
     // Log with 'debug' level so it respects log_threshold setting
-    log_message('debug', 'PHPMailer [level ' . (int) $level . ']: ' . $sanitized);
+    log_message('debug', 'PHPMailer [level ' . $level . ']: ' . $sanitized);
 }
 
 /**

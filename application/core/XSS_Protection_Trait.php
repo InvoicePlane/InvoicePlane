@@ -28,8 +28,6 @@ trait XSS_Protection_Trait
      * - HTML fields (email_template_body, body): Sanitized with HTML Purifier
      * - Bypass fields (passwords): No sanitization to allow special characters
      * - All other fields: XSS cleaned and tags stripped
-     *
-     * @return void
      */
     protected function filter_input(): void
     {
@@ -191,9 +189,10 @@ trait XSS_Protection_Trait
                     $xss_log_entries[] = [
                         'field'           => sanitize_for_logging($field_path),
                         'original_length' => mb_strlen((string) $original_value),
-                        'cleaned_length'  => mb_strlen((string) $cleaned_value),
+                        'cleaned_length'  => mb_strlen($cleaned_value),
                     ];
                 }
+
                 $data[$key] = $cleaned_value;
             }
         }

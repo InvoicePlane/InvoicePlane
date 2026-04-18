@@ -29,6 +29,7 @@ class Get extends Base_Controller
         parent::__construct();
         $this->load->helper('file_security');
         $this->load->model('upload/mdl_uploads');
+
         $this->content_types = $this->mdl_uploads->content_types;
     }
 
@@ -48,8 +49,6 @@ class Get extends Base_Controller
      * Provides support for the /guest/get/attachment/ URL path.
      *
      * @param string|null $filename The filename to download
-     *
-     * @return void
      */
     public function attachment(?string $filename = null): void
     {
@@ -66,6 +65,7 @@ class Get extends Base_Controller
                 'guest/get: '
             );
         }
+
         // Security: Use comprehensive file security validation helper
         // Note: CodeIgniter already URL-decodes parameters during routing
         $validation = validate_file_access($filename, $this->targetPath);

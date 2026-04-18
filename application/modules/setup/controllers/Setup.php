@@ -556,27 +556,27 @@ class Setup extends MX_Controller
 
         $config = preg_replace_callback(
             '/^DB_HOSTNAME=.*$/m',
-            static fn () => 'DB_HOSTNAME="' . addcslashes($hostname, '\\"$') . '"',
+            static fn (): string => 'DB_HOSTNAME="' . addcslashes($hostname, '\\"$') . '"',
             $config
         );
         $config = preg_replace_callback(
             '/^DB_USERNAME=.*$/m',
-            static fn () => 'DB_USERNAME="' . addcslashes($username, '\\"$') . '"',
+            static fn (): string => 'DB_USERNAME="' . addcslashes($username, '\\"$') . '"',
             $config
         );
         $config = preg_replace_callback(
             '/^DB_PASSWORD=.*$/m',
-            static fn () => 'DB_PASSWORD="' . addcslashes($password, '\\"$') . '"',
+            static fn (): string => 'DB_PASSWORD="' . addcslashes($password, '\\"$') . '"',
             $config
         );
         $config = preg_replace_callback(
             '/^DB_DATABASE=.*$/m',
-            static fn () => 'DB_DATABASE="' . addcslashes($database, '\\"$') . '"',
+            static fn (): string => 'DB_DATABASE="' . addcslashes($database, '\\"$') . '"',
             $config
         );
         $config = preg_replace_callback(
             '/^DB_PORT=.*$/m',
-            static fn () => 'DB_PORT=' . $port,
+            static fn (): string => 'DB_PORT=' . $port,
             $config
         );
 
@@ -669,6 +669,7 @@ class Setup extends MX_Controller
 
             return;
         }
+
         if ($count_completed === 0) {
             log_message('error', trans('log_setup_flag_not_found_setup_completed'));
 
@@ -682,6 +683,7 @@ class Setup extends MX_Controller
 
             return;
         }
+
         if ($count_disable === 0) {
             log_message('error', trans('log_setup_flag_not_found_disable_setup'));
 
@@ -716,6 +718,7 @@ class Setup extends MX_Controller
                     'recommended'   => 'false',
                 ];
             }
+
             if ($legacy_calc === 'true' || $legacy_calc === true) {
                 return [
                     'needs_config'  => true,

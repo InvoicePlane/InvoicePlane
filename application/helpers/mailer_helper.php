@@ -214,7 +214,6 @@ function email_quote_status(string $quote_id, $status)
  * $email string can be a single email or a list of emails.
  * The emails can either be comma (,) or semicolon (;) separated.
  *
- * @param string $email
  *
  * @return bool returs true if all emails are valid otherwise false
  */

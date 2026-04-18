@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace types;
 
 class QrCodeSwiss extends AbstractType
@@ -31,13 +33,13 @@ class QrCodeSwiss extends AbstractType
         return [];
     }
 
-    public function validateGeneralOptions($generalOptions)
+    public function validateGeneralOptions($generalOptions): bool
     {
         // TODO: Implement getInvoiceOptions() method.
         return true;
     }
 
-    public function validateInvoiceOptions($invoiceOptions)
+    public function validateInvoiceOptions($invoiceOptions): bool
     {
         // TODO: Implement validateInvoiceOptions() method.
         return true;

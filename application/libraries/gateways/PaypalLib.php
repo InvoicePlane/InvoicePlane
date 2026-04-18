@@ -161,7 +161,7 @@ class PaypalLib
 
         $uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', mb_str_split(bin2hex($data), 4));
 
-        return 'ip' . ($context ? "-{$context}" : '') . '-' . $uuid;
+        return 'ip' . ($context ? '-' . $context : '') . '-' . $uuid;
     }
 
     /**

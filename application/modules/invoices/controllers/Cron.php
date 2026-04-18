@@ -142,6 +142,7 @@ class Cron extends Base_Controller
                     // Plain text - convert line breaks to <br> tags
                     $body = nl2br($body);
                 }
+
                 // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
                 // The sanitized HTML is used directly without decoding.
 
@@ -153,6 +154,7 @@ class Cron extends Base_Controller
                     if (empty($default_from_email)) {
                         $default_from_email = $invoice->user_email;
                     }
+
                     $from = [$default_from_email, ''];
                 }
 

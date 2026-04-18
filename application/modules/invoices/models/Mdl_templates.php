@@ -155,8 +155,6 @@ class Mdl_Templates extends CI_Model
      *
      * @param string $subpath  Relative sub-path, e.g. 'invoice_templates/pdf'
      * @param array  $built_in Hardcoded whitelist entries from the class constants
-     *
-     * @return array
      */
     private function _merge_custom(string $subpath, array $built_in): array
     {
@@ -195,17 +193,5 @@ class Mdl_Templates extends CI_Model
         }
 
         return array_values(array_unique(array_merge($custom_names, $built_in)));
-    }
-
-    /**
-     * @param $files
-     */
-    private function remove_extension(array $files): array
-    {
-        foreach ($files as $key => $file) {
-            $files[$key] = str_replace('.php', '', $file);
-        }
-
-        return $files;
     }
 }

@@ -9,7 +9,7 @@
         foreach ($payment_method_types as $key => $element) {
             if (isset($element['class']) && !is_null($element['class'])) {
                 $options = $element['class']->getInvoiceOptions();
-                if (is_array($options) && !empty($options)) {
+                if (is_array($options) && $options !== []) {
                     $keys_of_filtered_payment_method_types[] = '' . $key;
                 }
             }

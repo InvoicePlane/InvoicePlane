@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'VI' => 'ABD Virgin Adaları',
     'AF' => 'Afganistan',

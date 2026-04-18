@@ -50,7 +50,7 @@ class Mdl_Settings extends CI_Model
      */
     public function save_batch(array $settings)
     {
-        if (empty($settings)) {
+        if ($settings === []) {
             return;
         }
 
@@ -79,13 +79,13 @@ class Mdl_Settings extends CI_Model
         }
 
         // Perform batch insert for new settings
-        if ( ! empty($to_insert)) {
+        if ( $to_insert !== []) {
             $this->db->insert_batch('ip_settings', $to_insert);
         }
 
         // Perform batch update for existing settings
         // Note: CodeIgniter's update_batch requires a key field to match on
-        if ( ! empty($to_update)) {
+        if ( $to_update !== []) {
             $this->db->update_batch('ip_settings', $to_update, 'setting_key');
         }
     }

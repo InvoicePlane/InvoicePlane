@@ -34,7 +34,7 @@ function validate_safe_filename(string $filename): array
     $hash = hash('sha256', $filename);
 
     // Check for empty filename
-    if (empty($filename)) {
+    if ($filename === '' || $filename === '0') {
         return ['valid' => false, 'hash' => $hash, 'error' => 'empty_filename'];
     }
 
@@ -138,7 +138,7 @@ function extract_safe_basename(string $filename): array
     $hash         = hash('sha256', $filename);
     $safeFilename = basename($filename);
 
-    if (empty($safeFilename)) {
+    if ($safeFilename === '' || $safeFilename === '0') {
         return ['valid' => false, 'filename' => '', 'hash' => $hash, 'error' => 'empty_basename'];
     }
 
@@ -166,9 +166,7 @@ function sanitize_for_logging(string $value): string
  *
  * Removes control characters to prevent injection issues.
  *
- * @param string|null $value
  *
- * @return string
  */
 function sanitize_database_config_value(?string $value): string
 {
@@ -180,9 +178,7 @@ function sanitize_database_config_value(?string $value): string
  *
  * Ensures the port is numeric and within the valid range of 1-65535.
  *
- * @param string|int|null $value
  *
- * @return int|null
  */
 function sanitize_database_port(string|int|null $value): ?int
 {
@@ -285,7 +281,7 @@ function respond_file_message(int $httpCode, string $messageKey, string $dynamic
     http_response_code($httpCode);
     _trans($messageKey);
 
-    if ( ! empty($additionalOutput)) {
+    if ( $additionalOutput !== '' && $additionalOutput !== '0') {
         echo $additionalOutput;
     }
 
@@ -434,6 +430,7 @@ function strip_exif_metadata(string $filePath): array
                 if (function_exists('imagecreatefromwebp')) {
                     $image = @imagecreatefromwebp($filePath);
                 }
+
                 break;
         }
 
@@ -464,6 +461,7 @@ function strip_exif_metadata(string $filePath): array
                 if (function_exists('imagewebp')) {
                     $saveSuccess = @imagewebp($image, $filePath, 90); // 90 quality
                 }
+
                 break;
         }
 
@@ -484,8 +482,8 @@ function strip_exif_metadata(string $filePath): array
             'success' => true,
             'message' => 'EXIF metadata stripped successfully',
         ];
-    } catch (Exception $e) {
-        log_message('error', 'Exception during EXIF stripping: ' . sanitize_for_logging($e->getMessage()));
+    } catch (Exception $exception) {
+        log_message('error', 'Exception during EXIF stripping: ' . sanitize_for_logging($exception->getMessage()));
 
         return [
             'success' => false,
@@ -562,6 +560,7 @@ function validate_db_config_parameter(string $value, string $type): array
                     'sanitized' => '',
                 ];
             }
+
             break;
 
         case 'username':
@@ -575,6 +574,7 @@ function validate_db_config_parameter(string $value, string $type): array
                     'sanitized' => '',
                 ];
             }
+
             break;
 
         case 'password':
@@ -595,6 +595,7 @@ function validate_db_config_parameter(string $value, string $type): array
                     'sanitized' => '',
                 ];
             }
+
             break;
 
         case 'database':
@@ -608,6 +609,7 @@ function validate_db_config_parameter(string $value, string $type): array
                     'sanitized' => '',
                 ];
             }
+
             break;
 
         case 'port':
@@ -621,6 +623,7 @@ function validate_db_config_parameter(string $value, string $type): array
                     'sanitized' => '',
                 ];
             }
+
             break;
 
         default:

@@ -40,6 +40,7 @@ function render_template_view(string $template_subpath, array $data, bool $retur
             if ($return) {
                 return $output;
             }
+
             $CI = &get_instance();
             $CI->output->append_output($output);
 
@@ -259,7 +260,7 @@ function select_email_invoice_template($invoice)
  *
  * @return string|false Returns the validated template name or false if validation fails
  */
-function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf')
+function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf'): false|string
 {
     // Load necessary dependencies
     $CI = & get_instance();
@@ -345,7 +346,7 @@ function validate_template_name($template_name, $type = 'invoice', $scope = 'pdf
  *
  * @return array Returns ['path' => string, 'name' => string] with validated path and name
  */
-function get_validated_template_path($template_name, $type = 'invoice', $scope = 'public', $default_template = 'InvoicePlane_Web')
+function get_validated_template_path($template_name, string $type = 'invoice', string $scope = 'public', $default_template = 'InvoicePlane_Web'): array
 {
     // Load file_security helper if not already loaded
     $CI = & get_instance();

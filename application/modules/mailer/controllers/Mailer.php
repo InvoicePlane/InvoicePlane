@@ -181,6 +181,7 @@ class Mailer extends Admin_Controller
             // Plain text - convert line breaks to <br> tags
             $body = nl2br($body);
         }
+
         // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
         $cc  = $this->input->post('cc');
@@ -231,6 +232,7 @@ class Mailer extends Admin_Controller
             // Plain text - convert line breaks to <br> tags
             $body = nl2br($body);
         }
+
         // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
         $cc  = $this->input->post('cc');

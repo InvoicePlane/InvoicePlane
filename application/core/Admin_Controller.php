@@ -26,7 +26,7 @@ class Admin_Controller extends User_Controller
 
         // Automatically filter all POST input to prevent XSS attacks
         // This applies to all admin controllers and prevents the need to call filter_input() manually
-        if ($this->input->method() === 'post' && ! empty($_POST)) {
+        if ($this->input->method() === 'post' && $_POST !== []) {
             $this->filter_input();
         }
     }
@@ -130,9 +130,10 @@ class Admin_Controller extends User_Controller
                     $xss_log_entries[] = [
                         'field'           => $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key,
                         'original_length' => mb_strlen((string) $original_value),
-                        'cleaned_length'  => mb_strlen((string) $cleaned_value),
+                        'cleaned_length'  => mb_strlen($cleaned_value),
                     ];
                 }
+
                 $data[$key] = $cleaned_value;
             }
         }

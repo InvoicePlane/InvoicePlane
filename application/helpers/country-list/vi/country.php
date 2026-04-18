@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'SA' => 'A-rập Xê-út',
     'EG' => 'Ai Cập',

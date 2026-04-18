@@ -31,7 +31,10 @@ class ClientTitleEnum
         }
     }
 
-    public static function cases()
+    /**
+     * @return \StdClass[]
+     */
+    public static function cases(): array
     {
         $values = self::getValues();
 
@@ -47,7 +50,7 @@ class ClientTitleEnum
         return $returnArray;
     }
 
-    private static function getValues()
+    private static function getValues(): array
     {
         return [
             self::MISTER,

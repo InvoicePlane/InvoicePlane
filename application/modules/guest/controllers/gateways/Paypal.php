@@ -27,11 +27,10 @@ class Paypal extends Base_Controller
      * Create the order on PayPal that is then processed when
      * the user inserts the payment method.
      *
-     * @param string $invoice_url_key
      *
      * @return json the PayPal object to be loaded in the JS SDK script
      */
-    public function paypal_create_order($invoice_url_key)
+    public function paypal_create_order(string $invoice_url_key)
     {
         // Require POST request to prevent CSRF attacks
         if ($this->input->method() !== 'post') {

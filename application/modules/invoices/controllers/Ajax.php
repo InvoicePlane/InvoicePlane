@@ -118,17 +118,14 @@ class Ajax extends Admin_Controller
 
             // Validate invoice_number: only allow safe characters (alphanumeric, dash, underscore, slash, period, space).
             // If invalid characters are present, return a clear validation error instead of silently modifying input.
-            if ($invoice_number !== null && $invoice_number !== '') {
-                if ( ! preg_match('/^[a-zA-Z0-9\-_\/\.\s]+$/', $invoice_number)) {
-                    $response = [
-                        'success'           => 0,
-                        'validation_errors' => [
-                            'invoice_number' => trans('invoice_number') . ' ' . trans('contains_invalid_characters'),
-                        ],
-                    ];
-
-                    exit(json_encode($response));
-                }
+            if ($invoice_number !== null && $invoice_number !== '' && ! preg_match('/^[a-zA-Z0-9\-_\/\.\s]+$/', $invoice_number)) {
+                $response = [
+                    'success'           => 0,
+                    'validation_errors' => [
+                        'invoice_number' => trans('invoice_number') . ' ' . trans('contains_invalid_characters'),
+                    ],
+                ];
+                exit(json_encode($response));
             }
 
             if (empty($invoice_number) && $invoice_status_id != 1) {

@@ -57,6 +57,7 @@ class Clients extends Admin_Controller
 
                 $client = $this->check_client_einvoice_active($client, $req_einvoicing);
             }
+
             unset($client);
         }
 
@@ -352,12 +353,11 @@ class Clients extends Admin_Controller
     private function sanitize_for_log($value): string
     {
         $sanitized = (string) $value;
-        $sanitized = str_replace(["\r", "\n"], ' ', $sanitized);
 
-        return $sanitized;
+        return str_replace(["\r", "\n"], ' ', $sanitized);
     }
 
-    private function check_client_einvoice_active($client, $req_einvoicing)
+    private function check_client_einvoice_active($client, object $req_einvoicing)
     {
         // Update active eInvoicing client
         // Check if database has been migrated to 1.6.3+ (where einvoicing fields were added)

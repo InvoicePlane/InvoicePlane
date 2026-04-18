@@ -90,7 +90,7 @@ class Invoices extends Admin_Controller
         $this->layout->render();
     }
 
-    public function download($invoice): void
+    public function download(string $invoice): void
     {
         // Security: Use comprehensive file security validation
         // Note: Removed urldecode() - CodeIgniter already handles this
@@ -265,7 +265,7 @@ class Invoices extends Admin_Controller
             $invoice_template = validate_pdf_template($invoice_template, 'invoice');
         }
 
-        generate_invoice_pdf($invoice_id, $stream, $invoice_template, null);
+        generate_invoice_pdf($invoice_id, $stream, $invoice_template);
     }
 
     public function generate_xml($invoice_id): void

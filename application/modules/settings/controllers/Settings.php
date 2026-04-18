@@ -75,16 +75,15 @@ class Settings extends Admin_Controller
                     $batch_settings[$key] = standardize_amount($value);
                 } else {
                     // Security: Validate logo filename settings to prevent path traversal
-                    if ($key === 'invoice_logo' || $key === 'login_logo') {
-                        if ( ! empty($value)) {
-                            $validation = validate_safe_filename($value);
-                            if ( ! $validation['valid']) {
-                                log_message('error', sprintf('Path traversal attempt blocked in %s setting (hash: %s, error: %s)', sanitize_for_logging($key), $validation['hash'], sanitize_for_logging($validation['error'])));
-                                $this->session->set_flashdata('alert_error', trans('invalid_filename'));
-                                redirect('settings');
-                            }
+                    if (($key === 'invoice_logo' || $key === 'login_logo') && ! empty($value)) {
+                        $validation = validate_safe_filename($value);
+                        if ( ! $validation['valid']) {
+                            log_message('error', sprintf('Path traversal attempt blocked in %s setting (hash: %s, error: %s)', sanitize_for_logging($key), $validation['hash'], sanitize_for_logging($validation['error'])));
+                            $this->session->set_flashdata('alert_error', trans('invalid_filename'));
+                            redirect('settings');
                         }
                     }
+
                     $batch_settings[$key] = $value;
                 }
 
@@ -329,17 +328,15 @@ class Settings extends Admin_Controller
         //   2. Graceful handling - allows DB cleanup if file already removed
         if (file_exists($validation['path'])) {
             $deleted = unlink($validation['path']);
-            if ( ! $deleted) {
-                // Re-check file existence - if file is gone (race delete), proceed with cleanup
-                if (file_exists($validation['path'])) {
-                    log_message('error', sprintf(
-                        'Failed to remove logo file for type=%s by user %s',
-                        sanitize_for_logging($type),
-                        sanitize_for_logging((string) $this->session->userdata('user_id'))
-                    ));
-                    $this->session->set_flashdata('alert_error', trans('failure'));
-                    redirect('settings');
-                }
+            // Re-check file existence - if file is gone (race delete), proceed with cleanup
+            if (!$deleted && file_exists($validation['path'])) {
+                log_message('error', sprintf(
+                    'Failed to remove logo file for type=%s by user %s',
+                    sanitize_for_logging($type),
+                    sanitize_for_logging((string) $this->session->userdata('user_id'))
+                ));
+                $this->session->set_flashdata('alert_error', trans('failure'));
+                redirect('settings');
             }
         }
 
@@ -377,7 +374,6 @@ class Settings extends Admin_Controller
     /**
      * Validate and persist tax rate decimal places setting, including schema changes.
      *
-     * @param array $settings
      *
      * @return array settings array, with tax_rate_decimal_places removed if it was processed
      */
@@ -397,7 +393,7 @@ class Settings extends Admin_Controller
                 self::MIN_TAX_RATE_DECIMALS,
                 self::MAX_TAX_RATE_DECIMALS
             );
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException $invalidArgumentException) {
             log_message(
                 'error',
                 sprintf(
@@ -471,8 +467,6 @@ class Settings extends Admin_Controller
      *
      * @param string $filePath The full path to the uploaded file
      * @param string $logoType The type of logo (invoice_logo or login_logo)
-     *
-     * @return void
      */
     private function strip_logo_metadata(string $filePath, string $logoType): void
     {

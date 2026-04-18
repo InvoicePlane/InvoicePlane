@@ -143,7 +143,7 @@ function invoice_qrcode($invoice_id, $width = 64): string
             $numeric_width = (int) $width;
             $width         = '';
             if ($numeric_width > 0) {
-                $width = ' width="' . (string) $numeric_width . '"';
+                $width = ' width="' . $numeric_width . '"';
             }
 
             return '<img src="' . $qrcode_data_uri . '"' . $width . ' alt="QR Code" id="invoice-qr-code">';
