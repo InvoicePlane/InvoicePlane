@@ -133,7 +133,7 @@ class Mdl_Items extends Response_Model
             return false;
         }
 
-        $row        = $query->row();
+        $row = $query->row();
         $invoice_id = $row->invoice_id;
 
         // Delete the item itself

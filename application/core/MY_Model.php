@@ -174,9 +174,9 @@ class MY_Model extends CI_Model
         $this->load->helper('url');
         $this->load->library('pagination');
 
-        $this->offset       = $offset;
+        $this->offset = $offset;
         $default_list_limit = $this->mdl_settings->setting('default_list_limit');
-        $per_page           = (empty($default_list_limit) ? $this->default_limit : $default_list_limit);
+        $per_page = (empty($default_list_limit) ? $this->default_limit : $default_list_limit);
 
         $this->set_defaults();
         $this->run_filters();
@@ -184,10 +184,10 @@ class MY_Model extends CI_Model
         $this->db->limit($per_page, $this->offset);
         $this->query = $this->db->get($this->table);
 
-        $this->total_rows      = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
-        $this->total_pages     = ceil($this->total_rows / $per_page);
+        $this->total_rows = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
+        $this->total_pages = ceil($this->total_rows / $per_page);
         $this->previous_offset = $this->offset - $per_page;
-        $this->next_offset     = $this->offset + $per_page;
+        $this->next_offset = $this->offset + $per_page;
 
         $config = [
             'base_url'   => $base_url,

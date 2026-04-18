@@ -34,7 +34,7 @@ class Ajax extends Admin_Controller
             $items = json_decode($this->input->post('items'));
 
             $quote_discount_percent = (float) $this->input->post('quote_discount_percent');
-            $quote_discount_amount  = (float) $this->input->post('quote_discount_amount');
+            $quote_discount_amount = (float) $this->input->post('quote_discount_amount');
 
             // Percent by default. Only one allowed. Prevent set 2 global discounts by geeky client - since v1.6.3
             if ($quote_discount_percent && $quote_discount_amount) {
@@ -69,12 +69,12 @@ class Ajax extends Admin_Controller
                 // Check if an item has either a quantity + price or name or description
                 if ( ! empty($item->item_name)) {
                     // Standardize item data
-                    $item->item_quantity        = $item->item_quantity ? standardize_amount($item->item_quantity) : 0.0;
-                    $item->item_price           = $item->item_price ? standardize_amount($item->item_price) : 0.0;
+                    $item->item_quantity = $item->item_quantity ? standardize_amount($item->item_quantity) : 0.0;
+                    $item->item_price = $item->item_price ? standardize_amount($item->item_price) : 0.0;
                     $item->item_discount_amount = $item->item_discount_amount ? standardize_amount($item->item_discount_amount) : null;
-                    $item->item_product_id      = $item->item_product_id ? $item->item_product_id : null;
+                    $item->item_product_id = $item->item_product_id ? $item->item_product_id : null;
                     $item->item_product_unit_id = $item->item_product_unit_id ? $item->item_product_unit_id : null;
-                    $item->item_product_unit    = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
+                    $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
@@ -104,7 +104,7 @@ class Ajax extends Admin_Controller
 
             if (empty($quote_number) && $quote_status_id != 1) {
                 $quote_group_id = $this->mdl_quotes->get_invoice_group_id($quote_id);
-                $quote_number   = $this->mdl_quotes->get_quote_number($quote_group_id);
+                $quote_number = $this->mdl_quotes->get_quote_number($quote_group_id);
             }
 
             // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
@@ -314,7 +314,7 @@ class Ajax extends Admin_Controller
 
         // Get the user ID
         $user_id = $this->security->xss_clean($this->input->post('user_id'));
-        $user    = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
+        $user = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
 
         if ( ! empty($user)) {
             $quote_id = $this->input->post('quote_id');
@@ -363,7 +363,7 @@ class Ajax extends Admin_Controller
 
         // Get the client ID
         $client_id = $this->security->xss_clean($this->input->post('client_id'));
-        $client    = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
+        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
         if ( ! empty($client)) {
             $quote_id = $this->input->post('quote_id');
@@ -460,7 +460,7 @@ class Ajax extends Admin_Controller
         if ($this->mdl_invoices->run_validation()) {
             // Get the quote
             $quote_id = $this->input->post('quote_id');
-            $quote    = $this->mdl_quotes->get_by_id($quote_id);
+            $quote = $this->mdl_quotes->get_by_id($quote_id);
 
             // Create new invoice
             $invoice_id = $this->mdl_invoices->create(null, false);

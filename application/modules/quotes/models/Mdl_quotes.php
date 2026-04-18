@@ -190,7 +190,7 @@ class Mdl_Quotes extends Response_Model
         $this->load->model('quotes/mdl_quote_items');
 
         // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
-        $quote           = $this->get_by_id($source_id); // This is the original quote
+        $quote = $this->get_by_id($source_id); // This is the original quote
         $global_discount = [
             'amount'         => $quote->quote_discount_amount,
             'percent'        => $quote->quote_discount_percent,
@@ -258,7 +258,7 @@ class Mdl_Quotes extends Response_Model
 
         // Get the client id for the submitted quote
         $this->load->model('clients/mdl_clients');
-        $cid                   = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
+        $cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
         $db_array['client_id'] = $cid;
 
         $db_array['quote_date_created'] = date_to_mysql($db_array['quote_date_created']);

@@ -76,19 +76,19 @@ class Get extends Base_Controller
                 'path_outside_directory' => [403, 'upload_error_unauthorized_access', 'Unauthorized access'],
             ];
 
-            $error    = $validation['error'] ?? 'unknown';
+            $error = $validation['error'] ?? 'unknown';
             $response = $errorMap[$error] ?? [400, 'upload_error_invalid_filename', 'Invalid filename'];
 
             respond_file_message($response[0], $response[1], $response[2], 'guest/get: ');
         }
 
-        $realFile     = $validation['path'];
+        $realFile = $validation['path'];
         $safeFilename = $validation['basename'];
 
         $path_parts = pathinfo($realFile);
-        $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
-        $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
-        $file_size  = filesize($realFile);
+        $file_ext = mb_strtolower($path_parts['extension'] ?? '');
+        $ctype = $this->content_types[$file_ext] ?? $this->ctype_default;
+        $file_size = filesize($realFile);
 
         // Security: Sanitize filename for Content-Disposition header to prevent header injection
         $sanitizedFilename = sanitize_filename_for_header($safeFilename);

@@ -15,8 +15,8 @@
 
         <tbody>
 <?php
-$quote_idx                    = 1;
-            $quote_count      = count($quotes);
+$quote_idx = 1;
+            $quote_count = count($quotes);
             $quote_list_split = $quote_count > 3 ? $quote_count / 2 : 9999;
 
             foreach ($quotes as $quote) {

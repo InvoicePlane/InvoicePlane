@@ -22,7 +22,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_invoices');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         foreach ($keywords as $keyword) {
@@ -44,7 +44,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('quotes/mdl_quotes');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         foreach ($keywords as $keyword) {
@@ -66,7 +66,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('clients/mdl_clients');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         foreach ($keywords as $keyword) {
@@ -90,7 +90,7 @@ class Ajax extends Admin_Controller
         // Parse the URL path first so query strings do not affect basename extraction
         $name = 'all'; // Default value
         if ( ! empty($_SERVER['HTTP_REFERER'])) {
-            $referer      = $_SERVER['HTTP_REFERER'];
+            $referer = $_SERVER['HTTP_REFERER'];
             $referer_path = parse_url($referer, PHP_URL_PATH);
 
             if (is_string($referer_path) && $referer_path !== '') {
@@ -104,7 +104,7 @@ class Ajax extends Admin_Controller
 
         $this->load->model('custom_fields/mdl_custom_fields');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         foreach ($keywords as $keyword) {
@@ -140,7 +140,7 @@ class Ajax extends Admin_Controller
         // Parse the URL path first so query strings do not affect basename extraction
         $id = 0; // Default value
         if ( ! empty($_SERVER['HTTP_REFERER'])) {
-            $referer      = $_SERVER['HTTP_REFERER'];
+            $referer = $_SERVER['HTTP_REFERER'];
             $referer_path = parse_url($referer, PHP_URL_PATH);
 
             if (is_string($referer_path) && $referer_path !== '') {
@@ -159,7 +159,7 @@ class Ajax extends Admin_Controller
             ]
         );
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         foreach ($keywords as $keyword) {
@@ -189,7 +189,7 @@ class Ajax extends Admin_Controller
         // Parse the URL path first so query strings do not affect basename extraction
         $id = 0; // Default value
         if ( ! empty($_SERVER['HTTP_REFERER'])) {
-            $referer      = $_SERVER['HTTP_REFERER'];
+            $referer = $_SERVER['HTTP_REFERER'];
             $referer_path = parse_url($referer, PHP_URL_PATH);
 
             if (is_string($referer_path) && $referer_path !== '') {
@@ -201,7 +201,7 @@ class Ajax extends Admin_Controller
             }
         }
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         foreach ($keywords as $keyword) {
@@ -212,7 +212,7 @@ class Ajax extends Admin_Controller
         }
 
         $elements = $this->mdl_custom_values->get_by_fid($id)->result();
-        $data     = [
+        $data = [
             'id'       => $id,
             'elements' => $elements,
         ];
@@ -223,7 +223,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('projects/mdl_projects');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
         // client_id : Column 'client_id' in where clause is ambiguous (ip_clients.client_id or ip_project.client_id
         // Not showed in frontend table
@@ -246,7 +246,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('tasks/mdl_tasks');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
         // Column 'project_id' in where clause is ambiguous
         // Not showed in frontend table:
@@ -270,7 +270,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('products/mdl_products');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         // Columns 'tax_rate_id' & 'unit_id' in where clause is ambiguous
@@ -294,7 +294,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('users/mdl_users');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         // Not used: user_id    user_type   user_active user_date_modified  user_language   user_password   user_psalt  user_passwordreset_token
@@ -322,7 +322,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('families/mdl_families');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
         // Not showed in frontend table:
         // family_id,
@@ -344,7 +344,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_invoices_recurring');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         // invoice_recurring_id invoice_id
@@ -367,7 +367,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('payments/mdl_payment_logs');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         foreach ($keywords as $keyword) {
@@ -399,7 +399,7 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('payments/mdl_payments');
 
-        $query    = $this->input->post('filter_query');
+        $query = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
 
         foreach ($keywords as $keyword) {

@@ -66,8 +66,8 @@ function get_safe_referer($referer = '', $default_url = '')
     }
 
     // Parse the base URL and referer to compare host and port properly
-    $base_url      = base_url();
-    $base_parts    = parse_url($base_url);
+    $base_url = base_url();
+    $base_parts = parse_url($base_url);
     $referer_parts = parse_url($referer);
 
     // Validate parse results
@@ -78,7 +78,7 @@ function get_safe_referer($referer = '', $default_url = '')
     }
 
     // Extract and validate host
-    $base_host    = $base_parts['host'] ?? '';
+    $base_host = $base_parts['host'] ?? '';
     $referer_host = $referer_parts['host'] ?? '';
 
     if (empty($base_host) || empty($referer_host)) {
@@ -89,10 +89,10 @@ function get_safe_referer($referer = '', $default_url = '')
 
     // Security: Compare host and scheme to ensure same domain
     // This prevents false positives from prefix matching and handles scheme/port differences
-    $base_scheme    = $base_parts['scheme'] ?? 'http';
+    $base_scheme = $base_parts['scheme'] ?? 'http';
     $referer_scheme = $referer_parts['scheme'] ?? 'http';
-    $base_port      = $base_parts['port'] ?? ($base_scheme === 'https' ? 443 : 80);
-    $referer_port   = $referer_parts['port'] ?? ($referer_scheme === 'https' ? 443 : 80);
+    $base_port = $base_parts['port'] ?? ($base_scheme === 'https' ? 443 : 80);
+    $referer_port = $referer_parts['port'] ?? ($referer_scheme === 'https' ? 443 : 80);
 
     // Check if host, scheme, and port match
     if ($base_host === $referer_host && $base_scheme === $referer_scheme && $base_port === $referer_port) {
@@ -141,7 +141,7 @@ function validate_redirect_url($url, $default_url = '')
     }
 
     // External URL - reject and sanitize host before logging
-    $url_host  = parse_url($url, PHP_URL_HOST);
+    $url_host = parse_url($url, PHP_URL_HOST);
     $safe_host = is_string($url_host) ? sanitize_for_logging($url_host) : 'invalid';
     log_message('debug', 'External redirect URL blocked: ' . $safe_host);
 
@@ -201,8 +201,8 @@ function user_has_invoice_access($invoice_id)
     $CI = & get_instance();
 
     // Normalize to integer to prevent type juggling
-    $user_type  = (int) $CI->session->userdata('user_type');
-    $user_id    = (int) $CI->session->userdata('user_id');
+    $user_type = (int) $CI->session->userdata('user_type');
+    $user_id = (int) $CI->session->userdata('user_id');
     $invoice_id = (int) $invoice_id;
 
     // Admin users have access to all invoices
@@ -254,8 +254,8 @@ function user_has_quote_access($quote_id)
 
     // Normalize to integer to prevent type juggling
     $user_type = (int) $CI->session->userdata('user_type');
-    $user_id   = (int) $CI->session->userdata('user_id');
-    $quote_id  = (int) $quote_id;
+    $user_id = (int) $CI->session->userdata('user_id');
+    $quote_id = (int) $quote_id;
 
     // Admin users have access to all quotes
     if ($user_type === 1) {
@@ -309,11 +309,11 @@ function verify_csrf_token(): bool
     }
 
     // Get CSRF token from POST data
-    $token_name      = config_item('csrf_token_name');
+    $token_name = config_item('csrf_token_name');
     $submitted_token = $CI->input->post($token_name);
 
     // Get CSRF token from cookie
-    $cookie_name    = config_item('csrf_cookie_name');
+    $cookie_name = config_item('csrf_cookie_name');
     $expected_token = $CI->input->cookie($cookie_name);
 
     // Security: Enforce non-empty string tokens to prevent bypass when both are null
@@ -336,7 +336,7 @@ function verify_csrf_token(): bool
 
     // Token mismatch - sanitize IP before logging to prevent log injection
     $ip_address = $CI->input->ip_address();
-    $safe_ip    = filter_var($ip_address, FILTER_VALIDATE_IP);
+    $safe_ip = filter_var($ip_address, FILTER_VALIDATE_IP);
     if ($safe_ip === false) {
         $safe_ip = 'invalid-ip';
     }

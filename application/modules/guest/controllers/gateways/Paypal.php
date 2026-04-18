@@ -128,9 +128,9 @@ class Paypal extends Base_Controller
             if ($capture_status === 'COMPLETED' || $capture_status === 'PENDING') {
                 // Extract payment data with defensive null safety checks at each level
                 $purchase_units = $paypal_object->purchase_units ?? null;
-                $payments       = $purchase_units[0]->payments ?? null;
-                $captures       = $payments->captures ?? null;
-                $capture_data   = $captures[0] ?? null;
+                $payments = $purchase_units[0]->payments ?? null;
+                $captures = $payments->captures ?? null;
+                $capture_data = $captures[0] ?? null;
 
                 if ( ! $capture_data) {
                     log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid PayPal response structure: missing capture data');
@@ -138,7 +138,7 @@ class Paypal extends Base_Controller
                 }
 
                 $invoice_id = $capture_data->invoice_id ?? null;
-                $amount     = $capture_data->amount->value ?? null;
+                $amount = $capture_data->amount->value ?? null;
                 $capture_id = $capture_data->id ?? null;
 
                 // Validate required fields
@@ -223,7 +223,7 @@ class Paypal extends Base_Controller
                 // If we can't get invoice_id from captures, try to get it from order details
                 if ( ! $invoice_id) {
                     $order_details = json_decode($this->lib_paypal->showOrderDetails($order_id));
-                    $invoice_id    = $order_details->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
+                    $invoice_id = $order_details->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
                 }
 
                 // Get processor response code if available.

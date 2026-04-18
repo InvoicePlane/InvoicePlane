@@ -285,6 +285,7 @@ class Mdl_Clients extends Response_Model
      * Returns clients with their invoice balances if exist.
      *
      * @param $status (client status (1:active, 0:inactive))
+     *
      * @return $result array (query result)
      */
     public function with_total_balance_with_currency($status)
@@ -295,7 +296,8 @@ class Mdl_Clients extends Response_Model
                       WHERE ip_clients.client_active IN ?
                       GROUP BY ip_invoices.invoice_currency, ip_clients.client_id
                       ORDER BY ip_clients.client_name";
-        $result = $this->db->query($query, array($status))->result();
+        $result = $this->db->query($query, [$status])->result();
+
         return $result;
     }
 
@@ -303,6 +305,7 @@ class Mdl_Clients extends Response_Model
      * Returns client with their invoice balance, paid amount and total amount.
      *
      * @param $client_id
+     *
      * @return $result array (query result)
      */
     public function get_invoice_amounts_for_client($client_id)
@@ -313,7 +316,8 @@ class Mdl_Clients extends Response_Model
                       RIGHT JOIN ip_clients ON ip_clients.client_id = ip_invoices.client_id
                       WHERE ip_clients.client_id = ?
                       GROUP BY ip_invoices.invoice_currency";
-        $result = $this->db->query($query, array($client_id))->result();
+        $result = $this->db->query($query, [$client_id])->result();
+
         return $result;
     }
 
