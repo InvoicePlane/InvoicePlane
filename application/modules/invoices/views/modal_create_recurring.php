@@ -19,7 +19,8 @@
                     invoice_id: <?php echo $invoice_id; ?>,
                     recur_start_date: $('#recur_start_date').val(),
                     recur_end_date: $('#recur_end_date').val(),
-                    recur_frequency: $('#recur_frequency').val()
+                    recur_frequency: $('#recur_frequency').val(),
+                    generate_if_unpaid: $('#generate_if_unpaid').is(':checked') ? 1 : 0
                 },
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
@@ -89,6 +90,16 @@
                     <span class="input-group-addon">
                         <i class="fa fa-calendar fa-fw"></i>
                     </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="generate_if_unpaid" id="generate_if_unpaid" value="1" checked>
+                        <?php _trans('recurring_generate_if_unpaid'); ?>
+                    </label>
+                    <small class="help-block"><?php _trans('recurring_generate_if_unpaid_tooltip'); ?></small>
                 </div>
             </div>
 

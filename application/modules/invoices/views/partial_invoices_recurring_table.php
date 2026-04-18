@@ -10,6 +10,7 @@
                     <th><?php _trans('end_date'); ?></th>
                     <th><?php _trans('every'); ?></th>
                     <th><?php _trans('next_date'); ?></th>
+                    <th><?php _trans('recurring_generation_behavior'); ?></th>
                     <th><?php _trans('options'); ?></th>
                 </tr>
                 </thead>
@@ -34,6 +35,17 @@ foreach ($recurring_invoices as $invoice) {
                         <td><?php echo date_from_mysql($invoice->recur_end_date); ?></td>
                         <td><?php _trans($recur_frequencies[$invoice->recur_frequency]); ?></td>
                         <td><?php echo date_from_mysql($invoice->recur_next_date); ?></td>
+                        <td>
+                            <?php if ($invoice->generate_if_unpaid == 1) { ?>
+                                <span class="label label-info">
+                                    <i class="fa fa-refresh"></i> <?php _trans('recurring_generation_continuous'); ?>
+                                </span>
+                            <?php } else { ?>
+                                <span class="label label-warning">
+                                    <i class="fa fa-pause"></i> <?php _trans('recurring_generation_requires_payment'); ?>
+                                </span>
+                            <?php } ?>
+                        </td>
                         <td>
                             <div class="options btn-group">
                                 <a href="#" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
