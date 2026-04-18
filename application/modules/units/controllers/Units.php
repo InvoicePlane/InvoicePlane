@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,9 +13,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Units
- */
+#[AllowDynamicProperties]
 class Units extends Admin_Controller
 {
     /**
@@ -38,22 +39,22 @@ class Units extends Admin_Controller
         $this->layout->render();
     }
 
-    /**
-     * @param null $id
-     */
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
             redirect('units');
         }
 
-        if ($this->input->post('is_update') == 0
-            && $this->input->post('unit_name') != ''
+        $this->filter_input();  // <<<--- filters _POST array for nastiness
+
+        if (
+            $this->input->post('is_update') == 0
+            && $this->input->post('unit_name')      != ''
             && $this->input->post('unit_name_plrl') != ''
         ) {
-            $check = $this->db->get_where('ip_units', array('unit_name' => $this->input->post('unit_name')))->result();
+            $check = $this->db->get_where('ip_units', ['unit_name' => $this->input->post('unit_name')])->result();
 
-            if (!empty($check)) {
+            if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('unit_already_exists'));
                 redirect('units/form');
             }
@@ -64,8 +65,8 @@ class Units extends Admin_Controller
             redirect('units');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_units->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_units->prep_form($id)) {
                 show_404();
             }
 
@@ -84,5 +85,4 @@ class Units extends Admin_Controller
         $this->mdl_units->delete($id);
         redirect('units');
     }
-
 }

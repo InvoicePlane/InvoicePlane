@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -10,20 +13,14 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Ajax
- */
+#[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 
-    /**
-     *
-     */
     public function get_cron_key()
     {
         $this->load->helper('string');
         echo random_string('alnum', 16);
     }
-
 }
