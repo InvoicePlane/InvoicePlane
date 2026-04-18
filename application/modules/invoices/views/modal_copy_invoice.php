@@ -20,7 +20,7 @@
                     invoice_group_id: $('#invoice_group_id').val(),
                     invoice_password: $('#invoice_password').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
-                    payment_method: $('#payment_method').val()
+                    payment_method: $('#payment_method').val(),
                 },
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);

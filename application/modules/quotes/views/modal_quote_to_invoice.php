@@ -13,6 +13,7 @@
                     legacy_calculation: legacy_calculation, // Automatic. From meta (see script)
                     quote_id: <?php echo $quote_id; ?>,
                     client_id: $('#client_id').val(),
+                    service_id: $('#service_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
                     invoice_group_id: $('#invoice_group_id').val(),
@@ -51,7 +52,8 @@
                    value="<?php echo $quote->client_id; ?>">
             <input type="hidden" name="user_id" id="user_id"
                    value="<?php echo $quote->user_id; ?>">
-
+            <input type="hidden" name="service_id" id="service_id"
+                   value="<?php echo $quote->service_id; ?>">
             <div class="form-group has-feedback">
                 <label for="invoice_date_created">
                     <?php _trans('invoice_date'); ?>
