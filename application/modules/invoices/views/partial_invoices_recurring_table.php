@@ -36,13 +36,13 @@ foreach ($recurring_invoices as $invoice) {
                         <td><?php _trans($recur_frequencies[$invoice->recur_frequency]); ?></td>
                         <td><?php echo date_from_mysql($invoice->recur_next_date); ?></td>
                         <td>
-                            <?php if ($invoice->generate_if_unpaid == 1) { ?>
+                            <?php if ((int) $invoice->generate_if_unpaid === 1) { ?>
                                 <span class="label label-info">
-                                    <i class="fa fa-refresh"></i> <?php _trans('recurring_generation_continuous'); ?>
+                                    <i class="fa fa-refresh" aria-hidden="true"></i> <?php _trans('recurring_generation_continuous'); ?>
                                 </span>
                             <?php } else { ?>
                                 <span class="label label-warning">
-                                    <i class="fa fa-pause"></i> <?php _trans('recurring_generation_requires_payment'); ?>
+                                    <i class="fa fa-pause" aria-hidden="true"></i> <?php _trans('recurring_generation_requires_payment'); ?>
                                 </span>
                             <?php } ?>
                         </td>

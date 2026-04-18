@@ -144,6 +144,12 @@ class Mdl_Invoices_Recurring extends Response_Model
         // Apply payment-based filtering: exclude recurring invoices with unpaid generated invoices
         // when generate_if_unpaid = 0
         // Note: The NOT EXISTS subquery uses hardcoded table/column names (not user input) so SQL injection is not a risk
+        //
+        // Invoice statuses: 1=Draft, 2=Sent, 3=Viewed, 4=Paid
+        // This query checks invoice_balance > 0, which includes ALL invoices with an outstanding balance
+        // regardless of status (including Draft invoices with status_id=1).
+        // Deleted invoices are not included (they are physically removed from the database).
+        // Therefore, when generate_if_unpaid=0, any unpaid generated invoice (including drafts) will pause generation.
         $this->db->group_start();
         $this->db->where('ip_invoices_recurring.generate_if_unpaid', 1);
         $this->db->or_group_start();
