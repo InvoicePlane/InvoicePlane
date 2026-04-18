@@ -53,7 +53,13 @@ switch ($invoice_mode) {
 
     <div id="client">
         <div>
-            <b><?php _htmlsc(format_client($invoice)); ?></b>
+	    <b><?php _htmlsc(format_client($invoice)); ?></b>
+                <?php
+                   if (isset($invoice->service_name) && $invoice->service_name) {
+                      echo '<br>';
+                      _htmlsc($invoice->service_name);
+                   }
+                ?>
         </div>
 <?php
 if ($invoice->client_vat_id) {

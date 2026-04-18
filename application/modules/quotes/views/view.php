@@ -76,7 +76,8 @@ if ($quote->quote_status_id == 1) {
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
-                    custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
+		    custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
+		    service_id: $('#service_id').val(),
                 },
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
@@ -316,8 +317,39 @@ if ($quote->quote_status_id == 1) {
 ?>
                     </h3>
                     <br>
-                    <div class="client-address">
-                        <?php $this->layout->load_view('clients/partial_client_address', ['client' => $quote]); ?>
+		    <div class="client-address">
+                       <?php
+                          if (get_setting('enable_services') == 1) {
+                       ?>
+                            <label for="service_id">
+                              <?php
+                                  echo ' <span class="small">(' . trans('service_name') . ')</span>';
+                              ?>
+                            </label>
+		            <select name="service_id" id="service_id"
+                               class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
+                               <option value="0" selected><?php _trans('select_service'); ?></option>
+                               <?php
+                                 foreach($services as $service)
+				 {
+				     if (!empty($service['service_name'])) {
+                                         echo '<option value="' . $service['service_id'] .'" ';
+                                         if ($service['service_id'] == $quote->service_id)
+                                            echo 'selected';
+                                         echo '>' . $service['service_name'] .'</option>';
+				     }
+                                 }
+                               ?>
+                            </select><br>
+                       <?php
+			  }
+			  else {
+		       ?>
+		            <input type="hidden" name="service_id" id="service_id" value="0">
+                       <?php
+			  }
+			  $this->layout->load_view('clients/partial_client_address', ['client' => $quote]);
+                       ?>
                     </div>
 <?php if ($quote->client_phone || $quote->client_email) : ?>
                         <hr>

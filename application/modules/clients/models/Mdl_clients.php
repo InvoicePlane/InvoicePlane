@@ -312,4 +312,23 @@ class Mdl_Clients extends Response_Model
 
         return $this;
     }
+
+    public function get_all_services()
+    {
+        $this->load->model('services/mdl_services');
+        return $this->mdl_services->get()->result_array();
+    }
+
+    /**
+     * Legacy alias for get_all_services().
+     *
+     * Kept for backwards compatibility. This method returns all services
+     * and does not filter by client.
+     *
+     * @return array
+     */
+    public function service_by_client()
+    {
+        return $this->get_all_services();
+    }
 }

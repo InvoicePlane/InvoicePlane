@@ -19,7 +19,8 @@
                     invoice_time_created: '<?php echo date('H:i:s') ?>',
                     invoice_password: $('#invoice_password').val(),
                     user_id: '<?php echo $this->session->userdata('user_id'); ?>',
-                    payment_method: $('#payment_method_id').val()
+		    payment_method: $('#payment_method_id').val(),
+		    service_id: $('#service_id').val(),
                 },
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
@@ -29,6 +30,7 @@
                     }
                     else {
                         // The validation was not successful
+                        close_loader();
                         $('.control-group').removeClass('has-error');
                         for (var key in response.validation_errors) {
                             $('#' + key).parent().parent().addClass('has-error');
@@ -37,7 +39,6 @@
                 });
         });
     });
-
 </script>
 
 <div id="create-invoice" class="modal modal-lg"
@@ -68,6 +69,35 @@
                     </select>
                 </div>
             </div>
+
+       <?php
+          if (get_setting('enable_services') == 1) {
+       ?>
+           <div class="form-group has-feedback">
+                <label for="service_id"><?php _trans('service'); ?></label>
+                <div class="input-group" style="width: 100%;">
+                    <select name="service_id" id="service_id" class="form-control" style="width: 100%;">
+                               <option value="0"><?php _trans('select_service'); ?></option>
+                               <?php
+                                 foreach($services as $service) {
+			             if (!empty($service['service_name'])) {
+			                 echo '<option value="' . htmlspecialchars($service['service_id'], ENT_QUOTES) . '">';
+				         echo htmlspecialchars($service['service_name'], ENT_QUOTES);
+				         echo '</option>';
+				     }
+                                 }
+                               ?>
+                    </select>
+                </div>
+	    </div>
+       <?php
+	  }
+	  else {
+       ?>
+            <input type="hidden" name="service_id" id="service_id" value="0">
+       <?php
+	  }
+       ?>
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created"><?php _trans('invoice_date'); ?></label>

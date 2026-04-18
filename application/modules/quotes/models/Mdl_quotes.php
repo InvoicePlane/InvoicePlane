@@ -66,7 +66,8 @@ class Mdl_Quotes extends Response_Model
         $this->db->select("
             SQL_CALC_FOUND_ROWS
             ip_users.*,
-            ip_clients.*,
+	    ip_clients.*,
+	    ip_services.*,
             ip_quote_amounts.quote_amount_id,
             IFnull(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
             IFnull(ip_quote_amounts.quote_item_tax_total, '0.00') AS quote_item_tax_total,
@@ -83,7 +84,8 @@ class Mdl_Quotes extends Response_Model
 
     public function default_join()
     {
-        $this->db->join('ip_clients', 'ip_clients.client_id = ip_quotes.client_id');
+	$this->db->join('ip_clients', 'ip_clients.client_id = ip_quotes.client_id');
+	$this->db->join('ip_services', 'ip_services.service_id = ip_quotes.service_id', 'left');
         $this->db->join('ip_users', 'ip_users.user_id = ip_quotes.user_id');
         $this->db->join('ip_quote_amounts', 'ip_quote_amounts.quote_id = ip_quotes.quote_id', 'left');
         $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_quotes.invoice_id', 'left');
@@ -99,7 +101,11 @@ class Mdl_Quotes extends Response_Model
                 'field' => 'client_id',
                 'label' => trans('client'),
                 'rules' => 'required',
-            ],
+	    ],
+	    'service_id' => [
+                'field' => 'service_id',
+                'label' => trans('service'),
+	    ],
             'quote_date_created' => [
                 'field' => 'quote_date_created',
                 'label' => trans('quote_date'),
@@ -196,6 +202,7 @@ class Mdl_Quotes extends Response_Model
             'percent'        => $quote->quote_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for quote_item_subtotal calculation in Mdl_quote_amounts)
             'items_subtotal' => $this->mdl_quote_items->get_items_subtotal($source_id),
+            'service'        => $quote->service_id,
         ];
         unset($quote); // Free memory
 
@@ -203,6 +210,7 @@ class Mdl_Quotes extends Response_Model
         $this->where('quote_id', $target_id)->update('ip_quotes', [
             'quote_discount_percent' => $global_discount['percent'],
             'quote_discount_amount'  => $global_discount['amount'],
+            'service_id'             => $global_discount['service'],
         ]);
 
         $quote_items = $this->mdl_quote_items->where('quote_id', $source_id)->get()->result();
@@ -257,9 +265,20 @@ class Mdl_Quotes extends Response_Model
         $db_array = parent::db_array();
 
         // Get the client id for the submitted quote
-        $this->load->model('clients/mdl_clients');
-        $cid                   = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
-        $db_array['client_id'] = $cid;
+	$this->load->model('clients/mdl_clients');
+	$this->load->model('services/mdl_services');
+	$cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
+	// Handle service_id - default to 0 if not provided or not found
+	$sid = 0;
+	if (!empty($db_array['service_id'])) {
+	    $service_row = $this->mdl_services->where('ip_services.service_id', $db_array['service_id'])->get()->row();
+	    if ($service_row) {
+		$sid = $service_row->service_id;
+	    }
+	}
+
+	$db_array['client_id'] = $cid;
+	$db_array['service_id'] = $sid;
 
         $db_array['quote_date_created'] = date_to_mysql($db_array['quote_date_created']);
         $db_array['quote_date_expires'] = $this->get_date_due($db_array['quote_date_created']);
@@ -530,4 +549,21 @@ class Mdl_Quotes extends Response_Model
             $this->db->update('ip_quotes');
         }
     }
+
+    /**
+      * Update the service association for a quote
+      * @param $quote_id
+      * @param $service_id
+      */
+    public function set_quote_service($quote_id, $service_id)
+    {
+        $quote = $this->get_by_id($quote_id);
+
+        if (!empty($quote)) {
+            $this->db->where('quote_id', $quote_id);
+            $this->db->set('service_id', $service_id);
+            $this->db->update('ip_quotes');
+        }
+    }
+
 }
