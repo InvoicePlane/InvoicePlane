@@ -19,7 +19,7 @@
     <div class="headerbar-item pull-right visible-lg">
         <div class="btn-group btn-group-sm index-options">
             <a href="<?php echo site_url('clients/status/active'); ?>"
-               class="btn <?php echo $this->uri->segment(3) == 'active' || !$this->uri->segment(3) ? 'btn-primary' : 'btn-default' ?>">
+               class="btn <?php echo $this->uri->segment(3) == 'active' || ! $this->uri->segment(3) ? 'btn-primary' : 'btn-default' ?>">
                 <?php _trans('active'); ?>
             </a>
             <a href="<?php echo site_url('clients/status/inactive'); ?>"
@@ -45,7 +45,7 @@
         <div class="submenu-row">
             <div class="btn-group btn-group-sm index-options">
                 <a href="<?php echo site_url('clients/status/active'); ?>"
-                   class="btn <?php echo $this->uri->segment(3) == 'active' || !$this->uri->segment(3) ? 'btn-primary' : 'btn-default' ?>">
+                   class="btn <?php echo $this->uri->segment(3) == 'active' || ! $this->uri->segment(3) ? 'btn-primary' : 'btn-default' ?>">
                     <?php _trans('active'); ?>
                 </a>
                 <a href="<?php echo site_url('clients/status/inactive'); ?>"

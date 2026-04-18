@@ -22,26 +22,26 @@
 
     <div class="row">
         <div class="col-xs-12 col-md-4">
-
-            <?php if (!empty($project->client_name)) : ?>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <strong><?php echo format_client($project); ?></strong>
-                    </div>
-                    <div class="panel-body">
-                        <div class="client-address">
-                            <?php $this->layout->load_view('clients/partial_client_address', ['client' => $project]); ?>
-                        </div>
+<?php
+if ( ! empty($project->client_name)) {
+?>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong><?php _htmlsc(format_client($project)); ?></strong>
+                </div>
+                <div class="panel-body">
+                    <div class="client-address">
+                        <?php $this->layout->load_view('clients/partial_client_address', ['client' => $project]); ?>
                     </div>
                 </div>
-
-            <?php else : ?>
-
-                <div class="alert alert-info"><?php _trans('alert_no_client_assigned'); ?></div>
-
-            <?php endif; ?>
-
+            </div>
+<?php
+} else {
+?>
+            <div class="alert alert-info"><?php _trans('alert_no_client_assigned'); ?></div>
+<?php
+}
+?>
         </div>
         <div class="col-xs-12 col-md-8">
 
@@ -64,40 +64,40 @@
                             </thead>
 
                             <tbody>
-                            <?php foreach ($tasks as $task) { ?>
+<?php
+foreach ($tasks as $task) {
+?>
                                 <tr>
+                                    <td><?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?></td>
                                     <td>
-                                        <?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?>
+                                        <span class="label <?php echo $task_statuses[$task->task_status]['class']; ?>">
+                                            <?php echo $task_statuses[$task->task_status]['label']; ?>
+                                        </span>
                                     </td>
                                     <td>
-                                <span class="label <?php echo $task_statuses["$task->task_status"]['class']; ?>">
-                                    <?php echo $task_statuses["$task->task_status"]['label']; ?>
-                                </span>
+                                        <span class="<?php echo $task->is_overdue ? 'text-danger' : ''; ?>">
+                                            <?php echo date_from_mysql($task->task_finish_date); ?>
+                                        </span>
                                     </td>
-                                    <td>
-                                <span class="<?php if ($task->is_overdue) { ?>text-danger<?php } ?>">
-                                    <?php echo date_from_mysql($task->task_finish_date); ?>
-                                </span>
-                                    </td>
-                                    <td><?php _htmlsc($task->project_name); ?></td>
+                                    <td><?php echo anchor('projects/form/' . $project->project_id, htmlsc($project->project_name)); ?></td>
                                 </tr>
-                            <?php } ?>
+<?php
+}
+?>
                             </tbody>
-
                         </table>
-
                     </div>
                 </div>
-
-                <?php if (empty($tasks)) : ?>
-                    <div class="panel-body">
-                        <div class="alert alert-info no-margin"><?php echo trans('alert_no_tasks_found') ?></div>
-                    </div>
-                <?php endif; ?>
-
+<?php
+if (empty($tasks)) {
+?>
+                <div class="panel-body">
+                    <div class="alert alert-info no-margin"><?php echo trans('alert_no_tasks_found') ?></div>
+                </div>
+<?php
+}
+?>
             </div>
-
         </div>
     </div>
-
 </div>

@@ -1,0 +1,48 @@
+name: Translation Request
+description: Suggest a new translation or improvement to existing translations in InvoicePlane.
+labels: ["translation"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Title
+      description: Provide a short, descriptive summary of the translation request.
+      placeholder: "Brief summary of the request"
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      description: Which language is this request for?
+      options:
+        - Arabic (ar)
+        - Chinese (zh)
+        - Dutch (nl)
+        - English (en)
+        - French (fr)
+        - German (de)
+        - Italian (it)
+        - Japanese (ja)
+        - Portuguese (pt)
+        - Spanish (es)
+        - Other (please specify in Additional Context)
+
+  - type: textarea
+    id: translation_issue
+    attributes:
+      label: Translation Issue / Improvement
+      description: Provide details on the incorrect or missing translation.
+      placeholder: "Explain what needs to be translated or improved."
+
+  - type: textarea
+    id: proposed_translation
+    attributes:
+      label: Proposed Translation
+      description: If you have a suggested translation, provide it here.
+      placeholder: "Write the suggested translation."
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context (Optional)
+      description: Include any additional information related to this translation request.

@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,12 +13,9 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Mdl_Versions
- */
+#[AllowDynamicProperties]
 class Mdl_Versions extends Response_Model
 {
-
     public $table = 'ip_versions';
 
     public $primary_key = 'ip_versions.version_id';
@@ -33,13 +31,21 @@ class Mdl_Versions extends Response_Model
     }
 
     /**
-     * Returns the latest version from the database
+     * Returns the latest version from the database.
      *
-     * @return string
+     * @return string|null Returns the version string or null if no version records exist
      */
     public function get_current_version()
     {
-        $current_version = $this->mdl_versions->limit(1)->get()->row()->version_file;
-        return str_replace('.sql', '', substr($current_version, strpos($current_version, '_') + 1));
+        $result = $this->limit(1)->get();
+
+        // Check if any rows were returned to avoid null dereference
+        if ($result->query->num_rows() === 0) {
+            return;
+        }
+
+        $current_version = $result->query->row()->version_file;
+
+        return str_replace('.sql', '', mb_substr($current_version, mb_strpos($current_version, '_') + 1));
     }
 }

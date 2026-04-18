@@ -1,4 +1,6 @@
-<?php return array(
+<?php
+
+return [
     'AF' => 'Afghanistan',
     'AL' => 'Albania',
     'DZ' => 'Algeria',
@@ -180,7 +182,7 @@
     'PZ' => 'Panama Canal Zone',
     'PG' => 'Papua New Guinea',
     'PY' => 'Paraguay',
-    'YD' => 'People\'s Democratic Republic of Yemen',
+    'YD' => "People's Democratic Republic of Yemen",
     'PE' => 'Peru',
     'PH' => 'Philippines',
     'PN' => 'Pitcairn Islands',
@@ -262,4 +264,4 @@
     'ZM' => 'Zambia',
     'ZW' => 'Zimbabwe',
     'AX' => 'Åland Islands',
-);
+];

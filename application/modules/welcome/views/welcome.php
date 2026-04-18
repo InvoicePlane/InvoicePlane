@@ -1,4 +1,7 @@
-<!doctype html>
+<?php
+$completed = env_bool('SETUP_COMPLETED') ? '' : ' hidden';
+$disabled  = env_bool('DISABLE_SETUP') ? ' hidden' : '';
+?><!doctype html>
 
 <!--[if lt IE 7]>
 <html class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -15,15 +18,16 @@
     <!-- Use the .htaccess and remove these lines to avoid edge case issues -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title>InvoicePlane</title>
+    <title><?php echo get_setting('custom_title', 'InvoicePlane', true); ?></title>
 
     <!-- Mobile viewport optimized: j.mp/bplateviewport -->
     <meta name="viewport" content="width=device-width">
 
-    <!-- CSS: implied media=all -->
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/invoiceplane/css/welcome.css">
-    <!-- end CSS-->
+    <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
+    <!-- CSS: implied media=all -->
+    <link rel="stylesheet" href="<?php _theme_asset('css/welcome.css'); ?>" type="text/css">
+    <!-- end CSS-->
 </head>
 <body>
 
@@ -31,7 +35,7 @@
 
     <div id="content">
         <div id="logo"><span>InvoicePlane</span></div>
-        <p class="alert alert-info text-center">
+        <p class="alert alert-info text-center<?php echo $completed ? '' : ' hidden'; ?>">
             Please install InvoicePlane.<br/>
             <span class="text-muted">Bitte installiere InvoicePlane.</span><br/>
             <span class="text-muted">S'il vous plaît installer InvoicePlane</span><br/>
@@ -39,7 +43,10 @@
         </p>
 
         <div class="btn-group btn-group-justified">
-            <a href="<?php echo site_url('setup'); ?>" class="btn btn-success">
+            <a href="<?php echo site_url(); ?>" class="btn btn-default<?php echo $completed; ?>">
+                <i class="fa fa-user"></i> Enter
+            </a>
+            <a href="<?php echo site_url('setup'); ?>" class="btn btn-success<?php echo $disabled; ?>">
                 <i class="fa fa-cogs"></i> Setup
             </a>
             <a href="https://wiki.invoiceplane.com/" class="btn btn-info">

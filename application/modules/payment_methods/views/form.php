@@ -1,7 +1,6 @@
 <form method="post" class="form-horizontal">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('payment_method_form'); ?></h1>
@@ -29,6 +28,24 @@
             <div class="col-xs-12 col-sm-6">
                 <input type="text" name="payment_method_name" id="payment_method_name" class="form-control"
                        value="<?php echo $this->mdl_payment_methods->form_value('payment_method_name', true); ?>" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="payment_method_type_id" class="control-label">
+                    <?php _trans('payment_method_type'); ?>:
+                </label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <select name="payment_method_type_id" id="payment_method_type_id"
+                        class="form-control input-sm simple-select">
+                    <?php foreach ($payment_method_types as $key => $type) { $currentType = $this->mdl_payment_methods->form_value('payment_method_type_id', true); ?>
+                        <option <?php check_select($currentType, $key) ?>
+                            value="<?php echo $key; ?>">
+                            <?php echo $type['label']; ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
         </div>
 

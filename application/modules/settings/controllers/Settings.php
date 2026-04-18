@@ -1,18 +1,19 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author      InvoicePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
+ * @license     https://invoiceplane.com/license.txt
+ * @link        https://invoiceplane.com
  */
 
-/**
- * Class Settings
- */
+#[AllowDynamicProperties]
 class Settings extends Admin_Controller
 {
     /**
@@ -26,6 +27,32 @@ class Settings extends Admin_Controller
         $this->load->library('crypt');
         $this->load->library('form_validation');
         $this->load->helper('payments_helper');
+        $this->load->helper('file_security');
+        
+        // Security: Check for SVG logos and display warnings
+        $this->check_svg_logos();
+    }
+    
+    /**
+     * Check for SVG logos and display security warnings
+     * This provides a soft migration path for existing SVG logos
+     */
+    private function check_svg_logos()
+    {
+        $logos_to_check = ['login_logo', 'invoice_logo'];
+        
+        foreach ($logos_to_check as $logo_setting) {
+            $logo_file = get_setting($logo_setting);
+            if ($logo_file) {
+                $extension = strtolower(pathinfo($logo_file, PATHINFO_EXTENSION));
+                if ($extension === 'svg') {
+                    $this->session->set_flashdata('alert_warning', 
+                        trans('svg_logo_blocked_security') . ' ' . 
+                        trans('please_remove_and_reupload')
+                    );
+                }
+            }
+        }
     }
 
     public function index()
@@ -46,13 +73,12 @@ class Settings extends Admin_Controller
             if ($settings['tax_rate_decimal_places'] != get_setting('tax_rate_decimal_places')) {
                 $this->db->query("
                     ALTER TABLE `ip_tax_rates` CHANGE `tax_rate_percent` `tax_rate_percent`
-                    DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null"
-                );
+                    DECIMAL( 5, {$settings['tax_rate_decimal_places']} ) NOT null");
             }
 
-            // Save the submitted settings
+            // Save the submitted settings :todo:improve: Save In One SQL query : $db_array[$key] = val; •••& @end mdl save $db_array.
             foreach ($settings as $key => $value) {
-                if (strpos($key, 'field_is_password') !== false || strpos($key, 'field_is_amount') !== false) {
+                if (str_contains($key, 'field_is_password') || str_contains($key, 'field_is_amount')) {
                     // Skip all meta fields
                     continue;
                 }
@@ -64,17 +90,12 @@ class Settings extends Admin_Controller
 
                 if (isset($settings[$key . '_field_is_password']) && $value != '') {
                     // Encrypt passwords but don't save empty passwords
-                    $this->mdl_settings->save($key, $this->crypt->encode(trim($value)));
-
+                    $this->mdl_settings->save($key, $this->crypt->encode(mb_trim($value)));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
-
                     // Format amount inputs
                     $this->mdl_settings->save($key, standardize_amount($value));
-
                 } else {
-
                     $this->mdl_settings->save($key, $value);
-
                 }
 
                 if ($key == 'number_format') {
@@ -82,22 +103,29 @@ class Settings extends Admin_Controller
                     $this->mdl_settings->save('decimal_point', $number_formats[$value]['decimal_point']);
                     $this->mdl_settings->save('thousands_separator', $number_formats[$value]['thousands_separator']);
                 }
-
             }
 
-            $upload_config = array(
-                'upload_path' => './uploads/',
-                'allowed_types' => 'gif|jpg|jpeg|png|svg',
-                'max_size' => '9999',
-                'max_width' => '9999',
-                'max_height' => '9999'
-            );
+            $upload_config = [
+                'upload_path'   => './uploads/',
+                'allowed_types' => 'gif|jpg|jpeg|png', // Invoice quote logo image - SVG removed for security
+                'max_size'      => '9999',
+                'max_width'     => '9999',
+                'max_height'    => '9999',
+            ];
 
             // Check for invoice logo upload
             if ($_FILES['invoice_logo']['name']) {
+                // Security: Check for SVG files before attempting upload
+                $file_extension = strtolower(pathinfo($_FILES['invoice_logo']['name'], PATHINFO_EXTENSION));
+                if ($file_extension === 'svg') {
+                    log_message('warning', 'SVG upload attempt blocked for invoice_logo by user ' . $this->session->userdata('user_id') . ': ' . sanitize_for_logging(basename($_FILES['invoice_logo']['name'])));
+                    $this->session->set_flashdata('alert_error', trans('svg_upload_blocked_security'));
+                    redirect('settings');
+                }
+                
                 $this->load->library('upload', $upload_config);
 
-                if (!$this->upload->do_upload('invoice_logo')) {
+                if ( ! $this->upload->do_upload('invoice_logo')) {
                     $this->session->set_flashdata('alert_error', $this->upload->display_errors());
                     redirect('settings');
                 }
@@ -109,9 +137,17 @@ class Settings extends Admin_Controller
 
             // Check for login logo upload
             if ($_FILES['login_logo']['name']) {
+                // Security: Check for SVG files before attempting upload
+                $file_extension = strtolower(pathinfo($_FILES['login_logo']['name'], PATHINFO_EXTENSION));
+                if ($file_extension === 'svg') {
+                    log_message('warning', 'SVG upload attempt blocked for login_logo by user ' . $this->session->userdata('user_id') . ': ' . sanitize_for_logging(basename($_FILES['login_logo']['name'])));
+                    $this->session->set_flashdata('alert_error', trans('svg_upload_blocked_security'));
+                    redirect('settings');
+                }
+                
                 $this->load->library('upload', $upload_config);
 
-                if (!$this->upload->do_upload('login_logo')) {
+                if ( ! $this->upload->do_upload('login_logo')) {
                     $this->session->set_flashdata('alert_error', $this->upload->display_errors());
                     redirect('settings');
                 }
@@ -127,45 +163,49 @@ class Settings extends Admin_Controller
         }
 
         // Load required resources
-        $this->load->model('invoice_groups/mdl_invoice_groups');
-        $this->load->model('tax_rates/mdl_tax_rates');
-        $this->load->model('email_templates/mdl_email_templates');
-        $this->load->model('payment_methods/mdl_payment_methods');
-        $this->load->model('invoices/mdl_templates');
-
-        $this->load->helper('country');
+        $this->load->model([
+            'invoice_groups/mdl_invoice_groups',
+            'tax_rates/mdl_tax_rates',
+            'email_templates/mdl_email_templates',
+            'payment_methods/mdl_payment_methods',
+            'invoices/mdl_templates',
+            'custom_fields/mdl_invoice_custom',
+            'custom_fields/mdl_custom_fields',
+        ]);
 
         // Collect the list of templates
-        $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
+        $pdf_invoice_templates    = $this->mdl_templates->get_invoice_templates('pdf');
         $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
-        $pdf_quote_templates = $this->mdl_templates->get_quote_templates('pdf');
-        $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
+        $pdf_quote_templates      = $this->mdl_templates->get_quote_templates('pdf');
+        $public_quote_templates   = $this->mdl_templates->get_quote_templates('public');
 
         // Get all themes
         $available_themes = $this->mdl_settings->get_themes();
 
         // Set data in the layout
         $this->layout->set(
-            array(
-                'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
-                'tax_rates' => $this->mdl_tax_rates->get()->result(),
-                'payment_methods' => $this->mdl_payment_methods->get()->result(),
+            [
+                'invoice_groups'           => $this->mdl_invoice_groups->get()->result(),
+                'tax_rates'                => $this->mdl_tax_rates->get()->result(),
+                'payment_methods'          => $this->mdl_payment_methods->get()->result(),
                 'public_invoice_templates' => $public_invoice_templates,
-                'pdf_invoice_templates' => $pdf_invoice_templates,
-                'public_quote_templates' => $public_quote_templates,
-                'pdf_quote_templates' => $pdf_quote_templates,
-                'languages' => get_available_languages(),
-                'countries' => get_country_list(trans('cldr')),
-                'date_formats' => date_formats(),
-                'current_date' => new DateTime(),
-                'available_themes' => $available_themes,
-                'email_templates_quote' => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
-                'email_templates_invoice' => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'gateway_drivers' => $gateways,
-                'number_formats' => $number_formats,
-                'gateway_currency_codes' => get_currencies(),
-                'first_days_of_weeks' => array('0' => lang('sunday'), '1' => lang('monday'))
-            )
+                'pdf_invoice_templates'    => $pdf_invoice_templates,
+                'public_quote_templates'   => $public_quote_templates,
+                'pdf_quote_templates'      => $pdf_quote_templates,
+                'languages'                => get_available_languages(),
+                'countries'                => get_country_list(trans('cldr')),
+                'date_formats'             => date_formats(),
+                'current_date'             => new DateTime(),
+                'available_themes'         => $available_themes,
+                'email_templates_quote'    => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
+                'email_templates_invoice'  => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'custom_fields'            => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
+                'gateway_drivers'          => $gateways,
+                'number_formats'           => $number_formats,
+                'gateway_currency_codes'   => get_currencies(),
+                'first_days_of_weeks'      => ['0' => lang('sunday'), '1' => lang('monday')],
+                'legacy_calculation'       => config_item('legacy_calculation'),
+            ]
         );
 
         $this->layout->buffer('content', 'settings/index');
@@ -175,7 +215,7 @@ class Settings extends Admin_Controller
     /**
      * @param $type
      */
-    public function remove_logo($type)
+    public function remove_logo(string $type)
     {
         unlink('./uploads/' . get_setting($type . '_logo'));
 

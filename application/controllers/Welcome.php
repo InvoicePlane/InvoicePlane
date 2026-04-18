@@ -1,6 +1,10 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
 
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+#[AllowDynamicProperties]
 class Welcome extends CI_Controller
 {
     /**
@@ -16,6 +20,7 @@ class Welcome extends CI_Controller
      *
      * So any other public methods not prefixed with an underscore will
      * map to /index.php/welcome/<method_name>
+     *
      * @see https://codeigniter.com/user_guide/general/urls.html
      */
     public function index()

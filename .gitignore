@@ -7,12 +7,24 @@
 /node_modules
 /vendor
 
+# Workflow artifacts
+audit-report.json
+updated-packages.txt
+pint_output.log
+
 # Other files
-/.htaccess
+.htaccess
 .idea
+.todo
 .sass-cache
 adminer.php
 /nbproject
+/patches
 /.php_cs.cache
 /doc
 *.bak
+npm-debug.log
+yarn-error.log
+.temp
+/stan.txt
+/phpunit.txt
