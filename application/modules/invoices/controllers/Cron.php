@@ -38,6 +38,11 @@ class Cron extends Base_Controller
         // Gather a list of recurring invoices to generate
         $invoices_recurring = $this->mdl_invoices_recurring->active()->get()->result();
         $recurInfo          = [];
+
+        if (IP_DEBUG) {
+            log_message('debug', '[Cron Recurring Invoices] Found ' . count($invoices_recurring) . ' recurring invoices ready to generate');
+        }
+
         foreach ($invoices_recurring as $invoice_recurring) {
             $recurInfo = [
                 'invoice_id'           => $invoice_recurring->invoice_id,
@@ -51,9 +56,11 @@ class Cron extends Base_Controller
                 'recur_frequency'      => $invoice_recurring->recur_frequency,
                 'recur_next_date'      => $invoice_recurring->recur_next_date,
                 'recur_status'         => $invoice_recurring->recur_status,
+                'generate_if_unpaid'   => $invoice_recurring->generate_if_unpaid,
             ];
 
             if (IP_DEBUG) {
+                log_message('debug', '[Cron Recurring Invoices] Processing recurring invoice #' . $invoice_recurring->invoice_recurring_id . ' (generate_if_unpaid: ' . $invoice_recurring->generate_if_unpaid . ')');
                 log_message('debug', '[Cron Recurring Invoices] Recurring Info: ' . json_encode($recurInfo, JSON_PRETTY_PRINT));
             }
 
@@ -83,6 +90,7 @@ class Cron extends Base_Controller
                 'invoice_terms'            => $invoice->invoice_terms,
                 'invoice_discount_amount'  => $invoice->invoice_discount_amount,
                 'invoice_discount_percent' => $invoice->invoice_discount_percent,
+                'invoice_recurring_id'     => $invoice_recurring->invoice_recurring_id,
             ];
 
             // This is the new invoice id

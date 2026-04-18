@@ -58,6 +58,7 @@ class Mdl_Invoices_Recurring extends Response_Model
             ip_clients.client_name,
             ip_clients.client_surname,
             ip_invoices_recurring.*,
+            ip_invoices_recurring.generate_if_unpaid,
             IF(recur_end_date > date(NOW()) OR recur_end_date IS NULL, "active", "inactive") AS recur_status', false);
     }
 
@@ -96,6 +97,9 @@ class Mdl_Invoices_Recurring extends Response_Model
                 'label' => trans('every'),
                 'rules' => 'required',
             ],
+            'generate_if_unpaid' => [
+                'field' => 'generate_if_unpaid',
+            ],
         ];
     }
 
@@ -110,6 +114,11 @@ class Mdl_Invoices_Recurring extends Response_Model
         $db_array['recur_next_date']  = $db_array['recur_start_date'];
 
         $db_array['recur_end_date'] = $db_array['recur_end_date'] ? date_to_mysql($db_array['recur_end_date']) : null;
+
+        // Default to 1 (generate even if unpaid) if not set
+        if ( ! isset($db_array['generate_if_unpaid'])) {
+            $db_array['generate_if_unpaid'] = 1;
+        }
 
         return $db_array;
     }
@@ -135,7 +144,24 @@ class Mdl_Invoices_Recurring extends Response_Model
      */
     public function active()
     {
+        // Base date filter: only invoices due to recur now and not ended
         $this->filter_where('recur_next_date <= date(NOW()) AND (recur_end_date > date(NOW()) OR recur_end_date IS NULL)');
+
+        // Apply payment-based filtering: exclude recurring invoices with unpaid generated invoices
+        // when generate_if_unpaid = 0
+        $this->db->group_start();
+        $this->db->where('ip_invoices_recurring.generate_if_unpaid', 1);
+        $this->db->or_group_start();
+        $this->db->where('ip_invoices_recurring.generate_if_unpaid', 0);
+        $this->db->where('NOT EXISTS (
+            SELECT 1
+            FROM ip_invoices AS generated_inv
+            JOIN ip_invoice_amounts AS inv_amt ON inv_amt.invoice_id = generated_inv.invoice_id
+            WHERE generated_inv.invoice_recurring_id = ip_invoices_recurring.invoice_recurring_id
+              AND inv_amt.invoice_balance > 0
+        )', null, false);
+        $this->db->group_end();
+        $this->db->group_end();
 
         return $this;
     }
