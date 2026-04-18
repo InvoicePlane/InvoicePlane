@@ -8,7 +8,3 @@ ALTER TABLE `ip_invoices_recurring`
 ALTER TABLE `ip_invoices`
     ADD COLUMN `invoice_recurring_id` INT(11) DEFAULT NULL AFTER `invoice_id`,
     ADD KEY `invoice_recurring_id` (`invoice_recurring_id`);
-
-# Add composite index to optimize the payment status check in active() method
-ALTER TABLE `ip_invoice_amounts`
-    ADD KEY `idx_balance_check` (`invoice_id`, `invoice_balance`);
