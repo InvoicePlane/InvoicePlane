@@ -114,11 +114,6 @@ class Mdl_Invoices_Recurring extends Response_Model
 
         $db_array['recur_end_date'] = $db_array['recur_end_date'] ? date_to_mysql($db_array['recur_end_date']) : null;
 
-        // Default to 1 (generate even if unpaid) if not set
-        if ( ! isset($db_array['generate_if_unpaid'])) {
-            $db_array['generate_if_unpaid'] = 1;
-        }
-
         return $db_array;
     }
 
@@ -148,6 +143,7 @@ class Mdl_Invoices_Recurring extends Response_Model
 
         // Apply payment-based filtering: exclude recurring invoices with unpaid generated invoices
         // when generate_if_unpaid = 0
+        // Note: The NOT EXISTS subquery uses hardcoded table/column names (not user input) so SQL injection is not a risk
         $this->db->group_start();
         $this->db->where('ip_invoices_recurring.generate_if_unpaid', 1);
         $this->db->or_group_start();

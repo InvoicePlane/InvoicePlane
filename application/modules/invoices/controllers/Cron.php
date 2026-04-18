@@ -33,7 +33,7 @@ class Cron extends Base_Controller
             'invoices/mdl_invoices',
             'invoices/mdl_invoice_amounts',
         ]);
-        $this->load->helper('mailer');
+        $this->load->helper(['mailer', 'file_security']);
 
         // Gather a list of recurring invoices to generate
         $invoices_recurring = $this->mdl_invoices_recurring->active()->get()->result();
@@ -60,7 +60,7 @@ class Cron extends Base_Controller
             ];
 
             if (IP_DEBUG) {
-                log_message('debug', '[Cron Recurring Invoices] Processing recurring invoice #' . $invoice_recurring->invoice_recurring_id . ' (generate_if_unpaid: ' . $invoice_recurring->generate_if_unpaid . ')');
+                log_message('debug', '[Cron Recurring Invoices] Processing recurring invoice #' . sanitize_for_logging((string) $invoice_recurring->invoice_recurring_id) . ' (generate_if_unpaid: ' . sanitize_for_logging((string) $invoice_recurring->generate_if_unpaid) . ')');
                 log_message('debug', '[Cron Recurring Invoices] Recurring Info: ' . json_encode($recurInfo, JSON_PRETTY_PRINT));
             }
 
