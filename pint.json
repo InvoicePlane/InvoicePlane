@@ -16,7 +16,7 @@
         "binary_operator_spaces": {
             "default": "single_space",
             "operators": {
-                "=": "single_space",
+                "=": "align_single_space_minimal",
                 "=>": "align_single_space_minimal"
             }
         },
