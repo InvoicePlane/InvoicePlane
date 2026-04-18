@@ -65,7 +65,9 @@
         createOrderUrl: '<?php echo site_url('guest/gateways/paypal/paypal_create_order/' . $invoice_url_key); ?>',
         capturePaymentUrl: '<?php echo site_url('guest/gateways/paypal/paypal_capture_payment/'); ?>',
         successUrl: '<?php echo site_url('guest/view/invoice/' . $invoice_url_key); ?>',
-        errorUrl: '<?php echo site_url('guest/payment_information/form/' . $invoice_url_key . '/paypal'); ?>'
+        errorUrl: '<?php echo site_url('guest/payment_information/form/' . $invoice_url_key . '/paypal'); ?>',
+        csrfTokenName: '<?php echo $this->security->get_csrf_token_name(); ?>',
+        csrfTokenValue: '<?php echo $this->security->get_csrf_hash(); ?>'
     };
 </script>
 <script src="<?php _core_asset('js/paypal.js'); ?>"></script>

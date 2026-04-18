@@ -135,7 +135,7 @@ if ($quote->user_fax) {
             <th class="item-price text-right"><?php _trans('price'); ?></th>
 <?php
 if ($show_item_discounts) {
-?>
+    ?>
             <th class="item-discount text-right"><?php _trans('discount'); ?></th>
 <?php
 }
@@ -147,7 +147,7 @@ if ($show_item_discounts) {
 
 <?php
 foreach ($items as $item) {
-?>
+    ?>
             <tr>
                 <td><?php _htmlsc($item->item_name); ?></td>
                 <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
@@ -155,19 +155,19 @@ foreach ($items as $item) {
                     <?php echo format_quantity($item->item_quantity); ?>
 <?php
     if ($item->item_product_unit) {
-?>
+        ?>
                     <br>
                     <small><?php _htmlsc($item->item_product_unit); ?></small>
 <?php
     }
-?>
+    ?>
                 </td>
                 <td class="text-right">
                     <?php echo format_currency(htmlsc($item->item_price)); ?>
                 </td>
 <?php
-    if ($show_item_discounts) {
-?>
+        if ($show_item_discounts) {
+            ?>
                 <td class="text-right">
                     <?php echo format_currency($item->item_discount); ?>
                 </td>
@@ -187,7 +187,7 @@ foreach ($items as $item) {
 // Fix for mpdf: table head of items printed on 2nd page
 if ($add_table_and_head_for_sums) {
     $colspan .= '" style="width:543px'; // little hackish
-?>
+    ?>
     </table>
 
     <table class="item-table">
@@ -219,7 +219,7 @@ if ( ! $legacy_calculation) {
 
 <?php
 if ($quote->quote_item_tax_total > 0) {
-?>
+    ?>
         <tr>
             <td class="text-right" colspan="<?php echo $colspan ?>">
                 <?php _trans('item_tax'); ?>
@@ -234,7 +234,7 @@ if ($quote->quote_item_tax_total > 0) {
 
 <?php
 foreach ($quote_tax_rates as $quote_tax_rate) {
-?>
+    ?>
         <tr>
             <td class="text-right" colspan="<?php echo $colspan ?>">
                 <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%)'; ?>
@@ -268,7 +268,7 @@ if ($legacy_calculation) {
 <div class="invoice-terms">
 <?php
 if ($quote->notes) {
-?>
+    ?>
     <div class="notes">
         <b><?php _trans('notes'); ?></b><br/>
         <?php echo nl2br(htmlsc($quote->notes)); ?>

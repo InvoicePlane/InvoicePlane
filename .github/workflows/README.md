@@ -29,7 +29,6 @@ A reusable composite action that sets up PHP and installs Composer dependencies 
 - `pint.yml` - Code formatting
 - `composer-update.yml` - Dependency updates
 - `yarn-update.yml` - Frontend dependency updates
-- `quickstart.yml` - Smoke tests
 
 **Note:** `release.yml` uses manual Composer caching (not this composite action) due to its custom production build flags (`--no-dev`).
 
@@ -37,7 +36,7 @@ A reusable composite action that sets up PHP and installs Composer dependencies 
 
 ### 1. Production Release (`release.yml`)
 
-**Trigger:** Manual dispatch only (workflow_dispatch)
+**Trigger:** Automatically runs on every push to the `master` branch
 
 **Purpose:** Creates a production-ready release package of InvoicePlane v2 and publishes it as a GitHub Release
 
@@ -174,10 +173,9 @@ The default `GITHUB_TOKEN` has restricted permissions and cannot create pull req
 4. **Creates pull request** - Automated PR with update details
 
 **Update Types:**
-- `security-updates` - Only security fixes (default for scheduled runs)
-- `common-packages` - Updates commonly changed packages (vite, laravel-vite-plugin, tailwindcss, etc.)
+- `security-only` - Only security fixes (default for scheduled runs)
 - `patch-minor` - Patch and minor version updates
-- `all-latest-with-build` - All updates to latest versions including major versions
+- `all-dependencies` - All updates including major versions
 
 **Required Secrets:**
 
@@ -291,11 +289,11 @@ If Pint reports parse errors:
 **Why Run on PRs:**
 
 Running Pint automatically on PRs ensures:
-- ✅ Consistent code style across all contributions
-- ✅ No style-related review comments needed
-- ✅ Cleaner git history (style fixes separate from logic changes)
-- ✅ Reduced merge conflicts related to formatting
-- ✅ Faster code reviews (focus on logic, not style)
+- Consistent code style across all contributions
+- No style-related review comments needed
+- Cleaner git history (style fixes separate from logic changes)
+- Reduced merge conflicts related to formatting
+- Faster code reviews (focus on logic, not style)
 
 **Workflow Permissions:**
 - `contents: write` - Required to commit and push formatting changes
@@ -319,11 +317,11 @@ Running Pint automatically on PRs ensures:
 **Analysis Features:**
 
 The workflow includes smart error formatting:
-- 🔢 **Type Errors** - Type mismatches and expectations
-- 🔧 **Method Errors** - Undefined or incorrect method calls
-- 📦 **Property Errors** - Property access issues
+- **Type Errors** - Type mismatches and expectations
+- **Method Errors** - Undefined or incorrect method calls
+- **Property Errors** - Property access issues
 - ↩️ **Return Type Errors** - Incorrect return types
-- ⚠️ **Other Errors** - Miscellaneous issues
+- **Other Errors** - Miscellaneous issues
 
 **Local Development:**
 
@@ -477,17 +475,11 @@ To debug specific steps:
 - Node.js 22 with Yarn caching
 
 **Known Issues Fixed:**
-- ✅ AddressFactory faker instance issue fixed (now uses `$this->faker` consistently)
-- ✅ Yarn EISDIR errors handled gracefully
-- ✅ All errors collected and reported at the end
+- AddressFactory faker instance issue fixed (now uses `$this->faker` consistently)
+- Yarn EISDIR errors handled gracefully
+- All errors collected and reported at the end
 
-### 9. Quickstart (`quickstart.yml`)
-
-**Trigger:** Manual dispatch only
-
-Provides a quick setup for development environments.
-
-### 10. Crowdin Translation Sync (`crowdin-sync.yml`)
+### 9. Crowdin Translation Sync (`crowdin-sync.yml`)
 
 **Trigger:**
 - Scheduled: Weekly on Sundays at 2:00 AM UTC
