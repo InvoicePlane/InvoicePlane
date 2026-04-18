@@ -96,10 +96,10 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="generate_if_unpaid" id="generate_if_unpaid" value="1" checked>
+                        <input type="checkbox" name="generate_if_unpaid" id="generate_if_unpaid" value="1" checked aria-describedby="generate_if_unpaid_help">
                         <?php _trans('recurring_generate_if_unpaid'); ?>
                     </label>
-                    <small class="help-block"><?php _trans('recurring_generate_if_unpaid_tooltip'); ?></small>
+                    <small class="help-block" id="generate_if_unpaid_help"><?php _trans('recurring_generate_if_unpaid_tooltip'); ?></small>
                 </div>
             </div>
 

@@ -58,7 +58,6 @@ class Mdl_Invoices_Recurring extends Response_Model
             ip_clients.client_name,
             ip_clients.client_surname,
             ip_invoices_recurring.*,
-            ip_invoices_recurring.generate_if_unpaid,
             IF(recur_end_date > date(NOW()) OR recur_end_date IS NULL, "active", "inactive") AS recur_status', false);
     }
 
