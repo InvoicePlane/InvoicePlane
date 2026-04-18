@@ -62,7 +62,7 @@ class Cron extends Base_Controller
             if (IP_DEBUG) {
                 log_message('debug', '[Cron Recurring Invoices] Processing recurring invoice #' . sanitize_for_logging((string) $invoice_recurring->invoice_recurring_id) . ' (generate_if_unpaid: ' . sanitize_for_logging((string) $invoice_recurring->generate_if_unpaid) . ')');
                 $sanitizedRecurInfo = array_map(
-                    fn ($v) => is_scalar($v) ? sanitize_for_logging((string) $v) : $v,
+                    fn ($v) => is_scalar($v) ? sanitize_for_logging((string) $v) : json_encode($v),
                     $recurInfo
                 );
                 log_message('debug', '[Cron Recurring Invoices] Recurring Info: ' . json_encode($sanitizedRecurInfo, JSON_PRETTY_PRINT));
