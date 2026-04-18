@@ -330,25 +330,24 @@ if ($quote->quote_status_id == 1) {
                                class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
                                <option value="0" selected><?php _trans('select_service'); ?></option>
                                <?php
-                                 foreach($services as $service)
-				 {
-				     if (!empty($service['service_name'])) {
-                                         echo '<option value="' . $service['service_id'] .'" ';
-                                         if ($service['service_id'] == $quote->service_id)
+                                 foreach ($services as $service) {
+                     if ( ! empty($service['service_name'])) {
+                                         echo '<option value="' . $service['service_id'] . '" ';
+                                         if ($service['service_id'] == $quote->service_id) {
                                             echo 'selected';
-                                         echo '>' . $service['service_name'] .'</option>';
-				     }
+                                         }
+                                         echo '>' . $service['service_name'] . '</option>';
+                     }
                                  }
                                ?>
                             </select><br>
                        <?php
-			  }
-			  else {
-		       ?>
+              } else {
+               ?>
 		            <input type="hidden" name="service_id" id="service_id" value="0">
                        <?php
-			  }
-			  $this->layout->load_view('clients/partial_client_address', ['client' => $quote]);
+              }
+              $this->layout->load_view('clients/partial_client_address', ['client' => $quote]);
                        ?>
                     </div>
 <?php if ($quote->client_phone || $quote->client_email) : ?>

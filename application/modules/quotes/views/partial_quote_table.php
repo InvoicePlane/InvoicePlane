@@ -45,12 +45,12 @@ $quote_idx                    = 1;
                     <a href="<?php echo site_url('clients/view/' . $quote->client_id); ?>"
 		       title="<?php _trans('view_client'); ?>">
                         <?php
-	                 _htmlsc(format_client($quote)); 
+                     _htmlsc(format_client($quote));
                          if (get_setting('enable_services') == 1 && $quote->service_name) {
-	     	             echo '&nbsp;(';
-			     _htmlsc($quote->service_name);
-			     echo ')';
-      			 }
+                          echo '&nbsp;(';
+                 _htmlsc($quote->service_name);
+                 echo ')';
+                   }
                         ?>
                     </a>
                 </td>

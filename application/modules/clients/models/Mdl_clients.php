@@ -316,6 +316,7 @@ class Mdl_Clients extends Response_Model
     public function get_all_services()
     {
         $this->load->model('services/mdl_services');
+
         return $this->mdl_services->get()->result_array();
     }
 

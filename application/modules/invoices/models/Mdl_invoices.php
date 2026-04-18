@@ -81,8 +81,8 @@ class Mdl_Invoices extends Response_Model
 
     public function default_join()
     {
-	$this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
-	$this->db->join('ip_services', 'ip_services.service_id = ip_invoices.service_id', 'left');
+    $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+    $this->db->join('ip_services', 'ip_services.service_id = ip_invoices.service_id', 'left');
         $this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
@@ -99,11 +99,11 @@ class Mdl_Invoices extends Response_Model
                 'field' => 'client_id',
                 'label' => trans('client'),
                 'rules' => 'required',
-	    ],
-	    'service_id' => [
+            ],
+            'service_id' => [
                 'field' => 'service_id',
                 'label' => trans('service'),
-	    ],
+            ],
             'invoice_date_created' => [
                 'field' => 'invoice_date_created',
                 'label' => trans('invoice_date'),
@@ -382,14 +382,14 @@ class Mdl_Invoices extends Response_Model
 
         // Handle service_id - default to 0 if not provided or not found
         $sid = 0;
-        if (!empty($db_array['service_id'])) {
+        if ( ! empty($db_array['service_id'])) {
             $service_row = $this->mdl_services->where('ip_services.service_id', $db_array['service_id'])->get()->row();
             if ($service_row) {
                 $sid = $service_row->service_id;
             }
         }
 
-        $db_array['client_id'] = $cid;
+        $db_array['client_id']  = $cid;
         $db_array['service_id'] = $sid;
 
         // Check if is SUMEX
@@ -696,15 +696,16 @@ class Mdl_Invoices extends Response_Model
     }
 
     /**
-      * Update the service association for a invoice
-      * @param $invoice_id
-      * @param $service_id
-      */
+     * Update the service association for a invoice.
+     *
+     * @param $invoice_id
+     * @param $service_id
+     */
     public function set_invoice_service($invoice_id, $service_id)
     {
         $invoice = $this->get_by_id($invoice_id);
 
-        if (!empty($invoice)) {
+        if ( ! empty($invoice)) {
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('service_id', $service_id);
             $this->db->update('ip_invoices');

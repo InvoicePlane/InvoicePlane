@@ -32,12 +32,12 @@ class Ajax extends Admin_Controller
             }
         }
 
-	$invoices = $this->mdl_invoices->get()->result();
+    $invoices = $this->mdl_invoices->get()->result();
 
-	foreach ($invoices as $invoice) {
-            $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
+    foreach ($invoices as $invoice) {
+            $servicesById          = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
             $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
-	}
+    }
 
         $data = [
             'invoices'         => $invoices,
@@ -63,10 +63,10 @@ class Ajax extends Admin_Controller
 
         $quotes = $this->mdl_quotes->get()->result();
 
-	foreach ($quotes as $quote) {
-            $servicesById = $this->mdl_services->get_names_by_ids([$quote->service_id]);
+    foreach ($quotes as $quote) {
+            $servicesById        = $this->mdl_services->get_names_by_ids([$quote->service_id]);
             $quote->service_name = $servicesById[$quote->service_id] ?? null;
-	}
+    }
 
         $data = [
             'quotes'         => $quotes,
