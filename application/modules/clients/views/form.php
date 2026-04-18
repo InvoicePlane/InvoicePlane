@@ -36,19 +36,21 @@ $einvoicingOpt = $req_einvoicing ? $einvoicingTip . trans('optional') . ')"' : '
          * We retrieve the list directly from the PHP helper.
          * This ensures that both Backend and Frontend stay in sync.
          */
-        const zipBeforeCityCountries = <?php echo json_encode(get_zip_before_city_countries()); ?>;
+        const zipBeforeCityCountries = <?php echo json_encode(get_zip_before_city_countries(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+        const defaultCountry = <?php echo json_encode(get_setting('default_country'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
     
         $('#client_country').change(function() {
-            const country = $(this).val().toUpperCase();
+            const country = String($(this).val() || defaultCountry || '').toUpperCase();
             const $zipField = $('#client_zip').closest('.form-group');
             const $cityField = $('#client_city').closest('.form-group');
+            const $stateField = $('#client_state').closest('.form-group');
     
             if (zipBeforeCityCountries.indexOf(country) !== -1) {
                 // ZIP before City
-                $zipField.insertBefore($cityField);
+                $stateField.before($zipField, $cityField);
             } else {
                 // City before ZIP
-                $cityField.insertBefore($zipField);
+                $stateField.before($cityField, $zipField);
             }
         }).trigger('change');
     });
