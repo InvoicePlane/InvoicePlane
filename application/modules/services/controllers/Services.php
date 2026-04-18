@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! defined('BASEPATH')) {
+exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -11,7 +14,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 
 /**
- * Class Services
+ * Class Services.
  */
 class Services extends Admin_Controller
 {
@@ -54,8 +57,8 @@ class Services extends Admin_Controller
             redirect('services');
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_services->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_services->prep_form($id)) {
                 show_404();
             }
         }
@@ -73,16 +76,16 @@ class Services extends Admin_Controller
             redirect('services');
         }
         $this->layout->set(
-            array(
-                'client_id' => $client_id
-            )
+            [
+                'client_id' => $client_id,
+            ]
         );
 
         if ($this->input->post('client_id') && $id) {
             $this->db->insert('ip_client_services', [
-                    'client_id' => $this->input->post('client_id'), 
-		    'service_id' => $id,
-	    ]);
+                'client_id'  => $this->input->post('client_id'),
+                'service_id' => $id,
+            ]);
         }
 
         if ($this->mdl_services->run_validation()) {
@@ -91,18 +94,18 @@ class Services extends Admin_Controller
             $this->mdl_services->save($id, $db_array);
 
             if ($this->input->post('client_id')) {
-		$this->db->insert('ip_client_services', [
-			'client_id' => $this->input->post('client_id'),
-			'service_id' => $this->db->insert_id(),
-		]);
-		redirect('clients/form/'. $this->input->post('client_id'));
-	    }
-            else
-                redirect('services');
+        $this->db->insert('ip_client_services', [
+            'client_id'  => $this->input->post('client_id'),
+            'service_id' => $this->db->insert_id(),
+        ]);
+        redirect('clients/form/' . $this->input->post('client_id'));
+        } else {
+        redirect('services');
+        }
         }
 
-        if ($id and !$this->input->post('btn_submit')) {
-            if (!$this->mdl_services->prep_form($id)) {
+        if ($id && ! $this->input->post('btn_submit')) {
+            if ( ! $this->mdl_services->prep_form($id)) {
                 show_404();
             }
         }
@@ -119,5 +122,4 @@ class Services extends Admin_Controller
         $this->mdl_services->delete($id);
         redirect('services');
     }
-
 }

@@ -64,11 +64,11 @@ class Quotes extends Admin_Controller
 
         $this->load->model('services/mdl_services');
 
-	foreach ($quotes as $quote) {
-	    $servicesById = $this->mdl_services->get_names_by_ids([$quote->service_id]);
+    foreach ($quotes as $quote) {
+        $servicesById            = $this->mdl_services->get_names_by_ids([$quote->service_id]);
             $quote->service_name = $servicesById[$quote->service_id] ?? null;
-	}
-	
+    }
+
         $services = $this->mdl_services->get()->result_array();
 
         $this->layout->set(
@@ -78,7 +78,7 @@ class Quotes extends Admin_Controller
                 'filter_display'     => true,
                 'filter_placeholder' => trans('filter_quotes'),
                 'filter_method'      => 'filter_quotes',
-		'quote_statuses'     => $this->mdl_quotes->statuses(),
+                'quote_statuses'     => $this->mdl_quotes->statuses(),
                 'services'           => $services,
             ]
         );
@@ -151,7 +151,7 @@ class Quotes extends Admin_Controller
             }
         }
 
-	$servicesById = $this->mdl_services->get_names_by_ids([$quote->service_id]);
+    $servicesById            = $this->mdl_services->get_names_by_ids([$quote->service_id]);
         $quote->service_name = $servicesById[$quote->service_id] ?? null;
 
         $services = $this->mdl_services->get()->result_array();
@@ -175,8 +175,8 @@ class Quotes extends Admin_Controller
                 'units'           => $this->mdl_units->get()->result(),
                 'tax_rates'       => $this->mdl_tax_rates->get()->result(),
                 'quote_tax_rates' => $this->mdl_quote_tax_rates->where('quote_id', $quote_id)->get()->result(),
-		'quote_statuses'  => $this->mdl_quotes->statuses(),
-		'services'        => $services,
+                'quote_statuses'  => $this->mdl_quotes->statuses(),
+                'services'        => $services,
                 'custom_fields'   => $custom_fields,
                 'custom_values'   => $custom_values,
                 'custom_js_vars'  => [
