@@ -44,6 +44,7 @@ class Payment_Information extends Base_Controller
             }
 
             $disable_form = true;
+            show_404();
         }
 
         // Get all payment gateways

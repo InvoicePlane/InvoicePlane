@@ -58,7 +58,8 @@
 
 <?php
 // e-invoice alert when client or user empty required field
-if ($invoice->client_einvoicing_version != '' && $invoice->client_einvoicing_active == 0) {
+// Use null coalescing to handle cases where database hasn't been migrated yet
+if (($invoice->client_einvoicing_version ?? '') != '' && ($invoice->client_einvoicing_active ?? 0) == 0) {
 ?>
                 <div class="alert alert-warning">
                     <table style="margin-left: auto; margin-right: auto;">
@@ -122,7 +123,7 @@ foreach ($email_templates as $email_template) {
                 <div class="form-group">
                     <label for="subject"><?php _trans('subject'); ?></label>
                     <input type="text" name="subject" id="subject" class="form-control"
-                           value="<?php _trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?>">
+                           value="<?php _trans('invoice'); ?> #<?php echo htmlsc($invoice->invoice_number); ?>">
                 </div>
 
                 <div class="form-group">
@@ -197,7 +198,7 @@ foreach ($pdf_templates as $pdf_template) {
                                     </div>
                                 </div>
                                 <div class="panel-body">
-                                    <iframe id="email-template-preview"></iframe>
+                                    <iframe id="email-template-preview" sandbox="allow-same-origin"></iframe>
                                 </div>
                             </div>
 

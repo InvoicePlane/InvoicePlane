@@ -137,7 +137,7 @@ class Mdl_Quotes extends Response_Model
             'quote_number' => [
                 'field' => 'quote_number',
                 'label' => trans('quote') . ' #',
-                'rules' => 'is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']',
+                'rules' => 'regex_match[/^[a-zA-Z0-9\-_\/\.\s]*$/]|is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']',
             ],
             'quote_date_created' => [
                 'field' => 'quote_date_created',

@@ -170,7 +170,7 @@ foreach ($items as $item) {
 ?>
                 </td>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_price); ?>
+                    <?php echo format_currency(htmlsc($item->item_price)); ?>
                 </td>
 <?php
     if ($show_item_discounts) {
@@ -182,7 +182,7 @@ foreach ($items as $item) {
     }
 ?>
                 <td class="text-right">
-                    <?php echo format_currency($item->item_total); ?>
+                    <?php echo format_currency(htmlsc($item->item_total)); ?>
                 </td>
             </tr>
 <?php
@@ -244,7 +244,7 @@ foreach ($quote_tax_rates as $quote_tax_rate) {
 ?>
         <tr>
             <td class="text-right" colspan="<?php echo $colspan ?>">
-                <?php echo $quote_tax_rate->quote_tax_rate_name . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%)'; ?>
+                <?php echo htmlsc($quote_tax_rate->quote_tax_rate_name) . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%)'; ?>
             </td>
             <td class="text-right">
                 <?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?>
@@ -265,7 +265,7 @@ if ($legacy_calculation) {
                 <b><?php _trans('total'); ?></b>
             </td>
             <td class="text-right">
-                <b><?php echo format_currency($quote->quote_total); ?></b>
+                <b><?php echo format_currency(htmlsc($quote->quote_total)); ?></b>
             </td>
         </tr>
         </tbody>
