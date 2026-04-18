@@ -59,3 +59,28 @@ function format_gender($gender)
 
     return trans('gender_other');
 }
+
+if (!function_exists('is_zip_before_city')) {
+    /**
+     * Determines the address format (ZIP before City or vice-versa) based on the country.
+     *
+     * @param string $country_code The ISO country code (e.g., 'DE', 'US').
+     * @return bool True if the ZIP code should be placed before the City.
+     */
+    function is_zip_before_city($country_code = '')
+    {
+        // If no country is provided, fallback to the system's default country setting
+        if (empty($country_code)) {
+            $country_code = get_setting('default_country');
+        }
+
+        // List of countries that typically use the "ZIP City" format
+        $zip_before_city_countries = [
+            'AT', 'BE', 'CH', 'CZ', 'DE', 'DK', 'ES', 'FI', 
+            'FR', 'GR', 'IT', 'LU', 'NL', 'NO', 'PL', 'PT', 
+            'SE', 'SK', 'TR', 'VN', 'CN'
+        ];
+
+        return in_array(strtoupper($country_code), $zip_before_city_countries);
+    }
+}
