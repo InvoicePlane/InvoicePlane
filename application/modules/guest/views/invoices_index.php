@@ -1,7 +1,7 @@
-<?php 
+<?php
 
     $currencySymbol = get_setting('currency_symbol');
-    if($invoice->client_currency_symbol != null){
+    if ($invoice->client_currency_symbol != null) {
         $currencySymbol = $invoice->client_currency_symbol;
     }
 
