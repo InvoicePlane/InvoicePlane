@@ -31,7 +31,27 @@ $einvoicingOpt = $req_einvoicing ? $einvoicingTip . trans('optional') . ')"' : '
 <?php $this->layout->load_view('clients/js/script_select_client_title.js'); ?>
 
     });
-
+    $(function() {
+        /**
+         * We retrieve the list directly from the PHP helper.
+         * This ensures that both Backend and Frontend stay in sync.
+         */
+        const zipBeforeCityCountries = <?php echo json_encode(get_zip_before_city_countries()); ?>;
+    
+        $('#client_country').change(function() {
+            const country = $(this).val().toUpperCase();
+            const $zipField = $('#client_zip').closest('.form-group');
+            const $cityField = $('#client_city').closest('.form-group');
+    
+            if (zipBeforeCityCountries.indexOf(country) !== -1) {
+                // ZIP before City
+                $zipField.insertBefore($cityField);
+            } else {
+                // City before ZIP
+                $cityField.insertBefore($zipField);
+            }
+        }).trigger('change');
+    });
 </script>
 
 <form method="post">
