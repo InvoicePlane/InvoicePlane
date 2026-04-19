@@ -1,180 +1,195 @@
 #!/usr/bin/env node
 
 /**
- * Generate Package Update Report for Yarn
+ * Generate a readable package update report from yarn.lock changes
  * 
- * This script compares the current yarn.lock with the previous version
- * to detect which packages were updated, added, or removed.
- * 
- * It writes a human-readable report to updated-packages.txt.
+ * This script analyzes the git diff of yarn.lock and generates a tree-like
+ * report showing which packages were updated, distinguishing between:
+ * - Direct dependencies (from package.json)
+ * - Transitive dependencies (dependencies of dependencies)
  */
 
 const fs = require('fs');
 const { execSync } = require('child_process');
 
-/**
- * Parse yarn.lock file and extract package versions
- * @param {string} content - yarn.lock file content
- * @returns {Map<string, Set<string>>} - Map of package name to set of versions
- */
-function parseYarnLock(content) {
-  const packages = new Map();
-  const lines = content.split('\n');
-  let currentPackage = null;
-  let currentVersion = null;
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-
-    // Match package declaration lines (e.g., "package-name@^1.0.0:" or package-name@^1.0.0:)
-    // Handle scoped packages, multi-selector keys, and both quoted and unquoted package names
-    const keyLine = line.trim();
-    // Package declarations in yarn.lock are non-indented lines ending with ':'
-    // Indented lines are properties (version, resolution, dependencies, etc.)
-    if (!/^\s/.test(line) && keyLine.endsWith(':')) {
-      const raw = keyLine.slice(0, -1);
-      const selectors = raw.startsWith('"')
-        ? raw.split(/",\s*"/).map(s => s.replace(/^"/, '').replace(/"$/, ''))
-        : raw.split(/,\s*/);
-      const firstSelector = selectors[0];
-      const at = firstSelector.lastIndexOf('@');
-      if (at > 0) {
-        currentPackage = firstSelector.slice(0, at);
-        currentVersion = null;
-        continue;
-      }
+function parsePackageJson() {
+    try {
+        const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+        const directDeps = new Set();
+        
+        if (packageJson.dependencies) {
+            Object.keys(packageJson.dependencies).forEach(dep => directDeps.add(dep));
+        }
+        if (packageJson.devDependencies) {
+            Object.keys(packageJson.devDependencies).forEach(dep => directDeps.add(dep));
+        }
+        
+        return directDeps;
+    } catch (error) {
+        console.error('Error reading package.json:', error.message);
+        return new Set();
     }
-
-    // Match version lines (e.g., "  version "1.0.0"")
-    const versionMatch = line.match(/^\s+version\s+"([^"]+)"/);
-    if (versionMatch && currentPackage) {
-      currentVersion = versionMatch[1];
-      // Add version to Set for this package
-      if (!packages.has(currentPackage)) {
-        packages.set(currentPackage, new Set());
-      }
-      packages.get(currentPackage).add(currentVersion);
-      currentPackage = null;
-      currentVersion = null;
-    }
-  }
-
-  return packages;
 }
 
-/**
- * Get the previous yarn.lock content from git
- * @returns {string} - Previous yarn.lock content
- */
-function getPreviousYarnLock() {
-  try {
-    return execSync('git show HEAD:yarn.lock', { encoding: 'utf8' });
-  } catch (error) {
-    console.error('Warning: Could not retrieve previous yarn.lock, assuming empty');
-    return '';
-  }
+function parseYarnLockDiff() {
+    try {
+        // Get the diff of yarn.lock
+        const diff = execSync('git diff yarn.lock', { encoding: 'utf8' });
+        
+        const updates = new Map();
+        const lines = diff.split('\n');
+        
+        let currentPackage = null;
+        let oldVersion = null;
+        let newVersion = null;
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            
+            // Detect package name (can be context line or added/removed)
+            // Package names can be quoted ("package@version":) or unquoted (package@version:)
+            // In git diff, context lines start with space, additions with +, removals with -
+            // Match yarn.lock package entry lines: either "package@version": or package@version:
+            if (line.match(/^[ +-]([^@\s"]+(@[^:]+)?|"[^"]+"):$/)) {
+                // Extract package name - handle both quoted and unquoted
+                let packageName;
+                
+                // Try quoted format first: "packagename@version":
+                let match = line.match(/^[ +-]"([^"@]+)(?:@[^"]+)?":$/);
+                if (match) {
+                    packageName = match[1];
+                } else {
+                    // Try unquoted format: packagename@version:
+                    match = line.match(/^[ +-]([^@\s]+)(?:@[^:]+)?:$/);
+                    if (match) {
+                        packageName = match[1];
+                    }
+                }
+                
+                if (packageName) {
+                    // Only reset if we're seeing a new package
+                    if (currentPackage !== packageName) {
+                        currentPackage = packageName;
+                        // Reset version tracking when we see a new package
+                        oldVersion = null;
+                        newVersion = null;
+                    }
+                }
+            }
+            
+            // Detect version changes
+            if (line.match(/^[-+]  version "/)) {
+                const versionMatch = line.match(/^([-+])  version "([^"]+)"/);
+                if (versionMatch) {
+                    const changeType = versionMatch[1];
+                    const version = versionMatch[2];
+                    
+                    if (changeType === '-') {
+                        oldVersion = version;
+                    } else if (changeType === '+') {
+                        newVersion = version;
+                    }
+                    
+                    // If we have both versions, record the update
+                    if (oldVersion && newVersion && oldVersion !== newVersion && currentPackage) {
+                        // Basic version format validation (allows semver and other common formats)
+                        const versionRegex = /^[\d.]+[-+a-zA-Z0-9.]*$/;
+                        if (versionRegex.test(oldVersion) && versionRegex.test(newVersion)) {
+                            // Only record if not already recorded or if this is a different version pair
+                            const existingUpdate = updates.get(currentPackage);
+                            if (!existingUpdate || (existingUpdate.from !== oldVersion || existingUpdate.to !== newVersion)) {
+                                updates.set(currentPackage, { from: oldVersion, to: newVersion });
+                            }
+                        }
+                        // Reset version tracking but keep currentPackage for potential additional entries
+                        oldVersion = null;
+                        newVersion = null;
+                    }
+                }
+            }
+        }
+        
+        return updates;
+    } catch (error) {
+        console.error('Error parsing yarn.lock diff:', error.message);
+        return new Map();
+    }
 }
 
-/**
- * Generate a human-readable report of package changes
- */
 function generateReport() {
-  try {
-    // Read current yarn.lock
-    if (!fs.existsSync('yarn.lock')) {
-      console.error('Error: yarn.lock not found');
-      process.exit(1);
+    const directDeps = parsePackageJson();
+    const updates = parseYarnLockDiff();
+    
+    if (updates.size === 0) {
+        return 'No package updates detected.';
     }
-
-    const currentContent = fs.readFileSync('yarn.lock', 'utf8');
-    const previousContent = getPreviousYarnLock();
-
-    // Parse both versions
-    const currentPackages = parseYarnLock(currentContent);
-    const previousPackages = parseYarnLock(previousContent);
-
-    // Detect changes
-    const added = [];
-    const updated = [];
-    const removed = [];
-
-    // Check for added and updated packages
-    for (const [name, currentVersions] of currentPackages) {
-      if (!previousPackages.has(name)) {
-        // Package is entirely new
-        added.push({ name, versions: Array.from(currentVersions).sort() });
-      } else {
-        // Package exists, check if versions changed
-        const previousVersions = previousPackages.get(name);
-        
-        // Check if the version sets are different (check both directions)
-        const hasChanges = currentVersions.size !== previousVersions.size ||
-          Array.from(currentVersions).some(v => !previousVersions.has(v)) ||
-          Array.from(previousVersions).some(v => !currentVersions.has(v));
-        
-        if (hasChanges) {
-          updated.push({
-            name,
-            oldVersions: Array.from(previousVersions).sort(),
-            newVersions: Array.from(currentVersions).sort()
-          });
-        }
-      }
-    }
-
-    // Check for removed packages
-    for (const [name, versions] of previousPackages) {
-      if (!currentPackages.has(name)) {
-        removed.push({ name, versions: Array.from(versions).sort() });
-      }
-    }
-
-    // Generate report
+    
     let report = '';
-
-    if (added.length === 0 && updated.length === 0 && removed.length === 0) {
-      report = 'No package changes detected';
-    } else {
-      if (updated.length > 0) {
-        report += '## Updated Packages\n\n';
-        updated.sort((a, b) => a.name.localeCompare(b.name));
-        for (const pkg of updated) {
-          report += `${pkg.name}: ${pkg.oldVersions.join(', ')} → ${pkg.newVersions.join(', ')}\n`;
+    
+    // Separate direct and transitive dependencies
+    const directUpdates = [];
+    const transitiveUpdates = [];
+    
+    for (const [pkg, versions] of updates.entries()) {
+        const updateInfo = { pkg, ...versions };
+        
+        if (directDeps.has(pkg)) {
+            directUpdates.push(updateInfo);
+        } else {
+            transitiveUpdates.push(updateInfo);
         }
-      }
-
-      if (added.length > 0) {
-        if (report) report += '\n';
-        report += '## Added Packages\n\n';
-        added.sort((a, b) => a.name.localeCompare(b.name));
-        for (const pkg of added) {
-          report += `${pkg.name}: (new) → ${pkg.versions.join(', ')}\n`;
-        }
-      }
-
-      if (removed.length > 0) {
-        if (report) report += '\n';
-        report += '## Removed Packages\n\n';
-        removed.sort((a, b) => a.name.localeCompare(b.name));
-        for (const pkg of removed) {
-          report += `${pkg.name}: ${pkg.versions.join(', ')} → (removed)\n`;
-        }
-      }
     }
+    
+    // Sort alphabetically
+    directUpdates.sort((a, b) => a.pkg.localeCompare(b.pkg));
+    transitiveUpdates.sort((a, b) => a.pkg.localeCompare(b.pkg));
+    
+    // Generate report header
+    report += 'Package Update Report\n';
+    report += '='.repeat(65) + '\n\n';
+    
+    // Direct dependencies section
+    if (directUpdates.length > 0) {
+        report += 'Direct dependencies (from package.json)\n';
+        report += '-'.repeat(65) + '\n\n';
+
+        for (const { pkg, from, to } of directUpdates) {
+            report += `  ${pkg}\n`;
+            report += `    ${from} -> ${to}\n\n`;
+        }
+    } else {
+        report += 'Direct dependencies (from package.json)\n';
+        report += '-'.repeat(65) + '\n';
+        report += '  No direct dependencies updated.\n\n';
+    }
+
+    // Transitive dependencies section
+    if (transitiveUpdates.length > 0) {
+        report += '\nTransitive dependencies (dependencies of dependencies)\n';
+        report += '-'.repeat(65) + '\n\n';
+
+        for (const { pkg, from, to } of transitiveUpdates) {
+            report += `  ${pkg}\n`;
+            report += `    ${from} -> ${to}\n\n`;
+        }
+    }
+    
+    // Summary
+    report += '\n' + '='.repeat(65) + '\n';
+    report += `Summary: ${directUpdates.length} direct, ${transitiveUpdates.length} transitive (${updates.size} total)\n`;
+    report += '='.repeat(65) + '\n';
+
+    return report;
+}
+
+// Main execution
+try {
+    const report = generateReport();
 
     // Write to file
-    fs.writeFileSync('updated-packages.txt', report, 'utf8');
-
-    // Also print to console for debugging
-    console.log('Package update report generated:');
-    console.log(report);
-
-    process.exit(0);
-  } catch (error) {
-    console.error('Error generating package update report:', error.message);
+    fs.writeFileSync('updated-packages.txt', report);
+    console.log('Report saved to updated-packages.txt');
+} catch (error) {
+    console.error('Fatal error:', error.message);
     process.exit(1);
-  }
 }
-
-// Run the script
-generateReport();
