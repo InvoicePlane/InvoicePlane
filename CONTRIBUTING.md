@@ -119,20 +119,54 @@ Engage with the InvoicePlane community by:
 
 ### Setting Up Your Development Environment
 
-1. **Clone the Repository & Set Up Docker**
+Follow the three-phase development workflow outlined in [INSTALLATION.md](INSTALLATION.md):
+
+#### Phase 1: Prepare (Initial Setup)
+
+1. **Clone the Repository**
    ```sh
    git clone https://github.com/InvoicePlane/InvoicePlane.git
    cd InvoicePlane
-   cp .env.example .env
-   docker-compose up --build -d
    ```
 
-2. **Install Dependencies (if applicable)**
+2. **Install Dependencies**
    ```sh
-   composer install
-   yarn install
-   yarn grunt
+   composer install    # PHP dependencies
+   yarn install       # JavaScript dependencies
+   yarn build         # Build frontend assets
    ```
+
+3. **Configure Application**
+   ```sh
+   cp ipconfig.php.example ipconfig.php
+   ```
+   Edit `ipconfig.php` with your database and URL settings.
+
+#### Phase 2: StartMeUp (Launch Environment)
+
+Start the Docker development environment:
+
+```sh
+# PHP 8.1 (default)
+docker-compose up -d
+
+# OR PHP 8.2+
+docker-compose -f docker-compose.php82.yml up -d
+```
+
+Access:
+- **InvoicePlane**: http://localhost
+- **phpMyAdmin**: http://localhost:8081
+
+#### Phase 3: Workflow (Daily Development)
+
+1. **Make changes** to PHP or frontend files
+2. **Rebuild assets** if needed: `yarn build` or `grunt watch`
+3. **Test changes** at http://localhost
+4. **Run linters**: `composer check`
+5. **Commit and push** your changes
+
+For detailed workflow instructions, see [INSTALLATION.md - Development Workflow](INSTALLATION.md#development-workflow).
 
 ### Coding Standards
 
