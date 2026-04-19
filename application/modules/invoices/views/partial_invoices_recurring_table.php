@@ -37,11 +37,11 @@ foreach ($recurring_invoices as $invoice) {
                         <td><?php echo date_from_mysql($invoice->recur_next_date); ?></td>
                         <td>
                             <?php if ((int) $invoice->generate_if_unpaid === 1) { ?>
-                                <span class="label label-info">
+                                <span class="label label-info" role="status">
                                     <i class="fa fa-refresh" aria-hidden="true"></i> <?php _trans('recurring_generation_continuous'); ?>
                                 </span>
                             <?php } else { ?>
-                                <span class="label label-warning">
+                                <span class="label label-warning" role="status">
                                     <i class="fa fa-pause" aria-hidden="true"></i> <?php _trans('recurring_generation_requires_payment'); ?>
                                 </span>
                             <?php } ?>

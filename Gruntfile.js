@@ -1,6 +1,7 @@
 "use strict";
 module.exports = function(grunt) {
   const sass = require("sass");
+  const autoprefixer = require("autoprefixer");
 
   // Load grunt tasks automatically
   require("load-grunt-tasks")(grunt);
@@ -55,14 +56,14 @@ module.exports = function(grunt) {
       dev: {
         options: {
           map: true,
-          processors: [require("autoprefixer")]
+          processors: [autoprefixer()]
         },
         src: ["assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
       },
       build: {
         options: {
           map: false,
-          processors: [require("autoprefixer")]
+          processors: [autoprefixer()]
         },
         src: ["assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
       }
