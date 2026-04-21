@@ -10,7 +10,6 @@ use Tests\TestCase;
 
 class ProjectsServiceTest extends TestCase
 {
-
     private ProjectsService $service;
 
     protected function setUp(): void

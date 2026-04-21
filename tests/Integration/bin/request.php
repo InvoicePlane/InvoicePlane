@@ -17,7 +17,7 @@ if ( ! is_array($request)) {
     exit(3);
 }
 
-$method  = strtoupper((string) ($request['method'] ?? 'GET'));
+$method  = mb_strtoupper((string) ($request['method'] ?? 'GET'));
 $uri     = '/' . ltrim((string) ($request['uri'] ?? '/'), '/');
 $query   = is_array($request['query'] ?? null) ? $request['query'] : [];
 $post    = is_array($request['post'] ?? null) ? $request['post'] : [];
@@ -25,7 +25,7 @@ $session = is_array($request['session'] ?? null) ? $request['session'] : [];
 
 if ($session !== []) {
     if (session_status() === PHP_SESSION_NONE) {
-        session_id('ci_test_' . substr(md5((string) json_encode($session)), 0, 12));
+        session_id('ci_test_' . mb_substr(md5((string) json_encode($session)), 0, 12));
         session_start();
     }
 

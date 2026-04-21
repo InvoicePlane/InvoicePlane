@@ -4,7 +4,6 @@ namespace Tests\Unit\Invoices;
 
 use DateInterval;
 use DateTime;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Mdl_Invoices business logic that is pure PHP and requires
@@ -21,7 +20,6 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group invoices
  */
-
 class StubMdl_Invoices
 {
     public ?int $id = null;

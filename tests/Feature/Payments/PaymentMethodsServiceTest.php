@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Payments;
 
-
 use function Modules\PaymentMethods\Tests\Unit\app;
 
 use Modules\Payments\app\Models\PaymentMethod;
@@ -12,7 +11,6 @@ use Tests\TestCase;
 
 class PaymentMethodsServiceTest extends TestCase
 {
-
     private PaymentMethodsService $service;
 
     protected function setUp(): void

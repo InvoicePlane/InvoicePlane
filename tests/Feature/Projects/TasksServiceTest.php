@@ -4,13 +4,11 @@ namespace Tests\Feature\Projects;
 
 use Modules\Projects\app\Models\Task;
 use Modules\Projects\Models\Project;
-use Modules\Projects\Services\ProjectsService;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class TasksServiceTest extends TestCase
 {
-
     private TasksService $service;
 
     protected function setUp(): void

@@ -2,15 +2,12 @@
 
 namespace Tests\Feature\Invoices;
 
-use Tests\Concerns\InteractsWithDatabase;
-
-use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Models\PaymentLog;
 use Modules\Payments\Services\PaymentLogService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractServiceTestCase;
+use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(PaymentLogService::class)]
 

@@ -2,17 +2,15 @@
 
 namespace Tests\Feature\Products;
 
-use Tests\Concerns\InteractsWithDatabase;
-
 use PHPUnit\Framework\Attributes\Test;
 use src\Models\Family;
 use src\Services\FamiliesService;
+use Tests\Concerns\InteractsWithDatabase;
 use Tests\TestCase;
 
 class FamiliesServiceTest extends TestCase
 {
     use InteractsWithDatabase;
-
 
     private FamiliesService $service;
 

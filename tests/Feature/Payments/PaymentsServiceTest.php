@@ -2,17 +2,13 @@
 
 namespace Tests\Feature\Payments;
 
-
 use function Modules\PaymentMethods\Tests\Unit\app;
 
-use Modules\Payments\app\Models\PaymentMethod;
-use Modules\Payments\app\Services\PaymentMethodsService;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PaymentsServiceTest extends TestCase
 {
-
     private PaymentsService $service;
 
     protected function setUp(): void

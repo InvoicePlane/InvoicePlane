@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Invoices;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Unit tests for Mdl_Invoice_Amounts pure-PHP logic.
  *
@@ -18,7 +16,6 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group invoices
  */
-
 class StubMdl_InvoiceAmounts
 {
     public function __construct(private readonly int $decimalPlaces = 2) {}

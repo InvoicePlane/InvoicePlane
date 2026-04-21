@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Invoices;
 
-
 use function Modules\InvoiceGroups\Tests\Unit\app;
 
 use Modules\Invoices\app\Models\InvoiceGroup;
@@ -12,7 +11,6 @@ use Tests\TestCase;
 
 class InvoiceGroupsServiceTest extends TestCase
 {
-
     private InvoiceGroupsService $service;
 
     protected function setUp(): void

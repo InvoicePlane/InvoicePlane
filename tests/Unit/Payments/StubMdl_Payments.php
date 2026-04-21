@@ -3,7 +3,6 @@
 namespace Tests\Unit\Payments;
 
 use DateTime;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Mdl_Payments business logic that is pure PHP.
@@ -17,7 +16,6 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group payments
  */
-
 class StubMdl_Payments
 {
     public function validation_rules(): array

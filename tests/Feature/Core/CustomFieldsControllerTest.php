@@ -2,15 +2,10 @@
 
 namespace Tests\Feature\Core;
 
-use App\Models\User;
-
-use function Tests\Feature\Auth\route;
-
 use Tests\TestCase;
 
 class CustomFieldsControllerTest extends TestCase
 {
-
     #[Test]
     public function it_displays_custom_fields_list()
     {
