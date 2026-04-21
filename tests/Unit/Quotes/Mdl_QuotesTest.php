@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Models;
 
+use DateInterval;
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -197,8 +199,8 @@ final class StubMdl_Quotes
 
     public function getDateExpires(string $createdDate, int $expireAfterDays): string
     {
-        $dt = new \DateTime($createdDate);
-        $dt->add(new \DateInterval('P' . $expireAfterDays . 'D'));
+        $dt = new DateTime($createdDate);
+        $dt->add(new DateInterval('P' . $expireAfterDays . 'D'));
 
         return $dt->format('Y-m-d');
     }

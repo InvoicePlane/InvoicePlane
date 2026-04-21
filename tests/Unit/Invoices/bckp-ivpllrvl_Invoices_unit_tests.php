@@ -296,4 +296,3 @@ class InvoicesServiceTest extends TestCase
         $this->assertInstanceOf(InvoicesService::class, $result);
     }
 }
-

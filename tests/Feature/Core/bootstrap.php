@@ -1,8 +1,8 @@
 <?php
 
 /**
- * PHPUnit Bootstrap File
- * 
+ * PHPUnit Bootstrap File.
+ *
  * Initializes the testing environment for InvoicePlane
  * Sets up the Illuminate container and loads necessary components
  */
@@ -18,6 +18,6 @@ define('ENVIRONMENT', 'testing');
 
 // Ensure upload directories exist for tests
 $testUploadDir = __DIR__ . '/../uploads/temp/test';
-if (!is_dir($testUploadDir)) {
+if ( ! is_dir($testUploadDir)) {
     mkdir($testUploadDir, 0777, true);
 }

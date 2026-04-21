@@ -2,13 +2,14 @@
 
 namespace Modules\Core\Testing;
 
-use PHPUnit\Framework\TestCase as PHPUnitTestCase;
-use Modules\Core\Testing\Fixtures\FixtureLoader;
 use Modules\Core\Testing\Fakes\FakeDatabase;
+use Modules\Core\Testing\Fixtures\FixtureLoader;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+use ReflectionClass;
 
 /**
- * Base class for Service/Model Unit Tests
- * 
+ * Base class for Service/Model Unit Tests.
+ *
  * Provides utilities for testing service classes (models) in isolation.
  * Services are tested as unit tests with Fakes (not Mocks) for dependencies.
  * Supports Fixtures for reusable test data.
@@ -16,29 +17,31 @@ use Modules\Core\Testing\Fakes\FakeDatabase;
 abstract class ServiceTestCase extends PHPUnitTestCase
 {
     protected mixed $service;
+
     protected string $serviceClass;
+
     protected array $testData = [];
-    
+
     // Test doubles (Fakes)
     protected FakeDatabase $fakeDb;
-    
+
     // Fixture support
     protected FixtureLoader $fixtures;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Initialize fakes
-        $this->fakeDb = new FakeDatabase();
+        $this->fakeDb   = new FakeDatabase();
         $this->fixtures = new FixtureLoader();
-        
+
         // Reset test state
         $this->testData = [];
-        
+
         // Load fixtures if needed
         $this->loadFixtures();
-        
+
         // Call child setup
         $this->setUpService();
     }
@@ -46,16 +49,16 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     protected function tearDown(): void
     {
         $this->service = null;
-        
+
         // Clear fakes
         $this->fakeDb->clear();
         $this->fixtures->clear();
-        
+
         parent::tearDown();
     }
 
     /**
-     * Override this method in child classes to set up service-specific test data
+     * Override this method in child classes to set up service-specific test data.
      */
     protected function setUpService(): void
     {
@@ -63,7 +66,7 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Override this method to load fixtures
+     * Override this method to load fixtures.
      */
     protected function loadFixtures(): void
     {
@@ -71,19 +74,19 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Get the service instance for testing
+     * Get the service instance for testing.
      */
     protected function getService(): mixed
     {
-        if ($this->service === null && !empty($this->serviceClass)) {
+        if ($this->service === null && ! empty($this->serviceClass)) {
             $this->service = new $this->serviceClass();
         }
-        
+
         return $this->service;
     }
 
     /**
-     * Get the fake database (preferred over mocks)
+     * Get the fake database (preferred over mocks).
      */
     protected function getFakeDb(): FakeDatabase
     {
@@ -91,7 +94,7 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that a SQL query contains expected elements
+     * Assert that a SQL query contains expected elements.
      */
     protected function assertQueryContains(string $query, string $expected): void
     {
@@ -103,7 +106,7 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that a SQL query is a SELECT statement
+     * Assert that a SQL query is a SELECT statement.
      */
     protected function assertIsSelectQuery(string $query): void
     {
@@ -115,7 +118,7 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that a SQL query is an INSERT statement
+     * Assert that a SQL query is an INSERT statement.
      */
     protected function assertIsInsertQuery(string $query): void
     {
@@ -127,7 +130,7 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that a SQL query is an UPDATE statement
+     * Assert that a SQL query is an UPDATE statement.
      */
     protected function assertIsUpdateQuery(string $query): void
     {
@@ -139,7 +142,7 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that a SQL query is a DELETE statement
+     * Assert that a SQL query is a DELETE statement.
      */
     protected function assertIsDeleteQuery(string $query): void
     {
@@ -151,7 +154,7 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that validation rules exist for a field
+     * Assert that validation rules exist for a field.
      */
     protected function assertHasValidationRule(array $rules, string $field): void
     {
@@ -164,12 +167,12 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that a field is required in validation rules
+     * Assert that a field is required in validation rules.
      */
     protected function assertFieldIsRequired(array $rules, string $field): void
     {
         $this->assertHasValidationRule($rules, $field);
-        
+
         foreach ($rules as $rule) {
             if ($rule['field'] === $field) {
                 $this->assertStringContainsString(
@@ -177,13 +180,14 @@ abstract class ServiceTestCase extends PHPUnitTestCase
                     $rule['rules'],
                     "Expected field '{$field}' to be required"
                 );
+
                 return;
             }
         }
     }
 
     /**
-     * Assert that a method exists on the service
+     * Assert that a method exists on the service.
      */
     protected function assertServiceHasMethod(string $method): void
     {
@@ -194,7 +198,7 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that a property exists on the service
+     * Assert that a property exists on the service.
      */
     protected function assertServiceHasProperty(string $property): void
     {
@@ -205,16 +209,16 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that service uses the correct table
+     * Assert that service uses the correct table.
      */
     protected function assertUsesTable(string $expectedTable): void
     {
         $service = $this->getService();
-        
-        if (!property_exists($service, 'table')) {
+
+        if ( ! property_exists($service, 'table')) {
             $this->fail('Service does not have a table property');
         }
-        
+
         $this->assertEquals(
             $expectedTable,
             $service->table,
@@ -223,16 +227,16 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Assert that service has correct primary key
+     * Assert that service has correct primary key.
      */
     protected function assertHasPrimaryKey(string $expectedKey): void
     {
         $service = $this->getService();
-        
-        if (!property_exists($service, 'primary_key')) {
+
+        if ( ! property_exists($service, 'primary_key')) {
             $this->fail('Service does not have a primary_key property');
         }
-        
+
         $this->assertEquals(
             $expectedKey,
             $service->primary_key,
@@ -241,21 +245,21 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Get validation rules from service
+     * Get validation rules from service.
      */
     protected function getValidationRules(string $rulesMethod = 'validation_rules'): array
     {
         $service = $this->getService();
-        
-        if (!method_exists($service, $rulesMethod)) {
+
+        if ( ! method_exists($service, $rulesMethod)) {
             $this->fail("Service does not have method '{$rulesMethod}'");
         }
-        
-        return $service->$rulesMethod();
+
+        return $service->{$rulesMethod}();
     }
 
     /**
-     * Assert that a scope method exists
+     * Assert that a scope method exists.
      */
     protected function assertHasScope(string $scopeName): void
     {
@@ -263,38 +267,38 @@ abstract class ServiceTestCase extends PHPUnitTestCase
     }
 
     /**
-     * Call a protected/private method on the service for testing
+     * Call a protected/private method on the service for testing.
      */
     protected function invokeMethod(string $methodName, array $parameters = []): mixed
     {
-        $reflection = new \ReflectionClass($this->getService());
-        $method = $reflection->getMethod($methodName);
+        $reflection = new ReflectionClass($this->getService());
+        $method     = $reflection->getMethod($methodName);
         $method->setAccessible(true);
-        
+
         return $method->invokeArgs($this->getService(), $parameters);
     }
 
     /**
-     * Get a protected/private property value from the service
+     * Get a protected/private property value from the service.
      */
     protected function getProperty(string $propertyName): mixed
     {
-        $reflection = new \ReflectionClass($this->getService());
-        $property = $reflection->getProperty($propertyName);
+        $reflection = new ReflectionClass($this->getService());
+        $property   = $reflection->getProperty($propertyName);
         $property->setAccessible(true);
-        
+
         return $property->getValue($this->getService());
     }
 
     /**
-     * Set a protected/private property value on the service
+     * Set a protected/private property value on the service.
      */
     protected function setProperty(string $propertyName, mixed $value): void
     {
-        $reflection = new \ReflectionClass($this->getService());
-        $property = $reflection->getProperty($propertyName);
+        $reflection = new ReflectionClass($this->getService());
+        $property   = $reflection->getProperty($propertyName);
         $property->setAccessible(true);
-        
+
         $property->setValue($this->getService(), $value);
     }
 }

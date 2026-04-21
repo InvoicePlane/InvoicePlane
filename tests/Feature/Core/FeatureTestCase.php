@@ -23,12 +23,13 @@ abstract class FeatureTestCase extends TestCase
     /**
      * Helper method to authenticate as a user for tests.
      *
-     * @param  \Modules\Core\Models\User|null  $user
+     * @param \Modules\Core\Models\User|null $user
+     *
      * @return \Modules\Core\Models\User
      */
     protected function actingAsUser($user = null)
     {
-        $user = $user ?? \Modules\Core\Models\User::factory()->create();
+        $user ??= \Modules\Core\Models\User::factory()->create();
 
         return $this->actingAs($user);
     }

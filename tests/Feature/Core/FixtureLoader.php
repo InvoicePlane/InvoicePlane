@@ -2,26 +2,30 @@
 
 namespace Modules\Core\Testing\Fixtures;
 
+use RuntimeException;
+
 /**
- * Fixture Loader
- * 
+ * Fixture Loader.
+ *
  * Provides functionality to load test fixtures from files.
  * Fixtures are reusable test data that can be loaded into tests.
  */
 class FixtureLoader
 {
     protected string $fixturesPath;
+
     protected array $loadedFixtures = [];
 
-    public function __construct(string $fixturesPath = null)
+    public function __construct(?string $fixturesPath = null)
     {
         $this->fixturesPath = $fixturesPath ?? dirname(__DIR__, 4) . '/tests/fixtures';
     }
 
     /**
-     * Load a fixture by name
-     * 
+     * Load a fixture by name.
+     *
      * @param string $name Fixture name (without .php extension)
+     *
      * @return array Fixture data
      */
     public function load(string $name): array
@@ -32,14 +36,14 @@ class FixtureLoader
 
         $fixturePath = $this->fixturesPath . '/' . $name . '.php';
 
-        if (!file_exists($fixturePath)) {
-            throw new \RuntimeException("Fixture file not found: {$fixturePath}");
+        if ( ! file_exists($fixturePath)) {
+            throw new RuntimeException("Fixture file not found: {$fixturePath}");
         }
 
         $fixtureData = require $fixturePath;
 
-        if (!is_array($fixtureData)) {
-            throw new \RuntimeException("Fixture must return an array: {$name}");
+        if ( ! is_array($fixtureData)) {
+            throw new RuntimeException("Fixture must return an array: {$name}");
         }
 
         $this->loadedFixtures[$name] = $fixtureData;
@@ -48,27 +52,29 @@ class FixtureLoader
     }
 
     /**
-     * Get a specific item from a fixture
-     * 
+     * Get a specific item from a fixture.
+     *
      * @param string $name Fixture name
-     * @param string $key Key to retrieve from fixture
+     * @param string $key  Key to retrieve from fixture
+     *
      * @return mixed Fixture item data
      */
     public function get(string $name, string $key): mixed
     {
         $fixture = $this->load($name);
 
-        if (!isset($fixture[$key])) {
-            throw new \RuntimeException("Fixture key not found: {$name}.{$key}");
+        if ( ! isset($fixture[$key])) {
+            throw new RuntimeException("Fixture key not found: {$name}.{$key}");
         }
 
         return $fixture[$key];
     }
 
     /**
-     * Get all items from a fixture
-     * 
+     * Get all items from a fixture.
+     *
      * @param string $name Fixture name
+     *
      * @return array All fixture items
      */
     public function all(string $name): array
@@ -77,7 +83,7 @@ class FixtureLoader
     }
 
     /**
-     * Clear loaded fixtures from memory
+     * Clear loaded fixtures from memory.
      */
     public function clear(): void
     {
@@ -85,7 +91,7 @@ class FixtureLoader
     }
 
     /**
-     * Set custom fixtures path
+     * Set custom fixtures path.
      */
     public function setFixturesPath(string $path): void
     {

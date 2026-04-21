@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Auth;
 
 use Tests\Hmvc\BaseHmvcTestCase;
-use Tests\Hmvc\HmvcResponse;
 
 /**
  * Parameterised auth-guard regression test.
@@ -27,6 +26,37 @@ final class ControllersAuthGuardTest extends BaseHmvcTestCase
         $this->actingAsGuest();
     }
 
+    public static function adminRouteProvider(): array
+    {
+        return [
+            'invoices index'        => ['/invoices'],
+            'invoices status all'   => ['/invoices/status/all'],
+            'invoices status draft' => ['/invoices/status/draft'],
+            'invoices status paid'  => ['/invoices/status/paid'],
+            'clients index'         => ['/clients'],
+            'clients status active' => ['/clients/status/active'],
+            'payments index'        => ['/payments'],
+            'payments online_logs'  => ['/payments/online_logs'],
+            'quotes index'          => ['/quotes'],
+            'products index'        => ['/products'],
+            'tasks index'           => ['/tasks'],
+            'tax_rates index'       => ['/tax_rates'],
+            'units index'           => ['/units'],
+            'families index'        => ['/families'],
+            'payment_methods index' => ['/payment_methods'],
+            'invoice_groups index'  => ['/invoice_groups'],
+            'email_templates index' => ['/email_templates'],
+            'custom_fields index'   => ['/custom_fields'],
+            'custom_values index'   => ['/custom_values'],
+            'users index'           => ['/users'],
+            'settings index'        => ['/settings'],
+            'reports index'         => ['/reports'],
+            'dashboard'             => ['/dashboard'],
+            'import index'          => ['/import'],
+            'projects index'        => ['/projects'],
+        ];
+    }
+
     /**
      * @dataProvider adminRouteProvider
      */
@@ -40,7 +70,7 @@ final class ControllersAuthGuardTest extends BaseHmvcTestCase
                 'Unauthenticated GET [%s] must redirect to login. Got status [%d] with body (first 200 chars): %s',
                 $uri,
                 $response->statusCode(),
-                substr($response->body(), 0, 200)
+                mb_substr($response->body(), 0, 200)
             )
         );
 
@@ -51,37 +81,6 @@ final class ControllersAuthGuardTest extends BaseHmvcTestCase
                 $uri
             )
         );
-    }
-
-    public static function adminRouteProvider(): array
-    {
-        return [
-            'invoices index'         => ['/invoices'],
-            'invoices status all'    => ['/invoices/status/all'],
-            'invoices status draft'  => ['/invoices/status/draft'],
-            'invoices status paid'   => ['/invoices/status/paid'],
-            'clients index'          => ['/clients'],
-            'clients status active'  => ['/clients/status/active'],
-            'payments index'         => ['/payments'],
-            'payments online_logs'   => ['/payments/online_logs'],
-            'quotes index'           => ['/quotes'],
-            'products index'         => ['/products'],
-            'tasks index'            => ['/tasks'],
-            'tax_rates index'        => ['/tax_rates'],
-            'units index'            => ['/units'],
-            'families index'         => ['/families'],
-            'payment_methods index'  => ['/payment_methods'],
-            'invoice_groups index'   => ['/invoice_groups'],
-            'email_templates index'  => ['/email_templates'],
-            'custom_fields index'    => ['/custom_fields'],
-            'custom_values index'    => ['/custom_values'],
-            'users index'            => ['/users'],
-            'settings index'         => ['/settings'],
-            'reports index'          => ['/reports'],
-            'dashboard'              => ['/dashboard'],
-            'import index'           => ['/import'],
-            'projects index'         => ['/projects'],
-        ];
     }
 
     /**

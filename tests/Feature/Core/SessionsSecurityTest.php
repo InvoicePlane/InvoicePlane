@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Security;
 
+use DateTime;
+use DateTimeZone;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -121,7 +123,7 @@ final class SessionsSecurityTest extends TestCase
 
     public function it_considers_an_expired_token_as_expired(): void
     {
-        $expiry = new \DateTime('-1 minute', new \DateTimeZone('UTC'));
+        $expiry = new DateTime('-1 minute', new DateTimeZone('UTC'));
 
         self::assertTrue(
             $this->security->isTokenExpired($expiry->format('Y-m-d H:i:s')),
@@ -131,7 +133,7 @@ final class SessionsSecurityTest extends TestCase
 
     public function it_considers_a_future_token_as_not_expired(): void
     {
-        $expiry = new \DateTime('+15 minutes', new \DateTimeZone('UTC'));
+        $expiry = new DateTime('+15 minutes', new DateTimeZone('UTC'));
 
         self::assertFalse(
             $this->security->isTokenExpired($expiry->format('Y-m-d H:i:s')),
@@ -208,8 +210,8 @@ final class SessionsSecurityTest extends TestCase
 
     public function it_removes_attempts_outside_the_rate_limit_time_window(): void
     {
-        $now         = time();
-        $windowSecs  = 3600;
+        $now        = time();
+        $windowSecs = 3600;
 
         $attempts = [
             $now - 7200,
@@ -288,9 +290,9 @@ final class StubSessionsSecurity
 
     public function isTokenExpired(string $expiryTimestamp): bool
     {
-        $utc    = new \DateTimeZone('UTC');
-        $expiry = new \DateTime($expiryTimestamp, $utc);
-        $now    = new \DateTime('now', $utc);
+        $utc    = new DateTimeZone('UTC');
+        $expiry = new DateTime($expiryTimestamp, $utc);
+        $now    = new DateTime('now', $utc);
 
         return $now > $expiry;
     }

@@ -110,4 +110,3 @@ class QuotesServiceTest extends TestCase
         $this->assertIsArray($result);
     }
 }
-

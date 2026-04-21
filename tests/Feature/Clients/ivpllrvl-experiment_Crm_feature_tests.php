@@ -1294,7 +1294,6 @@ class ClientsControllerTest extends FeatureTestCase
     }
 }
 
-
 /**
  * PaymentsController (CRM/Guest) Feature Tests.
  *
@@ -2016,4 +2015,3 @@ class ViewControllerTest extends FeatureTestCase
         $response->assertViewIs('crm::guest_view');
     }
 }
-

@@ -2,17 +2,23 @@
 
 namespace Modules\Core\Testing;
 
+use UnexpectedValueException;
+
 /**
- * TestResponse - Wrapper for HTTP response in tests
- * 
+ * TestResponse - Wrapper for HTTP response in tests.
+ *
  * Provides Laravel-style fluent assertions for testing HTTP responses
  */
 class TestResponse
 {
     public int $statusCode = 200;
+
     public string $content = '';
+
     public array $headers = [];
+
     public ?string $redirectUrl = null;
+
     public array $sessionErrors = [];
 
     public function getStatusCode(): int
@@ -64,42 +70,45 @@ class TestResponse
     {
         $decoded = json_decode($this->content, true, 512, JSON_THROW_ON_ERROR);
 
-        if (!is_array($decoded)) {
-            throw new \UnexpectedValueException('JSON response is not an array or object.');
+        if ( ! is_array($decoded)) {
+            throw new UnexpectedValueException('JSON response is not an array or object.');
         }
 
         return $decoded;
     }
 
     /**
-     * Assert response status is 200
+     * Assert response status is 200.
      */
     public function assertOk(): self
     {
         \PHPUnit\Framework\Assert::assertEquals(200, $this->statusCode, 'Expected status 200 OK');
+
         return $this;
     }
 
     /**
-     * Assert response status is 201
+     * Assert response status is 201.
      */
     public function assertCreated(): self
     {
         \PHPUnit\Framework\Assert::assertEquals(201, $this->statusCode, 'Expected status 201 Created');
+
         return $this;
     }
 
     /**
-     * Assert response status is 204
+     * Assert response status is 204.
      */
     public function assertNoContent(): self
     {
         \PHPUnit\Framework\Assert::assertEquals(204, $this->statusCode, 'Expected status 204 No Content');
+
         return $this;
     }
 
     /**
-     * Assert response is a redirect
+     * Assert response is a redirect.
      */
     public function assertRedirect(?string $uri = null): self
     {
@@ -107,7 +116,7 @@ class TestResponse
             $this->isRedirect(),
             'Expected redirect status code (301, 302, 303, 307, 308)'
         );
-        
+
         if ($uri !== null) {
             \PHPUnit\Framework\Assert::assertStringContainsString(
                 $uri,
@@ -115,49 +124,53 @@ class TestResponse
                 "Expected redirect to [{$uri}]"
             );
         }
-        
+
         return $this;
     }
 
     /**
-     * Assert response status is 401
+     * Assert response status is 401.
      */
     public function assertUnauthorized(): self
     {
         \PHPUnit\Framework\Assert::assertEquals(401, $this->statusCode, 'Expected status 401 Unauthorized');
+
         return $this;
     }
 
     /**
-     * Assert response status is 403
+     * Assert response status is 403.
      */
     public function assertForbidden(): self
     {
         \PHPUnit\Framework\Assert::assertEquals(403, $this->statusCode, 'Expected status 403 Forbidden');
+
         return $this;
     }
 
     /**
-     * Assert response status is 404
+     * Assert response status is 404.
      */
     public function assertNotFound(): self
     {
         \PHPUnit\Framework\Assert::assertEquals(404, $this->statusCode, 'Expected status 404 Not Found');
+
         return $this;
     }
 
     /**
-     * Assert response status is 422
+     * Assert response status is 422.
      */
     public function assertUnprocessable(): self
     {
         \PHPUnit\Framework\Assert::assertEquals(422, $this->statusCode, 'Expected status 422 Unprocessable Entity');
+
         return $this;
     }
 
     /**
-     * Assert session has validation errors
-     * 
+     * Assert session has validation errors.
+     *
      * @param array|string $keys Field names or ['field' => 'expected message']
      */
     public function assertSessionHasErrors($keys = []): self
@@ -167,13 +180,14 @@ class TestResponse
                 $this->sessionErrors,
                 'Expected session to have validation errors'
             );
+
             return $this;
         }
-        
+
         if (is_string($keys)) {
             $keys = [$keys];
         }
-        
+
         foreach ($keys as $key => $value) {
             if (is_int($key)) {
                 // Just check field exists: ['field_name']
@@ -196,19 +210,19 @@ class TestResponse
                 );
             }
         }
-        
+
         return $this;
     }
 
     /**
-     * Assert session does not have errors for given fields
+     * Assert session does not have errors for given fields.
      */
     public function assertSessionDoesntHaveErrors($keys = []): self
     {
         if (is_string($keys)) {
             $keys = [$keys];
         }
-        
+
         foreach ($keys as $key) {
             \PHPUnit\Framework\Assert::assertArrayNotHasKey(
                 $key,
@@ -216,12 +230,12 @@ class TestResponse
                 "Expected no validation error for field [{$key}]"
             );
         }
-        
+
         return $this;
     }
 
     /**
-     * Assert response contains text
+     * Assert response contains text.
      */
     public function assertSee(string $value): self
     {
@@ -230,11 +244,12 @@ class TestResponse
             $this->content,
             "Expected response to contain [{$value}]"
         );
+
         return $this;
     }
 
     /**
-     * Assert response does not contain text
+     * Assert response does not contain text.
      */
     public function assertDontSee(string $value): self
     {
@@ -243,20 +258,21 @@ class TestResponse
             $this->content,
             "Expected response not to contain [{$value}]"
         );
+
         return $this;
     }
 
     /**
-     * Assert response has specific header value
+     * Assert response has specific header value.
      */
-    public function assertHeader(string $name, string $value = null): self
+    public function assertHeader(string $name, ?string $value = null): self
     {
         \PHPUnit\Framework\Assert::assertArrayHasKey(
             $name,
             $this->headers,
             "Expected header [{$name}] to be present"
         );
-        
+
         if ($value !== null) {
             \PHPUnit\Framework\Assert::assertStringContainsString(
                 $value,
@@ -264,12 +280,12 @@ class TestResponse
                 "Expected header [{$name}] to contain [{$value}]"
             );
         }
-        
+
         return $this;
     }
 
     /**
-     * Assert response status code matches
+     * Assert response status code matches.
      */
     public function assertStatus(int $status): self
     {
@@ -278,7 +294,7 @@ class TestResponse
             $this->statusCode,
             "Expected status {$status} but got {$this->statusCode}"
         );
+
         return $this;
     }
 }
-

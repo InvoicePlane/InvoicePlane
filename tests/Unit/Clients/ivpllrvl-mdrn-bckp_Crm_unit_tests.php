@@ -4,8 +4,8 @@ namespace Modules\Crm\Tests\Unit;
 
 use Modules\Crm\Services\ClientService;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractServiceTestCase;
 
 #[CoversClass(ClientService::class)]
@@ -32,4 +32,3 @@ class ClientServiceTest extends AbstractServiceTestCase
         $this->assertArrayHasKey('client_active', $rules);
     }
 }
-

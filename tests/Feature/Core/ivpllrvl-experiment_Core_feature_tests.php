@@ -1836,18 +1836,6 @@ class ReportsControllerTest extends FeatureTestCase
 class SessionsControllerTest extends FeatureTestCase
 {
     /**
-     * Generate a throttle key matching the format used by SessionsController.
-     *
-     * @param string $email
-     * @param string $ip
-     *
-     * @return string
-     */
-    protected function getThrottleKey(string $email, string $ip = '127.0.0.1'): string
-    {
-        return Str::transliterate(Str::lower($email).'|'.$ip);
-    }
-    /**
      * Test index redirects to login page.
      */
     #[Group('smoke')]
@@ -1945,21 +1933,21 @@ class SessionsControllerTest extends FeatureTestCase
     public function it_authenticates_user_with_valid_credentials(): void
     {
         /** Arrange */
-        $crypt = new Crypt();
-        $salt = $crypt->salt();
-        $password = 'test-password-123';
+        $crypt          = new Crypt();
+        $salt           = $crypt->salt();
+        $password       = 'test-password-123';
         $hashedPassword = $crypt->generate_password($password, $salt);
 
         $user = User::factory()->create([
-            'user_email' => 'test@example.com',
+            'user_email'    => 'test@example.com',
             'user_password' => $hashedPassword,
-            'user_active' => 1,
-            'user_type' => 1,
+            'user_active'   => 1,
+            'user_type'     => 1,
         ]);
 
         /** Act */
         $response = $this->post(route('sessions.authenticate'), [
-            'email' => 'test@example.com',
+            'email'    => 'test@example.com',
             'password' => $password,
         ]);
 
@@ -1977,21 +1965,21 @@ class SessionsControllerTest extends FeatureTestCase
     public function it_rejects_authentication_with_invalid_password(): void
     {
         /** Arrange */
-        $crypt = new Crypt();
-        $salt = $crypt->salt();
+        $crypt          = new Crypt();
+        $salt           = $crypt->salt();
         $hashedPassword = $crypt->generate_password('correct-password', $salt);
 
         User::factory()->create([
-            'user_email' => 'test@example.com',
+            'user_email'    => 'test@example.com',
             'user_password' => $hashedPassword,
-            'user_active' => 1,
+            'user_active'   => 1,
         ]);
 
-        /** Act & Assert */
+        /* Act & Assert */
         $this->expectException(ValidationException::class);
 
         $this->post(route('sessions.authenticate'), [
-            'email' => 'test@example.com',
+            'email'    => 'test@example.com',
             'password' => 'wrong-password',
         ]);
 
@@ -2004,14 +1992,14 @@ class SessionsControllerTest extends FeatureTestCase
     #[Test]
     public function it_rejects_authentication_for_nonexistent_user(): void
     {
-        /** Arrange */
+        /* Arrange */
         // No user created
 
-        /** Act & Assert */
+        /* Act & Assert */
         $this->expectException(ValidationException::class);
 
         $this->post(route('sessions.authenticate'), [
-            'email' => 'nonexistent@example.com',
+            'email'    => 'nonexistent@example.com',
             'password' => 'any-password',
         ]);
 
@@ -2025,22 +2013,22 @@ class SessionsControllerTest extends FeatureTestCase
     public function it_rejects_authentication_for_inactive_user(): void
     {
         /** Arrange */
-        $crypt = new Crypt();
-        $salt = $crypt->salt();
-        $password = 'test-password-123';
+        $crypt          = new Crypt();
+        $salt           = $crypt->salt();
+        $password       = 'test-password-123';
         $hashedPassword = $crypt->generate_password($password, $salt);
 
         User::factory()->create([
-            'user_email' => 'inactive@example.com',
+            'user_email'    => 'inactive@example.com',
             'user_password' => $hashedPassword,
-            'user_active' => 0, // Inactive user
+            'user_active'   => 0, // Inactive user
         ]);
 
-        /** Act & Assert */
+        /* Act & Assert */
         $this->expectException(ValidationException::class);
 
         $this->post(route('sessions.authenticate'), [
-            'email' => 'inactive@example.com',
+            'email'    => 'inactive@example.com',
             'password' => $password,
         ]);
 
@@ -2057,21 +2045,21 @@ class SessionsControllerTest extends FeatureTestCase
         $email = 'ratelimit@example.com';
 
         User::factory()->create([
-            'user_email' => $email,
+            'user_email'    => $email,
             'user_password' => 'hashed-password',
-            'user_active' => 1,
+            'user_active'   => 1,
         ]);
 
         // Clear any existing rate limits using the properly formatted throttle key
         $throttleKey = $this->getThrottleKey($email);
         RateLimiter::clear($throttleKey);
 
-        /** Act */
+        /* Act */
         // Make 5 failed attempts (the rate limit threshold)
         for ($i = 0; $i < 5; $i++) {
             try {
                 $this->post(route('sessions.authenticate'), [
-                    'email' => $email,
+                    'email'    => $email,
                     'password' => 'wrong-password',
                 ]);
             } catch (ValidationException $e) {
@@ -2079,13 +2067,13 @@ class SessionsControllerTest extends FeatureTestCase
             }
         }
 
-        /** Assert */
+        /* Assert */
         // The 6th attempt should be rate limited
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('auth.throttle');
 
         $this->post(route('sessions.authenticate'), [
-            'email' => $email,
+            'email'    => $email,
             'password' => 'wrong-password',
         ]);
     }
@@ -2097,22 +2085,22 @@ class SessionsControllerTest extends FeatureTestCase
     public function it_regenerates_session_on_successful_login(): void
     {
         /** Arrange */
-        $crypt = new Crypt();
-        $salt = $crypt->salt();
-        $password = 'test-password-123';
+        $crypt          = new Crypt();
+        $salt           = $crypt->salt();
+        $password       = 'test-password-123';
         $hashedPassword = $crypt->generate_password($password, $salt);
 
         User::factory()->create([
-            'user_email' => 'test@example.com',
+            'user_email'    => 'test@example.com',
             'user_password' => $hashedPassword,
-            'user_active' => 1,
+            'user_active'   => 1,
         ]);
 
         $oldSessionId = session()->getId();
 
-        /** Act */
+        /* Act */
         $this->post(route('sessions.authenticate'), [
-            'email' => 'test@example.com',
+            'email'    => 'test@example.com',
             'password' => $password,
         ]);
 
@@ -2127,15 +2115,15 @@ class SessionsControllerTest extends FeatureTestCase
     public function it_clears_rate_limiter_on_successful_authentication(): void
     {
         /** Arrange */
-        $crypt = new Crypt();
-        $salt = $crypt->salt();
-        $password = 'test-password-123';
+        $crypt          = new Crypt();
+        $salt           = $crypt->salt();
+        $password       = 'test-password-123';
         $hashedPassword = $crypt->generate_password($password, $salt);
 
         $user = User::factory()->create([
-            'user_email' => 'test@example.com',
+            'user_email'    => 'test@example.com',
             'user_password' => $hashedPassword,
-            'user_active' => 1,
+            'user_active'   => 1,
         ]);
 
         // Generate throttle key using the same format as the controller
@@ -2147,9 +2135,9 @@ class SessionsControllerTest extends FeatureTestCase
 
         $this->assertEquals(2, RateLimiter::attempts($throttleKey));
 
-        /** Act */
+        /* Act */
         $this->post(route('sessions.authenticate'), [
-            'email' => 'test@example.com',
+            'email'    => 'test@example.com',
             'password' => $password,
         ]);
 
@@ -2178,7 +2166,7 @@ class SessionsControllerTest extends FeatureTestCase
     {
         /** Act */
         $response = $this->post(route('sessions.authenticate'), [
-            'email' => 'not-an-email',
+            'email'    => 'not-an-email',
             'password' => 'password',
         ]);
 
@@ -2193,21 +2181,21 @@ class SessionsControllerTest extends FeatureTestCase
     public function it_redirects_guest_users_to_guest_dashboard(): void
     {
         /** Arrange */
-        $crypt = new Crypt();
-        $salt = $crypt->salt();
-        $password = 'test-password-123';
+        $crypt          = new Crypt();
+        $salt           = $crypt->salt();
+        $password       = 'test-password-123';
         $hashedPassword = $crypt->generate_password($password, $salt);
 
         User::factory()->create([
-            'user_email' => 'guest@example.com',
+            'user_email'    => 'guest@example.com',
             'user_password' => $hashedPassword,
-            'user_active' => 1,
-            'user_type' => 2, // Guest user type
+            'user_active'   => 1,
+            'user_type'     => 2, // Guest user type
         ]);
 
         /** Act */
         $response = $this->post(route('sessions.authenticate'), [
-            'email' => 'guest@example.com',
+            'email'    => 'guest@example.com',
             'password' => $password,
         ]);
 
@@ -2237,6 +2225,19 @@ class SessionsControllerTest extends FeatureTestCase
         $this->assertNull(session('user_id'));
         $this->assertNull(session('user_email'));
         $this->assertNotEquals($oldToken, csrf_token());
+    }
+
+    /**
+     * Generate a throttle key matching the format used by SessionsController.
+     *
+     * @param string $email
+     * @param string $ip
+     *
+     * @return string
+     */
+    protected function getThrottleKey(string $email, string $ip = '127.0.0.1'): string
+    {
+        return Str::transliterate(Str::lower($email) . '|' . $ip);
     }
 }
 
@@ -4412,4 +4413,3 @@ class WelcomeControllerTest extends FeatureTestCase
         $response->assertViewIs('core::welcome');
     }
 }
-

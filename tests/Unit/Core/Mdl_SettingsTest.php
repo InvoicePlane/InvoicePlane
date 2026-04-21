@@ -197,9 +197,10 @@ final class StubMdl_Settings
     /**
      * Replicates the insert/update classification from Mdl_Settings::save_batch().
      *
-     * @param  array    $settings     key => value pairs to persist
-     * @param  string[] $existingKeys keys already present in ip_settings
-     * @return array{0: array, 1: array}  [toUpdate, toInsert]
+     * @param array    $settings     key => value pairs to persist
+     * @param string[] $existingKeys keys already present in ip_settings
+     *
+     * @return array{0: array, 1: array} [toUpdate, toInsert]
      */
     public function classifyBatch(array $settings, array $existingKeys): array
     {

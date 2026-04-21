@@ -316,4 +316,3 @@ class PaymentServiceTest extends AbstractServiceTestCase
         $this->assertFalse($result->contains('payment_id', $payment3->payment_id));
     }
 }
-

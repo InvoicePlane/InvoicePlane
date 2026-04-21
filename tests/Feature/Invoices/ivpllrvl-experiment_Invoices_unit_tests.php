@@ -1928,4 +1928,3 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
         $this->assertEquals(0, $result2->include_item_tax);
     }
 }
-

@@ -399,4 +399,3 @@ class UnitsServiceTest extends TestCase
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
     }
 }
-

@@ -140,4 +140,3 @@ class PaymentsServiceTest extends TestCase
         $this->assertIsArray($result);
     }
 }
-

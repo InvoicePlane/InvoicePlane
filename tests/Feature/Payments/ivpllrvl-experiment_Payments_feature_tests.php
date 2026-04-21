@@ -524,4 +524,3 @@ class StripeControllerTest extends FeatureTestCase
         $response->assertOk();
     }
 }
-

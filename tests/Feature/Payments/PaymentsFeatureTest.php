@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Payments;
 
 use Tests\Hmvc\BaseHmvcTestCase;
-use Tests\Hmvc\HmvcResponse;
 
 /**
  * @group feature
@@ -119,7 +118,7 @@ final class PaymentsFeatureTest extends BaseHmvcTestCase
             $response->contains('175') || $response->contains((string) $paymentId),
             sprintf(
                 'Payment view page must contain the payment amount or ID. Body (first 400 chars): %s',
-                substr($response->body(), 0, 400)
+                mb_substr($response->body(), 0, 400)
             )
         );
     }

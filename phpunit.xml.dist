@@ -1,33 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-    bootstrap="tests/bootstrap.php"
+    bootstrap="tests/ci_bootstrap.php"
     colors="true"
     stopOnFailure="false"
-    processIsolation="false"
     backupGlobals="false"
     backupStaticProperties="false"
 >
     <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
-        </testsuite>
-        <testsuite name="Feature">
-            <directory>tests/Feature</directory>
-        </testsuite>
-        <testsuite name="Regression">
-            <directory>tests/Regression</directory>
+        <testsuite name="CI Lifecycle Suite">
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
-
-    <groups>
-        <exclude>
-            <group>regression</group>
-        </exclude>
-    </groups>
-
-    <php>
-        <env name="CI_ENV"  value="testing"/>
-    </php>
 </phpunit>

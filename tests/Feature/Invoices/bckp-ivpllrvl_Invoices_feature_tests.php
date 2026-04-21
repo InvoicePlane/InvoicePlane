@@ -739,4 +739,3 @@ class RecurringInvoicesControllerTest extends TestCase
         ]);
     }
 }
-

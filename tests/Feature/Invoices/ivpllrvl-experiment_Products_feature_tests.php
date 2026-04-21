@@ -1880,4 +1880,3 @@ class UnitsControllerTest extends FeatureTestCase
         $this->assertCount(3, $units);
     }
 }
-

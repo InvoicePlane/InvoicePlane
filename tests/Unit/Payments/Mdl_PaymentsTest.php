@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Models;
 
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -268,16 +269,16 @@ final class StubMdl_Payments
             return date('Y-m-d');
         }
 
-        $dt = \DateTime::createFromFormat('m/d/Y', $input)
-            ?: \DateTime::createFromFormat('Y-m-d', $input)
-            ?: new \DateTime($input);
+        $dt = DateTime::createFromFormat('m/d/Y', $input)
+            ?: DateTime::createFromFormat('Y-m-d', $input)
+            ?: new DateTime($input);
 
         return $dt->format('Y-m-d');
     }
 
     public function normaliseAmount(string $input, string $decimalPoint = '.', string $thousandsSep = ','): string
     {
-        if (trim($input) === '') {
+        if (mb_trim($input) === '') {
             return '0.00';
         }
 

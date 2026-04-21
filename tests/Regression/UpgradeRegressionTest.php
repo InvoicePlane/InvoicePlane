@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Regression;
 
 use Tests\Hmvc\BaseHmvcTestCase;
-use Tests\Hmvc\HmvcResponse;
 
 /**
  * Snapshot-based regression suite.
@@ -107,8 +106,8 @@ final class UpgradeRegressionTest extends BaseHmvcTestCase
         self::assertStringNotContainsString(
             'Unable to load your default controller',
             $response->body(),
-            'MX router returned the CI3 default 404 page for /integrations — ' .
-            'MY_Router::aliasPsr4Controller() or $moduleAliases may have regressed.'
+            'MX router returned the CI3 default 404 page for /integrations — '
+            . 'MY_Router::aliasPsr4Controller() or $moduleAliases may have regressed.'
         );
 
         self::assertStringNotContainsString(
@@ -127,8 +126,8 @@ final class UpgradeRegressionTest extends BaseHmvcTestCase
         self::assertStringNotContainsString(
             'Undefined property',
             $response->body(),
-            'An Undefined property warning in the clients page suggests a model failed to bind — ' .
-            'check MY_Loader::loadNamespacedClass().'
+            'An Undefined property warning in the clients page suggests a model failed to bind — '
+            . 'check MY_Loader::loadNamespacedClass().'
         );
 
         self::assertStringNotContainsString(

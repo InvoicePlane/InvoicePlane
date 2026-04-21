@@ -1499,4 +1499,3 @@ class TasksControllerTest extends FeatureTestCase
         ]);
     }
 }
-

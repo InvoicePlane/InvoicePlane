@@ -2369,4 +2369,3 @@ class UserHelperTest extends UnitTestCase
         $this->assertSame('Jane smith', $result);
     }
 }
-

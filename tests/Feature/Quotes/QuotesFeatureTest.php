@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Quotes;
 
 use Tests\Hmvc\BaseHmvcTestCase;
-use Tests\Hmvc\HmvcResponse;
 
 /**
  * @group feature
@@ -52,7 +51,7 @@ final class QuotesFeatureTest extends BaseHmvcTestCase
             sprintf(
                 'Unauthenticated GET /quotes must redirect. Got status [%d] with body: %s',
                 $response->statusCode(),
-                substr($response->body(), 0, 200)
+                mb_substr($response->body(), 0, 200)
             )
         );
     }
@@ -107,7 +106,7 @@ final class QuotesFeatureTest extends BaseHmvcTestCase
             sprintf(
                 'The quote view page for ID [%d] must show the quote number or ID. Body (first 400 chars): %s',
                 $quoteId,
-                substr($response->body(), 0, 400)
+                mb_substr($response->body(), 0, 400)
             )
         );
     }
@@ -140,14 +139,14 @@ final class QuotesFeatureTest extends BaseHmvcTestCase
     private function seedQuote(int $clientId, array $overrides = []): int
     {
         return $this->databaseInsert('ip_quotes', array_merge([
-            'user_id'              => 1,
-            'client_id'            => $clientId,
-            'quote_status_id'      => 1,
-            'quote_date_created'   => date('Y-m-d'),
-            'quote_date_expires'   => date('Y-m-d', strtotime('+30 days')),
-            'quote_number'         => 'QUO-' . time(),
-            'quote_url_key'        => bin2hex(random_bytes(16)),
-            'invoice_group_id'     => 1,
+            'user_id'                => 1,
+            'client_id'              => $clientId,
+            'quote_status_id'        => 1,
+            'quote_date_created'     => date('Y-m-d'),
+            'quote_date_expires'     => date('Y-m-d', strtotime('+30 days')),
+            'quote_number'           => 'QUO-' . time(),
+            'quote_url_key'          => bin2hex(random_bytes(16)),
+            'invoice_group_id'       => 1,
             'quote_discount_amount'  => '0.00',
             'quote_discount_percent' => '0.00',
         ], $overrides));

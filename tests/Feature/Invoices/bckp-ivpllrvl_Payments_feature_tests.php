@@ -495,4 +495,3 @@ class PaymentsControllerTest extends TestCase
         });
     }
 }
-

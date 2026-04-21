@@ -6,8 +6,9 @@ use Modules\Crm\Models\Client;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Services\ProjectService;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use ReflectionClass;
 use Tests\TestCase;
 
 /**
@@ -34,12 +35,12 @@ class ProjectServiceTest extends TestCase
     public function it_returns_correct_model_class(): void
     {
         /** Arrange & Act */
-        $reflection = new \ReflectionClass($this->service);
-        $method = $reflection->getMethod('getModelClass');
+        $reflection = new ReflectionClass($this->service);
+        $method     = $reflection->getMethod('getModelClass');
         $method->setAccessible(true);
         $modelClass = $method->invoke($this->service);
 
-        /** Assert */
+        /* Assert */
         $this->assertEquals(Project::class, $modelClass);
     }
 
@@ -52,7 +53,7 @@ class ProjectServiceTest extends TestCase
     {
         /** Arrange */
         $client = Client::factory()->create();
-        $data = [
+        $data   = [
             'client_id'    => $client->client_id,
             'project_name' => 'Test Project',
         ];
@@ -60,7 +61,7 @@ class ProjectServiceTest extends TestCase
         /** Act */
         $project = $this->service->create($data);
 
-        /** Assert */
+        /* Assert */
         $this->assertInstanceOf(Project::class, $project);
         $this->assertEquals('Test Project', $project->project_name);
         $this->assertEquals($client->client_id, $project->client_id);
@@ -77,7 +78,7 @@ class ProjectServiceTest extends TestCase
     public function it_updates_project(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client  = Client::factory()->create();
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
             'project_name' => 'Old Name',
@@ -90,7 +91,7 @@ class ProjectServiceTest extends TestCase
         /** Act */
         $result = $this->service->update($project->project_id, $updateData);
 
-        /** Assert */
+        /* Assert */
         $this->assertTrue($result);
         $this->assertDatabaseHas('ip_projects', [
             'project_id'   => $project->project_id,
@@ -105,7 +106,7 @@ class ProjectServiceTest extends TestCase
     public function it_finds_project_by_id(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client  = Client::factory()->create();
         $project = Project::factory()->create([
             'client_id' => $client->client_id,
         ]);
@@ -113,7 +114,7 @@ class ProjectServiceTest extends TestCase
         /** Act */
         $found = $this->service->find($project->project_id);
 
-        /** Assert */
+        /* Assert */
         $this->assertInstanceOf(Project::class, $found);
         $this->assertEquals($project->project_id, $found->project_id);
     }
@@ -124,10 +125,10 @@ class ProjectServiceTest extends TestCase
     #[Test]
     public function it_throws_exception_when_project_not_found(): void
     {
-        /** Arrange */
+        /* Arrange */
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-        /** Act */
+        /* Act */
         $this->service->findOrFail(999999);
     }
 
@@ -139,7 +140,7 @@ class ProjectServiceTest extends TestCase
     public function it_deletes_project(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client  = Client::factory()->create();
         $project = Project::factory()->create([
             'client_id' => $client->client_id,
         ]);
@@ -147,7 +148,7 @@ class ProjectServiceTest extends TestCase
         /** Act */
         $result = $this->service->delete($project->project_id);
 
-        /** Assert */
+        /* Assert */
         $this->assertTrue($result);
         $this->assertDatabaseMissing('ip_projects', [
             'project_id' => $project->project_id,
@@ -179,12 +180,12 @@ class TaskServiceTest extends TestCase
     public function it_returns_correct_model_class(): void
     {
         /** Arrange & Act */
-        $reflection = new \ReflectionClass($this->service);
-        $method = $reflection->getMethod('getModelClass');
+        $reflection = new ReflectionClass($this->service);
+        $method     = $reflection->getMethod('getModelClass');
         $method->setAccessible(true);
         $modelClass = $method->invoke($this->service);
 
-        /** Assert */
+        /* Assert */
         $this->assertEquals(Task::class, $modelClass);
     }
 
@@ -197,16 +198,16 @@ class TaskServiceTest extends TestCase
     {
         /** Arrange */
         $project = Project::factory()->create();
-        $data = [
-            'project_id' => $project->project_id,
-            'task_name'  => 'Test Task',
+        $data    = [
+            'project_id'  => $project->project_id,
+            'task_name'   => 'Test Task',
             'task_status' => 1,
         ];
 
         /** Act */
         $task = $this->service->create($data);
 
-        /** Assert */
+        /* Assert */
         $this->assertInstanceOf(Task::class, $task);
         $this->assertEquals('Test Task', $task->task_name);
         $this->assertEquals($project->project_id, $task->project_id);
@@ -231,7 +232,7 @@ class TaskServiceTest extends TestCase
         /** Act */
         $task = $this->service->create($data);
 
-        /** Assert */
+        /* Assert */
         $this->assertInstanceOf(Task::class, $task);
         $this->assertEquals('Standalone Task', $task->task_name);
         $this->assertNull($task->project_id);
@@ -256,7 +257,7 @@ class TaskServiceTest extends TestCase
         /** Act */
         $result = $this->service->update($task->task_id, $updateData);
 
-        /** Assert */
+        /* Assert */
         $this->assertTrue($result);
         $this->assertDatabaseHas('ip_tasks', [
             'task_id'   => $task->task_id,
@@ -276,7 +277,7 @@ class TaskServiceTest extends TestCase
         /** Act */
         $found = $this->service->find($task->task_id);
 
-        /** Assert */
+        /* Assert */
         $this->assertInstanceOf(Task::class, $found);
         $this->assertEquals($task->task_id, $found->task_id);
     }
@@ -287,10 +288,10 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_throws_exception_when_task_not_found(): void
     {
-        /** Arrange */
+        /* Arrange */
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-        /** Act */
+        /* Act */
         $this->service->findOrFail(999999);
     }
 
@@ -307,11 +308,10 @@ class TaskServiceTest extends TestCase
         /** Act */
         $result = $this->service->delete($task->task_id);
 
-        /** Assert */
+        /* Assert */
         $this->assertTrue($result);
         $this->assertDatabaseMissing('ip_tasks', [
             'task_id' => $task->task_id,
         ]);
     }
 }
-

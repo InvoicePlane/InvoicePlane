@@ -1433,4 +1433,3 @@ class QuotesControllerTest extends FeatureTestCase
         $this->assertContains($approvedQuote->quote_id, $quoteIds);
     }
 }
-

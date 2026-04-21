@@ -50,7 +50,11 @@ class CI
     public function __construct()
     {
         // assign the application instance
-        self::$APP = CI_Controller::get_instance();
+        self::$APP = get_instance();
+
+        if ( ! class_exists('CI_Controller', false)) {
+            throw new RuntimeException('CI_Controller not loaded before MX initialization');
+        }
 
         global $LANG, $CFG;
 

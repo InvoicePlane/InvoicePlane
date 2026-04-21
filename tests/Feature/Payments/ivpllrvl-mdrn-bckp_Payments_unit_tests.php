@@ -4,8 +4,8 @@ namespace Modules\Payments\Tests\Unit;
 
 use Modules\Payments\Services\PaymentService;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractServiceTestCase;
 
 #[CoversClass(PaymentService::class)]
@@ -32,4 +32,3 @@ class PaymentServiceTest extends AbstractServiceTestCase
         $this->assertArrayHasKey('payment_date', $rules);
     }
 }
-

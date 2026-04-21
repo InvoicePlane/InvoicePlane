@@ -284,4 +284,3 @@ class ClientsServiceTest extends TestCase
         $this->service->delete($client->client_id);
     }
 }
-
