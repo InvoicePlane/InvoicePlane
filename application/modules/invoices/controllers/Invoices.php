@@ -100,6 +100,7 @@ class Invoices extends Admin_Controller
             $error = $validation['error'] ?? 'unknown';
             log_message('error', 'invoices: Invalid file access attempt during download (error: ' . $error . ', hash: ' . $validation['hash'] . ')');
             show_404();
+
             return;
         }
 

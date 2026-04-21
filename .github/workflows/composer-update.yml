@@ -1,10 +1,10 @@
-name: Composer Dependency Update
+name: Composer Update
 
 on:
   workflow_dispatch:
     inputs:
       update_type:
-        description: 'Type of update to perform'
+        description: 'Update scope'
         required: true
         type: choice
         options:
@@ -12,31 +12,23 @@ on:
           - patch-minor
           - all-dependencies
         default: 'security-patch'
-  # schedule:
-    # Run weekly on Monday at 9:00 AM UTC
-   # - cron: '0 9 * * 1'
+  schedule:
+    - cron: '0 9 * * 1'
 
 permissions:
   contents: write
   pull-requests: write
 
-# Note: This workflow requires a Personal Access Token (PAT) to create pull requests.
-# The default GITHUB_TOKEN has restricted permissions and cannot create PRs that trigger other workflows.
-# 
-# To configure the required secret:
-# 1. Create a Personal Access Token (classic) with 'repo' and 'workflow' scopes
-#    at https://github.com/settings/tokens
-# 2. Add the token as a repository secret named 'PAT_TOKEN'
-#    at https://github.com/OWNER/REPO/settings/secrets/actions
-#
-# See: https://github.com/peter-evans/create-pull-request#action-inputs
+# Requires a PAT secret named PAT_TOKEN with repo and workflow scopes to open pull requests.
+# https://github.com/settings/tokens
 
 jobs:
-  update-composer-dependencies:
+  update:
+    name: Update Composer dependencies
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -45,206 +37,95 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.2'
-          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql'
 
-      - name: Run Composer audit
-        id: audit
-        run: |
-          composer audit --format=json > audit-report.json || true
-          # Parse JSON to check advisories array length
-          ADVISORY_COUNT=$(jq '.advisories | length' audit-report.json 2>/dev/null || echo "0")
-          if [ "$ADVISORY_COUNT" -gt 0 ]; then
-            echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
-          else
-            echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
-          fi
+      - name: Security audit (before update)
+        run: composer audit --format=json > audit-report.json || true
 
-      - name: Update Composer dependencies (Security & Patch Updates)
-        if: github.event.inputs.update_type == 'security-patch' || github.event_name == 'schedule'
-        run: |
-          # Note: This updates all dependencies while respecting version constraints in composer.json
-          # For true security-only updates, manually update specific vulnerable packages
-          composer update --with-dependencies --prefer-stable --no-interaction
+      - name: Update (security & patch)
+        if: >
+          github.event.inputs.update_type == 'security-patch' ||
+          github.event_name == 'schedule'
+        run: composer update --with-dependencies --prefer-stable --no-interaction
 
-      - name: Update Composer dependencies (Patch & Minor)
+      - name: Update (patch & minor)
         if: github.event.inputs.update_type == 'patch-minor'
-        run: |
-          composer update --prefer-stable --no-interaction
+        run: composer update --prefer-stable --no-interaction
 
-      - name: Update Composer dependencies (All)
+      - name: Update (all)
         if: github.event.inputs.update_type == 'all-dependencies'
-        run: |
-          composer bump && composer update
+        run: composer bump && composer update
 
       - name: Check for changes
-        id: check-changes
+        id: changes
         run: |
-          # Check both composer.lock and composer.json separately
-          # Both conditions must be true (no changes) for changes_detected to be false
-          # This ensures we detect changes to either file
-          if git diff --quiet composer.lock && git diff --quiet composer.json; then
-            echo "changes_detected=false" >> $GITHUB_OUTPUT
+          if git diff --quiet composer.lock; then
+            echo "detected=false" >> $GITHUB_OUTPUT
           else
-            echo "changes_detected=true" >> $GITHUB_OUTPUT
+            echo "detected=true" >> $GITHUB_OUTPUT
           fi
-      - name: Run smoke tests
-        if: steps.check-changes.outputs.changes_detected == 'true'
-        run: |
-          cp .env.testing.example .env.testing
-          php artisan key:generate --env=testing
-          php artisan test --configuration=phpunit.smoke.xml --env=testing
-        continue-on-error: true
 
-      - name: Get updated packages
-        if: steps.check-changes.outputs.changes_detected == 'true'
-        id: updated-packages
+      - name: Build change summary
+        if: steps.changes.outputs.detected == 'true'
+        id: summary
         run: |
-          # Parse composer.lock to extract package name:version pairs
-          # Get the old version first
-          EMPTY_LOCK='{"packages":[],"packages-dev":[]}'
-          git show HEAD:composer.lock > /tmp/composer.lock.old 2>/dev/null || echo "$EMPTY_LOCK" > /tmp/composer.lock.old
-          
-          # Parse both old and new composer.lock files to get package changes
+          git show HEAD:composer.lock > /tmp/composer.lock.old 2>/dev/null || echo '{"packages":[],"packages-dev":[]}' > /tmp/composer.lock.old
           php -r '
           $old = json_decode(file_get_contents("/tmp/composer.lock.old"), true);
           $new = json_decode(file_get_contents("composer.lock"), true);
-          
-          // Read and parse composer.json with error handling
-          if (file_exists("composer.json")) {
-              $composerJson = json_decode(file_get_contents("composer.json"), true);
-              if ($composerJson === null) {
-                  $composerJson = ["require" => [], "require-dev" => []];
+          $oldPkgs = [];
+          foreach (array_merge($old["packages"] ?? [], $old["packages-dev"] ?? []) as $p) {
+              $oldPkgs[$p["name"]] = $p["version"];
+          }
+          $lines = [];
+          foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $p) {
+              $n = $p["name"]; $v = $p["version"];
+              if (!isset($oldPkgs[$n])) { $lines[] = "$n: (new) -> $v"; }
+              elseif ($oldPkgs[$n] !== $v) { $lines[] = "$n: {$oldPkgs[$n]} -> $v"; }
+          }
+          foreach ($oldPkgs as $n => $v) {
+              $found = false;
+              foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $p) {
+                  if ($p["name"] === $n) { $found = true; break; }
               }
-          } else {
-              $composerJson = ["require" => [], "require-dev" => []];
+              if (!$found) { $lines[] = "$n: $v -> (removed)"; }
           }
-          
-          // Get direct dependencies from composer.json
-          $directDeps = array_keys($composerJson["require"] ?? []);
-          $directDevDeps = array_keys($composerJson["require-dev"] ?? []);
-          
-          $oldPackages = [];
-          foreach (array_merge($old["packages"] ?? [], $old["packages-dev"] ?? []) as $pkg) {
-              $oldPackages[$pkg["name"]] = $pkg["version"];
-          }
-          
-          $newPackages = [];
-          foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $pkg) {
-              $newPackages[$pkg["name"]] = $pkg["version"];
-          }
-          
-          $directChanges = [];
-          $transientChanges = [];
-          
-          // Check for new and updated packages
-          foreach ($newPackages as $name => $newVersion) {
-              $isDirect = in_array($name, $directDeps) || in_array($name, $directDevDeps);
-              
-              if (!isset($oldPackages[$name])) {
-                  $change = "$name: (new) → $newVersion";
-                  if ($isDirect) {
-                      $directChanges[] = $change;
-                  } else {
-                      $transientChanges[] = $change;
-                  }
-              } elseif ($oldPackages[$name] !== $newVersion) {
-                  $change = "$name: {$oldPackages[$name]} → $newVersion";
-                  if ($isDirect) {
-                      $directChanges[] = $change;
-                  } else {
-                      $transientChanges[] = $change;
-                  }
-              }
-          }
-          
-          // Check for removed packages using array key lookup
-          foreach ($oldPackages as $name => $version) {
-              if (!isset($newPackages[$name])) {
-                  $isDirect = in_array($name, $directDeps) || in_array($name, $directDevDeps);
-                  $change = "$name: $version → (removed)";
-                  if ($isDirect) {
-                      $directChanges[] = $change;
-                  } else {
-                      $transientChanges[] = $change;
-                  }
-              }
-          }
-          
-          if (empty($directChanges) && empty($transientChanges)) {
-              echo "No package changes detected\n";
-          } else {
-              if (!empty($directChanges)) {
-                  echo "## Direct Dependencies (from composer.json)\n\n";
-                  foreach ($directChanges as $change) {
-                      echo "$change\n";
-                  }
-              }
-              
-              if (!empty($transientChanges)) {
-                  if (!empty($directChanges)) {
-                      echo "\n";
-                  }
-                  echo "## Transient Dependencies (indirect)\n\n";
-                  foreach ($transientChanges as $change) {
-                      echo "$change\n";
-                  }
-              }
-          }
+          echo empty($lines) ? "No version changes.\n" : implode("\n", $lines) . "\n";
           ' > updated-packages.txt
-          
-          echo "UPDATED_PACKAGES<<EOF" >> $GITHUB_OUTPUT
+          echo "PACKAGES<<EOF" >> $GITHUB_OUTPUT
           cat updated-packages.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Create Pull Request
-        if: steps.check-changes.outputs.changes_detected == 'true'
+      - name: Create pull request
+        if: steps.changes.outputs.detected == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.PAT_TOKEN }}
           commit-message: "chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
           branch: automated/composer-update-${{ github.run_number }}
           delete-branch: false
-          title: "chore(deps): Update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
+          title: "chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
           body: |
-            ## Composer Dependency Update
-            
-            This PR updates Composer dependencies.
-            
-            **Update Type:** ${{ github.event.inputs.update_type }}
+            ## Composer dependency update
+
+            **Update scope:** ${{ github.event.inputs.update_type || 'security-patch' }}
             **Triggered by:** ${{ github.event_name }}
-            
-            ### Updated Packages
-            
+
+            ### Changed packages
+
             ```
-            ${{ steps.updated-packages.outputs.UPDATED_PACKAGES }}
+            ${{ steps.summary.outputs.PACKAGES }}
             ```
-            
-            ### Checks Performed
-            
-            - [ ] ~~Unit tests passed~~ (commented out until further notice)
-            - [ ] ~~Static analysis completed~~ (commented out until further notice)
-            - [ ] ~~Code formatting checked~~ (commented out until further notice)
-            
-            ### Security Audit
-            
-            ${{ steps.audit.outputs.vulnerabilities_found == 'true' && 'Security vulnerabilities detected. Please review audit-report.json.' || 'No security vulnerabilities detected.' }}
-            
-            ### Review Checklist
-            
-            - [ ] Review updated packages and their changelogs
-            - [ ] Verify all tests pass
-            - [ ] Check for breaking changes
-            - [ ] Update documentation if needed
-            - [ ] Test manually in development environment
-            
-            ---
-            
-            *This PR was automatically created by the Composer Update workflow.*
+
+            ### Review checklist
+
+            - [ ] Review changelogs for changed packages
+            - [ ] Run PHPUnit
+            - [ ] Test manually in a development environment
           labels: |
             dependencies
             composer
             automated-pr
 
-      - name: No changes detected
-        if: steps.check-changes.outputs.changes_detected == 'false'
-        run: echo "No Composer dependency updates available."
+      - name: No changes
+        if: steps.changes.outputs.detected == 'false'
+        run: echo "Composer dependencies are already up to date."

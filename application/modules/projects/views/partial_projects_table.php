@@ -12,7 +12,7 @@
             <tbody>
 <?php
 foreach ($projects as $project) {
-?>
+    ?>
                 <tr>
                     <td><?php echo anchor('projects/view/' . $project->project_id, htmlsc($project->project_name)); ?></td>
                     <td><?php echo ($project->client_id) ? htmlsc(format_client($project)) : trans('none'); ?></td>
@@ -44,7 +44,7 @@ foreach ($projects as $project) {
                 </tr>
 <?php
 }
-?>
+                ?>
             </tbody>
 
         </table>

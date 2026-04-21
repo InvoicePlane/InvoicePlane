@@ -46,7 +46,7 @@
                 <table class="table table-hover table-bordered table-condensed no-margin">
 <?php
 foreach ($quote_status_totals as $total) {
-?>
+    ?>
                     <tr>
                         <td>
                             <a href="<?php echo site_url($total['href']); ?>">
@@ -61,7 +61,7 @@ foreach ($quote_status_totals as $total) {
                     </tr>
 <?php
 }
-?>
+    ?>
                 </table>
             </div>
 
@@ -78,7 +78,7 @@ foreach ($quote_status_totals as $total) {
                 <table class="table table-hover table-bordered table-condensed no-margin">
 <?php
 foreach ($invoice_status_totals as $total) {
-?>
+    ?>
                     <tr>
                         <td>
                             <a href="<?php echo site_url($total['href']); ?>">
@@ -93,12 +93,12 @@ foreach ($invoice_status_totals as $total) {
                     </tr>
 <?php
 }
-?>
+    ?>
                 </table>
             </div>
 <?php
 if (empty($overdue_invoices)) {
-?>
+    ?>
             <div class="panel panel-default panel-heading">
                 <span class="text-muted"><?php _trans('no_overdue_invoices'); ?></span>
             </div>
@@ -108,7 +108,7 @@ if (empty($overdue_invoices)) {
     foreach ($overdue_invoices as $invoice) {
         $overdue_invoices_total += $invoice->invoice_balance;
     }
-?>
+    ?>
             <div class="panel panel-danger panel-heading">
                 <?php echo anchor('invoices/status/overdue', '<i class="fa fa-external-link"></i> ' . trans('overdue_invoices'), 'class="text-danger"'); ?>
                 <span class="pull-right text-danger">
@@ -117,7 +117,7 @@ if (empty($overdue_invoices)) {
             </div>
 <?php
 }
-?>
+    ?>
 
         </div>
     </div>
@@ -145,7 +145,7 @@ if (empty($overdue_invoices)) {
                         <tbody>
 <?php
 foreach ($quotes as $quote) {
-?>
+    ?>
                             <tr>
                                 <td>
                                 <span class="label
@@ -174,7 +174,7 @@ foreach ($quotes as $quote) {
                             </tr>
 <?php
 }
-?>
+    ?>
                         <tr>
                             <td colspan="6" class="text-right small">
                                 <?php echo anchor('quotes/status/all', trans('view_all')); ?>
@@ -213,15 +213,15 @@ foreach ($invoices as $invoice) {
     if ($this->config->item('disable_read_only') == true) {
         $invoice->is_read_only = 0;
     }
-?>
+    ?>
                             <tr>
                                 <td>
                                     <span class="label <?php echo $invoice_statuses[$invoice->invoice_status_id]['class']; ?>">
                                         <?php echo $invoice_statuses[$invoice->invoice_status_id]['label'];
-                                            if ($invoice->invoice_sign == '-1') { ?>&nbsp;<i class="fa fa-credit-invoice" title="<?php _trans('credit_invoice') ?>"></i><?php }
-                                            if ($invoice->is_read_only) { ?>&nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only') ?>"></i><?php }
-                                            if ($invoice->invoice_is_recurring) { ?>&nbsp;<i class="fa fa-refresh" title="<?php _trans('recurring') ?>"></i><?php }
-                                        ?>
+    if ($invoice->invoice_sign == '-1') { ?>&nbsp;<i class="fa fa-credit-invoice" title="<?php _trans('credit_invoice') ?>"></i><?php }
+    if ($invoice->is_read_only) { ?>&nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only') ?>"></i><?php }
+    if ($invoice->invoice_is_recurring) { ?>&nbsp;<i class="fa fa-refresh" title="<?php _trans('recurring') ?>"></i><?php }
+    ?>
                                     </span>
                                 </td>
                                 <td>
@@ -241,26 +241,26 @@ foreach ($invoices as $invoice) {
                                 <td style="text-align: center;">
 <?php
     if ($invoice->sumex_id != null) {
-?>
+        ?>
                                     <a href="<?php echo site_url('invoices/generate_sumex_pdf/' . $invoice->invoice_id); ?>"
                                        target="_blank" title="<?php _trans('generate_sumex'); ?>">
                                         <i class="fa fa-file-pdf-o"></i>
                                     </a>
 <?php
     } else {
-?>
+        ?>
                                     <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                        target="_blank" title="<?php _trans('download_pdf'); ?>">
                                         <i class="fa fa-file-pdf-o"></i>
                                     </a>
 <?php
     }
-?>
+    ?>
                                 </td>
                             </tr>
 <?php
 }
-?>
+    ?>
                         <tr>
                             <td colspan="6" class="text-right small">
                                 <?php echo anchor('invoices/status/all', trans('view_all')); ?>
@@ -277,7 +277,7 @@ foreach ($invoices as $invoice) {
 
 <?php
 if (get_setting('projects_enabled') == 1) {
-?>
+    ?>
         <div class="row">
             <div class="col-xs-12 col-md-6">
 
@@ -297,8 +297,8 @@ if (get_setting('projects_enabled') == 1) {
 
                             <tbody>
 <?php
-    foreach ($projects as $project) {
-?>
+        foreach ($projects as $project) {
+            ?>
                                 <tr>
                                     <td>
                                         <?php echo anchor('projects/view/' . $project->project_id, htmlsc($project->project_name)); ?>
@@ -312,8 +312,8 @@ if (get_setting('projects_enabled') == 1) {
                                     </td>
                                 </tr>
 <?php
-    }
-?>
+        }
+    ?>
                                 <tr>
                                     <td colspan="6" class="text-right small">
                                         <?php echo anchor('projects/index', trans('view_all')); ?>
@@ -348,8 +348,8 @@ if (get_setting('projects_enabled') == 1) {
 
                             <tbody>
 <?php
-    foreach ($tasks as $task) {
-?>
+        foreach ($tasks as $task) {
+            ?>
                                 <tr>
                                     <td>
                                     <span class="label <?php echo $task_statuses[$task->task_status]['class'] ?? '' ?>">
@@ -371,8 +371,8 @@ if (get_setting('projects_enabled') == 1) {
                                     </td>
                                 </tr>
 <?php
-    }
-?>
+        }
+    ?>
                                 <tr>
                                     <td colspan="6" class="text-right small">
                                         <?php echo anchor('tasks/index', trans('view_all')); ?>
@@ -389,6 +389,6 @@ if (get_setting('projects_enabled') == 1) {
         </div>
 <?php
 } // End if projects_enabled
-?>
+    ?>
 
 </div>

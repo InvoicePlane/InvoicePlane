@@ -96,7 +96,37 @@ For detailed upgrade instructions, visit the [InvoicePlane Wiki](https://wiki.in
 
 ## Getting Started
 
-To get started with InvoicePlane:
+To get started with InvoicePlane, you have several options depending on your needs:
+
+### Quick Start with Docker (Recommended for Development)
+
+The easiest way to get InvoicePlane running locally is with Docker:
+
+```bash
+# Clone the repository
+git clone https://github.com/InvoicePlane/InvoicePlane.git
+cd InvoicePlane
+
+# Install dependencies
+composer install
+yarn install
+yarn build
+
+# Configure the application
+cp ipconfig.php.example ipconfig.php
+# Edit ipconfig.php to set your database connection (use settings from docker-compose.yml)
+
+# Start Docker containers (PHP 8.2, MariaDB, nginx, phpMyAdmin)
+docker-compose up -d
+
+# Access the application
+# InvoicePlane: http://localhost
+# phpMyAdmin: http://localhost:8081
+```
+
+### Production Installation
+
+For production deployments:
 
 1. **Download the Latest Version:**
    - Visit the [InvoicePlane website](https://www.invoiceplane.com/) to download the latest release.
@@ -106,7 +136,7 @@ To get started with InvoicePlane:
 
 3. **Configuration:**
    - Duplicate `ipconfig.php.example` and rename it to `ipconfig.php`.
-   - Open `ipconfig.php` in a text editor and set your base URL.
+   - Open `ipconfig.php` in a text editor and set your base URL and database credentials.
 
 4. **Run the Installer:**
    - Navigate to `http://your-domain.com/index.php/setup` in your browser and follow the on-screen instructions to complete the installation.
@@ -129,6 +159,72 @@ To remove `index.php` from your URLs:
    - Rename the `htaccess` file in the root directory to `.htaccess`.
 
 > **Note:** If you experience issues after making these changes, revert to the default settings by undoing the steps above.
+
+---
+
+## Container Deployment
+
+> [!WARNING]
+> The container always uses the new calculation.
+
+A pre-built container image is available. Configuration is provided entirely through environment variables — no `ipconfig.php` file is needed. The entrypoint generates the configuration and runs any pending database migrations automatically on startup.
+
+### Required environment variables
+
+| Variable | Description |
+|---|---|
+| `IP_URL` | Public base URL without trailing slash, e.g. `https://invoices.example.com` |
+| `DB_HOSTNAME` | Database host |
+| `DB_USERNAME` | Database user |
+| `DB_PASSWORD` | Database password |
+| `DB_DATABASE` | Database name |
+| `ENCRYPTION_KEY` | Secret key for encrypted data — generate with `openssl rand -base64 32` |
+
+### Optional environment variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `DB_PORT` | `3306` | Database port |
+| `CI_ENV` | `production` | Set to `development` to show all PHP errors |
+| `ENABLE_DEBUG` | `false` | Enable advanced debug logging |
+| `CUSTOM_TEMPLATES_FOLDER` | `/var/www/html/templates/` | Absolute path to a directory of custom invoice/quote templates. Mount a volume at the chosen path and set this variable to point at it. The directory should mirror the built-in structure: `invoice_templates/pdf/`, `invoice_templates/public/`, `quote_templates/pdf/`, `quote_templates/public/`. Templates here are listed alongside the built-in ones and take precedence when they share a name. |
+| `SESS_EXPIRATION` | `864000` | Session lifetime in seconds (0 = expire on browser close) |
+| `SESS_MATCH_IP` | `true` | Tie sessions to the client IP address |
+| `SESS_REGENERATE_DESTROY` | `false` | Destroy the old session on regeneration |
+| `X_FRAME_OPTIONS` | `SAMEORIGIN` | Value for the `X-Frame-Options` response header |
+| `ENABLE_X_CONTENT_TYPE_OPTIONS` | `true` | Send the `X-Content-Type-Options: nosniff` header |
+| `LEGACY_CALCULATION` | `false` | Use the classic tax/discount calculation mode. Set to `false` for simple per-item tax calculation (required for valid e-invoice XML output) |
+| `ENABLE_INVOICE_DELETION` | `false` | Allow invoices to be deleted |
+| `DISABLE_READ_ONLY` | `false` | Disable the read-only mode for sent invoices |
+| `PASSWORD_RESET_IP_MAX_ATTEMPTS` | `5` | Max password reset attempts per IP within the time window |
+| `PASSWORD_RESET_IP_WINDOW_MINUTES` | `60` | Time window in minutes for IP-based reset rate limiting |
+| `PASSWORD_RESET_EMAIL_MAX_ATTEMPTS` | `3` | Max password reset attempts per email within the time window |
+| `PASSWORD_RESET_EMAIL_WINDOW_HOURS` | `1` | Time window in hours for email-based reset rate limiting |
+| `SUMEX_SETTINGS` | `false` | Enable Swiss medical invoice (Sumex) customizations |
+| `SUMEX_URL` | — | URL to post Sumex XML to in order to receive a generated PDF |
+| `ENCRYPTION_CIPHER` | `AES-256` | Cipher used for encrypted data |
+
+### Default admin user
+
+On first startup, if no users exist in the database, the entrypoint automatically creates an admin account. The credentials can be set via environment variables; any omitted value falls back to a safe default.
+
+| Variable | Default | Description |
+|---|---|---|
+| `DEFAULT_LANGUAGE` | `english` | Default language for the application (e.g. `english`, `german`, `french`). Only applied on fresh installs; changing it after the first run has no effect. |
+| `DEFAULT_ADMIN_EMAIL` | `admin@localhost` | Email address for the default admin account |
+| `DEFAULT_ADMIN_PASSWORD` | *(random)* | Password for the default admin account. If unset, a random 24-character password is generated and printed to the container log on first startup. |
+| `DEFAULT_ADMIN_NAME` | `admin` | Display name for the default admin account |
+
+> **Note:** User creation is skipped on every subsequent startup once at least one user exists, so changing these variables after the initial run has no effect.
+
+### Persistent volumes
+
+Mount volumes for any data that must survive container restarts:
+
+| Path | Contents |
+|---|---|
+| `/var/www/html/uploads` | Client files, logos, and imported documents |
+| `/var/www/html/storage` | Framework cache and log files |
 
 ---
 
@@ -155,6 +251,12 @@ We welcome contributions from the community! To get involved:
 - **Translate InvoicePlane:** Help translate the application into your language. Also see [Translations.md](TRANSLATIONS.md)
 
 For detailed contribution guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Developer Resources
+
+- **[Development Guidelines](.junie/guidelines.md)** - Comprehensive guide for developers
+- **[Copilot Instructions](.github/copilot-instructions.md)** - GitHub Copilot context and patterns
+- **[Docker Setup](resources/docker/README.md)** - Docker configuration and usage guide
 
 ---
 

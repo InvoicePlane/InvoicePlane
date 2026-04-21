@@ -30,14 +30,20 @@
                     </a>
                 <?php } ?>
                 <?php if (in_array($quote->quote_status_id, [2, 3])) { ?>
-                    <a href="<?php echo site_url('guest/view/approve_quote/' . $quote_url_key); ?>"
-                       class="btn btn-success">
-                        <i class="fa fa-check"></i><?php _trans('approve_this_quote'); ?>
-                    </a>
-                    <a href="<?php echo site_url('guest/view/reject_quote/' . $quote_url_key); ?>"
-                       class="btn btn-danger">
-                        <i class="fa fa-times-circle"></i><?php _trans('reject_this_quote'); ?>
-                    </a>
+                    <?php if (isset($_SESSION['user_id'], $_SESSION['user_type']) && (int) $_SESSION['user_type'] === 2) { ?>
+                        <form method="post" action="<?php echo site_url('guest/view/approve_quote/' . $quote_url_key); ?>" style="display: inline;">
+                            <?php _csrf_field(); ?>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-check"></i><?php _trans('approve_this_quote'); ?>
+                            </button>
+                        </form>
+                        <form method="post" action="<?php echo site_url('guest/view/reject_quote/' . $quote_url_key); ?>" style="display: inline;">
+                            <?php _csrf_field(); ?>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa fa-times-circle"></i><?php _trans('reject_this_quote'); ?>
+                            </button>
+                        </form>
+                    <?php } ?>
                 <?php } ?>
                 <a href="<?php echo site_url('guest/view/generate_quote_pdf/' . $quote_url_key); ?>"
                    class="btn btn-primary">
@@ -59,15 +65,15 @@
         } else {
             echo '<br>';
         }
-        ?>
+?>
 
         <div class="quote">
 
             <?php
-            if ($logo = invoice_logo()) {
-                echo $logo . '<br><br>';
-            }
-            ?>
+    if ($logo = invoice_logo()) {
+        echo $logo . '<br><br>';
+    }
+?>
 
             <div class="row">
                 <div class="col-xs-12 col-md-6 col-lg-5">
@@ -203,8 +209,8 @@
                         </thead>
                         <tbody>
                         <?php
-                        foreach ($items as $item) {
-                            ?>
+foreach ($items as $item) {
+    ?>
                             <tr>
                                 <td><?php _htmlsc($item->item_name); ?></td>
                                 <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
@@ -222,29 +228,29 @@
                                 <td class="amount"><?php echo format_currency($item->item_subtotal - $item->item_discount); ?></td>
                             </tr>
                             <?php
-                        }
-                        ?>
+}
+?>
 
                         <?php
-                        $colspan = $show_item_discounts ? 4 : 3;
-                        if ($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
-                            if ( ! $legacy_calculation) {
-                                ?>
+$colspan = $show_item_discounts ? 4 : 3;
+if ($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
+    if ( ! $legacy_calculation) {
+        ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="amount"><?php _trans('discount'); ?></td>
                                     <td class="amount"><?php
-                                        if ($quote->quote_discount_percent > 0) {
-                                            echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
-                                        } else {
-                                            echo format_currency($quote->quote_discount_amount);
-                                        }
-                                        ?></td>
+                if ($quote->quote_discount_percent > 0) {
+                    echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
+                } else {
+                    echo format_currency($quote->quote_discount_amount);
+                }
+        ?></td>
                                 </tr>
                                 <?php
-                            }
-                        }
-                        ?>
+    }
+}
+?>
 
                         <tr>
                             <td colspan="<?php echo $colspan; ?>"></td>
@@ -253,20 +259,20 @@
                         </tr>
 
                         <?php
-                        if ($quote->quote_item_tax_total > 0) {
-                            ?>
+if ($quote->quote_item_tax_total > 0) {
+    ?>
                             <tr>
                                 <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                 <td class="amount"><?php _trans('item_tax'); ?></td>
                                 <td class="amount"><?php echo format_currency($quote->quote_item_tax_total); ?></td>
                             </tr>
                             <?php
-                        }
-                        ?>
+}
+?>
 
                         <?php
-                        foreach ($quote_tax_rates as $quote_tax_rate) {
-                            ?>
+foreach ($quote_tax_rates as $quote_tax_rate) {
+    ?>
                             <tr>
                                 <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                 <td class="amount">
@@ -275,28 +281,28 @@
                                 <td class="amount"><?php echo format_currency($quote_tax_rate->quote_tax_rate_amount); ?></td>
                             </tr>
                             <?php
-                        }
-                        ?>
+}
+?>
 
                         <?php
-                        if ($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
-                            if ($legacy_calculation) {
-                                ?>
+if ($quote?->quote_discount_percent > 0 || $quote?->quote_discount_amount > 0) {
+    if ($legacy_calculation) {
+        ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="amount"><?php _trans('discount'); ?></td>
                                     <td class="amount"><?php
-                                        if ($quote->quote_discount_percent > 0) {
-                                            echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
-                                        } else {
-                                            echo format_currency($quote->quote_discount_amount);
-                                        }
-                                        ?></td>
+                if ($quote->quote_discount_percent > 0) {
+                    echo format_amount($quote->quote_discount_percent) . '&nbsp;%';
+                } else {
+                    echo format_currency($quote->quote_discount_amount);
+                }
+        ?></td>
                                 </tr>
                                 <?php
-                            }
-                        }
-                        ?>
+    }
+}
+?>
 
                         <tr>
                             <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
@@ -318,18 +324,18 @@
                         </div>
                         <?php
                     }
-                    ?>
+?>
 
                     <?php
-                    if (count($attachments) > 0) {
-                        ?>
+if (count($attachments) > 0) {
+    ?>
                         <div class="col-xs-12 col-md-6">
                             <h4><?php _trans('attachments'); ?></h4>
                             <div class="table-responsive">
                                 <table class="table table-condensed">
                                     <?php
-                                    foreach ($attachments as $attachment) {
-                                        ?>
+                foreach ($attachments as $attachment) {
+                    ?>
                                         <tr class="attachments">
                                             <td><?php echo $attachment['name']; ?></td>
                                             <td>
@@ -340,14 +346,14 @@
                                             </td>
                                         </tr>
                                         <?php
-                                    }
-                                    ?>
+                }
+    ?>
                                 </table>
                             </div>
                         </div>
                         <?php
-                    }
-                    ?>
+}
+?>
 
                 </div>
 

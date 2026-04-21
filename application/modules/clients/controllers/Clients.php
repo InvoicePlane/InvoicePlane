@@ -81,7 +81,6 @@ class Clients extends Admin_Controller
         }
 
         $new_client = false;
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
