@@ -2,6 +2,8 @@
 
 namespace Tests\Kernel;
 
+use RuntimeException;
+
 class MxDispatcher
 {
     public function dispatch(string $uri, string $method = 'GET', array $payload = []): mixed
@@ -82,15 +84,17 @@ class MxDispatcher
             return;
         }
 
-        if (!function_exists('get_instance')) {
-            require_once BASEPATH . 'core/Common.php';
+        require_once BASEPATH . 'core/Common.php';
+        require_once BASEPATH . 'core/Controller.php';
+
+        if (!class_exists('CI_Controller', false)) {
+            throw new RuntimeException('CI_Controller not available');
         }
 
-        if (!class_exists('CI_Controller')) {
-            require_once BASEPATH . 'core/Controller.php';
-        }
+        $CI = new \CI_Controller();
 
-        new \CI_Controller();
+        // THIS LINE is what you are missing
+        $GLOBALS['CI'] = $CI;
 
         $booted = true;
     }
