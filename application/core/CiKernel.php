@@ -2,8 +2,6 @@
 
 namespace core;
 
-use Modules;
-
 class CiKernel
 {
     private static ?self $instance = null;
@@ -25,11 +23,6 @@ class CiKernel
         return self::boot('testing');
     }
 
-    public function handleHttp(): void
-    {
-        self::$ci->run();
-    }
-
     public static function boot(string $context): self
     {
         if (self::$instance !== null) {
@@ -44,6 +37,11 @@ class CiKernel
         self::$instance->initCi();
 
         return self::$instance;
+    }
+
+    public function handleHttp(): void
+    {
+        self::$ci->run();
     }
 
     private function defineConstants(string $context): void
@@ -80,7 +78,7 @@ class CiKernel
 
     private function loadCore(): void
     {
-        if (!defined('CI_TESTING')) {
+        if ( ! defined('CI_TESTING')) {
             require_once BASEPATH . 'core/CodeIgniter.php';
             exit;
         }
