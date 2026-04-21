@@ -21,8 +21,8 @@ if (file_exists($base . '/ipconfig.php')) {
 
 defined('ENVIRONMENT') || define('ENVIRONMENT', 'testing');
 
-defined('FCPATH')   || define('FCPATH', $base . '/');
-defined('APPPATH')  || define('APPPATH', $base . '/application/');
+defined('FCPATH') || define('FCPATH', $base . '/');
+defined('APPPATH') || define('APPPATH', $base . '/application/');
 defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter/system/');
 defined('VIEWPATH') || define('VIEWPATH', APPPATH . 'views/');
 
@@ -63,6 +63,6 @@ Modules::$locations = [
 |--------------------------------------------------------------------------
 */
 
-$CI =& get_instance();
+$CI = & get_instance();
 
 return $CI;
