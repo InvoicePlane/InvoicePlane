@@ -2,13 +2,9 @@
 
 namespace Tests\Feature\Clients;
 
-use Tests\Hmvc\BaseHmvcTestCase;
+use Tests\AbstractTestCase;
 
-/**
- * @group feature
- * @group clients
- */
-class ClientsFeatureTest extends BaseHmvcTestCase
+class ClientsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
     {

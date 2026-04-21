@@ -2,6 +2,8 @@
 
 namespace core;
 
+use Modules;
+
 class CiKernel
 {
     private static ?self $instance = null;
@@ -28,7 +30,7 @@ class CiKernel
         self::$ci->run();
     }
 
-    private static function boot(string $context): self
+    public static function boot(string $context): self
     {
         if (self::$instance !== null) {
             return self::$instance;

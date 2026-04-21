@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Feature\Integrations;
 
-use Tests\Hmvc\BaseHmvcTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * Drives the integrations module through the real MX router stack.
@@ -16,7 +14,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group integrations
  */
-class IntegrationsFeatureTest extends BaseHmvcTestCase
+class IntegrationsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
