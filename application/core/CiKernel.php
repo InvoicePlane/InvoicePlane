@@ -80,7 +80,15 @@ class CiKernel
 
     private function loadCore(): void
     {
-        require_once BASEPATH . 'core/CodeIgniter.php';
+        if (!defined('CI_TESTING')) {
+            require_once BASEPATH . 'core/CodeIgniter.php';
+            exit;
+        }
+
+        if (defined('CI_TESTING')) {
+            // prevent routing execution during phpunit bootstrap
+            return;
+        }
     }
 
     private function initCi(): void
