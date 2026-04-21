@@ -16,9 +16,13 @@ abstract class AbstractTestCase extends PHPUnitTestCase
     {
         parent::setUp();
 
-        define('PHPUNIT_RUNNING', true);
+        require_once base_path('bootstrap/app.php');
 
-        $this->application = require base_path('bootstrap/app.php');
+        $this->ci = &get_instance();
+
+        $_GET    = [];
+        $_POST   = [];
+        $_SERVER = [];
     }
 
     /**
