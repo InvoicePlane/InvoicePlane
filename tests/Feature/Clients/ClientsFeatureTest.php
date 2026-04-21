@@ -1,11 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Feature\Clients;
 
 use Tests\Hmvc\BaseHmvcTestCase;
-use Tests\Hmvc\HmvcResponse;
 
 /**
  * @group feature
@@ -108,7 +105,7 @@ final class ClientsFeatureTest extends BaseHmvcTestCase
             sprintf(
                 'Client view page for ID [%d] must contain the client name or ID. Body (first 400 chars): %s',
                 $clientId,
-                substr($response->body(), 0, 400)
+                mb_substr($response->body(), 0, 400)
             )
         );
     }
@@ -166,8 +163,8 @@ final class ClientsFeatureTest extends BaseHmvcTestCase
         );
 
         self::assertSame(
-            strlen($first->body()),
-            strlen($second->body()),
+            mb_strlen($first->body()),
+            mb_strlen($second->body()),
             'Two consecutive GET /clients produced bodies of different lengths — the response is non-deterministic.'
         );
     }

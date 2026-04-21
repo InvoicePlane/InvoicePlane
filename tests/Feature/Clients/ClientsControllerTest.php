@@ -1,0 +1,20 @@
+<?php
+
+namespace Tests\Feature\Clients;
+
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
+
+class ClientsControllerTest extends AbstractTestCase
+{
+    #[Test]
+    public function it_shows_seeded_client_on_clients_page(): void
+    {
+        $response = $this->get('/clients');
+
+        $this->assertStringContainsString(
+            'Test Client',
+            $response
+        );
+    }
+}

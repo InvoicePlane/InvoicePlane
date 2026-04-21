@@ -1,20 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Tests\Hmvc\Concerns;
+namespace Tests\Concerns;
 
 trait InteractsWithSession
 {
     protected function seedSession(array $data): void
     {
-        if (!function_exists('get_instance')) {
+        if ( ! function_exists('get_instance')) {
             return;
         }
 
         $CI = &get_instance();
 
-        if (!isset($CI->session)) {
+        if ( ! isset($CI->session)) {
             return;
         }
 
@@ -25,13 +23,13 @@ trait InteractsWithSession
 
     protected function clearSession(): void
     {
-        if (!function_exists('get_instance')) {
+        if ( ! function_exists('get_instance')) {
             return;
         }
 
         $CI = &get_instance();
 
-        if (!isset($CI->session)) {
+        if ( ! isset($CI->session)) {
             return;
         }
 

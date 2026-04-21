@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Tests\Hmvc\Concerns;
+namespace Tests\Concerns;
 
 trait InteractsWithDatabase
 {
@@ -10,7 +8,7 @@ trait InteractsWithDatabase
     {
         $CI = &get_instance();
 
-        if (!isset($CI->db)) {
+        if ( ! isset($CI->db)) {
             static::markTestSkipped(
                 'Database connection unavailable. Ensure the test environment has a configured database.'
             );
@@ -33,7 +31,7 @@ trait InteractsWithDatabase
     {
         $CI = &get_instance();
 
-        if (!isset($CI->db)) {
+        if ( ! isset($CI->db)) {
             static::markTestSkipped('Database connection unavailable.');
         }
 
@@ -44,7 +42,7 @@ trait InteractsWithDatabase
     {
         $CI = &get_instance();
 
-        if (!isset($CI->db)) {
+        if ( ! isset($CI->db)) {
             static::markTestSkipped('Database connection unavailable.');
         }
 
@@ -55,7 +53,7 @@ trait InteractsWithDatabase
     {
         $CI = &get_instance();
 
-        if (!isset($CI->db)) {
+        if ( ! isset($CI->db)) {
             static::markTestSkipped('Database connection unavailable.');
         }
 
