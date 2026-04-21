@@ -2,54 +2,70 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-
-use function Tests\Feature\Auth\route;
-
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
     use InteractsWithDatabase;
 
-    public function test_login_screen_can_be_rendered(): void
+    #[Test]
+    public function it_renders_the_login_screen(): void
     {
+        /* Arrange */
+        /* (no setup needed) */
+
+        /* Act */
         $response = $this->get('/login');
 
+        /* Assert */
         $response->assertStatus(200);
     }
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
+    #[Test]
+    public function it_authenticates_users_via_the_login_screen(): void
     {
+        /* Arrange */
         $user = $this->seedModel('User');
 
+        /* Act */
         $response = $this->post('/login', [
-            'email'    => $user->email,
-            'password' => 'password',
+            'email'    => $user->user_email,
+            'password' => 'secret',
         ]);
 
+        /* Assert */
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
-    public function test_users_can_not_authenticate_with_invalid_password(): void
+    #[Test]
+    public function it_rejects_authentication_with_invalid_password(): void
     {
+        /* Arrange */
         $user = $this->seedModel('User');
 
+        /* Act */
         $this->post('/login', [
-            'email'    => $user->email,
+            'email'    => $user->user_email,
             'password' => 'wrong-password',
         ]);
 
+        /* Assert */
         $this->assertGuest();
     }
 
-    public function test_users_can_logout(): void
+    #[Test]
+    public function it_logs_out_authenticated_users(): void
     {
+        /* Arrange */
         $user = $this->seedModel('User');
 
+        /* Act */
         $response = $this->actingAs($user)->post('/logout');
 
+        /* Assert */
         $this->assertGuest();
         $response->assertRedirect('/');
     }

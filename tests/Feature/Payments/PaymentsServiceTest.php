@@ -20,7 +20,7 @@ class PaymentsServiceTest extends TestCase
     #[Test]
     public function it_retrieves_payments_by_invoice_id(): void
     {
-        // Arrange
+        /* Arrange */
         $client = tmpClient::create([
             'client_name'   => 'Test Client',
             'client_active' => 1,
@@ -55,20 +55,20 @@ class PaymentsServiceTest extends TestCase
             'payment_date'   => now(),
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->whereInvoiceId($invoice->invoice_id);
 
-        // Assert
+        /* Assert */
         $this->assertInstanceOf(PaymentsService::class, $result);
     }
 
     #[Test]
     public function it_returns_db_array_with_correct_structure(): void
     {
-        // Act
+        /* Act */
         $result = $this->service->dbArray();
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($result);
     }
 }

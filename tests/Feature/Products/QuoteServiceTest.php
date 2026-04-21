@@ -110,7 +110,7 @@ class QuoteServiceTest extends AbstractServiceTestCase
 
         $createdDate = '2024-01-01';
 
-        /** Act */
+        /* Act */
         // Note: This test assumes QuoteService has a calculateDateDue method
         // If it doesn't exist, we're testing the concept
         // For now, we'll test the date calculation logic
@@ -126,7 +126,7 @@ class QuoteServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_finds_quote_with_relations(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('\Modules\Crm\Models\Client');
         $user   = $this->seedModel('\Modules\Core\Models\User');
         $quote  = $this->seedModel('Quote', [
@@ -134,7 +134,7 @@ class QuoteServiceTest extends AbstractServiceTestCase
             'user_id'   => $user->user_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->findWithRelations($quote->quote_id);
 
         /* Assert */
@@ -150,13 +150,13 @@ class QuoteServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_finds_quote_with_custom_relations(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('\Modules\Crm\Models\Client');
         $quote  = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->findWithRelations($quote->quote_id, ['client']);
 
         /* Assert */
@@ -169,7 +169,7 @@ class QuoteServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_null_when_quote_not_found(): void
     {
-        /** Act */
+        /* Act */
         $result = $this->service->findWithRelations(99999);
 
         /* Assert */
@@ -180,13 +180,13 @@ class QuoteServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_finds_quote_or_fails(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('\Modules\Crm\Models\Client');
         $quote  = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->findWithRelationsOrFail($quote->quote_id);
 
         /* Assert */
@@ -211,7 +211,7 @@ class QuoteServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_gets_all_quotes_with_relations_paginated(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('\Modules\Crm\Models\Client');
         $user   = $this->seedModel('\Modules\Core\Models\User');
 
@@ -220,7 +220,7 @@ class QuoteServiceTest extends AbstractServiceTestCase
             'user_id'   => $user->user_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations();
 
         /* Assert */
@@ -233,7 +233,7 @@ class QuoteServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_filters_quotes_by_status(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client     = $this->seedModel('\Modules\Crm\Models\Client');
         $draftQuote = $this->seedModel('Quote', [
             'client_id'       => $client->client_id,
@@ -244,7 +244,7 @@ class QuoteServiceTest extends AbstractServiceTestCase
             'quote_status_id' => 2, // Sent
         ]);
 
-        /** Act */
+        /* Act */
         $draftResult = $this->service->getAllWithRelations(['client'], 'draft');
         $sentResult  = $this->service->getAllWithRelations(['client'], 'sent');
 
@@ -265,13 +265,13 @@ class QuoteServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_respects_custom_per_page_parameter(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('\Modules\Crm\Models\Client');
         $this->seedModelMany('Quote', 10, [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations(['client'], null, 5);
 
         /* Assert */
@@ -282,14 +282,14 @@ class QuoteServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_gets_quotes_by_client_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client1 = $this->seedModel('\Modules\Crm\Models\Client');
         $client2 = $this->seedModel('\Modules\Crm\Models\Client');
         $quote1  = $this->seedModel('Quote', ['client_id' => $client1->client_id]);
         $quote2  = $this->seedModel('Quote', ['client_id' => $client1->client_id]);
         $quote3  = $this->seedModel('Quote', ['client_id' => $client2->client_id]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getByClientId($client1->client_id);
 
         /* Assert */

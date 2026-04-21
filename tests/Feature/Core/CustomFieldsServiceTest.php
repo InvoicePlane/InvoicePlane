@@ -20,7 +20,7 @@ class CustomFieldsServiceTest extends TestCase
     #[Test]
     public function it_retrieves_custom_fields_by_table(): void
     {
-        // Arrange
+        /* Arrange */
         CustomField::create([
             'custom_field_table' => 'ip_clients',
             'custom_field_label' => 'Client Custom Field',
@@ -39,20 +39,20 @@ class CustomFieldsServiceTest extends TestCase
             'custom_field_type'  => 'TEXT',
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->byTable('ip_clients');
 
-        // Assert
+        /* Assert */
         $this->assertInstanceOf(CustomFieldsService::class, $result);
     }
 
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        // Act
+        /* Act */
         $rules = $this->service->validationRules();
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($rules);
     }
 }

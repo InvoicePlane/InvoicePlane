@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -31,7 +31,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_modal_with_active_clients(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $activeClient   = $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Active Client']);
@@ -59,7 +59,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_clients_alphabetically_in_modal(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Zebra Corp']);
@@ -70,7 +70,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
         $this->actingAs($user);
         $response = $this->get(route('crm.ajax.modal_client_lookup'));
 
-        /** Assert */
+        /* Assert */
         $clients = $response->viewData('clients');
         $names   = $clients->pluck('client_name')->toArray();
 
@@ -86,7 +86,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_requires_authentication_for_modal_client_lookup(): void
     {
-        /** Act */
+        /* Act */
         $response = $this->get(route('crm.ajax.modal_client_lookup'));
 
         /* Assert */
@@ -100,7 +100,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_empty_modal_when_no_active_clients(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         // All clients are inactive
         $this->seedModelMany('Client', 3, ['client_active' => 0]);
@@ -122,7 +122,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_special_characters_in_client_names(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModel('Client', [
             'client_active' => 1,
@@ -149,7 +149,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_client_details_as_json(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client', [
             'client_name'  => 'Test Client',
@@ -176,7 +176,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_for_non_existent_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -194,10 +194,10 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_requires_authentication_for_get_client_details(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
 
         /* Assert */
@@ -211,7 +211,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_invalid_client_id_type(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -233,7 +233,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_all_client_fields(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client', [
             'client_name'      => 'Complete Client',
@@ -270,7 +270,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_details_for_inactive_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user           = $this->seedModel('User');
         $inactiveClient = $this->seedModel('Client', [
             'client_active' => 0,
@@ -297,7 +297,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_null_fields_in_client_details(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client', [
             'client_name'      => 'Minimal Client',
@@ -324,7 +324,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_negative_client_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -342,7 +342,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_zero_client_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -360,7 +360,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_pagination_with_many_active_clients(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         // Create 100 active clients
         $this->seedModelMany('Client', 100, ['client_active' => 1]);

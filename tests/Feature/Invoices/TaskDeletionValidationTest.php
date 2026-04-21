@@ -35,14 +35,14 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_allows_deletion_of_task_not_assigned_to_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_name'   => 'Unassigned Task',
             'invoice_id'  => null, // Not assigned to any invoice
             'task_status' => 1,
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete  = $this->service->canDelete($task->task_id);
         $isAssigned = $this->service->isAssignedToInvoice($task->task_id);
 
@@ -59,7 +59,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_of_task_assigned_to_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $task = $this->seedModel('Task', [
@@ -68,7 +68,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
             'task_status' => 3, // Complete
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete  = $this->service->canDelete($task->task_id);
         $isAssigned = $this->service->isAssignedToInvoice($task->task_id);
 
@@ -85,7 +85,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_correctly_identifies_task_invoice_assignment(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $assignedTask = $this->seedModel('Task', [
@@ -96,7 +96,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
             'invoice_id' => null,
         ]);
 
-        /** Act */
+        /* Act */
         $assignedIsAssigned   = $this->service->isAssignedToInvoice($assignedTask->task_id);
         $unassignedIsAssigned = $this->service->isAssignedToInvoice($unassignedTask->task_id);
 
@@ -113,10 +113,10 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_true_for_nonexistent_task(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $canDelete  = $this->service->canDelete($nonexistentId);
         $isAssigned = $this->service->isAssignedToInvoice($nonexistentId);
 
@@ -133,7 +133,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_regardless_of_task_status(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         // Create tasks with different statuses but all assigned to invoice
@@ -145,7 +145,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
                 'invoice_id'  => $invoice->invoice_id,
             ]);
 
-            /** Act */
+            /* Act */
             $canDelete = $this->service->canDelete($task->task_id);
 
             /* Assert */
@@ -164,13 +164,13 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_allows_deletion_of_completed_task_without_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_status' => 3, // Complete
             'invoice_id'  => null, // Not assigned
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($task->task_id);
 
         /* Assert */
@@ -185,7 +185,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_of_all_tasks_assigned_to_same_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         // Create multiple tasks assigned to same invoice
@@ -211,7 +211,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_allows_deletion_after_invoice_reference_removed(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $task = $this->seedModel('Task', [
@@ -225,7 +225,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
         $task->invoice_id = null;
         $task->save();
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($task->task_id);
 
         /* Assert */

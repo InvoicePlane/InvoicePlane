@@ -35,10 +35,10 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_allows_deletion_of_unit_without_references(): void
     {
-        /** Arrange */
+        /* Arrange */
         $unit = $this->seedModel('Unit', ['unit_name' => 'Unused Unit']);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
         $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
 
@@ -54,11 +54,11 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_with_products(): void
     {
-        /** Arrange */
+        /* Arrange */
         $unit = $this->seedModel('Unit');
         $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
         $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
 
@@ -72,11 +72,11 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_with_invoice_items(): void
     {
-        /** Arrange */
+        /* Arrange */
         $unit = $this->seedModel('Unit');
         $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
         $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
 
@@ -90,11 +90,11 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_with_quote_items(): void
     {
-        /** Arrange */
+        /* Arrange */
         $unit = $this->seedModel('Unit');
         $this->seedModel('QuoteItem', ['item_product_unit_id' => $unit->unit_id]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
         $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
 
@@ -108,14 +108,14 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_with_multiple_references(): void
     {
-        /** Arrange */
+        /* Arrange */
         $unit = $this->seedModel('Unit');
 
         $this->seedModelMany('Product', 2, ['unit_id' => $unit->unit_id]);
         $this->seedModelMany('InvoiceItem', 3, ['item_product_unit_id' => $unit->unit_id]);
         $this->seedModelMany('QuoteItem', 1, ['item_product_unit_id' => $unit->unit_id]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
         $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
 
@@ -131,7 +131,7 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_allows_deletion_after_references_removed(): void
     {
-        /** Arrange */
+        /* Arrange */
         $unit    = $this->seedModel('Unit');
         $product = $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
@@ -141,7 +141,7 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
         // Remove reference
         $product->delete();
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
 
         /* Assert */

@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * QuotesController (CRM/Guest) Feature Tests.
@@ -28,10 +28,10 @@ class CrmQuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_guest_quotes_list(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Guest portal accessible without authentication
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.quotes'));
 
         /* Assert */
@@ -46,10 +46,10 @@ class CrmQuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_quote_by_url_key(): void
     {
-        /** Arrange */
+        /* Arrange */
         $quote = $this->seedModel('Quote', ['quote_url_key' => 'test-quote-key']);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.quotes.view', ['urlKey' => 'test-quote-key']));
 
         /* Assert */
@@ -68,10 +68,10 @@ class CrmQuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_for_invalid_quote_url_key(): void
     {
-        /** Arrange */
+        /* Arrange */
         // No quote with this URL key
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.quotes.view', ['urlKey' => 'non-existent-key']));
 
         /* Assert */
@@ -84,13 +84,13 @@ class CrmQuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_approves_quote_when_approve_called(): void
     {
-        /** Arrange */
+        /* Arrange */
         $quote = $this->seedModel('Quote', [
             'quote_url_key'   => 'approve-key',
             'quote_status_id' => 2, // Sent
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.quotes.approve', ['urlKey' => 'approve-key']));
 
         /* Assert */
@@ -108,10 +108,10 @@ class CrmQuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_approving_non_existent_quote(): void
     {
-        /** Arrange */
+        /* Arrange */
         // No quote with this URL key
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.quotes.approve', ['urlKey' => 'invalid-key']));
 
         /* Assert */
@@ -124,10 +124,10 @@ class CrmQuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_is_accessible_without_authentication(): void
     {
-        /** Arrange */
+        /* Arrange */
         $quote = $this->seedModel('Quote', ['quote_url_key' => 'guest-quote-key']);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.quotes.view', ['urlKey' => 'guest-quote-key']));
 
         /* Assert */

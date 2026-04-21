@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
@@ -28,10 +28,10 @@ class CrmInvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_guest_invoices_list(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Guest portal accessible without authentication
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.invoices'));
 
         /* Assert */
@@ -46,10 +46,10 @@ class CrmInvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_invoice_by_url_key(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice', ['invoice_url_key' => 'test-key-123']);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.invoices.view', ['urlKey' => 'test-key-123']));
 
         /* Assert */
@@ -68,10 +68,10 @@ class CrmInvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_for_invalid_url_key(): void
     {
-        /** Arrange */
+        /* Arrange */
         // No invoice with this URL key
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.invoices.view', ['urlKey' => 'non-existent-key']));
 
         /* Assert */
@@ -84,10 +84,10 @@ class CrmInvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_is_accessible_without_authentication(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice', ['invoice_url_key' => 'guest-key']);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.invoices.view', ['urlKey' => 'guest-key']));
 
         /* Assert */

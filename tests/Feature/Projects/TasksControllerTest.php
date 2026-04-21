@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ProjectsController Feature Tests.
@@ -29,10 +29,10 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_list_of_tasks(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task');
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('tasks.index'));
 
         /* Assert */
@@ -54,7 +54,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_task_create_form(): void
     {
-        /** Act */
+        /* Act */
         $response = $this->get(route('tasks.form'));
 
         /* Assert */
@@ -77,7 +77,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_task_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $project = $this->seedModel('Project');
         /**
          * {
@@ -94,7 +94,7 @@ class TasksControllerTest extends FeatureTestCase
             'task_finish_date' => '2025-12-31',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form'), $taskData);
 
         /* Assert */
@@ -114,7 +114,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_fails_to_create_task_with_invalid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         /**
          * {
          *     "project_id": 999
@@ -125,7 +125,7 @@ class TasksControllerTest extends FeatureTestCase
             // Missing required task_name
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form'), $taskData);
 
         /* Assert */
@@ -139,10 +139,10 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_task_edit_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task');
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('tasks.form', ['task_id' => $task->task_id]));
 
         /* Assert */
@@ -164,7 +164,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_task_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_name' => 'Old Name',
         ]);
@@ -180,7 +180,7 @@ class TasksControllerTest extends FeatureTestCase
             'task_status' => 2,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
 
         /* Assert */
@@ -201,10 +201,10 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_task(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task');
 
-        /** Act */
+        /* Act */
         $response = $this->delete(route('tasks.destroy', ['task' => $task->task_id]));
 
         /* Assert */
@@ -224,7 +224,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_task_without_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         /**
          * {
          *     "task_name": "Standalone Task",
@@ -236,7 +236,7 @@ class TasksControllerTest extends FeatureTestCase
             'task_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form'), $taskData);
 
         /* Assert */
@@ -258,13 +258,13 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_fails_to_create_task_with_empty_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $taskData = [
             'task_name'   => '', // Empty name
             'task_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form'), $taskData);
 
         /* Assert */
@@ -278,7 +278,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_special_characters_in_task_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $taskData = [
             'task_name'   => "Task <img src=x onerror=alert('xss')> Name",
             'task_status' => 1,
@@ -311,13 +311,13 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_fails_to_create_task_with_invalid_status(): void
     {
-        /** Arrange */
+        /* Arrange */
         $taskData = [
             'task_name'   => 'Test Task',
             'task_status' => 999, // Invalid status
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form'), $taskData);
 
         /* Assert */
@@ -331,14 +331,14 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_fails_to_create_task_with_nonexistent_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $taskData = [
             'task_name'   => 'Test Task',
             'project_id'  => 99999, // Non-existent project
             'task_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form'), $taskData);
 
         /* Assert */
@@ -352,10 +352,10 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_editing_nonexistent_task(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('tasks.form', ['task_id' => $nonexistentId]));
 
         /* Assert */
@@ -369,7 +369,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_fails_to_update_task_with_invalid_finish_date(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task');
 
         $updateData = [
@@ -377,7 +377,7 @@ class TasksControllerTest extends FeatureTestCase
             'task_finish_date' => 'invalid-date', // Invalid date format
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
 
         /* Assert */
@@ -391,7 +391,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_can_reassign_task_to_different_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $project1 = $this->seedModel('Project');
         $project2 = $this->seedModel('Project');
 
@@ -405,7 +405,7 @@ class TasksControllerTest extends FeatureTestCase
             'task_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
 
         /* Assert */
@@ -425,7 +425,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_can_unassign_task_from_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $project = $this->seedModel('Project');
         $task    = $this->seedModel('Task', [
             'project_id' => $project->project_id,
@@ -437,7 +437,7 @@ class TasksControllerTest extends FeatureTestCase
             'task_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
 
         /* Assert */
@@ -457,7 +457,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_filters_tasks_by_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $project1 = $this->seedModel('Project');
         $project2 = $this->seedModel('Project');
 
@@ -470,7 +470,7 @@ class TasksControllerTest extends FeatureTestCase
             'task_name'  => 'Project 2 Task',
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('tasks.by-project', ['project' => $project1->project_id]));
 
         /* Assert */
@@ -494,7 +494,7 @@ class TasksControllerTest extends FeatureTestCase
         /* Arrange */
         Task::query()->delete();
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('tasks.index'));
 
         /* Assert */
@@ -513,10 +513,10 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_deletion_of_nonexistent_task_gracefully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $response = $this->delete(route('tasks.destroy', ['task' => $nonexistentId]));
 
         /* Assert */
@@ -534,7 +534,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_task_finish_date(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_finish_date' => '2025-12-01',
         ]);
@@ -544,7 +544,7 @@ class TasksControllerTest extends FeatureTestCase
             'task_finish_date' => '2025-12-31',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
 
         /* Assert */
@@ -564,7 +564,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_task_status(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_status' => 1, // Not started
         ]);
@@ -574,7 +574,7 @@ class TasksControllerTest extends FeatureTestCase
             'task_status' => 3, // Complete
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
 
         /* Assert */
@@ -594,7 +594,7 @@ class TasksControllerTest extends FeatureTestCase
     #[Test]
     public function it_preserves_unchanged_fields_on_task_update(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_name'        => 'Original Name',
             'task_description' => 'Original description',

@@ -7,7 +7,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
 
-use function Tests\Feature\PaymentMethods\route;
 
 use Tests\TestCase;
 

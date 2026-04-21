@@ -6,7 +6,7 @@ use Modules\Payments\Controllers\PaymentMethodsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * PaymentMethodsController Feature Tests.
@@ -24,11 +24,11 @@ class PaypalControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_paypal_ipn_notification(): void
     {
-        /** Arrange */
+        /* Arrange */
         // PayPal IPN notifications require specific fields for validation
         // Note: Current implementation is a stub/TODO but test reflects real IPN data
 
-        /** Act */
+        /* Act */
         /**
          * {
          *     "txn_id": "1234567890ABCDEF",
@@ -65,11 +65,11 @@ class PaypalControllerTest extends FeatureTestCase
     #[Test]
     public function it_is_accessible_without_authentication(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Webhook endpoints should not require authentication
         // Note: Current implementation is a stub/TODO but test reflects real IPN data
 
-        /** Act */
+        /* Act */
         /**
          * {
          *     "txn_id": "0987654321ZYXWVU",

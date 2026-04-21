@@ -4,7 +4,6 @@ namespace Tests\Feature\Core;
 
 use Tests\Concerns\InteractsWithDatabase;
 
-use function Tests\Feature\Auth\route;
 
 use Tests\TestCase;
 

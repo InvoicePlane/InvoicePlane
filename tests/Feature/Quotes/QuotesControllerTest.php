@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * QuotesController (CRM/Guest) Feature Tests.
@@ -28,7 +28,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_all_status_view_from_index(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -46,7 +46,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_only_draft_quotes_when_draft_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -84,7 +84,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_all_quotes_when_all_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -121,7 +121,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_quote_statuses_in_view_data_for_status_method(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -143,7 +143,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_quote_details_with_items_and_amounts(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -181,7 +181,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_viewing_non_existent_quote(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user               = $this->seedModel('User');
         $nonExistentQuoteId = 99999;
 
@@ -200,7 +200,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_custom_fields_in_quote_view_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -226,7 +226,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_tax_rates_in_quote_view_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -252,7 +252,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_quote_and_redirects_to_index(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -290,7 +290,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_quote_and_all_related_records(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -331,7 +331,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_removes_tax_rate_and_recalculates_quote(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -347,7 +347,7 @@ class QuotesControllerTest extends FeatureTestCase
 
         $quoteTaxRateId = $taxRate->quote_tax_rate_id;
 
-        /** Act */
+        /* Act */
         /**
          * Note: Empty payload is correct - IDs are passed via route parameters
          * Route: POST /quotes/delete_tax/{quote_id}/{quote_tax_rate_id}.
@@ -376,7 +376,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_quote_view_after_deleting_tax_rate(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -387,7 +387,7 @@ class QuotesControllerTest extends FeatureTestCase
 
         $taxRate = $this->seedModel('QuoteTaxRate', ['quote_id' => $quote->quote_id]);
 
-        /** Act */
+        /* Act */
         /**
          * Note: Empty payload is correct - IDs are passed via route parameters
          * Route: POST /quotes/delete_tax/{quote_id}/{quote_tax_rate_id}.
@@ -415,7 +415,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_recalculates_all_quotes_successfully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -429,7 +429,7 @@ class QuotesControllerTest extends FeatureTestCase
             'user_id'   => $user->user_id,
         ]);
 
-        /** Act */
+        /* Act */
         /**
          * {}.
          */
@@ -450,11 +450,11 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_empty_quote_list_when_recalculating_all_quotes(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         Quote::query()->delete();
 
-        /** Act */
+        /* Act */
         /**
          * {}.
          */
@@ -475,7 +475,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_paginates_quote_results_correctly(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -506,7 +506,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_only_sent_quotes_when_sent_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -540,7 +540,7 @@ class QuotesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_only_approved_quotes_when_approved_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 

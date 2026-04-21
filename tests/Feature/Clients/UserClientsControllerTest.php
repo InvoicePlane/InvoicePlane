@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -29,7 +29,7 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_user_clients(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
         $this->seedModelMany('UserClient', 5, [
@@ -54,7 +54,7 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_user_and_client_relationships(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
         $this->seedModel('UserClient', [
@@ -81,7 +81,7 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -105,7 +105,7 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_user_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user       = $this->seedModel('User');
         $client     = $this->seedModel('Client');
         $userClient = $this->seedModel('UserClient', [
@@ -133,7 +133,7 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_user_client_relationship_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -171,7 +171,7 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_user_client_relationship(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $client1 = $this->seedModel('Client');
         $client2 = $this->seedModel('Client');
@@ -214,11 +214,11 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_required_user_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
-        /** Act */
+        /* Act */
         /**
          * {
          *     "client_id": 1,
@@ -243,10 +243,10 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_required_client_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         /**
          * {
          *     "user_id": 1,
@@ -272,7 +272,7 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_index_on_cancel(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -299,7 +299,7 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_user_client_relationship(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user       = $this->seedModel('User');
         $client     = $this->seedModel('Client');
         $userClient = $this->seedModel('UserClient', [
@@ -339,7 +339,7 @@ class UserClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_deleting_non_existent_user_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**

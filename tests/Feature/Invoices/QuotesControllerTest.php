@@ -34,29 +34,29 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_redirects_to_status_all()
     {
-        // Act: call the index route
+        /* Act */
         $response = $this->get(route('quotes.index'));
 
-        // Assert: should redirect to quotes/status/all
+        /* Assert */
         $response->assertRedirect(route('quotes.status', ['status' => 'all']));
     }
 
     #[Test]
     public function it_displays_quotes_by_status()
     {
-        // Arrange: create quotes with different statuses
+        /* Arrange */
         $draftQuote    = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'draft']);
         $sentQuote     = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'sent']);
         $approvedQuote = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'approved']);
 
-        // Act: call the status route for 'draft'
+        /* Act */
         $response = $this->get(route('quotes.status', ['status' => 'draft']));
         $response->assertSee($draftQuote->title);
         $response->assertDontSee($sentQuote->title);
         $response->assertDontSee($approvedQuote->title);
         $response->assertStatus(200);
 
-        // Act: call the status route for 'sent'
+        /* Act */
         $response = $this->get(route('quotes.status', ['status' => 'sent']));
         $response->assertSee($sentQuote->title);
         $response->assertDontSee($draftQuote->title);
