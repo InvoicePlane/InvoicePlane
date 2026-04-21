@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Controllers\AjaxController as CoreAjaxController;
 use Modules\Core\Models\User;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class UsersControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays paginated list of users.
      */
@@ -26,8 +30,8 @@ class UsersControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_users(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        User::factory()->count(5)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('User', 5);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('users.index'));
@@ -49,11 +53,11 @@ class UsersControllerTest extends FeatureTestCase
     public function it_orders_users_alphabetically_by_name(): void
     {
         /** Arrange */
-        $adminUser = User::factory()->create(['user_name' => 'Admin']);
+        $adminUser = $this->seedModel('User', ['user_name' => 'Admin']);
 
-        User::factory()->create(['user_name' => 'Zack']);
-        User::factory()->create(['user_name' => 'Alice']);
-        User::factory()->create(['user_name' => 'Bob']);
+        $this->seedModel('User', ['user_name' => 'Zack']);
+        $this->seedModel('User', ['user_name' => 'Alice']);
+        $this->seedModel('User', ['user_name' => 'Bob']);
 
         /** Act */
         $response = $this->actingAs($adminUser)->get(route('users.index'));
@@ -77,7 +81,7 @@ class UsersControllerTest extends FeatureTestCase
     public function it_displays_create_form(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('users.form'));
@@ -100,8 +104,8 @@ class UsersControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_user(): void
     {
         /** Arrange */
-        $adminUser = User::factory()->create();
-        $editUser  = User::factory()->create();
+        $adminUser = $this->seedModel('User');
+        $editUser  = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($adminUser)->get(route('users.form', ['id' => $editUser->user_id]));
@@ -123,7 +127,7 @@ class UsersControllerTest extends FeatureTestCase
     public function it_creates_new_user_with_valid_data(): void
     {
         /** Arrange */
-        $adminUser = User::factory()->create();
+        $adminUser = $this->seedModel('User');
 
         /**
          * {
@@ -163,8 +167,8 @@ class UsersControllerTest extends FeatureTestCase
     public function it_updates_existing_user_with_valid_data(): void
     {
         /** Arrange */
-        $adminUser = User::factory()->create();
-        $editUser  = User::factory()->create([
+        $adminUser = $this->seedModel('User');
+        $editUser  = $this->seedModel('User', [
             'user_name'  => 'Old Name',
             'user_email' => 'old@example.com',
         ]);
@@ -205,7 +209,7 @@ class UsersControllerTest extends FeatureTestCase
     public function it_redirects_to_index_on_cancel(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -231,8 +235,8 @@ class UsersControllerTest extends FeatureTestCase
     public function it_deletes_user(): void
     {
         /** Arrange */
-        $adminUser  = User::factory()->create();
-        $deleteUser = User::factory()->create();
+        $adminUser  = $this->seedModel('User');
+        $deleteUser = $this->seedModel('User');
 
         /**
          * {
@@ -266,7 +270,7 @@ class UsersControllerTest extends FeatureTestCase
     public function it_returns_404_when_deleting_non_existent_user(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -295,7 +299,7 @@ class UsersControllerTest extends FeatureTestCase
     public function it_returns_404_when_editing_non_existent_user(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('users.form', ['id' => 99999]));

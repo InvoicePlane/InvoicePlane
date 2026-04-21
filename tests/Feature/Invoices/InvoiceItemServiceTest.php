@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Invoices\Tests\Unit;
+namespace Tests\Feature\Invoices;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\Setting;

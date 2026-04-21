@@ -1,13 +1,15 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Core;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 use Tests\TestCase;
 
 abstract class FeatureTestCase extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     /**
      * Setup the test environment.
@@ -29,7 +31,7 @@ abstract class FeatureTestCase extends TestCase
      */
     protected function actingAsUser($user = null)
     {
-        $user ??= \Modules\Core\Models\User::factory()->create();
+        $user ??= $this->seedModel('\Modules\Core\Models\User');
 
         return $this->actingAs($user);
     }

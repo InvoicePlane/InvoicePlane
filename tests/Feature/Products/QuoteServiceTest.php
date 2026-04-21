@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Quotes\Tests\Unit;
+namespace Tests\Feature\Products;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Quotes\Services\QuoteAmountService;
 use Modules\Quotes\Services\QuoteService;
@@ -13,6 +15,8 @@ use Tests\AbstractServiceTestCase;
 
 class QuoteServiceTest extends AbstractServiceTestCase
 {
+    use InteractsWithDatabase;
+
     private QuoteService $service;
 
     protected function setUp(): void
@@ -124,9 +128,9 @@ class QuoteServiceTest extends AbstractServiceTestCase
     public function it_finds_quote_with_relations(): void
     {
         /** Arrange */
-        $client = \Modules\Crm\Models\Client::factory()->create();
-        $user   = \Modules\Core\Models\User::factory()->create();
-        $quote  = Quote::factory()->create([
+        $client = $this->seedModel('\Modules\Crm\Models\Client');
+        $user   = $this->seedModel('\Modules\Core\Models\User');
+        $quote  = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
@@ -148,8 +152,8 @@ class QuoteServiceTest extends AbstractServiceTestCase
     public function it_finds_quote_with_custom_relations(): void
     {
         /** Arrange */
-        $client = \Modules\Crm\Models\Client::factory()->create();
-        $quote  = Quote::factory()->create([
+        $client = $this->seedModel('\Modules\Crm\Models\Client');
+        $quote  = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
         ]);
 
@@ -178,8 +182,8 @@ class QuoteServiceTest extends AbstractServiceTestCase
     public function it_finds_quote_or_fails(): void
     {
         /** Arrange */
-        $client = \Modules\Crm\Models\Client::factory()->create();
-        $quote  = Quote::factory()->create([
+        $client = $this->seedModel('\Modules\Crm\Models\Client');
+        $quote  = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
         ]);
 
@@ -209,10 +213,10 @@ class QuoteServiceTest extends AbstractServiceTestCase
     public function it_gets_all_quotes_with_relations_paginated(): void
     {
         /** Arrange */
-        $client = \Modules\Crm\Models\Client::factory()->create();
-        $user   = \Modules\Core\Models\User::factory()->create();
+        $client = $this->seedModel('\Modules\Crm\Models\Client');
+        $user   = $this->seedModel('\Modules\Core\Models\User');
 
-        Quote::factory()->count(3)->create([
+        $this->seedModelMany('Quote', 3, [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
@@ -231,12 +235,12 @@ class QuoteServiceTest extends AbstractServiceTestCase
     public function it_filters_quotes_by_status(): void
     {
         /** Arrange */
-        $client     = \Modules\Crm\Models\Client::factory()->create();
-        $draftQuote = Quote::factory()->create([
+        $client     = $this->seedModel('\Modules\Crm\Models\Client');
+        $draftQuote = $this->seedModel('Quote', [
             'client_id'       => $client->client_id,
             'quote_status_id' => 1, // Draft
         ]);
-        $sentQuote = Quote::factory()->create([
+        $sentQuote = $this->seedModel('Quote', [
             'client_id'       => $client->client_id,
             'quote_status_id' => 2, // Sent
         ]);
@@ -263,8 +267,8 @@ class QuoteServiceTest extends AbstractServiceTestCase
     public function it_respects_custom_per_page_parameter(): void
     {
         /** Arrange */
-        $client = \Modules\Crm\Models\Client::factory()->create();
-        Quote::factory()->count(10)->create([
+        $client = $this->seedModel('\Modules\Crm\Models\Client');
+        $this->seedModelMany('Quote', 10, [
             'client_id' => $client->client_id,
         ]);
 
@@ -280,11 +284,11 @@ class QuoteServiceTest extends AbstractServiceTestCase
     public function it_gets_quotes_by_client_id(): void
     {
         /** Arrange */
-        $client1 = \Modules\Crm\Models\Client::factory()->create();
-        $client2 = \Modules\Crm\Models\Client::factory()->create();
-        $quote1  = Quote::factory()->create(['client_id' => $client1->client_id]);
-        $quote2  = Quote::factory()->create(['client_id' => $client1->client_id]);
-        $quote3  = Quote::factory()->create(['client_id' => $client2->client_id]);
+        $client1 = $this->seedModel('\Modules\Crm\Models\Client');
+        $client2 = $this->seedModel('\Modules\Crm\Models\Client');
+        $quote1  = $this->seedModel('Quote', ['client_id' => $client1->client_id]);
+        $quote2  = $this->seedModel('Quote', ['client_id' => $client1->client_id]);
+        $quote3  = $this->seedModel('Quote', ['client_id' => $client2->client_id]);
 
         /** Act */
         $result = $this->service->getByClientId($client1->client_id);

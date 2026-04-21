@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Invoices\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
 use Modules\Invoices\Models\Invoice;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class InvoicesControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index redirects to all status view.
      */
@@ -26,7 +30,7 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_redirects_to_all_status_view_from_index(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.index'));
@@ -43,9 +47,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_displays_only_draft_invoices_when_draft_status_selected(): void
     {
         /** Arrange */
-        $user         = User::factory()->create();
-        $draftInvoice = Invoice::factory()->draft()->create();
-        $sentInvoice  = Invoice::factory()->sent()->create();
+        $user         = $this->seedModel('User');
+        $draftInvoice = $this->seedModel('Invoice');
+        $sentInvoice  = $this->seedModel('Invoice');
 
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/draft');
@@ -70,10 +74,10 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_displays_all_invoices_when_all_status_selected(): void
     {
         /** Arrange */
-        $user         = User::factory()->create();
-        $draftInvoice = Invoice::factory()->draft()->create();
-        $sentInvoice  = Invoice::factory()->sent()->create();
-        $paidInvoice  = Invoice::factory()->paid()->create();
+        $user         = $this->seedModel('User');
+        $draftInvoice = $this->seedModel('Invoice');
+        $sentInvoice  = $this->seedModel('Invoice');
+        $paidInvoice  = $this->seedModel('Invoice');
 
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/all');
@@ -96,7 +100,7 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_includes_invoice_statuses_in_view_data_for_status_method(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/all');
@@ -115,9 +119,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_displays_invoice_details_with_items_and_amounts(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->create();
-        Item::factory()->count(3)->create(['invoice_id' => $invoice->invoice_id]);
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModelMany('Item', 3, ['invoice_id' => $invoice->invoice_id]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
@@ -140,7 +144,7 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_returns_404_when_viewing_non_existent_invoice(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => 99999]));
@@ -157,8 +161,8 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_includes_custom_fields_in_invoice_view_data(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
@@ -177,9 +181,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_includes_tax_rates_in_invoice_view_data(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->create();
-        TaxRate::factory()->count(5)->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModelMany('TaxRate', 5);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
@@ -199,8 +203,8 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_deletes_draft_invoice_and_redirects_to_index(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
 
         /**
          * {
@@ -227,9 +231,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_updates_task_status_when_deleting_invoice_with_tasks(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
-        $task    = Task::factory()->create(['invoice_id' => $invoice->invoice_id, 'task_status' => 4]);
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $task    = $this->seedModel('Task', ['invoice_id' => $invoice->invoice_id, 'task_status' => 4]);
 
         /**
          * {
@@ -256,9 +260,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_shows_error_when_deleting_non_draft_invoice_and_deletion_disabled(): void
     {
         /* Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         config(['settings.enable_invoice_deletion' => false]);
-        $invoice = Invoice::factory()->sent()->create(); // Not a draft
+        $invoice = $this->seedModel('Invoice'); // Not a draft
 
         /**
          * {
@@ -285,7 +289,7 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_displays_archived_invoices_list(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.archive'));
@@ -304,7 +308,7 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_prevents_directory_traversal_when_downloading_invoice(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $response = $this->actingAs($user)->get(route('invoices.download', ['filename' => '../../../etc/passwd']));
@@ -321,7 +325,7 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_returns_404_when_downloading_non_existent_file(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $response = $this->actingAs($user)->get(route('invoices.download', ['filename' => 'non-existent-file.pdf']));
@@ -338,9 +342,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_recalculates_invoice_after_deleting_tax_rate(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->create();
-        $taxRate = InvoiceTaxRate::factory()->create(['invoice_id' => $invoice->invoice_id]);
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $taxRate = $this->seedModel('InvoiceTaxRate', ['invoice_id' => $invoice->invoice_id]);
 
         /** Act */
         /**
@@ -369,9 +373,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_redirects_to_invoice_view_after_deleting_tax_rate(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->create();
-        $taxRate = InvoiceTaxRate::factory()->create(['invoice_id' => $invoice->invoice_id]);
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $taxRate = $this->seedModel('InvoiceTaxRate', ['invoice_id' => $invoice->invoice_id]);
 
         /** Act */
         /**
@@ -400,8 +404,8 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_recalculates_all_invoices_in_system(): void
     {
         /* Arrange */
-        $user = User::factory()->create();
-        Invoice::factory()->count(5)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('Invoice', 5);
         $initialCount = Invoice::count();
 
         /** Act */
@@ -426,7 +430,7 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_handles_empty_invoice_list_when_recalculating_all(): void
     {
         /* Arrange - No invoices */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         Invoice::truncate();
 
         /** Act */
@@ -449,9 +453,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_marks_invoice_as_sent_when_generating_pdf_and_setting_enabled(): void
     {
         /* Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         config(['settings.mark_invoices_sent_pdf' => 1]);
-        $invoice = Invoice::factory()->draft()->create();
+        $invoice = $this->seedModel('Invoice');
 
         /* Act */
         $this->actingAs($user)->get(route('invoices.generate_pdf', ['id' => $invoice->invoice_id]));
@@ -469,9 +473,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_displays_only_paid_invoices_when_paid_status_selected(): void
     {
         /** Arrange */
-        $user         = User::factory()->create();
-        $draftInvoice = Invoice::factory()->draft()->create();
-        $paidInvoice  = Invoice::factory()->paid()->create();
+        $user         = $this->seedModel('User');
+        $draftInvoice = $this->seedModel('Invoice');
+        $paidInvoice  = $this->seedModel('Invoice');
 
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/paid');
@@ -493,9 +497,9 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_displays_only_overdue_invoices_when_overdue_status_selected(): void
     {
         /** Arrange */
-        $user           = User::factory()->create();
-        $overdueInvoice = Invoice::factory()->overdue()->create();
-        $paidInvoice    = Invoice::factory()->paid()->create();
+        $user           = $this->seedModel('User');
+        $overdueInvoice = $this->seedModel('Invoice');
+        $paidInvoice    = $this->seedModel('Invoice');
 
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/overdue');
@@ -516,8 +520,8 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_uses_sumex_template_when_invoice_has_sumex_id(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->create(['sumex_id' => 12345]);
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice', ['sumex_id' => 12345]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
@@ -534,8 +538,8 @@ class InvoicesControllerTest extends FeatureTestCase
     public function it_paginates_invoice_results_correctly(): void
     {
         /* Arrange */
-        $user = User::factory()->create();
-        Invoice::factory()->count(30)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('Invoice', 30);
 
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/all');

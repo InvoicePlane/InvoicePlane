@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,7 +12,8 @@ use Tests\TestCase;
 
 class EmailTemplatesControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -19,7 +21,7 @@ class EmailTemplatesControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
         $this->actingAs($this->user);
     }
 
@@ -54,7 +56,7 @@ class EmailTemplatesControllerTest extends TestCase
     #[Test]
     public function it_prevents_duplicate_email_template_titles(): void
     {
-        EmailTemplate::factory()->create(['email_template_title' => 'Existing Template']);
+        $this->seedModel('EmailTemplate', ['email_template_title' => 'Existing Template']);
 
         $templateData = [
             'email_template_title'   => 'Existing Template',
@@ -72,7 +74,7 @@ class EmailTemplatesControllerTest extends TestCase
     #[Test]
     public function it_updates_existing_email_template(): void
     {
-        $template = EmailTemplate::factory()->create([
+        $template = $this->seedModel('EmailTemplate', [
             'email_template_title' => 'Original Template',
         ]);
 
@@ -94,7 +96,7 @@ class EmailTemplatesControllerTest extends TestCase
     #[Test]
     public function it_deletes_email_template(): void
     {
-        $template = EmailTemplate::factory()->create();
+        $template = $this->seedModel('EmailTemplate');
 
         $response = $this->delete(route('email_templates.delete', ['id' => $template->email_template_id]));
 

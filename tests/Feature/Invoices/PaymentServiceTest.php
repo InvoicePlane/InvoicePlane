@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Payments\Tests\Unit;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\PaymentLog;
@@ -14,6 +16,8 @@ use Tests\AbstractServiceTestCase;
 
 class PaymentServiceTest extends AbstractServiceTestCase
 {
+    use InteractsWithDatabase;
+
     private PaymentService $service;
 
     protected function setUp(): void
@@ -40,16 +44,16 @@ class PaymentServiceTest extends AbstractServiceTestCase
     public function it_orders_payments_by_date_descending(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
-        Payment::factory()->create([
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModel('Payment', [
             'invoice_id'   => $invoice->invoice_id,
             'payment_date' => now()->subDays(3),
         ]);
-        $payment2 = Payment::factory()->create([
+        $payment2 = $this->seedModel('Payment', [
             'invoice_id'   => $invoice->invoice_id,
             'payment_date' => now()->subDays(1),
         ]);
-        Payment::factory()->create([
+        $this->seedModel('Payment', [
             'invoice_id'   => $invoice->invoice_id,
             'payment_date' => now()->subDays(2),
         ]);
@@ -69,19 +73,19 @@ class PaymentServiceTest extends AbstractServiceTestCase
     public function it_gets_payments_by_client_id(): void
     {
         /** Arrange */
-        $client1  = \Modules\Crm\Models\Client::factory()->create();
-        $client2  = \Modules\Crm\Models\Client::factory()->create();
-        $invoice1 = \Modules\Invoices\Models\Invoice::factory()->create(['client_id' => $client1->client_id]);
-        $invoice2 = \Modules\Invoices\Models\Invoice::factory()->create(['client_id' => $client2->client_id]);
-        $payment1 = Payment::factory()->create([
+        $client1  = $this->seedModel('\Modules\Crm\Models\Client');
+        $client2  = $this->seedModel('\Modules\Crm\Models\Client');
+        $invoice1 = $this->seedModel('\Modules\Invoices\Models\Invoice', ['client_id' => $client1->client_id]);
+        $invoice2 = $this->seedModel('\Modules\Invoices\Models\Invoice', ['client_id' => $client2->client_id]);
+        $payment1 = $this->seedModel('Payment', [
             'invoice_id' => $invoice1->invoice_id,
             'client_id'  => $client1->client_id,
         ]);
-        $payment2 = Payment::factory()->create([
+        $payment2 = $this->seedModel('Payment', [
             'invoice_id' => $invoice1->invoice_id,
             'client_id'  => $client1->client_id,
         ]);
-        $payment3 = Payment::factory()->create([
+        $payment3 = $this->seedModel('Payment', [
             'invoice_id' => $invoice2->invoice_id,
             'client_id'  => $client2->client_id,
         ]);

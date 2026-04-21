@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Unit;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Products\Models\Family;
 use Modules\Products\Models\Product;
@@ -20,6 +22,8 @@ use Tests\AbstractServiceTestCase;
 
 class FamilyDeletionValidationTest extends AbstractServiceTestCase
 {
+    use InteractsWithDatabase;
+
     private FamilyService $service;
 
     protected function setUp(): void
@@ -34,7 +38,7 @@ class FamilyDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_of_family_without_products(): void
     {
         /** Arrange */
-        $family = Family::factory()->create(['family_name' => 'Empty Family']);
+        $family = $this->seedModel('Family', ['family_name' => 'Empty Family']);
 
         /** Act */
         $canDelete = $this->service->canDelete($family->family_id);
@@ -51,8 +55,8 @@ class FamilyDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_products(): void
     {
         /** Arrange */
-        $family = Family::factory()->create();
-        Product::factory()->create(['family_id' => $family->family_id]);
+        $family = $this->seedModel('Family');
+        $this->seedModel('Product', ['family_id' => $family->family_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($family->family_id);
@@ -69,8 +73,8 @@ class FamilyDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_multiple_products(): void
     {
         /** Arrange */
-        $family = Family::factory()->create();
-        Product::factory()->count(5)->create(['family_id' => $family->family_id]);
+        $family = $this->seedModel('Family');
+        $this->seedModelMany('Product', 5, ['family_id' => $family->family_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($family->family_id);
@@ -87,8 +91,8 @@ class FamilyDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_after_products_removed(): void
     {
         /** Arrange */
-        $family  = Family::factory()->create();
-        $product = Product::factory()->create(['family_id' => $family->family_id]);
+        $family  = $this->seedModel('Family');
+        $product = $this->seedModel('Product', ['family_id' => $family->family_id]);
 
         // Initially cannot delete
         $this->assertFalse($this->service->canDelete($family->family_id));
@@ -109,7 +113,7 @@ class FamilyDeletionValidationTest extends AbstractServiceTestCase
     public function it_returns_correct_blocker_structure(): void
     {
         /** Arrange */
-        $family = Family::factory()->create();
+        $family = $this->seedModel('Family');
 
         /** Act */
         $blockers = $this->service->getDeletionBlockers($family->family_id);

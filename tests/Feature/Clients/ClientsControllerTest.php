@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Crm\Tests\Feature;
+namespace Tests\Feature\Clients;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\ClientsController;
 use Modules\Crm\Models\Client;
@@ -22,6 +24,8 @@ use Tests\Feature\FeatureTestCase;
 
 class ClientsControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index redirects to active status view.
      */
@@ -30,7 +34,7 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_redirects_to_active_status_view_from_index(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -48,10 +52,10 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_displays_only_active_clients_when_active_status_selected(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        $activeClient   = Client::factory()->create(['client_active' => 1]);
-        $inactiveClient = Client::factory()->create(['client_active' => 0]);
+        $activeClient   = $this->seedModel('Client', ['client_active' => 1]);
+        $inactiveClient = $this->seedModel('Client', ['client_active' => 0]);
 
         /* Act */
         $this->actingAs($user);
@@ -76,10 +80,10 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_displays_only_inactive_clients_when_inactive_status_selected(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        $activeClient   = Client::factory()->create(['client_active' => 1]);
-        $inactiveClient = Client::factory()->create(['client_active' => 0]);
+        $activeClient   = $this->seedModel('Client', ['client_active' => 1]);
+        $inactiveClient = $this->seedModel('Client', ['client_active' => 0]);
 
         /* Act */
         $this->actingAs($user);
@@ -104,10 +108,10 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_displays_all_clients_when_all_status_selected(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        $activeClient   = Client::factory()->create(['client_active' => 1]);
-        $inactiveClient = Client::factory()->create(['client_active' => 0]);
+        $activeClient   = $this->seedModel('Client', ['client_active' => 1]);
+        $inactiveClient = $this->seedModel('Client', ['client_active' => 0]);
 
         /* Act */
         $this->actingAs($user);
@@ -132,7 +136,7 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_includes_filter_configuration_in_status_view(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -153,7 +157,7 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_displays_create_form(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -177,7 +181,7 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_creates_new_client_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -214,8 +218,8 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_client(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
         /* Act */
         $this->actingAs($user);
@@ -238,8 +242,8 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_updates_existing_client_with_valid_data(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client', [
             'client_name'   => 'Old Name',
             'client_email'  => 'client@example.com',
             'client_active' => 0,
@@ -280,8 +284,8 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_deletes_client(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
         /* Act */
         $this->actingAs($user);
@@ -303,11 +307,11 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_orders_clients_alphabetically_by_name(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        Client::factory()->create(['client_name' => 'Zebra Company', 'client_active' => 1]);
-        Client::factory()->create(['client_name' => 'Alpha Company', 'client_active' => 1]);
-        Client::factory()->create(['client_name' => 'Beta Company', 'client_active' => 1]);
+        $this->seedModel('Client', ['client_name' => 'Zebra Company', 'client_active' => 1]);
+        $this->seedModel('Client', ['client_name' => 'Alpha Company', 'client_active' => 1]);
+        $this->seedModel('Client', ['client_name' => 'Beta Company', 'client_active' => 1]);
 
         /* Act */
         $this->actingAs($user);

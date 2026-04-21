@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Payments\Tests\Unit;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\PaymentLog;
@@ -14,6 +16,8 @@ use Tests\AbstractServiceTestCase;
 
 class PaymentLogServiceTest extends AbstractServiceTestCase
 {
+    use InteractsWithDatabase;
+
     private PaymentLogService $service;
 
     protected function setUp(): void
@@ -27,9 +31,9 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
     public function it_gets_all_payment_logs_with_relations_paginated(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        PaymentLog::factory()->count(3)->create([
+        $this->seedModelMany('PaymentLog', 3, [
             'invoice_id'       => $invoice->invoice_id,
             'payment_log_date' => now()->subDays(1),
         ]);
@@ -47,16 +51,16 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
     public function it_orders_payment_logs_by_date_descending(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
-        PaymentLog::factory()->create([
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModel('PaymentLog', [
             'invoice_id'       => $invoice->invoice_id,
             'payment_log_date' => now()->subDays(3),
         ]);
-        $log2 = PaymentLog::factory()->create([
+        $log2 = $this->seedModel('PaymentLog', [
             'invoice_id'       => $invoice->invoice_id,
             'payment_log_date' => now()->subDays(1),
         ]);
-        PaymentLog::factory()->create([
+        $this->seedModel('PaymentLog', [
             'invoice_id'       => $invoice->invoice_id,
             'payment_log_date' => now()->subDays(2),
         ]);
@@ -76,8 +80,8 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
     public function it_respects_custom_per_page_parameter(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
-        PaymentLog::factory()->count(10)->create([
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModelMany('PaymentLog', 10, [
             'invoice_id' => $invoice->invoice_id,
         ]);
 
@@ -93,8 +97,8 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
     public function it_loads_custom_relations(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
-        PaymentLog::factory()->create([
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModel('PaymentLog', [
             'invoice_id' => $invoice->invoice_id,
         ]);
 

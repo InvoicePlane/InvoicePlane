@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Models;
+namespace Tests\Unit\Invoices;
 
 use PHPUnit\Framework\TestCase;
 

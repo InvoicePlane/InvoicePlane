@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Projects\Tests\Unit;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Models\Client;
 use Modules\Projects\Models\Project;
@@ -20,6 +22,8 @@ use Tests\TestCase;
 
 class TaskDeletionValidationTest extends AbstractServiceTestCase
 {
+    use InteractsWithDatabase;
+
     private TaskService $service;
 
     protected function setUp(): void
@@ -37,7 +41,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_of_task_not_assigned_to_invoice(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_name'   => 'Unassigned Task',
             'invoice_id'  => null, // Not assigned to any invoice
             'task_status' => 1,
@@ -61,9 +65,9 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_of_task_assigned_to_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_name'   => 'Invoiced Task',
             'invoice_id'  => $invoice->invoice_id, // Assigned to invoice
             'task_status' => 3, // Complete
@@ -87,13 +91,13 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     public function it_correctly_identifies_task_invoice_assignment(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        $assignedTask = Task::factory()->create([
+        $assignedTask = $this->seedModel('Task', [
             'invoice_id' => $invoice->invoice_id,
         ]);
 
-        $unassignedTask = Task::factory()->create([
+        $unassignedTask = $this->seedModel('Task', [
             'invoice_id' => null,
         ]);
 
@@ -135,13 +139,13 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_regardless_of_task_status(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
         // Create tasks with different statuses but all assigned to invoice
         $statuses = [1, 2, 3, 4]; // Not Started, In Progress, Complete, On Hold
 
         foreach ($statuses as $status) {
-            $task = Task::factory()->create([
+            $task = $this->seedModel('Task', [
                 'task_status' => $status,
                 'invoice_id'  => $invoice->invoice_id,
             ]);
@@ -166,7 +170,7 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_of_completed_task_without_invoice(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_status' => 3, // Complete
             'invoice_id'  => null, // Not assigned
         ]);
@@ -187,10 +191,10 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_of_all_tasks_assigned_to_same_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
         // Create multiple tasks assigned to same invoice
-        $tasks = Task::factory()->count(3)->create([
+        $tasks = $this->seedModelMany('Task', 3, [
             'invoice_id' => $invoice->invoice_id,
         ]);
 
@@ -213,9 +217,9 @@ class TaskDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_after_invoice_reference_removed(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'invoice_id' => $invoice->invoice_id,
         ]);
 

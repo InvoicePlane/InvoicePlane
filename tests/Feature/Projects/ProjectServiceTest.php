@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Projects\Tests\Unit;
+namespace Tests\Feature\Projects;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Models\Client;
 use Modules\Projects\Models\Project;
@@ -20,6 +22,8 @@ use Tests\TestCase;
 
 class ProjectServiceTest extends TestCase
 {
+    use InteractsWithDatabase;
+
     private ProjectService $service;
 
     protected function setUp(): void
@@ -53,7 +57,7 @@ class ProjectServiceTest extends TestCase
     public function it_creates_project(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
         $data   = [
             'client_id'    => $client->client_id,
             'project_name' => 'Test Project',
@@ -79,8 +83,8 @@ class ProjectServiceTest extends TestCase
     public function it_updates_project(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id'    => $client->client_id,
             'project_name' => 'Old Name',
         ]);
@@ -107,8 +111,8 @@ class ProjectServiceTest extends TestCase
     public function it_finds_project_by_id(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
@@ -141,8 +145,8 @@ class ProjectServiceTest extends TestCase
     public function it_deletes_project(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 

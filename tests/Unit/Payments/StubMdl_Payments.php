@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Models;
+namespace Tests\Unit\Payments;
 
 use DateTime;
 use PHPUnit\Framework\TestCase;

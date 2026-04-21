@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Invoices\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
 use Modules\Invoices\Models\Invoice;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class InvoiceControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays paginated list of invoices.
      */
@@ -26,8 +30,8 @@ class InvoiceControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_invoices(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        Invoice::factory()->count(5)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('Invoice', 5);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice.index'));
@@ -45,13 +49,13 @@ class InvoiceControllerTest extends FeatureTestCase
     public function it_orders_invoices_by_date_created_and_number_descending(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        Invoice::factory()->create([
+        $this->seedModel('Invoice', [
             'invoice_date_created' => '2024-01-01',
             'invoice_number'       => 'INV-001',
         ]);
-        Invoice::factory()->create([
+        $this->seedModel('Invoice', [
             'invoice_date_created' => '2024-01-02',
             'invoice_number'       => 'INV-002',
         ]);
@@ -75,8 +79,8 @@ class InvoiceControllerTest extends FeatureTestCase
     public function it_displays_invoice_with_relationships(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice.show', ['id' => $invoice->invoice_id]));
@@ -98,7 +102,7 @@ class InvoiceControllerTest extends FeatureTestCase
     public function it_returns_404_when_showing_non_existent_invoice(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice.show', ['id' => 99999]));
@@ -115,7 +119,7 @@ class InvoiceControllerTest extends FeatureTestCase
     public function it_displays_invoice_creation_form(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice.create'));
@@ -133,7 +137,7 @@ class InvoiceControllerTest extends FeatureTestCase
     public function it_creates_new_invoice(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** @var array{client_id: int, invoice_number: string, invoice_date_created: string} $invoiceData */
         $invoiceData = [
@@ -161,7 +165,7 @@ class InvoiceControllerTest extends FeatureTestCase
     public function it_creates_invoice_amount_record_when_storing_invoice(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** @var array{client_id: int, invoice_number: string, invoice_date_created: string} $invoiceData */
         $invoiceData = [

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Quotes\Tests\Unit;
+namespace Tests\Feature\Quotes;
 
 use Modules\Quotes\Services\QuoteAmountService;
 use Modules\Quotes\Services\QuoteService;

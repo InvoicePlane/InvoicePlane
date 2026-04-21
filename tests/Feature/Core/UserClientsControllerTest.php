@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,7 +12,8 @@ use Tests\TestCase;
 
 class UserClientsControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     #[Test]
     public function it_redirects_to_users_from_index()
@@ -27,7 +29,7 @@ class UserClientsControllerTest extends TestCase
     public function it_displays_user_clients_for_a_user()
     {
         // Arrange: create a user
-        $user = \src\Models\User::factory()->create();
+        $user = $this->seedModel('\src\Models\User');
 
         // Act: visit user clients page
         $response = $this->get(route('user_clients.user', ['id' => $user->id]));
@@ -63,9 +65,9 @@ class UserClientsControllerTest extends TestCase
     public function it_deletes_user_client_and_redirects()
     {
         // Arrange: create user and user client
-        $user       = \src\Models\User::factory()->create();
-        $client     = \Modules\Clients\Models\tmpClient::factory()->create();
-        $userClient = \src\Models\UserClient::factory()->create([
+        $user       = $this->seedModel('\src\Models\User');
+        $client     = $this->seedModel('\Modules\Clients\Models\tmpClient');
+        $userClient = $this->seedModel('\src\Models\UserClient', [
             'user_id'   => $user->id,
             'client_id' => $client->id,
         ]);

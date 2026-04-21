@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Projects\Tests\Feature;
+namespace Tests\Feature\Projects;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Models\Client;
 use Modules\Projects\Controllers\ProjectsController;
@@ -20,6 +22,8 @@ use Tests\Feature\FeatureTestCase;
 
 class TaskDeletionValidationFeatureTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test that task without invoice assignment can be deleted via HTTP.
      */
@@ -30,7 +34,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     public function it_deletes_task_without_invoice_assignment(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_name'   => 'Deletable Task',
             'invoice_id'  => null, // Not assigned to invoice
             'task_status' => 1,
@@ -59,9 +63,9 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_task_assigned_to_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_name'   => 'Invoiced Task',
             'invoice_id'  => $invoice->invoice_id, // Assigned to invoice
             'task_status' => 3, // Complete
@@ -92,7 +96,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     public function it_deletes_completed_task_without_invoice(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_status' => 3, // Complete
             'invoice_id'  => null,
         ]);
@@ -116,7 +120,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_regardless_of_status_when_assigned(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
         // Test with different statuses
         $statuses = [
@@ -127,7 +131,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
         ];
 
         foreach ($statuses as $statusId => $statusName) {
-            $task = Task::factory()->create([
+            $task = $this->seedModel('Task', [
                 'task_name'   => "Task - {$statusName}",
                 'task_status' => $statusId,
                 'invoice_id'  => $invoice->invoice_id,
@@ -196,9 +200,9 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     public function it_allows_deletion_after_invoice_reference_removed(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'invoice_id' => $invoice->invoice_id,
         ]);
 
@@ -229,9 +233,9 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_all_tasks_with_same_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        $tasks = Task::factory()->count(3)->create([
+        $tasks = $this->seedModelMany('Task', 3, [
             'invoice_id' => $invoice->invoice_id,
         ]);
 
@@ -255,7 +259,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     public function it_allows_deletion_of_all_unassigned_tasks(): void
     {
         /** Arrange */
-        $tasks = Task::factory()->count(3)->create([
+        $tasks = $this->seedModelMany('Task', 3, [
             'invoice_id' => null,
         ]);
 
@@ -279,10 +283,10 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     public function it_handles_mixed_deletable_and_non_deletable_tasks(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        $deletableTask    = Task::factory()->create(['invoice_id' => null]);
-        $nonDeletableTask = Task::factory()->create(['invoice_id' => $invoice->invoice_id]);
+        $deletableTask    = $this->seedModel('Task', ['invoice_id' => null]);
+        $nonDeletableTask = $this->seedModel('Task', ['invoice_id' => $invoice->invoice_id]);
 
         /** Act */
         $response1 = $this->post(route('tasks.delete', ['task_id' => $deletableTask->task_id]));

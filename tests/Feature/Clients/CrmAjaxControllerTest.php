@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Crm\Tests\Feature;
+namespace Tests\Feature\Clients;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Crm\Controllers\ClientsController;
@@ -20,6 +22,8 @@ use Tests\Feature\FeatureTestCase;
 
 class CrmAjaxControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test modalClientLookup displays active clients.
      */
@@ -28,10 +32,10 @@ class CrmAjaxControllerTest extends FeatureTestCase
     public function it_displays_modal_with_active_clients(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        $activeClient   = Client::factory()->create(['client_active' => 1, 'client_name' => 'Active Client']);
-        $inactiveClient = Client::factory()->create(['client_active' => 0, 'client_name' => 'Inactive Client']);
+        $activeClient   = $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Active Client']);
+        $inactiveClient = $this->seedModel('Client', ['client_active' => 0, 'client_name' => 'Inactive Client']);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.modal_client_lookup'));
@@ -55,11 +59,11 @@ class CrmAjaxControllerTest extends FeatureTestCase
     public function it_orders_clients_alphabetically_in_modal(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        Client::factory()->create(['client_active' => 1, 'client_name' => 'Zebra Corp']);
-        Client::factory()->create(['client_active' => 1, 'client_name' => 'Alpha Inc']);
-        Client::factory()->create(['client_active' => 1, 'client_name' => 'Beta LLC']);
+        $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Zebra Corp']);
+        $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Alpha Inc']);
+        $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Beta LLC']);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.modal_client_lookup'));
@@ -81,8 +85,8 @@ class CrmAjaxControllerTest extends FeatureTestCase
     public function it_returns_client_details_as_json(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client', [
             'client_name'  => 'Test Client',
             'client_email' => 'test@client.com',
         ]);
@@ -107,7 +111,7 @@ class CrmAjaxControllerTest extends FeatureTestCase
     public function it_returns_404_for_non_existent_client(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.get_client_details', ['clientId' => 99999]));

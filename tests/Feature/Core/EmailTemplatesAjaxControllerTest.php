@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,21 +12,22 @@ use Tests\TestCase;
 
 class EmailTemplatesAjaxControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     protected User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
         $this->actingAs($this->user);
     }
 
     #[Test]
     public function it_returns_email_template_content_as_json(): void
     {
-        $template = EmailTemplate::factory()->create([
+        $template = $this->seedModel('EmailTemplate', [
             'email_template_subject' => 'Test Subject',
             'email_template_body'    => 'Test Body',
         ]);

@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,11 +12,12 @@ use Tests\TestCase;
 
 class PasswordConfirmationTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     public function test_confirm_password_screen_can_be_rendered(): void
     {
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         $response = $this->actingAs($user)->get('/confirm-password');
 
@@ -24,7 +26,7 @@ class PasswordConfirmationTest extends TestCase
 
     public function test_password_can_be_confirmed(): void
     {
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         $response = $this->actingAs($user)->post('/confirm-password', [
             'password' => 'password',
@@ -36,7 +38,7 @@ class PasswordConfirmationTest extends TestCase
 
     public function test_password_is_not_confirmed_with_invalid_password(): void
     {
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         $response = $this->actingAs($user)->post('/confirm-password', [
             'password' => 'wrong-password',

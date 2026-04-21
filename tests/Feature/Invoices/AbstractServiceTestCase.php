@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Feature\Invoices;
 
 use Modules\Core\Models\Setting;
 use Modules\Crm\Models\Client;

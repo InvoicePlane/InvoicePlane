@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Crm\Tests\Feature;
+namespace Tests\Feature\Clients;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\ClientsController;
 use Modules\Crm\Models\Client;
@@ -22,6 +24,8 @@ use Tests\Feature\FeatureTestCase;
 
 class GetControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays guest get page.
      */
@@ -63,7 +67,7 @@ class GetControllerTest extends FeatureTestCase
     public function it_is_accessible_when_authenticated(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);

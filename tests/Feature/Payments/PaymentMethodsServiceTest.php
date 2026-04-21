@@ -1,8 +1,7 @@
 <?php
 
-namespace Modules\Payments\tests\Unit;
+namespace Tests\Feature\Payments;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Modules\PaymentMethods\Tests\Unit\app;
 
@@ -13,7 +12,6 @@ use Tests\TestCase;
 
 class PaymentMethodsServiceTest extends TestCase
 {
-    use RefreshDatabase;
 
     private PaymentMethodsService $service;
 

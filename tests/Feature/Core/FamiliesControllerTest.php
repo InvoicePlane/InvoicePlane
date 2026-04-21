@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,7 +12,8 @@ use Tests\TestCase;
 
 class FamiliesControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -19,7 +21,7 @@ class FamiliesControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
         $this->actingAs($this->user);
     }
 
@@ -51,7 +53,7 @@ class FamiliesControllerTest extends TestCase
     #[Test]
     public function it_prevents_duplicate_family_names(): void
     {
-        Family::factory()->create(['family_name' => 'Existing Family']);
+        $this->seedModel('Family', ['family_name' => 'Existing Family']);
 
         $familyData = [
             'family_name' => 'Existing Family',
@@ -67,7 +69,7 @@ class FamiliesControllerTest extends TestCase
     #[Test]
     public function it_updates_existing_family(): void
     {
-        $family = Family::factory()->create(['family_name' => 'Original Family']);
+        $family = $this->seedModel('Family', ['family_name' => 'Original Family']);
 
         $updateData = [
             'family_name' => 'Updated Family',
@@ -85,7 +87,7 @@ class FamiliesControllerTest extends TestCase
     #[Test]
     public function it_deletes_family(): void
     {
-        $family = Family::factory()->create();
+        $family = $this->seedModel('Family');
 
         $response = $this->delete(route('families.delete', ['id' => $family->family_id]));
 

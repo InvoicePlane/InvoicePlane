@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
 
 use Modules\Core\Controllers\AjaxController as CoreAjaxController;
 use Modules\Core\Models\User;

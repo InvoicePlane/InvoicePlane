@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Providers;
+namespace Tests\Unit\Core;
 
 use Closure;
 use InvalidArgumentException;

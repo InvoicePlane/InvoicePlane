@@ -1,14 +1,12 @@
 <?php
 
-namespace Modules\Crm\tests\Unit;
+namespace Tests\Unit\Clients;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Crm\app\Services\ClientNotesService;
 use Tests\TestCase;
 
 class ClientNotesServiceTest extends TestCase
 {
-    use RefreshDatabase;
 
     private ClientNotesService $service;
 

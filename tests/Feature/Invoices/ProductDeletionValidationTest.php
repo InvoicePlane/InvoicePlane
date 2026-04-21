@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Unit;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Products\Models\Family;
 use Modules\Products\Models\Product;
@@ -20,6 +22,8 @@ use Tests\AbstractServiceTestCase;
 
 class ProductDeletionValidationTest extends AbstractServiceTestCase
 {
+    use InteractsWithDatabase;
+
     private ProductService $service;
 
     protected function setUp(): void
@@ -37,7 +41,7 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_of_product_without_invoice_items(): void
     {
         /** Arrange */
-        $product = Product::factory()->create([
+        $product = $this->seedModel('Product', [
             'product_name'  => 'Test Product',
             'product_price' => 100.00,
         ]);
@@ -58,13 +62,13 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_of_product_with_invoice_items(): void
     {
         /** Arrange */
-        $product = Product::factory()->create([
+        $product = $this->seedModel('Product', [
             'product_name'  => 'Product In Use',
             'product_price' => 150.00,
         ]);
 
         // Create an invoice item that references this product
-        InvoiceItem::factory()->create([
+        $this->seedModel('InvoiceItem', [
             'item_product_id' => $product->product_id,
             'item_name'       => 'Invoice Item',
             'item_price'      => 150.00,
@@ -87,13 +91,13 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     public function it_returns_correct_invoice_item_count(): void
     {
         /** Arrange */
-        $product = Product::factory()->create([
+        $product = $this->seedModel('Product', [
             'product_name'  => 'Popular Product',
             'product_price' => 200.00,
         ]);
 
         // Create multiple invoice items referencing this product
-        InvoiceItem::factory()->count(3)->create([
+        $this->seedModelMany('InvoiceItem', 3, [
             'item_product_id' => $product->product_id,
             'item_price'      => 200.00,
             'item_quantity'   => 1,
@@ -115,9 +119,9 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_single_invoice_item(): void
     {
         /** Arrange */
-        $product = Product::factory()->create();
+        $product = $this->seedModel('Product');
 
-        InvoiceItem::factory()->create([
+        $this->seedModel('InvoiceItem', [
             'item_product_id' => $product->product_id,
         ]);
 
@@ -139,10 +143,10 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_multiple_invoice_items(): void
     {
         /** Arrange */
-        $product = Product::factory()->create();
+        $product = $this->seedModel('Product');
 
         // Create 5 invoice items
-        InvoiceItem::factory()->count(5)->create([
+        $this->seedModelMany('InvoiceItem', 5, [
             'item_product_id' => $product->product_id,
         ]);
 
@@ -184,10 +188,10 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_even_with_archived_invoice_items(): void
     {
         /** Arrange */
-        $product = Product::factory()->create();
+        $product = $this->seedModel('Product');
 
         // Even if invoice is archived/old, item still references product
-        InvoiceItem::factory()->create([
+        $this->seedModel('InvoiceItem', [
             'item_product_id' => $product->product_id,
             // Invoice could be old/archived, but relationship still exists
         ]);

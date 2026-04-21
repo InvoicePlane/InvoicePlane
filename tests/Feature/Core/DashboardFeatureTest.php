@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Dashboard;
+namespace Tests\Feature\Core;
 
  use Tests\AbstractTestCase;
 

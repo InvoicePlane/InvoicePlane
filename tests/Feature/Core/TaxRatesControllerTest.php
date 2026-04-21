@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,17 +12,18 @@ use Tests\TestCase;
 
 class TaxRatesControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     #[Test]
     public function it_displays_tax_rates_list()
     {
         // Arrange: authenticate user
-        $user = \src\Models\User::factory()->create();
+        $user = $this->seedModel('\src\Models\User');
         $this->actingAs($user);
 
         // Arrange: create tax rates
-        $taxRate = \src\Models\TaxRate::factory()->create();
+        $taxRate = $this->seedModel('\src\Models\TaxRate');
 
         // Act: visit tax rates index
         $response = $this->get(route('tax_rates.index'));
@@ -91,7 +93,7 @@ class TaxRatesControllerTest extends TestCase
     #[Test]
     public function it_updates_existing_tax_rate(): void
     {
-        $taxRate = TaxRate::factory()->create([
+        $taxRate = $this->seedModel('TaxRate', [
             'tax_rate_name'    => 'Original Tax',
             'tax_rate_percent' => 10.00,
         ]);
@@ -127,7 +129,7 @@ class TaxRatesControllerTest extends TestCase
     public function it_deletes_tax_rate()
     {
         // Arrange: create a tax rate
-        $taxRate = \src\Models\TaxRate::factory()->create();
+        $taxRate = $this->seedModel('\src\Models\TaxRate');
 
         // Act: delete the tax rate
         $response = $this->get(route('tax_rates.delete', ['id' => $taxRate->id]));

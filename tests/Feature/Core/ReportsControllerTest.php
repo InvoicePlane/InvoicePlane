@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,7 +12,8 @@ use Tests\TestCase;
 
 class ReportsControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -19,7 +21,7 @@ class ReportsControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
         $this->actingAs($this->user);
     }
 
@@ -27,8 +29,8 @@ class ReportsControllerTest extends TestCase
     public function it_returns_sales_by_client_report()
     {
         // Arrange: create clients and sales data
-        $client  = \Modules\Clients\Models\tmpClient::factory()->create();
-        $invoice = \Modules\Invoices\Models\Invoice::factory(3)->create([
+        $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
+        $invoice = $this->seedModelMany('\Modules\Invoices\Models\Invoice', 3, [
             'client_id'    => $client->id,
             'invoice_date' => now()->subDays(5),
             'total'        => 500,
@@ -51,8 +53,8 @@ class ReportsControllerTest extends TestCase
     public function it_generates_sales_by_client_report(): void
     {
         // Arrange
-        $client = tmpClient::factory()->create();
-        Invoice::factory()->count(3)->create([
+        $client = $this->seedModel('tmpClient');
+        $this->seedModelMany('Invoice', 3, [
             'client_id'            => $client->client_id,
             'invoice_status_id'    => 4, // Paid
             'invoice_date_created' => now()->subDays(10),
@@ -84,8 +86,8 @@ class ReportsControllerTest extends TestCase
     #[Test]
     public function it_generates_payment_history_report(): void
     {
-        $invoice = Invoice::factory()->create();
-        Payment::factory()->count(3)->create([
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModelMany('Payment', 3, [
             'invoice_id'   => $invoice->invoice_id,
             'payment_date' => now()->subDays(5),
         ]);
@@ -104,15 +106,15 @@ class ReportsControllerTest extends TestCase
     public function it_generates_invoice_aging_report(): void
     {
         // Arrange: create clients and invoices
-        Invoice::factory()->create([
+        $this->seedModel('Invoice', [
             'invoice_date_due'  => now()->subDays(10),
             'invoice_status_id' => 2, // Sent
         ]);
-        Invoice::factory()->create([
+        $this->seedModel('Invoice', [
             'invoice_date_due'  => now()->subDays(40),
             'invoice_status_id' => 2,
         ]);
-        Invoice::factory()->create([
+        $this->seedModel('Invoice', [
             'invoice_date_due'  => now()->subDays(70),
             'invoice_status_id' => 2,
         ]);
@@ -131,8 +133,8 @@ class ReportsControllerTest extends TestCase
     public function it_returns_invoices_per_client_report()
     {
         // Arrange: create clients and invoices
-        $client  = \Modules\Clients\Models\tmpClient::factory()->create();
-        $invoice = \Modules\Invoices\Models\Invoice::factory()->create([
+        $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
+        $invoice = $this->seedModel('\Modules\Invoices\Models\Invoice', [
             'client_id'    => $client->id,
             'invoice_date' => now()->subDays(3),
             'total'        => 300,
@@ -154,7 +156,7 @@ class ReportsControllerTest extends TestCase
     #[Test]
     public function it_generates_sales_by_year_report_with_filters(): void
     {
-        Invoice::factory()->count(10)->create([
+        $this->seedModelMany('Invoice', 10, [
             'invoice_date_created' => now()->subMonths(6),
             'invoice_status_id'    => 4,
         ]);

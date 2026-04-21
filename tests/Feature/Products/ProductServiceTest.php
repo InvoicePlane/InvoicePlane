@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Products\Tests\Unit;
+namespace Tests\Feature\Products;
 
 use Modules\Products\Services\ProductService;
 use PHPUnit\Framework\Attributes\CoversClass;

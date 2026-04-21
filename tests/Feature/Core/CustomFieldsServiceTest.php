@@ -1,8 +1,7 @@
 <?php
 
-namespace Modules\Core\Tests\Unit;
+namespace Tests\Feature\Core;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\CustomFields\Models\CustomField;
 use Modules\CustomFields\Services\CustomFieldsService;
 use PHPUnit\Framework\Attributes\Test;
@@ -10,7 +9,6 @@ use Tests\TestCase;
 
 class CustomFieldsServiceTest extends TestCase
 {
-    use RefreshDatabase;
 
     private CustomFieldsService $service;
 

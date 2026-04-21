@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,7 +12,8 @@ use Tests\TestCase;
 
 class MailerControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -21,8 +23,8 @@ class MailerControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user   = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
-        $this->client = tmpClient::factory()->create(['client_email' => 'client@example.com']);
+        $this->user   = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
+        $this->client = $this->seedModel('tmpClient', ['client_email' => 'client@example.com']);
         $this->actingAs($this->user);
 
         // Mock mailer as configured
@@ -32,8 +34,8 @@ class MailerControllerTest extends TestCase
     #[Test]
     public function it_displays_invoice_mail_composer(): void
     {
-        $invoice       = Invoice::factory()->create(['client_id' => $this->client->client_id]);
-        $emailTemplate = EmailTemplate::factory()->create(['email_template_type' => 'invoice']);
+        $invoice       = $this->seedModel('Invoice', ['client_id' => $this->client->client_id]);
+        $emailTemplate = $this->seedModel('EmailTemplate', ['email_template_type' => 'invoice']);
 
         $response = $this->get(route('mailer.invoice', ['invoice_id' => $invoice->invoice_id]));
 
@@ -47,8 +49,8 @@ class MailerControllerTest extends TestCase
     #[Test]
     public function it_displays_quote_mail_composer(): void
     {
-        $quote         = Quote::factory()->create(['client_id' => $this->client->client_id]);
-        $emailTemplate = EmailTemplate::factory()->create(['email_template_type' => 'quote']);
+        $quote         = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
+        $emailTemplate = $this->seedModel('EmailTemplate', ['email_template_type' => 'quote']);
 
         $response = $this->get(route('mailer.quote', ['quote_id' => $quote->quote_id]));
 
@@ -63,7 +65,7 @@ class MailerControllerTest extends TestCase
     {
         Config::set('mail.driver', null);
 
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
         $response = $this->get(route('mailer.invoice', ['invoice_id' => $invoice->invoice_id]));
 
@@ -76,7 +78,7 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'client_id'      => $this->client->client_id,
             'invoice_number' => 'INV-001',
         ]);
@@ -107,7 +109,7 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'client_id'      => $this->client->client_id,
             'invoice_number' => 'INV-002',
         ]);
@@ -137,7 +139,7 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'client_id'      => $this->client->client_id,
             'invoice_number' => 'INV-003',
         ]);
@@ -166,12 +168,12 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'client_id'      => $this->client->client_id,
             'invoice_number' => 'INV-004',
         ]);
 
-        Upload::factory()->count(2)->create([
+        $this->seedModelMany('Upload', 2, [
             'invoice_id' => $invoice->invoice_id,
         ]);
 
@@ -194,7 +196,7 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'client_id'         => $this->client->client_id,
             'invoice_number'    => null,
             'invoice_status_id' => 1,
@@ -220,7 +222,7 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'client_id'         => $this->client->client_id,
             'invoice_status_id' => 1,
         ]);
@@ -243,7 +245,7 @@ class MailerControllerTest extends TestCase
     #[Test]
     public function it_cancels_invoice_email_and_redirects_to_view(): void
     {
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
         $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), [
             'btn_cancel' => true,
@@ -258,7 +260,7 @@ class MailerControllerTest extends TestCase
         Mail::fake();
         Mail::shouldReceive('send')->andThrow(new Exception('Mail server error'));
 
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'client_id' => $this->client->client_id,
         ]);
 
@@ -281,7 +283,7 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id'    => $this->client->client_id,
             'quote_number' => 'QUO-001',
         ]);
@@ -312,7 +314,7 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id'       => $this->client->client_id,
             'quote_number'    => null,
             'quote_status_id' => 1,
@@ -338,7 +340,7 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id'       => $this->client->client_id,
             'quote_status_id' => 1,
         ]);
@@ -361,7 +363,7 @@ class MailerControllerTest extends TestCase
     #[Test]
     public function it_cancels_quote_email_and_redirects_to_view(): void
     {
-        $quote = Quote::factory()->create();
+        $quote = $this->seedModel('Quote');
 
         $response = $this->post(route('mailer.sendQuote', ['quote_id' => $quote->quote_id]), [
             'btn_cancel' => true,
@@ -375,12 +377,12 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id'    => $this->client->client_id,
             'quote_number' => 'QUO-002',
         ]);
 
-        Upload::factory()->count(2)->create([
+        $this->seedModelMany('Upload', 2, [
             'quote_id' => $quote->quote_id,
         ]);
 
@@ -403,7 +405,7 @@ class MailerControllerTest extends TestCase
     {
         Mail::fake();
 
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'client_id' => $this->client->client_id,
         ]);
 

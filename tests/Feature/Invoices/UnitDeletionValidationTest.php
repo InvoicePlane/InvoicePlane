@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Unit;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Products\Models\Family;
 use Modules\Products\Models\Product;
@@ -20,6 +22,8 @@ use Tests\AbstractServiceTestCase;
 
 class UnitDeletionValidationTest extends AbstractServiceTestCase
 {
+    use InteractsWithDatabase;
+
     private UnitService $service;
 
     protected function setUp(): void
@@ -34,7 +38,7 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_of_unit_without_references(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create(['unit_name' => 'Unused Unit']);
+        $unit = $this->seedModel('Unit', ['unit_name' => 'Unused Unit']);
 
         /** Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
@@ -53,8 +57,8 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_products(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create();
-        Product::factory()->create(['unit_id' => $unit->unit_id]);
+        $unit = $this->seedModel('Unit');
+        $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
@@ -71,8 +75,8 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_invoice_items(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create();
-        InvoiceItem::factory()->create(['item_product_unit_id' => $unit->unit_id]);
+        $unit = $this->seedModel('Unit');
+        $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
@@ -89,8 +93,8 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_quote_items(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create();
-        QuoteItem::factory()->create(['item_product_unit_id' => $unit->unit_id]);
+        $unit = $this->seedModel('Unit');
+        $this->seedModel('QuoteItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
@@ -107,11 +111,11 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_multiple_references(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create();
+        $unit = $this->seedModel('Unit');
 
-        Product::factory()->count(2)->create(['unit_id' => $unit->unit_id]);
-        InvoiceItem::factory()->count(3)->create(['item_product_unit_id' => $unit->unit_id]);
-        QuoteItem::factory()->count(1)->create(['item_product_unit_id' => $unit->unit_id]);
+        $this->seedModelMany('Product', 2, ['unit_id' => $unit->unit_id]);
+        $this->seedModelMany('InvoiceItem', 3, ['item_product_unit_id' => $unit->unit_id]);
+        $this->seedModelMany('QuoteItem', 1, ['item_product_unit_id' => $unit->unit_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($unit->unit_id);
@@ -130,8 +134,8 @@ class UnitDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_after_references_removed(): void
     {
         /** Arrange */
-        $unit    = Unit::factory()->create();
-        $product = Product::factory()->create(['unit_id' => $unit->unit_id]);
+        $unit    = $this->seedModel('Unit');
+        $product = $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
         // Initially cannot delete
         $this->assertFalse($this->service->canDelete($unit->unit_id));

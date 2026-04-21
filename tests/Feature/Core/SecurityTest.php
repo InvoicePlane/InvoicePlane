@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,14 +12,15 @@ use Tests\TestCase;
 
 class SecurityTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     protected User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
     }
 
     #[Test]
@@ -43,7 +45,7 @@ class SecurityTest extends TestCase
     public function it_filters_input_to_prevent_xss_attacks(): void
     {
         $this->actingAs($this->user);
-        $client = tmpClient::factory()->create();
+        $client = $this->seedModel('tmpClient');
 
         $maliciousData = [
             'client_id'            => $client->client_id,
@@ -64,7 +66,7 @@ class SecurityTest extends TestCase
     public function it_prevents_sql_injection_in_search_queries(): void
     {
         $this->actingAs($this->user);
-        tmpClient::factory()->create(['client_name' => 'Test Client', 'client_active' => 1]);
+        $this->seedModel('tmpClient', ['client_name' => 'Test Client', 'client_active' => 1]);
 
         $sqlInjection = "' OR '1'='1";
 
@@ -102,10 +104,10 @@ class SecurityTest extends TestCase
     #[Test]
     public function it_validates_user_permissions_for_sensitive_operations(): void
     {
-        $guestUser = User::factory()->create(['user_type' => 2, 'user_active' => 1]);
+        $guestUser = $this->seedModel('User', ['user_type' => 2, 'user_active' => 1]);
         $this->actingAs($guestUser);
 
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
         $response = $this->delete(route('invoices.delete', ['invoice_id' => $invoice->invoice_id]));
 
@@ -130,7 +132,7 @@ class SecurityTest extends TestCase
     #[Test]
     public function it_rate_limits_login_attempts(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => bcrypt('password'),
             'user_active'   => 1,

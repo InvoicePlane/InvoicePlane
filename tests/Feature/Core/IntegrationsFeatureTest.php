@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integrations;
+namespace Tests\Feature\Core;
 
  use Tests\AbstractTestCase;
 

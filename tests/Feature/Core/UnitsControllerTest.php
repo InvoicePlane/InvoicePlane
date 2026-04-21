@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,7 +12,8 @@ use Tests\TestCase;
 
 class UnitsControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -19,7 +21,7 @@ class UnitsControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
         $this->actingAs($this->user);
     }
 
@@ -51,7 +53,7 @@ class UnitsControllerTest extends TestCase
     #[Test]
     public function it_prevents_duplicate_unit_names(): void
     {
-        Unit::factory()->create(['unit_name' => 'Existing Unit']);
+        $this->seedModel('Unit', ['unit_name' => 'Existing Unit']);
 
         $unitData = [
             'unit_name'      => 'Existing Unit',
@@ -68,7 +70,7 @@ class UnitsControllerTest extends TestCase
     #[Test]
     public function it_updates_existing_unit(): void
     {
-        $unit = Unit::factory()->create(['unit_name' => 'Original Unit']);
+        $unit = $this->seedModel('Unit', ['unit_name' => 'Original Unit']);
 
         $updateData = [
             'unit_name'      => 'Updated Unit',
@@ -87,7 +89,7 @@ class UnitsControllerTest extends TestCase
     #[Test]
     public function it_deletes_unit(): void
     {
-        $unit = Unit::factory()->create();
+        $unit = $this->seedModel('Unit');
 
         $response = $this->delete(route('units.delete', ['id' => $unit->unit_id]));
 

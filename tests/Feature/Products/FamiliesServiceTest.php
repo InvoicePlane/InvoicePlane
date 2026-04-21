@@ -1,8 +1,9 @@
 <?php
 
-namespace tests\Unit;
+namespace Tests\Feature\Products;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 use PHPUnit\Framework\Attributes\Test;
 use src\Models\Family;
 use src\Services\FamiliesService;
@@ -10,7 +11,8 @@ use Tests\TestCase;
 
 class FamiliesServiceTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     private FamiliesService $service;
 
@@ -45,7 +47,7 @@ class FamiliesServiceTest extends TestCase
     #[Test]
     public function it_returns_all_families_from_get_all(): void
     {
-        Family::factory()->count(5)->create();
+        $this->seedModelMany('Family', 5);
 
         $results = $this->service->getAll();
         $this->assertCount(5, $results);

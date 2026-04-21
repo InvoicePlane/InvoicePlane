@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Controllers\AjaxController as CoreAjaxController;
 use Modules\Core\Models\User;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class SetupControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays setup wizard page.
      */
@@ -26,7 +30,7 @@ class SetupControllerTest extends FeatureTestCase
     public function it_displays_setup_wizard_page(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('setup.index'));

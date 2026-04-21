@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Security;
+namespace Tests\Feature\Core;
 
 use DateTime;
 use DateTimeZone;

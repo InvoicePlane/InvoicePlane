@@ -1,8 +1,7 @@
 <?php
 
-namespace Modules\Core\Tests\Unit;
+namespace Tests\Feature\Core;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\CustomFields\Models\CustomField;
 use Modules\CustomFields\Services\CustomFieldsService;
 use PHPUnit\Framework\Attributes\Test;
@@ -10,7 +9,6 @@ use Tests\TestCase;
 
 class EdgeCasesTest extends TestCase
 {
-    use RefreshDatabase;
 
     #[Test]
     public function unit_service_handles_extreme_quantities_correctly(): void

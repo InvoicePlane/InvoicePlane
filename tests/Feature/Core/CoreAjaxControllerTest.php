@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Controllers\AjaxController as CoreAjaxController;
 use Modules\Core\Models\User;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class CoreAjaxControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test getCronKey returns JSON with random key.
      */
@@ -26,7 +30,7 @@ class CoreAjaxControllerTest extends FeatureTestCase
     public function it_returns_json_with_random_cron_key(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
@@ -47,7 +51,7 @@ class CoreAjaxControllerTest extends FeatureTestCase
     public function it_generates_different_keys_on_each_request(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response1 = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
@@ -67,7 +71,7 @@ class CoreAjaxControllerTest extends FeatureTestCase
     public function it_generates_alphanumeric_keys_only(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));

@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,7 +12,8 @@ use Tests\TestCase;
 
 class SessionsControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     #[Test]
@@ -35,7 +37,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_authenticates_user_with_valid_credentials(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),
             'user_active'   => 1,
@@ -55,7 +57,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_redirects_guest_users_to_guest_area(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'    => 'guest@example.com',
             'user_password' => Hash::make('password123'),
             'user_active'   => 1,
@@ -74,7 +76,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_rejects_authentication_with_invalid_credentials(): void
     {
-        User::factory()->create([
+        $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),
             'user_active'   => 1,
@@ -108,7 +110,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_rejects_authentication_for_inactive_user(): void
     {
-        User::factory()->create([
+        $this->seedModel('User', [
             'user_email'    => 'inactive@example.com',
             'user_password' => Hash::make('password123'),
             'user_active'   => 0,
@@ -128,7 +130,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_throttles_login_attempts_after_multiple_failures(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),
             'user_active'   => 1,
@@ -159,7 +161,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_logs_out_authenticated_user(): void
     {
-        $user = User::factory()->create(['user_active' => 1]);
+        $user = $this->seedModel('User', ['user_active' => 1]);
         $this->actingAs($user);
 
         $response = $this->get(route('sessions.logout'));
@@ -182,7 +184,7 @@ class SessionsControllerTest extends TestCase
     {
         Mail::fake();
 
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'  => 'test@example.com',
             'user_active' => 1,
         ]);
@@ -213,7 +215,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_throttles_password_reset_attempts(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'  => 'test@example.com',
             'user_active' => 1,
         ]);
@@ -234,7 +236,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_displays_new_password_form_with_valid_token(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'               => 'test@example.com',
             'user_passwordreset_token' => 'valid_token_123',
             'user_active'              => 1,
@@ -268,7 +270,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_updates_password_with_valid_token(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'               => 'test@example.com',
             'user_passwordreset_token' => 'valid_token_123',
             'user_active'              => 1,
@@ -291,7 +293,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_rejects_password_update_with_mismatched_token(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'               => 'test@example.com',
             'user_passwordreset_token' => 'valid_token_123',
             'user_active'              => 1,
@@ -314,7 +316,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_rejects_empty_password_in_reset(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'               => 'test@example.com',
             'user_passwordreset_token' => 'valid_token_123',
             'user_active'              => 1,
@@ -334,7 +336,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_clears_login_failures_after_successful_authentication(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),
             'user_active'   => 1,
@@ -365,7 +367,7 @@ class SessionsControllerTest extends TestCase
     #[Test]
     public function it_unlocks_account_after_12_hours(): void
     {
-        $user = User::factory()->create([
+        $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),
             'user_active'   => 1,

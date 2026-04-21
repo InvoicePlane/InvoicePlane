@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Invoices\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
 use Modules\Invoices\Models\Invoice;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class InvoiceGroupsControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays paginated list of invoice groups.
      */
@@ -26,7 +30,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_invoice_groups(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice_groups.index'));
@@ -44,7 +48,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     public function it_orders_invoice_groups_by_name(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create multiple invoice groups with different names */
 
         /** Act */
@@ -63,7 +67,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     public function it_paginates_invoice_groups_at_15_per_page(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create 20 invoice groups */
 
         /** Act */
@@ -83,7 +87,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     public function it_displays_create_form_with_default_values(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice_groups.form'));
@@ -239,7 +243,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     public function it_deletes_invoice_group_successfully(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create invoice group */
         $testId = 1;
 

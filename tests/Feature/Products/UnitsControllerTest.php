@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Feature;
+namespace Tests\Feature\Products;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
@@ -19,6 +21,8 @@ use Tests\Feature\FeatureTestCase;
 
 class UnitsControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays paginated list of units.
      */
@@ -27,8 +31,8 @@ class UnitsControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_units(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        Unit::factory()->count(5)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('Unit', 5);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('units.index'));
@@ -47,7 +51,7 @@ class UnitsControllerTest extends FeatureTestCase
     public function it_displays_create_form(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('units.create'));
@@ -70,7 +74,7 @@ class UnitsControllerTest extends FeatureTestCase
     public function it_creates_new_unit_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -104,8 +108,8 @@ class UnitsControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_unit(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        $unit = Unit::factory()->create();
+        $user = $this->seedModel('User');
+        $unit = $this->seedModel('Unit');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('units.edit', $unit));
@@ -127,8 +131,8 @@ class UnitsControllerTest extends FeatureTestCase
     public function it_updates_existing_unit_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        $unit = Unit::factory()->create(['unit_name' => 'Old Name']);
+        $user = $this->seedModel('User');
+        $unit = $this->seedModel('Unit', ['unit_name' => 'Old Name']);
 
         /**
          * {
@@ -162,8 +166,8 @@ class UnitsControllerTest extends FeatureTestCase
     public function it_deletes_unit(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        $unit = Unit::factory()->create();
+        $user = $this->seedModel('User');
+        $unit = $this->seedModel('Unit');
 
         /** Act */
         $response = $this->actingAs($user)->delete(route('units.destroy', $unit));
@@ -184,11 +188,11 @@ class UnitsControllerTest extends FeatureTestCase
     public function it_orders_units_correctly(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        Unit::factory()->create(['unit_name' => 'Zebra Unit']);
-        Unit::factory()->create(['unit_name' => 'Alpha Unit']);
-        Unit::factory()->create(['unit_name' => 'Beta Unit']);
+        $this->seedModel('Unit', ['unit_name' => 'Zebra Unit']);
+        $this->seedModel('Unit', ['unit_name' => 'Alpha Unit']);
+        $this->seedModel('Unit', ['unit_name' => 'Beta Unit']);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('units.index'));

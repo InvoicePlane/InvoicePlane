@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Crm\Tests\Feature;
+namespace Tests\Feature\Clients;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\ClientsController;
 use Modules\Crm\Models\Client;
@@ -22,6 +24,8 @@ use Tests\Feature\FeatureTestCase;
 
 class ClientsAjaxDetailsTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     // ==================== ROUTE: GET /crm/ajax/get_client_details/{clientId} ====================
 
     /**
@@ -32,8 +36,8 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     public function it_returns_client_details_as_json(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client', [
             'client_name'  => 'Test Client',
             'client_email' => 'test@client.com',
         ]);
@@ -59,7 +63,7 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     public function it_returns_404_for_non_existent_client(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -77,7 +81,7 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     public function it_requires_authentication_for_get_client_details(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
 
         /** Act */
         $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
@@ -94,8 +98,8 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     public function it_returns_all_client_fields(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client', [
             'client_name'      => 'Complete Client',
             'client_email'     => 'complete@test.com',
             'client_phone'     => '123-456-7890',
@@ -131,8 +135,8 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     public function it_returns_details_for_inactive_client(): void
     {
         /** Arrange */
-        $user           = User::factory()->create();
-        $inactiveClient = Client::factory()->create([
+        $user           = $this->seedModel('User');
+        $inactiveClient = $this->seedModel('Client', [
             'client_active' => 0,
             'client_name'   => 'Inactive Client',
         ]);
@@ -158,8 +162,8 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     public function it_handles_null_fields_in_client_details(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client', [
             'client_name'      => 'Minimal Client',
             'client_email'     => null,
             'client_phone'     => null,

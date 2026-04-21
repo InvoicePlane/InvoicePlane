@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Unit;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Products\Models\Family;
 use Modules\Products\Models\Product;
@@ -20,6 +22,8 @@ use Tests\AbstractServiceTestCase;
 
 class TaxRateDeletionValidationTest extends AbstractServiceTestCase
 {
+    use InteractsWithDatabase;
+
     private TaxRateService $service;
 
     protected function setUp(): void
@@ -34,7 +38,7 @@ class TaxRateDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_of_tax_rate_without_references(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create(['tax_rate_name' => 'Unused Tax Rate']);
+        $taxRate = $this->seedModel('TaxRate', ['tax_rate_name' => 'Unused Tax Rate']);
 
         /** Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
@@ -55,8 +59,8 @@ class TaxRateDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_products(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        Product::factory()->create(['tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $this->seedModel('Product', ['tax_rate_id' => $taxRate->tax_rate_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
@@ -73,8 +77,8 @@ class TaxRateDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_invoice_items(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        InvoiceItem::factory()->create(['item_tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $this->seedModel('InvoiceItem', ['item_tax_rate_id' => $taxRate->tax_rate_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
@@ -89,8 +93,8 @@ class TaxRateDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_invoice_tax_rates(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        InvoiceTaxRate::factory()->create(['tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $this->seedModel('InvoiceTaxRate', ['tax_rate_id' => $taxRate->tax_rate_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
@@ -105,8 +109,8 @@ class TaxRateDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_quote_items(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        QuoteItem::factory()->create(['item_tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $this->seedModel('QuoteItem', ['item_tax_rate_id' => $taxRate->tax_rate_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
@@ -121,8 +125,8 @@ class TaxRateDeletionValidationTest extends AbstractServiceTestCase
     public function it_prevents_deletion_with_quote_tax_rates(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        QuoteTaxRate::factory()->create(['tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $this->seedModel('QuoteTaxRate', ['tax_rate_id' => $taxRate->tax_rate_id]);
 
         /** Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
@@ -137,11 +141,11 @@ class TaxRateDeletionValidationTest extends AbstractServiceTestCase
     public function it_returns_correct_blocker_counts(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
+        $taxRate = $this->seedModel('TaxRate');
 
-        Product::factory()->count(2)->create(['tax_rate_id' => $taxRate->tax_rate_id]);
-        InvoiceItem::factory()->count(3)->create(['item_tax_rate_id' => $taxRate->tax_rate_id]);
-        QuoteItem::factory()->count(1)->create(['item_tax_rate_id' => $taxRate->tax_rate_id]);
+        $this->seedModelMany('Product', 2, ['tax_rate_id' => $taxRate->tax_rate_id]);
+        $this->seedModelMany('InvoiceItem', 3, ['item_tax_rate_id' => $taxRate->tax_rate_id]);
+        $this->seedModelMany('QuoteItem', 1, ['item_tax_rate_id' => $taxRate->tax_rate_id]);
         /** Act */
         $blockers = $this->service->getDeletionBlockers($taxRate->tax_rate_id);
 
@@ -157,8 +161,8 @@ class TaxRateDeletionValidationTest extends AbstractServiceTestCase
     public function it_allows_deletion_after_all_references_removed(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        $product = Product::factory()->create(['tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $product = $this->seedModel('Product', ['tax_rate_id' => $taxRate->tax_rate_id]);
 
         // Initially cannot delete
         $this->assertFalse($this->service->canDelete($taxRate->tax_rate_id));

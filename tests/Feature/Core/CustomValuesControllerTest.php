@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,13 +12,14 @@ use Tests\TestCase;
 
 class CustomValuesControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     #[Test]
     public function it_displays_custom_values()
     {
         // Arrange: create custom values
-        $customValue = CustomValue::factory()->create(['name' => 'Test Value']);
+        $customValue = $this->seedModel('CustomValue', ['name' => 'Test Value']);
 
         // Act: call the index route
         $response = $this->get(route('custom_values.index'));
@@ -31,7 +33,7 @@ class CustomValuesControllerTest extends TestCase
     public function it_displays_and_saves_custom_field()
     {
         // Arrange: create a custom field
-        $customField     = \Modules\CustomFields\Models\CustomField::factory()->create(['name' => 'Test Field']);
+        $customField     = $this->seedModel('\Modules\CustomFields\Models\CustomField', ['name' => 'Test Field']);
         $customValueData = [
             'value' => 'New Value',
             // add other required fields

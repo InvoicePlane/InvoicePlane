@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Quotes\Tests\Feature;
+namespace Tests\Feature\Quotes;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\QuotesController as GuestQuotesController;
 use Modules\Quotes\Models\Quote;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class QuotesControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test that index method redirects to all quotes status view.
      */
@@ -26,7 +30,7 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_redirects_to_all_status_view_from_index(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -44,15 +48,15 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_displays_only_draft_quotes_when_draft_status_selected(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $draftQuote = Quote::factory()->draft()->create([
+        $draftQuote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
 
-        $sentQuote = Quote::factory()->sent()->create([
+        $sentQuote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
@@ -82,15 +86,15 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_displays_all_quotes_when_all_status_selected(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $draftQuote = Quote::factory()->draft()->create([
+        $draftQuote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
 
-        $sentQuote = Quote::factory()->sent()->create([
+        $sentQuote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
@@ -119,7 +123,7 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_includes_quote_statuses_in_view_data_for_status_method(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -141,16 +145,16 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_displays_quote_details_with_items_and_amounts(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
 
-        $item1 = QuoteItem::factory()->create(['quote_id' => $quote->quote_id]);
-        $item2 = QuoteItem::factory()->create(['quote_id' => $quote->quote_id]);
+        $item1 = $this->seedModel('QuoteItem', ['quote_id' => $quote->quote_id]);
+        $item2 = $this->seedModel('QuoteItem', ['quote_id' => $quote->quote_id]);
 
         /* Act */
         $this->actingAs($user);
@@ -179,7 +183,7 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_returns_404_when_viewing_non_existent_quote(): void
     {
         /** Arrange */
-        $user               = User::factory()->create();
+        $user               = $this->seedModel('User');
         $nonExistentQuoteId = 99999;
 
         /* Act */
@@ -198,10 +202,10 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_includes_custom_fields_in_quote_view_data(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
@@ -224,10 +228,10 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_includes_tax_rates_in_quote_view_data(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
@@ -250,10 +254,10 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_deletes_quote_and_redirects_to_index(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
@@ -288,16 +292,16 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_deletes_quote_and_all_related_records(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
 
-        $item    = QuoteItem::factory()->create(['quote_id' => $quote->quote_id]);
-        $taxRate = QuoteTaxRate::factory()->create(['quote_id' => $quote->quote_id]);
+        $item    = $this->seedModel('QuoteItem', ['quote_id' => $quote->quote_id]);
+        $taxRate = $this->seedModel('QuoteTaxRate', ['quote_id' => $quote->quote_id]);
 
         $quoteId   = $quote->quote_id;
         $itemId    = $item->item_id;
@@ -329,15 +333,15 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_removes_tax_rate_and_recalculates_quote(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
 
-        $taxRate = QuoteTaxRate::factory()->create([
+        $taxRate = $this->seedModel('QuoteTaxRate', [
             'quote_id'    => $quote->quote_id,
             'tax_rate_id' => 1,
         ]);
@@ -374,15 +378,15 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_redirects_to_quote_view_after_deleting_tax_rate(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
 
-        $taxRate = QuoteTaxRate::factory()->create(['quote_id' => $quote->quote_id]);
+        $taxRate = $this->seedModel('QuoteTaxRate', ['quote_id' => $quote->quote_id]);
 
         /** Act */
         /**
@@ -413,15 +417,15 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_recalculates_all_quotes_successfully(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $quote1 = Quote::factory()->create([
+        $quote1 = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
 
-        $quote2 = Quote::factory()->create([
+        $quote2 = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
@@ -448,7 +452,7 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_handles_empty_quote_list_when_recalculating_all_quotes(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         Quote::query()->delete();
 
         /** Act */
@@ -473,12 +477,12 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_paginates_quote_results_correctly(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
         /* Create 20 draft quotes (more than the 15 per page limit) */
         for ($i = 0; $i < 20; $i++) {
-            Quote::factory()->draft()->create([
+            $this->seedModel('Quote', [
                 'client_id' => $client->client_id,
                 'user_id'   => $user->user_id,
             ]);
@@ -504,15 +508,15 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_displays_only_sent_quotes_when_sent_status_selected(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $draftQuote = Quote::factory()->draft()->create([
+        $draftQuote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
 
-        $sentQuote = Quote::factory()->sent()->create([
+        $sentQuote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
@@ -538,15 +542,15 @@ class QuotesControllerTest extends FeatureTestCase
     public function it_displays_only_approved_quotes_when_approved_status_selected(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
-        $draftQuote = Quote::factory()->draft()->create([
+        $draftQuote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
 
-        $approvedQuote = Quote::factory()->approved()->create([
+        $approvedQuote = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
         ]);
