@@ -7,9 +7,7 @@ class MxKernel
     public static function boot(): void
     {
         self::defineConstants();
-        self::loadAutoload();
         self::loadCiCore();
-        self::loadMx();
         self::loadHelpers();
     }
 
@@ -30,14 +28,10 @@ class MxKernel
         );
     }
 
-    private static function loadAutoload(): void
-    {
-        // already handled by bootstrap.php
-    }
-
     private static function loadCiCore(): void
     {
         require_once BASEPATH . 'core/Common.php';
+
         require_once BASEPATH . 'core/Exceptions.php';
         require_once BASEPATH . 'core/Benchmark.php';
         require_once BASEPATH . 'core/Hooks.php';
@@ -50,18 +44,6 @@ class MxKernel
         require_once BASEPATH . 'core/Lang.php';
         require_once BASEPATH . 'core/Controller.php';
         require_once BASEPATH . 'core/Loader.php';
-    }
-
-    private static function loadMx(): void
-    {
-        require_once APPPATH . 'third_party/MX/Modules.php';
-        require_once APPPATH . 'third_party/MX/Loader.php';
-        require_once APPPATH . 'third_party/MX/Controller.php';
-        require_once APPPATH . 'third_party/MX/Router.php';
-
-        \Modules::$locations = [
-            APPPATH . 'modules/' => APPPATH . 'modules/',
-        ];
     }
 
     private static function loadHelpers(): void
