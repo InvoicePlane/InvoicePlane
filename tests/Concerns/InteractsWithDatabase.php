@@ -2,117 +2,111 @@
 
 namespace Tests\Concerns;
 
+use mysqli;
+
 trait InteractsWithDatabase
 {
+    private static ?mysqli $testDb = null;
+
     protected function databaseInsert(string $table, array $row): int
     {
-        $CI = &get_instance();
+        $db = $this->db();
 
-        if ( ! isset($CI->db)) {
-            static::markTestSkipped(
-                'Database connection unavailable. Ensure the test environment has a configured database.'
-            );
+        $columns = array_keys($row);
+        $values  = array_values($row);
+
+        $escapedColumns = array_map(static fn ($column) => '`' . $column . '`', $columns);
+        $escapedValues  = array_map([$db, 'real_escape_string'], array_map('strval', $values));
+        $wrappedValues  = array_map(static fn ($value) => "'{$value}'", $escapedValues);
+
+        $sql = sprintf(
+            'INSERT INTO `%s` (%s) VALUES (%s)',
+            $table,
+            implode(', ', $escapedColumns),
+            implode(', ', $wrappedValues)
+        );
+
+        if ( ! $db->query($sql)) {
+            static::fail('Failed inserting test row: ' . $db->error);
         }
 
-        $CI->db->insert($table, $row);
-
-        $id = (int) $CI->db->insert_id();
-
-        if ($id === 0) {
-            static::fail(
-                sprintf('INSERT into [%s] returned insert_id 0 — row was not persisted.', $table)
-            );
-        }
-
-        return $id;
+        return (int) $db->insert_id;
     }
 
     protected function databaseUpdate(string $table, array $set, array $where): void
     {
-        $CI = &get_instance();
+        $db = $this->db();
 
-        if ( ! isset($CI->db)) {
-            static::markTestSkipped('Database connection unavailable.');
+        $setParts = [];
+        foreach ($set as $key => $value) {
+            $setParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
         }
 
-        $CI->db->update($table, $set, $where);
+        $whereParts = [];
+        foreach ($where as $key => $value) {
+            $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+        }
+
+        $sql = sprintf('UPDATE `%s` SET %s WHERE %s', $table, implode(', ', $setParts), implode(' AND ', $whereParts));
+        $db->query($sql);
     }
 
     protected function databaseDelete(string $table, array $where): void
     {
-        $CI = &get_instance();
+        $db = $this->db();
 
-        if ( ! isset($CI->db)) {
-            static::markTestSkipped('Database connection unavailable.');
+        $whereParts = [];
+        foreach ($where as $key => $value) {
+            $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
         }
 
-        $CI->db->delete($table, $where);
+        $sql = sprintf('DELETE FROM `%s` WHERE %s', $table, implode(' AND ', $whereParts));
+        $db->query($sql);
     }
 
     protected function databaseFetchOne(string $table, array $where): ?array
     {
-        $CI = &get_instance();
+        $db = $this->db();
 
-        if ( ! isset($CI->db)) {
-            static::markTestSkipped('Database connection unavailable.');
+        $whereParts = [];
+        foreach ($where as $key => $value) {
+            $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
         }
 
-        $row = $CI->db->get_where($table, $where, 1)->row_array();
+        $sql    = sprintf('SELECT * FROM `%s` WHERE %s LIMIT 1', $table, implode(' AND ', $whereParts));
+        $result = $db->query($sql);
+        $row    = $result ? $result->fetch_assoc() : false;
 
         return $row ?: null;
     }
 
     protected function assertDatabaseHas(string $table, array $conditions): void
     {
-        $CI    = &get_instance();
-        $query = $CI->db->get_where($table, $conditions);
-
-        static::assertGreaterThan(
-            0,
-            $query->num_rows(),
-            sprintf(
-                'Failed asserting that table [%s] contains a row matching: %s',
-                $table,
-                json_encode($conditions, JSON_PRETTY_PRINT)
-            )
-        );
+        static::assertNotNull($this->databaseFetchOne($table, $conditions));
     }
 
     protected function assertDatabaseMissing(string $table, array $conditions): void
     {
-        $CI    = &get_instance();
-        $query = $CI->db->get_where($table, $conditions);
-
-        static::assertSame(
-            0,
-            $query->num_rows(),
-            sprintf(
-                'Failed asserting that table [%s] does NOT contain a row matching: %s',
-                $table,
-                json_encode($conditions, JSON_PRETTY_PRINT)
-            )
-        );
+        static::assertNull($this->databaseFetchOne($table, $conditions));
     }
 
     protected function assertDatabaseCount(string $table, int $expected, array $conditions = []): void
     {
-        $CI = &get_instance();
+        $db = $this->db();
 
-        $actual = empty($conditions)
-            ? $CI->db->count_all($table)
-            : $CI->db->where($conditions)->count_all_results($table);
+        $sql = sprintf('SELECT COUNT(*) AS c FROM `%s`', $table);
+        if ($conditions !== []) {
+            $whereParts = [];
+            foreach ($conditions as $key => $value) {
+                $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+            }
+            $sql .= ' WHERE ' . implode(' AND ', $whereParts);
+        }
 
-        static::assertSame(
-            $expected,
-            (int) $actual,
-            sprintf(
-                'Expected [%d] rows in table [%s] matching %s but found [%d].',
-                $expected,
-                $table,
-                empty($conditions) ? '(no conditions)' : json_encode($conditions),
-                $actual
-            )
-        );
+        $result = $db->query($sql);
+        $count  = (int) (($result ? $result->fetch_assoc()['c'] : 0));
+
+        static::assertSame($expected, $count);
     }
 
     protected function seedClient(array $overrides = []): int
@@ -152,5 +146,36 @@ trait InteractsWithDatabase
             'payment_note'         => '',
             'payment_date_created' => date('Y-m-d H:i:s'),
         ], $overrides));
+    }
+
+    private function db(): mysqli
+    {
+        if (self::$testDb instanceof mysqli) {
+            return self::$testDb;
+        }
+
+        $basePath = dirname(__DIR__, 2);
+        require_once $basePath . '/bootstrap/kernel.php';
+
+        $active_group = null;
+        $db           = [];
+        require $basePath . '/application/config/database.php';
+
+        $group = $active_group ?? 'default';
+        $cfg   = $db[$group] ?? [];
+
+        self::$testDb = new mysqli(
+            (string) ($cfg['hostname'] ?? '127.0.0.1'),
+            (string) ($cfg['username'] ?? ''),
+            (string) ($cfg['password'] ?? ''),
+            (string) ($cfg['database'] ?? ''),
+            (int) ($cfg['port'] ?? 3306),
+        );
+
+        if (self::$testDb->connect_errno) {
+            static::markTestSkipped('Database unavailable for integration tests: ' . self::$testDb->connect_error);
+        }
+
+        return self::$testDb;
     }
 }

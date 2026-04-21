@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Support;
 
+use JsonException;
+
 final class HttpResponse
 {
     /**
@@ -15,6 +17,52 @@ final class HttpResponse
         public readonly array $headers,
         public readonly string $stderr,
     ) {
+    }
+
+    public function __toString(): string
+    {
+        return $this->body;
+    }
+
+    public function body(): string
+    {
+        return $this->body;
+    }
+
+    public function bodyLength(): int
+    {
+        return strlen($this->body);
+    }
+
+    public function statusCode(): int
+    {
+        return $this->statusCode;
+    }
+
+    public function contains(string $needle): bool
+    {
+        return str_contains($this->body, $needle);
+    }
+
+    public function isRedirect(): bool
+    {
+        return in_array($this->statusCode, [301, 302, 303, 307, 308], true);
+    }
+
+    public function redirectUrl(): ?string
+    {
+        return $this->header('Location');
+    }
+
+    public function json(): array
+    {
+        try {
+            $decoded = json_decode($this->body, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            return [];
+        }
+
+        return is_array($decoded) ? $decoded : [];
     }
 
     public function header(string $name): ?string

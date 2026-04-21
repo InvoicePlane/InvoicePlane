@@ -17,18 +17,28 @@ if ( ! is_array($request)) {
     exit(3);
 }
 
-$method = strtoupper((string) ($request['method'] ?? 'GET'));
-$uri    = '/' . ltrim((string) ($request['uri'] ?? '/'), '/');
-$query  = is_array($request['query'] ?? null) ? $request['query'] : [];
-$post   = is_array($request['post'] ?? null) ? $request['post'] : [];
+$method  = strtoupper((string) ($request['method'] ?? 'GET'));
+$uri     = '/' . ltrim((string) ($request['uri'] ?? '/'), '/');
+$query   = is_array($request['query'] ?? null) ? $request['query'] : [];
+$post    = is_array($request['post'] ?? null) ? $request['post'] : [];
+$session = is_array($request['session'] ?? null) ? $request['session'] : [];
+
+if ($session !== []) {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_id('ci_test_' . substr(md5((string) json_encode($session)), 0, 12));
+        session_start();
+    }
+
+    $_SESSION = $session;
+}
 
 $queryString = http_build_query($query);
 $requestUri  = '/index.php' . $uri . ($queryString !== '' ? '?' . $queryString : '');
 
-$_GET    = $query;
-$_POST   = $post;
-$_COOKIE = [];
-$_FILES  = [];
+$_GET     = $query;
+$_POST    = $post;
+$_COOKIE  = [];
+$_FILES   = [];
 $_REQUEST = $method === 'POST' ? array_merge($query, $post) : $query;
 
 $_SERVER['REQUEST_METHOD']     = $method;

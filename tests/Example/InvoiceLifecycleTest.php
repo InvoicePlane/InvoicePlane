@@ -3,9 +3,9 @@
 namespace Tests\Example;
 
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Kernel\CiLifecycleKernel;
+use Tests\AbstractTestCase;
 
-class InvoiceLifecycleTest extends CiLifecycleKernel
+class InvoiceLifecycleTest extends AbstractTestCase
 {
     #[Test]
     public function it_invoice_index_loads(): void
