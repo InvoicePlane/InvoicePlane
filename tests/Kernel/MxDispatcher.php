@@ -6,6 +6,8 @@ class MxDispatcher
 {
     public function dispatch(string $uri, string $method = 'GET', array $payload = []): mixed
     {
+        $this->bootstrapCi();
+
         $this->loadMx(); // move here
 
         [$module, $controller, $action] = $this->parseUri($uri);
@@ -29,10 +31,15 @@ class MxDispatcher
 
     private function loadMx(): void
     {
+        require_once APPPATH . 'third_party/MX/Base.php';
+        require_once APPPATH . 'third_party/MX/Config.php';
+        require_once APPPATH . 'third_party/MX/Lang.php';
+        require_once APPPATH . 'third_party/MX/Ci.php';
+
         require_once APPPATH . 'third_party/MX/Loader.php';
-        require_once APPPATH . 'third_party/MX/Router.php';
         require_once APPPATH . 'third_party/MX/Controller.php';
         require_once APPPATH . 'third_party/MX/Modules.php';
+        require_once APPPATH . 'third_party/MX/Router.php';
 
         \Modules::$locations = [
             APPPATH . 'modules/' => APPPATH . 'modules/',
@@ -65,5 +72,26 @@ class MxDispatcher
 
         $_GET  = $method === 'GET' ? $payload : [];
         $_POST = $method === 'POST' ? $payload : [];
+    }
+
+    private function bootstrapCi(): void
+    {
+        static $booted = false;
+
+        if ($booted) {
+            return;
+        }
+
+        if (!function_exists('get_instance')) {
+            require_once BASEPATH . 'core/Common.php';
+        }
+
+        if (!class_exists('CI_Controller')) {
+            require_once BASEPATH . 'core/Controller.php';
+        }
+
+        new \CI_Controller();
+
+        $booted = true;
     }
 }
