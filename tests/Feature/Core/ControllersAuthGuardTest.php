@@ -18,7 +18,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group auth
  */
-final class ControllersAuthGuardTest extends BaseHmvcTestCase
+class ControllersAuthGuardTest extends BaseHmvcTestCase
 {
     protected function setUp(): void
     {

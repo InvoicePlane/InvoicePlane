@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group quotes
  */
-final class Mdl_QuotesTest extends TestCase
+class Mdl_QuotesTest extends TestCase
 {
     private StubMdl_Quotes $model;
 
@@ -176,7 +176,7 @@ final class Mdl_QuotesTest extends TestCase
     }
 }
 
-final class StubMdl_Quotes
+class StubMdl_Quotes
 {
     public ?int $id = null;
 

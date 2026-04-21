@@ -26,7 +26,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  *
  * @group regression
  */
-final class UpgradeRegressionTest extends BaseHmvcTestCase
+class UpgradeRegressionTest extends BaseHmvcTestCase
 {
     protected function setUp(): void
     {

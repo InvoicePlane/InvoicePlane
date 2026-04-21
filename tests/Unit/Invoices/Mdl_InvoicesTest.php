@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group invoices
  */
-final class Mdl_InvoicesTest extends TestCase
+class Mdl_InvoicesTest extends TestCase
 {
     private StubMdl_Invoices $model;
 
@@ -255,7 +255,7 @@ final class Mdl_InvoicesTest extends TestCase
 /**
  * Stub that replicates the pure-PHP logic from Mdl_Invoices without CI3 dependencies.
  */
-final class StubMdl_Invoices
+class StubMdl_Invoices
 {
     public ?int $id = null;
 

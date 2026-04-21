@@ -20,7 +20,7 @@ use Throwable;
  * @group unit
  * @group providers
  */
-final class IntegrationProviderFactoryTest extends TestCase
+class IntegrationProviderFactoryTest extends TestCase
 {
     private StubProviderFactory $factory;
 
@@ -161,7 +161,7 @@ interface StubIntegrationProviderInterface
     public function sendInvoice(array $payload): bool;
 }
 
-final class StubProvider implements StubIntegrationProviderInterface
+class StubProvider implements StubIntegrationProviderInterface
 {
     public function __construct(
         private readonly string $key,
@@ -180,7 +180,7 @@ final class StubProvider implements StubIntegrationProviderInterface
     }
 }
 
-final class ThrowingProvider implements StubIntegrationProviderInterface
+class ThrowingProvider implements StubIntegrationProviderInterface
 {
     public function validateParticipant(string $participantId): bool
     {
@@ -193,7 +193,7 @@ final class ThrowingProvider implements StubIntegrationProviderInterface
     }
 }
 
-final class DecoratedProvider implements StubIntegrationProviderInterface
+class DecoratedProvider implements StubIntegrationProviderInterface
 {
     public function __construct(private readonly StubIntegrationProviderInterface $inner) {}
 
@@ -216,7 +216,7 @@ final class DecoratedProvider implements StubIntegrationProviderInterface
     }
 }
 
-final class StubProviderFactory
+class StubProviderFactory
 {
     /** @var array<string, Closure> */
     private array $registry = [];

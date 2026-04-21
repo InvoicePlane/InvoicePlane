@@ -17,7 +17,7 @@ use stdClass;
  * @group unit
  * @group loader
  */
-final class MY_LoaderTest extends TestCase
+class MY_LoaderTest extends TestCase
 {
     private TestableLoader $loader;
 
@@ -144,7 +144,7 @@ final class MY_LoaderTest extends TestCase
     }
 }
 
-final class TestableLoader
+class TestableLoader
 {
     public function isNamespaced(string $className): bool
     {
@@ -178,7 +178,7 @@ final class TestableLoader
     }
 }
 
-final class FakeCiSuperObject
+class FakeCiSuperObject
 {
     public function __get(string $name): mixed
     {
@@ -191,4 +191,4 @@ final class FakeCiSuperObject
     }
 }
 
-final class FakeService {}
+class FakeService {}

@@ -16,7 +16,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group integrations
  */
-final class IntegrationsFeatureTest extends BaseHmvcTestCase
+class IntegrationsFeatureTest extends BaseHmvcTestCase
 {
     protected function setUp(): void
     {

@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group payments
  */
-final class Mdl_PaymentsTest extends TestCase
+class Mdl_PaymentsTest extends TestCase
 {
     private StubMdl_Payments $model;
 
@@ -222,7 +222,7 @@ final class Mdl_PaymentsTest extends TestCase
     }
 }
 
-final class StubMdl_Payments
+class StubMdl_Payments
 {
     public function validation_rules(): array
     {

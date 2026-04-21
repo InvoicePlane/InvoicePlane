@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group invoices
  */
-final class Mdl_InvoiceAmountsTest extends TestCase
+class Mdl_InvoiceAmountsTest extends TestCase
 {
     private StubMdl_InvoiceAmounts $model;
 
@@ -247,7 +247,7 @@ final class Mdl_InvoiceAmountsTest extends TestCase
     }
 }
 
-final class StubMdl_InvoiceAmounts
+class StubMdl_InvoiceAmounts
 {
     public function __construct(private readonly int $decimalPlaces = 2) {}
 
