@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\Setting;
 use Modules\Crm\Models\Client;
 use Modules\Invoices\Models\Invoice;
@@ -20,7 +19,8 @@ abstract class AbstractServiceTestCase extends UnitTestCase
     /**
      * Create a test invoice with common defaults.
      *
-     * @param  array  $overrides
+     * @param array $overrides
+     *
      * @return Invoice
      */
     protected function createInvoiceFixture(array $overrides = []): Invoice
@@ -47,8 +47,9 @@ abstract class AbstractServiceTestCase extends UnitTestCase
     /**
      * Create a test invoice item with common defaults.
      *
-     * @param  int  $invoiceId
-     * @param  array  $overrides
+     * @param int   $invoiceId
+     * @param array $overrides
+     *
      * @return Item
      */
     protected function createItemFixture(int $invoiceId, array $overrides = []): Item
@@ -73,8 +74,9 @@ abstract class AbstractServiceTestCase extends UnitTestCase
     /**
      * Create a test item amount with common defaults.
      *
-     * @param  int  $itemId
-     * @param  array  $overrides
+     * @param int   $itemId
+     * @param array $overrides
+     *
      * @return ItemAmount
      */
     protected function createItemAmountFixture(int $itemId, array $overrides = []): ItemAmount
@@ -93,7 +95,8 @@ abstract class AbstractServiceTestCase extends UnitTestCase
     /**
      * Create a test quote with common defaults.
      *
-     * @param  array  $overrides
+     * @param array $overrides
+     *
      * @return Quote
      */
     protected function createQuoteFixture(array $overrides = []): Quote
@@ -120,7 +123,8 @@ abstract class AbstractServiceTestCase extends UnitTestCase
     /**
      * Create a test invoice group with common defaults.
      *
-     * @param  array  $overrides
+     * @param array $overrides
+     *
      * @return InvoiceGroup
      */
     protected function createInvoiceGroupFixture(array $overrides = []): InvoiceGroup
@@ -138,7 +142,8 @@ abstract class AbstractServiceTestCase extends UnitTestCase
     /**
      * Create a test client with common defaults.
      *
-     * @param  array  $overrides
+     * @param array $overrides
+     *
      * @return Client
      */
     protected function createClientFixture(array $overrides = []): Client
@@ -154,8 +159,9 @@ abstract class AbstractServiceTestCase extends UnitTestCase
     /**
      * Set a setting value for tests.
      *
-     * @param  string  $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return void
      */
     protected function setSettingFixture(string $key, $value): void

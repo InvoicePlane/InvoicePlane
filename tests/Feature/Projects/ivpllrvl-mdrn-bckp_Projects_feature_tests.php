@@ -6,8 +6,8 @@ use Modules\Crm\Models\Client;
 use Modules\Projects\Controllers\ProjectsController;
 use Modules\Projects\Models\Project;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\FeatureTestCase;
 
 /**
@@ -27,7 +27,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_displays_list_of_projects(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client  = Client::factory()->create();
         $project = Project::factory()->create([
             'client_id' => $client->client_id,
         ]);
@@ -35,13 +35,13 @@ class ProjectsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('projects.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('projects::projects_index');
         $response->assertViewHas('projects');
 
         /** Verify project is in the list */
-        $projects = $response->viewData('projects');
+        $projects   = $response->viewData('projects');
         $projectIds = $projects->pluck('project_id')->toArray();
         $this->assertContains($project->project_id, $projectIds);
     }
@@ -59,7 +59,7 @@ class ProjectsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('projects.create'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('projects::projects_form');
         $response->assertViewHas('project');
@@ -85,7 +85,7 @@ class ProjectsControllerTest extends FeatureTestCase
          *     "client_id": 1,
          *     "project_name": "Test Project",
          *     "project_status": 1
-         * }
+         * }.
          */
         $projectData = [
             'client_id'      => $client->client_id,
@@ -96,11 +96,11 @@ class ProjectsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->post(route('projects.store'), $projectData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('projects.index'));
         $response->assertSessionHas('alert_success');
 
-        /** Verify project was created in database */
+        /* Verify project was created in database */
         $this->assertDatabaseHas('ip_projects', [
             'client_id'    => $client->client_id,
             'project_name' => 'Test Project',
@@ -117,7 +117,7 @@ class ProjectsControllerTest extends FeatureTestCase
         /**
          * {
          *     "project_name": "Test Project"
-         * }
+         * }.
          */
         $projectData = [
             'project_name' => 'Test Project',
@@ -127,7 +127,7 @@ class ProjectsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->post(route('projects.store'), $projectData);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors(['client_id']);
     }
 
@@ -139,7 +139,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_displays_project_edit_form(): void
     {
         /** Arrange */
-        $client = Client::factory()->create(['client_active' => 1]);
+        $client  = Client::factory()->create(['client_active' => 1]);
         $project = Project::factory()->create([
             'client_id' => $client->client_id,
         ]);
@@ -147,7 +147,7 @@ class ProjectsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('projects.edit', ['project' => $project->project_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('projects::projects_form');
         $response->assertViewHas('project');
@@ -166,7 +166,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_updates_existing_project_with_valid_data(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client  = Client::factory()->create();
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
             'project_name' => 'Old Name',
@@ -176,7 +176,7 @@ class ProjectsControllerTest extends FeatureTestCase
          * {
          *     "client_id": 1,
          *     "project_name": "Updated Name"
-         * }
+         * }.
          */
         $updateData = [
             'client_id'    => $client->client_id,
@@ -186,11 +186,11 @@ class ProjectsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->put(route('projects.update', ['project' => $project->project_id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('projects.index'));
         $response->assertSessionHas('alert_success');
 
-        /** Verify project was updated */
+        /* Verify project was updated */
         $this->assertDatabaseHas('ip_projects', [
             'project_id'   => $project->project_id,
             'project_name' => 'Updated Name',
@@ -205,7 +205,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_displays_project_view_with_related_data(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client  = Client::factory()->create();
         $project = Project::factory()->create([
             'client_id' => $client->client_id,
         ]);
@@ -213,7 +213,7 @@ class ProjectsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('projects.view', ['project' => $project->project_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('projects::projects_view');
         $response->assertViewHas('project');
@@ -232,7 +232,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_deletes_project(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client  = Client::factory()->create();
         $project = Project::factory()->create([
             'client_id' => $client->client_id,
         ]);
@@ -240,11 +240,11 @@ class ProjectsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->delete(route('projects.destroy', ['project' => $project->project_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('projects.index'));
         $response->assertSessionHas('alert_success');
 
-        /** Verify project was deleted */
+        /* Verify project was deleted */
         $this->assertDatabaseMissing('ip_projects', [
             'project_id' => $project->project_id,
         ]);
@@ -273,14 +273,14 @@ class TasksControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('tasks.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('projects::tasks_index');
         $response->assertViewHas('tasks');
         $response->assertViewHas('task_statuses');
 
         /** Verify task is in the list */
-        $tasks = $response->viewData('tasks');
+        $tasks   = $response->viewData('tasks');
         $taskIds = $tasks->pluck('task_id')->toArray();
         $this->assertContains($task->task_id, $taskIds);
     }
@@ -295,7 +295,7 @@ class TasksControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('tasks.create'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('projects::tasks_form');
         $response->assertViewHas('task');
@@ -323,7 +323,7 @@ class TasksControllerTest extends FeatureTestCase
          *     "task_name": "Test Task",
          *     "task_status": 1,
          *     "task_finish_date": "2025-12-31"
-         * }
+         * }.
          */
         $taskData = [
             'project_id'       => $project->project_id,
@@ -335,11 +335,11 @@ class TasksControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->post(route('tasks.store'), $taskData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('tasks.index'));
         $response->assertSessionHas('alert_success');
 
-        /** Verify task was created in database */
+        /* Verify task was created in database */
         $this->assertDatabaseHas('ip_tasks', [
             'project_id' => $project->project_id,
             'task_name'  => 'Test Task',
@@ -356,7 +356,7 @@ class TasksControllerTest extends FeatureTestCase
         /**
          * {
          *     "project_id": 999
-         * }
+         * }.
          */
         $taskData = [
             'project_id' => 999,
@@ -366,7 +366,7 @@ class TasksControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->post(route('tasks.store'), $taskData);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors(['task_name']);
     }
 
@@ -383,7 +383,7 @@ class TasksControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('tasks.edit', ['task' => $task->task_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('projects::tasks_form');
         $response->assertViewHas('task');
@@ -411,7 +411,7 @@ class TasksControllerTest extends FeatureTestCase
          * {
          *     "task_name": "Updated Name",
          *     "task_status": 2
-         * }
+         * }.
          */
         $updateData = [
             'task_name'   => 'Updated Name',
@@ -421,11 +421,11 @@ class TasksControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->put(route('tasks.update', ['task' => $task->task_id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('tasks.index'));
         $response->assertSessionHas('alert_success');
 
-        /** Verify task was updated */
+        /* Verify task was updated */
         $this->assertDatabaseHas('ip_tasks', [
             'task_id'   => $task->task_id,
             'task_name' => 'Updated Name',
@@ -445,11 +445,11 @@ class TasksControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->delete(route('tasks.destroy', ['task' => $task->task_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('tasks.index'));
         $response->assertSessionHas('alert_success');
 
-        /** Verify task was deleted */
+        /* Verify task was deleted */
         $this->assertDatabaseMissing('ip_tasks', [
             'task_id' => $task->task_id,
         ]);
@@ -467,7 +467,7 @@ class TasksControllerTest extends FeatureTestCase
          * {
          *     "task_name": "Standalone Task",
          *     "task_status": 1
-         * }
+         * }.
          */
         $taskData = [
             'task_name'   => 'Standalone Task',
@@ -477,14 +477,13 @@ class TasksControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->post(route('tasks.store'), $taskData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('tasks.index'));
 
-        /** Verify task was created without project */
+        /* Verify task was created without project */
         $this->assertDatabaseHas('ip_tasks', [
             'task_name'  => 'Standalone Task',
             'project_id' => null,
         ]);
     }
 }
-

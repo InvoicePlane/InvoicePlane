@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Router;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 /**
  * Unit tests for MY_Router's two extension points:
@@ -100,8 +101,8 @@ final class MY_RouterTest extends TestCase
         $tmpDir = sys_get_temp_dir() . '/mx_router_test_' . bin2hex(random_bytes(4));
         mkdir($tmpDir . '/controllers', 0755, true);
 
-        $psr4ClassName  = 'TmpPsr4OnlyController' . bin2hex(random_bytes(3));
-        $legacyClass    = 'TmpPsr4Only' . substr($psr4ClassName, -6);
+        $psr4ClassName = 'TmpPsr4OnlyController' . bin2hex(random_bytes(3));
+        $legacyClass   = 'TmpPsr4Only' . mb_substr($psr4ClassName, -6);
 
         file_put_contents(
             $tmpDir . '/controllers/' . $psr4ClassName . '.php',
@@ -115,7 +116,7 @@ final class MY_RouterTest extends TestCase
             'The PSR-4 class must be loadable before testing the alias logic.'
         );
 
-        if (!class_exists($legacyClass, false)) {
+        if ( ! class_exists($legacyClass, false)) {
             class_alias($psr4ClassName, $legacyClass);
         }
 
@@ -130,7 +131,7 @@ final class MY_RouterTest extends TestCase
         self::assertSame(
             $psr4ClassName,
             get_parent_class(new $legacyClass()) === false
-                ? (new \ReflectionClass($legacyClass))->getName()
+                ? (new ReflectionClass($legacyClass))->getName()
                 : $psr4ClassName,
             'The aliased class must point to the same underlying PSR-4 class.'
         );
@@ -153,11 +154,11 @@ final class MY_RouterTest extends TestCase
 
         $countBefore = count(get_declared_classes());
 
-        if (!class_exists($existingClass . 'Psr4', false)) {
+        if ( ! class_exists($existingClass . 'Psr4', false)) {
             eval('class ' . $existingClass . 'Psr4 {}');
         }
 
-        if (!class_exists($existingClass . 'Legacy', false)) {
+        if ( ! class_exists($existingClass . 'Legacy', false)) {
             class_alias($existingClass . 'Psr4', $existingClass . 'Legacy');
         }
 
@@ -205,7 +206,7 @@ final class TestableRouter
 
         $first = $segments[0];
 
-        if (!isset($this->moduleAliases[$first])) {
+        if ( ! isset($this->moduleAliases[$first])) {
             return $segments;
         }
 

@@ -6,8 +6,8 @@ use Modules\Core\Models\User;
 use Modules\Crm\Controllers\ClientsController;
 use Modules\Crm\Models\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\FeatureTestCase;
 
 /**
@@ -32,7 +32,7 @@ class ClientsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('clients.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('clients.status', ['status' => 'active']));
     }
 
@@ -45,19 +45,19 @@ class ClientsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
-        $activeClient = Client::factory()->create(['client_active' => 1]);
+
+        $activeClient   = Client::factory()->create(['client_active' => 1]);
         $inactiveClient = Client::factory()->create(['client_active' => 0]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('clients.status', ['status' => 'active']));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::clients_index');
         $response->assertViewHas('records');
-        
-        $clients = $response->viewData('records');
+
+        $clients   = $response->viewData('records');
         $clientIds = $clients->pluck('client_id')->toArray();
         $this->assertContains($activeClient->client_id, $clientIds);
         $this->assertNotContains($inactiveClient->client_id, $clientIds);
@@ -72,19 +72,19 @@ class ClientsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
-        $activeClient = Client::factory()->create(['client_active' => 1]);
+
+        $activeClient   = Client::factory()->create(['client_active' => 1]);
         $inactiveClient = Client::factory()->create(['client_active' => 0]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('clients.status', ['status' => 'inactive']));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::clients_index');
         $response->assertViewHas('records');
-        
-        $clients = $response->viewData('records');
+
+        $clients   = $response->viewData('records');
         $clientIds = $clients->pluck('client_id')->toArray();
         $this->assertNotContains($activeClient->client_id, $clientIds);
         $this->assertContains($inactiveClient->client_id, $clientIds);
@@ -99,19 +99,19 @@ class ClientsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
-        $activeClient = Client::factory()->create(['client_active' => 1]);
+
+        $activeClient   = Client::factory()->create(['client_active' => 1]);
         $inactiveClient = Client::factory()->create(['client_active' => 0]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('clients.status', ['status' => 'all']));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::clients_index');
         $response->assertViewHas('records');
-        
-        $clients = $response->viewData('records');
+
+        $clients   = $response->viewData('records');
         $clientIds = $clients->pluck('client_id')->toArray();
         $this->assertContains($activeClient->client_id, $clientIds);
         $this->assertContains($inactiveClient->client_id, $clientIds);
@@ -130,7 +130,7 @@ class ClientsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('clients.status', ['status' => 'active']));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('filter_display', true);
         $response->assertViewHas('filter_placeholder');
@@ -150,11 +150,11 @@ class ClientsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('clients.create'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::clients_form');
         $response->assertViewHas('client');
-        
+
         $client = $response->viewData('client');
         $this->assertInstanceOf(Client::class, $client);
         $this->assertFalse($client->exists);
@@ -169,29 +169,29 @@ class ClientsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "client_name": "Test Client Inc.",
          *     "client_email": "test@client.com",
          *     "client_active": 1
-         * }
+         * }.
          */
         $clientData = [
-            'client_name' => 'Test Client Inc.',
-            'client_email' => 'test@client.com',
+            'client_name'   => 'Test Client Inc.',
+            'client_email'  => 'test@client.com',
             'client_active' => 1,
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('clients.store'), $clientData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('clients.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_clients', [
-            'client_name' => 'Test Client Inc.',
+            'client_name'  => 'Test Client Inc.',
             'client_email' => 'test@client.com',
         ]);
     }
@@ -204,17 +204,17 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_client(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $client = Client::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->get(route('clients.edit', $client));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::clients_form');
         $response->assertViewHas('client');
-        
+
         $viewClient = $response->viewData('client');
         $this->assertEquals($client->client_id, $viewClient->client_id);
     }
@@ -227,10 +227,10 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_updates_existing_client_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $client = Client::factory()->create([
-            'client_name'  => 'Old Name',
-            'client_email' => 'client@example.com',
+            'client_name'   => 'Old Name',
+            'client_email'  => 'client@example.com',
             'client_active' => 0,
         ]);
 
@@ -239,23 +239,23 @@ class ClientsControllerTest extends FeatureTestCase
          *     "client_name": "Updated Name",
          *     "client_email": "client@example.com",
          *     "client_active": 1
-         * }
+         * }.
          */
         $updateData = [
-            'client_name' => 'Updated Name',
-            'client_email' => 'client@example.com',
+            'client_name'   => 'Updated Name',
+            'client_email'  => 'client@example.com',
             'client_active' => 1,
         ];
 
         /** Act */
         $response = $this->actingAs($user)->put(route('clients.update', $client), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('clients.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_clients', [
-            'client_id' => $client->client_id,
+            'client_id'   => $client->client_id,
             'client_name' => 'Updated Name',
         ]);
     }
@@ -268,16 +268,16 @@ class ClientsControllerTest extends FeatureTestCase
     public function it_deletes_client(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $client = Client::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->delete(route('clients.destroy', $client));
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('clients.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_clients', [
             'client_id' => $client->client_id,
         ]);
@@ -291,7 +291,7 @@ class ClientsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         Client::factory()->create(['client_name' => 'Zebra Company', 'client_active' => 1]);
         Client::factory()->create(['client_name' => 'Alpha Company', 'client_active' => 1]);
         Client::factory()->create(['client_name' => 'Beta Company', 'client_active' => 1]);
@@ -299,11 +299,11 @@ class ClientsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('clients.status', ['status' => 'active']));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $clients = $response->viewData('records');
-        $names = $clients->pluck('client_name')->toArray();
-        
+        $names   = $clients->pluck('client_name')->toArray();
+
         $this->assertEquals('Alpha Company', $names[0]);
         $this->assertEquals('Beta Company', $names[1]);
         $this->assertEquals('Zebra Company', $names[2]);
@@ -327,21 +327,21 @@ class CrmAjaxControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
-        $activeClient = Client::factory()->create(['client_active' => 1, 'client_name' => 'Active Client']);
+
+        $activeClient   = Client::factory()->create(['client_active' => 1, 'client_name' => 'Active Client']);
         $inactiveClient = Client::factory()->create(['client_active' => 0, 'client_name' => 'Inactive Client']);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.modal_client_lookup'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::modal_client_lookup');
         $response->assertViewHas('clients');
-        
-        $clients = $response->viewData('clients');
+
+        $clients   = $response->viewData('clients');
         $clientIds = $clients->pluck('client_id')->toArray();
-        
+
         $this->assertContains($activeClient->client_id, $clientIds);
         $this->assertNotContains($inactiveClient->client_id, $clientIds);
     }
@@ -354,7 +354,7 @@ class CrmAjaxControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         Client::factory()->create(['client_active' => 1, 'client_name' => 'Zebra Corp']);
         Client::factory()->create(['client_active' => 1, 'client_name' => 'Alpha Inc']);
         Client::factory()->create(['client_active' => 1, 'client_name' => 'Beta LLC']);
@@ -364,8 +364,8 @@ class CrmAjaxControllerTest extends FeatureTestCase
 
         /** Assert */
         $clients = $response->viewData('clients');
-        $names = $clients->pluck('client_name')->toArray();
-        
+        $names   = $clients->pluck('client_name')->toArray();
+
         $this->assertEquals('Alpha Inc', $names[0]);
         $this->assertEquals('Beta LLC', $names[1]);
         $this->assertEquals('Zebra Corp', $names[2]);
@@ -379,20 +379,20 @@ class CrmAjaxControllerTest extends FeatureTestCase
     public function it_returns_client_details_as_json(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $client = Client::factory()->create([
-            'client_name' => 'Test Client',
+            'client_name'  => 'Test Client',
             'client_email' => 'test@client.com',
         ]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertJson([
-            'client_id' => $client->client_id,
-            'client_name' => 'Test Client',
+            'client_id'    => $client->client_id,
+            'client_name'  => 'Test Client',
             'client_email' => 'test@client.com',
         ]);
     }
@@ -410,7 +410,7 @@ class CrmAjaxControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.get_client_details', ['clientId' => 99999]));
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 }
@@ -436,7 +436,7 @@ class CrmPaymentsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.payments'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_payments');
     }
@@ -453,7 +453,7 @@ class CrmPaymentsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.payments'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
     }
 
@@ -474,18 +474,18 @@ class CrmPaymentsControllerTest extends FeatureTestCase
          *     "payment_method": "paypal",
          *     "amount": "100.00",
          *     "payment_status": "completed"
-         * }
+         * }.
          */
         $payload = [
             'invoice_url_key' => 'abc123def456',
-            'payment_method' => 'paypal',
-            'amount' => '100.00',
-            'payment_status' => 'completed',
+            'payment_method'  => 'paypal',
+            'amount'          => '100.00',
+            'payment_status'  => 'completed',
         ];
 
         $response = $this->post(route('guest.payments.submit'), $payload);
 
-        /** Assert */
+        /* Assert */
         // Note: Current stub implementation ignores payload and always succeeds
         // Future implementation should validate these fields
         $response->assertRedirect();
@@ -508,17 +508,17 @@ class CrmPaymentsControllerTest extends FeatureTestCase
          *     "invoice_url_key": "xyz789ghi012",
          *     "payment_method": "stripe",
          *     "amount": "250.50"
-         * }
+         * }.
          */
         $payload = [
             'invoice_url_key' => 'xyz789ghi012',
-            'payment_method' => 'stripe',
-            'amount' => '250.50',
+            'payment_method'  => 'stripe',
+            'amount'          => '250.50',
         ];
 
         $response = $this->post(route('guest.payments.submit'), $payload);
 
-        /** Assert */
+        /* Assert */
         // Note: Current stub implementation ignores payload and always succeeds
         // Future implementation should validate invoice_url_key exists, amount is positive, etc.
         $response->assertRedirect();
@@ -537,7 +537,7 @@ class CrmPaymentsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('guest.payments'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_payments');
     }
@@ -564,7 +564,7 @@ class GetControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.get'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_get');
     }
@@ -581,7 +581,7 @@ class GetControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.get'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
     }
 
@@ -597,7 +597,7 @@ class GetControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('guest.get'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_get');
     }
@@ -624,7 +624,7 @@ class GuestControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_index');
     }
@@ -641,7 +641,7 @@ class GuestControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
     }
 
@@ -657,7 +657,7 @@ class GuestControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('guest.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_index');
     }
@@ -684,7 +684,7 @@ class PaymentInformationControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('payment_information.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_payment_info');
     }
@@ -701,7 +701,7 @@ class PaymentInformationControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('payment_information.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
     }
 
@@ -717,7 +717,7 @@ class PaymentInformationControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('payment_information.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_payment_info');
     }
@@ -739,17 +739,17 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_user_clients(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $client = Client::factory()->create();
         UserClient::factory()->count(5)->create([
-            'user_id' => $user->user_id,
+            'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('user_clients.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::user_clients_index');
         $response->assertViewHas('user_clients');
@@ -763,20 +763,20 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_loads_user_and_client_relationships(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $client = Client::factory()->create();
         UserClient::factory()->create([
-            'user_id' => $user->user_id,
+            'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('user_clients.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $userClients = $response->viewData('user_clients');
-        
+
         // Verify relationships are loaded
         $this->assertGreaterThan(0, $userClients->count());
     }
@@ -794,11 +794,11 @@ class UserClientsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('user_clients.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::user_clients_form');
         $response->assertViewHas('user_client');
-        
+
         $userClient = $response->viewData('user_client');
         $this->assertInstanceOf(UserClient::class, $userClient);
         $this->assertFalse($userClient->exists);
@@ -812,21 +812,21 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_user_client(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        $client = Client::factory()->create();
+        $user       = User::factory()->create();
+        $client     = Client::factory()->create();
         $userClient = UserClient::factory()->create([
-            'user_id' => $user->user_id,
+            'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('user_clients.form', ['id' => $userClient->id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::user_clients_form');
         $response->assertViewHas('user_client');
-        
+
         $viewUserClient = $response->viewData('user_client');
         $this->assertEquals($userClient->id, $viewUserClient->id);
     }
@@ -839,31 +839,31 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_creates_new_user_client_relationship_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $client = Client::factory()->create();
-        
+
         /**
          * {
          *     "user_id": 1,
          *     "client_id": 1,
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $userClientData = [
-            'user_id' => $user->user_id,
-            'client_id' => $client->client_id,
+            'user_id'    => $user->user_id,
+            'client_id'  => $client->client_id,
             'btn_submit' => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('user_clients.form'), $userClientData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('user_clients.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_user_clients', [
-            'user_id' => $user->user_id,
+            'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
     }
@@ -876,37 +876,37 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_updates_existing_user_client_relationship(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $client1 = Client::factory()->create();
         $client2 = Client::factory()->create();
-        
+
         $userClient = UserClient::factory()->create([
-            'user_id' => $user->user_id,
+            'user_id'   => $user->user_id,
             'client_id' => $client1->client_id,
         ]);
-        
+
         /**
          * {
          *     "user_id": 1,
          *     "client_id": 1,
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $updateData = [
-            'user_id' => $user->user_id,
-            'client_id' => $client2->client_id,
+            'user_id'    => $user->user_id,
+            'client_id'  => $client2->client_id,
             'btn_submit' => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('user_clients.form', ['id' => $userClient->id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('user_clients.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_user_clients', [
-            'id' => $userClient->id,
+            'id'        => $userClient->id,
             'client_id' => $client2->client_id,
         ]);
     }
@@ -918,7 +918,7 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_validates_required_user_id(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $client = Client::factory()->create();
 
         /** Act */
@@ -926,16 +926,16 @@ class UserClientsControllerTest extends FeatureTestCase
          * {
          *     "client_id": 1,
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $missingUserPayload = [
-            'client_id' => $client->client_id,
+            'client_id'  => $client->client_id,
             'btn_submit' => '1',
         ];
 
         $response = $this->actingAs($user)->post(route('user_clients.form'), $missingUserPayload);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors('user_id');
     }
 
@@ -953,16 +953,16 @@ class UserClientsControllerTest extends FeatureTestCase
          * {
          *     "user_id": 1,
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $missingClientPayload = [
-            'user_id' => $user->user_id,
+            'user_id'    => $user->user_id,
             'btn_submit' => '1',
         ];
 
         $response = $this->actingAs($user)->post(route('user_clients.form'), $missingClientPayload);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors('client_id');
     }
 
@@ -975,11 +975,11 @@ class UserClientsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "btn_cancel": "1"
-         * }
+         * }.
          */
         $cancelData = [
             'btn_cancel' => '1',
@@ -988,7 +988,7 @@ class UserClientsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('user_clients.form'), $cancelData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('user_clients.index'));
     }
 
@@ -1000,17 +1000,17 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_deletes_user_client_relationship(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        $client = Client::factory()->create();
+        $user       = User::factory()->create();
+        $client     = Client::factory()->create();
         $userClient = UserClient::factory()->create([
-            'user_id' => $user->user_id,
+            'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
-        
+
         /**
          * {
          *     "user_client_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'user_client_id' => $userClient->user_client_id,
@@ -1022,10 +1022,10 @@ class UserClientsControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('user_clients.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_user_clients', [
             'user_client_id' => $userClient->user_client_id,
         ]);
@@ -1040,11 +1040,11 @@ class UserClientsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "user_client_id": 99999
-         * }
+         * }.
          */
         $deletePayload = [
             'user_client_id' => 99999,
@@ -1056,7 +1056,7 @@ class UserClientsControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 }
@@ -1082,7 +1082,7 @@ class ViewControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.view'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_view');
     }
@@ -1099,7 +1099,7 @@ class ViewControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.view'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
     }
 
@@ -1115,9 +1115,8 @@ class ViewControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('guest.view'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_view');
     }
 }
-

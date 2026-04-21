@@ -437,4 +437,3 @@ class UnitsControllerTest extends TestCase
         $response->assertRedirect(route('units'));
     }
 }
-

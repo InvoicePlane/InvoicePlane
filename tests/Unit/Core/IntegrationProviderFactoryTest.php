@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Providers;
 
+use Closure;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use Throwable;
 
 /**
  * Unit tests for IntegrationProviderFactory's registration, resolution,
@@ -41,7 +45,7 @@ final class IntegrationProviderFactoryTest extends TestCase
 
     public function it_throws_when_making_an_unregistered_provider_key(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/not registered/i');
 
         $this->factory->make('nonexistent_provider');
@@ -113,7 +117,7 @@ final class IntegrationProviderFactoryTest extends TestCase
 
     public function it_does_not_suppress_exceptions_outside_the_decorator(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $this->factory->registerRaw('boom', fn () => new ThrowingProvider());
 
@@ -180,12 +184,12 @@ final class ThrowingProvider implements StubIntegrationProviderInterface
 {
     public function validateParticipant(string $participantId): bool
     {
-        throw new \RuntimeException('Provider network failure during validateParticipant.');
+        throw new RuntimeException('Provider network failure during validateParticipant.');
     }
 
     public function sendInvoice(array $payload): bool
     {
-        throw new \RuntimeException('Provider network failure during sendInvoice.');
+        throw new RuntimeException('Provider network failure during sendInvoice.');
     }
 }
 
@@ -197,7 +201,7 @@ final class DecoratedProvider implements StubIntegrationProviderInterface
     {
         try {
             return $this->inner->validateParticipant($participantId);
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return false;
         }
     }
@@ -206,7 +210,7 @@ final class DecoratedProvider implements StubIntegrationProviderInterface
     {
         try {
             return $this->inner->sendInvoice($payload);
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return false;
         }
     }
@@ -214,20 +218,20 @@ final class DecoratedProvider implements StubIntegrationProviderInterface
 
 final class StubProviderFactory
 {
-    /** @var array<string, \Closure> */
+    /** @var array<string, Closure> */
     private array $registry = [];
 
-    /** @var array<string, \Closure> */
+    /** @var array<string, Closure> */
     private array $rawRegistry = [];
 
-    public function register(string $key, \Closure $factory): self
+    public function register(string $key, Closure $factory): self
     {
         $this->registry[$key] = $factory;
 
         return $this;
     }
 
-    public function registerRaw(string $key, \Closure $factory): self
+    public function registerRaw(string $key, Closure $factory): self
     {
         $this->rawRegistry[$key] = $factory;
 
@@ -236,8 +240,8 @@ final class StubProviderFactory
 
     public function make(string $key): StubIntegrationProviderInterface
     {
-        if (!isset($this->registry[$key])) {
-            throw new \InvalidArgumentException(
+        if ( ! isset($this->registry[$key])) {
+            throw new InvalidArgumentException(
                 sprintf('Integration provider [%s] is not registered in the factory.', $key)
             );
         }
@@ -249,8 +253,8 @@ final class StubProviderFactory
 
     public function makeRaw(string $key): StubIntegrationProviderInterface
     {
-        if (!isset($this->rawRegistry[$key])) {
-            throw new \InvalidArgumentException(
+        if ( ! isset($this->rawRegistry[$key])) {
+            throw new InvalidArgumentException(
                 sprintf('Raw provider [%s] is not registered.', $key)
             );
         }

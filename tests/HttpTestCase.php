@@ -2,39 +2,32 @@
 
 namespace Modules\Core\Testing;
 
-use ReflectionClass;
+use RuntimeException;
 
 /**
- * HttpTestCase - Base class for HTTP integration tests
- * 
+ * HttpTestCase - Base class for HTTP integration tests.
+ *
  * Provides methods for making HTTP requests and handling authentication
  * in CodeIgniter 3 tests.
  */
 abstract class HttpTestCase extends TestCase
 {
     protected mixed $codeigniter;
+
     protected array $sessionData = [];
+
     protected ?int $authenticatedUserId = null;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->setupDatabase();
         $this->codeigniter = &get_instance();
     }
 
     /**
-     * Setup test database (to be implemented based on environment)
-     */
-    protected function setupDatabase(): void
-    {
-        // Override in subclasses to setup database fixtures
-        // Can run SQL migration files or use factories
-    }
-
-    /**
-     * Clean up after tests
+     * Clean up after tests.
      */
     protected function tearDown(): void
     {
@@ -43,7 +36,16 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Create an authenticated admin user for testing
+     * Setup test database (to be implemented based on environment).
+     */
+    protected function setupDatabase(): void
+    {
+        // Override in subclasses to setup database fixtures
+        // Can run SQL migration files or use factories
+    }
+
+    /**
+     * Create an authenticated admin user for testing.
      */
     protected function actingAsAdmin(array $userData = []): int
     {
@@ -51,7 +53,7 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Create an authenticated guest user for testing
+     * Create an authenticated guest user for testing.
      */
     protected function actingAsGuest(array $userData = []): int
     {
@@ -59,75 +61,76 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Create and authenticate as a user
+     * Create and authenticate as a user.
      */
     protected function actingAs(array $userData = []): int
     {
         // Generate consistent email if not provided
-        if (!isset($userData['user_email'])) {
+        if ( ! isset($userData['user_email'])) {
             $userData['user_email'] = 'test' . bin2hex(random_bytes(8)) . '@example.com';
         }
-        
+
         $userId = $this->createUser($userData);
-        
+
         // Set session data using the same email
         $this->sessionData = [
-            'user_id' => $userId,
-            'user_type' => $userData['user_type'] ?? 1,
-            'user_email' => $userData['user_email'],
-            'user_name' => $userData['user_name'] ?? 'Test User',
-            'user_company' => $userData['user_company'] ?? 'Test Company',
+            'user_id'       => $userId,
+            'user_type'     => $userData['user_type'] ?? 1,
+            'user_email'    => $userData['user_email'],
+            'user_name'     => $userData['user_name'] ?? 'Test User',
+            'user_company'  => $userData['user_company'] ?? 'Test Company',
             'user_language' => $userData['user_language'] ?? 'system',
         ];
-        
+
         $this->authenticatedUserId = $userId;
-        
+
         return $userId;
     }
 
     /**
-     * Clear authentication
+     * Clear authentication.
      */
     protected function clearAuthentication(): void
     {
-        $this->sessionData = [];
+        $this->sessionData         = [];
         $this->authenticatedUserId = null;
     }
 
     /**
-     * Create a user in the database
+     * Create a user in the database.
      */
     protected function createUser(array $data = []): int
     {
         $ci = &get_instance();
         $ci->load->library('crypt');
-        
+
         $defaults = [
-            'user_type' => 1,
-            'user_email' => 'test' . bin2hex(random_bytes(8)) . '@example.com',
-            'user_name' => 'Test User',
-            'user_company' => 'Test Company',
-            'user_active' => 1,
-            'user_language' => 'system',
-            'user_date_created' => date('Y-m-d H:i:s'),
+            'user_type'          => 1,
+            'user_email'         => 'test' . bin2hex(random_bytes(8)) . '@example.com',
+            'user_name'          => 'Test User',
+            'user_company'       => 'Test Company',
+            'user_active'        => 1,
+            'user_language'      => 'system',
+            'user_date_created'  => date('Y-m-d H:i:s'),
             'user_date_modified' => date('Y-m-d H:i:s'),
         ];
-        
+
         $userData = array_merge($defaults, $data);
-        
+
         // Hash password
-        $password = $data['password'] ?? 'password';
-        $salt = $ci->crypt->salt();
-        $userData['user_psalt'] = $salt;
+        $password                  = $data['password'] ?? 'password';
+        $salt                      = $ci->crypt->salt();
+        $userData['user_psalt']    = $salt;
         $userData['user_password'] = $ci->crypt->generate_password($password, $salt);
         unset($userData['password']);
-        
+
         $ci->db->insert('ip_users', $userData);
+
         return (int) $ci->db->insert_id();
     }
 
     /**
-     * Make a GET request
+     * Make a GET request.
      */
     protected function get(string $uri, array $query = []): TestResponse
     {
@@ -135,7 +138,7 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Make a POST request
+     * Make a POST request.
      */
     protected function post(string $uri, array $data = []): TestResponse
     {
@@ -143,37 +146,37 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Make an HTTP request
+     * Make an HTTP request.
      */
     protected function call(string $method, string $uri, array $data = [], array $query = []): TestResponse
     {
         // Mock CodeIgniter's input and session for the request
         $this->mockInput($method, $data, $query);
         $this->mockSession();
-        
+
         // Parse URI and route to controller
         return $this->routeRequest($method, $uri, $data);
     }
 
     /**
-     * Mock CodeIgniter's input
+     * Mock CodeIgniter's input.
      */
     protected function mockInput(string $method, array $data, array $query): void
     {
         $_SERVER['REQUEST_METHOD'] = $method;
-        $_POST = $method === 'POST' ? $data : [];
-        $_GET = $query;
+        $_POST                     = $method === 'POST' ? $data : [];
+        $_GET                      = $query;
     }
 
     /**
-     * Mock CodeIgniter's session with authenticated user data
+     * Mock CodeIgniter's session with authenticated user data.
      */
     protected function mockSession(): void
     {
         if (empty($this->sessionData)) {
             return;
         }
-        
+
         $ci = &get_instance();
         if (isset($ci->session)) {
             foreach ($this->sessionData as $key => $value) {
@@ -183,13 +186,13 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Route the request to appropriate controller/method
+     * Route the request to appropriate controller/method.
      */
     protected function routeRequest(string $method, string $uri, array $data): TestResponse
     {
         // Routing is not yet implemented for HTTP integration tests.
         // Failing fast here avoids misleading test results (e.g. always-200 responses).
-        throw new \RuntimeException(
+        throw new RuntimeException(
             sprintf(
                 'HttpTestCase::routeRequest is not implemented. Attempted to route [%s] %s.',
                 $method,
@@ -199,7 +202,7 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Assert response status is 200
+     * Assert response status is 200.
      */
     protected function assertOk(TestResponse $response, string $message = ''): void
     {
@@ -207,7 +210,7 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Assert response is a redirect
+     * Assert response is a redirect.
      */
     protected function assertRedirect(TestResponse $response, ?string $expectedLocation = null): void
     {
@@ -215,14 +218,14 @@ abstract class HttpTestCase extends TestCase
             in_array($response->getStatusCode(), [301, 302, 303, 307, 308]),
             'Expected redirect status code'
         );
-        
+
         if ($expectedLocation !== null) {
             $this->assertStringContainsString($expectedLocation, $response->getRedirectUrl());
         }
     }
 
     /**
-     * Assert response is unauthorized
+     * Assert response is unauthorized.
      */
     protected function assertUnauthorized(TestResponse $response): void
     {
@@ -233,7 +236,7 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Assert response contains text
+     * Assert response contains text.
      */
     protected function assertResponseContains(TestResponse $response, string $needle): void
     {
@@ -241,7 +244,7 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Assert response JSON matches
+     * Assert response JSON matches.
      */
     protected function assertJsonResponse(TestResponse $response, array $expected): void
     {
@@ -250,27 +253,27 @@ abstract class HttpTestCase extends TestCase
     }
 
     /**
-     * Assert database has record
+     * Assert database has record.
      */
     protected function assertDatabaseHas(string $table, array $conditions): void
     {
-        $ci = &get_instance();
+        $ci    = &get_instance();
         $query = $ci->db->get_where($table, $conditions);
         $this->assertGreaterThan(0, $query->num_rows(), "Expected record in table {$table}");
     }
 
     /**
-     * Assert database missing record
+     * Assert database missing record.
      */
     protected function assertDatabaseMissing(string $table, array $conditions): void
     {
-        $ci = &get_instance();
+        $ci    = &get_instance();
         $query = $ci->db->get_where($table, $conditions);
         $this->assertEquals(0, $query->num_rows(), "Expected no record in table {$table}");
     }
 
     /**
-     * Get count of records in database
+     * Get count of records in database.
      */
     protected function getDatabaseCount(string $table, array $conditions = []): int
     {
@@ -278,6 +281,7 @@ abstract class HttpTestCase extends TestCase
         if (empty($conditions)) {
             return $ci->db->count_all($table);
         }
+
         return $ci->db->where($conditions)->count_all_results($table);
     }
 }

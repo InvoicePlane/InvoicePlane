@@ -3774,4 +3774,3 @@ class RecurringControllerTest extends FeatureTestCase
         $this->assertEquals('filter_invoices_recuring', $filterMethod);
     }
 }
-

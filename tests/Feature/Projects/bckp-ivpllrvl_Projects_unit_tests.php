@@ -325,4 +325,3 @@ class TasksServiceTest extends TestCase
         $this->assertNotEmpty($statuses);
     }
 }
-

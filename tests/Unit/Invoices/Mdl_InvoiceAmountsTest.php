@@ -161,8 +161,8 @@ final class Mdl_InvoiceAmountsTest extends TestCase
 
         self::assertTrue(
             $shouldMarkPaid,
-            'A credit invoice (creditinvoice_parent_id > 0) with zero balance must be marked paid ' .
-            'even when the total is also zero.'
+            'A credit invoice (creditinvoice_parent_id > 0) with zero balance must be marked paid '
+            . 'even when the total is also zero.'
         );
     }
 
@@ -176,8 +176,8 @@ final class Mdl_InvoiceAmountsTest extends TestCase
 
         self::assertFalse(
             $shouldMarkPaid,
-            'A non-credit invoice with both balance and total at zero must NOT be marked paid ' .
-            '(it is an empty/placeholder invoice).'
+            'A non-credit invoice with both balance and total at zero must NOT be marked paid '
+            . '(it is an empty/placeholder invoice).'
         );
     }
 

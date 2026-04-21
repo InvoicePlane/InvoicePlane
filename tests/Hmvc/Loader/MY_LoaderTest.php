@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Loader;
 
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * Unit tests for MY_Loader's PSR-4 detection and binding logic.
@@ -93,7 +94,7 @@ final class MY_LoaderTest extends TestCase
 
     public function it_binds_a_namespaced_class_instance_to_the_ci_superobject_under_the_derived_alias(): void
     {
-        $stub   = new \stdClass();
+        $stub   = new stdClass();
         $target = new FakeCiSuperObject();
 
         $this->loader->bindToSuperObject($target, 'App\\Fakes\\FakeService', new FakeService(), null);
@@ -112,8 +113,8 @@ final class MY_LoaderTest extends TestCase
 
     public function it_does_not_rebind_a_class_that_is_already_present_on_the_superobject(): void
     {
-        $target            = new FakeCiSuperObject();
-        $originalInstance  = new FakeService();
+        $target              = new FakeCiSuperObject();
+        $originalInstance    = new FakeService();
         $target->fakeService = $originalInstance;
 
         $this->loader->bindToSuperObject($target, 'App\\Fakes\\FakeService', new FakeService(), null);

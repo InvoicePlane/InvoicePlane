@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Dashboard;
 
 use Tests\Hmvc\BaseHmvcTestCase;
-use Tests\Hmvc\HmvcResponse;
 
 /**
  * Feature tests for the Dashboard module.

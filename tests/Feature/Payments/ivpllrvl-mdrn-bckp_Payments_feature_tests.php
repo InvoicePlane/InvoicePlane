@@ -6,8 +6,8 @@ use Modules\Core\Models\User;
 use Modules\Payments\Controllers\PaymentMethodsController;
 use Modules\Payments\Models\PaymentMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\FeatureTestCase;
 
 /**
@@ -32,7 +32,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('payment_methods.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('payments::payment_methods_index');
         $response->assertViewHas('payment_methods');
@@ -46,7 +46,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         PaymentMethod::factory()->create(['payment_method_name' => 'Wire Transfer']);
         PaymentMethod::factory()->create(['payment_method_name' => 'Cash']);
         PaymentMethod::factory()->create(['payment_method_name' => 'Check']);
@@ -54,11 +54,11 @@ class PaymentMethodsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('payment_methods.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $paymentMethods = $response->viewData('payment_methods');
-        $names = $paymentMethods->pluck('payment_method_name')->toArray();
-        
+        $names          = $paymentMethods->pluck('payment_method_name')->toArray();
+
         $this->assertEquals('Cash', $names[0]);
         $this->assertEquals('Check', $names[1]);
         $this->assertEquals('Wire Transfer', $names[2]);
@@ -77,7 +77,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('payment_methods.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('payments::payment_methods_form');
         $response->assertViewHas('payment_method');
@@ -92,18 +92,18 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_payment_method(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user          = User::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->get(route('payment_methods.form', ['id' => $paymentMethod->payment_method_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('payments::payment_methods_form');
         $response->assertViewHas('payment_method');
         $response->assertViewHas('is_update', true);
-        
+
         $viewPaymentMethod = $response->viewData('payment_method');
         $this->assertEquals($paymentMethod->payment_method_id, $viewPaymentMethod->payment_method_id);
     }
@@ -117,25 +117,25 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "payment_method_name": "Credit Card",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $data = [
             'payment_method_name' => 'Credit Card',
-            'btn_submit' => '1',
+            'btn_submit'          => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form'), $data);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('payment_methods.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_payment_methods', [
             'payment_method_name' => 'Credit Card',
         ]);
@@ -149,29 +149,29 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_updates_existing_payment_method(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user          = User::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create(['payment_method_name' => 'Old Name']);
-        
+
         /**
          * {
          *     "payment_method_name": "Updated Name",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $updateData = [
             'payment_method_name' => 'Updated Name',
-            'btn_submit' => '1',
+            'btn_submit'          => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form', ['id' => $paymentMethod->payment_method_id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('payment_methods.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_payment_methods', [
-            'payment_method_id' => $paymentMethod->payment_method_id,
+            'payment_method_id'   => $paymentMethod->payment_method_id,
             'payment_method_name' => 'Updated Name',
         ]);
     }
@@ -185,11 +185,11 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "btn_cancel": "1"
-         * }
+         * }.
          */
         $cancelData = [
             'btn_cancel' => '1',
@@ -198,7 +198,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form'), $cancelData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('payment_methods.index'));
     }
 
@@ -210,22 +210,22 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "payment_method_name": "",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $invalidData = [
             'payment_method_name' => '',
-            'btn_submit' => '1',
+            'btn_submit'          => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form'), $invalidData);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors('payment_method_name');
     }
 
@@ -238,22 +238,22 @@ class PaymentMethodsControllerTest extends FeatureTestCase
         /** Arrange */
         $user = User::factory()->create();
         PaymentMethod::factory()->create(['payment_method_name' => 'Cash']);
-        
+
         /**
          * {
          *     "payment_method_name": "Cash",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $duplicateData = [
             'payment_method_name' => 'Cash',
-            'btn_submit' => '1',
+            'btn_submit'          => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form'), $duplicateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors('payment_method_name');
     }
 
@@ -265,13 +265,13 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_deletes_payment_method(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user          = User::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create();
-        
+
         /**
          * {
          *     "payment_method_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'payment_method_id' => $paymentMethod->payment_method_id,
@@ -283,10 +283,10 @@ class PaymentMethodsControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('payment_methods.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_payment_methods', [
             'payment_method_id' => $paymentMethod->payment_method_id,
         ]);
@@ -301,11 +301,11 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "payment_method_id": 99999
-         * }
+         * }.
          */
         $deletePayload = [
             'payment_method_id' => 99999,
@@ -317,7 +317,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 }
@@ -351,21 +351,21 @@ class PaypalControllerTest extends FeatureTestCase
          *     "receiver_email": "merchant@example.com",
          *     "payer_email": "buyer@example.com",
          *     "custom": "invoice_123"
-         * }
+         * }.
          */
         $payload = [
-            'txn_id' => '1234567890ABCDEF',
+            'txn_id'         => '1234567890ABCDEF',
             'payment_status' => 'Completed',
-            'mc_gross' => '100.00',
-            'mc_currency' => 'USD',
+            'mc_gross'       => '100.00',
+            'mc_currency'    => 'USD',
             'receiver_email' => 'merchant@example.com',
-            'payer_email' => 'buyer@example.com',
-            'custom' => 'invoice_123',
+            'payer_email'    => 'buyer@example.com',
+            'custom'         => 'invoice_123',
         ];
 
         $response = $this->post(route('gateways.paypal.notify'), $payload);
 
-        /** Assert */
+        /* Assert */
         // Note: Current stub implementation returns OK without validation
         // Future implementation should verify IPN signature, validate txn_id, update payment status
         $response->assertOk();
@@ -389,18 +389,18 @@ class PaypalControllerTest extends FeatureTestCase
          *     "payment_status": "Pending",
          *     "mc_gross": "50.00",
          *     "mc_currency": "EUR"
-         * }
+         * }.
          */
         $payload = [
-            'txn_id' => '0987654321ZYXWVU',
+            'txn_id'         => '0987654321ZYXWVU',
             'payment_status' => 'Pending',
-            'mc_gross' => '50.00',
-            'mc_currency' => 'EUR',
+            'mc_gross'       => '50.00',
+            'mc_currency'    => 'EUR',
         ];
 
         $response = $this->post(route('gateways.paypal.notify'), $payload);
 
-        /** Assert */
+        /* Assert */
         // Note: Current stub implementation returns OK without validation
         // Future implementation should handle pending payments differently than completed
         $response->assertOk();
@@ -442,17 +442,17 @@ class StripeControllerTest extends FeatureTestCase
          *             }
          *         }
          *     }
-         * }
+         * }.
          */
         $payload = [
-            'id' => 'evt_1234567890',
+            'id'   => 'evt_1234567890',
             'type' => 'payment_intent.succeeded',
             'data' => [
                 'object' => [
-                    'id' => 'pi_1234567890',
-                    'amount' => 10000,
+                    'id'       => 'pi_1234567890',
+                    'amount'   => 10000,
                     'currency' => 'usd',
-                    'status' => 'succeeded',
+                    'status'   => 'succeeded',
                     'metadata' => [
                         'invoice_id' => '123',
                     ],
@@ -462,7 +462,7 @@ class StripeControllerTest extends FeatureTestCase
 
         $response = $this->post(route('gateways.stripe.notify'), $payload);
 
-        /** Assert */
+        /* Assert */
         // Note: Current stub implementation returns OK without validation
         // Future implementation should verify webhook signature, handle event types, update payment records
         $response->assertOk();
@@ -491,15 +491,15 @@ class StripeControllerTest extends FeatureTestCase
          *             "refunded": true
          *         }
          *     }
-         * }
+         * }.
          */
         $payload = [
-            'id' => 'evt_0987654321',
+            'id'   => 'evt_0987654321',
             'type' => 'charge.refunded',
             'data' => [
                 'object' => [
-                    'id' => 'ch_0987654321',
-                    'amount' => 5000,
+                    'id'       => 'ch_0987654321',
+                    'amount'   => 5000,
                     'refunded' => true,
                 ],
             ],
@@ -507,10 +507,9 @@ class StripeControllerTest extends FeatureTestCase
 
         $response = $this->post(route('gateways.stripe.notify'), $payload);
 
-        /** Assert */
+        /* Assert */
         // Note: Current stub implementation returns OK without validation
         // Future implementation should handle different event types (refunds, disputes, etc.)
         $response->assertOk();
     }
 }
-

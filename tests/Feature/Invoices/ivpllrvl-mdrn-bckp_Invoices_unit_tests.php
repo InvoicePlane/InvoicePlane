@@ -10,8 +10,8 @@ use Modules\Invoices\Models\Item;
 use Modules\Invoices\Models\ItemAmount;
 use Modules\Invoices\Services\InvoiceAmountService;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(InvoiceAmountService::class)]
 class InvoiceAmountServiceTest extends AbstractServiceTestCase
@@ -36,19 +36,19 @@ class InvoiceAmountServiceTest extends AbstractServiceTestCase
     {
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
-            'client_id'               => 1,
-            'user_id'                 => 1,
-            'invoice_group_id'        => 1,
-            'invoice_status_id'       => 1,
-            'invoice_number'          => 'INV-1000',
-            'invoice_date_created'    => '2024-01-01',
-            'invoice_date_modified'   => '2024-01-01',
-            'invoice_date_due'        => '2024-01-15',
-            'invoice_password'        => '',
-            'invoice_discount_amount' => 0,
-            'invoice_discount_percent'=> 0,
-            'invoice_terms'           => '',
-            'invoice_url_key'         => 'key-1000',
+            'client_id'                => 1,
+            'user_id'                  => 1,
+            'invoice_group_id'         => 1,
+            'invoice_status_id'        => 1,
+            'invoice_number'           => 'INV-1000',
+            'invoice_date_created'     => '2024-01-01',
+            'invoice_date_modified'    => '2024-01-01',
+            'invoice_date_due'         => '2024-01-15',
+            'invoice_password'         => '',
+            'invoice_discount_amount'  => 0,
+            'invoice_discount_percent' => 0,
+            'invoice_terms'            => '',
+            'invoice_url_key'          => 'key-1000',
         ]);
 
         $firstItem = Item::query()->create([
@@ -666,8 +666,8 @@ class InvoiceItemAmountServiceTest extends AbstractServiceTestCase
         ]);
 
         $globalDiscount = [
-            'amount'           => 50,
-            'items_subtotal'   => 200,
+            'amount'         => 50,
+            'items_subtotal' => 200,
         ];
 
         $this->service->calculate($item->item_id, $globalDiscount);
@@ -1227,7 +1227,7 @@ class InvoiceServiceTest extends AbstractServiceTestCase
         $urlKey = $this->service->generateUrlKey();
 
         $this->assertIsString($urlKey);
-        $this->assertEquals(32, strlen($urlKey)); // 16 bytes = 32 hex chars
+        $this->assertEquals(32, mb_strlen($urlKey)); // 16 bytes = 32 hex chars
         $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $urlKey);
     }
 
@@ -1759,11 +1759,11 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
         Setting::setValue('legacy_calculation', '1');
 
         $data = [
-            'invoice_id'                 => 1,
-            'tax_rate_id'                => 1,
-            'include_item_tax'           => 0,
-            'invoice_tax_rate_percent'   => 10.0,
-            'invoice_tax_rate_amount'    => 0.0,
+            'invoice_id'               => 1,
+            'tax_rate_id'              => 1,
+            'include_item_tax'         => 0,
+            'invoice_tax_rate_percent' => 10.0,
+            'invoice_tax_rate_amount'  => 0.0,
         ];
 
         $result = $this->service->saveTaxRate($data);

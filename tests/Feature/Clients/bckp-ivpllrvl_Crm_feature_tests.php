@@ -497,4 +497,3 @@ class ClientsControllerTest extends TestCase
         $this->assertDatabaseMissing('ip_clients', ['client_id' => $client->id]);
     }
 }
-

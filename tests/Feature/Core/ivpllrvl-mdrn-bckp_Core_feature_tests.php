@@ -5,8 +5,8 @@ namespace Modules\Core\Tests\Feature;
 use Modules\Core\Controllers\AjaxController as CoreAjaxController;
 use Modules\Core\Models\User;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\FeatureTestCase;
 
 /**
@@ -30,13 +30,13 @@ class CoreAjaxControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertJsonStructure(['key']);
-        
+
         $data = $response->json();
         $this->assertIsString($data['key']);
-        $this->assertEquals(16, strlen($data['key']));
+        $this->assertEquals(16, mb_strlen($data['key']));
     }
 
     /**
@@ -55,7 +55,7 @@ class CoreAjaxControllerTest extends FeatureTestCase
         /** Assert */
         $key1 = $response1->json('key');
         $key2 = $response2->json('key');
-        
+
         $this->assertNotEquals($key1, $key2);
     }
 
@@ -99,7 +99,7 @@ class CustomFieldsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_fields.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::custom_fields_index');
         $response->assertViewHas('custom_fields');
@@ -113,7 +113,7 @@ class CustomFieldsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         CustomField::factory()->create(['custom_field_table' => 'ip_clients', 'custom_field_label' => 'Field B']);
         CustomField::factory()->create(['custom_field_table' => 'ip_clients', 'custom_field_label' => 'Field A']);
         CustomField::factory()->create(['custom_field_table' => 'ip_invoices', 'custom_field_label' => 'Field C']);
@@ -121,10 +121,10 @@ class CustomFieldsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_fields.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $customFields = $response->viewData('custom_fields');
-        
+
         // Verify ordering by table, then label
         $this->assertGreaterThan(0, $customFields->count());
     }
@@ -142,11 +142,11 @@ class CustomFieldsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_fields.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::custom_fields_form');
         $response->assertViewHas('custom_field');
-        
+
         $customField = $response->viewData('custom_field');
         $this->assertInstanceOf(CustomField::class, $customField);
         $this->assertFalse($customField->exists);
@@ -160,17 +160,17 @@ class CustomFieldsControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_custom_field(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user        = User::factory()->create();
         $customField = CustomField::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_fields.form', ['id' => $customField->custom_field_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::custom_fields_form');
         $response->assertViewHas('custom_field');
-        
+
         $viewCustomField = $response->viewData('custom_field');
         $this->assertEquals($customField->custom_field_id, $viewCustomField->custom_field_id);
     }
@@ -184,29 +184,29 @@ class CustomFieldsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "custom_field_table": "ip_clients",
          *     "custom_field_label": "Test Field",
          *     "custom_field_column": "custom_test_field",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $customFieldData = [
-            'custom_field_table' => 'ip_clients',
-            'custom_field_label' => 'Test Field',
+            'custom_field_table'  => 'ip_clients',
+            'custom_field_label'  => 'Test Field',
             'custom_field_column' => 'custom_test_field',
-            'btn_submit' => '1',
+            'btn_submit'          => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('custom_fields.form'), $customFieldData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('custom_fields.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_custom_fields', [
             'custom_field_table' => 'ip_clients',
             'custom_field_label' => 'Test Field',
@@ -221,33 +221,33 @@ class CustomFieldsControllerTest extends FeatureTestCase
     public function it_updates_existing_custom_field_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user        = User::factory()->create();
         $customField = CustomField::factory()->create(['custom_field_label' => 'Old Label']);
-        
+
         /**
          * {
          *     "custom_field_table": "ip_clients",
          *     "custom_field_label": "Updated Label",
          *     "custom_field_column": "client_custom",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $updateData = [
-            'custom_field_table' => $customField->custom_field_table,
-            'custom_field_label' => 'Updated Label',
+            'custom_field_table'  => $customField->custom_field_table,
+            'custom_field_label'  => 'Updated Label',
             'custom_field_column' => $customField->custom_field_column,
-            'btn_submit' => '1',
+            'btn_submit'          => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('custom_fields.form', ['id' => $customField->custom_field_id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('custom_fields.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_custom_fields', [
-            'custom_field_id' => $customField->custom_field_id,
+            'custom_field_id'    => $customField->custom_field_id,
             'custom_field_label' => 'Updated Label',
         ]);
     }
@@ -261,11 +261,11 @@ class CustomFieldsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "btn_cancel": "1"
-         * }
+         * }.
          */
         $cancelData = [
             'btn_cancel' => '1',
@@ -274,7 +274,7 @@ class CustomFieldsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('custom_fields.form'), $cancelData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('custom_fields.index'));
     }
 
@@ -286,13 +286,13 @@ class CustomFieldsControllerTest extends FeatureTestCase
     public function it_deletes_custom_field(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user        = User::factory()->create();
         $customField = CustomField::factory()->create();
-        
+
         /**
          * {
          *     "custom_field_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'custom_field_id' => $customField->custom_field_id,
@@ -304,10 +304,10 @@ class CustomFieldsControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('custom_fields.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_custom_fields', [
             'custom_field_id' => $customField->custom_field_id,
         ]);
@@ -322,11 +322,11 @@ class CustomFieldsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "custom_field_id": 99999
-         * }
+         * }.
          */
         $deletePayload = [
             'custom_field_id' => 99999,
@@ -338,7 +338,7 @@ class CustomFieldsControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 
@@ -355,7 +355,7 @@ class CustomFieldsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_fields.form', ['id' => 99999]));
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 }
@@ -376,14 +376,14 @@ class CustomValuesControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_custom_values(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user        = User::factory()->create();
         $customField = CustomField::factory()->create();
         CustomValue::factory()->count(5)->create(['custom_field_id' => $customField->custom_field_id]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_values.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::custom_values_index');
         $response->assertViewHas('custom_values');
@@ -397,17 +397,17 @@ class CustomValuesControllerTest extends FeatureTestCase
     public function it_loads_custom_values_with_custom_field_relationship(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user        = User::factory()->create();
         $customField = CustomField::factory()->create();
         CustomValue::factory()->create(['custom_field_id' => $customField->custom_field_id]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_values.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $customValues = $response->viewData('custom_values');
-        
+
         // Verify relationship is loaded
         $this->assertGreaterThan(0, $customValues->count());
     }
@@ -425,12 +425,12 @@ class CustomValuesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_values.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::custom_values_form');
         $response->assertViewHas('custom_value');
         $response->assertViewHas('custom_fields');
-        
+
         $customValue = $response->viewData('custom_value');
         $this->assertInstanceOf(CustomValue::class, $customValue);
         $this->assertFalse($customValue->exists);
@@ -444,19 +444,19 @@ class CustomValuesControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_custom_value(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user        = User::factory()->create();
         $customField = CustomField::factory()->create();
         $customValue = CustomValue::factory()->create(['custom_field_id' => $customField->custom_field_id]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_values.form', ['id' => $customValue->custom_value_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::custom_values_form');
         $response->assertViewHas('custom_value');
         $response->assertViewHas('custom_fields');
-        
+
         $viewCustomValue = $response->viewData('custom_value');
         $this->assertEquals($customValue->custom_value_id, $viewCustomValue->custom_value_id);
     }
@@ -469,31 +469,31 @@ class CustomValuesControllerTest extends FeatureTestCase
     public function it_creates_new_custom_value_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user        = User::factory()->create();
         $customField = CustomField::factory()->create();
-        
+
         /**
          * {
          *     "custom_field_id": 1,
          *     "custom_value_value": "Test Value",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $customValueData = [
-            'custom_field_id' => $customField->custom_field_id,
+            'custom_field_id'    => $customField->custom_field_id,
             'custom_value_value' => 'Test Value',
-            'btn_submit' => '1',
+            'btn_submit'         => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('custom_values.form'), $customValueData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('custom_values.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_custom_values', [
-            'custom_field_id' => $customField->custom_field_id,
+            'custom_field_id'    => $customField->custom_field_id,
             'custom_value_value' => 'Test Value',
         ]);
     }
@@ -506,35 +506,35 @@ class CustomValuesControllerTest extends FeatureTestCase
     public function it_updates_existing_custom_value_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user        = User::factory()->create();
         $customField = CustomField::factory()->create();
         $customValue = CustomValue::factory()->create([
-            'custom_field_id' => $customField->custom_field_id,
+            'custom_field_id'    => $customField->custom_field_id,
             'custom_value_value' => 'Old Value',
         ]);
-        
+
         /**
          * {
          *     "custom_field_id": 1,
          *     "custom_value_value": "Updated Value",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $updateData = [
-            'custom_field_id' => $customField->custom_field_id,
+            'custom_field_id'    => $customField->custom_field_id,
             'custom_value_value' => 'Updated Value',
-            'btn_submit' => '1',
+            'btn_submit'         => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('custom_values.form', ['id' => $customValue->custom_value_id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('custom_values.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_custom_values', [
-            'custom_value_id' => $customValue->custom_value_id,
+            'custom_value_id'    => $customValue->custom_value_id,
             'custom_value_value' => 'Updated Value',
         ]);
     }
@@ -548,11 +548,11 @@ class CustomValuesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "btn_cancel": "1"
-         * }
+         * }.
          */
         $cancelData = [
             'btn_cancel' => '1',
@@ -561,7 +561,7 @@ class CustomValuesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('custom_values.form'), $cancelData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('custom_values.index'));
     }
 
@@ -573,14 +573,14 @@ class CustomValuesControllerTest extends FeatureTestCase
     public function it_deletes_custom_value(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user        = User::factory()->create();
         $customField = CustomField::factory()->create();
         $customValue = CustomValue::factory()->create(['custom_field_id' => $customField->custom_field_id]);
-        
+
         /**
          * {
          *     "custom_value_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'custom_value_id' => $customValue->custom_value_id,
@@ -592,10 +592,10 @@ class CustomValuesControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('custom_values.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_custom_values', [
             'custom_value_id' => $customValue->custom_value_id,
         ]);
@@ -610,11 +610,11 @@ class CustomValuesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "custom_value_id": 99999
-         * }
+         * }.
          */
         $deletePayload = [
             'custom_value_id' => 99999,
@@ -626,7 +626,7 @@ class CustomValuesControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 
@@ -643,7 +643,7 @@ class CustomValuesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('custom_values.form', ['id' => 99999]));
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 }
@@ -665,7 +665,7 @@ class DashboardControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         // Create test data
         Client::factory()->count(5)->create();
         Invoice::factory()->count(10)->create();
@@ -674,7 +674,7 @@ class DashboardControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('dashboard'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::dashboard');
         $response->assertViewHas('total_clients');
@@ -696,7 +696,7 @@ class DashboardControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('dashboard'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $totalClients = $response->viewData('total_clients');
         $this->assertEquals(7, $totalClients);
@@ -716,7 +716,7 @@ class DashboardControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('dashboard'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $totalInvoices = $response->viewData('total_invoices');
         $this->assertEquals(15, $totalInvoices);
@@ -736,7 +736,7 @@ class DashboardControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('dashboard'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $totalQuotes = $response->viewData('total_quotes');
         $this->assertEquals(8, $totalQuotes);
@@ -755,7 +755,7 @@ class DashboardControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('dashboard'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $this->assertEquals(0, $response->viewData('total_clients'));
         $this->assertEquals(0, $response->viewData('total_invoices'));
@@ -785,7 +785,7 @@ class EmailTemplatesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('email_templates.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::email_templates_index');
         $response->assertViewHas('email_templates');
@@ -799,7 +799,7 @@ class EmailTemplatesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         EmailTemplate::factory()->create(['email_template_title' => 'Welcome Email']);
         EmailTemplate::factory()->create(['email_template_title' => 'Invoice Email']);
         EmailTemplate::factory()->create(['email_template_title' => 'Quote Email']);
@@ -807,11 +807,11 @@ class EmailTemplatesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('email_templates.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $templates = $response->viewData('email_templates');
-        $titles = $templates->pluck('email_template_title')->toArray();
-        
+        $titles    = $templates->pluck('email_template_title')->toArray();
+
         $this->assertEquals('Invoice Email', $titles[0]);
         $this->assertEquals('Quote Email', $titles[1]);
         $this->assertEquals('Welcome Email', $titles[2]);
@@ -830,11 +830,11 @@ class EmailTemplatesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('email_templates.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::email_templates_form');
         $response->assertViewHas('email_template');
-        
+
         $template = $response->viewData('email_template');
         $this->assertInstanceOf(EmailTemplate::class, $template);
         $this->assertFalse($template->exists);
@@ -848,17 +848,17 @@ class EmailTemplatesControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_template(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $template = EmailTemplate::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->get(route('email_templates.form', ['id' => $template->email_template_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::email_templates_form');
         $response->assertViewHas('email_template');
-        
+
         $viewTemplate = $response->viewData('email_template');
         $this->assertEquals($template->email_template_id, $viewTemplate->email_template_id);
     }
@@ -872,29 +872,29 @@ class EmailTemplatesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "email_template_title": "New Template",
          *     "email_template_subject": "Subject",
          *     "email_template_body": "Body content",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $templateData = [
-            'email_template_title' => 'New Template',
+            'email_template_title'   => 'New Template',
             'email_template_subject' => 'Subject',
-            'email_template_body' => 'Body content',
-            'btn_submit' => '1',
+            'email_template_body'    => 'Body content',
+            'btn_submit'             => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('email_templates.form'), $templateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('email_templates.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_email_templates', [
             'email_template_title' => 'New Template',
         ]);
@@ -908,33 +908,33 @@ class EmailTemplatesControllerTest extends FeatureTestCase
     public function it_updates_existing_email_template(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $template = EmailTemplate::factory()->create(['email_template_title' => 'Old Title']);
-        
+
         /**
          * {
          *     "email_template_title": "Updated Title",
          *     "email_template_subject": "Invoice Reminder",
          *     "email_template_body": "Please pay your invoice.",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $updateData = [
-            'email_template_title' => 'Updated Title',
+            'email_template_title'   => 'Updated Title',
             'email_template_subject' => $template->email_template_subject,
-            'email_template_body' => $template->email_template_body,
-            'btn_submit' => '1',
+            'email_template_body'    => $template->email_template_body,
+            'btn_submit'             => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('email_templates.form', ['id' => $template->email_template_id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('email_templates.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_email_templates', [
-            'email_template_id' => $template->email_template_id,
+            'email_template_id'    => $template->email_template_id,
             'email_template_title' => 'Updated Title',
         ]);
     }
@@ -948,11 +948,11 @@ class EmailTemplatesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "btn_cancel": "1"
-         * }
+         * }.
          */
         $cancelData = [
             'btn_cancel' => '1',
@@ -961,7 +961,7 @@ class EmailTemplatesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('email_templates.form'), $cancelData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('email_templates.index'));
     }
 
@@ -973,13 +973,13 @@ class EmailTemplatesControllerTest extends FeatureTestCase
     public function it_deletes_email_template(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $template = EmailTemplate::factory()->create();
-        
+
         /**
          * {
          *     "email_template_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'email_template_id' => $template->email_template_id,
@@ -991,10 +991,10 @@ class EmailTemplatesControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('email_templates.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_email_templates', [
             'email_template_id' => $template->email_template_id,
         ]);
@@ -1009,11 +1009,11 @@ class EmailTemplatesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "email_template_id": 99999
-         * }
+         * }.
          */
         $deletePayload = [
             'email_template_id' => 99999,
@@ -1025,7 +1025,7 @@ class EmailTemplatesControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 
@@ -1042,7 +1042,7 @@ class EmailTemplatesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('email_templates.form', ['id' => 99999]));
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 }
@@ -1068,7 +1068,7 @@ class ImportControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('import.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::import_index');
     }
@@ -1095,7 +1095,7 @@ class LayoutControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('layout.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::layout_index');
     }
@@ -1122,7 +1122,7 @@ class MailerControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('mailer.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::mailer_index');
     }
@@ -1149,7 +1149,7 @@ class ReportsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('reports.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::reports_index');
     }
@@ -1176,7 +1176,7 @@ class SessionsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('sessions.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('sessions.login'));
     }
 
@@ -1193,7 +1193,7 @@ class SessionsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('sessions.login'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('sessions::login');
         $response->assertViewHas('login_logo');
@@ -1213,7 +1213,7 @@ class SessionsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('sessions.logout'));
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('sessions.login'));
         $this->assertNull(session('user_id'));
     }
@@ -1231,7 +1231,7 @@ class SessionsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('sessions.passwordreset'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('sessions::passwordreset');
     }
@@ -1249,7 +1249,7 @@ class SessionsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('sessions.passwordreset', ['token' => $token]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('sessions::passwordreset');
     }
@@ -1272,18 +1272,18 @@ class SettingsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         Setting::factory()->create(['setting_key' => 'company_name', 'setting_value' => 'Test Company']);
         Setting::factory()->create(['setting_key' => 'currency_code', 'setting_value' => 'USD']);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('settings.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::settings_index');
         $response->assertViewHas('settings');
-        
+
         $settings = $response->viewData('settings');
         $this->assertIsArray($settings);
         $this->assertArrayHasKey('company_name', $settings);
@@ -1299,7 +1299,7 @@ class SettingsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         Setting::factory()->create(['setting_key' => 'email_from', 'setting_value' => 'noreply@example.com']);
         Setting::factory()->create(['setting_key' => 'invoice_prefix', 'setting_value' => 'INV-']);
 
@@ -1321,27 +1321,27 @@ class SettingsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "company_name": "New Company",
          *     "currency_code": "EUR"
-         * }
+         * }.
          */
         $settingsData = [
-            'company_name' => 'New Company',
+            'company_name'  => 'New Company',
             'currency_code' => 'EUR',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('settings.save'), $settingsData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('settings.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'company_name',
+            'setting_key'   => 'company_name',
             'setting_value' => 'New Company',
         ]);
     }
@@ -1355,13 +1355,13 @@ class SettingsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         Setting::factory()->create(['setting_key' => 'company_name', 'setting_value' => 'Old Company']);
-        
+
         /**
          * {
          *     "company_name": "Updated Company"
-         * }
+         * }.
          */
         $settingsData = [
             'company_name' => 'Updated Company',
@@ -1370,12 +1370,12 @@ class SettingsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('settings.save'), $settingsData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('settings.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'company_name',
+            'setting_key'   => 'company_name',
             'setting_value' => 'Updated Company',
         ]);
     }
@@ -1389,36 +1389,36 @@ class SettingsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "company_name": "Multi Test Company",
          *     "currency_code": "GBP",
          *     "invoice_prefix": "INV-"
-         * }
+         * }.
          */
         $settingsData = [
-            'company_name' => 'Multi Test Company',
-            'currency_code' => 'GBP',
+            'company_name'   => 'Multi Test Company',
+            'currency_code'  => 'GBP',
             'invoice_prefix' => 'INV-',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('settings.save'), $settingsData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('settings.index'));
-        
+
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'company_name',
+            'setting_key'   => 'company_name',
             'setting_value' => 'Multi Test Company',
         ]);
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'currency_code',
+            'setting_key'   => 'currency_code',
             'setting_value' => 'GBP',
         ]);
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'invoice_prefix',
+            'setting_key'   => 'invoice_prefix',
             'setting_value' => 'INV-',
         ]);
     }
@@ -1436,7 +1436,7 @@ class SettingsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('settings.save'));
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('settings.index'));
     }
 
@@ -1453,7 +1453,7 @@ class SettingsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('settings.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $settings = $response->viewData('settings');
         $this->assertIsArray($settings);
@@ -1482,7 +1482,7 @@ class SetupControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('setup.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::setup_index');
     }
@@ -1499,7 +1499,7 @@ class SetupControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('setup.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::setup_index');
     }
@@ -1526,7 +1526,7 @@ class UploadControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('upload.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::upload_index');
     }
@@ -1554,7 +1554,7 @@ class UsersControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('users.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('users::index');
         $response->assertViewHas('users');
@@ -1572,7 +1572,7 @@ class UsersControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $adminUser = User::factory()->create(['user_name' => 'Admin']);
-        
+
         User::factory()->create(['user_name' => 'Zack']);
         User::factory()->create(['user_name' => 'Alice']);
         User::factory()->create(['user_name' => 'Bob']);
@@ -1580,11 +1580,11 @@ class UsersControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($adminUser)->get(route('users.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $users = $response->viewData('users');
         $names = $users->pluck('user_name')->toArray();
-        
+
         $this->assertEquals('Admin', $names[0]);
         $this->assertEquals('Alice', $names[1]);
         $this->assertEquals('Bob', $names[2]);
@@ -1604,11 +1604,11 @@ class UsersControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('users.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('users::form');
         $response->assertViewHas('user');
-        
+
         $formUser = $response->viewData('user');
         $this->assertInstanceOf(User::class, $formUser);
         $this->assertFalse($formUser->exists);
@@ -1623,16 +1623,16 @@ class UsersControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $adminUser = User::factory()->create();
-        $editUser = User::factory()->create();
+        $editUser  = User::factory()->create();
 
         /** Act */
         $response = $this->actingAs($adminUser)->get(route('users.form', ['id' => $editUser->user_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('users::form');
         $response->assertViewHas('user');
-        
+
         $formUser = $response->viewData('user');
         $this->assertEquals($editUser->user_id, $formUser->user_id);
     }
@@ -1646,7 +1646,7 @@ class UsersControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $adminUser = User::factory()->create();
-        
+
         /**
          * {
          *     "user_name": "New User",
@@ -1654,25 +1654,25 @@ class UsersControllerTest extends FeatureTestCase
          *     "user_password": "password123",
          *     "user_type": 1,
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $userData = [
-            'user_name' => 'New User',
-            'user_email' => 'newuser@example.com',
+            'user_name'     => 'New User',
+            'user_email'    => 'newuser@example.com',
             'user_password' => 'password123',
-            'user_type' => User::USER_TYPE_ADMINISTRATOR,
-            'btn_submit' => '1',
+            'user_type'     => User::USER_TYPE_ADMINISTRATOR,
+            'btn_submit'    => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($adminUser)->post(route('users.form'), $userData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('users.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_users', [
-            'user_name' => 'New User',
+            'user_name'  => 'New User',
             'user_email' => 'newuser@example.com',
         ]);
     }
@@ -1686,8 +1686,8 @@ class UsersControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $adminUser = User::factory()->create();
-        $editUser = User::factory()->create([
-            'user_name' => 'Old Name',
+        $editUser  = User::factory()->create([
+            'user_name'  => 'Old Name',
             'user_email' => 'old@example.com',
         ]);
 
@@ -1697,24 +1697,24 @@ class UsersControllerTest extends FeatureTestCase
          *     "user_email": "old@example.com",
          *     "user_type": 1,
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $updateData = [
-            'user_name' => 'Updated Name',
+            'user_name'  => 'Updated Name',
             'user_email' => $editUser->user_email,
-            'user_type' => User::USER_TYPE_ADMINISTRATOR,
+            'user_type'  => User::USER_TYPE_ADMINISTRATOR,
             'btn_submit' => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($adminUser)->post(route('users.form', ['id' => $editUser->user_id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('users.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_users', [
-            'user_id' => $editUser->user_id,
+            'user_id'   => $editUser->user_id,
             'user_name' => 'Updated Name',
         ]);
     }
@@ -1728,11 +1728,11 @@ class UsersControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "btn_cancel": "1"
-         * }
+         * }.
          */
         $cancelData = [
             'btn_cancel' => '1',
@@ -1741,7 +1741,7 @@ class UsersControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('users.form'), $cancelData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('users.index'));
     }
 
@@ -1753,13 +1753,13 @@ class UsersControllerTest extends FeatureTestCase
     public function it_deletes_user(): void
     {
         /** Arrange */
-        $adminUser = User::factory()->create();
+        $adminUser  = User::factory()->create();
         $deleteUser = User::factory()->create();
-        
+
         /**
          * {
          *     "user_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'user_id' => $deleteUser->user_id,
@@ -1771,10 +1771,10 @@ class UsersControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('users.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_users', [
             'user_id' => $deleteUser->user_id,
         ]);
@@ -1789,11 +1789,11 @@ class UsersControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "user_id": 99999
-         * }
+         * }.
          */
         $deletePayload = [
             'user_id' => 99999,
@@ -1805,7 +1805,7 @@ class UsersControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 
@@ -1822,7 +1822,7 @@ class UsersControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('users.form', ['id' => 99999]));
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 }
@@ -1848,43 +1848,43 @@ class VersionsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('versions.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::versions_index');
     }
 }
 
 /**
- * Test that the view template system uses PHP templates, not Blade
+ * Test that the view template system uses PHP templates, not Blade.
  */
 class ViewTemplateSystemTest extends TestCase
 {
     /**
-     * Test that PHP view engine is registered
+     * Test that PHP view engine is registered.
      */
     public function test_php_view_engine_is_registered(): void
     {
         $resolver = $this->app->make('view.engine.resolver');
-        
+
         // PHP engine should be registered
         $phpEngine = $resolver->resolve('php');
         $this->assertInstanceOf(\Illuminate\View\Engines\PhpEngine::class, $phpEngine);
     }
 
     /**
-     * Test that Blade engine is available but secondary
+     * Test that Blade engine is available but secondary.
      */
     public function test_blade_engine_is_available_as_secondary(): void
     {
         $resolver = $this->app->make('view.engine.resolver');
-        
+
         // Blade engine should also be available
         $bladeEngine = $resolver->resolve('blade');
         $this->assertInstanceOf(\Illuminate\View\Engines\CompilerEngine::class, $bladeEngine);
     }
 
     /**
-     * Test that plain PHP views can be rendered
+     * Test that plain PHP views can be rendered.
      */
     public function test_plain_php_views_can_be_rendered(): void
     {
@@ -1895,7 +1895,7 @@ class ViewTemplateSystemTest extends TestCase
         try {
             // Render the view
             $rendered = view('test_php_template', ['message' => 'Success'])->render();
-            
+
             // Assert it renders correctly
             $this->assertStringContainsString('PHP Template Works: Success', $rendered);
         } finally {
@@ -1907,15 +1907,15 @@ class ViewTemplateSystemTest extends TestCase
     }
 
     /**
-     * Test that welcome view uses PHP template
+     * Test that welcome view uses PHP template.
      */
     public function test_welcome_view_is_php_template(): void
     {
         $welcomePath = resource_path('views/welcome.php');
-        
+
         // The welcome view should be a .php file, not .blade.php
         $this->assertFileExists($welcomePath);
-        
+
         // Should not have a .blade.php version
         $bladePath = resource_path('views/welcome.blade.php');
         $this->assertFileDoesNotExist($bladePath);
@@ -1943,7 +1943,7 @@ class WelcomeControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('welcome'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::welcome');
     }
@@ -1961,9 +1961,8 @@ class WelcomeControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('welcome'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('core::welcome');
     }
 }
-

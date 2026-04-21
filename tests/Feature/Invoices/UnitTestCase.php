@@ -20,7 +20,8 @@ abstract class UnitTestCase extends TestCase
     /**
      * Clean up database tables commonly used in tests.
      *
-     * @param  array  $tables
+     * @param array $tables
+     *
      * @return void
      */
     protected function cleanupTables(array $tables): void
@@ -33,7 +34,8 @@ abstract class UnitTestCase extends TestCase
     /**
      * Create a test invoice with common defaults.
      *
-     * @param  array  $overrides
+     * @param array $overrides
+     *
      * @return \Modules\Invoices\Models\Invoice
      */
     protected function createTestInvoice(array $overrides = [])
@@ -62,8 +64,9 @@ abstract class UnitTestCase extends TestCase
     /**
      * Create a test invoice item with common defaults.
      *
-     * @param  int  $invoiceId
-     * @param  array  $overrides
+     * @param int   $invoiceId
+     * @param array $overrides
+     *
      * @return \Modules\Invoices\Models\Item
      */
     protected function createTestItem(int $invoiceId, array $overrides = [])
@@ -90,7 +93,8 @@ abstract class UnitTestCase extends TestCase
     /**
      * Create a test quote with common defaults.
      *
-     * @param  array  $overrides
+     * @param array $overrides
+     *
      * @return \Modules\Quotes\Models\Quote
      */
     protected function createTestQuote(array $overrides = [])

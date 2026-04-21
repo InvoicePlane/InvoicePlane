@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Models;
 
+use DateInterval;
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -274,8 +276,8 @@ final class StubMdl_Invoices
 
     public function get_date_due(string $invoiceDateCreated, int $dueDays): string
     {
-        $due = new \DateTime($invoiceDateCreated);
-        $due->add(new \DateInterval('P' . $dueDays . 'D'));
+        $due = new DateTime($invoiceDateCreated);
+        $due->add(new DateInterval('P' . $dueDays . 'D'));
 
         return $due->format('Y-m-d');
     }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Integrations;
 
 use Tests\Hmvc\BaseHmvcTestCase;
-use Tests\Hmvc\HmvcResponse;
 
 /**
  * Drives the integrations module through the real MX router stack.
@@ -57,7 +56,7 @@ final class IntegrationsFeatureTest extends BaseHmvcTestCase
             sprintf(
                 'Unauthenticated GET /integrations must redirect to login. Got status [%d] with body: %s',
                 $response->statusCode(),
-                substr($response->body(), 0, 200)
+                mb_substr($response->body(), 0, 200)
             )
         );
     }
@@ -131,10 +130,10 @@ final class IntegrationsFeatureTest extends BaseHmvcTestCase
 
     public function it_resolves_integrations_via_the_psr4_controller_alias_not_a_legacy_file(): void
     {
-        $psr4ControllerFile = APPPATH . 'modules/integrations/controllers/IntegrationsController.php';
+        $psr4ControllerFile   = APPPATH . 'modules/integrations/controllers/IntegrationsController.php';
         $legacyControllerFile = APPPATH . 'modules/integrations/controllers/Integrations.php';
 
-        if (!file_exists($psr4ControllerFile) && !file_exists($legacyControllerFile)) {
+        if ( ! file_exists($psr4ControllerFile) && ! file_exists($legacyControllerFile)) {
             static::markTestSkipped(
                 'Neither IntegrationsController.php nor Integrations.php found — module may not exist yet.'
             );

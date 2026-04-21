@@ -689,4 +689,3 @@ class UnitServiceTest extends AbstractServiceTestCase
         $this->assertEquals('Hours', $pluralName);
     }
 }
-

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Routing;
 
 use Tests\Hmvc\BaseHmvcTestCase;
-use Tests\Hmvc\HmvcResponse;
 
 /**
  * Parameterised routing smoke test.
@@ -34,6 +33,32 @@ final class ModuleRoutingTest extends BaseHmvcTestCase
         $this->actingAsAdmin();
     }
 
+    public static function moduleIndexRouteProvider(): array
+    {
+        return [
+            'invoices'        => ['/invoices'],
+            'clients'         => ['/clients'],
+            'payments'        => ['/payments'],
+            'quotes'          => ['/quotes'],
+            'products'        => ['/products'],
+            'tasks'           => ['/tasks'],
+            'tax_rates'       => ['/tax_rates'],
+            'units'           => ['/units'],
+            'families'        => ['/families'],
+            'payment_methods' => ['/payment_methods'],
+            'invoice_groups'  => ['/invoice_groups'],
+            'email_templates' => ['/email_templates'],
+            'custom_fields'   => ['/custom_fields'],
+            'custom_values'   => ['/custom_values'],
+            'users'           => ['/users'],
+            'settings'        => ['/settings'],
+            'reports'         => ['/reports'],
+            'dashboard'       => ['/dashboard'],
+            'import'          => ['/import'],
+            'projects'        => ['/projects'],
+        ];
+    }
+
     /**
      * @dataProvider moduleIndexRouteProvider
      */
@@ -52,7 +77,7 @@ final class ModuleRoutingTest extends BaseHmvcTestCase
                 'GET [%s] must return 200 or a redirect. Got [%d] with body: %s',
                 $uri,
                 $response->statusCode(),
-                substr($response->body(), 0, 300)
+                mb_substr($response->body(), 0, 300)
             )
         );
     }
@@ -84,37 +109,11 @@ final class ModuleRoutingTest extends BaseHmvcTestCase
             200,
             $response->bodyLength(),
             sprintf(
-                'GET [%s] returned a body shorter than 200 bytes — the view likely did not render. ' .
-                'Body: %s',
+                'GET [%s] returned a body shorter than 200 bytes — the view likely did not render. '
+                . 'Body: %s',
                 $uri,
                 $response->body()
             )
         );
-    }
-
-    public static function moduleIndexRouteProvider(): array
-    {
-        return [
-            'invoices'         => ['/invoices'],
-            'clients'          => ['/clients'],
-            'payments'         => ['/payments'],
-            'quotes'           => ['/quotes'],
-            'products'         => ['/products'],
-            'tasks'            => ['/tasks'],
-            'tax_rates'        => ['/tax_rates'],
-            'units'            => ['/units'],
-            'families'         => ['/families'],
-            'payment_methods'  => ['/payment_methods'],
-            'invoice_groups'   => ['/invoice_groups'],
-            'email_templates'  => ['/email_templates'],
-            'custom_fields'    => ['/custom_fields'],
-            'custom_values'    => ['/custom_values'],
-            'users'            => ['/users'],
-            'settings'         => ['/settings'],
-            'reports'          => ['/reports'],
-            'dashboard'        => ['/dashboard'],
-            'import'           => ['/import'],
-            'projects'         => ['/projects'],
-        ];
     }
 }

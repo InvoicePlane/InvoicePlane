@@ -349,4 +349,3 @@ class UsersServiceTest extends TestCase
         $this->assertIsArray($rules);
     }
 }
-

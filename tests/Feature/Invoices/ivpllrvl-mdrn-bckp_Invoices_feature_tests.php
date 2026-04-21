@@ -5,8 +5,8 @@ namespace Modules\Invoices\Tests\Feature;
 use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
 use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\FeatureTestCase;
 
 /**
@@ -30,7 +30,7 @@ class CrmInvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.invoices'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_invoices');
     }
@@ -48,11 +48,11 @@ class CrmInvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.invoices.view', ['urlKey' => 'test-key-123']));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('crm::guest_invoice_view');
         $response->assertViewHas('invoice');
-        
+
         $viewInvoice = $response->viewData('invoice');
         $this->assertEquals($invoice->invoice_id, $viewInvoice->invoice_id);
     }
@@ -70,7 +70,7 @@ class CrmInvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.invoices.view', ['urlKey' => 'non-existent-key']));
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 
@@ -86,7 +86,7 @@ class CrmInvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->get(route('guest.invoices.view', ['urlKey' => 'guest-key']));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
     }
 }
@@ -420,7 +420,7 @@ class InvoiceControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('invoices::index');
         $response->assertViewHas('invoices');
@@ -434,23 +434,23 @@ class InvoiceControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         Invoice::factory()->create([
             'invoice_date_created' => '2024-01-01',
-            'invoice_number' => 'INV-001',
+            'invoice_number'       => 'INV-001',
         ]);
         Invoice::factory()->create([
             'invoice_date_created' => '2024-01-02',
-            'invoice_number' => 'INV-002',
+            'invoice_number'       => 'INV-002',
         ]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $invoices = $response->viewData('invoices');
-        
+
         // Most recent should be first
         $this->assertGreaterThan(0, $invoices->count());
     }
@@ -463,17 +463,17 @@ class InvoiceControllerTest extends FeatureTestCase
     public function it_displays_invoice_with_relationships(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $invoice = Invoice::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice.show', ['id' => $invoice->invoice_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('invoices::show');
         $response->assertViewHas('invoice');
-        
+
         $viewInvoice = $response->viewData('invoice');
         $this->assertEquals($invoice->invoice_id, $viewInvoice->invoice_id);
     }
@@ -491,7 +491,7 @@ class InvoiceControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice.show', ['id' => 99999]));
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 
@@ -508,7 +508,7 @@ class InvoiceControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice.create'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('invoices::create');
     }
@@ -522,19 +522,19 @@ class InvoiceControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /** @var array{client_id: int, invoice_number: string, invoice_date_created: string} $invoiceData */
         $invoiceData = [
-            'client_id' => 1,
-            'invoice_number' => 'TEST-001',
+            'client_id'            => 1,
+            'invoice_number'       => 'TEST-001',
             'invoice_date_created' => '2024-01-01',
         ];
 
         /** Act */
         $controller = new InvoiceController();
-        $invoice = $controller->store($invoiceData);
+        $invoice    = $controller->store($invoiceData);
 
-        /** Assert */
+        /* Assert */
         $this->assertInstanceOf(Invoice::class, $invoice);
         $this->assertDatabaseHas('ip_invoices', [
             'invoice_number' => 'TEST-001',
@@ -550,19 +550,19 @@ class InvoiceControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /** @var array{client_id: int, invoice_number: string, invoice_date_created: string} $invoiceData */
         $invoiceData = [
-            'client_id' => 1,
-            'invoice_number' => 'TEST-002',
+            'client_id'            => 1,
+            'invoice_number'       => 'TEST-002',
             'invoice_date_created' => '2024-01-01',
         ];
 
         /** Act */
         $controller = new InvoiceController();
-        $invoice = $controller->store($invoiceData);
+        $invoice    = $controller->store($invoiceData);
 
-        /** Assert */
+        /* Assert */
         $this->assertDatabaseHas('ip_invoice_amounts', [
             'invoice_id' => $invoice->invoice_id,
         ]);
@@ -629,7 +629,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoice_groups.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         /* Would verify pagination shows max 15 items */
         $this->assertTrue(true, 'Should paginate at 15 items per page');
@@ -802,11 +802,11 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
         $user = User::factory()->create();
         /** Would create invoice group */
         $testId = 1;
-        
+
         /**
          * {
          *     "invoice_group_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'invoice_group_id' => $testId,
@@ -971,7 +971,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          *     "client_id": 1,
          *     "user_id": 1,
          *     "invoice_date_created": "2024-01-01"
-         * }
+         * }.
          */
         $payload = [
             'client_id'            => $client->client_id,
@@ -1042,7 +1042,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          *     "invoice_date_created": "2024-01-01",
          *     "invoice_date_due": "2024-01-31",
          *     "invoice_status_id": 1
-         * }
+         * }.
          */
         $payload = [
             'invoice_id'               => $invoice->invoice_id,
@@ -1063,7 +1063,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
         $data = $response->json();
         $this->assertEquals(1, $data['success']);
         $this->assertEquals(2, Item::where('invoice_id', $invoice->invoice_id)->count());
-        
+
         // Verify invoice data was saved
         $invoice->refresh();
         $this->assertEquals('INV-001', $invoice->invoice_number);
@@ -1118,7 +1118,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          *     "invoice_status_id": 2,
          *     "invoice_discount_percent": 0,
          *     "invoice_discount_amount": 0
-         * }
+         * }.
          */
         $payload = [
             'invoice_id'               => $invoice->invoice_id,
@@ -1138,11 +1138,11 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
         $response->assertOk();
         $data = $response->json();
         $this->assertEquals(1, $data['success']);
-        
+
         $invoice->refresh();
         $this->assertEquals('INV-002', $invoice->invoice_number);
         $this->assertEquals(2, $invoice->invoice_status_id);
-        
+
         $item->refresh();
         $this->assertEquals('Updated Item', $item->item_name);
         $this->assertEquals(3, $item->item_quantity);
@@ -1166,13 +1166,13 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
         /** Arrange */
         $user    = User::factory()->create();
         $invoice = Invoice::factory()->draft()->create();
-        
+
         /**
          * {
          *     "invoice_id": 1,
          *     "items": "[]",
          *     "invoice_date_created": "invalid-date"
-         * }
+         * }.
          */
         $payload = [
             'invoice_id'           => $invoice->invoice_id,
@@ -1226,7 +1226,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          *     "invoice_date_created": "2024-01-01",
          *     "invoice_date_due": "2024-01-31",
          *     "invoice_status_id": 1
-         * }
+         * }.
          */
         $payload = [
             'invoice_id'               => $invoice->invoice_id,
@@ -1279,7 +1279,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          * {
          *     "invoice_id": 1,
          *     "items": "[{\"item_id\":null,\"item_name\":\"\",\"item_quantity\":5,\"item_price\":100,\"item_discount_amount\":0}]"
-         * }
+         * }.
          */
         $payload = [
             'invoice_id' => $invoice->invoice_id,
@@ -1321,7 +1321,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          *     "invoice_id": 1,
          *     "tax_rate_id": 1,
          *     "include_item_tax": 1
-         * }
+         * }.
          */
         $payload = [
             'invoice_id'       => $invoice->invoice_id,
@@ -1363,7 +1363,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
         /**
          * {
          *     "item_id": 1
-         * }
+         * }.
          */
         $payload = ['item_id' => $item->item_id];
 
@@ -1393,11 +1393,11 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_returns_failure_when_deleting_item_for_non_existent_invoice(): void
     {
         /* Arrange */
-        $user    = User::factory()->create();
+        $user = User::factory()->create();
         /**
          * {
          *     "item_id": 99999
-         * }
+         * }.
          */
         $payload = ['item_id' => 99999];
 
@@ -1487,7 +1487,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          *     "user_id": 1,
          *     "invoice_date_created": "2024-01-01",
          *     "invoice_change_client": 0
-         * }
+         * }.
          */
         $payload = [
             'invoice_id'            => $sourceInvoice->invoice_id,
@@ -1533,7 +1533,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          * {
          *     "invoice_id": 1,
          *     "user_id": 1
-         * }
+         * }.
          */
         $payload = [
             'invoice_id' => $invoice->invoice_id,
@@ -1572,7 +1572,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          * {
          *     "invoice_id": 1,
          *     "user_id": 99999
-         * }
+         * }.
          */
         $payload = [
             'invoice_id' => $invoice->invoice_id,
@@ -1611,7 +1611,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          * {
          *     "invoice_id": 1,
          *     "client_id": 1
-         * }
+         * }.
          */
         $payload = [
             'invoice_id' => $invoice->invoice_id,
@@ -1658,7 +1658,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          *     "recur_start_date": "2024-01-01",
          *     "recur_end_date": "2025-01-01",
          *     "recur_frequency": "1M"
-         * }
+         * }.
          */
         $payload = [
             'client_id'        => $client->client_id,
@@ -1725,7 +1725,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          * {
          *     "invoice_id": 1,
          *     "invoice_date_created": "2024-01-01"
-         * }
+         * }.
          */
         $payload = [
             'invoice_id'           => $sourceInvoice->invoice_id,
@@ -1990,7 +1990,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          *     "invoice_date_created": "2024-01-01",
          *     "invoice_date_due": "2024-01-31",
          *     "invoice_status_id": 1
-         * }
+         * }.
          */
         $payload = [
             'invoice_id'               => $invoice->invoice_id,
@@ -2012,7 +2012,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
         $this->assertEquals(1, $data['success']);
         $invoice->refresh();
         $this->assertEquals(30.00, $invoice->invoice_discount_amount);
-        /** Verify items were created */
+        /* Verify items were created */
         $this->assertEquals(2, Item::where('invoice_id', $invoice->invoice_id)->count());
     }
 }
@@ -2085,7 +2085,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/all');
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $invoices   = $response->viewData('invoices');
         $invoiceIds = $invoices->pluck('invoice_id')->toArray();
@@ -2108,7 +2108,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/all');
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('invoice_statuses');
         $response->assertViewHas('status', 'all');
@@ -2129,7 +2129,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('invoice');
         $response->assertViewHas('items');
@@ -2152,7 +2152,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /* Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => 99999]));
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 
@@ -2170,7 +2170,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('custom_fields');
         $response->assertViewHas('custom_values');
@@ -2191,7 +2191,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('tax_rates');
         $taxRates = $response->viewData('tax_rates');
@@ -2208,11 +2208,11 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Arrange */
         $user    = User::factory()->create();
         $invoice = Invoice::factory()->draft()->create();
-        
+
         /**
          * {
          *     "invoiceId": 1
-         * }
+         * }.
          */
         $deleteParams = [
             'invoiceId' => $invoice->invoice_id,
@@ -2237,11 +2237,11 @@ class InvoicesControllerTest extends FeatureTestCase
         $user    = User::factory()->create();
         $invoice = Invoice::factory()->draft()->create();
         $task    = Task::factory()->create(['invoice_id' => $invoice->invoice_id, 'task_status' => 4]);
-        
+
         /**
          * {
          *     "invoiceId": 1
-         * }
+         * }.
          */
         $deleteParams = [
             'invoiceId' => $invoice->invoice_id,
@@ -2266,11 +2266,11 @@ class InvoicesControllerTest extends FeatureTestCase
         $user = User::factory()->create();
         config(['settings.enable_invoice_deletion' => false]);
         $invoice = Invoice::factory()->sent()->create(); // Not a draft
-        
+
         /**
          * {
          *     "invoiceId": 1
-         * }
+         * }.
          */
         $deleteParams = [
             'invoiceId' => $invoice->invoice_id,
@@ -2352,7 +2352,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         /**
          * Note: Empty payload is correct - IDs are passed via route parameters
-         * Route: POST /invoices/delete-tax/{invoiceId}/{taxRateId}
+         * Route: POST /invoices/delete-tax/{invoiceId}/{taxRateId}.
          */
         $payload = [];
 
@@ -2383,7 +2383,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         /**
          * Note: Empty payload is correct - IDs are passed via route parameters
-         * Route: POST /invoices/delete-tax/{invoiceId}/{taxRateId}
+         * Route: POST /invoices/delete-tax/{invoiceId}/{taxRateId}.
          */
         $payload = [];
 
@@ -2395,7 +2395,7 @@ class InvoicesControllerTest extends FeatureTestCase
             $payload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
     }
 
@@ -2413,7 +2413,7 @@ class InvoicesControllerTest extends FeatureTestCase
 
         /** Act */
         /**
-         * {}
+         * {}.
          */
         $recalculatePayload = [];
 
@@ -2438,7 +2438,7 @@ class InvoicesControllerTest extends FeatureTestCase
 
         /** Act */
         /**
-         * {}
+         * {}.
          */
         $recalculatePayload = [];
 
@@ -2483,7 +2483,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/paid');
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $invoices   = $response->viewData('invoices');
         $invoiceIds = $invoices->pluck('invoice_id')->toArray();
@@ -2507,7 +2507,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/overdue');
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $invoices   = $response->viewData('invoices');
         $invoiceIds = $invoices->pluck('invoice_id')->toArray();
@@ -2547,7 +2547,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get('/invoices/status/all');
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $invoices = $response->viewData('invoices');
         $this->assertLessThanOrEqual(15, $invoices->count());
@@ -2570,35 +2570,35 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
     public function it_creates_payment_via_ajax_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        $invoice = Invoice::factory()->create();
+        $user          = User::factory()->create();
+        $invoice       = Invoice::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create();
-        
+
         /**
          * {
          *     "invoice_id": 1,
          *     "payment_date": "2024-01-15",
          *     "payment_amount": "100.00",
          *     "payment_method_id": 1
-         * }
+         * }.
          */
         $paymentData = [
-            'invoice_id' => $invoice->invoice_id,
-            'payment_date' => '2024-01-15',
-            'payment_amount' => '100.00',
+            'invoice_id'        => $invoice->invoice_id,
+            'payment_date'      => '2024-01-15',
+            'payment_amount'    => '100.00',
             'payment_method_id' => $paymentMethod->payment_method_id,
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('payments.ajax.add'), $paymentData);
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertJson(['success' => 1]);
         $response->assertJsonStructure(['success', 'payment_id']);
-        
+
         $this->assertDatabaseHas('ip_payments', [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'     => $invoice->invoice_id,
             'payment_amount' => '100.00',
         ]);
     }
@@ -2618,16 +2618,16 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
          * {
          *     "payment_date": "invalid-date",
          *     "payment_amount": "not-a-number"
-         * }
+         * }.
          */
         $payload = [
-            'payment_date' => 'invalid-date',
+            'payment_date'   => 'invalid-date',
             'payment_amount' => 'not-a-number',
         ];
 
         $response = $this->actingAs($user)->post(route('payments.ajax.add'), $payload);
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertJson(['success' => 0]);
         $response->assertJsonStructure(['success', 'validation_errors']);
@@ -2647,19 +2647,19 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
          * {
          *     "payment_date": "2024-01-15",
          *     "payment_amount": "100.00"
-         * }
+         * }.
          */
         $payload = [
-            'payment_date' => '2024-01-15',
+            'payment_date'   => '2024-01-15',
             'payment_amount' => '100.00',
         ];
 
         $response = $this->actingAs($user)->post(route('payments.ajax.add'), $payload);
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertJson(['success' => 0]);
-        
+
         $data = $response->json();
         $this->assertArrayHasKey('validation_errors', $data);
         $this->assertArrayHasKey('invoice_id', $data['validation_errors']);
@@ -2672,7 +2672,7 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
     public function it_validates_required_payment_date(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $invoice = Invoice::factory()->create();
 
         /** Act */
@@ -2680,19 +2680,19 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
          * {
          *     "invoice_id": 1,
          *     "payment_amount": "100.00"
-         * }
+         * }.
          */
         $payload = [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'     => $invoice->invoice_id,
             'payment_amount' => '100.00',
         ];
 
         $response = $this->actingAs($user)->post(route('payments.ajax.add'), $payload);
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertJson(['success' => 0]);
-        
+
         $data = $response->json();
         $this->assertArrayHasKey('payment_date', $data['validation_errors']);
     }
@@ -2704,7 +2704,7 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
     public function it_validates_required_payment_amount(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $invoice = Invoice::factory()->create();
 
         /** Act */
@@ -2712,19 +2712,19 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
          * {
          *     "invoice_id": 1,
          *     "payment_date": "2024-01-15"
-         * }
+         * }.
          */
         $payload = [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'   => $invoice->invoice_id,
             'payment_date' => '2024-01-15',
         ];
 
         $response = $this->actingAs($user)->post(route('payments.ajax.add'), $payload);
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertJson(['success' => 0]);
-        
+
         $data = $response->json();
         $this->assertArrayHasKey('payment_amount', $data['validation_errors']);
     }
@@ -2746,17 +2746,17 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
          *     "invoice_id": 1,
          *     "invoice_balance": "100.00",
          *     "invoice_payment_method": 1
-         * }
+         * }.
          */
         $modalPayload = [
-            'invoice_id' => 1,
-            'invoice_balance' => '100.00',
+            'invoice_id'             => 1,
+            'invoice_balance'        => '100.00',
             'invoice_payment_method' => 1,
         ];
 
         $response = $this->actingAs($user)->post(route('payments.ajax.modal_add_payment'), $modalPayload);
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('payments::modal_add_payment');
         $response->assertViewHas('payment_methods');
@@ -2773,7 +2773,7 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         PaymentMethod::factory()->create(['payment_method_name' => 'Cash']);
         PaymentMethod::factory()->create(['payment_method_name' => 'Check']);
         PaymentMethod::factory()->create(['payment_method_name' => 'Credit Card']);
@@ -2781,10 +2781,10 @@ class PaymentsAjaxControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('payments.ajax.modal_add_payment'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $paymentMethods = $response->viewData('payment_methods');
-        
+
         $this->assertCount(3, $paymentMethods);
     }
 }
@@ -2811,7 +2811,7 @@ class PaymentsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('payments.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('payments::index');
         $response->assertViewHas('payments');
@@ -2828,7 +2828,7 @@ class PaymentsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         Payment::factory()->create(['payment_date' => '2024-01-01']);
         Payment::factory()->create(['payment_date' => '2024-01-02']);
         Payment::factory()->create(['payment_date' => '2024-01-03']);
@@ -2836,10 +2836,10 @@ class PaymentsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('payments.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $payments = $response->viewData('payments');
-        
+
         // Most recent should be first
         $this->assertGreaterThan(0, $payments->count());
     }
@@ -2852,22 +2852,22 @@ class PaymentsControllerTest extends FeatureTestCase
     public function it_loads_payments_with_relationships(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        $invoice = Invoice::factory()->create();
+        $user          = User::factory()->create();
+        $invoice       = Invoice::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create();
-        
+
         Payment::factory()->create([
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'        => $invoice->invoice_id,
             'payment_method_id' => $paymentMethod->payment_method_id,
         ]);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('payments.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $payments = $response->viewData('payments');
-        
+
         // Verify relationships are loaded
         $this->assertGreaterThan(0, $payments->count());
     }
@@ -2885,7 +2885,7 @@ class PaymentsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('payments.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('payments::form');
         $response->assertViewHas('payment');
@@ -2900,17 +2900,17 @@ class PaymentsControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_payment(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $payment = Payment::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->get(route('payments.form', ['id' => $payment->payment_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('payments::form');
         $response->assertViewHas('payment');
-        
+
         $viewPayment = $response->viewData('payment');
         $this->assertEquals($payment->payment_id, $viewPayment->payment_id);
     }
@@ -2923,10 +2923,10 @@ class PaymentsControllerTest extends FeatureTestCase
     public function it_creates_new_payment_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        $invoice = Invoice::factory()->create();
+        $user          = User::factory()->create();
+        $invoice       = Invoice::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create();
-        
+
         /**
          * {
          *     "invoice_id": 1,
@@ -2934,25 +2934,25 @@ class PaymentsControllerTest extends FeatureTestCase
          *     "payment_amount": "100.00",
          *     "payment_method_id": 1,
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $paymentData = [
-            'invoice_id' => $invoice->invoice_id,
-            'payment_date' => '2024-01-15',
-            'payment_amount' => '100.00',
+            'invoice_id'        => $invoice->invoice_id,
+            'payment_date'      => '2024-01-15',
+            'payment_amount'    => '100.00',
             'payment_method_id' => $paymentMethod->payment_method_id,
-            'btn_submit' => '1',
+            'btn_submit'        => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('payments.form'), $paymentData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('payments.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_payments', [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'     => $invoice->invoice_id,
             'payment_amount' => '100.00',
         ]);
     }
@@ -2965,33 +2965,33 @@ class PaymentsControllerTest extends FeatureTestCase
     public function it_updates_existing_payment(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $payment = Payment::factory()->create(['payment_amount' => '50.00']);
-        
+
         /**
          * {
          *     "invoice_id": 1,
          *     "payment_date": "2024-01-15",
          *     "payment_amount": "75.00",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $updateData = [
-            'invoice_id' => $payment->invoice_id,
-            'payment_date' => $payment->payment_date,
+            'invoice_id'     => $payment->invoice_id,
+            'payment_date'   => $payment->payment_date,
             'payment_amount' => '75.00',
-            'btn_submit' => '1',
+            'btn_submit'     => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('payments.form', ['id' => $payment->payment_id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('payments.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_payments', [
-            'payment_id' => $payment->payment_id,
+            'payment_id'     => $payment->payment_id,
             'payment_amount' => '75.00',
         ]);
     }
@@ -3011,17 +3011,17 @@ class PaymentsControllerTest extends FeatureTestCase
          *     "payment_date": "2024-01-15",
          *     "payment_amount": "100.00",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $missingInvoicePayload = [
-            'payment_date' => '2024-01-15',
+            'payment_date'   => '2024-01-15',
             'payment_amount' => '100.00',
-            'btn_submit' => '1',
+            'btn_submit'     => '1',
         ];
 
         $response = $this->actingAs($user)->post(route('payments.form'), $missingInvoicePayload);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors('invoice_id');
     }
 
@@ -3032,7 +3032,7 @@ class PaymentsControllerTest extends FeatureTestCase
     public function it_validates_required_payment_date(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $invoice = Invoice::factory()->create();
 
         /** Act */
@@ -3041,17 +3041,17 @@ class PaymentsControllerTest extends FeatureTestCase
          *     "invoice_id": 1,
          *     "payment_amount": "100.00",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $missingDatePayload = [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'     => $invoice->invoice_id,
             'payment_amount' => '100.00',
-            'btn_submit' => '1',
+            'btn_submit'     => '1',
         ];
 
         $response = $this->actingAs($user)->post(route('payments.form'), $missingDatePayload);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors('payment_date');
     }
 
@@ -3062,7 +3062,7 @@ class PaymentsControllerTest extends FeatureTestCase
     public function it_validates_required_payment_amount(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $invoice = Invoice::factory()->create();
 
         /** Act */
@@ -3071,17 +3071,17 @@ class PaymentsControllerTest extends FeatureTestCase
          *     "invoice_id": 1,
          *     "payment_date": "2024-01-15",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $missingAmountPayload = [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'   => $invoice->invoice_id,
             'payment_date' => '2024-01-15',
-            'btn_submit' => '1',
+            'btn_submit'   => '1',
         ];
 
         $response = $this->actingAs($user)->post(route('payments.form'), $missingAmountPayload);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors('payment_amount');
     }
 
@@ -3094,11 +3094,11 @@ class PaymentsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "btn_cancel": "1"
-         * }
+         * }.
          */
         $cancelData = [
             'btn_cancel' => '1',
@@ -3107,7 +3107,7 @@ class PaymentsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('payments.form'), $cancelData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('payments.index'));
     }
 
@@ -3119,13 +3119,13 @@ class PaymentsControllerTest extends FeatureTestCase
     public function it_deletes_payment(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $payment = Payment::factory()->create();
-        
+
         /**
          * {
          *     "payment_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'payment_id' => $payment->payment_id,
@@ -3137,10 +3137,10 @@ class PaymentsControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('payments.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_payments', [
             'payment_id' => $payment->payment_id,
         ]);
@@ -3155,11 +3155,11 @@ class PaymentsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "payment_id": 99999
-         * }
+         * }.
          */
         $deletePayload = [
             'payment_id' => 99999,
@@ -3171,7 +3171,7 @@ class PaymentsControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 }
@@ -3220,7 +3220,7 @@ class RecurringControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('recur_frequencies');
         $recurFrequencies = $response->viewData('recur_frequencies');
@@ -3240,7 +3240,7 @@ class RecurringControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $recurringInvoices = $response->viewData('recurring_invoices');
         $this->assertLessThanOrEqual(15, $recurringInvoices->count());
@@ -3295,7 +3295,7 @@ class RecurringControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /** @var array{id: int} $stopParams */
         $stopParams = [
             'id' => 99999,
@@ -3319,7 +3319,7 @@ class RecurringControllerTest extends FeatureTestCase
         $user        = User::factory()->create();
         $recurring   = InvoicesRecurring::factory()->create();
         $recurringId = $recurring->invoice_recurring_id;
-        
+
         /** @var array{id: int} $deleteParams */
         $deleteParams = [
             'id' => $recurringId,
@@ -3343,7 +3343,7 @@ class RecurringControllerTest extends FeatureTestCase
         /** Arrange */
         $user      = User::factory()->create();
         $recurring = InvoicesRecurring::factory()->create();
-        
+
         /** @var array{id: int} $deleteParams */
         $deleteParams = [
             'id' => $recurring->invoice_recurring_id,
@@ -3364,7 +3364,7 @@ class RecurringControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /** @var array{id: int} $deleteParams */
         $deleteParams = [
             'id' => 99999,
@@ -3390,7 +3390,7 @@ class RecurringControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('filter_display');
         $response->assertViewHas('filter_placeholder');
@@ -3401,4 +3401,3 @@ class RecurringControllerTest extends FeatureTestCase
         $this->assertEquals('filter_invoices_recuring', $filterMethod);
     }
 }
-

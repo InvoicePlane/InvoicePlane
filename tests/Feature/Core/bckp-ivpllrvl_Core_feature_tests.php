@@ -2559,4 +2559,3 @@ class WelcomeControllerTest extends TestCase
         $response->assertViewIs('welcome');
     }
 }
-

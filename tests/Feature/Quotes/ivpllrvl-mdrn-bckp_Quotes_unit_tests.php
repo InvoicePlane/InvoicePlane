@@ -5,21 +5,22 @@ namespace Modules\Quotes\Tests\Unit;
 use Modules\Quotes\Services\QuoteAmountService;
 use Modules\Quotes\Services\QuoteService;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractServiceTestCase;
 
 #[CoversClass(QuoteAmountService::class)]
 class QuoteAmountServiceTest extends AbstractServiceTestCase
 {
     private QuoteAmountService $service;
+
     private QuoteService $quoteService;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->quoteService = new QuoteService();
-        $this->service = new QuoteAmountService($this->quoteService);
+        $this->service      = new QuoteAmountService($this->quoteService);
     }
 
     #[Group('exotic')]
@@ -93,10 +94,10 @@ class QuoteItemServiceTest extends AbstractServiceTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $quoteService = $this->createMock(\Modules\Quotes\Services\QuoteService::class);
-        $quoteAmountService = new QuoteAmountService($quoteService);
+        $quoteService           = $this->createMock(\Modules\Quotes\Services\QuoteService::class);
+        $quoteAmountService     = new QuoteAmountService($quoteService);
         $quoteItemAmountService = new QuoteItemAmountService();
-        $this->service = new QuoteItemService($quoteAmountService, $quoteItemAmountService);
+        $this->service          = new QuoteItemService($quoteAmountService, $quoteItemAmountService);
     }
 
     #[Group('crud')]
@@ -197,12 +198,12 @@ class QuoteServiceTest extends AbstractServiceTestCase
     public function it_returns_save_validation_rules_with_quote_id(): void
     {
         $quoteId = 123;
-        $rules = $this->service->getSaveValidationRules($quoteId);
+        $rules   = $this->service->getSaveValidationRules($quoteId);
 
         $this->assertIsArray($rules);
         $this->assertArrayHasKey('quote_number', $rules);
         $this->assertStringContainsString('unique:ip_quotes,quote_number', $rules['quote_number']);
-        $this->assertStringContainsString((string)$quoteId, $rules['quote_number']);
+        $this->assertStringContainsString((string) $quoteId, $rules['quote_number']);
     }
 
     #[Test]
@@ -211,7 +212,7 @@ class QuoteServiceTest extends AbstractServiceTestCase
         $urlKey = $this->service->generateUrlKey();
 
         $this->assertIsString($urlKey);
-        $this->assertEquals(32, strlen($urlKey)); // 16 bytes = 32 hex chars
+        $this->assertEquals(32, mb_strlen($urlKey)); // 16 bytes = 32 hex chars
     }
 
     #[Group('exotic')]
@@ -232,9 +233,9 @@ class QuoteTaxRateServiceTest extends AbstractServiceTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $quoteService = $this->createMock(\Modules\Quotes\Services\QuoteService::class);
+        $quoteService       = $this->createMock(\Modules\Quotes\Services\QuoteService::class);
         $quoteAmountService = new QuoteAmountService($quoteService);
-        $this->service = new QuoteTaxRateService($quoteAmountService);
+        $this->service      = new QuoteTaxRateService($quoteAmountService);
     }
 
     #[Group('crud')]
@@ -263,4 +264,3 @@ class QuoteTaxRateServiceTest extends AbstractServiceTestCase
         $this->markTestIncomplete('Requires config_item mock');
     }
 }
-

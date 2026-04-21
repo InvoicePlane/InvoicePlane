@@ -251,4 +251,3 @@ class ClientServiceTest extends AbstractServiceTestCase
         $this->assertArrayHasKey('client_active', $rules);
     }
 }
-

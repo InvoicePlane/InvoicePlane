@@ -6,8 +6,8 @@ use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
 use Modules\Products\Models\Family;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\FeatureTestCase;
 
 /**
@@ -32,7 +32,7 @@ class FamiliesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('families.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::families_index');
         $response->assertViewHas('families');
@@ -54,12 +54,12 @@ class FamiliesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('families.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::families_form');
         $response->assertViewHas('family');
         $response->assertViewHas('is_update', false);
-        
+
         $family = $response->viewData('family');
         $this->assertInstanceOf(Family::class, $family);
         $this->assertFalse($family->exists);
@@ -73,18 +73,18 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_family(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $family = Family::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->get(route('families.form', ['id' => $family->family_id]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::families_form');
         $response->assertViewHas('family');
         $response->assertViewHas('is_update', true);
-        
+
         $viewFamily = $response->viewData('family');
         $this->assertEquals($family->family_id, $viewFamily->family_id);
     }
@@ -98,25 +98,25 @@ class FamiliesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "family_name": "Electronics",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $familyData = [
             'family_name' => 'Electronics',
-            'btn_submit' => '1',
+            'btn_submit'  => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('families.form'), $familyData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('families.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_families', [
             'family_name' => 'Electronics',
         ]);
@@ -130,29 +130,29 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_updates_existing_family_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $family = Family::factory()->create(['family_name' => 'Old Name']);
-        
+
         /**
          * {
          *     "family_name": "Updated Name",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $updateData = [
             'family_name' => 'Updated Name',
-            'btn_submit' => '1',
+            'btn_submit'  => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('families.form', ['id' => $family->family_id]), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('families.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_families', [
-            'family_id' => $family->family_id,
+            'family_id'   => $family->family_id,
             'family_name' => 'Updated Name',
         ]);
     }
@@ -166,11 +166,11 @@ class FamiliesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "btn_cancel": "1"
-         * }
+         * }.
          */
         $cancelData = [
             'btn_cancel' => '1',
@@ -179,7 +179,7 @@ class FamiliesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->post(route('families.form'), $cancelData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('families.index'));
     }
 
@@ -191,22 +191,22 @@ class FamiliesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "family_name": "",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $invalidData = [
             'family_name' => '',
-            'btn_submit' => '1',
+            'btn_submit'  => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('families.form'), $invalidData);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors('family_name');
     }
 
@@ -219,22 +219,22 @@ class FamiliesControllerTest extends FeatureTestCase
         /** Arrange */
         $user = User::factory()->create();
         Family::factory()->create(['family_name' => 'Existing Family']);
-        
+
         /**
          * {
          *     "family_name": "Existing Family",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
         $duplicateData = [
             'family_name' => 'Existing Family',
-            'btn_submit' => '1',
+            'btn_submit'  => '1',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('families.form'), $duplicateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertSessionHasErrors('family_name');
     }
 
@@ -246,13 +246,13 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_deletes_family(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user   = User::factory()->create();
         $family = Family::factory()->create();
-        
+
         /**
          * {
          *     "family_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'family_id' => $family->family_id,
@@ -264,10 +264,10 @@ class FamiliesControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('families.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_families', [
             'family_id' => $family->family_id,
         ]);
@@ -282,11 +282,11 @@ class FamiliesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "family_id": 99999
-         * }
+         * }.
          */
         $deletePayload = [
             'family_id' => 99999,
@@ -298,7 +298,7 @@ class FamiliesControllerTest extends FeatureTestCase
             $deletePayload
         );
 
-        /** Assert */
+        /* Assert */
         $response->assertNotFound();
     }
 }
@@ -326,7 +326,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::modal_product_lookups');
         $response->assertViewHas('products');
@@ -341,10 +341,10 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     public function it_filters_products_by_family(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $family1 = Family::factory()->create();
         $family2 = Family::factory()->create();
-        
+
         $product1 = Product::factory()->create(['family_id' => $family1->family_id]);
         $product2 = Product::factory()->create(['family_id' => $family2->family_id]);
 
@@ -353,7 +353,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
             'filter_family' => $family1->family_id,
         ]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('filter_family', $family1->family_id);
     }
@@ -374,7 +374,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
             'filter_product' => 'Widget',
         ]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('filter_product', 'Widget');
     }
@@ -394,7 +394,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
             'filter_product' => 'test',
         ]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::partial_product_table_modal');
     }
@@ -414,7 +414,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
             'reset_table' => '1',
         ]));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::partial_product_table_modal');
     }
@@ -432,10 +432,10 @@ class ProductsAjaxControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('default_item_tax_rate');
-        
+
         $defaultTaxRate = $response->viewData('default_item_tax_rate');
         $this->assertIsNumeric($defaultTaxRate);
     }
@@ -523,7 +523,7 @@ class ProductsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('products.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewHas('filter_placeholder');
         $response->assertViewHas('filter_method');
@@ -619,7 +619,7 @@ class ProductsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('products.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         /* Would verify families are ordered alphabetically */
         $this->assertTrue(true, 'Families should be ordered by name');
@@ -639,7 +639,7 @@ class ProductsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('products.form'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         /* Would verify units are ordered alphabetically */
         $this->assertTrue(true, 'Units should be ordered by name');
@@ -790,11 +790,11 @@ class ProductsControllerTest extends FeatureTestCase
         $user = User::factory()->create();
         /** Would create product */
         $testId = 1;
-        
+
         /**
          * {
          *     "product_id": 1
-         * }
+         * }.
          */
         $deletePayload = [
             'product_id' => $testId,
@@ -949,7 +949,7 @@ class TaxRatesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('tax_rates.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::tax_rates_index');
         $response->assertViewHas('tax_rates');
@@ -968,11 +968,11 @@ class TaxRatesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('tax_rates.create'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::tax_rates_form');
         $response->assertViewHas('tax_rate');
-        
+
         $taxRate = $response->viewData('tax_rate');
         $this->assertInstanceOf(TaxRate::class, $taxRate);
         $this->assertFalse($taxRate->exists);
@@ -987,27 +987,27 @@ class TaxRatesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "tax_rate_name": "VAT 20%",
          *     "tax_rate_percent": "20.00"
-         * }
+         * }.
          */
         $taxRateData = [
-            'tax_rate_name' => 'VAT 20%',
+            'tax_rate_name'    => 'VAT 20%',
             'tax_rate_percent' => '20.00',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('tax_rates.store'), $taxRateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('tax_rates.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_tax_rates', [
-            'tax_rate_name' => 'VAT 20%',
+            'tax_rate_name'    => 'VAT 20%',
             'tax_rate_percent' => '20.00',
         ]);
     }
@@ -1020,17 +1020,17 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_tax_rate(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $taxRate = TaxRate::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->get(route('tax_rates.edit', $taxRate));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::tax_rates_form');
         $response->assertViewHas('tax_rate');
-        
+
         $viewTaxRate = $response->viewData('tax_rate');
         $this->assertEquals($taxRate->tax_rate_id, $viewTaxRate->tax_rate_id);
     }
@@ -1043,33 +1043,33 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_updates_existing_tax_rate_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => 'Old Name',
+            'tax_rate_name'    => 'Old Name',
             'tax_rate_percent' => '10.00',
         ]);
-        
+
         /**
          * {
          *     "tax_rate_name": "Updated VAT",
          *     "tax_rate_percent": "25.00"
-         * }
+         * }.
          */
         $updateData = [
-            'tax_rate_name' => 'Updated VAT',
+            'tax_rate_name'    => 'Updated VAT',
             'tax_rate_percent' => '25.00',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->put(route('tax_rates.update', $taxRate), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('tax_rates.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_tax_rates', [
-            'tax_rate_id' => $taxRate->tax_rate_id,
-            'tax_rate_name' => 'Updated VAT',
+            'tax_rate_id'      => $taxRate->tax_rate_id,
+            'tax_rate_name'    => 'Updated VAT',
             'tax_rate_percent' => '25.00',
         ]);
     }
@@ -1082,16 +1082,16 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_deletes_tax_rate(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $taxRate = TaxRate::factory()->create();
 
         /** Act */
         $response = $this->actingAs($user)->delete(route('tax_rates.destroy', $taxRate));
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('tax_rates.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_tax_rates', [
             'tax_rate_id' => $taxRate->tax_rate_id,
         ]);
@@ -1105,7 +1105,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         TaxRate::factory()->create(['tax_rate_name' => 'Zero Rate', 'tax_rate_percent' => '0.00']);
         TaxRate::factory()->create(['tax_rate_name' => 'Standard Rate', 'tax_rate_percent' => '20.00']);
         TaxRate::factory()->create(['tax_rate_name' => 'Reduced Rate', 'tax_rate_percent' => '5.00']);
@@ -1113,10 +1113,10 @@ class TaxRatesControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('tax_rates.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $taxRates = $response->viewData('tax_rates');
-        
+
         // Verify we have all tax rates
         $this->assertCount(3, $taxRates);
     }
@@ -1130,20 +1130,20 @@ class TaxRatesControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /** @var array{tax_rate_name: string, tax_rate_percent: string} $taxRateData */
         $taxRateData = [
-            'tax_rate_name' => 'No Tax',
+            'tax_rate_name'    => 'No Tax',
             'tax_rate_percent' => '0.00',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('tax_rates.store'), $taxRateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('tax_rates.index'));
         $this->assertDatabaseHas('ip_tax_rates', [
-            'tax_rate_name' => 'No Tax',
+            'tax_rate_name'    => 'No Tax',
             'tax_rate_percent' => '0.00',
         ]);
     }
@@ -1171,7 +1171,7 @@ class UnitsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('units.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::units_index');
         $response->assertViewHas('units');
@@ -1190,11 +1190,11 @@ class UnitsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('units.create'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::units_form');
         $response->assertViewHas('unit');
-        
+
         $unit = $response->viewData('unit');
         $this->assertInstanceOf(Unit::class, $unit);
         $this->assertFalse($unit->exists);
@@ -1209,27 +1209,27 @@ class UnitsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         /**
          * {
          *     "unit_name": "Kilogram",
          *     "unit_name_plrl": "Kilograms"
-         * }
+         * }.
          */
         $unitData = [
-            'unit_name' => 'Kilogram',
+            'unit_name'      => 'Kilogram',
             'unit_name_plrl' => 'Kilograms',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->post(route('units.store'), $unitData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('units.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_units', [
-            'unit_name' => 'Kilogram',
+            'unit_name'      => 'Kilogram',
             'unit_name_plrl' => 'Kilograms',
         ]);
     }
@@ -1248,11 +1248,11 @@ class UnitsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('units.edit', $unit));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $response->assertViewIs('products::units_form');
         $response->assertViewHas('unit');
-        
+
         $viewUnit = $response->viewData('unit');
         $this->assertEquals($unit->unit_id, $viewUnit->unit_id);
     }
@@ -1267,27 +1267,27 @@ class UnitsControllerTest extends FeatureTestCase
         /** Arrange */
         $user = User::factory()->create();
         $unit = Unit::factory()->create(['unit_name' => 'Old Name']);
-        
+
         /**
          * {
          *     "unit_name": "Updated Name",
          *     "unit_name_plrl": "Updated Names"
-         * }
+         * }.
          */
         $updateData = [
-            'unit_name' => 'Updated Name',
+            'unit_name'      => 'Updated Name',
             'unit_name_plrl' => 'Updated Names',
         ];
 
         /** Act */
         $response = $this->actingAs($user)->put(route('units.update', $unit), $updateData);
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('units.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseHas('ip_units', [
-            'unit_id' => $unit->unit_id,
+            'unit_id'   => $unit->unit_id,
             'unit_name' => 'Updated Name',
         ]);
     }
@@ -1306,10 +1306,10 @@ class UnitsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->delete(route('units.destroy', $unit));
 
-        /** Assert */
+        /* Assert */
         $response->assertRedirect(route('units.index'));
         $response->assertSessionHas('alert_success');
-        
+
         $this->assertDatabaseMissing('ip_units', [
             'unit_id' => $unit->unit_id,
         ]);
@@ -1323,7 +1323,7 @@ class UnitsControllerTest extends FeatureTestCase
     {
         /** Arrange */
         $user = User::factory()->create();
-        
+
         Unit::factory()->create(['unit_name' => 'Zebra Unit']);
         Unit::factory()->create(['unit_name' => 'Alpha Unit']);
         Unit::factory()->create(['unit_name' => 'Beta Unit']);
@@ -1331,12 +1331,11 @@ class UnitsControllerTest extends FeatureTestCase
         /** Act */
         $response = $this->actingAs($user)->get(route('units.index'));
 
-        /** Assert */
+        /* Assert */
         $response->assertOk();
         $units = $response->viewData('units');
-        
+
         // Verify ordering (depends on Unit's ordered() scope implementation)
         $this->assertCount(3, $units);
     }
 }
-

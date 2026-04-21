@@ -448,4 +448,3 @@ class QuotesControllerTest extends TestCase
         $this->assertDatabaseMissing('ip_quotes', ['quote_id' => $quote->quote_id]);
     }
 }
-
