@@ -1,37 +1,40 @@
 <?php
 
-namespace Tests\Feature\Controllers;
+namespace Modules\Invoices\Tests\Feature;
 
-use Modules\Invoices\Controllers\InvoiceGroupsController;
+use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
+use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Tests\Feature\FeatureTestCase;
 
 /**
- * InvoiceGroupsController Feature Tests.
+ * InvoicesController (CRM/Guest) Feature Tests.
  *
- * Comprehensive test coverage for invoice group management
- * Invoice groups control invoice numbering patterns
+ * Tests guest portal invoice viewing.
  */
-#[CoversClass(InvoiceGroupsController::class)]
-class InvoiceGroupsControllerTest extends TestCase
+#[CoversClass(GuestInvoicesController::class)]
+
+class InvoiceGroupsControllerTest extends FeatureTestCase
 {
     /**
      * Test index displays paginated list of invoice groups.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_paginated_list_of_invoice_groups(): void
     {
         /** Arrange */
-        $controller = new InvoiceGroupsController();
+        $user = User::factory()->create();
 
         /** Act */
-        $response = $controller->index();
+        $response = $this->actingAs($user)->get(route('invoice_groups.index'));
 
         /* Assert */
-        $this->assertInstanceOf(\Illuminate\View\View::class, $response);
-        $viewData = $response->getData();
-        $this->assertArrayHasKey('invoice_groups', $viewData);
+        $response->assertOk();
+        $response->assertViewIs('invoices::invoice_groups_index');
+        $response->assertViewHas('invoice_groups');
     }
 
     /**
@@ -41,13 +44,14 @@ class InvoiceGroupsControllerTest extends TestCase
     public function it_orders_invoice_groups_by_name(): void
     {
         /** Arrange */
-        $controller = new InvoiceGroupsController();
+        $user = User::factory()->create();
         /** Would create multiple invoice groups with different names */
 
         /** Act */
-        $response = $controller->index();
+        $response = $this->actingAs($user)->get(route('invoice_groups.index'));
 
         /* Assert */
+        $response->assertOk();
         /* Would verify groups are ordered alphabetically */
         $this->assertTrue(true, 'Invoice groups should be ordered by name');
     }
@@ -59,14 +63,14 @@ class InvoiceGroupsControllerTest extends TestCase
     public function it_paginates_invoice_groups_at_15_per_page(): void
     {
         /** Arrange */
-        $controller = new InvoiceGroupsController();
+        $user = User::factory()->create();
         /** Would create 20 invoice groups */
 
         /** Act */
-        $response = $controller->index(0);
+        $response = $this->actingAs($user)->get(route('invoice_groups.index'));
 
-        /** Assert */
-        $viewData = $response->getData();
+        /* Assert */
+        $response->assertOk();
         /* Would verify pagination shows max 15 items */
         $this->assertTrue(true, 'Should paginate at 15 items per page');
     }
@@ -74,22 +78,23 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test form displays create form with default values when no ID provided.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_create_form_with_default_values(): void
     {
         /** Arrange */
-        $controller = new InvoiceGroupsController();
+        $user = User::factory()->create();
 
         /** Act */
-        $response = $controller->form(null);
+        $response = $this->actingAs($user)->get(route('invoice_groups.form'));
 
         /* Assert */
-        $this->assertInstanceOf(\Illuminate\View\View::class, $response);
-        $viewData = $response->getData();
-        $this->assertArrayHasKey('invoice_group', $viewData);
+        $response->assertOk();
+        $response->assertViewIs('invoices::invoice_groups_form');
+        $response->assertViewHas('invoice_group');
 
         /** Verify default values */
-        $invoiceGroup = $viewData['invoice_group'];
+        $invoiceGroup = $response->viewData('invoice_group');
         $this->assertEquals(0, $invoiceGroup->invoice_group_left_pad);
         $this->assertEquals(1, $invoiceGroup->invoice_group_next_id);
     }
@@ -97,6 +102,7 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test form displays edit form with existing record when ID provided.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_edit_form_with_existing_record(): void
     {
@@ -113,6 +119,7 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test form returns 404 when trying to edit non-existent record.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_returns_404_when_editing_non_existent_invoice_group(): void
     {
@@ -128,6 +135,7 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test form redirects to index when cancel button is clicked.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_redirects_to_index_when_cancel_button_clicked(): void
     {
@@ -143,6 +151,7 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test form creates new invoice group with valid data.
      */
+    #[Group('crud')]
     #[Test]
     public function it_creates_new_invoice_group_with_valid_data(): void
     {
@@ -165,6 +174,7 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test form updates existing invoice group with valid data.
      */
+    #[Group('crud')]
     #[Test]
     public function it_updates_existing_invoice_group_with_valid_data(): void
     {
@@ -224,16 +234,29 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test delete removes invoice group successfully.
      */
+    #[Group('crud')]
     #[Test]
     public function it_deletes_invoice_group_successfully(): void
     {
         /** Arrange */
-        $controller = new InvoiceGroupsController();
+        $user = User::factory()->create();
         /** Would create invoice group */
         $testId = 1;
 
+        /**
+         * {
+         *     "invoice_group_id": 1
+         * }.
+         */
+        $deletePayload = [
+            'invoice_group_id' => $testId,
+        ];
+
         /** Act */
-        $response = $controller->delete($testId);
+        $response = $this->actingAs($user)->post(
+            route('invoice_groups.delete', ['id' => $testId]),
+            $deletePayload
+        );
 
         /* Assert */
         /* Would verify invoice group is deleted */
@@ -244,6 +267,7 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test delete returns 404 for non-existent invoice group.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_returns_404_when_deleting_non_existent_invoice_group(): void
     {
@@ -262,6 +286,7 @@ class InvoiceGroupsControllerTest extends TestCase
      * Note: In production, you might want to prevent deletion of groups
      * that have associated invoices, or cascade the deletion
      */
+    #[Group('exotic')]
     #[Test]
     public function it_handles_deletion_of_invoice_group_with_associated_invoices(): void
     {
@@ -277,6 +302,7 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test form displays success message after creating invoice group.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_success_message_after_creating_invoice_group(): void
     {
@@ -291,6 +317,7 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test form displays success message after updating invoice group.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_success_message_after_updating_invoice_group(): void
     {
@@ -305,6 +332,7 @@ class InvoiceGroupsControllerTest extends TestCase
     /**
      * Test delete displays success message after deleting invoice group.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_success_message_after_deleting_invoice_group(): void
     {
