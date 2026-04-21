@@ -3,6 +3,7 @@
 namespace Tests\Feature\Invoices;
 
 use PHPUnit\Framework\TestCase;
+use Products;
 
 /**
  * Products Controller Feature Tests.
@@ -19,13 +20,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -35,7 +36,7 @@ class ProductsControllerTest extends TestCase
         $controller->index(0);
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -51,13 +52,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -67,7 +68,7 @@ class ProductsControllerTest extends TestCase
         $controller->index(0);
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -83,13 +84,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -99,7 +100,7 @@ class ProductsControllerTest extends TestCase
         $controller->index(0);
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -115,13 +116,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -131,7 +132,7 @@ class ProductsControllerTest extends TestCase
         $controller->index(0);
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -147,13 +148,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -163,7 +164,7 @@ class ProductsControllerTest extends TestCase
         $controller->index(0);
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -179,13 +180,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -195,7 +196,7 @@ class ProductsControllerTest extends TestCase
         $controller->form();
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -211,13 +212,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -227,7 +228,7 @@ class ProductsControllerTest extends TestCase
         $controller->form(1);
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -243,13 +244,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // Simulate non-existent product (ID 99999)
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -258,7 +259,7 @@ class ProductsControllerTest extends TestCase
         $controller->form(99999);
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -274,13 +275,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -290,7 +291,7 @@ class ProductsControllerTest extends TestCase
         $controller->form();
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -306,13 +307,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -322,7 +323,7 @@ class ProductsControllerTest extends TestCase
         $controller->form();
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------
@@ -338,13 +339,13 @@ class ProductsControllerTest extends TestCase
         /**
          * --------------------------------------------------------------
          * Arrange
-         * --------------------------------------------------------------
+         * --------------------------------------------------------------.
          */
         require_once __DIR__ . '/../../../application/modules/products/controllers/Products.php';
-        $controller = new \Products();
+        $controller = new Products();
         // ...simulate CI environment as needed...
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Act
          * --------------------------------------------------------------
@@ -354,7 +355,7 @@ class ProductsControllerTest extends TestCase
         $controller->form();
         $output = ob_get_clean();
 
-        /**
+        /*
          * --------------------------------------------------------------
          * Assert
          * --------------------------------------------------------------

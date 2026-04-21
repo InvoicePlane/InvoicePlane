@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Core;
 
-
 use Tests\TestCase;
 
 class SettingsControllerTest extends TestCase

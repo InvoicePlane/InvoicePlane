@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests for .github/scripts/parse-phpstan-results.php
+ * Tests for .github/scripts/parse-phpstan-results.php.
  *
  * The script defines four helper functions used for formatting PHPStan JSON
  * output into a readable Markdown report:
@@ -73,6 +73,22 @@ class ParsePhpstanResultsTest extends TestCase
         @unlink($tmpFile);
 
         self::$scriptLoaded = true;
+    }
+
+    // -------------------------------------------------------------------------
+    // getCategoryLabel()
+    // -------------------------------------------------------------------------
+
+    /** @return array<string, array{string, string}> */
+    public static function categoryLabelProvider(): array
+    {
+        return [
+            'type_errors'        => ['type_errors', 'Type Errors'],
+            'method_errors'      => ['method_errors', 'Method Errors'],
+            'property_errors'    => ['property_errors', 'Property Errors'],
+            'return_type_errors' => ['return_type_errors', 'Return Type Errors'],
+            'other_errors'       => ['other_errors', 'Other Errors'],
+        ];
     }
 
     // -------------------------------------------------------------------------
@@ -228,22 +244,6 @@ class ParsePhpstanResultsTest extends TestCase
         $this->assertSame('method_errors', $result);
     }
 
-    // -------------------------------------------------------------------------
-    // getCategoryLabel()
-    // -------------------------------------------------------------------------
-
-    /** @return array<string, array{string, string}> */
-    public static function categoryLabelProvider(): array
-    {
-        return [
-            'type_errors'        => ['type_errors', 'Type Errors'],
-            'method_errors'      => ['method_errors', 'Method Errors'],
-            'property_errors'    => ['property_errors', 'Property Errors'],
-            'return_type_errors' => ['return_type_errors', 'Return Type Errors'],
-            'other_errors'       => ['other_errors', 'Other Errors'],
-        ];
-    }
-
     #[Test]
     #[DataProvider('categoryLabelProvider')]
     public function it_returns_human_readable_label_for_known_category(string $category, string $expectedLabel): void
@@ -374,8 +374,8 @@ class ParsePhpstanResultsTest extends TestCase
         /* Arrange – derive the project root the same way the script does:
            .github/scripts/parse-phpstan-results.php => dirname(__DIR__, 2) from the
            script file's __DIR__ (.github/scripts) gives the project root.          */
-        $scriptDir   = dirname(__DIR__, 3) . '/.github/scripts';
-        $projectRoot = dirname($scriptDir, 2);
+        $scriptDir    = dirname(__DIR__, 3) . '/.github/scripts';
+        $projectRoot  = dirname($scriptDir, 2);
         $absolutePath = $projectRoot . '/application/modules/invoices/models/Mdl_invoices.php';
 
         /* Act */
