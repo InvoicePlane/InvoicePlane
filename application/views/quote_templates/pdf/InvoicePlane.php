@@ -35,17 +35,16 @@ if ($quote->client_address_1) {
 if ($quote->client_address_2) {
     echo '<div>' . htmlsc($quote->client_address_2) . '</div>';
 }
-if ($quote->client_city || $quote->client_state || $quote->client_zip) {
+if ($invoice->client_city || $invoice->client_state || $invoice->client_zip) {
     echo '<div>';
-    if ($quote->client_city) {
-        echo htmlsc($quote->client_city) . ' ';
+    if (is_zip_before_city($invoice->client_country)) {
+        echo $invoice->client_zip ? htmlsc($invoice->client_zip) . ' ' : '';
+        echo $invoice->client_city ? htmlsc($invoice->client_city) . ' ' : '';
+    } else {
+        echo $invoice->client_city ? htmlsc($invoice->client_city) . ' ' : '';
+        echo $invoice->client_zip ? htmlsc($invoice->client_zip) . ' ' : '';
     }
-    if ($quote->client_state) {
-        echo htmlsc($quote->client_state) . ' ';
-    }
-    if ($quote->client_zip) {
-        echo htmlsc($quote->client_zip);
-    }
+    echo $invoice->client_state ? htmlsc($invoice->client_state) : '';
     echo '</div>';
 }
 if ($quote->client_country) {
@@ -75,17 +74,16 @@ if ($quote->user_address_1) {
 if ($quote->user_address_2) {
     echo '<div>' . htmlsc($quote->user_address_2) . '</div>';
 }
-if ($quote->user_city || $quote->user_state || $quote->user_zip) {
+if ($invoice->user_city || $invoice->user_state || $invoice->user_zip) {
     echo '<div>';
-    if ($quote->user_city) {
-        echo htmlsc($quote->user_city) . ' ';
+    if (is_zip_before_city($invoice->user_country)) {
+        echo $invoice->user_zip ? htmlsc($invoice->user_zip) . ' ' : '';
+        echo $invoice->user_city ? htmlsc($invoice->user_city) . ' ' : '';
+    } else {
+        echo $invoice->user_city ? htmlsc($invoice->user_city) . ' ' : '';
+        echo $invoice->user_zip ? htmlsc($invoice->user_zip) . ' ' : '';
     }
-    if ($quote->user_state) {
-        echo htmlsc($quote->user_state) . ' ';
-    }
-    if ($quote->user_zip) {
-        echo htmlsc($quote->user_zip);
-    }
+    echo $invoice->user_state ? htmlsc($invoice->user_state) : '';
     echo '</div>';
 }
 if ($quote->user_country) {
