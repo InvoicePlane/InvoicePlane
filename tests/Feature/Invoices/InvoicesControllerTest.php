@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
@@ -28,10 +28,10 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_all_status_view_from_index(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.index'));
 
         /* Assert */
@@ -45,12 +45,12 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_only_draft_invoices_when_draft_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user         = $this->seedModel('User');
         $draftInvoice = $this->seedModel('Invoice');
         $sentInvoice  = $this->seedModel('Invoice');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get('/invoices/status/draft');
 
         /* Assert */
@@ -72,13 +72,13 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_all_invoices_when_all_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user         = $this->seedModel('User');
         $draftInvoice = $this->seedModel('Invoice');
         $sentInvoice  = $this->seedModel('Invoice');
         $paidInvoice  = $this->seedModel('Invoice');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get('/invoices/status/all');
 
         /* Assert */
@@ -98,10 +98,10 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_invoice_statuses_in_view_data_for_status_method(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get('/invoices/status/all');
 
         /* Assert */
@@ -117,12 +117,12 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_invoice_details_with_items_and_amounts(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $this->seedModelMany('Item', 3, ['invoice_id' => $invoice->invoice_id]);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -142,7 +142,7 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_viewing_non_existent_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -159,11 +159,11 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_custom_fields_in_invoice_view_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -179,12 +179,12 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_tax_rates_in_invoice_view_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $this->seedModelMany('TaxRate', 5);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -201,7 +201,7 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_draft_invoice_and_redirects_to_index(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
 
@@ -214,7 +214,7 @@ class InvoicesControllerTest extends FeatureTestCase
             'invoiceId' => $invoice->invoice_id,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.delete', $deleteParams));
 
         /* Assert */
@@ -229,7 +229,7 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_task_status_when_deleting_invoice_with_tasks(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $task    = $this->seedModel('Task', ['invoice_id' => $invoice->invoice_id, 'task_status' => 4]);
@@ -246,7 +246,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /* Act */
         $this->actingAs($user)->post(route('invoices.delete', $deleteParams));
 
-        /** Assert */
+        /* Assert */
         $updatedTask = Task::find($task->task_id);
         $this->assertEquals(3, $updatedTask->task_status); // 3 = Complete
     }
@@ -272,7 +272,7 @@ class InvoicesControllerTest extends FeatureTestCase
             'invoiceId' => $invoice->invoice_id,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.delete', $deleteParams));
 
         /* Assert */
@@ -287,10 +287,10 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_archived_invoices_list(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.archive'));
 
         /* Assert */
@@ -306,7 +306,7 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_prevents_directory_traversal_when_downloading_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -323,7 +323,7 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_downloading_non_existent_file(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -340,12 +340,12 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_recalculates_invoice_after_deleting_tax_rate(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $taxRate = $this->seedModel('InvoiceTaxRate', ['invoice_id' => $invoice->invoice_id]);
 
-        /** Act */
+        /* Act */
         /**
          * Note: Empty payload is correct - IDs are passed via route parameters
          * Route: POST /invoices/delete-tax/{invoiceId}/{taxRateId}.
@@ -371,12 +371,12 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_invoice_view_after_deleting_tax_rate(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $taxRate = $this->seedModel('InvoiceTaxRate', ['invoice_id' => $invoice->invoice_id]);
 
-        /** Act */
+        /* Act */
         /**
          * Note: Empty payload is correct - IDs are passed via route parameters
          * Route: POST /invoices/delete-tax/{invoiceId}/{taxRateId}.
@@ -407,7 +407,7 @@ class InvoicesControllerTest extends FeatureTestCase
         $this->seedModelMany('Invoice', 5);
         $initialCount = Invoice::count();
 
-        /** Act */
+        /* Act */
         /**
          * {}.
          */
@@ -432,7 +432,7 @@ class InvoicesControllerTest extends FeatureTestCase
         $user = $this->seedModel('User');
         Invoice::truncate();
 
-        /** Act */
+        /* Act */
         /**
          * {}.
          */
@@ -459,7 +459,7 @@ class InvoicesControllerTest extends FeatureTestCase
         /* Act */
         $this->actingAs($user)->get(route('invoices.generate_pdf', ['id' => $invoice->invoice_id]));
 
-        /** Assert */
+        /* Assert */
         $updatedInvoice = Invoice::find($invoice->invoice_id);
         $this->assertNotEquals(1, $updatedInvoice->invoice_status_id); // Not draft anymore
     }
@@ -471,12 +471,12 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_only_paid_invoices_when_paid_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user         = $this->seedModel('User');
         $draftInvoice = $this->seedModel('Invoice');
         $paidInvoice  = $this->seedModel('Invoice');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get('/invoices/status/paid');
 
         /* Assert */
@@ -495,12 +495,12 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_only_overdue_invoices_when_overdue_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user           = $this->seedModel('User');
         $overdueInvoice = $this->seedModel('Invoice');
         $paidInvoice    = $this->seedModel('Invoice');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get('/invoices/status/overdue');
 
         /* Assert */
@@ -518,11 +518,11 @@ class InvoicesControllerTest extends FeatureTestCase
     #[Test]
     public function it_uses_sumex_template_when_invoice_has_sumex_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice', ['sumex_id' => 12345]);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -540,7 +540,7 @@ class InvoicesControllerTest extends FeatureTestCase
         $user = $this->seedModel('User');
         $this->seedModelMany('Invoice', 30);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get('/invoices/status/all');
 
         /* Assert */

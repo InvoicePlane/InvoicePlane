@@ -39,13 +39,13 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_allows_deletion_of_product_without_invoice_items(): void
     {
-        /** Arrange */
+        /* Arrange */
         $product = $this->seedModel('Product', [
             'product_name'  => 'Test Product',
             'product_price' => 100.00,
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($product->product_id);
 
         /* Assert */
@@ -60,7 +60,7 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_of_product_with_invoice_items(): void
     {
-        /** Arrange */
+        /* Arrange */
         $product = $this->seedModel('Product', [
             'product_name'  => 'Product In Use',
             'product_price' => 150.00,
@@ -74,7 +74,7 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
             'item_quantity'   => 1,
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($product->product_id);
 
         /* Assert */
@@ -89,7 +89,7 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_correct_invoice_item_count(): void
     {
-        /** Arrange */
+        /* Arrange */
         $product = $this->seedModel('Product', [
             'product_name'  => 'Popular Product',
             'product_price' => 200.00,
@@ -102,7 +102,7 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
             'item_quantity'   => 1,
         ]);
 
-        /** Act */
+        /* Act */
         $itemCount = $this->service->getInvoiceItemCount($product->product_id);
 
         /* Assert */
@@ -117,14 +117,14 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_with_single_invoice_item(): void
     {
-        /** Arrange */
+        /* Arrange */
         $product = $this->seedModel('Product');
 
         $this->seedModel('InvoiceItem', [
             'item_product_id' => $product->product_id,
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($product->product_id);
         $itemCount = $this->service->getInvoiceItemCount($product->product_id);
 
@@ -141,7 +141,7 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_with_multiple_invoice_items(): void
     {
-        /** Arrange */
+        /* Arrange */
         $product = $this->seedModel('Product');
 
         // Create 5 invoice items
@@ -149,7 +149,7 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
             'item_product_id' => $product->product_id,
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($product->product_id);
         $itemCount = $this->service->getInvoiceItemCount($product->product_id);
 
@@ -166,10 +166,10 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_zero_count_for_nonexistent_product(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $itemCount = $this->service->getInvoiceItemCount($nonexistentId);
         $canDelete = $this->service->canDelete($nonexistentId);
 
@@ -186,7 +186,7 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_even_with_archived_invoice_items(): void
     {
-        /** Arrange */
+        /* Arrange */
         $product = $this->seedModel('Product');
 
         // Even if invoice is archived/old, item still references product
@@ -195,7 +195,7 @@ class ProductDeletionValidationTest extends AbstractServiceTestCase
             // Invoice could be old/archived, but relationship still exists
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($product->product_id);
 
         /* Assert */

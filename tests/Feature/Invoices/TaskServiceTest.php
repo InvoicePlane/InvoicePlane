@@ -37,7 +37,7 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_returns_correct_model_class(): void
     {
-        /** Arrange & Act */
+        /* Arrange & Act */
         $reflection = new ReflectionClass($this->service);
         $method     = $reflection->getMethod('getModelClass');
         $method->setAccessible(true);
@@ -54,7 +54,7 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_creates_task(): void
     {
-        /** Arrange */
+        /* Arrange */
         $project = $this->seedModel('Project');
         $data    = [
             'project_id'  => $project->project_id,
@@ -62,7 +62,7 @@ class TaskServiceTest extends TestCase
             'task_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $task = $this->service->create($data);
 
         /* Assert */
@@ -81,13 +81,13 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_creates_task_without_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $data = [
             'task_name'   => 'Standalone Task',
             'task_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $task = $this->service->create($data);
 
         /* Assert */
@@ -103,7 +103,7 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_updates_task(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_name' => 'Old Name',
         ]);
@@ -112,7 +112,7 @@ class TaskServiceTest extends TestCase
             'task_name' => 'Updated Name',
         ];
 
-        /** Act */
+        /* Act */
         $result = $this->service->update($task->task_id, $updateData);
 
         /* Assert */
@@ -129,10 +129,10 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_finds_task_by_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task');
 
-        /** Act */
+        /* Act */
         $found = $this->service->find($task->task_id);
 
         /* Assert */
@@ -160,10 +160,10 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_deletes_task(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task');
 
-        /** Act */
+        /* Act */
         $result = $this->service->delete($task->task_id);
 
         /* Assert */
@@ -177,7 +177,7 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_gets_all_tasks_with_relations_paginated(): void
     {
-        /** Arrange */
+        /* Arrange */
         $project = $this->seedModel('Project');
         $taxRate = $this->seedModel('\Modules\Products\Models\TaxRate');
 
@@ -186,7 +186,7 @@ class TaskServiceTest extends TestCase
             'task_tax_rate_id' => $taxRate->tax_rate_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations();
 
         /* Assert */
@@ -204,10 +204,10 @@ class TaskServiceTest extends TestCase
         $this->seedModel('Task', ['task_name' => 'Alpha Task']);
         $this->seedModel('Task', ['task_name' => 'Beta Task']);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations();
 
-        /** Assert */
+        /* Assert */
         $tasks = $result->items();
         $this->assertGreaterThanOrEqual(3, count($tasks));
         // First task should be Alpha (alphabetically first)
@@ -221,7 +221,7 @@ class TaskServiceTest extends TestCase
         /* Arrange */
         $this->seedModelMany('Task', 10);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations(['project'], 5);
 
         /* Assert */

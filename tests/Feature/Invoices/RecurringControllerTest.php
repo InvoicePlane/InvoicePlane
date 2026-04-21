@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
@@ -28,12 +28,12 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_list_of_recurring_invoices(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user       = $this->seedModel('User');
         $recurring1 = $this->seedModel('InvoicesRecurring');
         $recurring2 = $this->seedModel('InvoicesRecurring');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
 
         /* Assert */
@@ -51,10 +51,10 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_recur_frequencies_in_view_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
 
         /* Assert */
@@ -70,11 +70,11 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_paginates_recurring_invoices_correctly(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('InvoicesRecurring', 20);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
 
         /* Assert */
@@ -89,11 +89,11 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_stops_recurring_invoice_and_sets_status_to_zero(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user      = $this->seedModel('User');
         $recurring = $this->seedModel('InvoicesRecurring', ['recur_status' => 1]);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('invoices.recurring.stop', ['id' => $recurring->invoice_recurring_id])
         );
@@ -111,11 +111,11 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_index_after_stopping_recurring_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user      = $this->seedModel('User');
         $recurring = $this->seedModel('InvoicesRecurring');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('invoices.recurring.stop', ['id' => $recurring->invoice_recurring_id])
         );
@@ -130,7 +130,7 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_throws_404_when_stopping_non_existent_recurring_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /** @var array{id: int} $stopParams */
@@ -152,7 +152,7 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_recurring_invoice_from_database(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user        = $this->seedModel('User');
         $recurring   = $this->seedModel('InvoicesRecurring');
         $recurringId = $recurring->invoice_recurring_id;
@@ -162,7 +162,7 @@ class RecurringControllerTest extends FeatureTestCase
             'id' => $recurringId,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.recurring.delete', $deleteParams));
 
         /* Assert */
@@ -177,7 +177,7 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_index_after_deleting_recurring_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user      = $this->seedModel('User');
         $recurring = $this->seedModel('InvoicesRecurring');
 
@@ -186,7 +186,7 @@ class RecurringControllerTest extends FeatureTestCase
             'id' => $recurring->invoice_recurring_id,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.recurring.delete', $deleteParams));
 
         /* Assert */
@@ -199,7 +199,7 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_throws_404_when_deleting_non_existent_recurring_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /** @var array{id: int} $deleteParams */
@@ -221,10 +221,10 @@ class RecurringControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_filter_configuration_in_view_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
 
         /* Assert */

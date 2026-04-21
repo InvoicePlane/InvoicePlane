@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Feature Tests.
@@ -29,13 +29,13 @@ class CrmAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_modal_with_active_clients(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $activeClient   = $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Active Client']);
         $inactiveClient = $this->seedModel('Client', ['client_active' => 0, 'client_name' => 'Inactive Client']);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.modal_client_lookup'));
 
         /* Assert */
@@ -56,17 +56,17 @@ class CrmAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_clients_alphabetically_in_modal(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Zebra Corp']);
         $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Alpha Inc']);
         $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Beta LLC']);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.modal_client_lookup'));
 
-        /** Assert */
+        /* Assert */
         $clients = $response->viewData('clients');
         $names   = $clients->pluck('client_name')->toArray();
 
@@ -82,14 +82,14 @@ class CrmAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_client_details_as_json(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client', [
             'client_name'  => 'Test Client',
             'client_email' => 'test@client.com',
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
 
         /* Assert */
@@ -108,10 +108,10 @@ class CrmAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_for_non_existent_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('crm.ajax.get_client_details', ['clientId' => 99999]));
 
         /* Assert */

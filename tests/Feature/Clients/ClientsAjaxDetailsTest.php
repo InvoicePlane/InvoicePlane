@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -31,7 +31,7 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     #[Test]
     public function it_returns_client_details_as_json(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client', [
             'client_name'  => 'Test Client',
@@ -58,7 +58,7 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_for_non_existent_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -76,10 +76,10 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     #[Test]
     public function it_requires_authentication_for_get_client_details(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
 
         /* Assert */
@@ -93,7 +93,7 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     #[Test]
     public function it_returns_all_client_fields(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client', [
             'client_name'      => 'Complete Client',
@@ -130,7 +130,7 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     #[Test]
     public function it_returns_details_for_inactive_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user           = $this->seedModel('User');
         $inactiveClient = $this->seedModel('Client', [
             'client_active' => 0,
@@ -157,7 +157,7 @@ class ClientsAjaxDetailsTest extends FeatureTestCase
     #[Test]
     public function it_handles_null_fields_in_client_details(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client', [
             'client_name'      => 'Minimal Client',

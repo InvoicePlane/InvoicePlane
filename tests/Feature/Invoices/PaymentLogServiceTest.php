@@ -27,7 +27,7 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_gets_all_payment_logs_with_relations_paginated(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $this->seedModelMany('PaymentLog', 3, [
@@ -35,7 +35,7 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
             'payment_log_date' => now()->subDays(1),
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations();
 
         /* Assert */
@@ -47,7 +47,7 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_orders_payment_logs_by_date_descending(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
         $this->seedModel('PaymentLog', [
             'invoice_id'       => $invoice->invoice_id,
@@ -62,10 +62,10 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
             'payment_log_date' => now()->subDays(2),
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations();
 
-        /** Assert */
+        /* Assert */
         $logs = $result->items();
         $this->assertGreaterThanOrEqual(3, count($logs));
         // Most recent should be first
@@ -76,13 +76,13 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_respects_custom_per_page_parameter(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
         $this->seedModelMany('PaymentLog', 10, [
             'invoice_id' => $invoice->invoice_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations(['invoice'], 5);
 
         /* Assert */
@@ -93,13 +93,13 @@ class PaymentLogServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_loads_custom_relations(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
         $this->seedModel('PaymentLog', [
             'invoice_id' => $invoice->invoice_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations(['invoice']);
 
         /* Assert */

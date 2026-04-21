@@ -22,7 +22,7 @@ class PagerHelperTest extends UnitTestCase
     #[Test]
     public function it_returns_links_html_when_given_length_aware_paginator(): void
     {
-        // Arrange
+        /* Arrange */
         $items = collect([
             ['id' => 1, 'name' => 'Item 1'],
             ['id' => 2, 'name' => 'Item 2'],
@@ -37,10 +37,10 @@ class PagerHelperTest extends UnitTestCase
             ['path' => '/test']
         );
 
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/test', $paginator);
 
-        // Assert
+        /* Assert */
         $this->assertIsString($result);
         $this->assertNotEmpty($result);
         // Laravel pagination HTML contains navigation elements
@@ -50,7 +50,7 @@ class PagerHelperTest extends UnitTestCase
     #[Test]
     public function it_returns_links_html_when_given_simple_paginator(): void
     {
-        // Arrange
+        /* Arrange */
         $items = collect([
             ['id' => 1, 'name' => 'Item 1'],
             ['id' => 2, 'name' => 'Item 2'],
@@ -63,10 +63,10 @@ class PagerHelperTest extends UnitTestCase
             ['path' => '/test']
         );
 
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/test', $paginator);
 
-        // Assert
+        /* Assert */
         $this->assertIsString($result);
         $this->assertNotEmpty($result);
         $this->assertStringContainsString('pagination', $result);
@@ -75,7 +75,7 @@ class PagerHelperTest extends UnitTestCase
     #[Test]
     public function it_paginates_eloquent_builder_and_returns_links(): void
     {
-        // Arrange - Create test quotes
+        /* Arrange */
         for ($i = 1; $i <= 30; $i++) {
             $this->createTestQuote([
                 'quote_number' => 'Q-' . mb_str_pad($i, 4, '0', STR_PAD_LEFT),
@@ -84,10 +84,10 @@ class PagerHelperTest extends UnitTestCase
 
         $builder = Quote::query()->where('quote_status_id', '>', 0);
 
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/quotes', $builder, 10);
 
-        // Assert
+        /* Assert */
         $this->assertIsString($result);
         $this->assertNotEmpty($result);
         $this->assertStringContainsString('pagination', $result);
@@ -96,7 +96,7 @@ class PagerHelperTest extends UnitTestCase
     #[Test]
     public function it_paginates_query_builder_and_returns_links(): void
     {
-        // Arrange - Create test data
+        /* Arrange */
         for ($i = 1; $i <= 20; $i++) {
             $this->createTestQuote([
                 'quote_number' => 'Q-' . mb_str_pad($i, 4, '0', STR_PAD_LEFT),
@@ -105,10 +105,10 @@ class PagerHelperTest extends UnitTestCase
 
         $builder = Quote::query()->getQuery()->where('quote_status_id', '>', 0);
 
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/quotes', $builder, 5);
 
-        // Assert
+        /* Assert */
         $this->assertIsString($result);
         $this->assertNotEmpty($result);
         $this->assertStringContainsString('pagination', $result);
@@ -117,7 +117,7 @@ class PagerHelperTest extends UnitTestCase
     #[Test]
     public function it_uses_default_per_page_when_not_specified(): void
     {
-        // Arrange - Create test quotes
+        /* Arrange */
         for ($i = 1; $i <= 20; $i++) {
             $this->createTestQuote([
                 'quote_number' => 'Q-' . mb_str_pad($i, 4, '0', STR_PAD_LEFT),
@@ -126,10 +126,10 @@ class PagerHelperTest extends UnitTestCase
 
         $builder = Quote::query();
 
-        // Act - Not passing perPage, should use default of 15
+        /* Act */
         $result = PagerHelper::pager('/quotes', $builder);
 
-        // Assert
+        /* Assert */
         $this->assertIsString($result);
         $this->assertNotEmpty($result);
         $this->assertStringContainsString('pagination', $result);
@@ -138,65 +138,65 @@ class PagerHelperTest extends UnitTestCase
     #[Test]
     public function it_returns_empty_string_for_plain_array(): void
     {
-        // Arrange
+        /* Arrange */
         $array = [
             ['id' => 1, 'name' => 'Item 1'],
             ['id' => 2, 'name' => 'Item 2'],
         ];
 
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/test', $array);
 
-        // Assert
+        /* Assert */
         $this->assertSame('', $result);
     }
 
     #[Test]
     public function it_returns_empty_string_for_collection(): void
     {
-        // Arrange
+        /* Arrange */
         $collection = collect([
             ['id' => 1, 'name' => 'Item 1'],
             ['id' => 2, 'name' => 'Item 2'],
         ]);
 
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/test', $collection);
 
-        // Assert
+        /* Assert */
         $this->assertSame('', $result);
     }
 
     #[Test]
     public function it_returns_empty_string_for_null(): void
     {
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/test', null);
 
-        // Assert
+        /* Assert */
         $this->assertSame('', $result);
     }
 
     #[Test]
     public function it_returns_empty_string_for_string(): void
     {
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/test', 'mdl_quotes');
 
-        // Assert
+        /* Assert */
         $this->assertSame('', $result);
     }
 
     #[Test]
     public function it_handles_empty_eloquent_builder(): void
     {
-        // Arrange - Builder with no results
+        /* Arrange */
         $builder = Quote::query()->where('quote_id', -1); // No matching records
 
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/quotes', $builder);
 
-        // Assert
+        /* Assert */
         $this->assertIsString($result);
         // Even with no results, pagination HTML may be rendered
     }
@@ -204,7 +204,7 @@ class PagerHelperTest extends UnitTestCase
     #[Test]
     public function it_preserves_builder_constraints_when_paginating(): void
     {
-        // Arrange - Create draft and sent quotes
+        /* Arrange */
         for ($i = 1; $i <= 10; $i++) {
             $this->createTestQuote([
                 'quote_number'    => 'Q-DRAFT-' . mb_str_pad($i, 4, '0', STR_PAD_LEFT),
@@ -221,10 +221,10 @@ class PagerHelperTest extends UnitTestCase
 
         $builder = Quote::query()->where('quote_status_id', 1); // Draft only
 
-        // Act
+        /* Act */
         $result = PagerHelper::pager('/quotes/draft', $builder, 5);
 
-        // Assert
+        /* Assert */
         $this->assertIsString($result);
         $this->assertNotEmpty($result);
         // The builder should have been paginated with draft filter preserved
@@ -234,7 +234,7 @@ class PagerHelperTest extends UnitTestCase
     #[Test]
     public function it_respects_custom_per_page_parameter(): void
     {
-        // Arrange - Create test quotes
+        /* Arrange */
         for ($i = 1; $i <= 50; $i++) {
             $this->createTestQuote([
                 'quote_number' => 'Q-' . mb_str_pad($i, 4, '0', STR_PAD_LEFT),
@@ -243,10 +243,10 @@ class PagerHelperTest extends UnitTestCase
 
         $builder = Quote::query();
 
-        // Act - Use custom perPage of 25
+        /* Act */
         $result = PagerHelper::pager('/quotes', $builder, 25);
 
-        // Assert
+        /* Assert */
         $this->assertIsString($result);
         $this->assertNotEmpty($result);
         $this->assertStringContainsString('pagination', $result);
@@ -255,7 +255,7 @@ class PagerHelperTest extends UnitTestCase
     #[Test]
     public function it_handles_already_paginated_results_without_double_pagination(): void
     {
-        // Arrange - Create test quotes
+        /* Arrange */
         for ($i = 1; $i <= 30; $i++) {
             $this->createTestQuote([
                 'quote_number' => 'Q-' . mb_str_pad($i, 4, '0', STR_PAD_LEFT),
@@ -264,10 +264,10 @@ class PagerHelperTest extends UnitTestCase
 
         $paginated = Quote::query()->paginate(10);
 
-        // Act - Pass already paginated result
+        /* Act */
         $result = PagerHelper::pager('/quotes', $paginated);
 
-        // Assert
+        /* Assert */
         $this->assertIsString($result);
         $this->assertNotEmpty($result);
         $this->assertStringContainsString('pagination', $result);

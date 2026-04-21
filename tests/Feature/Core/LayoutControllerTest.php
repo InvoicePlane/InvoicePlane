@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * Core AjaxController Feature Tests.
@@ -27,10 +27,10 @@ class LayoutControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_layout_configuration_page(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('layout.index'));
 
         /* Assert */

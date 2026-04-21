@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -28,7 +28,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_families(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('Family', 5);
 
@@ -52,7 +52,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -77,7 +77,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_family(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $family = $this->seedModel('Family');
 
@@ -102,7 +102,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_family_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -136,7 +136,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_family_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $family = $this->seedModel('Family', ['family_name' => 'Old Name']);
 
@@ -172,7 +172,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_index_on_cancel(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -198,7 +198,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_required_family_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -226,7 +226,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_unique_family_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModel('Family', ['family_name' => 'Existing Family']);
 
@@ -256,7 +256,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_family(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $family = $this->seedModel('Family');
 
@@ -292,7 +292,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_deleting_non_existent_family(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**

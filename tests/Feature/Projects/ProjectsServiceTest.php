@@ -21,7 +21,7 @@ class ProjectsServiceTest extends TestCase
     #[Test]
     public function it_returns_tasks_for_a_project(): void
     {
-        // Arrange
+        /* Arrange */
         $project = Project::create([
             'project_name' => 'Test Project',
         ]);
@@ -50,10 +50,10 @@ class ProjectsServiceTest extends TestCase
             'project_id'       => $otherProject->project_id,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getTasks($project->project_id);
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertCount(2, $result);
         $this->assertEquals('Task 1', $result[0]->task_name);
@@ -63,15 +63,15 @@ class ProjectsServiceTest extends TestCase
     #[Test]
     public function it_returns_empty_array_when_project_has_no_tasks(): void
     {
-        // Arrange
+        /* Arrange */
         $project = Project::create([
             'project_name' => 'Empty Project',
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getTasks($project->project_id);
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -79,10 +79,10 @@ class ProjectsServiceTest extends TestCase
     #[Test]
     public function it_returns_empty_array_when_project_id_is_null(): void
     {
-        // Act
+        /* Act */
         $result = $this->service->getTasks(null);
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -90,10 +90,10 @@ class ProjectsServiceTest extends TestCase
     #[Test]
     public function it_returns_empty_array_when_project_id_is_zero(): void
     {
-        // Act
+        /* Act */
         $result = $this->service->getTasks(0);
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -101,10 +101,10 @@ class ProjectsServiceTest extends TestCase
     #[Test]
     public function it_returns_empty_array_when_project_id_is_false(): void
     {
-        // Act
+        /* Act */
         $result = $this->service->getTasks(false);
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -112,10 +112,10 @@ class ProjectsServiceTest extends TestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        // Act
+        /* Act */
         $rules = $this->service->validationRules();
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($rules);
     }
 }

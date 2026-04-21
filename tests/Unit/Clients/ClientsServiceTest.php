@@ -20,7 +20,7 @@ class ClientsServiceTest extends TestCase
     #[Test]
     public function it_returns_all_active_clients(): void
     {
-        // Arrange
+        /* Arrange */
         tmpClient::create([
             'client_name'   => 'Active Client 1',
             'client_active' => 1,
@@ -34,10 +34,10 @@ class ClientsServiceTest extends TestCase
             'client_active' => 0,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getActive();
 
-        // Assert
+        /* Assert */
         $this->assertCount(2, $result);
         $this->assertEquals('Active Client 1', $result[0]->client_name);
         $this->assertEquals('Active Client 2', $result[1]->client_name);
@@ -49,43 +49,43 @@ class ClientsServiceTest extends TestCase
     #[Test]
     public function it_returns_empty_collection_when_no_active_clients_exist(): void
     {
-        // Arrange
+        /* Arrange */
         tmpClient::create([
             'client_name'   => 'Inactive Client',
             'client_active' => 0,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getActive();
 
-        // Assert
+        /* Assert */
         $this->assertCount(0, $result);
     }
 
     #[Test]
     public function it_returns_query_builder_for_active_clients(): void
     {
-        // Act
+        /* Act */
         $builder = $this->service->isActive();
 
-        // Assert
+        /* Assert */
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
     }
 
     #[Test]
     public function it_returns_query_builder_for_inactive_clients(): void
     {
-        // Act
+        /* Act */
         $builder = $this->service->isInactive();
 
-        // Assert
+        /* Assert */
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
     }
 
     #[Test]
     public function it_returns_active_clients_not_assigned_to_user(): void
     {
-        // Arrange
+        /* Arrange */
         $userId = 1;
 
         tmpClient::create([
@@ -107,10 +107,10 @@ class ClientsServiceTest extends TestCase
             'client_id' => $client2->client_id,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getNotAssignedToUser($userId);
 
-        // Assert
+        /* Assert */
         $this->assertCount(1, $result);
         $this->assertEquals('Unassigned Client', $result[0]->client_name);
     }
@@ -118,7 +118,7 @@ class ClientsServiceTest extends TestCase
     #[Test]
     public function it_returns_all_active_clients_when_no_assignments_exist(): void
     {
-        // Arrange
+        /* Arrange */
         $userId = 999;
 
         tmpClient::create([
@@ -130,10 +130,10 @@ class ClientsServiceTest extends TestCase
             'client_active' => 1,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getNotAssignedToUser($userId);
 
-        // Assert
+        /* Assert */
         $this->assertCount(2, $result);
     }
 

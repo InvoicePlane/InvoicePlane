@@ -66,7 +66,7 @@ class QuoteTaxRateServiceTest extends AbstractServiceTestCase
             'quote_tax_rate_percent' => 20.00,
         ];
 
-        /** Act */
+        /* Act */
         $quoteTaxRate = $this->service->saveTaxRate($data);
 
         /* Assert */
@@ -108,7 +108,7 @@ class QuoteTaxRateServiceTest extends AbstractServiceTestCase
             'quote_tax_rate_percent' => 20.00,
         ];
 
-        /** Act */
+        /* Act */
         $result = $this->service->saveTaxRate($data);
 
         /* Assert */

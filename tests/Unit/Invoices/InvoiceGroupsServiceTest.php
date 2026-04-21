@@ -22,7 +22,7 @@ class InvoiceGroupsServiceTest extends TestCase
     #[Test]
     public function it_retrieves_all_invoice_groups(): void
     {
-        // Arrange
+        /* Arrange */
         InvoiceGroup::create([
             'invoice_group_name' => 'Default',
         ]);
@@ -30,27 +30,27 @@ class InvoiceGroupsServiceTest extends TestCase
             'invoice_group_name' => 'Custom Group',
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->defaultSelect()->get();
 
-        // Assert
+        /* Assert */
         $this->assertCount(2, $result);
     }
 
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        // Act
+        /* Act */
         $rules = $this->service->validationRules();
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($rules);
     }
 
     #[Test]
     public function it_orders_by_next_id_by_default(): void
     {
-        // Arrange
+        /* Arrange */
         InvoiceGroup::create([
             'invoice_group_name'    => 'Group A',
             'invoice_group_next_id' => 100,
@@ -60,10 +60,10 @@ class InvoiceGroupsServiceTest extends TestCase
             'invoice_group_next_id' => 50,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->defaultOrderBy()->get();
 
-        // Assert
+        /* Assert */
         $this->assertCount(2, $result);
     }
 }

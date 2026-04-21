@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Core;
 
+use Modules\Core\Models\User;
+use Modules\Core\Services\UsersService;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -18,7 +20,7 @@ class UsersServiceTest extends TestCase
     #[Test]
     public function it_retrieves_all_users(): void
     {
-        // Arrange
+        /* Arrange */
         User::create([
             'user_name'     => 'John Doe',
             'user_email'    => 'john@example.com',
@@ -30,20 +32,23 @@ class UsersServiceTest extends TestCase
             'user_password' => bcrypt('password'),
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->defaultSelect()->get();
 
-        // Assert
+        /* Assert */
         $this->assertCount(2, $result);
     }
 
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        // Act
+        /* Arrange */
+        /* (no setup needed) */
+
+        /* Act */
         $rules = $this->service->validationRules();
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($rules);
     }
 }

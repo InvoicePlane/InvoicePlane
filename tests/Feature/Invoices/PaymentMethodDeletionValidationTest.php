@@ -27,10 +27,10 @@ class PaymentMethodDeletionValidationTest extends TestCase
     #[Test]
     public function it_allows_deletion_of_payment_method_without_payments(): void
     {
-        /** Arrange */
+        /* Arrange */
         $paymentMethod = $this->seedModel('PaymentMethod');
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($paymentMethod->payment_method_id);
 
         /* Assert */
@@ -43,11 +43,11 @@ class PaymentMethodDeletionValidationTest extends TestCase
     #[Test]
     public function it_prevents_deletion_of_payment_method_with_payments(): void
     {
-        /** Arrange */
+        /* Arrange */
         $paymentMethod = $this->seedModel('PaymentMethod');
         $this->seedModel('Payment', ['payment_method_id' => $paymentMethod->payment_method_id]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($paymentMethod->payment_method_id);
 
         /* Assert */
@@ -60,11 +60,11 @@ class PaymentMethodDeletionValidationTest extends TestCase
     #[Test]
     public function it_returns_correct_payment_count_in_blockers(): void
     {
-        /** Arrange */
+        /* Arrange */
         $paymentMethod = $this->seedModel('PaymentMethod');
         $this->seedModelMany('Payment', 3, ['payment_method_id' => $paymentMethod->payment_method_id]);
 
-        /** Act */
+        /* Act */
         $blockers = $this->service->getDeletionBlockers($paymentMethod->payment_method_id);
 
         /* Assert */
@@ -78,10 +78,10 @@ class PaymentMethodDeletionValidationTest extends TestCase
     #[Test]
     public function it_returns_zero_payments_when_no_payments_exist(): void
     {
-        /** Arrange */
+        /* Arrange */
         $paymentMethod = $this->seedModel('PaymentMethod');
 
-        /** Act */
+        /* Act */
         $blockers = $this->service->getDeletionBlockers($paymentMethod->payment_method_id);
 
         /* Assert */
@@ -94,14 +94,14 @@ class PaymentMethodDeletionValidationTest extends TestCase
     #[Test]
     public function it_allows_deletion_after_payments_removed(): void
     {
-        /** Arrange */
+        /* Arrange */
         $paymentMethod = $this->seedModel('PaymentMethod');
         $payment       = $this->seedModel('Payment', ['payment_method_id' => $paymentMethod->payment_method_id]);
 
         // Remove the payment
         $payment->delete();
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($paymentMethod->payment_method_id);
 
         /* Assert */
@@ -114,10 +114,10 @@ class PaymentMethodDeletionValidationTest extends TestCase
     #[Test]
     public function it_handles_non_existent_payment_method(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonExistentId = 99999;
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($nonExistentId);
         $blockers  = $this->service->getDeletionBlockers($nonExistentId);
 

@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -28,7 +28,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_products(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -51,7 +51,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_products_with_family_unit_and_tax_rate_relationships(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /* Would create product with family, unit, and tax rate */
 
@@ -71,7 +71,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_products_by_name_alphabetically(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /* Would create products with different names */
 
@@ -92,7 +92,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_filter_configuration_in_view_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -113,7 +113,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_paginates_products_at_15_per_page(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /* Would create 20 products */
 
@@ -134,7 +134,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form_for_new_product(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -157,7 +157,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_product(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new ProductsController();
         /** Would create product with ID */
         $testId = 1;
@@ -174,7 +174,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_editing_non_existent_product(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller    = new ProductsController();
         $nonExistentId = 99999;
 
@@ -190,7 +190,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_families_ordered_by_name_for_dropdown(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /* Would create multiple families */
 
@@ -211,7 +211,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_units_ordered_by_name_for_dropdown(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /* Would create multiple units */
 
@@ -232,7 +232,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_tax_rates_ordered_by_name_for_dropdown(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /* Would create multiple tax rates */
 
@@ -240,7 +240,7 @@ class ProductsControllerTest extends FeatureTestCase
         $this->actingAs($user);
         $response = $this->get(route('products.form'));
 
-        /** Assert */
+        /* Assert */
         $viewData = $response->getData();
         /* Would verify tax rates are ordered alphabetically */
         $this->assertTrue(true, 'Tax rates should be ordered by name');
@@ -253,7 +253,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_index_when_cancel_button_clicked(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new ProductsController();
         /* Would mock request with btn_cancel = true */
 
@@ -269,7 +269,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_product_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new ProductsController();
         $validData  = [
             'product_sku'         => 'PROD-001',
@@ -295,7 +295,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_product_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new ProductsController();
         /** Would create existing product */
         $testId     = 1;
@@ -316,7 +316,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_required_fields_on_submit(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new ProductsController();
 
         /* Required fields from Product::validationRules(): */
@@ -333,7 +333,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_product_price_is_numeric_and_positive(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new ProductsController();
 
         /* Test cases: */
@@ -350,7 +350,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_product_sku_is_unique(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new ProductsController();
         /* Would create product with SKU 'PROD-001' */
 
@@ -367,7 +367,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_product_successfully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /** Would create product */
         $testId = 1;
@@ -401,7 +401,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_deleting_non_existent_product(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller    = new ProductsController();
         $nonExistentId = 99999;
 
@@ -420,7 +420,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_deletion_of_product_used_in_invoices(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new ProductsController();
         /* Would create product used in invoice items */
 
@@ -495,7 +495,7 @@ class ProductsControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_product_without_optional_fields(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller  = new ProductsController();
         $minimalData = [
             'product_sku'   => 'MIN-001',

@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ProjectsController Feature Tests.
@@ -30,13 +30,13 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_list_of_projects(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('projects.index'));
 
         /* Assert */
@@ -57,10 +57,10 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_project_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client', ['client_active' => 1]);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('projects.form'));
 
         /* Assert */
@@ -82,7 +82,7 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_project_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
         /**
          * {
@@ -97,7 +97,7 @@ class ProjectsControllerTest extends FeatureTestCase
             'project_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('projects.form'), $projectData);
 
         /* Assert */
@@ -117,7 +117,7 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_fails_to_create_project_with_invalid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         /**
          * {
          *     "project_name": "Test Project"
@@ -128,7 +128,7 @@ class ProjectsControllerTest extends FeatureTestCase
             // Missing required client_id
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('projects.form'), $projectData);
 
         /* Assert */
@@ -142,13 +142,13 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_project_edit_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client', ['client_active' => 1]);
         $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('projects.form', ['project_id' => $project->project_id]));
 
         /* Assert */
@@ -169,7 +169,7 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_project_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id'    => $client->client_id,
@@ -187,7 +187,7 @@ class ProjectsControllerTest extends FeatureTestCase
             'project_name' => 'Updated Name',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('projects.form', ['project_id' => $project->project_id]), $updateData);
 
         /* Assert */
@@ -208,13 +208,13 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_project_view_with_related_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('projects.view', ['project' => $project->project_id]));
 
         /* Assert */
@@ -235,13 +235,13 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->delete(route('projects.destroy', ['project' => $project->project_id]));
 
         /* Assert */
@@ -263,14 +263,14 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_fails_to_create_project_with_empty_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client      = $this->seedModel('Client');
         $projectData = [
             'client_id'    => $client->client_id,
             'project_name' => '', // Empty name
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('projects.form'), $projectData);
 
         /* Assert */
@@ -284,7 +284,7 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_very_long_project_names(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client      = $this->seedModel('Client');
         $longName    = str_repeat('A', 300); // 300 characters
         $projectData = [
@@ -292,7 +292,7 @@ class ProjectsControllerTest extends FeatureTestCase
             'project_name' => $longName,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('projects.form'), $projectData);
 
         /* Assert */
@@ -317,14 +317,14 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_special_characters_in_project_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client      = $this->seedModel('Client');
         $projectData = [
             'client_id'    => $client->client_id,
             'project_name' => "Test <script>alert('xss')</script> Project",
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('projects.form'), $projectData);
 
         /* Assert */
@@ -344,13 +344,13 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_fails_to_create_project_with_nonexistent_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $projectData = [
             'client_id'    => 99999, // Non-existent client
             'project_name' => 'Test Project',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('projects.form'), $projectData);
 
         /* Assert */
@@ -364,7 +364,7 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_fails_to_update_project_with_invalid_status(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
@@ -376,7 +376,7 @@ class ProjectsControllerTest extends FeatureTestCase
             'project_status' => 999, // Invalid status
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('projects.form', ['project_id' => $project->project_id]), $updateData);
 
         /* Assert */
@@ -390,10 +390,10 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_viewing_nonexistent_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('projects.view', ['project' => $nonexistentId]));
 
         /* Assert */
@@ -407,10 +407,10 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_editing_nonexistent_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('projects.form', ['project_id' => $nonexistentId]));
 
         /* Assert */
@@ -424,7 +424,7 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_task_associations_when_deleting_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
@@ -438,7 +438,7 @@ class ProjectsControllerTest extends FeatureTestCase
             'project_id' => $project->project_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->delete(route('projects.destroy', ['project' => $project->project_id]));
 
         /* Assert */
@@ -467,7 +467,7 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_pagination_on_index_page(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         // Create multiple projects
@@ -475,7 +475,7 @@ class ProjectsControllerTest extends FeatureTestCase
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('projects.index', ['page' => 1]));
 
         /* Assert */
@@ -499,7 +499,7 @@ class ProjectsControllerTest extends FeatureTestCase
         // Ensure no projects exist
         Project::query()->delete();
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('projects.index'));
 
         /* Assert */
@@ -519,7 +519,7 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_all_related_tasks_in_project_view(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
@@ -535,7 +535,7 @@ class ProjectsControllerTest extends FeatureTestCase
             'task_name'  => 'Task 2',
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('projects.view', ['project' => $project->project_id]));
 
         /* Assert */
@@ -556,7 +556,7 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_preserves_unchanged_fields_on_update(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id'      => $client->client_id,
@@ -571,7 +571,7 @@ class ProjectsControllerTest extends FeatureTestCase
             // Not updating status or notes
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('projects.form', ['project_id' => $project->project_id]), $updateData);
 
         /* Assert */
@@ -591,10 +591,10 @@ class ProjectsControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_deletion_of_nonexistent_project_gracefully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $response = $this->delete(route('projects.destroy', ['project' => $nonexistentId]));
 
         /* Assert */

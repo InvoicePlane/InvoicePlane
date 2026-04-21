@@ -40,12 +40,12 @@ class ClientDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_allows_deletion_of_client_without_related_records(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client', [
             'client_name' => 'Deletable Client',
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($client->client_id);
         $blockers  = $this->service->getDeletionBlockers($client->client_id);
 
@@ -64,14 +64,14 @@ class ClientDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_of_client_with_invoices(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $this->seedModel('Invoice', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($client->client_id);
         $blockers  = $this->service->getDeletionBlockers($client->client_id);
 
@@ -88,14 +88,14 @@ class ClientDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_of_client_with_quotes(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $this->seedModel('Quote', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($client->client_id);
         $blockers  = $this->service->getDeletionBlockers($client->client_id);
 
@@ -112,14 +112,14 @@ class ClientDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_of_client_with_projects(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($client->client_id);
         $blockers  = $this->service->getDeletionBlockers($client->client_id);
 
@@ -136,14 +136,14 @@ class ClientDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_with_multiple_invoices(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $this->seedModelMany('Invoice', 3, [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($client->client_id);
         $blockers  = $this->service->getDeletionBlockers($client->client_id);
 
@@ -160,14 +160,14 @@ class ClientDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_prevents_deletion_with_mixed_related_records(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $this->seedModelMany('Invoice', 2, ['client_id' => $client->client_id]);
         $this->seedModelMany('Quote', 3, ['client_id' => $client->client_id]);
         $this->seedModel('Project', ['client_id' => $client->client_id]);
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($client->client_id);
         $blockers  = $this->service->getDeletionBlockers($client->client_id);
 
@@ -186,10 +186,10 @@ class ClientDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_correct_deletion_blockers_structure(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
-        /** Act */
+        /* Act */
         $blockers = $this->service->getDeletionBlockers($client->client_id);
 
         /* Assert */
@@ -207,7 +207,7 @@ class ClientDeletionValidationTest extends AbstractServiceTestCase
     #[Test]
     public function it_allows_deletion_after_related_records_removed(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $invoice = $this->seedModel('Invoice', ['client_id' => $client->client_id]);
@@ -220,7 +220,7 @@ class ClientDeletionValidationTest extends AbstractServiceTestCase
         $invoice->delete();
         $quote->delete();
 
-        /** Act */
+        /* Act */
         $canDelete = $this->service->canDelete($client->client_id);
 
         /* Assert */

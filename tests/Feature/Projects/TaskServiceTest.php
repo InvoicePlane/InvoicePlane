@@ -37,7 +37,7 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_returns_correct_model_class(): void
     {
-        /** Arrange & Act */
+        /* Arrange & Act */
         $reflection = new ReflectionClass($this->service);
         $method     = $reflection->getMethod('getModelClass');
         $method->setAccessible(true);
@@ -54,7 +54,7 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_creates_task(): void
     {
-        /** Arrange */
+        /* Arrange */
         $project = $this->seedModel('Project');
         $data    = [
             'project_id'  => $project->project_id,
@@ -62,7 +62,7 @@ class TaskServiceTest extends TestCase
             'task_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $task = $this->service->create($data);
 
         /* Assert */
@@ -81,13 +81,13 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_creates_task_without_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $data = [
             'task_name'   => 'Standalone Task',
             'task_status' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $task = $this->service->create($data);
 
         /* Assert */
@@ -103,7 +103,7 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_updates_task(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_name' => 'Old Name',
         ]);
@@ -112,7 +112,7 @@ class TaskServiceTest extends TestCase
             'task_name' => 'Updated Name',
         ];
 
-        /** Act */
+        /* Act */
         $result = $this->service->update($task->task_id, $updateData);
 
         /* Assert */
@@ -129,10 +129,10 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_finds_task_by_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task');
 
-        /** Act */
+        /* Act */
         $found = $this->service->find($task->task_id);
 
         /* Assert */
@@ -160,10 +160,10 @@ class TaskServiceTest extends TestCase
     #[Test]
     public function it_deletes_task(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task');
 
-        /** Act */
+        /* Act */
         $result = $this->service->delete($task->task_id);
 
         /* Assert */

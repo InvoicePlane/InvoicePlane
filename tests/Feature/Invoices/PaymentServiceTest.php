@@ -40,7 +40,7 @@ class PaymentServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_orders_payments_by_date_descending(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
         $this->seedModel('Payment', [
             'invoice_id'   => $invoice->invoice_id,
@@ -55,10 +55,10 @@ class PaymentServiceTest extends AbstractServiceTestCase
             'payment_date' => now()->subDays(2),
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getAllWithRelations();
 
-        /** Assert */
+        /* Assert */
         $payments = $result->items();
         $this->assertGreaterThanOrEqual(3, count($payments));
         // Most recent should be first
@@ -69,7 +69,7 @@ class PaymentServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_gets_payments_by_client_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client1  = $this->seedModel('\Modules\Crm\Models\Client');
         $client2  = $this->seedModel('\Modules\Crm\Models\Client');
         $invoice1 = $this->seedModel('\Modules\Invoices\Models\Invoice', ['client_id' => $client1->client_id]);
@@ -87,7 +87,7 @@ class PaymentServiceTest extends AbstractServiceTestCase
             'client_id'  => $client2->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->getByClientId($client1->client_id);
 
         /* Assert */

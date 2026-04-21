@@ -50,7 +50,7 @@ class QuoteItemAmountServiceTest extends AbstractServiceTestCase
         /* Act */
         $this->service->calculate($item->item_id);
 
-        /** Assert */
+        /* Assert */
         $itemAmount = \Modules\Quotes\Models\QuoteItemAmount::query()->where('item_id', $item->item_id)->first();
         $this->assertNotNull($itemAmount);
         $this->assertEquals(200.00, $itemAmount->item_subtotal); // 2 * 100
@@ -92,7 +92,7 @@ class QuoteItemAmountServiceTest extends AbstractServiceTestCase
         /* Act */
         $this->service->calculate($item->item_id, $globalDiscount);
 
-        /** Assert */
+        /* Assert */
         $itemAmount = \Modules\Quotes\Models\QuoteItemAmount::query()->where('item_id', $item->item_id)->first();
         $this->assertNotNull($itemAmount);
         $this->assertEquals(200.00, $itemAmount->item_subtotal); // 2 * 100
@@ -125,7 +125,7 @@ class QuoteItemAmountServiceTest extends AbstractServiceTestCase
         /* Act */
         $this->service->calculate($item->item_id, $globalDiscount);
 
-        /** Assert */
+        /* Assert */
         $itemAmount = \Modules\Quotes\Models\QuoteItemAmount::query()->where('item_id', $item->item_id)->first();
         $this->assertNotNull($itemAmount);
         $this->assertEquals(100.00, $itemAmount->item_subtotal);

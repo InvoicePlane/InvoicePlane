@@ -50,7 +50,7 @@ class QuoteAmountServiceTest extends AbstractServiceTestCase
             'item_total'     => 105.00,
         ]);
 
-        /** Act */
+        /* Act */
         $globalDiscount = $this->service->getGlobalDiscount($quote->quote_id);
 
         /* Assert */
@@ -76,7 +76,7 @@ class QuoteAmountServiceTest extends AbstractServiceTestCase
         $quoteTotal    = 200.00;
         $decimalPlaces = 2;
 
-        /** Act */
+        /* Act */
         $result = $this->service->calculateDiscount($quote->quote_id, $quoteTotal, $decimalPlaces);
 
         /* Assert */
@@ -119,7 +119,7 @@ class QuoteAmountServiceTest extends AbstractServiceTestCase
             'quote_total'          => 220.00,
         ]);
 
-        /** Act */
+        /* Act */
         $total = $this->service->getTotalQuoted();
 
         /* Assert */

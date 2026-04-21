@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Core;
 
-use App\Models\User;
+use Modules\Core\Models\User;
 use Tests\Concerns\InteractsWithDatabase;
 
-use function Tests\Feature\Auth\route;
 
 use Tests\TestCase;
 
@@ -27,7 +26,7 @@ class ReportsControllerTest extends TestCase
     #[Test]
     public function it_returns_sales_by_client_report()
     {
-        // Arrange: create clients and sales data
+        /* Arrange */
         $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
         $invoice = $this->seedModelMany('\Modules\Invoices\Models\Invoice', 3, [
             'client_id'    => $client->id,
@@ -35,14 +34,14 @@ class ReportsControllerTest extends TestCase
             'total'        => 500,
         ]);
 
-        // Act: submit the report form
+        /* Act */
         $response = $this->post(route('reports.salesByClient'), [
             'from_date'  => now()->subMonth()->format('Y-m-d'),
             'to_date'    => now()->format('Y-m-d'),
             'btn_submit' => true,
         ]);
 
-        // Assert: report contains client and sales data
+        /* Assert */
         $response->assertStatus(200);
         $response->assertSee($client->name);
         $response->assertSee('500');
@@ -51,7 +50,7 @@ class ReportsControllerTest extends TestCase
     #[Test]
     public function it_generates_sales_by_client_report(): void
     {
-        // Arrange
+        /* Arrange */
         $client = $this->seedModel('tmpClient');
         $this->seedModelMany('Invoice', 3, [
             'client_id'            => $client->client_id,
@@ -59,14 +58,14 @@ class ReportsControllerTest extends TestCase
             'invoice_date_created' => now()->subDays(10),
         ]);
 
-        // Act
+        /* Act */
         $response = $this->post(route('reports.salesByClient'), [
             'btn_submit' => true,
             'from_date'  => now()->subDays(30)->format('Y-m-d'),
             'to_date'    => now()->format('Y-m-d'),
         ]);
 
-        // Assert
+        /* Assert */
         $response->assertSuccessful();
         $response->assertViewHas('results');
         $response->assertViewHas('from_date');
@@ -104,7 +103,7 @@ class ReportsControllerTest extends TestCase
     #[Test]
     public function it_generates_invoice_aging_report(): void
     {
-        // Arrange: create clients and invoices
+        /* Arrange */
         $this->seedModel('Invoice', [
             'invoice_date_due'  => now()->subDays(10),
             'invoice_status_id' => 2, // Sent
@@ -118,12 +117,12 @@ class ReportsControllerTest extends TestCase
             'invoice_status_id' => 2,
         ]);
 
-        // Act: submit the report form
+        /* Act */
         $response = $this->post(route('reports.invoiceAging'), [
             'btn_submit' => true,
         ]);
 
-        // Assert: report contains client and invoice data
+        /* Assert */
         $response->assertSuccessful();
         $response->assertViewHas('results');
     }
@@ -131,7 +130,7 @@ class ReportsControllerTest extends TestCase
     #[Test]
     public function it_returns_invoices_per_client_report()
     {
-        // Arrange: create clients and invoices
+        /* Arrange */
         $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
         $invoice = $this->seedModel('\Modules\Invoices\Models\Invoice', [
             'client_id'    => $client->id,
@@ -139,14 +138,14 @@ class ReportsControllerTest extends TestCase
             'total'        => 300,
         ]);
 
-        // Act: submit the report form
+        /* Act */
         $response = $this->post(route('reports.invoicesPerClient'), [
             'from_date'  => now()->subMonth()->format('Y-m-d'),
             'to_date'    => now()->format('Y-m-d'),
             'btn_submit' => true,
         ]);
 
-        // Assert: report contains client and invoice data
+        /* Assert */
         $response->assertStatus(200);
         $response->assertSee($client->name);
         $response->assertSee('300');

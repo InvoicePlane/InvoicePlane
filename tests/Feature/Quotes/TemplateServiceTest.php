@@ -29,13 +29,13 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_empty_array_when_invoice_pdf_templates_directory_not_exists(): void
     {
-        /** Arrange */
+        /* Arrange */
         // APPPATH is defined in bootstrap to point to 'application' directory
         // The old CodeIgniter template path (APPPATH/views/invoice_templates/pdf)
         // won't exist in the new Laravel structure, where templates are in
         // Modules/Core/Resources/views/invoice_templates/
 
-        /** Act */
+        /* Act */
         $result = $this->service->getInvoiceTemplates('pdf');
 
         /* Assert */
@@ -51,10 +51,10 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_empty_array_when_invoice_public_templates_directory_not_exists(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Test graceful handling of missing public template directory
 
-        /** Act */
+        /* Act */
         $result = $this->service->getInvoiceTemplates('public');
 
         /* Assert */
@@ -69,10 +69,10 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_empty_array_when_quote_pdf_templates_directory_not_exists(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Test graceful handling of missing quote template directory
 
-        /** Act */
+        /* Act */
         $result = $this->service->getQuoteTemplates('pdf');
 
         /* Assert */
@@ -87,10 +87,10 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_empty_array_when_quote_public_templates_directory_not_exists(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Test graceful handling of missing public quote template directory
 
-        /** Act */
+        /* Act */
         $result = $this->service->getQuoteTemplates('public');
 
         /* Assert */
@@ -104,10 +104,10 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_defaults_to_pdf_type_for_invoice_templates(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Service should use 'pdf' as default when no type is specified
 
-        /** Act */
+        /* Act */
         $resultDefault = $this->service->getInvoiceTemplates();
         $resultPdf     = $this->service->getInvoiceTemplates('pdf');
 
@@ -121,10 +121,10 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_defaults_to_pdf_type_for_quote_templates(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Service should use 'pdf' as default when no type is specified
 
-        /** Act */
+        /* Act */
         $resultDefault = $this->service->getQuoteTemplates();
         $resultPdf     = $this->service->getQuoteTemplates('pdf');
 
@@ -141,10 +141,10 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_filters_out_dot_directories(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Service should exclude '.' and '..' from directory listings using array_filter
 
-        /** Act */
+        /* Act */
         $invoiceTemplates = $this->service->getInvoiceTemplates();
         $quoteTemplates   = $this->service->getQuoteTemplates();
 
@@ -165,10 +165,10 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_removes_file_extensions_from_template_names(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Service should strip .php extensions using pathinfo(PATHINFO_FILENAME)
 
-        /** Act */
+        /* Act */
         $invoiceTemplates = $this->service->getInvoiceTemplates('pdf');
         $quoteTemplates   = $this->service->getQuoteTemplates('pdf');
 
@@ -193,10 +193,10 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_handles_different_template_types(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Service should handle both 'pdf' and 'public' directory types
 
-        /** Act */
+        /* Act */
         $pdfTemplates    = $this->service->getInvoiceTemplates('pdf');
         $publicTemplates = $this->service->getInvoiceTemplates('public');
 
@@ -215,10 +215,10 @@ class TemplateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_indexed_array(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Service uses array_values() to ensure numeric indexing
 
-        /** Act */
+        /* Act */
         $templates = $this->service->getInvoiceTemplates();
 
         /* Assert */

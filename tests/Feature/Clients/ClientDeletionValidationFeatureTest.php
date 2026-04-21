@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -31,12 +31,12 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_deletes_client_without_related_records(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client', [
             'client_name' => 'Deletable Client',
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('clients.delete', ['client_id' => $client->client_id]));
 
         /* Assert */
@@ -57,14 +57,14 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_client_with_invoices(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $this->seedModel('Invoice', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('clients.delete', ['client_id' => $client->client_id]));
 
         /* Assert */
@@ -85,14 +85,14 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_client_with_quotes(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $this->seedModel('Quote', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('clients.delete', ['client_id' => $client->client_id]));
 
         /* Assert */
@@ -113,14 +113,14 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_client_with_projects(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('clients.delete', ['client_id' => $client->client_id]));
 
         /* Assert */
@@ -141,14 +141,14 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_shows_comprehensive_error_for_mixed_blockers(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $this->seedModelMany('Invoice', 2, ['client_id' => $client->client_id]);
         $this->seedModelMany('Quote', 3, ['client_id' => $client->client_id]);
         $this->seedModel('Project', ['client_id' => $client->client_id]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('clients.delete', ['client_id' => $client->client_id]));
 
         /* Assert */
@@ -167,10 +167,10 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_invalid_client_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invalidId = -1;
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('clients.delete', ['client_id' => $invalidId]));
 
         /* Assert */
@@ -187,10 +187,10 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_nonexistent_client_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('clients.delete', ['client_id' => $nonexistentId]));
 
         /* Assert */
@@ -207,7 +207,7 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_allows_deletion_after_related_records_removed(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
 
         $invoice = $this->seedModel('Invoice', ['client_id' => $client->client_id]);
@@ -221,7 +221,7 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
         $invoice->delete();
         $quote->delete();
 
-        /** Act */
+        /* Act */
         $response2 = $this->post(route('clients.delete', ['client_id' => $client->client_id]));
 
         /* Assert */

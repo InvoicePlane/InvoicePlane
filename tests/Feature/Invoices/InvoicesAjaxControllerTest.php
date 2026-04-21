@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
@@ -35,7 +35,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_invoice_and_returns_invoice_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -52,7 +52,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'invoice_date_created' => '2024-01-01',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.create'), $payload);
 
         /* Assert */
@@ -85,7 +85,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_saves_invoice_with_items_and_returns_success(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $items   = [
@@ -128,7 +128,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'invoice_status_id'        => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
 
         /* Assert */
@@ -161,7 +161,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_invoice_with_modified_items_successfully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice', ['invoice_number' => 'INV-OLD']);
         $item    = $this->seedModel('Item', [
@@ -204,7 +204,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'invoice_discount_amount'  => 0,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
 
         /* Assert */
@@ -236,7 +236,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_validation_errors_when_saving_invalid_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
 
@@ -253,7 +253,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'invoice_date_created' => 'invalid-date',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
 
         /* Assert */
@@ -278,7 +278,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_prevents_both_discount_types_when_saving_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $items   = [
@@ -312,7 +312,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'invoice_status_id'        => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
 
         /* Assert */
@@ -337,7 +337,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_error_when_item_has_quantity_but_no_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $items   = [
@@ -359,7 +359,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'items'      => json_encode($items),
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
 
         /* Assert */
@@ -384,7 +384,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_saves_invoice_tax_rate_in_legacy_calculation_mode(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $taxRate = $this->seedModel('TaxRate', ['tax_rate_percent' => 20]);
@@ -402,7 +402,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'include_item_tax' => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.save_tax_rate'), $payload);
 
         /* Assert */
@@ -428,7 +428,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_invoice_item_and_returns_success(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $item    = $this->seedModel('Item', ['invoice_id' => $invoice->invoice_id]);
@@ -440,7 +440,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          */
         $payload = ['item_id' => $item->item_id];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('invoices.ajax.delete_item', ['invoiceId' => $invoice->invoice_id]),
             $payload
@@ -474,7 +474,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
          */
         $payload = ['item_id' => 99999];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('invoices.ajax.delete_item', ['invoiceId' => 99999]),
             $payload
@@ -493,7 +493,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_invoice_item_data_when_getting_item(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $item    = $this->seedModel('Item', [
@@ -502,7 +502,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'item_price' => 100.00,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.ajax.get_item', ['item_id' => $item->item_id]));
 
         /* Assert */
@@ -522,7 +522,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
         /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.ajax.get_item', ['item_id' => 99999]));
 
         /* Assert */
@@ -547,7 +547,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_copies_invoice_with_all_items_and_tax_rates(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user          = $this->seedModel('User');
         $client        = $this->seedModel('Client');
         $sourceInvoice = $this->seedModel('Invoice');
@@ -570,7 +570,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'invoice_change_client' => 0,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.copy'), $payload);
 
         /* Assert */
@@ -597,7 +597,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_changes_invoice_user_and_returns_success(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $newUser = $this->seedModel('User');
@@ -613,7 +613,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'user_id'    => $newUser->user_id,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.change_user'), $payload);
 
         /* Assert */
@@ -637,7 +637,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_error_when_changing_to_non_existent_user(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
 
@@ -652,7 +652,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'user_id'    => 99999,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.change_user'), $payload);
 
         /* Assert */
@@ -675,7 +675,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_changes_invoice_client_and_returns_success(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user      = $this->seedModel('User');
         $invoice   = $this->seedModel('Invoice');
         $newClient = $this->seedModel('Client');
@@ -691,7 +691,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'client_id'  => $newClient->client_id,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.change_client'), $payload);
 
         /* Assert */
@@ -719,7 +719,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_recurring_invoice_and_returns_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -742,7 +742,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'recur_frequency'  => '1M',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.create_recurring'), $payload);
 
         /* Assert */
@@ -765,7 +765,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
         /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.ajax.recur_start_date', ['recur_frequency' => '1M']));
 
         /* Assert */
@@ -789,7 +789,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_credit_invoice_from_existing_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user          = $this->seedModel('User');
         $sourceInvoice = $this->seedModel('Invoice');
         $this->seedModelMany('Item', 2, ['invoice_id' => $sourceInvoice->invoice_id]);
@@ -805,7 +805,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'invoice_date_created' => '2024-01-01',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.create_credit'), $payload);
 
         /* Assert */
@@ -825,13 +825,13 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_copy_invoice_modal_with_clients_and_users(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $this->seedModelMany('Client', 3);
         $this->seedModelMany('User', 2);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.copy', ['invoice_id' => $invoice->invoice_id]));
 
         /* Assert */
@@ -856,7 +856,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
         $this->seedModelMany('Client', 5);
         $this->seedModelMany('User', 2);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.create'));
 
         /* Assert */
@@ -875,12 +875,12 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_change_user_modal_with_users_list(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $this->seedModelMany('User', 3);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.change_user', ['invoice_id' => $invoice->invoice_id]));
 
         /* Assert */
@@ -899,12 +899,12 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_change_client_modal_with_clients_list(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $this->seedModelMany('Client', 4);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.change_client', ['invoice_id' => $invoice->invoice_id]));
 
         /* Assert */
@@ -928,7 +928,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
         $this->seedModelMany('Client', 2);
         $this->seedModelMany('User', 2);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.create_recurring'));
 
         /* Assert */
@@ -945,11 +945,11 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_create_credit_modal_with_invoice_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.create_credit', ['invoice_id' => $invoice->invoice_id]));
 
         /* Assert */
@@ -978,7 +978,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_preserves_item_details_when_saving_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $items   = [
@@ -1003,7 +1003,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'invoice_status_id'        => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
 
         /* Assert */
@@ -1037,7 +1037,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_distributes_global_discount_across_items_proportionally(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $invoice = $this->seedModel('Invoice');
         $items   = [
@@ -1076,7 +1076,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
             'invoice_status_id'        => 1,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
 
         /* Assert */

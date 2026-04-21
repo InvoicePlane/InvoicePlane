@@ -19,7 +19,7 @@ class AjaxControllerTest extends TestCase
     #[Test]
     public function it_returns_clients_matching_name_query()
     {
-        // Arrange: create clients
+        /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient', ['name' => 'Test Client']);
 
         /**
@@ -28,12 +28,12 @@ class AjaxControllerTest extends TestCase
          *   "query": "Test"
          * }
          */
-        // Act: query for clients by name
+        /* Act */
         $response = $this->json('POST', route('clients.ajax.nameQuery'), [
             'query' => 'Test',
         ]);
 
-        // Assert: client is returned
+        /* Assert */
         $response->assertStatus(200);
         $response->assertJsonFragment(['name' => 'Test Client']);
     }
@@ -41,13 +41,13 @@ class AjaxControllerTest extends TestCase
     #[Test]
     public function it_gets_latest_clients()
     {
-        // Arrange: create clients
+        /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
 
-        // Act: get latest clients
+        /* Act */
         $response = $this->get(route('clients.ajax.getLatest'));
 
-        // Assert: clients are returned
+        /* Assert */
         $response->assertStatus(200);
     }
 
@@ -60,26 +60,26 @@ class AjaxControllerTest extends TestCase
          *   "permissive_search_clients": "1"
          * }
          */
-        // Act: save preference
+        /* Act */
         $response = $this->json('POST', route('clients.ajax.savePreference'), [
             'permissive_search_clients' => '1',
         ]);
 
-        // Assert: preference is saved
+        /* Assert */
         $response->assertStatus(200);
     }
 
     #[Test]
     public function it_deletes_client_note()
     {
-        // Arrange: create client and note
+        /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
         $note   = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $client->id]);
 
-        // Act: delete note
+        /* Act */
         $response = $this->json('POST', route('clients.ajax.deleteNote', ['note_id' => $note->id]));
 
-        // Assert: note is deleted
+        /* Assert */
         $response->assertStatus(200);
         $this->assertDatabaseMissing('ip_client_notes', ['id' => $note->id]);
     }
@@ -87,7 +87,7 @@ class AjaxControllerTest extends TestCase
     #[Test]
     public function it_saves_client_note()
     {
-        // Arrange: create client
+        /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
 
         /**
@@ -97,13 +97,13 @@ class AjaxControllerTest extends TestCase
          *   "note": "This is a test note"
          * }
          */
-        // Act: save note
+        /* Act */
         $response = $this->json('POST', route('clients.ajax.saveNote'), [
             'client_id' => $client->id,
             'note'      => 'This is a test note',
         ]);
 
-        // Assert: note is saved
+        /* Assert */
         $response->assertStatus(200);
         $this->assertDatabaseHas('ip_client_notes', [
             'client_id' => $client->id,
@@ -114,14 +114,14 @@ class AjaxControllerTest extends TestCase
     #[Test]
     public function it_loads_client_notes()
     {
-        // Arrange: create client and notes
+        /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
         $note   = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $client->id]);
 
-        // Act: load notes
+        /* Act */
         $response = $this->get(route('clients.ajax.loadNotes', ['client_id' => $client->id]));
 
-        // Assert: notes are returned
+        /* Assert */
         $response->assertStatus(200);
         $response->assertSee($note->note);
     }

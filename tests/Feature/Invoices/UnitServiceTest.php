@@ -57,7 +57,7 @@ class UnitServiceTest extends AbstractServiceTestCase
             'unit_name_plrl' => 'Hours',
         ]);
 
-        /** Act */
+        /* Act */
         $singularName = $this->service->getUnitName($unit->unit_id, 1);
         $pluralName   = $this->service->getUnitName($unit->unit_id, 2);
 

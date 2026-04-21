@@ -2,20 +2,20 @@
 
 namespace Tests\Feature\Invoices;
 
-use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
+use Modules\Invoices\app\Http\Controllers\InvoiceGroupsController;
 use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
- * InvoicesController (CRM/Guest) Feature Tests.
+ * InvoiceGroupsController Feature Tests.
  *
- * Tests guest portal invoice viewing.
+ * Tests invoice group management (index, form, delete).
  */
-#[CoversClass(GuestInvoicesController::class)]
+#[CoversClass(InvoiceGroupsController::class)]
 
 class InvoiceGroupsControllerTest extends FeatureTestCase
 {
@@ -28,10 +28,10 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_invoice_groups(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoice_groups.index'));
 
         /* Assert */
@@ -46,11 +46,11 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_invoice_groups_by_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /** Would create multiple invoice groups with different names */
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoice_groups.index'));
 
         /* Assert */
@@ -65,11 +65,11 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_paginates_invoice_groups_at_15_per_page(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /** Would create 20 invoice groups */
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoice_groups.index'));
 
         /* Assert */
@@ -85,10 +85,10 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form_with_default_values(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('invoice_groups.form'));
 
         /* Assert */
@@ -96,7 +96,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
         $response->assertViewIs('invoices::invoice_groups_form');
         $response->assertViewHas('invoice_group');
 
-        /** Verify default values */
+        /* Verify default values */
         $invoiceGroup = $response->viewData('invoice_group');
         $this->assertEquals(0, $invoiceGroup->invoice_group_left_pad);
         $this->assertEquals(1, $invoiceGroup->invoice_group_next_id);
@@ -109,7 +109,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_record(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new InvoiceGroupsController();
         /** Would create invoice group with ID */
         $testId = 1;
@@ -126,7 +126,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_editing_non_existent_invoice_group(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller    = new InvoiceGroupsController();
         $nonExistentId = 99999;
 
@@ -142,7 +142,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_index_when_cancel_button_clicked(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new InvoiceGroupsController();
         /* Would mock request with btn_cancel = true */
 
@@ -158,7 +158,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_invoice_group_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new InvoiceGroupsController();
         /** Would mock valid POST data */
         $validData = [
@@ -181,7 +181,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_invoice_group_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new InvoiceGroupsController();
         /** Would create existing invoice group */
         $testId     = 1;
@@ -204,7 +204,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_required_fields_on_submit(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new InvoiceGroupsController();
         /* Would mock POST with missing required fields */
 
@@ -223,7 +223,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_field_types_and_constraints(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new InvoiceGroupsController();
 
         /* Test cases: */
@@ -241,7 +241,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_invoice_group_successfully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /** Would create invoice group */
         $testId = 1;
@@ -255,7 +255,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
             'invoice_group_id' => $testId,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('invoice_groups.delete', ['id' => $testId]),
             $deletePayload
@@ -274,7 +274,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_deleting_non_existent_invoice_group(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller    = new InvoiceGroupsController();
         $nonExistentId = 99999;
 
@@ -293,7 +293,7 @@ class InvoiceGroupsControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_deletion_of_invoice_group_with_associated_invoices(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new InvoiceGroupsController();
         /* Would create invoice group with associated invoices */
 

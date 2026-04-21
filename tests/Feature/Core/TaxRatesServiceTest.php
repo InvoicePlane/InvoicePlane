@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Core;
 
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Services\TaxRatesService;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
 use Tests\TestCase;
@@ -21,7 +23,7 @@ class TaxRatesServiceTest extends TestCase
     #[Test]
     public function it_retrieves_all_tax_rates(): void
     {
-        // Arrange
+        /* Arrange */
         TaxRate::create([
             'tax_rate_name'    => 'VAT 20%',
             'tax_rate_percent' => 20.00,
@@ -31,20 +33,23 @@ class TaxRatesServiceTest extends TestCase
             'tax_rate_percent' => 10.00,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->defaultSelect()->get();
 
-        // Assert
+        /* Assert */
         $this->assertCount(2, $result);
     }
 
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        // Act
+        /* Arrange */
+        /* (no setup needed) */
+
+        /* Act */
         $rules = $this->service->validationRules();
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($rules);
         $this->assertArrayHasKey('tax_rate_name', $rules);
         $this->assertArrayHasKey('tax_rate_percent', $rules);
@@ -55,9 +60,13 @@ class TaxRatesServiceTest extends TestCase
     #[Test]
     public function it_all_returns_all_tax_rates(): void
     {
+        /* Arrange */
         $this->seedModelMany('TaxRate', 5);
 
+        /* Act */
         $results = $this->service->getAll();
+
+        /* Assert */
         $this->assertCount(5, $results);
     }
 }

@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -28,7 +28,7 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_units(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('Unit', 5);
 
@@ -49,7 +49,7 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -73,7 +73,7 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_unit_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -108,7 +108,7 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_unit(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $unit = $this->seedModel('Unit');
 
@@ -132,7 +132,7 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_unit_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $unit = $this->seedModel('Unit', ['unit_name' => 'Old Name']);
 
@@ -168,7 +168,7 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_unit(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $unit = $this->seedModel('Unit');
 
@@ -191,7 +191,7 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_units_correctly(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $this->seedModel('Unit', ['unit_name' => 'Zebra Unit']);

@@ -4,7 +4,6 @@ namespace Tests\Feature\Core;
 
 use Tests\Concerns\InteractsWithDatabase;
 
-use function Tests\Feature\Auth\route;
 
 use Tests\TestCase;
 
@@ -26,17 +25,17 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_displays_dashboard_with_overview_data()
     {
-        // Arrange: create sample data
+        /* Arrange */
         $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
         $invoice = $this->seedModel('\Modules\Invoices\Models\Invoice', [
             'client_id' => $client->id,
             'total'     => 1000,
         ]);
 
-        // Act: visit dashboard
+        /* Act */
         $response = $this->get(route('dashboard'));
 
-        // Assert: dashboard is displayed
+        /* Assert */
         $response->assertStatus(200);
         $response->assertViewIs('dashboard.index');
         $response->assertViewHas('invoice_status_totals');

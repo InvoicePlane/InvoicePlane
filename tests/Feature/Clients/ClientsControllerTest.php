@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -29,7 +29,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_active_status_view_from_index(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -47,7 +47,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_only_active_clients_when_active_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $activeClient   = $this->seedModel('Client', ['client_active' => 1]);
@@ -75,7 +75,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_only_inactive_clients_when_inactive_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $activeClient   = $this->seedModel('Client', ['client_active' => 1]);
@@ -103,7 +103,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_all_clients_when_all_status_selected(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $activeClient   = $this->seedModel('Client', ['client_active' => 1]);
@@ -131,7 +131,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_filter_configuration_in_status_view(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -152,7 +152,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -176,7 +176,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_client_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -213,7 +213,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -237,7 +237,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_client_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client', [
             'client_name'   => 'Old Name',
@@ -279,7 +279,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_client(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -302,7 +302,7 @@ class ClientsControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_clients_alphabetically_by_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $this->seedModel('Client', ['client_name' => 'Zebra Company', 'client_active' => 1]);

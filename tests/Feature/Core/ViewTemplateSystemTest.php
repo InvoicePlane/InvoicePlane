@@ -52,7 +52,7 @@ class ViewTemplateSystemTest extends TestCase
             // Render the view
             $rendered = view('test_php_template', ['message' => 'Success'])->render();
 
-            // Assert it renders correctly
+            /* Assert */
             $this->assertStringContainsString('PHP Template Works: Success', $rendered);
         } finally {
             // Clean up

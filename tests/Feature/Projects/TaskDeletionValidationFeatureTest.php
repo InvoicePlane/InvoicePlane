@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ProjectsController Feature Tests.
@@ -30,14 +30,14 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_deletes_task_without_invoice_assignment(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_name'   => 'Deletable Task',
             'invoice_id'  => null, // Not assigned to invoice
             'task_status' => 1,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
 
         /* Assert */
@@ -59,7 +59,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_task_assigned_to_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $task = $this->seedModel('Task', [
@@ -68,7 +68,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
             'task_status' => 3, // Complete
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
 
         /* Assert */
@@ -92,13 +92,13 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_deletes_completed_task_without_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $task = $this->seedModel('Task', [
             'task_status' => 3, // Complete
             'invoice_id'  => null,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
 
         /* Assert */
@@ -116,7 +116,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_regardless_of_status_when_assigned(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         // Test with different statuses
@@ -134,7 +134,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
                 'invoice_id'  => $invoice->invoice_id,
             ]);
 
-            /** Act */
+            /* Act */
             $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
 
             /* Assert */
@@ -156,10 +156,10 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_invalid_task_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invalidId = -1;
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.delete', ['task_id' => $invalidId]));
 
         /* Assert */
@@ -176,10 +176,10 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_nonexistent_task_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('tasks.delete', ['task_id' => $nonexistentId]));
 
         /* Assert */
@@ -196,7 +196,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_allows_deletion_after_invoice_reference_removed(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $task = $this->seedModel('Task', [
@@ -211,7 +211,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
         $task->invoice_id = null;
         $task->save();
 
-        /** Act */
+        /* Act */
         $response2 = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
 
         /* Assert */
@@ -229,7 +229,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_all_tasks_with_same_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $tasks = $this->seedModelMany('Task', 3, [
@@ -255,7 +255,7 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_allows_deletion_of_all_unassigned_tasks(): void
     {
-        /** Arrange */
+        /* Arrange */
         $tasks = $this->seedModelMany('Task', 3, [
             'invoice_id' => null,
         ]);
@@ -279,13 +279,13 @@ class TaskDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_mixed_deletable_and_non_deletable_tasks(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $deletableTask    = $this->seedModel('Task', ['invoice_id' => null]);
         $nonDeletableTask = $this->seedModel('Task', ['invoice_id' => $invoice->invoice_id]);
 
-        /** Act */
+        /* Act */
         $response1 = $this->post(route('tasks.delete', ['task_id' => $deletableTask->task_id]));
         $response2 = $this->post(route('tasks.delete', ['task_id' => $nonDeletableTask->task_id]));
 

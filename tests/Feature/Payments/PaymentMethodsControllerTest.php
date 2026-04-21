@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * PaymentMethodsController Feature Tests.
@@ -27,11 +27,11 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_payment_methods(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('PaymentMethod', 5);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('payment_methods.index'));
 
         /* Assert */
@@ -46,14 +46,14 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_payment_methods_alphabetically(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $this->seedModel('PaymentMethod', ['payment_method_name' => 'Wire Transfer']);
         $this->seedModel('PaymentMethod', ['payment_method_name' => 'Cash']);
         $this->seedModel('PaymentMethod', ['payment_method_name' => 'Check']);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('payment_methods.index'));
 
         /* Assert */
@@ -73,10 +73,10 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('payment_methods.form'));
 
         /* Assert */
@@ -93,11 +93,11 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_payment_method(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user          = $this->seedModel('User');
         $paymentMethod = $this->seedModel('PaymentMethod');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('payment_methods.form', ['id' => $paymentMethod->payment_method_id]));
 
         /* Assert */
@@ -117,7 +117,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_payment_method_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -131,7 +131,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
             'btn_submit'          => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form'), $data);
 
         /* Assert */
@@ -150,7 +150,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_payment_method(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user          = $this->seedModel('User');
         $paymentMethod = $this->seedModel('PaymentMethod', ['payment_method_name' => 'Old Name']);
 
@@ -165,7 +165,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
             'btn_submit'          => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form', ['id' => $paymentMethod->payment_method_id]), $updateData);
 
         /* Assert */
@@ -185,7 +185,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_index_on_cancel(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -197,7 +197,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
             'btn_cancel' => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form'), $cancelData);
 
         /* Assert */
@@ -210,7 +210,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_required_payment_method_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -224,7 +224,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
             'btn_submit'          => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form'), $invalidData);
 
         /* Assert */
@@ -237,7 +237,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_unique_payment_method_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModel('PaymentMethod', ['payment_method_name' => 'Cash']);
 
@@ -252,7 +252,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
             'btn_submit'          => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('payment_methods.form'), $duplicateData);
 
         /* Assert */
@@ -266,7 +266,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_payment_method(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user          = $this->seedModel('User');
         $paymentMethod = $this->seedModel('PaymentMethod');
 
@@ -279,7 +279,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
             'payment_method_id' => $paymentMethod->payment_method_id,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('payment_methods.delete', ['id' => $paymentMethod->payment_method_id]),
             $deletePayload
@@ -301,7 +301,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_deleting_non_existent_payment_method(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -313,7 +313,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
             'payment_method_id' => 99999,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('payment_methods.delete', ['id' => 99999]),
             $deletePayload

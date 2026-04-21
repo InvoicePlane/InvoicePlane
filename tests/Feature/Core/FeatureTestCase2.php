@@ -5,7 +5,7 @@ namespace Tests\Feature\Core;
 use Tests\Concerns\InteractsWithDatabase;
 use Tests\TestCase;
 
-abstract class FeatureTestCase extends TestCase
+abstract class FeatureTestCase2 extends TestCase
 {
     use InteractsWithDatabase;
 

@@ -4,12 +4,13 @@ namespace Tests\Feature\Invoices;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\Setting;
-use Modules\Invoices\Services\InvoiceAmountService;
+use Modules\Invoices\Models\InvoiceTaxRate;
+use Modules\Invoices\Services\InvoiceTaxRateService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(InvoiceAmountService::class)]
+#[CoversClass(InvoiceTaxRateService::class)]
 
 class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
 {
@@ -33,9 +34,13 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
+        /* (no additional setup needed beyond setUp()) */
+
+        /* Act */
         $rules = $this->service->getValidationRules();
 
+        /* Assert */
         $this->assertIsArray($rules);
         $this->assertArrayHasKey('invoice_id', $rules);
         $this->assertArrayHasKey('tax_rate_id', $rules);
@@ -46,7 +51,7 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_null_when_not_in_legacy_mode(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
         Setting::setValue('legacy_calculation', '0');
 
         $data = [
@@ -55,8 +60,10 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
             'include_item_tax' => 0,
         ];
 
+        /* Act */
         $result = $this->service->saveTaxRate($data);
 
+        /* Assert */
         $this->assertNull($result);
     }
 
@@ -64,7 +71,7 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_creates_tax_rate_in_legacy_mode(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
         Setting::setValue('legacy_calculation', '1');
 
         $data = [
@@ -75,8 +82,10 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
             'invoice_tax_rate_amount'  => 0.0,
         ];
 
+        /* Act */
         $result = $this->service->saveTaxRate($data);
 
+        /* Assert */
         $this->assertInstanceOf(InvoiceTaxRate::class, $result);
         $this->assertEquals(1, $result->invoice_id);
         $this->assertEquals(1, $result->tax_rate_id);
@@ -87,7 +96,7 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_updates_existing_tax_rate_in_legacy_mode(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
         Setting::setValue('legacy_calculation', '1');
 
         $existingTaxRate = InvoiceTaxRate::query()->create([
@@ -107,8 +116,10 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
             'invoice_tax_rate_amount'  => 50.0,
         ];
 
+        /* Act */
         $result = $this->service->saveTaxRate($data);
 
+        /* Assert */
         $this->assertEquals($existingTaxRate->invoice_tax_rate_id, $result->invoice_tax_rate_id);
         $this->assertEquals(2, $result->tax_rate_id);
         $this->assertEquals(1, $result->include_item_tax);
@@ -119,7 +130,7 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_handles_include_item_tax_flag(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
         Setting::setValue('legacy_calculation', '1');
 
         $data1 = [
@@ -130,9 +141,13 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
             'invoice_tax_rate_amount'  => 0.0,
         ];
 
+        /* Act */
         $result1 = $this->service->saveTaxRate($data1);
+
+        /* Assert */
         $this->assertEquals(1, $result1->include_item_tax);
 
+        /* Arrange (second case) */
         $data2 = [
             'invoice_id'               => 2,
             'tax_rate_id'              => 2,
@@ -141,7 +156,10 @@ class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
             'invoice_tax_rate_amount'  => 0.0,
         ];
 
+        /* Act */
         $result2 = $this->service->saveTaxRate($data2);
+
+        /* Assert */
         $this->assertEquals(0, $result2->include_item_tax);
     }
 }
