@@ -15,7 +15,7 @@ $text_class_balance = '';
 $watermark          = '';
 $stamp              = '';
 $show_qrcode        = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
-$invoice_mode       ??= 'default'; // from template - overdue / paid.php
+$invoice_mode ??= 'default'; // from template - overdue / paid.php
 
 switch ($invoice_mode) {
     case 'overdue':
@@ -70,15 +70,20 @@ if ($invoice->client_address_2) {
 }
 if ($invoice->client_city || $invoice->client_state || $invoice->client_zip) {
     echo '<div>';
-    if ($invoice->client_city) {
-        echo htmlsc($invoice->client_city) . ' ';
+
+    if (is_zip_before_city($invoice->client_country)) {
+        // ZIP + City
+        echo $invoice->client_zip ? htmlsc($invoice->client_zip) . ' ' : '';
+        echo $invoice->client_city ? htmlsc($invoice->client_city) . ' ' : '';
+    } else {
+        // City + ZIP
+        echo $invoice->client_city ? htmlsc($invoice->client_city) . ' ' : '';
+        echo $invoice->client_zip ? htmlsc($invoice->client_zip) . ' ' : '';
     }
-    if ($invoice->client_state) {
-        echo htmlsc($invoice->client_state) . ' ';
-    }
-    if ($invoice->client_zip) {
-        echo htmlsc($invoice->client_zip);
-    }
+
+    // Bundesland/State immer am Ende, falls vorhanden
+    echo $invoice->client_state ? htmlsc($invoice->client_state) : '';
+
     echo '</div>';
 }
 if ($invoice->client_country) {
@@ -109,15 +114,20 @@ if ($invoice->user_address_2) {
 }
 if ($invoice->user_city || $invoice->user_state || $invoice->user_zip) {
     echo '<div>';
-    if ($invoice->user_city) {
-        echo htmlsc($invoice->user_city) . ' ';
+
+    if (is_zip_before_city($invoice->user_country)) {
+        // ZIP + City
+        echo $invoice->user_zip ? htmlsc($invoice->user_zip) . ' ' : '';
+        echo $invoice->user_city ? htmlsc($invoice->user_city) . ' ' : '';
+    } else {
+        // City + ZIP
+        echo $invoice->user_city ? htmlsc($invoice->user_city) . ' ' : '';
+        echo $invoice->user_zip ? htmlsc($invoice->user_zip) . ' ' : '';
     }
-    if ($invoice->user_state) {
-        echo htmlsc($invoice->user_state) . ' ';
-    }
-    if ($invoice->user_zip) {
-        echo htmlsc($invoice->user_zip);
-    }
+
+    // Bundesland/State am Ende
+    echo $invoice->user_state ? htmlsc($invoice->user_state) : '';
+
     echo '</div>';
 }
 if ($invoice->user_country) {
