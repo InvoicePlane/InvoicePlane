@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * QuotesController (CRM/Guest) Feature Tests.
@@ -37,7 +37,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_saves_quote_with_items_and_returns_success(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user  = $this->seedModel('User');
         $quote = $this->seedModel('Quote', ['quote_status_id' => 1]);
 
@@ -91,7 +91,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_validation_errors_when_saving_invalid_quote(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user  = $this->seedModel('User');
         $quote = $this->seedModel('Quote');
 
@@ -131,7 +131,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_prevents_both_discount_types_when_saving_quote(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user  = $this->seedModel('User');
         $quote = $this->seedModel('Quote');
 
@@ -183,7 +183,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_calculates_item_subtotal_correctly_when_saving_quote(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user  = $this->seedModel('User');
         $quote = $this->seedModel('Quote');
 
@@ -228,7 +228,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_saves_quote_tax_rate_successfully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $quote   = $this->seedModel('Quote');
         $taxRate = $this->seedModel('TaxRate');
@@ -272,7 +272,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_quote_item_successfully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user  = $this->seedModel('User');
         $quote = $this->seedModel('Quote');
         $item  = $this->seedModel('QuoteItem', ['quote_id' => $quote->quote_id]);
@@ -310,7 +310,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_failure_when_deleting_item_from_non_existent_quote(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         /**
          * {
@@ -339,7 +339,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_quote_item_data_when_getting_item(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user  = $this->seedModel('User');
         $quote = $this->seedModel('Quote');
         $item  = $this->seedModel('QuoteItem', [
@@ -364,7 +364,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_empty_array_when_getting_non_existent_item(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -393,7 +393,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_copies_quote_with_all_items(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
         $quote  = $this->seedModel('Quote');
@@ -444,7 +444,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_changes_quote_user_successfully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $newUser = $this->seedModel('User');
         $quote   = $this->seedModel('Quote');
@@ -486,7 +486,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_error_when_changing_to_non_existent_user(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user  = $this->seedModel('User');
         $quote = $this->seedModel('Quote');
 
@@ -524,7 +524,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_changes_quote_client_successfully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user      = $this->seedModel('User');
         $newClient = $this->seedModel('Client');
         $quote     = $this->seedModel('Quote');
@@ -567,7 +567,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_quote_and_returns_quote_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $client = $this->seedModel('Client');
 
@@ -615,7 +615,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_converts_quote_to_invoice_successfully(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user         = $this->seedModel('User');
         $client       = $this->seedModel('Client');
         $quote        = $this->seedModel('Quote', ['client_id' => $client->client_id]);
@@ -682,7 +682,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_marks_quote_as_approved_when_converting_to_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user         = $this->seedModel('User');
         $client       = $this->seedModel('Client');
         $quote        = $this->seedModel('Quote', ['client_id' => $client->client_id, 'quote_status_id' => 1]);
@@ -717,7 +717,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_copy_quote_modal_with_clients_and_users(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user  = $this->seedModel('User');
         $quote = $this->seedModel('Quote');
         $this->seedModelMany('Client', 3);
@@ -742,7 +742,7 @@ class QuotesAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_loads_create_quote_modal_with_clients_list(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('Client', 5);
         $this->seedModelMany('User', 2);

@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Core;
 
-use App\Models\User;
+use Modules\Core\Models\User;
 use Tests\Concerns\InteractsWithDatabase;
 
-use function Tests\Feature\Auth\route;
 
 use Tests\TestCase;
 
@@ -16,17 +15,17 @@ class TaxRatesControllerTest extends TestCase
     #[Test]
     public function it_displays_tax_rates_list()
     {
-        // Arrange: authenticate user
-        $user = $this->seedModel('\src\Models\User');
+        /* Arrange */
+        $user = $this->seedModel('User');
         $this->actingAs($user);
 
-        // Arrange: create tax rates
-        $taxRate = $this->seedModel('\src\Models\TaxRate');
+        /* Arrange */
+        $taxRate = $this->seedModel('TaxRate');
 
-        // Act: visit tax rates index
+        /* Act */
         $response = $this->get(route('tax_rates.index'));
 
-        // Assert: tax rates are displayed
+        /* Assert */
         $response->assertStatus(200);
         $response->assertViewIs('tax_rates.index');
         $response->assertSee($taxRate->tax_rate_name);
@@ -52,7 +51,7 @@ class TaxRatesControllerTest extends TestCase
     #[Test]
     public function it_stores_tax_rate_via_form_store()
     {
-        // Act: submit form with valid data
+        /* Act */
         /**
          * Payload:
          * {
@@ -67,7 +66,7 @@ class TaxRatesControllerTest extends TestCase
             'btn_submit'       => true,
         ]);
 
-        // Assert: redirects to tax rates index
+        /* Assert */
         $response->assertRedirect(route('tax_rates.index'));
     }
 
@@ -114,25 +113,25 @@ class TaxRatesControllerTest extends TestCase
     #[Test]
     public function it_redirects_when_cancel_button_is_clicked()
     {
-        // Act: submit form with cancel button
+        /* Act */
         $response = $this->post(route('tax_rates.form'), [
             'btn_cancel' => true,
         ]);
 
-        // Assert: redirects to tax rates index
+        /* Assert */
         $response->assertRedirect(route('tax_rates.index'));
     }
 
     #[Test]
     public function it_deletes_tax_rate()
     {
-        // Arrange: create a tax rate
-        $taxRate = $this->seedModel('\src\Models\TaxRate');
+        /* Arrange */
+        $taxRate = $this->seedModel('TaxRate');
 
-        // Act: delete the tax rate
+        /* Act */
         $response = $this->get(route('tax_rates.delete', ['id' => $taxRate->id]));
 
-        // Assert: redirects and tax rate is deleted
+        /* Assert */
         $response->assertRedirect(route('tax_rates.index'));
         $this->assertDatabaseMissing('ip_tax_rates', ['tax_rate_id' => $taxRate->id]);
     }

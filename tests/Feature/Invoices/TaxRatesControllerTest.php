@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -28,7 +28,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_tax_rates(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('TaxRate', 5);
 
@@ -49,7 +49,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -73,7 +73,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_tax_rate_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -108,7 +108,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_tax_rate(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $taxRate = $this->seedModel('TaxRate');
 
@@ -132,7 +132,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_tax_rate_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $taxRate = $this->seedModel('TaxRate', [
             'tax_rate_name'    => 'Old Name',
@@ -172,7 +172,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_tax_rate(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $taxRate = $this->seedModel('TaxRate');
 
@@ -195,7 +195,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_tax_rates_correctly(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $this->seedModel('TaxRate', ['tax_rate_name' => 'Zero Rate', 'tax_rate_percent' => '0.00']);
@@ -221,7 +221,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_tax_rate_with_zero_percent(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /** @var array{tax_rate_name: string, tax_rate_percent: string} $taxRateData */

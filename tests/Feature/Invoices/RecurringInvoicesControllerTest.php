@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Invoices;
 
-use App\Models\User;
+use Modules\Core\Models\User;
 use Modules\InvoiceGroups\Tests\Feature\WithFaker;
 use Modules\Invoices\app\Http\Controllers\InvoiceGroupsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
 
-use function Tests\Feature\InvoiceGroups\route;
 
 use Tests\TestCase;
 

@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -31,7 +31,7 @@ class ClientsAjaxEdgeCasesTest extends FeatureTestCase
     #[Test]
     public function it_handles_invalid_client_id_type(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -53,7 +53,7 @@ class ClientsAjaxEdgeCasesTest extends FeatureTestCase
     #[Test]
     public function it_handles_negative_client_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -71,7 +71,7 @@ class ClientsAjaxEdgeCasesTest extends FeatureTestCase
     #[Test]
     public function it_handles_zero_client_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */

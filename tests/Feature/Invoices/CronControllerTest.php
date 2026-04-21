@@ -7,6 +7,7 @@ use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
@@ -25,7 +26,7 @@ class CronControllerTest extends TestCase
     #[Test]
     public function it_rejects_invalid_cron_key_and_exits(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new CronController();
 
         /* Mock get_setting to return a valid key */
@@ -65,7 +66,7 @@ class CronControllerTest extends TestCase
     #[Test]
     public function it_processes_active_recurring_invoices_with_valid_key(): void
     {
-        /** Arrange */
+        /* Arrange */
         $controller = new CronController();
 
         /* This test requires: */

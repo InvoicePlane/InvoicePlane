@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -28,7 +28,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_modal_with_products(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('Product', 3);
         $this->seedModelMany('Family', 2);
@@ -51,7 +51,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_filters_products_by_family(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user    = $this->seedModel('User');
         $family1 = $this->seedModel('Family');
         $family2 = $this->seedModel('Family');
@@ -76,7 +76,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_filters_products_by_search_term(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModel('Product', ['product_name' => 'Widget']);
         $this->seedModel('Product', ['product_name' => 'Gadget']);
@@ -99,7 +99,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_partial_view_when_filtering(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -120,7 +120,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_partial_view_when_resetting_table(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */
@@ -141,7 +141,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     #[Test]
     public function it_includes_default_tax_rate_setting(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */

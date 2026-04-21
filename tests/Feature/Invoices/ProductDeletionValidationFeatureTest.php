@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -30,13 +30,13 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_deletes_product_without_invoice_items(): void
     {
-        /** Arrange */
+        /* Arrange */
         $product = $this->seedModel('Product', [
             'product_name'  => 'Deletable Product',
             'product_price' => 50.00,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('products.delete', ['product_id' => $product->product_id]));
 
         /* Assert */
@@ -58,7 +58,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_product_with_invoice_items(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $product = $this->seedModel('Product', [
@@ -73,7 +73,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
             'item_price'      => 75.00,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('products.delete', ['product_id' => $product->product_id]));
 
         /* Assert */
@@ -96,7 +96,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_returns_error_message_with_item_count(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
 
         $product = $this->seedModel('Product');
@@ -107,7 +107,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
             'item_product_id' => $product->product_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('products.delete', ['product_id' => $product->product_id]));
 
         /* Assert */
@@ -133,7 +133,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_with_single_invoice_item(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
         $product = $this->seedModel('Product');
 
@@ -142,7 +142,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
             'item_product_id' => $product->product_id,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('products.delete', ['product_id' => $product->product_id]));
 
         /* Assert */
@@ -160,7 +160,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_with_multiple_invoice_references(): void
     {
-        /** Arrange */
+        /* Arrange */
         $product = $this->seedModel('Product');
 
         // Create 2 different invoices, each with an item referencing the product
@@ -172,7 +172,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
             ]);
         }
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('products.delete', ['product_id' => $product->product_id]));
 
         /* Assert */
@@ -190,10 +190,10 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_invalid_product_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invalidId = -1;
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('products.delete', ['product_id' => $invalidId]));
 
         /* Assert */
@@ -210,10 +210,10 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_nonexistent_product_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('products.delete', ['product_id' => $nonexistentId]));
 
         /* Assert */
@@ -230,7 +230,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_allows_deletion_after_invoice_items_removed(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice');
         $product = $this->seedModel('Product');
 
@@ -246,7 +246,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
         // Remove the invoice item
         $item->delete();
 
-        /** Act */
+        /* Act */
         $response2 = $this->post(route('products.delete', ['product_id' => $product->product_id]));
 
         /* Assert */

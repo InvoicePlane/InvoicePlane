@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -29,10 +29,10 @@ class ViewControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_guest_view_page(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Guest operations may not require authentication
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.view'));
 
         /* Assert */
@@ -46,10 +46,10 @@ class ViewControllerTest extends FeatureTestCase
     #[Test]
     public function it_is_accessible_without_authentication(): void
     {
-        /** Arrange */
+        /* Arrange */
         // No authentication required
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.view'));
 
         /* Assert */
@@ -62,7 +62,7 @@ class ViewControllerTest extends FeatureTestCase
     #[Test]
     public function it_is_accessible_when_authenticated(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */

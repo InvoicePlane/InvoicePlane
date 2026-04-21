@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -28,11 +28,11 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_families(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('Family', 5);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('families.index'));
 
         /* Assert */
@@ -51,10 +51,10 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('families.form'));
 
         /* Assert */
@@ -75,11 +75,11 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_family(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $family = $this->seedModel('Family');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('families.form', ['id' => $family->family_id]));
 
         /* Assert */
@@ -99,7 +99,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_family_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -113,7 +113,7 @@ class FamiliesControllerTest extends FeatureTestCase
             'btn_submit'  => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('families.form'), $familyData);
 
         /* Assert */
@@ -132,7 +132,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_family_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $family = $this->seedModel('Family', ['family_name' => 'Old Name']);
 
@@ -147,7 +147,7 @@ class FamiliesControllerTest extends FeatureTestCase
             'btn_submit'  => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('families.form', ['id' => $family->family_id]), $updateData);
 
         /* Assert */
@@ -167,7 +167,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_index_on_cancel(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -179,7 +179,7 @@ class FamiliesControllerTest extends FeatureTestCase
             'btn_cancel' => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('families.form'), $cancelData);
 
         /* Assert */
@@ -192,7 +192,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_required_family_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -206,7 +206,7 @@ class FamiliesControllerTest extends FeatureTestCase
             'btn_submit'  => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('families.form'), $invalidData);
 
         /* Assert */
@@ -219,7 +219,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_validates_unique_family_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModel('Family', ['family_name' => 'Existing Family']);
 
@@ -234,7 +234,7 @@ class FamiliesControllerTest extends FeatureTestCase
             'btn_submit'  => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('families.form'), $duplicateData);
 
         /* Assert */
@@ -248,7 +248,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_family(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user   = $this->seedModel('User');
         $family = $this->seedModel('Family');
 
@@ -261,7 +261,7 @@ class FamiliesControllerTest extends FeatureTestCase
             'family_id' => $family->family_id,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('families.delete', ['id' => $family->family_id]),
             $deletePayload
@@ -283,7 +283,7 @@ class FamiliesControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_deleting_non_existent_family(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -295,7 +295,7 @@ class FamiliesControllerTest extends FeatureTestCase
             'family_id' => 99999,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('families.delete', ['id' => 99999]),
             $deletePayload

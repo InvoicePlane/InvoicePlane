@@ -20,7 +20,7 @@ class TasksServiceTest extends TestCase
     #[Test]
     public function it_filters_tasks_by_name(): void
     {
-        // Arrange
+        /* Arrange */
         Task::create([
             'task_name'        => 'Design Homepage',
             'task_description' => 'Create wireframes',
@@ -37,47 +37,47 @@ class TasksServiceTest extends TestCase
             'task_status'      => 1,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->byTask('Design');
 
-        // Assert: Should match both task_name and task_description
+        /* Assert */
         $this->assertInstanceOf(TasksService::class, $result);
     }
 
     #[Test]
     public function it_returns_null_when_getting_invoice_for_null_task_id(): void
     {
-        // Act
+        /* Act */
         $result = $this->service->getInvoiceForTask(null);
 
-        // Assert
+        /* Assert */
         $this->assertNull($result);
     }
 
     #[Test]
     public function it_returns_null_when_task_has_no_associated_invoice(): void
     {
-        // Arrange
+        /* Arrange */
         $task = Task::create([
             'task_name'        => 'Test Task',
             'task_description' => 'Description',
             'task_status'      => 1,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getInvoiceForTask($task->task_id);
 
-        // Assert
+        /* Assert */
         $this->assertNull($result);
     }
 
     #[Test]
     public function it_returns_empty_array_when_getting_tasks_to_invoice_with_null_id(): void
     {
-        // Act
+        /* Act */
         $result = $this->service->getTasksToInvoice(null);
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -85,7 +85,7 @@ class TasksServiceTest extends TestCase
     #[Test]
     public function it_returns_tasks_to_invoice_for_unassigned_projects(): void
     {
-        // Arrange: Create tasks with no project (project_id = 0) and status 3 (completed)
+        /* Arrange */
         Task::create([
             'task_name'        => 'Task 1',
             'task_description' => 'Description 1',
@@ -118,10 +118,10 @@ class TasksServiceTest extends TestCase
             'invoice_status_id' => 1,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getTasksToInvoice($invoice->invoice_id);
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertCount(2, $result);
     }
@@ -129,17 +129,17 @@ class TasksServiceTest extends TestCase
     #[Test]
     public function it_does_nothing_when_updating_on_invoice_delete_with_null_id(): void
     {
-        // Arrange
+        /* Arrange */
         $task = Task::create([
             'task_name'        => 'Test Task',
             'task_description' => 'Description',
             'task_status'      => 1,
         ]);
 
-        // Act
+        /* Act */
         $this->service->updateOnInvoiceDelete(null);
 
-        // Assert: Task should remain unchanged
+        /* Assert */
         $task->refresh();
         $this->assertEquals(1, $task->task_status);
     }
@@ -147,7 +147,7 @@ class TasksServiceTest extends TestCase
     #[Test]
     public function it_does_nothing_when_updating_on_project_delete_with_null_id(): void
     {
-        // Arrange
+        /* Arrange */
         $project = Project::create([
             'project_name' => 'Test Project',
         ]);
@@ -158,10 +158,10 @@ class TasksServiceTest extends TestCase
             'project_id'       => $project->project_id,
         ]);
 
-        // Act
+        /* Act */
         $this->service->updateOnProjectDelete(null);
 
-        // Assert: Task should remain unchanged
+        /* Assert */
         $task->refresh();
         $this->assertEquals($project->project_id, $task->project_id);
     }
@@ -169,7 +169,7 @@ class TasksServiceTest extends TestCase
     #[Test]
     public function it_clears_project_association_when_project_is_deleted(): void
     {
-        // Arrange
+        /* Arrange */
         $project = Project::create([
             'project_name' => 'Test Project',
         ]);
@@ -186,10 +186,10 @@ class TasksServiceTest extends TestCase
             'project_id'       => $project->project_id,
         ]);
 
-        // Act
+        /* Act */
         $this->service->updateOnProjectDelete($project->project_id);
 
-        // Assert
+        /* Assert */
         $task1->refresh();
         $task2->refresh();
         $this->assertNull($task1->project_id);
@@ -199,10 +199,10 @@ class TasksServiceTest extends TestCase
     #[Test]
     public function it_returns_status_array(): void
     {
-        // Act
+        /* Act */
         $statuses = $this->service->statuses();
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($statuses);
         $this->assertNotEmpty($statuses);
     }

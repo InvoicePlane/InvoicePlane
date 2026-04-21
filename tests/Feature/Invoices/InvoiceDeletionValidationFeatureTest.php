@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
@@ -30,13 +30,13 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_deletes_draft_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 1, // Draft
             'invoice_number'    => 'DRAFT-001',
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('invoices.delete', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -57,13 +57,13 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_sent_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 2, // Sent
             'invoice_number'    => 'INV-001',
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('invoices.delete', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -86,13 +86,13 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_viewed_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 3, // Viewed
             'invoice_number'    => 'INV-002',
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('invoices.delete', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -110,13 +110,13 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_paid_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 4, // Paid
             'invoice_number'    => 'INV-003',
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('invoices.delete', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -134,13 +134,13 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_of_overdue_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 5, // Overdue
             'invoice_number'    => 'INV-004',
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('invoices.delete', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -158,7 +158,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_unmarks_tasks_when_deleting_draft_invoice(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 1, // Draft
         ]);
@@ -173,7 +173,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
             'task_status' => 4,
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('invoices.delete', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -202,7 +202,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_blocks_deletion_for_all_non_draft_statuses(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonDraftStatuses = [2, 3, 4, 5]; // Sent, Viewed, Paid, Overdue
 
         foreach ($nonDraftStatuses as $status) {
@@ -210,7 +210,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
                 'invoice_status_id' => $status,
             ]);
 
-            /** Act */
+            /* Act */
             $response = $this->post(route('invoices.delete', ['invoiceId' => $invoice->invoice_id]));
 
             /* Assert */
@@ -231,7 +231,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_allows_deletion_when_config_enabled(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Enable invoice deletion in config
         $originalConfig = config('settings.enable_invoice_deletion');
         config(['settings.enable_invoice_deletion' => true]);
@@ -240,7 +240,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
             'invoice_status_id' => 2, // Sent (normally not deletable)
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('invoices.delete', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -264,12 +264,12 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_deletes_draft_invoice_without_tasks(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 1, // Draft
         ]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('invoices.delete', ['invoiceId' => $invoice->invoice_id]));
 
         /* Assert */
@@ -286,7 +286,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_invalid_invoice_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invalidId = 99999;
 
         /* Act & Assert */

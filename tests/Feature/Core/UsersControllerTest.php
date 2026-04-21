@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * Core AjaxController Feature Tests.
@@ -28,11 +28,11 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_users(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('User', 5);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('users.index'));
 
         /* Assert */
@@ -51,14 +51,14 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_users_alphabetically_by_name(): void
     {
-        /** Arrange */
+        /* Arrange */
         $adminUser = $this->seedModel('User', ['user_name' => 'Admin']);
 
         $this->seedModel('User', ['user_name' => 'Zack']);
         $this->seedModel('User', ['user_name' => 'Alice']);
         $this->seedModel('User', ['user_name' => 'Bob']);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($adminUser)->get(route('users.index'));
 
         /* Assert */
@@ -79,10 +79,10 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('users.form'));
 
         /* Assert */
@@ -102,11 +102,11 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_user(): void
     {
-        /** Arrange */
+        /* Arrange */
         $adminUser = $this->seedModel('User');
         $editUser  = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($adminUser)->get(route('users.form', ['id' => $editUser->user_id]));
 
         /* Assert */
@@ -125,7 +125,7 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_user_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $adminUser = $this->seedModel('User');
 
         /**
@@ -145,7 +145,7 @@ class UsersControllerTest extends FeatureTestCase
             'btn_submit'    => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($adminUser)->post(route('users.form'), $userData);
 
         /* Assert */
@@ -165,7 +165,7 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_user_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $adminUser = $this->seedModel('User');
         $editUser  = $this->seedModel('User', [
             'user_name'  => 'Old Name',
@@ -187,7 +187,7 @@ class UsersControllerTest extends FeatureTestCase
             'btn_submit' => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($adminUser)->post(route('users.form', ['id' => $editUser->user_id]), $updateData);
 
         /* Assert */
@@ -207,7 +207,7 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_redirects_to_index_on_cancel(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -219,7 +219,7 @@ class UsersControllerTest extends FeatureTestCase
             'btn_cancel' => '1',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('users.form'), $cancelData);
 
         /* Assert */
@@ -233,7 +233,7 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_user(): void
     {
-        /** Arrange */
+        /* Arrange */
         $adminUser  = $this->seedModel('User');
         $deleteUser = $this->seedModel('User');
 
@@ -246,7 +246,7 @@ class UsersControllerTest extends FeatureTestCase
             'user_id' => $deleteUser->user_id,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($adminUser)->post(
             route('users.delete', ['id' => $deleteUser->user_id]),
             $deletePayload
@@ -268,7 +268,7 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_deleting_non_existent_user(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -280,7 +280,7 @@ class UsersControllerTest extends FeatureTestCase
             'user_id' => 99999,
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(
             route('users.delete', ['id' => 99999]),
             $deletePayload
@@ -297,10 +297,10 @@ class UsersControllerTest extends FeatureTestCase
     #[Test]
     public function it_returns_404_when_editing_non_existent_user(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('users.form', ['id' => 99999]));
 
         /* Assert */

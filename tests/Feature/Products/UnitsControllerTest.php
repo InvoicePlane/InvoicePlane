@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -28,11 +28,11 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_paginated_list_of_units(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $this->seedModelMany('Unit', 5);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('units.index'));
 
         /* Assert */
@@ -48,10 +48,10 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_create_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('units.create'));
 
         /* Assert */
@@ -71,7 +71,7 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_creates_new_unit_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /**
@@ -85,7 +85,7 @@ class UnitsControllerTest extends FeatureTestCase
             'unit_name_plrl' => 'Kilograms',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->post(route('units.store'), $unitData);
 
         /* Assert */
@@ -105,11 +105,11 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_edit_form_with_existing_unit(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $unit = $this->seedModel('Unit');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('units.edit', $unit));
 
         /* Assert */
@@ -128,7 +128,7 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_updates_existing_unit_with_valid_data(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $unit = $this->seedModel('Unit', ['unit_name' => 'Old Name']);
 
@@ -143,7 +143,7 @@ class UnitsControllerTest extends FeatureTestCase
             'unit_name_plrl' => 'Updated Names',
         ];
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->put(route('units.update', $unit), $updateData);
 
         /* Assert */
@@ -163,11 +163,11 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_deletes_unit(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
         $unit = $this->seedModel('Unit');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->delete(route('units.destroy', $unit));
 
         /* Assert */
@@ -185,14 +185,14 @@ class UnitsControllerTest extends FeatureTestCase
     #[Test]
     public function it_orders_units_correctly(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         $this->seedModel('Unit', ['unit_name' => 'Zebra Unit']);
         $this->seedModel('Unit', ['unit_name' => 'Alpha Unit']);
         $this->seedModel('Unit', ['unit_name' => 'Beta Unit']);
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('units.index'));
 
         /* Assert */

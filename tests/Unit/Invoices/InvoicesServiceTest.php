@@ -20,7 +20,7 @@ class InvoicesServiceTest extends TestCase
     #[Test]
     public function it_attaches_payments_to_invoice(): void
     {
-        // Arrange
+        /* Arrange */
         $client = tmpClient::create([
             'client_name'   => 'Test Client',
             'client_active' => 1,
@@ -43,10 +43,10 @@ class InvoicesServiceTest extends TestCase
             'payment_date'   => now(),
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getPayments($invoice);
 
-        // Assert
+        /* Assert */
         $this->assertNotNull($result->payments);
         $this->assertCount(2, $result->payments);
     }
@@ -54,7 +54,7 @@ class InvoicesServiceTest extends TestCase
     #[Test]
     public function it_returns_null_payments_when_invoice_has_no_payments(): void
     {
-        // Arrange
+        /* Arrange */
         $client = tmpClient::create([
             'client_name'   => 'Test Client',
             'client_active' => 1,
@@ -65,17 +65,17 @@ class InvoicesServiceTest extends TestCase
             'invoice_status_id' => 1,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->getPayments($invoice);
 
-        // Assert
+        /* Assert */
         $this->assertNull($result->payments);
     }
 
     #[Test]
     public function it_marks_invoice_as_viewed_when_status_is_sent(): void
     {
-        // Arrange
+        /* Arrange */
         $client = tmpClient::create([
             'client_name'   => 'Test Client',
             'client_active' => 1,
@@ -86,10 +86,10 @@ class InvoicesServiceTest extends TestCase
             'invoice_status_id' => 2, // Sent status
         ]);
 
-        // Act
+        /* Act */
         $this->service->markViewed($invoice->invoice_id);
 
-        // Assert
+        /* Assert */
         $invoice->refresh();
         $this->assertEquals(3, $invoice->invoice_status_id); // Viewed status
     }
@@ -97,7 +97,7 @@ class InvoicesServiceTest extends TestCase
     #[Test]
     public function it_does_not_change_status_when_invoice_is_not_sent(): void
     {
-        // Arrange
+        /* Arrange */
         $client = tmpClient::create([
             'client_name'   => 'Test Client',
             'client_active' => 1,
@@ -108,10 +108,10 @@ class InvoicesServiceTest extends TestCase
             'invoice_status_id' => 1, // Draft status
         ]);
 
-        // Act
+        /* Act */
         $this->service->markViewed($invoice->invoice_id);
 
-        // Assert
+        /* Assert */
         $invoice->refresh();
         $this->assertEquals(1, $invoice->invoice_status_id); // Should remain draft
     }
@@ -119,7 +119,7 @@ class InvoicesServiceTest extends TestCase
     #[Test]
     public function it_filters_invoices_by_client(): void
     {
-        // Arrange
+        /* Arrange */
         $client1 = tmpClient::create([
             'client_name'   => 'Client 1',
             'client_active' => 1,
@@ -145,10 +145,10 @@ class InvoicesServiceTest extends TestCase
             'invoice_status_id' => 1,
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->byClient($client1->client_id);
 
-        // Assert
+        /* Assert */
         $this->assertInstanceOf(InvoicesService::class, $result);
     }
 }

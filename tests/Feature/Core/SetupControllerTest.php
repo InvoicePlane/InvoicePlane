@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * Core AjaxController Feature Tests.
@@ -27,10 +27,10 @@ class SetupControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_setup_wizard_page(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
-        /** Act */
+        /* Act */
         $response = $this->actingAs($user)->get(route('setup.index'));
 
         /* Assert */
@@ -44,10 +44,10 @@ class SetupControllerTest extends FeatureTestCase
     #[Test]
     public function it_is_accessible_without_authentication(): void
     {
-        /** Arrange */
+        /* Arrange */
         // No authentication for initial setup
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('setup.index'));
 
         /* Assert */

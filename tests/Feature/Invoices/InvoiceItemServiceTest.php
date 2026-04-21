@@ -7,12 +7,12 @@ use Modules\Core\Models\Setting;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\Item;
 use Modules\Invoices\Models\ItemAmount;
-use Modules\Invoices\Services\InvoiceAmountService;
+use Modules\Invoices\Services\InvoiceItemService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(InvoiceAmountService::class)]
+#[CoversClass(InvoiceItemService::class)]
 
 class InvoiceItemServiceTest extends AbstractServiceTestCase
 {
@@ -37,9 +37,13 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
+        /* (no additional setup needed beyond setUp()) */
+
+        /* Act */
         $rules = $this->service->getValidationRules();
 
+        /* Assert */
         $this->assertIsArray($rules);
         $this->assertArrayHasKey('invoice_id', $rules);
         $this->assertArrayHasKey('item_name', $rules);
@@ -54,7 +58,7 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_creates_new_item(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
             'user_id'                  => 1,
@@ -80,8 +84,10 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
             'item_discount_amount' => 0,
         ];
 
+        /* Act */
         $item = $this->service->saveItem(null, $data, $invoice->invoice_id);
 
+        /* Assert */
         $this->assertInstanceOf(Item::class, $item);
         $this->assertEquals('Test Item', $item->item_name);
         $this->assertEquals(2, $item->item_quantity);
@@ -92,7 +98,7 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_updates_existing_item(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
             'user_id'                  => 1,
@@ -128,8 +134,10 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
             'item_discount_amount' => 10,
         ];
 
+        /* Act */
         $item = $this->service->saveItem($existingItem->item_id, $data, $invoice->invoice_id);
 
+        /* Assert */
         $this->assertEquals($existingItem->item_id, $item->item_id);
         $this->assertEquals('Updated Name', $item->item_name);
         $this->assertEquals(3, $item->item_quantity);
@@ -141,7 +149,7 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_deletes_item_and_recalculates_invoice(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
             'user_id'                  => 1,
@@ -176,8 +184,10 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
             'item_total'     => 110,
         ]);
 
+        /* Act */
         $result = $this->service->deleteItem($item->item_id);
 
+        /* Assert */
         $this->assertTrue($result);
         $this->assertNull(Item::query()->find($item->item_id));
         $this->assertNull(ItemAmount::query()->where('item_id', $item->item_id)->first());
@@ -187,16 +197,20 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_false_when_deleting_non_existent_item(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
+        /* (no setup needed) */
+
+        /* Act */
         $result = $this->service->deleteItem(99999);
 
+        /* Assert */
         $this->assertFalse($result);
     }
 
     #[Test]
     public function it_gets_items_subtotal(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
             'user_id'                  => 1,
@@ -247,8 +261,10 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
             'item_total'     => 165,
         ]);
 
+        /* Act */
         $subtotal = $this->service->getItemsSubtotal($invoice->invoice_id);
 
+        /* Assert */
         $this->assertEquals(350.0, $subtotal);
     }
 
@@ -256,7 +272,7 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
     #[Test]
     public function it_returns_zero_subtotal_for_invoice_without_items(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
             'user_id'                  => 1,
@@ -273,8 +289,10 @@ class InvoiceItemServiceTest extends AbstractServiceTestCase
             'invoice_url_key'          => 'key-item-005',
         ]);
 
+        /* Act */
         $subtotal = $this->service->getItemsSubtotal($invoice->invoice_id);
 
+        /* Assert */
         $this->assertEquals(0.0, $subtotal);
     }
 }

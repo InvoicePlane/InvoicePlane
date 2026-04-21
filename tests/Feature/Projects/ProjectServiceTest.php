@@ -37,7 +37,7 @@ class ProjectServiceTest extends TestCase
     #[Test]
     public function it_returns_correct_model_class(): void
     {
-        /** Arrange & Act */
+        /* Arrange & Act */
         $reflection = new ReflectionClass($this->service);
         $method     = $reflection->getMethod('getModelClass');
         $method->setAccessible(true);
@@ -54,14 +54,14 @@ class ProjectServiceTest extends TestCase
     #[Test]
     public function it_creates_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client = $this->seedModel('Client');
         $data   = [
             'client_id'    => $client->client_id,
             'project_name' => 'Test Project',
         ];
 
-        /** Act */
+        /* Act */
         $project = $this->service->create($data);
 
         /* Assert */
@@ -80,7 +80,7 @@ class ProjectServiceTest extends TestCase
     #[Test]
     public function it_updates_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id'    => $client->client_id,
@@ -91,7 +91,7 @@ class ProjectServiceTest extends TestCase
             'project_name' => 'Updated Name',
         ];
 
-        /** Act */
+        /* Act */
         $result = $this->service->update($project->project_id, $updateData);
 
         /* Assert */
@@ -108,13 +108,13 @@ class ProjectServiceTest extends TestCase
     #[Test]
     public function it_finds_project_by_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $found = $this->service->find($project->project_id);
 
         /* Assert */
@@ -142,13 +142,13 @@ class ProjectServiceTest extends TestCase
     #[Test]
     public function it_deletes_project(): void
     {
-        /** Arrange */
+        /* Arrange */
         $client  = $this->seedModel('Client');
         $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->delete($project->project_id);
 
         /* Assert */

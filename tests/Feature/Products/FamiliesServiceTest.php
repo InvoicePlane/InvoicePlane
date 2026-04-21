@@ -54,15 +54,15 @@ class FamiliesServiceTest extends TestCase
     #[Test]
     public function it_retrieves_all_families(): void
     {
-        // Arrange
+        /* Arrange */
         Family::create(['family_name' => 'Family 1']);
         Family::create(['family_name' => 'Family 2']);
         Family::create(['family_name' => 'Family 3']);
 
-        // Act
+        /* Act */
         $result = $this->service->defaultSelect()->get();
 
-        // Assert
+        /* Assert */
         $this->assertCount(3, $result);
     }
 }

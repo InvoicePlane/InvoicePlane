@@ -2,19 +2,21 @@
 
 namespace Tests\Feature\Core;
 
-use function Tests\Feature\Auth\route;
-
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class WelcomeControllerTest extends TestCase
 {
     #[Test]
-    public function it_displays_welcome_page()
+    public function it_displays_welcome_page(): void
     {
-        // Act: visit the welcome page
+        /* Arrange */
+        /* (no setup needed) */
+
+        /* Act */
         $response = $this->get(route('welcome'));
 
-        // Assert: page is displayed successfully
+        /* Assert */
         $response->assertStatus(200);
         $response->assertViewIs('welcome');
     }

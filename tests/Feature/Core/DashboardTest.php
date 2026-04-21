@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
 use Tests\TestCase;
 
@@ -9,15 +10,30 @@ class DashboardTest extends TestCase
 {
     use InteractsWithDatabase;
 
-    public function test_guests_are_redirected_to_the_login_page(): void
+    #[Test]
+    public function it_redirects_guests_to_the_login_page(): void
     {
-        $this->get('/dashboard')->assertRedirect('/login');
+        /* Arrange */
+        /* (no setup needed - unauthenticated request) */
+
+        /* Act */
+        $response = $this->get('/dashboard');
+
+        /* Assert */
+        $response->assertRedirect('/login');
     }
 
-    public function test_authenticated_users_can_visit_the_dashboard(): void
+    #[Test]
+    public function it_allows_authenticated_users_to_visit_the_dashboard(): void
     {
-        $this->actingAs($user = $this->seedModel('User'));
+        /* Arrange */
+        $user = $this->seedModel('User');
 
-        $this->get('/dashboard')->assertStatus(200);
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get('/dashboard');
+
+        /* Assert */
+        $response->assertStatus(200);
     }
 }

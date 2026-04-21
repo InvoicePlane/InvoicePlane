@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -27,10 +27,10 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_deletes_family_without_products(): void
     {
-        /** Arrange */
+        /* Arrange */
         $family = $this->seedModel('Family', ['family_name' => 'Empty Family']);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('families.delete', ['family_id' => $family->family_id]));
 
         /* Assert */
@@ -45,11 +45,11 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_with_products(): void
     {
-        /** Arrange */
+        /* Arrange */
         $family = $this->seedModel('Family');
         $this->seedModel('Product', ['family_id' => $family->family_id]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('families.delete', ['family_id' => $family->family_id]));
 
         /* Assert */
@@ -64,11 +64,11 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_prevents_deletion_with_multiple_products(): void
     {
-        /** Arrange */
+        /* Arrange */
         $family = $this->seedModel('Family');
         $this->seedModelMany('Product', 3, ['family_id' => $family->family_id]);
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('families.delete', ['family_id' => $family->family_id]));
 
         /* Assert */
@@ -83,10 +83,10 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_invalid_family_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $invalidId = -1;
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('families.delete', ['family_id' => $invalidId]));
 
         /* Assert */
@@ -100,10 +100,10 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_handles_nonexistent_family_id(): void
     {
-        /** Arrange */
+        /* Arrange */
         $nonexistentId = 99999;
 
-        /** Act */
+        /* Act */
         $response = $this->post(route('families.delete', ['family_id' => $nonexistentId]));
 
         /* Assert */
@@ -117,7 +117,7 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     #[Test]
     public function it_allows_deletion_after_products_removed(): void
     {
-        /** Arrange */
+        /* Arrange */
         $family  = $this->seedModel('Family');
         $product = $this->seedModel('Product', ['family_id' => $family->family_id]);
 
@@ -128,7 +128,7 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
         // Remove product
         $product->delete();
 
-        /** Act */
+        /* Act */
         $response2 = $this->post(route('families.delete', ['family_id' => $family->family_id]));
 
         /* Assert */

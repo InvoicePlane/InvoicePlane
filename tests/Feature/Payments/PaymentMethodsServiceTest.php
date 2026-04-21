@@ -22,7 +22,7 @@ class PaymentMethodsServiceTest extends TestCase
     #[Test]
     public function it_retrieves_all_payment_methods(): void
     {
-        // Arrange
+        /* Arrange */
         PaymentMethod::create([
             'payment_method_name' => 'Cash',
         ]);
@@ -33,20 +33,20 @@ class PaymentMethodsServiceTest extends TestCase
             'payment_method_name' => 'Bank Transfer',
         ]);
 
-        // Act
+        /* Act */
         $result = $this->service->defaultSelect()->get();
 
-        // Assert
+        /* Assert */
         $this->assertCount(3, $result);
     }
 
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        // Act
+        /* Act */
         $rules = $this->service->validationRules();
 
-        // Assert
+        /* Assert */
         $this->assertIsArray($rules);
         $this->assertArrayHasKey('payment_method_name', $rules);
     }
@@ -54,15 +54,15 @@ class PaymentMethodsServiceTest extends TestCase
     #[Test]
     public function it_orders_by_name_by_default(): void
     {
-        // Arrange
+        /* Arrange */
         PaymentMethod::create(['payment_method_name' => 'Zebra Payment']);
         PaymentMethod::create(['payment_method_name' => 'Apple Pay']);
         PaymentMethod::create(['payment_method_name' => 'Bitcoin']);
 
-        // Act
+        /* Act */
         $result = $this->service->defaultOrderBy()->get();
 
-        // Assert
+        /* Assert */
         $this->assertCount(3, $result);
         // First should be alphabetically first
         $this->assertEquals('Apple Pay', $result->first()->payment_method_name);

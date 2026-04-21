@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -30,10 +30,10 @@ class CrmPaymentsControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_guest_payment_form(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Guest portal accessible without authentication
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.payments'));
 
         /* Assert */
@@ -47,10 +47,10 @@ class CrmPaymentsControllerTest extends FeatureTestCase
     #[Test]
     public function it_is_accessible_without_authentication(): void
     {
-        /** Arrange */
+        /* Arrange */
         // No authentication required
 
-        /** Act */
+        /* Act */
         $response = $this->get(route('guest.payments'));
 
         /* Assert */
@@ -63,11 +63,11 @@ class CrmPaymentsControllerTest extends FeatureTestCase
     #[Test]
     public function it_submits_payment_and_redirects_with_success(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Guest payment submission requires invoice URL key and payment details
         // Note: Current implementation is a stub/TODO but test reflects real-world data
 
-        /** Act */
+        /* Act */
         /**
          * {
          *     "invoice_url_key": "abc123def456",
@@ -98,11 +98,11 @@ class CrmPaymentsControllerTest extends FeatureTestCase
     #[Test]
     public function it_allows_payment_submission_without_authentication(): void
     {
-        /** Arrange */
+        /* Arrange */
         // No authentication required for guest payments
         // Note: Current implementation is a stub/TODO but test reflects real-world data
 
-        /** Act */
+        /* Act */
         /**
          * {
          *     "invoice_url_key": "xyz789ghi012",
@@ -131,7 +131,7 @@ class CrmPaymentsControllerTest extends FeatureTestCase
     #[Test]
     public function it_works_when_authenticated(): void
     {
-        /** Arrange */
+        /* Arrange */
         $user = $this->seedModel('User');
 
         /* Act */

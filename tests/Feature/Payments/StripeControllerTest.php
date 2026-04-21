@@ -6,7 +6,7 @@ use Modules\Payments\Controllers\PaymentMethodsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Feature\FeatureTestCase;
+use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * PaymentMethodsController Feature Tests.
@@ -24,11 +24,11 @@ class StripeControllerTest extends FeatureTestCase
     #[Test]
     public function it_handles_stripe_webhook_notification(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Stripe webhooks require event type and data object
         // Note: Current implementation is a stub/TODO but test reflects real webhook data
 
-        /** Act */
+        /* Act */
         /**
          * {
          *     "id": "evt_1234567890",
@@ -77,11 +77,11 @@ class StripeControllerTest extends FeatureTestCase
     #[Test]
     public function it_is_accessible_without_authentication(): void
     {
-        /** Arrange */
+        /* Arrange */
         // Webhook endpoints should not require authentication
         // Note: Current implementation is a stub/TODO but test reflects real webhook data
 
-        /** Act */
+        /* Act */
         /**
          * {
          *     "id": "evt_0987654321",

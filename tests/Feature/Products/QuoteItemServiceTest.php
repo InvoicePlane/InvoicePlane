@@ -54,7 +54,7 @@ class QuoteItemServiceTest extends AbstractServiceTestCase
             'item_price'       => 100.00,
         ];
 
-        /** Act */
+        /* Act */
         $item = $this->service->saveItem($itemData);
 
         /* Assert */
@@ -85,7 +85,7 @@ class QuoteItemServiceTest extends AbstractServiceTestCase
             'item_price'    => 50.00,
         ]);
 
-        /** Act */
+        /* Act */
         $result = $this->service->deleteItem($item->item_id);
 
         /* Assert */
@@ -133,7 +133,7 @@ class QuoteItemServiceTest extends AbstractServiceTestCase
             'item_total'     => 50.00,
         ]);
 
-        /** Act */
+        /* Act */
         $subtotal = $this->service->getItemsSubtotal($quote->quote_id);
 
         /* Assert */
