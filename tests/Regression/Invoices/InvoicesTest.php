@@ -3,9 +3,9 @@
 namespace Tests\Regression\Invoices;
 
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Kernel\InvoicePlaneRegressionKernel;
+use Tests\AbstractTestCase;
 
-class InvoicesTest extends InvoicePlaneRegressionKernel
+class InvoicesTest extends AbstractTestCase
 {
     #[Test]
     public function it_can_load_invoice_index(): void
