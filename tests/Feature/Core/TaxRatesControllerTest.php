@@ -2,10 +2,7 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Models\User;
 use Tests\Concerns\InteractsWithDatabase;
-
-
 use Tests\TestCase;
 
 class TaxRatesControllerTest extends TestCase
