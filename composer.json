@@ -35,6 +35,11 @@
         "squizlabs/php_codesniffer": "^3.13.5",
         "symfony/var-dumper": "^6.4.32"
     },
+    "autoload": {
+        "files": [
+            "bootstrap/helpers.php"
+        ]
+    },
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
