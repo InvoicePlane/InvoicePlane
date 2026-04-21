@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('env')) {
+if ( ! function_exists('env')) {
     function env(string $key, mixed $default = null): mixed
     {
         return $_ENV[$key]
@@ -10,7 +10,7 @@ if (!function_exists('env')) {
     }
 }
 
-if (!function_exists('env_bool')) {
+if ( ! function_exists('env_bool')) {
     function env_bool(string $key, bool $default = false): bool
     {
         $value = $_ENV[$key] ?? null;
@@ -23,7 +23,7 @@ if (!function_exists('env_bool')) {
     }
 }
 
-if (!function_exists('base_path')) {
+if ( ! function_exists('base_path')) {
     function base_path(string $path = ''): string
     {
         static $basePath = null;
