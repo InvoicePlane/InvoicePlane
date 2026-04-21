@@ -47,6 +47,9 @@
         <a data-toggle="tab" href="#settings-general"><?php _trans('general'); ?></a>
     </li>
     <li>
+        <a data-toggle="tab" href="#settings-oidc"><?php _trans('oidc_sso'); ?></a>
+    </li>
+    <li>
         <a data-toggle="tab" href="#settings-invoices"><?php _trans('invoices'); ?></a>
     </li>
     <li>
@@ -83,6 +86,10 @@
 
             <div id="settings-general" class="tab-pane active">
                 <?php $this->layout->load_view('settings/partial_settings_general'); ?>
+            </div>
+
+            <div id="settings-oidc" class="tab-pane">
+                <?php $this->layout->load_view('settings/partial_settings_oidc'); ?>
             </div>
 
             <div id="settings-invoices" class="tab-pane">

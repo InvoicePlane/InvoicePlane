@@ -1,17 +1,17 @@
 name: PHP Testing
 
 on:
-  pull_request:
-    branches:
-      - development
+  workflow_dispatch:
 
 jobs:
   run:
+    permissions:
+      contents: read
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['8.1']
+        php-versions: ['8.2']
 
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
 

@@ -1,18 +1,14 @@
 name: Build & Push PHPMyAdmin Docker Image
 
 on:
-  push:
-    branches:
-      - development
-    paths:
-      - 'resources/docker/phpmyadmin/Dockerfile'
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
   build-test-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

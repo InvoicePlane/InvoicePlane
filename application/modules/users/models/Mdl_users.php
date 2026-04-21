@@ -154,6 +154,65 @@ class Mdl_Users extends Response_Model
     }
 
     /**
+     * Validation rules for OIDC users (no password required)
+     *
+     * @return array
+     */
+    public function validation_rules_oidc()
+    {
+        return [
+            'user_type' => [
+                'field' => 'user_type',
+                'label' => trans('user_type'),
+                'rules' => 'required',
+            ],
+            'user_email' => [
+                'field' => 'user_email',
+                'label' => trans('email'),
+                'rules' => 'required|valid_email|is_unique[ip_users.user_email]',
+            ],
+            'user_name' => [
+                'field' => 'user_name',
+                'label' => trans('name'),
+                'rules' => 'required',
+            ],
+            'user_language' => [
+                'field' => 'user_language',
+                'label' => trans('language'),
+                'rules' => 'required',
+            ],
+        ];
+    }
+
+    /**
+     * Find a user by their OIDC subject ID
+     *
+     * @param string $sub OIDC subject identifier
+     * @return object|null
+     */
+    public function find_by_oidc_sub($sub)
+    {
+        return $this->db
+            ->where('user_oidc_sub', $sub)
+            ->get('ip_users')
+            ->row();
+    }
+
+    /**
+     * Find a user by email address
+     *
+     * @param string $email
+     * @return object|null
+     */
+    public function find_by_email($email)
+    {
+        return $this->db
+            ->where('user_email', $email)
+            ->get('ip_users')
+            ->row();
+    }
+
+    /**
      * @param int $amount
      *
      * @return mixed
@@ -259,6 +318,8 @@ class Mdl_Users extends Response_Model
             'user_rcc' => [
                 'field' => 'user_rcc',
             ],
+            // Note: user_auth_provider and user_oidc_sub are intentionally excluded
+            // to prevent mass assignment vulnerabilities - these are set only by OIDC library
         ];
     }
 

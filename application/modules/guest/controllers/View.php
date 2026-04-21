@@ -80,6 +80,8 @@ class View extends Base_Controller
             'legacy_calculation' => config_item('legacy_calculation'),
         ];
 
+        $data['show_item_discounts'] = $this->has_discounts($data['items']);
+
         $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
     }
 
@@ -184,6 +186,7 @@ class View extends Base_Controller
             'custom_fields'      => $custom_fields,
             'legacy_calculation' => config_item('legacy_calculation'),
         ];
+        $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
         $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
     }
@@ -246,7 +249,8 @@ class View extends Base_Controller
      */
     private function get_attachments(string $url_key): array
     {
-        $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = '" . $url_key . "'");
+        // Security: Use query binding to prevent SQL injection
+        $query = $this->db->query('SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?', [$url_key]);
 
         $names = [];
 
@@ -261,5 +265,25 @@ class View extends Base_Controller
         }
 
         return $names;
+    }
+
+    /**
+     * Determine if in the array of items
+     * that are provided, one or more items
+     * have a discount.
+     *
+     * @param array $items
+     *
+     * @return bool
+     */
+    private function has_discounts(array $items): bool
+    {
+        foreach ($items as $item) {
+            if ($item->item_discount > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -49,6 +49,23 @@ if ($login_logo) {
 
         <div class="row"><?php $this->layout->load_view('layout/alerts'); ?></div>
 
+<?php
+$show_sso_button = $oidc_enabled && (! $oidc_auto_redirect || $local_login_requested || $has_oidc_error);
+$show_local_login = ! $oidc_enabled || $oidc_allow_local;
+
+if ($show_sso_button): ?>
+        <a href="<?php echo site_url('sessions/oidc_login'); ?>" class="btn btn-primary btn-block btn-lg">
+            <i class="fa fa-sign-in fa-margin"></i> <?php echo htmlspecialchars($oidc_button_text); ?>
+        </a>
+
+<?php if ($show_local_login): ?>
+        <div class="text-center" style="margin: 20px 0;">
+            <span style="color: #999;">— <?php _trans('or'); ?> —</span>
+        </div>
+<?php endif; ?>
+<?php endif; ?>
+
+<?php if ($show_local_login): ?>
         <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
 
             <?php _csrf_field(); ?>
@@ -69,7 +86,7 @@ if ($login_logo) {
 
             <input type="hidden" name="btn_login" value="true">
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-default">
                 <i class="fa fa-unlock fa-margin"></i> <?php _trans('login'); ?>
             </button>
             <a href="<?php echo site_url('sessions/passwordreset'); ?>" class="btn btn-default">
@@ -77,6 +94,7 @@ if ($login_logo) {
             </a>
 
         </form>
+<?php endif; ?>
 
     </div>
 </div>

@@ -107,7 +107,7 @@ switch (ENVIRONMENT) {
  * This variable must contain the name of your "system" directory.
  * Set the path if it is not in the same directory as this file.
  */
-$system_path = 'vendor/codeigniter/framework/system';
+$system_path = 'vendor/pocketarc/codeigniter/system';
 
 /*
  *---------------------------------------------------------------
@@ -303,7 +303,12 @@ define('VIEWPATH', $view_folder . DIRECTORY_SEPARATOR);
 define('THEME_FOLDER', FCPATH . 'assets' . DIRECTORY_SEPARATOR);
 
 // Automatic temp pdf & xml files cleanup
-array_map('unlink', glob(UPLOADS_TEMP_FOLDER . '*.{pdf,xml}', \GLOB_BRACE));
+$files = array_merge(
+    glob(UPLOADS_TEMP_FOLDER . '*.pdf'),
+    glob(UPLOADS_TEMP_FOLDER . '*.xml')
+);
+
+array_map('unlink', $files);
 
 /*
  * --------------------------------------------------------------------

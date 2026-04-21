@@ -48,7 +48,7 @@ if ($overdue_invoices) {
         <div class="panel-body no-padding">
 
 <?php
-if ($overdue_invoices) {
+if ($open_invoices) {
     echo $this->layout->load_view('guest/partial_invoices_table', ['invoices' => $open_invoices]);
 } else {
 ?>

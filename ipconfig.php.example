@@ -53,12 +53,32 @@ ENABLE_INVOICE_DELETION=false
 # Disable the read-only mode for invoices
 DISABLE_READ_ONLY=false
 
+# Password reset rate limiting settings (since v1.6.4)
+# Maximum password reset attempts per IP address within the time window
+PASSWORD_RESET_IP_MAX_ATTEMPTS=5
+# Time window in minutes for IP-based rate limiting
+PASSWORD_RESET_IP_WINDOW_MINUTES=60
+# Maximum password reset attempts per email address within the time window
+PASSWORD_RESET_EMAIL_MAX_ATTEMPTS=3
+# Time window in hours for email-based rate limiting
+PASSWORD_RESET_EMAIL_WINDOW_HOURS=1
+
 # Sumex Customizations (Swiss Medical Invoices)
 # Need one (or more) Name containing "sumex" in invoice groups
 # Settings panel: true to Enable - Since v-1.6.3
 SUMEX_SETTINGS=false
 # Set the url where post the xml to get a generated pdf - Since v-1.5.0. See https://github.com/InvoicePlane/InvoicePlane/pull/453
 SUMEX_URL=
+
+# OIDC SSO Configuration (optional - can also configure in admin settings)
+# Enable OIDC Single Sign-On
+OIDC_ENABLED=false
+# The OIDC provider URL (issuer), e.g., https://your-keycloak.com/realms/your-realm
+OIDC_PROVIDER_URL=
+# The client ID registered with your identity provider
+OIDC_CLIENT_ID=
+# The client secret (keep this secure!)
+OIDC_CLIENT_SECRET=
 
 ##
 ## DO NOT CHANGE ANY CONFIGURATION VALUES BELOW THIS LINE!

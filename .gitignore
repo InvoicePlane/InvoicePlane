@@ -21,3 +21,5 @@ adminer.php
 npm-debug.log
 yarn-error.log
 .temp
+composer.phar
+package-lock.json

@@ -1,18 +1,13 @@
 name: Build & Push PHP-FPM Docker Image
 
 on:
-  push:
-    branches:
-      - development
-    paths:
-      - 'resources/docker/php-fpm/Dockerfile'
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
   build-test-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
