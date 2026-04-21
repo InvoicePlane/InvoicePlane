@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Tests\Hmvc;
+namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use Tests\Hmvc\Concerns\InteractsWithDatabase;
-use Tests\Hmvc\Concerns\InteractsWithSession;
+use Tests\Concerns\InteractsWithDatabase;
+use Tests\Concerns\InteractsWithSession;
 
 abstract class BaseHmvcTestCase extends TestCase
 {
@@ -57,7 +55,7 @@ abstract class BaseHmvcTestCase extends TestCase
             sprintf(
                 "Failed asserting response body contains [%s].\nActual body (first 500 chars):\n%s",
                 $needle,
-                substr($response->body(), 0, 500)
+                mb_substr($response->body(), 0, 500)
             )
         );
     }
@@ -69,7 +67,7 @@ abstract class BaseHmvcTestCase extends TestCase
             sprintf(
                 "Failed asserting response body does NOT contain [%s].\nBody (first 500 chars):\n%s",
                 $needle,
-                substr($response->body(), 0, 500)
+                mb_substr($response->body(), 0, 500)
             )
         );
     }
@@ -83,7 +81,7 @@ abstract class BaseHmvcTestCase extends TestCase
                 'Expected HTTP status [%d] but received [%d]. Body (first 300 chars): %s',
                 $expected,
                 $response->statusCode(),
-                substr($response->body(), 0, 300)
+                mb_substr($response->body(), 0, 300)
             )
         );
     }
@@ -95,7 +93,7 @@ abstract class BaseHmvcTestCase extends TestCase
             sprintf(
                 'Expected a 3xx redirect but got status [%d]. Body: %s',
                 $response->statusCode(),
-                substr($response->body(), 0, 300)
+                mb_substr($response->body(), 0, 300)
             )
         );
 
@@ -150,9 +148,9 @@ abstract class BaseHmvcTestCase extends TestCase
 
     private function resetGlobalState(): void
     {
-        $_GET    = [];
-        $_POST   = [];
-        $_FILES  = [];
+        $_GET   = [];
+        $_POST  = [];
+        $_FILES = [];
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI']    = '/';

@@ -1,10 +1,12 @@
 <?php
 
-namespace Modules\Core\Testing;
+namespace Tests;
 
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+use ReflectionClass;
+use ReflectionMethod;
 
-abstract class TestCase extends PHPUnitTestCase
+abstract class AbstractTestCase extends PHPUnitTestCase
 {
     protected mixed $application;
 
@@ -20,10 +22,10 @@ abstract class TestCase extends PHPUnitTestCase
      */
     protected function discoverPublicControllerActions(string $controllerClass): array
     {
-        $reflection = new \ReflectionClass($controllerClass);
-        $actions = [];
+        $reflection = new ReflectionClass($controllerClass);
+        $actions    = [];
 
-        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             if ($method->getDeclaringClass()->getName() !== $controllerClass) {
                 continue;
             }
@@ -45,9 +47,9 @@ abstract class TestCase extends PHPUnitTestCase
      */
     protected function guessRouteForControllerAction(string $controllerClass, string $action): array
     {
-        $reflection = new \ReflectionClass($controllerClass);
-        $module = strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', explode('\\', $reflection->getNamespaceName())[1] ?? 'core'));
-        $controller = strtolower(str_replace('Controller', '', $reflection->getShortName()));
+        $reflection = new ReflectionClass($controllerClass);
+        $module     = mb_strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', explode('\\', $reflection->getNamespaceName())[1] ?? 'core'));
+        $controller = mb_strtolower(str_replace('Controller', '', $reflection->getShortName()));
 
         $verb = 'GET';
 
@@ -61,7 +63,7 @@ abstract class TestCase extends PHPUnitTestCase
 
         return [
             'verb' => $verb,
-            'uri' => $module . '/' . $controller . '/' . $action,
+            'uri'  => $module . '/' . $controller . '/' . $action,
         ];
     }
 
@@ -70,7 +72,7 @@ abstract class TestCase extends PHPUnitTestCase
      */
     protected function discoverRouteDefinitionsForController(string $controllerClass): array
     {
-        $reflection = new \ReflectionClass($controllerClass);
+        $reflection     = new ReflectionClass($controllerClass);
         $controllerFile = $reflection->getFileName();
 
         if ($controllerFile === false) {
@@ -78,7 +80,7 @@ abstract class TestCase extends PHPUnitTestCase
         }
 
         // Walk up from controller file to find the module root (directory containing routes/)
-        $dir = dirname($controllerFile);
+        $dir        = dirname($controllerFile);
         $moduleRoot = null;
 
         while ($dir !== dirname($dir)) {
@@ -93,15 +95,15 @@ abstract class TestCase extends PHPUnitTestCase
             return [];
         }
 
-        $routeFileName = strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', str_replace('Controller', '', $reflection->getShortName())));
-        $routeFile = $moduleRoot . '/routes/' . $routeFileName . '.php';
+        $routeFileName = mb_strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', str_replace('Controller', '', $reflection->getShortName())));
+        $routeFile     = $moduleRoot . '/routes/' . $routeFileName . '.php';
 
-        if (!is_file($routeFile)) {
+        if ( ! is_file($routeFile)) {
             return [];
         }
 
         $contents = (string) file_get_contents($routeFile);
-        $routes = [];
+        $routes   = [];
 
         if (preg_match_all("/Route::(get|post)\\(\\s*'([^']+)',\\s*\\[[^\\]]+::class,\\s*'([^']+)'\\]\\)/i", $contents, $matches, PREG_SET_ORDER) === false) {
             return [];
@@ -110,8 +112,8 @@ abstract class TestCase extends PHPUnitTestCase
         foreach ($matches as $match) {
             $routes[] = [
                 'action' => $match[3],
-                'verb' => strtoupper($match[1]),
-                'uri' => $match[2],
+                'verb'   => mb_strtoupper($match[1]),
+                'uri'    => $match[2],
             ];
         }
 
@@ -147,34 +149,32 @@ abstract class TestCase extends PHPUnitTestCase
     protected function validateRequiredFields(array $payload, array $requiredFields): bool
     {
         foreach ($requiredFields as $field) {
-            if (!isset($payload[$field]) || $payload[$field] === '') {
+            if ( ! isset($payload[$field]) || $payload[$field] === '') {
                 return false;
             }
         }
 
         return true;
     }
-
 }
 
-
-if (! function_exists('base_path')) {
+if ( ! function_exists('base_path')) {
     function base_path(string $path = ''): string
     {
         $basePath = dirname(__DIR__, 4);
 
-        return $path === '' ? $basePath : $basePath . '/' . ltrim($path, '/');
+        return $path === '' ? $basePath : $basePath . '/' . mb_ltrim($path, '/');
     }
 }
 
-if (! function_exists('trans')) {
+if ( ! function_exists('trans')) {
     function trans(string $key): string
     {
         return $key;
     }
 }
 
-if (! function_exists('config')) {
+if ( ! function_exists('config')) {
     function config(string $key, mixed $default = null): mixed
     {
         return $default;
