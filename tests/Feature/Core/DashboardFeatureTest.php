@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Feature\Dashboard;
 
-use Tests\Hmvc\BaseHmvcTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * Feature tests for the Dashboard module.
@@ -12,7 +10,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group dashboard
  */
-class DashboardFeatureTest extends BaseHmvcTestCase
+class DashboardFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
     {

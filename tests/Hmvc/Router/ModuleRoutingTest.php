@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Feature\Routing;
 
-use Tests\Hmvc\BaseHmvcTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * Parameterised routing smoke test.
@@ -25,7 +23,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group routing
  */
-class ModuleRoutingTest extends BaseHmvcTestCase
+class ModuleRoutingTest extends AbstractTestCase
 {
     protected function setUp(): void
     {

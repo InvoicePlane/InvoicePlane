@@ -1,16 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Feature\Payments;
 
-use Tests\Hmvc\BaseHmvcTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * @group feature
  * @group payments
  */
-class PaymentsFeatureTest extends BaseHmvcTestCase
+class PaymentsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
     {

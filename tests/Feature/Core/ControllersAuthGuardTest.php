@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Feature\Auth;
 
-use Tests\Hmvc\BaseHmvcTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * Parameterised auth-guard regression test.
@@ -18,7 +16,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group auth
  */
-class ControllersAuthGuardTest extends BaseHmvcTestCase
+class ControllersAuthGuardTest extends AbstractTestCase
 {
     protected function setUp(): void
     {

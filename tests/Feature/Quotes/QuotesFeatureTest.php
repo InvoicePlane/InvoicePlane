@@ -1,16 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Feature\Quotes;
 
-use Tests\Hmvc\BaseHmvcTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * @group feature
  * @group quotes
  */
-class QuotesFeatureTest extends BaseHmvcTestCase
+class QuotesFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
     {

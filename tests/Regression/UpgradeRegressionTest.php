@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Regression;
 
-use Tests\Hmvc\BaseHmvcTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * Snapshot-based regression suite.
@@ -26,7 +24,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  *
  * @group regression
  */
-class UpgradeRegressionTest extends BaseHmvcTestCase
+class UpgradeRegressionTest extends AbstractTestCase
 {
     protected function setUp(): void
     {

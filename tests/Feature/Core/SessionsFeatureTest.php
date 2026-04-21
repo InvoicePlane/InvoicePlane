@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Feature\Sessions;
 
-use Tests\Hmvc\BaseHmvcTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * Feature tests for the Sessions module.
@@ -16,7 +14,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group sessions
  */
-class SessionsFeatureTest extends BaseHmvcTestCase
+class SessionsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
