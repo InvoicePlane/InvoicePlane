@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Payments;
 
-use Tests\AbstractTestCase;
+ use Tests\AbstractTestCase;
 
 /**
  * @group feature

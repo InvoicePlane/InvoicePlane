@@ -1,8 +1,6 @@
 <?php
 
-use core\CiKernel;
-
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../application/core/CiKernel.php';
+require_once __DIR__ . '/Kernel/MxKernel.php';
 
-CiKernel::boot();
+\Tests\Kernel\MxKernel::boot();

@@ -2,7 +2,7 @@
 
 namespace Tests\Regression;
 
-use Tests\AbstractTestCase;
+ use Tests\AbstractTestCase;
 
 /**
  * Snapshot-based regression suite.

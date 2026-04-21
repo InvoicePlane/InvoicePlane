@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
-use Tests\AbstractTestCase;
+ use Tests\AbstractTestCase;
 
 /**
  * Parameterised auth-guard regression test.
