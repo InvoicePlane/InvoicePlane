@@ -2,17 +2,13 @@
 
 namespace Tests\Feature\Core;
 
-use Tests\Concerns\InteractsWithDatabase;
-
-use Modules\CustomFields\Models\CustomField;
-use Modules\CustomFields\Services\CustomFieldsService;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Concerns\InteractsWithDatabase;
 use Tests\TestCase;
 
 class TaxRatesServiceTest extends TestCase
 {
     use InteractsWithDatabase;
-
 
     private TaxRatesService $service;
 

@@ -3,17 +3,11 @@
 namespace Tests\Feature\Core;
 
 use Tests\Concerns\InteractsWithDatabase;
-
-use App\Models\User;
-
-use function Tests\Feature\Auth\route;
-
 use Tests\TestCase;
 
 class PasswordConfirmationTest extends TestCase
 {
     use InteractsWithDatabase;
-
 
     public function test_confirm_password_screen_can_be_rendered(): void
     {

@@ -4,9 +4,6 @@ namespace Tests\Unit\Clients;
 
 use Modules\Crm\Models\Client;
 use Modules\Crm\Services\ClientService;
-use Modules\Invoices\Models\Invoice;
-use Modules\Projects\Models\Project;
-use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

@@ -2,11 +2,10 @@
 
 namespace Tests\Feature\Invoices;
 
-use Tests\Concerns\InteractsWithDatabase;
-
 use Modules\Quotes\Controllers\AjaxController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Concerns\InteractsWithDatabase;
 use Tests\TestCase;
 
 #[CoversClass(AjaxController::class)]

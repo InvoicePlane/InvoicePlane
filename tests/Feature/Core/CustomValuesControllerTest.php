@@ -4,8 +4,6 @@ namespace Tests\Feature\Core;
 
 use Tests\Concerns\InteractsWithDatabase;
 
-use App\Models\User;
-
 use function Tests\Feature\Auth\route;
 
 use Tests\TestCase;
@@ -13,7 +11,6 @@ use Tests\TestCase;
 class CustomValuesControllerTest extends TestCase
 {
     use InteractsWithDatabase;
-
 
     #[Test]
     public function it_displays_custom_values()

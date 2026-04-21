@@ -11,4 +11,4 @@ require_once $basePath . '/tests/Integration/bootstrap.php';
 
 $_SERVER['REQUEST_URI'] = '/';
 $_SERVER['SCRIPT_NAME'] = '/index.php';
-$_SERVER['PHP_SELF'] = '/index.php';
+$_SERVER['PHP_SELF']    = '/index.php';

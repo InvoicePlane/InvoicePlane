@@ -3,13 +3,10 @@
 namespace Tests\Feature\Products;
 
 use PHPUnit\Framework\Attributes\Test;
-use src\Models\Family;
-use src\Services\FamiliesService;
 use Tests\TestCase;
 
 class ProductsServiceTest extends TestCase
 {
-
     private ProductsService $service;
 
     protected function setUp(): void

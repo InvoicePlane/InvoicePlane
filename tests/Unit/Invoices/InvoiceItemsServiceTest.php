@@ -3,19 +3,11 @@
 namespace Tests\Unit\Invoices;
 
 use Tests\Concerns\InteractsWithDatabase;
-
-
-use function Modules\InvoiceGroups\Tests\Unit\app;
-
-use Modules\Invoices\app\Models\InvoiceGroup;
-use Modules\Invoices\app\Services\InvoiceGroupsService;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class InvoiceItemsServiceTest extends TestCase
 {
     use InteractsWithDatabase;
-
 
     private ItemsService $service;
 

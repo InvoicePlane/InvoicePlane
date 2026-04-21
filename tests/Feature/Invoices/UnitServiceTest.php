@@ -3,7 +3,6 @@
 namespace Tests\Feature\Invoices;
 
 use Modules\Products\Models\Family;
-use Modules\Products\Models\Product;
 use Modules\Products\Services\FamilyService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;

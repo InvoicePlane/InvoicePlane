@@ -2,13 +2,11 @@
 
 namespace Tests\Feature\Core;
 
-use Tests\Concerns\InteractsWithDatabase;
-
-//use Modules\Core\Controllers\AjaxController as CoreAjaxController;
-use Modules\Core\Models\User;
 use PHPUnit\Framework\Attributes\CoversClass;
+//use Modules\Core\Controllers\AjaxController as CoreAjaxController;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Concerns\InteractsWithDatabase;
 use Tests\Feature\FeatureTestCase;
 
 /**

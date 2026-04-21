@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Products;
 
-use Tests\Concerns\InteractsWithDatabase;
-
 use Modules\Quotes\Services\QuoteAmountService;
 use Modules\Quotes\Services\QuoteService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractServiceTestCase;
+use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(QuoteAmountService::class)]
 
