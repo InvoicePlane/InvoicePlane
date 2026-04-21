@@ -6,17 +6,44 @@ if (defined('CI_BOOTSTRAPPED')) {
 
 define('CI_BOOTSTRAPPED', true);
 
+/*
+|--------------------------------------------------------------------------
+| COMPOSER
+|--------------------------------------------------------------------------
+*/
 require_once __DIR__ . '/../vendor/autoload.php';
 
+/*
+|--------------------------------------------------------------------------
+| ENV FIRST
+|--------------------------------------------------------------------------
+*/
+if (file_exists(__DIR__ . '/../ipconfig.php')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..', 'ipconfig.php');
+    $dotenv->safeLoad();
+}
+
+/*
+|--------------------------------------------------------------------------
+| SAFE HELPERS
+|--------------------------------------------------------------------------
+*/
+require_once __DIR__ . '/helpers.php';
+
+/*
+|--------------------------------------------------------------------------
+| BASE PATH
+|--------------------------------------------------------------------------
+*/
 $base = dirname(__DIR__);
 
 /*
 |--------------------------------------------------------------------------
-| CONSTANTS FIRST (NO DEPENDENCIES)
+| CRITICAL CI CONSTANTS (MUST EXIST BEFORE CORE LOAD)
 |--------------------------------------------------------------------------
 */
-
 defined('ENVIRONMENT') || define('ENVIRONMENT', 'testing');
+
 defined('FCPATH') || define('FCPATH', $base . '/');
 defined('APPPATH') || define('APPPATH', $base . '/application/');
 defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter/system/');
@@ -24,28 +51,21 @@ defined('VIEWPATH') || define('VIEWPATH', APPPATH . 'views/');
 
 /*
 |--------------------------------------------------------------------------
-| ENV DEPENDENT CONSTANTS (MUST BE BEFORE CI LOAD)
+| APPLICATION CONSTANTS USED BY CONFIG
+|--------------------------------------------------------------------------
+| This is the missing piece causing your crash
 |--------------------------------------------------------------------------
 */
+defined('IP_DEBUG') || define('IP_DEBUG', env_bool('ENABLE_DEBUG', false));
 
-if (!defined('IP_DEBUG')) {
-    $env = $_ENV['ENABLE_DEBUG'] ?? false;
-
-    define('IP_DEBUG', filter_var($env, FILTER_VALIDATE_BOOLEAN));
+if (PHP_SAPI === 'cli') {
+    $_SERVER['REQUEST_URI'] = '/clients/index';
 }
 
 /*
 |--------------------------------------------------------------------------
-| HELPERS (AFTER CONSTANTS, BEFORE CI)
+| CI CORE
 |--------------------------------------------------------------------------
 */
-
-require_once __DIR__ . '/helpers.php';
-
-/*
-|--------------------------------------------------------------------------
-| CI CORE LAST
-|--------------------------------------------------------------------------
-*/
-
+require_once BASEPATH . 'core/Common.php';
 require_once BASEPATH . 'core/CodeIgniter.php';

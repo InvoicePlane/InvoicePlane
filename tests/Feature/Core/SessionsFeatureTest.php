@@ -16,7 +16,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group sessions
  */
-final class SessionsFeatureTest extends BaseHmvcTestCase
+class SessionsFeatureTest extends BaseHmvcTestCase
 {
     protected function setUp(): void
     {

@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group settings
  */
-final class Mdl_SettingsTest extends TestCase
+class Mdl_SettingsTest extends TestCase
 {
     private StubMdl_Settings $model;
 
@@ -178,7 +178,7 @@ final class Mdl_SettingsTest extends TestCase
     }
 }
 
-final class StubMdl_Settings
+class StubMdl_Settings
 {
     public array $settings = [];
 

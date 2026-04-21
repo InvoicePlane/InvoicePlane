@@ -8,7 +8,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group clients
  */
-final class ClientsFeatureTest extends BaseHmvcTestCase
+class ClientsFeatureTest extends BaseHmvcTestCase
 {
     protected function setUp(): void
     {

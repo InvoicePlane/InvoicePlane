@@ -10,7 +10,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group payments
  */
-final class PaymentsFeatureTest extends BaseHmvcTestCase
+class PaymentsFeatureTest extends BaseHmvcTestCase
 {
     protected function setUp(): void
     {

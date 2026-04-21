@@ -12,7 +12,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group dashboard
  */
-final class DashboardFeatureTest extends BaseHmvcTestCase
+class DashboardFeatureTest extends BaseHmvcTestCase
 {
     protected function setUp(): void
     {

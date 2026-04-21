@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @group security
  * @group sessions
  */
-final class SessionsSecurityTest extends TestCase
+class SessionsSecurityTest extends TestCase
 {
     private StubSessionsSecurity $security;
 
@@ -257,7 +257,7 @@ final class SessionsSecurityTest extends TestCase
     }
 }
 
-final class StubSessionsSecurity
+class StubSessionsSecurity
 {
     private const MAX_EXPIRY_MINUTES = 1440;
 

@@ -19,7 +19,7 @@ use ReflectionClass;
  * @group unit
  * @group router
  */
-final class MY_RouterTest extends TestCase
+class MY_RouterTest extends TestCase
 {
     private TestableRouter $router;
 
@@ -189,7 +189,7 @@ final class MY_RouterTest extends TestCase
  * Exposes the alias expansion logic from MY_Router for isolated unit testing
  * without requiring a running CI3 instance.
  */
-final class TestableRouter
+class TestableRouter
 {
     private array $moduleAliases = [];
 

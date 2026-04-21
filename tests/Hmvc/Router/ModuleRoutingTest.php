@@ -25,7 +25,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group routing
  */
-final class ModuleRoutingTest extends BaseHmvcTestCase
+class ModuleRoutingTest extends BaseHmvcTestCase
 {
     protected function setUp(): void
     {

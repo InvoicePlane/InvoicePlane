@@ -10,7 +10,7 @@ use Tests\Hmvc\BaseHmvcTestCase;
  * @group feature
  * @group quotes
  */
-final class QuotesFeatureTest extends BaseHmvcTestCase
+class QuotesFeatureTest extends BaseHmvcTestCase
 {
     protected function setUp(): void
     {

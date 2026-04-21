@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group clients
  */
-final class Mdl_ClientsTest extends TestCase
+class Mdl_ClientsTest extends TestCase
 {
     private StubMdl_Clients $model;
 
@@ -201,7 +201,7 @@ final class Mdl_ClientsTest extends TestCase
     }
 }
 
-final class StubMdl_Clients
+class StubMdl_Clients
 {
     public function validation_rules(): array
     {
