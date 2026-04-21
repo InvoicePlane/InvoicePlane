@@ -1,0 +1,89 @@
+<?php
+
+namespace Modules\Invoices\tests\Unit;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+use function Modules\InvoiceGroups\Tests\Unit\app;
+
+use Modules\Invoices\app\Models\InvoiceGroup;
+use Modules\Invoices\app\Services\InvoiceGroupsService;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
+
+class InvoiceItemsServiceTest extends TestCase
+{
+    use RefreshDatabase;
+
+    private ItemsService $service;
+
+    private $itemAmountsService;
+
+    private $invoiceAmountsService;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->itemAmountsService    = $this->createMock(ItemAmountsService::class);
+        $this->invoiceAmountsService = $this->createMock(InvoiceAmountsService::class);
+
+        $this->service = new ItemsService(
+            $this->itemAmountsService,
+            $this->invoiceAmountsService
+        );
+    }
+
+    public function test_get_by_invoice_id_returns_items(): void
+    {
+        $invoice_id = 1;
+        Item::factory()->count(3)->create(['invoice_id' => $invoice_id]);
+        Item::factory()->count(2)->create(['invoice_id' => 2]);
+
+        $results = $this->service->getByInvoiceId($invoice_id);
+        $this->assertCount(3, $results);
+    }
+
+    public function test_get_by_invoice_id_returns_collection(): void
+    {
+        $results = $this->service->getByInvoiceId(1);
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $results);
+    }
+
+    public function test_validation_rules_requires_invoice_id(): void
+    {
+        $rules = $this->service->validationRules();
+        $this->assertArrayHasKey('invoice_id', $rules);
+        $this->assertEquals('required', $rules['invoice_id']['rules']);
+    }
+
+    public function test_delete_removes_item_and_amounts(): void
+    {
+        $item = Item::factory()->create(['invoice_id' => 1]);
+        ItemAmount::factory()->create(['item_id' => $item->item_id]);
+
+        $this->invoiceAmountsService
+            ->expects($this->once())
+            ->method('getGlobalDiscount')
+            ->willReturn(['item' => 0]);
+
+        $this->invoiceAmountsService
+            ->expects($this->once())
+            ->method('calculate');
+
+        $result = $this->service->delete($item->item_id);
+        $this->assertTrue($result);
+        $this->assertDatabaseMissing('ip_invoice_items', ['item_id' => $item->item_id]);
+    }
+
+    public function test_delete_returns_false_for_nonexistent_item(): void
+    {
+        $result = $this->service->delete(99999);
+        $this->assertFalse($result);
+    }
+
+    public function test_service_has_correct_table(): void
+    {
+        $this->assertEquals('ip_invoice_items', $this->service->table);
+    }
+}

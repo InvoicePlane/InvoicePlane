@@ -1,19 +1,21 @@
 <?php
 
-namespace Tests\Feature\Controllers;
+namespace Modules\Invoices\Tests\Feature;
 
-use Modules\Invoices\Controllers\CronController;
+use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
+use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Tests\Feature\FeatureTestCase;
 
 /**
- * CronController Feature Tests.
+ * InvoicesController (CRM/Guest) Feature Tests.
  *
- * Comprehensive test coverage for cron job operations,
- * particularly recurring invoice generation
+ * Tests guest portal invoice viewing.
  */
-#[CoversClass(CronController::class)]
+#[CoversClass(GuestInvoicesController::class)]
+
 class CronControllerTest extends TestCase
 {
     /**
@@ -88,6 +90,7 @@ class CronControllerTest extends TestCase
      * - Due date is calculated correctly
      * - URL key is unique
      */
+    #[Group('crud')]
     #[Test]
     public function it_creates_new_invoice_from_recurring_template(): void
     {
@@ -103,6 +106,7 @@ class CronControllerTest extends TestCase
      *
      * Verifies that all invoice items are copied correctly
      */
+    #[Group('exotic')]
     #[Test]
     public function it_copies_all_items_from_source_invoice_to_new_invoice(): void
     {
@@ -118,6 +122,7 @@ class CronControllerTest extends TestCase
      *
      * Verifies that tax configuration is preserved
      */
+    #[Group('exotic')]
     #[Test]
     public function it_copies_tax_rates_from_source_invoice_to_new_invoice(): void
     {
@@ -133,6 +138,7 @@ class CronControllerTest extends TestCase
      *
      * Verifies that invoice amounts are calculated correctly
      */
+    #[Group('exotic')]
     #[Test]
     public function it_recalculates_amounts_for_new_invoice(): void
     {
@@ -148,6 +154,7 @@ class CronControllerTest extends TestCase
      *
      * Verifies that the recurring schedule is updated after processing
      */
+    #[Group('crud')]
     #[Test]
     public function it_updates_next_recur_date_after_processing(): void
     {
@@ -163,6 +170,7 @@ class CronControllerTest extends TestCase
      *
      * Verifies date calculation for weekly recurring (frequency = 1)
      */
+    #[Group('exotic')]
     #[Test]
     public function it_calculates_next_date_correctly_for_weekly_frequency(): void
     {
@@ -177,6 +185,7 @@ class CronControllerTest extends TestCase
      *
      * Verifies date calculation for monthly recurring (frequency = 3)
      */
+    #[Group('exotic')]
     #[Test]
     public function it_calculates_next_date_correctly_for_monthly_frequency(): void
     {
