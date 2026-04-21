@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Clients;
 
-use Tests\AbstractTestCase;
+ use Tests\AbstractTestCase;
 
 class ClientsFeatureTest extends AbstractTestCase
 {

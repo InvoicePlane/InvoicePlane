@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Integrations;
 
-use Tests\AbstractTestCase;
+ use Tests\AbstractTestCase;
 
 /**
  * Drives the integrations module through the real MX router stack.

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Sessions;
 
-use Tests\AbstractTestCase;
+ use Tests\AbstractTestCase;
 
 /**
  * Feature tests for the Sessions module.
