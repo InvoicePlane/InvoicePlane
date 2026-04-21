@@ -6,9 +6,9 @@ class MxDispatcher
 {
     public function dispatch(string $uri, string $method = 'GET', array $payload = []): mixed
     {
-        $segments = $this->parseUri($uri);
+        $this->loadMx(); // move here
 
-        [$module, $controller, $action] = $segments;
+        [$module, $controller, $action] = $this->parseUri($uri);
 
         $class = $this->resolveController($module, $controller);
 
@@ -25,6 +25,18 @@ class MxDispatcher
         $this->setGlobals($method, $uri, $payload);
 
         return $instance->{$action}();
+    }
+
+    private function loadMx(): void
+    {
+        require_once APPPATH . 'third_party/MX/Loader.php';
+        require_once APPPATH . 'third_party/MX/Router.php';
+        require_once APPPATH . 'third_party/MX/Controller.php';
+        require_once APPPATH . 'third_party/MX/Modules.php';
+
+        \Modules::$locations = [
+            APPPATH . 'modules/' => APPPATH . 'modules/',
+        ];
     }
 
     private function parseUri(string $uri): array
