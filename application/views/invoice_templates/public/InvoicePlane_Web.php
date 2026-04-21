@@ -51,40 +51,53 @@
                         <div class="col-xs-12 col-md-6 col-lg-5">
                             <h4><?php _htmlsc($invoice->user_name); ?></h4>
                             <p>
-                                <?php if ($invoice->user_vat_id) { echo trans('vat_id_short') . ': ' .
-                                htmlsc($invoice->user_vat_id) . '<br />'; } if ($invoice->user_tax_code) { echo
-                                trans('tax_code_short') . ': ' . htmlsc($invoice->user_tax_code) . '<br />'; } if
-                                ($invoice->user_address_1) { echo htmlsc($invoice->user_address_1) . '<br />'; } if
-                                ($invoice->user_address_2) { echo htmlsc($invoice->user_address_2) . '<br />'; } if
-                                ($invoice->user_city || $invoice->user_state || $invoice->user_zip) { if
-                                (is_zip_before_city($invoice->user_country)) { // ZIP + City (Europäisch) echo
-                                $invoice->user_zip ? htmlsc($invoice->user_zip) . ' ' : ''; echo $invoice->user_city ?
-                                htmlsc($invoice->user_city) . ' ' : ''; } else { // City + ZIP (International) echo
-                                $invoice->user_city ? htmlsc($invoice->user_city) . ' ' : ''; echo $invoice->user_zip ?
-                                htmlsc($invoice->user_zip) . ' ' : ''; } if ($invoice->user_state) { echo
-                                htmlsc($invoice->user_state); } echo '<br />'; } if ($invoice->user_phone) {
-                                _trans('phone_abbr'); echo ': ' . htmlsc($invoice->user_phone) . '<br />'; } if
-                                ($invoice->user_fax) { _trans('fax_abbr'); echo ': ' . htmlsc($invoice->user_fax); } ?>
+                                <?php
+                                if ($invoice->user_vat_id) { echo trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '<br />'; }
+                                if ($invoice->user_tax_code) { echo trans('tax_code_short') . ': ' . htmlsc($invoice->user_tax_code) . '<br />'; }
+                                if ($invoice->user_address_1) { echo htmlsc($invoice->user_address_1) . '<br />'; }
+                                if ($invoice->user_address_2) { echo htmlsc($invoice->user_address_2) . '<br />'; }
+
+                                if ($invoice->user_city || $invoice->user_state || $invoice->user_zip) {
+                                    if (is_zip_before_city($invoice->user_country)) {
+                                        echo ($invoice->user_zip ? htmlsc($invoice->user_zip) . ' ' : '');
+                                        echo ($invoice->user_city ? htmlsc($invoice->user_city) . ' ' : '');
+                                    } else {
+                                        echo ($invoice->user_city ? htmlsc($invoice->user_city) . ' ' : '');
+                                        echo ($invoice->user_zip ? htmlsc($invoice->user_zip) . ' ' : '');
+                                    }
+                                    if ($invoice->user_state) { echo htmlsc($invoice->user_state); }
+                                    echo '<br />';
+                                }
+
+                                if ($invoice->user_phone) { _trans('phone_abbr'); echo ': ' . htmlsc($invoice->user_phone) . '<br />'; }
+                                if ($invoice->user_fax) { _trans('fax_abbr'); echo ': ' . htmlsc($invoice->user_fax); }
+                                ?>
                             </p>
                         </div>
                         <div class="col-lg-2"></div>
                         <div class="col-xs-12 col-md-6 col-lg-5 text-right">
                             <h4><?php _htmlsc(format_client($invoice)); ?></h4>
                             <p>
-                                <?php if ($invoice->client_vat_id) { _trans('vat_id_short'); echo ': ' .
-                                htmlsc($invoice->client_vat_id) . '<br />'; } if ($invoice->client_tax_code) {
-                                _trans('tax_code_short'); echo ': ' . htmlsc($invoice->client_tax_code) . '<br />'; } if
-                                ($invoice->client_address_1) { echo htmlsc($invoice->client_address_1) . '<br />'; } if
-                                ($invoice->client_address_2) { echo htmlsc($invoice->client_address_2) . '<br />'; } if
-                                ($invoice->client_city || $invoice->client_state || $invoice->client_zip) { if
-                                (is_zip_before_city($invoice->client_country)) { // ZIP + City echo $invoice->client_zip
-                                ? htmlsc($invoice->client_zip) . ' ' : ''; echo $invoice->client_city ?
-                                htmlsc($invoice->client_city) . ' ' : ''; } else { // City + ZIP echo
-                                $invoice->client_city ? htmlsc($invoice->client_city) . ' ' : ''; echo
-                                $invoice->client_zip ? htmlsc($invoice->client_zip) . ' ' : ''; } if
-                                ($invoice->client_state) { echo htmlsc($invoice->client_state); } echo '<br />'; } if
-                                ($invoice->client_phone) { echo trans('phone_abbr') . ': ' .
-                                htmlsc($invoice->client_phone) . '<br />'; } ?>
+                                <?php
+                                if ($invoice->client_vat_id) { _trans('vat_id_short'); echo ': ' . htmlsc($invoice->client_vat_id) . '<br />'; }
+                                if ($invoice->client_tax_code) { _trans('tax_code_short'); echo ': ' . htmlsc($invoice->client_tax_code) . '<br />'; }
+                                if ($invoice->client_address_1) { echo htmlsc($invoice->client_address_1) . '<br />'; }
+                                if ($invoice->client_address_2) { echo htmlsc($invoice->client_address_2) . '<br />'; }
+
+                                if ($invoice->client_city || $invoice->client_state || $invoice->client_zip) {
+                                    if (is_zip_before_city($invoice->client_country)) {
+                                        echo ($invoice->client_zip ? htmlsc($invoice->client_zip) . ' ' : '');
+                                        echo ($invoice->client_city ? htmlsc($invoice->client_city) . ' ' : '');
+                                    } else {
+                                        echo ($invoice->client_city ? htmlsc($invoice->client_city) . ' ' : '');
+                                        echo ($invoice->client_zip ? htmlsc($invoice->client_zip) . ' ' : '');
+                                    }
+                                    if ($invoice->client_state) { echo htmlsc($invoice->client_state); }
+                                    echo '<br />';
+                                }
+
+                                if ($invoice->client_phone) { echo trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '<br />'; }
+                                ?>
                             </p>
                             <br />
                             <table class="table table-condensed">
