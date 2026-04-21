@@ -18,6 +18,12 @@ abstract class AbstractTestCase extends TestCase
 
     protected function get(string $uri, array $query = []): mixed
     {
+        $this->dispatcher->setGlobals([
+            'REQUEST_URI' => $uri,
+            'SCRIPT_NAME' => '/index.php',
+            'PHP_SELF' => '/index.php',
+        ]);
+
         return $this->dispatcher->dispatch($uri, 'GET', $query);
     }
 
