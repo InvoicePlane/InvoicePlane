@@ -2,13 +2,12 @@
 
 namespace Tests\Feature\Quotes;
 
-use Tests\Concerns\InteractsWithDatabase;
-
 use Modules\Crm\Controllers\QuotesController as GuestQuotesController;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Concerns\InteractsWithDatabase;
 use Tests\Feature\FeatureTestCase;
 
 /**

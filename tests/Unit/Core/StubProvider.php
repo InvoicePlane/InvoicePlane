@@ -2,12 +2,6 @@
 
 namespace Tests\Unit\Core;
 
-use Closure;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use RuntimeException;
-use Throwable;
-
 /**
  * Unit tests for IntegrationProviderFactory's registration, resolution,
  * and ExceptionHandlingDecorator wrapping.
@@ -18,7 +12,6 @@ use Throwable;
  * @group unit
  * @group providers
  */
-
 class StubProvider implements StubIntegrationProviderInterface
 {
     public function __construct(

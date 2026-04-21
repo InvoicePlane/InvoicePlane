@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Core;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Unit tests for Mdl_Settings pure-PHP logic.
  *
@@ -16,7 +14,6 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group settings
  */
-
 class StubMdl_Settings
 {
     public array $settings = [];

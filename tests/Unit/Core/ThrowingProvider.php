@@ -2,11 +2,7 @@
 
 namespace Tests\Unit\Core;
 
-use Closure;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Throwable;
 
 /**
  * Unit tests for IntegrationProviderFactory's registration, resolution,
@@ -18,7 +14,6 @@ use Throwable;
  * @group unit
  * @group providers
  */
-
 class ThrowingProvider implements StubIntegrationProviderInterface
 {
     public function validateParticipant(string $participantId): bool

@@ -2,17 +2,13 @@
 
 namespace Tests\Unit\Invoices;
 
-
 use function Modules\InvoiceGroups\Tests\Unit\app;
 
-use Modules\Invoices\app\Models\InvoiceGroup;
-use Modules\Invoices\app\Services\InvoiceGroupsService;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class InvoicesServiceTest extends TestCase
 {
-
     private InvoicesService $service;
 
     protected function setUp(): void

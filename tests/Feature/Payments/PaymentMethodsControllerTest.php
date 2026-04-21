@@ -2,14 +2,11 @@
 
 namespace Tests\Feature\Payments;
 
-use Tests\Concerns\InteractsWithDatabase;
-
-use Modules\Core\Models\User;
 use Modules\Payments\Controllers\PaymentMethodsController;
-use Modules\Payments\Models\PaymentMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Concerns\InteractsWithDatabase;
 use Tests\Feature\FeatureTestCase;
 
 /**

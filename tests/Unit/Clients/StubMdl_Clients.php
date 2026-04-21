@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Clients;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Unit tests for Mdl_Clients pure-PHP logic.
  *
@@ -17,7 +15,6 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group clients
  */
-
 class StubMdl_Clients
 {
     public function validation_rules(): array

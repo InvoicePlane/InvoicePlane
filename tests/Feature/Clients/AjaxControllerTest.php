@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Clients;
 
-use Tests\Concerns\InteractsWithDatabase;
-
-
 use function Modules\Clients\Tests\Feature\route;
 
 use Modules\Crm\app\Http\Controllers\AjaxController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Concerns\InteractsWithDatabase;
 use Tests\TestCase;
 
 #[CoversClass(AjaxController::class)]
@@ -17,7 +15,6 @@ use Tests\TestCase;
 class AjaxControllerTest extends TestCase
 {
     use InteractsWithDatabase;
-
 
     #[Test]
     public function it_returns_clients_matching_name_query()

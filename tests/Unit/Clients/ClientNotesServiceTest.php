@@ -7,7 +7,6 @@ use Tests\TestCase;
 
 class ClientNotesServiceTest extends TestCase
 {
-
     private ClientNotesService $service;
 
     protected function setUp(): void

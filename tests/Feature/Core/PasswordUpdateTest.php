@@ -3,17 +3,11 @@
 namespace Tests\Feature\Core;
 
 use Tests\Concerns\InteractsWithDatabase;
-
-use App\Models\User;
-
-use function Tests\Feature\Auth\route;
-
 use Tests\TestCase;
 
 class PasswordUpdateTest extends TestCase
 {
     use InteractsWithDatabase;
-
 
     public function test_password_can_be_updated(): void
     {

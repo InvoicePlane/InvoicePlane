@@ -2,15 +2,12 @@
 
 namespace Tests\Feature\Core;
 
-use App\Models\User;
-
 use function Tests\Feature\Auth\route;
 
 use Tests\TestCase;
 
 class SettingsControllerTest extends TestCase
 {
-
     #[Test]
     public function it_displays_settings_page_and_saves_settings()
     {

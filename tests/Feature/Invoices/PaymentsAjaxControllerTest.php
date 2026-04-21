@@ -2,11 +2,10 @@
 
 namespace Tests\Feature\Invoices;
 
-use Tests\Concerns\InteractsWithDatabase;
-
 use Modules\Payments\app\Http\Controllers\PaymentMethodsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Concerns\InteractsWithDatabase;
 
 use function Tests\Feature\PaymentMethods\route;
 

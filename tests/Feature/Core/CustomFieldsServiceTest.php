@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class CustomFieldsServiceTest extends TestCase
 {
-
     private CustomFieldsService $service;
 
     protected function setUp(): void

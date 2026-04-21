@@ -2,10 +2,6 @@
 
 namespace Tests\Unit\Core;
 
-use Closure;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use RuntimeException;
 use Throwable;
 
 /**
@@ -18,7 +14,6 @@ use Throwable;
  * @group unit
  * @group providers
  */
-
 class DecoratedProvider implements StubIntegrationProviderInterface
 {
     public function __construct(private readonly StubIntegrationProviderInterface $inner) {}

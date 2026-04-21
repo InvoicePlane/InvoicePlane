@@ -2,15 +2,12 @@
 
 namespace Tests\Feature\Core;
 
-use App\Models\User;
-
 use function Tests\Feature\Auth\route;
 
 use Tests\TestCase;
 
 class WelcomeControllerTest extends TestCase
 {
-
     #[Test]
     public function it_displays_welcome_page()
     {

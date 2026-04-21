@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Invoices;
 
-use Tests\Concerns\InteractsWithDatabase;
-
-use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
 use Modules\Products\Models\Family;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Concerns\InteractsWithDatabase;
 use Tests\Feature\FeatureTestCase;
 
 /**

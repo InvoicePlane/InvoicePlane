@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Routing;
 
- use Tests\AbstractTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * Parameterised routing smoke test.

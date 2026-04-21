@@ -2,9 +2,8 @@
 
 namespace Tests\Feature\Core;
 
-use Tests\Concerns\InteractsWithDatabase;
-
 use App\Models\User;
+use Tests\Concerns\InteractsWithDatabase;
 
 use function Tests\Feature\Auth\route;
 

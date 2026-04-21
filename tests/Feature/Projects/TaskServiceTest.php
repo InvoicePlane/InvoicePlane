@@ -2,15 +2,13 @@
 
 namespace Tests\Feature\Projects;
 
-use Tests\Concerns\InteractsWithDatabase;
-
-use Modules\Crm\Models\Client;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Services\ProjectService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
+use Tests\Concerns\InteractsWithDatabase;
 use Tests\TestCase;
 
 /**

@@ -3,11 +3,8 @@
 namespace Tests\Feature\Core;
 
 use Modules\Core\Controllers\AjaxController as CoreAjaxController;
-use Modules\Core\Models\User;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Feature\FeatureTestCase;
 
 /**
  * Core AjaxController Feature Tests.

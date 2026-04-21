@@ -3,13 +3,11 @@
 namespace Tests\Feature\Core;
 
 use Tests\Concerns\InteractsWithDatabase;
-
 use Tests\TestCase;
 
 abstract class FeatureTestCase extends TestCase
 {
     use InteractsWithDatabase;
-
 
     /**
      * Setup the test environment.

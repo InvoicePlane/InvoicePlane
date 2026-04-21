@@ -5,7 +5,6 @@ namespace Tests\Feature\Invoices;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\Setting;
 use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Models\InvoiceAmount;
 use Modules\Invoices\Models\Item;
 use Modules\Invoices\Models\ItemAmount;
 use Modules\Invoices\Services\InvoiceAmountService;

@@ -16,8 +16,7 @@ final class HttpResponse
         public readonly int $statusCode,
         public readonly array $headers,
         public readonly string $stderr,
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {
@@ -31,7 +30,7 @@ final class HttpResponse
 
     public function bodyLength(): int
     {
-        return strlen($this->body);
+        return mb_strlen($this->body);
     }
 
     public function statusCode(): int
@@ -71,7 +70,7 @@ final class HttpResponse
 
         foreach ($this->headers as $header) {
             if (str_starts_with(mb_strtolower($header), $needle)) {
-                return mb_trim(substr($header, strlen($name) + 1));
+                return mb_trim(mb_substr($header, mb_strlen($name) + 1));
             }
         }
 

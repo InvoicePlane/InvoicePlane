@@ -2,15 +2,13 @@
 
 namespace Tests\Feature\Invoices;
 
-use Tests\Concerns\InteractsWithDatabase;
-
 use Modules\Products\Models\Family;
-use Modules\Products\Models\Product;
 use Modules\Products\Services\FamilyService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractServiceTestCase;
+use Tests\Concerns\InteractsWithDatabase;
 
 /**
  * FamilyService Deletion Validation Tests.

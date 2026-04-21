@@ -4,7 +4,6 @@ namespace Tests\Unit\Quotes;
 
 use DateInterval;
 use DateTime;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Mdl_Quotes pure-PHP logic.
@@ -20,7 +19,6 @@ use PHPUnit\Framework\TestCase;
  * @group models
  * @group quotes
  */
-
 class StubMdl_Quotes
 {
     public ?int $id = null;

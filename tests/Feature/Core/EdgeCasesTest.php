@@ -2,14 +2,11 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\CustomFields\Models\CustomField;
-use Modules\CustomFields\Services\CustomFieldsService;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class EdgeCasesTest extends TestCase
 {
-
     #[Test]
     public function unit_service_handles_extreme_quantities_correctly(): void
     {

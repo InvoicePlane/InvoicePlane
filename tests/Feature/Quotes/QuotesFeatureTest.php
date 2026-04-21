@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Quotes;
 
- use Tests\AbstractTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * @group feature

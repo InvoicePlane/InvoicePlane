@@ -3,14 +3,11 @@
 namespace Tests\Unit\Clients;
 
 use Tests\Concerns\InteractsWithDatabase;
-
-use Modules\Crm\app\Services\ClientNotesService;
 use Tests\TestCase;
 
 class ClientsServiceTest extends TestCase
 {
     use InteractsWithDatabase;
-
 
     private ClientsService $service;
 

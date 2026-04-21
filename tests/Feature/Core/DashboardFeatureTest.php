@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Core;
 
- use Tests\AbstractTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * Feature tests for the Dashboard module.

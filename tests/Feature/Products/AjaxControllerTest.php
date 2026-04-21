@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class AjaxControllerTest extends TestCase
 {
-
     #[Test]
     public function modal_product_lookups_returns_expected_results()
     {

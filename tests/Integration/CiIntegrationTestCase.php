@@ -23,7 +23,7 @@ abstract class CiIntegrationTestCase extends TestCase
     protected function request(string $method, string $uri, array $query = [], array $post = []): HttpResponse
     {
         $payload = [
-            'method' => strtoupper($method),
+            'method' => mb_strtoupper($method),
             'uri'    => '/' . mb_ltrim($uri, '/'),
             'query'  => $query,
             'post'   => $post,

@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class AjaxControllerTest extends TestCase
 {
-
     #[Test]
     public function it_saves_quote_item()
     {
