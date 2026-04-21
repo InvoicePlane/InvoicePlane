@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Invoices\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
 use Modules\Invoices\Models\Invoice;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class InvoicesAjaxControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test creating new invoice and returning invoice ID.
      *
@@ -33,8 +37,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_creates_new_invoice_and_returns_invoice_id(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
         /**
          * {
@@ -83,8 +87,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_saves_invoice_with_items_and_returns_success(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
         $items   = [
             [
                 'item_id'              => null,
@@ -159,9 +163,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_updates_invoice_with_modified_items_successfully(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create(['invoice_number' => 'INV-OLD']);
-        $item    = Item::factory()->create([
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice', ['invoice_number' => 'INV-OLD']);
+        $item    = $this->seedModel('Item', [
             'invoice_id'    => $invoice->invoice_id,
             'item_name'     => 'Old Item',
             'item_quantity' => 1,
@@ -234,8 +238,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_returns_validation_errors_when_saving_invalid_invoice(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
 
         /**
          * {
@@ -276,8 +280,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_prevents_both_discount_types_when_saving_invoice(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
         $items   = [
             [
                 'item_name'     => 'Test Item',
@@ -335,8 +339,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_returns_error_when_item_has_quantity_but_no_name(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
         $items   = [
             [
                 'item_name'     => '',
@@ -382,9 +386,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_saves_invoice_tax_rate_in_legacy_calculation_mode(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
-        $taxRate = TaxRate::factory()->create(['tax_rate_percent' => 20]);
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $taxRate = $this->seedModel('TaxRate', ['tax_rate_percent' => 20]);
 
         /**
          * {
@@ -426,9 +430,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_deletes_invoice_item_and_returns_success(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
-        $item    = Item::factory()->create(['invoice_id' => $invoice->invoice_id]);
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $item    = $this->seedModel('Item', ['invoice_id' => $invoice->invoice_id]);
 
         /**
          * {
@@ -463,7 +467,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_returns_failure_when_deleting_item_for_non_existent_invoice(): void
     {
         /* Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /**
          * {
          *     "item_id": 99999
@@ -491,9 +495,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_returns_invoice_item_data_when_getting_item(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
-        $item    = Item::factory()->create([
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $item    = $this->seedModel('Item', [
             'invoice_id' => $invoice->invoice_id,
             'item_name'  => 'Test Item',
             'item_price' => 100.00,
@@ -517,7 +521,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_returns_empty_array_when_getting_non_existent_item(): void
     {
         /* Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.ajax.get_item', ['item_id' => 99999]));
@@ -545,10 +549,10 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_copies_invoice_with_all_items_and_tax_rates(): void
     {
         /** Arrange */
-        $user          = User::factory()->create();
-        $client        = Client::factory()->create();
-        $sourceInvoice = Invoice::factory()->draft()->create();
-        Item::factory()->count(3)->create(['invoice_id' => $sourceInvoice->invoice_id]);
+        $user          = $this->seedModel('User');
+        $client        = $this->seedModel('Client');
+        $sourceInvoice = $this->seedModel('Invoice');
+        $this->seedModelMany('Item', 3, ['invoice_id' => $sourceInvoice->invoice_id]);
 
         /**
          * {
@@ -595,9 +599,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_changes_invoice_user_and_returns_success(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
-        $newUser = User::factory()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $newUser = $this->seedModel('User');
 
         /**
          * {
@@ -635,8 +639,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_returns_error_when_changing_to_non_existent_user(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
 
         /**
          * {
@@ -673,9 +677,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_changes_invoice_client_and_returns_success(): void
     {
         /** Arrange */
-        $user      = User::factory()->create();
-        $invoice   = Invoice::factory()->draft()->create();
-        $newClient = Client::factory()->create();
+        $user      = $this->seedModel('User');
+        $invoice   = $this->seedModel('Invoice');
+        $newClient = $this->seedModel('Client');
 
         /**
          * {
@@ -717,8 +721,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_creates_recurring_invoice_and_returns_id(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
         /**
          * {
@@ -760,7 +764,7 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_calculates_recurring_start_date_based_on_frequency(): void
     {
         /* Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.ajax.recur_start_date', ['recur_frequency' => '1M']));
@@ -787,9 +791,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_creates_credit_invoice_from_existing_invoice(): void
     {
         /** Arrange */
-        $user          = User::factory()->create();
-        $sourceInvoice = Invoice::factory()->paid()->create();
-        Item::factory()->count(2)->create(['invoice_id' => $sourceInvoice->invoice_id]);
+        $user          = $this->seedModel('User');
+        $sourceInvoice = $this->seedModel('Invoice');
+        $this->seedModelMany('Item', 2, ['invoice_id' => $sourceInvoice->invoice_id]);
 
         /**
          * {
@@ -823,10 +827,10 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_loads_copy_invoice_modal_with_clients_and_users(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
-        Client::factory()->count(3)->create();
-        User::factory()->count(2)->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModelMany('Client', 3);
+        $this->seedModelMany('User', 2);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.copy', ['invoice_id' => $invoice->invoice_id]));
@@ -849,9 +853,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_loads_create_invoice_modal_with_clients_list(): void
     {
         /* Arrange */
-        $user = User::factory()->create();
-        Client::factory()->count(5)->create();
-        User::factory()->count(2)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('Client', 5);
+        $this->seedModelMany('User', 2);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.create'));
@@ -873,9 +877,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_loads_change_user_modal_with_users_list(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
-        User::factory()->count(3)->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModelMany('User', 3);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.change_user', ['invoice_id' => $invoice->invoice_id]));
@@ -897,9 +901,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_loads_change_client_modal_with_clients_list(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
-        Client::factory()->count(4)->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
+        $this->seedModelMany('Client', 4);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.change_client', ['invoice_id' => $invoice->invoice_id]));
@@ -921,9 +925,9 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_loads_create_recurring_modal_with_form_data(): void
     {
         /* Arrange */
-        $user = User::factory()->create();
-        Client::factory()->count(2)->create();
-        User::factory()->count(2)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('Client', 2);
+        $this->seedModelMany('User', 2);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.create_recurring'));
@@ -943,8 +947,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_loads_create_credit_modal_with_invoice_data(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->paid()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.modal.create_credit', ['invoice_id' => $invoice->invoice_id]));
@@ -976,8 +980,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_preserves_item_details_when_saving_invoice(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
         $items   = [
             [
                 'item_id'              => null,
@@ -1035,8 +1039,8 @@ class InvoicesAjaxControllerTest extends FeatureTestCase
     public function it_distributes_global_discount_across_items_proportionally(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $invoice = Invoice::factory()->draft()->create();
+        $user    = $this->seedModel('User');
+        $invoice = $this->seedModel('Invoice');
         $items   = [
             [
                 'item_name'     => 'Item 1',

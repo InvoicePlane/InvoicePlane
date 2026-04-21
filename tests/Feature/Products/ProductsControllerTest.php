@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Feature;
+namespace Tests\Feature\Products;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
@@ -19,6 +21,8 @@ use Tests\Feature\FeatureTestCase;
 
 class ProductsControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays paginated list of products.
      */
@@ -27,7 +31,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_products(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('products.index'));
@@ -49,7 +53,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_loads_products_with_family_unit_and_tax_rate_relationships(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create product with family, unit, and tax rate */
 
         /** Act */
@@ -68,7 +72,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_orders_products_by_name_alphabetically(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create products with different names */
 
         /** Act */
@@ -88,7 +92,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_includes_filter_configuration_in_view_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('products.index'));
@@ -108,7 +112,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_paginates_products_at_15_per_page(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create 20 products */
 
         /** Act */
@@ -128,7 +132,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_displays_create_form_for_new_product(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('products.form'));
@@ -183,7 +187,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_loads_families_ordered_by_name_for_dropdown(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create multiple families */
 
         /** Act */
@@ -203,7 +207,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_loads_units_ordered_by_name_for_dropdown(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create multiple units */
 
         /** Act */
@@ -223,7 +227,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_loads_tax_rates_ordered_by_name_for_dropdown(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create multiple tax rates */
 
         /** Act */
@@ -357,7 +361,7 @@ class ProductsControllerTest extends FeatureTestCase
     public function it_deletes_product_successfully(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         /** Would create product */
         $testId = 1;
 

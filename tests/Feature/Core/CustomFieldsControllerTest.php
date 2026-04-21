@@ -1,9 +1,8 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,7 +10,6 @@ use Tests\TestCase;
 
 class CustomFieldsControllerTest extends TestCase
 {
-    use RefreshDatabase;
 
     #[Test]
     public function it_displays_custom_fields_list()

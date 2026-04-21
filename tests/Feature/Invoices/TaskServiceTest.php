@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Projects\Tests\Unit;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Models\Client;
 use Modules\Projects\Models\Project;
@@ -20,6 +22,8 @@ use Tests\TestCase;
 
 class TaskServiceTest extends TestCase
 {
+    use InteractsWithDatabase;
+
     private TaskService $service;
 
     protected function setUp(): void
@@ -53,7 +57,7 @@ class TaskServiceTest extends TestCase
     public function it_creates_task(): void
     {
         /** Arrange */
-        $project = Project::factory()->create();
+        $project = $this->seedModel('Project');
         $data    = [
             'project_id'  => $project->project_id,
             'task_name'   => 'Test Task',
@@ -102,7 +106,7 @@ class TaskServiceTest extends TestCase
     public function it_updates_task(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_name' => 'Old Name',
         ]);
 
@@ -128,7 +132,7 @@ class TaskServiceTest extends TestCase
     public function it_finds_task_by_id(): void
     {
         /** Arrange */
-        $task = Task::factory()->create();
+        $task = $this->seedModel('Task');
 
         /** Act */
         $found = $this->service->find($task->task_id);
@@ -159,7 +163,7 @@ class TaskServiceTest extends TestCase
     public function it_deletes_task(): void
     {
         /** Arrange */
-        $task = Task::factory()->create();
+        $task = $this->seedModel('Task');
 
         /** Act */
         $result = $this->service->delete($task->task_id);
@@ -176,10 +180,10 @@ class TaskServiceTest extends TestCase
     public function it_gets_all_tasks_with_relations_paginated(): void
     {
         /** Arrange */
-        $project = Project::factory()->create();
-        $taxRate = \Modules\Products\Models\TaxRate::factory()->create();
+        $project = $this->seedModel('Project');
+        $taxRate = $this->seedModel('\Modules\Products\Models\TaxRate');
 
-        Task::factory()->count(3)->create([
+        $this->seedModelMany('Task', 3, [
             'project_id'       => $project->project_id,
             'task_tax_rate_id' => $taxRate->tax_rate_id,
         ]);
@@ -198,9 +202,9 @@ class TaskServiceTest extends TestCase
     public function it_orders_tasks_by_name(): void
     {
         /* Arrange */
-        Task::factory()->create(['task_name' => 'Zebra Task']);
-        Task::factory()->create(['task_name' => 'Alpha Task']);
-        Task::factory()->create(['task_name' => 'Beta Task']);
+        $this->seedModel('Task', ['task_name' => 'Zebra Task']);
+        $this->seedModel('Task', ['task_name' => 'Alpha Task']);
+        $this->seedModel('Task', ['task_name' => 'Beta Task']);
 
         /** Act */
         $result = $this->service->getAllWithRelations();
@@ -217,7 +221,7 @@ class TaskServiceTest extends TestCase
     public function it_respects_custom_per_page_parameter(): void
     {
         /* Arrange */
-        Task::factory()->count(10)->create();
+        $this->seedModelMany('Task', 10);
 
         /** Act */
         $result = $this->service->getAllWithRelations(['project'], 5);

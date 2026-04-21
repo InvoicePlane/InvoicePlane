@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Payments\Tests\Feature;
+namespace Tests\Feature\Payments;
 
 use Modules\Core\Models\User;
 use Modules\Payments\Controllers\PaymentMethodsController;

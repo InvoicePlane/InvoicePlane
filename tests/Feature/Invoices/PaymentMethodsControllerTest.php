@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Payments\tests\Feature;
+namespace Tests\Feature\Invoices;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 use Modules\Payments\app\Http\Controllers\PaymentMethodsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -15,7 +16,8 @@ use Tests\TestCase;
 
 class PaymentMethodsControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -23,7 +25,7 @@ class PaymentMethodsControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
         $this->actingAs($this->user);
     }
 
@@ -55,7 +57,7 @@ class PaymentMethodsControllerTest extends TestCase
     #[Test]
     public function it_prevents_duplicate_payment_method_names(): void
     {
-        PaymentMethod::factory()->create(['payment_method_name' => 'Existing Method']);
+        $this->seedModel('PaymentMethod', ['payment_method_name' => 'Existing Method']);
 
         $methodData = [
             'payment_method_name' => 'Existing Method',
@@ -71,7 +73,7 @@ class PaymentMethodsControllerTest extends TestCase
     #[Test]
     public function it_updates_existing_payment_method(): void
     {
-        $method = PaymentMethod::factory()->create(['payment_method_name' => 'Original']);
+        $method = $this->seedModel('PaymentMethod', ['payment_method_name' => 'Original']);
 
         $updateData = [
             'payment_method_name' => 'Edited Payment Method',
@@ -89,7 +91,7 @@ class PaymentMethodsControllerTest extends TestCase
     #[Test]
     public function it_deletes_payment_method(): void
     {
-        $method = PaymentMethod::factory()->create();
+        $method = $this->seedModel('PaymentMethod');
 
         $response = $this->delete(route('payment_methods.delete', ['id' => $method->payment_method_id]));
 

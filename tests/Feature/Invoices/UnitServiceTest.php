@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Products\Tests\Unit;
+namespace Tests\Feature\Invoices;
 
 use Modules\Products\Models\Family;
 use Modules\Products\Models\Product;

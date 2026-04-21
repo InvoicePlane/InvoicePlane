@@ -1,8 +1,7 @@
 <?php
 
-namespace Modules\Projects\Tests\Unit;
+namespace Tests\Feature\Projects;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Projects\app\Models\Task;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Services\ProjectsService;
@@ -11,7 +10,6 @@ use Tests\TestCase;
 
 class TasksServiceTest extends TestCase
 {
-    use RefreshDatabase;
 
     private TasksService $service;
 

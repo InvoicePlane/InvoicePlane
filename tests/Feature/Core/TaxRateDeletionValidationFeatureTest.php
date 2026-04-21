@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 //use Modules\Core\Controllers\AjaxController as CoreAjaxController;
 use Modules\Core\Models\User;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class TaxRateDeletionValidationFeatureTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     #[Group('business-rules')]
     #[Group('deletion')]
     #[Group('http')]
@@ -25,7 +29,7 @@ class TaxRateDeletionValidationFeatureTest extends FeatureTestCase
     public function it_deletes_tax_rate_without_references(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create(['tax_rate_name' => 'Deletable']);
+        $taxRate = $this->seedModel('TaxRate', ['tax_rate_name' => 'Deletable']);
 
         /** Act */
         $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
@@ -43,8 +47,8 @@ class TaxRateDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_products(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        Product::factory()->create(['tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $this->seedModel('Product', ['tax_rate_id' => $taxRate->tax_rate_id]);
 
         /** Act */
         $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
@@ -62,8 +66,8 @@ class TaxRateDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_invoice_items(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        InvoiceItem::factory()->create(['item_tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $this->seedModel('InvoiceItem', ['item_tax_rate_id' => $taxRate->tax_rate_id]);
 
         /** Act */
         $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
@@ -81,8 +85,8 @@ class TaxRateDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_quote_items(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        QuoteItem::factory()->create(['item_tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $this->seedModel('QuoteItem', ['item_tax_rate_id' => $taxRate->tax_rate_id]);
 
         /** Act */
         $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
@@ -134,8 +138,8 @@ class TaxRateDeletionValidationFeatureTest extends FeatureTestCase
     public function it_allows_deletion_after_references_removed(): void
     {
         /** Arrange */
-        $taxRate = TaxRate::factory()->create();
-        $product = Product::factory()->create(['tax_rate_id' => $taxRate->tax_rate_id]);
+        $taxRate = $this->seedModel('TaxRate');
+        $product = $this->seedModel('Product', ['tax_rate_id' => $taxRate->tax_rate_id]);
 
         // Initially cannot delete
         $response1 = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));

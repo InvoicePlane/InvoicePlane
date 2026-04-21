@@ -1,8 +1,7 @@
 <?php
 
-namespace Modules\Products\Tests\Feature;
+namespace Tests\Feature\Products;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Products\Controllers\AjaxController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -12,7 +11,6 @@ use Tests\TestCase;
 
 class AjaxControllerTest extends TestCase
 {
-    use RefreshDatabase;
 
     #[Test]
     public function modal_product_lookups_returns_expected_results()

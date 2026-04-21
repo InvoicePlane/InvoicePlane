@@ -1,8 +1,7 @@
 <?php
 
-namespace Modules\Invoices\tests\Unit;
+namespace Tests\Unit\Invoices;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Modules\InvoiceGroups\Tests\Unit\app;
 
@@ -13,7 +12,6 @@ use Tests\TestCase;
 
 class InvoicesServiceTest extends TestCase
 {
-    use RefreshDatabase;
 
     private InvoicesService $service;
 

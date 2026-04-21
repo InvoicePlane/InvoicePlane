@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Projects\Tests\Feature;
+namespace Tests\Feature\Projects;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Models\Client;
 use Modules\Projects\Controllers\ProjectsController;
@@ -20,6 +22,8 @@ use Tests\Feature\FeatureTestCase;
 
 class ProjectsControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test that index method displays list of projects.
      */
@@ -28,8 +32,8 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_displays_list_of_projects(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
@@ -55,7 +59,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_displays_project_create_form(): void
     {
         /** Arrange */
-        $client = Client::factory()->create(['client_active' => 1]);
+        $client = $this->seedModel('Client', ['client_active' => 1]);
 
         /** Act */
         $response = $this->get(route('projects.form'));
@@ -80,7 +84,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_creates_new_project_with_valid_data(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
         /**
          * {
          *     "client_id": 1,
@@ -140,8 +144,8 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_displays_project_edit_form(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create(['client_active' => 1]);
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client', ['client_active' => 1]);
+        $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
@@ -167,8 +171,8 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_updates_existing_project_with_valid_data(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id'    => $client->client_id,
             'project_name' => 'Old Name',
         ]);
@@ -206,8 +210,8 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_displays_project_view_with_related_data(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
@@ -233,8 +237,8 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_deletes_project(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
@@ -261,7 +265,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_fails_to_create_project_with_empty_name(): void
     {
         /** Arrange */
-        $client      = Client::factory()->create();
+        $client      = $this->seedModel('Client');
         $projectData = [
             'client_id'    => $client->client_id,
             'project_name' => '', // Empty name
@@ -282,7 +286,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_handles_very_long_project_names(): void
     {
         /** Arrange */
-        $client      = Client::factory()->create();
+        $client      = $this->seedModel('Client');
         $longName    = str_repeat('A', 300); // 300 characters
         $projectData = [
             'client_id'    => $client->client_id,
@@ -315,7 +319,7 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_handles_special_characters_in_project_name(): void
     {
         /** Arrange */
-        $client      = Client::factory()->create();
+        $client      = $this->seedModel('Client');
         $projectData = [
             'client_id'    => $client->client_id,
             'project_name' => "Test <script>alert('xss')</script> Project",
@@ -362,8 +366,8 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_fails_to_update_project_with_invalid_status(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
@@ -422,16 +426,16 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_handles_task_associations_when_deleting_project(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
         // Create tasks associated with the project
-        $task1 = \Modules\Projects\Models\Task::factory()->create([
+        $task1 = $this->seedModel('\Modules\Projects\Models\Task', [
             'project_id' => $project->project_id,
         ]);
-        $task2 = \Modules\Projects\Models\Task::factory()->create([
+        $task2 = $this->seedModel('\Modules\Projects\Models\Task', [
             'project_id' => $project->project_id,
         ]);
 
@@ -465,10 +469,10 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_handles_pagination_on_index_page(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
 
         // Create multiple projects
-        Project::factory()->count(25)->create([
+        $this->seedModelMany('Project', 25, [
             'client_id' => $client->client_id,
         ]);
 
@@ -517,17 +521,17 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_displays_all_related_tasks_in_project_view(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
         // Create multiple tasks for the project
-        $task1 = \Modules\Projects\Models\Task::factory()->create([
+        $task1 = $this->seedModel('\Modules\Projects\Models\Task', [
             'project_id' => $project->project_id,
             'task_name'  => 'Task 1',
         ]);
-        $task2 = \Modules\Projects\Models\Task::factory()->create([
+        $task2 = $this->seedModel('\Modules\Projects\Models\Task', [
             'project_id' => $project->project_id,
             'task_name'  => 'Task 2',
         ]);
@@ -554,8 +558,8 @@ class ProjectsControllerTest extends FeatureTestCase
     public function it_preserves_unchanged_fields_on_update(): void
     {
         /** Arrange */
-        $client  = Client::factory()->create();
-        $project = Project::factory()->create([
+        $client  = $this->seedModel('Client');
+        $project = $this->seedModel('Project', [
             'client_id'      => $client->client_id,
             'project_name'   => 'Original Name',
             'project_status' => 1,

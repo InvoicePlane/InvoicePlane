@@ -1,8 +1,7 @@
 <?php
 
-namespace tests\Unit;
+namespace Tests\Feature\Products;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use src\Models\Family;
 use src\Services\FamiliesService;
@@ -10,7 +9,6 @@ use Tests\TestCase;
 
 class UnitsServiceTest extends TestCase
 {
-    use RefreshDatabase;
 
     private UnitsService $service;
 

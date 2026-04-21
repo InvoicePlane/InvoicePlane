@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Payments\Tests\Feature;
+namespace Tests\Feature\Payments;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Payments\Controllers\PaymentMethodsController;
@@ -19,6 +21,8 @@ use Tests\Feature\FeatureTestCase;
 
 class PaymentMethodsControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays paginated list of payment methods.
      */
@@ -27,8 +31,8 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_payment_methods(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        PaymentMethod::factory()->count(5)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('PaymentMethod', 5);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('payment_methods.index'));
@@ -46,11 +50,11 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_orders_payment_methods_alphabetically(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        PaymentMethod::factory()->create(['payment_method_name' => 'Wire Transfer']);
-        PaymentMethod::factory()->create(['payment_method_name' => 'Cash']);
-        PaymentMethod::factory()->create(['payment_method_name' => 'Check']);
+        $this->seedModel('PaymentMethod', ['payment_method_name' => 'Wire Transfer']);
+        $this->seedModel('PaymentMethod', ['payment_method_name' => 'Cash']);
+        $this->seedModel('PaymentMethod', ['payment_method_name' => 'Check']);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('payment_methods.index'));
@@ -73,7 +77,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_displays_create_form(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('payment_methods.form'));
@@ -93,8 +97,8 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_payment_method(): void
     {
         /** Arrange */
-        $user          = User::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
+        $user          = $this->seedModel('User');
+        $paymentMethod = $this->seedModel('PaymentMethod');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('payment_methods.form', ['id' => $paymentMethod->payment_method_id]));
@@ -117,7 +121,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_creates_new_payment_method_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -150,8 +154,8 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_updates_existing_payment_method(): void
     {
         /** Arrange */
-        $user          = User::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create(['payment_method_name' => 'Old Name']);
+        $user          = $this->seedModel('User');
+        $paymentMethod = $this->seedModel('PaymentMethod', ['payment_method_name' => 'Old Name']);
 
         /**
          * {
@@ -185,7 +189,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_redirects_to_index_on_cancel(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -210,7 +214,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_validates_required_payment_method_name(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -237,8 +241,8 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_validates_unique_payment_method_name(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        PaymentMethod::factory()->create(['payment_method_name' => 'Cash']);
+        $user = $this->seedModel('User');
+        $this->seedModel('PaymentMethod', ['payment_method_name' => 'Cash']);
 
         /**
          * {
@@ -266,8 +270,8 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_deletes_payment_method(): void
     {
         /** Arrange */
-        $user          = User::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
+        $user          = $this->seedModel('User');
+        $paymentMethod = $this->seedModel('PaymentMethod');
 
         /**
          * {
@@ -301,7 +305,7 @@ class PaymentMethodsControllerTest extends FeatureTestCase
     public function it_returns_404_when_deleting_non_existent_payment_method(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {

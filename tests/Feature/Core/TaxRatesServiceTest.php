@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Core\Tests\Unit;
+namespace Tests\Feature\Core;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 use Modules\CustomFields\Models\CustomField;
 use Modules\CustomFields\Services\CustomFieldsService;
 use PHPUnit\Framework\Attributes\Test;
@@ -10,7 +11,8 @@ use Tests\TestCase;
 
 class TaxRatesServiceTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     private TaxRatesService $service;
 
@@ -57,7 +59,7 @@ class TaxRatesServiceTest extends TestCase
     #[Test]
     public function it_all_returns_all_tax_rates(): void
     {
-        TaxRate::factory()->count(5)->create();
+        $this->seedModelMany('TaxRate', 5);
 
         $results = $this->service->getAll();
         $this->assertCount(5, $results);

@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Invoices\tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\InvoiceGroups\Tests\Feature\WithFaker;
 use Modules\Invoices\app\Http\Controllers\InvoiceGroupsController;
 use Modules\Invoices\app\Models\InvoiceGroup;
@@ -18,7 +19,8 @@ use Tests\TestCase;
 
 class RecurringInvoicesControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -26,7 +28,7 @@ class RecurringInvoicesControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
         $this->actingAs($this->user);
     }
 
@@ -43,7 +45,7 @@ class RecurringInvoicesControllerTest extends TestCase
     #[Test]
     public function it_stops_recurring_invoice(): void
     {
-        $recurringInvoice = RecurringInvoice::factory()->create(['status' => 'active']);
+        $recurringInvoice = $this->seedModel('RecurringInvoice', ['status' => 'active']);
 
         $response = $this->post(route('invoices.recurring.stop', [
             'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,
@@ -59,7 +61,7 @@ class RecurringInvoicesControllerTest extends TestCase
     #[Test]
     public function it_deletes_recurring_invoice(): void
     {
-        $recurringInvoice = RecurringInvoice::factory()->create();
+        $recurringInvoice = $this->seedModel('RecurringInvoice');
 
         $response = $this->delete(route('invoices.recurring.delete', [
             'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,

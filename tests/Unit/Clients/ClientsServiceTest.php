@@ -1,14 +1,16 @@
 <?php
 
-namespace Modules\Crm\tests\Unit;
+namespace Tests\Unit\Clients;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 use Modules\Crm\app\Services\ClientNotesService;
 use Tests\TestCase;
 
 class ClientsServiceTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     private ClientsService $service;
 
@@ -140,7 +142,7 @@ class ClientsServiceTest extends TestCase
 
     public function test_get_latest_limits_results(): void
     {
-        tmpClient::factory()->count(15)->create(['client_active' => 1]);
+        $this->seedModelMany('tmpClient', 15, ['client_active' => 1]);
 
         $results = $this->service->getLatest(5);
         $this->assertCount(5, $results);
@@ -179,7 +181,7 @@ class ClientsServiceTest extends TestCase
 
     public function test_client_lookup_finds_existing_client(): void
     {
-        $client = tmpClient::factory()->create(['client_name' => 'Test Client']);
+        $client = $this->seedModel('tmpClient', ['client_name' => 'Test Client']);
 
         $result = $this->service->clientLookup('Test Client');
         $this->assertEquals($client->client_id, $result);
@@ -228,8 +230,8 @@ class ClientsServiceTest extends TestCase
     public function test_get_not_assigned_to_user_excludes_assigned_clients(): void
     {
         $user_id          = 1;
-        $assignedClient   = tmpClient::factory()->create(['client_active' => 1]);
-        $unassignedClient = tmpClient::factory()->create(['client_active' => 1]);
+        $assignedClient   = $this->seedModel('tmpClient', ['client_active' => 1]);
+        $unassignedClient = $this->seedModel('tmpClient', ['client_active' => 1]);
 
         UserClient::create(['user_id' => $user_id, 'client_id' => $assignedClient->client_id]);
 
@@ -240,8 +242,8 @@ class ClientsServiceTest extends TestCase
 
     public function test_get_active_returns_only_active_clients(): void
     {
-        tmpClient::factory()->count(3)->create(['client_active' => 1]);
-        tmpClient::factory()->count(2)->create(['client_active' => 0]);
+        $this->seedModelMany('tmpClient', 3, ['client_active' => 1]);
+        $this->seedModelMany('tmpClient', 2, ['client_active' => 0]);
 
         $results = $this->service->getActive();
         $this->assertCount(3, $results);
@@ -252,7 +254,7 @@ class ClientsServiceTest extends TestCase
 
     public function test_delete_logs_orphan_handling(): void
     {
-        $client = tmpClient::factory()->create();
+        $client = $this->seedModel('tmpClient');
 
         Log::shouldReceive('info')
             ->once()

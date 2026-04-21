@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Models;
+namespace Tests\Unit\Quotes;
 
 use DateInterval;
 use DateTime;

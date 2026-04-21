@@ -1,8 +1,7 @@
 <?php
 
-namespace Modules\Quotes\Tests\Feature;
+namespace Tests\Feature\Invoices;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Quotes\Controllers\AjaxController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -12,7 +11,6 @@ use Tests\TestCase;
 
 class AjaxControllerTest extends TestCase
 {
-    use RefreshDatabase;
 
     #[Test]
     public function it_saves_quote_item()

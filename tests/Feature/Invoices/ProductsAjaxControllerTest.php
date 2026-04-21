@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
@@ -19,6 +21,8 @@ use Tests\Feature\FeatureTestCase;
 
 class ProductsAjaxControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test modal_product_lookups displays modal with products.
      */
@@ -27,9 +31,9 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     public function it_displays_modal_with_products(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        Product::factory()->count(3)->create();
-        Family::factory()->count(2)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('Product', 3);
+        $this->seedModelMany('Family', 2);
 
         /* Act */
         $this->actingAs($user);
@@ -50,12 +54,12 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     public function it_filters_products_by_family(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $family1 = Family::factory()->create();
-        $family2 = Family::factory()->create();
+        $user    = $this->seedModel('User');
+        $family1 = $this->seedModel('Family');
+        $family2 = $this->seedModel('Family');
 
-        $product1 = Product::factory()->create(['family_id' => $family1->family_id]);
-        $product2 = Product::factory()->create(['family_id' => $family2->family_id]);
+        $product1 = $this->seedModel('Product', ['family_id' => $family1->family_id]);
+        $product2 = $this->seedModel('Product', ['family_id' => $family2->family_id]);
 
         /* Act */
         $this->actingAs($user);
@@ -75,9 +79,9 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     public function it_filters_products_by_search_term(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        Product::factory()->create(['product_name' => 'Widget']);
-        Product::factory()->create(['product_name' => 'Gadget']);
+        $user = $this->seedModel('User');
+        $this->seedModel('Product', ['product_name' => 'Widget']);
+        $this->seedModel('Product', ['product_name' => 'Gadget']);
 
         /* Act */
         $this->actingAs($user);
@@ -98,7 +102,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     public function it_returns_partial_view_when_filtering(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -119,7 +123,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     public function it_returns_partial_view_when_resetting_table(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -140,7 +144,7 @@ class ProductsAjaxControllerTest extends FeatureTestCase
     public function it_includes_default_tax_rate_setting(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);

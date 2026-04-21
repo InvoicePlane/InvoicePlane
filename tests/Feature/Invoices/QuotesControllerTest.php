@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Quotes\Tests\Feature;
+namespace Tests\Feature\Invoices;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 use Modules\Quotes\Controllers\AjaxController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -12,7 +13,8 @@ use Tests\TestCase;
 
 class QuotesControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -24,9 +26,9 @@ class QuotesControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user       = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
-        $this->client     = tmpClient::factory()->create(['client_active' => 1]);
-        $this->quoteGroup = InvoiceGroup::factory()->create();
+        $this->user       = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
+        $this->client     = $this->seedModel('tmpClient', ['client_active' => 1]);
+        $this->quoteGroup = $this->seedModel('InvoiceGroup');
         $this->actingAs($this->user);
     }
 
@@ -44,9 +46,9 @@ class QuotesControllerTest extends TestCase
     public function it_displays_quotes_by_status()
     {
         // Arrange: create quotes with different statuses
-        $draftQuote    = \Modules\Quotes\Models\Quote::factory()->create(['status' => 'draft']);
-        $sentQuote     = \Modules\Quotes\Models\Quote::factory()->create(['status' => 'sent']);
-        $approvedQuote = \Modules\Quotes\Models\Quote::factory()->create(['status' => 'approved']);
+        $draftQuote    = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'draft']);
+        $sentQuote     = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'sent']);
+        $approvedQuote = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'approved']);
 
         // Act: call the status route for 'draft'
         $response = $this->get(route('quotes.status', ['status' => 'draft']));
@@ -140,7 +142,7 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_creates_quote_with_tax_rates(): void
     {
-        $taxRate = TaxRate::factory()->create(['tax_rate_percent' => 21.00]);
+        $taxRate = $this->seedModel('TaxRate', ['tax_rate_percent' => 21.00]);
 
         $quoteData = [
             'client_id'          => $this->client->client_id,
@@ -168,8 +170,8 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_views_quote_details(): void
     {
-        $quote = Quote::factory()->create(['client_id' => $this->client->client_id]);
-        QuoteItem::factory()->count(2)->create(['quote_id' => $quote->quote_id]);
+        $quote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
+        $this->seedModelMany('QuoteItem', 2, ['quote_id' => $quote->quote_id]);
 
         $response = $this->get(route('quotes.view', ['quote_id' => $quote->quote_id]));
 
@@ -193,7 +195,7 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_generates_quote_pdf(): void
     {
-        $quote = Quote::factory()->create();
+        $quote = $this->seedModel('Quote');
 
         $response = $this->get(route('quotes.generatePdf', ['quote_id' => $quote->quote_id]));
 
@@ -204,7 +206,7 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_loads_quote_edit_form(): void
     {
-        $quote = Quote::factory()->create();
+        $quote = $this->seedModel('Quote');
 
         $response = $this->get(route('quotes.form', ['id' => $quote->quote_id]));
 
@@ -215,7 +217,7 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_updates_quote_details(): void
     {
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'client_id'       => $this->client->client_id,
             'quote_status_id' => 1,
         ]);
@@ -239,8 +241,8 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_updates_quote_items_and_pricing(): void
     {
-        $quote = Quote::factory()->create();
-        $item  = QuoteItem::factory()->create([
+        $quote = $this->seedModel('Quote');
+        $item  = $this->seedModel('QuoteItem', [
             'quote_id'  => $quote->quote_id,
             'item_name' => 'Original Name',
         ]);
@@ -269,7 +271,7 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_marks_quote_as_sent(): void
     {
-        $quote = Quote::factory()->create(['quote_status_id' => 1]);
+        $quote = $this->seedModel('Quote', ['quote_status_id' => 1]);
 
         $response = $this->post(route('quotes.form', ['id' => $quote->quote_id]), [
             'quote_status_id' => 2,
@@ -285,7 +287,7 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_marks_quote_as_approved(): void
     {
-        $quote = Quote::factory()->create(['quote_status_id' => 2]);
+        $quote = $this->seedModel('Quote', ['quote_status_id' => 2]);
 
         $response = $this->post(route('quotes.form', ['id' => $quote->quote_id]), [
             'quote_status_id' => 3,
@@ -301,7 +303,7 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_marks_quote_as_rejected(): void
     {
-        $quote = Quote::factory()->create(['quote_status_id' => 2]);
+        $quote = $this->seedModel('Quote', ['quote_status_id' => 2]);
 
         $response = $this->post(route('quotes.form', ['id' => $quote->quote_id]), [
             'quote_status_id' => 4,
@@ -317,8 +319,8 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_converts_quote_to_invoice(): void
     {
-        $quote = Quote::factory()->create(['client_id' => $this->client->client_id]);
-        QuoteItem::factory()->count(2)->create(['quote_id' => $quote->quote_id]);
+        $quote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
+        $this->seedModelMany('QuoteItem', 2, ['quote_id' => $quote->quote_id]);
 
         $convertData = [
             'invoice_date_created' => now()->format('Y-m-d'),
@@ -336,8 +338,8 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_copies_existing_quote(): void
     {
-        $originalQuote = Quote::factory()->create(['client_id' => $this->client->client_id]);
-        QuoteItem::factory()->count(2)->create(['quote_id' => $originalQuote->quote_id]);
+        $originalQuote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
+        $this->seedModelMany('QuoteItem', 2, ['quote_id' => $originalQuote->quote_id]);
 
         $response = $this->post(route('quotes.copy', ['quote_id' => $originalQuote->quote_id]), [
             'quote_date_created' => now()->format('Y-m-d'),
@@ -351,7 +353,7 @@ class QuotesControllerTest extends TestCase
     #[Test]
     public function it_deletes_quote(): void
     {
-        $quote = Quote::factory()->create();
+        $quote = $this->seedModel('Quote');
 
         $response = $this->delete(route('quotes.delete', ['quote_id' => $quote->quote_id]));
 

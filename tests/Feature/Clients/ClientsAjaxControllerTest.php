@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Crm\Tests\Feature;
+namespace Tests\Feature\Clients;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\ClientsController;
 use Modules\Crm\Models\Client;
@@ -22,6 +24,8 @@ use Tests\Feature\FeatureTestCase;
 
 class ClientsAjaxControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     // ==================== ROUTE: GET /clients/ajax/modal_client_lookup ====================
 
     /**
@@ -32,10 +36,10 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_displays_modal_with_active_clients(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        $activeClient   = Client::factory()->create(['client_active' => 1, 'client_name' => 'Active Client']);
-        $inactiveClient = Client::factory()->create(['client_active' => 0, 'client_name' => 'Inactive Client']);
+        $activeClient   = $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Active Client']);
+        $inactiveClient = $this->seedModel('Client', ['client_active' => 0, 'client_name' => 'Inactive Client']);
 
         /* Act */
         $this->actingAs($user);
@@ -60,11 +64,11 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_orders_clients_alphabetically_in_modal(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        Client::factory()->create(['client_active' => 1, 'client_name' => 'Zebra Corp']);
-        Client::factory()->create(['client_active' => 1, 'client_name' => 'Alpha Inc']);
-        Client::factory()->create(['client_active' => 1, 'client_name' => 'Beta LLC']);
+        $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Zebra Corp']);
+        $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Alpha Inc']);
+        $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Beta LLC']);
 
         /* Act */
         $this->actingAs($user);
@@ -101,9 +105,9 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_displays_empty_modal_when_no_active_clients(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         // All clients are inactive
-        Client::factory()->count(3)->create(['client_active' => 0]);
+        $this->seedModelMany('Client', 3, ['client_active' => 0]);
 
         /* Act */
         $this->actingAs($user);
@@ -123,8 +127,8 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_handles_special_characters_in_client_names(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        Client::factory()->create([
+        $user = $this->seedModel('User');
+        $this->seedModel('Client', [
             'client_active' => 1,
             'client_name'   => "O'Brien & Associates <script>alert('xss')</script>",
         ]);
@@ -150,8 +154,8 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_returns_client_details_as_json(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client', [
             'client_name'  => 'Test Client',
             'client_email' => 'test@client.com',
         ]);
@@ -177,7 +181,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_returns_404_for_non_existent_client(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -195,7 +199,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_requires_authentication_for_get_client_details(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
 
         /** Act */
         $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
@@ -212,7 +216,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_handles_invalid_client_id_type(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -234,8 +238,8 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_returns_all_client_fields(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client', [
             'client_name'      => 'Complete Client',
             'client_email'     => 'complete@test.com',
             'client_phone'     => '123-456-7890',
@@ -271,8 +275,8 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_returns_details_for_inactive_client(): void
     {
         /** Arrange */
-        $user           = User::factory()->create();
-        $inactiveClient = Client::factory()->create([
+        $user           = $this->seedModel('User');
+        $inactiveClient = $this->seedModel('Client', [
             'client_active' => 0,
             'client_name'   => 'Inactive Client',
         ]);
@@ -298,8 +302,8 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_handles_null_fields_in_client_details(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client', [
             'client_name'      => 'Minimal Client',
             'client_email'     => null,
             'client_phone'     => null,
@@ -325,7 +329,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_handles_negative_client_id(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -343,7 +347,7 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_handles_zero_client_id(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -361,9 +365,9 @@ class ClientsAjaxControllerTest extends FeatureTestCase
     public function it_handles_pagination_with_many_active_clients(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
         // Create 100 active clients
-        Client::factory()->count(100)->create(['client_active' => 1]);
+        $this->seedModelMany('Client', 100, ['client_active' => 1]);
 
         /* Act */
         $this->actingAs($user);
