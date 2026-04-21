@@ -1,54 +1,64 @@
 <?php
 
-namespace Tests\Feature\Controllers;
+namespace Modules\Products\Tests\Feature;
 
-use Modules\Products\Controllers\ProductsController;
+use Modules\Core\Models\User;
+use Modules\Products\Controllers\FamiliesController;
+use Modules\Products\Models\Family;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Tests\Feature\FeatureTestCase;
 
 /**
- * ProductsController Feature Tests.
+ * FamiliesController Feature Tests.
  *
- * Comprehensive test coverage for product catalog management
+ * Tests product family (category) management including list, create, update, and delete.
  */
-#[CoversClass(ProductsController::class)]
-class ProductsControllerTest extends TestCase
+#[CoversClass(FamiliesController::class)]
+
+class ProductsControllerTest extends FeatureTestCase
 {
     /**
      * Test index displays paginated list of products.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_paginated_list_of_products(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
+        $user = User::factory()->create();
 
-        /** Act */
-        $response = $controller->index();
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(route('products.index'));
 
         /* Assert */
-        $this->assertInstanceOf(\Illuminate\View\View::class, $response);
-        $viewData = $response->getData();
-        $this->assertArrayHasKey('products', $viewData);
-        $this->assertArrayHasKey('filter_display', $viewData);
-        $this->assertTrue($viewData['filter_display']);
+        $response->assertOk();
+        $response->assertViewIs('products::index');
+        $response->assertViewHas('products');
+        $response->assertViewHas('filter_display');
+        $filterDisplay = $response->viewData('filter_display');
+        $this->assertTrue($filterDisplay);
     }
 
     /**
      * Test index loads products with relationships.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_loads_products_with_family_unit_and_tax_rate_relationships(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
-        /** Would create product with family, unit, and tax rate */
+        $user = User::factory()->create();
+        /* Would create product with family, unit, and tax rate */
 
-        /** Act */
-        $response = $controller->index();
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(route('products.index'));
 
         /* Assert */
+        $response->assertOk();
         /* Would verify eager loading of relationships */
         $this->assertTrue(true, 'Should eager load family, unit, and tax rate');
     }
@@ -60,13 +70,15 @@ class ProductsControllerTest extends TestCase
     public function it_orders_products_by_name_alphabetically(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
-        /** Would create products with different names */
+        $user = User::factory()->create();
+        /* Would create products with different names */
 
-        /** Act */
-        $response = $controller->index();
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(route('products.index'));
 
         /* Assert */
+        $response->assertOk();
         /* Would verify products are ordered alphabetically */
         $this->assertTrue(true, 'Products should be ordered by name');
     }
@@ -74,20 +86,23 @@ class ProductsControllerTest extends TestCase
     /**
      * Test index includes filter configuration.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_includes_filter_configuration_in_view_data(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
+        $user = User::factory()->create();
 
-        /** Act */
-        $response = $controller->index();
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(route('products.index'));
 
-        /** Assert */
-        $viewData = $response->getData();
-        $this->assertArrayHasKey('filter_placeholder', $viewData);
-        $this->assertArrayHasKey('filter_method', $viewData);
-        $this->assertEquals('filter_products', $viewData['filter_method']);
+        /* Assert */
+        $response->assertOk();
+        $response->assertViewHas('filter_placeholder');
+        $response->assertViewHas('filter_method');
+        $filterMethod = $response->viewData('filter_method');
+        $this->assertEquals('filter_products', $filterMethod);
     }
 
     /**
@@ -97,13 +112,15 @@ class ProductsControllerTest extends TestCase
     public function it_paginates_products_at_15_per_page(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
-        /** Would create 20 products */
+        $user = User::factory()->create();
+        /* Would create 20 products */
 
-        /** Act */
-        $response = $controller->index(0);
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(route('products.index'));
 
         /* Assert */
+        $response->assertOk();
         /* Would verify pagination shows max 15 items */
         $this->assertTrue(true, 'Should paginate at 15 items per page');
     }
@@ -111,27 +128,30 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form displays create form for new product.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_create_form_for_new_product(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
+        $user = User::factory()->create();
 
-        /** Act */
-        $response = $controller->form(null);
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(route('products.form'));
 
         /* Assert */
-        $this->assertInstanceOf(\Illuminate\View\View::class, $response);
-        $viewData = $response->getData();
-        $this->assertArrayHasKey('product', $viewData);
-        $this->assertArrayHasKey('families', $viewData);
-        $this->assertArrayHasKey('units', $viewData);
-        $this->assertArrayHasKey('tax_rates', $viewData);
+        $response->assertOk();
+        $response->assertViewIs('products::form');
+        $response->assertViewHas('product');
+        $response->assertViewHas('families');
+        $response->assertViewHas('units');
+        $response->assertViewHas('tax_rates');
     }
 
     /**
      * Test form displays edit form with existing product.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_edit_form_with_existing_product(): void
     {
@@ -148,6 +168,7 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form returns 404 for non-existent product.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_returns_404_when_editing_non_existent_product(): void
     {
@@ -163,18 +184,20 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form loads families for dropdown.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_loads_families_ordered_by_name_for_dropdown(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
-        /** Would create multiple families */
+        $user = User::factory()->create();
+        /* Would create multiple families */
 
-        /** Act */
-        $response = $controller->form();
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(route('products.form'));
 
-        /** Assert */
-        $viewData = $response->getData();
+        /* Assert */
+        $response->assertOk();
         /* Would verify families are ordered alphabetically */
         $this->assertTrue(true, 'Families should be ordered by name');
     }
@@ -182,18 +205,20 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form loads units for dropdown.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_loads_units_ordered_by_name_for_dropdown(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
-        /** Would create multiple units */
+        $user = User::factory()->create();
+        /* Would create multiple units */
 
-        /** Act */
-        $response = $controller->form();
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(route('products.form'));
 
-        /** Assert */
-        $viewData = $response->getData();
+        /* Assert */
+        $response->assertOk();
         /* Would verify units are ordered alphabetically */
         $this->assertTrue(true, 'Units should be ordered by name');
     }
@@ -201,15 +226,17 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form loads tax rates for dropdown.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_loads_tax_rates_ordered_by_name_for_dropdown(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
-        /** Would create multiple tax rates */
+        $user = User::factory()->create();
+        /* Would create multiple tax rates */
 
-        /** Act */
-        $response = $controller->form();
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(route('products.form'));
 
         /** Assert */
         $viewData = $response->getData();
@@ -220,6 +247,7 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form redirects to index when cancel clicked.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_redirects_to_index_when_cancel_button_clicked(): void
     {
@@ -235,6 +263,7 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form creates new product with valid data.
      */
+    #[Group('crud')]
     #[Test]
     public function it_creates_new_product_with_valid_data(): void
     {
@@ -260,6 +289,7 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form updates existing product with valid data.
      */
+    #[Group('crud')]
     #[Test]
     public function it_updates_existing_product_with_valid_data(): void
     {
@@ -331,16 +361,30 @@ class ProductsControllerTest extends TestCase
     /**
      * Test delete removes product successfully.
      */
+    #[Group('crud')]
     #[Test]
     public function it_deletes_product_successfully(): void
     {
         /** Arrange */
-        $controller = new ProductsController();
+        $user = User::factory()->create();
         /** Would create product */
         $testId = 1;
 
-        /** Act */
-        $response = $controller->delete($testId);
+        /**
+         * {
+         *     "product_id": 1
+         * }.
+         */
+        $deletePayload = [
+            'product_id' => $testId,
+        ];
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->post(
+            route('products.delete', ['product_id' => $testId]),
+            $deletePayload
+        );
 
         /* Assert */
         /* Would verify product is deleted */
@@ -351,6 +395,7 @@ class ProductsControllerTest extends TestCase
     /**
      * Test delete returns 404 for non-existent product.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_returns_404_when_deleting_non_existent_product(): void
     {
@@ -369,6 +414,7 @@ class ProductsControllerTest extends TestCase
      * Note: In production, you might want to prevent deletion of products
      * that are referenced in invoices/quotes
      */
+    #[Group('exotic')]
     #[Test]
     public function it_handles_deletion_of_product_used_in_invoices(): void
     {
@@ -384,6 +430,7 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form displays success message after creating product.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_success_message_after_creating_product(): void
     {
@@ -398,6 +445,7 @@ class ProductsControllerTest extends TestCase
     /**
      * Test form displays success message after updating product.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_success_message_after_updating_product(): void
     {
@@ -412,6 +460,7 @@ class ProductsControllerTest extends TestCase
     /**
      * Test delete displays success message after deleting product.
      */
+    #[Group('smoke')]
     #[Test]
     public function it_displays_success_message_after_deleting_product(): void
     {
@@ -440,6 +489,7 @@ class ProductsControllerTest extends TestCase
     /**
      * Test product can be created without optional fields.
      */
+    #[Group('crud')]
     #[Test]
     public function it_creates_product_without_optional_fields(): void
     {
