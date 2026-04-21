@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Crm\Tests\Unit;
+namespace Tests\Unit\Clients;
 
 use Modules\Crm\Models\Client;
 use Modules\Crm\Services\ClientService;

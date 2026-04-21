@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Invoices\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
 use Modules\Invoices\Models\Invoice;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test that draft invoice (status = 1) can be deleted.
      */
@@ -28,7 +32,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     public function it_deletes_draft_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 1, // Draft
             'invoice_number'    => 'DRAFT-001',
         ]);
@@ -55,7 +59,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_sent_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 2, // Sent
             'invoice_number'    => 'INV-001',
         ]);
@@ -84,7 +88,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_viewed_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 3, // Viewed
             'invoice_number'    => 'INV-002',
         ]);
@@ -108,7 +112,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_paid_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 4, // Paid
             'invoice_number'    => 'INV-003',
         ]);
@@ -132,7 +136,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_overdue_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 5, // Overdue
             'invoice_number'    => 'INV-004',
         ]);
@@ -156,16 +160,16 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     public function it_unmarks_tasks_when_deleting_draft_invoice(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 1, // Draft
         ]);
 
         // Create tasks assigned to this invoice
-        $task1 = Task::factory()->create([
+        $task1 = $this->seedModel('Task', [
             'invoice_id'  => $invoice->invoice_id,
             'task_status' => 4, // On Hold (invoiced)
         ]);
-        $task2 = Task::factory()->create([
+        $task2 = $this->seedModel('Task', [
             'invoice_id'  => $invoice->invoice_id,
             'task_status' => 4,
         ]);
@@ -203,7 +207,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
         $nonDraftStatuses = [2, 3, 4, 5]; // Sent, Viewed, Paid, Overdue
 
         foreach ($nonDraftStatuses as $status) {
-            $invoice = Invoice::factory()->create([
+            $invoice = $this->seedModel('Invoice', [
                 'invoice_status_id' => $status,
             ]);
 
@@ -233,7 +237,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
         $originalConfig = config('settings.enable_invoice_deletion');
         config(['settings.enable_invoice_deletion' => true]);
 
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 2, // Sent (normally not deletable)
         ]);
 
@@ -262,7 +266,7 @@ class InvoiceDeletionValidationFeatureTest extends FeatureTestCase
     public function it_deletes_draft_invoice_without_tasks(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create([
+        $invoice = $this->seedModel('Invoice', [
             'invoice_status_id' => 1, // Draft
         ]);
 

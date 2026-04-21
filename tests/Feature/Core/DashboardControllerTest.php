@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Tests\Feature\Core;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Tests\Feature\Auth\route;
 
@@ -11,7 +12,8 @@ use Tests\TestCase;
 
 class DashboardControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected \Modules\Core\Models\User $user;
@@ -19,7 +21,7 @@ class DashboardControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = \Modules\Dashboard\Tests\Feature\User::factory()->create(['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('\Modules\Dashboard\Tests\Feature\User', ['user_type' => 1, 'user_active' => 1]);
         $this->actingAs($this->user);
     }
 
@@ -27,8 +29,8 @@ class DashboardControllerTest extends TestCase
     public function it_displays_dashboard_with_overview_data()
     {
         // Arrange: create sample data
-        $client  = \Modules\Clients\Models\tmpClient::factory()->create();
-        $invoice = \Modules\Invoices\Models\Invoice::factory()->create([
+        $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
+        $invoice = $this->seedModel('\Modules\Invoices\Models\Invoice', [
             'client_id' => $client->id,
             'total'     => 1000,
         ]);
@@ -46,9 +48,9 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_displays_dashboard_with_invoice_status_totals(): void
     {
-        \Modules\Dashboard\Tests\Feature\Invoice::factory()->count(5)->create(['invoice_status_id' => 1]); // Draft
-        \Modules\Dashboard\Tests\Feature\Invoice::factory()->count(3)->create(['invoice_status_id' => 2]); // Sent
-        \Modules\Dashboard\Tests\Feature\Invoice::factory()->count(7)->create(['invoice_status_id' => 4]); // Paid
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 5, ['invoice_status_id' => 1]); // Draft
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 3, ['invoice_status_id' => 2]); // Sent
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 7, ['invoice_status_id' => 4]); // Paid
 
         $response = $this->get(route('dashboard.index'));
 
@@ -60,9 +62,9 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_displays_dashboard_with_quote_status_totals(): void
     {
-        \Modules\Dashboard\Tests\Feature\Quote::factory()->count(4)->create(['quote_status_id' => 1]); // Draft
-        \Modules\Dashboard\Tests\Feature\Quote::factory()->count(2)->create(['quote_status_id' => 2]); // Sent
-        \Modules\Dashboard\Tests\Feature\Quote::factory()->count(3)->create(['quote_status_id' => 3]); // Approved
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 4, ['quote_status_id' => 1]); // Draft
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 2, ['quote_status_id' => 2]); // Sent
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 3, ['quote_status_id' => 3]); // Approved
 
         $response = $this->get(route('dashboard.index'));
 
@@ -74,7 +76,7 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_displays_recent_invoices_on_dashboard(): void
     {
-        \Modules\Dashboard\Tests\Feature\Invoice::factory()->count(15)->create();
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 15);
 
         $response = $this->get(route('dashboard.index'));
 
@@ -87,7 +89,7 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_displays_recent_quotes_on_dashboard(): void
     {
-        \Modules\Dashboard\Tests\Feature\Quote::factory()->count(15)->create();
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 15);
 
         $response = $this->get(route('dashboard.index'));
 
@@ -100,7 +102,7 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_displays_overdue_invoices_on_dashboard(): void
     {
-        \Modules\Dashboard\Tests\Feature\Invoice::factory()->count(3)->create([
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 3, [
             'invoice_status_id' => 2,
             'invoice_date_due'  => now()->subDays(10),
         ]);
@@ -116,7 +118,7 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_displays_latest_projects_on_dashboard(): void
     {
-        \Modules\Dashboard\Tests\Feature\Project::factory()->count(5)->create();
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Project', 5);
 
         $response = $this->get(route('dashboard.index'));
 
@@ -127,7 +129,7 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_displays_latest_tasks_on_dashboard(): void
     {
-        \Modules\Dashboard\Tests\Feature\Task::factory()->count(5)->create();
+        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Task', 5);
 
         $response = $this->get(route('dashboard.index'));
 
@@ -139,7 +141,7 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_uses_custom_invoice_overview_period_setting(): void
     {
-        \Modules\Dashboard\Tests\Feature\Setting::factory()->create([
+        $this->seedModel('\Modules\Dashboard\Tests\Feature\Setting', [
             'setting_key'   => 'invoice_overview_period',
             'setting_value' => 'this-month',
         ]);
@@ -153,7 +155,7 @@ class DashboardControllerTest extends TestCase
     #[Test]
     public function it_uses_custom_quote_overview_period_setting(): void
     {
-        \Modules\Dashboard\Tests\Feature\Setting::factory()->create([
+        $this->seedModel('\Modules\Dashboard\Tests\Feature\Setting', [
             'setting_key'   => 'quote_overview_period',
             'setting_value' => 'this-quarter',
         ]);

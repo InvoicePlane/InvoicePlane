@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Projects\Tests\Feature;
+namespace Tests\Feature\Projects;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Models\Client;
 use Modules\Projects\Controllers\ProjectsController;
@@ -20,6 +22,8 @@ use Tests\Feature\FeatureTestCase;
 
 class TasksControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test that index method displays list of tasks.
      */
@@ -28,7 +32,7 @@ class TasksControllerTest extends FeatureTestCase
     public function it_displays_list_of_tasks(): void
     {
         /** Arrange */
-        $task = Task::factory()->create();
+        $task = $this->seedModel('Task');
 
         /** Act */
         $response = $this->get(route('tasks.index'));
@@ -76,7 +80,7 @@ class TasksControllerTest extends FeatureTestCase
     public function it_creates_new_task_with_valid_data(): void
     {
         /** Arrange */
-        $project = Project::factory()->create();
+        $project = $this->seedModel('Project');
         /**
          * {
          *     "project_id": 1,
@@ -138,7 +142,7 @@ class TasksControllerTest extends FeatureTestCase
     public function it_displays_task_edit_form(): void
     {
         /** Arrange */
-        $task = Task::factory()->create();
+        $task = $this->seedModel('Task');
 
         /** Act */
         $response = $this->get(route('tasks.form', ['task_id' => $task->task_id]));
@@ -163,7 +167,7 @@ class TasksControllerTest extends FeatureTestCase
     public function it_updates_existing_task_with_valid_data(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_name' => 'Old Name',
         ]);
 
@@ -200,7 +204,7 @@ class TasksControllerTest extends FeatureTestCase
     public function it_deletes_task(): void
     {
         /** Arrange */
-        $task = Task::factory()->create();
+        $task = $this->seedModel('Task');
 
         /** Act */
         $response = $this->delete(route('tasks.destroy', ['task' => $task->task_id]));
@@ -368,7 +372,7 @@ class TasksControllerTest extends FeatureTestCase
     public function it_fails_to_update_task_with_invalid_finish_date(): void
     {
         /** Arrange */
-        $task = Task::factory()->create();
+        $task = $this->seedModel('Task');
 
         $updateData = [
             'task_name'        => 'Updated Task',
@@ -390,10 +394,10 @@ class TasksControllerTest extends FeatureTestCase
     public function it_can_reassign_task_to_different_project(): void
     {
         /** Arrange */
-        $project1 = Project::factory()->create();
-        $project2 = Project::factory()->create();
+        $project1 = $this->seedModel('Project');
+        $project2 = $this->seedModel('Project');
 
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'project_id' => $project1->project_id,
         ]);
 
@@ -424,8 +428,8 @@ class TasksControllerTest extends FeatureTestCase
     public function it_can_unassign_task_from_project(): void
     {
         /** Arrange */
-        $project = Project::factory()->create();
-        $task    = Task::factory()->create([
+        $project = $this->seedModel('Project');
+        $task    = $this->seedModel('Task', [
             'project_id' => $project->project_id,
         ]);
 
@@ -456,14 +460,14 @@ class TasksControllerTest extends FeatureTestCase
     public function it_filters_tasks_by_project(): void
     {
         /** Arrange */
-        $project1 = Project::factory()->create();
-        $project2 = Project::factory()->create();
+        $project1 = $this->seedModel('Project');
+        $project2 = $this->seedModel('Project');
 
-        $task1 = Task::factory()->create([
+        $task1 = $this->seedModel('Task', [
             'project_id' => $project1->project_id,
             'task_name'  => 'Project 1 Task',
         ]);
-        $task2 = Task::factory()->create([
+        $task2 = $this->seedModel('Task', [
             'project_id' => $project2->project_id,
             'task_name'  => 'Project 2 Task',
         ]);
@@ -533,7 +537,7 @@ class TasksControllerTest extends FeatureTestCase
     public function it_updates_task_finish_date(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_finish_date' => '2025-12-01',
         ]);
 
@@ -563,7 +567,7 @@ class TasksControllerTest extends FeatureTestCase
     public function it_updates_task_status(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_status' => 1, // Not started
         ]);
 
@@ -593,7 +597,7 @@ class TasksControllerTest extends FeatureTestCase
     public function it_preserves_unchanged_fields_on_task_update(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_name'        => 'Original Name',
             'task_description' => 'Original description',
             'task_status'      => 1,

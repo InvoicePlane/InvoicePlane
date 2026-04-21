@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
@@ -19,6 +21,8 @@ use Tests\Feature\FeatureTestCase;
 
 class FamilyDeletionValidationFeatureTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     #[Group('business-rules')]
     #[Group('deletion')]
     #[Group('http')]
@@ -26,7 +30,7 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     public function it_deletes_family_without_products(): void
     {
         /** Arrange */
-        $family = Family::factory()->create(['family_name' => 'Empty Family']);
+        $family = $this->seedModel('Family', ['family_name' => 'Empty Family']);
 
         /** Act */
         $response = $this->post(route('families.delete', ['family_id' => $family->family_id]));
@@ -44,8 +48,8 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_products(): void
     {
         /** Arrange */
-        $family = Family::factory()->create();
-        Product::factory()->create(['family_id' => $family->family_id]);
+        $family = $this->seedModel('Family');
+        $this->seedModel('Product', ['family_id' => $family->family_id]);
 
         /** Act */
         $response = $this->post(route('families.delete', ['family_id' => $family->family_id]));
@@ -63,8 +67,8 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_multiple_products(): void
     {
         /** Arrange */
-        $family = Family::factory()->create();
-        Product::factory()->count(3)->create(['family_id' => $family->family_id]);
+        $family = $this->seedModel('Family');
+        $this->seedModelMany('Product', 3, ['family_id' => $family->family_id]);
 
         /** Act */
         $response = $this->post(route('families.delete', ['family_id' => $family->family_id]));
@@ -116,8 +120,8 @@ class FamilyDeletionValidationFeatureTest extends FeatureTestCase
     public function it_allows_deletion_after_products_removed(): void
     {
         /** Arrange */
-        $family  = Family::factory()->create();
-        $product = Product::factory()->create(['family_id' => $family->family_id]);
+        $family  = $this->seedModel('Family');
+        $product = $this->seedModel('Product', ['family_id' => $family->family_id]);
 
         // Initially cannot delete
         $response1 = $this->post(route('families.delete', ['family_id' => $family->family_id]));

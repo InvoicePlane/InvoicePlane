@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Tests\Unit;
+namespace Tests\Feature\Quotes;
 
 use Modules\Core\Support\ClientHelper;
 use PHPUnit\Framework\Attributes\CoversClass;

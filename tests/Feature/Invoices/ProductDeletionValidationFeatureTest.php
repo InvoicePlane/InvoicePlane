@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
@@ -19,6 +21,8 @@ use Tests\Feature\FeatureTestCase;
 
 class ProductDeletionValidationFeatureTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test that product without invoice items can be deleted via HTTP.
      */
@@ -29,7 +33,7 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     public function it_deletes_product_without_invoice_items(): void
     {
         /** Arrange */
-        $product = Product::factory()->create([
+        $product = $this->seedModel('Product', [
             'product_name'  => 'Deletable Product',
             'product_price' => 50.00,
         ]);
@@ -57,14 +61,14 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_product_with_invoice_items(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        $product = Product::factory()->create([
+        $product = $this->seedModel('Product', [
             'product_name'  => 'Product In Use',
             'product_price' => 75.00,
         ]);
 
-        InvoiceItem::factory()->create([
+        $this->seedModel('InvoiceItem', [
             'invoice_id'      => $invoice->invoice_id,
             'item_product_id' => $product->product_id,
             'item_name'       => 'Invoice Item',
@@ -95,12 +99,12 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     public function it_returns_error_message_with_item_count(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
+        $invoice = $this->seedModel('Invoice');
 
-        $product = Product::factory()->create();
+        $product = $this->seedModel('Product');
 
         // Create 3 invoice items
-        InvoiceItem::factory()->count(3)->create([
+        $this->seedModelMany('InvoiceItem', 3, [
             'invoice_id'      => $invoice->invoice_id,
             'item_product_id' => $product->product_id,
         ]);
@@ -132,10 +136,10 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_single_invoice_item(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
-        $product = Product::factory()->create();
+        $invoice = $this->seedModel('Invoice');
+        $product = $this->seedModel('Product');
 
-        InvoiceItem::factory()->create([
+        $this->seedModel('InvoiceItem', [
             'invoice_id'      => $invoice->invoice_id,
             'item_product_id' => $product->product_id,
         ]);
@@ -159,12 +163,12 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_multiple_invoice_references(): void
     {
         /** Arrange */
-        $product = Product::factory()->create();
+        $product = $this->seedModel('Product');
 
         // Create 2 different invoices, each with an item referencing the product
         for ($i = 0; $i < 2; $i++) {
-            $invoice = Invoice::factory()->create();
-            InvoiceItem::factory()->create([
+            $invoice = $this->seedModel('Invoice');
+            $this->seedModel('InvoiceItem', [
                 'invoice_id'      => $invoice->invoice_id,
                 'item_product_id' => $product->product_id,
             ]);
@@ -229,10 +233,10 @@ class ProductDeletionValidationFeatureTest extends FeatureTestCase
     public function it_allows_deletion_after_invoice_items_removed(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create();
-        $product = Product::factory()->create();
+        $invoice = $this->seedModel('Invoice');
+        $product = $this->seedModel('Product');
 
-        $item = InvoiceItem::factory()->create([
+        $item = $this->seedModel('InvoiceItem', [
             'invoice_id'      => $invoice->invoice_id,
             'item_product_id' => $product->product_id,
         ]);

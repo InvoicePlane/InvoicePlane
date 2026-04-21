@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Projects\Tests\Unit;
+namespace Tests\Feature\Projects;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Models\Client;
 use Modules\Projects\Models\Project;
@@ -20,6 +22,8 @@ use Tests\TestCase;
 
 class TaskServiceTest extends TestCase
 {
+    use InteractsWithDatabase;
+
     private TaskService $service;
 
     protected function setUp(): void
@@ -53,7 +57,7 @@ class TaskServiceTest extends TestCase
     public function it_creates_task(): void
     {
         /** Arrange */
-        $project = Project::factory()->create();
+        $project = $this->seedModel('Project');
         $data    = [
             'project_id'  => $project->project_id,
             'task_name'   => 'Test Task',
@@ -102,7 +106,7 @@ class TaskServiceTest extends TestCase
     public function it_updates_task(): void
     {
         /** Arrange */
-        $task = Task::factory()->create([
+        $task = $this->seedModel('Task', [
             'task_name' => 'Old Name',
         ]);
 
@@ -128,7 +132,7 @@ class TaskServiceTest extends TestCase
     public function it_finds_task_by_id(): void
     {
         /** Arrange */
-        $task = Task::factory()->create();
+        $task = $this->seedModel('Task');
 
         /** Act */
         $found = $this->service->find($task->task_id);
@@ -159,7 +163,7 @@ class TaskServiceTest extends TestCase
     public function it_deletes_task(): void
     {
         /** Arrange */
-        $task = Task::factory()->create();
+        $task = $this->seedModel('Task');
 
         /** Act */
         $result = $this->service->delete($task->task_id);

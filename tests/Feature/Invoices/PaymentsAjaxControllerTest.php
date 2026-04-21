@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Payments\tests\Feature;
+namespace Tests\Feature\Invoices;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 use Modules\Payments\app\Http\Controllers\PaymentMethodsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -15,7 +16,8 @@ use Tests\TestCase;
 
 class PaymentsAjaxControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -27,9 +29,9 @@ class PaymentsAjaxControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user          = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
-        $this->invoice       = Invoice::factory()->create(['invoice_balance' => 100.00]);
-        $this->paymentMethod = PaymentMethod::factory()->create();
+        $this->user          = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
+        $this->invoice       = $this->seedModel('Invoice', ['invoice_balance' => 100.00]);
+        $this->paymentMethod = $this->seedModel('PaymentMethod');
         $this->actingAs($this->user);
     }
 

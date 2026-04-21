@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Quotes\Tests\Feature;
+namespace Tests\Feature\Quotes;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\QuotesController as GuestQuotesController;
 use Modules\Quotes\Models\Quote;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class CrmQuotesControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays guest quotes list.
      */
@@ -44,7 +48,7 @@ class CrmQuotesControllerTest extends FeatureTestCase
     public function it_displays_quote_by_url_key(): void
     {
         /** Arrange */
-        $quote = Quote::factory()->create(['quote_url_key' => 'test-quote-key']);
+        $quote = $this->seedModel('Quote', ['quote_url_key' => 'test-quote-key']);
 
         /** Act */
         $response = $this->get(route('guest.quotes.view', ['urlKey' => 'test-quote-key']));
@@ -82,7 +86,7 @@ class CrmQuotesControllerTest extends FeatureTestCase
     public function it_approves_quote_when_approve_called(): void
     {
         /** Arrange */
-        $quote = Quote::factory()->create([
+        $quote = $this->seedModel('Quote', [
             'quote_url_key'   => 'approve-key',
             'quote_status_id' => 2, // Sent
         ]);
@@ -122,7 +126,7 @@ class CrmQuotesControllerTest extends FeatureTestCase
     public function it_is_accessible_without_authentication(): void
     {
         /** Arrange */
-        $quote = Quote::factory()->create(['quote_url_key' => 'guest-quote-key']);
+        $quote = $this->seedModel('Quote', ['quote_url_key' => 'guest-quote-key']);
 
         /** Act */
         $response = $this->get(route('guest.quotes.view', ['urlKey' => 'guest-quote-key']));

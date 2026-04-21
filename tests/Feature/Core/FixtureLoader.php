@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Testing\Fixtures;
+namespace Tests\Feature\Core;
 
 use RuntimeException;
 

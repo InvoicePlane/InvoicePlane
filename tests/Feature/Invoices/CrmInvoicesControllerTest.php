@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Invoices\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
 use Modules\Invoices\Models\Invoice;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class CrmInvoicesControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays guest invoices list.
      */
@@ -44,7 +48,7 @@ class CrmInvoicesControllerTest extends FeatureTestCase
     public function it_displays_invoice_by_url_key(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create(['invoice_url_key' => 'test-key-123']);
+        $invoice = $this->seedModel('Invoice', ['invoice_url_key' => 'test-key-123']);
 
         /** Act */
         $response = $this->get(route('guest.invoices.view', ['urlKey' => 'test-key-123']));
@@ -82,7 +86,7 @@ class CrmInvoicesControllerTest extends FeatureTestCase
     public function it_is_accessible_without_authentication(): void
     {
         /** Arrange */
-        $invoice = Invoice::factory()->create(['invoice_url_key' => 'guest-key']);
+        $invoice = $this->seedModel('Invoice', ['invoice_url_key' => 'guest-key']);
 
         /** Act */
         $response = $this->get(route('guest.invoices.view', ['urlKey' => 'guest-key']));

@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Crm\tests\Feature;
+namespace Tests\Feature\Clients;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 
 use function Modules\Clients\Tests\Feature\route;
 
@@ -15,13 +16,14 @@ use Tests\TestCase;
 
 class AjaxControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     #[Test]
     public function it_returns_clients_matching_name_query()
     {
         // Arrange: create clients
-        $client = \Modules\Clients\Models\tmpClient::factory()->create(['name' => 'Test Client']);
+        $client = $this->seedModel('\Modules\Clients\Models\tmpClient', ['name' => 'Test Client']);
 
         /**
          * Payload:
@@ -43,7 +45,7 @@ class AjaxControllerTest extends TestCase
     public function it_gets_latest_clients()
     {
         // Arrange: create clients
-        $client = \Modules\Clients\Models\tmpClient::factory()->create();
+        $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
 
         // Act: get latest clients
         $response = $this->get(route('clients.ajax.getLatest'));
@@ -74,8 +76,8 @@ class AjaxControllerTest extends TestCase
     public function it_deletes_client_note()
     {
         // Arrange: create client and note
-        $client = \Modules\Clients\Models\tmpClient::factory()->create();
-        $note   = \Modules\Crm\app\Models\ClientNote::factory()->create(['client_id' => $client->id]);
+        $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
+        $note   = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $client->id]);
 
         // Act: delete note
         $response = $this->json('POST', route('clients.ajax.deleteNote', ['note_id' => $note->id]));
@@ -89,7 +91,7 @@ class AjaxControllerTest extends TestCase
     public function it_saves_client_note()
     {
         // Arrange: create client
-        $client = \Modules\Clients\Models\tmpClient::factory()->create();
+        $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
 
         /**
          * Payload:
@@ -116,8 +118,8 @@ class AjaxControllerTest extends TestCase
     public function it_loads_client_notes()
     {
         // Arrange: create client and notes
-        $client = \Modules\Clients\Models\tmpClient::factory()->create();
-        $note   = \Modules\Crm\app\Models\ClientNote::factory()->create(['client_id' => $client->id]);
+        $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
+        $note   = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $client->id]);
 
         // Act: load notes
         $response = $this->get(route('clients.ajax.loadNotes', ['client_id' => $client->id]));

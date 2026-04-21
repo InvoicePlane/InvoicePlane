@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Crm\Tests\Feature;
+namespace Tests\Feature\Clients;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\ClientsController;
 use Modules\Crm\Models\Client;
@@ -22,6 +24,8 @@ use Tests\Feature\FeatureTestCase;
 
 class ClientDeletionValidationFeatureTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test that client without related records can be deleted via HTTP.
      */
@@ -32,7 +36,7 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     public function it_deletes_client_without_related_records(): void
     {
         /** Arrange */
-        $client = Client::factory()->create([
+        $client = $this->seedModel('Client', [
             'client_name' => 'Deletable Client',
         ]);
 
@@ -58,9 +62,9 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_client_with_invoices(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
 
-        Invoice::factory()->create([
+        $this->seedModel('Invoice', [
             'client_id' => $client->client_id,
         ]);
 
@@ -86,9 +90,9 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_client_with_quotes(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
 
-        Quote::factory()->create([
+        $this->seedModel('Quote', [
             'client_id' => $client->client_id,
         ]);
 
@@ -114,9 +118,9 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_of_client_with_projects(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
 
-        Project::factory()->create([
+        $this->seedModel('Project', [
             'client_id' => $client->client_id,
         ]);
 
@@ -142,11 +146,11 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     public function it_shows_comprehensive_error_for_mixed_blockers(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
 
-        Invoice::factory()->count(2)->create(['client_id' => $client->client_id]);
-        Quote::factory()->count(3)->create(['client_id' => $client->client_id]);
-        Project::factory()->create(['client_id' => $client->client_id]);
+        $this->seedModelMany('Invoice', 2, ['client_id' => $client->client_id]);
+        $this->seedModelMany('Quote', 3, ['client_id' => $client->client_id]);
+        $this->seedModel('Project', ['client_id' => $client->client_id]);
 
         /** Act */
         $response = $this->post(route('clients.delete', ['client_id' => $client->client_id]));
@@ -208,10 +212,10 @@ class ClientDeletionValidationFeatureTest extends FeatureTestCase
     public function it_allows_deletion_after_related_records_removed(): void
     {
         /** Arrange */
-        $client = Client::factory()->create();
+        $client = $this->seedModel('Client');
 
-        $invoice = Invoice::factory()->create(['client_id' => $client->client_id]);
-        $quote   = Quote::factory()->create(['client_id' => $client->client_id]);
+        $invoice = $this->seedModel('Invoice', ['client_id' => $client->client_id]);
+        $quote   = $this->seedModel('Quote', ['client_id' => $client->client_id]);
 
         // Initially cannot delete
         $response1 = $this->post(route('clients.delete', ['client_id' => $client->client_id]));

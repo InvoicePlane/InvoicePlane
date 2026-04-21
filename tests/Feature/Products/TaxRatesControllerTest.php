@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Feature;
+namespace Tests\Feature\Products;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
@@ -19,6 +21,8 @@ use Tests\Feature\FeatureTestCase;
 
 class TaxRatesControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays paginated list of tax rates.
      */
@@ -27,8 +31,8 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_tax_rates(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        TaxRate::factory()->count(5)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('TaxRate', 5);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('tax_rates.index'));
@@ -47,7 +51,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_displays_create_form(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('tax_rates.create'));
@@ -70,7 +74,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_creates_new_tax_rate_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -104,8 +108,8 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_tax_rate(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $taxRate = TaxRate::factory()->create();
+        $user    = $this->seedModel('User');
+        $taxRate = $this->seedModel('TaxRate');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('tax_rates.edit', $taxRate));
@@ -127,8 +131,8 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_updates_existing_tax_rate_with_valid_data(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $taxRate = TaxRate::factory()->create([
+        $user    = $this->seedModel('User');
+        $taxRate = $this->seedModel('TaxRate', [
             'tax_rate_name'    => 'Old Name',
             'tax_rate_percent' => '10.00',
         ]);
@@ -166,8 +170,8 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_deletes_tax_rate(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $taxRate = TaxRate::factory()->create();
+        $user    = $this->seedModel('User');
+        $taxRate = $this->seedModel('TaxRate');
 
         /** Act */
         $response = $this->actingAs($user)->delete(route('tax_rates.destroy', $taxRate));
@@ -188,11 +192,11 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_orders_tax_rates_correctly(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
-        TaxRate::factory()->create(['tax_rate_name' => 'Zero Rate', 'tax_rate_percent' => '0.00']);
-        TaxRate::factory()->create(['tax_rate_name' => 'Standard Rate', 'tax_rate_percent' => '20.00']);
-        TaxRate::factory()->create(['tax_rate_name' => 'Reduced Rate', 'tax_rate_percent' => '5.00']);
+        $this->seedModel('TaxRate', ['tax_rate_name' => 'Zero Rate', 'tax_rate_percent' => '0.00']);
+        $this->seedModel('TaxRate', ['tax_rate_name' => 'Standard Rate', 'tax_rate_percent' => '20.00']);
+        $this->seedModel('TaxRate', ['tax_rate_name' => 'Reduced Rate', 'tax_rate_percent' => '5.00']);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('tax_rates.index'));
@@ -213,7 +217,7 @@ class TaxRatesControllerTest extends FeatureTestCase
     public function it_creates_tax_rate_with_zero_percent(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** @var array{tax_rate_name: string, tax_rate_percent: string} $taxRateData */
         $taxRateData = [

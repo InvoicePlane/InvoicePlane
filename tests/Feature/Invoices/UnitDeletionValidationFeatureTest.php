@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
@@ -19,6 +21,8 @@ use Tests\Feature\FeatureTestCase;
 
 class UnitDeletionValidationFeatureTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     #[Group('business-rules')]
     #[Group('deletion')]
     #[Group('http')]
@@ -26,7 +30,7 @@ class UnitDeletionValidationFeatureTest extends FeatureTestCase
     public function it_deletes_unit_without_references(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create(['unit_name' => 'Deletable Unit']);
+        $unit = $this->seedModel('Unit', ['unit_name' => 'Deletable Unit']);
 
         /** Act */
         $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
@@ -44,8 +48,8 @@ class UnitDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_products(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create();
-        Product::factory()->create(['unit_id' => $unit->unit_id]);
+        $unit = $this->seedModel('Unit');
+        $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
         /** Act */
         $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
@@ -63,8 +67,8 @@ class UnitDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_invoice_items(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create();
-        InvoiceItem::factory()->create(['item_product_unit_id' => $unit->unit_id]);
+        $unit = $this->seedModel('Unit');
+        $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /** Act */
         $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
@@ -82,8 +86,8 @@ class UnitDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_quote_items(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create();
-        QuoteItem::factory()->create(['item_product_unit_id' => $unit->unit_id]);
+        $unit = $this->seedModel('Unit');
+        $this->seedModel('QuoteItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /** Act */
         $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
@@ -101,10 +105,10 @@ class UnitDeletionValidationFeatureTest extends FeatureTestCase
     public function it_prevents_deletion_with_multiple_references(): void
     {
         /** Arrange */
-        $unit = Unit::factory()->create();
+        $unit = $this->seedModel('Unit');
 
-        Product::factory()->count(2)->create(['unit_id' => $unit->unit_id]);
-        InvoiceItem::factory()->create(['item_product_unit_id' => $unit->unit_id]);
+        $this->seedModelMany('Product', 2, ['unit_id' => $unit->unit_id]);
+        $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /** Act */
         $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
@@ -122,8 +126,8 @@ class UnitDeletionValidationFeatureTest extends FeatureTestCase
     public function it_allows_deletion_after_references_removed(): void
     {
         /** Arrange */
-        $unit    = Unit::factory()->create();
-        $product = Product::factory()->create(['unit_id' => $unit->unit_id]);
+        $unit    = $this->seedModel('Unit');
+        $product = $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
         // Initially cannot delete
         $response1 = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));

@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Payments\tests\Feature;
+namespace Tests\Feature\Invoices;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 use Modules\Payments\app\Http\Controllers\PaymentMethodsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -15,7 +16,8 @@ use Tests\TestCase;
 
 class PaymentsControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
     use WithFaker;
 
     protected User $user;
@@ -27,9 +29,9 @@ class PaymentsControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user          = User::factory()->create(['user_type' => 1, 'user_active' => 1]);
-        $this->invoice       = Invoice::factory()->create(['invoice_balance' => 100.00]);
-        $this->paymentMethod = PaymentMethod::factory()->create();
+        $this->user          = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
+        $this->invoice       = $this->seedModel('Invoice', ['invoice_balance' => 100.00]);
+        $this->paymentMethod = $this->seedModel('PaymentMethod');
         $this->actingAs($this->user);
     }
 
@@ -102,7 +104,7 @@ class PaymentsControllerTest extends TestCase
     #[Test]
     public function it_updates_existing_payment(): void
     {
-        $payment = Payment::factory()->create([
+        $payment = $this->seedModel('Payment', [
             'invoice_id'     => $this->invoice->invoice_id,
             'payment_amount' => 50.00,
         ]);
@@ -125,7 +127,7 @@ class PaymentsControllerTest extends TestCase
     #[Test]
     public function it_views_payment_details(): void
     {
-        $payment = Payment::factory()->create();
+        $payment = $this->seedModel('Payment');
 
         $response = $this->get(route('payments.view', ['id' => $payment->payment_id]));
 
@@ -136,7 +138,7 @@ class PaymentsControllerTest extends TestCase
     #[Test]
     public function it_deletes_payment(): void
     {
-        $payment = Payment::factory()->create();
+        $payment = $this->seedModel('Payment');
 
         $response = $this->delete(route('payments.delete', ['id' => $payment->payment_id]));
 
@@ -157,7 +159,7 @@ class PaymentsControllerTest extends TestCase
     #[Test]
     public function it_loads_payment_edit_form(): void
     {
-        $payment = Payment::factory()->create();
+        $payment = $this->seedModel('Payment');
 
         $response = $this->get(route('payments.form', ['id' => $payment->payment_id]));
 
@@ -176,7 +178,7 @@ class PaymentsControllerTest extends TestCase
     #[Test]
     public function it_saves_payment_custom_fields(): void
     {
-        $customField = CustomField::factory()->create([
+        $customField = $this->seedModel('CustomField', [
             'custom_field_table' => 'ip_payment_custom',
         ]);
 
@@ -201,7 +203,7 @@ class PaymentsControllerTest extends TestCase
     #[Test]
     public function it_displays_online_payment_logs(): void
     {
-        PaymentLog::factory()->count(5)->create();
+        $this->seedModelMany('PaymentLog', 5);
 
         $response = $this->get(route('payments.onlineLogs'));
 
@@ -214,8 +216,8 @@ class PaymentsControllerTest extends TestCase
     #[Test]
     public function it_filters_online_payment_logs_by_search(): void
     {
-        PaymentLog::factory()->create(['transaction_id' => 'TXN123ABC']);
-        PaymentLog::factory()->create(['transaction_id' => 'TXN456DEF']);
+        $this->seedModel('PaymentLog', ['transaction_id' => 'TXN123ABC']);
+        $this->seedModel('PaymentLog', ['transaction_id' => 'TXN456DEF']);
 
         $response = $this->get(route('payments.onlineLogs', ['search' => '123']));
 
@@ -228,9 +230,9 @@ class PaymentsControllerTest extends TestCase
     #[Test]
     public function it_filters_online_payment_logs_by_date_range(): void
     {
-        PaymentLog::factory()->create(['created_at' => now()->subDays(10)]);
-        PaymentLog::factory()->create(['created_at' => now()->subDays(5)]);
-        PaymentLog::factory()->create(['created_at' => now()]);
+        $this->seedModel('PaymentLog', ['created_at' => now()->subDays(10)]);
+        $this->seedModel('PaymentLog', ['created_at' => now()->subDays(5)]);
+        $this->seedModel('PaymentLog', ['created_at' => now()]);
 
         $response = $this->get(route('payments.onlineLogs', [
             'date_from' => now()->subDays(6)->format('Y-m-d'),
@@ -246,9 +248,9 @@ class PaymentsControllerTest extends TestCase
     #[Test]
     public function it_filters_online_payment_logs_by_status(): void
     {
-        PaymentLog::factory()->create(['status' => 'completed']);
-        PaymentLog::factory()->create(['status' => 'completed']);
-        PaymentLog::factory()->create(['status' => 'failed']);
+        $this->seedModel('PaymentLog', ['status' => 'completed']);
+        $this->seedModel('PaymentLog', ['status' => 'completed']);
+        $this->seedModel('PaymentLog', ['status' => 'failed']);
 
         $response = $this->get(route('payments.onlineLogs', ['status' => 'completed']));
 

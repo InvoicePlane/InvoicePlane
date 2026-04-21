@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Crm\Tests\Feature;
+namespace Tests\Feature\Clients;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\ClientsController;
 use Modules\Crm\Models\Client;
@@ -22,6 +24,8 @@ use Tests\Feature\FeatureTestCase;
 
 class UserClientsControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays paginated list of user-client relationships.
      */
@@ -30,9 +34,9 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_user_clients(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
-        UserClient::factory()->count(5)->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
+        $this->seedModelMany('UserClient', 5, [
             'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
@@ -55,9 +59,9 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_loads_user_and_client_relationships(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
-        UserClient::factory()->create([
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
+        $this->seedModel('UserClient', [
             'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
@@ -82,7 +86,7 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_displays_create_form(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -106,9 +110,9 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_user_client(): void
     {
         /** Arrange */
-        $user       = User::factory()->create();
-        $client     = Client::factory()->create();
-        $userClient = UserClient::factory()->create([
+        $user       = $this->seedModel('User');
+        $client     = $this->seedModel('Client');
+        $userClient = $this->seedModel('UserClient', [
             'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
@@ -134,8 +138,8 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_creates_new_user_client_relationship_with_valid_data(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
         /**
          * {
@@ -172,11 +176,11 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_updates_existing_user_client_relationship(): void
     {
         /** Arrange */
-        $user    = User::factory()->create();
-        $client1 = Client::factory()->create();
-        $client2 = Client::factory()->create();
+        $user    = $this->seedModel('User');
+        $client1 = $this->seedModel('Client');
+        $client2 = $this->seedModel('Client');
 
-        $userClient = UserClient::factory()->create([
+        $userClient = $this->seedModel('UserClient', [
             'user_id'   => $user->user_id,
             'client_id' => $client1->client_id,
         ]);
@@ -215,8 +219,8 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_validates_required_user_id(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $client = Client::factory()->create();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
 
         /** Act */
         /**
@@ -244,7 +248,7 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_validates_required_client_id(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         /**
@@ -273,7 +277,7 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_redirects_to_index_on_cancel(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -300,9 +304,9 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_deletes_user_client_relationship(): void
     {
         /** Arrange */
-        $user       = User::factory()->create();
-        $client     = Client::factory()->create();
-        $userClient = UserClient::factory()->create([
+        $user       = $this->seedModel('User');
+        $client     = $this->seedModel('Client');
+        $userClient = $this->seedModel('UserClient', [
             'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
@@ -340,7 +344,7 @@ class UserClientsControllerTest extends FeatureTestCase
     public function it_returns_404_when_deleting_non_existent_user_client(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {

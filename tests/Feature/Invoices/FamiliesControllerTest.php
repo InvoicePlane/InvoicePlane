@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Products\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Core\Models\User;
 use Modules\Products\Controllers\FamiliesController;
@@ -19,6 +21,8 @@ use Tests\Feature\FeatureTestCase;
 
 class FamiliesControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test index displays paginated list of families.
      */
@@ -27,8 +31,8 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_displays_paginated_list_of_families(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        Family::factory()->count(5)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('Family', 5);
 
         /* Act */
         $this->actingAs($user);
@@ -51,7 +55,7 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_displays_create_form(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -76,8 +80,8 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_displays_edit_form_with_existing_family(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $family = Family::factory()->create();
+        $user   = $this->seedModel('User');
+        $family = $this->seedModel('Family');
 
         /* Act */
         $this->actingAs($user);
@@ -101,7 +105,7 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_creates_new_family_with_valid_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -135,8 +139,8 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_updates_existing_family_with_valid_data(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $family = Family::factory()->create(['family_name' => 'Old Name']);
+        $user   = $this->seedModel('User');
+        $family = $this->seedModel('Family', ['family_name' => 'Old Name']);
 
         /**
          * {
@@ -171,7 +175,7 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_redirects_to_index_on_cancel(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -197,7 +201,7 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_validates_required_family_name(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {
@@ -225,8 +229,8 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_validates_unique_family_name(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        Family::factory()->create(['family_name' => 'Existing Family']);
+        $user = $this->seedModel('User');
+        $this->seedModel('Family', ['family_name' => 'Existing Family']);
 
         /**
          * {
@@ -255,8 +259,8 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_deletes_family(): void
     {
         /** Arrange */
-        $user   = User::factory()->create();
-        $family = Family::factory()->create();
+        $user   = $this->seedModel('User');
+        $family = $this->seedModel('Family');
 
         /**
          * {
@@ -291,7 +295,7 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_returns_404_when_deleting_non_existent_family(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /**
          * {

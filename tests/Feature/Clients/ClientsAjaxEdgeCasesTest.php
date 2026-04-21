@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Crm\Tests\Feature;
+namespace Tests\Feature\Clients;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\ClientsController;
 use Modules\Crm\Models\Client;
@@ -22,6 +24,8 @@ use Tests\Feature\FeatureTestCase;
 
 class ClientsAjaxEdgeCasesTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     // ==================== VALIDATION & EDGE CASES ====================
 
     /**
@@ -32,7 +36,7 @@ class ClientsAjaxEdgeCasesTest extends FeatureTestCase
     public function it_handles_invalid_client_id_type(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -54,7 +58,7 @@ class ClientsAjaxEdgeCasesTest extends FeatureTestCase
     public function it_handles_negative_client_id(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);
@@ -72,7 +76,7 @@ class ClientsAjaxEdgeCasesTest extends FeatureTestCase
     public function it_handles_zero_client_id(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /* Act */
         $this->actingAs($user);

@@ -1,6 +1,8 @@
 <?php
 
-namespace Modules\Invoices\Tests\Feature;
+namespace Tests\Feature\Invoices;
+
+use Tests\Concerns\InteractsWithDatabase;
 
 use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
 use Modules\Invoices\Models\Invoice;
@@ -18,6 +20,8 @@ use Tests\Feature\FeatureTestCase;
 
 class RecurringControllerTest extends FeatureTestCase
 {
+    use InteractsWithDatabase;
+
     /**
      * Test recurring invoices index displays all recurring configurations.
      */
@@ -26,9 +30,9 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_displays_list_of_recurring_invoices(): void
     {
         /** Arrange */
-        $user       = User::factory()->create();
-        $recurring1 = InvoicesRecurring::factory()->create();
-        $recurring2 = InvoicesRecurring::factory()->create();
+        $user       = $this->seedModel('User');
+        $recurring1 = $this->seedModel('InvoicesRecurring');
+        $recurring2 = $this->seedModel('InvoicesRecurring');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
@@ -49,7 +53,7 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_includes_recur_frequencies_in_view_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
@@ -68,8 +72,8 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_paginates_recurring_invoices_correctly(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
-        InvoicesRecurring::factory()->count(20)->create();
+        $user = $this->seedModel('User');
+        $this->seedModelMany('InvoicesRecurring', 20);
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));
@@ -87,8 +91,8 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_stops_recurring_invoice_and_sets_status_to_zero(): void
     {
         /** Arrange */
-        $user      = User::factory()->create();
-        $recurring = InvoicesRecurring::factory()->create(['recur_status' => 1]);
+        $user      = $this->seedModel('User');
+        $recurring = $this->seedModel('InvoicesRecurring', ['recur_status' => 1]);
 
         /** Act */
         $response = $this->actingAs($user)->post(
@@ -109,8 +113,8 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_redirects_to_index_after_stopping_recurring_invoice(): void
     {
         /** Arrange */
-        $user      = User::factory()->create();
-        $recurring = InvoicesRecurring::factory()->create();
+        $user      = $this->seedModel('User');
+        $recurring = $this->seedModel('InvoicesRecurring');
 
         /** Act */
         $response = $this->actingAs($user)->post(
@@ -128,7 +132,7 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_throws_404_when_stopping_non_existent_recurring_invoice(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** @var array{id: int} $stopParams */
         $stopParams = [
@@ -150,8 +154,8 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_deletes_recurring_invoice_from_database(): void
     {
         /** Arrange */
-        $user        = User::factory()->create();
-        $recurring   = InvoicesRecurring::factory()->create();
+        $user        = $this->seedModel('User');
+        $recurring   = $this->seedModel('InvoicesRecurring');
         $recurringId = $recurring->invoice_recurring_id;
 
         /** @var array{id: int} $deleteParams */
@@ -175,8 +179,8 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_redirects_to_index_after_deleting_recurring_invoice(): void
     {
         /** Arrange */
-        $user      = User::factory()->create();
-        $recurring = InvoicesRecurring::factory()->create();
+        $user      = $this->seedModel('User');
+        $recurring = $this->seedModel('InvoicesRecurring');
 
         /** @var array{id: int} $deleteParams */
         $deleteParams = [
@@ -197,7 +201,7 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_throws_404_when_deleting_non_existent_recurring_invoice(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** @var array{id: int} $deleteParams */
         $deleteParams = [
@@ -219,7 +223,7 @@ class RecurringControllerTest extends FeatureTestCase
     public function it_includes_filter_configuration_in_view_data(): void
     {
         /** Arrange */
-        $user = User::factory()->create();
+        $user = $this->seedModel('User');
 
         /** Act */
         $response = $this->actingAs($user)->get(route('invoices.recurring'));

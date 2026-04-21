@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Invoices\tests\Unit;
+namespace Tests\Unit\Invoices;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithDatabase;
+
 
 use function Modules\InvoiceGroups\Tests\Unit\app;
 
@@ -13,7 +14,8 @@ use Tests\TestCase;
 
 class InvoiceItemsServiceTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithDatabase;
+
 
     private ItemsService $service;
 
@@ -37,8 +39,8 @@ class InvoiceItemsServiceTest extends TestCase
     public function test_get_by_invoice_id_returns_items(): void
     {
         $invoice_id = 1;
-        Item::factory()->count(3)->create(['invoice_id' => $invoice_id]);
-        Item::factory()->count(2)->create(['invoice_id' => 2]);
+        $this->seedModelMany('Item', 3, ['invoice_id' => $invoice_id]);
+        $this->seedModelMany('Item', 2, ['invoice_id' => 2]);
 
         $results = $this->service->getByInvoiceId($invoice_id);
         $this->assertCount(3, $results);
@@ -59,8 +61,8 @@ class InvoiceItemsServiceTest extends TestCase
 
     public function test_delete_removes_item_and_amounts(): void
     {
-        $item = Item::factory()->create(['invoice_id' => 1]);
-        ItemAmount::factory()->create(['item_id' => $item->item_id]);
+        $item = $this->seedModel('Item', ['invoice_id' => 1]);
+        $this->seedModel('ItemAmount', ['item_id' => $item->item_id]);
 
         $this->invoiceAmountsService
             ->expects($this->once())
