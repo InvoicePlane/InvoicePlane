@@ -87,7 +87,7 @@ class NumberHelperTest extends AbstractTestCase
 
     #[Test]
     #[DataProvider('currencyAmountProvider')]
-    public function it_formats_various_currency_amounts($amount, string $expected): void
+    public function it_formats_various_currency_amounts(int|float|string $amount, string $expected): void
     {
         $this->setDefaultCurrencySettings();
 

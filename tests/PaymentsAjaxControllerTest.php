@@ -91,7 +91,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
         ]);
 
         $response->assertSuccessful();
-        $response->assertViewHas('invoice_id', function ($id) {
+        $response->assertViewHas('invoice_id', function ($id): bool {
             return ! str_contains($id, '<script>');
         });
     }

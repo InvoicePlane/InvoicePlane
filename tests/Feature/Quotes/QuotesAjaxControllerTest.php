@@ -2,11 +2,12 @@
 
 namespace Tests\Feature\Quotes;
 
-use Modules\Crm\Controllers\QuotesController as GuestQuotesController;
+use Ajax;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 /**
@@ -14,8 +15,7 @@ use Tests\Concerns\InteractsWithDatabase;
  *
  * Tests guest portal quote viewing and approval.
  */
-#[CoversClass(GuestQuotesController::class)]
-#[CoversClass(Tests\Feature\Quotes\QuotesAjaxController::class)]
+#[CoversClass(Ajax::class)]
 
 class QuotesAjaxControllerTest extends AbstractTestCase
 {

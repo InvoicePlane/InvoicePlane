@@ -6,8 +6,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
+use Units;
 
-#[CoversClass(\Units::class)]
+#[CoversClass(Units::class)]
 class UnitsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

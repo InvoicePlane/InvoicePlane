@@ -12,7 +12,7 @@ class CustomValuesControllerTest extends AbstractTestCase
     use InteractsWithDatabase;
 
     #[Test]
-    public function it_displays_custom_values()
+    public function it_displays_custom_values(): void
     {
         /* Arrange */
         $customValue = $this->seedModel('CustomValue', ['name' => 'Test Value']);
@@ -26,7 +26,7 @@ class CustomValuesControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_displays_and_saves_custom_field()
+    public function it_displays_and_saves_custom_field(): void
     {
         /* Arrange */
         $customField     = $this->seedModel('\Modules\CustomFields\Models\CustomField', ['name' => 'Test Field']);

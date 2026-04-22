@@ -24,7 +24,7 @@ class ReportsControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_returns_sales_by_client_report()
+    public function it_returns_sales_by_client_report(): void
     {
         /* Arrange */
         $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
@@ -128,7 +128,7 @@ class ReportsControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_returns_invoices_per_client_report()
+    public function it_returns_invoices_per_client_report(): void
     {
         /* Arrange */
         $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');

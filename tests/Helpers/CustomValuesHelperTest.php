@@ -85,7 +85,7 @@ class CustomValuesHelperTest extends AbstractTestCase
 
     #[Test]
     #[DataProvider('booleanProvider')]
-    public function it_formats_various_boolean_values($value, bool $isEmpty): void
+    public function it_formats_various_boolean_values(?string $value, bool $isEmpty): void
     {
         $result = CustomValuesHelper::format_boolean($value);
 

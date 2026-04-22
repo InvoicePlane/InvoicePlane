@@ -325,7 +325,7 @@ class StubSessionsSecurity
     {
         $cutoff = time() - $windowSeconds;
 
-        return array_values(array_filter($timestamps, fn (int $ts) => $ts > $cutoff));
+        return array_values(array_filter($timestamps, fn (int $ts): bool => $ts > $cutoff));
     }
 
     public function isRateLimited(array $attempts, int $maxAttempts, int $windowSeconds): bool

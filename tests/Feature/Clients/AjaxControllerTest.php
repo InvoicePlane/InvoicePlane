@@ -16,7 +16,7 @@ class AjaxControllerTest extends AbstractTestCase
     use InteractsWithDatabase;
 
     #[Test]
-    public function it_returns_clients_matching_name_query()
+    public function it_returns_clients_matching_name_query(): void
     {
         /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient', ['name' => 'Test Client']);
@@ -38,7 +38,7 @@ class AjaxControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_gets_latest_clients()
+    public function it_gets_latest_clients(): void
     {
         /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
@@ -51,7 +51,7 @@ class AjaxControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_saves_permissive_search_preference()
+    public function it_saves_permissive_search_preference(): void
     {
         /**
          * Payload:
@@ -69,7 +69,7 @@ class AjaxControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_deletes_client_note()
+    public function it_deletes_client_note(): void
     {
         /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
@@ -84,7 +84,7 @@ class AjaxControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_saves_client_note()
+    public function it_saves_client_note(): void
     {
         /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
@@ -111,7 +111,7 @@ class AjaxControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_loads_client_notes()
+    public function it_loads_client_notes(): void
     {
         /* Arrange */
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient');

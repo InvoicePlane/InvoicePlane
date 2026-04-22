@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Quotes;
 
-use Illuminate\Database\Query\Builder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Quotes;
 use Tests\AbstractTestCase;
 
-#[CoversClass(\Quotes::class)]
+#[CoversClass(Quotes::class)]
 class QuotesFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void

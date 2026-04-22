@@ -42,7 +42,7 @@ class ClientsServiceTest extends AbstractTestCase
         $this->assertCount(2, $result);
         $this->assertEquals('Active Client 1', $result[0]->client_name);
         $this->assertEquals('Active Client 2', $result[1]->client_name);
-        $result->each(function ($client) {
+        $result->each(function ($client): void {
             $this->assertEquals(1, $client->client_active);
         });
     }

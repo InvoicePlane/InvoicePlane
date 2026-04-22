@@ -200,7 +200,7 @@ class PaymentsControllerTest extends AbstractTestCase
         $response = $this->get(\Tests\Feature\Invoices\route('payments.onlineLogs'));
 
         $response->assertSuccessful();
-        $response->assertViewHas('payment_logs', function ($logs) {
+        $response->assertViewHas('payment_logs', function ($logs): bool {
             return $logs->count() === 5;
         });
     }
@@ -214,7 +214,7 @@ class PaymentsControllerTest extends AbstractTestCase
         $response = $this->get(\Tests\Feature\Invoices\route('payments.onlineLogs', ['search' => '123']));
 
         $response->assertSuccessful();
-        $response->assertViewHas('payment_logs', function ($logs) {
+        $response->assertViewHas('payment_logs', function ($logs): bool {
             return $logs->count() === 1;
         });
     }
@@ -232,7 +232,7 @@ class PaymentsControllerTest extends AbstractTestCase
         ]));
 
         $response->assertSuccessful();
-        $response->assertViewHas('payment_logs', function ($logs) {
+        $response->assertViewHas('payment_logs', function ($logs): bool {
             return $logs->count() === 2;
         });
     }
@@ -247,7 +247,7 @@ class PaymentsControllerTest extends AbstractTestCase
         $response = $this->get(\Tests\Feature\Invoices\route('payments.onlineLogs', ['status' => 'completed']));
 
         $response->assertSuccessful();
-        $response->assertViewHas('payment_logs', function ($logs) {
+        $response->assertViewHas('payment_logs', function ($logs): bool {
             return $logs->count() === 2;
         });
     }

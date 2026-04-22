@@ -29,7 +29,7 @@ class QuotesControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_redirects_to_status_all()
+    public function it_redirects_to_status_all(): void
     {
         /* Act */
         $response = $this->get(\Tests\Feature\Invoices\route('quotes.index'));
@@ -39,7 +39,7 @@ class QuotesControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_displays_quotes_by_status()
+    public function it_displays_quotes_by_status(): void
     {
         /* Arrange */
         $draftQuote    = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'draft']);
@@ -172,10 +172,10 @@ class QuotesControllerTest extends AbstractTestCase
         $response = $this->get(\Tests\Feature\Invoices\route('quotes.view', ['quote_id' => $quote->quote_id]));
 
         $response->assertSuccessful();
-        $response->assertViewHas('quote', function ($viewQuote) use ($quote) {
+        $response->assertViewHas('quote', function ($viewQuote) use ($quote): bool {
             return $viewQuote->quote_id === $quote->quote_id;
         });
-        $response->assertViewHas('items', function ($items) {
+        $response->assertViewHas('items', function ($items): bool {
             return count($items) === 2;
         });
     }

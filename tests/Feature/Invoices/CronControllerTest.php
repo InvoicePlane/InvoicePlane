@@ -31,14 +31,14 @@ class CronControllerTest extends AbstractTestCase
 
         /* Mock get_setting to return a valid key */
         if ( ! function_exists('get_setting')) {
-            function get_setting($key)
+            function get_setting($key): string
             {
                 return 'valid_cron_key_123';
             }
         }
 
         if ( ! function_exists('log_message')) {
-            function log_message($level, $message)
+            function log_message($level, $message): void
             {
                 /* Mock log function */
             }

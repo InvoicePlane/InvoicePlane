@@ -9,25 +9,25 @@ use Tests\AbstractTestCase;
 class CustomFieldsControllerTest extends AbstractTestCase
 {
     #[Test]
-    public function it_displays_custom_fields_list()
+    public function it_displays_custom_fields_list(): void
     {
         $this->markTestIncomplete('Implement meaningful test for index');
     }
 
     #[Test]
-    public function it_displays_custom_fields_table()
+    public function it_displays_custom_fields_table(): void
     {
         $this->markTestIncomplete('Implement meaningful test for table');
     }
 
     #[Test]
-    public function it_displays_custom_field_form()
+    public function it_displays_custom_field_form(): void
     {
         $this->markTestIncomplete('Implement meaningful test for form');
     }
 
     #[Test]
-    public function it_deletes_custom_field()
+    public function it_deletes_custom_field(): void
     {
         $this->markTestIncomplete('Implement meaningful test for delete');
     }

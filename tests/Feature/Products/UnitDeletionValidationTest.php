@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
+use Units;
 
 /**
  * FamilyService Deletion Validation Tests.
@@ -14,12 +15,12 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests business rules for family deletion:
  * - Families with products cannot be deleted
  */
-#[CoversClass(\Units::class)]
+#[CoversClass(Units::class)]
 class UnitDeletionValidationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private $service;
+    private \Tests\Feature\Products\UnitService $service;
 
     protected function setUp(): void
     {

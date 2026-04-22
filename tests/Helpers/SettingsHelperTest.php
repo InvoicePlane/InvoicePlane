@@ -183,7 +183,7 @@ class SettingsHelperTest extends AbstractTestCase
 
     #[Test]
     #[DataProvider('checkSelectProvider')]
-    public function it_handles_various_check_select_scenarios($value1, $value2, string $operator, bool $checked, string $expected): void
+    public function it_handles_various_check_select_scenarios(string|int|bool $value1, ?string $value2, string $operator, bool $checked, string $expected): void
     {
         ob_start();
         SettingsHelper::checkSelect($value1, $value2, $operator, $checked);
