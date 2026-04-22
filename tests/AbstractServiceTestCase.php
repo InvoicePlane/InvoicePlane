@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use Tests\AbstractTestCase;
-
 /**
  * Abstract base class for service tests with shared fixtures and utilities.
  */

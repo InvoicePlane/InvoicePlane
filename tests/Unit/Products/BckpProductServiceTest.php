@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Products;
 
+use Mdl_Products;
 use Modules\Products\Models\Family;
 use Modules\Products\Services\FamilyService;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -15,7 +16,7 @@ use Tests\AbstractTestCase;
  * Tests business rules for family deletion:
  * - Families with products cannot be deleted
  */
-#[CoversClass(\Mdl_Products::class)]
+#[CoversClass(Mdl_Products::class)]
 class BckpProductServiceTest extends AbstractTestCase
 {
     private $service;

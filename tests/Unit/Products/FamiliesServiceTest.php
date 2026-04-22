@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\Products;
 
+use Mdl_Families;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(\Mdl_Families::class)]
+#[CoversClass(Mdl_Families::class)]
 class FamiliesServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

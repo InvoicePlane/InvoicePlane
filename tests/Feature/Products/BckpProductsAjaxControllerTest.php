@@ -51,7 +51,7 @@ class BckpProductsAjaxControllerTest extends AbstractTestCase
     public function it_filters_products_by_family(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        $user    = $this->seedModel('User');
         $family1 = $this->seedModel('Family');
         $family2 = $this->seedModel('Family');
 

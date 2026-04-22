@@ -2,13 +2,14 @@
 
 namespace Tests\Unit\Payments;
 
+use Mdl_Payment_Logs;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(\Mdl_Payment_Logs::class)]
+#[CoversClass(Mdl_Payment_Logs::class)]
 class BckpPaymentLogServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -29,7 +30,7 @@ class BckpPaymentLogServiceTest extends AbstractTestCase
         $invoice = $this->seedModel('Invoice');
 
         $this->seedModelMany('PaymentLog', 3, [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'       => $invoice->invoice_id,
             'payment_log_date' => now()->subDays(1),
         ]);
 
@@ -48,15 +49,15 @@ class BckpPaymentLogServiceTest extends AbstractTestCase
         /* Arrange */
         $invoice = $this->seedModel('Invoice');
         $this->seedModel('PaymentLog', [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'       => $invoice->invoice_id,
             'payment_log_date' => now()->subDays(3),
         ]);
         $log2 = $this->seedModel('PaymentLog', [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'       => $invoice->invoice_id,
             'payment_log_date' => now()->subDays(1),
         ]);
         $this->seedModel('PaymentLog', [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'       => $invoice->invoice_id,
             'payment_log_date' => now()->subDays(2),
         ]);
 

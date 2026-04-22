@@ -2,6 +2,7 @@
 
 namespace tests\Feature\Projects;
 
+use AbstractServiceTestCase;
 use Modules\Projects\Services\ProjectService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -14,7 +15,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Test suite for ProjectService business logic methods.
  */
 #[CoversClass(ProjectService::class)]
-class BckpTaskDeletionValidationTest extends \AbstractServiceTestCase
+class BckpTaskDeletionValidationTest extends AbstractServiceTestCase
 {
     use InteractsWithDatabase;
 
@@ -22,7 +23,7 @@ class BckpTaskDeletionValidationTest extends \AbstractServiceTestCase
 
     protected function setUp(): void
     {
-        \AbstractServiceTestCase::setUp();
+        AbstractServiceTestCase::setUp();
         $this->service = new \Tests\Feature\Invoices\TaskService();
     }
 
@@ -36,13 +37,13 @@ class BckpTaskDeletionValidationTest extends \AbstractServiceTestCase
     {
         /* Arrange */
         $task = $this->seedModel('Task', [
-            'task_name' => 'Unassigned Task',
-            'invoice_id' => null, // Not assigned to any invoice
+            'task_name'   => 'Unassigned Task',
+            'invoice_id'  => null, // Not assigned to any invoice
             'task_status' => 1,
         ]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($task->task_id);
+        $canDelete  = $this->service->canDelete($task->task_id);
         $isAssigned = $this->service->isAssignedToInvoice($task->task_id);
 
         /* Assert */
@@ -62,13 +63,13 @@ class BckpTaskDeletionValidationTest extends \AbstractServiceTestCase
         $invoice = $this->seedModel('Invoice');
 
         $task = $this->seedModel('Task', [
-            'task_name' => 'Invoiced Task',
-            'invoice_id' => $invoice->invoice_id, // Assigned to invoice
+            'task_name'   => 'Invoiced Task',
+            'invoice_id'  => $invoice->invoice_id, // Assigned to invoice
             'task_status' => 3, // Complete
         ]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($task->task_id);
+        $canDelete  = $this->service->canDelete($task->task_id);
         $isAssigned = $this->service->isAssignedToInvoice($task->task_id);
 
         /* Assert */
@@ -96,7 +97,7 @@ class BckpTaskDeletionValidationTest extends \AbstractServiceTestCase
         ]);
 
         /* Act */
-        $assignedIsAssigned = $this->service->isAssignedToInvoice($assignedTask->task_id);
+        $assignedIsAssigned   = $this->service->isAssignedToInvoice($assignedTask->task_id);
         $unassignedIsAssigned = $this->service->isAssignedToInvoice($unassignedTask->task_id);
 
         /* Assert */
@@ -116,7 +117,7 @@ class BckpTaskDeletionValidationTest extends \AbstractServiceTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $canDelete = $this->service->canDelete($nonexistentId);
+        $canDelete  = $this->service->canDelete($nonexistentId);
         $isAssigned = $this->service->isAssignedToInvoice($nonexistentId);
 
         /* Assert */
@@ -141,7 +142,7 @@ class BckpTaskDeletionValidationTest extends \AbstractServiceTestCase
         foreach ($statuses as $status) {
             $task = $this->seedModel('Task', [
                 'task_status' => $status,
-                'invoice_id' => $invoice->invoice_id,
+                'invoice_id'  => $invoice->invoice_id,
             ]);
 
             /* Act */
@@ -166,7 +167,7 @@ class BckpTaskDeletionValidationTest extends \AbstractServiceTestCase
         /* Arrange */
         $task = $this->seedModel('Task', [
             'task_status' => 3, // Complete
-            'invoice_id' => null, // Not assigned
+            'invoice_id'  => null, // Not assigned
         ]);
 
         /* Act */

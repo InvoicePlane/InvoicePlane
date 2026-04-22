@@ -2,11 +2,12 @@
 
 namespace Tests\Unit\Payments;
 
+use Mdl_Payment_Methods;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(\Mdl_Payment_Methods::class)]
+#[CoversClass(Mdl_Payment_Methods::class)]
 class PaymentMethodsServiceTest extends AbstractTestCase
 {
     private $service;

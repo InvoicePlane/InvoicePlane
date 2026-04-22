@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\Quotes;
 
+use Mdl_Quotes;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(\Mdl_Quotes::class)]
+#[CoversClass(Mdl_Quotes::class)]
 class BckpQuoteServiceTest extends AbstractTestCase
 {
     private $service;
