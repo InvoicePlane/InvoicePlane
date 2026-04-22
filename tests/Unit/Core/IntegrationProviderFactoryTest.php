@@ -29,7 +29,7 @@ class IntegrationProviderFactoryTest extends AbstractTestCase
 
     public function it_resolves_a_registered_provider_by_its_key(): void
     {
-        $this->factory->register('stripe', fn () => new StubProvider('stripe'));
+        $this->factory->register('stripe', fn (): \Tests\Unit\Core\StubProvider => new StubProvider('stripe'));
 
         $provider = $this->factory->make('stripe');
 
@@ -50,7 +50,7 @@ class IntegrationProviderFactoryTest extends AbstractTestCase
 
     public function it_returns_a_different_provider_instance_per_make_call_when_factory_creates_new(): void
     {
-        $this->factory->register('paypal', fn () => new StubProvider('paypal'));
+        $this->factory->register('paypal', fn (): \Tests\Unit\Core\StubProvider => new StubProvider('paypal'));
 
         $first  = $this->factory->make('paypal');
         $second = $this->factory->make('paypal');
@@ -64,9 +64,9 @@ class IntegrationProviderFactoryTest extends AbstractTestCase
 
     public function it_can_register_multiple_providers_under_different_keys(): void
     {
-        $this->factory->register('letspeppol', fn () => new StubProvider('letspeppol'));
-        $this->factory->register('storecove', fn () => new StubProvider('storecove'));
-        $this->factory->register('stripe', fn () => new StubProvider('stripe'));
+        $this->factory->register('letspeppol', fn (): \Tests\Unit\Core\StubProvider => new StubProvider('letspeppol'));
+        $this->factory->register('storecove', fn (): \Tests\Unit\Core\StubProvider => new StubProvider('storecove'));
+        $this->factory->register('stripe', fn (): \Tests\Unit\Core\StubProvider => new StubProvider('stripe'));
 
         self::assertTrue(
             $this->factory->has('letspeppol'),
@@ -86,7 +86,7 @@ class IntegrationProviderFactoryTest extends AbstractTestCase
 
     public function it_wraps_the_resolved_provider_in_the_exception_handling_decorator(): void
     {
-        $this->factory->register('letspeppol', fn () => new ThrowingProvider());
+        $this->factory->register('letspeppol', fn (): \Tests\Unit\Core\ThrowingProvider => new ThrowingProvider());
 
         $provider = $this->factory->make('letspeppol');
 
@@ -100,7 +100,7 @@ class IntegrationProviderFactoryTest extends AbstractTestCase
 
     public function it_returns_false_from_validate_participant_when_provider_throws(): void
     {
-        $this->factory->register('letspeppol', fn () => new ThrowingProvider());
+        $this->factory->register('letspeppol', fn (): \Tests\Unit\Core\ThrowingProvider => new ThrowingProvider());
 
         $provider = $this->factory->make('letspeppol');
 
@@ -116,7 +116,7 @@ class IntegrationProviderFactoryTest extends AbstractTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->factory->registerRaw('boom', fn () => new ThrowingProvider());
+        $this->factory->registerRaw('boom', fn (): \Tests\Unit\Core\ThrowingProvider => new ThrowingProvider());
 
         $provider = $this->factory->makeRaw('boom');
         $provider->sendInvoice([]);
@@ -124,7 +124,7 @@ class IntegrationProviderFactoryTest extends AbstractTestCase
 
     public function it_returns_true_when_the_provider_successfully_validates_a_participant(): void
     {
-        $this->factory->register('storecove', fn () => new StubProvider('storecove', validateResult: true));
+        $this->factory->register('storecove', fn (): \Tests\Unit\Core\StubProvider => new StubProvider('storecove', validateResult: true));
 
         $provider = $this->factory->make('storecove');
 
@@ -138,7 +138,7 @@ class IntegrationProviderFactoryTest extends AbstractTestCase
 
     public function it_returns_true_when_the_provider_successfully_sends_an_invoice(): void
     {
-        $this->factory->register('storecove', fn () => new StubProvider('storecove', sendResult: true));
+        $this->factory->register('storecove', fn (): \Tests\Unit\Core\StubProvider => new StubProvider('storecove', sendResult: true));
 
         $provider = $this->factory->make('storecove');
 

@@ -8,7 +8,7 @@ use Tests\AbstractTestCase;
 
 class UnitsServiceTest extends AbstractTestCase
 {
-    private $service;
+    private \Unit\Products\UnitsService $service;
 
     protected function setUp(): void
     {

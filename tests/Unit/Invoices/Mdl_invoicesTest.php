@@ -7,25 +7,25 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class Mdl_Invoices_Test extends CIUnit_TestCase
 {
-    public function set_up()
+    public function set_up(): void
     {
         parent::set_up();
         $this->CI->load->model('invoices/mdl_invoices');
     }
 
-    public function test_get_invoice_by_id()
+    public function test_get_invoice_by_id(): void
     {
         $invoice = $this->CI->mdl_invoices->get_invoice_by_id(1);
         $this->assertEquals('Invoice 1', $invoice->title);
     }
 
-    public function test_get_all_invoices()
+    public function test_get_all_invoices(): void
     {
         $invoices = $this->CI->mdl_invoices->get_all_invoices();
         $this->assertCount(2, $invoices);
     }
 
-    public function test_create_invoice()
+    public function test_create_invoice(): void
     {
         $data = [
             'title'  => 'New Invoice',
@@ -36,7 +36,7 @@ class Mdl_Invoices_Test extends CIUnit_TestCase
         $this->assertGreaterThan(0, $invoice_id);
     }
 
-    public function test_update_invoice()
+    public function test_update_invoice(): void
     {
         $data = [
             'title'  => 'Updated Invoice',
@@ -48,7 +48,7 @@ class Mdl_Invoices_Test extends CIUnit_TestCase
         $this->assertEquals('Updated Invoice', $invoice->title);
     }
 
-    public function test_delete_invoice()
+    public function test_delete_invoice(): void
     {
         $this->markTestIncomplete('weak test');
         $this->CI->mdl_invoices->delete_invoice(2);

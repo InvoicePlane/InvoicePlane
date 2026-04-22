@@ -51,7 +51,7 @@ class ClientHelperTest extends AbstractTestCase
 
     #[Test]
     #[DataProvider('genderProvider')]
-    public function it_formats_various_genders($gender): void
+    public function it_formats_various_genders(int $gender): void
     {
         $result = ClientHelper::format_gender($gender);
 

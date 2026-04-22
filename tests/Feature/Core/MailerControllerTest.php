@@ -124,7 +124,7 @@ class MailerControllerTest extends AbstractTestCase
 
         $response->assertRedirect(route('invoices.view', ['invoice_id' => $invoice->invoice_id]));
 
-        Mail::assertSent(function ($mail) use ($emailData) {
+        Mail::assertSent(function ($mail) use ($emailData): bool {
             return $mail->hasCc($emailData['cc']) && $mail->hasBcc($emailData['bcc']);
         });
     }
@@ -153,7 +153,7 @@ class MailerControllerTest extends AbstractTestCase
         $response->assertRedirect(route('invoices.view', ['invoice_id' => $invoice->invoice_id]));
 
         // Body should have been converted with nl2br
-        Mail::assertSent(function ($mail) {
+        Mail::assertSent(function ($mail): bool {
             return str_contains($mail->body, '<br');
         });
     }
@@ -418,7 +418,7 @@ class MailerControllerTest extends AbstractTestCase
         $response->assertRedirect(route('invoices.view', ['invoice_id' => $invoice->invoice_id]));
 
         // HTML entities should be decoded
-        Mail::assertSent(function ($mail) {
+        Mail::assertSent(function ($mail): bool {
             return str_contains($mail->body, '&') && ! str_contains($mail->body, '&amp;');
         });
     }

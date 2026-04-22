@@ -21,7 +21,7 @@ class TaskServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private $service;
+    private \Unit\Projects\TaskService $service;
 
     protected function setUp(): void
     {

@@ -26,7 +26,7 @@ class DashboardControllerTest extends AbstractTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_displays_dashboard_with_overview_data()
+    public function it_displays_dashboard_with_overview_data(): void
     {
         /* Arrange */
         $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
@@ -81,7 +81,7 @@ class DashboardControllerTest extends AbstractTestCase
         $response = $this->get(route('dashboard.index'));
 
         $response->assertSuccessful();
-        $response->assertViewHas('invoices', function ($invoices) {
+        $response->assertViewHas('invoices', function ($invoices): bool {
             return $invoices->count() === 10; // Limited to 10
         });
     }
@@ -94,7 +94,7 @@ class DashboardControllerTest extends AbstractTestCase
         $response = $this->get(route('dashboard.index'));
 
         $response->assertSuccessful();
-        $response->assertViewHas('quotes', function ($quotes) {
+        $response->assertViewHas('quotes', function ($quotes): bool {
             return $quotes->count() === 10; // Limited to 10
         });
     }
@@ -110,7 +110,7 @@ class DashboardControllerTest extends AbstractTestCase
         $response = $this->get(route('dashboard.index'));
 
         $response->assertSuccessful();
-        $response->assertViewHas('overdue_invoices', function ($invoices) {
+        $response->assertViewHas('overdue_invoices', function ($invoices): bool {
             return $invoices->count() === 3;
         });
     }

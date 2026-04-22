@@ -16,9 +16,9 @@ trait InteractsWithDatabase
         $columns = array_keys($row);
         $values  = array_values($row);
 
-        $escapedColumns = array_map(static fn ($column) => '`' . $column . '`', $columns);
+        $escapedColumns = array_map(static fn (int|string $column): string => '`' . $column . '`', $columns);
         $escapedValues  = array_map([$db, 'real_escape_string'], array_map('strval', $values));
-        $wrappedValues  = array_map(static fn ($value) => "'{$value}'", $escapedValues);
+        $wrappedValues  = array_map(static fn ($value): string => "'{$value}'", $escapedValues);
 
         $sql = sprintf(
             'INSERT INTO `%s` (%s) VALUES (%s)',

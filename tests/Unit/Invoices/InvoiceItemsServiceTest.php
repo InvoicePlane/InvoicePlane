@@ -11,9 +11,9 @@ class InvoiceItemsServiceTest extends AbstractTestCase
 
     private ItemsService $service;
 
-    private $itemAmountsService;
+    private \PHPUnit\Framework\MockObject\MockObject $itemAmountsService;
 
-    private $invoiceAmountsService;
+    private \PHPUnit\Framework\MockObject\MockObject $invoiceAmountsService;
 
     protected function setUp(): void
     {

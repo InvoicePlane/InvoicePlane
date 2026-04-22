@@ -12,7 +12,7 @@ use Tests\AbstractTestCase;
 class SettingsControllerTest extends AbstractTestCase
 {
     #[Test]
-    public function it_displays_settings_page_and_saves_settings()
+    public function it_displays_settings_page_and_saves_settings(): void
     {
         /* Act */
         $response = $this->get(route('settings.index'));

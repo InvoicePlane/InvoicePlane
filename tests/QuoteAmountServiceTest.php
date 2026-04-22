@@ -1,22 +1,18 @@
 <?php
 
-namespace Tests\Feature\Quotes;
+namespace Tests;
 
-use Modules\Quotes\Services\QuoteAmountService;
-use Modules\Quotes\Services\QuoteService;
+use Mdl_Quote_Amounts;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\AbstractTestCase;
 
-#[CoversClass(QuoteAmountService::class)]
-#[CoversClass(Tests\Feature\Quotes\QuoteAmountService::class)]
-
+#[CoversClass(Mdl_Quote_Amounts::class)]
 class QuoteAmountServiceTest extends AbstractTestCase
 {
-    private QuoteAmountService $service;
+    private \Tests\QuoteAmountService $service;
 
-    private QuoteService $quoteService;
+    private \Tests\QuoteService $quoteService;
 
     protected function setUp(): void
     {

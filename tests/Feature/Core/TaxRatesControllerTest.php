@@ -12,7 +12,7 @@ class TaxRatesControllerTest extends AbstractTestCase
     use InteractsWithDatabase;
 
     #[Test]
-    public function it_displays_tax_rates_list()
+    public function it_displays_tax_rates_list(): void
     {
         /* Arrange */
         $user = $this->seedModel('User');
@@ -48,7 +48,7 @@ class TaxRatesControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_stores_tax_rate_via_form_store()
+    public function it_stores_tax_rate_via_form_store(): void
     {
         /* Act */
         /**
@@ -110,7 +110,7 @@ class TaxRatesControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_redirects_when_cancel_button_is_clicked()
+    public function it_redirects_when_cancel_button_is_clicked(): void
     {
         /* Act */
         $response = $this->post(route('tax_rates.form'), [
@@ -122,7 +122,7 @@ class TaxRatesControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_deletes_tax_rate()
+    public function it_deletes_tax_rate(): void
     {
         /* Arrange */
         $taxRate = $this->seedModel('TaxRate');

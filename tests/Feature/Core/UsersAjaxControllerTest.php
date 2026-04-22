@@ -227,7 +227,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
         ]);
 
         $response->assertSuccessful();
-        $response->assertViewHas('user_clients', function ($userClients) {
+        $response->assertViewHas('user_clients', function ($userClients): bool {
             return count($userClients) === 3;
         });
     }
@@ -243,7 +243,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $response = $this->post(route('users.ajax.loadUserClientTable'));
 
         $response->assertSuccessful();
-        $response->assertViewHas('user_clients', function ($userClients) {
+        $response->assertViewHas('user_clients', function ($userClients): bool {
             return count($userClients) === 2;
         });
     }
@@ -265,7 +265,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $response = $this->get(route('users.ajax.modalAddUserClient', ['user_id' => $user->user_id]));
 
         $response->assertSuccessful();
-        $response->assertViewHas('clients', function ($clients) {
+        $response->assertViewHas('clients', function ($clients): bool {
             return count($clients) === 3; // Only unassigned clients
         });
         $response->assertViewHas('user_id', $user->user_id);
@@ -279,7 +279,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $response = $this->get(route('users.ajax.modalAddUserClient'));
 
         $response->assertSuccessful();
-        $response->assertViewHas('clients', function ($clients) {
+        $response->assertViewHas('clients', function ($clients): bool {
             return count($clients) === 5;
         });
     }
@@ -295,7 +295,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $response = $this->get(route('users.ajax.modalAddUserClient'));
 
         $response->assertSuccessful();
-        $response->assertViewHas('clients', function ($clients) {
+        $response->assertViewHas('clients', function ($clients): bool {
             return count($clients) === 4;
         });
     }

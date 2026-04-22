@@ -19,7 +19,7 @@ class ProjectServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private $service;
+    private \Tests\ProjectService $service;
 
     protected function setUp(): void
     {

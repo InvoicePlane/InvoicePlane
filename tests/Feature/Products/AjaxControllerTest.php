@@ -12,13 +12,13 @@ use Tests\AbstractTestCase;
 class AjaxControllerTest extends AbstractTestCase
 {
     #[Test]
-    public function modal_product_lookups_returns_expected_results()
+    public function modal_product_lookups_returns_expected_results(): void
     {
         $this->markTestIncomplete('Implement meaningful test for modalProductLookups');
     }
 
     #[Test]
-    public function process_product_selections_handles_selection_logic()
+    public function process_product_selections_handles_selection_logic(): void
     {
         $this->markTestIncomplete('Implement meaningful test for processProductSelections');
     }
