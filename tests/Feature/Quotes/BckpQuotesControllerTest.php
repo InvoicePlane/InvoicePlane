@@ -1,10 +1,11 @@
 <?php
 
-namespace Tests;
+namespace Tests\Feature\Quotes;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Quotes;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Quotes::class)]

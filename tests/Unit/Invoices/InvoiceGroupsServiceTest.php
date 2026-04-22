@@ -7,10 +7,10 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass()]
+#[CoversClass(\Mdl_Invoice_Groups::class)]
 class InvoiceGroupsServiceTest extends AbstractTestCase
 {
-    private InvoiceGroupsService $service;
+    private $service;
 
     protected function setUp(): void
     {

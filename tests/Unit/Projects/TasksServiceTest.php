@@ -1,13 +1,15 @@
 <?php
 
-namespace Unit\Projects;
+namespace Tests\Unit\Projects;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
+#[CoversClass(\Mdl_Tasks::class)]
 class TasksServiceTest extends AbstractTestCase
 {
-    private TasksService $service;
+    private $service;
 
     protected function setUp(): void
     {

@@ -1,14 +1,16 @@
 <?php
 
-namespace Unit\Quotes;
+namespace Tests\Unit\Quotes;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Feature\Quotes\Group;
-use Tests\Feature\Quotes\TemplateService;
+use Tests\AbstractTestCase;
 
+#[CoversClass(\Mdl_Templates::class)]
 class TemplateServiceTest extends AbstractTestCase
 {
-    private TemplateService $service;
+    private $service;
 
     protected function setUp(): void
     {

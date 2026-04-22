@@ -1,9 +1,7 @@
 <?php
 
-namespace Tests\Unit\Clients;
+namespace tests\Feature\Clients;
 
-use Modules\Crm\Models\Client;
-use Modules\Crm\Services\ClientService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,7 +16,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * - Clients with quotes cannot be deleted
  * - Clients with projects cannot be deleted
  */
-#[CoversClass(ClientService::class)]
+#[CoversClass(\Clients::class)]
 
 class ClientDeletionValidationTest extends AbstractTestCase
 {

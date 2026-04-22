@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Projects;
+namespace Tests\Unit\Projects;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;

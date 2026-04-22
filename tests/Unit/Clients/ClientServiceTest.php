@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Clients;
 
-use Modules\Crm\Models\Client;
-use Modules\Crm\Services\ClientService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -17,8 +15,7 @@ use Tests\AbstractTestCase;
  * - Clients with quotes cannot be deleted
  * - Clients with projects cannot be deleted
  */
-#[CoversClass(ClientService::class)]
-
+#[CoversClass(\Mdl_Clients::class)]
 class ClientServiceTest extends AbstractTestCase
 {
     private ClientService $service;

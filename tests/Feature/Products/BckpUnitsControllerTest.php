@@ -1,5 +1,8 @@
 <?php
 
+namespace tests\Feature\Products;
+
+use AbstractTestCase;
 use Modules\Products\Controllers\FamiliesController;
 use Modules\Products\Models\Family;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -13,7 +16,6 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests product family (category) management including list, create, update, and delete.
  */
 #[CoversClass(FamiliesController::class)]
-
 class BckpUnitsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -80,7 +82,7 @@ class BckpUnitsControllerTest extends AbstractTestCase
          * }.
          */
         $unitData = [
-            'unit_name'      => 'Kilogram',
+            'unit_name' => 'Kilogram',
             'unit_name_plrl' => 'Kilograms',
         ];
 
@@ -93,7 +95,7 @@ class BckpUnitsControllerTest extends AbstractTestCase
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_units', [
-            'unit_name'      => 'Kilogram',
+            'unit_name' => 'Kilogram',
             'unit_name_plrl' => 'Kilograms',
         ]);
     }
@@ -140,7 +142,7 @@ class BckpUnitsControllerTest extends AbstractTestCase
          * }.
          */
         $updateData = [
-            'unit_name'      => 'Updated Name',
+            'unit_name' => 'Updated Name',
             'unit_name_plrl' => 'Updated Names',
         ];
 
@@ -153,7 +155,7 @@ class BckpUnitsControllerTest extends AbstractTestCase
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_units', [
-            'unit_id'   => $unit->unit_id,
+            'unit_id' => $unit->unit_id,
             'unit_name' => 'Updated Name',
         ]);
     }

@@ -2,11 +2,12 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Tests\Feature\Core\Dashboard::class)]
+#[CoversClass(\Dashboard::class)]
 class DashboardTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
