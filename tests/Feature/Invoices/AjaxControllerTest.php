@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Test coverage for Invoices Ajax Controller (application/modules/invoices/controllers/Ajax.php)
+ */
+
 namespace Tests\Feature\Invoices;
 
 use Modules\Quotes\Controllers\AjaxController;

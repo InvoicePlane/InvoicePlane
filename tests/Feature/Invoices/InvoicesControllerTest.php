@@ -11,6 +11,8 @@ use Tests\Concerns\InteractsWithDatabase;
 use Tests\Feature\Core\FeatureTestCase;
 
 /**
+ * Test coverage for Invoices Controller (application/modules/invoices/controllers/Invoices.php)
+ *
  * InvoicesController (CRM/Guest) Feature Tests.
  *
  * Tests guest portal invoice viewing.

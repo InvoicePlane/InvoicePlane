@@ -15,8 +15,11 @@ use Tests\Feature\Core\FeatureTestCase;
  *
  * Tests guest portal invoice viewing.
  */
-#[CoversClass(GuestInvoicesController::class)]
+#[CoversClass(\Recurring::class)]
 
+/**
+ * Test coverage for Invoices Recurring Controller (application/modules/invoices/controllers/Recurring.php)
+ */
 class RecurringControllerTest extends FeatureTestCase
 {
     use InteractsWithDatabase;
