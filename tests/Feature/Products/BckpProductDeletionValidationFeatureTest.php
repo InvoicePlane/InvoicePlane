@@ -1,5 +1,8 @@
 <?php
 
+namespace tests\Feature\Products;
+
+use AbstractTestCase;
 use Modules\Products\Controllers\FamiliesController;
 use Modules\Products\Models\Family;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -13,7 +16,6 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests product family (category) management including list, create, update, and delete.
  */
 #[CoversClass(FamiliesController::class)]
-
 class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -29,7 +31,7 @@ class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
     {
         /* Arrange */
         $product = $this->seedModel('Product', [
-            'product_name'  => 'Deletable Product',
+            'product_name' => 'Deletable Product',
             'product_price' => 50.00,
         ]);
 
@@ -59,15 +61,15 @@ class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
         $invoice = $this->seedModel('Invoice');
 
         $product = $this->seedModel('Product', [
-            'product_name'  => 'Product In Use',
+            'product_name' => 'Product In Use',
             'product_price' => 75.00,
         ]);
 
         $this->seedModel('InvoiceItem', [
-            'invoice_id'      => $invoice->invoice_id,
+            'invoice_id' => $invoice->invoice_id,
             'item_product_id' => $product->product_id,
-            'item_name'       => 'Invoice Item',
-            'item_price'      => 75.00,
+            'item_name' => 'Invoice Item',
+            'item_price' => 75.00,
         ]);
 
         /* Act */
@@ -79,7 +81,7 @@ class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
 
         // Verify product still exists in database
         $this->assertDatabaseHas('ip_products', [
-            'product_id'   => $product->product_id,
+            'product_id' => $product->product_id,
             'product_name' => 'Product In Use',
         ]);
     }
@@ -100,7 +102,7 @@ class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
 
         // Create 3 invoice items
         $this->seedModelMany('InvoiceItem', 3, [
-            'invoice_id'      => $invoice->invoice_id,
+            'invoice_id' => $invoice->invoice_id,
             'item_product_id' => $product->product_id,
         ]);
 
@@ -135,7 +137,7 @@ class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
         $product = $this->seedModel('Product');
 
         $this->seedModel('InvoiceItem', [
-            'invoice_id'      => $invoice->invoice_id,
+            'invoice_id' => $invoice->invoice_id,
             'item_product_id' => $product->product_id,
         ]);
 
@@ -164,7 +166,7 @@ class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
         for ($i = 0; $i < 2; $i++) {
             $invoice = $this->seedModel('Invoice');
             $this->seedModel('InvoiceItem', [
-                'invoice_id'      => $invoice->invoice_id,
+                'invoice_id' => $invoice->invoice_id,
                 'item_product_id' => $product->product_id,
             ]);
         }
@@ -232,7 +234,7 @@ class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
         $product = $this->seedModel('Product');
 
         $item = $this->seedModel('InvoiceItem', [
-            'invoice_id'      => $invoice->invoice_id,
+            'invoice_id' => $invoice->invoice_id,
             'item_product_id' => $product->product_id,
         ]);
 

@@ -1,13 +1,15 @@
 <?php
 
-namespace Unit\Payments;
+namespace Tests\Unit\Payments;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
+#[CoversClass(\Mdl_Payments::class)]
 class PaymentsServiceTest extends AbstractTestCase
 {
-    private PaymentsService $service;
+    private $service;
 
     protected function setUp(): void
     {

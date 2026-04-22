@@ -1,18 +1,18 @@
 <?php
 
-namespace Unit\Products;
+namespace Tests\Unit\Products;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-use function Tests\Feature\Products\app;
-
+#[CoversClass(\Mdl_Families::class)]
 class FamiliesServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private FamiliesService $service;
+    private $service;
 
     protected function setUp(): void
     {

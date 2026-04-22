@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Invoices;
 
-use Illuminate\Support\Facades\DB;
+
 use Modules\Core\Models\Setting;
 use Modules\Invoices\Models\InvoiceTaxRate;
 use Modules\Invoices\Services\InvoiceTaxRateService;

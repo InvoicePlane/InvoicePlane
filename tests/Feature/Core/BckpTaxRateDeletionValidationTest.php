@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Feature\Core;
+
 use Modules\Products\Models\Family;
 use Modules\Products\Services\FamilyService;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -15,7 +17,6 @@ use Tests\Concerns\InteractsWithDatabase;
  * - Families with products cannot be deleted
  */
 #[CoversClass(FamilyService::class)]
-
 class BckpTaxRateDeletionValidationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -38,7 +39,7 @@ class BckpTaxRateDeletionValidationTest extends AbstractTestCase
 
         /* Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
-        $blockers  = $this->service->getDeletionBlockers($taxRate->tax_rate_id);
+        $blockers = $this->service->getDeletionBlockers($taxRate->tax_rate_id);
 
         /* Assert */
         $this->assertTrue($canDelete);
@@ -60,7 +61,7 @@ class BckpTaxRateDeletionValidationTest extends AbstractTestCase
 
         /* Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
-        $blockers  = $this->service->getDeletionBlockers($taxRate->tax_rate_id);
+        $blockers = $this->service->getDeletionBlockers($taxRate->tax_rate_id);
 
         /* Assert */
         $this->assertFalse($canDelete);

@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 #[CoversClass(\Mdl_Quote_Tax_Rates::class)]
-class BckpQuoteTaxRateServiceTest extends AbstractTestCase
+class Bckp2QuoteTaxRateServiceTest extends AbstractTestCase
 {
     private $service;
 

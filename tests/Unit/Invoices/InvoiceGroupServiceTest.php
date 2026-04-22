@@ -1,20 +1,17 @@
 <?php
 
-namespace Unit\Invoices;
+namespace Tests\Unit\Invoices;
 
-use Illuminate\Support\Facades\DB;
-use Modules\Invoices\Services\InvoiceAmountService;
+
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Feature\Invoices\InvoiceGroup;
-use Tests\Feature\Invoices\InvoiceGroupService;
+use Tests\AbstractTestCase;
 
-#[CoversClass(InvoiceAmountService::class)]
-
+#[CoversClass(\Mdl_Invoice_Groups::class)]
 class InvoiceGroupServiceTest extends AbstractTestCase
 {
-    private InvoiceGroupService $service;
+    private $service;
 
     protected function setUp(): void
     {

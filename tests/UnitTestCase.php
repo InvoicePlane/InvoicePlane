@@ -1,6 +1,8 @@
 <?php
 
-abstract class UnitTestCase extends \Tests\Feature\Invoices\AbstractTestCase
+use Tests\AbstractTestCase;
+
+abstract class UnitTestCase extends AbstractTestCase
 {
     /**
      * Setup the test environment.

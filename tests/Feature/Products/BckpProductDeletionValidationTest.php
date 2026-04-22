@@ -1,5 +1,7 @@
 <?php
 
+namespace tests\Feature\Products;
+
 use Modules\Products\Models\Family;
 use Modules\Products\Models\Product;
 use Modules\Products\Services\FamilyService;
@@ -16,7 +18,6 @@ use Tests\Concerns\InteractsWithDatabase;
  * - Families with products cannot be deleted
  */
 #[CoversClass(FamilyService::class)]
-
 class BckpProductDeletionValidationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -39,7 +40,7 @@ class BckpProductDeletionValidationTest extends AbstractTestCase
     {
         /* Arrange */
         $product = $this->seedModel('Product', [
-            'product_name'  => 'Test Product',
+            'product_name' => 'Test Product',
             'product_price' => 100.00,
         ]);
 
@@ -60,16 +61,16 @@ class BckpProductDeletionValidationTest extends AbstractTestCase
     {
         /* Arrange */
         $product = $this->seedModel('Product', [
-            'product_name'  => 'Product In Use',
+            'product_name' => 'Product In Use',
             'product_price' => 150.00,
         ]);
 
         // Create an invoice item that references this product
         $this->seedModel('InvoiceItem', [
             'item_product_id' => $product->product_id,
-            'item_name'       => 'Invoice Item',
-            'item_price'      => 150.00,
-            'item_quantity'   => 1,
+            'item_name' => 'Invoice Item',
+            'item_price' => 150.00,
+            'item_quantity' => 1,
         ]);
 
         /* Act */
@@ -89,15 +90,15 @@ class BckpProductDeletionValidationTest extends AbstractTestCase
     {
         /* Arrange */
         $product = $this->seedModel('Product', [
-            'product_name'  => 'Popular Product',
+            'product_name' => 'Popular Product',
             'product_price' => 200.00,
         ]);
 
         // Create multiple invoice items referencing this product
         $this->seedModelMany('InvoiceItem', 3, [
             'item_product_id' => $product->product_id,
-            'item_price'      => 200.00,
-            'item_quantity'   => 1,
+            'item_price' => 200.00,
+            'item_quantity' => 1,
         ]);
 
         /* Act */

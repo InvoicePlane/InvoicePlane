@@ -1,18 +1,16 @@
 <?php
 
-namespace Unit\Products;
+namespace Tests\Unit\Products;
 
-use Modules\Products\Services\ProductService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(ProductService::class)]
-
+#[CoversClass(\Mdl_Products::class)]
 class ProductServiceTest extends AbstractTestCase
 {
-    private ProductService $service;
+    private $service;
 
     protected function setUp(): void
     {

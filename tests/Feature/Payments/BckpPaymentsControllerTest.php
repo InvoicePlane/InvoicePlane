@@ -1,12 +1,13 @@
 <?php
 
+namespace Tests\Feature\Payments;
+
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(\Payments::class)]
-
 class BckpPaymentsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -20,8 +21,8 @@ class BckpPaymentsControllerTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user          = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
-        $this->invoice       = $this->seedModel('Invoice', ['invoice_balance' => 100.00]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
+        $this->invoice = $this->seedModel('Invoice', ['invoice_balance' => 100.00]);
         $this->paymentMethod = $this->seedModel('PaymentMethod');
         $this->actingAs($this->user);
     }
@@ -39,18 +40,18 @@ class BckpPaymentsControllerTest extends AbstractTestCase
     public function it_creates_new_payment_with_valid_data(): void
     {
         $paymentData = [
-            'invoice_id'        => $this->invoice->invoice_id,
-            'payment_date'      => now()->format('Y-m-d'),
-            'payment_amount'    => 50.00,
+            'invoice_id' => $this->invoice->invoice_id,
+            'payment_date' => now()->format('Y-m-d'),
+            'payment_amount' => 50.00,
             'payment_method_id' => $this->paymentMethod->payment_method_id,
-            'payment_note'      => 'Test payment note.',
+            'payment_note' => 'Test payment note.',
         ];
 
         $response = $this->post(\Tests\Feature\Invoices\route('payments.form'), $paymentData);
 
         $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
         $this->assertDatabaseHas('ip_payments', [
-            'invoice_id'     => $this->invoice->invoice_id,
+            'invoice_id' => $this->invoice->invoice_id,
             'payment_amount' => 50.00,
         ]);
     }
@@ -59,8 +60,8 @@ class BckpPaymentsControllerTest extends AbstractTestCase
     public function it_creates_payment_with_minimum_required_fields(): void
     {
         $paymentData = [
-            'invoice_id'        => $this->invoice->invoice_id,
-            'payment_amount'    => 25.50,
+            'invoice_id' => $this->invoice->invoice_id,
+            'payment_amount' => 25.50,
             'payment_method_id' => $this->paymentMethod->payment_method_id,
         ];
 
@@ -68,7 +69,7 @@ class BckpPaymentsControllerTest extends AbstractTestCase
 
         $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
         $this->assertDatabaseHas('ip_payments', [
-            'invoice_id'     => $this->invoice->invoice_id,
+            'invoice_id' => $this->invoice->invoice_id,
             'payment_amount' => 25.50,
         ]);
     }
@@ -77,11 +78,11 @@ class BckpPaymentsControllerTest extends AbstractTestCase
     public function it_creates_payment_with_note(): void
     {
         $paymentData = [
-            'invoice_id'        => $this->invoice->invoice_id,
-            'payment_date'      => now()->format('Y-m-d'),
-            'payment_amount'    => 100.00,
+            'invoice_id' => $this->invoice->invoice_id,
+            'payment_date' => now()->format('Y-m-d'),
+            'payment_amount' => 100.00,
             'payment_method_id' => $this->paymentMethod->payment_method_id,
-            'payment_note'      => $this->faker->sentence(),
+            'payment_note' => $this->faker->sentence(),
         ];
 
         $response = $this->post(\Tests\Feature\Invoices\route('payments.form'), $paymentData);
@@ -96,22 +97,22 @@ class BckpPaymentsControllerTest extends AbstractTestCase
     public function it_updates_existing_payment(): void
     {
         $payment = $this->seedModel('Payment', [
-            'invoice_id'     => $this->invoice->invoice_id,
+            'invoice_id' => $this->invoice->invoice_id,
             'payment_amount' => 50.00,
         ]);
 
         $updateData = [
             'payment_amount' => 75.00,
-            'payment_note'   => 'Updated payment note',
+            'payment_note' => 'Updated payment note',
         ];
 
         $response = $this->post(\Tests\Feature\Invoices\route('payments.form', ['id' => $payment->payment_id]), $updateData);
 
         $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
         $this->assertDatabaseHas('ip_payments', [
-            'payment_id'     => $payment->payment_id,
+            'payment_id' => $payment->payment_id,
             'payment_amount' => 75.00,
-            'payment_note'   => 'Updated payment note',
+            'payment_note' => 'Updated payment note',
         ]);
     }
 
@@ -174,10 +175,10 @@ class BckpPaymentsControllerTest extends AbstractTestCase
         ]);
 
         $paymentData = [
-            'invoice_id'        => $this->invoice->invoice_id,
-            'payment_amount'    => 100.00,
+            'invoice_id' => $this->invoice->invoice_id,
+            'payment_amount' => 100.00,
             'payment_method_id' => $this->paymentMethod->payment_method_id,
-            'custom'            => [
+            'custom' => [
                 $customField->custom_field_id => 'Custom value',
             ],
         ];
@@ -186,7 +187,7 @@ class BckpPaymentsControllerTest extends AbstractTestCase
 
         $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
         $this->assertDatabaseHas('ip_payment_custom', [
-            'payment_custom_fieldid'    => $customField->custom_field_id,
+            'payment_custom_fieldid' => $customField->custom_field_id,
             'payment_custom_fieldvalue' => 'Custom value',
         ]);
     }
@@ -227,7 +228,7 @@ class BckpPaymentsControllerTest extends AbstractTestCase
 
         $response = $this->get(\Tests\Feature\Invoices\route('payments.onlineLogs', [
             'date_from' => now()->subDays(6)->format('Y-m-d'),
-            'date_to'   => now()->format('Y-m-d'),
+            'date_to' => now()->format('Y-m-d'),
         ]));
 
         $response->assertSuccessful();

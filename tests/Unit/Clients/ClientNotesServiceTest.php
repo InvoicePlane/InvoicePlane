@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\Clients;
 
-use Modules\Crm\app\Services\ClientNotesService;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\AbstractTestCase;
 
+#[CoversClass(\Mdl_Client_Notes::class)]
 class ClientNotesServiceTest extends AbstractTestCase
 {
-    private ClientNotesService $service;
+    private $service;
 
     protected function setUp(): void
     {

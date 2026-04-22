@@ -1,5 +1,8 @@
 <?php
 
+namespace tests\Feature\Products;
+
+use AbstractTestCase;
 use Modules\Products\Controllers\FamiliesController;
 use Modules\Products\Models\Family;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -13,7 +16,6 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests product family (category) management including list, create, update, and delete.
  */
 #[CoversClass(FamiliesController::class)]
-
 class BckpProductsAjaxControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -49,7 +51,7 @@ class BckpProductsAjaxControllerTest extends AbstractTestCase
     public function it_filters_products_by_family(): void
     {
         /* Arrange */
-        $user    = $this->seedModel('User');
+        $user = $this->seedModel('User');
         $family1 = $this->seedModel('Family');
         $family2 = $this->seedModel('Family');
 

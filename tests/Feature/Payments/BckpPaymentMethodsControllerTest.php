@@ -1,5 +1,8 @@
 <?php
 
+namespace Tests\Feature\Payments;
+
+use PaymentMethodsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -7,7 +10,6 @@ use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(PaymentMethodsController::class)]
 #[CoversClass(PaymentMethodsController::class)]
-
 class BckpPaymentMethodsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -53,7 +55,7 @@ class BckpPaymentMethodsControllerTest extends AbstractTestCase
 
         $methodData = [
             'payment_method_name' => 'Existing Method',
-            'is_update'           => 0,
+            'is_update' => 0,
         ];
 
         $response = $this->post(\Tests\Feature\Invoices\route('payment_methods.form'), $methodData);
@@ -75,7 +77,7 @@ class BckpPaymentMethodsControllerTest extends AbstractTestCase
 
         $response->assertRedirect(\Tests\Feature\Invoices\route('payment_methods.index'));
         $this->assertDatabaseHas('ip_payment_methods', [
-            'payment_method_id'   => $method->payment_method_id,
+            'payment_method_id' => $method->payment_method_id,
             'payment_method_name' => 'Edited Payment Method',
         ]);
     }

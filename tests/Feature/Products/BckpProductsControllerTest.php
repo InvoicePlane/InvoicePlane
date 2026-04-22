@@ -1,11 +1,15 @@
 <?php
 
+namespace tests\Feature\Products;
+use Products;
+use Tests\AbstractTestCase;
+
 /**
  * Products Controller Feature Tests.
  *
  * Tests product management including list, create, update, and delete.
  */
-class BckpProductsControllerTest extends \Tests\Feature\Invoices\AbstractTestCase
+class BckpProductsControllerTest extends AbstractTestCase
 {
     /**
      * Test index displays paginated list of products.
