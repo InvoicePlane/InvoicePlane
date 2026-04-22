@@ -6,6 +6,7 @@ use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(PaymentMethodsController::class)]
+#[CoversClass(PaymentMethodsController::class)]
 
 class PaymentMethodsControllerTest extends AbstractTestCase
 {

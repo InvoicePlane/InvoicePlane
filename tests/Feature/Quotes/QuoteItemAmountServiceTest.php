@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 #[CoversClass(QuoteAmountService::class)]
+#[CoversClass(Tests\Feature\Quotes\QuoteItemAmountService::class)]
 
 class QuoteItemAmountServiceTest extends AbstractTestCase
 {

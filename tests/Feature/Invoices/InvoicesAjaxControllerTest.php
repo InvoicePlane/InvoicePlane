@@ -15,6 +15,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests guest portal invoice viewing.
  */
 #[CoversClass(GuestInvoicesController::class)]
+#[CoversClass(Tests\Feature\Invoices\InvoicesAjaxController::class)]
 
 class InvoicesAjaxControllerTest extends AbstractTestCase
 {

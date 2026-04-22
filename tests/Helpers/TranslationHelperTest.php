@@ -2,7 +2,6 @@
 
 namespace Tests\Helpers;
 
-use Modules\Core\Support\ClientHelper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -16,7 +15,7 @@ use function Tests\Feature\Quotes\sort;
 
 use Tests\Feature\Quotes\TranslationHelper;
 
-#[CoversClass(ClientHelper::class)]
+#[CoversClass(Tests\Helpers\TranslationHelper::class)]
 
 class TranslationHelperTest extends AbstractTestCase
 {

@@ -9,6 +9,7 @@ use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Mdl_Tax_Rates::class)]
+#[CoversClass(Tests\Feature\Core\TaxRatesService::class)]
 class TaxRatesServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

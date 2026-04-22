@@ -13,6 +13,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(CoreAjaxController::class)]
+#[CoversClass(Tests\Feature\Core\CoreAjaxController::class)]
 
 class CoreAjaxControllerTest extends AbstractTestCase
 {

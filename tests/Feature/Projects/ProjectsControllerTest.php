@@ -2,12 +2,10 @@
 
 namespace Tests\Feature\Projects;
 
-use Modules\Crm\Models\Client;
-use Modules\Projects\Controllers\ProjectsController;
-use Modules\Projects\Models\Project;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 /**
@@ -16,7 +14,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Test suite for ProjectsController covering CRUD operations
  * with data integrity validation and business logic verification.
  */
-#[CoversClass(ProjectsController::class)]
+#[CoversClass(\Projects::class)]
 
 class ProjectsControllerTest extends AbstractTestCase
 {

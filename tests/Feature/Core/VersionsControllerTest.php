@@ -14,6 +14,7 @@ use Versions;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(Versions::class)]
+#[CoversClass(Tests\Feature\Core\VersionsController::class)]
 
 class VersionsControllerTest extends AbstractTestCase
 {

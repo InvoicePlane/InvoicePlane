@@ -4,6 +4,7 @@ namespace Tests\Integration;
 
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(Tests\Integration\HmvcRouteLifecycle::class)]
 class HmvcRouteLifecycleTest extends CiIntegrationTestCase
 {
     #[Test]

@@ -5,6 +5,7 @@ namespace Tests\Example;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
+#[CoversClass(Tests\Example\InvoiceLifecycle::class)]
 class InvoiceLifecycleTest extends AbstractTestCase
 {
     #[Test]

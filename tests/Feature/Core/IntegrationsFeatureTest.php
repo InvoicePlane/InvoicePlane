@@ -15,6 +15,7 @@ use Tests\AbstractTestCase;
  * @group feature
  * @group integrations
  */
+#[CoversClass(Tests\Feature\Core\IntegrationsFeature::class)]
 class IntegrationsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void

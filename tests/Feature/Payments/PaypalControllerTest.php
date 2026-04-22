@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\Test;
  * Tests Paypal management (Cash, Check, Credit Card, PayPal, etc.)
  */
 #[CoversClass(Paypal::class)]
+#[CoversClass(Tests\Feature\Payments\PaypalController::class)]
 
 class PaypalControllerTest extends AbstractTestCase
 {

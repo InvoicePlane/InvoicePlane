@@ -17,6 +17,7 @@ use View;
  * - Clients with invoices, quotes, or projects cannot be deleted
  */
 #[CoversClass(View::class)]
+#[CoversClass(Tests\Feature\Clients\ViewController::class)]
 
 class ViewControllerTest extends AbstractTestCase
 {

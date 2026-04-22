@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(InvoiceTaxRateService::class)]
+#[CoversClass(Tests\Feature\Invoices\InvoiceTaxRateService::class)]
 
 class InvoiceTaxRateServiceTest extends AbstractTestCase
 {

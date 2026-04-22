@@ -8,6 +8,7 @@ use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(PaymentLogService::class)]
+#[CoversClass(PaymentLogService::class)]
 
 class PaymentLogServiceTest extends AbstractTestCase
 {

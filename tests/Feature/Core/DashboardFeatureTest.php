@@ -11,6 +11,7 @@ use Tests\AbstractTestCase;
  * @group feature
  * @group dashboard
  */
+#[CoversClass(Tests\Feature\Core\DashboardFeature::class)]
 class DashboardFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void

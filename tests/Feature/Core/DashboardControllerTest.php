@@ -10,6 +10,7 @@ use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Dashboard::class)]
+#[CoversClass(Tests\Feature\Core\DashboardController::class)]
 class DashboardControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

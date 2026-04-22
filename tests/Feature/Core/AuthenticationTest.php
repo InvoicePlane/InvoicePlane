@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
+#[CoversClass(Tests\Feature\Core\Authentication::class)]
 class AuthenticationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

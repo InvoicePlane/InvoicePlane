@@ -1,15 +1,12 @@
 <?php
 
-namespace Feature\Products;
+namespace Tests\Feature\Products;
 
-use Modules\Products\Models\Family;
-use Modules\Products\Services\FamilyService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Invoices\UnitService;
 
 /**
  * FamilyService Deletion Validation Tests.
@@ -17,13 +14,12 @@ use Tests\Feature\Invoices\UnitService;
  * Tests business rules for family deletion:
  * - Families with products cannot be deleted
  */
-#[CoversClass(FamilyService::class)]
-
+#[CoversClass(\Units::class)]
 class UnitDeletionValidationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private UnitService $service;
+    private $service;
 
     protected function setUp(): void
     {

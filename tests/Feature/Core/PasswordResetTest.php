@@ -5,6 +5,7 @@ namespace Tests\Feature\Core;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
+#[CoversClass(Tests\Feature\Core\PasswordReset::class)]
 class PasswordResetTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

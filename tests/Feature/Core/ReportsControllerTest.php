@@ -9,6 +9,7 @@ use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Reports::class)]
+#[CoversClass(Tests\Feature\Core\ReportsController::class)]
 class ReportsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

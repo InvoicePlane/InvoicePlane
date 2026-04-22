@@ -14,6 +14,7 @@ use Upload;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(Upload::class)]
+#[CoversClass(Tests\Feature\Core\UploadController::class)]
 
 class UploadControllerTest extends AbstractTestCase
 {

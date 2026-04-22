@@ -15,6 +15,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests product family (category) management including list, create, update, and delete.
  */
 #[CoversClass(FamiliesController::class)]
+#[CoversClass(Tests\Feature\Products\ProductsAjaxController::class)]
 
 class ProductsAjaxControllerTest extends AbstractTestCase
 {

@@ -5,6 +5,7 @@ namespace Tests\Feature\Core;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
+#[CoversClass(Tests\Feature\Core\EdgeCases::class)]
 class EdgeCasesTest extends AbstractTestCase
 {
     #[Test]

@@ -14,6 +14,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests products management including list, create, update, and delete.
  */
 #[CoversClass(Products::class)]
+#[CoversClass(Tests\Feature\Products\ProductsController::class)]
 
 class ProductsControllerTest extends AbstractTestCase
 {

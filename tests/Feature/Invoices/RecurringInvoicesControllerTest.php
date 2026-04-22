@@ -9,6 +9,7 @@ use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Recurring::class)]
+#[CoversClass(Tests\Feature\Invoices\RecurringInvoicesController::class)]
 
 class RecurringInvoicesControllerTest extends AbstractTestCase
 {

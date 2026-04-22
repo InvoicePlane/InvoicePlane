@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\Test;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(CoreAjaxController::class)]
+#[CoversClass(Tests\Feature\Core\ViewTemplateSystem::class)]
 
 class ViewTemplateSystemTest extends AbstractTestCase
 {

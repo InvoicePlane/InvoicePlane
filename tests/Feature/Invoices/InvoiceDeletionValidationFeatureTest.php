@@ -15,6 +15,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests guest portal invoice viewing.
  */
 #[CoversClass(GuestInvoicesController::class)]
+#[CoversClass(Tests\Feature\Invoices\InvoiceDeletionValidationFeature::class)]
 
 class InvoiceDeletionValidationFeatureTest extends AbstractTestCase
 {

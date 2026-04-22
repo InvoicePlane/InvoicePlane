@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(ClientHelper::class)]
+#[CoversClass(Tests\Helpers\ClientHelper::class)]
 
 class ClientHelperTest extends AbstractTestCase
 {

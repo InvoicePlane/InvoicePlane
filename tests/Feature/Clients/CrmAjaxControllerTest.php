@@ -16,6 +16,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * status filtering, and relationship handling.
  */
 #[CoversClass(ClientsController::class)]
+#[CoversClass(Tests\Feature\Clients\CrmAjaxController::class)]
 
 class CrmAjaxControllerTest extends AbstractTestCase
 {

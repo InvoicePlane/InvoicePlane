@@ -9,6 +9,7 @@ use Tests\AbstractTestCase;
  * @group feature
  * @group payments
  */
+#[CoversClass(Tests\Feature\Payments\PaymentsFeature::class)]
 class PaymentsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void

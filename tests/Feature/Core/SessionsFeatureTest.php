@@ -15,6 +15,7 @@ use Tests\AbstractTestCase;
  * @group feature
  * @group sessions
  */
+#[CoversClass(Tests\Feature\Core\SessionsFeature::class)]
 class SessionsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void

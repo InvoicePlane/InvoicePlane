@@ -8,6 +8,7 @@ use Settings;
 use Tests\AbstractTestCase;
 
 #[CoversClass(Settings::class)]
+#[CoversClass(Tests\Feature\Core\SettingsController::class)]
 class SettingsControllerTest extends AbstractTestCase
 {
     #[Test]

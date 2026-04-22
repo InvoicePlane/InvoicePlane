@@ -16,6 +16,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * - Clients with invoices, quotes, or projects cannot be deleted
  */
 #[CoversClass(ClientsController::class)]
+#[CoversClass(Tests\Feature\Clients\ClientsAjaxController::class)]
 
 class ClientsAjaxControllerTest extends AbstractTestCase
 {

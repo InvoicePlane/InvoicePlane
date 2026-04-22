@@ -25,6 +25,7 @@ use Tests\AbstractTestCase;
  * @group feature
  * @group routing
  */
+#[CoversClass(Tests\Feature\Routing\ModuleRouting::class)]
 class ModuleRoutingTest extends AbstractTestCase
 {
     protected function setUp(): void

@@ -15,6 +15,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests guest portal quote viewing and approval.
  */
 #[CoversClass(Quotes::class)]
+#[CoversClass(Tests\Feature\Quotes\QuotesController::class)]
 
 class QuotesControllerTest extends AbstractTestCase
 {

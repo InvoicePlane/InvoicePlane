@@ -5,6 +5,7 @@ namespace Tests\Feature\Core;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
+#[CoversClass(Tests\Feature\Core\CustomFieldsController::class)]
 class CustomFieldsControllerTest extends AbstractTestCase
 {
     #[Test]

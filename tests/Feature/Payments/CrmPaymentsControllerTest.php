@@ -19,6 +19,7 @@ use function Tests\Feature\Clients\route;
  * - Clients with invoices, quotes, or projects cannot be deleted
  */
 #[CoversClass(ClientsController::class)]
+#[CoversClass(Feature\Payments\CrmPaymentsController::class)]
 
 class CrmPaymentsControllerTest extends AbstractTestCase
 {
