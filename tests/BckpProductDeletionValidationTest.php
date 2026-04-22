@@ -17,7 +17,7 @@ use Tests\Concerns\InteractsWithDatabase;
  */
 #[CoversClass(FamilyService::class)]
 
-class ProductDeletionValidationTest extends AbstractTestCase
+class BckpProductDeletionValidationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

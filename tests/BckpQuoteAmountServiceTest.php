@@ -8,11 +8,11 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(Mdl_Quote_Amounts::class)]
-class QuoteAmountServiceTest extends AbstractTestCase
+class BckpQuoteAmountServiceTest extends AbstractTestCase
 {
-    private \Tests\QuoteAmountService $service;
+    private $service;
 
-    private \Tests\QuoteService $quoteService;
+    private $quoteService;
 
     protected function setUp(): void
     {

@@ -14,7 +14,7 @@ use Tests\Concerns\InteractsWithDatabase;
  */
 #[CoversClass(FamiliesController::class)]
 
-class TaxRatesControllerTest extends AbstractTestCase
+class BckpTaxRatesControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

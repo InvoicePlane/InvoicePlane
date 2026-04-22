@@ -14,12 +14,11 @@ use Tests\Concerns\InteractsWithDatabase;
  * Test suite for ProjectService business logic methods.
  */
 #[CoversClass(Mdl_Projects::class)]
-
-class ProjectServiceTest extends AbstractTestCase
+class BckpProjectServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private \Tests\ProjectService $service;
+    private $service;
 
     protected function setUp(): void
     {

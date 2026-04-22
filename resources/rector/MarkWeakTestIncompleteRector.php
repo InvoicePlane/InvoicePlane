@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\BuilderFactory;
 use PhpParser\NodeFinder;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -25,11 +24,11 @@ class MarkWeakTestIncompleteRector extends AbstractRector
 
     public function refactor(Node $node): ?Node
     {
-        if (! $node instanceof ClassMethod) {
+        if ( ! $node instanceof ClassMethod) {
             return null;
         }
 
-        if (! $this->isTestMethod($node)) {
+        if ( ! $this->isTestMethod($node)) {
             return null;
         }
 
@@ -37,7 +36,7 @@ class MarkWeakTestIncompleteRector extends AbstractRector
             return null;
         }
 
-        if (! $this->isWeakTest($node)) {
+        if ( ! $this->isWeakTest($node)) {
             return null;
         }
 
@@ -53,6 +52,14 @@ class MarkWeakTestIncompleteRector extends AbstractRector
         );
 
         return $node;
+    }
+
+    public function getRuleDefinition(): RuleDefinition
+    {
+        return new RuleDefinition(
+            'Marks weak PHPUnit tests as incomplete',
+            []
+        );
     }
 
     private function isTestMethod(ClassMethod $method): bool
@@ -114,7 +121,7 @@ class MarkWeakTestIncompleteRector extends AbstractRector
         array $assertCalls
     ): bool {
         foreach ($assertCalls as $call) {
-            if (! $this->isTrivialAssertion($call)) {
+            if ( ! $this->isTrivialAssertion($call)) {
                 return false;
             }
         }
@@ -156,14 +163,6 @@ class MarkWeakTestIncompleteRector extends AbstractRector
                     ),
                 ]
             )
-        );
-    }
-
-    public function getRuleDefinition(): RuleDefinition
-    {
-        return new RuleDefinition(
-            'Marks weak PHPUnit tests as incomplete',
-            []
         );
     }
 

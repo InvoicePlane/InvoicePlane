@@ -2,16 +2,15 @@
 
 namespace Tests\Unit\Quotes;
 
-use Mdl_Quote_Tax_Rates;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Quote_Tax_Rates::class)]
-class QuoteTaxRateServiceTest extends AbstractTestCase
+#[CoversClass(\Mdl_Quote_Tax_Rates::class)]
+class BckpQuoteTaxRateServiceTest extends AbstractTestCase
 {
-    private \Tests\Unit\Quotes\QuoteTaxRateService $service;
+    private $service;
 
     protected function setUp(): void
     {

@@ -1,10 +1,11 @@
 <?php
 
-namespace Tests\Unit\Scripts;
+namespace tests\Scripts;
 
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 
 /**
  * Tests for .github/scripts/parse-phpstan-results.php.

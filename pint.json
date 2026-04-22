@@ -1,9 +1,7 @@
 {
     "preset": "per",
     "exclude": [
-        "application/views/**/pdf/",
-        "resources",
-        "storage"
+        "application/modules/clients/views/view.php"
     ],
     "rules": {
         "@PSR12": true,

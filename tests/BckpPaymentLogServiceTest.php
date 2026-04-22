@@ -10,7 +10,7 @@ use Tests\Concerns\InteractsWithDatabase;
 #[CoversClass(PaymentLogService::class)]
 #[CoversClass(PaymentLogService::class)]
 
-class PaymentLogServiceTest extends AbstractTestCase
+class BckpPaymentLogServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

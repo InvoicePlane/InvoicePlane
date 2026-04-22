@@ -1,11 +1,15 @@
 <?php
 
+namespace Tests\Unit\Invoices;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tests\AbstractTestCase;
+
 /**
  * Test coverage for Mdl_Invoices Model (application/modules/invoices/models/Mdl_invoices.php).
  */
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class Mdl_Invoices_Test extends CIUnit_TestCase
+#[CoversClass(\Mdl_Invoices::class)]
+class Mdl_Invoices_Test extends AbstractTestCase
 {
     public function set_up(): void
     {

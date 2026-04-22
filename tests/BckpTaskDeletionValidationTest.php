@@ -13,7 +13,7 @@ use Tests\Concerns\InteractsWithDatabase;
  */
 #[CoversClass(ProjectService::class)]
 
-class TaskDeletionValidationTest extends \AbstractServiceTestCase
+class BckpTaskDeletionValidationTest extends \AbstractServiceTestCase
 {
     use InteractsWithDatabase;
 

@@ -14,7 +14,7 @@ use Tests\Concerns\InteractsWithDatabase;
  */
 #[CoversClass(FamiliesController::class)]
 
-class ProductsAjaxControllerTest extends AbstractTestCase
+class BckpProductsAjaxControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

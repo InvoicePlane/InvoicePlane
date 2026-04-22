@@ -16,7 +16,7 @@ use Tests\Concerns\InteractsWithDatabase;
  */
 #[CoversClass(Mdl_Tasks::class)]
 
-class TaskServiceTest extends AbstractTestCase
+class BckpTaskServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
