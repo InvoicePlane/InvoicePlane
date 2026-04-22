@@ -2,12 +2,13 @@
 
 namespace Tests\Feature\Payments;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(\Ajax::class)]
+#[CoversClass(Ajax::class)]
 
 class BckpPaymentsAjaxControllerTest extends AbstractTestCase
 {

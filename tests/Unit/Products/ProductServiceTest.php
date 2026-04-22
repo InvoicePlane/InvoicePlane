@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\Products;
 
+use Mdl_Products;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(\Mdl_Products::class)]
+#[CoversClass(Mdl_Products::class)]
 class ProductServiceTest extends AbstractTestCase
 {
     private $service;

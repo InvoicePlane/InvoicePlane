@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Invoices;
 
-
 use Modules\Core\Models\Setting;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceAmount;

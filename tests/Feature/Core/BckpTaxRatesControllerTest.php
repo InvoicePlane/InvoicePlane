@@ -82,7 +82,7 @@ class BckpTaxRatesControllerTest extends AbstractTestCase
          * }.
          */
         $taxRateData = [
-            'tax_rate_name' => 'VAT 20%',
+            'tax_rate_name'    => 'VAT 20%',
             'tax_rate_percent' => '20.00',
         ];
 
@@ -95,7 +95,7 @@ class BckpTaxRatesControllerTest extends AbstractTestCase
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_tax_rates', [
-            'tax_rate_name' => 'VAT 20%',
+            'tax_rate_name'    => 'VAT 20%',
             'tax_rate_percent' => '20.00',
         ]);
     }
@@ -108,7 +108,7 @@ class BckpTaxRatesControllerTest extends AbstractTestCase
     public function it_displays_edit_form_with_existing_tax_rate(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        $user    = $this->seedModel('User');
         $taxRate = $this->seedModel('TaxRate');
 
         /* Act */
@@ -132,9 +132,9 @@ class BckpTaxRatesControllerTest extends AbstractTestCase
     public function it_updates_existing_tax_rate_with_valid_data(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        $user    = $this->seedModel('User');
         $taxRate = $this->seedModel('TaxRate', [
-            'tax_rate_name' => 'Old Name',
+            'tax_rate_name'    => 'Old Name',
             'tax_rate_percent' => '10.00',
         ]);
 
@@ -145,7 +145,7 @@ class BckpTaxRatesControllerTest extends AbstractTestCase
          * }.
          */
         $updateData = [
-            'tax_rate_name' => 'Updated VAT',
+            'tax_rate_name'    => 'Updated VAT',
             'tax_rate_percent' => '25.00',
         ];
 
@@ -158,8 +158,8 @@ class BckpTaxRatesControllerTest extends AbstractTestCase
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_tax_rates', [
-            'tax_rate_id' => $taxRate->tax_rate_id,
-            'tax_rate_name' => 'Updated VAT',
+            'tax_rate_id'      => $taxRate->tax_rate_id,
+            'tax_rate_name'    => 'Updated VAT',
             'tax_rate_percent' => '25.00',
         ]);
     }
@@ -172,7 +172,7 @@ class BckpTaxRatesControllerTest extends AbstractTestCase
     public function it_deletes_tax_rate(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        $user    = $this->seedModel('User');
         $taxRate = $this->seedModel('TaxRate');
 
         /* Act */
@@ -225,7 +225,7 @@ class BckpTaxRatesControllerTest extends AbstractTestCase
 
         /** @var array{tax_rate_name: string, tax_rate_percent: string} $taxRateData */
         $taxRateData = [
-            'tax_rate_name' => 'No Tax',
+            'tax_rate_name'    => 'No Tax',
             'tax_rate_percent' => '0.00',
         ];
 
@@ -236,7 +236,7 @@ class BckpTaxRatesControllerTest extends AbstractTestCase
         /* Assert */
         $response->assertRedirect(\Tests\Feature\Invoices\route('tax_rates.index'));
         $this->assertDatabaseHas('ip_tax_rates', [
-            'tax_rate_name' => 'No Tax',
+            'tax_rate_name'    => 'No Tax',
             'tax_rate_percent' => '0.00',
         ]);
     }

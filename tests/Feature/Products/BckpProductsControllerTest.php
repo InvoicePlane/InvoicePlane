@@ -1,6 +1,7 @@
 <?php
 
 namespace tests\Feature\Products;
+
 use Products;
 use Tests\AbstractTestCase;
 

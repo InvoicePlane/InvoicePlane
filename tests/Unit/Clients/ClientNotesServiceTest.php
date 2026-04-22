@@ -2,10 +2,11 @@
 
 namespace Tests\Unit\Clients;
 
+use Mdl_Client_Notes;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\AbstractTestCase;
 
-#[CoversClass(\Mdl_Client_Notes::class)]
+#[CoversClass(Mdl_Client_Notes::class)]
 class ClientNotesServiceTest extends AbstractTestCase
 {
     private $service;

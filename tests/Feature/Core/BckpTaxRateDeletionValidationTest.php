@@ -39,7 +39,7 @@ class BckpTaxRateDeletionValidationTest extends AbstractTestCase
 
         /* Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
-        $blockers = $this->service->getDeletionBlockers($taxRate->tax_rate_id);
+        $blockers  = $this->service->getDeletionBlockers($taxRate->tax_rate_id);
 
         /* Assert */
         $this->assertTrue($canDelete);
@@ -61,7 +61,7 @@ class BckpTaxRateDeletionValidationTest extends AbstractTestCase
 
         /* Act */
         $canDelete = $this->service->canDelete($taxRate->tax_rate_id);
-        $blockers = $this->service->getDeletionBlockers($taxRate->tax_rate_id);
+        $blockers  = $this->service->getDeletionBlockers($taxRate->tax_rate_id);
 
         /* Assert */
         $this->assertFalse($canDelete);

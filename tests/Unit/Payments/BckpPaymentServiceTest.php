@@ -2,13 +2,14 @@
 
 namespace Tests\Unit\Payments;
 
+use Mdl_Payments;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(\Mdl_Payments::class)]
+#[CoversClass(Mdl_Payments::class)]
 class BckpPaymentServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -41,15 +42,15 @@ class BckpPaymentServiceTest extends AbstractTestCase
         /* Arrange */
         $invoice = $this->seedModel('Invoice');
         $this->seedModel('Payment', [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'   => $invoice->invoice_id,
             'payment_date' => now()->subDays(3),
         ]);
         $payment2 = $this->seedModel('Payment', [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'   => $invoice->invoice_id,
             'payment_date' => now()->subDays(1),
         ]);
         $this->seedModel('Payment', [
-            'invoice_id' => $invoice->invoice_id,
+            'invoice_id'   => $invoice->invoice_id,
             'payment_date' => now()->subDays(2),
         ]);
 
@@ -68,21 +69,21 @@ class BckpPaymentServiceTest extends AbstractTestCase
     public function it_gets_payments_by_client_id(): void
     {
         /* Arrange */
-        $client1 = $this->seedModel('\Modules\Crm\Models\Client');
-        $client2 = $this->seedModel('\Modules\Crm\Models\Client');
+        $client1  = $this->seedModel('\Modules\Crm\Models\Client');
+        $client2  = $this->seedModel('\Modules\Crm\Models\Client');
         $invoice1 = $this->seedModel('\Modules\Invoices\Models\Invoice', ['client_id' => $client1->client_id]);
         $invoice2 = $this->seedModel('\Modules\Invoices\Models\Invoice', ['client_id' => $client2->client_id]);
         $payment1 = $this->seedModel('Payment', [
             'invoice_id' => $invoice1->invoice_id,
-            'client_id' => $client1->client_id,
+            'client_id'  => $client1->client_id,
         ]);
         $payment2 = $this->seedModel('Payment', [
             'invoice_id' => $invoice1->invoice_id,
-            'client_id' => $client1->client_id,
+            'client_id'  => $client1->client_id,
         ]);
         $payment3 = $this->seedModel('Payment', [
             'invoice_id' => $invoice2->invoice_id,
-            'client_id' => $client2->client_id,
+            'client_id'  => $client2->client_id,
         ]);
 
         /* Act */

@@ -2,12 +2,13 @@
 
 namespace Tests\Unit\Clients;
 
+use Mdl_Clients;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(\Mdl_Clients::class)]
+#[CoversClass(Mdl_Clients::class)]
 class ClientsServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Invoices;
 
-
+use Mdl_Items;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(\Mdl_Items::class)]
+#[CoversClass(Mdl_Items::class)]
 class InvoiceItemServiceTest extends AbstractTestCase
 {
     private $service;
