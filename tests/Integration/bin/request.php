@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 $encodedRequest = getenv('CI_TEST_REQUEST') ?: '';
 $decodedRequest = base64_decode($encodedRequest, true);
 

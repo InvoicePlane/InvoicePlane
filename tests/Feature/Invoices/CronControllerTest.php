@@ -7,7 +7,6 @@ use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
@@ -16,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 #[CoversClass(GuestInvoicesController::class)]
 
-class CronControllerTest extends TestCase
+class CronControllerTest extends AbstractTestCase
 {
     /**
      * Test recur method rejects invalid cron key.

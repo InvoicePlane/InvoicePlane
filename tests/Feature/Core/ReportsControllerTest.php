@@ -2,17 +2,18 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Models\User;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Reports;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class ReportsControllerTest extends TestCase
+#[CoversClass(Reports::class)]
+class ReportsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    use WithFaker;
-
-    protected User $user;
+    protected $user;
 
     protected function setUp(): void
     {

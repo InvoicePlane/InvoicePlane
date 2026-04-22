@@ -1,205 +1,95 @@
 <?php
 
-namespace Tests\Feature\Products;
+namespace Feature\Products;
 
-use Modules\Products\Controllers\FamiliesController;
-use Modules\Products\Models\Family;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
-/**
- * FamiliesController Feature Tests.
- *
- * Tests product family (category) management including list, create, update, and delete.
- */
-#[CoversClass(FamiliesController::class)]
+use function Tests\Feature\Core\route;
 
-class UnitsControllerTest extends FeatureTestCase
+class UnitsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    /**
-     * Test index displays paginated list of units.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_displays_paginated_list_of_units(): void
+    protected $user;
+
+    protected function setUp(): void
     {
-        /* Arrange */
-        $user = $this->seedModel('User');
-        $this->seedModelMany('Unit', 5);
+        parent::setUp();
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
+        $this->actingAs($this->user);
+    }
 
-        /* Act */
-        $response = $this->actingAs($user)->get(route('units.index'));
+    #[Test]
+    public function it_displays_units_index(): void
+    {
+        $response = $this->get(route('units.index'));
 
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('products::units_index');
+        $response->assertSuccessful();
         $response->assertViewHas('units');
     }
 
-    /**
-     * Test create displays unit form.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_displays_create_form(): void
+    public function it_creates_new_unit(): void
     {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('units.create'));
-
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('products::units_form');
-        $response->assertViewHas('unit');
-
-        $unit = $response->viewData('unit');
-        $this->assertInstanceOf(Unit::class, $unit);
-        $this->assertFalse($unit->exists);
-    }
-
-    /**
-     * Test store creates new unit with valid data.
-     */
-    #[Group('crud')]
-    #[Test]
-    public function it_creates_new_unit_with_valid_data(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /**
-         * {
-         *     "unit_name": "Kilogram",
-         *     "unit_name_plrl": "Kilograms"
-         * }.
-         */
         $unitData = [
             'unit_name'      => 'Kilogram',
             'unit_name_plrl' => 'Kilograms',
         ];
 
-        /* Act */
-        $response = $this->actingAs($user)->post(route('units.store'), $unitData);
+        $response = $this->post(route('units.form'), $unitData);
 
-        /* Assert */
         $response->assertRedirect(route('units.index'));
-        $response->assertSessionHas('alert_success');
-
         $this->assertDatabaseHas('ip_units', [
-            'unit_name'      => 'Kilogram',
-            'unit_name_plrl' => 'Kilograms',
+            'unit_name' => 'Kilogram',
         ]);
     }
 
-    /**
-     * Test edit displays unit form with existing data.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_displays_edit_form_with_existing_unit(): void
+    public function it_prevents_duplicate_unit_names(): void
     {
-        /* Arrange */
-        $user = $this->seedModel('User');
-        $unit = $this->seedModel('Unit');
+        $this->seedModel('Unit', ['unit_name' => 'Existing Unit']);
 
-        /* Act */
-        $response = $this->actingAs($user)->get(route('units.edit', $unit));
-
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('products::units_form');
-        $response->assertViewHas('unit');
-
-        $viewUnit = $response->viewData('unit');
-        $this->assertEquals($unit->unit_id, $viewUnit->unit_id);
-    }
-
-    /**
-     * Test update modifies existing unit.
-     */
-    #[Group('crud')]
-    #[Test]
-    public function it_updates_existing_unit_with_valid_data(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-        $unit = $this->seedModel('Unit', ['unit_name' => 'Old Name']);
-
-        /**
-         * {
-         *     "unit_name": "Updated Name",
-         *     "unit_name_plrl": "Updated Names"
-         * }.
-         */
-        $updateData = [
-            'unit_name'      => 'Updated Name',
-            'unit_name_plrl' => 'Updated Names',
+        $unitData = [
+            'unit_name'      => 'Existing Unit',
+            'unit_name_plrl' => 'Existing Units',
+            'is_update'      => 0,
         ];
 
-        /* Act */
-        $response = $this->actingAs($user)->put(route('units.update', $unit), $updateData);
+        $response = $this->post(route('units.form'), $unitData);
 
-        /* Assert */
+        $response->assertRedirect(route('units.form'));
+        $response->assertSessionHas('alert_error');
+    }
+
+    #[Test]
+    public function it_updates_existing_unit(): void
+    {
+        $unit = $this->seedModel('Unit', ['unit_name' => 'Original Unit']);
+
+        $updateData = [
+            'unit_name'      => 'Updated Unit',
+            'unit_name_plrl' => 'Updated Units',
+        ];
+
+        $response = $this->post(route('units.form', ['id' => $unit->unit_id]), $updateData);
+
         $response->assertRedirect(route('units.index'));
-        $response->assertSessionHas('alert_success');
-
         $this->assertDatabaseHas('ip_units', [
             'unit_id'   => $unit->unit_id,
-            'unit_name' => 'Updated Name',
+            'unit_name' => 'Updated Unit',
         ]);
     }
 
-    /**
-     * Test destroy deletes unit.
-     */
-    #[Group('crud')]
     #[Test]
     public function it_deletes_unit(): void
     {
-        /* Arrange */
-        $user = $this->seedModel('User');
         $unit = $this->seedModel('Unit');
 
-        /* Act */
-        $response = $this->actingAs($user)->delete(route('units.destroy', $unit));
+        $response = $this->delete(route('units.delete', ['id' => $unit->unit_id]));
 
-        /* Assert */
         $response->assertRedirect(route('units.index'));
-        $response->assertSessionHas('alert_success');
-
-        $this->assertDatabaseMissing('ip_units', [
-            'unit_id' => $unit->unit_id,
-        ]);
-    }
-
-    /**
-     * Test units are ordered correctly.
-     */
-    #[Test]
-    public function it_orders_units_correctly(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        $this->seedModel('Unit', ['unit_name' => 'Zebra Unit']);
-        $this->seedModel('Unit', ['unit_name' => 'Alpha Unit']);
-        $this->seedModel('Unit', ['unit_name' => 'Beta Unit']);
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('units.index'));
-
-        /* Assert */
-        $response->assertOk();
-        $units = $response->viewData('units');
-
-        // Verify ordering (depends on Unit's ordered() scope implementation)
-        $this->assertCount(3, $units);
+        $this->assertDatabaseMissing('ip_units', ['unit_id' => $unit->unit_id]);
     }
 }

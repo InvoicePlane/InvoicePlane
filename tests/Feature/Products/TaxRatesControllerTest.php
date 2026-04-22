@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
@@ -17,7 +16,7 @@ use Tests\Feature\Core\FeatureTestCase;
  */
 #[CoversClass(FamiliesController::class)]
 
-class TaxRatesControllerTest extends FeatureTestCase
+class TaxRatesControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests;
 
+use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 use RuntimeException;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Integration\CiIntegrationTestCase;
 use Tests\Integration\Support\HttpResponse;
 
-abstract class AbstractTestCase extends CiIntegrationTestCase
+abstract class AbstractTestCase extends PhpUnitTestCase
 {
     use InteractsWithDatabase;
 
@@ -92,6 +90,16 @@ abstract class AbstractTestCase extends CiIntegrationTestCase
             $result['headers'] ?? [],
             (string) $stderr,
         );
+    }
+
+    protected function get(string $uri, array $query = []): HttpResponse
+    {
+        return $this->request('GET', $uri, $query, []);
+    }
+
+    protected function post(string $uri, array $data = [], array $query = []): HttpResponse
+    {
+        return $this->request('POST', $uri, $query, $data);
     }
 
     protected function assertResponseBodyContains(HttpResponse $response, string $needle): void

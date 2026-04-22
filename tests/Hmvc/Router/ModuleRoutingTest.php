@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Routing;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**

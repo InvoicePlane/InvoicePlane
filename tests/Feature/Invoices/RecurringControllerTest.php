@@ -2,25 +2,24 @@
 
 namespace Tests\Feature\Invoices;
 
-use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
 use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Recurring;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
  *
  * Tests guest portal invoice viewing.
  */
-#[CoversClass(\Recurring::class)]
+#[CoversClass(Recurring::class)]
 
 /**
- * Test coverage for Invoices Recurring Controller (application/modules/invoices/controllers/Recurring.php)
+ * Test coverage for Invoices Recurring Controller (application/modules/invoices/controllers/Recurring.php).
  */
-class RecurringControllerTest extends FeatureTestCase
+class RecurringControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

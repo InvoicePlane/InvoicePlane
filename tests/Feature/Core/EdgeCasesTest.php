@@ -3,9 +3,9 @@
 namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Tests\AbstractTestCase;
 
-class EdgeCasesTest extends TestCase
+class EdgeCasesTest extends AbstractTestCase
 {
     #[Test]
     public function unit_service_handles_extreme_quantities_correctly(): void

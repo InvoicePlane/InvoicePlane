@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class UsersAjaxControllerTest extends TestCase
+class UsersAjaxControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
-
-    use WithFaker;
 
     protected AuthUser $user;
 

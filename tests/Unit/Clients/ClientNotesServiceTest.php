@@ -3,9 +3,9 @@
 namespace Tests\Unit\Clients;
 
 use Modules\Crm\app\Services\ClientNotesService;
-use Tests\TestCase;
+use Tests\AbstractTestCase;
 
-class ClientNotesServiceTest extends TestCase
+class ClientNotesServiceTest extends AbstractTestCase
 {
     private ClientNotesService $service;
 

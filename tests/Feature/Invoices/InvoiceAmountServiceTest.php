@@ -15,7 +15,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(InvoiceAmountService::class)]
 
-class InvoiceAmountServiceTest extends AbstractServiceTestCase
+class InvoiceAmountServiceTest extends AbstractTestCase
 {
     protected function setUp(): void
     {

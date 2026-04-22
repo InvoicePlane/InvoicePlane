@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Clients;
 
+use Clients;
 use Modules\Crm\Controllers\ClientsController;
 use Modules\Crm\Models\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -16,9 +16,9 @@ use Tests\Feature\Core\FeatureTestCase;
  * Tests HTTP endpoints for client deletion with business rules:
  * - Clients with invoices, quotes, or projects cannot be deleted
  */
-#[CoversClass(ClientsController::class)]
+#[CoversClass(Clients::class)]
 
-class ClientsControllerTest extends FeatureTestCase
+class ClientsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

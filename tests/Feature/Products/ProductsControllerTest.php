@@ -2,22 +2,20 @@
 
 namespace Tests\Feature\Products;
 
-use Modules\Products\Controllers\FamiliesController;
-use Modules\Products\Models\Family;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Products;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
- * FamiliesController Feature Tests.
+ * ProductsController Feature Tests.
  *
- * Tests product family (category) management including list, create, update, and delete.
+ * Tests products management including list, create, update, and delete.
  */
-#[CoversClass(FamiliesController::class)]
+#[CoversClass(Products::class)]
 
-class ProductsControllerTest extends FeatureTestCase
+class ProductsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

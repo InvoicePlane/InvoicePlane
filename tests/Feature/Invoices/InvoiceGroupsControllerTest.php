@@ -3,14 +3,13 @@
 namespace Tests\Feature\Invoices;
 
 use Invoice_Groups;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Invoice_Groups Controller Feature Tests.
  *
  * Tests invoice group management (index, form, delete).
  */
-class InvoiceGroupsControllerTest extends TestCase
+class InvoiceGroupsControllerTest extends AbstractTestCase
 {
     /**
      * Test index displays paginated list of invoice groups.

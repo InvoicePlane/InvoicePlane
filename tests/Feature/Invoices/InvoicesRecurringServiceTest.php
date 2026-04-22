@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(InvoiceAmountService::class)]
 
-class InvoicesRecurringServiceTest extends AbstractServiceTestCase
+class InvoicesRecurringServiceTest extends AbstractTestCase
 {
     private InvoicesRecurringService $service;
 

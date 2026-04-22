@@ -2,23 +2,19 @@
 
 namespace Tests\Feature\Invoices;
 
-use Modules\Core\Models\User;
-use Modules\InvoiceGroups\Tests\Feature\WithFaker;
-use Modules\Invoices\app\Http\Controllers\InvoiceGroupsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Recurring;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-#[CoversClass(InvoiceGroupsController::class)]
+#[CoversClass(Recurring::class)]
 
-class RecurringInvoicesControllerTest extends TestCase
+class RecurringInvoicesControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    use WithFaker;
-
-    protected User $user;
+    protected $user;
 
     protected function setUp(): void
     {

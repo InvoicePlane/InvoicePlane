@@ -38,7 +38,7 @@ The result is:
 ```php
 <?php
 
-declare(strict_types=1);
+
 
 namespace Bootstrap;
 
@@ -153,7 +153,7 @@ final class Application
 ```php
 <?php
 
-declare(strict_types=1);
+
 
 namespace Bootstrap;
 
@@ -170,7 +170,7 @@ interface BootProvider
 ```php
 <?php
 
-declare(strict_types=1);
+
 
 namespace Bootstrap\Providers;
 
@@ -198,7 +198,7 @@ final class EnvProvider implements BootProvider
 ```php
 <?php
 
-declare(strict_types=1);
+
 
 namespace Bootstrap\Providers;
 
@@ -256,7 +256,7 @@ final class ConstantsProvider implements BootProvider
 ```php
 <?php
 
-declare(strict_types=1);
+
 
 namespace Bootstrap\Providers;
 
@@ -284,7 +284,7 @@ final class CiCoreProvider implements BootProvider
 ```php
 <?php
 
-declare(strict_types=1);
+
 
 namespace Bootstrap\Providers;
 
@@ -324,7 +324,7 @@ final class MxProvider implements BootProvider
 ```php
 <?php
 
-declare(strict_types=1);
+
 
 use Bootstrap\Application;
 
@@ -338,7 +338,7 @@ return Application::createForHttp(dirname(__DIR__));
 ```php
 <?php
 
-declare(strict_types=1);
+
 
 use Bootstrap\Application;
 

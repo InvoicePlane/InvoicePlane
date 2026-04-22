@@ -2,14 +2,13 @@
 
 namespace Tests\Unit\Invoices;
 
-use function Modules\InvoiceGroups\Tests\Unit\app;
-
-use Modules\Invoices\app\Models\InvoiceGroup;
-use Modules\Invoices\app\Services\InvoiceGroupsService;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Tests\AbstractTestCase;
 
-class InvoiceGroupsServiceTest extends TestCase
+#[CoversClass()]
+class InvoiceGroupsServiceTest extends AbstractTestCase
 {
     private InvoiceGroupsService $service;
 
@@ -20,6 +19,7 @@ class InvoiceGroupsServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_retrieves_all_invoice_groups(): void
     {
         /* Arrange */

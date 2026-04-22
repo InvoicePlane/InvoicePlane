@@ -2,14 +2,16 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Models\User;
-use Modules\Core\Services\UsersService;
+use Mdl_Users;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Tests\AbstractTestCase;
 
-class UsersServiceTest extends TestCase
+#[CoversClass(Mdl_Users::class)]
+class UsersServiceTest extends AbstractTestCase
 {
-    private UsersService $service;
+    private $service;
 
     protected function setUp(): void
     {
@@ -18,6 +20,7 @@ class UsersServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_retrieves_all_users(): void
     {
         /* Arrange */

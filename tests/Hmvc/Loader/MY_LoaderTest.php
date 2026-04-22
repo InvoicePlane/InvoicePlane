@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Loader;
 
-use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
@@ -15,7 +14,7 @@ use stdClass;
  * @group unit
  * @group loader
  */
-class MY_LoaderTest extends TestCase
+class MY_LoaderTest extends AbstractTestCase
 {
     private TestableLoader $loader;
 

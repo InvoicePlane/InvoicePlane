@@ -7,7 +7,7 @@ use Modules\Crm\Services\ClientService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\AbstractServiceTestCase;
+use Tests\AbstractTestCase;
 
 /**
  * ClientService Deletion Validation Tests.
@@ -19,7 +19,7 @@ use Tests\AbstractServiceTestCase;
  */
 #[CoversClass(ClientService::class)]
 
-class ClientServiceTest extends AbstractServiceTestCase
+class ClientServiceTest extends AbstractTestCase
 {
     private ClientService $service;
 

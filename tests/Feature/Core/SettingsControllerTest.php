@@ -2,9 +2,13 @@
 
 namespace Tests\Feature\Core;
 
-use Tests\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Settings;
+use Tests\AbstractTestCase;
 
-class SettingsControllerTest extends TestCase
+#[CoversClass(Settings::class)]
+class SettingsControllerTest extends AbstractTestCase
 {
     #[Test]
     public function it_displays_settings_page_and_saves_settings()

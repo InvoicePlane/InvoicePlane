@@ -10,7 +10,7 @@ use RuntimeException;
  * Provides methods for making HTTP requests and handling authentication
  * in CodeIgniter 3 tests.
  */
-abstract class HttpTestCase extends TestCase
+abstract class HttpTestCase extends AbstractTestCase
 {
     protected mixed $codeigniter;
 

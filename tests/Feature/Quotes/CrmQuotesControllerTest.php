@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * QuotesController (CRM/Guest) Feature Tests.
@@ -17,7 +16,7 @@ use Tests\Feature\Core\FeatureTestCase;
  */
 #[CoversClass(GuestQuotesController::class)]
 
-class CrmQuotesControllerTest extends FeatureTestCase
+class CrmQuotesControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

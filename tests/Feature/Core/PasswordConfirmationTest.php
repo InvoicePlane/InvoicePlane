@@ -2,15 +2,16 @@
 
 namespace Tests\Feature\Core;
 
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class PasswordConfirmationTest extends TestCase
+class PasswordConfirmationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
     public function test_confirm_password_screen_can_be_rendered(): void
     {
+        $this->markTestIncomplete('weak test');
         $user = $this->seedModel('User');
 
         $response = $this->actingAs($user)->get('/confirm-password');

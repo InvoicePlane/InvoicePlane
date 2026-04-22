@@ -7,11 +7,11 @@ use Modules\Quotes\Services\QuoteService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\AbstractServiceTestCase;
+use Tests\AbstractTestCase;
 
 #[CoversClass(QuoteAmountService::class)]
 
-class QuoteAmountServiceTest extends AbstractServiceTestCase
+class QuoteAmountServiceTest extends AbstractTestCase
 {
     private QuoteAmountService $service;
 

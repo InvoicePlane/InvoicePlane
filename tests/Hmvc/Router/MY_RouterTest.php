@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Router;
 
-use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 /**
@@ -17,7 +16,7 @@ use ReflectionClass;
  * @group unit
  * @group router
  */
-class MY_RouterTest extends TestCase
+class MY_RouterTest extends AbstractTestCase
 {
     private TestableRouter $router;
 

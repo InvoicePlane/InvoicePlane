@@ -4,7 +4,6 @@ namespace Tests\Feature\Core;
 
 use DateTime;
 use DateTimeZone;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Sessions controller security helpers.
@@ -23,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * @group security
  * @group sessions
  */
-class SessionsSecurityTest extends TestCase
+class SessionsSecurityTest extends AbstractTestCase
 {
     private StubSessionsSecurity $security;
 

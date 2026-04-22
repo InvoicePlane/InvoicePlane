@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 define('CI_TESTING', true);
 
 $basePath = dirname(__DIR__);

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Controllers\AjaxController as CoreAjaxController;
+use Layout;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -13,9 +13,9 @@ use Tests\Concerns\InteractsWithDatabase;
  *
  * Tests AJAX requests for settings operations.
  */
-#[CoversClass(CoreAjaxController::class)]
+#[CoversClass(Layout::class)]
 
-class LayoutControllerTest extends FeatureTestCase
+class LayoutControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

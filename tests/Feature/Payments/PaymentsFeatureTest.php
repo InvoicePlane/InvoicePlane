@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Payments;
 
+use PHPUnit\Framework\Attributes\Group;
 use Tests\AbstractTestCase;
 
 /**

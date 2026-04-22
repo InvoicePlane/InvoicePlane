@@ -2,12 +2,10 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\CustomFields\Models\CustomField;
-use Modules\CustomFields\Services\CustomFieldsService;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Tests\AbstractTestCase;
 
-class CustomFieldsServiceTest extends TestCase
+class CustomFieldsServiceTest extends AbstractTestCase
 {
     private CustomFieldsService $service;
 
