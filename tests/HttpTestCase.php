@@ -3,6 +3,7 @@
 namespace Modules\Core\Testing;
 
 use RuntimeException;
+use Tests\AbstractTestCase;
 
 /**
  * HttpTestCase - Base class for HTTP integration tests.
