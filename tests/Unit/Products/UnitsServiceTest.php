@@ -1,14 +1,16 @@
 <?php
 
-namespace Unit\Products;
+namespace Tests\Unit\Products;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 use Tests\AbstractTestCase;
 
+#[CoversClass(\Mdl_Units::class)]
 class UnitsServiceTest extends AbstractTestCase
 {
-    private \Unit\Products\UnitsService $service;
+    private $service;
 
     protected function setUp(): void
     {

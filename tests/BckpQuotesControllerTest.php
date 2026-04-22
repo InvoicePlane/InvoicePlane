@@ -9,7 +9,7 @@ use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Quotes::class)]
 
-class QuotesControllerTest extends AbstractTestCase
+class BckpQuotesControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

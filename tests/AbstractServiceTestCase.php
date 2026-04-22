@@ -1,12 +1,7 @@
 <?php
 
-use Modules\Core\Models\Setting;
-use Modules\Crm\Models\Client;
-use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Models\InvoiceGroup;
-use Modules\Invoices\Models\Item;
-use Modules\Invoices\Models\ItemAmount;
-use Modules\Quotes\Models\Quote;
+namespace Tests;
+
 use Tests\AbstractTestCase;
 
 /**
@@ -28,7 +23,7 @@ abstract class AbstractServiceTestCase extends AbstractTestCase
             'user_id'                  => 1,
             'invoice_group_id'         => 1,
             'invoice_status_id'        => 1,
-            'invoice_number'           => 'INV-' . uniqid(),
+            'invoice_number'           => 'INV-' . uniqid('invnmbr', true),
             'invoice_date_created'     => '2024-01-01',
             'invoice_date_modified'    => '2024-01-01',
             'invoice_date_due'         => '2024-01-15',
@@ -36,7 +31,7 @@ abstract class AbstractServiceTestCase extends AbstractTestCase
             'invoice_discount_amount'  => 0,
             'invoice_discount_percent' => 0,
             'invoice_terms'            => '',
-            'invoice_url_key'          => 'key-' . uniqid(),
+            'invoice_url_key'          => 'key-' . uniqid('invurlkey', true),
         ];
 
         return Invoice::query()->create(array_merge($defaults, $overrides));
@@ -104,7 +99,7 @@ abstract class AbstractServiceTestCase extends AbstractTestCase
             'user_id'                => 1,
             'quote_group_id'         => 1,
             'quote_status_id'        => 1,
-            'quote_number'           => 'QUO-' . uniqid(),
+            'quote_number'           => 'QUO-' . uniqid('quotnmbr', true),
             'quote_date_created'     => '2024-01-01',
             'quote_date_modified'    => '2024-01-01',
             'quote_date_expires'     => '2024-01-31',
@@ -112,7 +107,7 @@ abstract class AbstractServiceTestCase extends AbstractTestCase
             'quote_discount_amount'  => 0,
             'quote_discount_percent' => 0,
             'quote_terms'            => '',
-            'quote_url_key'          => 'key-' . uniqid(),
+            'quote_url_key'          => 'key-' . uniqid('quoturlkey', true),
         ];
 
         return Quote::query()->create(array_merge($defaults, $overrides));

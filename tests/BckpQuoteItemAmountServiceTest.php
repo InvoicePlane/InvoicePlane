@@ -2,15 +2,14 @@
 
 namespace Tests;
 
-use Mdl_Quote_Item_Amounts;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(Mdl_Quote_Item_Amounts::class)]
-class QuoteItemAmountServiceTest extends AbstractTestCase
+#[CoversClass(\Mdl_Quote_Item_Amounts::class)]
+class BckpQuoteItemAmountServiceTest extends AbstractTestCase
 {
-    private QuoteItemAmountService $service;
+    private $service;
 
     protected function setUp(): void
     {

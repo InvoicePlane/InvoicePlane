@@ -7,10 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(PaymentMethodsController::class)]
-#[CoversClass(Tests\Feature\Payments\PaymentsAjaxController::class)]
+#[CoversClass(\Ajax::class)]
 
-class PaymentsAjaxControllerTest extends AbstractTestCase
+class BckpPaymentsAjaxControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

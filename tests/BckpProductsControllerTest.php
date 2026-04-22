@@ -5,7 +5,7 @@
  *
  * Tests product management including list, create, update, and delete.
  */
-class ProductsControllerTest extends \Tests\Feature\Invoices\AbstractTestCase
+class BckpProductsControllerTest extends \Tests\Feature\Invoices\AbstractTestCase
 {
     /**
      * Test index displays paginated list of products.

@@ -2,7 +2,6 @@
 
 namespace Unit\Projects;
 
-use Mdl_Tasks;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -15,7 +14,7 @@ use Tests\Concerns\InteractsWithDatabase;
  *
  * Test suite for ProjectService business logic methods.
  */
-#[CoversClass(Mdl_Tasks::class)]
+#[CoversClass(\Mdl_Tasks::class)]
 
 class TaskServiceTest extends AbstractTestCase
 {

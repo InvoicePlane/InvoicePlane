@@ -5,6 +5,7 @@ namespace Modules\Core\Testing;
 use Modules\Core\Testing\Fakes\FakeDatabase;
 use Modules\Core\Testing\Fakes\FakeSession;
 use Modules\Core\Testing\Fixtures\FixtureLoader;
+use Tests\AbstractTestCase;
 
 /**
  * Base class for Controller Integration Tests.

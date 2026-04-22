@@ -13,7 +13,7 @@ class TestResponse
 {
     public int $statusCode = 200;
 
-    public string $content = '';
+    public ?string $content = null;
 
     public array $headers = [];
 

@@ -2,15 +2,17 @@
 
 namespace Tests\Unit\Clients;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
+#[CoversClass(\Mdl_Clients::class)]
 class ClientsServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private ClientsService $service;
+    private $service;
 
     protected function setUp(): void
     {

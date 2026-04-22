@@ -6,11 +6,11 @@ namespace Resources\Rector;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Class_;
 use Rector\Rector\AbstractRector;
 
 class AddCoversClassRector extends AbstractRector
@@ -22,7 +22,7 @@ class AddCoversClassRector extends AbstractRector
 
     public function refactor(Node $node): ?Node
     {
-        if (! $node instanceof Class_) {
+        if ( ! $node instanceof Class_) {
             return null;
         }
 
@@ -62,11 +62,11 @@ class AddCoversClassRector extends AbstractRector
 
     private function resolveCoveredClass(string $testClass): ?string
     {
-        if (! str_ends_with($testClass, 'Test')) {
+        if ( ! str_ends_with($testClass, 'Test')) {
             return null;
         }
 
-        return substr($testClass, 0, -4);
+        return mb_substr($testClass, 0, -4);
     }
 
     private function addCoversAttribute(Class_ $class, string $coveredClass): void

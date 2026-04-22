@@ -2,18 +2,20 @@
 
 namespace Tests\Unit\Invoices;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
+#[CoversClass(\Mdl_Items::class)]
 class InvoiceItemsServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private ItemsService $service;
+    private $service;
 
-    private \PHPUnit\Framework\MockObject\MockObject $itemAmountsService;
+    private $itemAmountsService;
 
-    private \PHPUnit\Framework\MockObject\MockObject $invoiceAmountsService;
+    private $invoiceAmountsService;
 
     protected function setUp(): void
     {

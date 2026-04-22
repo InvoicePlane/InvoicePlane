@@ -2,12 +2,14 @@
 
 namespace Unit\Projects;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
+#[CoversClass(\Mdl_Projects::class)]
 class ProjectsServiceTest extends AbstractTestCase
 {
-    private \Unit\Projects\ProjectsService $service;
+    private $service;
 
     protected function setUp(): void
     {

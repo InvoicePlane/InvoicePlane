@@ -16,7 +16,7 @@ use Tests\Concerns\InteractsWithDatabase;
  */
 #[CoversClass(FamilyService::class)]
 
-class TaxRateDeletionValidationTest extends AbstractTestCase
+class BckpTaxRateDeletionValidationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

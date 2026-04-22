@@ -15,7 +15,7 @@ use Tests\AbstractTestCase;
  */
 #[CoversClass(FamilyService::class)]
 
-class ProductServiceTest extends AbstractTestCase
+class BckpProductServiceTest extends AbstractTestCase
 {
     private \Tests\Feature\Invoices\ProductService $service;
 
