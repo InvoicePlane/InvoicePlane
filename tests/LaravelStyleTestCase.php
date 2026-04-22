@@ -2,4 +2,4 @@
 
 namespace Modules\Core\Testing;
 
-abstract class LaravelStyleTestCase extends TestCase {}
+abstract class LaravelStyleTestCase extends AbstractTestCase {}

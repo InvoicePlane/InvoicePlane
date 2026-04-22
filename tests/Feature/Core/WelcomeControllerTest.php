@@ -3,9 +3,9 @@
 namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Tests\AbstractTestCase;
 
-class WelcomeControllerTest extends TestCase
+class WelcomeControllerTest extends AbstractTestCase
 {
     #[Test]
     public function it_displays_welcome_page(): void

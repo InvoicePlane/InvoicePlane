@@ -2,20 +2,19 @@
 
 namespace Tests\Feature\Payments;
 
-use Modules\Payments\Controllers\PaymentMethodsController;
+use Paypal;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
- * PaymentMethodsController Feature Tests.
+ * Paypal Feature Tests.
  *
- * Tests payment method management (Cash, Check, Credit Card, PayPal, etc.)
+ * Tests Paypal management (Cash, Check, Credit Card, PayPal, etc.)
  */
-#[CoversClass(PaymentMethodsController::class)]
+#[CoversClass(Paypal::class)]
 
-class PaypalControllerTest extends FeatureTestCase
+class PaypalControllerTest extends AbstractTestCase
 {
     /**
      * Test notify handles PayPal IPN notification.

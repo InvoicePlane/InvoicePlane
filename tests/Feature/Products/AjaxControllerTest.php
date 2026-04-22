@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Products;
 
-use Modules\Products\Controllers\AjaxController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Tests\AbstractTestCase;
 
 #[CoversClass(AjaxController::class)]
 
-class AjaxControllerTest extends TestCase
+class AjaxControllerTest extends AbstractTestCase
 {
     #[Test]
     public function modal_product_lookups_returns_expected_results()

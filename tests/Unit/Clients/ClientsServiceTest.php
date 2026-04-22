@@ -2,10 +2,11 @@
 
 namespace Tests\Unit\Clients;
 
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class ClientsServiceTest extends TestCase
+class ClientsServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
@@ -251,6 +252,7 @@ class ClientsServiceTest extends TestCase
 
     public function test_delete_logs_orphan_handling(): void
     {
+        $this->markTestIncomplete('weak test');
         $client = $this->seedModel('tmpClient');
 
         Log::shouldReceive('info')

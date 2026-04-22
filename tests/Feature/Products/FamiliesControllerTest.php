@@ -2,24 +2,31 @@
 
 namespace Tests\Feature\Products;
 
-use Modules\Products\Controllers\FamiliesController;
-use Modules\Products\Models\Family;
+use Families;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * FamiliesController Feature Tests.
  *
  * Tests product family (category) management including list, create, update, and delete.
  */
-#[CoversClass(FamiliesController::class)]
+#[CoversClass(Families::class)]
 
-class FamiliesControllerTest extends FeatureTestCase
+class FamiliesControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
+
+    protected $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
+        $this->actingAs($this->user);
+    }
 
     /**
      * Test index displays paginated list of families.
@@ -122,6 +129,22 @@ class FamiliesControllerTest extends FeatureTestCase
 
         $this->assertDatabaseHas('ip_families', [
             'family_name' => 'Electronics',
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_new_family(): void
+    {
+        $familyData = [
+            'family_name' => 'Test Family',
+            'is_update'   => 0,
+        ];
+
+        $response = $this->post(route('families.form'), $familyData);
+
+        $response->assertRedirect(route('families.index'));
+        $this->assertDatabaseHas('ip_families', [
+            'family_name' => 'Test Family',
         ]);
     }
 
@@ -249,7 +272,6 @@ class FamiliesControllerTest extends FeatureTestCase
     public function it_deletes_family(): void
     {
         /* Arrange */
-        $user   = $this->seedModel('User');
         $family = $this->seedModel('Family');
 
         /**
@@ -269,6 +291,7 @@ class FamiliesControllerTest extends FeatureTestCase
 
         /* Assert */
         $response->assertRedirect(route('families.index'));
+        $this->assertDatabaseMissing('ip_families', ['family_id' => $family->family_id]);
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseMissing('ip_families', [
@@ -303,5 +326,21 @@ class FamiliesControllerTest extends FeatureTestCase
 
         /* Assert */
         $response->assertNotFound();
+    }
+
+    #[Test]
+    public function it_prevents_duplicate_family_names(): void
+    {
+        $this->seedModel('Family', ['family_name' => 'Existing Family']);
+
+        $familyData = [
+            'family_name' => 'Existing Family',
+            'is_update'   => 0,
+        ];
+
+        $response = $this->post(route('families.form'), $familyData);
+
+        $response->assertRedirect(route('families.form'));
+        $response->assertSessionHas('alert_error');
     }
 }

@@ -2,9 +2,10 @@
 
 namespace Tests\Feature\Core;
 
-use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 
-class CustomFieldsControllerTest extends TestCase
+class CustomFieldsControllerTest extends AbstractTestCase
 {
     #[Test]
     public function it_displays_custom_fields_list()

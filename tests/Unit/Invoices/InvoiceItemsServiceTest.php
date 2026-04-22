@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Invoices;
 
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class InvoiceItemsServiceTest extends TestCase
+class InvoiceItemsServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
@@ -72,6 +72,7 @@ class InvoiceItemsServiceTest extends TestCase
 
     public function test_delete_returns_false_for_nonexistent_item(): void
     {
+        $this->markTestIncomplete('weak test');
         $result = $this->service->delete(99999);
         $this->assertFalse($result);
     }

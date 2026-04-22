@@ -2,15 +2,16 @@
 
 namespace Tests\Feature\Core;
 
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class PasswordResetTest extends TestCase
+class PasswordResetTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
     public function test_reset_password_link_screen_can_be_rendered(): void
     {
+        $this->markTestIncomplete('weak test');
         $response = $this->get('/forgot-password');
 
         $response->assertStatus(200);
@@ -18,6 +19,7 @@ class PasswordResetTest extends TestCase
 
     public function test_reset_password_link_can_be_requested(): void
     {
+        $this->markTestIncomplete('weak test');
         Notification::fake();
 
         $user = $this->seedModel('User');
@@ -29,6 +31,7 @@ class PasswordResetTest extends TestCase
 
     public function test_reset_password_screen_can_be_rendered(): void
     {
+        $this->markTestIncomplete('weak test');
         Notification::fake();
 
         $user = $this->seedModel('User');

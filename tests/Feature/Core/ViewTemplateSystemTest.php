@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 #[CoversClass(CoreAjaxController::class)]
 
-class ViewTemplateSystemTest extends TestCase
+class ViewTemplateSystemTest extends AbstractTestCase
 {
     /**
      * Test that PHP view engine is registered.

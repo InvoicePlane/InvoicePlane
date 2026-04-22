@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Models\User;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class EmailTemplatesAjaxControllerTest extends TestCase
+class EmailTemplatesAjaxControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    protected User $user;
+    protected $user;
 
     protected function setUp(): void
     {

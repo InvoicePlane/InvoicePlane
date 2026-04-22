@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ProjectsController Feature Tests.
@@ -19,7 +18,7 @@ use Tests\Feature\Core\FeatureTestCase;
  */
 #[CoversClass(ProjectsController::class)]
 
-class ProjectsControllerTest extends FeatureTestCase
+class ProjectsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

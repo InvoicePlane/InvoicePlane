@@ -2,20 +2,20 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Controllers\AjaxController as CoreAjaxController;
+use Import;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
 
 /**
- * Core AjaxController Feature Tests.
+ * Core Import Feature Tests.
  *
  * Tests AJAX requests for settings operations.
  */
-#[CoversClass(CoreAjaxController::class)]
+#[CoversClass(Import::class)]
 
-class ImportControllerTest extends FeatureTestCase
+class ImportControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class UserClientsControllerTest extends TestCase
+class UserClientsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

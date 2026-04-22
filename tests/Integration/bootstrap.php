@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Dotenv\Dotenv;
 
 define('CI_INTEGRATION_TESTING', true);

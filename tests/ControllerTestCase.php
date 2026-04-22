@@ -12,7 +12,7 @@ use Modules\Core\Testing\Fixtures\FixtureLoader;
  * Provides Laravel HTTP testing methods for controller integration tests.
  * Uses Fakes instead of Mocks and supports Fixtures for test data.
  */
-abstract class ControllerTestCase extends TestCase
+abstract class ControllerTestCase extends AbstractTestCase
 {
     protected mixed $CI;
 

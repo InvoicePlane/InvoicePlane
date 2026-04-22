@@ -2,15 +2,16 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Models\User;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Sessions;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class SessionsControllerTest extends TestCase
+#[CoversClass(Sessions::class)]
+class SessionsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
-
-    use WithFaker;
 
     #[Test]
     public function it_redirects_index_to_login(): void

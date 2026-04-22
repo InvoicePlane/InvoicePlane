@@ -3,9 +3,8 @@
 namespace Tests;
 
 use core\CiKernel;
-use PHPUnit\Framework\TestCase;
 
-abstract class CiTestCase extends TestCase
+abstract class CiTestCase extends AbstractTestCase
 {
     protected function setUp(): void
     {

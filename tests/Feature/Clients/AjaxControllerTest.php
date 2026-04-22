@@ -2,17 +2,14 @@
 
 namespace Tests\Feature\Clients;
 
-use function Modules\Clients\Tests\Feature\route;
-
-use Modules\Crm\app\Http\Controllers\AjaxController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
 #[CoversClass(AjaxController::class)]
 
-class AjaxControllerTest extends TestCase
+class AjaxControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

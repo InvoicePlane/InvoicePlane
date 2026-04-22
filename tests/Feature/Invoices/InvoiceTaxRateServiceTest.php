@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(InvoiceTaxRateService::class)]
 
-class InvoiceTaxRateServiceTest extends AbstractServiceTestCase
+class InvoiceTaxRateServiceTest extends AbstractTestCase
 {
     private InvoiceTaxRateService $service;
 

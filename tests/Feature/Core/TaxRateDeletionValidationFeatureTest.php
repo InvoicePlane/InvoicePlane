@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Controllers\AjaxController as CoreAjaxController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tax_Rates;
 use Tests\Concerns\InteractsWithDatabase;
 
 /**
@@ -13,9 +13,9 @@ use Tests\Concerns\InteractsWithDatabase;
  *
  * Tests AJAX requests for settings operations.
  */
-#[CoversClass(CoreAjaxController::class)]
+#[CoversClass(Tax_Rates::class)]
 
-class TaxRateDeletionValidationFeatureTest extends FeatureTestCase
+class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

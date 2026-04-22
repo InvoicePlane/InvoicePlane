@@ -8,10 +8,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
- * Test coverage for Invoices Controller (application/modules/invoices/controllers/Invoices.php)
+ * Test coverage for Invoices Controller (application/modules/invoices/controllers/Invoices.php).
  *
  * InvoicesController (CRM/Guest) Feature Tests.
  *
@@ -19,7 +18,7 @@ use Tests\Feature\Core\FeatureTestCase;
  */
 #[CoversClass(GuestInvoicesController::class)]
 
-class InvoicesControllerTest extends FeatureTestCase
+class InvoicesControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Regression;
 
+use PHPUnit\Framework\Attributes\Group;
 use Tests\AbstractTestCase;
 
 /**

@@ -3,10 +3,10 @@
 namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class DashboardTest extends TestCase
+class DashboardTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

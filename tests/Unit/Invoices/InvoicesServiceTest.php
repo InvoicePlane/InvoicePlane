@@ -2,12 +2,10 @@
 
 namespace Tests\Unit\Invoices;
 
-use function Modules\InvoiceGroups\Tests\Unit\app;
-
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Tests\AbstractTestCase;
 
-class InvoicesServiceTest extends TestCase
+class InvoicesServiceTest extends AbstractTestCase
 {
     private InvoicesService $service;
 

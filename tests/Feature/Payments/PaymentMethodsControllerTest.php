@@ -3,20 +3,20 @@
 namespace Tests\Feature\Payments;
 
 use Modules\Payments\Controllers\PaymentMethodsController;
+use Payment_Methods;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * PaymentMethodsController Feature Tests.
  *
  * Tests payment method management (Cash, Check, Credit Card, PayPal, etc.)
  */
-#[CoversClass(PaymentMethodsController::class)]
+#[CoversClass(Payment_Methods::class)]
 
-class PaymentMethodsControllerTest extends FeatureTestCase
+class PaymentMethodsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

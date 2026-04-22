@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Integration;
 
 use PHPUnit\Framework\Attributes\Test;

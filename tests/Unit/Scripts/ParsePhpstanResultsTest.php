@@ -1,13 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Unit\Scripts;
 
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for .github/scripts/parse-phpstan-results.php.
@@ -25,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * calling exit(), and then exercise each helper function in isolation.
  */
 #[CoversNothing]
-class ParsePhpstanResultsTest extends TestCase
+class ParsePhpstanResultsTest extends AbstractTestCase
 {
     private static bool $scriptLoaded = false;
 

@@ -2,16 +2,19 @@
 
 namespace Tests\Feature\Core;
 
+use Dashboard;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class DashboardControllerTest extends TestCase
+#[CoversClass(Dashboard::class)]
+class DashboardControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    use WithFaker;
-
-    protected \Modules\Core\Models\User $user;
+    protected $user;
 
     protected function setUp(): void
     {
@@ -21,6 +24,7 @@ class DashboardControllerTest extends TestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_displays_dashboard_with_overview_data()
     {
         /* Arrange */

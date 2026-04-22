@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -18,7 +17,7 @@ use Tests\Feature\Core\FeatureTestCase;
  */
 #[CoversClass(ClientsController::class)]
 
-class ClientsAjaxModalTest extends FeatureTestCase
+class ClientsAjaxModalTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

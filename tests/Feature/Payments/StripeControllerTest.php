@@ -6,16 +6,16 @@ use Modules\Payments\Controllers\PaymentMethodsController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Feature\Core\FeatureTestCase;
+use Stripe;
 
 /**
  * PaymentMethodsController Feature Tests.
  *
  * Tests payment method management (Cash, Check, Credit Card, PayPal, etc.)
  */
-#[CoversClass(PaymentMethodsController::class)]
+#[CoversClass(Stripe::class)]
 
-class StripeControllerTest extends FeatureTestCase
+class StripeControllerTest extends AbstractTestCase
 {
     /**
      * Test notify handles Stripe webhook notification.

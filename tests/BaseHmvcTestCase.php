@@ -2,11 +2,10 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
 use Tests\Concerns\InteractsWithDatabase;
 use Tests\Concerns\InteractsWithSession;
 
-abstract class BaseHmvcTestCase extends TestCase
+abstract class BaseHmvcTestCase extends AbstractTestCase
 {
     use InteractsWithDatabase;
     use InteractsWithSession;

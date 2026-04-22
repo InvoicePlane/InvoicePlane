@@ -7,7 +7,7 @@ use Modules\Crm\Services\ClientService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\AbstractServiceTestCase;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 /**
@@ -20,7 +20,7 @@ use Tests\Concerns\InteractsWithDatabase;
  */
 #[CoversClass(ClientService::class)]
 
-class ClientDeletionValidationTest extends AbstractServiceTestCase
+class ClientDeletionValidationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 

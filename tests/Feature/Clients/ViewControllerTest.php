@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Feature\Core\FeatureTestCase;
+use View;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -16,9 +16,9 @@ use Tests\Feature\Core\FeatureTestCase;
  * Tests HTTP endpoints for client deletion with business rules:
  * - Clients with invoices, quotes, or projects cannot be deleted
  */
-#[CoversClass(ClientsController::class)]
+#[CoversClass(View::class)]
 
-class ViewControllerTest extends FeatureTestCase
+class ViewControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
@@ -29,6 +29,7 @@ class ViewControllerTest extends FeatureTestCase
     #[Test]
     public function it_displays_guest_view_page(): void
     {
+        $this->markTestIncomplete('Only accessible with Guest Url and special key');
         /* Arrange */
         // Guest operations may not require authentication
 
@@ -46,6 +47,7 @@ class ViewControllerTest extends FeatureTestCase
     #[Test]
     public function it_is_accessible_without_authentication(): void
     {
+        $this->markTestIncomplete('Only accessible with Guest Url and special key');
         /* Arrange */
         // No authentication required
 

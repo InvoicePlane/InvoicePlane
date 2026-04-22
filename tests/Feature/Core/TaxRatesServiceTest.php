@@ -2,17 +2,18 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Models\TaxRate;
-use Modules\Core\Services\TaxRatesService;
+use Mdl_Tax_Rates;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\TestCase;
 
-class TaxRatesServiceTest extends TestCase
+#[CoversClass(Mdl_Tax_Rates::class)]
+class TaxRatesServiceTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private TaxRatesService $service;
+    private $service;
 
     protected function setUp(): void
     {
