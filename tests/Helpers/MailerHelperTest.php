@@ -2,7 +2,6 @@
 
 namespace Tests\Helpers;
 
-use Modules\Core\Support\ClientHelper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -13,7 +12,7 @@ use Tests\Feature\Quotes\MailerHelper;
 use Tests\Feature\Quotes\ReflectionMethod;
 use Tests\Feature\Quotes\Setting;
 
-#[CoversClass(ClientHelper::class)]
+#[CoversClass(Tests\Helpers\MailerHelper::class)]
 
 class MailerHelperTest extends AbstractTestCase
 {

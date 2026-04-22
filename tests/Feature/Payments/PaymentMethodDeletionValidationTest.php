@@ -10,6 +10,7 @@ use Tests\Feature\Invoices\AbstractTestCase;
 use Tests\Feature\Invoices\PaymentMethodService;
 
 #[CoversClass(PaymentLogService::class)]
+#[CoversClass(Feature\Payments\PaymentMethodDeletionValidation::class)]
 
 class PaymentMethodDeletionValidationTest extends AbstractTestCase
 {

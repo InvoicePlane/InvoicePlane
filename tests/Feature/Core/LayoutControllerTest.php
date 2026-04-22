@@ -14,6 +14,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(Layout::class)]
+#[CoversClass(Tests\Feature\Core\LayoutController::class)]
 
 class LayoutControllerTest extends AbstractTestCase
 {

@@ -2,7 +2,6 @@
 
 namespace Tests\Helpers;
 
-use Modules\Core\Support\ClientHelper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -11,7 +10,7 @@ use Tests\Feature\Quotes\PagerHelper;
 use Tests\Feature\Quotes\Paginator;
 use Tests\Feature\Quotes\Quote;
 
-#[CoversClass(ClientHelper::class)]
+#[CoversClass(Tests\Helpers\PagerHelper::class)]
 
 class PagerHelperTest extends AbstractTestCase
 {

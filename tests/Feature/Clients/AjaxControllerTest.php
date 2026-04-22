@@ -2,12 +2,14 @@
 
 namespace Tests\Feature\Clients;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(AjaxController::class)]
+#[CoversClass(Ajax::class)]
+#[CoversClass(Tests\Feature\Clients\AjaxController::class)]
 
 class AjaxControllerTest extends AbstractTestCase
 {

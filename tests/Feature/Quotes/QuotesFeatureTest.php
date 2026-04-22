@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Quotes;
 
+use Illuminate\Database\Query\Builder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-/**
- * @group feature
- * @group quotes
- */
+#[CoversClass(\Quotes::class)]
 class QuotesFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -17,6 +17,8 @@ class QuotesFeatureTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
+    #[Test]
+    #[Group('crud')]
     public function it_renders_the_quotes_index_page_with_a_200_status(): void
     {
         $response = $this->get('/quotes');
@@ -25,6 +27,7 @@ class QuotesFeatureTest extends AbstractTestCase
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[Test]
     public function it_includes_html_structure_on_the_quotes_index_page(): void
     {
         $response = $this->get('/quotes');
@@ -39,6 +42,7 @@ class QuotesFeatureTest extends AbstractTestCase
         );
     }
 
+    #[Test]
     public function it_redirects_an_unauthenticated_visitor_away_from_the_quotes_list(): void
     {
         $this->actingAsGuest();
@@ -55,6 +59,7 @@ class QuotesFeatureTest extends AbstractTestCase
         );
     }
 
+    #[Test]
     public function it_renders_the_create_quote_form(): void
     {
         $response = $this->get('/quotes/create');
@@ -64,6 +69,7 @@ class QuotesFeatureTest extends AbstractTestCase
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[Test]
     public function it_shows_the_correct_six_quote_statuses_in_the_index_filter_options(): void
     {
         $response = $this->get('/quotes');
@@ -91,6 +97,7 @@ class QuotesFeatureTest extends AbstractTestCase
         );
     }
 
+    #[Test]
     public function it_renders_the_view_page_for_a_seeded_quote(): void
     {
         $clientId = $this->seedClient(['client_name' => 'Quote Client']);
@@ -110,6 +117,7 @@ class QuotesFeatureTest extends AbstractTestCase
         );
     }
 
+    #[Test]
     public function it_does_not_expose_raw_php_errors_on_the_quotes_index(): void
     {
         $response = $this->get('/quotes');
@@ -117,6 +125,7 @@ class QuotesFeatureTest extends AbstractTestCase
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[Test]
     public function it_returns_404_or_redirect_for_a_nonexistent_quote_id(): void
     {
         $response = $this->get('/quotes/view/999999999');

@@ -18,6 +18,7 @@ use Tests\AbstractTestCase;
  * @group feature
  * @group auth
  */
+#[CoversClass(Tests\Feature\Core\ControllersAuthGuard::class)]
 class ControllersAuthGuardTest extends AbstractTestCase
 {
     protected function setUp(): void

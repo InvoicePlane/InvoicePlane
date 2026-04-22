@@ -16,6 +16,7 @@ use ReflectionClass;
  * @group unit
  * @group router
  */
+#[CoversClass(Tests\Unit\Router\MY_Router::class)]
 class MY_RouterTest extends AbstractTestCase
 {
     private TestableRouter $router;

@@ -15,6 +15,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests payment method management (Cash, Check, Credit Card, PayPal, etc.)
  */
 #[CoversClass(Payment_Methods::class)]
+#[CoversClass(Tests\Feature\Payments\PaymentMethodsController::class)]
 
 class PaymentMethodsControllerTest extends AbstractTestCase
 {

@@ -8,6 +8,7 @@ use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(PaymentMethodsController::class)]
+#[CoversClass(Tests\Feature\Payments\PaymentsAjaxController::class)]
 
 class PaymentsAjaxControllerTest extends AbstractTestCase
 {

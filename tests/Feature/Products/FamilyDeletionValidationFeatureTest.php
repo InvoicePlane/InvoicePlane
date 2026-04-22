@@ -17,6 +17,7 @@ use function Tests\Feature\Invoices\route;
  * Tests product family (category) management including list, create, update, and delete.
  */
 #[CoversClass(FamiliesController::class)]
+#[CoversClass(Feature\Products\FamilyDeletionValidationFeature::class)]
 
 class FamilyDeletionValidationFeatureTest extends AbstractTestCase
 {

@@ -2,13 +2,9 @@
 
 namespace Unit\Quotes;
 
-use Modules\Core\Support\ClientHelper;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\Quotes\Group;
 use Tests\Feature\Quotes\TemplateService;
-
-#[CoversClass(ClientHelper::class)]
 
 class TemplateServiceTest extends AbstractTestCase
 {

@@ -9,6 +9,7 @@ use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Sessions::class)]
+#[CoversClass(Tests\Feature\Core\SessionsController::class)]
 class SessionsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

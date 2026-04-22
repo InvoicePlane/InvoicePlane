@@ -17,6 +17,7 @@ use function Tests\Feature\Clients\route;
  * Tests HTTP endpoints for client deletion with business rules:
  */
 #[CoversClass(Payment_Information::class)]
+#[CoversClass(Feature\Payments\PaymentInformationController::class)]
 
 class PaymentInformationControllerTest extends AbstractTestCase
 {

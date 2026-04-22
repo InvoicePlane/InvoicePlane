@@ -14,6 +14,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests product family (category) management including list, create, update, and delete.
  */
 #[CoversClass(Families::class)]
+#[CoversClass(Tests\Feature\Products\FamiliesController::class)]
 
 class FamiliesControllerTest extends AbstractTestCase
 {

@@ -14,8 +14,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Test suite for ProjectsController covering CRUD operations
  * with data integrity validation and business logic verification.
  */
-#[CoversClass(ProjectsController::class)]
-
+#[CoversClass(\Tasks::class)]
 class TaskDeletionValidationFeatureTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

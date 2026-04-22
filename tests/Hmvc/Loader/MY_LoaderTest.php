@@ -14,6 +14,7 @@ use stdClass;
  * @group unit
  * @group loader
  */
+#[CoversClass(Tests\Unit\Loader\MY_Loader::class)]
 class MY_LoaderTest extends AbstractTestCase
 {
     private TestableLoader $loader;

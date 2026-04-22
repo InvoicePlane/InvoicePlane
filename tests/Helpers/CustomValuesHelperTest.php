@@ -2,14 +2,12 @@
 
 namespace Tests\Helpers;
 
-use Modules\Core\Support\ClientHelper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Feature\Quotes\CustomValuesHelper;
 
-#[CoversClass(ClientHelper::class)]
+#[CoversClass(Tests\Helpers\CustomValuesHelper::class)]
 
 class CustomValuesHelperTest extends AbstractTestCase
 {

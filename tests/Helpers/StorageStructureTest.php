@@ -2,7 +2,6 @@
 
 namespace Tests\Helpers;
 
-use Modules\Core\Support\ClientHelper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\Feature\Quotes\AbstractTestCase;
 
@@ -11,7 +10,7 @@ use const Tests\Feature\Quotes\UPLOADS_CFILES_FOLDER;
 use const Tests\Feature\Quotes\UPLOADS_FOLDER;
 use const Tests\Feature\Quotes\UPLOADS_TEMP_FOLDER;
 
-#[CoversClass(ClientHelper::class)]
+#[CoversClass(Tests\Helpers\StorageStructure::class)]
 
 class StorageStructureTest extends AbstractTestCase
 {

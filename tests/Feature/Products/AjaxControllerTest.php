@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 #[CoversClass(AjaxController::class)]
+#[CoversClass(Tests\Feature\Products\AjaxController::class)]
 
 class AjaxControllerTest extends AbstractTestCase
 {

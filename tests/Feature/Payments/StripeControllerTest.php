@@ -14,6 +14,7 @@ use Stripe;
  * Tests payment method management (Cash, Check, Credit Card, PayPal, etc.)
  */
 #[CoversClass(Stripe::class)]
+#[CoversClass(Tests\Feature\Payments\StripeController::class)]
 
 class StripeControllerTest extends AbstractTestCase
 {

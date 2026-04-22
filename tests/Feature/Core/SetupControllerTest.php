@@ -15,6 +15,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(Setup::class)]
+#[CoversClass(Tests\Feature\Core\SetupController::class)]
 
 class SetupControllerTest extends AbstractTestCase
 {

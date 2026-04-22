@@ -9,6 +9,7 @@ use Invoice_Groups;
  *
  * Tests invoice group management (index, form, delete).
  */
+#[CoversClass(Tests\Feature\Invoices\InvoiceGroupsController::class)]
 class InvoiceGroupsControllerTest extends AbstractTestCase
 {
     /**

@@ -5,6 +5,7 @@ namespace Tests\Feature\Core;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
+#[CoversClass(Tests\Feature\Core\EmailVerification::class)]
 class EmailVerificationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;

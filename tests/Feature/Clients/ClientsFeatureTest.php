@@ -4,6 +4,7 @@ namespace Tests\Feature\Clients;
 
 use Tests\AbstractTestCase;
 
+#[CoversClass(Tests\Feature\Clients\ClientsFeature::class)]
 class ClientsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void

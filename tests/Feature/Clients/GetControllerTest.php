@@ -17,6 +17,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * - Clients with invoices, quotes, or projects cannot be deleted
  */
 #[CoversClass(Get::class)]
+#[CoversClass(Tests\Feature\Clients\GetController::class)]
 
 class GetControllerTest extends AbstractTestCase
 {

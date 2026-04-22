@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 #[CoversClass(Mdl_Users::class)]
+#[CoversClass(Tests\Feature\Core\UsersService::class)]
 class UsersServiceTest extends AbstractTestCase
 {
     private $service;

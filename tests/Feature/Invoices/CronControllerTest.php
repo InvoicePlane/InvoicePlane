@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\Test;
  * Tests guest portal invoice viewing.
  */
 #[CoversClass(GuestInvoicesController::class)]
+#[CoversClass(Tests\Feature\Invoices\CronController::class)]
 
 class CronControllerTest extends AbstractTestCase
 {

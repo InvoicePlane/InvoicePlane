@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(InvoiceAmountService::class)]
+#[CoversClass(Tests\Feature\Invoices\InvoiceSumexService::class)]
 
 class InvoiceSumexServiceTest extends AbstractTestCase
 {

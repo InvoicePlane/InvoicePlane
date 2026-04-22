@@ -14,6 +14,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(Tax_Rates::class)]
+#[CoversClass(Tests\Feature\Core\TaxRateDeletionValidationFeature::class)]
 
 class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
 {

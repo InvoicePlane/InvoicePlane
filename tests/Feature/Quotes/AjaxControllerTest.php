@@ -10,6 +10,7 @@ use Tests\AbstractTestCase;
  * Test coverage for Invoices Ajax Controller (application/modules/invoices/controllers/Ajax.php).
  */
 #[CoversClass()]
+#[CoversClass(Tests\Feature\Quotes\AjaxController::class)]
 
 class AjaxControllerTest extends AbstractTestCase
 {

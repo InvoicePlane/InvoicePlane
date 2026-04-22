@@ -18,6 +18,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * - Families with products cannot be deleted
  */
 #[CoversClass(FamilyService::class)]
+#[CoversClass(Feature\Products\FamilyDeletionValidation::class)]
 
 class FamilyDeletionValidationTest extends AbstractTestCase
 {

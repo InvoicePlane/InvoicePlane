@@ -15,6 +15,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests guest portal invoice viewing.
  */
 #[CoversClass(Recurring::class)]
+#[CoversClass(Tests\Feature\Invoices\RecurringController::class)]
 
 /**
  * Test coverage for Invoices Recurring Controller (application/modules/invoices/controllers/Recurring.php).

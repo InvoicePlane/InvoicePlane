@@ -15,6 +15,7 @@ use Users;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(Users::class)]
+#[CoversClass(Tests\Feature\Core\UsersController::class)]
 
 class UsersControllerTest extends AbstractTestCase
 {

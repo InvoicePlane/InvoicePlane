@@ -2,14 +2,13 @@
 
 namespace Tests\Helpers;
 
-use Modules\Core\Support\ClientHelper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Feature\Quotes\DB;
 use Tests\Feature\Quotes\UserHelper;
 
-#[CoversClass(ClientHelper::class)]
+#[CoversClass(Tests\Helpers\UserHelper::class)]
 
 class UserHelperTest extends AbstractTestCase
 {
