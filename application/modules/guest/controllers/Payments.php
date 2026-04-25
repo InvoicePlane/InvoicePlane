@@ -31,21 +31,16 @@ class Payments extends Guest_Controller
      */
     public function index($page = 0)
     {
-        // Security: Use a subquery with proper parameter binding instead of string concatenation
-        // Get invoice IDs for this user's clients
-        $invoice_ids = $this->db->select('invoice_id')
-            ->from('ip_invoices')
-            ->where_in('client_id', $this->user_clients)
-            ->get()
-            ->result_array();
-
-        $invoice_ids = array_column($invoice_ids, 'invoice_id');
-
-        if ( ! empty($invoice_ids)) {
-            $this->mdl_payments->where_in('ip_payments.invoice_id', $invoice_ids);
+        // Security: Use a single join query instead of a two-step PHP-level prefetch.
+        // Joining on ip_invoices avoids fetching potentially large invoice-ID lists
+        // into PHP and removes the risk of hitting SQL IN-list limits.
+        if ( ! empty($this->user_clients)) {
+            $this->mdl_payments
+                ->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id', 'inner')
+                ->where_in('ip_invoices.client_id', $this->user_clients);
         } else {
-            // No invoices for this user, ensure no payments are returned
-            $this->mdl_payments->where('1=0'); // Always false condition - no results
+            // No client access for this user — return an empty result set.
+            $this->mdl_payments->where('1=0');
         }
 
         $this->mdl_payments->paginate(site_url('guest/payments/index'), $page);

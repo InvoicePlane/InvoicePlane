@@ -88,9 +88,17 @@ SEC_STRIP_EXIF_FROM_IMAGES=false
 #   <path>/invoice_templates/public/
 #   <path>/quote_templates/pdf/
 #   <path>/quote_templates/public/
-# Templates here are shown alongside the built-in ones and, when selected,
-# take precedence over any built-in template with the same name.
 CUSTOM_TEMPLATES_FOLDER=
+
+# Explicit allowlist of custom template names (without .php extension).
+# Comma-separated list of names that are made available alongside the built-in templates.
+# The corresponding PHP file must exist in CUSTOM_TEMPLATES_FOLDER under the matching sub-path.
+# Example: CUSTOM_INVOICE_TEMPLATES_PDF=MyTemplate,AnotherTemplate
+# Security: only names matching [a-zA-Z0-9 _-]+ are accepted; filesystem scanning is not used.
+CUSTOM_INVOICE_TEMPLATES_PDF=
+CUSTOM_INVOICE_TEMPLATES_PUBLIC=
+CUSTOM_QUOTE_TEMPLATES_PDF=
+CUSTOM_QUOTE_TEMPLATES_PUBLIC=
 
 ##
 ## DO NOT CHANGE ANY CONFIGURATION VALUES BELOW THIS LINE!

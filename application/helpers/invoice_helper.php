@@ -29,7 +29,7 @@ function invoice_logo(): string
             return '';
         }
 
-        return '<img src="' . base_url() . 'uploads/' . $logo_file . '">';
+        return '<img src="' . html_escape(base_url() . 'uploads/' . $logo_file) . '">';
     }
 
     return '';
