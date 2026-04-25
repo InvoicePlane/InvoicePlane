@@ -109,24 +109,6 @@ function get_xml_template_files(): array
             continue;
         }
 
-        // Security: Validate XML config ID before including
-        if ( ! is_valid_xml_config_id($xml_config_files[$key])) {
-            log_message('error', trans('log_invalid_xml_config_id') . ': ' . $xml_config_files[$key]);
-            continue;
-        }
-
-        // Security: Validate XML config ID before including
-        if ( ! is_valid_xml_config_id($xml_config_files[$key])) {
-            log_message('error', trans('log_invalid_xml_config_id') . ': ' . $xml_config_files[$key]);
-            continue;
-        }
-
-        // Security: Validate XML config ID before including
-        if ( ! is_valid_xml_config_id($xml_config_files[$key])) {
-            log_message('error', trans('log_invalid_xml_config_id') . ': ' . $xml_config_files[$key]);
-            continue;
-        }
-
         if (file_exists($path . $xml_config_files[$key] . '.php') && include $path . $xml_config_files[$key] . '.php') {
             // By default config filename
             $generator = $xml_config_files[$key];

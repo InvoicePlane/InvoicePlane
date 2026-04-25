@@ -143,45 +143,58 @@ class Mdl_Templates extends CI_Model
     }
 
     /**
-     * Merge built-in templates with any validated templates found in CUSTOM_TEMPLATES_FOLDER.
+     * Merge built-in templates with any custom templates explicitly allowlisted in the
+     * CUSTOM_INVOICE_TEMPLATES_PDF / CUSTOM_INVOICE_TEMPLATES_PUBLIC /
+     * CUSTOM_QUOTE_TEMPLATES_PDF / CUSTOM_QUOTE_TEMPLATES_PUBLIC constants.
      *
      * Security:
-     * - Only the admin-configured CUSTOM_TEMPLATES_FOLDER is scanned, NEVER the application's
-     *   own template directories (the RCE fix remains intact).
-     * - Template file names are validated against a strict allowlist regex before use.
-     *   Any name that does not match is silently skipped and logged.
-     * - Custom templates are listed first so admins can shadow a built-in name if needed;
+     * - The filesystem is NEVER scanned to discover templates (prevents RCE).
+     * - Only names present in the explicit config constants are added to the list.
+     * - Each name is validated against a strict allowlist regex before use.
+     *   Any name that does not match is skipped and logged.
+     * - Custom templates are prepended so admins can shadow built-in names;
      *   array_unique() deduplicates the merged list.
      *
-     * @param string $subpath  Relative sub-path, e.g. 'invoice_templates/pdf'
+     * To expose a custom template, add its name (without .php) to the appropriate
+     * constant in ipconfig.php, e.g.:
+     *   CUSTOM_INVOICE_TEMPLATES_PDF=MyTemplate,AnotherTemplate
+     *
+     * @param string $subpath  Relative sub-path key, e.g. 'invoice_templates/pdf'
      * @param array  $built_in Hardcoded whitelist entries from the class constants
      *
      * @return array
      */
     private function _merge_custom(string $subpath, array $built_in): array
     {
-        if ( ! CUSTOM_TEMPLATES_FOLDER) {
+        // Map subpath to the corresponding ipconfig constant name
+        $const_map = [
+            'invoice_templates/pdf'    => 'CUSTOM_INVOICE_TEMPLATES_PDF',
+            'invoice_templates/public' => 'CUSTOM_INVOICE_TEMPLATES_PUBLIC',
+            'quote_templates/pdf'      => 'CUSTOM_QUOTE_TEMPLATES_PDF',
+            'quote_templates/public'   => 'CUSTOM_QUOTE_TEMPLATES_PUBLIC',
+        ];
+
+        if ( ! isset($const_map[$subpath])) {
             return $built_in;
         }
 
-        $CI = &get_instance();
-        $CI->load->helper('directory');
+        $const_name = $const_map[$subpath];
 
-        $custom_dir = CUSTOM_TEMPLATES_FOLDER . $subpath;
+        // Read the explicit allowlist from ipconfig.php (empty string / undefined = no custom templates)
+        $raw = defined($const_name) ? constant($const_name) : '';
 
-        if ( ! is_dir($custom_dir)) {
+        if (empty($raw)) {
             return $built_in;
         }
 
-        $files        = directory_map($custom_dir, 1) ?: [];
         $custom_names = [];
 
-        foreach ($files as $file) {
-            if ( ! is_string($file) || ! str_ends_with($file, '.php')) {
+        foreach (explode(',', $raw) as $entry) {
+            $name = trim($entry);
+
+            if ($name === '') {
                 continue;
             }
-
-            $name = substr($file, 0, -4); // strip .php extension
 
             // Strict validation: only alphanumeric characters, spaces, hyphens and underscores.
             // Rejects path traversal sequences, null bytes, and any other special characters.
@@ -189,23 +202,11 @@ class Mdl_Templates extends CI_Model
                 $custom_names[] = $name;
             } else {
                 // Sanitize before logging: strip control characters to prevent log injection.
-                $safe_name = preg_replace('/[\x00-\x1f\x7f]/', '', substr($file, 0, 64));
+                $safe_name = preg_replace('/[\x00-\x1f\x7f]/', '', substr($name, 0, 64));
                 log_message('warning', 'Mdl_Templates: skipping invalid custom template name: ' . $safe_name);
             }
         }
 
         return array_values(array_unique(array_merge($custom_names, $built_in)));
-    }
-
-    /**
-     * @param $files
-     */
-    private function remove_extension(array $files): array
-    {
-        foreach ($files as $key => $file) {
-            $files[$key] = str_replace('.php', '', $file);
-        }
-
-        return $files;
     }
 }

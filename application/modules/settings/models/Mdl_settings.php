@@ -54,9 +54,13 @@ class Mdl_Settings extends CI_Model
             return;
         }
 
-        // Load all existing settings once to determine which are updates vs inserts
+        // Load existing settings once, scoped to only the keys we care about,
+        // so the query remains efficient even when ip_settings grows large.
         $existing_keys = [];
-        $query         = $this->db->select('setting_key')->get('ip_settings');
+        $query         = $this->db
+            ->select('setting_key')
+            ->where_in('setting_key', array_keys($settings))
+            ->get('ip_settings');
         foreach ($query->result() as $row) {
             $existing_keys[$row->setting_key] = true;
         }
@@ -78,6 +82,9 @@ class Mdl_Settings extends CI_Model
             }
         }
 
+        // Perform both inserts and updates atomically.
+        $this->db->trans_start();
+
         // Perform batch insert for new settings
         if ( ! empty($to_insert)) {
             $this->db->insert_batch('ip_settings', $to_insert);
@@ -88,6 +95,8 @@ class Mdl_Settings extends CI_Model
         if ( ! empty($to_update)) {
             $this->db->update_batch('ip_settings', $to_update, 'setting_key');
         }
+
+        $this->db->trans_complete();
     }
 
     /**
