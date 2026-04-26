@@ -148,10 +148,10 @@ class Paypal extends Base_Controller
                 }
 
                 // Security: Validate that the invoice is guest-visible before processing payment
-                $invoice_check = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
-                if ( ! $invoice_check) {
+                $verified_invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                if ( ! $verified_invoice) {
                     log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted payment capture for non-public invoice: ' . sanitize_for_logging($invoice_id));
-                    throw new Exception('Invalid invoice');
+                    throw new Exception('Invoice not found or not accessible');
                 }
 
                 $capture_id = (string) $capture_id; // Ensure string type
