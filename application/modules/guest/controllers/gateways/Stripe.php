@@ -104,7 +104,7 @@ class Stripe extends Base_Controller
             // Security: Verify the invoice exists and is guest-visible
             if ( ! $invoice) {
                 log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted payment callback for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_key));
-                throw new Exception('Invalid invoice');
+                throw new Exception('Invoice not found or not accessible');
             }
 
             // Check the session payment_status is 'paid'
