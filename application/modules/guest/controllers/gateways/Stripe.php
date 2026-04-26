@@ -101,6 +101,12 @@ class Stripe extends Base_Controller
             // Retrieve the invoice
             $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_key)->get()->row();
 
+            // Security: Verify the invoice exists and is guest-visible
+            if ( ! $invoice) {
+                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted payment callback for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_key));
+                throw new Exception('Invalid invoice');
+            }
+
             // Check the session payment_status is 'paid'
             // See: https://github.com/stripe/stripe-php/blob/044f9dd190967b8fb7e55fd0ea25f11c625c00a4/lib/Checkout/Session.php#L101
             $paid = $session->payment_status === $session::PAYMENT_STATUS_PAID; // +2 status: *_NO_PAYMENT_REQUIRED *_UNPAID
