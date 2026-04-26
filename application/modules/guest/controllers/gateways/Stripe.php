@@ -47,7 +47,7 @@ class Stripe extends Base_Controller
             show_404();
         }
 
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
         // Check if the invoice is payable
         if ($invoice->invoice_balance <= 0) {
@@ -99,7 +99,7 @@ class Stripe extends Base_Controller
             $invoice_key = $session->client_reference_id;
 
             // Retrieve the invoice
-            $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_key)->get()->row();
+            $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_key)->get()->row();
 
             // Check the session payment_status is 'paid'
             // See: https://github.com/stripe/stripe-php/blob/044f9dd190967b8fb7e55fd0ea25f11c625c00a4/lib/Checkout/Session.php#L101
