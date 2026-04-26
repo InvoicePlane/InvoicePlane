@@ -41,7 +41,7 @@ class Paypal extends Base_Controller
         // Check if the invoice exists and is billable
         $this->load->model('invoices/mdl_invoices');
 
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
         // Check if the invoice is payable
         if ($invoice->invoice_balance <= 0) {
@@ -168,12 +168,12 @@ class Paypal extends Base_Controller
                     // Duplicate payment attempt detected
                     log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. PayPal capture ID: ' . sanitize_for_logging($capture_id) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
 
-                    $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                    $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
                     $this->session->set_flashdata('alert_info', trans('online_payment_already_processed'));
                     $this->session->keep_flashdata('alert_info');
                 } else {
                     // Check if invoice is already fully paid
-                    $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                    $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
                     if ($invoice->invoice_balance <= 0) {
                         log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
