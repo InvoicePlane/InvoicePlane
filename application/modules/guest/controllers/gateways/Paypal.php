@@ -43,6 +43,12 @@ class Paypal extends Base_Controller
 
         $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
+        // Security: Verify the invoice exists and is guest-visible
+        if ( ! $invoice) {
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted order creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            show_404();
+        }
+
         // Check if the invoice is payable
         if ($invoice->invoice_balance <= 0) {
             $this->session->set_userdata('alert_error', lang('invoice_already_paid'));
@@ -176,13 +182,26 @@ class Paypal extends Base_Controller
                     log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. PayPal capture ID: ' . sanitize_for_logging($capture_id) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
 
                     $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
-                    $this->session->set_flashdata('alert_info', trans('online_payment_already_processed'));
-                    $this->session->keep_flashdata('alert_info');
+                    
+                    // Security: Verify the invoice exists and is guest-visible
+                    if ( ! $invoice) {
+                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invoice no longer guest-visible during duplicate payment check: ' . sanitize_for_logging($invoice_id));
+                        $this->session->set_flashdata('alert_error', trans('invoice_not_found'));
+                        $this->session->keep_flashdata('alert_error');
+                    } else {
+                        $this->session->set_flashdata('alert_info', trans('online_payment_already_processed'));
+                        $this->session->keep_flashdata('alert_info');
+                    }
                 } else {
                     // Check if invoice is already fully paid
                     $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
-                    if ($invoice->invoice_balance <= 0) {
+                    // Security: Verify the invoice exists and is guest-visible
+                    if ( ! $invoice) {
+                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invoice no longer guest-visible during payment capture: ' . sanitize_for_logging($invoice_id));
+                        $this->session->set_flashdata('alert_error', trans('invoice_not_found'));
+                        $this->session->keep_flashdata('alert_error');
+                    } elseif ($invoice->invoice_balance <= 0) {
                         log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
                         $this->session->set_flashdata('alert_info', trans('invoice_already_paid'));
                         $this->session->keep_flashdata('alert_info');
