@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
+use Tests\Support\TestUris;
 
-#[CoversClass(Tests\Feature\Core\WelcomeController::class)]
+#[CoversClass(\Welcome::class)]
 class WelcomeControllerTest extends AbstractTestCase
 {
     #[Test]
@@ -15,10 +17,10 @@ class WelcomeControllerTest extends AbstractTestCase
         /* (no setup needed) */
 
         /* Act */
-        $response = $this->get(route('welcome'));
+        $response = $this->get(TestUris::HOME);
 
         /* Assert */
-        $response->assertStatus(200);
-        $response->assertViewIs('welcome');
+        $this->assertResponseOk($response);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 }
