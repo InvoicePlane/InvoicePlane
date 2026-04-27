@@ -23,6 +23,7 @@ Completed:
 - Added `tests/Support/TestRoutes.php` for explicit URI mapping.
 - Restored full test bodies for `tests/Feature/Clients/ClientsControllerTest.php` and `tests/Feature/Clients/GuestControllerTest.php` after regression feedback.
 - Continued URI migration in both files by replacing `route(...)` calls with explicit `TestRoutes` mappings while preserving original assertion bodies.
+- Continued Phase 2 in `tests/Feature/Clients/UserClientsControllerTest.php` by migrating `user_clients` route helper calls to explicit `TestRoutes` URI mappings without deleting test logic.
 
 Remaining in Clients module:
 - Convert remaining Clients feature files still using `route(...)`.

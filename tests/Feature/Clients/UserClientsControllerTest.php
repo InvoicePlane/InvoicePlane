@@ -7,7 +7,9 @@ use Modules\Crm\Models\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
+use Tests\Support\TestRoutes;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -39,7 +41,7 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('user_clients.index'));
+        $response = $this->get(TestRoutes::USER_CLIENTS_INDEX);
 
         /* Assert */
         $response->assertOk();
@@ -64,7 +66,7 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('user_clients.index'));
+        $response = $this->get(TestRoutes::USER_CLIENTS_INDEX);
 
         /* Assert */
         $response->assertOk();
@@ -86,7 +88,7 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('user_clients.form'));
+        $response = $this->get(TestRoutes::userClientsForm());
 
         /* Assert */
         $response->assertOk();
@@ -115,7 +117,7 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('user_clients.form', ['id' => $userClient->id]));
+        $response = $this->get(TestRoutes::userClientsForm((int) $userClient->id));
 
         /* Assert */
         $response->assertOk();
@@ -152,10 +154,10 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('user_clients.form'), $userClientData);
+        $response = $this->post(TestRoutes::userClientsForm(), $userClientData);
 
         /* Assert */
-        $response->assertRedirect(route('user_clients.index'));
+        $response->assertRedirect(TestRoutes::USER_CLIENTS_INDEX);
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_user_clients', [
@@ -196,10 +198,10 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('user_clients.form', ['id' => $userClient->id]), $updateData);
+        $response = $this->post(TestRoutes::userClientsForm((int) $userClient->id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('user_clients.index'));
+        $response->assertRedirect(TestRoutes::USER_CLIENTS_INDEX);
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_user_clients', [
@@ -231,7 +233,7 @@ class UserClientsControllerTest extends AbstractTestCase
         ];
 
         $this->actingAs($user);
-        $response = $this->post(route('user_clients.form'), $missingUserPayload);
+        $response = $this->post(TestRoutes::userClientsForm(), $missingUserPayload);
 
         /* Assert */
         $response->assertSessionHasErrors('user_id');
@@ -259,7 +261,7 @@ class UserClientsControllerTest extends AbstractTestCase
         ];
 
         $this->actingAs($user);
-        $response = $this->post(route('user_clients.form'), $missingClientPayload);
+        $response = $this->post(TestRoutes::userClientsForm(), $missingClientPayload);
 
         /* Assert */
         $response->assertSessionHasErrors('client_id');
@@ -286,10 +288,10 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('user_clients.form'), $cancelData);
+        $response = $this->post(TestRoutes::userClientsForm(), $cancelData);
 
         /* Assert */
-        $response->assertRedirect(route('user_clients.index'));
+        $response->assertRedirect(TestRoutes::USER_CLIENTS_INDEX);
     }
 
     /**
@@ -319,12 +321,12 @@ class UserClientsControllerTest extends AbstractTestCase
         /* Act */
         $this->actingAs($user);
         $response = $this->post(
-            route('user_clients.delete', ['id' => $userClient->user_client_id]),
+            TestRoutes::userClientsDelete((int) $userClient->user_client_id),
             $deletePayload
         );
 
         /* Assert */
-        $response->assertRedirect(route('user_clients.index'));
+        $response->assertRedirect(TestRoutes::USER_CLIENTS_INDEX);
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseMissing('ip_user_clients', [
@@ -354,7 +356,7 @@ class UserClientsControllerTest extends AbstractTestCase
         /* Act */
         $this->actingAs($user);
         $response = $this->post(
-            route('user_clients.delete', ['id' => 99999]),
+            TestRoutes::userClientsDelete(99999),
             $deletePayload
         );
 
