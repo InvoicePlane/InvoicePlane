@@ -33,10 +33,10 @@ class FamilyDeletionValidationFeatureTest extends AbstractTestCase
         $family = $this->seedModel('Family', ['family_name' => 'Empty Family']);
 
         /* Act */
-        $response = $this->post(route('families.delete', ['family_id' => $family->family_id]));
+        $response = $this->post('/families/delete/' . ($family->family_id));
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
         $response->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_families', ['family_id' => $family->family_id]);
     }
@@ -52,10 +52,10 @@ class FamilyDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModel('Product', ['family_id' => $family->family_id]);
 
         /* Act */
-        $response = $this->post(route('families.delete', ['family_id' => $family->family_id]));
+        $response = $this->post('/families/delete/' . ($family->family_id));
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_families', ['family_id' => $family->family_id]);
     }
@@ -71,10 +71,10 @@ class FamilyDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModelMany('Product', 3, ['family_id' => $family->family_id]);
 
         /* Act */
-        $response = $this->post(route('families.delete', ['family_id' => $family->family_id]));
+        $response = $this->post('/families/delete/' . ($family->family_id));
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_families', ['family_id' => $family->family_id]);
     }
@@ -89,10 +89,10 @@ class FamilyDeletionValidationFeatureTest extends AbstractTestCase
         $invalidId = -1;
 
         /* Act */
-        $response = $this->post(route('families.delete', ['family_id' => $invalidId]));
+        $response = $this->post('/families/delete/' . ($invalidId));
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
         $response->assertSessionHas('alert_error');
     }
 
@@ -106,10 +106,10 @@ class FamilyDeletionValidationFeatureTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->post(route('families.delete', ['family_id' => $nonexistentId]));
+        $response = $this->post('/families/delete/' . ($nonexistentId));
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
         $response->assertSessionHas('alert_error');
     }
 
@@ -124,17 +124,17 @@ class FamilyDeletionValidationFeatureTest extends AbstractTestCase
         $product = $this->seedModel('Product', ['family_id' => $family->family_id]);
 
         // Initially cannot delete
-        $response1 = $this->post(route('families.delete', ['family_id' => $family->family_id]));
+        $response1 = $this->post('/families/delete/' . ($family->family_id));
         $response1->assertSessionHas('alert_error');
 
         // Remove product
         $product->delete();
 
         /* Act */
-        $response2 = $this->post(route('families.delete', ['family_id' => $family->family_id]));
+        $response2 = $this->post('/families/delete/' . ($family->family_id));
 
         /* Assert */
-        $response2->assertRedirect(route('families.index'));
+        $response2->assertRedirect('/families/index');
         $response2->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_families', ['family_id' => $family->family_id]);
     }

@@ -34,7 +34,7 @@ class ProductsAjaxControllerTest extends AbstractTestCase
         $this->seedModelMany('Family', 2);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups'));
+        $response = $this->actingAs($user)->get('/products/ajax/modal_product_lookups');
 
         /* Assert */
         $response->assertOk();
@@ -59,9 +59,7 @@ class ProductsAjaxControllerTest extends AbstractTestCase
         $product2 = $this->seedModel('Product', ['family_id' => $family2->family_id]);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups', [
-            'filter_family' => $family1->family_id,
-        ]));
+        $response = $this->actingAs($user)->get('/products/ajax/modal_product_lookups/' . ($family1->family_id));
 
         /* Assert */
         $response->assertOk();
@@ -80,9 +78,7 @@ class ProductsAjaxControllerTest extends AbstractTestCase
         $this->seedModel('Product', ['product_name' => 'Gadget']);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups', [
-            'filter_product' => 'Widget',
-        ]));
+        $response = $this->actingAs($user)->get('/products/ajax/modal_product_lookups/' . ('Widget'));
 
         /* Assert */
         $response->assertOk();
@@ -100,9 +96,7 @@ class ProductsAjaxControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups', [
-            'filter_product' => 'test',
-        ]));
+        $response = $this->actingAs($user)->get('/products/ajax/modal_product_lookups/' . ('test'));
 
         /* Assert */
         $response->assertOk();
@@ -120,9 +114,7 @@ class ProductsAjaxControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups', [
-            'reset_table' => '1',
-        ]));
+        $response = $this->actingAs($user)->get('/products/ajax/modal_product_lookups/' . ('1'));
 
         /* Assert */
         $response->assertOk();
@@ -140,7 +132,7 @@ class ProductsAjaxControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups'));
+        $response = $this->actingAs($user)->get('/products/ajax/modal_product_lookups');
 
         /* Assert */
         $response->assertOk();

@@ -35,7 +35,9 @@ InvoicePlane is a self-hosted, open-source invoicing application written in **PH
 - Test files go in `tests/` when they exist.
 - Method names: `it_<snake_case>`, annotated with `#[Test]`.
 - Follow Arrange / Act / Assert pattern.
-- Run with `vendor/bin/phpunit`.
+- Do **not** execute `vendor/bin/phpunit` in the coding-agent environment; run syntax/static checks only and rely on CI for PHPUnit execution.
+- Controller tests must use explicit URI paths (e.g. `'/invoices/view/1'`), not `route('...')`.
+- URI paths in tests must not contain namespace backslashes.
 
 ## GitHub Actions
 

@@ -31,7 +31,7 @@ class ProductsControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.index'));
+        $response = $this->actingAs($user)->get('/products/index');
 
         /* Assert */
         $response->assertOk();
@@ -54,7 +54,7 @@ class ProductsControllerTest extends AbstractTestCase
         /** Would create product with family, unit, and tax rate */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.index'));
+        $response = $this->actingAs($user)->get('/products/index');
 
         /* Assert */
         $response->assertOk();
@@ -73,7 +73,7 @@ class ProductsControllerTest extends AbstractTestCase
         /** Would create products with different names */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.index'));
+        $response = $this->actingAs($user)->get('/products/index');
 
         /* Assert */
         $response->assertOk();
@@ -92,7 +92,7 @@ class ProductsControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.index'));
+        $response = $this->actingAs($user)->get('/products/index');
 
         /* Assert */
         $response->assertOk();
@@ -113,7 +113,7 @@ class ProductsControllerTest extends AbstractTestCase
         /** Would create 20 products */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.index'));
+        $response = $this->actingAs($user)->get('/products/index');
 
         /* Assert */
         $response->assertOk();
@@ -132,7 +132,7 @@ class ProductsControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.form'));
+        $response = $this->actingAs($user)->get('/products/form');
 
         /* Assert */
         $response->assertOk();
@@ -188,7 +188,7 @@ class ProductsControllerTest extends AbstractTestCase
         /** Would create multiple families */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.form'));
+        $response = $this->actingAs($user)->get('/products/form');
 
         /* Assert */
         $response->assertOk();
@@ -208,7 +208,7 @@ class ProductsControllerTest extends AbstractTestCase
         /** Would create multiple units */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.form'));
+        $response = $this->actingAs($user)->get('/products/form');
 
         /* Assert */
         $response->assertOk();
@@ -228,7 +228,7 @@ class ProductsControllerTest extends AbstractTestCase
         /** Would create multiple tax rates */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.form'));
+        $response = $this->actingAs($user)->get('/products/form');
 
         /* Assert */
         $viewData = $response->getData();
@@ -391,7 +391,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('products.delete', ['id' => $testId]),
+            '/products/delete/' . ($testId),
             $deletePayload
         );
 

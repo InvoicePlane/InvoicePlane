@@ -15,7 +15,7 @@ class SettingsControllerTest extends AbstractTestCase
     public function it_displays_settings_page_and_saves_settings(): void
     {
         /* Act */
-        $response = $this->get(route('settings.index'));
+        $response = $this->get('/settings/index');
         $response->assertStatus(200);
         $response->assertSee('Settings'); // Adjust to match actual page content
 
@@ -27,11 +27,11 @@ class SettingsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('settings.index'), ['settings' => $settings]);
+        $response = $this->post('/settings/index', ['settings' => $settings]);
 
         /* Assert */
         $this->assertDatabaseHas('ip_settings', ['key' => 'tax_rate_decimal_places', 'value' => '2']);
         $this->assertDatabaseHas('ip_settings', ['key' => 'currency_symbol', 'value' => '$']);
-        $response->assertRedirect(route('settings.index'));
+        $response->assertRedirect('/settings/index');
     }
 }

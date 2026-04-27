@@ -38,7 +38,7 @@ class AuthenticationTest extends AbstractTestCase
 
         /* Assert */
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect('/dashboard');
     }
 
     #[Test]

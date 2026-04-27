@@ -32,7 +32,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('users.ajax.nameQuery', ['type' => 1]));
+        $response = $this->get('/users/ajax/nameQuery/' . (1));
 
         $response->assertSuccessful();
         $response->assertJson([]);
@@ -54,7 +54,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $this->seedModel('User', ['user_name' => 'Jane Doe', 'user_active' => 1, 'user_type' => 1]);
         $this->seedModel('User', ['user_name' => 'Bob Smith', 'user_active' => 1, 'user_type' => 1]);
 
-        $response = $this->get(route('users.ajax.nameQuery', ['type' => 1, 'query' => 'J']));
+        $response = $this->get('/users/ajax/nameQuery/' . (1) . '/' . ('J'));
 
         $data = $response->json();
         $this->assertCount(2, $data);
@@ -85,7 +85,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
             'user_type'    => 1,
         ]);
 
-        $response = $this->get(route('users.ajax.nameQuery', ['type' => 1, 'query' => 'Acme']));
+        $response = $this->get('/users/ajax/nameQuery/' . (1) . '/' . ('Acme'));
 
         $data = $response->json();
         $this->assertCount(2, $data);
@@ -109,11 +109,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
             'user_type'   => 1,
         ]);
 
-        $response = $this->get(route('users.ajax.nameQuery', [
-            'type'                    => 1,
-            'query'                   => 'ohn',
-            'permissive_search_users' => 1,
-        ]));
+        $response = $this->get('/users/ajax/nameQuery/' . (1) . '/' . ('ohn') . '/' . (1));
 
         $data = $response->json();
         $this->assertGreaterThanOrEqual(1, count($data));
@@ -134,7 +130,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $this->seedModel('User', ['user_name' => 'Active User', 'user_active' => 1, 'user_type' => 1]);
         $this->seedModel('User', ['user_name' => 'Inactive User', 'user_active' => 0, 'user_type' => 1]);
 
-        $response = $this->get(route('users.ajax.nameQuery', ['type' => 1, 'query' => 'User']));
+        $response = $this->get('/users/ajax/nameQuery/' . (1) . '/' . ('User'));
 
         $data = $response->json();
         $this->assertCount(1, $data);
@@ -156,7 +152,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $this->seedModel('User', ['user_name' => 'Admin User', 'user_active' => 1, 'user_type' => 1]);
         $this->seedModel('User', ['user_name' => 'Guest User', 'user_active' => 1, 'user_type' => 2]);
 
-        $response = $this->get(route('users.ajax.nameQuery', ['type' => 2, 'query' => 'User']));
+        $response = $this->get('/users/ajax/nameQuery/' . (2) . '/' . ('User'));
 
         $data = $response->json();
         $this->assertCount(1, $data);
@@ -177,7 +173,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
 
         $this->seedModel('User', ['user_name' => '100% Solutions', 'user_active' => 1, 'user_type' => 1]);
 
-        $response = $this->get(route('users.ajax.nameQuery', ['type' => 1, 'query' => '100%']));
+        $response = $this->get('/users/ajax/nameQuery/' . (1) . '/' . ('100%'));
 
         $response->assertSuccessful();
     }
@@ -196,7 +192,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
 
         $this->seedModelMany('User', 10, ['user_active' => 1]);
 
-        $response = $this->get(route('users.ajax.getLatest'));
+        $response = $this->get('/users/ajax/getLatest');
 
         $data = $response->json();
         $this->assertCount(5, $data);
@@ -216,7 +212,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('users.ajax.savePreference', ['permissive_search_users' => '1']));
+        $response = $this->get('/users/ajax/savePreference/' . ('1'));
 
         $response->assertSuccessful();
         $this->assertDatabaseHas('ip_settings', [
@@ -237,7 +233,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('users.ajax.savePreference', ['permissive_search_users' => '2']));
+        $response = $this->get('/users/ajax/savePreference/' . ('2'));
 
         $this->assertDatabaseMissing('ip_settings', [
             'setting_key'   => 'enable_permissive_search_users',
@@ -260,7 +256,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $user   = $this->seedModel('User');
         $client = $this->seedModel('tmpClient');
 
-        $response = $this->post(route('users.ajax.saveUserClient'), [
+        $response = $this->post('/users/ajax/saveUserClient', [
             'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
@@ -292,7 +288,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
             'client_id' => $client->client_id,
         ]);
 
-        $response = $this->post(route('users.ajax.saveUserClient'), [
+        $response = $this->post('/users/ajax/saveUserClient', [
             'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
         ]);
@@ -317,7 +313,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
 
         $client = $this->seedModel('tmpClient');
 
-        $response = $this->post(route('users.ajax.saveUserClient'), [
+        $response = $this->post('/users/ajax/saveUserClient', [
             'user_id'   => null,
             'client_id' => $client->client_id,
         ]);
@@ -348,7 +344,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
             ]);
         }
 
-        $response = $this->post(route('users.ajax.loadUserClientTable'), [
+        $response = $this->post('/users/ajax/loadUserClientTable', [
             'user_id' => $user->user_id,
         ]);
 
@@ -375,7 +371,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
 
         session(['user_clients' => array_combine($sessionClients, $sessionClients)]);
 
-        $response = $this->post(route('users.ajax.loadUserClientTable'));
+        $response = $this->post('/users/ajax/loadUserClientTable');
 
         $response->assertSuccessful();
         $response->assertViewHas('user_clients', function ($userClients): bool {
@@ -406,7 +402,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
             ]);
         }
 
-        $response = $this->get(route('users.ajax.modalAddUserClient', ['user_id' => $user->user_id]));
+        $response = $this->get('/users/ajax/modalAddUserClient/' . ($user->user_id));
 
         $response->assertSuccessful();
         $response->assertViewHas('clients', function ($clients): bool {
@@ -429,7 +425,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
 
         $this->seedModelMany('tmpClient', 5);
 
-        $response = $this->get(route('users.ajax.modalAddUserClient'));
+        $response = $this->get('/users/ajax/modalAddUserClient');
 
         $response->assertSuccessful();
         $response->assertViewHas('clients', function ($clients): bool {
@@ -454,7 +450,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
 
         session(['user_clients' => $sessionClients]);
 
-        $response = $this->get(route('users.ajax.modalAddUserClient'));
+        $response = $this->get('/users/ajax/modalAddUserClient');
 
         $response->assertSuccessful();
         $response->assertViewHas('clients', function ($clients): bool {
@@ -480,7 +476,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
             'user_type'   => 1,
         ]);
 
-        $response = $this->get(route('users.ajax.nameQuery', ['type' => 1, 'query' => 'script']));
+        $response = $this->get('/users/ajax/nameQuery/' . (1) . '/' . ('script'));
 
         $data = $response->json();
         $this->assertCount(1, $data);

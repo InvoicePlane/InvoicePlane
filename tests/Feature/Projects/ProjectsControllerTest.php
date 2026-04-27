@@ -35,7 +35,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(route('projects.index'));
+        $response = $this->get('/projects/index');
 
         /* Assert */
         $response->assertOk();
@@ -59,7 +59,7 @@ class ProjectsControllerTest extends AbstractTestCase
         $client = $this->seedModel('Client', ['client_active' => 1]);
 
         /* Act */
-        $response = $this->get(route('projects.form'));
+        $response = $this->get('/projects/form');
 
         /* Assert */
         $response->assertOk();
@@ -96,10 +96,10 @@ class ProjectsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('projects.form'), $projectData);
+        $response = $this->post('/projects/form', $projectData);
 
         /* Assert */
-        $response->assertRedirect(route('projects.index'));
+        $response->assertRedirect('/projects/index');
         $response->assertSessionHas('alert_success');
 
         /* Verify project was created in database */
@@ -127,7 +127,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('projects.form'), $projectData);
+        $response = $this->post('/projects/form', $projectData);
 
         /* Assert */
         $response->assertSessionHasErrors(['client_id']);
@@ -147,7 +147,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(route('projects.form', ['project_id' => $project->project_id]));
+        $response = $this->get('/projects/form/' . ($project->project_id));
 
         /* Assert */
         $response->assertOk();
@@ -186,10 +186,10 @@ class ProjectsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('projects.form', ['project_id' => $project->project_id]), $updateData);
+        $response = $this->post('/projects/form/' . ($project->project_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('projects.index'));
+        $response->assertRedirect('/projects/index');
         $response->assertSessionHas('alert_success');
 
         /* Verify project was updated */
@@ -213,7 +213,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(route('projects.view', ['project' => $project->project_id]));
+        $response = $this->get('/projects/view/' . ($project->project_id));
 
         /* Assert */
         $response->assertOk();
@@ -240,10 +240,10 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->delete(route('projects.destroy', ['project' => $project->project_id]));
+        $response = $this->delete('/projects/destroy/' . ($project->project_id));
 
         /* Assert */
-        $response->assertRedirect(route('projects.index'));
+        $response->assertRedirect('/projects/index');
         $response->assertSessionHas('alert_success');
 
         /* Verify project was deleted */
@@ -269,7 +269,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('projects.form'), $projectData);
+        $response = $this->post('/projects/form', $projectData);
 
         /* Assert */
         $response->assertSessionHasErrors(['project_name']);
@@ -291,11 +291,11 @@ class ProjectsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('projects.form'), $projectData);
+        $response = $this->post('/projects/form', $projectData);
 
         /* Assert */
         // Should either truncate or fail validation
-        if ($response->getStatusCode() === 302 && $response->isRedirect(route('projects.index'))) {
+        if ($response->getStatusCode() === 302 && $response->isRedirect('/projects/index')) {
             // Accepted - verify truncation or storage
             $this->assertDatabaseHas('ip_projects', [
                 'client_id' => $client->client_id,
@@ -323,10 +323,10 @@ class ProjectsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('projects.form'), $projectData);
+        $response = $this->post('/projects/form', $projectData);
 
         /* Assert */
-        $response->assertRedirect(route('projects.index'));
+        $response->assertRedirect('/projects/index');
 
         /** Verify XSS is prevented/escaped */
         $project = Project::query()->where('client_id', $client->client_id)->first();
@@ -349,7 +349,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('projects.form'), $projectData);
+        $response = $this->post('/projects/form', $projectData);
 
         /* Assert */
         $response->assertSessionHasErrors(['client_id']);
@@ -375,7 +375,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('projects.form', ['project_id' => $project->project_id]), $updateData);
+        $response = $this->post('/projects/form/' . ($project->project_id), $updateData);
 
         /* Assert */
         $response->assertSessionHasErrors(['project_status']);
@@ -392,7 +392,7 @@ class ProjectsControllerTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->get(route('projects.view', ['project' => $nonexistentId]));
+        $response = $this->get('/projects/view/' . ($nonexistentId));
 
         /* Assert */
         $response->assertNotFound();
@@ -409,7 +409,7 @@ class ProjectsControllerTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->get(route('projects.form', ['project_id' => $nonexistentId]));
+        $response = $this->get('/projects/form/' . ($nonexistentId));
 
         /* Assert */
         $response->assertNotFound();
@@ -437,10 +437,10 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->delete(route('projects.destroy', ['project' => $project->project_id]));
+        $response = $this->delete('/projects/destroy/' . ($project->project_id));
 
         /* Assert */
-        $response->assertRedirect(route('projects.index'));
+        $response->assertRedirect('/projects/index');
 
         /* Verify project was deleted */
         $this->assertDatabaseMissing('ip_projects', [
@@ -474,7 +474,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(route('projects.index', ['page' => 1]));
+        $response = $this->get('/projects/index/' . (1));
 
         /* Assert */
         $response->assertOk();
@@ -498,7 +498,7 @@ class ProjectsControllerTest extends AbstractTestCase
         Project::query()->delete();
 
         /* Act */
-        $response = $this->get(route('projects.index'));
+        $response = $this->get('/projects/index');
 
         /* Assert */
         $response->assertOk();
@@ -534,7 +534,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(route('projects.view', ['project' => $project->project_id]));
+        $response = $this->get('/projects/view/' . ($project->project_id));
 
         /* Assert */
         $response->assertOk();
@@ -570,10 +570,10 @@ class ProjectsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('projects.form', ['project_id' => $project->project_id]), $updateData);
+        $response = $this->post('/projects/form/' . ($project->project_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('projects.index'));
+        $response->assertRedirect('/projects/index');
 
         /** Verify only name was updated, other fields preserved */
         $updatedProject = Project::find($project->project_id);
@@ -593,7 +593,7 @@ class ProjectsControllerTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->delete(route('projects.destroy', ['project' => $nonexistentId]));
+        $response = $this->delete('/projects/destroy/' . ($nonexistentId));
 
         /* Assert */
         // Should either return 404 or redirect with error message

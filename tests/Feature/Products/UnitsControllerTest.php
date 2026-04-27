@@ -34,7 +34,7 @@ class UnitsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('units.index'));
+        $response = $this->get('/units/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('units');
@@ -57,9 +57,9 @@ class UnitsControllerTest extends AbstractTestCase
             'unit_name_plrl' => 'Kilograms',
         ];
 
-        $response = $this->post(route('units.form'), $unitData);
+        $response = $this->post('/units/form', $unitData);
 
-        $response->assertRedirect(route('units.index'));
+        $response->assertRedirect('/units/index');
         $this->assertDatabaseHas('ip_units', [
             'unit_name' => 'Kilogram',
         ]);
@@ -85,9 +85,9 @@ class UnitsControllerTest extends AbstractTestCase
             'is_update'      => 0,
         ];
 
-        $response = $this->post(route('units.form'), $unitData);
+        $response = $this->post('/units/form', $unitData);
 
-        $response->assertRedirect(route('units.form'));
+        $response->assertRedirect('/units/form');
         $response->assertSessionHas('alert_error');
     }
 
@@ -110,9 +110,9 @@ class UnitsControllerTest extends AbstractTestCase
             'unit_name_plrl' => 'Updated Units',
         ];
 
-        $response = $this->post(route('units.form', ['id' => $unit->unit_id]), $updateData);
+        $response = $this->post('/units/form/' . ($unit->unit_id), $updateData);
 
-        $response->assertRedirect(route('units.index'));
+        $response->assertRedirect('/units/index');
         $this->assertDatabaseHas('ip_units', [
             'unit_id'   => $unit->unit_id,
             'unit_name' => 'Updated Unit',
@@ -133,9 +133,9 @@ class UnitsControllerTest extends AbstractTestCase
 
         $unit = $this->seedModel('Unit');
 
-        $response = $this->delete(route('units.delete', ['id' => $unit->unit_id]));
+        $response = $this->delete('/units/delete/' . ($unit->unit_id));
 
-        $response->assertRedirect(route('units.index'));
+        $response->assertRedirect('/units/index');
         $this->assertDatabaseMissing('ip_units', ['unit_id' => $unit->unit_id]);
     }
 
@@ -150,7 +150,7 @@ class UnitsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(\Tests\Feature\Invoices\route('units.index'));
+        $response = $this->get('/units/index');
 
         /* Assert */
         $response->assertOk();
@@ -166,7 +166,7 @@ class UnitsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(\Tests\Feature\Invoices\route('units.form'));
+        $response = $this->get('/units/form');
 
         /* Assert */
         $response->assertOk();
@@ -197,10 +197,10 @@ class UnitsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(\Tests\Feature\Invoices\route('units.form'), $unitData);
+        $response = $this->post('/units/form', $unitData);
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('units.index'));
+        $response->assertRedirect('/units/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_units', [
@@ -218,7 +218,7 @@ class UnitsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(\Tests\Feature\Invoices\route('units.form', ['unit_id' => $unit->unit_id]));
+        $response = $this->get('/units/form/' . ($unit->unit_id));
 
         /* Assert */
         $response->assertOk();
@@ -249,10 +249,10 @@ class UnitsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(\Tests\Feature\Invoices\route('units.form', ['unit_id' => $unit->unit_id]), $updateData);
+        $response = $this->post('/units/form/' . ($unit->unit_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('units.index'));
+        $response->assertRedirect('/units/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_units', [
@@ -273,7 +273,7 @@ class UnitsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(\Tests\Feature\Invoices\route('units.index'));
+        $response = $this->get('/units/index');
 
         /* Assert */
         $response->assertOk();

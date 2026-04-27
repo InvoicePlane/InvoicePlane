@@ -32,7 +32,7 @@ class CrmInvoicesControllerTest extends AbstractTestCase
         // Guest portal accessible without authentication
 
         /* Act */
-        $response = $this->get(route('guest.invoices'));
+        $response = $this->get('/guest/invoices');
 
         /* Assert */
         $response->assertOk();
@@ -50,7 +50,7 @@ class CrmInvoicesControllerTest extends AbstractTestCase
         $invoice = $this->seedModel('Invoice', ['invoice_url_key' => 'test-key-123']);
 
         /* Act */
-        $response = $this->get(route('guest.invoices.view', ['urlKey' => 'test-key-123']));
+        $response = $this->get('/guest/invoices/view/' . ('test-key-123'));
 
         /* Assert */
         $response->assertOk();
@@ -72,7 +72,7 @@ class CrmInvoicesControllerTest extends AbstractTestCase
         // No invoice with this URL key
 
         /* Act */
-        $response = $this->get(route('guest.invoices.view', ['urlKey' => 'non-existent-key']));
+        $response = $this->get('/guest/invoices/view/' . ('non-existent-key'));
 
         /* Assert */
         $response->assertNotFound();
@@ -88,7 +88,7 @@ class CrmInvoicesControllerTest extends AbstractTestCase
         $invoice = $this->seedModel('Invoice', ['invoice_url_key' => 'guest-key']);
 
         /* Act */
-        $response = $this->get(route('guest.invoices.view', ['urlKey' => 'guest-key']));
+        $response = $this->get('/guest/invoices/view/' . ('guest-key'));
 
         /* Assert */
         $response->assertOk();

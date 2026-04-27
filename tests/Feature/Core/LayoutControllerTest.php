@@ -31,7 +31,7 @@ class LayoutControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('layout.index'));
+        $response = $this->actingAs($user)->get('/layout/index');
 
         /* Assert */
         $response->assertOk();

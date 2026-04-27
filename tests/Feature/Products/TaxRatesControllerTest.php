@@ -33,7 +33,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $this->seedModelMany('TaxRate', 5);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('tax_rates.index'));
+        $response = $this->actingAs($user)->get('/tax_rates/index');
 
         /* Assert */
         $response->assertOk();
@@ -52,7 +52,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('tax_rates.create'));
+        $response = $this->actingAs($user)->get('/tax_rates/create');
 
         /* Assert */
         $response->assertOk();
@@ -86,10 +86,10 @@ class TaxRatesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('tax_rates.store'), $taxRateData);
+        $response = $this->actingAs($user)->post('/tax_rates/store', $taxRateData);
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_tax_rates', [
@@ -110,7 +110,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $taxRate = $this->seedModel('TaxRate');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('tax_rates.edit', $taxRate));
+        $response = $this->actingAs($user)->get('/tax_rates/edit');
 
         /* Assert */
         $response->assertOk();
@@ -147,10 +147,10 @@ class TaxRatesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->put(route('tax_rates.update', $taxRate), $updateData);
+        $response = $this->actingAs($user)->put('/tax_rates/update', $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_tax_rates', [
@@ -172,10 +172,10 @@ class TaxRatesControllerTest extends AbstractTestCase
         $taxRate = $this->seedModel('TaxRate');
 
         /* Act */
-        $response = $this->actingAs($user)->delete(route('tax_rates.destroy', $taxRate));
+        $response = $this->actingAs($user)->delete('/tax_rates/destroy');
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseMissing('ip_tax_rates', [
@@ -197,7 +197,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $this->seedModel('TaxRate', ['tax_rate_name' => 'Reduced Rate', 'tax_rate_percent' => '5.00']);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('tax_rates.index'));
+        $response = $this->actingAs($user)->get('/tax_rates/index');
 
         /* Assert */
         $response->assertOk();
@@ -224,10 +224,10 @@ class TaxRatesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('tax_rates.store'), $taxRateData);
+        $response = $this->actingAs($user)->post('/tax_rates/store', $taxRateData);
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $this->assertDatabaseHas('ip_tax_rates', [
             'tax_rate_name'    => 'No Tax',
             'tax_rate_percent' => '0.00',

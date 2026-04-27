@@ -37,7 +37,7 @@ class EmailTemplatesAjaxControllerTest extends AbstractTestCase
             'email_template_body'    => 'Test Body',
         ]);
 
-        $response = $this->post(route('email_templates.ajax.getContent'), [
+        $response = $this->post('/email_templates/ajax/getContent', [
             'email_template_id' => $template->email_template_id,
         ]);
 
@@ -59,7 +59,7 @@ class EmailTemplatesAjaxControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->post(route('email_templates.ajax.getContent'), [
+        $response = $this->post('/email_templates/ajax/getContent', [
             'email_template_id' => 99999,
         ]);
 

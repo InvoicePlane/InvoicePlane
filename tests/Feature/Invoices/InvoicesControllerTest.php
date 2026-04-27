@@ -34,10 +34,10 @@ class InvoicesControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.index'));
+        $response = $this->actingAs($user)->get('/invoices/index');
 
         /* Assert */
-        $response->assertRedirect(route('invoices.status', ['status' => 'all']));
+        $response->assertRedirect('/invoices/status/' . ('all'));
     }
 
     /**
@@ -125,7 +125,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $this->seedModelMany('Item', 3, ['invoice_id' => $invoice->invoice_id]);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
+        $response = $this->actingAs($user)->get('/invoices/view/' . ($invoice->invoice_id));
 
         /* Assert */
         $response->assertOk();
@@ -148,7 +148,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => 99999]));
+        $response = $this->actingAs($user)->get('/invoices/view/' . (99999));
 
         /* Assert */
         $response->assertNotFound();
@@ -166,7 +166,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $invoice = $this->seedModel('Invoice');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
+        $response = $this->actingAs($user)->get('/invoices/view/' . ($invoice->invoice_id));
 
         /* Assert */
         $response->assertOk();
@@ -187,7 +187,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $this->seedModelMany('TaxRate', 5);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
+        $response = $this->actingAs($user)->get('/invoices/view/' . ($invoice->invoice_id));
 
         /* Assert */
         $response->assertOk();
@@ -217,7 +217,7 @@ class InvoicesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.delete', $deleteParams));
+        $response = $this->actingAs($user)->post('/invoices/delete');
 
         /* Assert */
         $response->assertRedirect();
@@ -246,7 +246,7 @@ class InvoicesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $this->actingAs($user)->post(route('invoices.delete', $deleteParams));
+        $this->actingAs($user)->post('/invoices/delete');
 
         /* Assert */
         $updatedTask = Task::find($task->task_id);
@@ -275,7 +275,7 @@ class InvoicesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.delete', $deleteParams));
+        $response = $this->actingAs($user)->post('/invoices/delete');
 
         /* Assert */
         $this->assertNotNull(Invoice::find($invoice->invoice_id)); // Still exists
@@ -293,7 +293,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.archive'));
+        $response = $this->actingAs($user)->get('/invoices/archive');
 
         /* Assert */
         $response->assertOk();
@@ -312,7 +312,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.download', ['filename' => '../../../etc/passwd']));
+        $response = $this->actingAs($user)->get('/invoices/download/' . ('../../../etc/passwd'));
 
         /* Assert - Expect 404 for invalid path */
         $response->assertNotFound();
@@ -329,7 +329,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.download', ['filename' => 'non-existent-file.pdf']));
+        $response = $this->actingAs($user)->get('/invoices/download/' . ('non-existent-file.pdf'));
 
         /* Assert - Expect 404 */
         $response->assertNotFound();
@@ -355,10 +355,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $payload = [];
 
         $response = $this->actingAs($user)->post(
-            route('invoices.delete_tax', [
-                'invoiceId' => $invoice->invoice_id,
-                'taxRateId' => $taxRate->invoice_tax_rate_id,
-            ]),
+            '/invoices/delete_tax/' . ($invoice->invoice_id) . '/' . ($taxRate->invoice_tax_rate_id),
             $payload
         );
 
@@ -386,15 +383,12 @@ class InvoicesControllerTest extends AbstractTestCase
         $payload = [];
 
         $response = $this->actingAs($user)->post(
-            route('invoices.delete_tax', [
-                'invoiceId' => $invoice->invoice_id,
-                'taxRateId' => $taxRate->invoice_tax_rate_id,
-            ]),
+            '/invoices/delete_tax/' . ($invoice->invoice_id) . '/' . ($taxRate->invoice_tax_rate_id),
             $payload
         );
 
         /* Assert */
-        $response->assertRedirect(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
+        $response->assertRedirect('/invoices/view/' . ($invoice->invoice_id));
     }
 
     /**
@@ -415,7 +409,7 @@ class InvoicesControllerTest extends AbstractTestCase
          */
         $recalculatePayload = [];
 
-        $response = $this->actingAs($user)->post(route('invoices.recalculate_all'), $recalculatePayload);
+        $response = $this->actingAs($user)->post('/invoices/recalculate_all', $recalculatePayload);
 
         /* Assert */
         $response->assertRedirect();
@@ -440,7 +434,7 @@ class InvoicesControllerTest extends AbstractTestCase
          */
         $recalculatePayload = [];
 
-        $response = $this->actingAs($user)->post(route('invoices.recalculate_all'), $recalculatePayload);
+        $response = $this->actingAs($user)->post('/invoices/recalculate_all', $recalculatePayload);
 
         /* Assert */
         $response->assertRedirect();
@@ -459,7 +453,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $invoice = $this->seedModel('Invoice');
 
         /* Act */
-        $this->actingAs($user)->get(route('invoices.generate_pdf', ['id' => $invoice->invoice_id]));
+        $this->actingAs($user)->get('/invoices/generate_pdf/' . ($invoice->invoice_id));
 
         /* Assert */
         $updatedInvoice = Invoice::find($invoice->invoice_id);
@@ -525,7 +519,7 @@ class InvoicesControllerTest extends AbstractTestCase
         $invoice = $this->seedModel('Invoice', ['sumex_id' => 12345]);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.view', ['invoiceId' => $invoice->invoice_id]));
+        $response = $this->actingAs($user)->get('/invoices/view/' . ($invoice->invoice_id));
 
         /* Assert */
         $response->assertOk();

@@ -41,7 +41,7 @@ class MailerControllerTest extends AbstractTestCase
         $invoice       = $this->seedModel('Invoice', ['client_id' => $this->client->client_id]);
         $emailTemplate = $this->seedModel('EmailTemplate', ['email_template_type' => 'invoice']);
 
-        $response = $this->get(route('mailer.invoice', ['invoice_id' => $invoice->invoice_id]));
+        $response = $this->get('/mailer/invoice/' . ($invoice->invoice_id));
 
         $response->assertSuccessful();
         $response->assertViewHas('invoice');
@@ -65,7 +65,7 @@ class MailerControllerTest extends AbstractTestCase
         $quote         = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
         $emailTemplate = $this->seedModel('EmailTemplate', ['email_template_type' => 'quote']);
 
-        $response = $this->get(route('mailer.quote', ['quote_id' => $quote->quote_id]));
+        $response = $this->get('/mailer/quote/' . ($quote->quote_id));
 
         $response->assertSuccessful();
         $response->assertViewHas('quote');
@@ -89,7 +89,7 @@ class MailerControllerTest extends AbstractTestCase
 
         $invoice = $this->seedModel('Invoice');
 
-        $response = $this->get(route('mailer.invoice', ['invoice_id' => $invoice->invoice_id]));
+        $response = $this->get('/mailer/invoice/' . ($invoice->invoice_id));
 
         $response->assertStatus(503);
         $response->assertViewIs('mailer.not_configured');
@@ -125,9 +125,9 @@ class MailerControllerTest extends AbstractTestCase
             'bcc'          => '',
         ];
 
-        $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), $emailData);
+        $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), $emailData);
 
-        $response->assertRedirect(route('invoices.view', ['invoice_id' => $invoice->invoice_id]));
+        $response->assertRedirect('/invoices/view/' . ($invoice->invoice_id));
         $response->assertSessionHas('alert_success');
 
         Mail::assertSent(function ($mail) use ($emailData) {
@@ -165,9 +165,9 @@ class MailerControllerTest extends AbstractTestCase
             'bcc'          => 'bcc@example.com',
         ];
 
-        $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), $emailData);
+        $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), $emailData);
 
-        $response->assertRedirect(route('invoices.view', ['invoice_id' => $invoice->invoice_id]));
+        $response->assertRedirect('/invoices/view/' . ($invoice->invoice_id));
 
         Mail::assertSent(function ($mail) use ($emailData): bool {
             return $mail->hasCc($emailData['cc']) && $mail->hasBcc($emailData['bcc']);
@@ -202,9 +202,9 @@ class MailerControllerTest extends AbstractTestCase
             'pdf_template' => 'default',
         ];
 
-        $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), $emailData);
+        $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), $emailData);
 
-        $response->assertRedirect(route('invoices.view', ['invoice_id' => $invoice->invoice_id]));
+        $response->assertRedirect('/invoices/view/' . ($invoice->invoice_id));
 
         // Body should have been converted with nl2br
         Mail::assertSent(function ($mail): bool {
@@ -244,9 +244,9 @@ class MailerControllerTest extends AbstractTestCase
             'pdf_template' => 'default',
         ];
 
-        $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), $emailData);
+        $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), $emailData);
 
-        $response->assertRedirect(route('invoices.view', ['invoice_id' => $invoice->invoice_id]));
+        $response->assertRedirect('/invoices/view/' . ($invoice->invoice_id));
     }
 
     #[Test]
@@ -278,7 +278,7 @@ class MailerControllerTest extends AbstractTestCase
             'pdf_template' => 'default',
         ];
 
-        $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), $emailData);
+        $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), $emailData);
 
         $invoice->refresh();
         $this->assertNotNull($invoice->invoice_number);
@@ -312,7 +312,7 @@ class MailerControllerTest extends AbstractTestCase
             'pdf_template' => 'default',
         ];
 
-        $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), $emailData);
+        $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), $emailData);
 
         $invoice->refresh();
         $this->assertEquals(2, $invoice->invoice_status_id); // Sent status
@@ -332,11 +332,11 @@ class MailerControllerTest extends AbstractTestCase
 
         $invoice = $this->seedModel('Invoice');
 
-        $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), [
+        $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), [
             'btn_cancel' => true,
         ]);
 
-        $response->assertRedirect(route('invoices.view', ['invoice_id' => $invoice->invoice_id]));
+        $response->assertRedirect('/invoices/view/' . ($invoice->invoice_id));
     }
 
     #[Test]
@@ -367,9 +367,9 @@ class MailerControllerTest extends AbstractTestCase
             'pdf_template' => 'default',
         ];
 
-        $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), $emailData);
+        $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), $emailData);
 
-        $response->assertRedirect(route('mailer.invoice', ['invoice_id' => $invoice->invoice_id]));
+        $response->assertRedirect('/mailer/invoice/' . ($invoice->invoice_id));
     }
 
     #[Test]
@@ -402,9 +402,9 @@ class MailerControllerTest extends AbstractTestCase
             'bcc'          => '',
         ];
 
-        $response = $this->post(route('mailer.sendQuote', ['quote_id' => $quote->quote_id]), $emailData);
+        $response = $this->post('/mailer/sendQuote/' . ($quote->quote_id), $emailData);
 
-        $response->assertRedirect(route('quotes.view', ['quote_id' => $quote->quote_id]));
+        $response->assertRedirect('/quotes/view/' . ($quote->quote_id));
         $response->assertSessionHas('alert_success');
 
         Mail::assertSent(function ($mail) use ($emailData) {
@@ -441,7 +441,7 @@ class MailerControllerTest extends AbstractTestCase
             'pdf_template' => 'default',
         ];
 
-        $response = $this->post(route('mailer.sendQuote', ['quote_id' => $quote->quote_id]), $emailData);
+        $response = $this->post('/mailer/sendQuote/' . ($quote->quote_id), $emailData);
 
         $quote->refresh();
         $this->assertNotNull($quote->quote_number);
@@ -475,7 +475,7 @@ class MailerControllerTest extends AbstractTestCase
             'pdf_template' => 'default',
         ];
 
-        $response = $this->post(route('mailer.sendQuote', ['quote_id' => $quote->quote_id]), $emailData);
+        $response = $this->post('/mailer/sendQuote/' . ($quote->quote_id), $emailData);
 
         $quote->refresh();
         $this->assertEquals(2, $quote->quote_status_id); // Sent status
@@ -495,11 +495,11 @@ class MailerControllerTest extends AbstractTestCase
 
         $quote = $this->seedModel('Quote');
 
-        $response = $this->post(route('mailer.sendQuote', ['quote_id' => $quote->quote_id]), [
+        $response = $this->post('/mailer/sendQuote/' . ($quote->quote_id), [
             'btn_cancel' => true,
         ]);
 
-        $response->assertRedirect(route('quotes.view', ['quote_id' => $quote->quote_id]));
+        $response->assertRedirect('/quotes/view/' . ($quote->quote_id));
     }
 
     #[Test]
@@ -534,9 +534,9 @@ class MailerControllerTest extends AbstractTestCase
             'pdf_template' => 'default',
         ];
 
-        $response = $this->post(route('mailer.sendQuote', ['quote_id' => $quote->quote_id]), $emailData);
+        $response = $this->post('/mailer/sendQuote/' . ($quote->quote_id), $emailData);
 
-        $response->assertRedirect(route('quotes.view', ['quote_id' => $quote->quote_id]));
+        $response->assertRedirect('/quotes/view/' . ($quote->quote_id));
     }
 
     #[Test]
@@ -566,9 +566,9 @@ class MailerControllerTest extends AbstractTestCase
             'pdf_template' => 'default',
         ];
 
-        $response = $this->post(route('mailer.sendInvoice', ['invoice_id' => $invoice->invoice_id]), $emailData);
+        $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), $emailData);
 
-        $response->assertRedirect(route('invoices.view', ['invoice_id' => $invoice->invoice_id]));
+        $response->assertRedirect('/invoices/view/' . ($invoice->invoice_id));
 
         // HTML entities should be decoded
         Mail::assertSent(function ($mail): bool {

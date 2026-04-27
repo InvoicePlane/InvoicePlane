@@ -31,7 +31,7 @@ class ImportControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('import.index'));
+        $response = $this->actingAs($user)->get('/import/index');
 
         /* Assert */
         $response->assertOk();

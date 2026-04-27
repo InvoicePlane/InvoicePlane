@@ -32,7 +32,7 @@ class SetupControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('setup.index'));
+        $response = $this->actingAs($user)->get('/setup/index');
 
         /* Assert */
         $response->assertOk();
@@ -49,7 +49,7 @@ class SetupControllerTest extends AbstractTestCase
         // No authentication for initial setup
 
         /* Act */
-        $response = $this->get(route('setup.index'));
+        $response = $this->get('/setup/index');
 
         /* Assert */
         $response->assertOk();

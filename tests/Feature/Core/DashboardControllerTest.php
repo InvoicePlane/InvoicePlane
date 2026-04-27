@@ -36,7 +36,7 @@ class DashboardControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(route('dashboard'));
+        $response = $this->get('/dashboard');
 
         /* Assert */
         $response->assertStatus(200);
@@ -61,7 +61,7 @@ class DashboardControllerTest extends AbstractTestCase
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 3, ['invoice_status_id' => 2]); // Sent
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 7, ['invoice_status_id' => 4]); // Paid
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('invoice_status_totals');
@@ -84,7 +84,7 @@ class DashboardControllerTest extends AbstractTestCase
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 2, ['quote_status_id' => 2]); // Sent
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 3, ['quote_status_id' => 3]); // Approved
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('quote_status_totals');
@@ -105,7 +105,7 @@ class DashboardControllerTest extends AbstractTestCase
 
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 15);
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('invoices', function ($invoices): bool {
@@ -127,7 +127,7 @@ class DashboardControllerTest extends AbstractTestCase
 
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 15);
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('quotes', function ($quotes): bool {
@@ -152,7 +152,7 @@ class DashboardControllerTest extends AbstractTestCase
             'invoice_date_due'  => now()->subDays(10),
         ]);
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('overdue_invoices', function ($invoices): bool {
@@ -174,7 +174,7 @@ class DashboardControllerTest extends AbstractTestCase
 
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Project', 5);
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('projects');
@@ -194,7 +194,7 @@ class DashboardControllerTest extends AbstractTestCase
 
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Task', 5);
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('tasks');
@@ -218,7 +218,7 @@ class DashboardControllerTest extends AbstractTestCase
             'setting_value' => 'this-month',
         ]);
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('invoice_status_period', 'this_month');
@@ -241,7 +241,7 @@ class DashboardControllerTest extends AbstractTestCase
             'setting_value' => 'this-quarter',
         ]);
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('quote_status_period', 'this_quarter');

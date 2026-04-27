@@ -33,10 +33,10 @@ class UnitDeletionValidationFeatureTest extends AbstractTestCase
         $unit = $this->seedModel('Unit', ['unit_name' => 'Deletable Unit']);
 
         /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response = $this->delete('/units/destroy/' . ($unit->unit_id));
 
         /* Assert */
-        $response->assertRedirect(route('units.index'));
+        $response->assertRedirect('/units/index');
         $response->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_units', ['unit_id' => $unit->unit_id]);
     }
@@ -52,10 +52,10 @@ class UnitDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
         /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response = $this->delete('/units/destroy/' . ($unit->unit_id));
 
         /* Assert */
-        $response->assertRedirect(route('units.index'));
+        $response->assertRedirect('/units/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_units', ['unit_id' => $unit->unit_id]);
     }
@@ -71,10 +71,10 @@ class UnitDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response = $this->delete('/units/destroy/' . ($unit->unit_id));
 
         /* Assert */
-        $response->assertRedirect(route('units.index'));
+        $response->assertRedirect('/units/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_units', ['unit_id' => $unit->unit_id]);
     }
@@ -90,10 +90,10 @@ class UnitDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModel('QuoteItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response = $this->delete('/units/destroy/' . ($unit->unit_id));
 
         /* Assert */
-        $response->assertRedirect(route('units.index'));
+        $response->assertRedirect('/units/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_units', ['unit_id' => $unit->unit_id]);
     }
@@ -111,10 +111,10 @@ class UnitDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response = $this->delete('/units/destroy/' . ($unit->unit_id));
 
         /* Assert */
-        $response->assertRedirect(route('units.index'));
+        $response->assertRedirect('/units/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_units', ['unit_id' => $unit->unit_id]);
     }
@@ -130,17 +130,17 @@ class UnitDeletionValidationFeatureTest extends AbstractTestCase
         $product = $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
         // Initially cannot delete
-        $response1 = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response1 = $this->delete('/units/destroy/' . ($unit->unit_id));
         $response1->assertSessionHas('alert_error');
 
         // Remove reference
         $product->delete();
 
         /* Act */
-        $response2 = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response2 = $this->delete('/units/destroy/' . ($unit->unit_id));
 
         /* Assert */
-        $response2->assertRedirect(route('units.index'));
+        $response2->assertRedirect('/units/index');
         $response2->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_units', ['unit_id' => $unit->unit_id]);
     }

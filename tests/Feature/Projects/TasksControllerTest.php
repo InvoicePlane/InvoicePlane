@@ -34,7 +34,7 @@ class TasksControllerTest extends AbstractTestCase
         $task = $this->seedModel('Task');
 
         /* Act */
-        $response = $this->get(route('tasks.index'));
+        $response = $this->get('/tasks/index');
 
         /* Assert */
         $response->assertOk();
@@ -65,7 +65,7 @@ class TasksControllerTest extends AbstractTestCase
     // ...
 
         /* Act */
-        $response = $this->get(route('tasks.form'));
+        $response = $this->get('/tasks/form');
 
         /* Assert */
         $response->assertOk();
@@ -105,10 +105,10 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form'), $taskData);
+        $response = $this->post('/tasks/form', $taskData);
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
         $response->assertSessionHas('alert_success');
 
         /* Verify task was created in database */
@@ -136,7 +136,7 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form'), $taskData);
+        $response = $this->post('/tasks/form', $taskData);
 
         /* Assert */
         $response->assertSessionHasErrors(['task_name']);
@@ -153,7 +153,7 @@ class TasksControllerTest extends AbstractTestCase
         $task = $this->seedModel('Task');
 
         /* Act */
-        $response = $this->get(route('tasks.form', ['task_id' => $task->task_id]));
+        $response = $this->get('/tasks/form/' . ($task->task_id));
 
         /* Assert */
         $response->assertOk();
@@ -191,10 +191,10 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
+        $response = $this->post('/tasks/form/' . ($task->task_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
         $response->assertSessionHas('alert_success');
 
         /* Verify task was updated */
@@ -215,10 +215,10 @@ class TasksControllerTest extends AbstractTestCase
         $task = $this->seedModel('Task');
 
         /* Act */
-        $response = $this->delete(route('tasks.destroy', ['task' => $task->task_id]));
+        $response = $this->delete('/tasks/destroy/' . ($task->task_id));
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
         $response->assertSessionHas('alert_success');
 
         /* Verify task was deleted */
@@ -247,10 +247,10 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form'), $taskData);
+        $response = $this->post('/tasks/form', $taskData);
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
 
         /* Verify task was created without project */
         $this->assertDatabaseHas('ip_tasks', [
@@ -275,7 +275,7 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form'), $taskData);
+        $response = $this->post('/tasks/form', $taskData);
 
         /* Assert */
         $response->assertSessionHasErrors(['task_name']);
@@ -296,10 +296,10 @@ class TasksControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('tasks.form'), $taskData);
+        $response = $this->post('/tasks/form', $taskData);
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
 
         /* Verify XSS is prevented - use database assertion instead of static model call */
         $this->assertDatabaseHas('ip_tasks', [
@@ -328,7 +328,7 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form'), $taskData);
+        $response = $this->post('/tasks/form', $taskData);
 
         /* Assert */
         $response->assertSessionHasErrors(['task_status']);
@@ -349,7 +349,7 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form'), $taskData);
+        $response = $this->post('/tasks/form', $taskData);
 
         /* Assert */
         $response->assertSessionHasErrors(['project_id']);
@@ -366,7 +366,7 @@ class TasksControllerTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->get(route('tasks.form', ['task_id' => $nonexistentId]));
+        $response = $this->get('/tasks/form/' . ($nonexistentId));
 
         /* Assert */
         $response->assertNotFound();
@@ -388,7 +388,7 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
+        $response = $this->post('/tasks/form/' . ($task->task_id), $updateData);
 
         /* Assert */
         $response->assertSessionHasErrors(['task_finish_date']);
@@ -416,10 +416,10 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
+        $response = $this->post('/tasks/form/' . ($task->task_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
 
         /* Verify task is now assigned to project2 */
         $this->assertDatabaseHas('ip_tasks', [
@@ -448,10 +448,10 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
+        $response = $this->post('/tasks/form/' . ($task->task_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
 
         /* Verify task is no longer assigned to project */
         $this->assertDatabaseHas('ip_tasks', [
@@ -481,7 +481,7 @@ class TasksControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(route('tasks.by-project', ['project' => $project1->project_id]));
+        $response = $this->get('/tasks/by-project/' . ($project1->project_id));
 
         /* Assert */
         $response->assertOk();
@@ -505,7 +505,7 @@ class TasksControllerTest extends AbstractTestCase
         Task::query()->delete();
 
         /* Act */
-        $response = $this->get(route('tasks.index'));
+        $response = $this->get('/tasks/index');
 
         /* Assert */
         $response->assertOk();
@@ -527,7 +527,7 @@ class TasksControllerTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->delete(route('tasks.destroy', ['task' => $nonexistentId]));
+        $response = $this->delete('/tasks/destroy/' . ($nonexistentId));
 
         /* Assert */
         // Should either return 404 or redirect with error
@@ -555,10 +555,10 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
+        $response = $this->post('/tasks/form/' . ($task->task_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
 
         /* Verify finish date was updated */
         $this->assertDatabaseHas('ip_tasks', [
@@ -585,10 +585,10 @@ class TasksControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
+        $response = $this->post('/tasks/form/' . ($task->task_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
 
         /* Verify status was updated */
         $this->assertDatabaseHas('ip_tasks', [
@@ -618,10 +618,10 @@ class TasksControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('tasks.form', ['task_id' => $task->task_id]), $updateData);
+        $response = $this->post('/tasks/form/' . ($task->task_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
 
         /* Verify only name was updated - use database assertions */
         $this->assertDatabaseHas('ip_tasks', [

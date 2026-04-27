@@ -33,7 +33,7 @@ class UsersControllerTest extends AbstractTestCase
         $this->seedModelMany('User', 5);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('users.index'));
+        $response = $this->actingAs($user)->get('/users/index');
 
         /* Assert */
         $response->assertOk();
@@ -59,7 +59,7 @@ class UsersControllerTest extends AbstractTestCase
         $this->seedModel('User', ['user_name' => 'Bob']);
 
         /* Act */
-        $response = $this->actingAs($adminUser)->get(route('users.index'));
+        $response = $this->actingAs($adminUser)->get('/users/index');
 
         /* Assert */
         $response->assertOk();
@@ -83,7 +83,7 @@ class UsersControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('users.form'));
+        $response = $this->actingAs($user)->get('/users/form');
 
         /* Assert */
         $response->assertOk();
@@ -107,7 +107,7 @@ class UsersControllerTest extends AbstractTestCase
         $editUser  = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($adminUser)->get(route('users.form', ['id' => $editUser->user_id]));
+        $response = $this->actingAs($adminUser)->get('/users/form/' . ($editUser->user_id));
 
         /* Assert */
         $response->assertOk();
@@ -146,10 +146,10 @@ class UsersControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($adminUser)->post(route('users.form'), $userData);
+        $response = $this->actingAs($adminUser)->post('/users/form', $userData);
 
         /* Assert */
-        $response->assertRedirect(route('users.index'));
+        $response->assertRedirect('/users/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_users', [
@@ -188,10 +188,10 @@ class UsersControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($adminUser)->post(route('users.form', ['id' => $editUser->user_id]), $updateData);
+        $response = $this->actingAs($adminUser)->post('/users/form/' . ($editUser->user_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('users.index'));
+        $response->assertRedirect('/users/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_users', [
@@ -220,10 +220,10 @@ class UsersControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('users.form'), $cancelData);
+        $response = $this->actingAs($user)->post('/users/form', $cancelData);
 
         /* Assert */
-        $response->assertRedirect(route('users.index'));
+        $response->assertRedirect('/users/index');
     }
 
     /**
@@ -248,12 +248,12 @@ class UsersControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($adminUser)->post(
-            route('users.delete', ['id' => $deleteUser->user_id]),
+            '/users/delete/' . ($deleteUser->user_id),
             $deletePayload
         );
 
         /* Assert */
-        $response->assertRedirect(route('users.index'));
+        $response->assertRedirect('/users/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseMissing('ip_users', [
@@ -282,7 +282,7 @@ class UsersControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('users.delete', ['id' => 99999]),
+            '/users/delete/' . (99999),
             $deletePayload
         );
 
@@ -301,7 +301,7 @@ class UsersControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('users.form', ['id' => 99999]));
+        $response = $this->actingAs($user)->get('/users/form/' . (99999));
 
         /* Assert */
         $response->assertNotFound();

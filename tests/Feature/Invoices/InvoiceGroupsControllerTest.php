@@ -63,7 +63,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          * Act
          * --------------------------------------------------------------.
          */
-        $response = $this->actingAs($user)->get(route('invoice_groups.index'));
+        $response = $this->actingAs($user)->get('/invoice_groups/index');
 
         /*
          * --------------------------------------------------------------
@@ -94,7 +94,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          * Act
          * --------------------------------------------------------------.
          */
-        $response = $this->actingAs($user)->get(route('invoice_groups.index'));
+        $response = $this->actingAs($user)->get('/invoice_groups/index');
 
         /*
          * --------------------------------------------------------------
@@ -124,7 +124,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          * Act
          * --------------------------------------------------------------.
          */
-        $response = $this->actingAs($user)->get(route('invoice_groups.form'));
+        $response = $this->actingAs($user)->get('/invoice_groups/form');
 
         /*
          * --------------------------------------------------------------
@@ -307,7 +307,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('invoice_groups.delete', ['id' => $testId]),
+            '/invoice_groups/delete/' . ($testId),
             $deletePayload
         );
 

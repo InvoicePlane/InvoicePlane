@@ -18,7 +18,7 @@ class CustomValuesControllerTest extends AbstractTestCase
         $customValue = $this->seedModel('CustomValue', ['name' => 'Test Value']);
 
         /* Act */
-        $response = $this->get(route('custom_values.index'));
+        $response = $this->get('/custom_values/index');
 
         /* Assert */
         $response->assertStatus(200);
@@ -36,10 +36,10 @@ class CustomValuesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->post(route('custom_values.field', ['id' => $customField->id]), $customValueData);
+        $response = $this->post('/custom_values/field/' . ($customField->id), $customValueData);
 
         /* Assert */
         $this->assertDatabaseHas('custom_values', ['value' => 'New Value']);
-        $response->assertRedirect(route('custom_values'));
+        $response->assertRedirect('/custom_values');
     }
 }
