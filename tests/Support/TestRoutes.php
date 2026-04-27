@@ -9,6 +9,15 @@ final class TestRoutes
 
     public const USER_CLIENTS_INDEX = '/user_clients';
 
+
+    public const SESSIONS_LOGIN = '/sessions/login';
+    public const CRM_AJAX_MODAL_CLIENT_LOOKUP = '/crm/ajax/modal_client_lookup';
+
+    public static function crmAjaxGetClientDetails(int|string $clientId): string
+    {
+        return '/crm/ajax/get_client_details/' . $clientId;
+    }
+
     public static function userClientsForm(?int $id = null): string
     {
         if ($id === null) {
