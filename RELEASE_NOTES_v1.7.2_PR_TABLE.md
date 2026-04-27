@@ -70,6 +70,7 @@ truth for the README / CHANGELOG entry once v1.7.2 goes final.
 
 | PR | Title | Linked Issue | Notes |
 |----|-------|-------------|-------|
+| [#1289](https://github.com/InvoicePlane/InvoicePlane/pull/1289) | Re-introduce Stripe & PayPal; add PayPal Advanced Credit Cards and Venmo support | [#1288](https://github.com/InvoicePlane/InvoicePlane/issues/1288) | By [@drewangell](https://github.com/drewangell); enables Advanced CC fields, Venmo, improved error handling |
 | [#1489](https://github.com/InvoicePlane/InvoicePlane/pull/1489) | Allow specifying the QR-code size in invoices | [#1376](https://github.com/InvoicePlane/InvoicePlane/issues/1376) | New `ipconfig.php` option |
 
 ---
