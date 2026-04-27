@@ -3,6 +3,7 @@
 namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Sessions;
 use Tests\AbstractTestCase;
@@ -10,10 +11,12 @@ use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Sessions::class)]
 #[CoversClass(Tests\Feature\Core\SessionsController::class)]
+#[Group('sessions')]
 class SessionsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
+    // region Authentication flow
     #[Test]
     public function it_redirects_index_to_login(): void
     {
@@ -227,7 +230,9 @@ class SessionsControllerTest extends AbstractTestCase
         ]);
         $this->assertGuest();
     }
+    // endregion
 
+    // region Logout flow
     #[Test]
     public function it_logs_out_authenticated_user(): void
     {
@@ -248,7 +253,9 @@ class SessionsControllerTest extends AbstractTestCase
         $response->assertRedirect('/sessions/login');
         $this->assertGuest();
     }
+    // endregion
 
+    // region Password reset flow
     #[Test]
     public function it_displays_password_reset_page(): void
     {
@@ -501,7 +508,9 @@ class SessionsControllerTest extends AbstractTestCase
         $response->assertRedirect();
         $response->assertSessionHas('alert_error');
     }
+    // endregion
 
+    // region Login lockout state transitions
     #[Test]
     public function it_clears_login_failures_after_successful_authentication(): void
     {
@@ -577,4 +586,5 @@ class SessionsControllerTest extends AbstractTestCase
         $response->assertRedirect('/dashboard');
         $this->assertAuthenticatedAs($user);
     }
+    // endregion
 }

@@ -143,3 +143,9 @@ See `.junie/guidelines.md` for detailed guidance on security patterns, DRY princ
   - `rg -n "\\broute\\(" tests`
   - `php tests/Scripts/CheckExplicitTestRoutes.php`
   and fix any violations before committing.
+
+## Test organization policy
+
+- Every test method must include `#[Test]`.
+- For large suites, apply meaningful `#[Group('...')]` tags to cluster smoke/crud/security/validation behaviors.
+- Use PhpStorm folding markers (`// region ...` / `// endregion`) for long classes to keep sections navigable.

@@ -37,6 +37,14 @@ Each test must:
 - Do not use `route('...')` helpers in controller tests.
 - URIs must never include namespace backslashes.
 
+## Test organization policy
+- Every test method must use `#[Test]`.
+- Group tests logically with `#[Group('...')]` (e.g. `smoke`, `crud`, `security`, `validation`) on large suites.
+- Use PhpStorm folding markers in long test classes:
+  - `// region <section>`
+  - `// endregion`
+  to keep suites maintainable during phased refactors.
+
 ## Migration safety rule (root cause prevention)
 - Do not run blind namespace-based search/replace when converting `route(...)` to URIs.
 - The previously observed broken form `\Fully\Qualified\Namespace'/route` is caused by partial replacement of namespace-qualified function calls.
