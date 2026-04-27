@@ -311,3 +311,10 @@ public function it_blocks_path_traversal(): void
 - [ ] Helpers are loaded explicitly with `$this->load->helper()`.
 - [ ] No direct use of `$_GET`, `$_POST`, or `$_SERVER` — use `$this->input->*()`.
 - [ ] No `php artisan` commands — InvoicePlane does not use Laravel.
+
+
+## Test Quality Guardrails
+
+- Never delete or empty meaningful test bodies just to make a suite pass. Preserve original intent and migrate in small, behavior-preserving steps.
+- Weak tests are prohibited: every test must assert expected behavior, not merely absence of fatal errors.
+- Do not use `assertResponseHasNoPhpErrors()` as the main assertion. Pair/replace it with concrete behavior checks (status code, redirect destination, expected view/output, database/session effects).

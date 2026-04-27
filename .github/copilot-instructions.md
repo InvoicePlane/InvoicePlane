@@ -65,3 +65,10 @@ There is no `quickstart.yml` and no `setup.yml` that uses `php artisan` — thos
 | `pint.json` | Pint / PHP CS Fixer configuration |
 | `.junie/guidelines.md` | Full development guidelines |
 | `AGENTS.md` | Instructions for AI coding agents |
+
+
+## Test quality guardrails
+
+- Do not delete or hollow out existing test method bodies during migration/refactor work. Preserve test intent and coverage.
+- Weak tests are prohibited; assertions must validate expected behavior and outcomes.
+- `assertResponseHasNoPhpErrors()` must not be used as a primary assertion for feature behavior.
