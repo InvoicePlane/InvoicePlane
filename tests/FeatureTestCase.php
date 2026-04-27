@@ -28,7 +28,7 @@ abstract class FeatureTestCase extends AbstractTestCase
      */
     protected function actingAsUser($user = null)
     {
-        $user ??= $this->seedModel('\Modules\Core\Models\User');
+        $user ??= $this->seedModel('User');
 
         return $this->actingAs($user);
     }

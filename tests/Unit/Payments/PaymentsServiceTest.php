@@ -119,10 +119,10 @@ class PaymentsServiceTest extends AbstractTestCase
     public function it_gets_payments_by_client_id(): void
     {
         /* Arrange */
-        $client1  = $this->seedModel('\Modules\Crm\Models\Client');
-        $client2  = $this->seedModel('\Modules\Crm\Models\Client');
-        $invoice1 = $this->seedModel('\Modules\Invoices\Models\Invoice', ['client_id' => $client1->client_id]);
-        $invoice2 = $this->seedModel('\Modules\Invoices\Models\Invoice', ['client_id' => $client2->client_id]);
+        $client1  = $this->seedModel('Client');
+        $client2  = $this->seedModel('Client');
+        $invoice1 = $this->seedModel('Invoice', ['client_id' => $client1->client_id]);
+        $invoice2 = $this->seedModel('Invoice', ['client_id' => $client2->client_id]);
         $payment1 = $this->seedModel('Payment', [
             'invoice_id' => $invoice1->invoice_id,
             'client_id'  => $client1->client_id,

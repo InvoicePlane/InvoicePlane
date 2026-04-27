@@ -429,10 +429,10 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         // Create tasks associated with the project
-        $task1 = $this->seedModel('\Modules\Projects\Models\Task', [
+        $task1 = $this->seedModel('Task', [
             'project_id' => $project->project_id,
         ]);
-        $task2 = $this->seedModel('\Modules\Projects\Models\Task', [
+        $task2 = $this->seedModel('Task', [
             'project_id' => $project->project_id,
         ]);
 
@@ -524,11 +524,11 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         // Create multiple tasks for the project
-        $task1 = $this->seedModel('\Modules\Projects\Models\Task', [
+        $task1 = $this->seedModel('Task', [
             'project_id' => $project->project_id,
             'task_name'  => 'Task 1',
         ]);
-        $task2 = $this->seedModel('\Modules\Projects\Models\Task', [
+        $task2 = $this->seedModel('Task', [
             'project_id' => $project->project_id,
             'task_name'  => 'Task 2',
         ]);

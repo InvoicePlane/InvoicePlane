@@ -27,8 +27,8 @@ class ReportsControllerTest extends AbstractTestCase
     public function it_returns_sales_by_client_report(): void
     {
         /* Arrange */
-        $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
-        $invoice = $this->seedModelMany('\Modules\Invoices\Models\Invoice', 3, [
+        $client  = $this->seedModel('tmpClient');
+        $invoice = $this->seedModelMany('Invoice', 3, [
             'client_id'    => $client->id,
             'invoice_date' => now()->subDays(5),
             'total'        => 500,
@@ -131,8 +131,8 @@ class ReportsControllerTest extends AbstractTestCase
     public function it_returns_invoices_per_client_report(): void
     {
         /* Arrange */
-        $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
-        $invoice = $this->seedModel('\Modules\Invoices\Models\Invoice', [
+        $client  = $this->seedModel('tmpClient');
+        $invoice = $this->seedModel('Invoice', [
             'client_id'    => $client->id,
             'invoice_date' => now()->subDays(3),
             'total'        => 300,

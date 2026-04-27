@@ -125,8 +125,8 @@ class QuoteServiceTest extends AbstractTestCase
     public function it_finds_quote_with_relations(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Crm\Models\Client');
-        $user   = $this->seedModel('\Modules\Core\Models\User');
+        $client = $this->seedModel('Client');
+        $user   = $this->seedModel('User');
         $quote  = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
             'user_id'   => $user->user_id,
@@ -149,7 +149,7 @@ class QuoteServiceTest extends AbstractTestCase
     public function it_finds_quote_with_custom_relations(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Crm\Models\Client');
+        $client = $this->seedModel('Client');
         $quote  = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
         ]);
@@ -179,7 +179,7 @@ class QuoteServiceTest extends AbstractTestCase
     public function it_finds_quote_or_fails(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Crm\Models\Client');
+        $client = $this->seedModel('Client');
         $quote  = $this->seedModel('Quote', [
             'client_id' => $client->client_id,
         ]);
@@ -210,8 +210,8 @@ class QuoteServiceTest extends AbstractTestCase
     public function it_gets_all_quotes_with_relations_paginated(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Crm\Models\Client');
-        $user   = $this->seedModel('\Modules\Core\Models\User');
+        $client = $this->seedModel('Client');
+        $user   = $this->seedModel('User');
 
         $this->seedModelMany('Quote', 3, [
             'client_id' => $client->client_id,
@@ -232,7 +232,7 @@ class QuoteServiceTest extends AbstractTestCase
     public function it_filters_quotes_by_status(): void
     {
         /* Arrange */
-        $client     = $this->seedModel('\Modules\Crm\Models\Client');
+        $client     = $this->seedModel('Client');
         $draftQuote = $this->seedModel('Quote', [
             'client_id'       => $client->client_id,
             'quote_status_id' => 1, // Draft
@@ -264,7 +264,7 @@ class QuoteServiceTest extends AbstractTestCase
     public function it_respects_custom_per_page_parameter(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Crm\Models\Client');
+        $client = $this->seedModel('Client');
         $this->seedModelMany('Quote', 10, [
             'client_id' => $client->client_id,
         ]);
@@ -281,8 +281,8 @@ class QuoteServiceTest extends AbstractTestCase
     public function it_gets_quotes_by_client_id(): void
     {
         /* Arrange */
-        $client1 = $this->seedModel('\Modules\Crm\Models\Client');
-        $client2 = $this->seedModel('\Modules\Crm\Models\Client');
+        $client1 = $this->seedModel('Client');
+        $client2 = $this->seedModel('Client');
         $quote1  = $this->seedModel('Quote', ['client_id' => $client1->client_id]);
         $quote2  = $this->seedModel('Quote', ['client_id' => $client1->client_id]);
         $quote3  = $this->seedModel('Quote', ['client_id' => $client2->client_id]);

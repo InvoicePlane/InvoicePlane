@@ -20,7 +20,7 @@ class DashboardControllerTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = $this->seedModel('\Modules\Dashboard\Tests\Feature\User', ['user_type' => 1, 'user_active' => 1]);
+        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
         $this->actingAs($this->user);
     }
 
@@ -29,8 +29,8 @@ class DashboardControllerTest extends AbstractTestCase
     public function it_displays_dashboard_with_overview_data(): void
     {
         /* Arrange */
-        $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
-        $invoice = $this->seedModel('\Modules\Invoices\Models\Invoice', [
+        $client  = $this->seedModel('tmpClient');
+        $invoice = $this->seedModel('Invoice', [
             'client_id' => $client->id,
             'total'     => 1000,
         ]);
@@ -48,9 +48,9 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_dashboard_with_invoice_status_totals(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 5, ['invoice_status_id' => 1]); // Draft
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 3, ['invoice_status_id' => 2]); // Sent
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 7, ['invoice_status_id' => 4]); // Paid
+        $this->seedModelMany('Invoice', 5, ['invoice_status_id' => 1]); // Draft
+        $this->seedModelMany('Invoice', 3, ['invoice_status_id' => 2]); // Sent
+        $this->seedModelMany('Invoice', 7, ['invoice_status_id' => 4]); // Paid
 
         $response = $this->get('/dashboard/index');
 
@@ -62,9 +62,9 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_dashboard_with_quote_status_totals(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 4, ['quote_status_id' => 1]); // Draft
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 2, ['quote_status_id' => 2]); // Sent
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 3, ['quote_status_id' => 3]); // Approved
+        $this->seedModelMany('Quote', 4, ['quote_status_id' => 1]); // Draft
+        $this->seedModelMany('Quote', 2, ['quote_status_id' => 2]); // Sent
+        $this->seedModelMany('Quote', 3, ['quote_status_id' => 3]); // Approved
 
         $response = $this->get('/dashboard/index');
 
@@ -76,7 +76,7 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_recent_invoices_on_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 15);
+        $this->seedModelMany('Invoice', 15);
 
         $response = $this->get('/dashboard/index');
 
@@ -89,7 +89,7 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_recent_quotes_on_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 15);
+        $this->seedModelMany('Quote', 15);
 
         $response = $this->get('/dashboard/index');
 
@@ -102,7 +102,7 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_overdue_invoices_on_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 3, [
+        $this->seedModelMany('Invoice', 3, [
             'invoice_status_id' => 2,
             'invoice_date_due'  => now()->subDays(10),
         ]);
@@ -118,7 +118,7 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_latest_projects_on_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Project', 5);
+        $this->seedModelMany('Project', 5);
 
         $response = $this->get('/dashboard/index');
 
@@ -129,7 +129,7 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_latest_tasks_on_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Task', 5);
+        $this->seedModelMany('Task', 5);
 
         $response = $this->get('/dashboard/index');
 
@@ -141,7 +141,7 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_uses_custom_invoice_overview_period_setting(): void
     {
-        $this->seedModel('\Modules\Dashboard\Tests\Feature\Setting', [
+        $this->seedModel('Setting', [
             'setting_key'   => 'invoice_overview_period',
             'setting_value' => 'this-month',
         ]);
@@ -155,7 +155,7 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_uses_custom_quote_overview_period_setting(): void
     {
-        $this->seedModel('\Modules\Dashboard\Tests\Feature\Setting', [
+        $this->seedModel('Setting', [
             'setting_key'   => 'quote_overview_period',
             'setting_value' => 'this-quarter',
         ]);
