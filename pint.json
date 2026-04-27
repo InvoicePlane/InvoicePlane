@@ -1,9 +1,7 @@
 {
     "preset": "per",
     "exclude": [
-        "application/views/**/pdf/",
-        "resources",
-        "storage"
+        "application/modules/clients/views/view.php"
     ],
     "rules": {
         "@PSR12": true,
@@ -16,7 +14,7 @@
         "binary_operator_spaces": {
             "default": "single_space",
             "operators": {
-                "=": "single_space",
+                "=": "align_single_space_minimal",
                 "=>": "align_single_space_minimal"
             }
         },

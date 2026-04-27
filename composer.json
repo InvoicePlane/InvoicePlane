@@ -26,11 +26,24 @@
         "vlucas/phpdotenv": "^5.6"
     },
     "require-dev": {
+        "driftingly/rector-laravel": "^2.3",
         "filp/whoops": "^2.18.4",
+        "larastan/larastan": "^3.9",
         "laravel/pint": "^1.27.1",
+        "phpunit/phpunit": "^11.5",
+        "rector/rector": "^2.4",
         "squizlabs/php_codesniffer": "^3.13.5",
-        "rector/rector": "^2.3.6",
         "symfony/var-dumper": "^6.4.32"
+    },
+    "autoload": {
+        "files": [
+            "bootstrap/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "scripts": {
         "check": [
