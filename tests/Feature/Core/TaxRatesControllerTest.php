@@ -33,6 +33,15 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_tax_rate(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $taxRateData = [
             'tax_rate_name'    => 'VAT',
             'tax_rate_percent' => '21.00',
@@ -50,6 +59,15 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_stores_tax_rate_via_form_store(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         /**
          * Payload:
@@ -72,6 +90,15 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_standardizes_tax_rate_percent_on_creation(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $taxRateData = [
             'tax_rate_name'    => 'Sales Tax',
             'tax_rate_percent' => '15,50', // European format
@@ -89,6 +116,15 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_updates_existing_tax_rate(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $taxRate = $this->seedModel('TaxRate', [
             'tax_rate_name'    => 'Original Tax',
             'tax_rate_percent' => 10.00,
@@ -112,6 +148,15 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_when_cancel_button_is_clicked(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $response = $this->post(route('tax_rates.form'), [
             'btn_cancel' => true,
@@ -138,6 +183,15 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_cancels_tax_rate_form_and_redirects(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post(route('tax_rates.form'), ['btn_cancel' => true]);
 
         $response->assertRedirect(route('tax_rates.index'));
@@ -146,6 +200,15 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_validates_tax_rate_percent_is_numeric(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $taxRateData = [
             'tax_rate_name'    => 'Invalid Tax',
             'tax_rate_percent' => 'not-a-number',
@@ -159,6 +222,15 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_when_editing_nonexistent_tax_rate(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get(route('tax_rates.form', ['id' => 99999]));
 
         $response->assertNotFound();
@@ -166,6 +238,7 @@ class TaxRatesControllerTest extends AbstractTestCase
 
 
     // Migrated from BckpTaxRatesControllerTest.php
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_paginated_list_of_tax_rates(): void
     {
         /* Arrange */
@@ -182,6 +255,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $response->assertViewHas('tax_rates');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_create_form(): void
     {
         /* Arrange */
@@ -201,6 +275,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $this->assertFalse($taxRate->exists);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_new_tax_rate_with_valid_data(): void
     {
         /* Arrange */
@@ -231,6 +306,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_edit_form_with_existing_tax_rate(): void
     {
         /* Arrange */
@@ -250,6 +326,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $this->assertEquals($taxRate->tax_rate_id, $viewTaxRate->tax_rate_id);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_updates_existing_tax_rate_with_valid_data(): void
     {
         /* Arrange */
@@ -285,6 +362,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_orders_tax_rates_correctly(): void
     {
         /* Arrange */
@@ -306,6 +384,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $this->assertCount(3, $taxRates);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_tax_rate_with_zero_percent(): void
     {
         /* Arrange */

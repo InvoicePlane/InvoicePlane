@@ -26,6 +26,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_null_text(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_text(null);
 
         $this->assertSame('', $result);
@@ -34,6 +43,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_text(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_text('Sample text');
 
         $this->assertSame('Sample text', $result);
@@ -42,6 +60,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_preserves_text_unchanged(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $text = 'This is some <b>formatted</b> text';
 
         $result = CustomValuesHelper::format_text($text);
@@ -52,6 +79,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_boolean_true(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_boolean('1');
 
         $this->assertIsString($result);
@@ -61,6 +97,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_boolean_false(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_boolean('0');
 
         $this->assertIsString($result);
@@ -70,6 +115,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_null_boolean(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_boolean(null);
 
         $this->assertSame('', $result);
@@ -78,6 +132,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_invalid_boolean(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_boolean('invalid');
 
         $this->assertSame('', $result);
@@ -87,6 +150,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[DataProvider('booleanProvider')]
     public function it_formats_various_boolean_values(?string $value, bool $isEmpty): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_boolean($value);
 
         if ($isEmpty) {
@@ -100,6 +172,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_empty_strings_in_format_text(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_text('');
 
         $this->assertSame('', $result);
@@ -108,6 +189,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_whitespace_in_format_text(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_text('   ');
 
         $this->assertSame('   ', $result);
@@ -116,6 +206,15 @@ class CustomValuesHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_numeric_strings_in_format_text(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = CustomValuesHelper::format_text('12345');
 
         $this->assertSame('12345', $result);

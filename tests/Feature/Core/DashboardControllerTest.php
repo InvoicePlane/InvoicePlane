@@ -48,6 +48,15 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_dashboard_with_invoice_status_totals(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 5, ['invoice_status_id' => 1]); // Draft
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 3, ['invoice_status_id' => 2]); // Sent
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 7, ['invoice_status_id' => 4]); // Paid
@@ -62,6 +71,15 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_dashboard_with_quote_status_totals(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 4, ['quote_status_id' => 1]); // Draft
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 2, ['quote_status_id' => 2]); // Sent
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 3, ['quote_status_id' => 3]); // Approved
@@ -76,6 +94,15 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_recent_invoices_on_dashboard(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 15);
 
         $response = $this->get(route('dashboard.index'));
@@ -89,6 +116,15 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_recent_quotes_on_dashboard(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 15);
 
         $response = $this->get(route('dashboard.index'));
@@ -102,6 +138,15 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_overdue_invoices_on_dashboard(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 3, [
             'invoice_status_id' => 2,
             'invoice_date_due'  => now()->subDays(10),
@@ -118,6 +163,15 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_latest_projects_on_dashboard(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Project', 5);
 
         $response = $this->get(route('dashboard.index'));
@@ -129,6 +183,15 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_latest_tasks_on_dashboard(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Task', 5);
 
         $response = $this->get(route('dashboard.index'));
@@ -141,6 +204,15 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_uses_custom_invoice_overview_period_setting(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModel('\Modules\Dashboard\Tests\Feature\Setting', [
             'setting_key'   => 'invoice_overview_period',
             'setting_value' => 'this-month',
@@ -155,6 +227,15 @@ class DashboardControllerTest extends AbstractTestCase
     #[Test]
     public function it_uses_custom_quote_overview_period_setting(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModel('\Modules\Dashboard\Tests\Feature\Setting', [
             'setting_key'   => 'quote_overview_period',
             'setting_value' => 'this-quarter',

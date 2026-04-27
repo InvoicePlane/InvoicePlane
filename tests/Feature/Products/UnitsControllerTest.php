@@ -25,6 +25,15 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_units_index(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get(route('units.index'));
 
         $response->assertSuccessful();
@@ -34,6 +43,15 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_unit(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $unitData = [
             'unit_name'      => 'Kilogram',
             'unit_name_plrl' => 'Kilograms',
@@ -50,6 +68,15 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_prevents_duplicate_unit_names(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModel('Unit', ['unit_name' => 'Existing Unit']);
 
         $unitData = [
@@ -67,6 +94,15 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_updates_existing_unit(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $unit = $this->seedModel('Unit', ['unit_name' => 'Original Unit']);
 
         $updateData = [
@@ -86,6 +122,15 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_deletes_unit(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $unit = $this->seedModel('Unit');
 
         $response = $this->delete(route('units.delete', ['id' => $unit->unit_id]));
@@ -96,6 +141,7 @@ class UnitsControllerTest extends AbstractTestCase
 
 
     // Migrated from BckpUnitsControllerTest.php
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_paginated_list_of_units(): void
     {
         /* Arrange */
@@ -112,6 +158,7 @@ class UnitsControllerTest extends AbstractTestCase
         $response->assertViewHas('units');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_create_form(): void
     {
         /* Arrange */
@@ -131,6 +178,7 @@ class UnitsControllerTest extends AbstractTestCase
         $this->assertFalse($unit->exists);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_new_unit_with_valid_data(): void
     {
         /* Arrange */
@@ -161,6 +209,7 @@ class UnitsControllerTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_edit_form_with_existing_unit(): void
     {
         /* Arrange */
@@ -180,6 +229,7 @@ class UnitsControllerTest extends AbstractTestCase
         $this->assertEquals($unit->unit_id, $viewUnit->unit_id);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_updates_existing_unit_with_valid_data(): void
     {
         /* Arrange */
@@ -211,6 +261,7 @@ class UnitsControllerTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_orders_units_correctly(): void
     {
         /* Arrange */

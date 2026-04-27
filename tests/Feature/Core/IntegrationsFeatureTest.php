@@ -24,16 +24,36 @@ class IntegrationsFeatureTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_resolves_the_integrations_index_through_mx_routing_and_returns_200(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/integrations');
 
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_html_on_the_integrations_index_page(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/integrations');
 
         $this->assertResponseBodyContains($response, '<html');
@@ -45,8 +65,18 @@ class IntegrationsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_an_unauthenticated_visitor_away_from_integrations(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->actingAsGuest();
 
         $response = $this->get('/integrations');
@@ -61,8 +91,18 @@ class IntegrationsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_expose_a_provider_api_key_in_the_integrations_page_body(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/integrations');
 
         $this->assertResponseBodyNotContains($response, 'api_secret');
@@ -70,8 +110,18 @@ class IntegrationsFeatureTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'client_secret');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_peppol_settings_form_when_the_provider_is_enabled(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/integrations/peppol');
 
         self::assertThat(
@@ -93,8 +143,18 @@ class IntegrationsFeatureTest extends AbstractTestCase
         }
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_json_with_a_success_flag_when_saving_valid_integration_settings(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post('/integrations/save', [
             'provider'    => 'letspeppol',
             'api_key'     => 'test-key-' . bin2hex(random_bytes(4)),
@@ -121,15 +181,35 @@ class IntegrationsFeatureTest extends AbstractTestCase
         }
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_expose_raw_php_errors_on_integration_settings_save_with_empty_payload(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post('/integrations/save', []);
 
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_resolves_integrations_via_the_psr4_controller_alias_not_a_legacy_file(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $psr4ControllerFile   = APPPATH . 'modules/integrations/controllers/IntegrationsController.php';
         $legacyControllerFile = APPPATH . 'modules/integrations/controllers/Integrations.php';
 

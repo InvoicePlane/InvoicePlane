@@ -36,6 +36,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_currency_with_default_settings(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->setDefaultCurrencySettings();
 
         $result = NumberHelper::format_currency(1234.56);
@@ -46,6 +55,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_currency_with_symbol_after(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('currency_symbol', '€');
         Setting::setValue('currency_symbol_placement', 'after');
         Setting::setValue('thousands_separator', '.');
@@ -60,6 +78,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_currency_with_symbol_after_space(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('currency_symbol', '€');
         Setting::setValue('currency_symbol_placement', 'afterspace');
         Setting::setValue('thousands_separator', ' ');
@@ -74,6 +101,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_currency_with_zero_decimals(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('currency_symbol', '$');
         Setting::setValue('currency_symbol_placement', 'before');
         Setting::setValue('thousands_separator', ',');
@@ -89,6 +125,15 @@ class NumberHelperTest extends AbstractTestCase
     #[DataProvider('currencyAmountProvider')]
     public function it_formats_various_currency_amounts(int|float|string $amount, string $expected): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->setDefaultCurrencySettings();
 
         $result = NumberHelper::format_currency($amount);
@@ -99,6 +144,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_amount_with_default_settings(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->setDefaultCurrencySettings();
 
         $result = NumberHelper::format_amount(1234.56);
@@ -109,6 +163,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_for_null_amount(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->setDefaultCurrencySettings();
 
         $result = NumberHelper::format_amount(null);
@@ -119,6 +182,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_amount_with_european_format(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('thousands_separator', '.');
         Setting::setValue('decimal_point', ',');
         Setting::setValue('tax_rate_decimal_places', '2');
@@ -131,6 +203,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_quantity_with_default_settings(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('thousands_separator', ',');
         Setting::setValue('decimal_point', '.');
         Setting::setValue('default_item_decimals', '2');
@@ -143,6 +224,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_quantity_with_higher_precision(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('thousands_separator', ',');
         Setting::setValue('decimal_point', '.');
         Setting::setValue('default_item_decimals', '4');
@@ -155,6 +245,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_for_null_quantity(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->setDefaultCurrencySettings();
 
         $result = NumberHelper::format_quantity(null);
@@ -165,6 +264,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_standardizes_amount_from_european_format(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('thousands_separator', '.');
         Setting::setValue('decimal_point', ',');
 
@@ -176,6 +284,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_standardizes_amount_from_us_format(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('thousands_separator', ',');
         Setting::setValue('decimal_point', '.');
 
@@ -187,6 +304,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_numeric_amount_standardization(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->setDefaultCurrencySettings();
 
         $result = NumberHelper::standardize_amount(1234.56);
@@ -197,6 +323,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_standardizes_amount_with_multiple_dots(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('thousands_separator', '.');
         Setting::setValue('decimal_point', ',');
 
@@ -209,6 +344,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_empty_thousands_separator(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('thousands_separator', '');
         Setting::setValue('decimal_point', ',');
 
@@ -220,6 +364,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_for_null_standardize_amount(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->setDefaultCurrencySettings();
 
         $result = NumberHelper::standardize_amount(null);
@@ -230,6 +383,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_standardizes_zero(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->setDefaultCurrencySettings();
 
         $result = NumberHelper::standardize_amount('0,00');
@@ -240,6 +402,15 @@ class NumberHelperTest extends AbstractTestCase
     #[Test]
     public function it_standardizes_negative_amounts(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('thousands_separator', ',');
         Setting::setValue('decimal_point', '.');
 

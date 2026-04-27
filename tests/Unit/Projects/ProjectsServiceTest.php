@@ -79,6 +79,15 @@ class ProjectsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_array_when_project_id_is_null(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $result = $this->service->getTasks(null);
 
@@ -90,6 +99,15 @@ class ProjectsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_array_when_project_id_is_zero(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $result = $this->service->getTasks(0);
 
@@ -101,6 +119,15 @@ class ProjectsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_array_when_project_id_is_false(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $result = $this->service->getTasks(false);
 
@@ -112,6 +139,15 @@ class ProjectsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $rules = $this->service->validationRules();
 

@@ -326,8 +326,18 @@ class PaymentMethodsControllerTest extends AbstractTestCase
 
 
     // Migrated from BckpPaymentMethodsControllerTest.php
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_payment_methods_index(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get(\Tests\Feature\Invoices\route('payment_methods.index'));
 
         $response->assertSuccessful();
@@ -335,8 +345,18 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $response->assertSee('Payment Methods');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_new_payment_method(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $methodData = [
             'payment_method_name' => 'Test Payment Method',
         ];
@@ -349,8 +369,18 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prevents_duplicate_payment_method_names(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModel('PaymentMethod', ['payment_method_name' => 'Existing Method']);
 
         $methodData = [
@@ -364,8 +394,18 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $response->assertSessionHas('alert_error');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_cancels_payment_method_form_and_redirects(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post(\Tests\Feature\Invoices\route('payment_methods.form'), ['btn_cancel' => true]);
 
         $response->assertRedirect(\Tests\Feature\Invoices\route('payment_methods.index'));

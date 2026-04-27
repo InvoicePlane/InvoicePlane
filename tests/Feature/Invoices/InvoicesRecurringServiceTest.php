@@ -25,6 +25,15 @@ class InvoicesRecurringServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -39,6 +48,15 @@ class InvoicesRecurringServiceTest extends AbstractTestCase
     #[Test]
     public function it_validates_invoice_id_as_required_integer(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -49,6 +67,15 @@ class InvoicesRecurringServiceTest extends AbstractTestCase
     #[Test]
     public function it_validates_recur_start_date_as_required_date(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -59,6 +86,15 @@ class InvoicesRecurringServiceTest extends AbstractTestCase
     #[Test]
     public function it_validates_recur_end_date_as_nullable_date(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -69,6 +105,15 @@ class InvoicesRecurringServiceTest extends AbstractTestCase
     #[Test]
     public function it_validates_recur_frequency_as_required_string(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -79,6 +124,15 @@ class InvoicesRecurringServiceTest extends AbstractTestCase
     #[Test]
     public function it_validates_recur_next_date_as_nullable_date(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -89,6 +143,15 @@ class InvoicesRecurringServiceTest extends AbstractTestCase
     #[Test]
     public function it_provides_all_required_validation_keys(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 

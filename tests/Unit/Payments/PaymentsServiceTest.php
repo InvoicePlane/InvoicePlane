@@ -66,6 +66,15 @@ class PaymentsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_db_array_with_correct_structure(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $result = $this->service->dbArray();
 
@@ -75,8 +84,18 @@ class PaymentsServiceTest extends AbstractTestCase
 
 
     // Migrated from BckpPaymentServiceTest.php
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_validation_rules(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $rules = $this->service->getValidationRules();
 
         $this->assertIsArray($rules);
@@ -86,6 +105,7 @@ class PaymentsServiceTest extends AbstractTestCase
         $this->assertArrayHasKey('payment_date', $rules);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_orders_payments_by_date_descending(): void
     {
         /* Arrange */
@@ -113,6 +133,7 @@ class PaymentsServiceTest extends AbstractTestCase
         $this->assertEquals($payment2->payment_id, $payments[0]->payment_id);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_payments_by_client_id(): void
     {
         /* Arrange */

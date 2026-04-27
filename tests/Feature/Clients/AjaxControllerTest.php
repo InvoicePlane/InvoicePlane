@@ -53,6 +53,15 @@ class AjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_saves_permissive_search_preference(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /**
          * Payload:
          * {

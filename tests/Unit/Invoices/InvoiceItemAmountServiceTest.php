@@ -32,6 +32,15 @@ class InvoiceItemAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_item_amount_in_legacy_mode(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         Setting::setValue('legacy_calculation', '1');
 
@@ -66,6 +75,15 @@ class InvoiceItemAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_item_amount_with_no_tax(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         Setting::setValue('legacy_calculation', '1');
 
@@ -95,6 +113,15 @@ class InvoiceItemAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_item_amount_with_global_amount_discount(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         Setting::setValue('legacy_calculation', '0');
 
@@ -126,6 +153,15 @@ class InvoiceItemAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_item_amount_with_global_percent_discount(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         Setting::setValue('legacy_calculation', '0');
 
@@ -156,6 +192,15 @@ class InvoiceItemAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_item_amount_with_item_and_global_discount(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         Setting::setValue('legacy_calculation', '0');
 
@@ -192,6 +237,15 @@ class InvoiceItemAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_updates_existing_item_amount(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         Setting::setValue('legacy_calculation', '1');
 
@@ -228,6 +282,15 @@ class InvoiceItemAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_accumulates_global_discount_across_multiple_items(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         Setting::setValue('legacy_calculation', '0');
 
@@ -266,6 +329,15 @@ class InvoiceItemAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_handles_fractional_quantities_and_prices(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         Setting::setValue('legacy_calculation', '1');
 

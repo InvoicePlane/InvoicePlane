@@ -40,6 +40,15 @@ class UnitsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_collection_when_no_units_exist(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $result = $this->service->getAll();
 
@@ -126,6 +135,15 @@ class UnitsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_for_non_existent_unit_id(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $result = $this->service->getName(99999, 1);
 
@@ -209,6 +227,15 @@ class UnitsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_false_when_deleting_non_existent_unit(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $result = $this->service->delete(99999);
 
@@ -219,6 +246,15 @@ class UnitsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $rules = $this->service->validationRules();
 
@@ -233,6 +269,15 @@ class UnitsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_default_select_query_builder(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $builder = $this->service->defaultSelect();
 
@@ -243,6 +288,15 @@ class UnitsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_default_order_by_query_builder(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $builder = $this->service->defaultOrderBy();
 

@@ -24,16 +24,36 @@ class SessionsFeatureTest extends AbstractTestCase
         $this->actingAsGuest();
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_login_page_with_a_200_status_when_unauthenticated(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/sessions/login');
 
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_includes_a_login_form_on_the_sessions_login_page(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/sessions/login');
 
         $this->assertResponseBodyContains($response, '<form');
@@ -44,8 +64,18 @@ class SessionsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_render_the_admin_dashboard_when_unauthenticated(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/dashboard');
 
         self::assertTrue(
@@ -57,8 +87,18 @@ class SessionsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_to_login_when_post_credentials_are_missing(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post('/sessions/login', [
             'btn_login' => '1',
             'email'     => '',
@@ -71,8 +111,18 @@ class SessionsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_to_login_with_wrong_credentials(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post('/sessions/login', [
             'btn_login' => '1',
             'email'     => 'nobody@nonexistent.example',
@@ -90,8 +140,18 @@ class SessionsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_password_reset_form_with_a_200_status(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/sessions/passwordreset');
 
         $this->assertResponseStatusCode($response, 200);
@@ -99,8 +159,18 @@ class SessionsFeatureTest extends AbstractTestCase
         $this->assertResponseBodyContains($response, '<form');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_to_login_when_a_nonexistent_email_is_submitted_to_password_reset(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post('/sessions/passwordreset', [
             'btn_reset' => '1',
             'email'     => 'nobody_exists_' . time() . '@nonexistent.example',
@@ -112,8 +182,18 @@ class SessionsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_reveal_whether_the_email_exists_in_the_reset_response(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $responseReal = $this->post('/sessions/passwordreset', [
             'btn_reset' => '1',
             'email'     => 'nobody_real_' . time() . '@nonexistent.example',
@@ -131,8 +211,18 @@ class SessionsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_password_reset_token_containing_non_alphanumeric_characters(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $maliciousToken = '../etc/passwd';
 
         $response = $this->get('/sessions/passwordreset/' . rawurlencode($maliciousToken));
@@ -154,8 +244,18 @@ class SessionsFeatureTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'root:');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_to_login_when_an_unknown_valid_format_token_is_used(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $unknownToken = bin2hex(random_bytes(16));
 
         $response = $this->get('/sessions/passwordreset/' . $unknownToken);
@@ -169,8 +269,18 @@ class SessionsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_destroys_the_session_and_redirects_to_login_on_logout(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->actingAsAdmin();
 
         $response = $this->get('/sessions/logout');
@@ -188,8 +298,18 @@ class SessionsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_expose_php_errors_on_the_login_page(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/sessions/login');
 
         $this->assertResponseHasNoPhpErrors($response);

@@ -173,6 +173,15 @@ class PagerHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_null(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $result = PagerHelper::pager('/test', null);
 
@@ -183,6 +192,15 @@ class PagerHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_string(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $result = PagerHelper::pager('/test', 'mdl_quotes');
 

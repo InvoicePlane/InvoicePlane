@@ -9,7 +9,7 @@ use Tests\AbstractTestCase;
 class EdgeCasesTest extends AbstractTestCase
 {
     #[Test]
-    public function unit_service_handles_extreme_quantities_correctly(): void
+    public function it_unit_service_handles_extreme_quantities_correctly(): void
     {
         /* Arrange */
         $service = new UnitsService();
@@ -29,7 +29,7 @@ class EdgeCasesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function tasks_service_handles_concurrent_task_retrieval(): void
+    public function it_tasks_service_handles_concurrent_task_retrieval(): void
     {
         /* Arrange */
         $service = new TasksService();
@@ -56,7 +56,7 @@ class EdgeCasesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function tasks_to_invoice_returns_correct_sorting(): void
+    public function it_tasks_to_invoice_returns_correct_sorting(): void
     {
         /* Arrange */
         $service = new TasksService();
@@ -100,7 +100,7 @@ class EdgeCasesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function unit_save_preserves_data_integrity_on_update(): void
+    public function it_unit_save_preserves_data_integrity_on_update(): void
     {
         /* Arrange */
         $service = new UnitsService();
@@ -123,7 +123,7 @@ class EdgeCasesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function tasks_service_handles_string_and_numeric_ids(): void
+    public function it_tasks_service_handles_string_and_numeric_ids(): void
     {
         /* Arrange */
         $service = new TasksService();
@@ -147,7 +147,7 @@ class EdgeCasesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function empty_string_id_treated_as_falsy(): void
+    public function it_empty_string_id_treated_as_falsy(): void
     {
         /* Arrange */
         $service = new TasksService();
@@ -161,7 +161,7 @@ class EdgeCasesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function unit_exists_is_case_sensitive(): void
+    public function it_unit_exists_is_case_sensitive(): void
     {
         /* Arrange */
         $service = new UnitsService();
@@ -174,7 +174,7 @@ class EdgeCasesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function concurrent_updates_maintain_consistency(): void
+    public function it_concurrent_updates_maintain_consistency(): void
     {
         /* Arrange */
         $service = new UnitsService();

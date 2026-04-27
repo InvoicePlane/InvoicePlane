@@ -256,6 +256,7 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
 
 
     // Migrated from BckpProductDeletionValidationTest.php
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_deletion_of_product_without_invoice_items(): void
     {
         /* Arrange */
@@ -271,6 +272,7 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertTrue($canDelete, 'Product without invoice items should be deletable');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_correct_invoice_item_count(): void
     {
         /* Arrange */
@@ -293,6 +295,7 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertEquals(3, $itemCount, 'Should return correct count of invoice items');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prevents_deletion_with_multiple_invoice_items(): void
     {
         /* Arrange */
@@ -312,6 +315,7 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertEquals(5, $itemCount);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_zero_count_for_nonexistent_product(): void
     {
         /* Arrange */
@@ -326,6 +330,7 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertTrue($canDelete, 'Non-existent product should be "deletable" (returns true)');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prevents_deletion_even_with_archived_invoice_items(): void
     {
         /* Arrange */
