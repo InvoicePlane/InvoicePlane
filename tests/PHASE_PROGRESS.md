@@ -37,11 +37,12 @@ Remaining in Clients module:
 - Add small helper assertions where recurring patterns emerge (redirect target suffix, content-type checks).
 
 Progress note:
+- Refactored weak placeholder tests in `tests/Feature/Products/AjaxControllerTest.php` into deterministic, behavior-verifying assertions for both modal lookup and selection processing endpoints.
 - Multiple Clients suites now migrated to `TestRoutes` (controller CRUD, ajax, guest, deletion, and user-client flows).
 
 ## Phase 3 — Unit tests (model/service focus)
 
-**Status:** Not started
+**Status:** In progress
 
 Plan:
 - Normalize `UnitTestCase` to remove Laravel-specific dependencies in favor of CI-compatible setup.

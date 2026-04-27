@@ -10,6 +10,8 @@ final class TestRoutes
     public const GUEST_VIEW = '/guest/view';
 
     public const USER_CLIENTS_INDEX = '/user_clients';
+    public const PRODUCTS_AJAX_MODAL_LOOKUPS = '/products/ajax/modal_product_lookups';
+    public const PRODUCTS_AJAX_PROCESS_SELECTIONS = '/products/ajax/process_product_selections';
 
 
     public const SESSIONS_LOGIN = '/sessions/login';
