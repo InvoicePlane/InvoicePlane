@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Support\TestRoutes;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -41,7 +40,7 @@ class ClientsAjaxModalTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
+        $response = $this->get('/crm/ajax/modal_client_lookup');
 
         /* Assert */
         $response->assertOk();
@@ -70,7 +69,7 @@ class ClientsAjaxModalTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
+        $response = $this->get('/crm/ajax/modal_client_lookup');
 
         /* Assert */
         $clients = $response->viewData('clients');
@@ -98,10 +97,10 @@ class ClientsAjaxModalTest extends AbstractTestCase
     // ...
 
         /* Act */
-        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
+        $response = $this->get('/crm/ajax/modal_client_lookup');
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::SESSIONS_LOGIN);
+        $response->assertRedirect('/sessions/login');
     }
 
     /**
@@ -118,7 +117,7 @@ class ClientsAjaxModalTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
+        $response = $this->get('/crm/ajax/modal_client_lookup');
 
         /* Assert */
         $response->assertOk();
@@ -142,7 +141,7 @@ class ClientsAjaxModalTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
+        $response = $this->get('/crm/ajax/modal_client_lookup');
 
         /* Assert */
         $response->assertOk();
@@ -165,7 +164,7 @@ class ClientsAjaxModalTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
+        $response = $this->get('/crm/ajax/modal_client_lookup');
 
         /* Assert */
         $response->assertOk();

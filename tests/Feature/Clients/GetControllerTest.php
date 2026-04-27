@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Support\TestRoutes;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -37,7 +36,7 @@ class GetControllerTest extends AbstractTestCase
         // Guest operations may not require authentication
 
         /* Act */
-        $response = $this->get(TestRoutes::GUEST_GET);
+        $response = $this->get('/guest/get');
 
         /* Assert */
         $response->assertOk();
@@ -55,7 +54,7 @@ class GetControllerTest extends AbstractTestCase
         // No authentication required
 
         /* Act */
-        $response = $this->get(TestRoutes::GUEST_GET);
+        $response = $this->get('/guest/get');
 
         /* Assert */
         $response->assertOk();
@@ -72,7 +71,7 @@ class GetControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::GUEST_GET);
+        $response = $this->get('/guest/get');
 
         /* Assert */
         $response->assertOk();

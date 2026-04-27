@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Support\TestRoutes;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -39,10 +38,10 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(TestRoutes::clientsDelete((int) $client->client_id));
+        $response = $this->post('/clients/delete/' . (int) $client->client_id);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseMissing('ip_clients', [
@@ -67,10 +66,10 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(TestRoutes::clientsDelete((int) $client->client_id));
+        $response = $this->post('/clients/delete/' . (int) $client->client_id);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_error');
 
         $this->assertDatabaseHas('ip_clients', [
@@ -95,10 +94,10 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(TestRoutes::clientsDelete((int) $client->client_id));
+        $response = $this->post('/clients/delete/' . (int) $client->client_id);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_error');
 
         $this->assertDatabaseHas('ip_clients', [
@@ -123,10 +122,10 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(TestRoutes::clientsDelete((int) $client->client_id));
+        $response = $this->post('/clients/delete/' . (int) $client->client_id);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_error');
 
         $this->assertDatabaseHas('ip_clients', [
@@ -151,10 +150,10 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModel('Project', ['client_id' => $client->client_id]);
 
         /* Act */
-        $response = $this->post(TestRoutes::clientsDelete((int) $client->client_id));
+        $response = $this->post('/clients/delete/' . (int) $client->client_id);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_error');
 
         $this->assertDatabaseHas('ip_clients', ['client_id' => $client->client_id]);
@@ -173,10 +172,10 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
         $invalidId = -1;
 
         /* Act */
-        $response = $this->post(TestRoutes::clientsDelete($invalidId));
+        $response = $this->post('/clients/delete/' . $invalidId);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_error');
     }
 
@@ -193,10 +192,10 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->post(TestRoutes::clientsDelete($nonexistentId));
+        $response = $this->post('/clients/delete/' . $nonexistentId);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_error');
     }
 
@@ -216,7 +215,7 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
         $quote   = $this->seedModel('Quote', ['client_id' => $client->client_id]);
 
         // Initially cannot delete
-        $response1 = $this->post(TestRoutes::clientsDelete((int) $client->client_id));
+        $response1 = $this->post('/clients/delete/' . (int) $client->client_id);
         $response1->assertSessionHas('alert_error');
 
         // Remove related records
@@ -224,10 +223,10 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
         $quote->delete();
 
         /* Act */
-        $response2 = $this->post(TestRoutes::clientsDelete((int) $client->client_id));
+        $response2 = $this->post('/clients/delete/' . (int) $client->client_id);
 
         /* Assert */
-        $response2->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response2->assertRedirect('/clients');
         $response2->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_clients', ['client_id' => $client->client_id]);
     }

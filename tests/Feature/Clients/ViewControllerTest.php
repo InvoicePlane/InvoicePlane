@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Support\TestRoutes;
 use View;
 
 /**
@@ -37,7 +36,7 @@ class ViewControllerTest extends AbstractTestCase
         // Guest operations may not require authentication
 
         /* Act */
-        $response = $this->get(TestRoutes::GUEST_VIEW);
+        $response = $this->get('/guest/view');
 
         /* Assert */
         $response->assertOk();
@@ -55,7 +54,7 @@ class ViewControllerTest extends AbstractTestCase
         // No authentication required
 
         /* Act */
-        $response = $this->get(TestRoutes::GUEST_VIEW);
+        $response = $this->get('/guest/view');
 
         /* Assert */
         $response->assertOk();
@@ -72,7 +71,7 @@ class ViewControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::GUEST_VIEW);
+        $response = $this->get('/guest/view');
 
         /* Assert */
         $response->assertOk();

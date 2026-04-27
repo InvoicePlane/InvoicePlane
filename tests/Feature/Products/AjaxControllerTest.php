@@ -6,7 +6,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Support\TestRoutes;
 
 #[CoversClass(AjaxController::class)]
 #[CoversClass(Tests\Feature\Products\AjaxController::class)]
@@ -26,7 +25,7 @@ class AjaxControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(TestRoutes::PRODUCTS_AJAX_MODAL_LOOKUPS);
+        $response = $this->get('/products/ajax/modal_product_lookups');
 
         /* Assert */
         $response->assertOk();
@@ -46,7 +45,7 @@ class AjaxControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(TestRoutes::PRODUCTS_AJAX_PROCESS_SELECTIONS, [
+        $response = $this->post('/products/ajax/process_product_selections', [
             'product_ids' => [$product->product_id],
         ]);
 

@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Support\TestRoutes;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -35,7 +34,7 @@ class GuestControllerTest extends AbstractTestCase
         // Guest portal may not require authentication
 
         /* Act */
-        $response = $this->get(TestRoutes::GUEST_INDEX);
+        $response = $this->get('/guest');
 
         /* Assert */
         $response->assertOk();
@@ -52,7 +51,7 @@ class GuestControllerTest extends AbstractTestCase
         // No authentication
 
         /* Act */
-        $response = $this->get(TestRoutes::GUEST_INDEX);
+        $response = $this->get('/guest');
 
         /* Assert */
         $response->assertOk();
@@ -69,7 +68,7 @@ class GuestControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::GUEST_INDEX);
+        $response = $this->get('/guest');
 
         /* Assert */
         $response->assertOk();
