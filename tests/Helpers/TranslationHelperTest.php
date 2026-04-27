@@ -30,15 +30,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_translates_simple_strings(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = TranslationHelper::trans('validation.required');
 
         $this->assertIsString($result);
@@ -48,15 +39,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_key_when_translation_not_found(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $key = 'non.existent.translation.key';
 
         $result = TranslationHelper::trans($key);
@@ -67,15 +49,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_uses_default_value_when_translation_not_found(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $key     = 'non.existent.key';
         $default = 'Default value';
 
@@ -87,15 +60,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_wraps_translation_in_label_with_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $fieldId = 'test_field';
 
         $result = TranslationHelper::trans('validation.required', $fieldId);
@@ -107,15 +71,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_does_not_wrap_when_id_is_empty(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = TranslationHelper::trans('validation.required', '');
 
         $this->assertStringStartsNotWith('<label', $result);
@@ -124,15 +79,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_sets_application_locale(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         TranslationHelper::setLanguage('fr');
 
         $this->assertSame('fr', app()->getLocale());
@@ -141,15 +87,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_uses_system_default_for_system_language(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Setting::setValue('default_language', 'de');
 
         TranslationHelper::setLanguage('system');
@@ -160,15 +97,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_sets_specific_language(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         TranslationHelper::setLanguage('es');
 
         $this->assertSame('es', app()->getLocale());
@@ -177,15 +105,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_available_languages(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $languages = TranslationHelper::getAvailableLanguages();
 
         $this->assertIsArray($languages);
@@ -195,15 +114,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_array_when_lang_directory_missing(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         // This test assumes the lang directory exists, but tests the handling
         $languages = TranslationHelper::getAvailableLanguages();
 
@@ -213,15 +123,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_sorted_languages(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $languages = TranslationHelper::getAvailableLanguages();
 
         if (count($languages) > 1) {
@@ -234,15 +135,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_empty_translation_key(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = TranslationHelper::trans('');
 
         $this->assertSame('', $result);
@@ -251,15 +143,6 @@ class TranslationHelperTest extends AbstractTestCase
     #[Test]
     public function it_uses_configured_default_language(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Setting::setValue('default_language', 'fr');
 
         $result = TranslationHelper::trans('validation.required');

@@ -29,15 +29,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_invoice_mail_composer(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $invoice       = $this->seedModel('Invoice', ['client_id' => $this->client->client_id]);
         $emailTemplate = $this->seedModel('EmailTemplate', ['email_template_type' => 'invoice']);
 
@@ -53,15 +44,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_quote_mail_composer(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote         = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
         $emailTemplate = $this->seedModel('EmailTemplate', ['email_template_type' => 'quote']);
 
@@ -76,15 +58,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_503_when_mailer_not_configured(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Config::set('mail.driver', null);
 
         $invoice = $this->seedModel('Invoice');
@@ -98,15 +71,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_sends_invoice_email_with_pdf(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $invoice = $this->seedModel('Invoice', [
@@ -138,15 +102,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_sends_invoice_email_with_cc_and_bcc(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $invoice = $this->seedModel('Invoice', [
@@ -177,15 +132,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_converts_plain_text_to_html_in_email_body(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $invoice = $this->seedModel('Invoice', [
@@ -215,15 +161,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_attaches_invoice_uploads_to_email(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $invoice = $this->seedModel('Invoice', [
@@ -252,15 +189,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_generates_invoice_number_before_sending_email(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $invoice = $this->seedModel('Invoice', [
@@ -287,15 +215,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_marks_invoice_as_sent_after_emailing(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $invoice = $this->seedModel('Invoice', [
@@ -321,15 +240,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_cancels_invoice_email_and_redirects_to_view(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $invoice = $this->seedModel('Invoice');
 
         $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), [
@@ -342,15 +252,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_to_mailer_form_on_failed_email_send(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
         Mail::shouldReceive('send')->andThrow(new Exception('Mail server error'));
 
@@ -375,15 +276,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_sends_quote_email_with_pdf(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $quote = $this->seedModel('Quote', [
@@ -415,15 +307,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_generates_quote_number_before_sending_email(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $quote = $this->seedModel('Quote', [
@@ -450,15 +333,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_marks_quote_as_sent_after_emailing(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $quote = $this->seedModel('Quote', [
@@ -484,15 +358,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_cancels_quote_email_and_redirects_to_view(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote');
 
         $response = $this->post('/mailer/sendQuote/' . ($quote->quote_id), [
@@ -505,15 +370,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_attaches_quote_uploads_to_email(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $quote = $this->seedModel('Quote', [
@@ -542,15 +398,6 @@ class MailerControllerTest extends AbstractTestCase
     #[Test]
     public function it_decodes_html_entities_in_email_body(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $invoice = $this->seedModel('Invoice', [

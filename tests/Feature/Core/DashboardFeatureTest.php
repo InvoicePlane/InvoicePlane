@@ -23,15 +23,6 @@ class DashboardFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_dashboard_with_a_200_status_when_authenticated(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/dashboard');
 
         $this->assertResponseStatusCode($response, 200);
@@ -41,15 +32,6 @@ class DashboardFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_a_full_html_document_on_the_dashboard(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/dashboard');
 
         $this->assertResponseBodyContains($response, '<html');
@@ -65,15 +47,6 @@ class DashboardFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_includes_navigation_elements_on_the_dashboard(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/dashboard');
 
         $this->assertResponseStatusCode($response, 200);
@@ -87,15 +60,6 @@ class DashboardFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_a_guest_away_from_the_dashboard(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAsGuest();
 
         $response = $this->get('/dashboard');
@@ -109,15 +73,6 @@ class DashboardFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_expose_php_errors_on_the_dashboard(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/dashboard');
 
         $this->assertResponseHasNoPhpErrors($response);
@@ -126,15 +81,6 @@ class DashboardFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_produces_a_deterministic_dashboard_response_on_two_consecutive_requests(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $first  = $this->get('/dashboard');
         $second = $this->get('/dashboard');
 

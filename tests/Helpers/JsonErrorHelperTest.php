@@ -20,15 +20,6 @@ class JsonErrorHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_array_when_no_post_data(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $_POST = [];
 
         $result = JsonErrorHelper::json_errors();
@@ -40,15 +31,6 @@ class JsonErrorHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_array_of_errors(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         // Simulate POST data
         $_POST = ['field1' => 'value1', 'field2' => 'value2'];
 
@@ -60,15 +42,6 @@ class JsonErrorHelperTest extends AbstractTestCase
     #[Test]
     public function it_processes_multiple_post_fields(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $_POST = [
             'email'    => 'invalid-email',
             'name'     => 'John Doe',

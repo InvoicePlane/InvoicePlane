@@ -24,15 +24,6 @@ class FamiliesServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_a_builder_from_default_select(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $builder = $this->service->defaultSelect();
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
     }
@@ -40,15 +31,6 @@ class FamiliesServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_a_builder_from_default_order_by(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $builder = $this->service->defaultOrderBy();
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
     }
@@ -56,15 +38,6 @@ class FamiliesServiceTest extends AbstractTestCase
     #[Test]
     public function it_requires_family_name_in_validation_rules(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $rules = $this->service->validationRules();
         $this->assertArrayHasKey('family_name', $rules);
         $this->assertEquals('required', $rules['family_name']['rules']);
@@ -73,15 +46,6 @@ class FamiliesServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_all_families_from_get_all(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModelMany('Family', 5);
 
         $results = $this->service->getAll();

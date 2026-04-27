@@ -25,15 +25,6 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_units_index(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/units/index');
 
         $response->assertSuccessful();
@@ -43,15 +34,6 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_unit(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $unitData = [
             'unit_name'      => 'Kilogram',
             'unit_name_plrl' => 'Kilograms',
@@ -68,15 +50,6 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_prevents_duplicate_unit_names(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('Unit', ['unit_name' => 'Existing Unit']);
 
         $unitData = [
@@ -94,15 +67,6 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_updates_existing_unit(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $unit = $this->seedModel('Unit', ['unit_name' => 'Original Unit']);
 
         $updateData = [
@@ -122,15 +86,6 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_deletes_unit(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $unit = $this->seedModel('Unit');
 
         $response = $this->delete('/units/delete/' . ($unit->unit_id));

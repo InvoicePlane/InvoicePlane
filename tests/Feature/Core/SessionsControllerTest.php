@@ -20,15 +20,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_index_to_login(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/sessions/index');
 
         $response->assertRedirect('/sessions/login');
@@ -37,15 +28,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_login_page(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/sessions/login');
 
         $response->assertSuccessful();
@@ -56,15 +38,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_authenticates_user_with_valid_credentials(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),
@@ -85,15 +58,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_guest_users_to_guest_area(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'    => 'guest@example.com',
             'user_password' => Hash::make('password123'),
@@ -113,15 +77,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_authentication_with_invalid_credentials(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),
@@ -142,15 +97,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_authentication_for_nonexistent_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'nonexistent@example.com',
@@ -165,15 +111,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_authentication_for_inactive_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('User', [
             'user_email'    => 'inactive@example.com',
             'user_password' => Hash::make('password123'),
@@ -194,15 +131,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_throttles_login_attempts_after_multiple_failures(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),
@@ -236,15 +164,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_logs_out_authenticated_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', ['user_active' => 1]);
         $this->actingAs($user);
 
@@ -259,15 +178,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_password_reset_page(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/sessions/passwordreset');
 
         $response->assertSuccessful();
@@ -277,15 +187,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_sends_password_reset_email(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         Mail::fake();
 
         $user = $this->seedModel('User', [
@@ -308,15 +209,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_validates_email_format_in_password_reset(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->post('/sessions/passwordreset', [
             'btn_reset' => true,
             'email'     => 'invalid-email',
@@ -328,15 +220,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_throttles_password_reset_attempts(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'  => 'test@example.com',
             'user_active' => 1,
@@ -358,15 +241,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_new_password_form_with_valid_token(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'               => 'test@example.com',
             'user_passwordreset_token' => 'valid_token_123',
@@ -384,15 +258,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_invalid_password_reset_token(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/sessions/passwordreset/' . ('invalid_token'));
 
         $response->assertRedirect('/sessions/passwordreset');
@@ -402,15 +267,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_non_alphanumeric_token(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/sessions/passwordreset/' . ('token<script>alert(1)</script>'));
 
         $response->assertRedirect('/');
@@ -419,15 +275,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_updates_password_with_valid_token(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'               => 'test@example.com',
             'user_passwordreset_token' => 'valid_token_123',
@@ -451,15 +298,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_password_update_with_mismatched_token(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'               => 'test@example.com',
             'user_passwordreset_token' => 'valid_token_123',
@@ -483,15 +321,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_empty_password_in_reset(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'               => 'test@example.com',
             'user_passwordreset_token' => 'valid_token_123',
@@ -514,15 +343,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_clears_login_failures_after_successful_authentication(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),
@@ -554,15 +374,6 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_unlocks_account_after_12_hours(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => Hash::make('password123'),

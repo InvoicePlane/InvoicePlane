@@ -66,15 +66,6 @@ class PaymentsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_db_array_with_correct_structure(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $result = $this->service->dbArray();
 
@@ -87,15 +78,6 @@ class PaymentsServiceTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_validation_rules(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $rules = $this->service->getValidationRules();
 
         $this->assertIsArray($rules);

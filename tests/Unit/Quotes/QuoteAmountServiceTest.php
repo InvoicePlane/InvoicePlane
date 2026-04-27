@@ -128,15 +128,6 @@ class QuoteAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_gets_status_totals_for_period(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $totals = $this->service->getStatusTotals('this-month');
 
         $this->assertIsArray($totals);

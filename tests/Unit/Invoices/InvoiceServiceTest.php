@@ -35,15 +35,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_invoice_statuses(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $statuses = $this->service->getStatuses();
 
@@ -65,15 +56,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -89,15 +71,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_save_validation_rules_without_invoice_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $rules = $this->service->getSaveValidationRules();
 
@@ -110,15 +83,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_save_validation_rules_with_invoice_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $rules = $this->service->getSaveValidationRules(123);
 
@@ -131,15 +95,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_due_date_from_creation_date(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         Setting::setValue('invoices_due_after', '30');
 
@@ -155,15 +110,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_due_date_with_different_intervals(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         Setting::setValue('invoices_due_after', '7');
 
@@ -178,15 +124,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_generates_url_key(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $urlKey = $this->service->generateUrlKey();
 
@@ -198,15 +135,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_generates_unique_url_keys(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $key1 = $this->service->generateUrlKey();
         $key2 = $this->service->generateUrlKey();
@@ -217,15 +145,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_gets_invoice_group_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -251,15 +170,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_gets_parent_invoice_number(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $parentInvoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -286,15 +196,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_deletes_invoice_and_related_records(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -341,15 +242,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_marks_invoice_as_viewed_when_sent(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -376,15 +268,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_does_not_mark_draft_invoice_as_viewed(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -411,15 +294,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_marks_draft_invoice_as_sent(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -446,15 +320,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_does_not_mark_paid_invoice_as_sent(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -481,15 +346,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_detects_overdue_invoice(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = new Invoice([
             'invoice_status_id' => 2, // Sent
@@ -504,15 +360,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_detects_non_overdue_invoice(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = new Invoice([
             'invoice_status_id' => 2, // Sent
@@ -527,15 +374,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_does_not_mark_draft_invoice_as_overdue(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = new Invoice([
             'invoice_status_id' => 1, // Draft
@@ -550,15 +388,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_does_not_mark_paid_invoice_as_overdue(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = new Invoice([
             'invoice_status_id' => 4, // Paid
@@ -574,15 +403,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_days_overdue(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = new Invoice([
             'invoice_status_id' => 2, // Sent
@@ -598,15 +418,6 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_zero_days_overdue_for_non_overdue_invoice(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = new Invoice([
             'invoice_status_id' => 2, // Sent

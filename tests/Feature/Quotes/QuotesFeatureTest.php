@@ -21,15 +21,6 @@ class QuotesFeatureTest extends AbstractTestCase
     #[Group('crud')]
     public function it_renders_the_quotes_index_page_with_a_200_status(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/quotes');
 
         $this->assertResponseStatusCode($response, 200);
@@ -39,15 +30,6 @@ class QuotesFeatureTest extends AbstractTestCase
     #[Test]
     public function it_includes_html_structure_on_the_quotes_index_page(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/quotes');
 
         $this->assertResponseBodyContains($response, '<html');
@@ -63,15 +45,6 @@ class QuotesFeatureTest extends AbstractTestCase
     #[Test]
     public function it_redirects_an_unauthenticated_visitor_away_from_the_quotes_list(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAsGuest();
 
         $response = $this->get('/quotes');
@@ -89,15 +62,6 @@ class QuotesFeatureTest extends AbstractTestCase
     #[Test]
     public function it_renders_the_create_quote_form(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/quotes/create');
 
         $this->assertResponseStatusCode($response, 200);
@@ -108,15 +72,6 @@ class QuotesFeatureTest extends AbstractTestCase
     #[Test]
     public function it_shows_the_correct_six_quote_statuses_in_the_index_filter_options(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/quotes');
 
         $this->assertResponseStatusCode($response, 200);
@@ -145,15 +100,6 @@ class QuotesFeatureTest extends AbstractTestCase
     #[Test]
     public function it_renders_the_view_page_for_a_seeded_quote(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $clientId = $this->seedClient(['client_name' => 'Quote Client']);
         $quoteId  = $this->seedQuote($clientId, ['quote_number' => 'QUO-TEST-' . time()]);
 
@@ -174,15 +120,6 @@ class QuotesFeatureTest extends AbstractTestCase
     #[Test]
     public function it_does_not_expose_raw_php_errors_on_the_quotes_index(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/quotes');
 
         $this->assertResponseHasNoPhpErrors($response);
@@ -191,15 +128,6 @@ class QuotesFeatureTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_or_redirect_for_a_nonexistent_quote_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/quotes/view/999999999');
 
         self::assertThat(

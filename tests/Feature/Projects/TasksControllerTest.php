@@ -55,15 +55,6 @@ class TasksControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_task_create_form(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $response = $this->get('/tasks/form');
 

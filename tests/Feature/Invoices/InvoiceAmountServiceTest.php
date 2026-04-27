@@ -35,15 +35,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_invoice_totals_with_payments(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -129,15 +120,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_invoice_totals_without_payments(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -193,15 +175,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_invoice_with_global_discount(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         Setting::setValue('legacy_calculation', '0');
 
@@ -257,15 +230,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_calculates_discount_with_amount_and_percent(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -294,15 +258,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_zero_for_global_discount_when_no_items(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $invoice = Invoice::query()->create([
             'client_id'                => 1,
@@ -329,15 +284,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_gets_total_invoiced_for_month(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $service = app(InvoiceAmountService::class);
         $result  = $service->getTotalInvoiced('month');
@@ -349,15 +295,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_gets_total_paid_for_year(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $service = app(InvoiceAmountService::class);
         $result  = $service->getTotalPaid('year');
@@ -369,15 +306,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_gets_total_balance_for_last_month(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $service = app(InvoiceAmountService::class);
         $result  = $service->getTotalBalance('last_month');
@@ -389,15 +317,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_gets_status_totals_for_this_month(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $service = app(InvoiceAmountService::class);
         $result  = $service->getStatusTotals('this-month');
@@ -420,15 +339,6 @@ class InvoiceAmountServiceTest extends AbstractTestCase
     #[Test]
     public function it_gets_status_totals_for_different_periods(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $service = app(InvoiceAmountService::class);
 

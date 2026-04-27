@@ -23,15 +23,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_json_when_user_query_is_empty(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/users/ajax/nameQuery/' . (1));
 
         $response->assertSuccessful();
@@ -41,15 +32,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_searches_users_by_name_with_trailing_wildcard(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('User', ['user_name' => 'John Doe', 'user_active' => 1, 'user_type' => 1]);
         $this->seedModel('User', ['user_name' => 'Jane Doe', 'user_active' => 1, 'user_type' => 1]);
         $this->seedModel('User', ['user_name' => 'Bob Smith', 'user_active' => 1, 'user_type' => 1]);
@@ -63,15 +45,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_searches_users_by_company_name(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('User', [
             'user_name'    => 'John Doe',
             'user_company' => 'Acme Corp',
@@ -94,15 +67,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_searches_users_with_leading_wildcard_when_permissive_search_enabled(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('User', [
             'user_name'   => 'John Doe',
             'user_active' => 1,
@@ -118,15 +82,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_only_returns_active_users_in_name_query(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('User', ['user_name' => 'Active User', 'user_active' => 1, 'user_type' => 1]);
         $this->seedModel('User', ['user_name' => 'Inactive User', 'user_active' => 0, 'user_type' => 1]);
 
@@ -140,15 +95,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_users_by_type(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('User', ['user_name' => 'Admin User', 'user_active' => 1, 'user_type' => 1]);
         $this->seedModel('User', ['user_name' => 'Guest User', 'user_active' => 1, 'user_type' => 2]);
 
@@ -162,15 +108,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_escapes_percent_signs_in_user_search_query(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('User', ['user_name' => '100% Solutions', 'user_active' => 1, 'user_type' => 1]);
 
         $response = $this->get('/users/ajax/nameQuery/' . (1) . '/' . ('100%'));
@@ -181,15 +118,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_five_most_recent_active_users(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModelMany('User', 10, ['user_active' => 1]);
 
         $response = $this->get('/users/ajax/getLatest');
@@ -203,15 +131,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_saves_permissive_search_users_preference(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/users/ajax/savePreference/' . ('1'));
 
         $response->assertSuccessful();
@@ -224,15 +143,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_invalid_permissive_search_users_preference(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/users/ajax/savePreference/' . ('2'));
 
         $this->assertDatabaseMissing('ip_settings', [
@@ -244,15 +154,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_saves_user_client_relationship_for_existing_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user   = $this->seedModel('User');
         $client = $this->seedModel('tmpClient');
 
@@ -271,15 +172,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_does_not_duplicate_user_client_relationship(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user   = $this->seedModel('User');
         $client = $this->seedModel('tmpClient');
 
@@ -302,15 +194,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_stores_user_client_in_session_for_new_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $client = $this->seedModel('tmpClient');
 
         $response = $this->post('/users/ajax/saveUserClient', [
@@ -325,15 +208,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_loads_user_client_table_for_existing_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user    = $this->seedModel('User');
         $clients = $this->seedModelMany('tmpClient', 3);
 
@@ -357,15 +231,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_loads_user_client_table_from_session_for_new_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $clients        = $this->seedModelMany('tmpClient', 2);
         $sessionClients = $clients->pluck('client_id')->toArray();
 
@@ -382,15 +247,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_modal_add_user_client_for_existing_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user              = $this->seedModel('User');
         $assignedClients   = $this->seedModelMany('tmpClient', 2);
         $unassignedClients = $this->seedModelMany('tmpClient', 3);
@@ -414,15 +270,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_all_clients_for_new_user_in_modal(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModelMany('tmpClient', 5);
 
         $response = $this->get('/users/ajax/modalAddUserClient');
@@ -436,15 +283,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_excludes_session_clients_from_modal_for_new_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $clients        = $this->seedModelMany('tmpClient', 5);
         $sessionClients = [$clients->first()->client_id => $clients->first()->client_id];
 
@@ -461,15 +299,6 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_html_escapes_user_names_in_search_results(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModel('User', [
             'user_name'   => '<script>alert("xss")</script>',
             'user_active' => 1,

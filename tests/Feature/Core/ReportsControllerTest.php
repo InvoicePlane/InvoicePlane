@@ -75,15 +75,6 @@ class ReportsControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_payment_history_report_form(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/reports/paymentHistory');
 
         $response->assertSuccessful();
@@ -93,15 +84,6 @@ class ReportsControllerTest extends AbstractTestCase
     #[Test]
     public function it_generates_payment_history_report(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $invoice = $this->seedModel('Invoice');
         $this->seedModelMany('Payment', 3, [
             'invoice_id'   => $invoice->invoice_id,
@@ -172,15 +154,6 @@ class ReportsControllerTest extends AbstractTestCase
     #[Test]
     public function it_generates_sales_by_year_report_with_filters(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->seedModelMany('Invoice', 10, [
             'invoice_date_created' => now()->subMonths(6),
             'invoice_status_id'    => 4,
@@ -204,15 +177,6 @@ class ReportsControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_sales_report_by_quantity_range(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->post('/reports/salesByYear', [
             'btn_submit'  => true,
             'from_date'   => now()->subYear()->format('Y-m-d'),

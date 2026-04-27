@@ -15,15 +15,6 @@ class HmvcRouteLifecycleTest extends CiIntegrationTestCase
     #[Test]
     public function it_executes_clients_index_through_full_ci_and_mx_lifecycle(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get(TestUris::CLIENTS_INDEX);
 
         $this->assertResponseOk($response);
@@ -33,15 +24,6 @@ class HmvcRouteLifecycleTest extends CiIntegrationTestCase
     #[Test]
     public function it_executes_invoices_index_through_full_ci_and_mx_lifecycle(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get(TestUris::INVOICES_INDEX);
 
         $this->assertResponseOk($response);
