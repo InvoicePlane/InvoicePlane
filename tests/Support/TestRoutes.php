@@ -7,6 +7,22 @@ final class TestRoutes
     public const CLIENTS_INDEX = '/clients';
     public const GUEST_INDEX = '/guest';
 
+    public const USER_CLIENTS_INDEX = '/user_clients';
+
+    public static function userClientsForm(?int $id = null): string
+    {
+        if ($id === null) {
+            return '/user_clients/form';
+        }
+
+        return '/user_clients/form/' . $id;
+    }
+
+    public static function userClientsDelete(int $id): string
+    {
+        return '/user_clients/delete/' . $id;
+    }
+
     public static function clientsStatus(string $status): string
     {
         return '/clients/status/' . $status;
