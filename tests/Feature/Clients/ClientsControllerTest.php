@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Support\TestRoutes;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -37,10 +36,10 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::CLIENTS_INDEX);
+        $response = $this->get('/clients');
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::clientsStatus('active'));
+        $response->assertRedirect('/clients/status/active');
     }
 
     /**
@@ -58,7 +57,7 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::clientsStatus('active'));
+        $response = $this->get('/clients/status/active');
 
         /* Assert */
         $response->assertOk();
@@ -86,7 +85,7 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::clientsStatus('inactive'));
+        $response = $this->get('/clients/status/inactive');
 
         /* Assert */
         $response->assertOk();
@@ -114,7 +113,7 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::clientsStatus('all'));
+        $response = $this->get('/clients/status/all');
 
         /* Assert */
         $response->assertOk();
@@ -139,7 +138,7 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::clientsStatus('active'));
+        $response = $this->get('/clients/status/active');
 
         /* Assert */
         $response->assertOk();
@@ -160,7 +159,7 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::clientsForm());
+        $response = $this->get('/clients/form');
 
         /* Assert */
         $response->assertOk();
@@ -197,10 +196,10 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(TestRoutes::clientsForm(), $clientData);
+        $response = $this->post('/clients/form', $clientData);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_clients', [
@@ -222,7 +221,7 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::clientsForm((int) $client->client_id));
+        $response = $this->get('/clients/form/' . (int) $client->client_id);
 
         /* Assert */
         $response->assertOk();
@@ -263,10 +262,10 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(TestRoutes::clientsForm((int) $client->client_id), $updateData);
+        $response = $this->post('/clients/form/' . (int) $client->client_id, $updateData);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_clients', [
@@ -288,10 +287,10 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->delete(TestRoutes::clientsDelete((int) $client->client_id));
+        $response = $this->delete('/clients/delete/' . (int) $client->client_id);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::CLIENTS_INDEX);
+        $response->assertRedirect('/clients');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseMissing('ip_clients', [
@@ -314,7 +313,7 @@ class ClientsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::clientsStatus('active'));
+        $response = $this->get('/clients/status/active');
 
         /* Assert */
         $response->assertOk();

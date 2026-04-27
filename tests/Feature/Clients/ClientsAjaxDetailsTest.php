@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
-use Tests\Support\TestRoutes;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -42,7 +41,7 @@ class ClientsAjaxDetailsTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $client->client_id));
+        $response = $this->get('/crm/ajax/get_client_details/' . (int) $client->client_id);
 
         /* Assert */
         $response->assertOk();
@@ -65,7 +64,7 @@ class ClientsAjaxDetailsTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::crmAjaxGetClientDetails(99999));
+        $response = $this->get('/crm/ajax/get_client_details/' . 99999);
 
         /* Assert */
         $response->assertNotFound();
@@ -82,10 +81,10 @@ class ClientsAjaxDetailsTest extends AbstractTestCase
         $client = $this->seedModel('Client');
 
         /* Act */
-        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $client->client_id));
+        $response = $this->get('/crm/ajax/get_client_details/' . (int) $client->client_id);
 
         /* Assert */
-        $response->assertRedirect(TestRoutes::SESSIONS_LOGIN);
+        $response->assertRedirect('/sessions/login');
     }
 
     /**
@@ -109,7 +108,7 @@ class ClientsAjaxDetailsTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $client->client_id));
+        $response = $this->get('/crm/ajax/get_client_details/' . (int) $client->client_id);
 
         /* Assert */
         $response->assertOk();
@@ -141,7 +140,7 @@ class ClientsAjaxDetailsTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $inactiveClient->client_id));
+        $response = $this->get('/crm/ajax/get_client_details/' . (int) $inactiveClient->client_id);
 
         /* Assert */
         // Should still return details even for inactive clients
@@ -170,7 +169,7 @@ class ClientsAjaxDetailsTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $client->client_id));
+        $response = $this->get('/crm/ajax/get_client_details/' . (int) $client->client_id);
 
         /* Assert */
         $response->assertOk();
