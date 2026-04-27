@@ -40,7 +40,11 @@ Plan:
 
 ## Phase 4 — Dedupe and legacy cleanup
 
-**Status:** Not started
+**Status:** Started
+
+Completed:
+- Removed duplicate `Bckp*` test classes where canonical controller/model test classes already exist.
+- Removed empty duplicate placeholder test files in Clients/Projects/Products feature suites.
 
 Plan:
 - Remove/retire duplicate legacy test files once equivalent CI3-native coverage exists.
