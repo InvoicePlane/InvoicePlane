@@ -5,39 +5,59 @@ namespace Tests\Feature\Products;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
+use Tests\Concerns\InteractsWithDatabase;
+use Tests\Support\TestRoutes;
 
 #[CoversClass(AjaxController::class)]
 #[CoversClass(Tests\Feature\Products\AjaxController::class)]
-
 class AjaxControllerTest extends AbstractTestCase
 {
+    use InteractsWithDatabase;
+
     #[Test]
     public function it_modal_product_lookups_returns_expected_results(): void
     {
-    /* Arrange */
-    // ...
+        /* Arrange */
+        $this->actingAsAdmin();
+        $family = $this->seedModel('Family', ['family_name' => 'Hardware']);
+        $this->seedModel('Product', [
+            'family_id'    => $family->family_id,
+            'product_name' => 'Widget A',
+        ]);
 
-    /* Act */
-    // ...
+        /* Act */
+        $response = $this->get(TestRoutes::PRODUCTS_AJAX_MODAL_LOOKUPS);
 
-    /* Assert */
-    // ...
-
-        $this->markTestIncomplete('Implement meaningful test for modalProductLookups');
+        /* Assert */
+        $response->assertOk();
+        $response->assertViewHas('products');
+        $response->assertViewHas('families');
+        $response->assertSee('Widget A');
     }
 
     #[Test]
     public function it_process_product_selections_handles_selection_logic(): void
     {
-    /* Arrange */
-    // ...
+        /* Arrange */
+        $this->actingAsAdmin();
+        $product = $this->seedModel('Product', [
+            'product_name'  => 'Selected Product',
+            'product_price' => 25.5,
+        ]);
 
-    /* Act */
-    // ...
+        /* Act */
+        $response = $this->post(TestRoutes::PRODUCTS_AJAX_PROCESS_SELECTIONS, [
+            'product_ids' => [$product->product_id],
+        ]);
 
-    /* Assert */
-    // ...
-
-        $this->markTestIncomplete('Implement meaningful test for processProductSelections');
+        /* Assert */
+        $response->assertOk();
+        $response->assertJsonStructure([
+            ['product_id', 'product_name', 'product_price'],
+        ]);
+        $response->assertJsonFragment([
+            'product_id'   => $product->product_id,
+            'product_name' => 'Selected Product',
+        ]);
     }
 }

@@ -72,3 +72,9 @@ There is no `quickstart.yml` and no `setup.yml` that uses `php artisan` — thos
 - Do not delete or hollow out existing test method bodies during migration/refactor work. Preserve test intent and coverage.
 - Weak tests are prohibited; assertions must validate expected behavior and outcomes.
 - `assertResponseHasNoPhpErrors()` must not be used as a primary assertion for feature behavior.
+
+
+## Test quality policy reference
+
+- Follow `.junie/test-quality.md` as a mandatory test-quality policy.
+- Weak tests are prohibited; refactor weak tests immediately when found.

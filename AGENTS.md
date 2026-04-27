@@ -123,3 +123,9 @@ See `.junie/guidelines.md` for detailed guidance on security patterns, DRY princ
 - **Do not delete or hollow out existing test bodies** during refactors. Keep Arrange/Act/Assert logic intact and migrate assertions/URIs incrementally.
 - **Weak tests are prohibited.** Avoid assertions that only prove non-crash behavior without validating expected business behavior.
 - **Do not rely on `$this->assertResponseHasNoPhpErrors($response)` as a primary assertion.** Use concrete assertions (status, redirect target, view/response payload, DB/session side effects) that verify behavior.
+
+
+## Test quality policy reference
+
+- Follow `.junie/test-quality.md` as mandatory policy for all new/refactored tests.
+- Weak tests are prohibited and must be refactored immediately when discovered.

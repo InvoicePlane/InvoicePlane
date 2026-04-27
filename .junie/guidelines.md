@@ -318,3 +318,9 @@ public function it_blocks_path_traversal(): void
 - Never delete or empty meaningful test bodies just to make a suite pass. Preserve original intent and migrate in small, behavior-preserving steps.
 - Weak tests are prohibited: every test must assert expected behavior, not merely absence of fatal errors.
 - Do not use `assertResponseHasNoPhpErrors()` as the main assertion. Pair/replace it with concrete behavior checks (status code, redirect destination, expected view/output, database/session effects).
+
+
+## Test quality policy reference
+
+- Follow `.junie/test-quality.md` for production-grade test quality rules and enforcement.
+- Weak tests are prohibited and must be refactored as soon as identified.
