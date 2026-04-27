@@ -575,9 +575,9 @@ class QuotesControllerTest extends AbstractTestCase
     public function it_displays_quotes_by_status(): void
     {
         /* Arrange */
-        $draftQuote    = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'draft']);
-        $sentQuote     = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'sent']);
-        $approvedQuote = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'approved']);
+        $draftQuote    = $this->seedModel('Quote', ['status' => 'draft']);
+        $sentQuote     = $this->seedModel('Quote', ['status' => 'sent']);
+        $approvedQuote = $this->seedModel('Quote', ['status' => 'approved']);
 
         /* Act */
         $response = $this->get('/quotes/status/draft');

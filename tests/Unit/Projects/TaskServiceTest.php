@@ -178,7 +178,7 @@ class TaskServiceTest extends AbstractTestCase
     {
         /* Arrange */
         $project = $this->seedModel('Project');
-        $taxRate = $this->seedModel('\Modules\Products\Models\TaxRate');
+        $taxRate = $this->seedModel('TaxRate');
 
         $this->seedModelMany('Task', 3, [
             'project_id'       => $project->project_id,

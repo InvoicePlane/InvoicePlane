@@ -29,7 +29,7 @@ class CustomValuesControllerTest extends AbstractTestCase
     public function it_displays_and_saves_custom_field(): void
     {
         /* Arrange */
-        $customField     = $this->seedModel('\Modules\CustomFields\Models\CustomField', ['name' => 'Test Field']);
+        $customField     = $this->seedModel('CustomField', ['name' => 'Test Field']);
         $customValueData = [
             'value' => 'New Value',
             // add other required fields

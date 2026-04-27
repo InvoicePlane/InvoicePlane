@@ -62,7 +62,7 @@ class UserClientsControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $user       = $this->seedModel('User');
-        $client     = $this->seedModel('\Modules\Clients\Models\tmpClient');
+        $client     = $this->seedModel('tmpClient');
         $userClient = $this->seedModel('UserClient', [
             'user_id'   => $user->id,
             'client_id' => $client->id,
