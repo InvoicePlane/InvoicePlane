@@ -31,10 +31,10 @@ class QuotesControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('quotes.index'));
+        $response = $this->get('/quotes');
 
         /* Assert */
-        $response->assertRedirect(route('quotes.status', ['status' => 'all']));
+        $response->assertRedirect('/quotes/status/all');
     }
 
     /**
@@ -155,7 +155,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('quotes.view', ['quote_id' => $quote->quote_id]));
+        $response = $this->get('/quotes/view/' . $quote->quote_id);
 
         /* Assert */
         $response->assertOk();
@@ -185,7 +185,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('quotes.view', ['quote_id' => $nonExistentQuoteId]));
+        $response = $this->get('/quotes/view/' . $nonExistentQuoteId);
 
         /* Assert */
         $response->assertNotFound();
@@ -209,7 +209,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('quotes.view', ['quote_id' => $quote->quote_id]));
+        $response = $this->get('/quotes/view/' . $quote->quote_id);
 
         /* Assert */
         $response->assertOk();
@@ -235,7 +235,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('quotes.view', ['quote_id' => $quote->quote_id]));
+        $response = $this->get('/quotes/view/' . $quote->quote_id);
 
         /* Assert */
         $response->assertOk();
@@ -272,10 +272,10 @@ class QuotesControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.delete', $deleteParams));
+        $response = $this->post('/quotes/delete/' . $quote->quote_id);
 
         /* Assert */
-        $response->assertRedirect(route('quotes.index'));
+        $response->assertRedirect('/quotes');
 
         /* Verify quote was deleted */
         $this->assertNull(Quote::find($quoteId));
@@ -314,7 +314,7 @@ class QuotesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $this->actingAs($user)->post(route('quotes.delete', $deleteParams));
+        $this->actingAs($user)->post('/quotes/delete/' . $quote->quote_id);
 
         /* Assert - verify all related records are deleted */
         $this->assertNull(Quote::find($quoteId));
@@ -354,15 +354,12 @@ class QuotesControllerTest extends AbstractTestCase
 
         $this->actingAs($user);
         $response = $this->post(
-            route('quotes.delete_tax', [
-                'quote_id'          => $quote->quote_id,
-                'quote_tax_rate_id' => $quoteTaxRateId,
-            ]),
+            '/quotes/delete_quote_tax/' . $quote->quote_id . '/' . $quoteTaxRateId,
             $payload
         );
 
         /* Assert */
-        $response->assertRedirect(route('quotes.view', ['quote_id' => $quote->quote_id]));
+        $response->assertRedirect('/quotes/view/' . $quote->quote_id);
 
         /* Verify tax rate was deleted */
         $this->assertNull(QuoteTaxRate::find($quoteTaxRateId));
@@ -394,15 +391,12 @@ class QuotesControllerTest extends AbstractTestCase
 
         $this->actingAs($user);
         $response = $this->post(
-            route('quotes.delete_tax', [
-                'quote_id'          => $quote->quote_id,
-                'quote_tax_rate_id' => $taxRate->quote_tax_rate_id,
-            ]),
+            '/quotes/delete_quote_tax/' . $quote->quote_id . '/' . $taxRate->quote_tax_rate_id,
             $payload
         );
 
         /* Assert */
-        $response->assertRedirect(route('quotes.view', ['quote_id' => $quote->quote_id]));
+        $response->assertRedirect('/quotes/view/' . $quote->quote_id);
         $response->assertSessionHas('success');
     }
 
@@ -434,7 +428,7 @@ class QuotesControllerTest extends AbstractTestCase
         $recalculatePayload = [];
 
         $this->actingAs($user);
-        $response = $this->post(route('quotes.recalculate_all'), $recalculatePayload);
+        $response = $this->post('/quotes/recalculate_all_quotes', $recalculatePayload);
 
         /* Assert */
         $response->assertRedirect();
@@ -459,7 +453,7 @@ class QuotesControllerTest extends AbstractTestCase
         $recalculatePayload = [];
 
         $this->actingAs($user);
-        $response = $this->post(route('quotes.recalculate_all'), $recalculatePayload);
+        $response = $this->post('/quotes/recalculate_all_quotes', $recalculatePayload);
 
         /* Assert */
         $response->assertRedirect();
@@ -580,10 +574,10 @@ class QuotesControllerTest extends AbstractTestCase
     // ...
 
         /* Act */
-        $response = $this->get(\Tests\Feature\Invoices\route('quotes.index'));
+        $response = $this->get('/quotes');
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('quotes.status', ['status' => 'all']));
+        $response->assertRedirect('/quotes/status/all');
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -595,14 +589,14 @@ class QuotesControllerTest extends AbstractTestCase
         $approvedQuote = $this->seedModel('\Modules\Quotes\Models\Quote', ['status' => 'approved']);
 
         /* Act */
-        $response = $this->get(\Tests\Feature\Invoices\route('quotes.status', ['status' => 'draft']));
+        $response = $this->get('/quotes/status/draft');
         $response->assertSee($draftQuote->title);
         $response->assertDontSee($sentQuote->title);
         $response->assertDontSee($approvedQuote->title);
         $response->assertStatus(200);
 
         /* Act */
-        $response = $this->get(\Tests\Feature\Invoices\route('quotes.status', ['status' => 'sent']));
+        $response = $this->get('/quotes/status/sent');
         $response->assertSee($sentQuote->title);
         $response->assertDontSee($draftQuote->title);
         $response->assertDontSee($approvedQuote->title);
@@ -621,7 +615,7 @@ class QuotesControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(\Tests\Feature\Invoices\route('quotes.index'));
+        $response = $this->get('/quotes');
 
         $response->assertSuccessful();
         $response->assertViewHas('quotes');
@@ -655,7 +649,7 @@ class QuotesControllerTest extends AbstractTestCase
             ],
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.form'), $quoteData);
+        $response = $this->post('/quotes/form', $quoteData);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('ip_quotes', [
@@ -703,7 +697,7 @@ class QuotesControllerTest extends AbstractTestCase
             ],
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.form'), $quoteData);
+        $response = $this->post('/quotes/form', $quoteData);
 
         $response->assertRedirect();
         $quote = \Tests\Feature\Invoices\Quote::where('client_id', $this->client->client_id)->latest()->first();
@@ -738,7 +732,7 @@ class QuotesControllerTest extends AbstractTestCase
             ],
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.form'), $quoteData);
+        $response = $this->post('/quotes/form', $quoteData);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('ip_quote_items', [
@@ -762,7 +756,7 @@ class QuotesControllerTest extends AbstractTestCase
         $quote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
         $this->seedModelMany('QuoteItem', 2, ['quote_id' => $quote->quote_id]);
 
-        $response = $this->get(\Tests\Feature\Invoices\route('quotes.view', ['quote_id' => $quote->quote_id]));
+        $response = $this->get('/quotes/view/' . $quote->quote_id);
 
         $response->assertSuccessful();
         $response->assertViewHas('quote', function ($viewQuote) use ($quote): bool {
@@ -785,7 +779,7 @@ class QuotesControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(\Tests\Feature\Invoices\route('quotes.form'));
+        $response = $this->get('/quotes/form');
 
         $response->assertSuccessful();
     }
@@ -804,7 +798,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         $quote = $this->seedModel('Quote');
 
-        $response = $this->get(\Tests\Feature\Invoices\route('quotes.generatePdf', ['quote_id' => $quote->quote_id]));
+        $response = $this->get('/quotes/generate_pdf/' . $quote->quote_id);
 
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'application/pdf');
@@ -824,7 +818,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         $quote = $this->seedModel('Quote');
 
-        $response = $this->get(\Tests\Feature\Invoices\route('quotes.form', ['id' => $quote->quote_id]));
+        $response = $this->get('/quotes/form/' . $quote->quote_id);
 
         $response->assertSuccessful();
         $response->assertViewHas('quote');
@@ -853,7 +847,7 @@ class QuotesControllerTest extends AbstractTestCase
             'quote_notes'        => 'Updated quote with extended expiry',
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.form', ['id' => $quote->quote_id]), $updateData);
+        $response = $this->post('/quotes/form/' . $quote->quote_id, $updateData);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('ip_quotes', [
@@ -892,7 +886,7 @@ class QuotesControllerTest extends AbstractTestCase
             ],
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.form', ['id' => $quote->quote_id]), $updateData);
+        $response = $this->post('/quotes/form/' . $quote->quote_id, $updateData);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('ip_quote_items', [
@@ -916,7 +910,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         $quote = $this->seedModel('Quote', ['quote_status_id' => 1]);
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.form', ['id' => $quote->quote_id]), [
+        $response = $this->post('/quotes/form/' . $quote->quote_id, [
             'quote_status_id' => 2,
         ]);
 
@@ -941,7 +935,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         $quote = $this->seedModel('Quote', ['quote_status_id' => 2]);
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.form', ['id' => $quote->quote_id]), [
+        $response = $this->post('/quotes/form/' . $quote->quote_id, [
             'quote_status_id' => 3,
         ]);
 
@@ -966,7 +960,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         $quote = $this->seedModel('Quote', ['quote_status_id' => 2]);
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.form', ['id' => $quote->quote_id]), [
+        $response = $this->post('/quotes/form/' . $quote->quote_id, [
             'quote_status_id' => 4,
         ]);
 
@@ -997,7 +991,7 @@ class QuotesControllerTest extends AbstractTestCase
             'invoice_date_due'     => now()->addDays(30)->format('Y-m-d'),
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.convertToInvoice', ['quote_id' => $quote->quote_id]), $convertData);
+        $response = $this->post('/quotes/convert_to_invoice/' . $quote->quote_id, $convertData);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('ip_invoices', [
@@ -1020,7 +1014,7 @@ class QuotesControllerTest extends AbstractTestCase
         $originalQuote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
         $this->seedModelMany('QuoteItem', 2, ['quote_id' => $originalQuote->quote_id]);
 
-        $response = $this->post(\Tests\Feature\Invoices\route('quotes.copy', ['quote_id' => $originalQuote->quote_id]), [
+        $response = $this->post('/quotes/copy/' . $originalQuote->quote_id, [
             'quote_date_created' => now()->format('Y-m-d'),
             'quote_date_expires' => now()->addDays(45)->format('Y-m-d'),
         ]);
@@ -1043,7 +1037,7 @@ class QuotesControllerTest extends AbstractTestCase
 
         $quote = $this->seedModel('Quote');
 
-        $response = $this->delete(\Tests\Feature\Invoices\route('quotes.delete', ['quote_id' => $quote->quote_id]));
+        $response = $this->delete('/quotes/delete/' . $quote->quote_id);
 
         $response->assertRedirect();
         $this->assertDatabaseMissing('ip_quotes', ['quote_id' => $quote->quote_id]);

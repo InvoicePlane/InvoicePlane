@@ -28,7 +28,7 @@ class AjaxControllerTest extends AbstractTestCase
          * }
          */
         /* Act */
-        $response = $this->json('POST', route('clients.ajax.nameQuery'), [
+        $response = $this->json('POST', '/clients/ajax/name_query', [
             'query' => 'Test',
         ]);
 
@@ -44,7 +44,7 @@ class AjaxControllerTest extends AbstractTestCase
         $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
 
         /* Act */
-        $response = $this->get(route('clients.ajax.getLatest'));
+        $response = $this->get('/clients/ajax/get_latest');
 
         /* Assert */
         $response->assertStatus(200);
@@ -69,7 +69,7 @@ class AjaxControllerTest extends AbstractTestCase
          * }
          */
         /* Act */
-        $response = $this->json('POST', route('clients.ajax.savePreference'), [
+        $response = $this->json('POST', '/clients/ajax/save_preference_permissive_search_clients', [
             'permissive_search_clients' => '1',
         ]);
 
@@ -85,7 +85,7 @@ class AjaxControllerTest extends AbstractTestCase
         $note   = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $client->id]);
 
         /* Act */
-        $response = $this->json('POST', route('clients.ajax.deleteNote', ['note_id' => $note->id]));
+        $response = $this->json('POST', '/clients/ajax/delete_client_note');
 
         /* Assert */
         $response->assertStatus(200);
@@ -106,7 +106,7 @@ class AjaxControllerTest extends AbstractTestCase
          * }
          */
         /* Act */
-        $response = $this->json('POST', route('clients.ajax.saveNote'), [
+        $response = $this->json('POST', '/clients/ajax/save_client_note', [
             'client_id' => $client->id,
             'note'      => 'This is a test note',
         ]);
@@ -127,7 +127,7 @@ class AjaxControllerTest extends AbstractTestCase
         $note   = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $client->id]);
 
         /* Act */
-        $response = $this->get(route('clients.ajax.loadNotes', ['client_id' => $client->id]));
+        $response = $this->get('/clients/ajax/load_client_notes?client_id=' . $client->id);
 
         /* Assert */
         $response->assertStatus(200);

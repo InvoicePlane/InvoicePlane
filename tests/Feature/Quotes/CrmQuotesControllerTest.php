@@ -30,7 +30,7 @@ class CrmQuotesControllerTest extends AbstractTestCase
         // Guest portal accessible without authentication
 
         /* Act */
-        $response = $this->get(route('guest.quotes'));
+        $response = $this->get('/guest/quotes');
 
         /* Assert */
         $response->assertOk();
@@ -48,7 +48,7 @@ class CrmQuotesControllerTest extends AbstractTestCase
         $quote = $this->seedModel('Quote', ['quote_url_key' => 'test-quote-key']);
 
         /* Act */
-        $response = $this->get(route('guest.quotes.view', ['urlKey' => 'test-quote-key']));
+        $response = $this->get('/guest/quotes/view/test-quote-key');
 
         /* Assert */
         $response->assertOk();
@@ -70,7 +70,7 @@ class CrmQuotesControllerTest extends AbstractTestCase
         // No quote with this URL key
 
         /* Act */
-        $response = $this->get(route('guest.quotes.view', ['urlKey' => 'non-existent-key']));
+        $response = $this->get('/guest/quotes/view/non-existent-key');
 
         /* Assert */
         $response->assertNotFound();
@@ -89,7 +89,7 @@ class CrmQuotesControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(route('guest.quotes.approve', ['urlKey' => 'approve-key']));
+        $response = $this->get('/guest/quotes/approve/approve-key');
 
         /* Assert */
         $response->assertRedirect();
@@ -110,7 +110,7 @@ class CrmQuotesControllerTest extends AbstractTestCase
         // No quote with this URL key
 
         /* Act */
-        $response = $this->get(route('guest.quotes.approve', ['urlKey' => 'invalid-key']));
+        $response = $this->get('/guest/quotes/approve/invalid-key');
 
         /* Assert */
         $response->assertNotFound();
@@ -126,7 +126,7 @@ class CrmQuotesControllerTest extends AbstractTestCase
         $quote = $this->seedModel('Quote', ['quote_url_key' => 'guest-quote-key']);
 
         /* Act */
-        $response = $this->get(route('guest.quotes.view', ['urlKey' => 'guest-quote-key']));
+        $response = $this->get('/guest/quotes/view/guest-quote-key');
 
         /* Assert */
         $response->assertOk();

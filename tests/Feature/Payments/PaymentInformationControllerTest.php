@@ -34,7 +34,7 @@ class PaymentInformationControllerTest extends AbstractTestCase
         // Payment info may be accessible to guests
 
         /* Act */
-        $response = $this->get(route('payment_information.index'));
+        $response = $this->get('/guest/payment_information');
 
         /* Assert */
         $response->assertOk();
@@ -51,7 +51,7 @@ class PaymentInformationControllerTest extends AbstractTestCase
         // No authentication required
 
         /* Act */
-        $response = $this->get(route('payment_information.index'));
+        $response = $this->get('/guest/payment_information');
 
         /* Assert */
         $response->assertOk();
@@ -68,7 +68,7 @@ class PaymentInformationControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('payment_information.index'));
+        $response = $this->get('/guest/payment_information');
 
         /* Assert */
         $response->assertOk();

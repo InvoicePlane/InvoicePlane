@@ -48,7 +48,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
             'payment_date'      => now()->format('Y-m-d'),
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.ajax.add'), $paymentData);
+        $response = $this->post('/payments/ajax/add', $paymentData);
 
         $response->assertSuccessful();
         $response->assertJson(['success' => 1]);
@@ -76,7 +76,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
             'payment_amount' => -50.00, // Invalid amount
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.ajax.add'), $paymentData);
+        $response = $this->post('/payments/ajax/add', $paymentData);
 
         $response->assertSuccessful();
         $response->assertJson(['success' => 0]);
@@ -95,7 +95,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.ajax.modalAddPayment'), [
+        $response = $this->post('/payments/ajax/modal_add_payment', [
             'invoice_id'             => $this->invoice->invoice_id,
             'invoice_balance'        => $this->invoice->invoice_balance,
             'invoice_payment_method' => $this->invoice->payment_method,
@@ -120,7 +120,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.ajax.modalAddPayment'), [
+        $response = $this->post('/payments/ajax/modal_add_payment', [
             'invoice_id'       => '<script>alert("xss")</script>',
             'invoice_balance'  => 100,
             'payment_cf_exist' => 'no',

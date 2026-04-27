@@ -33,7 +33,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $this->seedModelMany('PaymentMethod', 5);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('payment_methods.index'));
+        $response = $this->actingAs($user)->get('/payment_methods');
 
         /* Assert */
         $response->assertOk();
@@ -55,7 +55,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $this->seedModel('PaymentMethod', ['payment_method_name' => 'Check']);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('payment_methods.index'));
+        $response = $this->actingAs($user)->get('/payment_methods');
 
         /* Assert */
         $response->assertOk();
@@ -78,7 +78,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('payment_methods.form'));
+        $response = $this->actingAs($user)->get('/payment_methods/form');
 
         /* Assert */
         $response->assertOk();
@@ -99,7 +99,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $paymentMethod = $this->seedModel('PaymentMethod');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('payment_methods.form', ['id' => $paymentMethod->payment_method_id]));
+        $response = $this->actingAs($user)->get('/payment_methods/form/' . $paymentMethod->payment_method_id);
 
         /* Assert */
         $response->assertOk();
@@ -133,10 +133,10 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('payment_methods.form'), $data);
+        $response = $this->actingAs($user)->post('/payment_methods/form', $data);
 
         /* Assert */
-        $response->assertRedirect(route('payment_methods.index'));
+        $response->assertRedirect('/payment_methods');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_payment_methods', [
@@ -167,10 +167,10 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('payment_methods.form', ['id' => $paymentMethod->payment_method_id]), $updateData);
+        $response = $this->actingAs($user)->post('/payment_methods/form/' . $paymentMethod->payment_method_id, $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('payment_methods.index'));
+        $response->assertRedirect('/payment_methods');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_payment_methods', [
@@ -199,10 +199,10 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('payment_methods.form'), $cancelData);
+        $response = $this->actingAs($user)->post('/payment_methods/form', $cancelData);
 
         /* Assert */
-        $response->assertRedirect(route('payment_methods.index'));
+        $response->assertRedirect('/payment_methods');
     }
 
     /**
@@ -226,7 +226,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('payment_methods.form'), $invalidData);
+        $response = $this->actingAs($user)->post('/payment_methods/form', $invalidData);
 
         /* Assert */
         $response->assertSessionHasErrors('payment_method_name');
@@ -254,7 +254,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('payment_methods.form'), $duplicateData);
+        $response = $this->actingAs($user)->post('/payment_methods/form', $duplicateData);
 
         /* Assert */
         $response->assertSessionHasErrors('payment_method_name');
@@ -282,12 +282,12 @@ class PaymentMethodsControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('payment_methods.delete', ['id' => $paymentMethod->payment_method_id]),
+            '/payment_methods/delete/' . $paymentMethod->payment_method_id,
             $deletePayload
         );
 
         /* Assert */
-        $response->assertRedirect(route('payment_methods.index'));
+        $response->assertRedirect('/payment_methods');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseMissing('ip_payment_methods', [
@@ -316,7 +316,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('payment_methods.delete', ['id' => 99999]),
+            '/payment_methods/delete/99999',
             $deletePayload
         );
 
@@ -338,7 +338,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(\Tests\Feature\Invoices\route('payment_methods.index'));
+        $response = $this->get('/payment_methods');
 
         $response->assertSuccessful();
         $response->assertViewHas('payment_methods');
@@ -361,9 +361,9 @@ class PaymentMethodsControllerTest extends AbstractTestCase
             'payment_method_name' => 'Test Payment Method',
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payment_methods.form'), $methodData);
+        $response = $this->post('/payment_methods/form', $methodData);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payment_methods.index'));
+        $response->assertRedirect('/payment_methods');
         $this->assertDatabaseHas('ip_payment_methods', [
             'payment_method_name' => 'Test Payment Method',
         ]);
@@ -388,9 +388,9 @@ class PaymentMethodsControllerTest extends AbstractTestCase
             'is_update'           => 0,
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payment_methods.form'), $methodData);
+        $response = $this->post('/payment_methods/form', $methodData);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payment_methods.form'));
+        $response->assertRedirect('/payment_methods/form');
         $response->assertSessionHas('alert_error');
     }
 
@@ -406,9 +406,9 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payment_methods.form'), ['btn_cancel' => true]);
+        $response = $this->post('/payment_methods/form', ['btn_cancel' => true]);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payment_methods.index'));
+        $response->assertRedirect('/payment_methods');
     }
 
 }
