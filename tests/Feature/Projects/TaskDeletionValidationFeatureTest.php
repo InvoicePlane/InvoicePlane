@@ -297,4 +297,122 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $response2->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_tasks', ['task_id' => $nonDeletableTask->task_id]);
     }
+
+
+    // Migrated from BckpTaskDeletionValidationTest.php
+    public function it_allows_deletion_of_task_not_assigned_to_invoice(): void
+    {
+        /* Arrange */
+        $task = $this->seedModel('Task', [
+            'task_name'   => 'Unassigned Task',
+            'invoice_id'  => null, // Not assigned to any invoice
+            'task_status' => 1,
+        ]);
+
+        /* Act */
+        $canDelete  = $this->service->canDelete($task->task_id);
+        $isAssigned = $this->service->isAssignedToInvoice($task->task_id);
+
+        /* Assert */
+        $this->assertTrue($canDelete, 'Task without invoice assignment should be deletable');
+        $this->assertFalse($isAssigned, 'Task should not be marked as assigned');
+    }
+
+    public function it_correctly_identifies_task_invoice_assignment(): void
+    {
+        /* Arrange */
+        $invoice = $this->seedModel('Invoice');
+
+        $assignedTask = $this->seedModel('Task', [
+            'invoice_id' => $invoice->invoice_id,
+        ]);
+
+        $unassignedTask = $this->seedModel('Task', [
+            'invoice_id' => null,
+        ]);
+
+        /* Act */
+        $assignedIsAssigned   = $this->service->isAssignedToInvoice($assignedTask->task_id);
+        $unassignedIsAssigned = $this->service->isAssignedToInvoice($unassignedTask->task_id);
+
+        /* Assert */
+        $this->assertTrue($assignedIsAssigned, 'Assigned task should return true');
+        $this->assertFalse($unassignedIsAssigned, 'Unassigned task should return false');
+    }
+
+    public function it_returns_true_for_nonexistent_task(): void
+    {
+        /* Arrange */
+        $nonexistentId = 99999;
+
+        /* Act */
+        $canDelete  = $this->service->canDelete($nonexistentId);
+        $isAssigned = $this->service->isAssignedToInvoice($nonexistentId);
+
+        /* Assert */
+        $this->assertTrue($canDelete, 'Non-existent task should return true for canDelete');
+        $this->assertFalse($isAssigned, 'Non-existent task should return false for isAssigned');
+    }
+
+    public function it_prevents_deletion_regardless_of_task_status(): void
+    {
+        /* Arrange */
+        $invoice = $this->seedModel('Invoice');
+
+        // Create tasks with different statuses but all assigned to invoice
+        $statuses = [1, 2, 3, 4]; // Not Started, In Progress, Complete, On Hold
+
+        foreach ($statuses as $status) {
+            $task = $this->seedModel('Task', [
+                'task_status' => $status,
+                'invoice_id'  => $invoice->invoice_id,
+            ]);
+
+            /* Act */
+            $canDelete = $this->service->canDelete($task->task_id);
+
+            /* Assert */
+            $this->assertFalse(
+                $canDelete,
+                "Task with status {$status} assigned to invoice should not be deletable"
+            );
+        }
+    }
+
+    public function it_allows_deletion_of_completed_task_without_invoice(): void
+    {
+        /* Arrange */
+        $task = $this->seedModel('Task', [
+            'task_status' => 3, // Complete
+            'invoice_id'  => null, // Not assigned
+        ]);
+
+        /* Act */
+        $canDelete = $this->service->canDelete($task->task_id);
+
+        /* Assert */
+        $this->assertTrue($canDelete, 'Completed task without invoice should be deletable');
+    }
+
+    public function it_prevents_deletion_of_all_tasks_assigned_to_same_invoice(): void
+    {
+        /* Arrange */
+        $invoice = $this->seedModel('Invoice');
+
+        // Create multiple tasks assigned to same invoice
+        $tasks = $this->seedModelMany('Task', 3, [
+            'invoice_id' => $invoice->invoice_id,
+        ]);
+
+        /* Act & Assert */
+        foreach ($tasks as $task) {
+            $canDelete = $this->service->canDelete($task->task_id);
+            $this->assertFalse(
+                $canDelete,
+                'Each task assigned to invoice should not be deletable'
+            );
+        }
+    }
+
+
 }

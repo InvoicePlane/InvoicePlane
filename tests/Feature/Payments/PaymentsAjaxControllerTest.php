@@ -10,7 +10,7 @@ use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Ajax::class)]
 
-class BckpPaymentsAjaxControllerTest extends AbstractTestCase
+class PaymentsAjaxControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
