@@ -163,4 +163,170 @@ class TaxRatesControllerTest extends AbstractTestCase
 
         $response->assertNotFound();
     }
+
+
+    // Migrated from BckpTaxRatesControllerTest.php
+    public function it_displays_paginated_list_of_tax_rates(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+        $this->seedModelMany('TaxRate', 5);
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(\Tests\Feature\Invoices\route('tax_rates.index'));
+
+        /* Assert */
+        $response->assertOk();
+        $response->assertViewIs('products::tax_rates_index');
+        $response->assertViewHas('tax_rates');
+    }
+
+    public function it_displays_create_form(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(\Tests\Feature\Invoices\route('tax_rates.form'));
+
+        /* Assert */
+        $response->assertOk();
+        $response->assertViewIs('products::tax_rates_form');
+        $response->assertViewHas('tax_rate');
+
+        $taxRate = $response->viewData('tax_rate');
+        $this->assertInstanceOf(\Tests\Feature\Invoices\TaxRate::class, $taxRate);
+        $this->assertFalse($taxRate->exists);
+    }
+
+    public function it_creates_new_tax_rate_with_valid_data(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+
+        /**
+         * {
+         *     "tax_rate_name": "VAT 20%",
+         *     "tax_rate_percent": "20.00"
+         * }.
+         */
+        $taxRateData = [
+            'tax_rate_name'    => 'VAT 20%',
+            'tax_rate_percent' => '20.00',
+        ];
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->post(\Tests\Feature\Invoices\route('tax_rates.form'), $taxRateData);
+
+        /* Assert */
+        $response->assertRedirect(\Tests\Feature\Invoices\route('tax_rates.index'));
+        $response->assertSessionHas('alert_success');
+
+        $this->assertDatabaseHas('ip_tax_rates', [
+            'tax_rate_name'    => 'VAT 20%',
+            'tax_rate_percent' => '20.00',
+        ]);
+    }
+
+    public function it_displays_edit_form_with_existing_tax_rate(): void
+    {
+        /* Arrange */
+        $user    = $this->seedModel('User');
+        $taxRate = $this->seedModel('TaxRate');
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(\Tests\Feature\Invoices\route('tax_rates.form', ['tax_rate_id' => $taxRate->tax_rate_id]));
+
+        /* Assert */
+        $response->assertOk();
+        $response->assertViewIs('products::tax_rates_form');
+        $response->assertViewHas('tax_rate');
+
+        $viewTaxRate = $response->viewData('tax_rate');
+        $this->assertEquals($taxRate->tax_rate_id, $viewTaxRate->tax_rate_id);
+    }
+
+    public function it_updates_existing_tax_rate_with_valid_data(): void
+    {
+        /* Arrange */
+        $user    = $this->seedModel('User');
+        $taxRate = $this->seedModel('TaxRate', [
+            'tax_rate_name'    => 'Old Name',
+            'tax_rate_percent' => '10.00',
+        ]);
+
+        /**
+         * {
+         *     "tax_rate_name": "Updated VAT",
+         *     "tax_rate_percent": "25.00"
+         * }.
+         */
+        $updateData = [
+            'tax_rate_name'    => 'Updated VAT',
+            'tax_rate_percent' => '25.00',
+        ];
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->post(\Tests\Feature\Invoices\route('tax_rates.form', ['tax_rate_id' => $taxRate->tax_rate_id]), $updateData);
+
+        /* Assert */
+        $response->assertRedirect(\Tests\Feature\Invoices\route('tax_rates.index'));
+        $response->assertSessionHas('alert_success');
+
+        $this->assertDatabaseHas('ip_tax_rates', [
+            'tax_rate_id'      => $taxRate->tax_rate_id,
+            'tax_rate_name'    => 'Updated VAT',
+            'tax_rate_percent' => '25.00',
+        ]);
+    }
+
+    public function it_orders_tax_rates_correctly(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+
+        $this->seedModel('TaxRate', ['tax_rate_name' => 'Zero Rate', 'tax_rate_percent' => '0.00']);
+        $this->seedModel('TaxRate', ['tax_rate_name' => 'Standard Rate', 'tax_rate_percent' => '20.00']);
+        $this->seedModel('TaxRate', ['tax_rate_name' => 'Reduced Rate', 'tax_rate_percent' => '5.00']);
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(\Tests\Feature\Invoices\route('tax_rates.index'));
+
+        /* Assert */
+        $response->assertOk();
+        $taxRates = $response->viewData('tax_rates');
+
+        // Verify we have all tax rates
+        $this->assertCount(3, $taxRates);
+    }
+
+    public function it_creates_tax_rate_with_zero_percent(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+
+        /** @var array{tax_rate_name: string, tax_rate_percent: string} $taxRateData */
+        $taxRateData = [
+            'tax_rate_name'    => 'No Tax',
+            'tax_rate_percent' => '0.00',
+        ];
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->post(\Tests\Feature\Invoices\route('tax_rates.form'), $taxRateData);
+
+        /* Assert */
+        $response->assertRedirect(\Tests\Feature\Invoices\route('tax_rates.index'));
+        $this->assertDatabaseHas('ip_tax_rates', [
+            'tax_rate_name'    => 'No Tax',
+            'tax_rate_percent' => '0.00',
+        ]);
+    }
+
 }
