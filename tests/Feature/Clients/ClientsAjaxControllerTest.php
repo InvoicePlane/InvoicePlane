@@ -7,7 +7,9 @@ use Modules\Crm\Models\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
+use Tests\Support\TestRoutes;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -39,7 +41,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.modal_client_lookup'));
+        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
 
         /* Assert */
         $response->assertOk();
@@ -68,7 +70,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.modal_client_lookup'));
+        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
 
         /* Assert */
         $clients = $response->viewData('clients');
@@ -87,10 +89,10 @@ class ClientsAjaxControllerTest extends AbstractTestCase
     public function it_requires_authentication_for_modal_client_lookup(): void
     {
         /* Act */
-        $response = $this->get(route('crm.ajax.modal_client_lookup'));
+        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
 
         /* Assert */
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect(TestRoutes::SESSIONS_LOGIN);
     }
 
     /**
@@ -107,7 +109,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.modal_client_lookup'));
+        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
 
         /* Assert */
         $response->assertOk();
@@ -131,7 +133,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.modal_client_lookup'));
+        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
 
         /* Assert */
         $response->assertOk();
@@ -158,7 +160,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
+        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $client->client_id));
 
         /* Assert */
         $response->assertOk();
@@ -181,7 +183,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => 99999]));
+        $response = $this->get(TestRoutes::crmAjaxGetClientDetails(99999));
 
         /* Assert */
         $response->assertNotFound();
@@ -198,10 +200,10 @@ class ClientsAjaxControllerTest extends AbstractTestCase
         $client = $this->seedModel('Client');
 
         /* Act */
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
+        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $client->client_id));
 
         /* Assert */
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect(TestRoutes::SESSIONS_LOGIN);
     }
 
     /**
@@ -216,7 +218,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => 'invalid']));
+        $response = $this->get(TestRoutes::crmAjaxGetClientDetails('invalid'));
 
         /* Assert */
         // Should either return 404 or handle gracefully
@@ -247,7 +249,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
+        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $client->client_id));
 
         /* Assert */
         $response->assertOk();
@@ -279,7 +281,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => $inactiveClient->client_id]));
+        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $inactiveClient->client_id));
 
         /* Assert */
         // Should still return details even for inactive clients
@@ -308,7 +310,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
+        $response = $this->get(TestRoutes::crmAjaxGetClientDetails((int) $client->client_id));
 
         /* Assert */
         $response->assertOk();
@@ -329,7 +331,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => -1]));
+        $response = $this->get(TestRoutes::crmAjaxGetClientDetails(-1));
 
         /* Assert */
         $response->assertNotFound();
@@ -347,7 +349,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => 0]));
+        $response = $this->get(TestRoutes::crmAjaxGetClientDetails(0));
 
         /* Assert */
         $response->assertNotFound();
@@ -367,7 +369,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.modal_client_lookup'));
+        $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
 
         /* Assert */
         $response->assertOk();
