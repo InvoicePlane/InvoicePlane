@@ -116,3 +116,10 @@ Alternatively, add the template name to the `ALLOWED_INVOICE_TEMPLATES` or `ALLO
 ## Extended guidelines
 
 See `.junie/guidelines.md` for detailed guidance on security patterns, DRY principles, and the code review checklist.
+
+
+## Test quality guardrails
+
+- **Do not delete or hollow out existing test bodies** during refactors. Keep Arrange/Act/Assert logic intact and migrate assertions/URIs incrementally.
+- **Weak tests are prohibited.** Avoid assertions that only prove non-crash behavior without validating expected business behavior.
+- **Do not rely on `$this->assertResponseHasNoPhpErrors($response)` as a primary assertion.** Use concrete assertions (status, redirect target, view/response payload, DB/session side effects) that verify behavior.

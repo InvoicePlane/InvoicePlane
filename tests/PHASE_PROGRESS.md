@@ -4,14 +4,12 @@ This tracks progress against the phased plan discussed for migrating tests away 
 
 ## Phase 1 — Stabilize framework (bootstrap + base assertions)
 
-**Status:** In progress
+**Status:** In progress (quality guardrails added)
 
 Completed:
 - Kept `phpunit.xml.dist` pointing to a single canonical bootstrap (`tests/bootstrap.php`).
-- Added CI3-native assertion aliases in `tests/AbstractTestCase.php` for `HttpResponse` flows:
-  - `assertOk()`
-  - `assertRedirectTo()`
-  - `assertJsonKey()`
+- Added CI3-native assertion aliases in `tests/AbstractTestCase.php` for `HttpResponse` flows (`assertOk()`, `assertRedirectTo()`, `assertJsonKey()`).
+- Added explicit test-quality guardrails in `AGENTS.md`, `.junie/guidelines.md`, and `.github/copilot-instructions.md` to prevent deletion of test bodies and prohibit weak assertions.
 
 Remaining:
 - Audit and remove/merge secondary bootstrap entry points where practical (`tests/Integration/bootstrap.php`, legacy backups) so behavior is centralized.
@@ -23,10 +21,8 @@ Remaining:
 
 Completed:
 - Added `tests/Support/TestRoutes.php` for explicit URI mapping.
-- Refactored `tests/Feature/Clients/ClientsControllerTest.php` to:
-  - Use concrete HMVC URIs
-  - Assert using CI3 `HttpResponse` methods
-- Refactored `tests/Feature/Clients/GuestControllerTest.php` to remove `route(...)` usage and validate responses via status/CI-compatible assertions.
+- Restored full test bodies for `tests/Feature/Clients/ClientsControllerTest.php` and `tests/Feature/Clients/GuestControllerTest.php` after regression feedback.
+- Continued URI migration in both files by replacing `route(...)` calls with explicit `TestRoutes` mappings while preserving original assertion bodies.
 
 Remaining in Clients module:
 - Convert remaining Clients feature files still using `route(...)`.
