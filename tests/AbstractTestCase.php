@@ -132,6 +132,22 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         self::assertLessThan(300, $response->statusCode());
     }
 
+
+    protected function assertOk(HttpResponse $response): void
+    {
+        $this->assertResponseOk($response);
+    }
+
+    protected function assertRedirectTo(HttpResponse $response, string $expectedUrl): void
+    {
+        $this->assertResponseRedirectTo($response, $expectedUrl);
+    }
+
+    protected function assertJsonKey(HttpResponse $response, string $key): void
+    {
+        self::assertArrayHasKey($key, $response->json());
+    }
+
     protected function assertResponseRedirectTo(HttpResponse $response, string $expectedUrl): void
     {
         self::assertTrue(
