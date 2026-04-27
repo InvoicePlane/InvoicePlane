@@ -7,7 +7,9 @@ use Modules\Crm\Models\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
+use Tests\Support\TestRoutes;
 use View;
 
 /**
@@ -35,7 +37,7 @@ class ViewControllerTest extends AbstractTestCase
         // Guest operations may not require authentication
 
         /* Act */
-        $response = $this->get(route('guest.view'));
+        $response = $this->get(TestRoutes::GUEST_VIEW);
 
         /* Assert */
         $response->assertOk();
@@ -53,7 +55,7 @@ class ViewControllerTest extends AbstractTestCase
         // No authentication required
 
         /* Act */
-        $response = $this->get(route('guest.view'));
+        $response = $this->get(TestRoutes::GUEST_VIEW);
 
         /* Assert */
         $response->assertOk();
@@ -70,7 +72,7 @@ class ViewControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('guest.view'));
+        $response = $this->get(TestRoutes::GUEST_VIEW);
 
         /* Assert */
         $response->assertOk();

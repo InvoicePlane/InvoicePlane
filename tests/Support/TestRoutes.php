@@ -6,6 +6,8 @@ final class TestRoutes
 {
     public const CLIENTS_INDEX = '/clients';
     public const GUEST_INDEX = '/guest';
+    public const GUEST_GET = '/guest/get';
+    public const GUEST_VIEW = '/guest/view';
 
     public const USER_CLIENTS_INDEX = '/user_clients';
 
