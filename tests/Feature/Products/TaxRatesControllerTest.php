@@ -110,7 +110,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $taxRate = $this->seedModel('TaxRate');
 
         /* Act */
-        $response = $this->actingAs($user)->get('/tax_rates/edit');
+        $response = $this->actingAs($user)->get('/tax_rates/form/' . ($taxRate->tax_rate_id));
 
         /* Assert */
         $response->assertOk();
@@ -147,7 +147,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->put('/tax_rates/update', $updateData);
+        $response = $this->actingAs($user)->post('/tax_rates/form/' . ($taxRate->tax_rate_id), $updateData);
 
         /* Assert */
         $response->assertRedirect('/tax_rates/index');
@@ -172,7 +172,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $taxRate = $this->seedModel('TaxRate');
 
         /* Act */
-        $response = $this->actingAs($user)->delete('/tax_rates/destroy');
+        $response = $this->actingAs($user)->get('/tax_rates/delete/' . ($taxRate->tax_rate_id));
 
         /* Assert */
         $response->assertRedirect('/tax_rates/index');

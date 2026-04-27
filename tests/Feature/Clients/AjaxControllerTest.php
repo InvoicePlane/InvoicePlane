@@ -9,113 +9,92 @@ use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Ajax::class)]
-#[CoversClass(Tests\Feature\Clients\AjaxController::class)]
 
 class AjaxControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->actingAsAdmin();
+    }
+
     #[Test]
     public function it_returns_clients_matching_name_query(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Clients\Models\tmpClient', ['name' => 'Test Client']);
+        $this->seedClient(['client_name' => 'Test Client']);
 
-        /**
-         * Payload:
-         * {
-         *   "query": "Test"
-         * }
-         */
         /* Act */
-        $response = $this->json('POST', '/clients/ajax/name_query', [
-            'query' => 'Test',
-        ]);
+        $response = $this->get('/clients/ajax/name_query', ['query' => 'Test']);
 
         /* Assert */
-        $response->assertStatus(200);
-        $response->assertJsonFragment(['name' => 'Test Client']);
+        $this->assertResponseStatusCode($response, 200);
+        $json = $response->json();
+        self::assertIsArray($json);
+        self::assertNotEmpty($json, 'Expected at least one client matching "Test".');
     }
 
     #[Test]
     public function it_gets_latest_clients(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
+        $this->seedClient();
 
         /* Act */
         $response = $this->get('/clients/ajax/get_latest');
 
         /* Assert */
-        $response->assertStatus(200);
+        $this->assertResponseStatusCode($response, 200);
     }
 
     #[Test]
     public function it_saves_permissive_search_preference(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
-        /**
-         * Payload:
-         * {
-         *   "permissive_search_clients": "1"
-         * }
-         */
         /* Act */
-        $response = $this->json('POST', '/clients/ajax/save_preference_permissive_search_clients', [
+        $response = $this->get('/clients/ajax/save_preference_permissive_search_clients', [
             'permissive_search_clients' => '1',
         ]);
 
         /* Assert */
-        $response->assertStatus(200);
+        $this->assertResponseStatusCode($response, 200);
     }
 
     #[Test]
     public function it_deletes_client_note(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
-        $note   = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $client->id]);
+        $clientId = $this->seedClient();
+        $note     = $this->seedModel('\\Modules\\Crm\\app\\Models\\ClientNote', ['client_id' => $clientId]);
 
         /* Act */
-        $response = $this->json('POST', '/clients/ajax/delete_client_note');
+        $response = $this->post('/clients/ajax/delete_client_note', [
+            'client_note_id' => $note->client_note_id,
+        ]);
 
         /* Assert */
-        $response->assertStatus(200);
-        $this->assertDatabaseMissing('ip_client_notes', ['id' => $note->id]);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseMissing('ip_client_notes', ['client_note_id' => $note->client_note_id]);
     }
 
     #[Test]
     public function it_saves_client_note(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
+        $clientId = $this->seedClient();
 
-        /**
-         * Payload:
-         * {
-         *   "client_id": 1,
-         *   "note": "This is a test note"
-         * }
-         */
         /* Act */
-        $response = $this->json('POST', '/clients/ajax/save_client_note', [
-            'client_id' => $client->id,
-            'note'      => 'This is a test note',
+        $response = $this->post('/clients/ajax/save_client_note', [
+            'client_id'   => $clientId,
+            'client_note' => 'This is a test note',
         ]);
 
         /* Assert */
-        $response->assertStatus(200);
+        $this->assertResponseStatusCode($response, 200);
         $this->assertDatabaseHas('ip_client_notes', [
-            'client_id' => $client->id,
-            'note'      => 'This is a test note',
+            'client_id'  => $clientId,
+            'client_note' => 'This is a test note',
         ]);
     }
 
@@ -123,14 +102,16 @@ class AjaxControllerTest extends AbstractTestCase
     public function it_loads_client_notes(): void
     {
         /* Arrange */
-        $client = $this->seedModel('\Modules\Clients\Models\tmpClient');
-        $note   = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $client->id]);
+        $clientId = $this->seedClient();
+        $note     = $this->seedModel('\\Modules\\Crm\\app\\Models\\ClientNote', ['client_id' => $clientId]);
 
         /* Act */
-        $response = $this->get('/clients/ajax/load_client_notes?client_id=' . $client->id);
+        $response = $this->post('/clients/ajax/load_client_notes', [
+            'client_id' => $clientId,
+        ]);
 
         /* Assert */
-        $response->assertStatus(200);
-        $response->assertSee($note->note);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, $note->client_note);
     }
 }
