@@ -41,6 +41,19 @@ Progress note:
 - Refactored weak placeholder tests in `tests/Feature/Products/AjaxControllerTest.php` into deterministic, behavior-verifying assertions for both modal lookup and selection processing endpoints.
 - Multiple Clients suites now use explicit inline URIs directly in test classes (controller CRUD, ajax, guest, deletion, and user-client flows).
 
+## Phase 2.5 — Sturdy-test + coverage audit automation
+
+Completed:
+- Added `tests/Scripts/AuditSturdyTests.php` to run a heuristic sturdy-test audit for all `#[Test]` methods (assertion presence, AAA markers, and primary-assertion misuse checks).
+- Added `tests/Scripts/AuditModuleCoverage.php` and generated `tests/COVERAGE_AUDIT.md` to track controller/model coverage heuristics against `application/modules/*/{controllers,models}`.
+- Latest heuristic snapshot:
+  - Controllers covered by controller-test filename/token heuristic: **50 / 50**
+  - Models covered by model-token heuristic: **18 / 42**
+
+Next:
+- Refactor flagged sturdy-test findings module-by-module until `AuditSturdyTests.php --strict` can pass.
+- Close uncovered model-test gaps listed in `tests/COVERAGE_AUDIT.md`.
+
 ## Phase 3 — Unit tests (model/service focus)
 
 **Status:** In progress
