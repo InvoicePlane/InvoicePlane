@@ -30,11 +30,25 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         $this->sessionData = [];
     }
 
+    protected function actingAs(object|array $user): void
+    {
+        $data = is_array($user) ? $user : get_object_vars($user);
+
+        $this->sessionData = [
+            'user_id'       => (int) ($data['user_id'] ?? 1),
+            'user_type'     => (int) ($data['user_type'] ?? 1),
+            'user_email'    => (string) ($data['user_email'] ?? 'admin@test.local'),
+            'user_name'     => (string) ($data['user_name'] ?? 'Test User'),
+            'user_company'  => (string) ($data['user_company'] ?? 'Test Company'),
+            'user_language' => (string) ($data['user_language'] ?? 'system'),
+        ];
+    }
+
     protected function request(string $method, string $uri, array $query = [], array $post = []): HttpResponse
     {
         $payload = [
             'method'  => mb_strtoupper($method),
-            'uri'     => '/' . mb_ltrim($uri, '/'),
+            'uri'     => $this->normalizeUri($uri),
             'query'   => $query,
             'post'    => $post,
             'session' => $this->sessionData,
@@ -102,6 +116,31 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         return $this->request('POST', $uri, $query, $data);
     }
 
+    protected function delete(string $uri, array $data = [], array $query = []): HttpResponse
+    {
+        return $this->request('DELETE', $uri, $query, $data);
+    }
+
+    protected function assertResponseOk(HttpResponse $response): void
+    {
+        self::assertSame(200, $response->statusCode());
+    }
+
+    protected function assertResponseSuccessful(HttpResponse $response): void
+    {
+        self::assertGreaterThanOrEqual(200, $response->statusCode());
+        self::assertLessThan(300, $response->statusCode());
+    }
+
+    protected function assertResponseRedirectTo(HttpResponse $response, string $expectedUrl): void
+    {
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Expected redirect status code, got [%d].', $response->statusCode())
+        );
+        self::assertSame($expectedUrl, $response->redirectUrl());
+    }
+
     protected function assertResponseBodyContains(HttpResponse $response, string $needle): void
     {
         self::assertStringContainsString($needle, $response->body());
@@ -140,5 +179,12 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         }
 
         self::assertSame((string) file_get_contents($path), $response->body());
+    }
+
+    private function normalizeUri(string $uri): string
+    {
+        $trimmed = ltrim($uri, '/');
+
+        return '/' . $trimmed;
     }
 }
