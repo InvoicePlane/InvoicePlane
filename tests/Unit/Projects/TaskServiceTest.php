@@ -144,6 +144,15 @@ class TaskServiceTest extends AbstractTestCase
     #[Test]
     public function it_throws_exception_when_task_not_found(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Arrange */
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
@@ -173,6 +182,7 @@ class TaskServiceTest extends AbstractTestCase
 
 
     // Migrated from BckpTaskServiceTest.php
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_all_tasks_with_relations_paginated(): void
     {
         /* Arrange */
@@ -193,6 +203,7 @@ class TaskServiceTest extends AbstractTestCase
         $this->assertTrue($result->first()->relationLoaded('taxRate'));
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_orders_tasks_by_name(): void
     {
         /* Arrange */
@@ -210,6 +221,7 @@ class TaskServiceTest extends AbstractTestCase
         $this->assertEquals('Alpha Task', $tasks[0]->task_name);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_respects_custom_per_page_parameter(): void
     {
         /* Arrange */

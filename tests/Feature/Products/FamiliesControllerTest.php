@@ -136,6 +136,15 @@ class FamiliesControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_family(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $familyData = [
             'family_name' => 'Test Family',
             'is_update'   => 0,
@@ -332,6 +341,15 @@ class FamiliesControllerTest extends AbstractTestCase
     #[Test]
     public function it_prevents_duplicate_family_names(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModel('Family', ['family_name' => 'Existing Family']);
 
         $familyData = [

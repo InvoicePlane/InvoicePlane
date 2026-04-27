@@ -88,6 +88,15 @@ class ClientsAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_requires_authentication_for_modal_client_lookup(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $response = $this->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
 

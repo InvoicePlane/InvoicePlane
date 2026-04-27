@@ -306,6 +306,15 @@ class ProductsControllerTest extends AbstractTestCase
     #[Test]
     public function it_validates_required_fields_on_submit(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Arrange */
         $controller = new ProductsController();
 
@@ -323,6 +332,15 @@ class ProductsControllerTest extends AbstractTestCase
     #[Test]
     public function it_validates_product_price_is_numeric_and_positive(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Arrange */
         $controller = new ProductsController();
 

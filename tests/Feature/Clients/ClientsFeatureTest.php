@@ -13,16 +13,36 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_clients_index_page_with_a_200_status(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/clients');
 
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_includes_a_html_document_structure_on_the_clients_index(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/clients');
 
         $this->assertResponseBodyContains($response, '<html');
@@ -35,8 +55,18 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_an_unauthenticated_visitor_away_from_the_client_list(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->actingAsGuest();
 
         $response = $this->get('/clients');
@@ -50,8 +80,18 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_create_client_form(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/clients/create');
 
         $this->assertResponseStatusCode($response, 200);
@@ -59,8 +99,18 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_post_to_create_client_with_missing_required_fields(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post('/clients/create', [
             'client_name' => '',
         ]);
@@ -89,8 +139,18 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_view_page_for_a_seeded_client(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $clientId = $this->seedClient(['client_name' => 'Regression Client']);
 
         $response = $this->get('/clients/view/' . $clientId);
@@ -107,8 +167,18 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_a_non_200_or_redirect_for_a_nonexistent_client_id(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/clients/view/999999999');
 
         self::assertThat(
@@ -125,8 +195,18 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_client_name_in_the_edit_form_for_an_existing_client(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $clientId = $this->seedClient(['client_name' => 'Editable Corp']);
 
         $response = $this->get('/clients/edit/' . $clientId);
@@ -136,8 +216,18 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->assertResponseBodyContains($response, '<form');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_render_php_errors_when_listing_multiple_clients(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedClient(['client_name' => 'Alpha Ltd']);
         $this->seedClient(['client_name' => 'Beta GmbH']);
         $this->seedClient(['client_name' => 'Gamma BV']);
@@ -148,8 +238,18 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->assertResponseStatusCode($response, 200);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_produces_identical_bodies_for_two_consecutive_client_list_requests(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $first  = $this->get('/clients');
         $second = $this->get('/clients');
 

@@ -14,6 +14,15 @@ class UserClientsControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_to_users_from_index(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $response = $this->get(route('user_clients.index'));
 
@@ -40,6 +49,15 @@ class UserClientsControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_to_users_when_user_not_found(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $response = $this->get(route('user_clients.user', ['id' => 99999]));
 
@@ -50,6 +68,15 @@ class UserClientsControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_to_custom_values_when_user_id_is_null(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $response = $this->get(route('user_clients.create'));
 

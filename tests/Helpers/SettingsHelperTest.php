@@ -37,6 +37,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_gets_setting_value(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('test_key', 'test_value');
 
         $result = SettingsHelper::getSetting('test_key');
@@ -47,6 +56,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_default_when_setting_not_found(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = SettingsHelper::getSetting('non_existent_key', 'default_value');
 
         $this->assertSame('default_value', $result);
@@ -55,6 +73,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_escapes_html_when_requested(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('html_key', '<script>alert("xss")</script>');
 
         $result = SettingsHelper::getSetting('html_key', '', true);
@@ -66,6 +93,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_does_not_escape_by_default(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('html_key', '<b>bold</b>');
 
         $result = SettingsHelper::getSetting('html_key');
@@ -76,6 +112,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_gets_gateway_settings(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('paypal_enabled', '1');
         Setting::setValue('paypal_api_key', 'test_key');
         Setting::setValue('paypal_secret', 'test_secret');
@@ -93,6 +138,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_array_for_gateway_with_no_settings(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('other_setting', 'value');
 
         $result = SettingsHelper::getGatewaySettings('nonexistent');
@@ -104,6 +158,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_checks_select_for_equal_values(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         ob_start();
         SettingsHelper::checkSelect('test', 'test');
         $output = ob_get_clean();
@@ -114,6 +177,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_checks_select_for_unequal_values(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         ob_start();
         SettingsHelper::checkSelect('test', 'other');
         $output = ob_get_clean();
@@ -124,6 +196,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_checks_select_with_not_equal_operator(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         ob_start();
         SettingsHelper::checkSelect('test', 'other', '!=');
         $output = ob_get_clean();
@@ -134,6 +215,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_checks_select_for_boolean_true(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         ob_start();
         SettingsHelper::checkSelect(true);
         $output = ob_get_clean();
@@ -144,6 +234,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_checks_select_for_boolean_false(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         ob_start();
         SettingsHelper::checkSelect(false);
         $output = ob_get_clean();
@@ -154,6 +253,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_outputs_checked_instead_of_selected(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         ob_start();
         SettingsHelper::checkSelect('test', 'test', '==', true);
         $output = ob_get_clean();
@@ -164,6 +272,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_checks_empty_operator(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         ob_start();
         SettingsHelper::checkSelect('', null, 'e');
         $output = ob_get_clean();
@@ -174,6 +291,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_checks_not_empty_operator(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         ob_start();
         SettingsHelper::checkSelect('value', null, 'e');
         $output = ob_get_clean();
@@ -185,6 +311,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[DataProvider('checkSelectProvider')]
     public function it_handles_various_check_select_scenarios(string|int|bool $value1, ?string $value2, string $operator, bool $checked, string $expected): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         ob_start();
         SettingsHelper::checkSelect($value1, $value2, $operator, $checked);
         $output = ob_get_clean();
@@ -195,6 +330,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_as_default(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = SettingsHelper::getSetting('nonexistent');
 
         $this->assertSame('', $result);
@@ -203,6 +347,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_numeric_settings(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('numeric_key', '123');
 
         $result = SettingsHelper::getSetting('numeric_key');
@@ -213,6 +366,15 @@ class SettingsHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_null_setting_values(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('null_key', null);
 
         $result = SettingsHelper::getSetting('null_key', 'fallback');

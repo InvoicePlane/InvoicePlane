@@ -157,6 +157,7 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
 
 
     // Migrated from BckpTaxRateDeletionValidationTest.php
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_deletion_of_tax_rate_without_references(): void
     {
         /* Arrange */
@@ -175,6 +176,7 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertEquals(0, $blockers['quote_tax_rates']);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prevents_deletion_with_invoice_tax_rates(): void
     {
         /* Arrange */
@@ -188,6 +190,7 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertFalse($canDelete);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prevents_deletion_with_quote_tax_rates(): void
     {
         /* Arrange */
@@ -201,6 +204,7 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertFalse($canDelete);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_correct_blocker_counts(): void
     {
         /* Arrange */
@@ -218,6 +222,7 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertEquals(1, $blockers['quote_items']);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_deletion_after_all_references_removed(): void
     {
         /* Arrange */

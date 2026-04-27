@@ -23,6 +23,15 @@ class EmailTemplatesAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_email_template_content_as_json(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $template = $this->seedModel('EmailTemplate', [
             'email_template_subject' => 'Test Subject',
             'email_template_body'    => 'Test Body',
@@ -41,6 +50,15 @@ class EmailTemplatesAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_for_nonexistent_template(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post(route('email_templates.ajax.getContent'), [
             'email_template_id' => 99999,
         ]);

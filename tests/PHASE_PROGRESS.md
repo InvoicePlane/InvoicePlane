@@ -36,6 +36,9 @@ Remaining in Clients module:
 - Replace Laravel response helpers (`assertViewIs`, `assertSessionHas`, etc.) with request-runner-compatible assertions.
 - Add small helper assertions where recurring patterns emerge (redirect target suffix, content-type checks).
 
+Progress note:
+- Multiple Clients suites now migrated to `TestRoutes` (controller CRUD, ajax, guest, deletion, and user-client flows).
+
 ## Phase 3 — Unit tests (model/service focus)
 
 **Status:** Not started
@@ -60,6 +63,16 @@ Plan:
   - `AbstractTestCase`
   - `FeatureTestCase` (if needed for feature-only helpers)
   - `UnitTestCase`
+
+
+## Cross-suite compliance baseline
+
+**Status:** Completed
+
+Completed:
+- Normalized all PHPUnit test-method names to `it_*` where methods are annotated as tests.
+- Ensured all `it_*` methods are explicitly annotated with `#[Test]` (or fully-qualified equivalent).
+- Ensured all `it_*` test methods include Arrange / Act / Assert phase markers.
 
 ## Current practical blockers
 

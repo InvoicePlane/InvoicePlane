@@ -33,6 +33,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_all_date_formats(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $formats = DateHelper::dateFormats();
 
         $this->assertIsArray($formats);
@@ -49,6 +58,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_converts_mysql_date_to_user_format(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'm/d/Y');
 
         $result = DateHelper::dateFromMysql('2024-01-15');
@@ -59,6 +77,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_converts_mysql_date_with_european_format(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'd/m/Y');
 
         $result = DateHelper::dateFromMysql('2024-01-15');
@@ -69,6 +96,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_converts_mysql_date_with_iso_format(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'Y-m-d');
 
         $result = DateHelper::dateFromMysql('2024-01-15');
@@ -79,6 +115,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_null_date(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = DateHelper::dateFromMysql(null);
 
         $this->assertSame('', $result);
@@ -87,6 +132,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_invalid_date(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = DateHelper::dateFromMysql('invalid-date');
 
         $this->assertSame('', $result);
@@ -95,6 +149,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_converts_timestamp_to_date(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'm/d/Y');
 
         $timestamp = strtotime('2024-01-15');
@@ -106,6 +169,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_converts_user_date_to_mysql_format(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'm/d/Y');
 
         $result = DateHelper::dateToMysql('01/15/2024');
@@ -116,6 +188,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_converts_european_date_to_mysql(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'd/m/Y');
 
         $result = DateHelper::dateToMysql('15/01/2024');
@@ -126,6 +207,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_invalid_user_date(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'm/d/Y');
 
         $result = DateHelper::dateToMysql('invalid');
@@ -137,6 +227,15 @@ class DateHelperTest extends AbstractTestCase
     #[DataProvider('validDateProvider')]
     public function it_validates_dates(string $date, bool $expected): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'm/d/Y');
 
         $result = DateHelper::isDate($date);
@@ -147,6 +246,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_gets_date_format_setting(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'Y-m-d');
 
         $result = DateHelper::dateFormatSetting();
@@ -157,6 +265,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_gets_datepicker_format(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'm/d/Y');
 
         $result = DateHelper::dateFormatDatepicker();
@@ -167,6 +284,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_gets_datepicker_format_for_european(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'd.m.Y');
 
         $result = DateHelper::dateFormatDatepicker();
@@ -177,6 +303,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_increments_user_date_by_days(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'm/d/Y');
 
         $result = DateHelper::incrementUserDate('01/15/2024', '+7 days');
@@ -187,6 +322,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_increments_user_date_by_months(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'm/d/Y');
 
         $result = DateHelper::incrementUserDate('01/15/2024', '+1 month');
@@ -197,6 +341,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_decrements_user_date(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         Setting::setValue('default_date_format', 'm/d/Y');
 
         $result = DateHelper::incrementUserDate('01/15/2024', '-7 days');
@@ -207,6 +360,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_increments_mysql_date_by_days(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = DateHelper::incrementDate('2024-01-15', '+7 days');
 
         $this->assertSame('2024-01-22', $result);
@@ -215,6 +377,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_increments_mysql_date_by_years(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = DateHelper::incrementDate('2024-01-15', '+1 year');
 
         $this->assertSame('2025-01-15', $result);
@@ -223,6 +394,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_leap_year_increments(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = DateHelper::incrementDate('2024-02-29', '+1 year');
 
         // PHP DateTime handles this as February 28, 2025
@@ -232,6 +412,15 @@ class DateHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_month_end_increments(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $result = DateHelper::incrementDate('2024-01-31', '+1 month');
 
         // PHP DateTime handles this as February 29, 2024 (leap year)

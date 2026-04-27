@@ -300,6 +300,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
 
 
     // Migrated from BckpTaskDeletionValidationTest.php
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_deletion_of_task_not_assigned_to_invoice(): void
     {
         /* Arrange */
@@ -318,6 +319,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertFalse($isAssigned, 'Task should not be marked as assigned');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_correctly_identifies_task_invoice_assignment(): void
     {
         /* Arrange */
@@ -340,6 +342,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertFalse($unassignedIsAssigned, 'Unassigned task should return false');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_true_for_nonexistent_task(): void
     {
         /* Arrange */
@@ -354,6 +357,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertFalse($isAssigned, 'Non-existent task should return false for isAssigned');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prevents_deletion_regardless_of_task_status(): void
     {
         /* Arrange */
@@ -379,6 +383,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         }
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_deletion_of_completed_task_without_invoice(): void
     {
         /* Arrange */
@@ -394,6 +399,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $this->assertTrue($canDelete, 'Completed task without invoice should be deletable');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_prevents_deletion_of_all_tasks_assigned_to_same_invoice(): void
     {
         /* Arrange */

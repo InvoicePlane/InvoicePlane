@@ -61,8 +61,18 @@ class ControllersAuthGuardTest extends AbstractTestCase
     /**
      * @dataProvider adminRouteProvider
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_an_unauthenticated_visitor_away_from_admin_module(string $uri): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get($uri);
 
         self::assertTrue(
@@ -87,8 +97,18 @@ class ControllersAuthGuardTest extends AbstractTestCase
     /**
      * @dataProvider adminRouteProvider
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_expose_php_errors_on_an_unauthenticated_request_to_admin_route(string $uri): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get($uri);
 
         $this->assertResponseHasNoPhpErrors($response);

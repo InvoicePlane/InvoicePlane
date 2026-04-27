@@ -26,6 +26,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -39,6 +48,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_generates_invoice_number_with_year_template(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -56,6 +74,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_generates_invoice_number_with_month_template(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -73,6 +100,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_generates_invoice_number_with_day_template(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -90,6 +126,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_generates_invoice_number_with_short_year_template(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -107,6 +152,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_generates_invoice_number_with_multiple_templates(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -125,6 +179,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_generates_invoice_number_without_templates(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -141,6 +204,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_increments_next_id_when_set_next_is_true(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -158,6 +230,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_does_not_increment_next_id_when_set_next_is_false(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -175,6 +256,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_pads_invoice_id_with_zeros(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -192,6 +282,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_handles_zero_left_pad(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',
@@ -209,6 +308,15 @@ class InvoiceGroupServiceTest extends AbstractTestCase
     #[Test]
     public function it_handles_unknown_template_variables(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->markTestIncomplete();
         $group = InvoiceGroup::query()->create([
             'invoice_group_name'              => 'Test Group',

@@ -23,6 +23,15 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_email_templates_index(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get(route('email_templates.index'));
 
         $response->assertSuccessful();
@@ -32,6 +41,15 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_email_template(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $templateData = [
             'email_template_title'   => 'Test Template',
             'email_template_subject' => 'Test Subject',
@@ -51,6 +69,15 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_prevents_duplicate_email_template_titles(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModel('EmailTemplate', ['email_template_title' => 'Existing Template']);
 
         $templateData = [
@@ -69,6 +96,15 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_updates_existing_email_template(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $template = $this->seedModel('EmailTemplate', [
             'email_template_title' => 'Original Template',
         ]);
@@ -91,6 +127,15 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_deletes_email_template(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $template = $this->seedModel('EmailTemplate');
 
         $response = $this->delete(route('email_templates.delete', ['id' => $template->email_template_id]));
@@ -102,6 +147,15 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_loads_email_template_form_with_custom_fields(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get(route('email_templates.form'));
 
         $response->assertSuccessful();

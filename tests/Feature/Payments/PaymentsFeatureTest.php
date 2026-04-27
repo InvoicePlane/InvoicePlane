@@ -18,16 +18,36 @@ class PaymentsFeatureTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_payments_index_page_with_a_200_status(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/payments');
 
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_an_unauthenticated_visitor_away_from_the_payments_list(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->actingAsGuest();
 
         $response = $this->get('/payments');
@@ -41,8 +61,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_create_payment_form_for_an_existing_invoice(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
 
@@ -53,8 +83,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         $this->assertResponseHasNoPhpErrors($response);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_stores_a_payment_and_links_it_to_the_invoice(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
 
@@ -81,8 +121,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         }
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_payment_submission_with_a_zero_amount(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
 
@@ -104,8 +154,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_payment_view_page_for_a_seeded_payment(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
         $paymentId = $this->seedPayment($invoiceId, ['payment_amount' => '175.50']);
@@ -123,8 +183,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_a_non_200_for_a_payment_view_with_a_nonexistent_id(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/payments/view/999999999');
 
         self::assertThat(
@@ -141,8 +211,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_expose_raw_php_errors_on_the_payments_index(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get('/payments');
 
         $this->assertResponseHasNoPhpErrors($response);
@@ -150,16 +230,36 @@ class PaymentsFeatureTest extends AbstractTestCase
 
 
     // Migrated from BckpPaymentsControllerTest.php
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_payments_index(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get(\Tests\Feature\Invoices\route('payments.index'));
 
         $response->assertSuccessful();
         $response->assertViewHas('payments');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_new_payment_with_valid_data(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $paymentData = [
             'invoice_id'        => $this->invoice->invoice_id,
             'payment_date'      => now()->format('Y-m-d'),
@@ -177,8 +277,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_payment_with_minimum_required_fields(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $paymentData = [
             'invoice_id'        => $this->invoice->invoice_id,
             'payment_amount'    => 25.50,
@@ -194,8 +304,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_payment_with_note(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $paymentData = [
             'invoice_id'        => $this->invoice->invoice_id,
             'payment_date'      => now()->format('Y-m-d'),
@@ -212,8 +332,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_updates_existing_payment(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $payment = $this->seedModel('Payment', [
             'invoice_id'     => $this->invoice->invoice_id,
             'payment_amount' => 50.00,
@@ -234,8 +364,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_views_payment_details(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $payment = $this->seedModel('Payment');
 
         $response = $this->get(\Tests\Feature\Invoices\route('payments.view', ['id' => $payment->payment_id]));
@@ -244,8 +384,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         $response->assertViewHas('payment');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_deletes_payment(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $payment = $this->seedModel('Payment');
 
         $response = $this->delete(\Tests\Feature\Invoices\route('payments.delete', ['id' => $payment->payment_id]));
@@ -254,8 +404,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         $this->assertDatabaseMissing('ip_payments', ['payment_id' => $payment->payment_id]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_loads_payment_form(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->get(\Tests\Feature\Invoices\route('payments.form'));
 
         $response->assertSuccessful();
@@ -263,8 +423,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         $response->assertViewHas('open_invoices');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_loads_payment_edit_form(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $payment = $this->seedModel('Payment');
 
         $response = $this->get(\Tests\Feature\Invoices\route('payments.form', ['id' => $payment->payment_id]));
@@ -273,15 +443,35 @@ class PaymentsFeatureTest extends AbstractTestCase
         $response->assertViewHas('payment');
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_cancels_payment_form_and_redirects(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $response = $this->post(\Tests\Feature\Invoices\route('payments.form'), ['btn_cancel' => true]);
 
         $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_saves_payment_custom_fields(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $customField = $this->seedModel('CustomField', [
             'custom_field_table' => 'ip_payment_custom',
         ]);
@@ -304,8 +494,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_online_payment_logs(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModelMany('PaymentLog', 5);
 
         $response = $this->get(\Tests\Feature\Invoices\route('payments.onlineLogs'));
@@ -316,8 +516,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         });
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_online_payment_logs_by_search(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModel('PaymentLog', ['transaction_id' => 'TXN123ABC']);
         $this->seedModel('PaymentLog', ['transaction_id' => 'TXN456DEF']);
 
@@ -329,8 +539,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         });
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_online_payment_logs_by_date_range(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModel('PaymentLog', ['created_at' => now()->subDays(10)]);
         $this->seedModel('PaymentLog', ['created_at' => now()->subDays(5)]);
         $this->seedModel('PaymentLog', ['created_at' => now()]);
@@ -346,8 +566,18 @@ class PaymentsFeatureTest extends AbstractTestCase
         });
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_filters_online_payment_logs_by_status(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         $this->seedModel('PaymentLog', ['status' => 'completed']);
         $this->seedModel('PaymentLog', ['status' => 'completed']);
         $this->seedModel('PaymentLog', ['status' => 'failed']);

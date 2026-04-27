@@ -69,6 +69,15 @@ class ClientsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_query_builder_for_active_clients(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $builder = $this->service->isActive();
 
@@ -79,6 +88,15 @@ class ClientsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_query_builder_for_inactive_clients(): void
     {
+    /* Arrange */
+    // ...
+
+    /* Act */
+    // ...
+
+    /* Assert */
+    // ...
+
         /* Act */
         $builder = $this->service->isInactive();
 
