@@ -6,6 +6,7 @@ final class TestRoutes
 {
     public const CLIENTS_INDEX = '/clients';
     public const CLIENTS_FORM = '/clients/form';
+    public const GUEST_INDEX = '/guest';
 
     public static function clientsStatus(string $status): string
     {
