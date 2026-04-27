@@ -25,7 +25,7 @@ class ClientsFeatureTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get('/clients');
+        $response = $this->get('/clients/status/active');
 
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
@@ -43,7 +43,7 @@ class ClientsFeatureTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get('/clients');
+        $response = $this->get('/clients/status/active');
 
         $this->assertResponseBodyContains($response, '<html');
         $this->assertResponseBodyContains($response, '</html>');
@@ -92,7 +92,7 @@ class ClientsFeatureTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get('/clients/create');
+        $response = $this->get('/clients/form');
 
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
@@ -111,7 +111,7 @@ class ClientsFeatureTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->post('/clients/create', [
+        $response = $this->post('/clients/form', [
             'client_name' => '',
         ]);
 
@@ -124,7 +124,7 @@ class ClientsFeatureTest extends AbstractTestCase
         );
 
         $isRedirectBack = $response->isRedirect()
-            && str_contains((string) $response->redirectUrl(), 'clients/create');
+            && str_contains((string) $response->redirectUrl(), 'clients/form');
 
         $isRerenderWithError = $response->statusCode() === 200
             && (
@@ -209,7 +209,7 @@ class ClientsFeatureTest extends AbstractTestCase
 
         $clientId = $this->seedClient(['client_name' => 'Editable Corp']);
 
-        $response = $this->get('/clients/edit/' . $clientId);
+        $response = $this->get('/clients/form/' . $clientId);
 
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, 'Editable Corp');
@@ -232,7 +232,7 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->seedClient(['client_name' => 'Beta GmbH']);
         $this->seedClient(['client_name' => 'Gamma BV']);
 
-        $response = $this->get('/clients');
+        $response = $this->get('/clients/status/active');
 
         $this->assertResponseHasNoPhpErrors($response);
         $this->assertResponseStatusCode($response, 200);
@@ -250,8 +250,8 @@ class ClientsFeatureTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $first  = $this->get('/clients');
-        $second = $this->get('/clients');
+        $first  = $this->get('/clients/status/active');
+        $second = $this->get('/clients/status/active');
 
         self::assertSame(
             $first->statusCode(),
