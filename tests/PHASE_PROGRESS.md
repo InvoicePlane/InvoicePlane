@@ -20,7 +20,7 @@ Remaining:
 **Status:** Resolved for Bckp/duplicate test-class cleanup (Clients module)
 
 Completed:
-- Moved URI mapping directly into controller test files using explicit inline URIs (no route helper file).
+- Removed `tests/Support/TestRoutes.php` and moved URI mapping directly into controller test files using explicit inline URIs (no route helper file).
 - Restored full test bodies for `tests/Feature/Clients/ClientsControllerTest.php` and `tests/Feature/Clients/GuestControllerTest.php` after regression feedback.
 - Continued URI migration in both files by replacing `route(...)` calls with explicit `TestRoutes` mappings while preserving original assertion bodies.
 - Continued Phase 2 in `tests/Feature/Clients/UserClientsControllerTest.php` by migrating `user_clients` route helper calls to explicit `TestRoutes` URI mappings without deleting test logic.
@@ -37,6 +37,7 @@ Remaining in Clients module:
 - Add small helper assertions where recurring patterns emerge (redirect target suffix, content-type checks).
 
 Progress note:
+- Continued route inlining for Quotes feature suites (`CrmQuotesControllerTest`, `QuotesAjaxControllerTest`, `QuotesControllerTest`) replacing `route(...)` helper calls with direct controller URIs.
 - Refactored weak placeholder tests in `tests/Feature/Products/AjaxControllerTest.php` into deterministic, behavior-verifying assertions for both modal lookup and selection processing endpoints.
 - Multiple Clients suites now use explicit inline URIs directly in test classes (controller CRUD, ajax, guest, deletion, and user-client flows).
 

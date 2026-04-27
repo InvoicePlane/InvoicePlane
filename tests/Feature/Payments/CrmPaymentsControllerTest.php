@@ -36,7 +36,7 @@ class CrmPaymentsControllerTest extends AbstractTestCase
         // Guest portal accessible without authentication
 
         /* Act */
-        $response = $this->get(route('guest.payments'));
+        $response = $this->get('/guest/payments');
 
         /* Assert */
         $response->assertOk();
@@ -53,7 +53,7 @@ class CrmPaymentsControllerTest extends AbstractTestCase
         // No authentication required
 
         /* Act */
-        $response = $this->get(route('guest.payments'));
+        $response = $this->get('/guest/payments');
 
         /* Assert */
         $response->assertOk();
@@ -85,7 +85,7 @@ class CrmPaymentsControllerTest extends AbstractTestCase
             'payment_status'  => 'completed',
         ];
 
-        $response = $this->post(route('guest.payments.submit'), $payload);
+        $response = $this->post('/guest/payments/submit', $payload);
 
         /* Assert */
         // Note: Current stub implementation ignores payload and always succeeds
@@ -118,7 +118,7 @@ class CrmPaymentsControllerTest extends AbstractTestCase
             'amount'          => '250.50',
         ];
 
-        $response = $this->post(route('guest.payments.submit'), $payload);
+        $response = $this->post('/guest/payments/submit', $payload);
 
         /* Assert */
         // Note: Current stub implementation ignores payload and always succeeds
@@ -138,7 +138,7 @@ class CrmPaymentsControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('guest.payments'));
+        $response = $this->get('/guest/payments');
 
         /* Assert */
         $response->assertOk();

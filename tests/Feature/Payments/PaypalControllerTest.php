@@ -50,7 +50,7 @@ class PaypalControllerTest extends AbstractTestCase
             'custom'         => 'invoice_123',
         ];
 
-        $response = $this->post(route('gateways.paypal.notify'), $payload);
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment', $payload);
 
         /* Assert */
         // Note: Current stub implementation returns OK without validation
@@ -85,7 +85,7 @@ class PaypalControllerTest extends AbstractTestCase
             'mc_currency'    => 'EUR',
         ];
 
-        $response = $this->post(route('gateways.paypal.notify'), $payload);
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment', $payload);
 
         /* Assert */
         // Note: Current stub implementation returns OK without validation

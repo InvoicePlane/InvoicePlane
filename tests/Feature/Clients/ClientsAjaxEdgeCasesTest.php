@@ -36,7 +36,7 @@ class ClientsAjaxEdgeCasesTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => 'invalid']));
+        $response = $this->get('/crm/ajax/get_client_details/invalid');
 
         /* Assert */
         // Should either return 404 or handle gracefully
@@ -58,7 +58,7 @@ class ClientsAjaxEdgeCasesTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => -1]));
+        $response = $this->get('/crm/ajax/get_client_details/-1');
 
         /* Assert */
         $response->assertNotFound();
@@ -76,7 +76,7 @@ class ClientsAjaxEdgeCasesTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('crm.ajax.get_client_details', ['clientId' => 0]));
+        $response = $this->get('/crm/ajax/get_client_details/0');
 
         /* Assert */
         $response->assertNotFound();

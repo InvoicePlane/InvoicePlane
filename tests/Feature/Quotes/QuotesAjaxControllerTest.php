@@ -67,7 +67,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.save'), $payload);
+        $response = $this->post('/quotes/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -107,7 +107,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.save'), $payload);
+        $response = $this->post('/quotes/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -158,7 +158,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.save'), $payload);
+        $response = $this->post('/quotes/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -206,7 +206,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.save'), $payload);
+        $response = $this->post('/quotes/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -248,7 +248,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.save_tax_rate'), $payload);
+        $response = $this->post('/quotes/ajax/save_quote_tax_rate', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -287,7 +287,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         /* Act */
         $this->actingAs($user);
         $response = $this->post(
-            route('quotes.ajax.delete_item', ['quoteId' => $quote->quote_id]),
+            '/quotes/ajax/delete_item/' . $quote->quote_id,
             $payload
         );
 
@@ -322,7 +322,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         /* Act */
         $this->actingAs($user);
         $response = $this->post(
-            route('quotes.ajax.delete_item', ['quoteId' => 99999]),
+            '/quotes/ajax/delete_item/99999',
             $payload
         );
 
@@ -349,7 +349,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('quotes.ajax.get_item', ['item_id' => $item->item_id]));
+        $response = $this->get('/quotes/ajax/get_item?item_id=' . $item->item_id);
 
         /* Assert */
         $response->assertOk();
@@ -369,7 +369,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('quotes.ajax.get_item', ['item_id' => 99999]));
+        $response = $this->get('/quotes/ajax/get_item?item_id=99999');
 
         /* Assert */
         $response->assertOk();
@@ -418,7 +418,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.copy'), $payload);
+        $response = $this->post('/quotes/ajax/copy_quote', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -462,7 +462,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.change_user'), $payload);
+        $response = $this->post('/quotes/ajax/change_user', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -503,7 +503,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.change_user'), $payload);
+        $response = $this->post('/quotes/ajax/change_user', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -542,7 +542,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.change_client'), $payload);
+        $response = $this->post('/quotes/ajax/change_client', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -586,7 +586,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.create'), $payload);
+        $response = $this->post('/quotes/ajax/create', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -653,7 +653,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.quote_to_invoice'), $payload);
+        $response = $this->post('/quotes/ajax/quote_to_invoice', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -699,7 +699,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->post(route('quotes.ajax.quote_to_invoice'), $payload);
+        $response = $this->post('/quotes/ajax/quote_to_invoice', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -725,7 +725,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('quotes.modal.copy', ['quote_id' => $quote->quote_id]));
+        $response = $this->get('/quotes/ajax/modal_copy_quote?quote_id=' . $quote->quote_id);
 
         /* Assert */
         $response->assertOk();
@@ -749,7 +749,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $this->actingAs($user);
-        $response = $this->get(route('quotes.modal.create'));
+        $response = $this->get('/quotes/ajax/modal_create_quote');
 
         /* Assert */
         $response->assertOk();

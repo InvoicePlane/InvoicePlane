@@ -63,7 +63,7 @@ class StripeControllerTest extends AbstractTestCase
             ],
         ];
 
-        $response = $this->post(route('gateways.stripe.notify'), $payload);
+        $response = $this->post('/guest/gateways/stripe/callback', $payload);
 
         /* Assert */
         // Note: Current stub implementation returns OK without validation
@@ -108,7 +108,7 @@ class StripeControllerTest extends AbstractTestCase
             ],
         ];
 
-        $response = $this->post(route('gateways.stripe.notify'), $payload);
+        $response = $this->post('/guest/gateways/stripe/callback', $payload);
 
         /* Assert */
         // Note: Current stub implementation returns OK without validation

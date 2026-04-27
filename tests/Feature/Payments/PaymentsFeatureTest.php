@@ -242,7 +242,7 @@ class PaymentsFeatureTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(\Tests\Feature\Invoices\route('payments.index'));
+        $response = $this->get('/payments');
 
         $response->assertSuccessful();
         $response->assertViewHas('payments');
@@ -268,9 +268,9 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_note'      => 'Test payment note.',
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.form'), $paymentData);
+        $response = $this->post('/payments/form', $paymentData);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
+        $response->assertRedirect('/payments');
         $this->assertDatabaseHas('ip_payments', [
             'invoice_id'     => $this->invoice->invoice_id,
             'payment_amount' => 50.00,
@@ -295,9 +295,9 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_method_id' => $this->paymentMethod->payment_method_id,
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.form'), $paymentData);
+        $response = $this->post('/payments/form', $paymentData);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
+        $response->assertRedirect('/payments');
         $this->assertDatabaseHas('ip_payments', [
             'invoice_id'     => $this->invoice->invoice_id,
             'payment_amount' => 25.50,
@@ -324,9 +324,9 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_note'      => $this->faker->sentence(),
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.form'), $paymentData);
+        $response = $this->post('/payments/form', $paymentData);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
+        $response->assertRedirect('/payments');
         $this->assertDatabaseHas('ip_payments', [
             'payment_note' => $paymentData['payment_note'],
         ]);
@@ -354,9 +354,9 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_note'   => 'Updated payment note',
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.form', ['id' => $payment->payment_id]), $updateData);
+        $response = $this->post('/payments/form/' . $payment->payment_id, $updateData);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
+        $response->assertRedirect('/payments');
         $this->assertDatabaseHas('ip_payments', [
             'payment_id'     => $payment->payment_id,
             'payment_amount' => 75.00,
@@ -378,7 +378,7 @@ class PaymentsFeatureTest extends AbstractTestCase
 
         $payment = $this->seedModel('Payment');
 
-        $response = $this->get(\Tests\Feature\Invoices\route('payments.view', ['id' => $payment->payment_id]));
+        $response = $this->get('/payments/view/' . $payment->payment_id);
 
         $response->assertSuccessful();
         $response->assertViewHas('payment');
@@ -398,9 +398,9 @@ class PaymentsFeatureTest extends AbstractTestCase
 
         $payment = $this->seedModel('Payment');
 
-        $response = $this->delete(\Tests\Feature\Invoices\route('payments.delete', ['id' => $payment->payment_id]));
+        $response = $this->delete('/payments/delete/' . $payment->payment_id);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
+        $response->assertRedirect('/payments');
         $this->assertDatabaseMissing('ip_payments', ['payment_id' => $payment->payment_id]);
     }
 
@@ -416,7 +416,7 @@ class PaymentsFeatureTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(\Tests\Feature\Invoices\route('payments.form'));
+        $response = $this->get('/payments/form');
 
         $response->assertSuccessful();
         $response->assertViewHas('payment_methods');
@@ -437,7 +437,7 @@ class PaymentsFeatureTest extends AbstractTestCase
 
         $payment = $this->seedModel('Payment');
 
-        $response = $this->get(\Tests\Feature\Invoices\route('payments.form', ['id' => $payment->payment_id]));
+        $response = $this->get('/payments/form/' . $payment->payment_id);
 
         $response->assertSuccessful();
         $response->assertViewHas('payment');
@@ -455,9 +455,9 @@ class PaymentsFeatureTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.form'), ['btn_cancel' => true]);
+        $response = $this->post('/payments/form', ['btn_cancel' => true]);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
+        $response->assertRedirect('/payments');
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -485,9 +485,9 @@ class PaymentsFeatureTest extends AbstractTestCase
             ],
         ];
 
-        $response = $this->post(\Tests\Feature\Invoices\route('payments.form'), $paymentData);
+        $response = $this->post('/payments/form', $paymentData);
 
-        $response->assertRedirect(\Tests\Feature\Invoices\route('payments.index'));
+        $response->assertRedirect('/payments');
         $this->assertDatabaseHas('ip_payment_custom', [
             'payment_custom_fieldid'    => $customField->custom_field_id,
             'payment_custom_fieldvalue' => 'Custom value',
@@ -508,7 +508,7 @@ class PaymentsFeatureTest extends AbstractTestCase
 
         $this->seedModelMany('PaymentLog', 5);
 
-        $response = $this->get(\Tests\Feature\Invoices\route('payments.onlineLogs'));
+        $response = $this->get('/payments/online_logs');
 
         $response->assertSuccessful();
         $response->assertViewHas('payment_logs', function ($logs): bool {
@@ -531,7 +531,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         $this->seedModel('PaymentLog', ['transaction_id' => 'TXN123ABC']);
         $this->seedModel('PaymentLog', ['transaction_id' => 'TXN456DEF']);
 
-        $response = $this->get(\Tests\Feature\Invoices\route('payments.onlineLogs', ['search' => '123']));
+        $response = $this->get('/payments/online_logs?search=123');
 
         $response->assertSuccessful();
         $response->assertViewHas('payment_logs', function ($logs): bool {
@@ -555,10 +555,10 @@ class PaymentsFeatureTest extends AbstractTestCase
         $this->seedModel('PaymentLog', ['created_at' => now()->subDays(5)]);
         $this->seedModel('PaymentLog', ['created_at' => now()]);
 
-        $response = $this->get(\Tests\Feature\Invoices\route('payments.onlineLogs', [
-            'date_from' => now()->subDays(6)->format('Y-m-d'),
-            'date_to'   => now()->format('Y-m-d'),
-        ]));
+        $response = $this->get(
+            '/payments/online_logs?date_from=' . now()->subDays(6)->format('Y-m-d')
+            . '&date_to=' . now()->format('Y-m-d')
+        );
 
         $response->assertSuccessful();
         $response->assertViewHas('payment_logs', function ($logs): bool {
@@ -582,7 +582,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         $this->seedModel('PaymentLog', ['status' => 'completed']);
         $this->seedModel('PaymentLog', ['status' => 'failed']);
 
-        $response = $this->get(\Tests\Feature\Invoices\route('payments.onlineLogs', ['status' => 'completed']));
+        $response = $this->get('/payments/online_logs?status=completed');
 
         $response->assertSuccessful();
         $response->assertViewHas('payment_logs', function ($logs): bool {
