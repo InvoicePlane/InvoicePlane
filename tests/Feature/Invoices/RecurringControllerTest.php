@@ -37,7 +37,7 @@ class RecurringControllerTest extends AbstractTestCase
         $recurring2 = $this->seedModel('InvoicesRecurring');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.recurring'));
+        $response = $this->actingAs($user)->get('/invoices/recurring');
 
         /* Assert */
         $response->assertOk();
@@ -58,7 +58,7 @@ class RecurringControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.recurring'));
+        $response = $this->actingAs($user)->get('/invoices/recurring');
 
         /* Assert */
         $response->assertOk();
@@ -78,7 +78,7 @@ class RecurringControllerTest extends AbstractTestCase
         $this->seedModelMany('InvoicesRecurring', 20);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.recurring'));
+        $response = $this->actingAs($user)->get('/invoices/recurring');
 
         /* Assert */
         $response->assertOk();
@@ -98,7 +98,7 @@ class RecurringControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('invoices.recurring.stop', ['id' => $recurring->invoice_recurring_id])
+            '/invoices/recurring/stop/' . ($recurring->invoice_recurring_id)
         );
 
         /* Assert */
@@ -120,7 +120,7 @@ class RecurringControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('invoices.recurring.stop', ['id' => $recurring->invoice_recurring_id])
+            '/invoices/recurring/stop/' . ($recurring->invoice_recurring_id)
         );
 
         /* Assert */
@@ -142,7 +142,7 @@ class RecurringControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.recurring.stop', $stopParams));
+        $response = $this->actingAs($user)->post('/invoices/recurring/stop');
 
         /* Assert */
         $response->assertNotFound();
@@ -166,7 +166,7 @@ class RecurringControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.recurring.delete', $deleteParams));
+        $response = $this->actingAs($user)->post('/invoices/recurring/delete');
 
         /* Assert */
         $response->assertRedirect();
@@ -190,7 +190,7 @@ class RecurringControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.recurring.delete', $deleteParams));
+        $response = $this->actingAs($user)->post('/invoices/recurring/delete');
 
         /* Assert */
         $response->assertRedirect();
@@ -211,7 +211,7 @@ class RecurringControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.recurring.delete', $deleteParams));
+        $response = $this->actingAs($user)->post('/invoices/recurring/delete');
 
         /* Assert */
         $response->assertNotFound();
@@ -228,7 +228,7 @@ class RecurringControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.recurring'));
+        $response = $this->actingAs($user)->get('/invoices/recurring');
 
         /* Assert */
         $response->assertOk();

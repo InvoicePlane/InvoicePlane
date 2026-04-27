@@ -35,7 +35,7 @@ class ReportsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(route('reports.salesByClient'), [
+        $response = $this->post('/reports/salesByClient', [
             'from_date'  => now()->subMonth()->format('Y-m-d'),
             'to_date'    => now()->format('Y-m-d'),
             'btn_submit' => true,
@@ -59,7 +59,7 @@ class ReportsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(route('reports.salesByClient'), [
+        $response = $this->post('/reports/salesByClient', [
             'btn_submit' => true,
             'from_date'  => now()->subDays(30)->format('Y-m-d'),
             'to_date'    => now()->format('Y-m-d'),
@@ -84,7 +84,7 @@ class ReportsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('reports.paymentHistory'));
+        $response = $this->get('/reports/paymentHistory');
 
         $response->assertSuccessful();
         $response->assertViewIs('reports.payment_history_index');
@@ -108,7 +108,7 @@ class ReportsControllerTest extends AbstractTestCase
             'payment_date' => now()->subDays(5),
         ]);
 
-        $response = $this->post(route('reports.paymentHistory'), [
+        $response = $this->post('/reports/paymentHistory', [
             'btn_submit' => true,
             'from_date'  => now()->subDays(30)->format('Y-m-d'),
             'to_date'    => now()->format('Y-m-d'),
@@ -136,7 +136,7 @@ class ReportsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(route('reports.invoiceAging'), [
+        $response = $this->post('/reports/invoiceAging', [
             'btn_submit' => true,
         ]);
 
@@ -157,7 +157,7 @@ class ReportsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(route('reports.invoicesPerClient'), [
+        $response = $this->post('/reports/invoicesPerClient', [
             'from_date'  => now()->subMonth()->format('Y-m-d'),
             'to_date'    => now()->format('Y-m-d'),
             'btn_submit' => true,
@@ -186,7 +186,7 @@ class ReportsControllerTest extends AbstractTestCase
             'invoice_status_id'    => 4,
         ]);
 
-        $response = $this->post(route('reports.salesByYear'), [
+        $response = $this->post('/reports/salesByYear', [
             'btn_submit'  => true,
             'from_date'   => now()->subYear()->format('Y-m-d'),
             'to_date'     => now()->format('Y-m-d'),
@@ -213,7 +213,7 @@ class ReportsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->post(route('reports.salesByYear'), [
+        $response = $this->post('/reports/salesByYear', [
             'btn_submit'  => true,
             'from_date'   => now()->subYear()->format('Y-m-d'),
             'to_date'     => now()->format('Y-m-d'),

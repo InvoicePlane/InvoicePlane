@@ -31,9 +31,9 @@ class SecurityTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect('/sessions/login');
     }
 
     #[Test]
@@ -50,7 +50,7 @@ class SecurityTest extends AbstractTestCase
 
         $this->actingAs($this->user);
 
-        $response = $this->get(route('dashboard.index'));
+        $response = $this->get('/dashboard/index');
 
         $response->assertSuccessful();
     }
@@ -77,7 +77,7 @@ class SecurityTest extends AbstractTestCase
             'invoice_date_due'     => now()->addDays(30)->format('Y-m-d'),
         ];
 
-        $response = $this->post(route('invoices.form'), $maliciousData);
+        $response = $this->post('/invoices/form', $maliciousData);
 
         // Input should be filtered
         $this->assertDatabaseMissing('ip_invoices', [
@@ -102,7 +102,7 @@ class SecurityTest extends AbstractTestCase
 
         $sqlInjection = "' OR '1'='1";
 
-        $response = $this->get(route('clients.ajax.nameQuery', ['query' => $sqlInjection]));
+        $response = $this->get('/clients/ajax/nameQuery/' . ($sqlInjection));
 
         $response->assertSuccessful();
         // Should not return all clients or cause error
@@ -122,7 +122,7 @@ class SecurityTest extends AbstractTestCase
 
         $this->actingAs($this->user);
 
-        $response = $this->post(route('clients.form'), [
+        $response = $this->post('/clients/form', [
             'client_name'  => 'Test Client',
             'client_email' => 'test@example.com',
         ], [
@@ -146,7 +146,7 @@ class SecurityTest extends AbstractTestCase
 
         $this->actingAs($this->user);
 
-        $response = $this->get(route('invoices.download', ['invoice' => '../../etc/passwd']));
+        $response = $this->get('/invoices/download/' . ('../../etc/passwd'));
 
         $response->assertNotFound();
     }
@@ -168,7 +168,7 @@ class SecurityTest extends AbstractTestCase
 
         $invoice = $this->seedModel('Invoice');
 
-        $response = $this->delete(route('invoices.delete', ['invoice_id' => $invoice->invoice_id]));
+        $response = $this->delete('/invoices/delete/' . ($invoice->invoice_id));
 
         // Guest users should not be able to delete invoices
         $response->assertStatus(403);
@@ -217,7 +217,7 @@ class SecurityTest extends AbstractTestCase
 
         // Attempt multiple failed logins
         for ($i = 0; $i < 11; $i++) {
-            $this->post(route('sessions.login'), [
+            $this->post('/sessions/login', [
                 'btn_login' => true,
                 'email'     => 'test@example.com',
                 'password'  => 'wrongpassword',
@@ -244,7 +244,7 @@ class SecurityTest extends AbstractTestCase
 
         $this->actingAs($this->user);
 
-        $response = $this->post(route('clients.form'), [
+        $response = $this->post('/clients/form', [
             'client_name'  => 'Test Client',
             'client_email' => 'not-an-email',
         ]);
@@ -266,7 +266,7 @@ class SecurityTest extends AbstractTestCase
 
         $this->actingAs($this->user);
 
-        $response = $this->post(route('clients.form'), [
+        $response = $this->post('/clients/form', [
             'client_name'  => 'Test Client',
             'client_email' => 'test@example.com',
             'user_type'    => 1, // Attempt to set privileged field

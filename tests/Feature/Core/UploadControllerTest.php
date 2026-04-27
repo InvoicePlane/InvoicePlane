@@ -31,7 +31,7 @@ class UploadControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('upload.index'));
+        $response = $this->actingAs($user)->get('/upload/index');
 
         /* Assert */
         $response->assertOk();

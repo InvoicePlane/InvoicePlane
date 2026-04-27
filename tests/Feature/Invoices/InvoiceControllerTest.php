@@ -33,7 +33,7 @@ class InvoiceControllerTest extends AbstractTestCase
         $this->seedModelMany('Invoice', 5);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoice.index'));
+        $response = $this->actingAs($user)->get('/invoice/index');
 
         /* Assert */
         $response->assertOk();
@@ -60,7 +60,7 @@ class InvoiceControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoice.index'));
+        $response = $this->actingAs($user)->get('/invoice/index');
 
         /* Assert */
         $response->assertOk();
@@ -82,7 +82,7 @@ class InvoiceControllerTest extends AbstractTestCase
         $invoice = $this->seedModel('Invoice');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoice.show', ['id' => $invoice->invoice_id]));
+        $response = $this->actingAs($user)->get('/invoice/show/' . ($invoice->invoice_id));
 
         /* Assert */
         $response->assertOk();
@@ -104,7 +104,7 @@ class InvoiceControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoice.show', ['id' => 99999]));
+        $response = $this->actingAs($user)->get('/invoice/show/' . (99999));
 
         /* Assert */
         $response->assertNotFound();
@@ -121,7 +121,7 @@ class InvoiceControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoice.create'));
+        $response = $this->actingAs($user)->get('/invoice/create');
 
         /* Assert */
         $response->assertOk();

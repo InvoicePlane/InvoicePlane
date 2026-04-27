@@ -37,10 +37,10 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
+        $response = $this->post('/tasks/delete/' . ($task->task_id));
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
         $response->assertSessionHas('alert_success');
 
         // Verify task was actually deleted
@@ -68,10 +68,10 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
+        $response = $this->post('/tasks/delete/' . ($task->task_id));
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
         $response->assertSessionHas('alert_error');
 
         // Verify task still exists in database
@@ -98,10 +98,10 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
+        $response = $this->post('/tasks/delete/' . ($task->task_id));
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
         $response->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_tasks', ['task_id' => $task->task_id]);
     }
@@ -134,10 +134,10 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
             ]);
 
             /* Act */
-            $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
+            $response = $this->post('/tasks/delete/' . ($task->task_id));
 
             /* Assert */
-            $response->assertRedirect(route('tasks.index'));
+            $response->assertRedirect('/tasks/index');
             $response->assertSessionHas('alert_error');
             $this->assertDatabaseHas('ip_tasks', [
                 'task_id'    => $task->task_id,
@@ -159,10 +159,10 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $invalidId = -1;
 
         /* Act */
-        $response = $this->post(route('tasks.delete', ['task_id' => $invalidId]));
+        $response = $this->post('/tasks/delete/' . ($invalidId));
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
         $response->assertSessionHas('alert_error');
     }
 
@@ -179,10 +179,10 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->post(route('tasks.delete', ['task_id' => $nonexistentId]));
+        $response = $this->post('/tasks/delete/' . ($nonexistentId));
 
         /* Assert */
-        $response->assertRedirect(route('tasks.index'));
+        $response->assertRedirect('/tasks/index');
         $response->assertSessionHas('alert_error');
     }
 
@@ -203,7 +203,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         // Initially cannot delete
-        $response1 = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
+        $response1 = $this->post('/tasks/delete/' . ($task->task_id));
         $response1->assertSessionHas('alert_error');
 
         // Remove invoice reference
@@ -211,10 +211,10 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $task->save();
 
         /* Act */
-        $response2 = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
+        $response2 = $this->post('/tasks/delete/' . ($task->task_id));
 
         /* Assert */
-        $response2->assertRedirect(route('tasks.index'));
+        $response2->assertRedirect('/tasks/index');
         $response2->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_tasks', ['task_id' => $task->task_id]);
     }
@@ -237,9 +237,9 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
 
         /* Act & Assert */
         foreach ($tasks as $task) {
-            $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
+            $response = $this->post('/tasks/delete/' . ($task->task_id));
 
-            $response->assertRedirect(route('tasks.index'));
+            $response->assertRedirect('/tasks/index');
             $response->assertSessionHas('alert_error');
             $this->assertDatabaseHas('ip_tasks', ['task_id' => $task->task_id]);
         }
@@ -261,9 +261,9 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
 
         /* Act & Assert */
         foreach ($tasks as $task) {
-            $response = $this->post(route('tasks.delete', ['task_id' => $task->task_id]));
+            $response = $this->post('/tasks/delete/' . ($task->task_id));
 
-            $response->assertRedirect(route('tasks.index'));
+            $response->assertRedirect('/tasks/index');
             $response->assertSessionHas('alert_success');
             $this->assertDatabaseMissing('ip_tasks', ['task_id' => $task->task_id]);
         }
@@ -285,8 +285,8 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $nonDeletableTask = $this->seedModel('Task', ['invoice_id' => $invoice->invoice_id]);
 
         /* Act */
-        $response1 = $this->post(route('tasks.delete', ['task_id' => $deletableTask->task_id]));
-        $response2 = $this->post(route('tasks.delete', ['task_id' => $nonDeletableTask->task_id]));
+        $response1 = $this->post('/tasks/delete/' . ($deletableTask->task_id));
+        $response2 = $this->post('/tasks/delete/' . ($nonDeletableTask->task_id));
 
         /* Assert */
         // Deletable task deleted

@@ -36,7 +36,7 @@ class RecurringInvoicesControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('invoices.recurring.index'));
+        $response = $this->get('/invoices/recurring/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('recurring_invoices');
@@ -57,11 +57,9 @@ class RecurringInvoicesControllerTest extends AbstractTestCase
 
         $recurringInvoice = $this->seedModel('RecurringInvoice', ['status' => 'active']);
 
-        $response = $this->post(route('invoices.recurring.stop', [
-            'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,
-        ]));
+        $response = $this->post('/invoices/recurring/stop/' . ($recurringInvoice->invoice_recurring_id));
 
-        $response->assertRedirect(route('invoices.recurring.index'));
+        $response->assertRedirect('/invoices/recurring/index');
         $this->assertDatabaseHas('ip_invoices_recurring', [
             'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,
             'status'               => 'stopped',
@@ -82,11 +80,9 @@ class RecurringInvoicesControllerTest extends AbstractTestCase
 
         $recurringInvoice = $this->seedModel('RecurringInvoice');
 
-        $response = $this->delete(route('invoices.recurring.delete', [
-            'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,
-        ]));
+        $response = $this->delete('/invoices/recurring/delete/' . ($recurringInvoice->invoice_recurring_id));
 
-        $response->assertRedirect(route('invoices.recurring.index'));
+        $response->assertRedirect('/invoices/recurring/index');
         $this->assertDatabaseMissing('ip_invoices_recurring', [
             'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,
         ]);

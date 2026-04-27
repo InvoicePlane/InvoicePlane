@@ -24,10 +24,10 @@ class UserClientsControllerTest extends AbstractTestCase
     // ...
 
         /* Act */
-        $response = $this->get(route('user_clients.index'));
+        $response = $this->get('/user_clients/index');
 
         /* Assert */
-        $response->assertRedirect(route('users'));
+        $response->assertRedirect('/users');
     }
 
     #[Test]
@@ -37,7 +37,7 @@ class UserClientsControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->get(route('user_clients.user', ['id' => $user->id]));
+        $response = $this->get('/user_clients/user/' . ($user->id));
 
         /* Assert */
         $response->assertStatus(200);
@@ -59,10 +59,10 @@ class UserClientsControllerTest extends AbstractTestCase
     // ...
 
         /* Act */
-        $response = $this->get(route('user_clients.user', ['id' => 99999]));
+        $response = $this->get('/user_clients/user/' . (99999));
 
         /* Assert */
-        $response->assertRedirect(route('users'));
+        $response->assertRedirect('/users');
     }
 
     #[Test]
@@ -78,10 +78,10 @@ class UserClientsControllerTest extends AbstractTestCase
     // ...
 
         /* Act */
-        $response = $this->get(route('user_clients.create'));
+        $response = $this->get('/user_clients/create');
 
         /* Assert */
-        $response->assertRedirect(route('custom_values'));
+        $response->assertRedirect('/custom_values');
     }
 
     #[Test]
@@ -96,10 +96,10 @@ class UserClientsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->get(route('user_clients.delete', ['user_client_id' => $userClient->id]));
+        $response = $this->get('/user_clients/delete/' . ($userClient->id));
 
         /* Assert */
-        $response->assertRedirect(route('user_clients.user', ['id' => $user->id]));
+        $response->assertRedirect('/user_clients/user/' . ($user->id));
         $this->assertDatabaseMissing('ip_user_clients', ['id' => $userClient->id]);
     }
 }

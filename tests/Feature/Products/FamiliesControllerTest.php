@@ -41,7 +41,7 @@ class FamiliesControllerTest extends AbstractTestCase
         $this->seedModelMany('Family', 5);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('families.index'));
+        $response = $this->actingAs($user)->get('/families/index');
 
         /* Assert */
         $response->assertOk();
@@ -63,7 +63,7 @@ class FamiliesControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('families.form'));
+        $response = $this->actingAs($user)->get('/families/form');
 
         /* Assert */
         $response->assertOk();
@@ -88,7 +88,7 @@ class FamiliesControllerTest extends AbstractTestCase
         $family = $this->seedModel('Family');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('families.form', ['id' => $family->family_id]));
+        $response = $this->actingAs($user)->get('/families/form/' . ($family->family_id));
 
         /* Assert */
         $response->assertOk();
@@ -122,10 +122,10 @@ class FamiliesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('families.form'), $familyData);
+        $response = $this->actingAs($user)->post('/families/form', $familyData);
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_families', [
@@ -150,9 +150,9 @@ class FamiliesControllerTest extends AbstractTestCase
             'is_update'   => 0,
         ];
 
-        $response = $this->post(route('families.form'), $familyData);
+        $response = $this->post('/families/form', $familyData);
 
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
         $this->assertDatabaseHas('ip_families', [
             'family_name' => 'Test Family',
         ]);
@@ -181,10 +181,10 @@ class FamiliesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('families.form', ['id' => $family->family_id]), $updateData);
+        $response = $this->actingAs($user)->post('/families/form/' . ($family->family_id), $updateData);
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
         $response->assertSessionHas('alert_success');
 
         $this->assertDatabaseHas('ip_families', [
@@ -213,10 +213,10 @@ class FamiliesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('families.form'), $cancelData);
+        $response = $this->actingAs($user)->post('/families/form', $cancelData);
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
     }
 
     /**
@@ -240,7 +240,7 @@ class FamiliesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('families.form'), $invalidData);
+        $response = $this->actingAs($user)->post('/families/form', $invalidData);
 
         /* Assert */
         $response->assertSessionHasErrors('family_name');
@@ -268,7 +268,7 @@ class FamiliesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('families.form'), $duplicateData);
+        $response = $this->actingAs($user)->post('/families/form', $duplicateData);
 
         /* Assert */
         $response->assertSessionHasErrors('family_name');
@@ -295,12 +295,12 @@ class FamiliesControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('families.delete', ['id' => $family->family_id]),
+            '/families/delete/' . ($family->family_id),
             $deletePayload
         );
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        $response->assertRedirect('/families/index');
         $this->assertDatabaseMissing('ip_families', ['family_id' => $family->family_id]);
         $response->assertSessionHas('alert_success');
 
@@ -330,7 +330,7 @@ class FamiliesControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('families.delete', ['id' => 99999]),
+            '/families/delete/' . (99999),
             $deletePayload
         );
 
@@ -357,9 +357,9 @@ class FamiliesControllerTest extends AbstractTestCase
             'is_update'   => 0,
         ];
 
-        $response = $this->post(route('families.form'), $familyData);
+        $response = $this->post('/families/form', $familyData);
 
-        $response->assertRedirect(route('families.form'));
+        $response->assertRedirect('/families/form');
         $response->assertSessionHas('alert_error');
     }
 }

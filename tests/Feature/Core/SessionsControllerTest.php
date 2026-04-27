@@ -26,9 +26,9 @@ class SessionsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('sessions.index'));
+        $response = $this->get('/sessions/index');
 
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect('/sessions/login');
     }
 
     #[Test]
@@ -43,7 +43,7 @@ class SessionsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('sessions.login'));
+        $response = $this->get('/sessions/login');
 
         $response->assertSuccessful();
         $response->assertViewIs('session_login');
@@ -69,13 +69,13 @@ class SessionsControllerTest extends AbstractTestCase
             'user_type'     => 1,
         ]);
 
-        $response = $this->post(route('sessions.login'), [
+        $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',
             'password'  => 'password123',
         ]);
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect('/dashboard');
         $this->assertAuthenticatedAs($user);
     }
 
@@ -98,13 +98,13 @@ class SessionsControllerTest extends AbstractTestCase
             'user_type'     => 2, // Guest user
         ]);
 
-        $response = $this->post(route('sessions.login'), [
+        $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'guest@example.com',
             'password'  => 'password123',
         ]);
 
-        $response->assertRedirect(route('guest'));
+        $response->assertRedirect('/guest');
     }
 
     #[Test]
@@ -125,13 +125,13 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'   => 1,
         ]);
 
-        $response = $this->post(route('sessions.login'), [
+        $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',
             'password'  => 'wrongpassword',
         ]);
 
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect('/sessions/login');
         $response->assertSessionHas('alert_error');
         $this->assertGuest();
     }
@@ -148,13 +148,13 @@ class SessionsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->post(route('sessions.login'), [
+        $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'nonexistent@example.com',
             'password'  => 'password123',
         ]);
 
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect('/sessions/login');
         $response->assertSessionHas('alert_error', trans('loginalert_user_not_found'));
         $this->assertGuest();
     }
@@ -177,13 +177,13 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'   => 0,
         ]);
 
-        $response = $this->post(route('sessions.login'), [
+        $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'inactive@example.com',
             'password'  => 'password123',
         ]);
 
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect('/sessions/login');
         $response->assertSessionHas('alert_error', trans('loginalert_user_inactive'));
         $this->assertGuest();
     }
@@ -208,7 +208,7 @@ class SessionsControllerTest extends AbstractTestCase
 
         // Attempt 10 failed logins
         for ($i = 0; $i < 10; $i++) {
-            $this->post(route('sessions.login'), [
+            $this->post('/sessions/login', [
                 'btn_login' => true,
                 'email'     => 'test@example.com',
                 'password'  => 'wrongpassword',
@@ -216,7 +216,7 @@ class SessionsControllerTest extends AbstractTestCase
         }
 
         // 11th attempt should be blocked
-        $response = $this->post(route('sessions.login'), [
+        $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',
             'password'  => 'password123',
@@ -243,9 +243,9 @@ class SessionsControllerTest extends AbstractTestCase
         $user = $this->seedModel('User', ['user_active' => 1]);
         $this->actingAs($user);
 
-        $response = $this->get(route('sessions.logout'));
+        $response = $this->get('/sessions/logout');
 
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect('/sessions/login');
         $this->assertGuest();
     }
 
@@ -261,7 +261,7 @@ class SessionsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('sessions.passwordreset'));
+        $response = $this->get('/sessions/passwordreset');
 
         $response->assertSuccessful();
         $response->assertViewIs('session_passwordreset');
@@ -286,12 +286,12 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active' => 1,
         ]);
 
-        $response = $this->post(route('sessions.passwordreset'), [
+        $response = $this->post('/sessions/passwordreset', [
             'btn_reset' => true,
             'email'     => 'test@example.com',
         ]);
 
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect('/sessions/login');
         $response->assertSessionHas('alert_success');
 
         $user->refresh();
@@ -310,7 +310,7 @@ class SessionsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->post(route('sessions.passwordreset'), [
+        $response = $this->post('/sessions/passwordreset', [
             'btn_reset' => true,
             'email'     => 'invalid-email',
         ]);
@@ -337,7 +337,7 @@ class SessionsControllerTest extends AbstractTestCase
 
         // Attempt 10 password resets
         for ($i = 0; $i < 10; $i++) {
-            $this->post(route('sessions.passwordreset'), [
+            $this->post('/sessions/passwordreset', [
                 'btn_reset' => true,
                 'email'     => 'test@example.com',
             ]);
@@ -366,7 +366,7 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'              => 1,
         ]);
 
-        $response = $this->get(route('sessions.passwordreset', ['token' => 'valid_token_123']));
+        $response = $this->get('/sessions/passwordreset/' . ('valid_token_123'));
 
         $response->assertSuccessful();
         $response->assertViewIs('session_new_password');
@@ -386,9 +386,9 @@ class SessionsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('sessions.passwordreset', ['token' => 'invalid_token']));
+        $response = $this->get('/sessions/passwordreset/' . ('invalid_token'));
 
-        $response->assertRedirect(route('sessions.passwordreset'));
+        $response->assertRedirect('/sessions/passwordreset');
         $response->assertSessionHas('alert_error');
     }
 
@@ -404,7 +404,7 @@ class SessionsControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('sessions.passwordreset', ['token' => 'token<script>alert(1)</script>']));
+        $response = $this->get('/sessions/passwordreset/' . ('token<script>alert(1)</script>'));
 
         $response->assertRedirect('/');
     }
@@ -427,14 +427,14 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'              => 1,
         ]);
 
-        $response = $this->post(route('sessions.passwordreset'), [
+        $response = $this->post('/sessions/passwordreset', [
             'btn_new_password' => true,
             'token'            => 'valid_token_123',
             'user_id'          => $user->user_id,
             'new_password'     => 'newpassword123',
         ]);
 
-        $response->assertRedirect(route('sessions.login'));
+        $response->assertRedirect('/sessions/login');
 
         $user->refresh();
         $this->assertEmpty($user->user_passwordreset_token);
@@ -459,7 +459,7 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'              => 1,
         ]);
 
-        $response = $this->post(route('sessions.passwordreset'), [
+        $response = $this->post('/sessions/passwordreset', [
             'btn_new_password' => true,
             'token'            => 'wrong_token',
             'user_id'          => $user->user_id,
@@ -491,7 +491,7 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'              => 1,
         ]);
 
-        $response = $this->post(route('sessions.passwordreset'), [
+        $response = $this->post('/sessions/passwordreset', [
             'btn_new_password' => true,
             'token'            => 'valid_token_123',
             'user_id'          => $user->user_id,
@@ -523,7 +523,7 @@ class SessionsControllerTest extends AbstractTestCase
 
         // Create some failed attempts
         for ($i = 0; $i < 3; $i++) {
-            $this->post(route('sessions.login'), [
+            $this->post('/sessions/login', [
                 'btn_login' => true,
                 'email'     => 'test@example.com',
                 'password'  => 'wrongpassword',
@@ -531,7 +531,7 @@ class SessionsControllerTest extends AbstractTestCase
         }
 
         // Successful login
-        $this->post(route('sessions.login'), [
+        $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',
             'password'  => 'password123',
@@ -568,13 +568,13 @@ class SessionsControllerTest extends AbstractTestCase
             'log_create_timestamp' => now()->subHours(13)->toDateTimeString(),
         ]);
 
-        $response = $this->post(route('sessions.login'), [
+        $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',
             'password'  => 'password123',
         ]);
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect('/dashboard');
         $this->assertAuthenticatedAs($user);
     }
 }

@@ -251,6 +251,8 @@ log_message('error', 'Security event: ' . json_encode($context, JSON_PARTIAL_OUT
 - Method names: `it_<snake_case>`.
 - Annotate with `#[Test]`.
 - Follow Arrange / Act / Assert.
+- In the coding-agent environment, do not execute `vendor/bin/phpunit`; run syntax/static checks and let CI run PHPUnit.
+- Controller tests must use explicit URI strings (no `route('...')` helpers), and URI strings must not contain backslashes.
 
 ```php
 #[Test]

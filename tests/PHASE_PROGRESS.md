@@ -22,22 +22,22 @@ Remaining:
 Completed:
 - Removed `tests/Support/TestRoutes.php` and moved URI mapping directly into controller test files using explicit inline URIs (no route helper file).
 - Restored full test bodies for `tests/Feature/Clients/ClientsControllerTest.php` and `tests/Feature/Clients/GuestControllerTest.php` after regression feedback.
-- Continued URI migration in both files by replacing `route(...)` calls with explicit `TestRoutes` mappings while preserving original assertion bodies.
+- Continued URI migration in both files by replacing named-route helper calls with explicit `TestRoutes` mappings while preserving original assertion bodies.
 - Continued Phase 2 in `tests/Feature/Clients/UserClientsControllerTest.php` by migrating `user_clients` route helper calls to explicit `TestRoutes` URI mappings without deleting test logic.
 
-- Continued Phase 2 in `tests/Feature/Clients/ClientsAjaxControllerTest.php` by migrating `crm.ajax.*` and auth redirect `route(...)` calls to `TestRoutes` URI mappings while preserving existing test bodies.
+- Continued Phase 2 in `tests/Feature/Clients/ClientsAjaxControllerTest.php` by migrating `crm.ajax.*` and auth redirect named-route helper calls to `TestRoutes` URI mappings while preserving existing test bodies.
 
-- Continued Phase 2 by migrating `ClientsAjaxModalTest`, `ClientsAjaxDetailsTest`, `GetControllerTest`, and `ViewControllerTest` from `route(...)` calls to explicit inline URIs while preserving their test bodies.
+- Continued Phase 2 by migrating `ClientsAjaxModalTest`, `ClientsAjaxDetailsTest`, `GetControllerTest`, and `ViewControllerTest` from named-route helper calls to explicit inline URIs while preserving their test bodies.
 
-- Continued Phase 2 by migrating `ClientDeletionValidationFeatureTest` and `CrmAjaxControllerTest` from `route(...)` calls to explicit inline URIs while keeping existing test logic intact.
+- Continued Phase 2 by migrating `ClientDeletionValidationFeatureTest` and `CrmAjaxControllerTest` from named-route helper calls to explicit inline URIs while keeping existing test logic intact.
 
 Remaining in Clients module:
-- Convert remaining Clients feature files still using `route(...)`.
+- Convert remaining Clients feature files still using named-route helpers.
 - Replace Laravel response helpers (`assertViewIs`, `assertSessionHas`, etc.) with request-runner-compatible assertions.
 - Add small helper assertions where recurring patterns emerge (redirect target suffix, content-type checks).
 
 Progress note:
-- Continued route inlining for Quotes feature suites (`CrmQuotesControllerTest`, `QuotesAjaxControllerTest`, `QuotesControllerTest`) replacing `route(...)` helper calls with direct controller URIs.
+- Continued route inlining for Quotes feature suites (`CrmQuotesControllerTest`, `QuotesAjaxControllerTest`, `QuotesControllerTest`) replacing named-route helper calls with direct controller URIs.
 - Refactored weak placeholder tests in `tests/Feature/Products/AjaxControllerTest.php` into deterministic, behavior-verifying assertions for both modal lookup and selection processing endpoints.
 - Multiple Clients suites now use explicit inline URIs directly in test classes (controller CRUD, ajax, guest, deletion, and user-client flows).
 
@@ -82,6 +82,6 @@ Completed:
 
 ## Next recommended slice
 
-1. Finish Clients module `route(...)` elimination.
+1. Finish Clients module named-route-helper elimination.
 2. Add/standardize 2-3 reusable CI3 assertion helpers in `AbstractTestCase` for redirects and JSON checks.
 3. Start base-class deduplication by mapping each existing test base to one target replacement.

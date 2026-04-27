@@ -31,3 +31,16 @@ Each test must:
 - If a weak test is found, refactor it immediately before adding new tests in that area.
 - Never delete meaningful test bodies to make tests pass.
 - Never rely on `assertResponseHasNoPhpErrors()` as a primary assertion.
+
+## Controller route policy (mandatory)
+- Controller tests must use explicit URI paths (e.g. `'/payments/form/5'`) for request/redirect assertions.
+- Do not use `route('...')` helpers in controller tests.
+- URIs must never include namespace backslashes.
+
+## Migration safety rule (root cause prevention)
+- Do not run blind namespace-based search/replace when converting `route(...)` to URIs.
+- The previously observed broken form `\Fully\Qualified\Namespace'/route` is caused by partial replacement of namespace-qualified function calls.
+- After every route migration, run:
+  - `rg -n "\\broute\\(" tests`
+  - `php tests/Scripts/CheckExplicitTestRoutes.php`
+  and fix all violations before committing.

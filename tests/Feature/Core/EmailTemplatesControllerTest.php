@@ -32,7 +32,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('email_templates.index'));
+        $response = $this->get('/email_templates/index');
 
         $response->assertSuccessful();
         $response->assertViewHas('email_templates');
@@ -58,9 +58,9 @@ class EmailTemplatesControllerTest extends AbstractTestCase
             'is_update'              => 0,
         ];
 
-        $response = $this->post(route('email_templates.form'), $templateData);
+        $response = $this->post('/email_templates/form', $templateData);
 
-        $response->assertRedirect(route('email_templates.index'));
+        $response->assertRedirect('/email_templates/index');
         $this->assertDatabaseHas('ip_email_templates', [
             'email_template_title' => 'Test Template',
         ]);
@@ -87,9 +87,9 @@ class EmailTemplatesControllerTest extends AbstractTestCase
             'is_update'              => 0,
         ];
 
-        $response = $this->post(route('email_templates.form'), $templateData);
+        $response = $this->post('/email_templates/form', $templateData);
 
-        $response->assertRedirect(route('email_templates.form'));
+        $response->assertRedirect('/email_templates/form');
         $response->assertSessionHas('alert_error');
     }
 
@@ -115,9 +115,9 @@ class EmailTemplatesControllerTest extends AbstractTestCase
             'email_template_body'    => 'Updated body',
         ];
 
-        $response = $this->post(route('email_templates.form', ['id' => $template->email_template_id]), $updateData);
+        $response = $this->post('/email_templates/form/' . ($template->email_template_id), $updateData);
 
-        $response->assertRedirect(route('email_templates.index'));
+        $response->assertRedirect('/email_templates/index');
         $this->assertDatabaseHas('ip_email_templates', [
             'email_template_id'    => $template->email_template_id,
             'email_template_title' => 'Updated Template',
@@ -138,9 +138,9 @@ class EmailTemplatesControllerTest extends AbstractTestCase
 
         $template = $this->seedModel('EmailTemplate');
 
-        $response = $this->delete(route('email_templates.delete', ['id' => $template->email_template_id]));
+        $response = $this->delete('/email_templates/delete/' . ($template->email_template_id));
 
-        $response->assertRedirect(route('email_templates.index'));
+        $response->assertRedirect('/email_templates/index');
         $this->assertDatabaseMissing('ip_email_templates', ['email_template_id' => $template->email_template_id]);
     }
 
@@ -156,7 +156,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     /* Assert */
     // ...
 
-        $response = $this->get(route('email_templates.form'));
+        $response = $this->get('/email_templates/form');
 
         $response->assertSuccessful();
         $response->assertViewHas('custom_fields');

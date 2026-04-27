@@ -31,7 +31,7 @@ class VersionsControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('versions.index'));
+        $response = $this->actingAs($user)->get('/versions/index');
 
         /* Assert */
         $response->assertOk();

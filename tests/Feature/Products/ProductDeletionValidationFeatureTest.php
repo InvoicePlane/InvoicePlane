@@ -36,10 +36,10 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(\Tests\Feature\Invoices\route('products.delete', ['product_id' => $product->product_id]));
+        $response = $this->post('/products/delete/' . ($product->product_id));
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('products.index'));
+        $response->assertRedirect('/products/index');
         $response->assertSessionHas('alert_success');
 
         // Verify product was actually deleted
@@ -73,10 +73,10 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(\Tests\Feature\Invoices\route('products.delete', ['product_id' => $product->product_id]));
+        $response = $this->post('/products/delete/' . ($product->product_id));
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('products.index'));
+        $response->assertRedirect('/products/index');
         $response->assertSessionHas('alert_error');
 
         // Verify product still exists in database
@@ -107,10 +107,10 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(\Tests\Feature\Invoices\route('products.delete', ['product_id' => $product->product_id]));
+        $response = $this->post('/products/delete/' . ($product->product_id));
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('products.index'));
+        $response->assertRedirect('/products/index');
         $response->assertSessionHas('alert_error');
 
         // Optionally verify the count appears in the error message
@@ -142,10 +142,10 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->post(\Tests\Feature\Invoices\route('products.delete', ['product_id' => $product->product_id]));
+        $response = $this->post('/products/delete/' . ($product->product_id));
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('products.index'));
+        $response->assertRedirect('/products/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_products', ['product_id' => $product->product_id]);
     }
@@ -172,10 +172,10 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         }
 
         /* Act */
-        $response = $this->post(\Tests\Feature\Invoices\route('products.delete', ['product_id' => $product->product_id]));
+        $response = $this->post('/products/delete/' . ($product->product_id));
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('products.index'));
+        $response->assertRedirect('/products/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_products', ['product_id' => $product->product_id]);
     }
@@ -193,10 +193,10 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         $invalidId = -1;
 
         /* Act */
-        $response = $this->post(\Tests\Feature\Invoices\route('products.delete', ['product_id' => $invalidId]));
+        $response = $this->post('/products/delete/' . ($invalidId));
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('products.index'));
+        $response->assertRedirect('/products/index');
         $response->assertSessionHas('alert_error');
     }
 
@@ -213,10 +213,10 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->post(\Tests\Feature\Invoices\route('products.delete', ['product_id' => $nonexistentId]));
+        $response = $this->post('/products/delete/' . ($nonexistentId));
 
         /* Assert */
-        $response->assertRedirect(\Tests\Feature\Invoices\route('products.index'));
+        $response->assertRedirect('/products/index');
         $response->assertSessionHas('alert_error');
     }
 
@@ -239,17 +239,17 @@ class ProductDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         // Initially cannot delete
-        $response1 = $this->post(\Tests\Feature\Invoices\route('products.delete', ['product_id' => $product->product_id]));
+        $response1 = $this->post('/products/delete/' . ($product->product_id));
         $response1->assertSessionHas('alert_error');
 
         // Remove the invoice item
         $item->delete();
 
         /* Act */
-        $response2 = $this->post(\Tests\Feature\Invoices\route('products.delete', ['product_id' => $product->product_id]));
+        $response2 = $this->post('/products/delete/' . ($product->product_id));
 
         /* Assert */
-        $response2->assertRedirect(\Tests\Feature\Invoices\route('products.index'));
+        $response2->assertRedirect('/products/index');
         $response2->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_products', ['product_id' => $product->product_id]);
     }

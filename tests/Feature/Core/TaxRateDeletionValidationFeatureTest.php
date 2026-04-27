@@ -30,10 +30,10 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $taxRate = $this->seedModel('TaxRate', ['tax_rate_name' => 'Deletable']);
 
         /* Act */
-        $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
+        $response = $this->post('/tax_rates/delete/' . ($taxRate->tax_rate_id));
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $response->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_tax_rates', ['tax_rate_id' => $taxRate->tax_rate_id]);
     }
@@ -49,10 +49,10 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModel('Product', ['tax_rate_id' => $taxRate->tax_rate_id]);
 
         /* Act */
-        $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
+        $response = $this->post('/tax_rates/delete/' . ($taxRate->tax_rate_id));
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_tax_rates', ['tax_rate_id' => $taxRate->tax_rate_id]);
     }
@@ -68,10 +68,10 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModel('InvoiceItem', ['item_tax_rate_id' => $taxRate->tax_rate_id]);
 
         /* Act */
-        $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
+        $response = $this->post('/tax_rates/delete/' . ($taxRate->tax_rate_id));
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_tax_rates', ['tax_rate_id' => $taxRate->tax_rate_id]);
     }
@@ -87,10 +87,10 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $this->seedModel('QuoteItem', ['item_tax_rate_id' => $taxRate->tax_rate_id]);
 
         /* Act */
-        $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
+        $response = $this->post('/tax_rates/delete/' . ($taxRate->tax_rate_id));
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $response->assertSessionHas('alert_error');
         $this->assertDatabaseHas('ip_tax_rates', ['tax_rate_id' => $taxRate->tax_rate_id]);
     }
@@ -105,10 +105,10 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $invalidId = -1;
 
         /* Act */
-        $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $invalidId]));
+        $response = $this->post('/tax_rates/delete/' . ($invalidId));
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $response->assertSessionHas('alert_error');
     }
 
@@ -122,10 +122,10 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $response = $this->post(route('tax_rates.delete', ['tax_rate_id' => $nonexistentId]));
+        $response = $this->post('/tax_rates/delete/' . ($nonexistentId));
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
+        $response->assertRedirect('/tax_rates/index');
         $response->assertSessionHas('alert_error');
     }
 
@@ -140,17 +140,17 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
         $product = $this->seedModel('Product', ['tax_rate_id' => $taxRate->tax_rate_id]);
 
         // Initially cannot delete
-        $response1 = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
+        $response1 = $this->post('/tax_rates/delete/' . ($taxRate->tax_rate_id));
         $response1->assertSessionHas('alert_error');
 
         // Remove reference
         $product->delete();
 
         /* Act */
-        $response2 = $this->post(route('tax_rates.delete', ['tax_rate_id' => $taxRate->tax_rate_id]));
+        $response2 = $this->post('/tax_rates/delete/' . ($taxRate->tax_rate_id));
 
         /* Assert */
-        $response2->assertRedirect(route('tax_rates.index'));
+        $response2->assertRedirect('/tax_rates/index');
         $response2->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_tax_rates', ['tax_rate_id' => $taxRate->tax_rate_id]);
     }

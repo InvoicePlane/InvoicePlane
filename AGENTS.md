@@ -96,6 +96,11 @@ There is no `quickstart.yml`. InvoicePlane does not have `php artisan` commands.
 - Pattern: Arrange / Act / Assert.
 - Run: `vendor/bin/phpunit` (requires `phpunit.xml` to be present).
 
+### Agent environment execution rule
+
+- In this coding-agent environment, **do not execute `vendor/bin/phpunit`**. Keep verification to static checks (for example `php -l`) and leave PHPUnit execution to CI where dependencies are fully provisioned.
+- If PHPUnit cannot be run locally, state that clearly in the PR/summary and ensure CI is expected to run the suite.
+
 ## Common pitfalls
 
 - **Do not call `php artisan`** — this command does not exist in InvoicePlane.
@@ -129,3 +134,12 @@ See `.junie/guidelines.md` for detailed guidance on security patterns, DRY princ
 
 - Follow `.junie/test-quality.md` as mandatory policy for all new/refactored tests.
 - Weak tests are prohibited and must be refactored immediately when discovered.
+
+## Controller route assertion policy
+
+- In controller tests, always call explicit URI strings (for example `'/clients/form/1'`), never `route('name')`.
+- Route strings must be plain URI paths and **must not contain namespace backslashes**.
+- After route migration/refactors, run:
+  - `rg -n "\\broute\\(" tests`
+  - `php tests/Scripts/CheckExplicitTestRoutes.php`
+  and fix any violations before committing.

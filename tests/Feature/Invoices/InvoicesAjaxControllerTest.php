@@ -53,7 +53,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.create'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/create', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -129,7 +129,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -205,7 +205,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -254,7 +254,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -313,7 +313,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -360,7 +360,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -403,7 +403,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.save_tax_rate'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/save_tax_rate', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -442,7 +442,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('invoices.ajax.delete_item', ['invoiceId' => $invoice->invoice_id]),
+            '/invoices/ajax/delete_item/' . ($invoice->invoice_id),
             $payload
         );
 
@@ -476,7 +476,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->actingAs($user)->post(
-            route('invoices.ajax.delete_item', ['invoiceId' => 99999]),
+            '/invoices/ajax/delete_item/' . (99999),
             $payload
         );
 
@@ -503,7 +503,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.ajax.get_item', ['item_id' => $item->item_id]));
+        $response = $this->actingAs($user)->get('/invoices/ajax/get_item/' . ($item->item_id));
 
         /* Assert */
         $response->assertOk();
@@ -523,7 +523,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.ajax.get_item', ['item_id' => 99999]));
+        $response = $this->actingAs($user)->get('/invoices/ajax/get_item/' . (99999));
 
         /* Assert */
         $response->assertOk();
@@ -571,7 +571,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.copy'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/copy', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -614,7 +614,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.change_user'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/change_user', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -653,7 +653,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.change_user'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/change_user', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -692,7 +692,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.change_client'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/change_client', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -743,7 +743,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.create_recurring'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/create_recurring', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -766,7 +766,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.ajax.recur_start_date', ['recur_frequency' => '1M']));
+        $response = $this->actingAs($user)->get('/invoices/ajax/recur_start_date/' . ('1M'));
 
         /* Assert */
         $response->assertOk();
@@ -806,7 +806,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.create_credit'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/create_credit', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -832,7 +832,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         $this->seedModelMany('User', 2);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.modal.copy', ['invoice_id' => $invoice->invoice_id]));
+        $response = $this->actingAs($user)->get('/invoices/modal/copy/' . ($invoice->invoice_id));
 
         /* Assert */
         $response->assertOk();
@@ -857,7 +857,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         $this->seedModelMany('User', 2);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.modal.create'));
+        $response = $this->actingAs($user)->get('/invoices/modal/create');
 
         /* Assert */
         $response->assertOk();
@@ -881,7 +881,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         $this->seedModelMany('User', 3);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.modal.change_user', ['invoice_id' => $invoice->invoice_id]));
+        $response = $this->actingAs($user)->get('/invoices/modal/change_user/' . ($invoice->invoice_id));
 
         /* Assert */
         $response->assertOk();
@@ -905,7 +905,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         $this->seedModelMany('Client', 4);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.modal.change_client', ['invoice_id' => $invoice->invoice_id]));
+        $response = $this->actingAs($user)->get('/invoices/modal/change_client/' . ($invoice->invoice_id));
 
         /* Assert */
         $response->assertOk();
@@ -929,7 +929,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         $this->seedModelMany('User', 2);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.modal.create_recurring'));
+        $response = $this->actingAs($user)->get('/invoices/modal/create_recurring');
 
         /* Assert */
         $response->assertOk();
@@ -950,7 +950,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         $invoice = $this->seedModel('Invoice');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.modal.create_credit', ['invoice_id' => $invoice->invoice_id]));
+        $response = $this->actingAs($user)->get('/invoices/modal/create_credit/' . ($invoice->invoice_id));
 
         /* Assert */
         $response->assertOk();
@@ -1004,7 +1004,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();
@@ -1077,7 +1077,7 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.ajax.save'), $payload);
+        $response = $this->actingAs($user)->post('/invoices/ajax/save', $payload);
 
         /* Assert */
         $response->assertOk();

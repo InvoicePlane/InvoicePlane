@@ -30,7 +30,7 @@ class CoreAjaxControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
+        $response = $this->actingAs($user)->get('/core/ajax/get_cron_key');
 
         /* Assert */
         $response->assertOk();
@@ -51,8 +51,8 @@ class CoreAjaxControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response1 = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
-        $response2 = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
+        $response1 = $this->actingAs($user)->get('/core/ajax/get_cron_key');
+        $response2 = $this->actingAs($user)->get('/core/ajax/get_cron_key');
 
         /* Assert */
         $key1 = $response1->json('key');
@@ -71,7 +71,7 @@ class CoreAjaxControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
+        $response = $this->actingAs($user)->get('/core/ajax/get_cron_key');
 
         /* Assert */
         $key = $response->json('key');
