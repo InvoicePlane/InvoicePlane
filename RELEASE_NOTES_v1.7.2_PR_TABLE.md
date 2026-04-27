@@ -137,21 +137,34 @@ disclosed once the final release is published.
 
 ## Contributor Acknowledgements
 
-Many thanks to the security researchers who responsibly disclosed vulnerabilities:
+### Security Researchers
 
-[Vijay-raghav7](https://github.com/Vijay-raghav7),
-[cyabell](https://github.com/cyabell),
-[HuajiHD](https://github.com/HuajiHD),
-[udaypali](https://github.com/udaypali),
-[radoi-teodor](https://github.com/radoi-teodor),
-[tikket1](https://github.com/tikket1),
-[Chittu13](https://github.com/Chittu13),
-[iiihaiii](https://github.com/iiihaiii),
+Many thanks to the security researchers who responsibly disclosed vulnerabilities through GitHub
+Security Advisories and private reports. Without their responsible disclosure, these issues
+would have remained undetected.
+
 [akgul7990](https://github.com/akgul7990),
 [ali-iltizar](https://github.com/ali-iltizar),
-[kitu232](https://github.com/kitu232)
+[Chittu13](https://github.com/Chittu13),
+[cyabell](https://github.com/cyabell),
+[HuajiHD](https://github.com/HuajiHD),
+[iiihaiii](https://github.com/iiihaiii),
+[kitu232](https://github.com/kitu232),
+[radoi-teodor](https://github.com/radoi-teodor),
+[tikket1](https://github.com/tikket1),
+[udaypali](https://github.com/udaypali),
+[Vijay-raghav7](https://github.com/Vijay-raghav7)
 
-And thanks to [@drewangell](https://github.com/drewangell) for re-introducing Stripe and PayPal support with Advanced Credit Cards and Venmo.
+### Contributors
+
+Many thanks to the community members who contributed code that was merged in this release.
+
+[mpldr](https://github.com/mpldr) — Docker application container with combined web server + PHP in a
+single image (`entrypoint.sh`, PR [#1509](https://github.com/InvoicePlane/InvoicePlane/pull/1509));
+configurable QR-code size in invoices (PR [#1489](https://github.com/InvoicePlane/InvoicePlane/pull/1489))
+
+[PatrickGTR](https://github.com/PatrickGTR) — Fix quote public template displaying client name on both
+header and footer (PR [#1449](https://github.com/InvoicePlane/InvoicePlane/pull/1449))
 
 ---
 
