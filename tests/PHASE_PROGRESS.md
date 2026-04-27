@@ -29,6 +29,8 @@ Completed:
 
 - Continued Phase 2 by migrating `ClientsAjaxModalTest`, `ClientsAjaxDetailsTest`, `GetControllerTest`, and `ViewControllerTest` from `route(...)` calls to explicit `TestRoutes` URIs while preserving their test bodies.
 
+- Continued Phase 2 by migrating `ClientDeletionValidationFeatureTest` and `CrmAjaxControllerTest` from `route(...)` calls to `TestRoutes` mappings while keeping existing test logic intact.
+
 Remaining in Clients module:
 - Convert remaining Clients feature files still using `route(...)`.
 - Replace Laravel response helpers (`assertViewIs`, `assertSessionHas`, etc.) with request-runner-compatible assertions.

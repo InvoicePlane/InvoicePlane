@@ -7,7 +7,9 @@ use Modules\Crm\Models\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
+use Tests\Support\TestRoutes;
 
 /**
  * ClientsController Feature Tests.
@@ -36,7 +38,7 @@ class CrmAjaxControllerTest extends AbstractTestCase
         $inactiveClient = $this->seedModel('Client', ['client_active' => 0, 'client_name' => 'Inactive Client']);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('crm.ajax.modal_client_lookup'));
+        $response = $this->actingAs($user)->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
 
         /* Assert */
         $response->assertOk();
@@ -64,7 +66,7 @@ class CrmAjaxControllerTest extends AbstractTestCase
         $this->seedModel('Client', ['client_active' => 1, 'client_name' => 'Beta LLC']);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('crm.ajax.modal_client_lookup'));
+        $response = $this->actingAs($user)->get(TestRoutes::CRM_AJAX_MODAL_CLIENT_LOOKUP);
 
         /* Assert */
         $clients = $response->viewData('clients');
@@ -90,7 +92,7 @@ class CrmAjaxControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('crm.ajax.get_client_details', ['clientId' => $client->client_id]));
+        $response = $this->actingAs($user)->get(TestRoutes::crmAjaxGetClientDetails((int) $client->client_id));
 
         /* Assert */
         $response->assertOk();
@@ -112,7 +114,7 @@ class CrmAjaxControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('crm.ajax.get_client_details', ['clientId' => 99999]));
+        $response = $this->actingAs($user)->get(TestRoutes::crmAjaxGetClientDetails(99999));
 
         /* Assert */
         $response->assertNotFound();
