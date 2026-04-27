@@ -236,6 +236,10 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Assert */
         $response->assertSessionHasErrors('user_id');
+        $response->assertSessionMissing('alert_success');
+        $this->assertDatabaseMissing('ip_user_clients', [
+            'client_id' => $client->client_id,
+        ]);
     }
 
     /**
@@ -264,6 +268,10 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Assert */
         $response->assertSessionHasErrors('client_id');
+        $response->assertSessionMissing('alert_success');
+        $this->assertDatabaseMissing('ip_user_clients', [
+            'user_id' => $user->user_id,
+        ]);
     }
 
     /**
@@ -291,6 +299,7 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Assert */
         $response->assertRedirect('/user_clients');
+        $response->assertSessionMissing('alert_error');
     }
 
     /**
@@ -361,5 +370,9 @@ class UserClientsControllerTest extends AbstractTestCase
 
         /* Assert */
         $response->assertNotFound();
+        $response->assertSessionMissing('alert_success');
+        $this->assertDatabaseMissing('ip_user_clients', [
+            'user_client_id' => 99999,
+        ]);
     }
 }

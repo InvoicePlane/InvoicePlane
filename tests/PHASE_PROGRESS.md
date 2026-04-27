@@ -46,6 +46,7 @@ Progress note:
 Completed:
 - Added `tests/Scripts/AuditSturdyTests.php` to run a heuristic sturdy-test audit for all `#[Test]` methods (assertion presence, AAA markers, and primary-assertion misuse checks).
 - Added `tests/Scripts/AuditModuleCoverage.php` and generated `tests/COVERAGE_AUDIT.md` to track controller/model coverage heuristics against `application/modules/*/{controllers,models}`.
+- Tightened sturdy-test audit heuristics to also flag methods with fewer than two assertions and explicit `markTestIncomplete()` bodies.
 - Latest heuristic snapshot:
   - Controllers covered by controller-test filename/token heuristic: **50 / 50**
   - Models covered by model-token heuristic: **18 / 42**
