@@ -1,8 +1,8 @@
 <?php
 
-namespace tests\Feature\Products;
+namespace Tests\Feature\Products;
 
-use AbstractTestCase;
+use Tests\AbstractTestCase;
 use Modules\Products\Controllers\FamiliesController;
 use Modules\Products\Models\Family;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,7 +16,7 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests product family (category) management including list, create, update, and delete.
  */
 #[CoversClass(FamiliesController::class)]
-class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
+class ProductDeletionValidationFeatureTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
@@ -253,4 +253,95 @@ class BckpProductDeletionValidationFeatureTest extends AbstractTestCase
         $response2->assertSessionHas('alert_success');
         $this->assertDatabaseMissing('ip_products', ['product_id' => $product->product_id]);
     }
+
+
+    // Migrated from BckpProductDeletionValidationTest.php
+    public function it_allows_deletion_of_product_without_invoice_items(): void
+    {
+        /* Arrange */
+        $product = $this->seedModel('Product', [
+            'product_name'  => 'Test Product',
+            'product_price' => 100.00,
+        ]);
+
+        /* Act */
+        $canDelete = $this->service->canDelete($product->product_id);
+
+        /* Assert */
+        $this->assertTrue($canDelete, 'Product without invoice items should be deletable');
+    }
+
+    public function it_returns_correct_invoice_item_count(): void
+    {
+        /* Arrange */
+        $product = $this->seedModel('Product', [
+            'product_name'  => 'Popular Product',
+            'product_price' => 200.00,
+        ]);
+
+        // Create multiple invoice items referencing this product
+        $this->seedModelMany('InvoiceItem', 3, [
+            'item_product_id' => $product->product_id,
+            'item_price'      => 200.00,
+            'item_quantity'   => 1,
+        ]);
+
+        /* Act */
+        $itemCount = $this->service->getInvoiceItemCount($product->product_id);
+
+        /* Assert */
+        $this->assertEquals(3, $itemCount, 'Should return correct count of invoice items');
+    }
+
+    public function it_prevents_deletion_with_multiple_invoice_items(): void
+    {
+        /* Arrange */
+        $product = $this->seedModel('Product');
+
+        // Create 5 invoice items
+        $this->seedModelMany('InvoiceItem', 5, [
+            'item_product_id' => $product->product_id,
+        ]);
+
+        /* Act */
+        $canDelete = $this->service->canDelete($product->product_id);
+        $itemCount = $this->service->getInvoiceItemCount($product->product_id);
+
+        /* Assert */
+        $this->assertFalse($canDelete);
+        $this->assertEquals(5, $itemCount);
+    }
+
+    public function it_returns_zero_count_for_nonexistent_product(): void
+    {
+        /* Arrange */
+        $nonexistentId = 99999;
+
+        /* Act */
+        $itemCount = $this->service->getInvoiceItemCount($nonexistentId);
+        $canDelete = $this->service->canDelete($nonexistentId);
+
+        /* Assert */
+        $this->assertEquals(0, $itemCount);
+        $this->assertTrue($canDelete, 'Non-existent product should be "deletable" (returns true)');
+    }
+
+    public function it_prevents_deletion_even_with_archived_invoice_items(): void
+    {
+        /* Arrange */
+        $product = $this->seedModel('Product');
+
+        // Even if invoice is archived/old, item still references product
+        $this->seedModel('InvoiceItem', [
+            'item_product_id' => $product->product_id,
+            // Invoice could be old/archived, but relationship still exists
+        ]);
+
+        /* Act */
+        $canDelete = $this->service->canDelete($product->product_id);
+
+        /* Assert */
+        $this->assertFalse($canDelete, 'Product should not be deletable even with archived invoice items');
+    }
+
 }
