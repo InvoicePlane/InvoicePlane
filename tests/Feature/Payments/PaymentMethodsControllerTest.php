@@ -323,4 +323,52 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         /* Assert */
         $response->assertNotFound();
     }
+
+
+    // Migrated from BckpPaymentMethodsControllerTest.php
+    public function it_displays_payment_methods_index(): void
+    {
+        $response = $this->get(\Tests\Feature\Invoices\route('payment_methods.index'));
+
+        $response->assertSuccessful();
+        $response->assertViewHas('payment_methods');
+        $response->assertSee('Payment Methods');
+    }
+
+    public function it_creates_new_payment_method(): void
+    {
+        $methodData = [
+            'payment_method_name' => 'Test Payment Method',
+        ];
+
+        $response = $this->post(\Tests\Feature\Invoices\route('payment_methods.form'), $methodData);
+
+        $response->assertRedirect(\Tests\Feature\Invoices\route('payment_methods.index'));
+        $this->assertDatabaseHas('ip_payment_methods', [
+            'payment_method_name' => 'Test Payment Method',
+        ]);
+    }
+
+    public function it_prevents_duplicate_payment_method_names(): void
+    {
+        $this->seedModel('PaymentMethod', ['payment_method_name' => 'Existing Method']);
+
+        $methodData = [
+            'payment_method_name' => 'Existing Method',
+            'is_update'           => 0,
+        ];
+
+        $response = $this->post(\Tests\Feature\Invoices\route('payment_methods.form'), $methodData);
+
+        $response->assertRedirect(\Tests\Feature\Invoices\route('payment_methods.form'));
+        $response->assertSessionHas('alert_error');
+    }
+
+    public function it_cancels_payment_method_form_and_redirects(): void
+    {
+        $response = $this->post(\Tests\Feature\Invoices\route('payment_methods.form'), ['btn_cancel' => true]);
+
+        $response->assertRedirect(\Tests\Feature\Invoices\route('payment_methods.index'));
+    }
+
 }

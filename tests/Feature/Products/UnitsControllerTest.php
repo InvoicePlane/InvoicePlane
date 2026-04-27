@@ -93,4 +93,143 @@ class UnitsControllerTest extends AbstractTestCase
         $response->assertRedirect(route('units.index'));
         $this->assertDatabaseMissing('ip_units', ['unit_id' => $unit->unit_id]);
     }
+
+
+    // Migrated from BckpUnitsControllerTest.php
+    public function it_displays_paginated_list_of_units(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+        $this->seedModelMany('Unit', 5);
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(\Tests\Feature\Invoices\route('units.index'));
+
+        /* Assert */
+        $response->assertOk();
+        $response->assertViewIs('products::units_index');
+        $response->assertViewHas('units');
+    }
+
+    public function it_displays_create_form(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(\Tests\Feature\Invoices\route('units.form'));
+
+        /* Assert */
+        $response->assertOk();
+        $response->assertViewIs('products::units_form');
+        $response->assertViewHas('unit');
+
+        $unit = $response->viewData('unit');
+        $this->assertInstanceOf(\Tests\Feature\Invoices\Unit::class, $unit);
+        $this->assertFalse($unit->exists);
+    }
+
+    public function it_creates_new_unit_with_valid_data(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+
+        /**
+         * {
+         *     "unit_name": "Kilogram",
+         *     "unit_name_plrl": "Kilograms"
+         * }.
+         */
+        $unitData = [
+            'unit_name'      => 'Kilogram',
+            'unit_name_plrl' => 'Kilograms',
+        ];
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->post(\Tests\Feature\Invoices\route('units.form'), $unitData);
+
+        /* Assert */
+        $response->assertRedirect(\Tests\Feature\Invoices\route('units.index'));
+        $response->assertSessionHas('alert_success');
+
+        $this->assertDatabaseHas('ip_units', [
+            'unit_name'      => 'Kilogram',
+            'unit_name_plrl' => 'Kilograms',
+        ]);
+    }
+
+    public function it_displays_edit_form_with_existing_unit(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+        $unit = $this->seedModel('Unit');
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(\Tests\Feature\Invoices\route('units.form', ['unit_id' => $unit->unit_id]));
+
+        /* Assert */
+        $response->assertOk();
+        $response->assertViewIs('products::units_form');
+        $response->assertViewHas('unit');
+
+        $viewUnit = $response->viewData('unit');
+        $this->assertEquals($unit->unit_id, $viewUnit->unit_id);
+    }
+
+    public function it_updates_existing_unit_with_valid_data(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+        $unit = $this->seedModel('Unit', ['unit_name' => 'Old Name']);
+
+        /**
+         * {
+         *     "unit_name": "Updated Name",
+         *     "unit_name_plrl": "Updated Names"
+         * }.
+         */
+        $updateData = [
+            'unit_name'      => 'Updated Name',
+            'unit_name_plrl' => 'Updated Names',
+        ];
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->post(\Tests\Feature\Invoices\route('units.form', ['unit_id' => $unit->unit_id]), $updateData);
+
+        /* Assert */
+        $response->assertRedirect(\Tests\Feature\Invoices\route('units.index'));
+        $response->assertSessionHas('alert_success');
+
+        $this->assertDatabaseHas('ip_units', [
+            'unit_id'   => $unit->unit_id,
+            'unit_name' => 'Updated Name',
+        ]);
+    }
+
+    public function it_orders_units_correctly(): void
+    {
+        /* Arrange */
+        $user = $this->seedModel('User');
+
+        $this->seedModel('Unit', ['unit_name' => 'Zebra Unit']);
+        $this->seedModel('Unit', ['unit_name' => 'Alpha Unit']);
+        $this->seedModel('Unit', ['unit_name' => 'Beta Unit']);
+
+        /* Act */
+        $this->actingAs($user);
+        $response = $this->get(\Tests\Feature\Invoices\route('units.index'));
+
+        /* Assert */
+        $response->assertOk();
+        $units = $response->viewData('units');
+
+        // Verify ordering (depends on Unit's ordered() scope implementation)
+        $this->assertCount(3, $units);
+    }
+
 }

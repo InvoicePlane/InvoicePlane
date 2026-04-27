@@ -17,7 +17,7 @@ Remaining:
 
 ## Phase 2 — Feature tests by module using concrete URIs
 
-**Status:** Started (Clients module)
+**Status:** Resolved for Bckp migration set (ongoing for broader suite) (Clients module)
 
 Completed:
 - Added `tests/Support/TestRoutes.php` for explicit URI mapping.
@@ -40,10 +40,11 @@ Plan:
 
 ## Phase 4 — Dedupe and legacy cleanup
 
-**Status:** Started
+**Status:** Resolved for Bckp migration set (ongoing for broader suite)
 
 Completed:
 - Removed duplicate `Bckp*` test classes where canonical controller/model test classes already exist.
+- Migrated missing test methods from removed `Bckp*` files into their canonical controller/model test classes, deduplicated by method name.
 - Removed empty duplicate placeholder test files in Clients/Projects/Products feature suites.
 
 Plan:

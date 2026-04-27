@@ -170,4 +170,56 @@ class TaskServiceTest extends AbstractTestCase
             'task_id' => $task->task_id,
         ]);
     }
+
+
+    // Migrated from BckpTaskServiceTest.php
+    public function it_gets_all_tasks_with_relations_paginated(): void
+    {
+        /* Arrange */
+        $project = $this->seedModel('Project');
+        $taxRate = $this->seedModel('\Modules\Products\Models\TaxRate');
+
+        $this->seedModelMany('Task', 3, [
+            'project_id'       => $project->project_id,
+            'task_tax_rate_id' => $taxRate->tax_rate_id,
+        ]);
+
+        /* Act */
+        $result = $this->service->getAllWithRelations();
+
+        /* Assert */
+        $this->assertGreaterThanOrEqual(3, $result->total());
+        $this->assertTrue($result->first()->relationLoaded('project'));
+        $this->assertTrue($result->first()->relationLoaded('taxRate'));
+    }
+
+    public function it_orders_tasks_by_name(): void
+    {
+        /* Arrange */
+        $this->seedModel('Task', ['task_name' => 'Zebra Task']);
+        $this->seedModel('Task', ['task_name' => 'Alpha Task']);
+        $this->seedModel('Task', ['task_name' => 'Beta Task']);
+
+        /* Act */
+        $result = $this->service->getAllWithRelations();
+
+        /* Assert */
+        $tasks = $result->items();
+        $this->assertGreaterThanOrEqual(3, count($tasks));
+        // First task should be Alpha (alphabetically first)
+        $this->assertEquals('Alpha Task', $tasks[0]->task_name);
+    }
+
+    public function it_respects_custom_per_page_parameter(): void
+    {
+        /* Arrange */
+        $this->seedModelMany('Task', 10);
+
+        /* Act */
+        $result = $this->service->getAllWithRelations(['project'], 5);
+
+        /* Assert */
+        $this->assertEquals(5, $result->perPage());
+    }
+
 }

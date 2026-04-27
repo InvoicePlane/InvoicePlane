@@ -757,4 +757,77 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         $response->assertViewHas('clients');
         $response->assertViewHas('users');
     }
+
+
+    // Migrated from BckpQuotesAjaxControllerTest.php
+    public function it_saves_quote_item(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for save');
+    }
+
+    public function it_saves_quote_tax_rate(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for saveQuoteTaxRate');
+    }
+
+    public function it_deletes_quote_item(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for deleteItem');
+    }
+
+    public function it_gets_quote_item(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for getItem');
+    }
+
+    public function it_displays_copy_quote_modal(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for modalCopyQuote');
+    }
+
+    public function it_copies_quote(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for copyQuote');
+    }
+
+    public function it_displays_change_user_modal(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for modalChangeUser');
+    }
+
+    public function it_changes_quote_user(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for changeUser');
+    }
+
+    public function it_displays_change_client_modal(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for modalChangeClient');
+    }
+
+    public function it_changes_quote_client(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for changeClient');
+    }
+
+    public function it_displays_create_quote_modal(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for modalCreateQuote');
+    }
+
+    public function it_creates_quote(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for create');
+    }
+
+    public function it_displays_quote_to_invoice_modal(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for modalQuoteToInvoice');
+    }
+
+    public function it_converts_quote_to_invoice(): void
+    {
+        $this->markTestIncomplete('Implement meaningful test for quoteToInvoice');
+    }
+
 }
