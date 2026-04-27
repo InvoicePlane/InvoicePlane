@@ -66,7 +66,7 @@ class AjaxControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $clientId = $this->seedClient();
-        $note     = $this->seedModel('\\Modules\\Crm\\app\\Models\\ClientNote', ['client_id' => $clientId]);
+        $note     = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $clientId]);
 
         /* Act */
         $response = $this->post('/clients/ajax/delete_client_note', [
@@ -103,7 +103,7 @@ class AjaxControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $clientId = $this->seedClient();
-        $note     = $this->seedModel('\\Modules\\Crm\\app\\Models\\ClientNote', ['client_id' => $clientId]);
+        $note     = $this->seedModel('\Modules\Crm\app\Models\ClientNote', ['client_id' => $clientId]);
 
         /* Act */
         $response = $this->post('/clients/ajax/load_client_notes', [
