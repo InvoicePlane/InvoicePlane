@@ -265,15 +265,6 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_validates_field_types_and_constraints(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Arrange */
         $controller = new InvoiceGroupsController();
 

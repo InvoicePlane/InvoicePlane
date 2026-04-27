@@ -48,15 +48,6 @@ class TasksServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_when_getting_invoice_for_null_task_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $result = $this->service->getInvoiceForTask(null);
 
@@ -84,15 +75,6 @@ class TasksServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_array_when_getting_tasks_to_invoice_with_null_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $result = $this->service->getTasksToInvoice(null);
 
@@ -218,15 +200,6 @@ class TasksServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_status_array(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $statuses = $this->service->statuses();
 

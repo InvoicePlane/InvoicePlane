@@ -26,15 +26,6 @@ class QuoteServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_quote_statuses(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $statuses = $this->service->getStatuses();
 
         $this->assertIsArray($statuses);
@@ -57,15 +48,6 @@ class QuoteServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $rules = $this->service->getValidationRules();
 
         $this->assertIsArray($rules);
@@ -80,15 +62,6 @@ class QuoteServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_save_validation_rules_without_quote_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $rules = $this->service->getSaveValidationRules();
 
         $this->assertIsArray($rules);
@@ -100,15 +73,6 @@ class QuoteServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_save_validation_rules_with_quote_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quoteId = 123;
         $rules   = $this->service->getSaveValidationRules($quoteId);
 
@@ -121,15 +85,6 @@ class QuoteServiceTest extends AbstractTestCase
     #[Test]
     public function it_generates_url_key(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $urlKey = $this->service->generateUrlKey();
 
         $this->assertIsString($urlKey);
@@ -212,15 +167,6 @@ class QuoteServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_when_quote_not_found(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $result = $this->service->findWithRelations(99999);
 
@@ -252,15 +198,6 @@ class QuoteServiceTest extends AbstractTestCase
     #[Test]
     public function it_throws_exception_when_quote_not_found(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Assert */
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 

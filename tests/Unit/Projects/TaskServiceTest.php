@@ -144,15 +144,6 @@ class TaskServiceTest extends AbstractTestCase
     #[Test]
     public function it_throws_exception_when_task_not_found(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Arrange */
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 

@@ -32,15 +32,6 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_adds_payment_via_ajax_with_valid_data(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $paymentData = [
             'invoice_id'        => $this->invoice->invoice_id,
             'payment_amount'    => 50.00,
@@ -62,15 +53,6 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_errors_for_invalid_payment(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $paymentData = [
             'invoice_id'     => null,
             'payment_amount' => -50.00, // Invalid amount
@@ -86,15 +68,6 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_modal_add_payment_form(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->post('/payments/ajax/modal_add_payment', [
             'invoice_id'             => $this->invoice->invoice_id,
             'invoice_balance'        => $this->invoice->invoice_balance,
@@ -111,15 +84,6 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_sanitizes_invoice_id_in_modal(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->post('/payments/ajax/modal_add_payment', [
             'invoice_id'       => '<script>alert("xss")</script>',
             'invoice_balance'  => 100,

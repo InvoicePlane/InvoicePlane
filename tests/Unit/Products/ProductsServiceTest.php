@@ -67,15 +67,6 @@ class ProductsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_collection_when_empty_array_provided(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $result = $this->service->getByIds([]);
 

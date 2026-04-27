@@ -25,15 +25,6 @@ class InvoiceSumexServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -51,15 +42,6 @@ class InvoiceSumexServiceTest extends AbstractTestCase
     #[Test]
     public function it_validates_sumex_invoice_as_required_integer(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -70,15 +52,6 @@ class InvoiceSumexServiceTest extends AbstractTestCase
     #[Test]
     public function it_validates_optional_fields_as_nullable(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -91,15 +64,6 @@ class InvoiceSumexServiceTest extends AbstractTestCase
     #[Test]
     public function it_validates_date_fields(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 
@@ -111,15 +75,6 @@ class InvoiceSumexServiceTest extends AbstractTestCase
     #[Test]
     public function it_validates_string_fields(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete();
         $rules = $this->service->getValidationRules();
 

@@ -564,15 +564,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_to_status_all(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $response = $this->get('/quotes');
 
@@ -606,15 +597,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_quotes_index(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/quotes');
 
         $response->assertSuccessful();
@@ -624,15 +606,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_new_quote_with_single_item(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quoteData = [
             'client_id'          => $this->client->client_id,
             'quote_date_created' => now()->format('Y-m-d'),
@@ -665,15 +638,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_quote_with_multiple_items(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quoteData = [
             'client_id'          => $this->client->client_id,
             'quote_date_created' => now()->format('Y-m-d'),
@@ -707,15 +671,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_quote_with_tax_rates(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $taxRate = $this->seedModel('TaxRate', ['tax_rate_percent' => 21.00]);
 
         $quoteData = [
@@ -744,15 +699,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_views_quote_details(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
         $this->seedModelMany('QuoteItem', 2, ['quote_id' => $quote->quote_id]);
 
@@ -770,15 +716,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_loads_quote_form(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/quotes/form');
 
         $response->assertSuccessful();
@@ -787,15 +724,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_generates_quote_pdf(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote');
 
         $response = $this->get('/quotes/generate_pdf/' . $quote->quote_id);
@@ -807,15 +735,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_loads_quote_edit_form(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote');
 
         $response = $this->get('/quotes/form/' . $quote->quote_id);
@@ -827,15 +746,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_updates_quote_details(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote', [
             'client_id'       => $this->client->client_id,
             'quote_status_id' => 1,
@@ -860,15 +770,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_updates_quote_items_and_pricing(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote');
         $item  = $this->seedModel('QuoteItem', [
             'quote_id'  => $quote->quote_id,
@@ -899,15 +800,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_marks_quote_as_sent(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote', ['quote_status_id' => 1]);
 
         $response = $this->post('/quotes/form/' . $quote->quote_id, [
@@ -924,15 +816,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_marks_quote_as_approved(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote', ['quote_status_id' => 2]);
 
         $response = $this->post('/quotes/form/' . $quote->quote_id, [
@@ -949,15 +832,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_marks_quote_as_rejected(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote', ['quote_status_id' => 2]);
 
         $response = $this->post('/quotes/form/' . $quote->quote_id, [
@@ -974,15 +848,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_converts_quote_to_invoice(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
         $this->seedModelMany('QuoteItem', 2, ['quote_id' => $quote->quote_id]);
 
@@ -1002,15 +867,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_copies_existing_quote(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $originalQuote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
         $this->seedModelMany('QuoteItem', 2, ['quote_id' => $originalQuote->quote_id]);
 
@@ -1026,15 +882,6 @@ class QuotesControllerTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_deletes_quote(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $quote = $this->seedModel('Quote');
 
         $response = $this->delete('/quotes/delete/' . $quote->quote_id);

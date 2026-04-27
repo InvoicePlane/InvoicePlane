@@ -27,15 +27,6 @@ class RecurringInvoicesControllerTest extends AbstractTestCase
     #[Test]
     public function it_displays_recurring_invoices_index(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/invoices/recurring/index');
 
         $response->assertSuccessful();
@@ -46,15 +37,6 @@ class RecurringInvoicesControllerTest extends AbstractTestCase
     #[Test]
     public function it_stops_recurring_invoice(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $recurringInvoice = $this->seedModel('RecurringInvoice', ['status' => 'active']);
 
         $response = $this->post('/invoices/recurring/stop/' . ($recurringInvoice->invoice_recurring_id));
@@ -69,15 +51,6 @@ class RecurringInvoicesControllerTest extends AbstractTestCase
     #[Test]
     public function it_deletes_recurring_invoice(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $recurringInvoice = $this->seedModel('RecurringInvoice');
 
         $response = $this->delete('/invoices/recurring/delete/' . ($recurringInvoice->invoice_recurring_id));

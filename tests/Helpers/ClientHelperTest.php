@@ -25,15 +25,6 @@ class ClientHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_gender_male(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = ClientHelper::format_gender(0);
 
         $this->assertIsString($result);
@@ -43,15 +34,6 @@ class ClientHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_gender_female(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = ClientHelper::format_gender(1);
 
         $this->assertIsString($result);
@@ -61,15 +43,6 @@ class ClientHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_gender_other(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = ClientHelper::format_gender(2);
 
         $this->assertIsString($result);
@@ -80,15 +53,6 @@ class ClientHelperTest extends AbstractTestCase
     #[DataProvider('genderProvider')]
     public function it_formats_various_genders(int $gender): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = ClientHelper::format_gender($gender);
 
         $this->assertIsString($result);
@@ -98,15 +62,6 @@ class ClientHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_string_gender_values(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = ClientHelper::format_gender('0');
 
         $this->assertIsString($result);
@@ -115,15 +70,6 @@ class ClientHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_null_gender(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = ClientHelper::format_gender(null);
 
         $this->assertIsString($result);

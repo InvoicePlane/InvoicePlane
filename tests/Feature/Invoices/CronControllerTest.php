@@ -174,15 +174,6 @@ class CronControllerTest extends AbstractTestCase
     #[Test]
     public function it_calculates_next_date_correctly_for_weekly_frequency(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Arrange - weekly frequency (1) */
         /* Expected: current_date + 1 week */
 
@@ -198,15 +189,6 @@ class CronControllerTest extends AbstractTestCase
     #[Test]
     public function it_calculates_next_date_correctly_for_monthly_frequency(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Arrange - monthly frequency (3) */
         /* Expected: current_date + 1 month */
 

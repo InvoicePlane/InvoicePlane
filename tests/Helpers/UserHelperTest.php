@@ -22,15 +22,6 @@ class UserHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_null_user(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = UserHelper::format_user(null);
 
         $this->assertSame('', $result);
@@ -39,15 +30,6 @@ class UserHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_nonexistent_user_id(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = UserHelper::format_user(99999);
 
         $this->assertSame('', $result);
@@ -56,15 +38,6 @@ class UserHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_user_with_name_only(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = (object) [
             'user_name'              => 'John Doe',
             'user_company'           => '',
@@ -79,15 +52,6 @@ class UserHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_user_with_company(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = (object) [
             'user_name'              => 'John Doe',
             'user_company'           => 'ACME Corp',
@@ -102,15 +66,6 @@ class UserHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_user_with_contact(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = (object) [
             'user_name'              => 'John Doe',
             'user_company'           => '',
@@ -125,15 +80,6 @@ class UserHelperTest extends AbstractTestCase
     #[Test]
     public function it_formats_user_with_all_fields(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = (object) [
             'user_name'              => 'John Doe',
             'user_company'           => 'ACME Corp',
@@ -148,15 +94,6 @@ class UserHelperTest extends AbstractTestCase
     #[Test]
     public function it_capitalizes_first_letter_of_name(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = (object) [
             'user_name'              => 'john',
             'user_company'           => '',
@@ -171,15 +108,6 @@ class UserHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_user_object_without_optional_fields(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = (object) [
             'user_name' => 'Jane Smith',
         ];

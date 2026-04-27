@@ -200,15 +200,6 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[Test]
     public function it_falls_back_to_other_errors_for_empty_message(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $result = categorizeError('');
 
@@ -255,15 +246,6 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[DataProvider('categoryLabelProvider')]
     public function it_returns_human_readable_label_for_known_category(string $category, string $expectedLabel): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $result = getCategoryLabel($category);
 
@@ -274,15 +256,6 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[Test]
     public function it_returns_unknown_for_unrecognized_category(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $result = getCategoryLabel('nonexistent_category');
 

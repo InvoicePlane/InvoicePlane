@@ -36,15 +36,6 @@ class UpgradeRegressionTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_produces_unchanged_output_for_the_invoices_index_after_an_upgrade(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/invoices');
 
         $this->assertResponseStatusCode($response, 200);
@@ -55,15 +46,6 @@ class UpgradeRegressionTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_produces_unchanged_output_for_the_clients_index_after_an_upgrade(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/clients');
 
         $this->assertResponseStatusCode($response, 200);
@@ -74,15 +56,6 @@ class UpgradeRegressionTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_produces_unchanged_output_for_the_payments_index_after_an_upgrade(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/payments');
 
         $this->assertResponseStatusCode($response, 200);
@@ -93,15 +66,6 @@ class UpgradeRegressionTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_produces_unchanged_output_for_the_integrations_index_after_an_upgrade(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/integrations');
 
         $this->assertResponseStatusCode($response, 200);
@@ -112,15 +76,6 @@ class UpgradeRegressionTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_produces_unchanged_output_for_the_quotes_index_after_an_upgrade(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/quotes');
 
         $this->assertResponseStatusCode($response, 200);
@@ -131,15 +86,6 @@ class UpgradeRegressionTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_produces_unchanged_output_for_the_products_index_after_an_upgrade(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/products');
 
         $this->assertResponseStatusCode($response, 200);
@@ -150,15 +96,6 @@ class UpgradeRegressionTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_produces_unchanged_output_for_the_dashboard_after_an_upgrade(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/dashboard');
 
         $this->assertResponseStatusCode($response, 200);
@@ -169,15 +106,6 @@ class UpgradeRegressionTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_detects_a_routing_regression_if_mx_router_stops_resolving_integrations(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/integrations');
 
         $this->assertResponseStatusCode($response, 200);
@@ -199,15 +127,6 @@ class UpgradeRegressionTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_detects_a_loader_regression_if_namespaced_models_stop_binding(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/clients');
 
         $this->assertResponseStatusCode($response, 200);

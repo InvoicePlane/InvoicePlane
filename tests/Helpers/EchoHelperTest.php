@@ -25,15 +25,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_escapes_html_special_chars(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $input = '<script>alert("xss")</script>';
 
         $result = EchoHelper::htmlsc($input);
@@ -44,15 +35,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_for_null_input(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = EchoHelper::htmlsc(null);
 
         $this->assertNull($result);
@@ -61,15 +43,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_quotes_in_htmlsc(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $input = "It's a \"test\"";
 
         $result = EchoHelper::htmlsc($input);
@@ -81,15 +54,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_ampersands(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $input = 'Johnson & Johnson';
 
         $result = EchoHelper::htmlsc($input);
@@ -101,15 +65,6 @@ class EchoHelperTest extends AbstractTestCase
     #[DataProvider('specialCharsProvider')]
     public function it_escapes_various_special_chars(string $input, string $expectedContains): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = EchoHelper::htmlsc($input);
 
         $this->assertStringContainsString($expectedContains, $result);
@@ -118,15 +73,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_outputs_escaped_html_chars(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $input = '<b>Bold</b>';
 
         ob_start();
@@ -139,15 +85,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_null_htmlsc_output(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         ob_start();
         $result = EchoHelper::_htmlsc(null);
         $output = ob_get_clean();
@@ -159,15 +96,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_outputs_html_entities(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $input = '<script>test</script>';
 
         ob_start();
@@ -181,15 +109,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_for_null_htmle_output(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         ob_start();
         $result = EchoHelper::_htmle(null);
         $output = ob_get_clean();
@@ -201,15 +120,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_empty_strings(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = EchoHelper::htmlsc('');
 
         $this->assertSame('', $result);
@@ -218,15 +128,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_preserves_safe_text(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $input = 'This is safe text without special chars';
 
         $result = EchoHelper::htmlsc($input);
@@ -237,15 +138,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_unicode_characters(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $input = 'Hello 世界 🌍';
 
         $result = EchoHelper::htmlsc($input);
@@ -257,15 +149,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_numeric_strings(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $input = '12345.67';
 
         $result = EchoHelper::htmlsc($input);
@@ -276,15 +159,6 @@ class EchoHelperTest extends AbstractTestCase
     #[Test]
     public function it_handles_multiple_special_chars(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $input = '<div class="test" id=\'myId\'>Content & more</div>';
 
         $result = EchoHelper::htmlsc($input);

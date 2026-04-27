@@ -41,15 +41,6 @@ class InvoiceGroupsServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         /* Act */
         $rules = $this->service->validationRules();
 

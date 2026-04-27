@@ -22,15 +22,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_prevents_unauthorized_access_to_admin_routes(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $response = $this->get('/dashboard/index');
 
         $response->assertRedirect('/sessions/login');
@@ -39,15 +30,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_allows_authenticated_users_to_access_admin_routes(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAs($this->user);
 
         $response = $this->get('/dashboard/index');
@@ -58,15 +40,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_filters_input_to_prevent_xss_attacks(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAs($this->user);
         $client = $this->seedModel('tmpClient');
 
@@ -88,15 +61,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_prevents_sql_injection_in_search_queries(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAs($this->user);
         $this->seedModel('tmpClient', ['client_name' => 'Test Client', 'client_active' => 1]);
 
@@ -111,15 +75,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_validates_csrf_tokens_on_form_submissions(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAs($this->user);
 
         $response = $this->post('/clients/form', [
@@ -135,15 +90,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_prevents_directory_traversal_in_file_operations(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAs($this->user);
 
         $response = $this->get('/invoices/download/' . ('../../etc/passwd'));
@@ -154,15 +100,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_validates_user_permissions_for_sensitive_operations(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $guestUser = $this->seedModel('User', ['user_type' => 2, 'user_active' => 1]);
         $this->actingAs($guestUser);
 
@@ -177,15 +114,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_sanitizes_file_upload_names(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAs($this->user);
 
         // Test with potentially malicious filename
@@ -200,15 +128,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_rate_limits_login_attempts(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $user = $this->seedModel('User', [
             'user_email'    => 'test@example.com',
             'user_password' => bcrypt('password'),
@@ -233,15 +152,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_validates_email_format_in_user_input(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAs($this->user);
 
         $response = $this->post('/clients/form', [
@@ -255,15 +165,6 @@ class SecurityTest extends AbstractTestCase
     #[Test]
     public function it_prevents_mass_assignment_vulnerabilities(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->actingAs($this->user);
 
         $response = $this->post('/clients/form', [

@@ -23,15 +23,6 @@ class UnitServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_validation_rules(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $rules = $this->service->getValidationRules();
 
         $this->assertIsArray($rules);
@@ -43,15 +34,6 @@ class UnitServiceTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_string_when_unit_id_is_null(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $result = $this->service->getUnitName(null, 1);
         $this->assertEquals('', $result);
     }
@@ -59,15 +41,6 @@ class UnitServiceTest extends AbstractTestCase
     #[Test]
     public function it_gets_unit_name(): void
     {
-    /* Arrange */
-    // ...
-
-    /* Act */
-    // ...
-
-    /* Assert */
-    // ...
-
         $this->markTestIncomplete('Requires database setup with unit data');
     }
 }
