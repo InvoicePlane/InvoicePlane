@@ -31,9 +31,14 @@ foreach ($rii as $file) {
         $method = $match[1];
         $body   = $match[2];
 
-        $hasAssertion = preg_match('/->assert[A-Za-z0-9_]+\s*\(|self::assert[A-Za-z0-9_]+\s*\(|expectException\s*\(/', $body) === 1;
+        $assertionCount = preg_match_all('/->assert[A-Za-z0-9_]+\s*\(|self::assert[A-Za-z0-9_]+\s*\(|expectException\s*\(/', $body, $assertions);
+        $hasAssertion   = $assertionCount > 0;
         if ( ! $hasAssertion) {
             $violations[] = $path . "::" . $method . " has no explicit assertion";
+        }
+
+        if ($assertionCount < 2) {
+            $violations[] = $path . "::" . $method . " has fewer than 2 assertions";
         }
 
         $aaaMarkers = preg_match('/\/\*\s*Arrange\s*\*\/.*\/\*\s*Act\s*\*\/.*\/\*\s*Assert\s*\*\//s', $body) === 1;
@@ -45,6 +50,10 @@ foreach ($rii as $file) {
         $otherAssertions  = preg_match_all('/->assert[A-Za-z0-9_]+\s*\(|self::assert[A-Za-z0-9_]+\s*\(/', $body, $tmp2);
         if ($noPhpErrorsCount > 0 && $otherAssertions <= $noPhpErrorsCount) {
             $violations[] = $path . "::" . $method . " appears to rely primarily on assertResponseHasNoPhpErrors()";
+        }
+
+        if (preg_match('/markTestIncomplete\s*\(/', $body) === 1) {
+            $violations[] = $path . "::" . $method . " is incomplete (markTestIncomplete)";
         }
     }
 }
