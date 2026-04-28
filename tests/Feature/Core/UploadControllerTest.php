@@ -5,6 +5,7 @@ namespace Tests\Feature\Core;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 use Upload;
 
@@ -14,7 +15,6 @@ use Upload;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(Upload::class)]
-#[CoversClass(Tests\Feature\Core\UploadController::class)]
 
 class UploadControllerTest extends AbstractTestCase
 {

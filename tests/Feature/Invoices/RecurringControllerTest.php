@@ -142,7 +142,7 @@ class RecurringControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post('/invoices/recurring/stop');
+        $response = $this->actingAs($user)->post('/invoices/recurring/stop', $stopParams);
 
         /* Assert */
         $response->assertNotFound();
@@ -166,7 +166,7 @@ class RecurringControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post('/invoices/recurring/delete');
+        $response = $this->actingAs($user)->post('/invoices/recurring/delete', $deleteParams);
 
         /* Assert */
         $response->assertRedirect();
@@ -190,7 +190,7 @@ class RecurringControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post('/invoices/recurring/delete');
+        $response = $this->actingAs($user)->post('/invoices/recurring/delete', $deleteParams);
 
         /* Assert */
         $response->assertRedirect();
@@ -211,7 +211,7 @@ class RecurringControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post('/invoices/recurring/delete');
+        $response = $this->actingAs($user)->post('/invoices/recurring/delete', $deleteParams);
 
         /* Assert */
         $response->assertNotFound();
