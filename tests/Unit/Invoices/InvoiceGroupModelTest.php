@@ -18,8 +18,6 @@ class InvoiceGroupModelTest extends CiTestCase
         parent::setUp();
         $this->CI->load->model('invoice_groups/mdl_invoice_groups');
         $this->model = $this->CI->mdl_invoice_groups;
-
-        DB::table('ip_invoice_groups')->delete();
     }
 
     #[Group('crud')]
