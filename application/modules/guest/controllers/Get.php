@@ -56,8 +56,8 @@ class Get extends Base_Controller
      */
     private function extract_url_key_from_filename(string $filename): ?string
     {
-        $pattern = '/^([a-zA-Z0-9]{' . self::URL_KEY_LENGTH . '})_/';
-        if (preg_match($pattern, $filename, $matches)) {
+        // Match exactly 32 alphanumeric characters followed by underscore
+        if (preg_match('/^([a-zA-Z0-9]{32})_/', $filename, $matches)) {
             return $matches[1];
         }
 
