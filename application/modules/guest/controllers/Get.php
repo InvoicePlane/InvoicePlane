@@ -32,10 +32,55 @@ class Get extends Base_Controller
         $this->content_types = $this->mdl_uploads->content_types;
     }
 
+    /**
+     * Verify that the url_key belongs to a guest-visible invoice or quote.
+     * Returns true if the url_key is valid and guest-visible, false otherwise.
+     *
+     * @param string $url_key The url_key to validate
+     *
+     * @return bool
+     */
+    private function is_url_key_guest_visible(string $url_key): bool
+    {
+        if ( ! $url_key) {
+            return false;
+        }
+
+        $this->load->model('invoices/mdl_invoices');
+        $this->load->model('quotes/mdl_quotes');
+
+        // Check if url_key belongs to a guest-visible invoice (status_id IN (2,3,4))
+        $invoice = $this->mdl_invoices->guest_visible()
+            ->where('invoice_url_key', $url_key)
+            ->get();
+
+        if ($invoice->num_rows() === 1) {
+            return true;
+        }
+
+        // Check if url_key belongs to a guest-visible quote (status_id IN (2,3,4,5))
+        $quote = $this->mdl_quotes->guest_visible()
+            ->where('quote_url_key', $url_key)
+            ->get();
+
+        if ($quote->num_rows() === 1) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function show_files($url_key = null): void
     {
         header('Content-Type: application/json; charset=utf-8');
-        if ($url_key && ! $result = $this->mdl_uploads->get_files($url_key)) {
+
+        // Security: Verify url_key belongs to a guest-visible invoice or quote
+        if ( ! $url_key || ! $this->is_url_key_guest_visible($url_key)) {
+            exit('{}');
+        }
+
+        $result = $this->mdl_uploads->get_files($url_key);
+        if ( ! $result) {
             exit('{}');
         }
 
@@ -66,6 +111,24 @@ class Get extends Base_Controller
                 'guest/get: '
             );
         }
+
+        // Security: Extract url_key from filename to validate parent document status
+        // Filename format: {url_key}_{original_filename}
+        $url_key = null;
+        if (preg_match('/^([a-zA-Z0-9]{32})_/', $filename, $matches)) {
+            $url_key = $matches[1];
+        }
+
+        // Security: Verify url_key belongs to a guest-visible invoice or quote
+        if ( ! $url_key || ! $this->is_url_key_guest_visible($url_key)) {
+            respond_file_message(
+                404,
+                'upload_error_file_not_found',
+                'File not found or access denied',
+                'guest/get: '
+            );
+        }
+
         // Security: Use comprehensive file security validation helper
         // Note: CodeIgniter already URL-decodes parameters during routing
         $validation = validate_file_access($filename, $this->targetPath);
