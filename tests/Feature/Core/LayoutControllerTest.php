@@ -6,6 +6,7 @@ use Layout;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 /**
@@ -14,7 +15,6 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(Layout::class)]
-#[CoversClass(Tests\Feature\Core\LayoutController::class)]
 
 class LayoutControllerTest extends AbstractTestCase
 {

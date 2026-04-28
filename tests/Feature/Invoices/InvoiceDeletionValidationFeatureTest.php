@@ -236,23 +236,25 @@ class InvoiceDeletionValidationFeatureTest extends AbstractTestCase
         $originalConfig = config('settings.enable_invoice_deletion');
         config(['settings.enable_invoice_deletion' => true]);
 
-        $invoice = $this->seedModel('Invoice', [
-            'invoice_status_id' => 2, // Sent (normally not deletable)
-        ]);
+        try {
+            $invoice = $this->seedModel('Invoice', [
+                'invoice_status_id' => 2, // Sent (normally not deletable)
+            ]);
 
-        /* Act */
-        $response = $this->post('/invoices/delete/' . ($invoice->invoice_id));
+            /* Act */
+            $response = $this->post('/invoices/delete/' . $invoice->invoice_id);
 
-        /* Assert */
-        $response->assertRedirect('/invoices/index');
+            /* Assert */
+            $response->assertRedirect('/invoices/index');
 
-        // Verify invoice was deleted despite being sent
-        $this->assertDatabaseMissing('ip_invoices', [
-            'invoice_id' => $invoice->invoice_id,
-        ]);
-
-        // Restore original config
-        config(['settings.enable_invoice_deletion' => $originalConfig]);
+            // Verify invoice was deleted despite being sent
+            $this->assertDatabaseMissing('ip_invoices', [
+                'invoice_id' => $invoice->invoice_id,
+            ]);
+        } finally {
+            // Restore original config
+            config(['settings.enable_invoice_deletion' => $originalConfig]);
+        }
     }
 
     /**

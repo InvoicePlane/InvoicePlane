@@ -217,7 +217,7 @@ class InvoicesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post('/invoices/delete');
+        $response = $this->actingAs($user)->post('/invoices/delete', $deleteParams);
 
         /* Assert */
         $response->assertRedirect();
@@ -246,7 +246,7 @@ class InvoicesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $this->actingAs($user)->post('/invoices/delete');
+        $this->actingAs($user)->post('/invoices/delete', $deleteParams);
 
         /* Assert */
         $updatedTask = Task::find($task->task_id);
@@ -275,7 +275,7 @@ class InvoicesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post('/invoices/delete');
+        $response = $this->actingAs($user)->post('/invoices/delete', $deleteParams);
 
         /* Assert */
         $this->assertNotNull(Invoice::find($invoice->invoice_id)); // Still exists
