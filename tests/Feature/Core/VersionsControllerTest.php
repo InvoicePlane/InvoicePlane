@@ -5,6 +5,7 @@ namespace Tests\Feature\Core;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 use Versions;
 
@@ -14,7 +15,6 @@ use Versions;
  * Tests AJAX requests for settings operations.
  */
 #[CoversClass(Versions::class)]
-#[CoversClass(Tests\Feature\Core\VersionsController::class)]
 
 class VersionsControllerTest extends AbstractTestCase
 {
@@ -31,7 +31,8 @@ class VersionsControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get('/versions/index');
+        $this->actingAs($user);
+        $response = $this->get('/versions/index');
 
         /* Assert */
         $response->assertOk();

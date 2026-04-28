@@ -285,7 +285,7 @@ class FamiliesControllerTest extends AbstractTestCase
         ];
 
         /* Act */
-        $response = $this->actingAs($user)->post(
+        $response = $this->actingAs($this->user)->post(
             '/families/delete/' . ($family->family_id),
             $deletePayload
         );

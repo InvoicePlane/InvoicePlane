@@ -7,6 +7,7 @@ use Payment_Methods;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 /**
@@ -15,11 +16,16 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests payment method management (Cash, Check, Credit Card, PayPal, etc.)
  */
 #[CoversClass(Payment_Methods::class)]
-#[CoversClass(Tests\Feature\Payments\PaymentMethodsController::class)]
 
 class PaymentMethodsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->actingAsAdmin();
+    }
 
     /**
      * Test index displays paginated list of payment methods.

@@ -66,7 +66,7 @@ class SecurityTest extends AbstractTestCase
 
         $sqlInjection = "' OR '1'='1";
 
-        $response = $this->get('/clients/ajax/nameQuery/' . ($sqlInjection));
+        $response = $this->get('/clients/ajax/nameQuery/' . rawurlencode($sqlInjection));
 
         $response->assertSuccessful();
         // Should not return all clients or cause error
