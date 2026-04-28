@@ -74,7 +74,8 @@ class Get extends Base_Controller
      */
     private function is_url_key_guest_visible(string $url_key): bool
     {
-        if ($url_key === '') {
+        // Validate url_key format before database query (defense in depth)
+        if ( ! $this->is_valid_url_key_format($url_key)) {
             return false;
         }
 
@@ -89,6 +90,20 @@ class Get extends Base_Controller
         }
 
         return false;
+    }
+
+    /**
+     * Validate that a url_key matches the expected format.
+     * url_keys must be exactly 32 alphanumeric characters.
+     *
+     * @param string $url_key The url_key to validate
+     *
+     * @return bool True if format is valid, false otherwise
+     */
+    private function is_valid_url_key_format(string $url_key): bool
+    {
+        // url_key must be exactly 32 alphanumeric characters (no special chars, no directory traversal)
+        return preg_match('/^[a-zA-Z0-9]{' . self::URL_KEY_LENGTH . '}$/', $url_key) === 1;
     }
 
     /**
