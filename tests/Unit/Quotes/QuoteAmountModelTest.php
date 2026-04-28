@@ -9,12 +9,9 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\CiTestCase;
 
 #[CoversClass(Mdl_Quote_Amounts::class)]
-
 class QuoteAmountModelTest extends CiTestCase
 {
     private $model;
-
-    private $quoteService;
 
     protected function setUp(): void
     {

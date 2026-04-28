@@ -9,14 +9,14 @@ use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 use Tests\CiTestCase;
 /**
- * ProjectService Unit Tests.
+ * TaskModel Unit Tests.
  *
- * Test suite for ProjectService business logic methods.
+ * Test suite for Mdl_Tasks model methods.
  */
 #[CoversClass(Mdl_Tasks::class)]
 class TaskModelTest extends CiTestCase
 {
-    private \Unit\Projects\TaskService $service;
+    private $model;
 
     protected function setUp(): void
     {
