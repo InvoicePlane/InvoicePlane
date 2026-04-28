@@ -26,7 +26,22 @@ class TaxRatesModelTest extends AbstractTestCase
     #[Test]
     public function it_retrieves_all_tax_rates(): void
     {
-        $this->markTestIncomplete('This test uses Laravel Model::create pattern which needs to be refactored to use CodeIgniter insert patterns');
+        /* Arrange */
+        $this->model->save(null, [
+            'tax_rate_name'    => 'VAT 20%',
+            'tax_rate_percent' => 20.00,
+        ]);
+        $this->model->save(null, [
+            'tax_rate_name'    => 'VAT 10%',
+            'tax_rate_percent' => 10.00,
+        ]);
+
+        /* Act */
+        $this->model->default_select();
+        $result = $this->model->get()->result();
+
+        /* Assert */
+        $this->assertCount(2, $result);
     }
 
     #[Test]
@@ -49,6 +64,19 @@ class TaxRatesModelTest extends AbstractTestCase
     #[Test]
     public function it_all_returns_all_tax_rates(): void
     {
-        $this->markTestIncomplete('This test needs to be refactored to use CodeIgniter query builder instead of getAll()');
+        /* Arrange */
+        for ($i = 1; $i <= 5; $i++) {
+            $this->model->save(null, [
+                'tax_rate_name'    => "Tax Rate {$i}",
+                'tax_rate_percent' => $i * 5.00,
+            ]);
+        }
+
+        /* Act */
+        $this->model->default_select();
+        $results = $this->model->get()->result();
+
+        /* Assert */
+        $this->assertCount(5, $results);
     }
 }
