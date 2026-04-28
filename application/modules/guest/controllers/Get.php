@@ -22,6 +22,13 @@ class Get extends Base_Controller
     public $content_types = [];
 
     /**
+     * Models loaded in constructor.
+     */
+    private $mdl_invoices;
+
+    private $mdl_quotes;
+
+    /**
      * The expected length of url_key strings.
      * url_keys are 32-character random alphanumeric strings.
      */
@@ -29,6 +36,7 @@ class Get extends Base_Controller
 
     /**
      * Empty JSON response for unauthorized file access.
+     * Using a constant for consistency across methods.
      */
     private const EMPTY_JSON_RESPONSE = '{}';
 
@@ -40,11 +48,14 @@ class Get extends Base_Controller
         parent::__construct();
         $this->load->helper('file_security');
         $this->load->model('upload/mdl_uploads');
+        $this->load->model('invoices/mdl_invoices');
+        $this->load->model('quotes/mdl_quotes');
         $this->content_types = $this->mdl_uploads->content_types;
     }
 
     /**
      * Extract url_key from a filename with format {url_key}_{original_filename}.
+     * Note: url_keys are case-sensitive alphanumeric strings.
      *
      * @param string $filename The filename to parse
      *
@@ -73,9 +84,6 @@ class Get extends Base_Controller
         if ($url_key === '') {
             return false;
         }
-
-        $this->load->model('invoices/mdl_invoices');
-        $this->load->model('quotes/mdl_quotes');
 
         // Check if url_key belongs to a guest-visible invoice (status_id IN (2,3,4))
         if ($this->check_document_visibility($this->mdl_invoices, 'invoice_url_key', $url_key)) {
@@ -113,6 +121,7 @@ class Get extends Base_Controller
         header('Content-Type: application/json; charset=utf-8');
 
         // Security: Verify url_key belongs to a guest-visible invoice or quote
+        // Null check is needed because $url_key can be null from URL parameter
         if ( ! $url_key || ! $this->is_url_key_guest_visible($url_key)) {
             exit(self::EMPTY_JSON_RESPONSE);
         }
