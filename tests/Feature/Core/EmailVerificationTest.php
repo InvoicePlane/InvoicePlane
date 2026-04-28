@@ -11,7 +11,7 @@ class EmailVerificationTest extends AbstractTestCase
     use InteractsWithDatabase;
 
     #[Test]
-    public function it_email_verification_screen_can_be_rendered(): void
+    public function it_renders_email_verification_screen(): void
     {
         $user = $this->seedModel('User');
 
@@ -22,7 +22,7 @@ class EmailVerificationTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_email_can_be_verified(): void
+    public function it_verifies_email_successfully(): void
     {
         $user = $this->seedModel('User');
 
@@ -44,7 +44,7 @@ class EmailVerificationTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_email_is_not_verified_with_invalid_hash(): void
+    public function it_rejects_verification_with_invalid_hash(): void
     {
         $user = $this->seedModel('User');
 
