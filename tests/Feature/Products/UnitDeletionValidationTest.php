@@ -1,5 +1,6 @@
 <?php
 
+// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Tests\Feature\Products;
 
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -25,7 +26,7 @@ class UnitDeletionValidationTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new UnitService();
+        $this->model = new UnitService();
     }
 
     #[Group('business-rules')]
@@ -37,8 +38,8 @@ class UnitDeletionValidationTest extends AbstractTestCase
         $unit = $this->seedModel('Unit', ['unit_name' => 'Unused Unit']);
 
         /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
+        $canDelete = $this->model->canDelete($unit->unit_id);
+        $blockers  = $this->model->getDeletionBlockers($unit->unit_id);
 
         /* Assert */
         $this->assertTrue($canDelete);
@@ -57,8 +58,8 @@ class UnitDeletionValidationTest extends AbstractTestCase
         $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
+        $canDelete = $this->model->canDelete($unit->unit_id);
+        $blockers  = $this->model->getDeletionBlockers($unit->unit_id);
 
         /* Assert */
         $this->assertFalse($canDelete);
@@ -75,8 +76,8 @@ class UnitDeletionValidationTest extends AbstractTestCase
         $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
+        $canDelete = $this->model->canDelete($unit->unit_id);
+        $blockers  = $this->model->getDeletionBlockers($unit->unit_id);
 
         /* Assert */
         $this->assertFalse($canDelete);
@@ -93,8 +94,8 @@ class UnitDeletionValidationTest extends AbstractTestCase
         $this->seedModel('QuoteItem', ['item_product_unit_id' => $unit->unit_id]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
+        $canDelete = $this->model->canDelete($unit->unit_id);
+        $blockers  = $this->model->getDeletionBlockers($unit->unit_id);
 
         /* Assert */
         $this->assertFalse($canDelete);
@@ -114,8 +115,8 @@ class UnitDeletionValidationTest extends AbstractTestCase
         $this->seedModelMany('QuoteItem', 1, ['item_product_unit_id' => $unit->unit_id]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
+        $canDelete = $this->model->canDelete($unit->unit_id);
+        $blockers  = $this->model->getDeletionBlockers($unit->unit_id);
 
         /* Assert */
         $this->assertFalse($canDelete);
@@ -134,13 +135,13 @@ class UnitDeletionValidationTest extends AbstractTestCase
         $product = $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
 
         // Initially cannot delete
-        $this->assertFalse($this->service->canDelete($unit->unit_id));
+        $this->assertFalse($this->model->canDelete($unit->unit_id));
 
         // Remove reference
         $product->delete();
 
         /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
+        $canDelete = $this->model->canDelete($unit->unit_id);
 
         /* Assert */
         $this->assertTrue($canDelete);

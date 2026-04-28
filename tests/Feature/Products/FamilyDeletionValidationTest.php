@@ -1,5 +1,6 @@
 <?php
 
+// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Feature\Products;
 
 use Modules\Products\Models\Family;
@@ -29,7 +30,7 @@ class FamilyDeletionValidationTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new FamilyService();
+        $this->model = new FamilyService();
     }
 
     #[Group('business-rules')]
@@ -41,8 +42,8 @@ class FamilyDeletionValidationTest extends AbstractTestCase
         $family = $this->seedModel('Family', ['family_name' => 'Empty Family']);
 
         /* Act */
-        $canDelete = $this->service->canDelete($family->family_id);
-        $blockers  = $this->service->getDeletionBlockers($family->family_id);
+        $canDelete = $this->model->canDelete($family->family_id);
+        $blockers  = $this->model->getDeletionBlockers($family->family_id);
 
         /* Assert */
         $this->assertTrue($canDelete);
@@ -59,8 +60,8 @@ class FamilyDeletionValidationTest extends AbstractTestCase
         $this->seedModel('Product', ['family_id' => $family->family_id]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($family->family_id);
-        $blockers  = $this->service->getDeletionBlockers($family->family_id);
+        $canDelete = $this->model->canDelete($family->family_id);
+        $blockers  = $this->model->getDeletionBlockers($family->family_id);
 
         /* Assert */
         $this->assertFalse($canDelete);
@@ -77,8 +78,8 @@ class FamilyDeletionValidationTest extends AbstractTestCase
         $this->seedModelMany('Product', 5, ['family_id' => $family->family_id]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($family->family_id);
-        $blockers  = $this->service->getDeletionBlockers($family->family_id);
+        $canDelete = $this->model->canDelete($family->family_id);
+        $blockers  = $this->model->getDeletionBlockers($family->family_id);
 
         /* Assert */
         $this->assertFalse($canDelete);
@@ -95,13 +96,13 @@ class FamilyDeletionValidationTest extends AbstractTestCase
         $product = $this->seedModel('Product', ['family_id' => $family->family_id]);
 
         // Initially cannot delete
-        $this->assertFalse($this->service->canDelete($family->family_id));
+        $this->assertFalse($this->model->canDelete($family->family_id));
 
         // Remove product
         $product->delete();
 
         /* Act */
-        $canDelete = $this->service->canDelete($family->family_id);
+        $canDelete = $this->model->canDelete($family->family_id);
 
         /* Assert */
         $this->assertTrue($canDelete);
@@ -116,7 +117,7 @@ class FamilyDeletionValidationTest extends AbstractTestCase
         $family = $this->seedModel('Family');
 
         /* Act */
-        $blockers = $this->service->getDeletionBlockers($family->family_id);
+        $blockers = $this->model->getDeletionBlockers($family->family_id);
 
         /* Assert */
         $this->assertIsArray($blockers);

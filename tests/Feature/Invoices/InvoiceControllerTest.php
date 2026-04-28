@@ -1,5 +1,6 @@
 <?php
 
+// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Tests\Feature\Invoices;
 
 use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;

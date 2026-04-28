@@ -1,5 +1,6 @@
 <?php
 
+// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace tests\Feature\Clients;
 
 use Clients;
@@ -28,7 +29,7 @@ class ClientDeletionValidationTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ClientService();
+        $this->model = new ClientService();
     }
 
     /**
@@ -45,8 +46,8 @@ class ClientDeletionValidationTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($client->client_id);
-        $blockers  = $this->service->getDeletionBlockers($client->client_id);
+        $canDelete = $this->model->canDelete($client->client_id);
+        $blockers  = $this->model->getDeletionBlockers($client->client_id);
 
         /* Assert */
         $this->assertTrue($canDelete, 'Client without related records should be deletable');
@@ -71,8 +72,8 @@ class ClientDeletionValidationTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($client->client_id);
-        $blockers  = $this->service->getDeletionBlockers($client->client_id);
+        $canDelete = $this->model->canDelete($client->client_id);
+        $blockers  = $this->model->getDeletionBlockers($client->client_id);
 
         /* Assert */
         $this->assertFalse($canDelete, 'Client with invoices should NOT be deletable');
@@ -95,8 +96,8 @@ class ClientDeletionValidationTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($client->client_id);
-        $blockers  = $this->service->getDeletionBlockers($client->client_id);
+        $canDelete = $this->model->canDelete($client->client_id);
+        $blockers  = $this->model->getDeletionBlockers($client->client_id);
 
         /* Assert */
         $this->assertFalse($canDelete, 'Client with quotes should NOT be deletable');
@@ -119,8 +120,8 @@ class ClientDeletionValidationTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($client->client_id);
-        $blockers  = $this->service->getDeletionBlockers($client->client_id);
+        $canDelete = $this->model->canDelete($client->client_id);
+        $blockers  = $this->model->getDeletionBlockers($client->client_id);
 
         /* Assert */
         $this->assertFalse($canDelete, 'Client with projects should NOT be deletable');
@@ -143,8 +144,8 @@ class ClientDeletionValidationTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($client->client_id);
-        $blockers  = $this->service->getDeletionBlockers($client->client_id);
+        $canDelete = $this->model->canDelete($client->client_id);
+        $blockers  = $this->model->getDeletionBlockers($client->client_id);
 
         /* Assert */
         $this->assertFalse($canDelete);
@@ -167,8 +168,8 @@ class ClientDeletionValidationTest extends AbstractTestCase
         $this->seedModel('Project', ['client_id' => $client->client_id]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($client->client_id);
-        $blockers  = $this->service->getDeletionBlockers($client->client_id);
+        $canDelete = $this->model->canDelete($client->client_id);
+        $blockers  = $this->model->getDeletionBlockers($client->client_id);
 
         /* Assert */
         $this->assertFalse($canDelete);
@@ -189,7 +190,7 @@ class ClientDeletionValidationTest extends AbstractTestCase
         $client = $this->seedModel('Client');
 
         /* Act */
-        $blockers = $this->service->getDeletionBlockers($client->client_id);
+        $blockers = $this->model->getDeletionBlockers($client->client_id);
 
         /* Assert */
         $this->assertIsArray($blockers);
@@ -213,14 +214,14 @@ class ClientDeletionValidationTest extends AbstractTestCase
         $quote   = $this->seedModel('Quote', ['client_id' => $client->client_id]);
 
         // Initially cannot delete
-        $this->assertFalse($this->service->canDelete($client->client_id));
+        $this->assertFalse($this->model->canDelete($client->client_id));
 
         // Remove related records
         $invoice->delete();
         $quote->delete();
 
         /* Act */
-        $canDelete = $this->service->canDelete($client->client_id);
+        $canDelete = $this->model->canDelete($client->client_id);
 
         /* Assert */
         $this->assertTrue($canDelete, 'Client should be deletable after related records removed');

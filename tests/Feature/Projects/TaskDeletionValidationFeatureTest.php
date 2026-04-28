@@ -1,5 +1,6 @@
 <?php
 
+// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Tests\Feature\Projects;
 
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -311,8 +312,8 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $canDelete  = $this->service->canDelete($task->task_id);
-        $isAssigned = $this->service->isAssignedToInvoice($task->task_id);
+        $canDelete  = $this->model->canDelete($task->task_id);
+        $isAssigned = $this->model->isAssignedToInvoice($task->task_id);
 
         /* Assert */
         $this->assertTrue($canDelete, 'Task without invoice assignment should be deletable');
@@ -334,8 +335,8 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $assignedIsAssigned   = $this->service->isAssignedToInvoice($assignedTask->task_id);
-        $unassignedIsAssigned = $this->service->isAssignedToInvoice($unassignedTask->task_id);
+        $assignedIsAssigned   = $this->model->isAssignedToInvoice($assignedTask->task_id);
+        $unassignedIsAssigned = $this->model->isAssignedToInvoice($unassignedTask->task_id);
 
         /* Assert */
         $this->assertTrue($assignedIsAssigned, 'Assigned task should return true');
@@ -349,8 +350,8 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         $nonexistentId = 99999;
 
         /* Act */
-        $canDelete  = $this->service->canDelete($nonexistentId);
-        $isAssigned = $this->service->isAssignedToInvoice($nonexistentId);
+        $canDelete  = $this->model->canDelete($nonexistentId);
+        $isAssigned = $this->model->isAssignedToInvoice($nonexistentId);
 
         /* Assert */
         $this->assertTrue($canDelete, 'Non-existent task should return true for canDelete');
@@ -373,7 +374,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
             ]);
 
             /* Act */
-            $canDelete = $this->service->canDelete($task->task_id);
+            $canDelete = $this->model->canDelete($task->task_id);
 
             /* Assert */
             $this->assertFalse(
@@ -393,7 +394,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         ]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($task->task_id);
+        $canDelete = $this->model->canDelete($task->task_id);
 
         /* Assert */
         $this->assertTrue($canDelete, 'Completed task without invoice should be deletable');
@@ -412,7 +413,7 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
 
         /* Act & Assert */
         foreach ($tasks as $task) {
-            $canDelete = $this->service->canDelete($task->task_id);
+            $canDelete = $this->model->canDelete($task->task_id);
             $this->assertFalse(
                 $canDelete,
                 'Each task assigned to invoice should not be deletable'
