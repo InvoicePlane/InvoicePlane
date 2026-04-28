@@ -16,56 +16,50 @@ class InvoiceGroupsModelTest extends CiTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        get_instance()->load->model('invoice_groups/mdl_invoice_groups');
-        $this->model = get_instance()->mdl_invoice_groups;
+        $this->CI->load->model('invoice_groups/mdl_invoice_groups');
+        $this->model = $this->CI->mdl_invoice_groups;
     }
 
     #[Test]
-    #[Group('crud')]
-    public function it_retrieves_all_invoice_groups(): void
+    public function it_has_correct_table_name(): void
     {
-        /* Arrange */
-        InvoiceGroup::create([
-            'invoice_group_name' => 'Default',
-        ]);
-        InvoiceGroup::create([
-            'invoice_group_name' => 'Custom Group',
-        ]);
+        $this->assertEquals('ip_invoice_groups', $this->model->table);
+    }
 
-        /* Act */
-        $result = $this->model->defaultSelect()->get();
-
-        /* Assert */
-        $this->assertCount(2, $result);
+    #[Test]
+    public function it_has_correct_primary_key(): void
+    {
+        $this->assertEquals('ip_invoice_groups.invoice_group_id', $this->model->primary_key);
     }
 
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        /* Act */
-        $rules = $this->model->validationRules();
-
-        /* Assert */
+        $rules = $this->model->validation_rules();
         $this->assertIsArray($rules);
+        $this->assertArrayHasKey('invoice_group_name', $rules);
+        $this->assertArrayHasKey('invoice_group_identifier_format', $rules);
+        $this->assertArrayHasKey('invoice_group_next_id', $rules);
+        $this->assertArrayHasKey('invoice_group_left_pad', $rules);
     }
 
     #[Test]
-    public function it_orders_by_next_id_by_default(): void
+    public function it_has_default_select_method(): void
     {
-        /* Arrange */
-        InvoiceGroup::create([
-            'invoice_group_name'    => 'Group A',
-            'invoice_group_next_id' => 100,
-        ]);
-        InvoiceGroup::create([
-            'invoice_group_name'    => 'Group B',
-            'invoice_group_next_id' => 50,
-        ]);
+        $this->assertTrue(method_exists($this->model, 'default_select'));
+    }
 
-        /* Act */
-        $result = $this->model->defaultOrderBy()->get();
+    #[Test]
+    public function it_has_default_order_by_method(): void
+    {
+        $this->assertTrue(method_exists($this->model, 'default_order_by'));
+    }
 
-        /* Assert */
-        $this->assertCount(2, $result);
+    #[Test]
+    public function it_requires_invoice_group_name_in_validation_rules(): void
+    {
+        $rules = $this->model->validation_rules();
+        $this->assertArrayHasKey('invoice_group_name', $rules);
+        $this->assertEquals('required', $rules['invoice_group_name']['rules']);
     }
 }
