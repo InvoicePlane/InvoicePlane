@@ -1,5 +1,6 @@
 <?php
 
+// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Tests\Feature\Projects;
 
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -297,7 +298,8 @@ class TasksControllerTest extends AbstractTestCase
             'task_status' => 1,
         ]);
         // Additional check: task name should contain safe content
-        $tasks = \Illuminate\Support\Facades\DB::table('ip_tasks')
+        $tasks = // TODO: InvoicePlane is not using Laravel - need to use CI3 database instead
+        \Illuminate\Support\Facades\DB::table('ip_tasks')
             ->where('task_status', 1)
             ->orderBy('task_id', 'desc')
             ->first();

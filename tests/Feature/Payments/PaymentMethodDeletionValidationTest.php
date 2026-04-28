@@ -1,5 +1,6 @@
 <?php
 
+// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Feature\Payments;
 
 use Modules\Payments\Services\PaymentLogService;
@@ -21,7 +22,7 @@ class PaymentMethodDeletionValidationTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new PaymentMethodService();
+        $this->model = new PaymentMethodService();
     }
 
     /**
@@ -34,7 +35,7 @@ class PaymentMethodDeletionValidationTest extends AbstractTestCase
         $paymentMethod = $this->seedModel('PaymentMethod');
 
         /* Act */
-        $canDelete = $this->service->canDelete($paymentMethod->payment_method_id);
+        $canDelete = $this->model->canDelete($paymentMethod->payment_method_id);
 
         /* Assert */
         $this->assertTrue($canDelete);
@@ -51,7 +52,7 @@ class PaymentMethodDeletionValidationTest extends AbstractTestCase
         $this->seedModel('Payment', ['payment_method_id' => $paymentMethod->payment_method_id]);
 
         /* Act */
-        $canDelete = $this->service->canDelete($paymentMethod->payment_method_id);
+        $canDelete = $this->model->canDelete($paymentMethod->payment_method_id);
 
         /* Assert */
         $this->assertFalse($canDelete);
@@ -68,7 +69,7 @@ class PaymentMethodDeletionValidationTest extends AbstractTestCase
         $this->seedModelMany('Payment', 3, ['payment_method_id' => $paymentMethod->payment_method_id]);
 
         /* Act */
-        $blockers = $this->service->getDeletionBlockers($paymentMethod->payment_method_id);
+        $blockers = $this->model->getDeletionBlockers($paymentMethod->payment_method_id);
 
         /* Assert */
         $this->assertArrayHasKey('payments', $blockers);
@@ -85,7 +86,7 @@ class PaymentMethodDeletionValidationTest extends AbstractTestCase
         $paymentMethod = $this->seedModel('PaymentMethod');
 
         /* Act */
-        $blockers = $this->service->getDeletionBlockers($paymentMethod->payment_method_id);
+        $blockers = $this->model->getDeletionBlockers($paymentMethod->payment_method_id);
 
         /* Assert */
         $this->assertEquals(0, $blockers['payments']);
@@ -105,7 +106,7 @@ class PaymentMethodDeletionValidationTest extends AbstractTestCase
         $payment->delete();
 
         /* Act */
-        $canDelete = $this->service->canDelete($paymentMethod->payment_method_id);
+        $canDelete = $this->model->canDelete($paymentMethod->payment_method_id);
 
         /* Assert */
         $this->assertTrue($canDelete);
@@ -121,8 +122,8 @@ class PaymentMethodDeletionValidationTest extends AbstractTestCase
         $nonExistentId = 99999;
 
         /* Act */
-        $canDelete = $this->service->canDelete($nonExistentId);
-        $blockers  = $this->service->getDeletionBlockers($nonExistentId);
+        $canDelete = $this->model->canDelete($nonExistentId);
+        $blockers  = $this->model->getDeletionBlockers($nonExistentId);
 
         /* Assert */
         $this->assertTrue($canDelete);

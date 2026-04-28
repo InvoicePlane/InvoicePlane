@@ -25,7 +25,8 @@ abstract class UnitTestCase extends AbstractTestCase
     protected function cleanupTables(array $tables): void
     {
         foreach ($tables as $table) {
-            \Illuminate\Support\Facades\DB::table($table)->delete();
+            // TODO: InvoicePlane is not using Laravel - need to use CI3 database instead
+        \Illuminate\Support\Facades\DB::table($table)->delete();
         }
     }
 

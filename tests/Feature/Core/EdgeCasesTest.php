@@ -1,5 +1,6 @@
 <?php
 
+// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Test;
@@ -12,7 +13,7 @@ class EdgeCasesTest extends AbstractTestCase
     public function it_unit_service_handles_extreme_quantities_correctly(): void
     {
         /* Arrange */
-        $service = new UnitsService();
+        $model = new UnitsService();
         $unit    = Unit::create(['unit_name' => 'Item', 'unit_name_plrl' => 'Items']);
 
         /* Act & Assert */
@@ -32,7 +33,7 @@ class EdgeCasesTest extends AbstractTestCase
     public function it_tasks_service_handles_concurrent_task_retrieval(): void
     {
         /* Arrange */
-        $service = new TasksService();
+        $model = new TasksService();
         $project = Project::create(['project_name' => 'Test Project']);
 
         // Create multiple tasks
@@ -59,7 +60,7 @@ class EdgeCasesTest extends AbstractTestCase
     public function it_tasks_to_invoice_returns_correct_sorting(): void
     {
         /* Arrange */
-        $service = new TasksService();
+        $model = new TasksService();
         $client  = tmpClient::create(['client_name' => 'Test Client', 'client_active' => 1]);
         $invoice = Invoice::create([
             'client_id'         => $client->client_id,
@@ -103,7 +104,7 @@ class EdgeCasesTest extends AbstractTestCase
     public function it_unit_save_preserves_data_integrity_on_update(): void
     {
         /* Arrange */
-        $service = new UnitsService();
+        $model = new UnitsService();
         $unit    = Unit::create([
             'unit_name'      => 'Original Name',
             'unit_name_plrl' => 'Original Plural',
@@ -126,7 +127,7 @@ class EdgeCasesTest extends AbstractTestCase
     public function it_tasks_service_handles_string_and_numeric_ids(): void
     {
         /* Arrange */
-        $service = new TasksService();
+        $model = new TasksService();
         $project = Project::create(['project_name' => 'Test Project']);
         Task::create([
             'task_name'        => 'Task 1',
@@ -150,7 +151,7 @@ class EdgeCasesTest extends AbstractTestCase
     public function it_empty_string_id_treated_as_falsy(): void
     {
         /* Arrange */
-        $service = new TasksService();
+        $model = new TasksService();
 
         /* Act */
         $result = $service->getTasks('');
@@ -164,7 +165,7 @@ class EdgeCasesTest extends AbstractTestCase
     public function it_unit_exists_is_case_sensitive(): void
     {
         /* Arrange */
-        $service = new UnitsService();
+        $model = new UnitsService();
         Unit::create(['unit_name' => 'Hour', 'unit_name_plrl' => 'Hours']);
 
         /* Act & Assert */
@@ -177,7 +178,7 @@ class EdgeCasesTest extends AbstractTestCase
     public function it_concurrent_updates_maintain_consistency(): void
     {
         /* Arrange */
-        $service = new UnitsService();
+        $model = new UnitsService();
         $unit    = Unit::create(['unit_name' => 'Item', 'unit_name_plrl' => 'Items']);
 
         /* Act */
