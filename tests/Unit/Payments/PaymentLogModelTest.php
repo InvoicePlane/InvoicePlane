@@ -15,7 +15,8 @@ class PaymentLogModelTest extends CiTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->model = new PaymentLogService();
+        $this->CI->load->model('payments/mdl_payment_log');
+        $this->model = $this->CI->mdl_payment_log;
     }
 
     #[Group('relationships')]

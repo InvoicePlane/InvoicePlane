@@ -18,14 +18,8 @@ class InvoiceItemAmountModelTest extends CiTestCase
     {
         parent::setUp();
 
-        $this->model = new InvoiceItemAmountService();
-
-        DB::table('ip_invoice_item_amounts')->delete();
-        DB::table('ip_invoice_items')->delete();
-        DB::table('ip_tax_rates')->delete();
-
-        Setting::setValue('tax_rate_decimal_places', '2');
-        Setting::setValue('legacy_calculation', '0');
+        $this->CI->load->model('invoices/mdl_invoice_item_amounts');
+        $this->model = $this->CI->mdl_invoice_item_amounts;
     }
 
     #[Group('exotic')]

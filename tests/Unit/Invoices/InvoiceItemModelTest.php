@@ -17,15 +17,8 @@ class InvoiceItemModelTest extends CiTestCase
     {
         parent::setUp();
 
-        $this->model = new InvoiceItemService();
-
-        DB::table('ip_invoice_amounts')->delete();
-        DB::table('ip_invoice_item_amounts')->delete();
-        DB::table('ip_invoice_items')->delete();
-        DB::table('ip_invoices')->delete();
-
-        Setting::setValue('tax_rate_decimal_places', '2');
-        Setting::setValue('legacy_calculation', '0');
+        $this->CI->load->model('invoices/mdl_items');
+        $this->model = $this->CI->mdl_items;
     }
 
     #[Group('crud')]

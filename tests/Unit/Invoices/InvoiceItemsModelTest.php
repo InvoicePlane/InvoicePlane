@@ -10,21 +10,12 @@ class InvoiceItemsModelTest extends CiTestCase
 {
     private $model;
 
-    private $itemAmountsService;
-
-    private $invoiceAmountsService;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->itemAmountsService    = $this->createMock(ItemAmountsService::class);
-        $this->invoiceAmountsService = $this->createMock(InvoiceAmountsService::class);
-
-        $this->model = new ItemsService(
-            $this->itemAmountsService,
-            $this->invoiceAmountsService
-        );
+        $this->CI->load->model('invoices/mdl_items');
+        $this->model = $this->CI->mdl_items;
     }
 
     public function test_get_by_invoice_id_returns_items(): void
