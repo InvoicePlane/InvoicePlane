@@ -22,13 +22,6 @@ class Get extends Base_Controller
     public $content_types = [];
 
     /**
-     * Models loaded in constructor.
-     */
-    private $mdl_invoices;
-
-    private $mdl_quotes;
-
-    /**
      * The expected length of url_key strings.
      * url_keys are 32-character random alphanumeric strings.
      */
