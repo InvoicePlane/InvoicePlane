@@ -20,6 +20,15 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
+    private $model;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        get_instance()->load->model('tasks/mdl_tasks');
+        $this->model = get_instance()->mdl_tasks;
+    }
+
     /**
      * Test that task without invoice assignment can be deleted via HTTP.
      */
