@@ -1,23 +1,23 @@
 <?php
 
-// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Tests\Unit\Invoices;
 
 use Mdl_Invoice_Groups;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\AbstractTestCase;
+use Tests\CiTestCase;
 
 #[CoversClass(Mdl_Invoice_Groups::class)]
-class InvoiceGroupsModelTest extends AbstractTestCase
+class InvoiceGroupsModelTest extends CiTestCase
 {
-    private $service;
+    private $model;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->model = app(InvoiceGroupsService::class);
+        get_instance()->load->model('invoice_groups/mdl_invoice_groups');
+        $this->model = get_instance()->mdl_invoice_groups;
     }
 
     #[Test]

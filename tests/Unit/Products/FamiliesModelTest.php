@@ -1,25 +1,25 @@
 <?php
 
-// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Tests\Unit\Products;
 
 use Mdl_Families;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\AbstractTestCase;
+use Tests\CiTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Mdl_Families::class)]
-class FamiliesModelTest extends AbstractTestCase
+class FamiliesModelTest extends CiTestCase
 {
     use InteractsWithDatabase;
 
-    private $service;
+    private $model;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->model = app(FamiliesService::class);
+        get_instance()->load->model('families/mdl_families');
+        $this->model = get_instance()->mdl_families;
     }
 
     #[Test]

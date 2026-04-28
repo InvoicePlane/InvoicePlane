@@ -1,6 +1,5 @@
 <?php
 
-// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Tests\Feature\Core;
 
 use Mdl_Tax_Rates;
@@ -15,12 +14,13 @@ class TaxRatesModelTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    private $service;
+    private $model;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->model = app(TaxRatesService::class);
+        get_instance()->load->model('tax_rates/mdl_tax_rates');
+        $this->model = get_instance()->mdl_tax_rates;
     }
 
     #[Test]

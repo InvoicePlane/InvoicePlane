@@ -1,6 +1,5 @@
 <?php
 
-// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Tests\Feature\Core;
 
 use Mdl_Users;
@@ -13,12 +12,13 @@ use Tests\AbstractTestCase;
 #[CoversClass(Tests\Feature\Core\UsersService::class)]
 class UsersModelTest extends AbstractTestCase
 {
-    private $service;
+    private $model;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->model = app(UsersService::class);
+        get_instance()->load->model('users/mdl_users');
+        $this->model = get_instance()->mdl_users;
     }
 
     #[Test]

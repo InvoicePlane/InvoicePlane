@@ -1,6 +1,5 @@
 <?php
 
-// TODO: InvoicePlane does not have namespaces yet - this will need to be refactored when namespaces are introduced
 namespace Feature\Products;
 
 use Modules\Products\Controllers\FamiliesController;
