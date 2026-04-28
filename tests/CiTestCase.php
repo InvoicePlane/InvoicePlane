@@ -10,7 +10,7 @@ abstract class CiTestCase extends AbstractTestCase
     {
         parent::setUp();
 
-        CiKernel::boot();
+        CiKernel::boot('testing');
 
         $_GET    = [];
         $_POST   = [];
