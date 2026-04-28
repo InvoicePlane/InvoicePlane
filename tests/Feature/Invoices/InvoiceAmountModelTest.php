@@ -20,18 +20,35 @@ class InvoiceAmountModelTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestIncomplete('This entire test file uses Laravel patterns (DB::table, Model::create, app(Service)) which need to be refactored to use CodeIgniter patterns');
+
+        // TODO: Refactor to use CodeIgniter database patterns
+        // DB::table('ip_invoice_amounts')->delete();
+        // DB::table('ip_invoice_item_amounts')->delete();
+        // DB::table('ip_invoice_items')->delete();
+        // DB::table('ip_payments')->delete();
+        // DB::table('ip_invoices')->delete();
+        //
+        // Setting::setValue('tax_rate_decimal_places', '2');
+        // Setting::setValue('legacy_calculation', '0');
     }
 
     #[Group('exotic')]
     #[Test]
     public function it_calculates_invoice_totals_with_payments(): void
     {
-        $this->markTestIncomplete('This test uses Laravel patterns which need to be refactored to use CodeIgniter patterns');
-    }
-
-    #[Group('exotic')]
-    #[Test]
+        $this->markTestIncomplete();
+        $invoice = Invoice::query()->create([
+            'client_id'                => 1,
+            'user_id'                  => 1,
+            'invoice_group_id'         => 1,
+            'invoice_status_id'        => 1,
+            'invoice_number'           => 'INV-1000',
+            'invoice_date_created'     => '2024-01-01',
+            'invoice_date_modified'    => '2024-01-01',
+            'invoice_date_due'         => '2024-01-15',
+            'invoice_password'         => '',
+            'invoice_discount_amount'  => 0,
+            'invoice_discount_percent' => 0,
             'invoice_terms'            => '',
             'invoice_url_key'          => 'key-1000',
         ]);

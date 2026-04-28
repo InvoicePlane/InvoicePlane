@@ -25,7 +25,26 @@ class UsersModelTest extends AbstractTestCase
     #[Group('crud')]
     public function it_retrieves_all_users(): void
     {
-        $this->markTestIncomplete('This test uses Laravel Model::create pattern which needs to be refactored to use CodeIgniter insert patterns');
+        /* Arrange */
+        $this->model->save(null, [
+            'user_name'     => 'John Doe',
+            'user_email'    => 'john@example.com',
+            'user_password' => password_hash('password', PASSWORD_DEFAULT),
+            'user_type'     => 1,
+        ]);
+        $this->model->save(null, [
+            'user_name'     => 'Jane Doe',
+            'user_email'    => 'jane@example.com',
+            'user_password' => password_hash('password', PASSWORD_DEFAULT),
+            'user_type'     => 1,
+        ]);
+
+        /* Act */
+        $this->model->default_select();
+        $result = $this->model->get()->result();
+
+        /* Assert */
+        $this->assertCount(2, $result);
     }
 
     #[Test]
