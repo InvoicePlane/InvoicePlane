@@ -28,6 +28,11 @@ class Get extends Base_Controller
     private const URL_KEY_LENGTH = 32;
 
     /**
+     * Empty JSON response for unauthorized file access.
+     */
+    private const EMPTY_JSON_RESPONSE = '{}';
+
+    /**
      * Upload constructor.
      */
     public function __construct()
@@ -65,7 +70,7 @@ class Get extends Base_Controller
      */
     private function is_url_key_guest_visible(string $url_key): bool
     {
-        if ( ! $url_key) {
+        if ($url_key === '') {
             return false;
         }
 
@@ -88,13 +93,13 @@ class Get extends Base_Controller
     /**
      * Check if a document with the given url_key is guest-visible.
      *
-     * @param object $model     The model (mdl_invoices or mdl_quotes)
-     * @param string $key_field The field name for the url_key
-     * @param string $url_key   The url_key to check
+     * @param Response_Model $model     The model (mdl_invoices or mdl_quotes)
+     * @param string         $key_field The field name for the url_key
+     * @param string         $url_key   The url_key to check
      *
      * @return bool True if the document is guest-visible, false otherwise
      */
-    private function check_document_visibility($model, string $key_field, string $url_key): bool
+    private function check_document_visibility(Response_Model $model, string $key_field, string $url_key): bool
     {
         $result = $model->guest_visible()
             ->where($key_field, $url_key)
@@ -109,12 +114,12 @@ class Get extends Base_Controller
 
         // Security: Verify url_key belongs to a guest-visible invoice or quote
         if ( ! $url_key || ! $this->is_url_key_guest_visible($url_key)) {
-            exit('{}');
+            exit(self::EMPTY_JSON_RESPONSE);
         }
 
         $result = $this->mdl_uploads->get_files($url_key);
         if ( ! $result) {
-            exit('{}');
+            exit(self::EMPTY_JSON_RESPONSE);
         }
 
         echo json_encode($result);
