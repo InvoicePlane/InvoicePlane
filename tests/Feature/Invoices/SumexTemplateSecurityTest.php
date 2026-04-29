@@ -31,13 +31,13 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_rejects_path_traversal_in_sumex_template(): void
     {
-        // Arrange
+        /* Arrange */
         $malicious_template = '../../../../composer.json';
 
-        // Act — validate_template_name is the security layer called by the Sumex pdf pipeline
+        /* Act — validate_template_name is the security layer called by the Sumex pdf pipeline */
         $result = validate_template_name($malicious_template, 'invoice', 'pdf');
 
-        // Assert — path traversal must be rejected; pipeline falls back to 'InvoicePlane'
+        /* Assert — path traversal must be rejected; pipeline falls back to 'InvoicePlane' */
         $this->assertFalse($result, 'Path traversal template must be rejected by validate_template_name()');
     }
 
@@ -45,13 +45,13 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_rejects_windows_style_path_traversal_in_sumex_template(): void
     {
-        // Arrange
+        /* Arrange */
         $malicious_template = '..\\..\\..\\composer.json';
 
-        // Act
+        /* Act */
         $result = validate_template_name($malicious_template, 'invoice', 'pdf');
 
-        // Assert
+        /* Assert */
         $this->assertFalse($result, 'Windows-style path traversal template must be rejected');
     }
 
@@ -63,13 +63,13 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_rejects_null_byte_injection_in_sumex_template(): void
     {
-        // Arrange
+        /* Arrange */
         $malicious_template = "InvoicePlane\0/../../etc/passwd";
 
-        // Act — validate_safe_filename (called inside validate_template_name) detects null bytes
+        /* Act — validate_safe_filename (called inside validate_template_name) detects null bytes */
         $result = validate_template_name($malicious_template, 'invoice', 'pdf');
 
-        // Assert
+        /* Assert */
         $this->assertFalse($result, 'Null-byte-injected template name must be rejected');
     }
 
@@ -77,13 +77,13 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_rejects_null_byte_at_start_of_sumex_template(): void
     {
-        // Arrange
+        /* Arrange */
         $malicious_template = "\0InvoicePlane";
 
-        // Act
+        /* Act */
         $result = validate_template_name($malicious_template, 'invoice', 'pdf');
 
-        // Assert
+        /* Assert */
         $this->assertFalse($result, 'Template starting with null byte must be rejected');
     }
 
@@ -95,13 +95,13 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_rejects_template_not_in_whitelist(): void
     {
-        // Arrange
+        /* Arrange */
         $unlisted_template = 'EvilTemplate';
 
-        // Act
+        /* Act */
         $result = validate_template_name($unlisted_template, 'invoice', 'pdf');
 
-        // Assert — only templates in ALLOWED_INVOICE_TEMPLATES pass
+        /* Assert — only templates in ALLOWED_INVOICE_TEMPLATES pass */
         $this->assertFalse($result, 'Template not in static whitelist must be rejected');
     }
 
@@ -109,13 +109,13 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_rejects_empty_template_name(): void
     {
-        // Arrange
+        /* Arrange */
         $empty_template = '';
 
-        // Act
+        /* Act */
         $result = validate_template_name($empty_template, 'invoice', 'pdf');
 
-        // Assert
+        /* Assert */
         $this->assertFalse($result, 'Empty template name must be rejected');
     }
 
@@ -123,13 +123,13 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_rejects_absolute_path_as_sumex_template(): void
     {
-        // Arrange
+        /* Arrange */
         $absolute_path = '/etc/passwd';
 
-        // Act
+        /* Act */
         $result = validate_template_name($absolute_path, 'invoice', 'pdf');
 
-        // Assert
+        /* Assert */
         $this->assertFalse($result, 'Absolute path as template name must be rejected');
     }
 
@@ -141,13 +141,13 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_accepts_valid_sumex_template(): void
     {
-        // Arrange — 'InvoicePlane' is the canonical PDF invoice template in the static whitelist
+        /* Arrange — 'InvoicePlane' is the canonical PDF invoice template in the static whitelist */
         $valid_template = 'InvoicePlane';
 
-        // Act
+        /* Act */
         $result = validate_template_name($valid_template, 'invoice', 'pdf');
 
-        // Assert — validation returns the template name unchanged when it passes all security layers
+        /* Assert — validation returns the template name unchanged when it passes all security layers */
         $this->assertSame($valid_template, $result, 'A valid whitelisted template name must be returned as-is');
     }
 
@@ -155,14 +155,14 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_accepts_all_built_in_invoice_pdf_templates(): void
     {
-        // Arrange — these are the built-in templates defined in Mdl_Templates::ALLOWED_INVOICE_TEMPLATES
+        /* Arrange — these are the built-in templates defined in Mdl_Templates::ALLOWED_INVOICE_TEMPLATES */
         $built_in_templates = ['InvoicePlane', 'InvoicePlane - paid', 'InvoicePlane - overdue'];
 
         foreach ($built_in_templates as $template) {
-            // Act
+            /* Act */
             $result = validate_template_name($template, 'invoice', 'pdf');
 
-            // Assert
+            /* Assert */
             $this->assertSame($template, $result, "Built-in template '{$template}' must be accepted");
         }
     }
@@ -177,18 +177,18 @@ class SumexTemplateSecurityTest extends CiTestCase
     {
         $this->skipWithoutDatabase();
 
-        // Arrange — build a minimal invoice stub that select_pdf_invoice_template() needs.
+        /* Arrange — build a minimal invoice stub that select_pdf_invoice_template() needs. */
         // is_overdue=false and invoice_status_id != 4 routes to the plain 'pdf_invoice_template' setting.
         $invoice              = new \stdClass();
         $invoice->is_overdue  = false;
         $invoice->invoice_status_id = 1;
 
-        // Act — select_pdf_invoice_template() is called by Sumex::pdf() when $invoice_template is null.
+        /* Act — select_pdf_invoice_template() is called by Sumex::pdf() when $invoice_template is null. */
         // It internally calls validate_template_name() and falls back to 'InvoicePlane' on failure.
         $this->CI->load->helper('template');
         $resolved = select_pdf_invoice_template($invoice);
 
-        // Assert — the result must be a non-empty string that passes whitelist validation,
+        /* Assert — the result must be a non-empty string that passes whitelist validation, */
         // confirming the null-template path always yields a safe, validated default.
         $this->assertIsString($resolved, 'select_pdf_invoice_template() must return a string');
         $this->assertNotEmpty($resolved, 'select_pdf_invoice_template() must not return an empty string');
@@ -206,7 +206,7 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_detects_path_traversal_via_file_security_helper(): void
     {
-        // Arrange
+        /* Arrange */
         $traversal_inputs = [
             '../etc/passwd',
             '..\\Windows\\System32',
@@ -215,10 +215,10 @@ class SumexTemplateSecurityTest extends CiTestCase
         ];
 
         foreach ($traversal_inputs as $input) {
-            // Act
+            /* Act */
             $validation = validate_safe_filename($input);
 
-            // Assert — each unsafe input must be flagged
+            /* Assert — each unsafe input must be flagged */
             $this->assertFalse(
                 $validation['valid'],
                 "validate_safe_filename() must reject unsafe input: {$input}"
@@ -231,7 +231,7 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_detects_null_byte_via_file_security_helper(): void
     {
-        // Arrange
+        /* Arrange */
         $null_byte_inputs = [
             "InvoicePlane\0",
             "\0InvoicePlane",
@@ -239,10 +239,10 @@ class SumexTemplateSecurityTest extends CiTestCase
         ];
 
         foreach ($null_byte_inputs as $input) {
-            // Act
+            /* Act */
             $validation = validate_safe_filename($input);
 
-            // Assert
+            /* Assert */
             $this->assertFalse($validation['valid'], "validate_safe_filename() must reject null-byte input");
             $this->assertSame('null_byte', $validation['error']);
         }
@@ -252,7 +252,7 @@ class SumexTemplateSecurityTest extends CiTestCase
     #[Test]
     public function it_accepts_safe_template_name_via_file_security_helper(): void
     {
-        // Arrange — a safe name that would survive path/null-byte checks
+        /* Arrange — a safe name that would survive path/null-byte checks */
         $safe_inputs = [
             'InvoicePlane',
             'InvoicePlane - paid',
@@ -261,10 +261,10 @@ class SumexTemplateSecurityTest extends CiTestCase
         ];
 
         foreach ($safe_inputs as $input) {
-            // Act
+            /* Act */
             $validation = validate_safe_filename($input);
 
-            // Assert
+            /* Assert */
             $this->assertTrue($validation['valid'], "validate_safe_filename() must accept safe name: {$input}");
         }
     }
