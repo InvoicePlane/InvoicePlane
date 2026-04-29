@@ -760,85 +760,85 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
 
     // Migrated from BckpQuotesAjaxControllerTest.php
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_saves_quote_item(): void
     {
         $this->markTestIncomplete('Implement meaningful test for save');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_saves_quote_tax_rate(): void
     {
         $this->markTestIncomplete('Implement meaningful test for saveQuoteTaxRate');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_deletes_quote_item(): void
     {
         $this->markTestIncomplete('Implement meaningful test for deleteItem');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_gets_quote_item(): void
     {
         $this->markTestIncomplete('Implement meaningful test for getItem');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_copy_quote_modal(): void
     {
         $this->markTestIncomplete('Implement meaningful test for modalCopyQuote');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_copies_quote(): void
     {
         $this->markTestIncomplete('Implement meaningful test for copyQuote');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_change_user_modal(): void
     {
         $this->markTestIncomplete('Implement meaningful test for modalChangeUser');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_changes_quote_user(): void
     {
         $this->markTestIncomplete('Implement meaningful test for changeUser');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_change_client_modal(): void
     {
         $this->markTestIncomplete('Implement meaningful test for modalChangeClient');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_changes_quote_client(): void
     {
         $this->markTestIncomplete('Implement meaningful test for changeClient');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_create_quote_modal(): void
     {
         $this->markTestIncomplete('Implement meaningful test for modalCreateQuote');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_creates_quote(): void
     {
         $this->markTestIncomplete('Implement meaningful test for create');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_quote_to_invoice_modal(): void
     {
         $this->markTestIncomplete('Implement meaningful test for modalQuoteToInvoice');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_converts_quote_to_invoice(): void
     {
         $this->markTestIncomplete('Implement meaningful test for quoteToInvoice');

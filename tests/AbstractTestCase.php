@@ -30,7 +30,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         $this->sessionData = [];
     }
 
-    protected function actingAs(object|array $user): void
+    protected function actingAs(object|array $user): static
     {
         $data = is_array($user) ? $user : get_object_vars($user);
 
@@ -42,6 +42,8 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             'user_company'  => (string) ($data['user_company'] ?? 'Test Company'),
             'user_language' => (string) ($data['user_language'] ?? 'system'),
         ];
+
+        return $this;
     }
 
     protected function request(string $method, string $uri, array $query = [], array $post = []): HttpResponse

@@ -166,7 +166,7 @@ class TaxRatesControllerTest extends AbstractTestCase
 
 
     // Migrated from BckpTaxRatesControllerTest.php
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_paginated_list_of_tax_rates(): void
     {
         /* Arrange */
@@ -183,7 +183,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $response->assertViewHas('tax_rates');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_create_form(): void
     {
         /* Arrange */
@@ -203,7 +203,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $this->assertFalse($taxRate->exists);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_creates_new_tax_rate_with_valid_data(): void
     {
         /* Arrange */
@@ -234,7 +234,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_edit_form_with_existing_tax_rate(): void
     {
         /* Arrange */
@@ -254,7 +254,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $this->assertEquals($taxRate->tax_rate_id, $viewTaxRate->tax_rate_id);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_updates_existing_tax_rate_with_valid_data(): void
     {
         /* Arrange */
@@ -290,7 +290,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_orders_tax_rates_correctly(): void
     {
         /* Arrange */
@@ -312,7 +312,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $this->assertCount(3, $taxRates);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_creates_tax_rate_with_zero_percent(): void
     {
         /* Arrange */

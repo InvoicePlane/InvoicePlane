@@ -332,7 +332,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
 
 
     // Migrated from BckpPaymentMethodsControllerTest.php
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_payment_methods_index(): void
     {
         $response = $this->get('/payment_methods');
@@ -342,7 +342,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $response->assertSee('Payment Methods');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_creates_new_payment_method(): void
     {
         $methodData = [
@@ -357,7 +357,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_prevents_duplicate_payment_method_names(): void
     {
         $this->seedModel('PaymentMethod', ['payment_method_name' => 'Existing Method']);
@@ -373,7 +373,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $response->assertSessionHas('alert_error');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_cancels_payment_method_form_and_redirects(): void
     {
         $response = $this->post('/payment_methods/form', ['btn_cancel' => true]);

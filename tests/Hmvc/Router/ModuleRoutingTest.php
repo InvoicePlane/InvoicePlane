@@ -63,7 +63,7 @@ class ModuleRoutingTest extends AbstractTestCase
     /**
      * @dataProvider moduleIndexRouteProvider
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_resolves_the_module_index_route_and_returns_200_or_redirect(string $uri): void
     {
         $response = $this->get($uri);
@@ -87,7 +87,7 @@ class ModuleRoutingTest extends AbstractTestCase
     /**
      * @dataProvider moduleIndexRouteProvider
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_does_not_expose_php_errors_on_authenticated_module_index(string $uri): void
     {
         $response = $this->get($uri);
@@ -98,7 +98,7 @@ class ModuleRoutingTest extends AbstractTestCase
     /**
      * @dataProvider moduleIndexRouteProvider
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_a_non_trivial_body_for_every_authenticated_module_index(string $uri): void
     {
         $response = $this->get($uri);

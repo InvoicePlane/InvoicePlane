@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Router;
 
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 
 /**
@@ -28,7 +29,7 @@ class MY_RouterTest extends AbstractTestCase
         $this->router = new TestableRouter();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_expands_a_registered_module_alias_to_its_internal_path(): void
     {
         $this->router->setModuleAliases(['integrations' => 'core/integrations']);
@@ -42,7 +43,7 @@ class MY_RouterTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_preserves_trailing_segments_after_alias_expansion(): void
     {
         $this->router->setModuleAliases(['integrations' => 'core/integrations']);
@@ -56,7 +57,7 @@ class MY_RouterTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_does_not_alter_segments_when_first_segment_is_not_in_alias_map(): void
     {
         $this->router->setModuleAliases(['integrations' => 'core/integrations']);
@@ -71,7 +72,7 @@ class MY_RouterTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_expands_a_multi_part_alias_target_correctly(): void
     {
         $this->router->setModuleAliases(['storecove' => 'core/storecove']);
@@ -85,7 +86,7 @@ class MY_RouterTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_handles_an_empty_segment_array_without_throwing(): void
     {
         $this->router->setModuleAliases(['integrations' => 'core/integrations']);
@@ -99,7 +100,7 @@ class MY_RouterTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_registers_a_class_alias_when_only_the_psr4_controller_file_exists(): void
     {
         $tmpDir = sys_get_temp_dir() . '/mx_router_test_' . bin2hex(random_bytes(4));
@@ -145,7 +146,7 @@ class MY_RouterTest extends AbstractTestCase
         rmdir($tmpDir);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_does_not_overwrite_an_existing_class_alias_on_repeated_resolution(): void
     {
         $existingClass = 'ExistingLegacyAlias' . bin2hex(random_bytes(3));
@@ -176,7 +177,7 @@ class MY_RouterTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_returns_an_empty_array_when_alias_map_is_empty(): void
     {
         $this->router->setModuleAliases([]);

@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Products;
+use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
 /**
@@ -14,8 +15,6 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests products management including list, create, update, and delete.
  */
 #[CoversClass(Products::class)]
-#[CoversClass(Tests\Feature\Products\ProductsController::class)]
-
 class ProductsControllerTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
@@ -59,7 +58,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Assert */
         $response->assertOk();
         /* Would verify eager loading of relationships */
-        $this->assertTrue(true, 'Should eager load family, unit, and tax rate');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -78,7 +77,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Assert */
         $response->assertOk();
         /* Would verify products are ordered alphabetically */
-        $this->assertTrue(true, 'Products should be ordered by name');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -118,7 +117,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Assert */
         $response->assertOk();
         /* Would verify pagination shows max 15 items */
-        $this->assertTrue(true, 'Should paginate at 15 items per page');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -157,7 +156,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would verify form loads with existing data */
-        $this->assertTrue(true, 'Should load existing product for editing');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -173,7 +172,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would expect 404 abort */
-        $this->assertTrue(true, 'Should return 404 for non-existent product');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -193,7 +192,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Assert */
         $response->assertOk();
         /* Would verify families are ordered alphabetically */
-        $this->assertTrue(true, 'Families should be ordered by name');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -213,7 +212,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Assert */
         $response->assertOk();
         /* Would verify units are ordered alphabetically */
-        $this->assertTrue(true, 'Units should be ordered by name');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -233,7 +232,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Assert */
         $viewData = $response->getData();
         /* Would verify tax rates are ordered alphabetically */
-        $this->assertTrue(true, 'Tax rates should be ordered by name');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -249,7 +248,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would verify redirect to products.index */
-        $this->assertTrue(true, 'Should redirect to index when cancel clicked');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -275,7 +274,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Act & Assert */
         /* Would verify new product is created */
         /* Would verify redirect to index with success message */
-        $this->assertTrue(true, 'Should create new product with valid data');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -297,7 +296,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Act & Assert */
         /* Would verify product is updated */
         /* Would verify redirect to index with success message */
-        $this->assertTrue(true, 'Should update existing product');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -314,7 +313,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* - product_sku (required, unique) */
         /* - product_price (required, numeric, min:0) */
 
-        $this->assertTrue(true, 'Should validate all required fields');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -331,7 +330,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* - Non-numeric price should fail */
         /* - Zero or positive should pass */
 
-        $this->assertTrue(true, 'Product price should be numeric and >= 0');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -347,7 +346,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Act & Assert */
         /* Would attempt to create another product with same SKU */
         /* Would expect validation error */
-        $this->assertTrue(true, 'Product SKU should be unique');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -380,7 +379,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Assert */
         /* Would verify product is deleted */
         /* Would verify redirect to index with success message */
-        $this->assertTrue(true, 'Should delete product and redirect');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -396,7 +395,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would expect 404 abort */
-        $this->assertTrue(true, 'Should return 404 for non-existent product');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -415,7 +414,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would verify appropriate handling (either prevent deletion or cascade) */
-        $this->assertTrue(true, 'Should handle products used in invoices');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -430,7 +429,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Assert */
         /* Would verify flash message: 'record_successfully_saved' */
-        $this->assertTrue(true, 'Should display success message after create');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -445,7 +444,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Assert */
         /* Would verify flash message: 'record_successfully_saved' */
-        $this->assertTrue(true, 'Should display success message after update');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -460,7 +459,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Assert */
         /* Would verify flash message: 'record_successfully_deleted' */
-        $this->assertTrue(true, 'Should display success message after delete');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -474,7 +473,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would verify price is stored with 2 decimal places */
-        $this->assertTrue(true, 'Should support decimal prices');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -494,6 +493,6 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would verify product can be created with only required fields */
-        $this->assertTrue(true, 'Should create product with only required fields');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 }

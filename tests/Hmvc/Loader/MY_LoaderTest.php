@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Loader;
 
+use PHPUnit\Framework\Attributes\Test;
 use stdClass;
 
 /**
@@ -25,7 +26,7 @@ class MY_LoaderTest extends AbstractTestCase
         $this->loader = new TestableLoader();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_detects_a_fully_qualified_class_name_as_namespaced(): void
     {
         self::assertTrue(
@@ -34,7 +35,7 @@ class MY_LoaderTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_detects_a_plain_ci_class_name_as_not_namespaced(): void
     {
         self::assertFalse(
@@ -43,7 +44,7 @@ class MY_LoaderTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_detects_a_root_namespace_class_as_namespaced(): void
     {
         self::assertTrue(
@@ -52,7 +53,7 @@ class MY_LoaderTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_returns_false_for_an_empty_string_class_name(): void
     {
         self::assertFalse(
@@ -61,7 +62,7 @@ class MY_LoaderTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_derives_the_short_class_name_from_a_fqcn_as_the_default_alias(): void
     {
         $alias = $this->loader->deriveAlias('App\\Services\\Clients\\ClientsService');
@@ -73,7 +74,7 @@ class MY_LoaderTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_derives_the_short_class_name_for_a_single_segment_namespace(): void
     {
         $alias = $this->loader->deriveAlias('App\\MyLibrary');
@@ -85,7 +86,7 @@ class MY_LoaderTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_uses_the_explicit_object_name_over_the_derived_alias_when_provided(): void
     {
         $alias = $this->loader->deriveAlias('App\\Services\\Clients\\ClientsService', 'clients');
@@ -97,7 +98,7 @@ class MY_LoaderTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_binds_a_namespaced_class_instance_to_the_ci_superobject_under_the_derived_alias(): void
     {
         $stub   = new stdClass();
@@ -117,7 +118,7 @@ class MY_LoaderTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_does_not_rebind_a_class_that_is_already_present_on_the_superobject(): void
     {
         $target              = new FakeCiSuperObject();
@@ -133,7 +134,7 @@ class MY_LoaderTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_uses_a_custom_object_name_when_binding_to_the_superobject(): void
     {
         $target = new FakeCiSuperObject();

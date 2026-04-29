@@ -3,51 +3,39 @@
 namespace Tests\Feature\Invoices;
 
 use Invoice_Groups;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 
 /**
  * Invoice_Groups Controller Feature Tests.
  *
  * Tests invoice group management (index, form, delete).
  */
-#[CoversClass(Tests\Feature\Invoices\InvoiceGroupsController::class)]
+#[CoversClass(Invoice_Groups::class)]
 class InvoiceGroupsControllerTest extends AbstractTestCase
 {
     /**
      * Test index displays paginated list of invoice groups.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_paginated_list_of_invoice_groups(): void
     {
-        /**
-         * --------------------------------------------------------------
-         * Arrange
-         * --------------------------------------------------------------.
-         */
-        require_once __DIR__ . '/../../../application/modules/invoice_groups/controllers/Invoice_groups.php';
-        $controller = new Invoice_Groups();
-        // ...simulate CI environment as needed...
+        /* Arrange */
+        $this->actingAsAdmin();
 
-        /*
-         * --------------------------------------------------------------
-         * Act
-         * --------------------------------------------------------------
-         */
-        ob_start();
-        $controller->index(0);
-        $output = ob_get_clean();
+        /* Act */
+        $response = $this->get('/invoice_groups/index');
 
-        /*
-         * --------------------------------------------------------------
-         * Assert
-         * --------------------------------------------------------------
-         */
-        $this->assertStringContainsString('invoice_groups', $output);
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     /**
      * Test index orders invoice groups by name.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_orders_invoice_groups_by_name(): void
     {
         /**
@@ -72,13 +60,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          */
         $response->assertOk();
         /* Would verify groups are ordered alphabetically */
-        $this->assertTrue(true, 'Invoice groups should be ordered by name');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test index paginates results correctly.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_paginates_invoice_groups_at_15_per_page(): void
     {
         /**
@@ -103,13 +91,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          */
         $response->assertOk();
         /* Would verify pagination shows max 15 items */
-        $this->assertTrue(true, 'Should paginate at 15 items per page');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test form displays create form with default values when no ID provided.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_create_form_with_default_values(): void
     {
         /**
@@ -144,7 +132,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form displays edit form with existing record when ID provided.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_edit_form_with_existing_record(): void
     {
         /* Arrange */
@@ -154,13 +142,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would verify form loads with existing data */
-        $this->assertTrue(true, 'Should load existing invoice group for editing');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test form returns 404 when trying to edit non-existent record.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_returns_404_when_editing_non_existent_invoice_group(): void
     {
         /* Arrange */
@@ -169,13 +157,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would expect 404 abort */
-        $this->assertTrue(true, 'Should return 404 for non-existent invoice group');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test form redirects to index when cancel button is clicked.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_redirects_to_index_when_cancel_button_clicked(): void
     {
         /* Arrange */
@@ -184,13 +172,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would verify redirect to invoice_groups.index */
-        $this->assertTrue(true, 'Should redirect to index when cancel clicked');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test form creates new invoice group with valid data.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_creates_new_invoice_group_with_valid_data(): void
     {
         /**
@@ -210,13 +198,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         /* Act & Assert */
         /* Would verify new record is created */
         /* Would verify redirect to index with success message */
-        $this->assertTrue(true, 'Should create new invoice group with valid data');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test form updates existing invoice group with valid data.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_updates_existing_invoice_group_with_valid_data(): void
     {
         /**
@@ -237,13 +225,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         /* Act & Assert */
         /* Would verify record is updated */
         /* Would verify redirect to index with success message */
-        $this->assertTrue(true, 'Should update existing invoice group');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test form validates required fields.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_validates_required_fields_on_submit(): void
     {
         /* Arrange */
@@ -256,13 +244,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         /* - invoice_group_identifier_format (required) */
         /* - invoice_group_next_id (required, integer, min:1) */
         /* - invoice_group_left_pad (required, integer, min:0) */
-        $this->assertTrue(true, 'Should validate all required fields');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test form validates field types and constraints.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_validates_field_types_and_constraints(): void
     {
         /* Arrange */
@@ -273,13 +261,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         /* - invoice_group_next_id: must be integer, min 1 */
         /* - invoice_group_left_pad: must be integer, min 0 */
 
-        $this->assertTrue(true, 'Should validate field types and constraints');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test delete removes invoice group successfully.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_deletes_invoice_group_successfully(): void
     {
         /* Arrange */
@@ -305,13 +293,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         /* Assert */
         /* Would verify invoice group is deleted */
         /* Would verify redirect to index with success message */
-        $this->assertTrue(true, 'Should delete invoice group and redirect');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test delete returns 404 for non-existent invoice group.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_returns_404_when_deleting_non_existent_invoice_group(): void
     {
         /* Arrange */
@@ -320,7 +308,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would expect 404 abort */
-        $this->assertTrue(true, 'Should return 404 for non-existent invoice group');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
@@ -329,7 +317,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
      * Note: In production, you might want to prevent deletion of groups
      * that have associated invoices, or cascade the deletion
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_handles_deletion_of_invoice_group_with_associated_invoices(): void
     {
         /* Arrange */
@@ -338,13 +326,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Act & Assert */
         /* Would verify appropriate handling (either prevent deletion or cascade) */
-        $this->assertTrue(true, 'Should handle invoice groups with associated invoices');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test form displays success message after creating invoice group.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_success_message_after_creating_invoice_group(): void
     {
         /* Arrange & Act */
@@ -352,13 +340,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Assert */
         /* Would verify flash message: 'record_successfully_saved' */
-        $this->assertTrue(true, 'Should display success message after create');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test form displays success message after updating invoice group.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_success_message_after_updating_invoice_group(): void
     {
         /* Arrange & Act */
@@ -366,13 +354,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Assert */
         /* Would verify flash message: 'record_successfully_saved' */
-        $this->assertTrue(true, 'Should display success message after update');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test delete displays success message after deleting invoice group.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_success_message_after_deleting_invoice_group(): void
     {
         /* Arrange & Act */
@@ -380,13 +368,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Assert */
         /* Would verify flash message: 'record_successfully_deleted' */
-        $this->assertTrue(true, 'Should display success message after delete');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test invoice numbering format supports year variable.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_supports_year_variable_in_identifier_format(): void
     {
         /* Arrange */
@@ -397,13 +385,13 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Assert */
         /* Would verify current year is in invoice number */
-        $this->assertTrue(true, 'Should support {{{year}}} in format');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 
     /**
      * Test invoice numbering format supports ID with left padding.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_supports_id_with_left_padding_in_identifier_format(): void
     {
         /* Arrange */
@@ -414,6 +402,6 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Assert */
         /* Would verify invoice number is '0001' */
-        $this->assertTrue(true, 'Should support {{{id}}} with left padding');
+        $this->markTestIncomplete('Not yet implemented for CI3');
     }
 }

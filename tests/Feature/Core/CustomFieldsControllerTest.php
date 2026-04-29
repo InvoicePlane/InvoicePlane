@@ -5,30 +5,53 @@ namespace Tests\Feature\Core;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Tests\Feature\Core\CustomFieldsController::class)]
 class CustomFieldsControllerTest extends AbstractTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->actingAsAdmin();
+    }
+
     #[Test]
     public function it_displays_custom_fields_list(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for index');
+        $response = $this->get('/custom_fields');
+
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
     public function it_displays_custom_fields_table(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for table');
+        $response = $this->get('/custom_fields/table');
+
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
     public function it_displays_custom_field_form(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for form');
+        $response = $this->get('/custom_fields/form');
+
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
     public function it_deletes_custom_field(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for delete');
+        $response = $this->post('/custom_fields/delete/999999');
+
+        self::assertTrue(
+            $response->isRedirect() || $response->statusCode() === 200,
+            sprintf(
+                'DELETE /custom_fields/delete/999999 must redirect or return 200. Got [%d].',
+                $response->statusCode()
+            )
+        );
+        $this->assertResponseHasNoPhpErrors($response);
     }
 }

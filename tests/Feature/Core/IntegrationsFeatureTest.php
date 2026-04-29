@@ -3,6 +3,7 @@
 namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
@@ -24,7 +25,7 @@ class IntegrationsFeatureTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_resolves_the_integrations_index_through_mx_routing_and_returns_200(): void
     {
         $response = $this->get('/integrations');
@@ -33,7 +34,7 @@ class IntegrationsFeatureTest extends AbstractTestCase
         $this->assertResponseHasNoPhpErrors($response);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_html_on_the_integrations_index_page(): void
     {
         $response = $this->get('/integrations');
@@ -47,7 +48,7 @@ class IntegrationsFeatureTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_redirects_an_unauthenticated_visitor_away_from_integrations(): void
     {
         $this->actingAsGuest();
@@ -64,7 +65,7 @@ class IntegrationsFeatureTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_does_not_expose_a_provider_api_key_in_the_integrations_page_body(): void
     {
         $response = $this->get('/integrations');
@@ -74,7 +75,7 @@ class IntegrationsFeatureTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'client_secret');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_the_peppol_settings_form_when_the_provider_is_enabled(): void
     {
         $response = $this->get('/integrations/peppol');
@@ -98,7 +99,7 @@ class IntegrationsFeatureTest extends AbstractTestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_returns_json_with_a_success_flag_when_saving_valid_integration_settings(): void
     {
         $response = $this->post('/integrations/save', [
@@ -127,7 +128,7 @@ class IntegrationsFeatureTest extends AbstractTestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_does_not_expose_raw_php_errors_on_integration_settings_save_with_empty_payload(): void
     {
         $response = $this->post('/integrations/save', []);
@@ -135,7 +136,7 @@ class IntegrationsFeatureTest extends AbstractTestCase
         $this->assertResponseHasNoPhpErrors($response);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_resolves_integrations_via_the_psr4_controller_alias_not_a_legacy_file(): void
     {
         $psr4ControllerFile   = APPPATH . 'modules/integrations/controllers/IntegrationsController.php';

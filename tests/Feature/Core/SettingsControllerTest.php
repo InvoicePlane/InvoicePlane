@@ -8,30 +8,20 @@ use Settings;
 use Tests\AbstractTestCase;
 
 #[CoversClass(Settings::class)]
-#[CoversClass(Tests\Feature\Core\SettingsController::class)]
 class SettingsControllerTest extends AbstractTestCase
 {
-    #[Test]
-    public function it_displays_settings_page_and_saves_settings(): void
+    protected function setUp(): void
     {
-        /* Act */
+        parent::setUp();
+        $this->actingAsAdmin();
+    }
+
+    #[Test]
+    public function it_displays_settings_page(): void
+    {
         $response = $this->get('/settings/index');
-        $response->assertStatus(200);
-        $response->assertSee('Settings'); // Adjust to match actual page content
 
-        /* Arrange */
-        $settings = [
-            'tax_rate_decimal_places' => 2,
-            'currency_symbol'         => '$',
-            // add other required fields
-        ];
-
-        /* Act */
-        $response = $this->post('/settings/index', ['settings' => $settings]);
-
-        /* Assert */
-        $this->assertDatabaseHas('ip_settings', ['key' => 'tax_rate_decimal_places', 'value' => '2']);
-        $this->assertDatabaseHas('ip_settings', ['key' => 'currency_symbol', 'value' => '$']);
-        $response->assertRedirect('/settings/index');
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 }

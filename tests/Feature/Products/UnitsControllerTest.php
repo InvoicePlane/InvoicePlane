@@ -96,7 +96,7 @@ class UnitsControllerTest extends AbstractTestCase
 
 
     // Migrated from BckpUnitsControllerTest.php
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_paginated_list_of_units(): void
     {
         /* Arrange */
@@ -113,7 +113,7 @@ class UnitsControllerTest extends AbstractTestCase
         $response->assertViewHas('units');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_create_form(): void
     {
         /* Arrange */
@@ -132,7 +132,7 @@ class UnitsControllerTest extends AbstractTestCase
         $this->assertNotNull($unit);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_creates_new_unit_with_valid_data(): void
     {
         /* Arrange */
@@ -163,7 +163,7 @@ class UnitsControllerTest extends AbstractTestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_displays_edit_form_with_existing_unit(): void
     {
         /* Arrange */
@@ -183,7 +183,7 @@ class UnitsControllerTest extends AbstractTestCase
         $this->assertEquals($unit->unit_id, $viewUnit->unit_id);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_updates_existing_unit_with_valid_data(): void
     {
         /* Arrange */
@@ -215,7 +215,7 @@ class UnitsControllerTest extends AbstractTestCase
         ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_orders_units_correctly(): void
     {
         /* Arrange */

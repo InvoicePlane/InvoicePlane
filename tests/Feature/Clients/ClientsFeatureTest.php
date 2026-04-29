@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Clients;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 #[CoversClass(Tests\Feature\Clients\ClientsFeature::class)]
@@ -13,7 +14,7 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_the_clients_index_page_with_a_200_status(): void
     {
         $response = $this->get('/clients/status/active');
@@ -22,7 +23,7 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->assertResponseHasNoPhpErrors($response);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_includes_a_html_document_structure_on_the_clients_index(): void
     {
         $response = $this->get('/clients/status/active');
@@ -37,7 +38,7 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_redirects_an_unauthenticated_visitor_away_from_the_client_list(): void
     {
         $this->actingAsGuest();
@@ -53,7 +54,7 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_the_create_client_form(): void
     {
         $response = $this->get('/clients/form');
@@ -63,7 +64,7 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->assertResponseHasNoPhpErrors($response);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_rejects_a_post_to_create_client_with_missing_required_fields(): void
     {
         $response = $this->post('/clients/form', [
@@ -94,7 +95,7 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_the_view_page_for_a_seeded_client(): void
     {
         $clientId = $this->seedModel('Client', ['client_name' => 'Regression Client'])->client_id;
@@ -113,7 +114,7 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_returns_a_non_200_or_redirect_for_a_nonexistent_client_id(): void
     {
         $response = $this->get('/clients/view/999999999');
@@ -132,7 +133,7 @@ class ClientsFeatureTest extends AbstractTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_shows_client_name_in_the_edit_form_for_an_existing_client(): void
     {
         $clientId = $this->seedModel('Client', ['client_name' => 'Editable Corp'])->client_id;
@@ -144,7 +145,7 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->assertResponseBodyContains($response, '<form');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_does_not_render_php_errors_when_listing_multiple_clients(): void
     {
         $this->seedModel('Client', ['client_name' => 'Alpha Ltd']);
@@ -157,7 +158,7 @@ class ClientsFeatureTest extends AbstractTestCase
         $this->assertResponseStatusCode($response, 200);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_produces_identical_bodies_for_two_consecutive_client_list_requests(): void
     {
         $first  = $this->get('/clients/status/active');

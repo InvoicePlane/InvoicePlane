@@ -101,7 +101,7 @@ class QuotesFeatureTest extends AbstractTestCase
     public function it_renders_the_view_page_for_a_seeded_quote(): void
     {
         $clientId = $this->seedModel('Client', ['client_name' => 'Quote Client'])->client_id;
-        $quoteId  = $this->seedQuote($clientId, ['quote_number' => 'QUO-TEST-' . time()]);
+        $quoteId  = $this->seedModel('Quote', ['client_id' => $clientId, 'quote_number' => 'QUO-TEST-' . time()])->quote_id;
 
         $response = $this->get('/quotes/view/' . $quoteId);
 
@@ -144,19 +144,4 @@ class QuotesFeatureTest extends AbstractTestCase
         );
     }
 
-    private function seedQuote(int $clientId, array $overrides = []): int
-    {
-        return $this->databaseInsert('ip_quotes', array_merge([
-            'user_id'                => 1,
-            'client_id'              => $clientId,
-            'quote_status_id'        => 1,
-            'quote_date_created'     => date('Y-m-d'),
-            'quote_date_expires'     => date('Y-m-d', strtotime('+30 days')),
-            'quote_number'           => 'QUO-' . time(),
-            'quote_url_key'          => bin2hex(random_bytes(16)),
-            'invoice_group_id'       => 1,
-            'quote_discount_amount'  => '0.00',
-            'quote_discount_percent' => '0.00',
-        ], $overrides));
-    }
 }

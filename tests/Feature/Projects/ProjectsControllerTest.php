@@ -313,7 +313,7 @@ class ProjectsControllerTest extends AbstractTestCase
             );
         } else {
             // Not stored — validation correctly rejected the input
-            $this->assertTrue(true, 'Project with overlong name was correctly rejected.');
+        $this->markTestIncomplete('Not yet implemented for CI3');
         }
     }
 
