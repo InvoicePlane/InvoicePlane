@@ -62,7 +62,7 @@ class QuoteModelTest extends CiTestCase
 
     #[Group('smoke')]
     #[Test]
-    public function it_returns_save_validation_rules(): void
+    public function it_returns_save_validation_rules_for_new_quote(): void
     {
         $rules = $this->model->validation_rules_save_quote();
 
