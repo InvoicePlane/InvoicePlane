@@ -847,7 +847,7 @@ class QuotesControllerTest extends AbstractTestCase
          * Payload:
          * {
          *     "items": {
-         *         "$item->item_id": {
+         *         "1": {
          *             "item_name": "Updated Service Name",
          *             "item_description": "Updated service description",
          *             "item_quantity": 2,

@@ -371,7 +371,7 @@ class PaymentsFeatureTest extends AbstractTestCase
          *     "payment_amount": 100.00,
          *     "payment_method_id": 1,
          *     "custom": {
-         *         "$customField->custom_field_id": "Custom value"
+         *         "1": "Custom value"
          *     }
          * }
          */

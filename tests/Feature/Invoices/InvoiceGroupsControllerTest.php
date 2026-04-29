@@ -264,7 +264,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         /**
          * Payload:
          * {
-         *     "invoice_group_name": "Updated ",
+         *     "invoice_group_name": "Updated Group",
          *     "invoice_group_identifier_format": "INV-{{{id}}}",
          *     "invoice_group_next_id": 1,
          *     "invoice_group_left_pad": 4
