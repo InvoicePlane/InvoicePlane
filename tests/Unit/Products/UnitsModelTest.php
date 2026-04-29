@@ -67,7 +67,6 @@ class UnitsModelTest extends CiTestCase
     #[Test]
     public function it_returns_null_when_unit_id_is_falsy(): void
     {
-        // get_name() returns null when unit_id is falsy (0, null, false)
         $this->assertNull($this->model->get_name(0, 1));
         $this->assertNull($this->model->get_name(null, 5));
     }
@@ -79,22 +78,18 @@ class UnitsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $data = [
-            'unit_name'      => 'TestUnit_' . uniqid(),
-            'unit_name_plrl' => 'TestUnits_' . uniqid(),
-        ];
+        $name    = 'TestUnit_' . uniqid();
+        $unit_id = $this->seedUnit(['unit_name' => $name, 'unit_name_plrl' => $name . 's']);
 
         /* Act */
-        $this->CI->db->insert('ip_units', $data);
-        $unit_id = $this->CI->db->insert_id();
+        $row = $this->databaseFetchOne('ip_units', ['unit_id' => $unit_id]);
 
         /* Assert */
-        $unit = $this->CI->db->get_where('ip_units', ['unit_id' => $unit_id])->row();
-        $this->assertNotNull($unit);
-        $this->assertStringStartsWith('TestUnit_', $unit->unit_name);
+        $this->assertNotNull($row);
+        $this->assertEquals($name, $row['unit_name']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_units', ['unit_id' => $unit_id]);
+        $this->databaseDelete('ip_units', ['unit_id' => $unit_id]);
     }
 
     #[Group('crud')]
@@ -104,11 +99,7 @@ class UnitsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_units', [
-            'unit_name'      => 'Kilogram',
-            'unit_name_plrl' => 'Kilograms',
-        ]);
-        $unit_id = $this->CI->db->insert_id();
+        $unit_id = $this->seedUnit(['unit_name' => 'Kilogram', 'unit_name_plrl' => 'Kilograms']);
 
         /* Act */
         $name = $this->model->get_name($unit_id, 1);
@@ -117,7 +108,7 @@ class UnitsModelTest extends CiTestCase
         $this->assertEquals('Kilogram', $name);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_units', ['unit_id' => $unit_id]);
+        $this->databaseDelete('ip_units', ['unit_id' => $unit_id]);
     }
 
     #[Group('crud')]
@@ -127,11 +118,7 @@ class UnitsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_units', [
-            'unit_name'      => 'Liter',
-            'unit_name_plrl' => 'Liters',
-        ]);
-        $unit_id = $this->CI->db->insert_id();
+        $unit_id = $this->seedUnit(['unit_name' => 'Liter', 'unit_name_plrl' => 'Liters']);
 
         /* Act */
         $name = $this->model->get_name($unit_id, 5);
@@ -140,6 +127,6 @@ class UnitsModelTest extends CiTestCase
         $this->assertEquals('Liters', $name);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_units', ['unit_id' => $unit_id]);
+        $this->databaseDelete('ip_units', ['unit_id' => $unit_id]);
     }
 }

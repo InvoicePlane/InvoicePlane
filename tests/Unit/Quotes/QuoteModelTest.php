@@ -85,24 +85,21 @@ class QuoteModelTest extends CiTestCase
     #[Test]
     public function it_is_draft_returns_self(): void
     {
-        $result = $this->model->is_draft();
-        $this->assertInstanceOf(\Mdl_Quotes::class, $result);
+        $this->assertInstanceOf(\Mdl_Quotes::class, $this->model->is_draft());
     }
 
     #[Group('smoke')]
     #[Test]
     public function it_is_sent_returns_self(): void
     {
-        $result = $this->model->is_sent();
-        $this->assertInstanceOf(\Mdl_Quotes::class, $result);
+        $this->assertInstanceOf(\Mdl_Quotes::class, $this->model->is_sent());
     }
 
     #[Group('smoke')]
     #[Test]
     public function it_is_approved_returns_self(): void
     {
-        $result = $this->model->is_approved();
-        $this->assertInstanceOf(\Mdl_Quotes::class, $result);
+        $this->assertInstanceOf(\Mdl_Quotes::class, $this->model->is_approved());
     }
 
     #[Test]
@@ -122,38 +119,20 @@ class QuoteModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'QuoteClient_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
+        $client_id    = $this->seedClient();
         $quote_number = 'QUO-' . uniqid();
-        $this->CI->db->insert('ip_quotes', [
-            'client_id'          => $client_id,
-            'user_id'            => 1,
-            'invoice_group_id'   => 1,
-            'quote_status_id'    => 1,
-            'quote_number'       => $quote_number,
-            'quote_date_created' => date('Y-m-d'),
-            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-            'quote_password'     => '',
-            'quote_url_key'      => bin2hex(random_bytes(16)),
-        ]);
-        $quote_id = $this->CI->db->insert_id();
+        $quote_id     = $this->seedQuote($client_id, ['quote_number' => $quote_number]);
 
         /* Act */
-        $quote = $this->CI->db->get_where('ip_quotes', ['quote_id' => $quote_id])->row();
+        $row = $this->databaseFetchOne('ip_quotes', ['quote_id' => $quote_id]);
 
         /* Assert */
-        $this->assertNotNull($quote);
-        $this->assertEquals($quote_number, $quote->quote_number);
-        $this->assertEquals(1, (int) $quote->quote_status_id);
+        $this->assertNotNull($row);
+        $this->assertEquals($quote_number, $row['quote_number']);
+        $this->assertEquals(1, (int) $row['quote_status_id']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_quotes', ['quote_id' => $quote_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_quotes', ['quote_id' => $quote_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 }

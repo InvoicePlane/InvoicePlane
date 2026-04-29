@@ -73,8 +73,8 @@ class ClientsModelTest extends CiTestCase
     #[Test]
     public function it_fix_avs_strips_dots_from_valid_avs_number(): void
     {
-        // 123.4567.8901.23 -> 1234567890123
         $result = $this->model->fix_avs('123.4567.8901.23');
+
         $this->assertEquals('1234567890123', $result);
     }
 
@@ -82,24 +82,21 @@ class ClientsModelTest extends CiTestCase
     #[Test]
     public function it_fix_avs_returns_empty_string_for_empty_input(): void
     {
-        $result = $this->model->fix_avs('');
-        $this->assertEquals('', $result);
+        $this->assertEquals('', $this->model->fix_avs(''));
     }
 
     #[Group('smoke')]
     #[Test]
     public function it_fix_avs_returns_13_digit_number_unchanged(): void
     {
-        $result = $this->model->fix_avs('1234567890123');
-        $this->assertEquals('1234567890123', $result);
+        $this->assertEquals('1234567890123', $this->model->fix_avs('1234567890123'));
     }
 
     #[Group('smoke')]
     #[Test]
     public function it_fix_avs_returns_empty_string_for_invalid_format(): void
     {
-        $result = $this->model->fix_avs('invalid');
-        $this->assertEquals('', $result);
+        $this->assertEquals('', $this->model->fix_avs('invalid'));
     }
 
     #[Group('crud')]
@@ -109,25 +106,19 @@ class ClientsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $name = 'ClientCreate_' . uniqid();
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => $name,
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
+        $name      = 'ClientCreate_' . uniqid();
+        $client_id = $this->seedClient(['client_name' => $name]);
 
         /* Act */
-        $client = $this->CI->db->get_where('ip_clients', ['client_id' => $client_id])->row();
+        $row = $this->databaseFetchOne('ip_clients', ['client_id' => $client_id]);
 
         /* Assert */
-        $this->assertNotNull($client);
-        $this->assertEquals($name, $client->client_name);
-        $this->assertEquals(1, (int) $client->client_active);
+        $this->assertNotNull($row);
+        $this->assertEquals($name, $row['client_name']);
+        $this->assertEquals(1, (int) $row['client_active']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 
     #[Group('crud')]
@@ -137,21 +128,8 @@ class ClientsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'Active_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $active_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'Inactive_' . uniqid(),
-            'client_active'        => 0,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $inactive_id = $this->CI->db->insert_id();
+        $active_id   = $this->seedClient(['client_active' => 1]);
+        $inactive_id = $this->seedClient(['client_active' => 0]);
 
         /* Act */
         $this->model->is_active();
@@ -163,7 +141,7 @@ class ClientsModelTest extends CiTestCase
         $this->assertNotContains((string) $inactive_id, $ids);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_clients', ['client_id' => $active_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $inactive_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $active_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $inactive_id]);
     }
 }

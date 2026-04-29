@@ -62,19 +62,16 @@ class PaymentMethodsModelTest extends CiTestCase
 
         /* Arrange */
         $name = 'TestMethod_' . uniqid();
-        $this->CI->db->insert('ip_payment_methods', [
-            'payment_method_name' => $name,
-        ]);
-        $pm_id = $this->CI->db->insert_id();
+        $pm_id = $this->seedPaymentMethod(['payment_method_name' => $name]);
 
         /* Act */
-        $pm = $this->CI->db->get_where('ip_payment_methods', ['payment_method_id' => $pm_id])->row();
+        $row = $this->databaseFetchOne('ip_payment_methods', ['payment_method_id' => $pm_id]);
 
         /* Assert */
-        $this->assertNotNull($pm);
-        $this->assertEquals($name, $pm->payment_method_name);
+        $this->assertNotNull($row);
+        $this->assertEquals($name, $row['payment_method_name']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_payment_methods', ['payment_method_id' => $pm_id]);
+        $this->databaseDelete('ip_payment_methods', ['payment_method_id' => $pm_id]);
     }
 }

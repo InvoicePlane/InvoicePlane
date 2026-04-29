@@ -45,26 +45,19 @@ class TaskModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $name = 'TaskCreate_' . uniqid();
-        $this->CI->db->insert('ip_tasks', [
-            'task_name'        => $name,
-            'task_date_added'  => date('Y-m-d H:i:s'),
-            'task_status'      => 1,
-            'task_price'       => 0,
-            'task_finish_date' => date('Y-m-d'),
-        ]);
-        $task_id = $this->CI->db->insert_id();
+        $name    = 'TaskCreate_' . uniqid();
+        $task_id = $this->seedTask(['task_name' => $name]);
 
         /* Act */
-        $task = $this->CI->db->get_where('ip_tasks', ['task_id' => $task_id])->row();
+        $row = $this->databaseFetchOne('ip_tasks', ['task_id' => $task_id]);
 
         /* Assert */
-        $this->assertNotNull($task);
-        $this->assertEquals($name, $task->task_name);
-        $this->assertEquals(1, (int) $task->task_status);
+        $this->assertNotNull($row);
+        $this->assertEquals($name, $row['task_name']);
+        $this->assertEquals(1, (int) $row['task_status']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_tasks', ['task_id' => $task_id]);
+        $this->databaseDelete('ip_tasks', ['task_id' => $task_id]);
     }
 
     #[Group('crud')]
@@ -74,24 +67,17 @@ class TaskModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_tasks', [
-            'task_name'        => 'Status Task ' . uniqid(),
-            'task_date_added'  => date('Y-m-d H:i:s'),
-            'task_status'      => 1,
-            'task_price'       => 0,
-            'task_finish_date' => date('Y-m-d'),
-        ]);
-        $task_id = $this->CI->db->insert_id();
+        $task_id = $this->seedTask(['task_status' => 1]);
 
         /* Act */
         $this->model->update_status(3, $task_id);
 
         /* Assert */
-        $task = $this->CI->db->get_where('ip_tasks', ['task_id' => $task_id])->row();
-        $this->assertEquals(3, (int) $task->task_status);
+        $row = $this->databaseFetchOne('ip_tasks', ['task_id' => $task_id]);
+        $this->assertEquals(3, (int) $row['task_status']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_tasks', ['task_id' => $task_id]);
+        $this->databaseDelete('ip_tasks', ['task_id' => $task_id]);
     }
 
     #[Group('crud')]
@@ -101,23 +87,16 @@ class TaskModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_tasks', [
-            'task_name'        => 'Invalid Status Task ' . uniqid(),
-            'task_date_added'  => date('Y-m-d H:i:s'),
-            'task_status'      => 1,
-            'task_price'       => 0,
-            'task_finish_date' => date('Y-m-d'),
-        ]);
-        $task_id = $this->CI->db->insert_id();
+        $task_id = $this->seedTask(['task_status' => 1]);
 
         /* Act: 99 is not a valid status */
         $this->model->update_status(99, $task_id);
 
         /* Assert: status remains unchanged */
-        $task = $this->CI->db->get_where('ip_tasks', ['task_id' => $task_id])->row();
-        $this->assertEquals(1, (int) $task->task_status);
+        $row = $this->databaseFetchOne('ip_tasks', ['task_id' => $task_id]);
+        $this->assertEquals(1, (int) $row['task_status']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_tasks', ['task_id' => $task_id]);
+        $this->databaseDelete('ip_tasks', ['task_id' => $task_id]);
     }
 }

@@ -64,52 +64,22 @@ class PaymentsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'PayClient_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_invoices', [
-            'client_id'                => $client_id,
-            'user_id'                  => 1,
-            'invoice_group_id'         => 1,
-            'invoice_status_id'        => 1,
-            'invoice_number'           => 'INV-PM-' . uniqid(),
-            'invoice_date_created'     => date('Y-m-d'),
-            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
-            'invoice_password'         => '',
-            'invoice_discount_amount'  => 0,
-            'invoice_discount_percent' => 0,
-            'invoice_terms'            => '',
-            'invoice_url_key'          => bin2hex(random_bytes(16)),
-        ]);
-        $invoice_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_payments', [
-            'invoice_id'           => $invoice_id,
-            'payment_method_id'    => 1,
-            'payment_amount'       => '150.00',
-            'payment_date'         => date('Y-m-d'),
-            'payment_note'         => '',
-            'payment_date_created' => date('Y-m-d H:i:s'),
-        ]);
-        $payment_id = $this->CI->db->insert_id();
+        $client_id  = $this->seedClient();
+        $invoice_id = $this->seedInvoice($client_id);
+        $payment_id = $this->seedPayment($invoice_id, ['payment_amount' => '150.00']);
 
         /* Act */
-        $payment = $this->CI->db->get_where('ip_payments', ['payment_id' => $payment_id])->row();
+        $row = $this->databaseFetchOne('ip_payments', ['payment_id' => $payment_id]);
 
         /* Assert */
-        $this->assertNotNull($payment);
-        $this->assertEquals(150.00, (float) $payment->payment_amount);
-        $this->assertEquals($invoice_id, (int) $payment->invoice_id);
+        $this->assertNotNull($row);
+        $this->assertEquals(150.00, (float) $row['payment_amount']);
+        $this->assertEquals($invoice_id, (int) $row['invoice_id']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_payments', ['payment_id' => $payment_id]);
-        $this->CI->db->delete('ip_invoices', ['invoice_id' => $invoice_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_payments', ['payment_id' => $payment_id]);
+        $this->databaseDelete('ip_invoices', ['invoice_id' => $invoice_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 
     #[Group('crud')]
@@ -119,51 +89,17 @@ class PaymentsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'PayFilter_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_invoices', [
-            'client_id'                => $client_id,
-            'user_id'                  => 1,
-            'invoice_group_id'         => 1,
-            'invoice_status_id'        => 1,
-            'invoice_number'           => 'INV-PMFILT-' . uniqid(),
-            'invoice_date_created'     => date('Y-m-d'),
-            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
-            'invoice_password'         => '',
-            'invoice_discount_amount'  => 0,
-            'invoice_discount_percent' => 0,
-            'invoice_terms'            => '',
-            'invoice_url_key'          => bin2hex(random_bytes(16)),
-        ]);
-        $invoice_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_payments', [
-            'invoice_id'           => $invoice_id,
-            'payment_method_id'    => 1,
-            'payment_amount'       => '100.00',
-            'payment_date'         => date('Y-m-d'),
-            'payment_note'         => '',
-            'payment_date_created' => date('Y-m-d H:i:s'),
-        ]);
-        $payment_id = $this->CI->db->insert_id();
-
-        /* Act */
-        $this->model->by_client(null); // reset
-        $payments = $this->CI->db->get_where('ip_payments', ['invoice_id' => $invoice_id])->result();
+        $client_id  = $this->seedClient();
+        $invoice_id = $this->seedInvoice($client_id);
+        $payment_id = $this->seedPayment($invoice_id, ['payment_amount' => '100.00']);
 
         /* Assert */
-        $this->assertNotEmpty($payments);
-        $this->assertEquals($payment_id, (int) $payments[0]->payment_id);
+        $this->assertDatabaseHas('ip_payments', ['payment_id' => $payment_id, 'invoice_id' => $invoice_id]);
+        $this->assertDatabaseCount('ip_payments', 1, ['invoice_id' => $invoice_id]);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_payments', ['payment_id' => $payment_id]);
-        $this->CI->db->delete('ip_invoices', ['invoice_id' => $invoice_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_payments', ['payment_id' => $payment_id]);
+        $this->databaseDelete('ip_invoices', ['invoice_id' => $invoice_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 }

@@ -70,50 +70,27 @@ class QuoteItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'QItemClient_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
+        $client_id = $this->seedClient();
+        $quote_id  = $this->seedQuote($client_id);
+        $item_id   = $this->seedQuoteItem($quote_id, [
+            'item_name'     => 'Test Quote Item',
+            'item_quantity' => 2,
+            'item_price'    => 75.00,
         ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_quotes', [
-            'client_id'          => $client_id,
-            'user_id'            => 1,
-            'invoice_group_id'   => 1,
-            'quote_status_id'    => 1,
-            'quote_number'       => 'QUO-ITEM-' . uniqid(),
-            'quote_date_created' => date('Y-m-d'),
-            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-            'quote_password'     => '',
-            'quote_url_key'      => bin2hex(random_bytes(16)),
-        ]);
-        $quote_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_quote_items', [
-            'quote_id'             => $quote_id,
-            'item_name'            => 'Test Quote Item',
-            'item_quantity'        => 2,
-            'item_price'           => 75.00,
-            'item_order'           => 1,
-            'item_discount_amount' => 0,
-        ]);
-        $item_id = $this->CI->db->insert_id();
 
         /* Act */
-        $item = $this->CI->db->get_where('ip_quote_items', ['item_id' => $item_id])->row();
+        $row = $this->databaseFetchOne('ip_quote_items', ['item_id' => $item_id]);
 
         /* Assert */
-        $this->assertNotNull($item);
-        $this->assertEquals('Test Quote Item', $item->item_name);
-        $this->assertEquals(2, (int) $item->item_quantity);
-        $this->assertEquals(75.00, (float) $item->item_price);
+        $this->assertNotNull($row);
+        $this->assertEquals('Test Quote Item', $row['item_name']);
+        $this->assertEquals(2, (int) $row['item_quantity']);
+        $this->assertEquals(75.00, (float) $row['item_price']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_quote_items', ['item_id' => $item_id]);
-        $this->CI->db->delete('ip_quotes', ['quote_id' => $quote_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_quote_items', ['item_id' => $item_id]);
+        $this->databaseDelete('ip_quotes', ['quote_id' => $quote_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 
     #[Group('crud')]
@@ -123,47 +100,19 @@ class QuoteItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'QDelClient_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_quotes', [
-            'client_id'          => $client_id,
-            'user_id'            => 1,
-            'invoice_group_id'   => 1,
-            'quote_status_id'    => 1,
-            'quote_number'       => 'QUO-DEL-' . uniqid(),
-            'quote_date_created' => date('Y-m-d'),
-            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-            'quote_password'     => '',
-            'quote_url_key'      => bin2hex(random_bytes(16)),
-        ]);
-        $quote_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_quote_items', [
-            'quote_id'             => $quote_id,
-            'item_name'            => 'Delete Me',
-            'item_quantity'        => 1,
-            'item_price'           => 50.00,
-            'item_order'           => 1,
-            'item_discount_amount' => 0,
-        ]);
-        $item_id = $this->CI->db->insert_id();
+        $client_id = $this->seedClient();
+        $quote_id  = $this->seedQuote($client_id);
+        $item_id   = $this->seedQuoteItem($quote_id);
 
         /* Act */
         $this->model->delete($item_id);
 
         /* Assert */
-        $item = $this->CI->db->get_where('ip_quote_items', ['item_id' => $item_id])->row();
-        $this->assertNull($item);
+        $this->assertNull($this->databaseFetchOne('ip_quote_items', ['item_id' => $item_id]));
 
         /* Cleanup */
-        $this->CI->db->delete('ip_quotes', ['quote_id' => $quote_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_quotes', ['quote_id' => $quote_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 
     #[Test]
@@ -172,26 +121,8 @@ class QuoteItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'QSubClient_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_quotes', [
-            'client_id'          => $client_id,
-            'user_id'            => 1,
-            'invoice_group_id'   => 1,
-            'quote_status_id'    => 1,
-            'quote_number'       => 'QUO-EMPTY-' . uniqid(),
-            'quote_date_created' => date('Y-m-d'),
-            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-            'quote_password'     => '',
-            'quote_url_key'      => bin2hex(random_bytes(16)),
-        ]);
-        $quote_id = $this->CI->db->insert_id();
+        $client_id = $this->seedClient();
+        $quote_id  = $this->seedQuote($client_id);
 
         /* Act */
         $subtotal = $this->model->get_items_subtotal($quote_id);
@@ -200,7 +131,7 @@ class QuoteItemModelTest extends CiTestCase
         $this->assertEquals(0.0, (float) $subtotal);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_quotes', ['quote_id' => $quote_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_quotes', ['quote_id' => $quote_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 }

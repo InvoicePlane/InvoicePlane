@@ -32,61 +32,28 @@ class InvoiceItemAmountModelTest extends CiTestCase
     {
         $this->skipWithoutDatabase();
 
-        /* Arrange: create client, invoice, and item */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'Test Client ' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_invoices', [
-            'client_id'                => $client_id,
-            'user_id'                  => 1,
-            'invoice_group_id'         => 1,
-            'invoice_status_id'        => 1,
-            'invoice_number'           => 'INV-IAMT-' . uniqid(),
-            'invoice_date_created'     => date('Y-m-d'),
-            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
-            'invoice_password'         => '',
-            'invoice_discount_amount'  => 0,
-            'invoice_discount_percent' => 0,
-            'invoice_terms'            => '',
-            'invoice_url_key'          => bin2hex(random_bytes(16)),
-        ]);
-        $invoice_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_invoice_items', [
-            'invoice_id'           => $invoice_id,
-            'item_name'            => 'Test Item',
-            'item_quantity'        => 3,
-            'item_price'           => 50,
-            'item_order'           => 1,
-            'item_discount_amount' => 0,
-        ]);
-        $item_id = $this->CI->db->insert_id();
+        /* Arrange */
+        $client_id  = $this->seedClient();
+        $invoice_id = $this->seedInvoice($client_id);
+        $item_id    = $this->seedInvoiceItem($invoice_id, ['item_quantity' => 3, 'item_price' => 50]);
 
         /* Act */
         $global_discount = [];
         $this->model->calculate($item_id, $global_discount);
 
         /* Assert */
-        $item_amount = $this->CI->db
-            ->get_where('ip_invoice_item_amounts', ['item_id' => $item_id])
-            ->row();
-
-        $this->assertNotNull($item_amount);
-        $this->assertEquals(150.0, (float) $item_amount->item_subtotal); // 3 * 50
-        $this->assertEquals(0.0, (float) $item_amount->item_tax_total);
-        $this->assertEquals(0.0, (float) $item_amount->item_discount);
-        $this->assertEquals(150.0, (float) $item_amount->item_total);
+        $row = $this->databaseFetchOne('ip_invoice_item_amounts', ['item_id' => $item_id]);
+        $this->assertNotNull($row);
+        $this->assertEquals(150.0, (float) $row['item_subtotal']); // 3 * 50
+        $this->assertEquals(0.0, (float) $row['item_tax_total']);
+        $this->assertEquals(0.0, (float) $row['item_discount']);
+        $this->assertEquals(150.0, (float) $row['item_total']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_invoice_item_amounts', ['item_id' => $item_id]);
-        $this->CI->db->delete('ip_invoice_items', ['item_id' => $item_id]);
-        $this->CI->db->delete('ip_invoices', ['invoice_id' => $invoice_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_invoice_item_amounts', ['item_id' => $item_id]);
+        $this->databaseDelete('ip_invoice_items', ['item_id' => $item_id]);
+        $this->databaseDelete('ip_invoices', ['invoice_id' => $invoice_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 
     #[Group('exotic')]
@@ -96,57 +63,28 @@ class InvoiceItemAmountModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'Test Client ' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_invoices', [
-            'client_id'                => $client_id,
-            'user_id'                  => 1,
-            'invoice_group_id'         => 1,
-            'invoice_status_id'        => 1,
-            'invoice_number'           => 'INV-IAMTD-' . uniqid(),
-            'invoice_date_created'     => date('Y-m-d'),
-            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
-            'invoice_password'         => '',
-            'invoice_discount_amount'  => 0,
-            'invoice_discount_percent' => 0,
-            'invoice_terms'            => '',
-            'invoice_url_key'          => bin2hex(random_bytes(16)),
-        ]);
-        $invoice_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_invoice_items', [
-            'invoice_id'           => $invoice_id,
-            'item_name'            => 'Discounted Item',
+        $client_id  = $this->seedClient();
+        $invoice_id = $this->seedInvoice($client_id);
+        $item_id    = $this->seedInvoiceItem($invoice_id, [
             'item_quantity'        => 2,
             'item_price'           => 100,
-            'item_order'           => 1,
             'item_discount_amount' => 5, // discount per unit
         ]);
-        $item_id = $this->CI->db->insert_id();
 
         /* Act */
         $global_discount = [];
         $this->model->calculate($item_id, $global_discount);
 
         /* Assert */
-        $item_amount = $this->CI->db
-            ->get_where('ip_invoice_item_amounts', ['item_id' => $item_id])
-            ->row();
-
-        $this->assertNotNull($item_amount);
-        $this->assertEquals(200.0, (float) $item_amount->item_subtotal); // 2 * 100
+        $row = $this->databaseFetchOne('ip_invoice_item_amounts', ['item_id' => $item_id]);
+        $this->assertNotNull($row);
+        $this->assertEquals(200.0, (float) $row['item_subtotal']); // 2 * 100
 
         /* Cleanup */
-        $this->CI->db->delete('ip_invoice_item_amounts', ['item_id' => $item_id]);
-        $this->CI->db->delete('ip_invoice_items', ['item_id' => $item_id]);
-        $this->CI->db->delete('ip_invoices', ['invoice_id' => $invoice_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_invoice_item_amounts', ['item_id' => $item_id]);
+        $this->databaseDelete('ip_invoice_items', ['item_id' => $item_id]);
+        $this->databaseDelete('ip_invoices', ['invoice_id' => $invoice_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 
     #[Group('exotic')]
@@ -156,61 +94,25 @@ class InvoiceItemAmountModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'Test Client ' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
+        $client_id  = $this->seedClient();
+        $invoice_id = $this->seedInvoice($client_id, ['invoice_discount_percent' => 10]);
+        $item_id    = $this->seedInvoiceItem($invoice_id, ['item_quantity' => 1, 'item_price' => 1000]);
 
-        $this->CI->db->insert('ip_invoices', [
-            'client_id'                => $client_id,
-            'user_id'                  => 1,
-            'invoice_group_id'         => 1,
-            'invoice_status_id'        => 1,
-            'invoice_number'           => 'INV-GD-' . uniqid(),
-            'invoice_date_created'     => date('Y-m-d'),
-            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
-            'invoice_password'         => '',
-            'invoice_discount_amount'  => 0,
-            'invoice_discount_percent' => 10, // 10% global discount
-            'invoice_terms'            => '',
-            'invoice_url_key'          => bin2hex(random_bytes(16)),
-        ]);
-        $invoice_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_invoice_items', [
-            'invoice_id'           => $invoice_id,
-            'item_name'            => 'GD Item',
-            'item_quantity'        => 1,
-            'item_price'           => 1000,
-            'item_order'           => 1,
-            'item_discount_amount' => 0,
-        ]);
-        $item_id = $this->CI->db->insert_id();
-
-        /* Act: pass a global percent discount */
-        $global_discount = [
-            'percent' => 10,
-        ];
+        /* Act */
+        $global_discount = ['percent' => 10];
         $this->model->calculate($item_id, $global_discount);
 
-        /* Assert: item subtotal is correct and global_discount['item'] is populated */
-        $item_amount = $this->CI->db
-            ->get_where('ip_invoice_item_amounts', ['item_id' => $item_id])
-            ->row();
-
-        $this->assertNotNull($item_amount);
-        $this->assertEquals(1000.0, (float) $item_amount->item_subtotal);
-        // Global discount should be tracked per-item
+        /* Assert */
+        $row = $this->databaseFetchOne('ip_invoice_item_amounts', ['item_id' => $item_id]);
+        $this->assertNotNull($row);
+        $this->assertEquals(1000.0, (float) $row['item_subtotal']);
         $this->assertArrayHasKey('item', $global_discount);
         $this->assertEquals(100.0, (float) $global_discount['item']); // 10% of 1000
 
         /* Cleanup */
-        $this->CI->db->delete('ip_invoice_item_amounts', ['item_id' => $item_id]);
-        $this->CI->db->delete('ip_invoice_items', ['item_id' => $item_id]);
-        $this->CI->db->delete('ip_invoices', ['invoice_id' => $invoice_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_invoice_item_amounts', ['item_id' => $item_id]);
+        $this->databaseDelete('ip_invoice_items', ['item_id' => $item_id]);
+        $this->databaseDelete('ip_invoices', ['invoice_id' => $invoice_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 }

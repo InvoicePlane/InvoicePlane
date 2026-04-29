@@ -83,25 +83,22 @@ class ProductsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $name = 'TestProduct_' . uniqid();
-        $this->CI->db->insert('ip_products', [
-            'product_name'        => $name,
-            'product_description' => 'Test description',
-            'product_price'       => 99.99,
-            'purchase_price'      => 50.00,
+        $name       = 'TestProduct_' . uniqid();
+        $product_id = $this->seedProduct([
+            'product_name'  => $name,
+            'product_price' => 99.99,
         ]);
-        $product_id = $this->CI->db->insert_id();
 
         /* Act */
-        $product = $this->CI->db->get_where('ip_products', ['product_id' => $product_id])->row();
+        $row = $this->databaseFetchOne('ip_products', ['product_id' => $product_id]);
 
         /* Assert */
-        $this->assertNotNull($product);
-        $this->assertEquals($name, $product->product_name);
-        $this->assertEquals(99.99, (float) $product->product_price);
+        $this->assertNotNull($row);
+        $this->assertEquals($name, $row['product_name']);
+        $this->assertEquals(99.99, (float) $row['product_price']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_products', ['product_id' => $product_id]);
+        $this->databaseDelete('ip_products', ['product_id' => $product_id]);
     }
 
     #[Group('crud')]
@@ -111,23 +108,19 @@ class ProductsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $unique = uniqid();
-        $this->CI->db->insert('ip_products', [
-            'product_name'  => 'FindMe_' . $unique,
-            'product_price' => 10.00,
-        ]);
-        $product_id = $this->CI->db->insert_id();
+        $name       = 'FindMe_' . uniqid();
+        $product_id = $this->seedProduct(['product_name' => $name]);
 
         /* Act */
-        $this->model->by_product('FindMe_' . $unique);
+        $this->model->by_product($name);
         $results = $this->model->get(false)->result();
 
         /* Assert */
         $this->assertNotEmpty($results);
-        $found = array_filter($results, fn ($r) => $r->product_id === $product_id);
+        $found = array_filter($results, fn ($r) => (int) $r->product_id === $product_id);
         $this->assertNotEmpty($found);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_products', ['product_id' => $product_id]);
+        $this->databaseDelete('ip_products', ['product_id' => $product_id]);
     }
 }

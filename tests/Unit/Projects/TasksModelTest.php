@@ -61,9 +61,7 @@ class TasksModelTest extends CiTestCase
     #[Test]
     public function it_returns_null_when_getting_invoice_for_null_task_id(): void
     {
-        $result = $this->model->get_invoice_for_task(null);
-
-        $this->assertNull($result);
+        $this->assertNull($this->model->get_invoice_for_task(null));
     }
 
     #[Group('smoke')]
@@ -83,27 +81,20 @@ class TasksModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $unique = uniqid();
-        $this->CI->db->insert('ip_tasks', [
-            'task_name'        => 'Design_' . $unique,
-            'task_date_added'  => date('Y-m-d H:i:s'),
-            'task_status'      => 1,
-            'task_price'       => 0,
-            'task_finish_date' => date('Y-m-d'),
-        ]);
-        $task_id = $this->CI->db->insert_id();
+        $name    = 'Design_' . uniqid();
+        $task_id = $this->seedTask(['task_name' => $name]);
 
         /* Act */
-        $this->model->by_task('Design_' . $unique);
+        $this->model->by_task($name);
         $results = $this->model->get(false)->result();
 
         /* Assert */
         $this->assertNotEmpty($results);
-        $found = array_filter($results, fn ($r) => $r->task_id === $task_id);
+        $found = array_filter($results, fn ($r) => (int) $r->task_id === $task_id);
         $this->assertNotEmpty($found);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_tasks', ['task_id' => $task_id]);
+        $this->databaseDelete('ip_tasks', ['task_id' => $task_id]);
     }
 
     #[Group('crud')]
@@ -113,23 +104,16 @@ class TasksModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_tasks', [
-            'task_name'        => 'Keep Me ' . uniqid(),
-            'task_date_added'  => date('Y-m-d H:i:s'),
-            'task_status'      => 1,
-            'task_price'       => 0,
-            'task_finish_date' => date('Y-m-d'),
-        ]);
-        $task_id = $this->CI->db->insert_id();
+        $task_id = $this->seedTask(['task_status' => 1]);
 
         /* Act */
         $this->model->update_on_invoice_delete(null);
 
         /* Assert */
-        $task = $this->CI->db->get_where('ip_tasks', ['task_id' => $task_id])->row();
-        $this->assertEquals(1, (int) $task->task_status);
+        $row = $this->databaseFetchOne('ip_tasks', ['task_id' => $task_id]);
+        $this->assertEquals(1, (int) $row['task_status']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_tasks', ['task_id' => $task_id]);
+        $this->databaseDelete('ip_tasks', ['task_id' => $task_id]);
     }
 }

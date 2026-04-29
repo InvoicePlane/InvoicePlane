@@ -45,33 +45,21 @@ class ProjectModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'ProjClient_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $name = 'ProjectCreate_' . uniqid();
-        $this->CI->db->insert('ip_projects', [
-            'client_id'            => $client_id,
-            'project_name'         => $name,
-            'project_date_created' => date('Y-m-d'),
-        ]);
-        $project_id = $this->CI->db->insert_id();
+        $client_id  = $this->seedClient();
+        $name       = 'ProjectCreate_' . uniqid();
+        $project_id = $this->seedProject($client_id, ['project_name' => $name]);
 
         /* Act */
-        $project = $this->CI->db->get_where('ip_projects', ['project_id' => $project_id])->row();
+        $row = $this->databaseFetchOne('ip_projects', ['project_id' => $project_id]);
 
         /* Assert */
-        $this->assertNotNull($project);
-        $this->assertEquals($name, $project->project_name);
-        $this->assertEquals($client_id, (int) $project->client_id);
+        $this->assertNotNull($row);
+        $this->assertEquals($name, $row['project_name']);
+        $this->assertEquals($client_id, (int) $row['client_id']);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_projects', ['project_id' => $project_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_projects', ['project_id' => $project_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 
     #[Group('crud')]
@@ -81,29 +69,16 @@ class ProjectModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'ProjDelClient_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_projects', [
-            'client_id'            => $client_id,
-            'project_name'         => 'Delete Me ' . uniqid(),
-            'project_date_created' => date('Y-m-d'),
-        ]);
-        $project_id = $this->CI->db->insert_id();
+        $client_id  = $this->seedClient();
+        $project_id = $this->seedProject($client_id);
 
         /* Act */
-        $this->CI->db->delete('ip_projects', ['project_id' => $project_id]);
+        $this->databaseDelete('ip_projects', ['project_id' => $project_id]);
 
         /* Assert */
-        $project = $this->CI->db->get_where('ip_projects', ['project_id' => $project_id])->row();
-        $this->assertNull($project);
+        $this->assertNull($this->databaseFetchOne('ip_projects', ['project_id' => $project_id]));
 
         /* Cleanup */
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 }

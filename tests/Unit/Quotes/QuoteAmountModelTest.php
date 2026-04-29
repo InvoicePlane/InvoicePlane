@@ -50,11 +50,7 @@ class QuoteAmountModelTest extends CiTestCase
     {
         $this->skipWithoutDatabase();
 
-        /* Act */
-        $totals = $this->model->get_status_totals('');
-
-        /* Assert */
-        $this->assertIsArray($totals);
+        $this->assertIsArray($this->model->get_status_totals(''));
     }
 
     #[Group('smoke')]
@@ -63,52 +59,30 @@ class QuoteAmountModelTest extends CiTestCase
     {
         $this->skipWithoutDatabase();
 
-        /* Act */
         $total = $this->model->get_total_quoted();
 
-        /* Assert: NULL when table is empty, numeric otherwise */
+        /* NULL when quote_amounts table is empty, numeric otherwise */
         $this->assertTrue($total === null || is_numeric($total));
     }
 
     #[Group('exotic')]
     #[Test]
-    public function it_calculates_global_discount_for_quote(): void
+    public function it_returns_null_global_discount_for_quote_with_no_items(): void
     {
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $this->CI->db->insert('ip_clients', [
-            'client_name'          => 'QAClient_' . uniqid(),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-        $client_id = $this->CI->db->insert_id();
-
-        $this->CI->db->insert('ip_quotes', [
-            'client_id'              => $client_id,
-            'user_id'                => 1,
-            'invoice_group_id'       => 1,
-            'quote_status_id'        => 1,
-            'quote_number'           => 'QUO-GD-' . uniqid(),
-            'quote_date_created'     => date('Y-m-d'),
-            'quote_date_expires'     => date('Y-m-d', strtotime('+30 days')),
-            'quote_discount_amount'  => 0,
-            'quote_discount_percent' => 0,
-            'quote_password'         => '',
-            'quote_url_key'          => bin2hex(random_bytes(16)),
-        ]);
-        $quote_id = $this->CI->db->insert_id();
+        $client_id = $this->seedClient();
+        $quote_id  = $this->seedQuote($client_id);
 
         /* Act */
         $discount = $this->model->get_global_discount($quote_id);
 
-        /* Assert */
-        $this->assertIsNumeric($discount);
-        $this->assertEquals(0.0, (float) $discount);
+        /* Assert: no items → SUM returns NULL */
+        $this->assertNull($discount);
 
         /* Cleanup */
-        $this->CI->db->delete('ip_quotes', ['quote_id' => $quote_id]);
-        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
+        $this->databaseDelete('ip_quotes', ['quote_id' => $quote_id]);
+        $this->databaseDelete('ip_clients', ['client_id' => $client_id]);
     }
 }
