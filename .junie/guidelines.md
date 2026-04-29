@@ -278,6 +278,50 @@ public function it_blocks_path_traversal(): void
 }
 ```
 
+### CI3 Test Infrastructure
+
+- HTTP controller tests extend `AbstractTestCase`; call `$this->actingAsAdmin()` in `setUp()`.
+- Model tests extend `CiTestCase`, which provides `$this->CI` (the CI3 super-object).
+- Database-backed tests use the `InteractsWithDatabase` trait.
+- Call `$this->skipWithoutDatabase()` as the **first line** of any test that requires a live database (early-return pattern). Tests skip gracefully locally and run fully in CI where MySQL is provisioned.
+- Use `$this->seedModel('ModelName', $overrides)` for all fixture creation — the single entry point following the Laravel factory pattern without importing Laravel.
+- Use `$this->assertDatabaseHas()`, `$this->assertDatabaseMissing()`, `$this->assertDatabaseCount()` for persistence assertions.
+- **Never** use `markTestIncomplete()` as a substitute for a real test. Write a proper working CI3 test instead.
+
+```php
+#[Test]
+public function it_creates_a_client(): void
+{
+    $this->skipWithoutDatabase();
+
+    $client = $this->seedModel('Client', ['client_name' => 'ACME Corp']);
+
+    $this->assertDatabaseHas('ip_clients', ['client_name' => 'ACME Corp']);
+    $this->assertNotEmpty($client->client_id);
+}
+```
+
+### Payload Doc Block Policy
+
+Every `$this->get(...)` and `$this->post(...)` call in a test method that sends parameters (query params for GET, request body for POST) **must** have a `/** Payload: { ... } */` doc block directly above it — or directly above the `$payload = [...]` variable if one is defined first.
+
+**Format:**
+```php
+/**
+ * Payload:
+ * {
+ *   "key": "value"
+ * }
+ */
+$response = $this->post('/endpoint', ['key' => 'value']);
+```
+
+**Rules:**
+- **NEVER** delete an existing payload doc block.
+- Add payload blocks when writing new tests.
+- GET calls with no parameters do not require a payload block.
+- Do not duplicate blocks (if one already exists, do not add another).
+
 ### Coverage Expectations
 
 - All security-critical helper functions must have unit tests.

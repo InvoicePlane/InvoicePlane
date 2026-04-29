@@ -31,6 +31,7 @@ Each test must:
 - If a weak test is found, refactor it immediately before adding new tests in that area.
 - Never delete meaningful test bodies to make tests pass.
 - Never rely on `assertResponseHasNoPhpErrors()` as a primary assertion.
+- **`markTestIncomplete()` is prohibited** as a substitute for a real test. Write a proper working CI3 test or skip with `$this->skipWithoutDatabase()` if a live DB is required.
 
 ## Controller route policy (mandatory)
 - Controller tests must use explicit URI paths (e.g. `'/payments/form/5'`) for request/redirect assertions.
@@ -52,3 +53,28 @@ Each test must:
   - `rg -n "\\broute\\(" tests`
   - `php tests/Scripts/CheckExplicitTestRoutes.php`
   and fix all violations before committing.
+
+## CI3 test infrastructure rules
+- HTTP controller tests must extend `AbstractTestCase`; call `$this->actingAsAdmin()` in `setUp()`.
+- Model tests must extend `CiTestCase`, which provides `$this->CI` (the CI3 super-object).
+- Database-backed tests must use the `InteractsWithDatabase` trait.
+- Call `$this->skipWithoutDatabase()` as the **first statement** inside any test that requires a live database (early-return pattern).
+- Use `$this->seedModel('ModelName', $overrides)` for all fixture creation — single entry point, returns the inserted row as `object` so FK chaining works naturally.
+- Use `$this->assertDatabaseHas()`, `$this->assertDatabaseMissing()`, `$this->assertDatabaseCount()` for persistence assertions.
+
+## Payload doc block policy (mandatory)
+Every `$this->get(...)` and `$this->post(...)` call in a test that sends parameters **must** have a `/** Payload: { ... } */` doc block directly above it (or above the `$payload = [...]` variable if defined first).
+
+```php
+/**
+ * Payload:
+ * {
+ *   "client_name": "ACME Corp"
+ * }
+ */
+$response = $this->post('/clients/form', ['client_name' => 'ACME Corp']);
+```
+
+- **NEVER** delete an existing payload doc block.
+- GET calls with no parameters do not require a payload block.
+- Do not duplicate blocks (if one already exists, do not add another).

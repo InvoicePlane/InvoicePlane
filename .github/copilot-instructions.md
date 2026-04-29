@@ -39,6 +39,37 @@ InvoicePlane is a self-hosted, open-source invoicing application written in **PH
 - Controller tests must use explicit URI paths (e.g. `'/invoices/view/1'`), not `route('...')`.
 - URI paths in tests must not contain namespace backslashes.
 
+### CI3 test infrastructure
+
+- HTTP controller tests extend `AbstractTestCase`; call `$this->actingAsAdmin()` in `setUp()`.
+- Model tests extend `CiTestCase`, which exposes `$this->CI` (the CI3 super-object).
+- Database-backed tests use the `InteractsWithDatabase` trait.
+- Call `$this->skipWithoutDatabase()` as the first statement in any DB-dependent test (early-return pattern; skips gracefully locally, runs fully in CI).
+- Use `$this->seedModel('ModelName', $overrides)` for all fixture creation — single entry point, returns the inserted row as `object` for FK chaining.
+- Use `$this->assertDatabaseHas()`, `$this->assertDatabaseMissing()`, `$this->assertDatabaseCount()` for persistence checks.
+- **`markTestIncomplete()` is prohibited** as a substitute for a real test. Write a proper CI3 test or guard with `skipWithoutDatabase()`.
+
+### Payload doc block policy
+
+Every `$this->get(...)` and `$this->post(...)` call in a test method that sends parameters (query params for GET, request body for POST) **must** have a `/** Payload: { ... } */` doc block directly above it (or directly above the `$payload = [...]` variable if one is defined).
+
+**Format:**
+```php
+/**
+ * Payload:
+ * {
+ *   "key": "value"
+ * }
+ */
+$response = $this->post('/endpoint', ['key' => 'value']);
+```
+
+**Rules:**
+- **NEVER** delete an existing payload doc block.
+- Add payload blocks when writing new tests.
+- GET calls with no parameters do not require a payload block.
+- Do not duplicate blocks (if one already exists, do not add another).
+
 ## GitHub Actions
 
 | Workflow | Purpose |
@@ -74,9 +105,49 @@ There is no `quickstart.yml` and no `setup.yml` that uses `php artisan` — thos
 - Do not delete or hollow out existing test method bodies during migration/refactor work. Preserve test intent and coverage.
 - Weak tests are prohibited; assertions must validate expected behavior and outcomes.
 - `assertResponseHasNoPhpErrors()` must not be used as a primary assertion for feature behavior.
+- `markTestIncomplete()` is prohibited as a substitute for a real test — write a proper CI3 test.
 
 
 ## Test quality policy reference
 
 - Follow `.junie/test-quality.md` as a mandatory test-quality policy.
 - Weak tests are prohibited; refactor weak tests immediately when found.
+
+
+## Controller route assertion policy
+
+- In controller tests, always call explicit URI strings (for example `'/clients/form/1'`), never `route('name')`.
+- Route strings must be plain URI paths and **must not contain namespace backslashes**.
+- After route migration/refactors, run:
+  - `rg -n "\\broute\\(" tests`
+  - `php tests/Scripts/CheckExplicitTestRoutes.php`
+  and fix any violations before committing.
+
+
+## Test organization policy
+
+- Every test method must include `#[Test]`.
+- For large suites, apply meaningful `#[Group('...')]` tags to cluster smoke/crud/security/validation behaviors.
+- Use PhpStorm folding markers (`// region ...` / `// endregion`) for long classes to keep sections navigable.
+
+
+## Payload doc block policy
+
+Every `$this->get(...)` and `$this->post(...)` call in a test method that sends parameters (query params for GET, request body for POST) **must** have a `/** Payload: { ... } */` doc block directly above it (or directly above the `$payload = [...]` variable if one is defined).
+
+**Format:**
+```php
+/**
+ * Payload:
+ * {
+ *   "key": "value"
+ * }
+ */
+$response = $this->post('/endpoint', ['key' => 'value']);
+```
+
+**Rules:**
+- **NEVER** delete an existing payload doc block.
+- Add payload blocks when writing new tests.
+- GET calls with no parameters do not require a payload block.
+- Do not duplicate blocks (if one already exists, do not add another).
