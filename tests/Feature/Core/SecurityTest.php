@@ -151,15 +151,15 @@ class SecurityTest extends AbstractTestCase
         ]);
 
         // Attempt multiple failed logins
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "test@example.com",
+         *     "password": "wrongpassword"
+         * }
+         */
         for ($i = 0; $i < 11; $i++) {
-            /**
-             * Payload:
-             * {
-             *     "btn_login": true,
-             *     "email": "test@example.com",
-             *     "password": "wrongpassword"
-             * }
-             */
             $this->post('/sessions/login', [
                 'btn_login' => true,
                 'email'     => 'test@example.com',

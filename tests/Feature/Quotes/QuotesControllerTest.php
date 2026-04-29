@@ -616,11 +616,11 @@ class QuotesControllerTest extends AbstractTestCase
          *     "quote_group_id": 1,
          *     "items": {
          *         "0": {
-"item_name": "Quoted Service",
-"item_description": "Service description for quote",
-"item_quantity": 1,
-"item_price": 250.00
-}
+         *             "item_name": "Quoted Service",
+         *             "item_description": "Service description for quote",
+         *             "item_quantity": 1,
+         *             "item_price": 250.00
+         *         }
          *     }
          * }
          */
@@ -664,20 +664,20 @@ class QuotesControllerTest extends AbstractTestCase
          *     "quote_date_expires": 1,
          *     "items": {
          *         "0": {
-"item_name": "Consultation",
-"item_quantity": 2,
-"item_price": 150.00
-},
+         *             "item_name": "Consultation",
+         *             "item_quantity": 2,
+         *             "item_price": 150.00
+         *         },
          *         "1": {
-"item_name": "Implementation",
-"item_quantity": 1,
-"item_price": 500.00
-},
+         *             "item_name": "Implementation",
+         *             "item_quantity": 1,
+         *             "item_price": 500.00
+         *         },
          *         "2": {
-"item_name": "Training",
-"item_quantity": 3,
-"item_price": 100.00
-}
+         *             "item_name": "Training",
+         *             "item_quantity": 3,
+         *             "item_price": 100.00
+         *         }
          *     }
          * }
          */
@@ -724,11 +724,11 @@ class QuotesControllerTest extends AbstractTestCase
          *     "quote_date_expires": 1,
          *     "items": {
          *         "0": {
-"item_name": "Taxable Service",
-"item_quantity": 1,
-"item_price": 200.00,
-"item_tax_rate_id": 1
-}
+         *             "item_name": "Taxable Service",
+         *             "item_quantity": 1,
+         *             "item_price": 200.00,
+         *             "item_tax_rate_id": 1
+         *         }
          *     }
          * }
          */

@@ -178,15 +178,15 @@ class SessionsControllerTest extends AbstractTestCase
         ]);
 
         // Attempt 10 failed logins
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "test@example.com",
+         *     "password": "wrongpassword"
+         * }
+         */
         for ($i = 0; $i < 10; $i++) {
-            /**
-             * Payload:
-             * {
-             *     "btn_login": true,
-             *     "email": "test@example.com",
-             *     "password": "wrongpassword"
-             * }
-             */
             $this->post('/sessions/login', [
                 'btn_login' => true,
                 'email'     => 'test@example.com',
@@ -296,14 +296,14 @@ class SessionsControllerTest extends AbstractTestCase
         ]);
 
         // Attempt 10 password resets
+        /**
+         * Payload:
+         * {
+         *     "btn_reset": true,
+         *     "email": "test@example.com"
+         * }
+         */
         for ($i = 0; $i < 10; $i++) {
-            /**
-             * Payload:
-             * {
-             *     "btn_reset": true,
-             *     "email": "test@example.com"
-             * }
-             */
             $this->post('/sessions/passwordreset', [
                 'btn_reset' => true,
                 'email'     => 'test@example.com',
@@ -455,15 +455,15 @@ class SessionsControllerTest extends AbstractTestCase
         ]);
 
         // Create some failed attempts
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "test@example.com",
+         *     "password": "wrongpassword"
+         * }
+         */
         for ($i = 0; $i < 3; $i++) {
-            /**
-             * Payload:
-             * {
-             *     "btn_login": true,
-             *     "email": "test@example.com",
-             *     "password": "wrongpassword"
-             * }
-             */
             $this->post('/sessions/login', [
                 'btn_login' => true,
                 'email'     => 'test@example.com',
