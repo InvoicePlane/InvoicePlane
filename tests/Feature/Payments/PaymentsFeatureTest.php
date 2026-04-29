@@ -63,6 +63,15 @@ class PaymentsFeatureTest extends AbstractTestCase
         $clientId  = $this->seedModel('Client')->client_id;
         $invoiceId = $this->seedModel('Invoice', ['client_id' => $clientId])->invoice_id;
 
+        /**
+         * Payload:
+         * {
+         *     "payment_method_id": 1,
+         *     "payment_amount": "250.00",
+         *     "payment_date": 1,
+         *     "payment_note": "Regression test payment"
+         * }
+         */
         $response = $this->post('/payments/create/' . $invoiceId, [
             'payment_method_id' => 1,
             'payment_amount'    => '250.00',
@@ -92,6 +101,14 @@ class PaymentsFeatureTest extends AbstractTestCase
         $clientId  = $this->seedModel('Client')->client_id;
         $invoiceId = $this->seedModel('Invoice', ['client_id' => $clientId])->invoice_id;
 
+        /**
+         * Payload:
+         * {
+         *     "payment_method_id": 1,
+         *     "payment_amount": "0.00",
+         *     "payment_date": 1
+         * }
+         */
         $response = $this->post('/payments/create/' . $invoiceId, [
             'payment_method_id' => 1,
             'payment_amount'    => '0.00',
@@ -171,6 +188,16 @@ class PaymentsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_payment_with_valid_data(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "invoice_id": 1,
+         *     "payment_date": 1,
+         *     "payment_amount": 50.00,
+         *     "payment_method_id": 1,
+         *     "payment_note": "Test payment note."
+         * }
+         */
         $paymentData = [
             'invoice_id'        => $this->invoice->invoice_id,
             'payment_date'      => now()->format('Y-m-d'),
@@ -191,6 +218,14 @@ class PaymentsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_creates_payment_with_minimum_required_fields(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "invoice_id": 1,
+         *     "payment_amount": 25.50,
+         *     "payment_method_id": 1
+         * }
+         */
         $paymentData = [
             'invoice_id'        => $this->invoice->invoice_id,
             'payment_amount'    => 25.50,
@@ -209,6 +244,16 @@ class PaymentsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_creates_payment_with_note(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "invoice_id": 1,
+         *     "payment_date": 1,
+         *     "payment_amount": 100.00,
+         *     "payment_method_id": 1,
+         *     "payment_note": 1
+         * }
+         */
         $paymentData = [
             'invoice_id'        => $this->invoice->invoice_id,
             'payment_date'      => now()->format('Y-m-d'),
@@ -233,6 +278,13 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_amount' => 50.00,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "payment_amount": 75.00,
+         *     "payment_note": "Updated payment note"
+         * }
+         */
         $updateData = [
             'payment_amount' => 75.00,
             'payment_note'   => 'Updated payment note',
@@ -294,6 +346,12 @@ class PaymentsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_cancels_payment_form_and_redirects(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_cancel": true
+         * }
+         */
         $response = $this->post('/payments/form', ['btn_cancel' => true]);
 
         $response->assertRedirect('/payments');
@@ -306,6 +364,17 @@ class PaymentsFeatureTest extends AbstractTestCase
             'custom_field_table' => 'ip_payment_custom',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "invoice_id": 1,
+         *     "payment_amount": 100.00,
+         *     "payment_method_id": 1,
+         *     "custom": {
+         *         "$customField->custom_field_id": "Custom value"
+         *     }
+         * }
+         */
         $paymentData = [
             'invoice_id'        => $this->invoice->invoice_id,
             'payment_amount'    => 100.00,

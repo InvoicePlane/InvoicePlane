@@ -30,6 +30,12 @@ class CustomValuesControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $customField     = $this->seedModel('CustomField', ['name' => 'Test Field']);
+        /**
+         * Payload:
+         * {
+         *     "value": "New Value"
+         * }
+         */
         $customValueData = [
             'value' => 'New Value',
             // add other required fields

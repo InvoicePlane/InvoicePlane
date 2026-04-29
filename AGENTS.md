@@ -149,3 +149,24 @@ See `.junie/guidelines.md` for detailed guidance on security patterns, DRY princ
 - Every test method must include `#[Test]`.
 - For large suites, apply meaningful `#[Group('...')]` tags to cluster smoke/crud/security/validation behaviors.
 - Use PhpStorm folding markers (`// region ...` / `// endregion`) for long classes to keep sections navigable.
+
+## Payload doc block policy
+
+Every `$this->get(...)` and `$this->post(...)` call in a test method that sends parameters (query params for GET, request body for POST) **must** have a `/** Payload: { ... } */` doc block directly above it (or directly above the `$payload = [...]` variable if one is defined).
+
+**Format:**
+```php
+/**
+ * Payload:
+ * {
+ *   "key": "value"
+ * }
+ */
+$response = $this->post('/endpoint', ['key' => 'value']);
+```
+
+**Rules:**
+- **NEVER** delete an existing payload doc block.
+- Add payload blocks when writing new tests.
+- GET calls with no parameters do not require a payload block.
+- Do not duplicate blocks (if one already exists, do not add another).

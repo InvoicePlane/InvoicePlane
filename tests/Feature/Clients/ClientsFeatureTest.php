@@ -67,6 +67,12 @@ class ClientsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_rejects_a_post_to_create_client_with_missing_required_fields(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "client_name": ""
+         * }
+         */
         $response = $this->post('/clients/form', [
             'client_name' => '',
         ]);

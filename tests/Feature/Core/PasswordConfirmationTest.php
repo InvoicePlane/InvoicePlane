@@ -38,6 +38,13 @@ class PasswordConfirmationTest extends AbstractTestCase
     #[Test]
     public function it_password_is_not_confirmed_with_invalid_password(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "user_email": "nobody@example.com",
+         *     "user_password": "wrongpassword"
+         * }
+         */
         $response = $this->post('/sessions/authenticate', [
             'user_email'    => 'nobody@example.com',
             'user_password' => 'wrongpassword',

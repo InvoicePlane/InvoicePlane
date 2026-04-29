@@ -28,6 +28,12 @@ class EmailTemplatesAjaxControllerTest extends AbstractTestCase
             'email_template_body'    => 'Test Body',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "email_template_id": 1
+         * }
+         */
         $response = $this->post('/email_templates/ajax/getContent', [
             'email_template_id' => $template->email_template_id,
         ]);
@@ -41,6 +47,12 @@ class EmailTemplatesAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_for_nonexistent_template(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "email_template_id": 99999
+         * }
+         */
         $response = $this->post('/email_templates/ajax/getContent', [
             'email_template_id' => 99999,
         ]);

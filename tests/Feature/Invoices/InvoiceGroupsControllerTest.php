@@ -88,6 +88,12 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_to_index_when_cancel_button_clicked(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_cancel": "1"
+         * }
+         */
         $response = $this->post('/invoice_groups/form', ['btn_cancel' => '1']);
 
         $this->assertTrue($response->isRedirect());
@@ -99,6 +105,15 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         $this->skipWithoutDatabase();
         $uniqueName = 'Test Group ' . bin2hex(random_bytes(4));
 
+        /**
+         * Payload:
+         * {
+         *     "invoice_group_name": 1,
+         *     "invoice_group_identifier_format": "{{{year}}}-{{{id}}}",
+         *     "invoice_group_next_id": 1,
+         *     "invoice_group_left_pad": 4
+         * }
+         */
         $response = $this->post('/invoice_groups/form', [
             'invoice_group_name'              => $uniqueName,
             'invoice_group_identifier_format' => '{{{year}}}-{{{id}}}',
@@ -122,6 +137,15 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         ]);
         $updatedName = 'Updated Group ' . bin2hex(random_bytes(4));
 
+        /**
+         * Payload:
+         * {
+         *     "invoice_group_name": 1,
+         *     "invoice_group_identifier_format": "{{{year}}}/{{{id}}}",
+         *     "invoice_group_next_id": 100,
+         *     "invoice_group_left_pad": 5
+         * }
+         */
         $response = $this->post('/invoice_groups/form/' . $group->invoice_group_id, [
             'invoice_group_name'              => $updatedName,
             'invoice_group_identifier_format' => '{{{year}}}/{{{id}}}',
@@ -135,6 +159,12 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     #[Test]
     public function it_validates_required_fields_on_submit(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "invoice_group_name": ""
+         * }
+         */
         $response = $this->post('/invoice_groups/form', [
             'invoice_group_name' => '',
         ]);
@@ -146,6 +176,15 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     #[Test]
     public function it_validates_field_types_and_constraints(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "invoice_group_name": "",
+         *     "invoice_group_identifier_format": "",
+         *     "invoice_group_next_id": "",
+         *     "invoice_group_left_pad": ""
+         * }
+         */
         $response = $this->post('/invoice_groups/form', [
             'invoice_group_name'              => '',
             'invoice_group_identifier_format' => '',
@@ -197,6 +236,15 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         $this->skipWithoutDatabase();
         $uniqueName = 'Create Success ' . bin2hex(random_bytes(4));
 
+        /**
+         * Payload:
+         * {
+         *     "invoice_group_name": 1,
+         *     "invoice_group_identifier_format": "INV-{{{id}}}",
+         *     "invoice_group_next_id": 1,
+         *     "invoice_group_left_pad": 4
+         * }
+         */
         $response = $this->post('/invoice_groups/form', [
             'invoice_group_name'              => $uniqueName,
             'invoice_group_identifier_format' => 'INV-{{{id}}}',
@@ -213,6 +261,15 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         $this->skipWithoutDatabase();
         $group = $this->seedModel('InvoiceGroup');
 
+        /**
+         * Payload:
+         * {
+         *     "invoice_group_name": "Updated ",
+         *     "invoice_group_identifier_format": "INV-{{{id}}}",
+         *     "invoice_group_next_id": 1,
+         *     "invoice_group_left_pad": 4
+         * }
+         */
         $response = $this->post('/invoice_groups/form/' . $group->invoice_group_id, [
             'invoice_group_name'              => 'Updated ' . bin2hex(random_bytes(3)),
             'invoice_group_identifier_format' => 'INV-{{{id}}}',

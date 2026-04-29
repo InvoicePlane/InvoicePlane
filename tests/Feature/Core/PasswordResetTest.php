@@ -24,6 +24,12 @@ class PasswordResetTest extends AbstractTestCase
     #[Test]
     public function it_reset_password_link_can_be_requested(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "user_email": "test@example.com"
+         * }
+         */
         $response = $this->post('/sessions/passwordreset', [
             'user_email' => 'test@example.com',
         ]);

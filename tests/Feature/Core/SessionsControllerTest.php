@@ -45,6 +45,14 @@ class SessionsControllerTest extends AbstractTestCase
             'user_type'     => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "test@example.com",
+         *     "password": "password123"
+         * }
+         */
         $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',
@@ -65,6 +73,14 @@ class SessionsControllerTest extends AbstractTestCase
             'user_type'     => 2, // Guest user
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "guest@example.com",
+         *     "password": "password123"
+         * }
+         */
         $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'guest@example.com',
@@ -83,6 +99,14 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'   => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "test@example.com",
+         *     "password": "wrongpassword"
+         * }
+         */
         $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',
@@ -97,6 +121,14 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_authentication_for_nonexistent_user(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "nonexistent@example.com",
+         *     "password": "password123"
+         * }
+         */
         $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'nonexistent@example.com',
@@ -117,6 +149,14 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'   => 0,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "inactive@example.com",
+         *     "password": "password123"
+         * }
+         */
         $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'inactive@example.com',
@@ -139,6 +179,14 @@ class SessionsControllerTest extends AbstractTestCase
 
         // Attempt 10 failed logins
         for ($i = 0; $i < 10; $i++) {
+            /**
+             * Payload:
+             * {
+             *     "btn_login": true,
+             *     "email": "test@example.com",
+             *     "password": "wrongpassword"
+             * }
+             */
             $this->post('/sessions/login', [
                 'btn_login' => true,
                 'email'     => 'test@example.com',
@@ -147,6 +195,14 @@ class SessionsControllerTest extends AbstractTestCase
         }
 
         // 11th attempt should be blocked
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "test@example.com",
+         *     "password": "password123"
+         * }
+         */
         $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',
@@ -194,6 +250,13 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active' => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_reset": true,
+         *     "email": "test@example.com"
+         * }
+         */
         $response = $this->post('/sessions/passwordreset', [
             'btn_reset' => true,
             'email'     => 'test@example.com',
@@ -209,6 +272,13 @@ class SessionsControllerTest extends AbstractTestCase
     #[Test]
     public function it_validates_email_format_in_password_reset(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_reset": true,
+         *     "email": "invalid-email"
+         * }
+         */
         $response = $this->post('/sessions/passwordreset', [
             'btn_reset' => true,
             'email'     => 'invalid-email',
@@ -227,6 +297,13 @@ class SessionsControllerTest extends AbstractTestCase
 
         // Attempt 10 password resets
         for ($i = 0; $i < 10; $i++) {
+            /**
+             * Payload:
+             * {
+             *     "btn_reset": true,
+             *     "email": "test@example.com"
+             * }
+             */
             $this->post('/sessions/passwordreset', [
                 'btn_reset' => true,
                 'email'     => 'test@example.com',
@@ -281,6 +358,15 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'              => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_new_password": true,
+         *     "token": "valid_token_123",
+         *     "user_id": 1,
+         *     "new_password": "newpassword123"
+         * }
+         */
         $response = $this->post('/sessions/passwordreset', [
             'btn_new_password' => true,
             'token'            => 'valid_token_123',
@@ -304,6 +390,15 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'              => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_new_password": true,
+         *     "token": "wrong_token",
+         *     "user_id": 1,
+         *     "new_password": "newpassword123"
+         * }
+         */
         $response = $this->post('/sessions/passwordreset', [
             'btn_new_password' => true,
             'token'            => 'wrong_token',
@@ -327,6 +422,15 @@ class SessionsControllerTest extends AbstractTestCase
             'user_active'              => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_new_password": true,
+         *     "token": "valid_token_123",
+         *     "user_id": 1,
+         *     "new_password": ""
+         * }
+         */
         $response = $this->post('/sessions/passwordreset', [
             'btn_new_password' => true,
             'token'            => 'valid_token_123',
@@ -352,6 +456,14 @@ class SessionsControllerTest extends AbstractTestCase
 
         // Create some failed attempts
         for ($i = 0; $i < 3; $i++) {
+            /**
+             * Payload:
+             * {
+             *     "btn_login": true,
+             *     "email": "test@example.com",
+             *     "password": "wrongpassword"
+             * }
+             */
             $this->post('/sessions/login', [
                 'btn_login' => true,
                 'email'     => 'test@example.com',
@@ -360,6 +472,14 @@ class SessionsControllerTest extends AbstractTestCase
         }
 
         // Successful login
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "test@example.com",
+         *     "password": "password123"
+         * }
+         */
         $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',
@@ -388,6 +508,14 @@ class SessionsControllerTest extends AbstractTestCase
             'log_create_timestamp' => now()->subHours(13)->toDateTimeString(),
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_login": true,
+         *     "email": "test@example.com",
+         *     "password": "password123"
+         * }
+         */
         $response = $this->post('/sessions/login', [
             'btn_login' => true,
             'email'     => 'test@example.com',

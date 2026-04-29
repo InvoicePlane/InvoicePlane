@@ -65,6 +65,14 @@ class SessionsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_redirects_to_login_when_post_credentials_are_missing(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_login": "1",
+         *     "email": "",
+         *     "password": ""
+         * }
+         */
         $response = $this->post('/sessions/login', [
             'btn_login' => '1',
             'email'     => '',
@@ -80,6 +88,14 @@ class SessionsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_redirects_to_login_with_wrong_credentials(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_login": "1",
+         *     "email": "nobody@nonexistent.example",
+         *     "password": "wrongpassword"
+         * }
+         */
         $response = $this->post('/sessions/login', [
             'btn_login' => '1',
             'email'     => 'nobody@nonexistent.example',
@@ -110,6 +126,13 @@ class SessionsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_redirects_to_login_when_a_nonexistent_email_is_submitted_to_password_reset(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_reset": "1",
+         *     "email": "nobody_exists_"
+         * }
+         */
         $response = $this->post('/sessions/passwordreset', [
             'btn_reset' => '1',
             'email'     => 'nobody_exists_' . time() . '@nonexistent.example',
@@ -124,11 +147,25 @@ class SessionsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_does_not_reveal_whether_the_email_exists_in_the_reset_response(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_reset": "1",
+         *     "email": "nobody_real_"
+         * }
+         */
         $responseReal = $this->post('/sessions/passwordreset', [
             'btn_reset' => '1',
             'email'     => 'nobody_real_' . time() . '@nonexistent.example',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_reset": "1",
+         *     "email": "nobody_fake_"
+         * }
+         */
         $responseFake = $this->post('/sessions/passwordreset', [
             'btn_reset' => '1',
             'email'     => 'nobody_fake_' . time() . '@nonexistent.example',

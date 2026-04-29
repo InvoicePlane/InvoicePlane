@@ -35,6 +35,14 @@ class ReportsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "from_date": 1,
+         *     "to_date": 1,
+         *     "btn_submit": true
+         * }
+         */
         $response = $this->post('/reports/salesByClient', [
             'from_date'  => now()->subMonth()->format('Y-m-d'),
             'to_date'    => now()->format('Y-m-d'),
@@ -59,6 +67,14 @@ class ReportsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "btn_submit": true,
+         *     "from_date": 1,
+         *     "to_date": 1
+         * }
+         */
         $response = $this->post('/reports/salesByClient', [
             'btn_submit' => true,
             'from_date'  => now()->subDays(30)->format('Y-m-d'),
@@ -90,6 +106,14 @@ class ReportsControllerTest extends AbstractTestCase
             'payment_date' => now()->subDays(5),
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_submit": true,
+         *     "from_date": 1,
+         *     "to_date": 1
+         * }
+         */
         $response = $this->post('/reports/paymentHistory', [
             'btn_submit' => true,
             'from_date'  => now()->subDays(30)->format('Y-m-d'),
@@ -118,6 +142,12 @@ class ReportsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "btn_submit": true
+         * }
+         */
         $response = $this->post('/reports/invoiceAging', [
             'btn_submit' => true,
         ]);
@@ -139,6 +169,14 @@ class ReportsControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "from_date": 1,
+         *     "to_date": 1,
+         *     "btn_submit": true
+         * }
+         */
         $response = $this->post('/reports/invoicesPerClient', [
             'from_date'  => now()->subMonth()->format('Y-m-d'),
             'to_date'    => now()->format('Y-m-d'),
@@ -159,6 +197,17 @@ class ReportsControllerTest extends AbstractTestCase
             'invoice_status_id'    => 4,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "btn_submit": true,
+         *     "from_date": 1,
+         *     "to_date": 1,
+         *     "minQuantity": 0,
+         *     "maxQuantity": 1000,
+         *     "checkboxTax": true
+         * }
+         */
         $response = $this->post('/reports/salesByYear', [
             'btn_submit'  => true,
             'from_date'   => now()->subYear()->format('Y-m-d'),
@@ -177,6 +226,16 @@ class ReportsControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_sales_report_by_quantity_range(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_submit": true,
+         *     "from_date": 1,
+         *     "to_date": 1,
+         *     "minQuantity": 10,
+         *     "maxQuantity": 100
+         * }
+         */
         $response = $this->post('/reports/salesByYear', [
             'btn_submit'  => true,
             'from_date'   => now()->subYear()->format('Y-m-d'),

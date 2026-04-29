@@ -229,6 +229,13 @@ class TaxRatesControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /** @var array{tax_rate_name: string, tax_rate_percent: string} $taxRateData */
+        /**
+         * Payload:
+         * {
+         *     "tax_rate_name": "No Tax",
+         *     "tax_rate_percent": "0.00"
+         * }
+         */
         $taxRateData = [
             'tax_rate_name'    => 'No Tax',
             'tax_rate_percent' => '0.00',

@@ -45,6 +45,12 @@ class AjaxControllerTest extends AbstractTestCase
         ]);
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "product_ids": {}
+         * }
+         */
         $response = $this->post('/products/ajax/process_product_selections', [
             'product_ids' => [$product->product_id],
         ]);

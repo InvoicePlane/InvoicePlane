@@ -34,6 +34,13 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_unit(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "unit_name": "Kilogram",
+         *     "unit_name_plrl": "Kilograms"
+         * }
+         */
         $unitData = [
             'unit_name'      => 'Kilogram',
             'unit_name_plrl' => 'Kilograms',
@@ -52,6 +59,14 @@ class UnitsControllerTest extends AbstractTestCase
     {
         $this->seedModel('Unit', ['unit_name' => 'Existing Unit']);
 
+        /**
+         * Payload:
+         * {
+         *     "unit_name": "Existing Unit",
+         *     "unit_name_plrl": "Existing Units",
+         *     "is_update": 0
+         * }
+         */
         $unitData = [
             'unit_name'      => 'Existing Unit',
             'unit_name_plrl' => 'Existing Units',
@@ -69,6 +84,13 @@ class UnitsControllerTest extends AbstractTestCase
     {
         $unit = $this->seedModel('Unit', ['unit_name' => 'Original Unit']);
 
+        /**
+         * Payload:
+         * {
+         *     "unit_name": "Updated Unit",
+         *     "unit_name_plrl": "Updated Units"
+         * }
+         */
         $updateData = [
             'unit_name'      => 'Updated Unit',
             'unit_name_plrl' => 'Updated Units',

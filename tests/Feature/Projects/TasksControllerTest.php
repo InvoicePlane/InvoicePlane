@@ -260,6 +260,13 @@ class TasksControllerTest extends AbstractTestCase
     public function it_fails_to_create_task_with_empty_name(): void
     {
         /* Arrange */
+        /**
+         * Payload:
+         * {
+         *     "task_name": "",
+         *     "task_status": 1
+         * }
+         */
         $taskData = [
             'task_name'   => '', // Empty name
             'task_status' => 1,
@@ -280,6 +287,13 @@ class TasksControllerTest extends AbstractTestCase
     public function it_handles_special_characters_in_task_name(): void
     {
         /* Arrange */
+        /**
+         * Payload:
+         * {
+         *     "task_name": "Task <img src=x onerror=alert('xss')> Name",
+         *     "task_status": 1
+         * }
+         */
         $taskData = [
             'task_name'   => "Task <img src=x onerror=alert('xss')> Name",
             'task_status' => 1,
@@ -314,6 +328,13 @@ class TasksControllerTest extends AbstractTestCase
     public function it_fails_to_create_task_with_invalid_status(): void
     {
         /* Arrange */
+        /**
+         * Payload:
+         * {
+         *     "task_name": "Test Task",
+         *     "task_status": 999
+         * }
+         */
         $taskData = [
             'task_name'   => 'Test Task',
             'task_status' => 999, // Invalid status
@@ -334,6 +355,14 @@ class TasksControllerTest extends AbstractTestCase
     public function it_fails_to_create_task_with_nonexistent_project(): void
     {
         /* Arrange */
+        /**
+         * Payload:
+         * {
+         *     "task_name": "Test Task",
+         *     "project_id": 99999,
+         *     "task_status": 1
+         * }
+         */
         $taskData = [
             'task_name'   => 'Test Task',
             'project_id'  => 99999, // Non-existent project
@@ -374,6 +403,13 @@ class TasksControllerTest extends AbstractTestCase
         /* Arrange */
         $task = $this->seedModel('Task');
 
+        /**
+         * Payload:
+         * {
+         *     "task_name": "Updated Task",
+         *     "task_finish_date": "invalid-date"
+         * }
+         */
         $updateData = [
             'task_name'        => 'Updated Task',
             'task_finish_date' => 'invalid-date', // Invalid date format
@@ -401,6 +437,14 @@ class TasksControllerTest extends AbstractTestCase
             'project_id' => $project1->project_id,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "task_name": 1,
+         *     "project_id": 1,
+         *     "task_status": 1
+         * }
+         */
         $updateData = [
             'task_name'   => $task->task_name,
             'project_id'  => $project2->project_id,
@@ -433,6 +477,14 @@ class TasksControllerTest extends AbstractTestCase
             'project_id' => $project->project_id,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "task_name": 1,
+         *     "project_id": null,
+         *     "task_status": 1
+         * }
+         */
         $updateData = [
             'task_name'   => $task->task_name,
             'project_id'  => null, // Unassign from project
@@ -541,6 +593,13 @@ class TasksControllerTest extends AbstractTestCase
             'task_finish_date' => '2025-12-01',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "task_name": 1,
+         *     "task_finish_date": "2025-12-31"
+         * }
+         */
         $updateData = [
             'task_name'        => $task->task_name,
             'task_finish_date' => '2025-12-31',
@@ -571,6 +630,13 @@ class TasksControllerTest extends AbstractTestCase
             'task_status' => 1, // Not started
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "task_name": 1,
+         *     "task_status": 3
+         * }
+         */
         $updateData = [
             'task_name'   => $task->task_name,
             'task_status' => 3, // Complete
@@ -603,6 +669,12 @@ class TasksControllerTest extends AbstractTestCase
             'task_status'      => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "task_name": "Updated Name"
+         * }
+         */
         $updateData = [
             'task_name' => 'Updated Name',
             // Not updating description or status

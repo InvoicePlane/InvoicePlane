@@ -33,6 +33,13 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_tax_rate(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "tax_rate_name": "VAT",
+         *     "tax_rate_percent": "21.00"
+         * }
+         */
         $taxRateData = [
             'tax_rate_name'    => 'VAT',
             'tax_rate_percent' => '21.00',
@@ -72,6 +79,13 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_standardizes_tax_rate_percent_on_creation(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "tax_rate_name": "Sales Tax",
+         *     "tax_rate_percent": "15,50"
+         * }
+         */
         $taxRateData = [
             'tax_rate_name'    => 'Sales Tax',
             'tax_rate_percent' => '15,50', // European format
@@ -94,6 +108,13 @@ class TaxRatesControllerTest extends AbstractTestCase
             'tax_rate_percent' => 10.00,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "tax_rate_name": "Updated Tax",
+         *     "tax_rate_percent": "19.00"
+         * }
+         */
         $updateData = [
             'tax_rate_name'    => 'Updated Tax',
             'tax_rate_percent' => '19.00',
@@ -113,6 +134,12 @@ class TaxRatesControllerTest extends AbstractTestCase
     public function it_redirects_when_cancel_button_is_clicked(): void
     {
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "btn_cancel": true
+         * }
+         */
         $response = $this->post('/tax_rates/form', [
             'btn_cancel' => true,
         ]);
@@ -138,6 +165,12 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_cancels_tax_rate_form_and_redirects(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_cancel": true
+         * }
+         */
         $response = $this->post('/tax_rates/form', ['btn_cancel' => true]);
 
         $response->assertRedirect('/tax_rates/index');
@@ -146,6 +179,13 @@ class TaxRatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_validates_tax_rate_percent_is_numeric(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "tax_rate_name": "Invalid Tax",
+         *     "tax_rate_percent": "not-a-number"
+         * }
+         */
         $taxRateData = [
             'tax_rate_name'    => 'Invalid Tax',
             'tax_rate_percent' => 'not-a-number',
@@ -319,6 +359,13 @@ class TaxRatesControllerTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /** @var array{tax_rate_name: string, tax_rate_percent: string} $taxRateData */
+        /**
+         * Payload:
+         * {
+         *     "tax_rate_name": "No Tax",
+         *     "tax_rate_percent": "0.00"
+         * }
+         */
         $taxRateData = [
             'tax_rate_name'    => 'No Tax',
             'tax_rate_percent' => '0.00',

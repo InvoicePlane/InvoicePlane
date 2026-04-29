@@ -43,6 +43,15 @@ class SecurityTest extends AbstractTestCase
         $this->actingAs($this->user);
         $client = $this->seedModel('tmpClient');
 
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "invoice_notes": "<script>alert(\"XSS\")</script>",
+         *     "invoice_date_created": 1,
+         *     "invoice_date_due": 1
+         * }
+         */
         $maliciousData = [
             'client_id'            => $client->client_id,
             'invoice_notes'        => '<script>alert("XSS")</script>',
@@ -77,6 +86,13 @@ class SecurityTest extends AbstractTestCase
     {
         $this->actingAs($this->user);
 
+        /**
+         * Payload:
+         * {
+         *     "client_name": "Test Client",
+         *     "client_email": "test@example.com"
+         * }
+         */
         $response = $this->post('/clients/form', [
             'client_name'  => 'Test Client',
             'client_email' => 'test@example.com',
@@ -136,6 +152,14 @@ class SecurityTest extends AbstractTestCase
 
         // Attempt multiple failed logins
         for ($i = 0; $i < 11; $i++) {
+            /**
+             * Payload:
+             * {
+             *     "btn_login": true,
+             *     "email": "test@example.com",
+             *     "password": "wrongpassword"
+             * }
+             */
             $this->post('/sessions/login', [
                 'btn_login' => true,
                 'email'     => 'test@example.com',
@@ -154,6 +178,13 @@ class SecurityTest extends AbstractTestCase
     {
         $this->actingAs($this->user);
 
+        /**
+         * Payload:
+         * {
+         *     "client_name": "Test Client",
+         *     "client_email": "not-an-email"
+         * }
+         */
         $response = $this->post('/clients/form', [
             'client_name'  => 'Test Client',
             'client_email' => 'not-an-email',
@@ -167,6 +198,15 @@ class SecurityTest extends AbstractTestCase
     {
         $this->actingAs($this->user);
 
+        /**
+         * Payload:
+         * {
+         *     "client_name": "Test Client",
+         *     "client_email": "test@example.com",
+         *     "user_type": 1,
+         *     "user_active": 1
+         * }
+         */
         $response = $this->post('/clients/form', [
             'client_name'  => 'Test Client',
             'client_email' => 'test@example.com',

@@ -102,6 +102,14 @@ class IntegrationsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_returns_json_with_a_success_flag_when_saving_valid_integration_settings(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "provider": "letspeppol",
+         *     "api_key": "test-key-",
+         *     "environment": "sandbox"
+         * }
+         */
         $response = $this->post('/integrations/save', [
             'provider'    => 'letspeppol',
             'api_key'     => 'test-key-' . bin2hex(random_bytes(4)),

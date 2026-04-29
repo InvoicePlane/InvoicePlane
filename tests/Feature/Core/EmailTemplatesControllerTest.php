@@ -32,6 +32,16 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_email_template(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "email_template_title": "Test Template",
+         *     "email_template_subject": "Test Subject",
+         *     "email_template_body": "Test body content",
+         *     "email_template_type": "invoice",
+         *     "is_update": 0
+         * }
+         */
         $templateData = [
             'email_template_title'   => 'Test Template',
             'email_template_subject' => 'Test Subject',
@@ -53,6 +63,15 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     {
         $this->seedModel('EmailTemplate', ['email_template_title' => 'Existing Template']);
 
+        /**
+         * Payload:
+         * {
+         *     "email_template_title": "Existing Template",
+         *     "email_template_subject": "Subject",
+         *     "email_template_body": "Body",
+         *     "is_update": 0
+         * }
+         */
         $templateData = [
             'email_template_title'   => 'Existing Template',
             'email_template_subject' => 'Subject',
@@ -73,6 +92,14 @@ class EmailTemplatesControllerTest extends AbstractTestCase
             'email_template_title' => 'Original Template',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "email_template_title": "Updated Template",
+         *     "email_template_subject": "Updated Subject",
+         *     "email_template_body": "Updated body"
+         * }
+         */
         $updateData = [
             'email_template_title'   => 'Updated Template',
             'email_template_subject' => 'Updated Subject',

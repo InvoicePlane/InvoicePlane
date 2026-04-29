@@ -263,6 +263,13 @@ class ProjectsControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $client      = $this->seedModel('Client');
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "project_name": ""
+         * }
+         */
         $projectData = [
             'client_id'    => $client->client_id,
             'project_name' => '', // Empty name
@@ -285,6 +292,13 @@ class ProjectsControllerTest extends AbstractTestCase
         /* Arrange */
         $client      = $this->seedModel('Client');
         $longName    = str_repeat('A', 300); // 300 characters
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "project_name": 1
+         * }
+         */
         $projectData = [
             'client_id'    => $client->client_id,
             'project_name' => $longName,
@@ -326,6 +340,13 @@ class ProjectsControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $client      = $this->seedModel('Client');
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "project_name": "Test <script>alert('xss')</script> Project"
+         * }
+         */
         $projectData = [
             'client_id'    => $client->client_id,
             'project_name' => "Test <script>alert('xss')</script> Project",
@@ -352,6 +373,13 @@ class ProjectsControllerTest extends AbstractTestCase
     public function it_fails_to_create_project_with_nonexistent_client(): void
     {
         /* Arrange */
+        /**
+         * Payload:
+         * {
+         *     "client_id": 99999,
+         *     "project_name": "Test Project"
+         * }
+         */
         $projectData = [
             'client_id'    => 99999, // Non-existent client
             'project_name' => 'Test Project',
@@ -377,6 +405,14 @@ class ProjectsControllerTest extends AbstractTestCase
             'client_id' => $client->client_id,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "project_name": "Updated Name",
+         *     "project_status": 999
+         * }
+         */
         $updateData = [
             'client_id'      => $client->client_id,
             'project_name'   => 'Updated Name',
@@ -572,6 +608,13 @@ class ProjectsControllerTest extends AbstractTestCase
             'project_notes'  => 'Original notes',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "project_name": "Updated Name"
+         * }
+         */
         $updateData = [
             'client_id'    => $client->client_id,
             'project_name' => 'Updated Name',

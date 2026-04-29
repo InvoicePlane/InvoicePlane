@@ -31,6 +31,13 @@ class AuthenticationTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "email": 1,
+         *     "password": "secret"
+         * }
+         */
         $response = $this->post('/login', [
             'email'    => $user->user_email,
             'password' => 'secret',
@@ -48,6 +55,13 @@ class AuthenticationTest extends AbstractTestCase
         $user = $this->seedModel('User');
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "email": 1,
+         *     "password": "wrong-password"
+         * }
+         */
         $this->post('/login', [
             'email'    => $user->user_email,
             'password' => 'wrong-password',

@@ -157,6 +157,13 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $user   = $this->seedModel('User');
         $client = $this->seedModel('tmpClient');
 
+        /**
+         * Payload:
+         * {
+         *     "user_id": 1,
+         *     "client_id": 1
+         * }
+         */
         $response = $this->post('/users/ajax/saveUserClient', [
             'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
@@ -180,6 +187,13 @@ class UsersAjaxControllerTest extends AbstractTestCase
             'client_id' => $client->client_id,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "user_id": 1,
+         *     "client_id": 1
+         * }
+         */
         $response = $this->post('/users/ajax/saveUserClient', [
             'user_id'   => $user->user_id,
             'client_id' => $client->client_id,
@@ -196,6 +210,13 @@ class UsersAjaxControllerTest extends AbstractTestCase
     {
         $client = $this->seedModel('tmpClient');
 
+        /**
+         * Payload:
+         * {
+         *     "user_id": null,
+         *     "client_id": 1
+         * }
+         */
         $response = $this->post('/users/ajax/saveUserClient', [
             'user_id'   => null,
             'client_id' => $client->client_id,
@@ -218,6 +239,12 @@ class UsersAjaxControllerTest extends AbstractTestCase
             ]);
         }
 
+        /**
+         * Payload:
+         * {
+         *     "user_id": 1
+         * }
+         */
         $response = $this->post('/users/ajax/loadUserClientTable', [
             'user_id' => $user->user_id,
         ]);

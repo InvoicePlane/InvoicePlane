@@ -78,6 +78,19 @@ class MailerControllerTest extends AbstractTestCase
             'invoice_number' => 'INV-001',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Invoice",
+         *     "body": "Please find attached your invoice.",
+         *     "pdf_template": "default",
+         *     "cc": "",
+         *     "bcc": ""
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -109,6 +122,19 @@ class MailerControllerTest extends AbstractTestCase
             'invoice_number' => 'INV-002',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Invoice",
+         *     "body": "Invoice email body",
+         *     "pdf_template": "default",
+         *     "cc": "cc@example.com",
+         *     "bcc": "bcc@example.com"
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -139,6 +165,17 @@ class MailerControllerTest extends AbstractTestCase
             'invoice_number' => 'INV-003',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Invoice",
+         *     "body": "Line 1\nLine 2\nLine 3",
+         *     "pdf_template": "default"
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -172,6 +209,17 @@ class MailerControllerTest extends AbstractTestCase
             'invoice_id' => $invoice->invoice_id,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Invoice",
+         *     "body": "Invoice with attachments",
+         *     "pdf_template": "default"
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -197,6 +245,17 @@ class MailerControllerTest extends AbstractTestCase
             'invoice_status_id' => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Invoice",
+         *     "body": "Invoice email",
+         *     "pdf_template": "default"
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -222,6 +281,17 @@ class MailerControllerTest extends AbstractTestCase
             'invoice_status_id' => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Invoice",
+         *     "body": "Invoice email",
+         *     "pdf_template": "default"
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -242,6 +312,12 @@ class MailerControllerTest extends AbstractTestCase
     {
         $invoice = $this->seedModel('Invoice');
 
+        /**
+         * Payload:
+         * {
+         *     "btn_cancel": true
+         * }
+         */
         $response = $this->post('/mailer/sendInvoice/' . ($invoice->invoice_id), [
             'btn_cancel' => true,
         ]);
@@ -259,6 +335,17 @@ class MailerControllerTest extends AbstractTestCase
             'client_id' => $this->client->client_id,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "invalid-email",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Invoice",
+         *     "body": "Invoice email",
+         *     "pdf_template": "default"
+         * }
+         */
         $emailData = [
             'to_email'     => 'invalid-email',
             'from_email'   => 'sender@example.com',
@@ -283,6 +370,19 @@ class MailerControllerTest extends AbstractTestCase
             'quote_number' => 'QUO-001',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Quote",
+         *     "body": "Please find attached your quote.",
+         *     "pdf_template": "default",
+         *     "cc": "",
+         *     "bcc": ""
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -315,6 +415,17 @@ class MailerControllerTest extends AbstractTestCase
             'quote_status_id' => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Quote",
+         *     "body": "Quote email",
+         *     "pdf_template": "default"
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -340,6 +451,17 @@ class MailerControllerTest extends AbstractTestCase
             'quote_status_id' => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Quote",
+         *     "body": "Quote email",
+         *     "pdf_template": "default"
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -360,6 +482,12 @@ class MailerControllerTest extends AbstractTestCase
     {
         $quote = $this->seedModel('Quote');
 
+        /**
+         * Payload:
+         * {
+         *     "btn_cancel": true
+         * }
+         */
         $response = $this->post('/mailer/sendQuote/' . ($quote->quote_id), [
             'btn_cancel' => true,
         ]);
@@ -381,6 +509,17 @@ class MailerControllerTest extends AbstractTestCase
             'quote_id' => $quote->quote_id,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Quote",
+         *     "body": "Quote with attachments",
+         *     "pdf_template": "default"
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',
@@ -404,6 +543,17 @@ class MailerControllerTest extends AbstractTestCase
             'client_id' => $this->client->client_id,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "to_email": "client@example.com",
+         *     "from_email": "sender@example.com",
+         *     "from_name": "Test Sender",
+         *     "subject": "Your Invoice",
+         *     "body": "<p>Invoice &amp; details</p>",
+         *     "pdf_template": "default"
+         * }
+         */
         $emailData = [
             'to_email'     => 'client@example.com',
             'from_email'   => 'sender@example.com',

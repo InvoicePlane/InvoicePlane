@@ -136,6 +136,13 @@ class FamiliesControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_family(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "family_name": "Test Family",
+         *     "is_update": 0
+         * }
+         */
         $familyData = [
             'family_name' => 'Test Family',
             'is_update'   => 0,
@@ -334,6 +341,13 @@ class FamiliesControllerTest extends AbstractTestCase
     {
         $this->seedModel('Family', ['family_name' => 'Existing Family']);
 
+        /**
+         * Payload:
+         * {
+         *     "family_name": "Existing Family",
+         *     "is_update": 0
+         * }
+         */
         $familyData = [
             'family_name' => 'Existing Family',
             'is_update'   => 0,

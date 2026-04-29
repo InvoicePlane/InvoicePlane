@@ -142,6 +142,12 @@ class ProductsControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_to_index_when_cancel_button_clicked(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_cancel": "1"
+         * }
+         */
         $response = $this->post('/products/form', ['btn_cancel' => '1']);
 
         $this->assertTrue($response->isRedirect());
@@ -153,6 +159,16 @@ class ProductsControllerTest extends AbstractTestCase
     {
         $this->skipWithoutDatabase();
         $uniqueName = 'Test Product ' . bin2hex(random_bytes(4));
+        /**
+         * Payload:
+         * {
+         *     "product_sku": "SKU-",
+         *     "product_name": 1,
+         *     "product_description": "Test Description",
+         *     "product_price": "99.99",
+         *     "purchase_price": "50.00"
+         * }
+         */
         $response   = $this->post('/products/form', [
             'product_sku'         => 'SKU-' . bin2hex(random_bytes(3)),
             'product_name'        => $uniqueName,
@@ -173,6 +189,13 @@ class ProductsControllerTest extends AbstractTestCase
         $product     = $this->seedModel('Product', ['product_name' => 'Original Name', 'product_price' => '10.00']);
         $updatedName = 'Updated Product ' . bin2hex(random_bytes(4));
 
+        /**
+         * Payload:
+         * {
+         *     "product_name": 1,
+         *     "product_price": "149.99"
+         * }
+         */
         $response = $this->post('/products/form/' . $product->product_id, [
             'product_name'  => $updatedName,
             'product_price' => '149.99',
@@ -184,6 +207,12 @@ class ProductsControllerTest extends AbstractTestCase
     #[Test]
     public function it_validates_required_fields_on_submit(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "product_name": ""
+         * }
+         */
         $response = $this->post('/products/form', ['product_name' => '']);
 
         $this->assertFalse($response->isRedirect());
@@ -195,6 +224,13 @@ class ProductsControllerTest extends AbstractTestCase
     {
         $this->actingAsAdmin();
         /* Arrange */
+        /**
+         * Payload:
+         * {
+         *     "product_name": "BadPriceProduct",
+         *     "product_price": "not_a_number"
+         * }
+         */
         $response = $this->post('/products/form', [
             'product_name'  => 'BadPriceProduct',
             'product_price' => 'not_a_number',
@@ -254,6 +290,13 @@ class ProductsControllerTest extends AbstractTestCase
     {
         $this->skipWithoutDatabase();
         $uniqueName = 'Success Create ' . bin2hex(random_bytes(4));
+        /**
+         * Payload:
+         * {
+         *     "product_name": 1,
+         *     "product_price": "10.00"
+         * }
+         */
         $response   = $this->post('/products/form', [
             'product_name'  => $uniqueName,
             'product_price' => '10.00',
@@ -269,6 +312,13 @@ class ProductsControllerTest extends AbstractTestCase
         $this->skipWithoutDatabase();
         $product = $this->seedModel('Product', ['product_name' => 'Update Me', 'product_price' => '10.00']);
 
+        /**
+         * Payload:
+         * {
+         *     "product_name": "Updated Successfully",
+         *     "product_price": "20.00"
+         * }
+         */
         $response = $this->post('/products/form/' . $product->product_id, [
             'product_name'  => 'Updated Successfully',
             'product_price' => '20.00',
@@ -307,6 +357,13 @@ class ProductsControllerTest extends AbstractTestCase
         $this->skipWithoutDatabase();
         $uniqueName = 'Minimal Product ' . bin2hex(random_bytes(4));
 
+        /**
+         * Payload:
+         * {
+         *     "product_name": 1,
+         *     "product_price": "10.00"
+         * }
+         */
         $response = $this->post('/products/form', [
             'product_name'  => $uniqueName,
             'product_price' => '10.00',

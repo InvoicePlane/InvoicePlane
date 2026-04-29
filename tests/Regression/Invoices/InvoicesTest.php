@@ -18,6 +18,13 @@ class InvoicesTest extends AbstractTestCase
     #[Test]
     public function it_can_create_invoice(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "amount": 100
+         * }
+         */
         $response = $this->post('invoices/create', [
             'client_id' => 1,
             'amount'    => 100,

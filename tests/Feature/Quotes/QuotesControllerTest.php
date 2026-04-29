@@ -606,6 +606,24 @@ class QuotesControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_quote_with_single_item(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "quote_date_created": 1,
+         *     "quote_date_expires": 1,
+         *     "quote_status_id": 1,
+         *     "quote_group_id": 1,
+         *     "items": {
+         *         "0": {
+"item_name": "Quoted Service",
+"item_description": "Service description for quote",
+"item_quantity": 1,
+"item_price": 250.00
+}
+         *     }
+         * }
+         */
         $quoteData = [
             'client_id'          => $this->client->client_id,
             'quote_date_created' => now()->format('Y-m-d'),
@@ -638,6 +656,31 @@ class QuotesControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_quote_with_multiple_items(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "quote_date_created": 1,
+         *     "quote_date_expires": 1,
+         *     "items": {
+         *         "0": {
+"item_name": "Consultation",
+"item_quantity": 2,
+"item_price": 150.00
+},
+         *         "1": {
+"item_name": "Implementation",
+"item_quantity": 1,
+"item_price": 500.00
+},
+         *         "2": {
+"item_name": "Training",
+"item_quantity": 3,
+"item_price": 100.00
+}
+         *     }
+         * }
+         */
         $quoteData = [
             'client_id'          => $this->client->client_id,
             'quote_date_created' => now()->format('Y-m-d'),
@@ -673,6 +716,22 @@ class QuotesControllerTest extends AbstractTestCase
     {
         $taxRate = $this->seedModel('TaxRate', ['tax_rate_percent' => 21.00]);
 
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "quote_date_created": 1,
+         *     "quote_date_expires": 1,
+         *     "items": {
+         *         "0": {
+"item_name": "Taxable Service",
+"item_quantity": 1,
+"item_price": 200.00,
+"item_tax_rate_id": 1
+}
+         *     }
+         * }
+         */
         $quoteData = [
             'client_id'          => $this->client->client_id,
             'quote_date_created' => now()->format('Y-m-d'),
@@ -751,6 +810,14 @@ class QuotesControllerTest extends AbstractTestCase
             'quote_status_id' => 1,
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "quote_date_expires": 1,
+         *     "quote_status_id": 2,
+         *     "quote_notes": "Updated quote with extended expiry"
+         * }
+         */
         $updateData = [
             'quote_date_expires' => now()->addDays(60)->format('Y-m-d'),
             'quote_status_id'    => 2,
@@ -776,6 +843,19 @@ class QuotesControllerTest extends AbstractTestCase
             'item_name' => 'Original Name',
         ]);
 
+        /**
+         * Payload:
+         * {
+         *     "items": {
+         *         "$item->item_id": {
+         *             "item_name": "Updated Service Name",
+         *             "item_description": "Updated service description",
+         *             "item_quantity": 2,
+         *             "item_price": 300.00
+         *         }
+         *     }
+         * }
+         */
         $updateData = [
             'items' => [
                 $item->item_id => [
@@ -802,6 +882,12 @@ class QuotesControllerTest extends AbstractTestCase
     {
         $quote = $this->seedModel('Quote', ['quote_status_id' => 1]);
 
+        /**
+         * Payload:
+         * {
+         *     "quote_status_id": 2
+         * }
+         */
         $response = $this->post('/quotes/form/' . $quote->quote_id, [
             'quote_status_id' => 2,
         ]);
@@ -818,6 +904,12 @@ class QuotesControllerTest extends AbstractTestCase
     {
         $quote = $this->seedModel('Quote', ['quote_status_id' => 2]);
 
+        /**
+         * Payload:
+         * {
+         *     "quote_status_id": 3
+         * }
+         */
         $response = $this->post('/quotes/form/' . $quote->quote_id, [
             'quote_status_id' => 3,
         ]);
@@ -834,6 +926,12 @@ class QuotesControllerTest extends AbstractTestCase
     {
         $quote = $this->seedModel('Quote', ['quote_status_id' => 2]);
 
+        /**
+         * Payload:
+         * {
+         *     "quote_status_id": 4
+         * }
+         */
         $response = $this->post('/quotes/form/' . $quote->quote_id, [
             'quote_status_id' => 4,
         ]);
@@ -851,6 +949,13 @@ class QuotesControllerTest extends AbstractTestCase
         $quote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
         $this->seedModelMany('QuoteItem', 2, ['quote_id' => $quote->quote_id]);
 
+        /**
+         * Payload:
+         * {
+         *     "invoice_date_created": 1,
+         *     "invoice_date_due": 1
+         * }
+         */
         $convertData = [
             'invoice_date_created' => now()->format('Y-m-d'),
             'invoice_date_due'     => now()->addDays(30)->format('Y-m-d'),
@@ -870,6 +975,13 @@ class QuotesControllerTest extends AbstractTestCase
         $originalQuote = $this->seedModel('Quote', ['client_id' => $this->client->client_id]);
         $this->seedModelMany('QuoteItem', 2, ['quote_id' => $originalQuote->quote_id]);
 
+        /**
+         * Payload:
+         * {
+         *     "quote_date_created": 1,
+         *     "quote_date_expires": 1
+         * }
+         */
         $response = $this->post('/quotes/copy/' . $originalQuote->quote_id, [
             'quote_date_created' => now()->format('Y-m-d'),
             'quote_date_expires' => now()->addDays(45)->format('Y-m-d'),

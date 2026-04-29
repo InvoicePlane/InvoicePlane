@@ -27,6 +27,12 @@ class AjaxControllerTest extends AbstractTestCase
         $this->seedModel('Client', ['client_name' => 'Test Client']);
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "query": "Test"
+         * }
+         */
         $response = $this->get('/clients/ajax/name_query', ['query' => 'Test']);
 
         /* Assert */
@@ -53,6 +59,12 @@ class AjaxControllerTest extends AbstractTestCase
     public function it_saves_permissive_search_preference(): void
     {
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "permissive_search_clients": "1"
+         * }
+         */
         $response = $this->get('/clients/ajax/save_preference_permissive_search_clients', [
             'permissive_search_clients' => '1',
         ]);
@@ -69,6 +81,12 @@ class AjaxControllerTest extends AbstractTestCase
         $note     = $this->seedModel('ClientNote', ['client_id' => $clientId]);
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "client_note_id": 1
+         * }
+         */
         $response = $this->post('/clients/ajax/delete_client_note', [
             'client_note_id' => $note->client_note_id,
         ]);
@@ -85,6 +103,13 @@ class AjaxControllerTest extends AbstractTestCase
         $clientId = $this->seedModel('Client')->client_id;
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "client_note": "This is a test note"
+         * }
+         */
         $response = $this->post('/clients/ajax/save_client_note', [
             'client_id'   => $clientId,
             'client_note' => 'This is a test note',
@@ -106,6 +131,12 @@ class AjaxControllerTest extends AbstractTestCase
         $note     = $this->seedModel('ClientNote', ['client_id' => $clientId]);
 
         /* Act */
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1
+         * }
+         */
         $response = $this->post('/clients/ajax/load_client_notes', [
             'client_id' => $clientId,
         ]);

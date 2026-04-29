@@ -345,6 +345,12 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_new_payment_method(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "payment_method_name": "Test Payment Method"
+         * }
+         */
         $methodData = [
             'payment_method_name' => 'Test Payment Method',
         ];
@@ -362,6 +368,13 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     {
         $this->seedModel('PaymentMethod', ['payment_method_name' => 'Existing Method']);
 
+        /**
+         * Payload:
+         * {
+         *     "payment_method_name": "Existing Method",
+         *     "is_update": 0
+         * }
+         */
         $methodData = [
             'payment_method_name' => 'Existing Method',
             'is_update'           => 0,
@@ -376,6 +389,12 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     #[Test]
     public function it_cancels_payment_method_form_and_redirects(): void
     {
+        /**
+         * Payload:
+         * {
+         *     "btn_cancel": true
+         * }
+         */
         $response = $this->post('/payment_methods/form', ['btn_cancel' => true]);
 
         $response->assertRedirect('/payment_methods');

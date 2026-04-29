@@ -688,6 +688,17 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         $quote        = $this->seedModel('Quote', ['client_id' => $client->client_id, 'quote_status_id' => 1]);
         $invoiceGroup = $this->seedModel('InvoiceGroup');
 
+        /**
+         * Payload:
+         * {
+         *     "quote_id": 1,
+         *     "client_id": 1,
+         *     "user_id": 1,
+         *     "invoice_date_created": "2024-01-01",
+         *     "invoice_group_id": 1,
+         *     "invoice_change_client": 0
+         * }
+         */
         $payload = [
             'quote_id'              => $quote->quote_id,
             'client_id'             => $client->client_id,
@@ -768,6 +779,15 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         $quote = $this->seedModel('Quote');
 
         $this->actingAs($user);
+        /**
+         * Payload:
+         * {
+         *     "quote_id": 1,
+         *     "quote_date_created": 1,
+         *     "quote_date_expires": 1,
+         *     "items": 1
+         * }
+         */
         $response = $this->post('/quotes/ajax/save', [
             'quote_id'           => $quote->quote_id,
             'quote_date_created' => date('Y-m-d'),
@@ -790,6 +810,13 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         $taxRate = $this->seedModel('TaxRate');
 
         $this->actingAs($user);
+        /**
+         * Payload:
+         * {
+         *     "quote_id": 1,
+         *     "tax_rate_id": 1
+         * }
+         */
         $response = $this->post('/quotes/ajax/save_quote_tax_rate', [
             'quote_id'    => $quote->quote_id,
             'tax_rate_id' => $taxRate->tax_rate_id,
@@ -853,6 +880,15 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         $quote  = $this->seedModel('Quote', ['client_id' => $client->client_id]);
 
         $this->actingAs($user);
+        /**
+         * Payload:
+         * {
+         *     "quote_id": 1,
+         *     "client_id": 1,
+         *     "user_id": 1,
+         *     "quote_date_created": 1
+         * }
+         */
         $response = $this->post('/quotes/ajax/copy_quote', [
             'quote_id'           => $quote->quote_id,
             'client_id'          => $client->client_id,
@@ -884,6 +920,13 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         $quote = $this->seedModel('Quote');
 
         $this->actingAs($user);
+        /**
+         * Payload:
+         * {
+         *     "quote_id": 1,
+         *     "user_id": 1
+         * }
+         */
         $response = $this->post('/quotes/ajax/change_user', [
             'quote_id' => $quote->quote_id,
             'user_id'  => $user->user_id,
@@ -914,6 +957,13 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         $quote     = $this->seedModel('Quote');
 
         $this->actingAs($user);
+        /**
+         * Payload:
+         * {
+         *     "quote_id": 1,
+         *     "client_id": 1
+         * }
+         */
         $response = $this->post('/quotes/ajax/change_client', [
             'quote_id'  => $quote->quote_id,
             'client_id' => $newClient->client_id,
@@ -942,6 +992,14 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         $client = $this->seedModel('Client');
 
         $this->actingAs($user);
+        /**
+         * Payload:
+         * {
+         *     "client_id": 1,
+         *     "user_id": 1,
+         *     "quote_date_created": 1
+         * }
+         */
         $response = $this->post('/quotes/ajax/create', [
             'client_id'          => $client->client_id,
             'user_id'            => $user->user_id,
@@ -975,6 +1033,17 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         $invoiceGroup = $this->seedModel('InvoiceGroup');
 
         $this->actingAs($user);
+        /**
+         * Payload:
+         * {
+         *     "quote_id": 1,
+         *     "client_id": 1,
+         *     "user_id": 1,
+         *     "invoice_date_created": 1,
+         *     "invoice_group_id": 1,
+         *     "invoice_change_client": 0
+         * }
+         */
         $response = $this->post('/quotes/ajax/quote_to_invoice', [
             'quote_id'              => $quote->quote_id,
             'client_id'             => $client->client_id,
