@@ -7,10 +7,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\CiTestCase;
+use Tests\Concerns\InteractsWithDatabase;
 
 #[CoversClass(Mdl_Units::class)]
 class UnitModelTest extends CiTestCase
 {
+    use InteractsWithDatabase;
     private $model;
 
     protected function setUp(): void
@@ -42,6 +44,9 @@ class UnitModelTest extends CiTestCase
     #[Test]
     public function it_gets_unit_name(): void
     {
-        $this->markTestIncomplete('Requires database setup with unit data');
+        $this->skipWithoutDatabase();
+        $unit = $this->seedModel('Unit', ['unit_name' => 'Hour', 'unit_name_plrl' => 'Hours']);
+        $this->assertEquals('Hour', $this->model->getUnitName($unit->unit_id, 1));
+        $this->assertEquals('Hours', $this->model->getUnitName($unit->unit_id, 2));
     }
 }

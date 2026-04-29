@@ -312,8 +312,8 @@ class ProjectsControllerTest extends AbstractTestCase
                 'Stored project_name must not exceed 255 characters.'
             );
         } else {
-            // Not stored — validation correctly rejected the input
-        $this->markTestIncomplete('Not yet implemented for CI3');
+            // Not stored — validation correctly rejected the input (expected behavior)
+            $this->assertTrue(true, 'Project with overlong name was correctly rejected.');
         }
     }
 

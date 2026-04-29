@@ -763,85 +763,228 @@ class QuotesAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_saves_quote_item(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for save');
+        $this->skipWithoutDatabase();
+        $user  = $this->seedModel('User');
+        $quote = $this->seedModel('Quote');
+
+        $this->actingAs($user);
+        $response = $this->post('/quotes/ajax/save', [
+            'quote_id'           => $quote->quote_id,
+            'quote_date_created' => date('Y-m-d'),
+            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
+            'items'              => json_encode([
+                ['item_name' => 'Test Item', 'item_quantity' => 1, 'item_price' => 10.00, 'item_order' => 1],
+            ]),
+        ]);
+
+        $this->assertNotEquals(500, $response->statusCode());
+        $this->assertDatabaseHas('ip_quotes', ['quote_id' => $quote->quote_id]);
     }
 
     #[Test]
     public function it_saves_quote_tax_rate(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for saveQuoteTaxRate');
+        $this->skipWithoutDatabase();
+        $user    = $this->seedModel('User');
+        $quote   = $this->seedModel('Quote');
+        $taxRate = $this->seedModel('TaxRate');
+
+        $this->actingAs($user);
+        $response = $this->post('/quotes/ajax/save_quote_tax_rate', [
+            'quote_id'    => $quote->quote_id,
+            'tax_rate_id' => $taxRate->tax_rate_id,
+        ]);
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
     #[Test]
     public function it_deletes_quote_item(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for deleteItem');
+        $this->skipWithoutDatabase();
+        $user  = $this->seedModel('User');
+        $quote = $this->seedModel('Quote');
+        $item  = $this->seedModel('QuoteItem', ['quote_id' => $quote->quote_id]);
+
+        $this->actingAs($user);
+        $response = $this->get('/quotes/ajax/delete_item/' . $item->item_id);
+
+        $this->assertNotEquals(500, $response->statusCode());
+        $this->assertDatabaseMissing('ip_quote_items', ['item_id' => $item->item_id]);
     }
 
     #[Test]
     public function it_gets_quote_item(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for getItem');
+        $this->skipWithoutDatabase();
+        $user  = $this->seedModel('User');
+        $quote = $this->seedModel('Quote');
+        $item  = $this->seedModel('QuoteItem', ['quote_id' => $quote->quote_id]);
+
+        $this->actingAs($user);
+        $response = $this->get('/quotes/ajax/get_item?item_id=' . $item->item_id);
+
+        $this->assertNotEquals(500, $response->statusCode());
+        $this->assertTrue(
+            $response->statusCode() === 200 || $response->isRedirect(),
+            'Expected 200 or redirect for get_item endpoint.'
+        );
     }
 
     #[Test]
     public function it_displays_copy_quote_modal(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for modalCopyQuote');
+        $this->skipWithoutDatabase();
+        $user  = $this->seedModel('User');
+        $quote = $this->seedModel('Quote');
+
+        $this->actingAs($user);
+        $response = $this->get('/quotes/ajax/modal_copy_quote?quote_id=' . $quote->quote_id);
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
     #[Test]
     public function it_copies_quote(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for copyQuote');
+        $this->skipWithoutDatabase();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
+        $quote  = $this->seedModel('Quote', ['client_id' => $client->client_id]);
+
+        $this->actingAs($user);
+        $response = $this->post('/quotes/ajax/copy_quote', [
+            'quote_id'           => $quote->quote_id,
+            'client_id'          => $client->client_id,
+            'user_id'            => $user->user_id,
+            'quote_date_created' => date('Y-m-d'),
+        ]);
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
     #[Test]
     public function it_displays_change_user_modal(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for modalChangeUser');
+        $this->skipWithoutDatabase();
+        $user  = $this->seedModel('User');
+        $quote = $this->seedModel('Quote');
+
+        $this->actingAs($user);
+        $response = $this->get('/quotes/ajax/modal_change_user?quote_id=' . $quote->quote_id);
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
     #[Test]
     public function it_changes_quote_user(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for changeUser');
+        $this->skipWithoutDatabase();
+        $user  = $this->seedModel('User');
+        $quote = $this->seedModel('Quote');
+
+        $this->actingAs($user);
+        $response = $this->post('/quotes/ajax/change_user', [
+            'quote_id' => $quote->quote_id,
+            'user_id'  => $user->user_id,
+        ]);
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
     #[Test]
     public function it_displays_change_client_modal(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for modalChangeClient');
+        $this->skipWithoutDatabase();
+        $user  = $this->seedModel('User');
+        $quote = $this->seedModel('Quote');
+
+        $this->actingAs($user);
+        $response = $this->get('/quotes/ajax/modal_change_client?quote_id=' . $quote->quote_id);
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
     #[Test]
     public function it_changes_quote_client(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for changeClient');
+        $this->skipWithoutDatabase();
+        $user      = $this->seedModel('User');
+        $newClient = $this->seedModel('Client');
+        $quote     = $this->seedModel('Quote');
+
+        $this->actingAs($user);
+        $response = $this->post('/quotes/ajax/change_client', [
+            'quote_id'  => $quote->quote_id,
+            'client_id' => $newClient->client_id,
+        ]);
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
     #[Test]
     public function it_displays_create_quote_modal(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for modalCreateQuote');
+        $this->skipWithoutDatabase();
+        $user = $this->seedModel('User');
+
+        $this->actingAs($user);
+        $response = $this->get('/quotes/ajax/modal_create_quote');
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
     #[Test]
     public function it_creates_quote(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for create');
+        $this->skipWithoutDatabase();
+        $user   = $this->seedModel('User');
+        $client = $this->seedModel('Client');
+
+        $this->actingAs($user);
+        $response = $this->post('/quotes/ajax/create', [
+            'client_id'          => $client->client_id,
+            'user_id'            => $user->user_id,
+            'quote_date_created' => date('Y-m-d'),
+        ]);
+
+        $this->assertNotEquals(500, $response->statusCode());
+        $this->assertDatabaseHas('ip_quotes', ['client_id' => $client->client_id]);
     }
 
     #[Test]
     public function it_displays_quote_to_invoice_modal(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for modalQuoteToInvoice');
+        $this->skipWithoutDatabase();
+        $user  = $this->seedModel('User');
+        $quote = $this->seedModel('Quote');
+
+        $this->actingAs($user);
+        $response = $this->get('/quotes/ajax/modal_quote_to_invoice/' . $quote->quote_id);
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
     #[Test]
     public function it_converts_quote_to_invoice(): void
     {
-        $this->markTestIncomplete('Implement meaningful test for quoteToInvoice');
+        $this->skipWithoutDatabase();
+        $user         = $this->seedModel('User');
+        $client       = $this->seedModel('Client');
+        $quote        = $this->seedModel('Quote', ['client_id' => $client->client_id]);
+        $invoiceGroup = $this->seedModel('InvoiceGroup');
+
+        $this->actingAs($user);
+        $response = $this->post('/quotes/ajax/quote_to_invoice', [
+            'quote_id'              => $quote->quote_id,
+            'client_id'             => $client->client_id,
+            'user_id'               => $user->user_id,
+            'invoice_date_created'  => date('Y-m-d'),
+            'invoice_group_id'      => $invoiceGroup->invoice_group_id,
+            'invoice_change_client' => 0,
+        ]);
+
+        $this->assertNotEquals(500, $response->statusCode());
     }
 
 }

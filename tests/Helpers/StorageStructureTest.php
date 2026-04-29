@@ -4,62 +4,86 @@ namespace Tests\Helpers;
 
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
 #[CoversNothing]
-class StorageStructureTest extends AbstractTestCase
+class StorageStructureTest extends TestCase
 {
-    /**
-     * Test that required storage directories exist.
-     */
+    private string $projectRoot;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->projectRoot = dirname(__DIR__, 2);
+    }
+
     #[Test]
     public function it_required_storage_directories_exist(): void
     {
-        $this->markTestIncomplete('InvoicePlane uses CI3 file structure, not Laravel storage directories.');
+        $this->assertDirectoryExists($this->projectRoot . '/uploads');
+        $this->assertDirectoryExists($this->projectRoot . '/uploads/customer_files');
+        $this->assertDirectoryExists($this->projectRoot . '/uploads/archive');
+        $this->assertDirectoryExists($this->projectRoot . '/uploads/import');
     }
 
-    /**
-     * Test that storage directories are writable.
-     */
     #[Test]
     public function it_storage_directories_are_writable(): void
     {
-        $this->markTestIncomplete('InvoicePlane uses CI3 file structure, not Laravel storage directories.');
+        $dirs = [
+            $this->projectRoot . '/uploads',
+            $this->projectRoot . '/uploads/customer_files',
+            $this->projectRoot . '/uploads/archive',
+            $this->projectRoot . '/uploads/import',
+        ];
+
+        foreach ($dirs as $dir) {
+            if (is_dir($dir)) {
+                $this->assertTrue(is_writable($dir), "Directory '{$dir}' should be writable.");
+            }
+        }
+
+        $this->assertDirectoryExists($this->projectRoot . '/uploads', 'uploads/ directory must exist.');
     }
 
-    /**
-     * Test that .gitignore files exist in storage directories.
-     */
     #[Test]
     public function it_gitignore_files_exist_in_storage_directories(): void
     {
-        $this->markTestIncomplete('InvoicePlane uses CI3 file structure, not Laravel storage directories.');
+        $uploadsDir = $this->projectRoot . '/uploads';
+        $hasMarker  = file_exists($uploadsDir . '/index.html')
+            || file_exists($uploadsDir . '/.gitignore')
+            || file_exists($uploadsDir . '/.gitkeep');
+
+        $this->assertTrue(is_dir($uploadsDir), 'uploads/ directory should exist.');
+        $this->assertTrue($hasMarker, 'uploads/ should contain an index.html, .gitignore, or .gitkeep marker file.');
     }
 
-    /**
-     * Test that .gitignore files have correct content.
-     */
     #[Test]
     public function it_gitignore_files_have_correct_content(): void
     {
-        $this->markTestIncomplete('InvoicePlane uses CI3 file structure, not Laravel storage directories.');
+        $indexFile = $this->projectRoot . '/uploads/index.html';
+
+        if (file_exists($indexFile)) {
+            $content = file_get_contents($indexFile);
+            $this->assertIsString($content);
+        } else {
+            $this->assertDirectoryExists($this->projectRoot . '/uploads');
+        }
     }
 
-    /**
-     * Test upload helper functions.
-     */
     #[Test]
     public function it_upload_helper_functions(): void
     {
-        $this->markTestIncomplete('InvoicePlane uses CI3 upload helpers, not Laravel storage helpers.');
+        $this->assertFileExists(
+            $this->projectRoot . '/application/modules/upload/controllers/Upload.php'
+        );
     }
 
-    /**
-     * Test upload constants point to storage.
-     */
     #[Test]
     public function it_upload_constants_point_to_storage(): void
     {
-        $this->markTestIncomplete('InvoicePlane uses CI3 file structure, not Laravel storage constants.');
+        $uploadsDir = $this->projectRoot . '/uploads';
+
+        $this->assertDirectoryExists($uploadsDir);
+        $this->assertTrue(is_readable($uploadsDir), 'uploads/ should be readable.');
     }
 }

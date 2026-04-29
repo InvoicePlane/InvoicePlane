@@ -9,6 +9,18 @@ trait InteractsWithDatabase
 {
     private static ?mysqli $testDb = null;
 
+    /**
+     * Skip the current test if no database connection is available.
+     */
+    protected function skipWithoutDatabase(): void
+    {
+        try {
+            $this->db();
+        } catch (\Throwable $e) {
+            $this->markTestSkipped('Database unavailable: ' . $e->getMessage());
+        }
+    }
+
     protected function databaseInsert(string $table, array $row): int
     {
         $db = $this->db();
