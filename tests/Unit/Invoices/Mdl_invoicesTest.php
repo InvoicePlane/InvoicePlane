@@ -4,60 +4,105 @@ namespace Tests\Unit\Invoices;
 
 use Mdl_Invoices;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\CiTestCase;
 
 /**
- * Test coverage for Mdl_Invoices Model (application/modules/invoices/models/Mdl_invoices.php).
+ * Tests for Mdl_Invoices (application/modules/invoices/models/Mdl_invoices.php).
  */
 #[CoversClass(Mdl_Invoices::class)]
-class Mdl_Invoices_Test extends CiTestCase
+class Mdl_invoicesTest extends CiTestCase
 {
-    public function set_up(): void
+    private $model;
+
+    protected function setUp(): void
     {
-        parent::set_up();
+        parent::setUp();
         $this->CI->load->model('invoices/mdl_invoices');
+        $this->model = $this->CI->mdl_invoices;
     }
 
-    public function test_get_invoice_by_id(): void
+    #[Test]
+    public function it_has_correct_table_name(): void
     {
-        $invoice = $this->CI->mdl_invoices->get_invoice_by_id(1);
-        $this->assertEquals('Invoice 1', $invoice->title);
+        $this->assertEquals('ip_invoices', $this->model->table);
     }
 
-    public function test_get_all_invoices(): void
+    #[Test]
+    public function it_has_correct_primary_key(): void
     {
-        $invoices = $this->CI->mdl_invoices->get_all_invoices();
-        $this->assertCount(2, $invoices);
+        $this->assertEquals('ip_invoices.invoice_id', $this->model->primary_key);
     }
 
-    public function test_create_invoice(): void
+    #[Test]
+    public function it_returns_statuses_array(): void
     {
-        $data = [
-            'title'  => 'New Invoice',
-            'amount' => 100,
-            'status' => 'unpaid',
-        ];
-        $invoice_id = $this->CI->mdl_invoices->create_invoice($data);
-        $this->assertGreaterThan(0, $invoice_id);
+        $statuses = $this->model->statuses();
+
+        $this->assertIsArray($statuses);
+        $this->assertCount(4, $statuses);
+        $this->assertArrayHasKey('1', $statuses);
+        $this->assertArrayHasKey('2', $statuses);
+        $this->assertArrayHasKey('3', $statuses);
+        $this->assertArrayHasKey('4', $statuses);
     }
 
-    public function test_update_invoice(): void
+    #[Test]
+    public function it_returns_validation_rules(): void
     {
-        $data = [
-            'title'  => 'Updated Invoice',
-            'amount' => 150,
-            'status' => 'paid',
-        ];
-        $this->CI->mdl_invoices->update_invoice(1, $data);
-        $invoice = $this->CI->mdl_invoices->get_invoice_by_id(1);
-        $this->assertEquals('Updated Invoice', $invoice->title);
+        $rules = $this->model->validation_rules();
+
+        $this->assertIsArray($rules);
+        $this->assertArrayHasKey('client_id', $rules);
+        $this->assertArrayHasKey('invoice_date_created', $rules);
     }
 
-    public function test_delete_invoice(): void
+    #[Test]
+    public function it_has_default_select_method(): void
     {
-        $this->markTestIncomplete('weak test');
-        $this->CI->mdl_invoices->delete_invoice(2);
-        $invoice = $this->CI->mdl_invoices->get_invoice_by_id(2);
-        $this->assertNull($invoice);
+        $this->assertTrue(method_exists($this->model, 'default_select'));
+    }
+
+    #[Test]
+    public function it_has_default_order_by_method(): void
+    {
+        $this->assertTrue(method_exists($this->model, 'default_order_by'));
+    }
+
+    #[Test]
+    public function it_has_default_join_method(): void
+    {
+        $this->assertTrue(method_exists($this->model, 'default_join'));
+    }
+
+    #[Test]
+    public function it_returns_url_key(): void
+    {
+        $urlKey = $this->model->get_url_key();
+
+        $this->assertIsString($urlKey);
+        $this->assertEquals(32, strlen($urlKey));
+    }
+
+    #[Test]
+    public function it_calculates_date_due_from_invoice_date(): void
+    {
+        $created    = '2024-01-01';
+        $dateDue    = $this->model->get_date_due($created);
+
+        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $dateDue);
+        // Date due must be after or equal to created date
+        $this->assertGreaterThanOrEqual($created, $dateDue);
+    }
+
+    #[Test]
+    public function it_has_validation_rules_save_invoice_method(): void
+    {
+        $rules = $this->model->validation_rules_save_invoice();
+
+        $this->assertIsArray($rules);
+        $this->assertArrayHasKey('invoice_number', $rules);
+        $this->assertArrayHasKey('invoice_date_created', $rules);
+        $this->assertArrayHasKey('invoice_date_due', $rules);
     }
 }

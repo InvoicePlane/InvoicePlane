@@ -2,14 +2,13 @@
 
 namespace Tests\Unit\Invoices;
 
-use Mdl_Invoice_Amounts;
+use Mdl_Item_Amounts;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\CiTestCase;
 
-#[CoversClass(Mdl_Invoice_Amounts::class)]
-
+#[CoversClass(Mdl_Item_Amounts::class)]
 class InvoiceItemAmountModelTest extends CiTestCase
 {
     private $model;
@@ -17,268 +16,136 @@ class InvoiceItemAmountModelTest extends CiTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->CI->load->model('invoices/mdl_invoice_item_amounts');
-        $this->model = $this->CI->mdl_invoice_item_amounts;
+        $this->CI->load->model('invoices/mdl_item_amounts');
+        $this->model = $this->CI->mdl_item_amounts;
     }
 
-    #[Group('exotic')]
     #[Test]
-    public function it_calculates_item_amount_in_legacy_mode(): void
+    public function it_has_calculate_method(): void
     {
-        $this->markTestIncomplete();
-        Setting::setValue('legacy_calculation', '1');
-
-        $taxRate = TaxRate::query()->create([
-            'tax_rate_name'    => 'VAT',
-            'tax_rate_percent' => 10,
-        ]);
-
-        $item = Item::query()->create([
-            'invoice_id'           => 1,
-            'item_tax_rate_id'     => $taxRate->tax_rate_id,
-            'item_name'            => 'Test Item',
-            'item_quantity'        => 2,
-            'item_price'           => 100,
-            'item_order'           => 1,
-            'item_discount_amount' => 5,
-        ]);
-
-        $globalDiscount = [];
-        $this->model->calculate($item->item_id, $globalDiscount);
-
-        $itemAmount = ItemAmount::query()->where('item_id', $item->item_id)->first();
-
-        $this->assertNotNull($itemAmount);
-        $this->assertEquals(200.0, (float) $itemAmount->item_subtotal); // 2 * 100
-        $this->assertEquals(20.0, (float) $itemAmount->item_tax_total);  // 200 * 10%
-        $this->assertEquals(10.0, (float) $itemAmount->item_discount);   // 5 * 2
-        $this->assertEquals(210.0, (float) $itemAmount->item_total);     // 200 + 20 - 10
+        $this->assertTrue(method_exists($this->model, 'calculate'));
     }
 
     #[Group('exotic')]
     #[Test]
     public function it_calculates_item_amount_with_no_tax(): void
     {
-        $this->markTestIncomplete();
-        Setting::setValue('legacy_calculation', '1');
+        $this->skipWithoutDatabase();
 
-        $item = Item::query()->create([
-            'invoice_id'           => 1,
-            'item_tax_rate_id'     => null,
+        /* Arrange: create client, invoice, and item */
+        $this->CI->db->insert('ip_clients', [
+            'client_name'          => 'Test Client ' . uniqid(),
+            'client_active'        => 1,
+            'client_date_created'  => date('Y-m-d H:i:s'),
+            'client_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+        $client_id = $this->CI->db->insert_id();
+
+        $this->CI->db->insert('ip_invoices', [
+            'client_id'                => $client_id,
+            'user_id'                  => 1,
+            'invoice_group_id'         => 1,
+            'invoice_status_id'        => 1,
+            'invoice_number'           => 'INV-IAMT-' . uniqid(),
+            'invoice_date_created'     => date('Y-m-d'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+            'invoice_password'         => '',
+            'invoice_discount_amount'  => 0,
+            'invoice_discount_percent' => 0,
+            'invoice_terms'            => '',
+            'invoice_url_key'          => bin2hex(random_bytes(16)),
+        ]);
+        $invoice_id = $this->CI->db->insert_id();
+
+        $this->CI->db->insert('ip_invoice_items', [
+            'invoice_id'           => $invoice_id,
             'item_name'            => 'Test Item',
             'item_quantity'        => 3,
             'item_price'           => 50,
             'item_order'           => 1,
             'item_discount_amount' => 0,
         ]);
+        $item_id = $this->CI->db->insert_id();
 
-        $globalDiscount = [];
-        $this->model->calculate($item->item_id, $globalDiscount);
+        /* Act */
+        $global_discount = [];
+        $this->model->calculate($item_id, $global_discount);
 
-        $itemAmount = ItemAmount::query()->where('item_id', $item->item_id)->first();
+        /* Assert */
+        $item_amount = $this->CI->db
+            ->get_where('ip_invoice_item_amounts', ['item_id' => $item_id])
+            ->row();
 
-        $this->assertNotNull($itemAmount);
-        $this->assertEquals(150.0, (float) $itemAmount->item_subtotal);
-        $this->assertEquals(0.0, (float) $itemAmount->item_tax_total);
-        $this->assertEquals(0.0, (float) $itemAmount->item_discount);
-        $this->assertEquals(150.0, (float) $itemAmount->item_total);
+        $this->assertNotNull($item_amount);
+        $this->assertEquals(150.0, (float) $item_amount->item_subtotal); // 3 * 50
+        $this->assertEquals(0.0, (float) $item_amount->item_tax_total);
+        $this->assertEquals(0.0, (float) $item_amount->item_discount);
+        $this->assertEquals(150.0, (float) $item_amount->item_total);
+
+        /* Cleanup */
+        $this->CI->db->delete('ip_invoice_item_amounts', ['item_id' => $item_id]);
+        $this->CI->db->delete('ip_invoice_items', ['item_id' => $item_id]);
+        $this->CI->db->delete('ip_invoices', ['invoice_id' => $invoice_id]);
+        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
     }
 
     #[Group('exotic')]
     #[Test]
-    public function it_calculates_item_amount_with_global_amount_discount(): void
+    public function it_calculates_item_amount_with_item_discount(): void
     {
-        $this->markTestIncomplete();
-        Setting::setValue('legacy_calculation', '0');
+        $this->skipWithoutDatabase();
 
-        $item = Item::query()->create([
-            'invoice_id'           => 1,
-            'item_tax_rate_id'     => null,
-            'item_name'            => 'Test Item',
+        /* Arrange */
+        $this->CI->db->insert('ip_clients', [
+            'client_name'          => 'Test Client ' . uniqid(),
+            'client_active'        => 1,
+            'client_date_created'  => date('Y-m-d H:i:s'),
+            'client_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+        $client_id = $this->CI->db->insert_id();
+
+        $this->CI->db->insert('ip_invoices', [
+            'client_id'                => $client_id,
+            'user_id'                  => 1,
+            'invoice_group_id'         => 1,
+            'invoice_status_id'        => 1,
+            'invoice_number'           => 'INV-IAMTD-' . uniqid(),
+            'invoice_date_created'     => date('Y-m-d'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+            'invoice_password'         => '',
+            'invoice_discount_amount'  => 0,
+            'invoice_discount_percent' => 0,
+            'invoice_terms'            => '',
+            'invoice_url_key'          => bin2hex(random_bytes(16)),
+        ]);
+        $invoice_id = $this->CI->db->insert_id();
+
+        $this->CI->db->insert('ip_invoice_items', [
+            'invoice_id'           => $invoice_id,
+            'item_name'            => 'Discounted Item',
             'item_quantity'        => 2,
             'item_price'           => 100,
             'item_order'           => 1,
-            'item_discount_amount' => 0,
+            'item_discount_amount' => 5, // discount per unit
         ]);
+        $item_id = $this->CI->db->insert_id();
 
-        $globalDiscount = [
-            'amount'         => 50,
-            'items_subtotal' => 200,
-        ];
+        /* Act */
+        $global_discount = [];
+        $this->model->calculate($item_id, $global_discount);
 
-        $this->model->calculate($item->item_id, $globalDiscount);
+        /* Assert */
+        $item_amount = $this->CI->db
+            ->get_where('ip_invoice_item_amounts', ['item_id' => $item_id])
+            ->row();
 
-        $itemAmount = ItemAmount::query()->where('item_id', $item->item_id)->first();
+        $this->assertNotNull($item_amount);
+        $this->assertEquals(200.0, (float) $item_amount->item_subtotal); // 2 * 100
 
-        $this->assertNotNull($itemAmount);
-        $this->assertEquals(200.0, (float) $itemAmount->item_subtotal);
-        $this->assertEquals(50.0, $globalDiscount['item']); // Global discount tracked
-    }
-
-    #[Group('exotic')]
-    #[Test]
-    public function it_calculates_item_amount_with_global_percent_discount(): void
-    {
-        $this->markTestIncomplete();
-        Setting::setValue('legacy_calculation', '0');
-
-        $item = Item::query()->create([
-            'invoice_id'           => 1,
-            'item_tax_rate_id'     => null,
-            'item_name'            => 'Test Item',
-            'item_quantity'        => 1,
-            'item_price'           => 1000,
-            'item_order'           => 1,
-            'item_discount_amount' => 0,
-        ]);
-
-        $globalDiscount = [
-            'percent' => 10,
-        ];
-
-        $this->model->calculate($item->item_id, $globalDiscount);
-
-        $itemAmount = ItemAmount::query()->where('item_id', $item->item_id)->first();
-
-        $this->assertNotNull($itemAmount);
-        $this->assertEquals(1000.0, (float) $itemAmount->item_subtotal);
-        $this->assertEquals(100.0, $globalDiscount['item']); // 10% of 1000
-    }
-
-    #[Group('exotic')]
-    #[Test]
-    public function it_calculates_item_amount_with_item_and_global_discount(): void
-    {
-        $this->markTestIncomplete();
-        Setting::setValue('legacy_calculation', '0');
-
-        $taxRate = TaxRate::query()->create([
-            'tax_rate_name'    => 'VAT',
-            'tax_rate_percent' => 20,
-        ]);
-
-        $item = Item::query()->create([
-            'invoice_id'           => 1,
-            'item_tax_rate_id'     => $taxRate->tax_rate_id,
-            'item_name'            => 'Test Item',
-            'item_quantity'        => 2,
-            'item_price'           => 100,
-            'item_order'           => 1,
-            'item_discount_amount' => 10,
-        ]);
-
-        $globalDiscount = [
-            'percent' => 5,
-        ];
-
-        $this->model->calculate($item->item_id, $globalDiscount);
-
-        $itemAmount = ItemAmount::query()->where('item_id', $item->item_id)->first();
-
-        $this->assertNotNull($itemAmount);
-        $this->assertEquals(200.0, (float) $itemAmount->item_subtotal);
-        $this->assertEquals(20.0, (float) $itemAmount->item_discount); // 10 * 2
-        $this->assertEquals(10.0, $globalDiscount['item']); // 5% of 200
-    }
-
-    #[Group('crud')]
-    #[Test]
-    public function it_updates_existing_item_amount(): void
-    {
-        $this->markTestIncomplete();
-        Setting::setValue('legacy_calculation', '1');
-
-        $item = Item::query()->create([
-            'invoice_id'           => 1,
-            'item_tax_rate_id'     => null,
-            'item_name'            => 'Test Item',
-            'item_quantity'        => 1,
-            'item_price'           => 100,
-            'item_order'           => 1,
-            'item_discount_amount' => 0,
-        ]);
-
-        // Create initial amount
-        ItemAmount::query()->create([
-            'item_id'        => $item->item_id,
-            'item_subtotal'  => 50,
-            'item_tax_total' => 5,
-            'item_discount'  => 0,
-            'item_total'     => 55,
-        ]);
-
-        $globalDiscount = [];
-        $this->model->calculate($item->item_id, $globalDiscount);
-
-        $itemAmount = ItemAmount::query()->where('item_id', $item->item_id)->first();
-
-        // Should update to correct values
-        $this->assertEquals(100.0, (float) $itemAmount->item_subtotal);
-        $this->assertEquals(0.0, (float) $itemAmount->item_tax_total);
-        $this->assertEquals(100.0, (float) $itemAmount->item_total);
-    }
-
-    #[Test]
-    public function it_accumulates_global_discount_across_multiple_items(): void
-    {
-        $this->markTestIncomplete();
-        Setting::setValue('legacy_calculation', '0');
-
-        $item1 = Item::query()->create([
-            'invoice_id'           => 1,
-            'item_tax_rate_id'     => null,
-            'item_name'            => 'Item 1',
-            'item_quantity'        => 1,
-            'item_price'           => 100,
-            'item_order'           => 1,
-            'item_discount_amount' => 0,
-        ]);
-
-        $item2 = Item::query()->create([
-            'invoice_id'           => 1,
-            'item_tax_rate_id'     => null,
-            'item_name'            => 'Item 2',
-            'item_quantity'        => 1,
-            'item_price'           => 200,
-            'item_order'           => 2,
-            'item_discount_amount' => 0,
-        ]);
-
-        $globalDiscount = [
-            'percent' => 10,
-        ];
-
-        $this->model->calculate($item1->item_id, $globalDiscount);
-        $this->model->calculate($item2->item_id, $globalDiscount);
-
-        // Should accumulate: 10% of 100 + 10% of 200 = 10 + 20 = 30
-        $this->assertEquals(30.0, $globalDiscount['item']);
-    }
-
-    #[Group('exotic')]
-    #[Test]
-    public function it_handles_fractional_quantities_and_prices(): void
-    {
-        $this->markTestIncomplete();
-        Setting::setValue('legacy_calculation', '1');
-
-        $item = Item::query()->create([
-            'invoice_id'           => 1,
-            'item_tax_rate_id'     => null,
-            'item_name'            => 'Test Item',
-            'item_quantity'        => 2.5,
-            'item_price'           => 33.33,
-            'item_order'           => 1,
-            'item_discount_amount' => 0,
-        ]);
-
-        $globalDiscount = [];
-        $this->model->calculate($item->item_id, $globalDiscount);
-
-        $itemAmount = ItemAmount::query()->where('item_id', $item->item_id)->first();
-
-        $this->assertNotNull($itemAmount);
-        $this->assertEquals(83.325, (float) $itemAmount->item_subtotal); // 2.5 * 33.33
+        /* Cleanup */
+        $this->CI->db->delete('ip_invoice_item_amounts', ['item_id' => $item_id]);
+        $this->CI->db->delete('ip_invoice_items', ['item_id' => $item_id]);
+        $this->CI->db->delete('ip_invoices', ['invoice_id' => $invoice_id]);
+        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
     }
 }

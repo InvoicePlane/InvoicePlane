@@ -16,35 +16,44 @@ class PaymentLogModelTest extends CiTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->CI->load->model('payments/mdl_payment_log');
-        $this->model = $this->CI->mdl_payment_log;
+        $this->CI->load->model('payments/mdl_payment_logs');
+        $this->model = $this->CI->mdl_payment_logs;
+    }
+
+    #[Test]
+    public function it_has_correct_table_name(): void
+    {
+        $this->assertEquals('ip_merchant_responses', $this->model->table);
+    }
+
+    #[Test]
+    public function it_has_correct_primary_key(): void
+    {
+        $this->assertStringContainsString('merchant_response_id', $this->model->primary_key);
+    }
+
+    #[Test]
+    public function it_has_default_select_method(): void
+    {
+        $this->assertTrue(method_exists($this->model, 'default_select'));
+    }
+
+    #[Test]
+    public function it_has_default_order_by_method(): void
+    {
+        $this->assertTrue(method_exists($this->model, 'default_order_by'));
+    }
+
+    #[Test]
+    public function it_has_default_join_method(): void
+    {
+        $this->assertTrue(method_exists($this->model, 'default_join'));
     }
 
     #[Group('relationships')]
     #[Test]
-    public function it_gets_all_payment_logs_with_relations_paginated(): void
+    public function it_extends_response_model(): void
     {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
-    }
-
-    #[Group('relationships')]
-    #[Test]
-    public function it_orders_payment_logs_by_date_descending(): void
-    {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
-    }
-
-    #[Group('relationships')]
-    #[Test]
-    public function it_respects_custom_per_page_parameter(): void
-    {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
-    }
-
-    #[Group('relationships')]
-    #[Test]
-    public function it_loads_custom_relations(): void
-    {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
+        $this->assertInstanceOf('Response_Model', $this->model);
     }
 }

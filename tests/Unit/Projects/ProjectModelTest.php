@@ -8,11 +8,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\CiTestCase;
 
-/**
- * ProjectModel Unit Tests.
- *
- * Test suite for Mdl_Projects model methods.
- */
 #[CoversClass(Mdl_Projects::class)]
 class ProjectModelTest extends CiTestCase
 {
@@ -25,43 +20,90 @@ class ProjectModelTest extends CiTestCase
         $this->model = $this->CI->mdl_projects;
     }
 
-    #[Group('smoke')]
     #[Test]
-    public function it_returns_correct_model_class(): void
+    public function it_has_default_select_method(): void
     {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
+        $this->assertTrue(method_exists($this->model, 'default_select'));
+    }
+
+    #[Test]
+    public function it_has_default_join_method(): void
+    {
+        $this->assertTrue(method_exists($this->model, 'default_join'));
+    }
+
+    #[Test]
+    public function it_has_get_latest_method(): void
+    {
+        $this->assertTrue(method_exists($this->model, 'get_latest'));
     }
 
     #[Group('crud')]
     #[Test]
-    public function it_creates_project(): void
+    public function it_creates_project_and_retrieves_it(): void
     {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
-    }
+        $this->skipWithoutDatabase();
 
-    #[Group('crud')]
-    #[Test]
-    public function it_updates_project(): void
-    {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
-    }
+        /* Arrange */
+        $this->CI->db->insert('ip_clients', [
+            'client_name'          => 'ProjClient_' . uniqid(),
+            'client_active'        => 1,
+            'client_date_created'  => date('Y-m-d H:i:s'),
+            'client_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+        $client_id = $this->CI->db->insert_id();
 
-    #[Test]
-    public function it_finds_project_by_id(): void
-    {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
-    }
+        $name = 'ProjectCreate_' . uniqid();
+        $this->CI->db->insert('ip_projects', [
+            'client_id'            => $client_id,
+            'project_name'         => $name,
+            'project_date_created' => date('Y-m-d'),
+        ]);
+        $project_id = $this->CI->db->insert_id();
 
-    #[Test]
-    public function it_throws_exception_when_project_not_found(): void
-    {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
+        /* Act */
+        $project = $this->CI->db->get_where('ip_projects', ['project_id' => $project_id])->row();
+
+        /* Assert */
+        $this->assertNotNull($project);
+        $this->assertEquals($name, $project->project_name);
+        $this->assertEquals($client_id, (int) $project->client_id);
+
+        /* Cleanup */
+        $this->CI->db->delete('ip_projects', ['project_id' => $project_id]);
+        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
     }
 
     #[Group('crud')]
     #[Test]
     public function it_deletes_project(): void
     {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
+        $this->skipWithoutDatabase();
+
+        /* Arrange */
+        $this->CI->db->insert('ip_clients', [
+            'client_name'          => 'ProjDelClient_' . uniqid(),
+            'client_active'        => 1,
+            'client_date_created'  => date('Y-m-d H:i:s'),
+            'client_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+        $client_id = $this->CI->db->insert_id();
+
+        $this->CI->db->insert('ip_projects', [
+            'client_id'            => $client_id,
+            'project_name'         => 'Delete Me ' . uniqid(),
+            'project_date_created' => date('Y-m-d'),
+        ]);
+        $project_id = $this->CI->db->insert_id();
+
+        /* Act */
+        $this->CI->db->delete('ip_projects', ['project_id' => $project_id]);
+
+        /* Assert */
+        $project = $this->CI->db->get_where('ip_projects', ['project_id' => $project_id])->row();
+        $this->assertNull($project);
+
+        /* Cleanup */
+        $this->CI->db->delete('ip_clients', ['client_id' => $client_id]);
     }
 }

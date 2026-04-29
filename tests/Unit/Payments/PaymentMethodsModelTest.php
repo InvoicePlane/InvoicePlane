@@ -4,6 +4,7 @@ namespace Tests\Unit\Payments;
 
 use Mdl_Payment_Methods;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\CiTestCase;
 
@@ -20,20 +21,60 @@ class PaymentMethodsModelTest extends CiTestCase
     }
 
     #[Test]
-    public function it_retrieves_all_payment_methods(): void
+    public function it_has_correct_table_name(): void
     {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
+        $this->assertEquals('ip_payment_methods', $this->model->table);
     }
 
+    #[Test]
+    public function it_has_correct_primary_key(): void
+    {
+        $this->assertStringContainsString('payment_method_id', $this->model->primary_key);
+    }
+
+    #[Group('crud')]
     #[Test]
     public function it_returns_validation_rules(): void
     {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
+        $rules = $this->model->validation_rules();
+
+        $this->assertIsArray($rules);
+        $this->assertArrayHasKey('payment_method_name', $rules);
     }
 
     #[Test]
-    public function it_orders_by_name_by_default(): void
+    public function it_has_default_select_method(): void
     {
-        $this->markTestIncomplete('Requires CI3 database integration setup');
+        $this->assertTrue(method_exists($this->model, 'default_select'));
+    }
+
+    #[Test]
+    public function it_has_order_by_method(): void
+    {
+        $this->assertTrue(method_exists($this->model, 'order_by'));
+    }
+
+    #[Group('crud')]
+    #[Test]
+    public function it_creates_and_retrieves_payment_method(): void
+    {
+        $this->skipWithoutDatabase();
+
+        /* Arrange */
+        $name = 'TestMethod_' . uniqid();
+        $this->CI->db->insert('ip_payment_methods', [
+            'payment_method_name' => $name,
+        ]);
+        $pm_id = $this->CI->db->insert_id();
+
+        /* Act */
+        $pm = $this->CI->db->get_where('ip_payment_methods', ['payment_method_id' => $pm_id])->row();
+
+        /* Assert */
+        $this->assertNotNull($pm);
+        $this->assertEquals($name, $pm->payment_method_name);
+
+        /* Cleanup */
+        $this->CI->db->delete('ip_payment_methods', ['payment_method_id' => $pm_id]);
     }
 }

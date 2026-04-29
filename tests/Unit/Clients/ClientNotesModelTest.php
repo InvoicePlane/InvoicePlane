@@ -4,6 +4,7 @@ namespace Tests\Unit\Clients;
 
 use Mdl_Client_Notes;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\CiTestCase;
 
 #[CoversClass(Mdl_Client_Notes::class)]
@@ -18,12 +19,14 @@ class ClientNotesModelTest extends CiTestCase
         $this->model = $this->CI->mdl_client_notes;
     }
 
-    public function test_service_has_correct_table(): void
+    #[Test]
+    public function it_has_correct_table(): void
     {
         $this->assertEquals('ip_client_notes', $this->model->table);
     }
 
-    public function test_service_has_correct_primary_key(): void
+    #[Test]
+    public function it_has_correct_primary_key(): void
     {
         $this->assertStringContainsString('client_note_id', $this->model->primary_key);
     }

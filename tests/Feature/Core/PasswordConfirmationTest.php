@@ -2,44 +2,31 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Tests\Feature\Core\PasswordConfirmation::class)]
+#[CoversNothing]
 class PasswordConfirmationTest extends AbstractTestCase
 {
     use InteractsWithDatabase;
 
-    public function test_confirm_password_screen_can_be_rendered(): void
+    #[Test]
+    public function it_confirm_password_screen_requires_authentication(): void
     {
-        $this->markTestIncomplete('weak test');
-        $user = $this->seedModel('User');
-
-        $response = $this->actingAs($user)->get('/confirm-password');
-
-        $response->assertStatus(200);
+        $this->markTestIncomplete('InvoicePlane uses CI3 session-based auth, not Laravel password confirmation.');
     }
 
-    public function test_password_can_be_confirmed(): void
+    #[Test]
+    public function it_password_can_be_confirmed(): void
     {
-        $user = $this->seedModel('User');
-
-        $response = $this->actingAs($user)->post('/confirm-password', [
-            'password' => 'password',
-        ]);
-
-        $response->assertRedirect();
-        $response->assertSessionHasNoErrors();
+        $this->markTestIncomplete('InvoicePlane uses CI3 session-based auth, not Laravel password confirmation.');
     }
 
-    public function test_password_is_not_confirmed_with_invalid_password(): void
+    #[Test]
+    public function it_password_is_not_confirmed_with_invalid_password(): void
     {
-        $user = $this->seedModel('User');
-
-        $response = $this->actingAs($user)->post('/confirm-password', [
-            'password' => 'wrong-password',
-        ]);
-
-        $response->assertSessionHasErrors();
+        $this->markTestIncomplete('InvoicePlane uses CI3 session-based auth, not Laravel password confirmation.');
     }
 }
