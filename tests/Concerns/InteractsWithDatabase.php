@@ -112,134 +112,75 @@ trait InteractsWithDatabase
 
     protected function seedClient(array $overrides = []): int
     {
-        return $this->databaseInsert('ip_clients', array_merge([
-            'client_name'          => 'Test Client ' . bin2hex(random_bytes(4)),
-            'client_address_1'     => '1 Test Street',
-            'client_city'          => 'Testville',
-            'client_country'       => 'NL',
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ], $overrides));
+        return $this->databaseInsert('ip_clients', $this->buildDefaultSeedRow('ip_clients', $overrides));
     }
 
     protected function seedInvoice(int $clientId, array $overrides = []): int
     {
-        return $this->databaseInsert('ip_invoices', array_merge([
-            'user_id'                  => 1,
-            'client_id'                => $clientId,
-            'invoice_group_id'         => 1,
-            'invoice_status_id'        => 1,
-            'invoice_date_created'     => date('Y-m-d'),
-            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
-            'invoice_number'           => 'INV-' . time() . '-' . random_int(100, 999),
-            'invoice_password'         => '',
-            'invoice_discount_amount'  => 0,
-            'invoice_discount_percent' => 0,
-            'invoice_terms'            => '',
-            'invoice_url_key'          => bin2hex(random_bytes(16)),
-        ], $overrides));
+        return $this->databaseInsert(
+            'ip_invoices',
+            $this->buildDefaultSeedRow('ip_invoices', array_merge(['client_id' => $clientId], $overrides))
+        );
     }
 
     protected function seedInvoiceItem(int $invoiceId, array $overrides = []): int
     {
-        return $this->databaseInsert('ip_invoice_items', array_merge([
-            'invoice_id'           => $invoiceId,
-            'item_name'            => 'Test Item ' . bin2hex(random_bytes(2)),
-            'item_description'     => '',
-            'item_quantity'        => 1,
-            'item_price'           => '100.00',
-            'item_order'           => 1,
-            'item_discount_amount' => '0.00',
-        ], $overrides));
+        return $this->databaseInsert(
+            'ip_invoice_items',
+            $this->buildDefaultSeedRow('ip_invoice_items', array_merge(['invoice_id' => $invoiceId], $overrides))
+        );
     }
 
     protected function seedQuote(int $clientId, array $overrides = []): int
     {
-        return $this->databaseInsert('ip_quotes', array_merge([
-            'client_id'              => $clientId,
-            'user_id'                => 1,
-            'invoice_group_id'       => 1,
-            'quote_status_id'        => 1,
-            'quote_number'           => 'QUO-' . time() . '-' . random_int(100, 999),
-            'quote_date_created'     => date('Y-m-d'),
-            'quote_date_expires'     => date('Y-m-d', strtotime('+30 days')),
-            'quote_password'         => '',
-            'quote_discount_amount'  => 0,
-            'quote_discount_percent' => 0,
-            'quote_url_key'          => bin2hex(random_bytes(16)),
-        ], $overrides));
+        return $this->databaseInsert(
+            'ip_quotes',
+            $this->buildDefaultSeedRow('ip_quotes', array_merge(['client_id' => $clientId], $overrides))
+        );
     }
 
     protected function seedQuoteItem(int $quoteId, array $overrides = []): int
     {
-        return $this->databaseInsert('ip_quote_items', array_merge([
-            'quote_id'             => $quoteId,
-            'item_name'            => 'Test Quote Item ' . bin2hex(random_bytes(2)),
-            'item_quantity'        => 1,
-            'item_price'           => '100.00',
-            'item_order'           => 1,
-            'item_discount_amount' => '0.00',
-        ], $overrides));
+        return $this->databaseInsert(
+            'ip_quote_items',
+            $this->buildDefaultSeedRow('ip_quote_items', array_merge(['quote_id' => $quoteId], $overrides))
+        );
     }
 
     protected function seedProject(int $clientId, array $overrides = []): int
     {
-        return $this->databaseInsert('ip_projects', array_merge([
-            'client_id'            => $clientId,
-            'project_name'         => 'Test Project ' . bin2hex(random_bytes(3)),
-            'project_date_created' => date('Y-m-d'),
-        ], $overrides));
+        return $this->databaseInsert(
+            'ip_projects',
+            $this->buildDefaultSeedRow('ip_projects', array_merge(['client_id' => $clientId], $overrides))
+        );
     }
 
     protected function seedTask(array $overrides = []): int
     {
-        return $this->databaseInsert('ip_tasks', array_merge([
-            'task_name'        => 'Test Task ' . bin2hex(random_bytes(3)),
-            'task_date_added'  => date('Y-m-d H:i:s'),
-            'task_status'      => 1,
-            'task_price'       => '0.00',
-            'task_finish_date' => date('Y-m-d'),
-        ], $overrides));
+        return $this->databaseInsert('ip_tasks', $this->buildDefaultSeedRow('ip_tasks', $overrides));
     }
 
     protected function seedProduct(array $overrides = []): int
     {
-        return $this->databaseInsert('ip_products', array_merge([
-            'product_name'        => 'Test Product ' . bin2hex(random_bytes(3)),
-            'product_description' => '',
-            'product_price'       => '10.00',
-            'purchase_price'      => '0.00',
-        ], $overrides));
+        return $this->databaseInsert('ip_products', $this->buildDefaultSeedRow('ip_products', $overrides));
     }
 
     protected function seedUnit(array $overrides = []): int
     {
-        $singular = 'Unit_' . bin2hex(random_bytes(3));
-
-        return $this->databaseInsert('ip_units', array_merge([
-            'unit_name'      => $singular,
-            'unit_name_plrl' => $singular . 's',
-        ], $overrides));
+        return $this->databaseInsert('ip_units', $this->buildDefaultSeedRow('ip_units', $overrides));
     }
 
     protected function seedPaymentMethod(array $overrides = []): int
     {
-        return $this->databaseInsert('ip_payment_methods', array_merge([
-            'payment_method_name' => 'Method ' . bin2hex(random_bytes(3)),
-        ], $overrides));
+        return $this->databaseInsert('ip_payment_methods', $this->buildDefaultSeedRow('ip_payment_methods', $overrides));
     }
 
     protected function seedPayment(int $invoiceId, array $overrides = []): int
     {
-        return $this->databaseInsert('ip_payments', array_merge([
-            'invoice_id'           => $invoiceId,
-            'payment_method_id'    => 1,
-            'payment_amount'       => '100.00',
-            'payment_date'         => date('Y-m-d'),
-            'payment_note'         => '',
-            'payment_date_created' => date('Y-m-d H:i:s'),
-        ], $overrides));
+        return $this->databaseInsert(
+            'ip_payments',
+            $this->buildDefaultSeedRow('ip_payments', array_merge(['invoice_id' => $invoiceId], $overrides))
+        );
     }
 
     /**
@@ -349,18 +290,43 @@ trait InteractsWithDatabase
         $defaults = match ($table) {
             'ip_clients' => [
                 'client_name'          => 'Test Client ' . bin2hex(random_bytes(4)),
+                'client_address_1'     => '1 Test Street',
+                'client_city'          => 'Testville',
+                'client_country'       => 'NL',
                 'client_active'        => 1,
                 'client_date_created'  => date('Y-m-d H:i:s'),
                 'client_date_modified' => date('Y-m-d H:i:s'),
             ],
             'ip_invoices' => [
-                'user_id'              => 1,
-                'client_id'            => (string) ($overrides['client_id'] ?? 1),
-                'invoice_status_id'    => 1,
-                'invoice_date_created' => date('Y-m-d'),
-                'invoice_date_due'     => date('Y-m-d', strtotime('+30 days')),
-                'invoice_number'       => 'INV-' . time() . '-' . random_int(100, 999),
-                'invoice_url_key'      => bin2hex(random_bytes(16)),
+                'user_id'                  => 1,
+                'client_id'                => (string) ($overrides['client_id'] ?? 1),
+                'invoice_group_id'         => 1,
+                'invoice_status_id'        => 1,
+                'invoice_date_created'     => date('Y-m-d'),
+                'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+                'invoice_number'           => 'INV-' . time() . '-' . random_int(100, 999),
+                'invoice_password'         => '',
+                'invoice_discount_amount'  => 0,
+                'invoice_discount_percent' => 0,
+                'invoice_terms'            => '',
+                'invoice_url_key'          => bin2hex(random_bytes(16)),
+            ],
+            'ip_invoice_items' => [
+                'invoice_id'           => (string) ($overrides['invoice_id'] ?? 1),
+                'item_name'            => 'Test Item ' . bin2hex(random_bytes(2)),
+                'item_description'     => '',
+                'item_quantity'        => 1,
+                'item_price'           => '100.00',
+                'item_order'           => 1,
+                'item_discount_amount' => '0.00',
+            ],
+            'ip_quote_items' => [
+                'quote_id'             => (string) ($overrides['quote_id'] ?? 1),
+                'item_name'            => 'Test Quote Item ' . bin2hex(random_bytes(2)),
+                'item_quantity'        => 1,
+                'item_price'           => '100.00',
+                'item_order'           => 1,
+                'item_discount_amount' => '0.00',
             ],
             'ip_projects' => [
                 'client_id'            => (string) ($overrides['client_id'] ?? 1),
@@ -376,11 +342,42 @@ trait InteractsWithDatabase
                 'project_id'       => (string) ($overrides['project_id'] ?? 0),
             ],
             'ip_quotes' => [
-                'client_id'          => (string) ($overrides['client_id'] ?? 1),
-                'quote_date_created' => date('Y-m-d'),
-                'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-                'quote_number'       => 'QUO-' . time() . '-' . random_int(100, 999),
-                'quote_url_key'      => bin2hex(random_bytes(16)),
+                'client_id'              => (string) ($overrides['client_id'] ?? 1),
+                'user_id'                => 1,
+                'invoice_group_id'       => 1,
+                'quote_status_id'        => 1,
+                'quote_date_created'     => date('Y-m-d'),
+                'quote_date_expires'     => date('Y-m-d', strtotime('+30 days')),
+                'quote_number'           => 'QUO-' . time() . '-' . random_int(100, 999),
+                'quote_password'         => '',
+                'quote_discount_amount'  => 0,
+                'quote_discount_percent' => 0,
+                'quote_url_key'          => bin2hex(random_bytes(16)),
+            ],
+            'ip_payments' => [
+                'invoice_id'           => (string) ($overrides['invoice_id'] ?? 1),
+                'payment_method_id'    => 1,
+                'payment_amount'       => '100.00',
+                'payment_date'         => date('Y-m-d'),
+                'payment_note'         => '',
+                'payment_date_created' => date('Y-m-d H:i:s'),
+            ],
+            'ip_products' => [
+                'product_name'        => 'Test Product ' . bin2hex(random_bytes(3)),
+                'product_description' => '',
+                'product_price'       => '10.00',
+                'purchase_price'      => '0.00',
+            ],
+            'ip_units' => (static function () use ($overrides): array {
+                $base = $overrides['unit_name'] ?? ('Unit_' . bin2hex(random_bytes(3)));
+
+                return [
+                    'unit_name'      => $base,
+                    'unit_name_plrl' => $overrides['unit_name_plrl'] ?? ($base . 's'),
+                ];
+            })(),
+            'ip_payment_methods' => [
+                'payment_method_name' => 'Method ' . bin2hex(random_bytes(3)),
             ],
             'ip_users' => [
                 'user_name'     => 'test_' . bin2hex(random_bytes(3)),
@@ -391,22 +388,6 @@ trait InteractsWithDatabase
             'ip_tax_rates' => [
                 'tax_rate_name'    => 'Test Rate ' . bin2hex(random_bytes(2)),
                 'tax_rate_percent' => 10.00,
-            ],
-            'ip_invoice_items' => [
-                'invoice_id'           => (string) ($overrides['invoice_id'] ?? 1),
-                'item_name'            => 'Test Item ' . bin2hex(random_bytes(2)),
-                'item_quantity'        => 1,
-                'item_price'           => '100.00',
-                'item_order'           => 1,
-                'item_discount_amount' => '0.00',
-            ],
-            'ip_quote_items' => [
-                'quote_id'             => (string) ($overrides['quote_id'] ?? 1),
-                'item_name'            => 'Test Quote Item ' . bin2hex(random_bytes(2)),
-                'item_quantity'        => 1,
-                'item_price'           => '100.00',
-                'item_order'           => 1,
-                'item_discount_amount' => '0.00',
             ],
             'ip_invoice_groups' => [
                 'invoice_group_name'              => 'Test Group ' . bin2hex(random_bytes(2)),
@@ -459,19 +440,6 @@ trait InteractsWithDatabase
                 'client_id'                => (string) ($overrides['client_id'] ?? 1),
                 'client_note'              => 'Test note ' . bin2hex(random_bytes(2)),
                 'client_note_date_created' => date('Y-m-d H:i:s'),
-            ],
-            'ip_products' => [
-                'product_name'        => 'Test Product ' . bin2hex(random_bytes(3)),
-                'product_description' => '',
-                'product_price'       => '10.00',
-                'purchase_price'      => '0.00',
-            ],
-            'ip_units' => [
-                'unit_name'      => 'Unit_' . bin2hex(random_bytes(3)),
-                'unit_name_plrl' => 'Units_' . bin2hex(random_bytes(3)),
-            ],
-            'ip_payment_methods' => [
-                'payment_method_name' => 'Method ' . bin2hex(random_bytes(3)),
             ],
             default => [],
         };
