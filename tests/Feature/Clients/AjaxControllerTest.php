@@ -24,7 +24,7 @@ class AjaxControllerTest extends AbstractTestCase
     public function it_returns_clients_matching_name_query(): void
     {
         /* Arrange */
-        $this->seedClient(['client_name' => 'Test Client']);
+        $this->seedModel('Client', ['client_name' => 'Test Client']);
 
         /* Act */
         $response = $this->get('/clients/ajax/name_query', ['query' => 'Test']);
@@ -40,7 +40,7 @@ class AjaxControllerTest extends AbstractTestCase
     public function it_gets_latest_clients(): void
     {
         /* Arrange */
-        $this->seedClient();
+        $this->seedModel('Client');
 
         /* Act */
         $response = $this->get('/clients/ajax/get_latest');
@@ -65,7 +65,7 @@ class AjaxControllerTest extends AbstractTestCase
     public function it_deletes_client_note(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient();
+        $clientId = $this->seedModel('Client')->client_id;
         $note     = $this->seedModel('ClientNote', ['client_id' => $clientId]);
 
         /* Act */
@@ -82,7 +82,7 @@ class AjaxControllerTest extends AbstractTestCase
     public function it_saves_client_note(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient();
+        $clientId = $this->seedModel('Client')->client_id;
 
         /* Act */
         $response = $this->post('/clients/ajax/save_client_note', [
@@ -102,7 +102,7 @@ class AjaxControllerTest extends AbstractTestCase
     public function it_loads_client_notes(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient();
+        $clientId = $this->seedModel('Client')->client_id;
         $note     = $this->seedModel('ClientNote', ['client_id' => $clientId]);
 
         /* Act */

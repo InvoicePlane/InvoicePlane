@@ -97,7 +97,7 @@ class ClientsFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_view_page_for_a_seeded_client(): void
     {
-        $clientId = $this->seedClient(['client_name' => 'Regression Client']);
+        $clientId = $this->seedModel('Client', ['client_name' => 'Regression Client'])->client_id;
 
         $response = $this->get('/clients/view/' . $clientId);
 
@@ -135,7 +135,7 @@ class ClientsFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_shows_client_name_in_the_edit_form_for_an_existing_client(): void
     {
-        $clientId = $this->seedClient(['client_name' => 'Editable Corp']);
+        $clientId = $this->seedModel('Client', ['client_name' => 'Editable Corp'])->client_id;
 
         $response = $this->get('/clients/form/' . $clientId);
 
@@ -147,9 +147,9 @@ class ClientsFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_render_php_errors_when_listing_multiple_clients(): void
     {
-        $this->seedClient(['client_name' => 'Alpha Ltd']);
-        $this->seedClient(['client_name' => 'Beta GmbH']);
-        $this->seedClient(['client_name' => 'Gamma BV']);
+        $this->seedModel('Client', ['client_name' => 'Alpha Ltd']);
+        $this->seedModel('Client', ['client_name' => 'Beta GmbH']);
+        $this->seedModel('Client', ['client_name' => 'Gamma BV']);
 
         $response = $this->get('/clients/status/active');
 

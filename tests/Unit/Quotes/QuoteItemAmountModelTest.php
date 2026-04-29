@@ -33,9 +33,9 @@ class QuoteItemAmountModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id = $this->seedClient();
-        $quote_id  = $this->seedQuote($client_id);
-        $item_id   = $this->seedQuoteItem($quote_id, ['item_quantity' => 3, 'item_price' => 50]);
+        $client_id = $this->seedModel('Client')->client_id;
+        $quote_id  = $this->seedModel('Quote', ['client_id' => $client_id])->quote_id;
+        $item_id   = $this->seedModel('QuoteItem', ['quote_id' => $quote_id, 'item_quantity' => 3, 'item_price' => 50])->item_id;
 
         /* Act */
         $global_discount = [];
@@ -62,9 +62,9 @@ class QuoteItemAmountModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id = $this->seedClient();
-        $quote_id  = $this->seedQuote($client_id, ['quote_discount_amount' => 50]);
-        $item_id   = $this->seedQuoteItem($quote_id, ['item_quantity' => 1, 'item_price' => 100]);
+        $client_id = $this->seedModel('Client')->client_id;
+        $quote_id  = $this->seedModel('Quote', ['client_id' => $client_id, 'quote_discount_amount' => 50])->quote_id;
+        $item_id   = $this->seedModel('QuoteItem', ['quote_id' => $quote_id, 'item_quantity' => 1, 'item_price' => 100])->item_id;
 
         /* Act */
         $global_discount = ['amount' => 50, 'items_subtotal' => 100];

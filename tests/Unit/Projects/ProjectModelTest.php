@@ -45,9 +45,9 @@ class ProjectModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
+        $client_id  = $this->seedModel('Client')->client_id;
         $name       = 'ProjectCreate_' . uniqid();
-        $project_id = $this->seedProject($client_id, ['project_name' => $name]);
+        $project_id = $this->seedModel('Project', ['client_id' => $client_id, 'project_name' => $name])->project_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_projects', ['project_id' => $project_id]);
@@ -69,8 +69,8 @@ class ProjectModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $project_id = $this->seedProject($client_id);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $project_id = $this->seedModel('Project', ['client_id' => $client_id])->project_id;
 
         /* Act */
         $this->databaseDelete('ip_projects', ['project_id' => $project_id]);

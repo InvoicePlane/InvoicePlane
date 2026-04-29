@@ -100,7 +100,7 @@ class QuotesFeatureTest extends AbstractTestCase
     #[Test]
     public function it_renders_the_view_page_for_a_seeded_quote(): void
     {
-        $clientId = $this->seedClient(['client_name' => 'Quote Client']);
+        $clientId = $this->seedModel('Client', ['client_name' => 'Quote Client'])->client_id;
         $quoteId  = $this->seedQuote($clientId, ['quote_number' => 'QUO-TEST-' . time()]);
 
         $response = $this->get('/quotes/view/' . $quoteId);

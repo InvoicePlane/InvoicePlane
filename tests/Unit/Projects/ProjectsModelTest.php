@@ -69,10 +69,10 @@ class ProjectsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $project_id = $this->seedProject($client_id);
-        $this->seedTask(['project_id' => $project_id]);
-        $this->seedTask(['project_id' => $project_id]);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $project_id = $this->seedModel('Project', ['client_id' => $client_id])->project_id;
+        $this->seedModel('Task', ['project_id' => $project_id]);
+        $this->seedModel('Task', ['project_id' => $project_id]);
 
         /* Act */
         $result = $this->model->get_tasks($project_id);

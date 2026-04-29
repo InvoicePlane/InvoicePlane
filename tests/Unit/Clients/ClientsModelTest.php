@@ -107,7 +107,7 @@ class ClientsModelTest extends CiTestCase
 
         /* Arrange */
         $name      = 'ClientCreate_' . uniqid();
-        $client_id = $this->seedClient(['client_name' => $name]);
+        $client_id = $this->seedModel('Client', ['client_name' => $name])->client_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_clients', ['client_id' => $client_id]);
@@ -128,8 +128,8 @@ class ClientsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $active_id   = $this->seedClient(['client_active' => 1]);
-        $inactive_id = $this->seedClient(['client_active' => 0]);
+        $active_id   = $this->seedModel('Client', ['client_active' => 1])->client_id;
+        $inactive_id = $this->seedModel('Client', ['client_active' => 0])->client_id;
 
         /* Act */
         $this->model->is_active();

@@ -62,7 +62,7 @@ class PaymentMethodsModelTest extends CiTestCase
 
         /* Arrange */
         $name = 'TestMethod_' . uniqid();
-        $pm_id = $this->seedPaymentMethod(['payment_method_name' => $name]);
+        $pm_id = $this->seedModel('PaymentMethod', ['payment_method_name' => $name])->payment_method_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_payment_methods', ['payment_method_id' => $pm_id]);

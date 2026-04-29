@@ -82,7 +82,7 @@ class TasksModelTest extends CiTestCase
 
         /* Arrange */
         $name    = 'Design_' . uniqid();
-        $task_id = $this->seedTask(['task_name' => $name]);
+        $task_id = $this->seedModel('Task', ['task_name' => $name])->task_id;
 
         /* Act */
         $this->model->by_task($name);
@@ -104,7 +104,7 @@ class TasksModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $task_id = $this->seedTask(['task_status' => 1]);
+        $task_id = $this->seedModel('Task', ['task_status' => 1])->task_id;
 
         /* Act */
         $this->model->update_on_invoice_delete(null);

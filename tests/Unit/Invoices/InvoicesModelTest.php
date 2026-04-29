@@ -66,9 +66,9 @@ class InvoicesModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id      = $this->seedClient();
+        $client_id      = $this->seedModel('Client')->client_id;
         $invoice_number = 'INV-TEST-' . uniqid();
-        $invoice_id     = $this->seedInvoice($client_id, ['invoice_number' => $invoice_number]);
+        $invoice_id     = $this->seedModel('Invoice', ['client_id' => $client_id, 'invoice_number' => $invoice_number])->invoice_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoice_id]);
@@ -90,9 +90,9 @@ class InvoicesModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id, ['invoice_status_id' => 4]);
-        $this->seedPayment($invoice_id, ['payment_amount' => '100.00']);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id, 'invoice_status_id' => 4])->invoice_id;
+        $this->seedModel('Payment', ['invoice_id' => $invoice_id, 'payment_amount' => '100.00']);
 
         $invoice = (object) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoice_id]);
 

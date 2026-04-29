@@ -70,13 +70,13 @@ class QuoteItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id = $this->seedClient();
-        $quote_id  = $this->seedQuote($client_id);
-        $item_id   = $this->seedQuoteItem($quote_id, [
+        $client_id = $this->seedModel('Client')->client_id;
+        $quote_id  = $this->seedModel('Quote', ['client_id' => $client_id])->quote_id;
+        $item_id   = $this->seedModel('QuoteItem', ['quote_id' => $quote_id,
             'item_name'     => 'Test Quote Item',
             'item_quantity' => 2,
             'item_price'    => 75.00,
-        ]);
+        ])->item_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_quote_items', ['item_id' => $item_id]);
@@ -100,9 +100,9 @@ class QuoteItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id = $this->seedClient();
-        $quote_id  = $this->seedQuote($client_id);
-        $item_id   = $this->seedQuoteItem($quote_id);
+        $client_id = $this->seedModel('Client')->client_id;
+        $quote_id  = $this->seedModel('Quote', ['client_id' => $client_id])->quote_id;
+        $item_id   = $this->seedModel('QuoteItem', ['quote_id' => $quote_id])->item_id;
 
         /* Act */
         $this->model->delete($item_id);
@@ -121,8 +121,8 @@ class QuoteItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id = $this->seedClient();
-        $quote_id  = $this->seedQuote($client_id);
+        $client_id = $this->seedModel('Client')->client_id;
+        $quote_id  = $this->seedModel('Quote', ['client_id' => $client_id])->quote_id;
 
         /* Act */
         $subtotal = $this->model->get_items_subtotal($quote_id);

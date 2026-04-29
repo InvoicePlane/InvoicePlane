@@ -79,7 +79,7 @@ class UnitsModelTest extends CiTestCase
 
         /* Arrange */
         $name    = 'TestUnit_' . uniqid();
-        $unit_id = $this->seedUnit(['unit_name' => $name, 'unit_name_plrl' => $name . 's']);
+        $unit_id = $this->seedModel('Unit', ['unit_name' => $name, 'unit_name_plrl' => $name . 's'])->unit_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_units', ['unit_id' => $unit_id]);
@@ -99,7 +99,7 @@ class UnitsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $unit_id = $this->seedUnit(['unit_name' => 'Kilogram', 'unit_name_plrl' => 'Kilograms']);
+        $unit_id = $this->seedModel('Unit', ['unit_name' => 'Kilogram', 'unit_name_plrl' => 'Kilograms'])->unit_id;
 
         /* Act */
         $name = $this->model->get_name($unit_id, 1);
@@ -118,7 +118,7 @@ class UnitsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $unit_id = $this->seedUnit(['unit_name' => 'Liter', 'unit_name_plrl' => 'Liters']);
+        $unit_id = $this->seedModel('Unit', ['unit_name' => 'Liter', 'unit_name_plrl' => 'Liters'])->unit_id;
 
         /* Act */
         $name = $this->model->get_name($unit_id, 5);

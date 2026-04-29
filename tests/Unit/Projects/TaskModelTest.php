@@ -46,7 +46,7 @@ class TaskModelTest extends CiTestCase
 
         /* Arrange */
         $name    = 'TaskCreate_' . uniqid();
-        $task_id = $this->seedTask(['task_name' => $name]);
+        $task_id = $this->seedModel('Task', ['task_name' => $name])->task_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_tasks', ['task_id' => $task_id]);
@@ -67,7 +67,7 @@ class TaskModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $task_id = $this->seedTask(['task_status' => 1]);
+        $task_id = $this->seedModel('Task', ['task_status' => 1])->task_id;
 
         /* Act */
         $this->model->update_status(3, $task_id);
@@ -87,7 +87,7 @@ class TaskModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $task_id = $this->seedTask(['task_status' => 1]);
+        $task_id = $this->seedModel('Task', ['task_status' => 1])->task_id;
 
         /* Act: 99 is not a valid status */
         $this->model->update_status(99, $task_id);

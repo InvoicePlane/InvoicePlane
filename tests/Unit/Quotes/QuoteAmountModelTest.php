@@ -72,8 +72,8 @@ class QuoteAmountModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id = $this->seedClient();
-        $quote_id  = $this->seedQuote($client_id);
+        $client_id = $this->seedModel('Client')->client_id;
+        $quote_id  = $this->seedModel('Quote', ['client_id' => $client_id])->quote_id;
 
         /* Act */
         $discount = $this->model->get_global_discount($quote_id);

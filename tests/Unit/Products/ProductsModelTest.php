@@ -84,10 +84,10 @@ class ProductsModelTest extends CiTestCase
 
         /* Arrange */
         $name       = 'TestProduct_' . uniqid();
-        $product_id = $this->seedProduct([
+        $product_id = $this->seedModel('Product', [
             'product_name'  => $name,
             'product_price' => 99.99,
-        ]);
+        ])->product_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_products', ['product_id' => $product_id]);
@@ -109,7 +109,7 @@ class ProductsModelTest extends CiTestCase
 
         /* Arrange */
         $name       = 'FindMe_' . uniqid();
-        $product_id = $this->seedProduct(['product_name' => $name]);
+        $product_id = $this->seedModel('Product', ['product_name' => $name])->product_id;
 
         /* Act */
         $this->model->by_product($name);

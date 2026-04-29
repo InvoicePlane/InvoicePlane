@@ -33,9 +33,9 @@ class InvoiceItemAmountModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id);
-        $item_id    = $this->seedInvoiceItem($invoice_id, ['item_quantity' => 3, 'item_price' => 50]);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id])->invoice_id;
+        $item_id    = $this->seedModel('InvoiceItem', ['invoice_id' => $invoice_id, 'item_quantity' => 3, 'item_price' => 50])->item_id;
 
         /* Act */
         $global_discount = [];
@@ -63,13 +63,13 @@ class InvoiceItemAmountModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id);
-        $item_id    = $this->seedInvoiceItem($invoice_id, [
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id])->invoice_id;
+        $item_id    = $this->seedModel('InvoiceItem', ['invoice_id' => $invoice_id,
             'item_quantity'        => 2,
             'item_price'           => 100,
             'item_discount_amount' => 5, // discount per unit
-        ]);
+        ])->item_id;
 
         /* Act */
         $global_discount = [];
@@ -94,9 +94,9 @@ class InvoiceItemAmountModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id, ['invoice_discount_percent' => 10]);
-        $item_id    = $this->seedInvoiceItem($invoice_id, ['item_quantity' => 1, 'item_price' => 1000]);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id, 'invoice_discount_percent' => 10])->invoice_id;
+        $item_id    = $this->seedModel('InvoiceItem', ['invoice_id' => $invoice_id, 'item_quantity' => 1, 'item_price' => 1000])->item_id;
 
         /* Act */
         $global_discount = ['percent' => 10];

@@ -43,8 +43,8 @@ class InvoiceItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id])->invoice_id;
 
         $data = [
             'invoice_id'           => $invoice_id,
@@ -80,13 +80,13 @@ class InvoiceItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id);
-        $item_id    = $this->seedInvoiceItem($invoice_id, [
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id])->invoice_id;
+        $item_id    = $this->seedModel('InvoiceItem', ['invoice_id' => $invoice_id,
             'item_name'        => 'Original Name',
             'item_quantity'    => 1,
             'item_price'       => 50,
-        ]);
+        ])->item_id;
 
         $data = [
             'invoice_id'           => $invoice_id,
@@ -123,9 +123,9 @@ class InvoiceItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id);
-        $item_id    = $this->seedInvoiceItem($invoice_id);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id])->invoice_id;
+        $item_id    = $this->seedModel('InvoiceItem', ['invoice_id' => $invoice_id])->item_id;
 
         /* Act */
         $result = $this->model->delete($item_id);
@@ -145,10 +145,10 @@ class InvoiceItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id);
-        $item1_id   = $this->seedInvoiceItem($invoice_id, ['item_quantity' => 2, 'item_price' => 100]);
-        $item2_id   = $this->seedInvoiceItem($invoice_id, ['item_quantity' => 1, 'item_price' => 150]);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id])->invoice_id;
+        $item1_id   = $this->seedModel('InvoiceItem', ['invoice_id' => $invoice_id, 'item_quantity' => 2, 'item_price' => 100])->item_id;
+        $item2_id   = $this->seedModel('InvoiceItem', ['invoice_id' => $invoice_id, 'item_quantity' => 1, 'item_price' => 150])->item_id;
 
         $this->databaseInsert('ip_invoice_item_amounts', [
             'item_id'        => $item1_id,
@@ -188,8 +188,8 @@ class InvoiceItemModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id])->invoice_id;
 
         /* Act */
         $this->CI->load->model('invoices/mdl_invoice_amounts');

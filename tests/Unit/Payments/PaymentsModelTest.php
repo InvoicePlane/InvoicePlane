@@ -64,9 +64,9 @@ class PaymentsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id);
-        $payment_id = $this->seedPayment($invoice_id, ['payment_amount' => '150.00']);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id])->invoice_id;
+        $payment_id = $this->seedModel('Payment', ['invoice_id' => $invoice_id, 'payment_amount' => '150.00'])->payment_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_payments', ['payment_id' => $payment_id]);
@@ -89,9 +89,9 @@ class PaymentsModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id  = $this->seedClient();
-        $invoice_id = $this->seedInvoice($client_id);
-        $payment_id = $this->seedPayment($invoice_id, ['payment_amount' => '100.00']);
+        $client_id  = $this->seedModel('Client')->client_id;
+        $invoice_id = $this->seedModel('Invoice', ['client_id' => $client_id])->invoice_id;
+        $payment_id = $this->seedModel('Payment', ['invoice_id' => $invoice_id, 'payment_amount' => '100.00'])->payment_id;
 
         /* Assert */
         $this->assertDatabaseHas('ip_payments', ['payment_id' => $payment_id, 'invoice_id' => $invoice_id]);

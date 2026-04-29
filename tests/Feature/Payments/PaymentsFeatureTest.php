@@ -46,8 +46,8 @@ class PaymentsFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_create_payment_form_for_an_existing_invoice(): void
     {
-        $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId  = $this->seedModel('Client')->client_id;
+        $invoiceId = $this->seedModel('Invoice', ['client_id' => $clientId])->invoice_id;
 
         $response = $this->get('/payments/create/' . $invoiceId);
 
@@ -59,8 +59,8 @@ class PaymentsFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_stores_a_payment_and_links_it_to_the_invoice(): void
     {
-        $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId  = $this->seedModel('Client')->client_id;
+        $invoiceId = $this->seedModel('Invoice', ['client_id' => $clientId])->invoice_id;
 
         $response = $this->post('/payments/create/' . $invoiceId, [
             'payment_method_id' => 1,
@@ -88,8 +88,8 @@ class PaymentsFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_payment_submission_with_a_zero_amount(): void
     {
-        $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId  = $this->seedModel('Client')->client_id;
+        $invoiceId = $this->seedModel('Invoice', ['client_id' => $clientId])->invoice_id;
 
         $response = $this->post('/payments/create/' . $invoiceId, [
             'payment_method_id' => 1,
@@ -112,9 +112,9 @@ class PaymentsFeatureTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_the_payment_view_page_for_a_seeded_payment(): void
     {
-        $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId);
-        $paymentId = $this->seedPayment($invoiceId, ['payment_amount' => '175.50']);
+        $clientId  = $this->seedModel('Client')->client_id;
+        $invoiceId = $this->seedModel('Invoice', ['client_id' => $clientId])->invoice_id;
+        $paymentId = $this->seedModel('Payment', ['invoice_id' => $invoiceId, 'payment_amount' => '175.50'])->payment_id;
 
         $response = $this->get('/payments/view/' . $paymentId);
 

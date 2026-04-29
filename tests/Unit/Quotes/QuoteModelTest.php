@@ -119,9 +119,9 @@ class QuoteModelTest extends CiTestCase
         $this->skipWithoutDatabase();
 
         /* Arrange */
-        $client_id    = $this->seedClient();
+        $client_id    = $this->seedModel('Client')->client_id;
         $quote_number = 'QUO-' . uniqid();
-        $quote_id     = $this->seedQuote($client_id, ['quote_number' => $quote_number]);
+        $quote_id     = $this->seedModel('Quote', ['client_id' => $client_id, 'quote_number' => $quote_number])->quote_id;
 
         /* Act */
         $row = $this->databaseFetchOne('ip_quotes', ['quote_id' => $quote_id]);
