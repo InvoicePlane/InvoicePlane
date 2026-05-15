@@ -46,7 +46,8 @@ function email_invoice(
     $body,
     $cc = null,
     $bcc = null,
-    $attachments = null
+    $attachments = null,
+    $reply_to = null
 ) {
     $CI = & get_instance();
 
@@ -72,11 +73,12 @@ function email_invoice(
         $_SERVER['CIIname'] = parse_template($db_invoice, $_SERVER['CIIname']);
     }
 
-    $message = parse_template($db_invoice, $body);
-    $subject = parse_template($db_invoice, $subject);
-    $cc      = parse_template($db_invoice, $cc);
-    $bcc     = parse_template($db_invoice, $bcc);
-    $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
+    $message  = parse_template($db_invoice, $body);
+    $subject  = parse_template($db_invoice, $subject);
+    $cc       = parse_template($db_invoice, $cc);
+    $bcc      = parse_template($db_invoice, $bcc);
+    $reply_to = parse_template($db_invoice, $reply_to);
+    $from     = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
     $errors = [];
     if ( ! validate_email_address($to)) {
@@ -95,11 +97,15 @@ function email_invoice(
         $errors[] = 'bcc_email';
     }
 
+    if ($reply_to && ! validate_email_address($reply_to)) {
+        $errors[] = 'reply_to';
+    }
+
     check_mail_errors($errors, 'mailer/invoice/' . $invoice_id);
 
     $message = (empty($message) ? ' ' : $message);
 
-    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc, $attachments);
+    return phpmail_send($from, $to, $subject, $message, $invoice, $cc, $bcc, $attachments, $reply_to);
 }
 
 /**
@@ -123,7 +129,8 @@ function email_quote(
     $body,
     $cc = null,
     $bcc = null,
-    $attachments = null
+    $attachments = null,
+    $reply_to = null
 ) {
     $CI = & get_instance();
 
@@ -137,11 +144,12 @@ function email_quote(
 
     $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
-    $message = parse_template($db_quote, $body);
-    $subject = parse_template($db_quote, $subject);
-    $cc      = parse_template($db_quote, $cc);
-    $bcc     = parse_template($db_quote, $bcc);
-    $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
+    $message  = parse_template($db_quote, $body);
+    $subject  = parse_template($db_quote, $subject);
+    $cc       = parse_template($db_quote, $cc);
+    $bcc      = parse_template($db_quote, $bcc);
+    $reply_to = parse_template($db_quote, $reply_to);
+    $from     = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
     $errors = [];
     if ( ! validate_email_address($to)) {
@@ -160,11 +168,15 @@ function email_quote(
         $errors[] = 'bcc_email';
     }
 
+    if ($reply_to && ! validate_email_address($reply_to)) {
+        $errors[] = 'reply_to';
+    }
+
     check_mail_errors($errors, 'mailer/quote/' . $quote_id);
 
     $message = (empty($message) ? ' ' : $message);
 
-    return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc, $attachments);
+    return phpmail_send($from, $to, $subject, $message, $quote, $cc, $bcc, $attachments, $reply_to);
 }
 
 /**

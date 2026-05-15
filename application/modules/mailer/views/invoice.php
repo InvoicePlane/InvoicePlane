@@ -1,6 +1,6 @@
 <script>
     $(function () {
-        var template_fields = ["body", "subject", "from_name", "from_email", "cc", "bcc", "pdf_template"];
+        var template_fields = ["body", "subject", "from_name", "from_email", "cc", "bcc", "reply_to", "pdf_template"];
 
         $('#email_template').change(function () {
             var email_template_id = $(this).val();
@@ -118,6 +118,11 @@ foreach ($email_templates as $email_template) {
                 <div class="form-group">
                     <label for="bcc"><?php _trans('bcc'); ?></label>
                     <input type="text" name="bcc" id="bcc" value="" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="reply_to"><?php _trans('reply_to'); ?></label>
+                    <input type="text" name="reply_to" id="reply_to" value="" class="form-control">
                 </div>
 
                 <div class="form-group">

@@ -74,6 +74,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="email_template_reply_to" class="control-label"><?php _trans('reply_to'); ?></label>
+                    <input type="text" name="email_template_reply_to" id="email_template_reply_to" class="form-control taggable"
+                           value="<?php echo $this->mdl_email_templates->form_value('email_template_reply_to', true); ?>">
+                </div>
+
+                <div class="form-group">
                     <label for="email_template_subject" class="control-label">
                         <?php _trans('subject'); ?>
                     </label>

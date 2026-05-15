@@ -183,15 +183,16 @@ class Mailer extends Admin_Controller
         }
         // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
-        $cc  = $this->input->post('cc');
-        $bcc = $this->input->post('bcc');
+        $cc       = $this->input->post('cc');
+        $bcc      = $this->input->post('bcc');
+        $reply_to = $this->input->post('reply_to', true);
 
         $this->load->model('upload/mdl_uploads');
         $attachment_files = $this->mdl_uploads->get_invoice_uploads($invoice_id);
 
         $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
 
-        if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
+        if (email_invoice($invoice_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files, $reply_to)) {
             $this->mdl_invoices->mark_sent($invoice_id);
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
             redirect('invoices/view/' . $invoice_id);
@@ -233,15 +234,16 @@ class Mailer extends Admin_Controller
         }
         // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
-        $cc  = $this->input->post('cc');
-        $bcc = $this->input->post('bcc');
+        $cc       = $this->input->post('cc');
+        $bcc      = $this->input->post('bcc');
+        $reply_to = $this->input->post('reply_to', true);
 
         $this->load->model('upload/mdl_uploads');
         $attachment_files = $this->mdl_uploads->get_quote_uploads($quote_id);
 
         $this->mdl_quotes->generate_quote_number_if_applicable($quote_id);
 
-        if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files)) {
+        if (email_quote($quote_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files, $reply_to)) {
             $this->mdl_quotes->mark_sent($quote_id);
             $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
 

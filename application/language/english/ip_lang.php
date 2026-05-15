@@ -542,6 +542,7 @@ $lang = [
     'reject_this_quote'                             => 'Reject This Quote',
     'rejected'                                      => 'Rejected',
     'remittance'                                    => 'Remittance',
+    'reply_to'                                      => 'Reply To',
     'remove'                                        => 'Remove',
     'remove_logo'                                   => 'Remove Logo',
     'report_options'                                => 'Report Options',

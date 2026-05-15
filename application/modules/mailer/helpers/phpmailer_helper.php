@@ -53,7 +53,8 @@ function phpmail_send(
     $attachment_path = null,
     $cc = null,
     $bcc = null,
-    $more_attachments = null
+    $more_attachments = null,
+    $reply_to = null
 ) {
     $CI = &get_instance();
     $CI->load->library('crypt');
@@ -162,6 +163,15 @@ function phpmail_send(
         // Add the BCC's
         foreach ($bcc as $address) {
             $mail->addBCC($address);
+        }
+    }
+
+    if ($reply_to) {
+        // Allow multiple reply-to addresses delimited by comma or semicolon
+        $reply_to = (str_contains($reply_to, ',')) ? explode(',', $reply_to) : explode(';', $reply_to);
+
+        foreach ($reply_to as $address) {
+            $mail->addReplyTo(trim($address));
         }
     }
 

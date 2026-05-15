@@ -66,6 +66,10 @@ class Mdl_Email_Templates extends Response_Model
                 'field' => 'email_template_bcc',
                 'label' => trans('bcc'),
             ],
+            'email_template_reply_to' => [
+                'field' => 'email_template_reply_to',
+                'label' => trans('reply_to'),
+            ],
             'email_template_pdf_template' => [
                 'field' => 'email_template_pdf_template',
                 'label' => trans('default_pdf_template'),

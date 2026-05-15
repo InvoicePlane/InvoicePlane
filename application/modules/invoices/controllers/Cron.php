@@ -164,8 +164,9 @@ class Cron extends Base_Controller
                 $to           = $invoice->client_email;
                 $cc           = $tpl->email_template_cc;
                 $bcc          = $tpl->email_template_bcc;
+                $reply_to     = $tpl->email_template_reply_to;
 
-                $email_invoice = email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files);
+                $email_invoice = email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files, $reply_to);
 
                 if ($email_invoice) {
                     $this->mdl_invoices->mark_sent($target_id);
