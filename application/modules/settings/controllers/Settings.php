@@ -212,11 +212,6 @@ class Settings extends Admin_Controller
     }
 
     /**
-     * Remove a logo file securely.
-     *
-     * @param string $type The logo type (e.g., 'invoice' or 'login')
-     */
-    /**
      * Remove a logo file with security validation.
      *
      * Security: Validates that the logo file path is safe and within the uploads directory
