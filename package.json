@@ -33,7 +33,7 @@
         "html5shiv": "3.7",
         "jquery": "3.7",
         "jquery-ui": "1.14",
-        "js-cookie": "2.2",
+        "js-cookie": "3.0",
         "load-grunt-tasks": "5.1",
         "postcss": "8.5",
         "sass": "^1.99",
