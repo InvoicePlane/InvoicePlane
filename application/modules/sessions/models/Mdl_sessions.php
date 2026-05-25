@@ -42,7 +42,7 @@ class Mdl_Sessions extends CI_Model
                  * The user has not logged in, so we're going to attempt to
                  * update their record with the updated hash
                  */
-                if (md5($password) == $user->user_password) {
+                if (hash_equals($user->user_password, md5($password))) {
                     /**
                      * The md5 login validated - let's update this user
                      * to the new hash.
