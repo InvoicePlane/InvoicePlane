@@ -14,7 +14,7 @@ if ( ! defined('BASEPATH')) {
  */
 
 #[AllowDynamicProperties]
-class View extends Base_Controller
+class View extends Guest_Controller
 {
     /**
      * Constructor - load file security helper for validation.
@@ -36,7 +36,7 @@ class View extends Base_Controller
 
         $this->load->model('invoices/mdl_invoices');
 
-        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
+        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->where_in('client_id', $this->user_clients)->get();
 
         if ($invoice->num_rows() != 1) {
             show_404();
@@ -111,7 +111,7 @@ class View extends Base_Controller
     {
         $this->load->model('invoices/mdl_invoices');
 
-        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
+        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->where_in('client_id', $this->user_clients)->get();
 
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
@@ -138,7 +138,7 @@ class View extends Base_Controller
     {
         $this->load->model('invoices/mdl_invoices');
 
-        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->get();
+        $invoice = $this->mdl_invoices->guest_visible()->where('invoice_url_key', $invoice_url_key)->where_in('client_id', $this->user_clients)->get();
 
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
@@ -168,7 +168,7 @@ class View extends Base_Controller
 
         $this->load->model('quotes/mdl_quotes');
 
-        $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get();
+        $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->where_in('client_id', $this->user_clients)->get();
 
         if ($quote->num_rows() != 1) {
             show_404();
@@ -228,7 +228,7 @@ class View extends Base_Controller
     {
         $this->load->model('quotes/mdl_quotes');
 
-        $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->get()->row();
+        $quote = $this->mdl_quotes->guest_visible()->where('quote_url_key', $quote_url_key)->where_in('client_id', $this->user_clients)->get()->row();
 
         if ( ! $quote) {
             show_404();
