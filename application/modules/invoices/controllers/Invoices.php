@@ -156,6 +156,8 @@ class Invoices extends Admin_Controller
             show_404();
         }
 
+        $invoice->invoice_password = $this->mdl_invoices->decrypt_invoice_password($invoice->invoice_password);
+
         $custom_fields = $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result();
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
