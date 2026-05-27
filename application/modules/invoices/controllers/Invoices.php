@@ -291,7 +291,8 @@ class Invoices extends Admin_Controller
         $options   = [];
         $generator = $xml_id;
         $path      = APPPATH . 'helpers/XMLconfigs/';
-        if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
+        $is_valid_xml_id = is_string($xml_id) && preg_match('/^[A-Za-z0-9-]+$/', $xml_id) === 1;
+        if ($is_valid_xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
             $embed_xml = $xml_setting['embedXML'];
             $XMLname   = $xml_setting['XMLname'];
             $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
