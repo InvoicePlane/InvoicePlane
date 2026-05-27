@@ -24,27 +24,7 @@ class Invoices extends Admin_Controller
         parent::__construct();
 
         $this->load->helper('file_security');
-        $this->load->helper('security');
         $this->load->model('mdl_invoices');
-    }
-
-    private function ensure_valid_post_request(string $redirect_url): bool
-    {
-        if ($this->input->method(true) !== 'POST') {
-            $this->session->set_flashdata('alert_error', trans('invalid_request'));
-            redirect($redirect_url);
-
-            return false;
-        }
-
-        if ( ! verify_csrf_token()) {
-            $this->session->set_flashdata('alert_error', trans('invalid_request'));
-            redirect($redirect_url);
-
-            return false;
-        }
-
-        return true;
     }
 
     public function index(): void

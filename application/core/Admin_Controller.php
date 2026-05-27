@@ -48,6 +48,30 @@ class Admin_Controller extends User_Controller
         }
     }
 
+
+    protected function ensure_valid_post_request(string $redirect_url): bool
+    {
+        if ($this->input->method(true) !== 'POST') {
+            $this->session->set_flashdata('alert_error', trans('invalid_request'));
+            redirect($redirect_url);
+
+            return false;
+        }
+
+        if ( ! function_exists('verify_csrf_token')) {
+            $this->load->helper('security');
+        }
+
+        if ( ! verify_csrf_token()) {
+            $this->session->set_flashdata('alert_error', trans('invalid_request'));
+            redirect($redirect_url);
+
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Check if setup wizard is properly disabled and warn admins if not.
      * This security check helps detect misconfigurations that could allow
