@@ -21,13 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install PHP 8.2
-        run: |
-          sudo add-apt-repository ppa:ondrej/php -y
-          sudo apt-get update
-          sudo apt-get install -y php8.2 php8.2-cli
-          sudo update-alternatives --set php /usr/bin/php8.2
-          php -v
+      - name: Set up PHP and Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
+          composer-args: --no-interaction --no-install
 
       - name: Run php -l on all PHP files
         run: |
