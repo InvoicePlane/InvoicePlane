@@ -189,6 +189,10 @@ class Quotes extends Admin_Controller
      */
     public function delete($quote_id)
     {
+        if ( ! $this->ensure_valid_post_request('quotes/index')) {
+            return;
+        }
+
         // Delete the quote
         $this->mdl_quotes->delete($quote_id);
 
@@ -223,6 +227,10 @@ class Quotes extends Admin_Controller
      */
     public function delete_quote_tax(string $quote_id, $quote_tax_rate_id)
     {
+        if ( ! $this->ensure_valid_post_request('quotes/view/' . $quote_id)) {
+            return;
+        }
+
         $this->load->model('quotes/mdl_quote_tax_rates');
         $this->mdl_quote_tax_rates->delete($quote_tax_rate_id);
 
