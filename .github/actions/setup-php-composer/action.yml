@@ -21,6 +21,10 @@ inputs:
     description: 'Working directory for composer commands'
     required: false
     default: '.'
+  skip-composer-install:
+    description: 'Skip running composer install (useful when only PHP setup is needed)'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -41,7 +45,23 @@ runs:
           IFS=',' read -ra EXTS <<< "$EXTENSIONS_CSV"
           for ext in "${EXTS[@]}"; do
             [ -n "$ext" ] || continue
-            EXTENSION_PACKAGES+=" php${PHP_MAJOR_MINOR}-${ext}"
+            case "$ext" in
+              sqlite)
+                EXTENSION_PACKAGES+=" php${PHP_MAJOR_MINOR}-sqlite3"
+                ;;
+              pdo_mysql)
+                EXTENSION_PACKAGES+=" php${PHP_MAJOR_MINOR}-mysql"
+                ;;
+              mysql)
+                EXTENSION_PACKAGES+=" php${PHP_MAJOR_MINOR}-mysql"
+                ;;
+              pdo|json|ctype|dom|fileinfo)
+                # Built-in or provided by other packages, skip
+                ;;
+              *)
+                EXTENSION_PACKAGES+=" php${PHP_MAJOR_MINOR}-${ext}"
+                ;;
+            esac
           done
         fi
 
@@ -89,7 +109,9 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        if [ -n "${{ inputs.composer-args }}" ]; then
+        if [ "${{ inputs.skip-composer-install }}" = "true" ]; then
+          echo "Skipping composer install as requested."
+        elif [ -n "${{ inputs.composer-args }}" ]; then
           composer install ${{ inputs.composer-args }}
         else
           composer install ${{ inputs.composer-flags }}
