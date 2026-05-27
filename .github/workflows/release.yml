@@ -80,12 +80,12 @@ jobs:
           echo "✓ Translations structure validated" | tee -a "$LOG_FILE"
 
       # Step 3: Set up PHP and Composer (before frontend build)
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - name: Set up PHP and Composer
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
-          extensions: gd, bcmath, dom, intl, xml, zip, mbstring, pdo_mysql
-          coverage: none
+          php-extensions: gd, bcmath, dom, intl, xml, zip, mbstring, pdo_mysql
+          composer-args: --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
       - name: Get Composer Cache Directory
         id: composer-cache
