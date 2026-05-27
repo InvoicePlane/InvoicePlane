@@ -25,12 +25,51 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ inputs.php-version }}
-        extensions: ${{ inputs.php-extensions }}
-        coverage: none
+    - name: Install PHP and required extensions
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        PHP_MAJOR_MINOR="${{ inputs.php-version }}"
+        sudo add-apt-repository ppa:ondrej/php -y
+        sudo apt-get update
+
+        EXTENSIONS_RAW="${{ inputs.php-extensions }}"
+        EXTENSIONS_CSV="$(echo "$EXTENSIONS_RAW" | tr -d '[:space:]')"
+        EXTENSION_PACKAGES=""
+        if [ -n "$EXTENSIONS_CSV" ]; then
+          IFS=',' read -ra EXTS <<< "$EXTENSIONS_CSV"
+          for ext in "${EXTS[@]}"; do
+            [ -n "$ext" ] || continue
+            EXTENSION_PACKAGES+=" php${PHP_MAJOR_MINOR}-${ext}"
+          done
+        fi
+
+        sudo apt-get install -y software-properties-common ca-certificates curl unzip \
+          php${PHP_MAJOR_MINOR} php${PHP_MAJOR_MINOR}-cli php${PHP_MAJOR_MINOR}-common \
+          php${PHP_MAJOR_MINOR}-mbstring php${PHP_MAJOR_MINOR}-xml php${PHP_MAJOR_MINOR}-curl \
+          php${PHP_MAJOR_MINOR}-zip php${PHP_MAJOR_MINOR}-mysql php${PHP_MAJOR_MINOR}-sqlite3 \
+          php${PHP_MAJOR_MINOR}-bcmath php${PHP_MAJOR_MINOR}-intl php${PHP_MAJOR_MINOR}-gd \
+          ${EXTENSION_PACKAGES}
+
+        sudo update-alternatives --set php /usr/bin/php${PHP_MAJOR_MINOR}
+        php -v
+
+    - name: Install Composer
+      shell: bash
+      run: |
+        set -euo pipefail
+        EXPECTED_SIGNATURE=$(curl -s https://composer.github.io/installer.sig)
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+        ACTUAL_SIGNATURE=$(php -r "echo hash_file('sha384', 'composer-setup.php');")
+        if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then
+          echo 'ERROR: Invalid Composer installer signature' >&2
+          rm composer-setup.php
+          exit 1
+        fi
+        php composer-setup.php --quiet --install-dir=/usr/local/bin --filename=composer
+        rm composer-setup.php
+        composer --version
 
     - name: Get Composer Cache Directory
       id: composer-cache
