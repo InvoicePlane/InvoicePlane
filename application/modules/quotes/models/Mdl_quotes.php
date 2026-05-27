@@ -76,6 +76,38 @@ class Mdl_Quotes extends Response_Model
             ip_quotes.*", false);
     }
 
+    public function save($id = null, $db_array = null)
+    {
+        if (is_array($db_array) && array_key_exists('quote_password', $db_array)) {
+            $db_array['quote_password'] = $this->encrypt_quote_password($db_array['quote_password']);
+        }
+
+        return parent::save($id, $db_array);
+    }
+
+    public function encrypt_quote_password($password): ?string
+    {
+        if ($password === null || $password === '') {
+            return null;
+        }
+
+        $this->load->library('crypt');
+
+        return $this->crypt->encode((string) $password);
+    }
+
+    public function decrypt_quote_password($password): string
+    {
+        if ($password === null || $password === '') {
+            return '';
+        }
+
+        $this->load->library('crypt');
+        $decoded = $this->crypt->decode($password);
+
+        return is_string($decoded) ? $decoded : '';
+    }
+
     public function default_order_by()
     {
         $this->db->order_by('ip_quotes.quote_date_created DESC, ip_quotes.quote_number DESC, ip_quotes.quote_id DESC');

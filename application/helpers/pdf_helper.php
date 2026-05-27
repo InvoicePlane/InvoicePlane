@@ -309,6 +309,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     );
 
     $quote = $CI->mdl_quotes->get_by_id($quote_id);
+    $quote->quote_password = $CI->mdl_quotes->decrypt_quote_password($quote->quote_password);
 
     // Override language with system language
     set_language($quote->client_language);
