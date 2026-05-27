@@ -118,6 +118,8 @@ class Quotes extends Admin_Controller
             show_404();
         }
 
+        $quote->quote_password = $this->mdl_quotes->decrypt_quote_password($quote->quote_password);
+
         $custom_fields = $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result();
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
