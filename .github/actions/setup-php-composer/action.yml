@@ -54,14 +54,24 @@ runs:
                 ;;
               mysql)
                 EXTENSION_PACKAGES+=" php${PHP_MAJOR_MINOR}-mysql"
-                ;;
-              pdo|json|ctype|dom|fileinfo)
-                # Built-in or provided by other packages, skip
-                ;;
-              *)
-                EXTENSION_PACKAGES+=" php${PHP_MAJOR_MINOR}-${ext}"
-                ;;
+        EXTENSIONS_RAW="${{ inputs.php-extensions }}"
+        EXTENSIONS_CSV="$(echo "$EXTENSIONS_RAW" | tr -d '[:space:]')"
+        EXTENSION_PACKAGES=""
+        if [ -n "$EXTENSIONS_CSV" ]; then
+          IFS=',' read -ra EXTS <<< "$EXTENSIONS_CSV"
+          for ext in "${EXTS[@]}"; do
+            [ -n "$ext" ] || continue
+            # Map extension names to apt package names
+            case "$ext" in
+              sqlite) pkg="sqlite3" ;;
+              pdo_mysql) pkg="mysql" ;;
+              pdo_pgsql) pkg="pgsql" ;;
+              pdo_sqlite) pkg="sqlite3" ;;
+              json|ctype|fileinfo|pdo) continue ;;  # Built into PHP 8+ or php-common
+              dom) pkg="xml" ;;
+              *) pkg="$ext" ;;
             esac
+            EXTENSION_PACKAGES+=" php${PHP_MAJOR_MINOR}-${pkg}"
           done
         fi
 
