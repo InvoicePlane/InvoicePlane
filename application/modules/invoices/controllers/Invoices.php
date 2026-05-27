@@ -24,7 +24,27 @@ class Invoices extends Admin_Controller
         parent::__construct();
 
         $this->load->helper('file_security');
+        $this->load->helper('security');
         $this->load->model('mdl_invoices');
+    }
+
+    private function ensure_valid_post_request(string $redirect_url): bool
+    {
+        if ($this->input->method(true) !== 'POST') {
+            $this->session->set_flashdata('alert_error', trans('invalid_request'));
+            redirect($redirect_url);
+
+            return false;
+        }
+
+        if ( ! verify_csrf_token()) {
+            $this->session->set_flashdata('alert_error', trans('invalid_request'));
+            redirect($redirect_url);
+
+            return false;
+        }
+
+        return true;
     }
 
     public function index(): void
@@ -229,8 +249,19 @@ class Invoices extends Admin_Controller
 
     public function delete($invoice_id): void
     {
+        if ( ! $this->ensure_valid_post_request('invoices/index')) {
+            return;
+        }
+
         // Get the status of the invoice
         $invoice        = $this->mdl_invoices->get_by_id($invoice_id);
+
+        if ( ! $invoice) {
+            show_404();
+
+            return;
+        }
+
         $invoice_status = $invoice->invoice_status_id;
 
         if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true) {
@@ -330,6 +361,10 @@ class Invoices extends Admin_Controller
 
     public function delete_invoice_tax(string $invoice_id, $invoice_tax_rate_id): void
     {
+        if ( ! $this->ensure_valid_post_request('invoices/view/' . $invoice_id)) {
+            return;
+        }
+
         $this->load->model('invoices/mdl_invoice_tax_rates');
         $this->mdl_invoice_tax_rates->delete($invoice_tax_rate_id);
 
