@@ -26,7 +26,7 @@ class Services extends Admin_Controller
         parent::__construct();
 
         $this->load->model('mdl_services');
-        $this->load->library('services/ServiceService', [], 'service_service');
+        $this->load->library('services/ServicesService', [], 'service_service');
     }
 
     /**
