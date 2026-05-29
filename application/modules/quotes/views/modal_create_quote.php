@@ -78,8 +78,8 @@
                         <?php
                                    foreach ($services as $service) {
                                        if ( ! empty($service['service_name'])) {
-                                           echo '<option value="' . htmlspecialchars($service['service_id'], ENT_QUOTES) . '">';
-                                           echo htmlspecialchars($service['service_name'], ENT_QUOTES);
+                                           echo '<option value="' . html_escape($service['service_id']) . '">';
+                                           echo html_escape($service['service_name']);
                                            echo '</option>';
                                        }
                                    }
