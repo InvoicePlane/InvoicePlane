@@ -34,7 +34,7 @@ class Mdl_Services extends Response_Model
 
     public function get_names_by_ids(array $serviceIds)
     {
-        $this->load->library('services/ServiceService', [], 'service_service');
+        $this->load->library('services/ServicesService', [], 'service_service');
 
         return $this->service_service->getServiceNamesByIds($serviceIds);
     }

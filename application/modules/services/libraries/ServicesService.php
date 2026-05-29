@@ -5,25 +5,18 @@ if ( ! defined('BASEPATH')) {
 }
 
 /**
- * Business logic for service records and service/client assignments.
+ * Business logic and persistence for service records and service/client assignments.
  */
-class ServiceService
+class ServicesService
 {
     /**
      * @var CI_Controller
      */
     private $ci;
 
-    /**
-     * @var ServiceRepository
-     */
-    private $repository;
-
     public function __construct()
     {
         $this->ci = &get_instance();
-        $this->ci->load->library('services/ServiceRepository', [], 'service_repository');
-        $this->repository = $this->ci->service_repository;
     }
 
     public function normalizeId($id): int
@@ -66,7 +59,16 @@ class ServiceService
 
     public function clientExists(int $client_id): bool
     {
-        return $this->repository->clientExists($client_id);
+        if ($client_id <= 0) {
+            return false;
+        }
+
+        return $this->ci->db
+            ->select('client_id')
+            ->where('client_id', $client_id)
+            ->limit(1)
+            ->get('ip_clients')
+            ->row() !== null;
     }
 
     public function getPaginatedServices(Mdl_Services $services_model, string $base_url, int $page): array
@@ -96,11 +98,14 @@ class ServiceService
             return;
         }
 
-        if ($this->repository->clientServiceLinkExists($client_id, $service_id)) {
+        if ($this->clientServiceLinkExists($client_id, $service_id)) {
             return;
         }
 
-        $this->repository->linkServiceToClient($client_id, $service_id);
+        $this->ci->db->insert('ip_client_services', [
+            'client_id'  => $client_id,
+            'service_id' => $service_id,
+        ]);
     }
 
     public function deleteService(int $service_id, Mdl_Services $services_model): void
@@ -109,7 +114,7 @@ class ServiceService
             return;
         }
 
-        $this->repository->deleteClientLinksForService($service_id);
+        $this->deleteClientLinksForService($service_id);
         $services_model->delete($service_id);
     }
 
@@ -121,7 +126,39 @@ class ServiceService
             return [];
         }
 
-        return $this->repository->getServiceNamesByIds($service_ids);
+        $services = $this->ci->db
+            ->select('service_id, service_name')
+            ->where_in('service_id', $service_ids)
+            ->order_by('service_name')
+            ->get('ip_services')
+            ->result_array();
+
+        return array_column($services, 'service_name', 'service_id');
+    }
+
+    private function clientServiceLinkExists(int $client_id, int $service_id): bool
+    {
+        if ($client_id <= 0 || $service_id <= 0) {
+            return false;
+        }
+
+        return $this->ci->db
+            ->select('client_id')
+            ->where('client_id', $client_id)
+            ->where('service_id', $service_id)
+            ->limit(1)
+            ->get('ip_client_services')
+            ->row() !== null;
+    }
+
+    private function deleteClientLinksForService(int $service_id): void
+    {
+        if ($service_id <= 0) {
+            return;
+        }
+
+        $this->ci->db->where('service_id', $service_id);
+        $this->ci->db->delete('ip_client_services');
     }
 
     private function normalizeIdList(array $ids): array
