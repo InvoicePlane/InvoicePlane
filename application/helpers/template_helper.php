@@ -30,7 +30,7 @@ if ( ! defined('BASEPATH')) {
 function render_template_view(string $template_subpath, array $data, bool $return = false)
 {
     if (CUSTOM_TEMPLATES_FOLDER) {
-        $has_ext   = (bool) pathinfo($template_subpath, PATHINFO_EXTENSION);
+        $has_ext = (bool) pathinfo($template_subpath, PATHINFO_EXTENSION);
         $file_path = CUSTOM_TEMPLATES_FOLDER . $template_subpath . ($has_ext ? '' : '.php');
         if (file_exists($file_path)) {
             extract($data);
@@ -131,10 +131,10 @@ function parse_template($object, $body)
                         if ($cf) {
                             // Get the values for the custom field
                             $cf_model = str_replace('ip_', 'mdl_', $cf->custom_field_table);
-                            $replace  = $CI->mdl_custom_fields->get_value_for_field($cf_id[1], $cf_model, $object);
+                            $replace = $CI->mdl_custom_fields->get_value_for_field($cf_id[1], $cf_model, $object);
                             if ($cf->custom_field_type == 'SINGLE-CHOICE') {
                                 $CI->load->model('custom_values/mdl_custom_values', 'cv');
-                                $el      = $CI->cv->get_by_id($replace)->row();
+                                $el = $CI->cv->get_by_id($replace)->row();
                                 $replace = $el->custom_values_value;
                             }
                         } else {
@@ -353,7 +353,7 @@ function get_validated_template_path($template_name, $type = 'invoice', $scope =
 
     // Security: Validate default template upfront to avoid using it if it's also invalid
     $safe_default_for_log = sanitize_for_logging((string) $default_template);
-    $validated_default    = validate_template_name($default_template, $type, $scope);
+    $validated_default = validate_template_name($default_template, $type, $scope);
     if ($validated_default === false) {
         log_message('error', 'Critical: Default template also invalid: ' . $safe_default_for_log);
         show_error('Template system error. Please contact administrator.', 500);
@@ -372,7 +372,7 @@ function get_validated_template_path($template_name, $type = 'invoice', $scope =
     // Security: Both $type and $scope have been validated in layers 3-4 above (lines 242-251)
     // to ensure they only contain the values 'invoice'/'quote' and 'pdf'/'public' respectively.
     // This prevents path traversal attacks through the type/scope parameters.
-    $template_dir  = $type . '_templates/' . $scope;
+    $template_dir = $type . '_templates/' . $scope;
     $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
 
     // Defense-in-depth: Validate template path is within allowed directory before checking existence
@@ -386,7 +386,7 @@ function get_validated_template_path($template_name, $type = 'invoice', $scope =
     if ( ! file_exists($template_path)) {
         log_message('error', 'Template file not found: ' . sanitize_for_logging($validated_name) . ', using default: ' . $safe_default_for_log);
         $validated_name = $validated_default;
-        $template_path  = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
+        $template_path = APPPATH . 'views/' . $template_dir . '/' . $validated_name . '.php';
 
         // Validate fallback template path is within allowed directory before checking existence
         if ( ! validate_file_in_directory($template_path, $base_directory)) {

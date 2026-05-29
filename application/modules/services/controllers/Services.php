@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined('BASEPATH')) {
-exit('No direct script access allowed');
+    exit('No direct script access allowed');
 }
 
 /*
@@ -81,27 +81,22 @@ class Services extends Admin_Controller
             ]
         );
 
-        if ($this->input->post('client_id') && $id) {
-            $this->db->insert('ip_client_services', [
-                'client_id'  => $this->input->post('client_id'),
-                'service_id' => $id,
-            ]);
-        }
-
         if ($this->mdl_services->run_validation()) {
             $db_array = $this->mdl_services->db_array();
 
             $this->mdl_services->save($id, $db_array);
 
+            $service_id = $id ? $id : $this->db->insert_id();
+
             if ($this->input->post('client_id')) {
-        $this->db->insert('ip_client_services', [
-            'client_id'  => $this->input->post('client_id'),
-            'service_id' => $this->db->insert_id(),
-        ]);
-        redirect('clients/form/' . $this->input->post('client_id'));
-        } else {
-        redirect('services');
-        }
+                $this->db->insert('ip_client_services', [
+                    'client_id'  => $this->input->post('client_id'),
+                    'service_id' => $service_id,
+                ]);
+                redirect('clients/form/' . $this->input->post('client_id'));
+            } else {
+                redirect('services');
+            }
         }
 
         if ($id && ! $this->input->post('btn_submit')) {

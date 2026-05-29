@@ -43,7 +43,7 @@
                 </option>
             </select>
 <?php
-$disabled                  = ''; // hint (And little tweak for .help-block)
+$disabled = ''; // hint (And little tweak for .help-block)
 $client_einvoicing_version = $this->mdl_clients->form_value('client_einvoicing_version');
 // Check logged user e-invoice fields (show_table 0 = ok, 1 = no)
 if ($req_einvoicing->users[$_SESSION['user_id']]->show_table > 0) {
@@ -83,16 +83,16 @@ foreach ($xml_templates as $xml_key => $xml_template) {
         </div>
 <?php
 $class_checks = ['fa fa-lg fa-check-square-o text-success', 'fa fa-lg fa-edit text-warning']; // Checkboxe icons
-$base         = 'address_1 zip city country company tax_code vat_id'; // Field names
-$keys         = explode(' ', $base); // To array
-$lang         = explode(' ', strtr($base, ['_1' => ''])); // Translation vars name
+$base = 'address_1 zip city country company tax_code vat_id'; // Field names
+$keys = explode(' ', $base); // To array
+$lang = explode(' ', strtr($base, ['_1' => ''])); // Translation vars name
 // Users loop
 foreach ($req_einvoicing->users as $user_id => $user) {
     if ($user->show_table) {
         $title_tip = ' data-toggle="tooltip" data-placement="bottom" title="' . trans('edit'); // Tooltip helper ! Need add: . '"'
         $user_link = anchor('/users/form/' . $user_id, trans('user'), $title_tip . ' ' . htmlsc($user->user_name) . '"'); // ! Need add: . '"'
-        $open      = $user_id == $_SESSION['user_id'] && $req_einvoicing->users[$_SESSION['user_id']]->show_table;
-        $me        = $user_id == $_SESSION['user_id'];
+        $open = $user_id == $_SESSION['user_id'] && $req_einvoicing->users[$_SESSION['user_id']]->show_table;
+        $me = $user_id == $_SESSION['user_id'];
         ?>
         <!-- Check if mandatory eInvoicing fields are empty -->
         <div class="col-xs-12 col-md-6 einvoice-user-check-lists collapse<?php echo $open ? ' in" aria-expanded="true' : '" aria-expanded="false'; ?>">

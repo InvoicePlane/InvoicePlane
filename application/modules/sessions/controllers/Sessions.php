@@ -44,7 +44,7 @@ class Sessions extends Base_Controller
         if ($this->input->post('btn_login')) {
             $this->db->where('user_email', $this->input->post('email'));
             $query = $this->db->get('ip_users');
-            $user  = $query->row();
+            $user = $query->row();
 
             // Check if the user exists
             if (empty($user)) {
@@ -139,7 +139,7 @@ class Sessions extends Base_Controller
                     }
 
                     // Use UTC timezone for consistent timestamp comparison
-                    $expiry_time  = new DateTime($user->user_passwordreset_token_expiry, self::$utc_timezone);
+                    $expiry_time = new DateTime($user->user_passwordreset_token_expiry, self::$utc_timezone);
                     $current_time = new DateTime('now', self::$utc_timezone);
 
                     if ($current_time > $expiry_time) {
@@ -176,7 +176,7 @@ class Sessions extends Base_Controller
         // Check if the form for a new password was used
         if ($this->input->post('btn_new_password')) {
             $new_password = $this->input->post('new_password', true);
-            $user_id      = $this->input->post('user_id', true);
+            $user_id = $this->input->post('user_id', true);
 
             if (empty($user_id) || empty($new_password)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
@@ -306,7 +306,7 @@ class Sessions extends Base_Controller
 
                 // Prepare some variables for the email
                 $email_resetlink = site_url('sessions/passwordreset/' . $token);
-                $email_message   = $this->load->view('emails/passwordreset', [
+                $email_message = $this->load->view('emails/passwordreset', [
                     'resetlink' => $email_resetlink,
                 ], true);
 
@@ -375,7 +375,7 @@ class Sessions extends Base_Controller
 
         if ( ! empty($login_log_query) && $login_log_query->log_count > 10) {
             $current_time = new DateTime();
-            $interval     = $current_time->diff(new DateTime($login_log_query->log_create_timestamp));
+            $interval = $current_time->diff(new DateTime($login_log_query->log_create_timestamp));
             //if the last recorded failed attempt is over 12 hours ago, then unlock the account
             //the fails are only counted up to 11, this means that the account is also unlocked
             //if the last failed 11th login attempt is over 12 hours ago.
@@ -399,10 +399,10 @@ class Sessions extends Base_Controller
      */
     private function _is_ip_rate_limited_password_reset()
     {
-        $max_attempts   = env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
+        $max_attempts = env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
         $window_minutes = env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
 
-        $ip_address  = $this->input->ip_address();
+        $ip_address = $this->input->ip_address();
         $session_key = 'password_reset_attempts_' . md5($ip_address);
 
         // Get current attempts from session
@@ -414,7 +414,7 @@ class Sessions extends Base_Controller
 
         // Clean up old attempts outside the time window
         $cutoff_time = time() - ($window_minutes * 60);
-        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
+        $attempts = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
             return $timestamp > $cutoff_time;
         });
 
@@ -433,7 +433,7 @@ class Sessions extends Base_Controller
      */
     private function _record_password_reset_attempt()
     {
-        $ip_address  = $this->input->ip_address();
+        $ip_address = $this->input->ip_address();
         $session_key = 'password_reset_attempts_' . md5($ip_address);
 
         // Get current attempts from session
@@ -475,7 +475,7 @@ class Sessions extends Base_Controller
 
         // Clean up old attempts outside the time window
         $cutoff_time = time() - ($window_hours * 3600);
-        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
+        $attempts = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
             return $timestamp > $cutoff_time;
         });
 

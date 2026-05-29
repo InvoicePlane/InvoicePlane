@@ -61,13 +61,13 @@ class Custom_Values extends Admin_Controller
         }
 
         $this->load->model('custom_fields/mdl_custom_fields');
-        $field  = $this->mdl_custom_fields->get_by_id($id);
+        $field = $this->mdl_custom_fields->get_by_id($id);
         $result = $this->mdl_custom_values->get_by_fid($id)->result();
         // Determine which name of table custom field to load
         $custom_tables = $this->mdl_custom_fields->custom_tables();
 
         $positions = $this->mdl_custom_fields->get_positions(true);
-        $position  = $positions[$field->custom_field_table][$field->custom_field_location];
+        $position = $positions[$field->custom_field_table][$field->custom_field_location];
         unset($positions);
 
         $this->layout->set(
@@ -90,7 +90,7 @@ class Custom_Values extends Admin_Controller
     public function edit($id = null)
     {
         $value = $this->mdl_custom_values->get_by_id($id)->row();
-        $fid   = $value->custom_field_id;
+        $fid = $value->custom_field_id;
 
         if ($this->input->post('btn_cancel')) {
             redirect('custom_values/field/' . $fid);
@@ -103,7 +103,7 @@ class Custom_Values extends Admin_Controller
 
         $this->load->model('custom_fields/mdl_custom_fields');
         $positions = $this->mdl_custom_fields->get_positions(true);
-        $position  = $positions[$value->custom_field_table][$value->custom_field_location];
+        $position = $positions[$value->custom_field_table][$value->custom_field_location];
         unset($positions);
 
         $this->layout->set(
@@ -141,11 +141,11 @@ class Custom_Values extends Admin_Controller
 
         // Determine which name of table custom field to load
         $custom_tables = $this->mdl_custom_fields->custom_tables();
-        $table         = $custom_tables[$field->custom_field_table];
+        $table = $custom_tables[$field->custom_field_table];
         unset($custom_tables);
 
         $positions = $this->mdl_custom_fields->get_positions(true);
-        $position  = $positions[$field->custom_field_table][$field->custom_field_location];
+        $position = $positions[$field->custom_field_table][$field->custom_field_location];
         unset($positions);
 
         $this->layout->set(

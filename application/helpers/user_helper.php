@@ -33,7 +33,7 @@ function format_user($user): string
     }
 
     $user_company = empty($user->user_company) ? '' : ' - ' . $user->user_company;
-    $contact      = empty($user->user_invoicing_contact) ? '' : ' - ' . $user->user_invoicing_contact;
+    $contact = empty($user->user_invoicing_contact) ? '' : ' - ' . $user->user_invoicing_contact;
 
     return ucfirst($user->user_name) . $user_company . $contact;
 }

@@ -445,7 +445,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
 <?php
 if ($invoice->invoice_sign == -1) {
     $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
-    $view_link             = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . htmlsc($parent_invoice_number));
+    $view_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . htmlsc($parent_invoice_number));
     ?>
                             <div class="col-xs-12">
                                 <div class="alert alert-warning small">
@@ -581,7 +581,7 @@ foreach ($payment_methods as $payment_method) {
 
 <?php
 $default_custom = false;
-$classes        = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field) {
     if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;

@@ -31,14 +31,14 @@ if ($custom_field_usage) {
         $need_model = false;
     if (in_array($what, ['invoice', 'quote'])) {
         $need_model = true;
-        $model      = 'mdl_' . $what . 's';
-        $CI         = & get_instance();
+        $model = 'mdl_' . $what . 's';
+        $CI = & get_instance();
         $CI->load->model($what . 's/' . $model);
     }
 
     foreach ($custom_field_usage as $obj) {
         $fid = $what . '_id'; // Like invoice_id
-        $id  = $obj->{$fid};
+        $id = $obj->{$fid};
         $fid = $id;
         if ($need_model) {
             $fid = '#' . $CI->{$model}->get_by_id($id)->{$what . '_number'};

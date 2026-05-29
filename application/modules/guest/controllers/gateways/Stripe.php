@@ -125,12 +125,12 @@ class Stripe extends Base_Controller
                 if ($existing_payment) {
                     // Duplicate payment attempt detected
                     log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. Payment intent: ' . sanitize_for_logging($payment_intent) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
-                    $paid     = false; // Mark as not paid to show info message instead of success
+                    $paid = false; // Mark as not paid to show info message instead of success
                     $user_msg = trans('online_payment_already_processed');
                 } elseif ($invoice->invoice_balance <= 0) {
                     // Invoice is already fully paid
                     log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
-                    $paid     = false; // Mark as not paid to show info message instead of success
+                    $paid = false; // Mark as not paid to show info message instead of success
                     $user_msg = trans('invoice_already_paid');
                 } else {
                     // Save the payment (visible in guest user)
@@ -158,7 +158,7 @@ class Stripe extends Base_Controller
                               : trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
         } catch (Error|Exception|ErrorException $e) {
             $user_msg = trans('online_payment_error') . (empty($user_msg) ? '' : '<br>' . $user_msg);
-            $paid     = 'error'; // tweak to reuse
+            $paid = 'error'; // tweak to reuse
             // Log the error so you can debug
             $response = __CLASS__ . '::' . __FUNCTION__ . ' exception: ' . $e->getMessage() . (empty($response) ? '' : ' - response: ' . $response);
             log_message('error', strtr($response . ' user_msg: ' . $user_msg, ['<br>' => ' '])); // No br's

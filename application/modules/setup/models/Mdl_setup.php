@@ -125,7 +125,7 @@ class Mdl_Setup extends CI_Model
          * greater than 100 and if v1.2.0 was not installed within this update process
          */
         $this->db->where_in('version_file', ['006_1.2.0.sql', '005_1.1.2.sql']);
-        $versions     = $this->db->get('ip_versions')->result();
+        $versions = $this->db->get('ip_versions')->result();
         $upgrade_diff = $versions[1]->version_date_applied - $versions[0]->version_date_applied;
 
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
@@ -144,7 +144,7 @@ class Mdl_Setup extends CI_Model
          * (see above for details)
          */
         $this->db->where_in('version_file', ['018_1.4.6.sql', '019_1.4.7.sql']);
-        $versions     = $this->db->get('ip_versions')->result();
+        $versions = $this->db->get('ip_versions')->result();
         $upgrade_diff = $versions[1]->version_date_applied - $versions[0]->version_date_applied;
 
         if ($this->session->userdata('is_upgrade') && $upgrade_diff > 100 && $versions[1]->version_date_applied > (time() - 100)) {
@@ -158,7 +158,7 @@ class Mdl_Setup extends CI_Model
 
     public function upgrade_023_1_5_0()
     {
-        $res          = $this->db->query('SELECT * FROM ip_custom_fields');
+        $res = $this->db->query('SELECT * FROM ip_custom_fields');
         $drop_columns = [];
 
         $tables = [
@@ -231,7 +231,7 @@ class Mdl_Setup extends CI_Model
             if ($res->num_rows()) {
                 foreach ($res->result() as $row) {
                     $escaped_table_type = $this->db->escape($row->{$table_type . '_id'});
-                    $escaped_column     = $this->db->escape($row->{$value['column']});
+                    $escaped_column = $this->db->escape($row->{$value['column']});
 
                     $query = "INSERT INTO {$table_name}
                         (" . $table_type . '_id, ' . $table_type . '_custom_fieldid, ' . $table_type . "_custom_fieldvalue)
@@ -313,8 +313,8 @@ class Mdl_Setup extends CI_Model
     {
         //**Set languages to lowercase & replace include_zugferd setting to einvoicing**
         $einvoicing = '0';
-        $step       = 2;
-        $rows       = $this->db->query('SELECT * FROM `ip_settings`');
+        $step = 2;
+        $rows = $this->db->query('SELECT * FROM `ip_settings`');
         foreach ($rows->result() as $row) {
             // Set default_language to lowercase
             if ($row->setting_key == 'default_language') {
@@ -355,8 +355,8 @@ class Mdl_Setup extends CI_Model
         } else {
             // Delete Zugferd lib & conf
             $filename = 'Zugferdv10';
-            $files[]  = APPPATH . 'libraries/XMLtemplates/' . $filename . 'Xml.php';
-            $files[]  = APPPATH . 'helpers/XMLconfigs/' . $filename . '.php';
+            $files[] = APPPATH . 'libraries/XMLtemplates/' . $filename . 'Xml.php';
+            $files[] = APPPATH . 'helpers/XMLconfigs/' . $filename . '.php';
             foreach ($files as $file) {
                 if (file_exists($file)) {
                     unlink($file);

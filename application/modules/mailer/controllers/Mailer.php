@@ -56,9 +56,9 @@ class Mailer extends Admin_Controller
 
         $this->load->helper(['template', 'dropzone']);
 
-        $invoice           = $this->mdl_invoices->get_by_id($invoice_id);
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
         $email_template_id = select_email_invoice_template($invoice);
-        $email_template    = '{}';
+        $email_template = '{}';
 
         if ($email_template_id) {
             $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
@@ -114,7 +114,7 @@ class Mailer extends Admin_Controller
         $this->load->helper('dropzone');
 
         $email_template_id = get_setting('email_quote_template');
-        $email_template    = '{}';
+        $email_template = '{}';
 
         if ($email_template_id) {
             $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
@@ -163,14 +163,14 @@ class Mailer extends Admin_Controller
             return;
         }
 
-        $to   = $this->input->post('to_email', true);
+        $to = $this->input->post('to_email', true);
         $from = $this->input->post('from_email', true);
 
         $from = [$from, $this->input->post('from_name')];
 
         $pdf_template = $this->input->post('pdf_template', true);
-        $subject      = $this->input->post('subject');
-        $body         = $this->input->post('body');
+        $subject = $this->input->post('subject');
+        $body = $this->input->post('body');
 
         // Load helper for email body processing
         $this->load->helper('html_sanitizer');
@@ -183,7 +183,7 @@ class Mailer extends Admin_Controller
         }
         // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
-        $cc  = $this->input->post('cc');
+        $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
 
         $this->load->model('upload/mdl_uploads');
@@ -213,14 +213,14 @@ class Mailer extends Admin_Controller
             return;
         }
 
-        $to   = $this->input->post('to_email');
+        $to = $this->input->post('to_email');
         $from = $this->input->post('from_email');
 
         $from = [$from, $this->input->post('from_name')];
 
         $pdf_template = $this->input->post('pdf_template');
-        $subject      = $this->input->post('subject');
-        $body         = $this->input->post('body');
+        $subject = $this->input->post('subject');
+        $body = $this->input->post('body');
 
         // Load helper for email body processing
         $this->load->helper('html_sanitizer');
@@ -233,7 +233,7 @@ class Mailer extends Admin_Controller
         }
         // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
-        $cc  = $this->input->post('cc');
+        $cc = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
 
         $this->load->model('upload/mdl_uploads');

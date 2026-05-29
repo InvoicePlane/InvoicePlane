@@ -56,7 +56,7 @@ class Mdl_Settings extends CI_Model
 
         // Load all existing settings once to determine which are updates vs inserts
         $existing_keys = [];
-        $query         = $this->db->select('setting_key')->get('ip_settings');
+        $query = $this->db->select('setting_key')->get('ip_settings');
         foreach ($query->result() as $row) {
             $existing_keys[$row->setting_key] = true;
         }
@@ -181,7 +181,7 @@ class Mdl_Settings extends CI_Model
             }
 
             // Get the theme info file
-            $theme     = str_replace(DIRECTORY_SEPARATOR, '', $theme);
+            $theme = str_replace(DIRECTORY_SEPARATOR, '', $theme);
             $info_path = THEME_FOLDER . $theme . '/';
             $info_file = $theme . '.theme';
 

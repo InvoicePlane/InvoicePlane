@@ -89,7 +89,7 @@ class Mdl_Payments extends Response_Model
      */
     public function validate_payment_amount($amount)
     {
-        $amount     = (float) standardize_amount($amount);
+        $amount = (float) standardize_amount($amount);
         $invoice_id = $this->input->post('invoice_id');
         $payment_id = $this->input->post('payment_id');
 
@@ -139,7 +139,7 @@ class Mdl_Payments extends Response_Model
         }
 
         // Calculate sum for payments
-        $paid  = (float) $invoice->invoice_paid;
+        $paid = (float) $invoice->invoice_paid;
         $total = (float) $invoice->invoice_total;
 
         if ($paid >= $total) {
@@ -162,7 +162,7 @@ class Mdl_Payments extends Response_Model
     {
         $db_array = parent::db_array();
 
-        $db_array['payment_date']   = date_to_mysql($db_array['payment_date']);
+        $db_array['payment_date'] = date_to_mysql($db_array['payment_date']);
         $db_array['payment_amount'] = standardize_amount($db_array['payment_amount']);
 
         return $db_array;

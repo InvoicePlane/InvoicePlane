@@ -81,8 +81,8 @@ class Mdl_Invoices extends Response_Model
 
     public function default_join()
     {
-    $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
-    $this->db->join('ip_services', 'ip_services.service_id = ip_invoices.service_id', 'left');
+        $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+        $this->db->join('ip_services', 'ip_services.service_id = ip_invoices.service_id', 'left');
         $this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
         $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
         $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
@@ -173,7 +173,7 @@ class Mdl_Invoices extends Response_Model
     {
         $invoice_id = parent::save(null, $db_array);
 
-        $inv           = $this->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+        $inv = $this->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
         $invoice_group = $inv->invoice_group_id;
 
         // Create an invoice amount record
@@ -222,7 +222,7 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
         // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
-        $invoice         = $this->get_by_id($source_id); // This is the original invoice
+        $invoice = $this->get_by_id($source_id); // This is the original invoice
         $global_discount = [
             'amount'         => $invoice->invoice_discount_amount,
             'percent'        => $invoice->invoice_discount_percent,
@@ -302,7 +302,7 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
         // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
-        $invoice         = $this->get_by_id($source_id); // This is the original invoice
+        $invoice = $this->get_by_id($source_id); // This is the original invoice
         $global_discount = [
             'amount'         => $invoice->invoice_discount_amount,
             'percent'        => $invoice->invoice_discount_percent,
@@ -389,15 +389,15 @@ class Mdl_Invoices extends Response_Model
             }
         }
 
-        $db_array['client_id']  = $cid;
+        $db_array['client_id'] = $cid;
         $db_array['service_id'] = $sid;
 
         // Check if is SUMEX
         $this->load->model('invoice_groups/mdl_invoice_groups');
 
         $db_array['invoice_date_created'] = date_to_mysql($db_array['invoice_date_created']);
-        $db_array['invoice_date_due']     = $this->get_date_due($db_array['invoice_date_created']);
-        $db_array['invoice_terms']        = get_setting('default_invoice_terms');
+        $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
+        $db_array['invoice_terms'] = get_setting('default_invoice_terms');
 
         if ( ! isset($db_array['invoice_status_id'])) {
             $db_array['invoice_status_id'] = 1;

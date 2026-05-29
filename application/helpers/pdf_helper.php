@@ -26,7 +26,7 @@ if ( ! defined('BASEPATH')) {
  */
 function discount_global_print_in_pdf($obj, $show_item_discounts, string $is = 'invoice'): void
 {
-    $type     = ['p' => $is . '_discount_percent', 'a' => $is . '_discount_amount'];
+    $type = ['p' => $is . '_discount_percent', 'a' => $is . '_discount_amount'];
     $discount = 0;
     if ($obj->{$type['p']} != '0.00') { // discount_percent
         $discount = format_amount($obj->{$type['p']}) . '%';
@@ -124,7 +124,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
 
     // START eInvoicing
-    $xml_id    = false;
+    $xml_id = false;
     $embed_xml = false;
     // For embed file on PDF
     $associatedFiles = null;
@@ -133,17 +133,17 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         // Get eInvoice name (version), user checks & shift legacy_calculation mode
         $einvoice = get_einvoice_usage($invoice, $items, false);
         // Set eInvoice config (false if Client & User not Ok)
-        $xml_id  = $einvoice->user ? $einvoice->name : false;
+        $xml_id = $einvoice->user ? $einvoice->name : false;
         $options = [];
         // Same name of config & library(+Xml) by default
         $generator = $xml_id;
-        $path      = APPPATH . 'helpers/XMLconfigs/';
+        $path = APPPATH . 'helpers/XMLconfigs/';
 
         // Security: Validate XML config ID to prevent path traversal
         if ($xml_id && is_valid_xml_config_id($xml_id) && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
             $embed_xml = $xml_setting['embedXML'];
-            $XMLname   = $xml_setting['XMLname'];
-            $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
+            $XMLname = $xml_setting['XMLname'];
+            $options = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
             $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
         } elseif ($xml_id && ! is_valid_xml_config_id($xml_id)) {
             log_message('error', trans('log_invalid_xml_config_id_pdf_helper') . ': ' . $xml_id);
@@ -237,18 +237,18 @@ function generate_invoice_sumex($invoice_id, $stream = true, $invoice_template =
     ]);
 
     $sumexPDF = $CI->sumex->pdf($invoice_template);
-    $sha1sum  = sha1($sumexPDF);
+    $sha1sum = sha1($sumexPDF);
     $shortsum = mb_substr($sha1sum, 0, 8);
     $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number) . '_' . $shortsum;
 
     if ( ! $client) {
         $temp = tempnam('/tmp', 'invsumex_');
         file_put_contents($temp, $sumexPDF);
-        $pdf       = new \setasign\Fpdi\Fpdi();
+        $pdf = new \setasign\Fpdi\Fpdi();
         $pageCount = $pdf->setSourceFile($temp);
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $templateId = $pdf->importPage($pageNo);
-            $size       = $pdf->getTemplateSize($templateId);
+            $size = $pdf->getTemplateSize($templateId);
             $pdf->addPage($size['orientation'], [$size['width'], $size['height']]);
             $pdf->useTemplate($templateId);
         }

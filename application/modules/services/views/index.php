@@ -47,7 +47,7 @@
                                           method="POST">
                                         <?php _csrf_field(); ?>
                                         <button type="submit" class="dropdown-button"
-                                                onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
+                                                onclick="return confirm('<?php echo html_escape(trans('delete_record_warning')); ?>');">
                                             <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
                                         </button>
                                     </form>

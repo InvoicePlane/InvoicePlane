@@ -34,13 +34,25 @@ class Payments extends Admin_Controller
         $this->mdl_payments->paginate(site_url('payments/index'), $page);
         $payments = $this->mdl_payments->result();
 
-        foreach ($payments as $payment) {
-        $service = $this->db->query('SELECT service_name FROM ip_services, ip_invoices WHERE ip_services.service_id = ip_invoices.service_id AND ip_invoices.invoice_id = ?', $payment->invoice_id)->result_array();
-            if ($service && $service[0] && $service[0]['service_name']) {
-               $payment->service_name = $service[0]['service_name'];
-            } else {
-            $payment->service_name = null;
+        $invoiceIds = array_filter(array_column($payments, 'invoice_id'));
+        $servicesByInvoice = [];
+
+        if ( ! empty($invoiceIds)) {
+            $results = $this->db
+                ->select('ip_invoices.invoice_id, ip_services.service_name')
+                ->from('ip_invoices')
+                ->join('ip_services', 'ip_services.service_id = ip_invoices.service_id', 'left')
+                ->where_in('ip_invoices.invoice_id', $invoiceIds)
+                ->get()
+                ->result();
+
+            foreach ($results as $row) {
+                $servicesByInvoice[$row->invoice_id] = $row->service_name;
             }
+        }
+
+        foreach ($payments as $payment) {
+            $payment->service_name = $servicesByInvoice[$payment->invoice_id] ?? null;
         }
 
         $this->layout->set(
@@ -111,7 +123,7 @@ class Payments extends Admin_Controller
 
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
@@ -131,12 +143,14 @@ class Payments extends Admin_Controller
             }
         }
 
-        $amounts                 = [];
+        $serviceIds = array_filter(array_column($open_invoices, 'service_id'));
+        $servicesById = ! empty($serviceIds) ? $this->mdl_services->get_names_by_ids($serviceIds) : [];
+
+        $amounts = [];
         $invoice_payment_methods = [];
-    foreach ($open_invoices as $open_invoice) {
-        $servicesById                                                       = $this->mdl_services->get_names_by_ids([$open_invoice->service_id]);
-            $open_invoice->service_name                                     = $servicesById[$open_invoice->service_id] ?? null;
-            $amounts['invoice' . $open_invoice->invoice_id]                 = format_amount($open_invoice->invoice_balance);
+        foreach ($open_invoices as $open_invoice) {
+            $open_invoice->service_name = $servicesById[$open_invoice->service_id] ?? null;
+            $amounts['invoice' . $open_invoice->invoice_id] = format_amount($open_invoice->invoice_balance);
             $invoice_payment_methods['invoice' . $open_invoice->invoice_id] = $open_invoice->payment_method;
         }
 

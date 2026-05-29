@@ -16,8 +16,8 @@
 
         <tbody>
 <?php
-$invoice_idx                    = 1;
-            $invoice_count      = count($invoices);
+$invoice_idx = 1;
+            $invoice_count = count($invoices);
             $invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
             foreach ($invoices as $invoice) {
                 // Disable read-only if not applicable
