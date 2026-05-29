@@ -26,6 +26,7 @@ class Services extends Admin_Controller
         parent::__construct();
 
         $this->load->model('mdl_services');
+        $this->load->library('services/ServiceService', [], 'service_service');
     }
 
     /**
@@ -33,8 +34,11 @@ class Services extends Admin_Controller
      */
     public function index($page = 0)
     {
-        $this->mdl_services->paginate(site_url('services/index'), $page);
-        $services = $this->mdl_services->result();
+        $services = $this->service_service->getPaginatedServices(
+            $this->mdl_services,
+            site_url('services/index'),
+            $this->service_service->normalizePage($page)
+        );
 
         $this->layout->set('services', $services);
         $this->layout->buffer('content', 'services/index');
@@ -46,25 +50,25 @@ class Services extends Admin_Controller
      */
     public function form($id = null)
     {
+        $id = $id === null ? null : $this->service_service->normalizeId($id);
+
+        if ($id === 0) {
+            show_404();
+        }
+
         if ($this->input->post('btn_cancel')) {
             redirect('services');
         }
-        if ($this->mdl_services->run_validation()) {
-            $db_array = $this->mdl_services->db_array();
 
-            $this->mdl_services->save($id, $db_array);
+        if ( ! $this->mdl_services->run_validation()) {
+            $this->render_form($id);
 
-            redirect('services');
+            return;
         }
 
-        if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_services->prep_form($id)) {
-                show_404();
-            }
-        }
+        $this->service_service->saveService($id, $this->mdl_services);
 
-        $this->layout->buffer('content', 'services/form');
-        $this->layout->render();
+        redirect('services');
     }
 
     /**
@@ -73,12 +77,14 @@ class Services extends Admin_Controller
      */
     public function form_client($client_id, $id = null)
     {
-        $client_id = (int) $client_id;
-        $id = $id === null ? null : (int) $id;
+        $client_id = $this->service_service->normalizeId($client_id);
+        $id = $id === null ? null : $this->service_service->normalizeId($id);
 
-        $this->load->model('clients/mdl_clients');
+        if ($id === 0) {
+            show_404();
+        }
 
-        if ($client_id <= 0 || ! $this->mdl_clients->get_by_id($client_id)) {
+        if ($client_id <= 0 || ! $this->service_service->clientExists($client_id)) {
             show_404();
         }
 
@@ -90,35 +96,17 @@ class Services extends Admin_Controller
             'client_id' => $client_id,
         ]);
 
-        if ($this->mdl_services->run_validation()) {
-            $db_array = $this->mdl_services->db_array();
+        if ( ! $this->mdl_services->run_validation()) {
+            $this->render_form($id);
 
-            $this->mdl_services->save($id, $db_array);
-
-            $service_id = $id ?: (int) $this->db->insert_id();
-
-            $this->db->where('client_id', $client_id);
-            $this->db->where('service_id', $service_id);
-            $existing_service = $this->db->get('ip_client_services')->row();
-
-            if ( ! $existing_service) {
-                $this->db->insert('ip_client_services', [
-                    'client_id'  => $client_id,
-                    'service_id' => $service_id,
-                ]);
-            }
-
-            redirect('clients/form/' . $client_id);
+            return;
         }
 
-        if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_services->prep_form($id)) {
-                show_404();
-            }
-        }
+        $service_id = $this->service_service->saveService($id, $this->mdl_services);
 
-        $this->layout->buffer('content', 'services/form');
-        $this->layout->render();
+        $this->service_service->assignServiceToClient($client_id, $service_id);
+
+        redirect('clients/form/' . $client_id);
     }
 
     /**
@@ -126,16 +114,26 @@ class Services extends Admin_Controller
      */
     public function delete($id)
     {
-        $id = (int) $id;
+        $id = $this->service_service->normalizeId($id);
 
         if ($id <= 0) {
             show_404();
         }
 
-        $this->db->where('service_id', $id);
-        $this->db->delete('ip_client_services');
-
-        $this->mdl_services->delete($id);
+        $this->service_service->deleteService($id, $this->mdl_services);
         redirect('services');
+    }
+
+    /**
+     * @param int|null $id
+     */
+    private function render_form($id = null): void
+    {
+        if ( ! $this->service_service->prepareForm($id, $this->mdl_services, (bool) $this->input->post('btn_submit'))) {
+            show_404();
+        }
+
+        $this->layout->buffer('content', 'services/form');
+        $this->layout->render();
     }
 }
