@@ -72,31 +72,31 @@
 
        <?php
           if (get_setting('enable_services') == 1) {
-       ?>
+              ?>
            <div class="form-group has-feedback">
                 <label for="service_id"><?php _trans('service'); ?></label>
                 <div class="input-group" style="width: 100%;">
                     <select name="service_id" id="service_id" class="form-control" style="width: 100%;">
                                <option value="0"><?php _trans('select_service'); ?></option>
                                <?php
-                                 foreach ($services as $service) {
-                         if ( ! empty($service['service_name'])) {
-                             echo '<option value="' . htmlspecialchars($service['service_id'], ENT_QUOTES) . '">';
-                         echo htmlspecialchars($service['service_name'], ENT_QUOTES);
-                         echo '</option>';
-                     }
-                                 }
-                               ?>
+                                        foreach ($services as $service) {
+                                            if ( ! empty($service['service_name'])) {
+                                                echo '<option value="' . htmlspecialchars($service['service_id'], ENT_QUOTES) . '">';
+                                                echo htmlspecialchars($service['service_name'], ENT_QUOTES);
+                                                echo '</option>';
+                                            }
+                                        }
+              ?>
                     </select>
                 </div>
 	    </div>
        <?php
-      } else {
-       ?>
+          } else {
+              ?>
             <input type="hidden" name="service_id" id="service_id" value="0">
        <?php
-      }
-       ?>
+          }
+        ?>
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created"><?php _trans('invoice_date'); ?></label>

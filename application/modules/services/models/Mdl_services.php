@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined('BASEPATH')) {
-exit('No direct script access allowed');
+    exit('No direct script access allowed');
 }
 
 /*
@@ -53,7 +53,7 @@ class Mdl_Services extends Response_Model
             'service_name' => [
                 'field' => 'service_name',
                 'label' => trans('service_name'),
-                'rules' => 'required',
+                'rules' => 'required|is_unique[ip_services.service_name' . (($this->id) ? '.service_id.' . $this->id : '') . ']',
             ],
         ];
     }

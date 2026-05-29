@@ -320,10 +320,10 @@ if ($quote->quote_status_id == 1) {
 		    <div class="client-address">
                        <?php
                           if (get_setting('enable_services') == 1) {
-                       ?>
+                              ?>
                             <label for="service_id">
                               <?php
-                                  echo ' <span class="small">(' . trans('service_name') . ')</span>';
+                                         echo ' <span class="small">(' . trans('service_name') . ')</span>';
                               ?>
                             </label>
 		            <select name="service_id" id="service_id"
@@ -331,24 +331,24 @@ if ($quote->quote_status_id == 1) {
                                <option value="0" selected><?php _trans('select_service'); ?></option>
                                <?php
                                  foreach ($services as $service) {
-                     if ( ! empty($service['service_name'])) {
-                                         echo '<option value="' . $service['service_id'] . '" ';
-                                         if ($service['service_id'] == $quote->service_id) {
-                                            echo 'selected';
+                                     if ( ! empty($service['service_name'])) {
+                                         echo '<option value="' . html_escape($service['service_id']) . '" ';
+                                         if ((int) $service['service_id'] === (int) $quote->service_id) {
+                                             echo 'selected';
                                          }
-                                         echo '>' . $service['service_name'] . '</option>';
-                     }
+                                         echo '>' . html_escape($service['service_name']) . '</option>';
+                                     }
                                  }
-                               ?>
+                              ?>
                             </select><br>
                        <?php
-              } else {
-               ?>
+                          } else {
+                              ?>
 		            <input type="hidden" name="service_id" id="service_id" value="0">
                        <?php
-              }
-              $this->layout->load_view('clients/partial_client_address', ['client' => $quote]);
-                       ?>
+                          }
+$this->layout->load_view('clients/partial_client_address', ['client' => $quote]);
+?>
                     </div>
 <?php if ($quote->client_phone || $quote->client_email) : ?>
                         <hr>
@@ -492,7 +492,7 @@ if ($quote->quote_status_id != 1) {
                             </div>
 <?php
 $default_custom = false;
-$classes        = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field) {
     if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;

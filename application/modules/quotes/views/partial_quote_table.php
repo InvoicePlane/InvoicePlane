@@ -15,8 +15,8 @@
 
         <tbody>
 <?php
-$quote_idx                    = 1;
-            $quote_count      = count($quotes);
+$quote_idx = 1;
+            $quote_count = count($quotes);
             $quote_list_split = $quote_count > 3 ? $quote_count / 2 : 9999;
 
             foreach ($quotes as $quote) {
@@ -46,12 +46,12 @@ $quote_idx                    = 1;
 		       title="<?php _trans('view_client'); ?>">
                         <?php
                      _htmlsc(format_client($quote));
-                         if (get_setting('enable_services') == 1 && $quote->service_name) {
-                          echo '&nbsp;(';
-                 _htmlsc($quote->service_name);
-                 echo ')';
-                   }
-                        ?>
+                if (get_setting('enable_services') == 1 && $quote->service_name) {
+                    echo '&nbsp;(';
+                    _htmlsc($quote->service_name);
+                    echo ')';
+                }
+                ?>
                     </a>
                 </td>
                 <td class="amount last">

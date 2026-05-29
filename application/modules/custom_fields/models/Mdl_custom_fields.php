@@ -221,7 +221,7 @@ class Mdl_Custom_Fields extends MY_Model
             return;
         }
 
-        $cf   = $this->get_by_id($id);
+        $cf = $this->get_by_id($id);
         $base = strtr($cf->custom_field_table, ['ip_' => '']) . '_field';
 
         $this->db->from($cf->custom_field_table)
@@ -293,7 +293,7 @@ class Mdl_Custom_Fields extends MY_Model
     {
         $this->load->model('custom_fields/' . $custom_field_model);
 
-        $cf_table      = str_replace('mdl_', '', $custom_field_model);
+        $cf_table = str_replace('mdl_', '', $custom_field_model);
         $cf_model_name = str_replace('_custom', '', $cf_table);
 
         $value = $this->{$custom_field_model}
@@ -301,7 +301,7 @@ class Mdl_Custom_Fields extends MY_Model
             ->where($cf_model_name . '_id', $object->{$cf_model_name . '_id'})
             ->get()->result();
 
-        $value_key            = $cf_table . '_fieldvalue';
+        $value_key = $cf_table . '_fieldvalue';
         $value_key_serialized = $cf_table . '_fieldvalue_serialized';
 
         if ( ! isset($value[0]->{$value_key})) {
@@ -328,7 +328,7 @@ class Mdl_Custom_Fields extends MY_Model
             return [];
         }
 
-        $values       = [];
+        $values = [];
         $custom_field = str_replace('mdl_', '', $custom_field_model);
 
         foreach ($fields as $field) {
@@ -348,7 +348,7 @@ class Mdl_Custom_Fields extends MY_Model
                     $key_serialized = $field_id_fieldlabel . '_serialized';
 
                     $field->{$field_id_fieldlabel} = [];
-                    $field->{$key_serialized}      = '';
+                    $field->{$key_serialized} = '';
 
                     foreach ($custom_values as $custom_value) {
                         //Fix compatibility issue with php 5.6
@@ -363,7 +363,7 @@ class Mdl_Custom_Fields extends MY_Model
                 $custom_value = $this->mdl_custom_values->get_by_id($field->{$field_id_fieldlabel})->result();
 
                 if ( ! empty($custom_value)) {
-                    $custom_value                  = $custom_value[0];
+                    $custom_value = $custom_value[0];
                     $field->{$field_id_fieldlabel} = $custom_value->custom_values_value;
                 }
             }

@@ -1,7 +1,7 @@
 <form method="post">
 
-    <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
-           value="<?php echo $this->security->get_csrf_hash() ?>">
+    <input type="hidden" name="<?php echo html_escape($this->config->item('csrf_token_name')); ?>"
+           value="<?php echo html_escape($this->security->get_csrf_hash()); ?>">
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('service_form'); ?></h1>
@@ -16,7 +16,7 @@
                 <?php $this->layout->load_view('layout/alerts'); ?>
 
                 <?php if (isset($client_id) && $client_id) { ?>
-                <input type="hidden" name="client_id" id="client_id" value="<?php echo $client_id; ?>">
+                <input type="hidden" name="client_id" id="client_id" value="<?php echo html_escape($client_id); ?>">
                 <?php } ?>
 
                 <div class="form-group">

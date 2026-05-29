@@ -64,10 +64,10 @@ if ($quote->client_phone) {
         <div><b><?php _htmlsc($quote->user_name); ?></b>
             <?php
                    if (isset($quote->service_name) && $quote->service_name) {
-                      echo '<br>';
-                      _htmlsc($quote->service_name);
+                       echo '<br>';
+                       _htmlsc($quote->service_name);
                    }
-            ?>
+?>
         </div>
 <?php
 if ($quote->user_vat_id) {

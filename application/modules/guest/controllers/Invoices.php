@@ -58,22 +58,22 @@ class Invoices extends Guest_Controller
 
         $invoices = $this->mdl_invoices->result();
         // Collect unique service IDs
-    $service_ids = array_unique(array_filter(array_column($invoices, 'service_id')));
+        $service_ids = array_unique(array_filter(array_column($invoices, 'service_id')));
 
-    // Fetch all services in one query
-    $services = [];
-    if ( ! empty($service_ids)) {
-       $this->db->where_in('service_id', $service_ids);
-       $result = $this->db->get('ip_services')->result_array();
-       foreach ($result as $row) {
-           $services[$row['service_id']] = $row['service_name'];
-       }
-    }
+        // Fetch all services in one query
+        $services = [];
+        if ( ! empty($service_ids)) {
+            $this->db->where_in('service_id', $service_ids);
+            $result = $this->db->get('ip_services')->result_array();
+            foreach ($result as $row) {
+                $services[$row['service_id']] = $row['service_name'];
+            }
+        }
 
-    // Map service names to invoices
-    foreach ($invoices as $invoice) {
-       $invoice->service_name = $services[$invoice->service_id] ?? null;
-    }
+        // Map service names to invoices
+        foreach ($invoices as $invoice) {
+            $invoice->service_name = $services[$invoice->service_id] ?? null;
+        }
 
         $this->layout->set(
             [

@@ -51,10 +51,10 @@ class MX_Controller
 
     public function __construct()
     {
-        if (CI::$APP->config->item('controller_suffix') == null) {
-        $class = str_replace('', '', get_class($this));
+        if (CI::$APP->config->item('controller_suffix') === null) {
+            $class = get_class($this);
         } else {
-        $class = str_replace(CI::$APP->config->item('controller_suffix'), '', get_class($this));
+            $class = str_replace(CI::$APP->config->item('controller_suffix'), '', get_class($this));
         }
 
         log_message('debug', $class . ' MX_Controller Initialized');
