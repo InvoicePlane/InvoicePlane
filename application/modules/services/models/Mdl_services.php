@@ -34,20 +34,9 @@ class Mdl_Services extends Response_Model
 
     public function get_names_by_ids(array $serviceIds)
     {
-        $serviceIds = array_values(array_unique(array_filter(array_map('intval', $serviceIds))));
+        $this->load->library('services/ServiceService', [], 'service_service');
 
-        if ($serviceIds === []) {
-            return [];
-        }
-
-        $services = $this->db
-            ->select('service_id, service_name')
-            ->where_in('service_id', $serviceIds)
-            ->order_by('service_name')
-            ->get($this->table)
-            ->result_array();
-
-        return array_column($services, 'service_name', 'service_id');
+        return $this->service_service->getServiceNamesByIds($serviceIds);
     }
 
     /**
