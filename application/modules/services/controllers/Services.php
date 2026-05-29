@@ -68,35 +68,47 @@ class Services extends Admin_Controller
     }
 
     /**
-     * @param null $id
+     * @param int $client_id
+     * @param int|null $id
      */
     public function form_client($client_id, $id = null)
     {
-        if ($this->input->post('btn_cancel')) {
-            redirect('services');
+        $client_id = (int) $client_id;
+        $id = $id === null ? null : (int) $id;
+
+        $this->load->model('clients/mdl_clients');
+
+        if ($client_id <= 0 || ! $this->mdl_clients->get_by_id($client_id)) {
+            show_404();
         }
-        $this->layout->set(
-            [
-                'client_id' => $client_id,
-            ]
-        );
+
+        if ($this->input->post('btn_cancel')) {
+            redirect('clients/form/' . $client_id);
+        }
+
+        $this->layout->set([
+            'client_id' => $client_id,
+        ]);
 
         if ($this->mdl_services->run_validation()) {
             $db_array = $this->mdl_services->db_array();
 
             $this->mdl_services->save($id, $db_array);
 
-            $service_id = $id ? $id : $this->db->insert_id();
+            $service_id = $id ?: (int) $this->db->insert_id();
 
-            if ($this->input->post('client_id')) {
+            $this->db->where('client_id', $client_id);
+            $this->db->where('service_id', $service_id);
+            $existing_service = $this->db->get('ip_client_services')->row();
+
+            if ( ! $existing_service) {
                 $this->db->insert('ip_client_services', [
-                    'client_id'  => $this->input->post('client_id'),
+                    'client_id'  => $client_id,
                     'service_id' => $service_id,
                 ]);
-                redirect('clients/form/' . $this->input->post('client_id'));
-            } else {
-                redirect('services');
             }
+
+            redirect('clients/form/' . $client_id);
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
@@ -110,10 +122,19 @@ class Services extends Admin_Controller
     }
 
     /**
-     * @param $id
+     * @param int $id
      */
     public function delete($id)
     {
+        $id = (int) $id;
+
+        if ($id <= 0) {
+            show_404();
+        }
+
+        $this->db->where('service_id', $id);
+        $this->db->delete('ip_client_services');
+
         $this->mdl_services->delete($id);
         redirect('services');
     }
