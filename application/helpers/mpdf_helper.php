@@ -189,12 +189,6 @@ function pdf_create(
         show_error($e->getMessage());
     }
 
-    // Browser PDF viewers often use the document title for "Save as" suggestions
-    // instead of the Content-Disposition filename from inline PDF responses. Ensure
-    // the title follows the generated invoice/quote filename after any invoice number
-    // is assigned while marking the invoice as sent.
-    $mpdf->SetTitle($filename);
-
     if ($isInvoice) {
         $pdfFiles = glob(UPLOADS_ARCHIVE_FOLDER . '*' . $filename . '.pdf');
 

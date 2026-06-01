@@ -60,6 +60,9 @@
                         <option value="{{{id}}}">
                             <?php _trans('id'); ?>
                         </option>
+                        <option value="{{{date}}}">
+                            <?php _trans('date'); ?>
+                        </option>
                         <option value="{{{year}}}">
                             <?php _trans('current_year'); ?>
                         </option>

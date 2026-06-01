@@ -103,7 +103,10 @@ class Mdl_Invoice_Groups extends Response_Model
     {
         if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
             foreach ($template_vars[1] as $var) {
-                switch ($var) {
+                switch (mb_strtolower($var)) {
+                    case 'date':
+                        $replace = date(date_format_setting());
+                        break;
                     case 'year':
                         $replace = date('Y');
                         break;
