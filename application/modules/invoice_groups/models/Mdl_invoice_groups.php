@@ -101,35 +101,20 @@ class Mdl_Invoice_Groups extends Response_Model
      */
     private function parse_identifier_format($identifier_format, string $next_id, int $left_pad)
     {
-        if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
-            foreach ($template_vars[1] as $var) {
-                switch (mb_strtolower($var)) {
-                    case 'date':
-                        $replace = date(date_format_setting());
-                        break;
-                    case 'year':
-                        $replace = date('Y');
-                        break;
-                    case 'yy':
-                        $replace = date('y');
-                        break;
-                    case 'month':
-                        $replace = date('m');
-                        break;
-                    case 'day':
-                        $replace = date('d');
-                        break;
-                    case 'id':
-                        $replace = mb_str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
-                        break;
-                    default:
-                        $replace = '';
-                }
-
-                $identifier_format = str_replace('{{{' . $var . '}}}', $replace, $identifier_format);
-            }
-        }
-
-        return $identifier_format;
+        return preg_replace_callback(
+            '/{{{([^{|}]*)}}}/',
+            static function (array $matches) use ($next_id, $left_pad): string {
+                return match (mb_strtolower(trim($matches[1]))) {
+                    'date'  => date(date_format_setting()),
+                    'year'  => date('Y'),
+                    'yy'    => date('y'),
+                    'month' => date('m'),
+                    'day'   => date('d'),
+                    'id'    => mb_str_pad($next_id, $left_pad, '0', STR_PAD_LEFT),
+                    default => '',
+                };
+            },
+            $identifier_format
+        );
     }
 }
