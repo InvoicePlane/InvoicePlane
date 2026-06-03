@@ -27,6 +27,7 @@ class Stripe extends Base_Controller
         parent::__construct();
         $this->load->library('crypt');
         $this->load->model('invoices/mdl_invoices');
+        $this->load->helper('file_security');
 
         $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
     }
@@ -41,7 +42,18 @@ class Stripe extends Base_Controller
      */
     public function create_checkout_session($invoice_url_key)
     {
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+
+        // Security: Verify the invoice exists and is guest-visible
+        if ( ! $invoice) {
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted checkout session creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            show_404();
+        }
 
         // Check if the invoice is payable
         if ($invoice->invoice_balance <= 0) {
@@ -93,7 +105,13 @@ class Stripe extends Base_Controller
             $invoice_key = $session->client_reference_id;
 
             // Retrieve the invoice
-            $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_key)->get()->row();
+            $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_key)->get()->row();
+
+            // Security: Verify the invoice exists and is guest-visible
+            if ( ! $invoice) {
+                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted payment callback for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_key));
+                throw new Exception('Invoice not found or not accessible');
+            }
 
             // Check the session payment_status is 'paid'
             // See: https://github.com/stripe/stripe-php/blob/044f9dd190967b8fb7e55fd0ea25f11c625c00a4/lib/Checkout/Session.php#L101
@@ -101,15 +119,42 @@ class Stripe extends Base_Controller
 
             // Is paid? (intent flow 'succeeded')
             if ($paid) {
-                // Save the payment (visible in guest user)
                 $this->load->model('payments/mdl_payments');
-                $this->mdl_payments->save(null, [
-                    'invoice_id'        => $invoice->invoice_id,
-                    'payment_date'      => date('Y-m-d'),
-                    'payment_amount'    => $session->amount_total / 100,
-                    'payment_method_id' => get_setting('gateway_stripe_payment_method'),
-                    'payment_note'      => trans('online_payment_intent_id') . ': ' . $session->payment_intent,
-                ]);
+
+                // Validate and sanitize the payment_intent ID
+                $payment_intent = (string) $session->payment_intent;
+                if (empty($payment_intent) || mb_strlen($payment_intent) > 255) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid payment_intent ID format');
+                    throw new Exception('Invalid payment intent ID');
+                }
+
+                // Check if this payment_intent has already been processed (deduplication check)
+                $existing_payment = $this->db
+                    ->where('payment_external_id', $payment_intent)
+                    ->get('ip_payments')
+                    ->row();
+
+                if ($existing_payment) {
+                    // Duplicate payment attempt detected
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. Payment intent: ' . sanitize_for_logging($payment_intent) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
+                    $paid     = false; // Mark as not paid to show info message instead of success
+                    $user_msg = trans('online_payment_already_processed');
+                } elseif ($invoice->invoice_balance <= 0) {
+                    // Invoice is already fully paid
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
+                    $paid     = false; // Mark as not paid to show info message instead of success
+                    $user_msg = trans('invoice_already_paid');
+                } else {
+                    // Save the payment (visible in guest user)
+                    $this->mdl_payments->save(null, [
+                        'invoice_id'          => $invoice->invoice_id,
+                        'payment_date'        => date('Y-m-d'),
+                        'payment_amount'      => $session->amount_total / 100,
+                        'payment_method_id'   => get_setting('gateway_stripe_payment_method'),
+                        'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
+                        'payment_external_id' => $payment_intent,
+                    ]);
+                }
             }
 
             // paid / cancel (+other flow)

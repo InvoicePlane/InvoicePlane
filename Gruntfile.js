@@ -29,7 +29,7 @@ module.exports = function(grunt) {
       dev: {
         options: {
           implementation: sass,
-          outputStyle: "extended",
+          outputStyle: "expanded",
           sourceMap: true
         },
         files: grunt.file.expandMapping(["assets/**/sass/*.scss"], "css", {

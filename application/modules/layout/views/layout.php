@@ -46,7 +46,7 @@ if (get_setting('disable_sidebar') != 1) {
     <script defer src="<?php _core_asset('js/scripts.min.js'); ?>"></script>
 <?php
 if (trans('cldr') != 'en') {
-?>
+    ?>
     <script src="<?php _core_asset('js/locales/bootstrap-datepicker.' . trans('cldr') . '.js'); ?>"></script>
 <?php
 }

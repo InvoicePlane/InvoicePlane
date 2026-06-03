@@ -118,6 +118,8 @@ class Quotes extends Admin_Controller
             show_404();
         }
 
+        $quote->quote_password = $this->mdl_quotes->decrypt_quote_password($quote->quote_password);
+
         $custom_fields = $this->mdl_custom_fields->by_table('ip_quote_custom')->get()->result();
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
@@ -187,6 +189,10 @@ class Quotes extends Admin_Controller
      */
     public function delete($quote_id)
     {
+        if ( ! $this->ensure_valid_post_request('quotes/index')) {
+            return;
+        }
+
         // Delete the quote
         $this->mdl_quotes->delete($quote_id);
 
@@ -221,6 +227,10 @@ class Quotes extends Admin_Controller
      */
     public function delete_quote_tax(string $quote_id, $quote_tax_rate_id)
     {
+        if ( ! $this->ensure_valid_post_request('quotes/view/' . $quote_id)) {
+            return;
+        }
+
         $this->load->model('quotes/mdl_quote_tax_rates');
         $this->mdl_quote_tax_rates->delete($quote_tax_rate_id);
 

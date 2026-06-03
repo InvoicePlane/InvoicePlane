@@ -38,6 +38,68 @@ class Mdl_Settings extends CI_Model
     }
 
     /**
+     * Batch save multiple settings in a single operation
+     * Automatically handles both inserts and updates based on existing settings.
+     *
+     * Performance: Executes at most 3 queries (1 SELECT + 1 INSERT batch + 1 UPDATE batch)
+     * This is much more efficient than calling save() in a loop
+     *
+     * @param array $settings Associative array of setting_key => setting_value pairs
+     *
+     * @return void
+     */
+    public function save_batch(array $settings)
+    {
+        if (empty($settings)) {
+            return;
+        }
+
+        // Load existing settings once, scoped to only the keys we care about,
+        // so the query remains efficient even when ip_settings grows large.
+        $existing_keys = [];
+        $query         = $this->db
+            ->select('setting_key')
+            ->where_in('setting_key', array_keys($settings))
+            ->get('ip_settings');
+        foreach ($query->result() as $row) {
+            $existing_keys[$row->setting_key] = true;
+        }
+
+        // Separate into updates and inserts
+        $to_update = [];
+        $to_insert = [];
+
+        foreach ($settings as $key => $value) {
+            $data = [
+                'setting_key'   => $key,
+                'setting_value' => $value,
+            ];
+
+            if (isset($existing_keys[$key])) {
+                $to_update[] = $data;
+            } else {
+                $to_insert[] = $data;
+            }
+        }
+
+        // Perform both inserts and updates atomically.
+        $this->db->trans_start();
+
+        // Perform batch insert for new settings
+        if ( ! empty($to_insert)) {
+            $this->db->insert_batch('ip_settings', $to_insert);
+        }
+
+        // Perform batch update for existing settings
+        // Note: CodeIgniter's update_batch requires a key field to match on
+        if ( ! empty($to_update)) {
+            $this->db->update_batch('ip_settings', $to_update, 'setting_key');
+        }
+
+        $this->db->trans_complete();
+    }
+
+    /**
      * @param $key
      */
     public function get($key)

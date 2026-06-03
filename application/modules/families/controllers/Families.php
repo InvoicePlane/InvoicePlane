@@ -50,8 +50,6 @@ class Families extends Admin_Controller
             redirect('families');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
-
         if ($this->input->post('is_update') == 0 && $this->input->post('family_name') != '') {
             $check = $this->db->get_where('ip_families', ['family_name' => $this->input->post('family_name')])->result();
 

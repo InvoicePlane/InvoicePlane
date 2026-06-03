@@ -1,49 +1,84 @@
-name: Run PHPUnit Tests
+name: PHPUnit
 
 on:
-  workflow_dispatch:  # Manual only — does not run automatically
+  workflow_dispatch:
+    inputs:
+      php_version:
+        description: 'PHP version'
+        required: false
+        default: '8.2'
+        type: choice
+        options:
+          - '8.2'
+          - '8.3'
+      mysql_version:
+        description: 'MySQL/MariaDB image'
+        required: false
+        default: 'mysql:8.0'
+        type: choice
+        options:
+          - 'mysql:8.0'
+          - 'mariadb:10.11'
+      fail_fast:
+        description: 'Stop on first failure'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+permissions:
+  contents: read
 
 jobs:
-  phpunit:
+  test:
+    name: PHPUnit (PHP ${{ github.event.inputs.php_version || '8.2' }})
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
-    # MySQL service commented out - tests use SQLite in-memory instead
-    # services:
-    #   mysql:
-    #     image: mysql:8
-    #     env:
-    #       MYSQL_ROOT_PASSWORD: root
-    #       MYSQL_DATABASE: testing
-    #     ports:
-    #       - 3306:3306
-    #     options: >-
-    #       --health-cmd="mysqladmin ping --silent"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=3
+    services:
+      database:
+        image: ${{ github.event.inputs.mysql_version || 'mysql:8.0' }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: invoiceplane_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.3'
-          php-extensions: 'mbstring, bcmath, pdo_mysql'
-          composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
+          php-version: ${{ github.event.inputs.php_version || '8.2' }}
 
-      - name: Prepare Laravel environment
+      - name: Copy ipconfig.php
+        run: cp ipconfig.php.example ipconfig.php
+
+      - name: Configure test database in ipconfig.php
         run: |
-          cp .env.testing.example .env.testing
-          php artisan key:generate --env=testing
+          sed -i \
+            -e 's|^DB_HOSTNAME=.*|DB_HOSTNAME=127.0.0.1|' \
+            -e 's|^DB_DATABASE=.*|DB_DATABASE=invoiceplane_test|' \
+            -e 's|^DB_USERNAME=.*|DB_USERNAME=root|' \
+            -e 's|^DB_PASSWORD=.*|DB_PASSWORD=root|' \
+            ipconfig.php || true
 
-      #- name: Run Laravel migrations
-      #  run: php artisan migrate --force --env=testing
-
-      #- name: Run Laravel seeds (optional)
-      #  run: php artisan db:seed --force --env=testing
+      - name: Confirm database is reachable
+        run: |
+          mysql -h 127.0.0.1 -u root -proot invoiceplane_test -e "SELECT 1;" 2>/dev/null
 
       - name: Run PHPUnit
-        run: php artisan test --env=testing
+        run: |
+          if [ -f phpunit.xml ] || [ -f phpunit.xml.dist ]; then
+            vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
+          else
+            echo "No phpunit.xml found — no tests to run yet."
+          fi

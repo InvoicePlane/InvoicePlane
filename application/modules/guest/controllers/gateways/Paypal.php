@@ -19,6 +19,7 @@ class Paypal extends Base_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('file_security');
         $this->_create_client();
     }
 
@@ -32,10 +33,21 @@ class Paypal extends Base_Controller
      */
     public function paypal_create_order($invoice_url_key)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         // Check if the invoice exists and is billable
         $this->load->model('invoices/mdl_invoices');
 
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+
+        // Security: Verify the invoice exists and is guest-visible
+        if ( ! $invoice) {
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted order creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            show_404();
+        }
 
         // Check if the invoice is payable
         if ($invoice->invoice_balance <= 0) {
@@ -51,7 +63,48 @@ class Paypal extends Base_Controller
             'custom_id'     => $invoice_url_key,
         ]);
 
-        return $this->output->set_output($paypal_client); //TODO: make proper response
+        // Decode the PayPal response
+        $paypal_response = json_decode($paypal_client, true);
+
+        // Handle JSON decode errors
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            log_message('error', 'PayPal createOrder JSON decode error for invoice ' . sanitize_for_logging($invoice_url_key) . ': ' . sanitize_for_logging(json_last_error_msg()));
+            $this->output
+                ->set_status_header(500)
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['error' => 'Invalid response from payment gateway']));
+
+            return;
+        }
+
+        // Validate required fields from PayPal response
+        if (empty($paypal_response['id'])) {
+            log_message('error', 'PayPal createOrder missing order ID for invoice ' . sanitize_for_logging($invoice_url_key));
+            $this->output
+                ->set_status_header(500)
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['error' => 'Invalid response from payment gateway']));
+
+            return;
+        }
+
+        // Add refreshed CSRF token to response (token regenerates on each POST)
+        $response = [
+            'id'         => $paypal_response['id'],
+            'status'     => $paypal_response['status'] ?? null,
+            'csrf_token' => $this->security->get_csrf_hash(),
+        ];
+
+        // Preserve any additional fields from PayPal response
+        foreach ($paypal_response as $key => $value) {
+            if ( ! isset($response[$key])) {
+                $response[$key] = $value;
+            }
+        }
+
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
     }
 
     /**
@@ -63,6 +116,11 @@ class Paypal extends Base_Controller
      */
     public function paypal_capture_payment(string $order_id)
     {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $paypal_response = $this->lib_paypal->captureOrder($order_id);
 
         //handle the payment
@@ -74,27 +132,96 @@ class Paypal extends Base_Controller
 
             // If either Completed or Pending, we're treating it as completed from the buyer's perspective.
             if ($capture_status === 'COMPLETED' || $capture_status === 'PENDING') {
-                $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id;
-                $amount     = $paypal_object->purchase_units[0]->payments->captures[0]->amount->value;
+                // Extract payment data with defensive null safety checks at each level
+                $purchase_units = $paypal_object->purchase_units ?? null;
+                $payments       = $purchase_units[0]->payments ?? null;
+                $captures       = $payments->captures ?? null;
+                $capture_data   = $captures[0] ?? null;
+
+                if ( ! $capture_data) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid PayPal response structure: missing capture data');
+                    throw new Exception('Invalid PayPal response structure');
+                }
+
+                $invoice_id = $capture_data->invoice_id ?? null;
+                $amount     = $capture_data->amount->value ?? null;
+                $capture_id = $capture_data->id ?? null;
+
+                // Validate required fields
+                if (empty($invoice_id) || empty($amount) || empty($capture_id)) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Missing required PayPal data fields');
+                    throw new Exception('Missing required PayPal data');
+                }
+
+                // Security: Validate that the invoice is guest-visible before processing payment
+                $verified_invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                if ( ! $verified_invoice) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted payment capture for non-public invoice: ' . sanitize_for_logging($invoice_id));
+                    throw new Exception('Invoice not found or not accessible');
+                }
+
+                $capture_id = (string) $capture_id; // Ensure string type
+
+                // Validate and sanitize the capture_id
+                if (mb_strlen($capture_id) > 255) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - PayPal capture ID too long: ' . mb_strlen($capture_id) . ' characters');
+                    throw new Exception('Invalid capture ID length');
+                }
 
                 //record the payment
                 $this->load->model('payments/mdl_payments');
 
-                // If the payment status is pending, set a note accordingly.
-                $payment_note = ($capture_status === 'PENDING') ? 'Payment Pending!  Check PayPal for details.' : '';
+                // Check if this capture_id has already been processed (deduplication check)
+                $existing_payment = $this->db
+                    ->where('payment_external_id', $capture_id)
+                    ->get('ip_payments')
+                    ->row();
 
-                $this->mdl_payments->save(null, [
-                    'invoice_id'        => $invoice_id,
-                    'payment_date'      => date('Y-m-d'),
-                    'payment_amount'    => $amount,
-                    'payment_method_id' => get_setting('gateway_paypal_payment_method'),
-                    'payment_note'      => $payment_note,
-                ]);
+                if ($existing_payment) {
+                    // Duplicate payment attempt detected
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. PayPal capture ID: ' . sanitize_for_logging($capture_id) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
 
-                $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                    $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                    
+                    // Security: Verify the invoice exists and is guest-visible
+                    if ( ! $invoice) {
+                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invoice no longer guest-visible during duplicate payment check: ' . sanitize_for_logging($invoice_id));
+                        $this->session->set_flashdata('alert_error', trans('invoice_not_found'));
+                        $this->session->keep_flashdata('alert_error');
+                    } else {
+                        $this->session->set_flashdata('alert_info', trans('online_payment_already_processed'));
+                        $this->session->keep_flashdata('alert_info');
+                    }
+                } else {
+                    // Check if invoice is already fully paid
+                    $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
-                $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
-                $this->session->keep_flashdata('alert_success');
+                    // Security: Verify the invoice exists and is guest-visible
+                    if ( ! $invoice) {
+                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invoice no longer guest-visible during payment capture: ' . sanitize_for_logging($invoice_id));
+                        $this->session->set_flashdata('alert_error', trans('invoice_not_found'));
+                        $this->session->keep_flashdata('alert_error');
+                    } elseif ($invoice->invoice_balance <= 0) {
+                        log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
+                        $this->session->set_flashdata('alert_info', trans('invoice_already_paid'));
+                        $this->session->keep_flashdata('alert_info');
+                    } else {
+                        // If the payment status is pending, set a note accordingly.
+                        $payment_note = ($capture_status === 'PENDING') ? trans('online_payment_pending') : '';
+
+                        $this->mdl_payments->save(null, [
+                            'invoice_id'          => $invoice_id,
+                            'payment_date'        => date('Y-m-d'),
+                            'payment_amount'      => $amount,
+                            'payment_method_id'   => get_setting('gateway_paypal_payment_method'),
+                            'payment_note'        => $payment_note,
+                            'payment_external_id' => $capture_id,
+                        ]);
+
+                        $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
+                        $this->session->keep_flashdata('alert_success');
+                    }
+                }
 
                 /*
                  * merchant_response_success will be set to true for both completed and pending,

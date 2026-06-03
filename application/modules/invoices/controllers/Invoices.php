@@ -100,6 +100,7 @@ class Invoices extends Admin_Controller
             $error = $validation['error'] ?? 'unknown';
             log_message('error', 'invoices: Invalid file access attempt during download (error: ' . $error . ', hash: ' . $validation['hash'] . ')');
             show_404();
+
             return;
         }
 
@@ -154,6 +155,8 @@ class Invoices extends Admin_Controller
         if ( ! $invoice) {
             show_404();
         }
+
+        $invoice->invoice_password = $this->mdl_invoices->decrypt_invoice_password($invoice->invoice_password);
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result();
         $custom_values = [];
@@ -226,8 +229,19 @@ class Invoices extends Admin_Controller
 
     public function delete($invoice_id): void
     {
+        if ( ! $this->ensure_valid_post_request('invoices/index')) {
+            return;
+        }
+
         // Get the status of the invoice
         $invoice        = $this->mdl_invoices->get_by_id($invoice_id);
+
+        if ( ! $invoice) {
+            show_404();
+
+            return;
+        }
+
         $invoice_status = $invoice->invoice_status_id;
 
         if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true) {
@@ -288,7 +302,8 @@ class Invoices extends Admin_Controller
         $options   = [];
         $generator = $xml_id;
         $path      = APPPATH . 'helpers/XMLconfigs/';
-        if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
+        $is_valid_xml_id = is_string($xml_id) && preg_match('/^[A-Za-z0-9-]+$/', $xml_id) === 1;
+        if ($is_valid_xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
             $embed_xml = $xml_setting['embedXML'];
             $XMLname   = $xml_setting['XMLname'];
             $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
@@ -327,6 +342,10 @@ class Invoices extends Admin_Controller
 
     public function delete_invoice_tax(string $invoice_id, $invoice_tax_rate_id): void
     {
+        if ( ! $this->ensure_valid_post_request('invoices/view/' . $invoice_id)) {
+            return;
+        }
+
         $this->load->model('invoices/mdl_invoice_tax_rates');
         $this->mdl_invoice_tax_rates->delete($invoice_tax_rate_id);
 

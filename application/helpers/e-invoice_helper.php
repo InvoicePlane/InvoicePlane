@@ -102,12 +102,6 @@ function get_xml_template_files(): array
 
     foreach ($xml_config_files as $key => $xml_config_file) {
         $xml_config_files[$key] = str_replace('.php', '', $xml_config_file);
-        
-        // Security: Validate XML config ID before including
-        if (!is_valid_xml_config_id($xml_config_files[$key])) {
-            log_message('error', trans('log_invalid_xml_config_id') . ': ' . $xml_config_files[$key]);
-            continue;
-        }
 
         // Security: Validate XML config ID before including
         if ( ! is_valid_xml_config_id($xml_config_files[$key])) {
@@ -198,12 +192,12 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
     $c   = new stdClass();
     // check if required (einvoicing) fields are filled in?
     $c->address_1 = $cid && $client->client_address_1 == '' ? 1 : 0;
-    $c->zip       = $cid && $client->client_zip       == '' ? 1 : 0;
-    $c->city      = $cid && $client->client_city      == '' ? 1 : 0;
-    $c->country   = $cid && $client->client_country   == '' ? 1 : 0;
-    $c->company   = $cid && $client->client_company   == '' ? 1 : 0;
-    $c->tax_code  = $cid && $client->client_tax_code  == '' ? 1 : 0;
-    $c->vat_id    = $cid && $client->client_vat_id    == '' ? 1 : 0;
+    $c->zip       = $cid && $client->client_zip == '' ? 1 : 0;
+    $c->city      = $cid && $client->client_city == '' ? 1 : 0;
+    $c->country   = $cid && $client->client_country == '' ? 1 : 0;
+    $c->company   = $cid && $client->client_company == '' ? 1 : 0;
+    $c->tax_code  = $cid && $client->client_tax_code == '' ? 1 : 0;
+    $c->vat_id    = $cid && $client->client_vat_id == '' ? 1 : 0;
     // Tweak to run with or without VAT
     if ($c->company + $c->vat_id == 2) {
         $c->company = 0;
@@ -236,12 +230,12 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
         $u = new stdClass();
         // check if required (eInvoicing) fields are filled in? todo: user_iban user_bic?
         $u->address_1 = $o->user_address_1 != '' ? 0 : 1;
-        $u->zip       = $o->user_zip       != '' ? 0 : 1;
-        $u->city      = $o->user_city      != '' ? 0 : 1;
-        $u->country   = $o->user_country   != '' ? 0 : 1;
-        $u->company   = $o->user_company   != '' ? 0 : 1;
-        $u->tax_code  = $o->user_tax_code  != '' ? 0 : 1;
-        $u->vat_id    = $o->user_vat_id    != '' ? 0 : 1;
+        $u->zip       = $o->user_zip != '' ? 0 : 1;
+        $u->city      = $o->user_city != '' ? 0 : 1;
+        $u->country   = $o->user_country != '' ? 0 : 1;
+        $u->company   = $o->user_company != '' ? 0 : 1;
+        $u->tax_code  = $o->user_tax_code != '' ? 0 : 1;
+        $u->vat_id    = $o->user_vat_id != '' ? 0 : 1;
         // Tweak to run with or without VAT
         if ($u->company + $u->vat_id == 2) {
             $u->company = 0;
@@ -258,12 +252,12 @@ function get_req_fields_einvoice($client = null, $user_id = ''): object
 
         // User records filled? (in relation with client)
         $u->tr_show_address_1 = $u->address_1 + $c->address_1 > 0 ? 1 : 0;
-        $u->tr_show_zip       = $u->zip       + $c->zip       > 0 ? 1 : 0;
-        $u->tr_show_city      = $u->city      + $c->city      > 0 ? 1 : 0;
-        $u->tr_show_country   = $u->country   + $c->country   > 0 ? 1 : 0;
-        $u->tr_show_company   = $u->company   + $c->company   > 0 ? 1 : 0;
-        $u->tr_show_tax_code  = $u->tax_code  + $c->tax_code  > 0 ? 1 : 0;
-        $u->tr_show_vat_id    = $u->vat_id    + $c->vat_id    > 0 ? 1 : 0;
+        $u->tr_show_zip       = $u->zip + $c->zip > 0 ? 1 : 0;
+        $u->tr_show_city      = $u->city + $c->city > 0 ? 1 : 0;
+        $u->tr_show_country   = $u->country + $c->country > 0 ? 1 : 0;
+        $u->tr_show_company   = $u->company + $c->company > 0 ? 1 : 0;
+        $u->tr_show_tax_code  = $u->tax_code + $c->tax_code > 0 ? 1 : 0;
+        $u->tr_show_vat_id    = $u->vat_id + $c->vat_id > 0 ? 1 : 0;
         // Show user table when sum of tr_show > 0
         $u->show_table = $u->tr_show_address_1 + $u->tr_show_zip + $u->tr_show_city + $u->tr_show_country + $u->tr_show_company + $u->tr_show_tax_code + $u->tr_show_vat_id > 0 ? 1 : 0;
 
