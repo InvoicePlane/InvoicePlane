@@ -317,3 +317,10 @@ public function it_blocks_path_traversal(): void
 - [ ] Helpers are loaded explicitly with `$this->load->helper()`.
 - [ ] No direct use of `$_GET`, `$_POST`, or `$_SERVER` — use `$this->input->*()`.
 - [ ] No `php artisan` commands — InvoicePlane does not use Laravel.
+
+### Changelog / Documentation
+
+- [ ] When filling in empty cells (`—`) in a vulnerability table, **only** those cells are changed — CVSSv3 scores, CWE IDs, and Severity labels in other columns of the same row are left untouched.
+- [ ] GHSA advisory IDs and reporter handles are sourced from the GitHub Security Advisories page; they are never guessed or inferred.
+- [ ] Reporter column uses linked GitHub handles: `[@handle](https://github.com/handle)`.
+- [ ] GHSA links follow the pattern `https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-xxxx-xxxx-xxxx`.

@@ -81,6 +81,12 @@ Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `
 - **Do NOT log raw user input** — always `sanitize_for_logging()` or hash it.
 - **Do NOT add `<form method="post">` without `<?php _csrf_field(); ?>`**.
 
+## Documentation / changelog rules
+
+- **Do NOT change CVSSv3 scores or CWE identifiers** in vulnerability tables unless explicitly asked. Scores and CWEs are set by the security researcher and the maintainer — never adjust them as a side-effect of filling in other columns (PR links, GHSA IDs, reporter handles).
+- **Do NOT change the "Severity" label** (Critical / High / Medium / Low) without a separate explicit instruction.
+- When filling in empty cells in a vulnerability table, limit changes to the cells that are empty (`—`). Leave populated cells untouched.
+
 ## Extended documentation
 
 - `AGENTS.md` — full agent instructions and security rules
