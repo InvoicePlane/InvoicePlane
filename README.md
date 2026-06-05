@@ -25,35 +25,104 @@ _A libre self-hosted web application designed to help you manage invoices, clien
 
 ## What's New in Version 1.7.2
 
-**InvoicePlane 1.7.2** is a security-focused release. It closes multiple high-severity vulnerabilities reported against 1.7.0 and 1.7.1 and hardens the application infrastructure.
+**InvoicePlane 1.7.2** is a security-focused release that closes multiple high-severity vulnerabilities
+reported against v1.7.0 and v1.7.1 and hardens the application infrastructure throughout.
 
-### Security highlights
+### Major Security Improvements
 
-- **Remote Code Execution (RCE) — Critical (CVSSv3 9.9):** The invoice/quote template system no longer scans the filesystem at runtime. Template names are now controlled by a static allowlist in `ipconfig.php`. Any PHP file placed in the templates directory is ignored unless explicitly listed.
-- **Arbitrary File Deletion — High (CVSSv3 7.1):** Path traversal sequences in logo filenames are now rejected; the delete endpoint validates that files are within the `uploads/` directory before removing them.
-- **Password Reset — High:** Tokens now expire after a configurable window (default 15 minutes) and are generated with a cryptographically secure PRNG.
-- **SQL/DDL Injection — High:** The tax rate decimal places setting is now strictly validated before being used in database operations.
-- **IDOR/CSRF on Quote Endpoints — High:** Guest quote approve/reject endpoints now enforce ownership checks and require a valid CSRF token.
-- **Session Hardening:** `cookie_httponly` is now `true` (session cookies inaccessible to JavaScript), `X-Frame-Options` defaults to `SAMEORIGIN`, and a `Referrer-Policy` header is sent on every response.
+- **Remote Code Execution (RCE) — Critical (CVSSv3 9.9):** The invoice/quote template system
+  no longer scans the filesystem at runtime. Template names are controlled by a static allowlist
+  in `ipconfig.php`. Any PHP file placed in the templates directory is ignored unless explicitly listed.
+- **Arbitrary File Deletion — High (CVSSv3 7.1):** Path traversal sequences in logo filenames are
+  now rejected; the delete endpoint validates that files are within the `uploads/` directory before removing them.
+- **Password Reset — High:** Tokens now expire after a configurable window (default 15 minutes) and
+  are generated with a cryptographically secure PRNG (`random_bytes(32)`).
+- **SQL/DDL Injection — High:** The tax rate decimal places setting is now strictly validated before
+  being used in database operations.
+- **IDOR/CSRF on Quote Endpoints — High:** Guest quote approve/reject endpoints now enforce
+  ownership checks and require a valid CSRF token.
+- **Session Hardening:** `cookie_httponly` is now `true` (session cookies inaccessible to JavaScript),
+  `X-Frame-Options` defaults to `SAMEORIGIN`, and a `Referrer-Policy` header is sent on every response.
 - **Log Injection:** All user-controlled values are sanitised before `log_message()` calls.
 
-See [CHANGELOG.md](CHANGELOG.md) for the complete list.
+### Security Vulnerability Summary
 
-### Upgrading from 1.7.0 or 1.7.1
+| Vulnerability | Severity | CVSSv3 | CWE | Fixed In |
+|---|---|---|---|---|
+| RCE via template filesystem scan | Critical | 9.9 | CWE-693 | #1505, #1506 |
+| Password reset tokens never expired | Critical | 9.8 | CWE-640 | — |
+| Arbitrary file deletion via path traversal | High | 7.1 | CWE-22 | — |
+| Weak PRNG in password reset tokens | High | 7.5 | CWE-338 | — |
+| SQL/DDL injection in tax rate decimal places | High | 8.8 | CWE-89 | — |
+| Configuration injection in DB setup wizard | High | 8.8 | CWE-77 | — |
+| IDOR + CSRF on guest quote approve/reject | High | 8.1 | CWE-639, CWE-352 | — |
+| Auth bypass in guest invoice/payment | Medium | 6.5 | CWE-284 | — |
+| Setup wizard accessible post-install | Medium | 5.3 | CWE-285 | — |
+| SSRF via PDF footer content | Medium | 6.5 | CWE-918 | — |
+| Open redirect via `HTTP_REFERER` | Medium | 6.1 | CWE-601 | — |
+| Payment gateway API credentials plaintext | Medium | 6.5 | CWE-312 | — |
+| XSS via session cookie theft | High | 7.4 | CWE-1004 | #1567 |
+| Clickjacking — `X-Frame-Options` missing | Medium | 4.3 | CWE-1021 | #1567 |
+| Session fixation | Medium | 6.8 | CWE-384 | #1567 |
+| Log injection in password reset flow | Low | 3.7 | CWE-117 | #1567 |
+| Open redirect via `$_SERVER['HTTP_REFERER']` | Medium | 6.1 | CWE-601 | #1567 |
 
-1. **Back up** your database and files.
-2. Replace all application files with the 1.7.2 release.
-3. Run the database migration wizard at `/index.php/setup` (adds the `user_passwordreset_token_expiry` column).
-4. **Re-register your custom templates** in `ipconfig.php` — the old filesystem scan is gone (see [Custom templates](#custom-invoice--quote-templates) below).
-5. If you use an SVG logo, convert it to PNG/JPG — SVG uploads remain blocked.
+### Issues Fixed in Version 1.7.2
 
-### Upgrading from 1.6.x
+**Security Fixes:**
+- #1505, #1506 — Remote Code Execution (RCE) via template filesystem scan (CVSSv3 9.9)
+- #1567 — Session hardening: `cookie_httponly`, `X-Frame-Options`, session fixation, log injection,
+  open redirect via `HTTP_REFERER`, `Referrer-Policy` header
+- #1433 — Local File Inclusion (LFI) vulnerabilities in PDF template handling
+- #1388, #1387 — Unsafe jQuery plugin vulnerabilities (Code scanning alerts)
+- #1389 — Missing GitHub Actions workflow permissions
+- #1383 — File access vulnerabilities across multiple controllers
+- Security fixes for password reset: token expiry, CSPRNG token generation, rate limiting
+- Security fix for IDOR + CSRF on guest quote endpoints
+- Security fix for authorization bypass in guest invoice/payment endpoints
+- Security fix for SQL/DDL injection in tax rate decimal places
+- Security fix for configuration injection in setup wizard
+- Security fix for payment gateway credential exposure
+- Security fix for email template preview XSS
+
+**Bug Fixes and Improvements:**
+- #1381 — E-invoicing field migration and version checking
+- #1380 — Dependency update (`qs` package bump)
+- #1377 — QR code image width reduced to 100 px
+- #1375 — Email address verification now supports comma and semicolon separators
+- #1373 — Removed deprecated library dependencies
+- #1367, #1368 — Various bug fixes
+- Fixed `phpmail_send()` always returning `true` on delivery failure
+- Fixed binary data corruption in `Cryptor::decryptString()` (byte-safe `strlen`/`substr`)
+
+### Fields Sanitized for XSS Protection
+
+The following fields were hardened to prevent XSS attacks:
+- `invoice_number` and `quote_number` — escaped in all templates and views
+- `tax_rate_name` — sanitized on input, escaped on output
+- `payment_method_name` — sanitized on input, escaped on output
+- `custom_field_label` — protected in all custom field displays
+- Client address fields — sanitized for safe display
+- `sumex_observations`, `quote_password`, `quote_notes` — sanitized on input
+- Email template content — HTML Purifier applied before rendering
+- File names in upload operations — sanitized before logging (prevents log injection)
+
+### Upgrading from Version 1.7.0 or 1.7.1
+
+1. **Back up** your database and files
+2. Replace all application files with the 1.7.2 release
+3. Run the database migration wizard at `/index.php/setup` (adds the `user_passwordreset_token_expiry` column)
+4. **Re-register your custom templates** in `ipconfig.php` — the old filesystem scan is gone
+   (see [Custom Invoice & Quote Templates](#custom-invoice--quote-templates) below)
+5. If you use an SVG logo, convert it to PNG/JPG — SVG uploads remain blocked
+
+### Upgrading from Version 1.6.x
 
 Follow the 1.7.0/1.7.1 upgrade guide first, then apply the 1.7.2 steps above.
 
 For detailed upgrade instructions, visit the [InvoicePlane Wiki](https://wiki.invoiceplane.com/).
 
-> **Full Release Notes:** See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes.
+> **Full Release Notes:** See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes, security fixes, and improvements.
 
 ---
 
@@ -106,9 +175,13 @@ For a detailed installation guide, see [INSTALLATION.md](INSTALLATION.md).
 
 ## Removing `index.php` from URLs
 
+To remove `index.php` from your URLs:
+
 1. Enable `mod_rewrite` on your web server.
 2. Set `REMOVE_INDEXPHP=true` in `ipconfig.php`.
 3. Rename the `htaccess` file in the root directory to `.htaccess`.
+
+> **Note:** If you experience issues after making these changes, revert to the default settings by undoing the steps above.
 
 ---
 
@@ -120,7 +193,7 @@ For a detailed installation guide, see [INSTALLATION.md](INSTALLATION.md).
 
 To add a custom template:
 
-1. Create the template `.php` file inside `CUSTOM_TEMPLATES_FOLDER` under the appropriate sub-path:
+1. **Create the template `.php` file** inside `CUSTOM_TEMPLATES_FOLDER` under the appropriate sub-path:
    ```
    <CUSTOM_TEMPLATES_FOLDER>/invoice_templates/pdf/MyTemplate.php
    <CUSTOM_TEMPLATES_FOLDER>/invoice_templates/public/MyTemplate.php
@@ -128,7 +201,7 @@ To add a custom template:
    <CUSTOM_TEMPLATES_FOLDER>/quote_templates/public/MyTemplate.php
    ```
 
-2. Add the template name (without `.php`) to the matching allowlist key in `ipconfig.php`.
+2. **Add the template name** (without `.php`) to the matching allowlist key in `ipconfig.php`.
    Quote the value when names contain spaces or hyphens:
    ```
    CUSTOM_INVOICE_TEMPLATES_PDF="MyTemplate,Corporate - Modern"
@@ -140,17 +213,23 @@ To add a custom template:
 
 3. The template will appear in **Settings → Invoice / Quote** once it is listed.
 
+> The built-in template directories are never scanned — only the `CUSTOM_TEMPLATES_FOLDER` is
+> searched, and only for names you have explicitly listed. This is the RCE prevention mechanism.
+
 ---
 
 ## Session Storage
 
-Session files are stored in `storage/framework/sessions/` by default. This directory can be moved **outside the document root** for additional security — set `SESS_SAVE_PATH` in `ipconfig.php` to an absolute path:
+Session files are stored in `storage/framework/sessions/` by default. This directory can be
+moved **outside the document root** for additional security — set `SESS_SAVE_PATH` in
+`ipconfig.php` to an absolute path:
 
 ```
 SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
 ```
 
-The `storage/` directory follows the same convention as Laravel. If you mount a volume in Docker, include it in your persistent volumes (see [Container Deployment](#container-deployment) below).
+The `storage/` directory follows the same convention as Laravel. If you mount a volume in
+Docker, include it in your persistent volumes (see [Container Deployment](#container-deployment) below).
 
 ---
 
@@ -159,7 +238,9 @@ The `storage/` directory follows the same convention as Laravel. If you mount a 
 > [!WARNING]
 > The container always uses the new (per-item) tax calculation mode.
 
-A pre-built container image is available. Configuration is provided entirely through environment variables — no `ipconfig.php` file is needed. The entrypoint generates the configuration and runs any pending database migrations automatically on startup.
+A pre-built container image is available. Configuration is provided entirely through environment
+variables — no `ipconfig.php` file is needed. The entrypoint generates the configuration and
+runs any pending database migrations automatically on startup.
 
 ### Required environment variables
 
@@ -181,6 +262,7 @@ A pre-built container image is available. Configuration is provided entirely thr
 | `ENABLE_DEBUG` | `false` | Enable advanced debug logging |
 | `SESS_SAVE_PATH` | `storage/framework/sessions` | Directory for session files. Set to an absolute path outside the document root for extra security. |
 | `SESS_COOKIE_NAME` | `ip_session` | Session cookie name |
+| `SESS_TABLE_NAME` | `ip_sessions` | Session database table name (only used when `SESS_DRIVER=database`) |
 | `SESS_EXPIRATION` | `864000` | Session lifetime in seconds (0 = expire on browser close) |
 | `SESS_MATCH_IP` | `true` | Tie sessions to the client IP address |
 | `SESS_REGENERATE_DESTROY` | `true` | Destroy the old session file on ID regeneration (prevents session fixation) |
@@ -229,10 +311,12 @@ On first startup the entrypoint creates an admin account if the database is empt
 
 ## Community and Support
 
-- **Community Forums:** [community.invoiceplane.com](https://community.invoiceplane.com/)
-- **Discord:** [Join our Discord](https://discord.gg/PPzD2hTrXt)
-- **Issue Tracker:** [GitHub Issues](https://github.com/InvoicePlane/InvoicePlane/issues)
-- **Wiki & Documentation:** [wiki.invoiceplane.com](https://wiki.invoiceplane.com/)
+Join our community for support, discussions, and contributions:
+
+- **Community Forums:** [community.invoiceplane.com](https://community.invoiceplane.com/) — ask questions, share knowledge, and get help from the community.
+- **Discord:** [Join our Discord](https://discord.gg/PPzD2hTrXt) — chat with users, developers, and contributors in real time.
+- **Issue Tracker:** [GitHub Issues](https://github.com/InvoicePlane/InvoicePlane/issues) — report bugs and request features.
+- **Wiki & Documentation:** [wiki.invoiceplane.com](https://wiki.invoiceplane.com/) — find guides, FAQs, and detailed setup instructions.
 
 > *InvoicePlane is developed and maintained by a dedicated team of volunteers. Support is provided by the community on a best-effort basis.*
 
@@ -240,7 +324,9 @@ On first startup the entrypoint creates an admin account if the database is empt
 
 ## Contributing
 
-- **Report Issues:** Use the [Issue Tracker](https://github.com/InvoicePlane/InvoicePlane/issues).
+We welcome contributions from the community! To get involved:
+
+- **Report Issues:** Use the [Issue Tracker](https://github.com/InvoicePlane/InvoicePlane/issues) to report bugs or request features.
 - **Submit Pull Requests:** Fork the repository, make your changes, and open a pull request.
 - **Translate:** Help translate InvoicePlane — see [TRANSLATIONS.md](TRANSLATIONS.md).
 
@@ -259,11 +345,43 @@ For contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 If you discover a security vulnerability, email **[mail@invoiceplane.com](mailto:mail@invoiceplane.com)** before disclosing it publicly.
 
-### SVG Logo Notice
+### Important Security Notice: SVG Logo Files
 
-SVG files are not accepted for logo uploads. SVGs can contain embedded JavaScript that enables XSS attacks. Use PNG, JPG/JPEG, or GIF instead.
+**SVG (Scalable Vector Graphics) files are not accepted for logo uploads.**
 
-If you have an existing SVG logo, convert it with [Inkscape](https://inkscape.org/) (free), [CloudConvert](https://cloudconvert.com/svg-to-png), or any similar tool. The old logo can be removed in **Settings → Logo**.
+#### Why are SVG files disabled?
+
+SVG files can contain embedded JavaScript code that could be exploited to perform Cross-Site
+Scripting (XSS) attacks. Since InvoicePlane handles sensitive financial data, SVG uploads are
+blocked entirely as a proactive security measure.
+
+#### What file formats are supported?
+
+- **PNG** (recommended for logos with transparency)
+- **JPG/JPEG** (recommended for photographs)
+- **GIF** (recommended for simple graphics)
+
+#### What happens to my existing SVG logo?
+
+If you previously uploaded an SVG logo:
+- It will not display in the application (blocked for security)
+- A warning message will appear on the settings page
+- You can remove it and upload a replacement in a supported format
+
+#### How do I convert my SVG logo?
+
+**Online tools:**
+- [CloudConvert](https://cloudconvert.com/svg-to-png)
+- [Convertio](https://convertio.co/svg-png/)
+
+**Desktop software:**
+- [Inkscape](https://inkscape.org/) (free, open-source) — File → Export PNG Image → set resolution → Export
+- Adobe Illustrator
+- GIMP
+
+#### Need help?
+
+Visit our [Community Forums](https://community.invoiceplane.com/) for assistance with logo conversion.
 
 ---
 
