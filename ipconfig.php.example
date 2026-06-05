@@ -16,13 +16,17 @@ CI_ENV=production
 X_FRAME_OPTIONS=SAMEORIGIN
 ENABLE_X_CONTENT_TYPE_OPTIONS=true
 
-# Session security settings
-# SESS_REGENERATE_DESTROY=true destroys old session ID after regeneration, preventing session fixation.
-SESS_REGENERATE_DESTROY=true
-# Override the session database table name (only used when SESS_DRIVER=database)
-SESS_TABLE_NAME=ip_sessions
+# Session settings
+# Session files are stored in storage/framework/sessions/ by default.
+# For extra security, set SESS_SAVE_PATH to an absolute directory OUTSIDE the document root.
+# Example: SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
+SESS_SAVE_PATH=storage/framework/sessions
 # Override the session cookie name
 SESS_COOKIE_NAME=ip_session
+# Override the session database table name (only used when SESS_DRIVER=database)
+SESS_TABLE_NAME=ip_sessions
+# Destroy the old session ID after regeneration — prevents session fixation attacks.
+SESS_REGENERATE_DESTROY=true
 
 # Set this setting to 'true' if you want to disable the setup for security purposes
 DISABLE_SETUP=false
@@ -104,10 +108,16 @@ SEC_STRIP_EXIF_FROM_IMAGES=false
 CUSTOM_TEMPLATES_FOLDER=
 
 # Explicit allowlist of custom template names (without .php extension).
-# Comma-separated list of names that are made available alongside the built-in templates.
-# The corresponding PHP file must exist in CUSTOM_TEMPLATES_FOLDER under the matching sub-path.
-# Example: CUSTOM_INVOICE_TEMPLATES_PDF=MyTemplate,AnotherTemplate
-# Security: only names matching [a-zA-Z0-9 _-]+ are accepted; filesystem scanning is not used.
+#
+# Security: The filesystem is NEVER scanned for templates (prevents Remote Code Execution).
+# Only template names listed here are made available in the UI.
+# Names must contain only letters, digits, spaces, hyphens, and underscores.
+#
+# Format: comma-separated names. Quote the whole value when names contain spaces or hyphens.
+#   CUSTOM_INVOICE_TEMPLATES_PDF="My Template,Another Template"
+#   CUSTOM_INVOICE_TEMPLATES_PDF="Corporate - Modern,Corporate - Classic"
+#
+# The corresponding .php file must exist in CUSTOM_TEMPLATES_FOLDER under the matching sub-path.
 CUSTOM_INVOICE_TEMPLATES_PDF=
 CUSTOM_INVOICE_TEMPLATES_PUBLIC=
 CUSTOM_QUOTE_TEMPLATES_PDF=
