@@ -240,22 +240,24 @@ site.
 
 | Vulnerability | Severity | CVSSv3 | CWE | Security Advisory | Reported By | Fixed In |
 |---|---|---|---|---|---|---|
-| RCE via template filesystem scan | Critical | 9.9 | CWE-693 | `SECURITY_ADVISORY_RCE_FIX.md` | — | #1505, #1506 |
-| Broken auth: password-reset tokens never expired | Critical | 9.8 | CWE-640 | — | — | — |
-| Arbitrary file deletion via path traversal | High | 7.1 | CWE-22 | `SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md` | — | — |
-| Weak PRNG in password-reset tokens | High | 7.5 | CWE-338 | — | — | — |
-| SQL/DDL injection in tax rate decimal places | High | 8.8 | CWE-89 | — | — | — |
-| Configuration injection in DB setup wizard | High | 8.8 | CWE-77 | — | — | — |
-| IDOR + CSRF on guest quote approve/reject | High | 8.1 | CWE-639, CWE-352 | — | — | — |
-| Auth bypass in guest invoice/payment endpoints | Medium | 6.5 | CWE-284 | — | — | — |
-| Setup wizard accessible post-installation | Medium | 5.3 | CWE-285 | — | — | — |
-| SSRF via PDF footer content | Medium | 6.5 | CWE-918 | — | — | — |
-| Open redirect via `HTTP_REFERER` | Medium | 6.1 | CWE-601 | — | — | — |
-| Payment gateway API credentials in plaintext | Medium | 6.5 | CWE-312 | — | — | — |
-| PHPMailer debug output in AJAX responses | Low–Medium | 4.3 | CWE-209 | — | — | — |
-| Duplicate payment processing | Low–Medium | 5.3 | CWE-362 | — | — | — |
-| Email template preview XSS | Low–Medium | 5.4 | CWE-79 | — | — | — |
-| EXIF metadata in uploaded images | Low | 3.5 | CWE-212 | — | — | — |
+| RCE via template filesystem scan | Critical | 9.9 | CWE-693 | [SECURITY_ADVISORY_RCE_FIX.md](SECURITY_ADVISORY_RCE_FIX.md) | via GHSA† | [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505), [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506) |
+| Broken auth: password-reset tokens never expired | Critical | 9.8 | CWE-640 | via GHSA† | via GHSA† | [#1514](https://github.com/InvoicePlane/InvoicePlane/pull/1514) |
+| Arbitrary file deletion via path traversal | High | 7.1 | CWE-22 | [SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md](SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md) | via GHSA† | [#1512](https://github.com/InvoicePlane/InvoicePlane/pull/1512), [#1510](https://github.com/InvoicePlane/InvoicePlane/pull/1510) |
+| Weak PRNG in password-reset tokens | High | 7.5 | CWE-338 | via GHSA† | via GHSA† | [#1494](https://github.com/InvoicePlane/InvoicePlane/pull/1494) |
+| SQL/DDL injection in tax rate decimal places | High | 8.8 | CWE-89 | via GHSA† | via GHSA† | [#1481](https://github.com/InvoicePlane/InvoicePlane/pull/1481), [#1488](https://github.com/InvoicePlane/InvoicePlane/pull/1488) |
+| Configuration injection in DB setup wizard | High | 8.8 | CWE-77 | via GHSA† | via GHSA† | [#1513](https://github.com/InvoicePlane/InvoicePlane/pull/1513) |
+| IDOR + CSRF on guest quote approve/reject | High | 8.1 | CWE-639, CWE-352 | via GHSA† | via GHSA† | [#1471](https://github.com/InvoicePlane/InvoicePlane/pull/1471), [#1482](https://github.com/InvoicePlane/InvoicePlane/pull/1482), [#1487](https://github.com/InvoicePlane/InvoicePlane/pull/1487) |
+| Auth bypass in guest invoice/payment endpoints | Medium | 6.5 | CWE-284 | via GHSA† | via GHSA† | [#1517](https://github.com/InvoicePlane/InvoicePlane/pull/1517), [#1537](https://github.com/InvoicePlane/InvoicePlane/pull/1537) |
+| Setup wizard accessible post-installation | Medium | 5.3 | CWE-285 | via GHSA† | via GHSA† | [#1491](https://github.com/InvoicePlane/InvoicePlane/pull/1491), [#1511](https://github.com/InvoicePlane/InvoicePlane/pull/1511), [#1518](https://github.com/InvoicePlane/InvoicePlane/pull/1518) |
+| SSRF via PDF footer content | Medium | 6.5 | CWE-918 | via GHSA† | via GHSA† | [#1492](https://github.com/InvoicePlane/InvoicePlane/pull/1492) |
+| Open redirect via `HTTP_REFERER` | Medium | 6.1 | CWE-601 | via GHSA† | via GHSA† | [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505) |
+| Payment gateway API credentials in plaintext | Medium | 6.5 | CWE-312 | via GHSA† | via GHSA† | [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) |
+| PHPMailer debug output in AJAX responses | Low–Medium | 4.3 | CWE-209 | — | Internal audit | [#1495](https://github.com/InvoicePlane/InvoicePlane/pull/1495) |
+| Duplicate payment processing | Low–Medium | 5.3 | CWE-362 | — | Internal audit | [#1496](https://github.com/InvoicePlane/InvoicePlane/pull/1496) |
+| Email template preview XSS | Low–Medium | 5.4 | CWE-79 | — | Internal audit | [#1486](https://github.com/InvoicePlane/InvoicePlane/pull/1486) |
+| EXIF metadata in uploaded images | Low | 3.5 | CWE-212 | — | Internal audit | [#1507](https://github.com/InvoicePlane/InvoicePlane/pull/1507) |
+
+> † Reported via private GitHub Security Advisory (GHSA). Per-vulnerability attribution will be published once CVEs are assigned. Researchers: [@akgul7990](https://github.com/akgul7990), [@ali-iltizar](https://github.com/ali-iltizar), [@Chittu13](https://github.com/Chittu13), [@cyabell](https://github.com/cyabell), [@HuajiHD](https://github.com/HuajiHD), [@iiihaiii](https://github.com/iiihaiii), [@kitu232](https://github.com/kitu232), [@radoi-teodor](https://github.com/radoi-teodor), [@tikket1](https://github.com/tikket1), [@udaypali](https://github.com/udaypali), [@Vijay-raghav7](https://github.com/Vijay-raghav7)
 
 ---
 

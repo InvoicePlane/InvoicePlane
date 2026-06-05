@@ -47,43 +47,52 @@ reported against v1.7.0 and v1.7.1 and hardens the application infrastructure th
 
 ### Security Vulnerability Summary
 
-| Vulnerability | Severity | CVSSv3 | CWE | Fixed In |
-|---|---|---|---|---|
-| RCE via template filesystem scan | Critical | 9.9 | CWE-693 | #1505, #1506 |
-| Password reset tokens never expired | Critical | 9.8 | CWE-640 | — |
-| Arbitrary file deletion via path traversal | High | 7.1 | CWE-22 | — |
-| Weak PRNG in password reset tokens | High | 7.5 | CWE-338 | — |
-| SQL/DDL injection in tax rate decimal places | High | 8.8 | CWE-89 | — |
-| Configuration injection in DB setup wizard | High | 8.8 | CWE-77 | — |
-| IDOR + CSRF on guest quote approve/reject | High | 8.1 | CWE-639, CWE-352 | — |
-| Auth bypass in guest invoice/payment | Medium | 6.5 | CWE-284 | — |
-| Setup wizard accessible post-install | Medium | 5.3 | CWE-285 | — |
-| SSRF via PDF footer content | Medium | 6.5 | CWE-918 | — |
-| Open redirect via `HTTP_REFERER` | Medium | 6.1 | CWE-601 | — |
-| Payment gateway API credentials plaintext | Medium | 6.5 | CWE-312 | — |
-| XSS via session cookie theft | High | 7.4 | CWE-1004 | #1567 |
-| Clickjacking — `X-Frame-Options` missing | Medium | 4.3 | CWE-1021 | #1567 |
-| Session fixation | Medium | 6.8 | CWE-384 | #1567 |
-| Log injection in password reset flow | Low | 3.7 | CWE-117 | #1567 |
-| Open redirect via `$_SERVER['HTTP_REFERER']` | Medium | 6.1 | CWE-601 | #1567 |
+| Vulnerability | Severity | CVSSv3 | CWE | Security Advisory | Reported By | Fixed In |
+|---|---|---|---|---|---|---|
+| RCE via template filesystem scan | Critical | 9.9 | CWE-693 | [SECURITY_ADVISORY_RCE_FIX.md](SECURITY_ADVISORY_RCE_FIX.md) | via GHSA† | [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505), [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506) |
+| Password reset tokens never expired | Critical | 9.8 | CWE-640 | via GHSA† | via GHSA† | [#1514](https://github.com/InvoicePlane/InvoicePlane/pull/1514) |
+| Arbitrary file deletion via path traversal | High | 7.1 | CWE-22 | [SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md](SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md) | via GHSA† | [#1512](https://github.com/InvoicePlane/InvoicePlane/pull/1512), [#1510](https://github.com/InvoicePlane/InvoicePlane/pull/1510) |
+| Weak PRNG in password reset tokens | High | 7.5 | CWE-338 | via GHSA† | via GHSA† | [#1494](https://github.com/InvoicePlane/InvoicePlane/pull/1494) |
+| SQL/DDL injection in tax rate decimal places | High | 8.8 | CWE-89 | via GHSA† | via GHSA† | [#1481](https://github.com/InvoicePlane/InvoicePlane/pull/1481), [#1488](https://github.com/InvoicePlane/InvoicePlane/pull/1488) |
+| Configuration injection in DB setup wizard | High | 8.8 | CWE-77 | via GHSA† | via GHSA† | [#1513](https://github.com/InvoicePlane/InvoicePlane/pull/1513) |
+| IDOR + CSRF on guest quote approve/reject | High | 8.1 | CWE-639, CWE-352 | via GHSA† | via GHSA† | [#1471](https://github.com/InvoicePlane/InvoicePlane/pull/1471), [#1482](https://github.com/InvoicePlane/InvoicePlane/pull/1482), [#1487](https://github.com/InvoicePlane/InvoicePlane/pull/1487) |
+| Auth bypass in guest invoice/payment | Medium | 6.5 | CWE-284 | via GHSA† | via GHSA† | [#1517](https://github.com/InvoicePlane/InvoicePlane/pull/1517), [#1537](https://github.com/InvoicePlane/InvoicePlane/pull/1537) |
+| Setup wizard accessible post-install | Medium | 5.3 | CWE-285 | via GHSA† | via GHSA† | [#1491](https://github.com/InvoicePlane/InvoicePlane/pull/1491), [#1511](https://github.com/InvoicePlane/InvoicePlane/pull/1511), [#1518](https://github.com/InvoicePlane/InvoicePlane/pull/1518) |
+| SSRF via PDF footer content | Medium | 6.5 | CWE-918 | via GHSA† | via GHSA† | [#1492](https://github.com/InvoicePlane/InvoicePlane/pull/1492) |
+| Open redirect via `HTTP_REFERER` | Medium | 6.1 | CWE-601 | via GHSA† | via GHSA† | [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505) |
+| Payment gateway API credentials plaintext | Medium | 6.5 | CWE-312 | via GHSA† | via GHSA† | [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) |
+| XSS via session cookie theft (`cookie_httponly=false`) | High | 7.4 | CWE-1004 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+| Clickjacking — `X-Frame-Options` missing | Medium | 4.3 | CWE-1021 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+| Session fixation | Medium | 6.8 | CWE-384 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+| Log injection in password reset flow | Low | 3.7 | CWE-117 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+| Open redirect via `$_SERVER['HTTP_REFERER']` | Medium | 6.1 | CWE-601 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+
+> † Reported via private [GitHub Security Advisory](https://github.com/InvoicePlane/InvoicePlane/security/advisories).
+> Per-vulnerability attribution will be published once CVEs are assigned.
+> Researchers acknowledged in [RELEASE_NOTES_v1.7.2_PR_TABLE.md](RELEASE_NOTES_v1.7.2_PR_TABLE.md):
+> [@akgul7990](https://github.com/akgul7990), [@ali-iltizar](https://github.com/ali-iltizar), [@Chittu13](https://github.com/Chittu13), [@cyabell](https://github.com/cyabell), [@HuajiHD](https://github.com/HuajiHD), [@iiihaiii](https://github.com/iiihaiii), [@kitu232](https://github.com/kitu232), [@radoi-teodor](https://github.com/radoi-teodor), [@tikket1](https://github.com/tikket1), [@udaypali](https://github.com/udaypali), [@Vijay-raghav7](https://github.com/Vijay-raghav7)
 
 ### Issues Fixed in Version 1.7.2
 
 **Security Fixes:**
-- #1505, #1506 — Remote Code Execution (RCE) via template filesystem scan (CVSSv3 9.9)
-- #1567 — Session hardening: `cookie_httponly`, `X-Frame-Options`, session fixation, log injection,
+- [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505), [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506) — Remote Code Execution (RCE) via template filesystem scan (CVSSv3 9.9)
+- [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) — Session hardening: `cookie_httponly`, `X-Frame-Options`, session fixation, log injection,
   open redirect via `HTTP_REFERER`, `Referrer-Policy` header
-- #1433 — Local File Inclusion (LFI) vulnerabilities in PDF template handling
-- #1388, #1387 — Unsafe jQuery plugin vulnerabilities (Code scanning alerts)
-- #1389 — Missing GitHub Actions workflow permissions
-- #1383 — File access vulnerabilities across multiple controllers
-- Security fixes for password reset: token expiry, CSPRNG token generation, rate limiting
-- Security fix for IDOR + CSRF on guest quote endpoints
-- Security fix for authorization bypass in guest invoice/payment endpoints
-- Security fix for SQL/DDL injection in tax rate decimal places
-- Security fix for configuration injection in setup wizard
-- Security fix for payment gateway credential exposure
-- Security fix for email template preview XSS
+- [#1514](https://github.com/InvoicePlane/InvoicePlane/pull/1514) — Password reset token expiry (`PASSWORD_RESET_TOKEN_EXPIRY_MINUTES`, default 15 min)
+- [#1494](https://github.com/InvoicePlane/InvoicePlane/pull/1494) — CSPRNG password reset token generation (`random_bytes(32)`, 256-bit entropy)
+- [#1471](https://github.com/InvoicePlane/InvoicePlane/pull/1471), [#1482](https://github.com/InvoicePlane/InvoicePlane/pull/1482), [#1487](https://github.com/InvoicePlane/InvoicePlane/pull/1487) — IDOR + CSRF on guest quote approve/reject endpoints
+- [#1517](https://github.com/InvoicePlane/InvoicePlane/pull/1517), [#1537](https://github.com/InvoicePlane/InvoicePlane/pull/1537) — Authorization bypass in guest invoice/payment endpoints
+- [#1481](https://github.com/InvoicePlane/InvoicePlane/pull/1481), [#1488](https://github.com/InvoicePlane/InvoicePlane/pull/1488) — SQL/DDL injection in tax rate decimal places ([#1479](https://github.com/InvoicePlane/InvoicePlane/issues/1479))
+- [#1513](https://github.com/InvoicePlane/InvoicePlane/pull/1513) — Configuration injection in database setup wizard
+- [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) — Payment gateway API credential exposure (Stripe/PayPal keys)
+- [#1486](https://github.com/InvoicePlane/InvoicePlane/pull/1486), [#1499](https://github.com/InvoicePlane/InvoicePlane/pull/1499) — Email template preview XSS
+- [#1512](https://github.com/InvoicePlane/InvoicePlane/pull/1512), [#1510](https://github.com/InvoicePlane/InvoicePlane/pull/1510) — Arbitrary file deletion via path traversal in logo settings
+- [#1491](https://github.com/InvoicePlane/InvoicePlane/pull/1491), [#1511](https://github.com/InvoicePlane/InvoicePlane/pull/1511), [#1518](https://github.com/InvoicePlane/InvoicePlane/pull/1518) — Setup wizard accessible post-installation
+- [#1492](https://github.com/InvoicePlane/InvoicePlane/pull/1492) — SSRF via PDF footer content
+- [#1433](https://github.com/InvoicePlane/InvoicePlane/pull/1433) — Local File Inclusion (LFI) vulnerabilities in PDF template handling
+- [#1388](https://github.com/InvoicePlane/InvoicePlane/pull/1388), [#1387](https://github.com/InvoicePlane/InvoicePlane/pull/1387) — Unsafe jQuery plugin vulnerabilities
+- [#1389](https://github.com/InvoicePlane/InvoicePlane/pull/1389) — Missing GitHub Actions workflow permissions
+- [#1383](https://github.com/InvoicePlane/InvoicePlane/pull/1383) — File access vulnerabilities across multiple controllers
 
 **Bug Fixes and Improvements:**
 - #1381 — E-invoicing field migration and version checking
