@@ -17,10 +17,13 @@ X_FRAME_OPTIONS=SAMEORIGIN
 ENABLE_X_CONTENT_TYPE_OPTIONS=true
 
 # Session settings
-# Session files are stored in storage/framework/sessions/ by default.
-# For extra security, set SESS_SAVE_PATH to an absolute directory OUTSIDE the document root.
-# Example: SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
-SESS_SAVE_PATH=storage/framework/sessions
+# Leave SESS_SAVE_PATH empty to use the auto-detected absolute path:
+#   <project-root>/storage/framework/sessions/
+# The project root is resolved at runtime (next to vendor/), so the path is always
+# absolute and correct whether index.php lives in the project root or in public/.
+# To store sessions outside the document root entirely, set an absolute path:
+#   SESS_SAVE_PATH=/srv/invoiceplane/sessions
+SESS_SAVE_PATH=
 # Override the session cookie name
 SESS_COOKIE_NAME=ip_session
 # Override the session database table name (only used when SESS_DRIVER=database)
