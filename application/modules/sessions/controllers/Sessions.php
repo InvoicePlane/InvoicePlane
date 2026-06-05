@@ -278,7 +278,7 @@ class Sessions extends Base_Controller
             // Security: Prevent brute force attacks by counting password reset attempts per email
             if ($this->_is_email_rate_limited_password_reset($email)) {
                 $this->load->helper('file_security');
-                log_message('warning', trans('log_password_reset_email_rate_limit') . ' (hash: ' . hash('sha256', $email) . ') from IP: ' . $this->input->ip_address());
+                log_message('warning', trans('log_password_reset_email_rate_limit') . ' (hash: ' . hash('sha256', $email) . ') from IP: ' . sanitize_for_logging($this->input->ip_address()));
                 redirect('sessions/login');
             }
 
