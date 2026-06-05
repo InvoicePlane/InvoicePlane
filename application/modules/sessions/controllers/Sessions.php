@@ -140,7 +140,7 @@ class Sessions extends Base_Controller
         // Check if a token was provided
         if ($token) {
             if (preg_match("/[^[:alnum:]\-_]/", $token)) {
-                log_message('error', 'Incoming token is not alphanumeric ' . $token);
+                log_message('error', 'Incoming token is not alphanumeric (hash: ' . hash('sha256', $token) . ')');
                 redirect('/');
             }
 
@@ -277,7 +277,8 @@ class Sessions extends Base_Controller
 
             // Security: Prevent brute force attacks by counting password reset attempts per email
             if ($this->_is_email_rate_limited_password_reset($email)) {
-                log_message('warning', trans('log_password_reset_email_rate_limit') . ' for: ' . $email . ' from IP: ' . $this->input->ip_address());
+                $this->load->helper('file_security');
+                log_message('warning', trans('log_password_reset_email_rate_limit') . ' (hash: ' . hash('sha256', $email) . ') from IP: ' . $this->input->ip_address());
                 redirect('sessions/login');
             }
 
@@ -514,7 +515,7 @@ class Sessions extends Base_Controller
 
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
-            log_message('info', trans('log_email_rate_limit_check') . ': ' . count($attempts) . ' attempts for email: ' . $email);
+            log_message('info', trans('log_email_rate_limit_check') . ': ' . count($attempts) . ' attempts (hash: ' . hash('sha256', $email) . ')');
 
             return true;
         }

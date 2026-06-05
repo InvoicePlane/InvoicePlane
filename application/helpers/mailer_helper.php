@@ -245,16 +245,9 @@ function check_mail_errors(array $errors = [], $redirect = ''): void
 
         $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
 
-        // Use provided redirect, or validate HTTP_REFERER against base_url
         if (empty($redirect)) {
-            $referer  = $_SERVER['HTTP_REFERER'] ?? '';
-            $base_url = base_url();
-            // Only use referer if it's from same domain
-            if ( ! empty($referer) && str_starts_with($referer, $base_url)) {
-                $redirect = $referer;
-            } else {
-                $redirect = base_url(); // Safe default
-            }
+            $CI->load->helper('security');
+            $redirect = get_safe_referer('', base_url());
         }
 
         redirect($redirect);

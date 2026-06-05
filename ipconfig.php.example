@@ -15,7 +15,14 @@ CI_ENV=production
 
 X_FRAME_OPTIONS=SAMEORIGIN
 ENABLE_X_CONTENT_TYPE_OPTIONS=true
-SESS_REGENERATE_DESTROY=false
+
+# Session security settings
+# SESS_REGENERATE_DESTROY=true destroys old session ID after regeneration, preventing session fixation.
+SESS_REGENERATE_DESTROY=true
+# Override the session database table name (only used when SESS_DRIVER=database)
+SESS_TABLE_NAME=ip_sessions
+# Override the session cookie name
+SESS_COOKIE_NAME=ip_session
 
 # Set this setting to 'true' if you want to disable the setup for security purposes
 DISABLE_SETUP=false
