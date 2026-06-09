@@ -223,6 +223,10 @@ class Mdl_Custom_Fields extends MY_Model
 
         $cf = $this->get_by_id($id);
 
+        if ($cf === null) {
+            return $get ? [] : $this->db;
+        }
+
         if ( ! in_array($cf->custom_field_table, array_keys($this->custom_tables()), true)) {
             return $get ? [] : $this->db;
         }
@@ -244,6 +248,10 @@ class Mdl_Custom_Fields extends MY_Model
     {
         if ( ! $this->used($id)) {
             $custom_field = $this->get_by_id($id);
+
+            if ($custom_field === null) {
+                return false;
+            }
 
             if ( ! in_array($custom_field->custom_field_table, array_keys($this->custom_tables()), true)) {
                 return false;
