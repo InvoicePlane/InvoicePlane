@@ -64,7 +64,7 @@ class Mdl_Custom_Fields extends MY_Model
             'custom_field_table' => [
                 'field' => 'custom_field_table',
                 'label' => trans('table'),
-                'rules' => 'required',
+                'rules' => 'required|in_list[' . implode(',', array_keys($this->custom_tables())) . ']',
             ],
             'custom_field_label' => [
                 'field' => 'custom_field_label',
@@ -221,7 +221,16 @@ class Mdl_Custom_Fields extends MY_Model
             return;
         }
 
-        $cf   = $this->get_by_id($id);
+        $cf = $this->get_by_id($id);
+
+        if ($cf === null) {
+            return $get ? [] : $this->db;
+        }
+
+        if ( ! in_array($cf->custom_field_table, array_keys($this->custom_tables()), true)) {
+            return $get ? [] : $this->db;
+        }
+
         $base = strtr($cf->custom_field_table, ['ip_' => '']) . '_field';
 
         $this->db->from($cf->custom_field_table)
@@ -239,6 +248,15 @@ class Mdl_Custom_Fields extends MY_Model
     {
         if ( ! $this->used($id)) {
             $custom_field = $this->get_by_id($id);
+
+            if ($custom_field === null) {
+                return false;
+            }
+
+            if ( ! in_array($custom_field->custom_field_table, array_keys($this->custom_tables()), true)) {
+                return false;
+            }
+
             // Remove MULTIPLE|SINGLE CHOICE values
             if (preg_match('/CHOICE/', $custom_field->custom_field_type)) {
                 $this->load->model('custom_values/mdl_custom_values');
