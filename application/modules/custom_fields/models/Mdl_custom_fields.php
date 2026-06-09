@@ -64,7 +64,7 @@ class Mdl_Custom_Fields extends MY_Model
             'custom_field_table' => [
                 'field' => 'custom_field_table',
                 'label' => trans('table'),
-                'rules' => 'required|in_list[ip_client_custom,ip_invoice_custom,ip_payment_custom,ip_quote_custom,ip_user_custom]',
+                'rules' => 'required|in_list[' . implode(',', array_keys($this->custom_tables())) . ']',
             ],
             'custom_field_label' => [
                 'field' => 'custom_field_label',
