@@ -113,6 +113,11 @@ class Mdl_Custom_Values extends MY_Model
         $cv = $this->get_by_id($id)->row();
         $cf = $this->mdl_custom_fields->get_by_id($cv->custom_values_field);
         unset($cv);
+
+        if ( ! in_array($cf->custom_field_table, array_keys($this->custom_tables()), true)) {
+            return $get ? [] : $this->db;
+        }
+
         $base = strtr($cf->custom_field_table, ['ip_' => '']) . '_fieldvalue';
 
         // Get values [SINGLE|MULTIPLE]-CHOICE
