@@ -31,15 +31,10 @@ class Payments extends Guest_Controller
      */
     public function index($page = 0)
     {
-        // Security: Use a single join query instead of a two-step PHP-level prefetch.
-        // Joining on ip_invoices avoids fetching potentially large invoice-ID lists
-        // into PHP and removes the risk of hitting SQL IN-list limits.
         if ( ! empty($this->user_clients)) {
             $this->mdl_payments
-                ->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id', 'inner')
                 ->where_in('ip_invoices.client_id', $this->user_clients);
         } else {
-            // No client access for this user — return an empty result set.
             $this->mdl_payments->where('1=0');
         }
 
