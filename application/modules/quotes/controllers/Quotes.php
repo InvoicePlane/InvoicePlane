@@ -193,6 +193,14 @@ class Quotes extends Admin_Controller
             return;
         }
 
+        $quote = $this->mdl_quotes->get_by_id($quote_id);
+
+        if ( ! $quote) {
+            show_404();
+
+            return;
+        }
+
         // Delete the quote
         $this->mdl_quotes->delete($quote_id);
 

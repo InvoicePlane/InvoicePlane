@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Quotes extends Response_Model
 {
+    use Password_Encryption_Trait;
+
     public $table = 'ip_quotes';
 
     public $primary_key = 'ip_quotes.quote_id';
@@ -78,8 +80,12 @@ class Mdl_Quotes extends Response_Model
 
     public function save($id = null, $db_array = null)
     {
-        if (is_array($db_array) && array_key_exists('quote_password', $db_array)) {
-            $db_array['quote_password'] = $this->encrypt_quote_password($db_array['quote_password']);
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('quote_password', $db_array)) {
+            $db_array['quote_password'] = $this->encrypt_password($db_array['quote_password']);
         }
 
         return parent::save($id, $db_array);
@@ -87,25 +93,12 @@ class Mdl_Quotes extends Response_Model
 
     public function encrypt_quote_password($password): ?string
     {
-        if ($password === null || $password === '') {
-            return null;
-        }
-
-        $this->load->library('crypt');
-
-        return $this->crypt->encode((string) $password);
+        return $this->encrypt_password($password);
     }
 
     public function decrypt_quote_password($password): string
     {
-        if ($password === null || $password === '') {
-            return '';
-        }
-
-        $this->load->library('crypt');
-        $decoded = $this->crypt->decode($password);
-
-        return is_string($decoded) ? $decoded : '';
+        return $this->decrypt_password($password);
     }
 
     public function default_order_by()
@@ -187,6 +180,14 @@ class Mdl_Quotes extends Response_Model
      */
     public function create($db_array = null)
     {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('quote_password', $db_array)) {
+            $db_array['quote_password'] = $this->encrypt_password($db_array['quote_password']);
+        }
+
         $quote_id = parent::save(null, $db_array);
 
         // Create an quote amount record
