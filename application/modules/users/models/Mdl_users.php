@@ -84,6 +84,9 @@ class Mdl_Users extends Response_Model
             'user_company' => [
                 'field' => 'user_company',
             ],
+            'user_siren' => [
+                'field' => 'user_siren',
+            ],
             'user_address_1' => [
                 'field' => 'user_address_1',
             ],
@@ -196,6 +199,9 @@ class Mdl_Users extends Response_Model
             ],
             'user_company' => [
                 'field' => 'user_company',
+            ],
+            'user_siren' => [
+                'field' => 'user_siren',
             ],
             'user_address_1' => [
                 'field' => 'user_address_1',
