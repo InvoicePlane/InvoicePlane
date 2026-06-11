@@ -46,7 +46,8 @@
                     <ul class="dropdown-menu">
                         <li><a href="#" class="create-invoice"><?php _trans('create_invoice'); ?></a></li>
                         <li><?php echo anchor('invoices/index', trans('view_invoices')); ?></li>
-                        <li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
+			<li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
+                        <li><a href="<?php echo site_url('pdp'); ?>"><i class="fa fa-exchange"></i> Facturation electronique</a></li>
                     </ul>
                 </li>
 

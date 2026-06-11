@@ -326,7 +326,13 @@ if ($einvoice->user) {
                         <i class="fa fa-file-code-o fa-margin"></i>
                         <?php _trans('download_xml'); ?>
                     </a>
-                </li>
+		</li>
+                <li>
+                   <a href="<?php echo site_url('pdp/invoice/' . $invoice->invoice_id); ?>">
+		       <i class="fa fa-paper-plane"></i>
+                       Transmettre PA/PDP
+                   </a>
+		</li>
 <?php
 }
 ?>
