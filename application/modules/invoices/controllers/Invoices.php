@@ -224,6 +224,15 @@ class Invoices extends Admin_Controller
             ]
         );
 
+        $this->load->model('einvoice/Merchant_responses_model');
+
+        $einvoice_status = $this->Merchant_responses_model
+            ->get_last_response_by_invoice((int) $invoice_id);
+
+        $this->layout->set([
+            'einvoice_status' => $einvoice_status,
+        ]);
+
         $this->layout->render();
     }
 

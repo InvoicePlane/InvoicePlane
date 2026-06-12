@@ -326,7 +326,25 @@ if ($einvoice->user) {
                         <i class="fa fa-file-code-o fa-margin"></i>
                         <?php _trans('download_xml'); ?>
                     </a>
-                </li>
+		</li>
+                <li>
+                   <a href="<?php echo site_url('einvoice/send_invoice/' . $invoice->invoice_id . '/1'); ?>">
+		               <i class="fa fa-paper-plane"></i>
+                       Transmettre PA/PDP
+                   </a>
+		</li>
+                <li>
+                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/1'); ?>">
+                         <i class="fa fa-refresh"></i>
+                         <?php _trans('check_status'); ?>
+                      </a>
+		</li>
+                <li>
+                      <a href="<?php echo site_url('einvoice/history/' . $invoice_id); ?>">
+                         <i class="fa fa-history"></i>
+                         <?php _trans('view_history'); ?>
+                     </a>
+		</li>
 <?php
 }
 ?>
@@ -615,6 +633,50 @@ if ($invoice->invoice_status_id != 1) {
 
                         </div>
                     </div>
+
+<?php if (!empty($einvoice_status)) : ?>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <?php _trans('electronic_invoicing'); ?>
+                        </div>
+
+                        <div class="panel-body">
+                            <p>
+                                <strong><?php _trans('status'); ?>:</strong>
+                                <?php echo htmlsc($einvoice_status['status'] ?? trans('not_sent')); ?>
+                            </p>
+
+                            <?php if (!empty($einvoice_status['external_id'])) : ?>
+                                <p>
+                                    <strong>External ID:</strong>
+                                    <?php echo htmlsc($einvoice_status['external_id']); ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <?php if (!empty($einvoice_status['message'])) : ?>
+                                <p>
+                                    <strong><?php _trans('message'); ?>:</strong>
+                                    <?php echo htmlsc($einvoice_status['message']); ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <?php if (!empty($einvoice_status['updated_at'])) : ?>
+                                <p>
+                                    <strong><?php _trans('last_update'); ?>:</strong>
+                                    <?php echo htmlsc($einvoice_status['updated_at']); ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/1'); ?>"
+                               class="btn btn-default btn-sm">
+                                <i class="fa fa-refresh"></i>
+                                <?php _trans('check_status'); ?>
+                            </a>
+                        </div>
+                    </div>
+<?php endif; ?>
+
+
                 </div>
 
             </div>

@@ -48,6 +48,11 @@
                         <li><?php echo anchor('invoices/index', trans('view_invoices')); ?></li>
                         <li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
                     </ul>
+		</li>
+                <li class="dropdown">
+                    <a href="<?php echo site_url('einvoice/settings'); ?>" style="color:white;font-weight:bold;">
+                        <?php _trans('E-Invoicing'); ?>
+                    </a>
                 </li>
 
                 <li class="dropdown">
