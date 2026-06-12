@@ -187,6 +187,7 @@ $lang = [
     'drop_files_here'                               => 'Drop files here!',
     'due_date'                                      => 'Due Date',
     'edit'                                          => 'Edit',
+    'einvoice_siren'                                => 'SIREN',
     'einvoicing_enable'                             => 'Enable e-invoice',
     'einvoicing_enable_help'                        => 'This option activates the electronic invoice system to be sent to the customer. Examples to adapt to your needs are available in this repository:',
     'einvoicing_how_enable_hint'                    => 'Electronic invoicing deactivated. No configuration and model found in dedicated folders. To activate this feature, please consult the documentation or see this repository:',
