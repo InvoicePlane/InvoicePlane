@@ -228,9 +228,14 @@ class Invoices extends Admin_Controller
 
         $einvoice_status = $this->Merchant_responses_model
             ->get_last_response_by_invoice((int) $invoice_id);
+	$einvoice_provider = $this->Merchant_clients_model
+            ->get_default_enabled();
+
+	$this->load->model('einvoice/Merchant_clients_model');
 
         $this->layout->set([
-            'einvoice_status' => $einvoice_status,
+	    'einvoice_status' => $einvoice_status,
+	    'einvoice_provider' => $einvoice_provider,
         ]);
 
         $this->layout->render();

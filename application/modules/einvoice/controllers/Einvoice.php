@@ -21,7 +21,7 @@ class Einvoice extends Admin_Controller
         $registry = new MerchantProviderRegistry();
         $this->output
             ->set_content_type('application/json')
-            ->set_output(json_encode($registry->discover(), JSON_PRETTY_PRINT));
+            ->set_output(json_encode($registry->all(), JSON_PRETTY_PRINT));
     }
 
     public function send_invoice($invoiceId, $merchantClientId): void

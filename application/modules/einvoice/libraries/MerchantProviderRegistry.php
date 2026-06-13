@@ -4,49 +4,113 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class MerchantProviderRegistry
 {
-    private string $providersPath;
+    private array $providers = [];
 
-    public function __construct(?string $providersPath = null)
+    public function __construct()
     {
-        $this->providersPath = $providersPath ?: APPPATH . 'modules/einvoice/libraries/providers/';
+        $this->loadProviders();
     }
 
-    public function discover(): array
+    public function getProvider(string $providerCode): MerchantProviderInterface
     {
-        $providers = [];
+        if (empty($this->providers[$providerCode])) {
+            throw new RuntimeException('Unknown e-invoicing provider: ' . $providerCode);
+        }
 
-        foreach (glob($this->providersPath . '*Provider.php') ?: [] as $file) {
+        $providerClass = $this->providers[$providerCode];
+
+        return new $providerClass();
+    }
+
+    public function all(): array
+    {
+        return $this->providers;
+    }
+
+    private function loadProviders(): void
+    {
+        require_once APPPATH . 'modules/einvoice/libraries/MerchantProviderInterface.php';
+
+        $providerPath = APPPATH . 'modules/einvoice/libraries/providers/';
+
+        foreach (glob($providerPath . '*Provider.php') as $file) {
             require_once $file;
+
             $className = basename($file, '.php');
 
             if (!class_exists($className)) {
                 continue;
             }
 
-            $implements = class_implements($className);
-            if (!$implements || !in_array(MerchantProviderInterface::class, $implements, true)) {
+            if (!is_subclass_of($className, MerchantProviderInterface::class)) {
                 continue;
             }
 
-            $providers[$className::providerCode()] = [
-                'code' => $className::providerCode(),
-                'name' => $className::providerName(),
-                'class' => $className,
-            ];
-        }
+            if (!method_exists($className, 'providerCode')) {
+                continue;
+            }
 
-        return $providers;
+            $this->providers[$className::providerCode()] = $className;
+        }
     }
 
-    public function getProvider(string $providerCode): MerchantProviderInterface
+    public function syncDatabaseProviders(): void
     {
-        $providers = $this->discover();
+        $CI = &get_instance();
 
-        if (!isset($providers[$providerCode])) {
-            throw new RuntimeException('Unknown merchant provider: ' . $providerCode);
+        foreach ($this->providers as $providerCode => $providerClass) {
+            $existing = $CI->db
+                ->where('merchant_type', $providerCode)
+                ->get('ip_merchant_clients')
+                ->row_array();
+
+	    if ($existing) {
+                log_message(
+                    'debug',
+                    'eInvoice provider already registered: ' . $providerCode
+                );
+                continue;
+            }
+
+            $settings = [];
+
+            if (method_exists($providerClass, 'defaultSettings')) {
+                $settings = $providerClass::defaultSettings();
+            }
+
+            $CI->db->insert('ip_merchant_clients', [
+                'merchant_type' => $providerCode,
+                'label' => $providerClass::providerName(),
+                'enabled' => 0,
+                'auth_type' => $this->guessAuthType($settings),
+                'settings_json' => json_encode($settings),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+    }
+
+    private function guessAuthType(array $settings): string
+    {
+        if (isset($settings['client_id']) || isset($settings['client_secret'])) {
+            return 'oauth2';
         }
 
-        $className = $providers[$providerCode]['class'];
-        return new $className();
+        if (isset($settings['access_token']) || isset($settings['api_key'])) {
+            return 'api_key';
+        }
+
+        return 'none';
+    }
+
+    public function get_default_enabled()
+    {
+        return $this->db
+            ->where('enabled', 1)
+            ->order_by('id', 'ASC')
+            ->limit(1)
+            ->get('ip_merchant_clients')
+            ->row_array();
     }
 }
+

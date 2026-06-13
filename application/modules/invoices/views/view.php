@@ -328,13 +328,13 @@ if ($einvoice->user) {
                     </a>
 		</li>
                 <li>
-                   <a href="<?php echo site_url('einvoice/send_invoice/' . $invoice->invoice_id . '/1'); ?>">
+                   <a href="<?php echo site_url('einvoice/send_invoice/' . $invoice->invoice_id . '/' . $einvoice_provider['id']); ?>">
 		               <i class="fa fa-paper-plane"></i>
                        Transmettre PA/PDP
                    </a>
 		</li>
                 <li>
-                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/1'); ?>">
+                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id  . '/' . $einvoice_provider['id']); ?>">
                          <i class="fa fa-refresh"></i>
                          <?php _trans('check_status'); ?>
                       </a>

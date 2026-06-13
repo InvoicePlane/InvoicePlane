@@ -17,6 +17,21 @@ class SuperPdpProvider implements MerchantProviderInterface
         return 'SuperPDP';
     }
 
+    public static function defaultSettings(): array
+    {
+        return [
+            'client_id' => '',
+            'client_secret' => '',
+            'token_url' => 'https://api.superpdp.tech/oauth2/token',
+            'api_base_url' => 'https://api.superpdp.tech',
+            'invoice_endpoint' => '/v1.beta/invoices',
+            'invoice_status_endpoint' => '/v1.beta/invoices/{id}',
+            'incoming_invoices_endpoint' => '/v1.beta/invoices',
+            'invoice_events_endpoint' => '/v1.beta/invoice_events',
+            'disable_pre_check' => false,
+        ];
+    }
+
     public function authenticate(array $settings): bool
     {
         $this->settings = $settings;
