@@ -26,7 +26,10 @@ class Einvoice extends Admin_Controller
 
     public function send_invoice($invoiceId, $merchantClientId): void
     {
-        $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchantClientId);
+        $invoiceId = (int) $invoiceId;
+        $merchantClientId = (int) $merchantClientId;
+
+        $merchantClient = $this->Merchant_clients_model->get_by_id($merchantClientId);
 
         if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
@@ -34,12 +37,27 @@ class Einvoice extends Admin_Controller
         }
 
         $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+
         $registry = new MerchantProviderRegistry();
         $provider = $registry->getProvider($merchantClient['merchant_type']);
+
         $client = new MerchantClient($provider, $settings);
 
-        // TODO: Replace with InvoicePlane Factur-X generated document path.
         $this->load->helper('pdf');
+        $this->load->model('invoices/mdl_invoices');
+        $this->load->model('invoices/mdl_items');
+
+        $invoice = $this->mdl_invoices->get_by_id($invoiceId);
+
+        if (!$invoice) {
+            show_error(trans('invoice_not_found'));
+            return;
+        }
+
+        $items = $this->mdl_items
+            ->where('invoice_id', $invoiceId)
+            ->get()
+            ->result();
 
         $documentDir = FCPATH . 'uploads/einvoice/outgoing/';
 
@@ -47,16 +65,16 @@ class Einvoice extends Admin_Controller
             mkdir($documentDir, 0775, true);
         }
 
-        $documentPath = $documentDir . 'invoice_' . (int) $invoiceId . '.pdf';
+        $documentPath = $documentDir . 'invoice_' . $invoiceId . '.pdf';
 
-        // Génère le PDF Factur-X InvoicePlane sans streaming navigateur
-        $pdfContent = generate_invoice_pdf((int) $invoiceId, false, null, null);
-	
-	if (empty($pdfContent)) {
+        $pdfContent = generate_invoice_pdf($invoiceId, false, null, null);
+
+        if (empty($pdfContent)) {
             show_error('InvoicePlane did not return PDF content.');
+            return;
         }
 
-	if (is_string($pdfContent) && file_exists($pdfContent)) {
+        if (is_string($pdfContent) && file_exists($pdfContent)) {
             copy($pdfContent, $documentPath);
         } else {
             file_put_contents($documentPath, $pdfContent);
@@ -64,31 +82,30 @@ class Einvoice extends Admin_Controller
 
         if (!file_exists($documentPath) || filesize($documentPath) === 0) {
             show_error('Invoice PDF not found after generation.');
+            return;
         }
 
         $metadata = [
-            'invoice_id' => (int) $invoiceId,
+            'invoice_id' => $invoiceId,
             'format' => 'factur-x',
             'profile' => 'EN16931',
         ];
 
+        $metadata = $provider->buildInvoicePayload($invoice, $items, $metadata);
+
         $response = $client->sendInvoice($documentPath, $metadata);
 
         $this->Merchant_responses_model->create_outbound(
-            (int) $merchantClientId,
-            (int) $invoiceId,
+            $merchantClientId,
+            $invoiceId,
             $response,
             [
                 'document_path' => $documentPath,
                 'metadata' => $metadata,
             ]
         );
-/*
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode($response, JSON_PRETTY_PRINT));
-*/
-	if (!empty($response['success'])) {
+
+        if (!empty($response['success'])) {
             $this->session->set_flashdata(
                 'alert_success',
                 trans('einvoice_send_success')
@@ -100,7 +117,7 @@ class Einvoice extends Admin_Controller
             );
         }
 
-        redirect('invoices/view/' . (int) $invoiceId);
+        redirect('invoices/view/' . $invoiceId);
     }
 
     public function receive($merchantClientId): void
@@ -186,9 +203,6 @@ class Einvoice extends Admin_Controller
 
     public function status($invoiceId, $merchantClientId)
     {
-        $this->load->model('einvoice/Merchant_clients_model');
-        $this->load->model('einvoice/Merchant_responses_model');
-
         $merchantClient = $this->Merchant_clients_model->get_by_id(
             (int) $merchantClientId
         );
@@ -209,6 +223,7 @@ class Einvoice extends Admin_Controller
             redirect('invoices/view/' . (int) $invoiceId);
         }
 
+	$this->load->model('einvoice/Merchant_clients_model');
         $settings = $this->Merchant_clients_model
             ->get_settings($merchantClient);
 

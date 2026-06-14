@@ -325,4 +325,9 @@ class SuperPdpProvider implements MerchantProviderInterface
             'response' => $decoded ?: $rawResponse,
         ];
     }
+
+    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
+    {
+        return $metadata;
+    }
 }

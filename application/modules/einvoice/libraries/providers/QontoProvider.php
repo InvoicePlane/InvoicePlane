@@ -306,5 +306,31 @@ class QontoProvider implements MerchantProviderInterface
             throw new RuntimeException('Missing Qonto setting: ' . $key);
         }
     }
+
+    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
+    {
+        $metadata['qonto_invoice_payload'] = [
+            'client_invoice' => [
+                'number' => $invoice->invoice_number,
+                'issue_date' => $invoice->invoice_date_created,
+                'due_date' => $invoice->invoice_date_due,
+                'currency' => $invoice->client_currency ?: 'EUR',
+                'client' => [
+                    'name' => $invoice->client_name,
+                    'email' => $invoice->client_email,
+                ],
+                'line_items' => array_map(static function ($item) {
+                    return [
+                        'title' => $item->item_name,
+                        'description' => $item->item_description,
+                        'quantity' => (float) $item->item_quantity,
+                        'unit_price' => (float) $item->item_price,
+                    ];
+                }, $items),
+            ],
+        ];
+
+        return $metadata;
+    }
 }
 

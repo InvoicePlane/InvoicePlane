@@ -41,5 +41,15 @@ class Merchant_clients_model extends CI_Model
     {
         return json_decode($client['settings_json'] ?? '{}', true) ?: [];
     }
+
+    public function get_default_enabled()
+    {
+        return $this->db
+            ->where('enabled', 1)
+            ->order_by('id', 'ASC')
+            ->limit(1)
+            ->get('ip_merchant_clients')
+            ->row_array();
+    }
 }
 
