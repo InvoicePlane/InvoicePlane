@@ -22,7 +22,7 @@ class Cron extends Base_Controller
     public function recur($cron_key = null)
     {
         // Check the provided cron key
-        if ($cron_key != get_setting('cron_key')) {
+        if ( ! hash_equals((string) get_setting('cron_key'), (string) $cron_key)) {
             log_message('error', '[Cron Recurring Invoices] Wrong cron key provided! ' . $cron_key);
             show_error(trans('wrong_cron_key_provided'), 500);
             exit('Wrong cron key!');
