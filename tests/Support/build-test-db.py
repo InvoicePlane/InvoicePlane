@@ -269,17 +269,27 @@ def seed_defaults(con: sqlite3.Connection) -> None:
             (key, val)
         )
 
-    import hashlib, hmac
-    # Simple password hash placeholder — tests won't actually authenticate through CI3 login
+    # Seed the admin user (user_id=1) — required for FK joins in quotes/invoices/payments.
+    # NOT NULL columns: user_date_created, user_date_modified, user_psalt.
     con.execute(
-        "INSERT OR IGNORE INTO ip_users (user_name,user_email,user_password,user_type,user_active) "
-        "VALUES ('Admin','admin@test.local','$2y$10$testhashedpassword.notreal',1,1)"
+        "INSERT OR IGNORE INTO ip_users "
+        "(user_id,user_name,user_email,user_password,user_psalt,user_type,user_active,"
+        " user_date_created,user_date_modified) "
+        "VALUES (1,'Admin','admin@test.local','$2y$10$testhashedpassword.notreal',"
+        "'salt1234567890123456',1,1,'2024-01-01 00:00:00','2024-01-01 00:00:00')"
     )
 
     con.execute(
         "INSERT OR IGNORE INTO ip_invoice_groups "
-        "(invoice_group_name,invoice_group_identifier_format,invoice_group_next_id,invoice_group_left_pad) "
-        "VALUES ('Default','{{{id}}}',1,0)"
+        "(invoice_group_id,invoice_group_name,invoice_group_identifier_format,"
+        " invoice_group_next_id,invoice_group_left_pad) "
+        "VALUES (1,'Default','INV-{{{id}}}',1,4)"
+    )
+
+    # Seed a default payment method (payment_method_id=1).
+    con.execute(
+        "INSERT OR IGNORE INTO ip_payment_methods (payment_method_id,payment_method_name) "
+        "VALUES (1,'Cash')"
     )
 
 
