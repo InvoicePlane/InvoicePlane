@@ -53,8 +53,8 @@ $_SERVER['HTTPS']              = 'off';
 $_SERVER['REMOTE_ADDR']        = '127.0.0.1';
 $_SERVER['HTTP_USER_AGENT']    = 'PHPUnit CI3 Integration Runner';
 $_SERVER['HTTP_ACCEPT']        = 'text/html,application/xhtml+xml';
-$_SERVER['DOCUMENT_ROOT']      = dirname(__DIR__, 3);
-$_SERVER['SCRIPT_FILENAME']    = dirname(__DIR__, 3) . '/index.php';
+$_SERVER['DOCUMENT_ROOT']      = dirname(__DIR__, 3) . '/public';
+$_SERVER['SCRIPT_FILENAME']    = dirname(__DIR__, 3) . '/public/index.php';
 $_SERVER['REQUEST_TIME']       = time();
 $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 
@@ -62,7 +62,7 @@ ob_start();
 $exception = null;
 
 try {
-    require dirname(__DIR__, 3) . '/index.php';
+    require dirname(__DIR__, 3) . '/public/index.php';
 } catch (Throwable $throwable) {
     $exception = $throwable::class . ': ' . $throwable->getMessage() . ' @ ' . $throwable->getFile() . ':' . $throwable->getLine();
 }
