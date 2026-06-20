@@ -597,7 +597,7 @@ foreach ($payment_methods as $payment_method) {
     ?>
                                         <option <?php check_select($invoice->payment_method, $payment_method->payment_method_id) ?>
                                             value="<?php echo $payment_method->payment_method_id; ?>">
-                                            <?php echo $payment_method->payment_method_name; ?>
+                                            <?php echo htmlsc($payment_method->payment_method_name); ?>
                                         </option>
 <?php
 } // End foreach

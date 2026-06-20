@@ -4,6 +4,10 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+if (! enum_exists('MerchantResponseDriver', false)) {
+    require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
+}
+
 /*
  * InvoicePlane
  *
@@ -27,6 +31,7 @@ class Stripe extends Base_Controller
         parent::__construct();
         $this->load->library('crypt');
         $this->load->model('invoices/mdl_invoices');
+        $this->load->model('integrations/merchant_responses_model');
         $this->load->helper('file_security');
 
         $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
@@ -47,7 +52,13 @@ class Stripe extends Base_Controller
             show_404();
         }
 
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+
+        // Security: Verify the invoice exists and is guest-visible
+        if ( ! $invoice) {
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted checkout session creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            show_404();
+        }
 
         // Check if the invoice is payable
         if ($invoice->invoice_balance <= 0) {
@@ -99,7 +110,13 @@ class Stripe extends Base_Controller
             $invoice_key = $session->client_reference_id;
 
             // Retrieve the invoice
-            $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_key)->get()->row();
+            $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_key)->get()->row();
+
+            // Security: Verify the invoice exists and is guest-visible
+            if ( ! $invoice) {
+                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted payment callback for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_key));
+                throw new Exception('Invoice not found or not accessible');
+            }
 
             // Check the session payment_status is 'paid'
             // See: https://github.com/stripe/stripe-php/blob/044f9dd190967b8fb7e55fd0ea25f11c625c00a4/lib/Checkout/Session.php#L101
@@ -167,14 +184,13 @@ class Stripe extends Base_Controller
             // Check stripe server ok
             $ok = $session->status !== null; // Stripe is accessible?
             // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts)
-            $this->db->insert('ip_merchant_responses', [
-                'invoice_id'                   => $invoice->invoice_id,
-                'merchant_response_successful' => (int) $ok, // response server API (no)ok
-                'merchant_response_date'       => date('Y-m-d'),
-                'merchant_response_driver'     => __CLASS__,
-                'merchant_response'            => ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
-                'merchant_response_reference'  => $ok ? 'intent_id: ' . $session->payment_intent : 'none',
-            ]);
+            $this->merchant_responses_model->create_payment_response(
+                invoiceId:  $invoice->invoice_id,
+                driver:     MerchantResponseDriver::Stripe,
+                message:    ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
+                reference:  $ok ? 'intent_id: ' . $session->payment_intent : 'none',
+                successful: $ok,
+            );
 
             // Notify user
             $this->session->set_flashdata('alert_' . $paid, $user_msg);

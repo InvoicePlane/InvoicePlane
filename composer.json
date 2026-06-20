@@ -25,6 +25,19 @@
         "stripe/stripe-php": "^14.10",
         "vlucas/phpdotenv": "^5.6"
     },
+    "autoload": {
+        "psr-4": {
+            "Core\\": "application/modules/core/src/"
+        },
+        "files": [
+            "bootstrap/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "require-dev": {
         "driftingly/rector-laravel": "^2.3",
         "filp/whoops": "^2.18.4",
@@ -46,6 +59,10 @@
         }
     },
     "scripts": {
+        "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "vendor/bin/phpunit"
+        ],
         "check": [
             "rector",
             "phpcs",

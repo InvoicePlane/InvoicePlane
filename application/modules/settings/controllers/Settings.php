@@ -270,7 +270,11 @@ class Settings extends Admin_Controller
                 sanitize_for_logging((string) $this->session->userdata('user_id'))
             ));
 
-            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
+            $this->session->set_flashdata('alert_error', trans(
+                ($validation['error'] ?? '') === 'path_outside_directory'
+                    ? 'invalid_file_path_outside_allowed_directory'
+                    : 'invalid_file_path'
+            ));
             redirect('settings');
         }
 

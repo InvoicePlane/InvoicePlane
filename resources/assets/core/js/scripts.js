@@ -248,18 +248,18 @@ function decodeHtmlEntities(text) {
 function update_email_template_preview() {
     var rawHtml = $('.email-template-body').val();
     var iframe = $('#email-template-preview')[0];
-    
+
     // Initialize iframe with a proper HTML document if needed
     if (iframe && iframe.contentDocument) {
         var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        
+
         // If the iframe doesn't have a proper document structure, create one
         if (!iframeDoc.body) {
             iframeDoc.open();
             iframeDoc.write('<!DOCTYPE html><html><head><meta charset="utf-8"></head><body></body></html>');
             iframeDoc.close();
         }
-        
+
         // Render as plain text to avoid interpreting untrusted DOM text as HTML.
         iframeDoc.body.textContent = rawHtml || '';
     }
@@ -512,9 +512,11 @@ $(function () {
     window.fullpage_loader = $('#fullpage-loader');
     window.loader_error = $('#loader-error');
     window.loader_icon = $('#loader-icon');
+    window.loader_error_icon = $('#loader-error-icon');
     window.reset_loader = function () {
         loader_error.hide();
-        loader_icon.addClass('fa-spin').removeClass('text-danger');
+        loader_error_icon.hide();
+        loader_icon.show().addClass('fa-spin').removeClass('text-danger');
         clearTimeout(window.fullpageloaderTimeout);
     }
     window.close_loader = function () {
@@ -528,8 +530,9 @@ $(function () {
         // Show
         fullpage_loader.fadeIn(200);
         window.fullpageloaderTimeout = window.setTimeout(function () {
+            loader_icon.hide();
+            loader_error_icon.fadeIn(200);
             loader_error.fadeIn(200);
-            loader_icon.removeClass('fa-spin').addClass('text-danger');
         }, timeout);
     }
 

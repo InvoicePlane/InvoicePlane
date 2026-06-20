@@ -1206,6 +1206,43 @@
             "time": "2024-10-29T12:34:00+00:00"
         },
         {
+            "name": "pocketarc/codeigniter",
+            "version": "3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pocketarc/codeigniter.git",
+                "reference": "d310726565c12ba99b8037e8fb231ed739258e6e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pocketarc/codeigniter/zipball/d310726565c12ba99b8037e8fb231ed739258e6e",
+                "reference": "d310726565c12ba99b8037e8fb231ed739258e6e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.8"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "1.6.*",
+                "phpunit/phpunit": "4.* || 5.* || 9.*"
+            },
+            "suggest": {
+                "paragonie/random_compat": "Provides better randomness in PHP 5.x"
+            },
+            "type": "project",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "The CodeIgniter framework",
+            "homepage": "https://github.com/pocketarc/codeigniter",
+            "support": {
+                "issues": "https://github.com/pocketarc/codeigniter/issues",
+                "source": "https://github.com/pocketarc/codeigniter"
+            },
+            "time": "2024-10-29T12:34:00+00:00"
+        },
+        {
             "name": "psr/http-client",
             "version": "1.0.3",
             "source": {

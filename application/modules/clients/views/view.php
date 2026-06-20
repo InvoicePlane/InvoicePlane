@@ -435,7 +435,11 @@ if ($client->client_surname != '') { // Client is not a company
                             <table class="table no-margin">
                                 <tr>
                                     <th><?php _trans('birthdate'); ?></th>
-                                    <td><?php echo format_date($client->client_birthdate); ?></td>
+                                    <td>
+                                        <?php echo (!empty($client->client_birthdate) && $client->client_birthdate !== '0000-00-00') 
+                                            ? htmlsc(format_date($client->client_birthdate)) 
+                                            : ''; ?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?php _trans('gender'); ?></th>
