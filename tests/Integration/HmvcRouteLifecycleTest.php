@@ -7,7 +7,6 @@ use Modules\Invoices\Controllers\Invoices;
 use Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Support\TestUris;
 
 #[CoversClass(Clients::class)]
 #[CoversClass(Invoices::class)]
@@ -18,7 +17,7 @@ class HmvcRouteLifecycleTest extends CiIntegrationTestCase
     {
         $this->actingAsAdmin();
 
-        $response = $this->get(TestUris::CLIENTS_INDEX);
+        $response = $this->get('/clients/status/active');
 
         $this->assertResponseOk($response);
         $this->assertNotSame('', mb_trim($response->body()));
@@ -29,7 +28,7 @@ class HmvcRouteLifecycleTest extends CiIntegrationTestCase
     {
         $this->actingAsAdmin();
 
-        $response = $this->get(TestUris::INVOICES_INDEX);
+        $response = $this->get('/invoices/index');
 
         $this->assertResponseOk($response);
         $this->assertNotSame('', mb_trim($response->body()));
