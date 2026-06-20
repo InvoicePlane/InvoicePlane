@@ -148,8 +148,10 @@ trait InteractsWithDatabase
             'user_id'              => 1,
             'client_id'            => $clientId,
             'invoice_status_id'    => 1,
-            'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due'     => date('Y-m-d', strtotime('+30 days')),
+            'invoice_group_id'       => 1,
+            'invoice_date_created'  => date('Y-m-d'),
+            'invoice_date_modified' => date('Y-m-d'),
+            'invoice_date_due'      => date('Y-m-d', strtotime('+30 days')),
             'invoice_number'       => 'INV-' . time() . '-' . random_int(100, 999),
             'invoice_terms'        => '',
             'invoice_url_key'      => bin2hex(random_bytes(16)),
@@ -159,12 +161,11 @@ trait InteractsWithDatabase
     protected function seedPayment(int $invoiceId, array $overrides = []): int
     {
         return $this->databaseInsert('ip_payments', array_merge([
-            'invoice_id'           => $invoiceId,
-            'payment_method_id'    => 1,
-            'payment_amount'       => '100.00',
-            'payment_date'         => date('Y-m-d'),
-            'payment_note'         => '',
-            'payment_date_created' => date('Y-m-d H:i:s'),
+            'invoice_id'        => $invoiceId,
+            'payment_method_id' => 1,
+            'payment_amount'    => '100.00',
+            'payment_date'      => date('Y-m-d'),
+            'payment_note'      => '',
         ], $overrides));
     }
 
