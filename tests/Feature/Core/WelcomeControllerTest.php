@@ -5,7 +5,6 @@ namespace Tests\Feature\Core;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Support\TestUris;
 use Welcome;
 
 #[CoversClass(Welcome::class)]

@@ -90,12 +90,18 @@ trait InteractsWithDatabase
 
     protected function assertDatabaseHas(string $table, array $conditions): void
     {
-        static::assertNotNull($this->databaseFetchOne($table, $conditions));
+        static::assertNotNull(
+            $this->databaseFetchOne($table, $conditions),
+            "Expected row in [{$table}] not found."
+        );
     }
 
     protected function assertDatabaseMissing(string $table, array $conditions): void
     {
-        static::assertNull($this->databaseFetchOne($table, $conditions));
+        static::assertNull(
+            $this->databaseFetchOne($table, $conditions),
+            "Unexpected row found in [{$table}]."
+        );
     }
 
     protected function assertDatabaseCount(string $table, int $expected, array $conditions = []): void
@@ -257,8 +263,6 @@ trait InteractsWithDatabase
             'Modules\\Payments\\Models\\Payment'         => ['ip_payments', 'payment_id'],
             'PaymentMethod'                              => ['ip_payment_methods', 'payment_method_id'],
             'Modules\\Payments\\Models\\PaymentMethod'   => ['ip_payment_methods', 'payment_method_id'],
-            'PaymentLog'                                 => ['ip_payment_logs', 'payment_log_id'],
-            'Modules\\Payments\\Models\\PaymentLog'      => ['ip_payment_logs', 'payment_log_id'],
             'TaxRate'                                    => ['ip_tax_rates', 'tax_rate_id'],
             'Modules\\Core\\Models\\TaxRate'             => ['ip_tax_rates', 'tax_rate_id'],
             'Modules\\Products\\Models\\TaxRate'         => ['ip_tax_rates', 'tax_rate_id'],
@@ -418,8 +422,9 @@ trait InteractsWithDatabase
         $db           = [];
         require $basePath . '/application/config/database.php';
 
-        $group = $active_group ?? 'default';
-        $cfg   = $db[$group] ?? [];
+        $group  = $active_group ?? 'default';
+        $cfg    = $db[$group] ?? [];
+        $driver = $cfg['dbdriver'] ?? 'mysqli';
 
         $driver = (string) ($cfg['dbdriver'] ?? 'mysqli');
 
