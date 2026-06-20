@@ -292,7 +292,7 @@ class Mdl_Import extends Response_Model
                                 $data[$key] = $tax_rate->row()->tax_rate_id;
                             } else {
                                 $this->db->insert('ip_tax_rates', [
-                                    'tax_rate_name'    => $data[$key],
+                                    'tax_rate_name'    => strip_tags($this->security->xss_clean($data[$key])),
                                     'tax_rate_percent' => $data[$key],
                                 ]);
                                 $data[$key] = $this->db->insert_id();
@@ -368,7 +368,7 @@ class Mdl_Import extends Response_Model
                             if ($payment_method->num_rows()) {
                                 $data[$key] = $payment_method->row()->payment_method_id;
                             } else {
-                                $this->db->insert('ip_payment_methods', ['payment_method_name' => $data[$key]]);
+                                $this->db->insert('ip_payment_methods', ['payment_method_name' => strip_tags($this->security->xss_clean($data[$key]))]);
                                 $data[$key] = $this->db->insert_id();
                             }
                         } else {
