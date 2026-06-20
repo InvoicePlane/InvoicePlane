@@ -10,12 +10,12 @@ on:
       php_version:
         description: 'PHP version'
         required: false
-        default: '8.2'
+        default: '8.4'
         type: choice
         options:
-          - '8.2'
-          - '8.3'
           - '8.4'
+          - '8.3'
+          - '8.2'
       mariadb_version:
         description: 'MariaDB image'
         required: false
@@ -38,7 +38,7 @@ permissions:
 
 jobs:
   test:
-    name: PHPUnit (PHP ${{ inputs.php_version || '8.2' }}, MariaDB ${{ inputs.mariadb_version || '10.11' }})
+    name: PHPUnit (PHP ${{ inputs.php_version || '8.4' }}, MariaDB ${{ inputs.mariadb_version || '10.11' }})
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -64,7 +64,7 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: ${{ inputs.php_version || '8.2' }}
+          php-version: ${{ inputs.php_version || '8.4' }}
 
       - name: Configure ipconfig.php for MariaDB
         run: |
