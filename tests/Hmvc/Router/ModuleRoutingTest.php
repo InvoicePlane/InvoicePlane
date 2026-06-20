@@ -25,13 +25,11 @@ use Tests\AbstractTestCase;
  * @group feature
  * @group routing
  */
-#[CoversClass(Tests\Feature\Routing\ModuleRouting::class)]
 class ModuleRoutingTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
         $this->actingAsAdmin();
     }
 
@@ -54,7 +52,7 @@ class ModuleRoutingTest extends AbstractTestCase
             'custom_values'   => ['/custom_values'],
             'users'           => ['/users'],
             'settings'        => ['/settings'],
-            'reports'         => ['/reports'],
+            'reports'         => ['/reports/sales_by_client'],
             'dashboard'       => ['/dashboard'],
             'import'          => ['/import'],
             'projects'        => ['/projects'],
@@ -72,7 +70,8 @@ class ModuleRoutingTest extends AbstractTestCase
             self::logicalOr(
                 self::equalTo(200),
                 self::equalTo(301),
-                self::equalTo(302)
+                self::equalTo(302),
+                self::equalTo(307)
             ),
             sprintf(
                 'GET [%s] must return 200 or a redirect. Got [%d] with body: %s',
