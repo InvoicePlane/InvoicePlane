@@ -35,7 +35,7 @@
                             </a>
                         </td>
                         <td><?php echo format_currency($payment->payment_amount); ?></td>
-                        <td><?php echo $payment->payment_method_name; ?></td>
+                        <td><?php echo htmlsc($payment->payment_method_name); ?></td>
                         <td><?php _htmlsc($payment->payment_note); ?></td>
                     </tr>
                 <?php } ?>
