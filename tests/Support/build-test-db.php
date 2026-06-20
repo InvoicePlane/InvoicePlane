@@ -37,7 +37,7 @@ foreach ($files as $file) {
         continue;
     }
 
-    $statements = convertMySqlToSqlite($sql);
+    $statements = convertMySqlToSqlite($stripped);
 
     foreach ($statements as $stmt) {
         // Strip any leading -- comment lines that ended up prepended to the statement

@@ -526,14 +526,15 @@ class MY_Model extends CI_Model
             }
         }
 
-        // SQLite3 does not support MySQL's SQL_CALC_FOUND_ROWS hint — strip it.
-        if ($this->db->dbdriver === 'sqlite3' && ! empty($this->db->qb_select)) {
-            foreach ($this->db->qb_select as $k => $v) {
-                $stripped = preg_replace('/\bSQL_CALC_FOUND_ROWS\s+/i', '', $v);
-                if ($stripped !== $v) {
-                    $this->db->qb_select[$k] = $stripped;
-                }
-            }
+        // SQL_CALC_FOUND_ROWS is MySQL-only — strip it for SQLite (same logic as get()/paginate()).
+        if (in_array($this->db->dbdriver, ['sqlite3', 'sqlite'], true) && ! empty($this->db->qb_select)) {
+            $this->db->qb_select = array_values(array_filter(
+                array_map(
+                    static fn ($s) => trim(preg_replace('/SQL_CALC_FOUND_ROWS\s*/i', '', $s)),
+                    $this->db->qb_select,
+                ),
+                static fn ($s) => $s !== '',
+            ));
         }
     }
 

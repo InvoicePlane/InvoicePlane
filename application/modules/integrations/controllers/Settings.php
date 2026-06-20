@@ -72,13 +72,8 @@ class Settings extends Admin_Controller
 	$enabled = $this->input->post('enabled') ? 1 : 0;
 
         if ($enabled === 1) {
-            $this->db
-                ->where('id !=', (int) $id)
-                ->update('ip_merchant_clients', [
-                   'enabled' => 0,
-                   'updated_at' => date('Y-m-d H:i:s'),
-                ]);
-	}
+            $this->Merchant_clients_model->disable_all_except((int) $id);
+        }
 
         $data = [
             'label' => $this->input->post('label'),

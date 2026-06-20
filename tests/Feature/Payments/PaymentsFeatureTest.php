@@ -95,7 +95,10 @@ class PaymentsFeatureTest extends AbstractTestCase
     {
         /* Arrange */
         $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId);
+        $invoiceId = $this->seedInvoice($clientId, [], [
+            'invoice_total'   => '250.00',
+            'invoice_balance' => '250.00',
+        ]);
 
         /* Act */
         $response = $this->post('/payments/form', [
@@ -116,12 +119,10 @@ class PaymentsFeatureTest extends AbstractTestCase
             )
         );
 
-        if ($response->isRedirect()) {
-            $this->assertDatabaseHas('ip_payments', [
-                'invoice_id'     => $invoiceId,
-                'payment_amount' => '250.00',
-            ]);
-        }
+        $this->assertDatabaseHas('ip_payments', [
+            'invoice_id'     => $invoiceId,
+            'payment_amount' => '250.00',
+        ]);
     }
 
     #[Test]
