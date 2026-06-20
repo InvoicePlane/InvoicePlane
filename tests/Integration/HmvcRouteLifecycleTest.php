@@ -4,6 +4,7 @@ namespace Tests\Integration;
 
 use Modules\Clients\Controllers\Clients;
 use Modules\Invoices\Controllers\Invoices;
+use Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Support\TestUris;
