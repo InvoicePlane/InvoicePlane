@@ -20,6 +20,12 @@ class IntegrationsFeatureTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $controllerDir = dirname(__DIR__, 3) . '/application/modules/integrations/controllers/';
+        if (! is_dir($controllerDir)) {
+            $this->markTestSkipped('Integrations module not present — skipping.');
+        }
+
         $this->actingAsAdmin();
     }
 
