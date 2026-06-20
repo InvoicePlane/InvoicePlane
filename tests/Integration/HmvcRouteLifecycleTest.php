@@ -15,10 +15,13 @@ class HmvcRouteLifecycleTest extends CiIntegrationTestCase
     #[Test]
     public function it_executes_clients_index_through_full_ci_and_mx_lifecycle(): void
     {
+        /* Arrange */
         $this->actingAsAdmin();
 
+        /* Act */
         $response = $this->get('/clients/status/active');
 
+        /* Assert */
         $this->assertResponseOk($response);
         $this->assertNotSame('', mb_trim($response->body()));
     }
@@ -26,10 +29,13 @@ class HmvcRouteLifecycleTest extends CiIntegrationTestCase
     #[Test]
     public function it_executes_invoices_index_through_full_ci_and_mx_lifecycle(): void
     {
+        /* Arrange */
         $this->actingAsAdmin();
 
+        /* Act */
         $response = $this->get('/invoices/status/all');
 
+        /* Assert */
         $this->assertResponseOk($response);
         $this->assertNotSame('', mb_trim($response->body()));
     }
