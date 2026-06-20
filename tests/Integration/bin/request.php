@@ -64,6 +64,31 @@ $_SERVER['SCRIPT_FILENAME']    = dirname(__DIR__, 3) . '/public/index.php';
 $_SERVER['REQUEST_TIME']       = time();
 $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 
+// State shared between the shutdown handler and the main try/catch.
+$ci_result    = null;
+$ci_exception = null;
+
+// Register shutdown BEFORE running index.php so it fires even if redirect() calls exit().
+register_shutdown_function(static function () use (&$ci_result, &$ci_exception): void {
+    // If the result was already emitted (normal exit path), do nothing.
+    if ($ci_result !== null) {
+        return;
+    }
+
+    $output = ob_get_clean() ?: '';
+
+    $result = [
+        'status'    => http_response_code() ?: 200,
+        'headers'   => headers_list(),
+        'output'    => $output,
+        'exception' => $ci_exception,
+    ];
+
+    echo '__CI_TEST_RESULT_START__';
+    echo base64_encode((string) json_encode($result, JSON_THROW_ON_ERROR));
+    echo '__CI_TEST_RESULT_END__';
+});
+
 ob_start();
 $exception = null;
 $resultEmitted = false;
@@ -89,7 +114,7 @@ register_shutdown_function(function () use (&$exception, &$resultEmitted) {
 try {
     require dirname(__DIR__, 3) . '/public/index.php';
 } catch (Throwable $throwable) {
-    $exception = $throwable::class . ': ' . $throwable->getMessage() . ' @ ' . $throwable->getFile() . ':' . $throwable->getLine();
+    $ci_exception = $throwable::class . ': ' . $throwable->getMessage() . ' @ ' . $throwable->getFile() . ':' . $throwable->getLine();
 }
 
 $output = ob_get_clean();
@@ -98,12 +123,15 @@ $result = [
     'status'    => http_response_code() ?: 200,
     'headers'   => headers_list(),
     'output'    => $output,
-    'exception' => $exception,
+    'exception' => $ci_exception,
 ];
+
+// Mark as done so the shutdown handler skips.
+$ci_result = $result;
 
 echo '__CI_TEST_RESULT_START__';
 echo base64_encode((string) json_encode($result, JSON_THROW_ON_ERROR));
 echo '__CI_TEST_RESULT_END__';
 $resultEmitted = true;
 
-exit($exception === null ? 0 : 1);
+exit($ci_exception === null ? 0 : 1);

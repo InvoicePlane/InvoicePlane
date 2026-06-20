@@ -14,7 +14,7 @@ if ( ! defined('BASEPATH')) {
  */
 
 #[AllowDynamicProperties]
-class Welcome extends CI_Controller
+class Welcome extends MX_Controller
 {
     public function index()
     {

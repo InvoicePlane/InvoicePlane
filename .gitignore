@@ -36,3 +36,8 @@ yarn-error.log
 /stan.txt
 /todo.txt
 /yarnpack.txt
+
+# SQLite test database (generated — rebuild with tests/Support/build-test-db.py)
+storage/test.sqlite
+storage/test.sqlite-shm
+storage/test.sqlite-wal

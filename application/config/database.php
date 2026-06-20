@@ -74,14 +74,22 @@ defined('BASEPATH') || exit('No direct script access allowed');
 $active_group  = 'default';
 $query_builder = true;
 
+$_dbDriver   = env('DB_DRIVER', 'mysqli');
+$_dbDatabase = env('DB_DATABASE', '');
+
+// SQLite path: resolve relative paths against the project root (one level up from APPPATH)
+if ($_dbDriver === 'sqlite3' && $_dbDatabase !== '' && ! str_starts_with($_dbDatabase, '/')) {
+    $_dbDatabase = rtrim(dirname(APPPATH), '/') . '/' . $_dbDatabase;
+}
+
 $db['default'] = [
     'dsn'          => '',
-    'hostname'     => env('DB_HOSTNAME'),
-    'port'         => env('DB_PORT'),
-    'username'     => env('DB_USERNAME'),
-    'password'     => env('DB_PASSWORD'),
-    'database'     => env('DB_DATABASE'),
-    'dbdriver'     => env('DB_DRIVER', 'mysqli'),
+    'hostname'     => $_dbDriver === 'sqlite3' ? '' : env('DB_HOSTNAME'),
+    'port'         => $_dbDriver === 'sqlite3' ? '' : env('DB_PORT'),
+    'username'     => $_dbDriver === 'sqlite3' ? '' : env('DB_USERNAME'),
+    'password'     => $_dbDriver === 'sqlite3' ? '' : env('DB_PASSWORD'),
+    'database'     => $_dbDatabase,
+    'dbdriver'     => $_dbDriver,
     'dbprefix'     => '',
     'pconnect'     => false,
     'db_debug'     => (ENVIRONMENT !== 'production'),
