@@ -16,7 +16,7 @@ if ( ! is_array($request)) {
 }
 
 $method  = mb_strtoupper((string) ($request['method'] ?? 'GET'));
-$uri     = '/' . ltrim((string) ($request['uri'] ?? '/'), '/');
+$uri     = '/' . mb_ltrim((string) ($request['uri'] ?? '/'), '/');
 $query   = is_array($request['query'] ?? null) ? $request['query'] : [];
 $post    = is_array($request['post'] ?? null) ? $request['post'] : [];
 $session = is_array($request['session'] ?? null) ? $request['session'] : [];

@@ -113,7 +113,7 @@ function generate_secure_salt(): string
         // bcrypt expects the "crypt" base64 alphabet: ./0-9A-Za-z and no '=' padding
         $base64 = base64_encode($randomBytes);
         // Translate '+' to '.' for crypt-style base64 and remove '=' padding
-        $base64 = rtrim(strtr($base64, '+', '.'), '=');
+        $base64 = mb_rtrim(strtr($base64, '+', '.'), '=');
 
         return mb_substr($base64, 0, 22);
     } catch (Exception|Error $e) {

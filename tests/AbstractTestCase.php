@@ -183,7 +183,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
     private function normalizeUri(string $uri): string
     {
-        $trimmed = ltrim($uri, '/');
+        $trimmed = mb_ltrim($uri, '/');
 
         return '/' . $trimmed;
     }

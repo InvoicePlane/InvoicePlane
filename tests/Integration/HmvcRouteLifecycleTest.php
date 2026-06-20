@@ -18,7 +18,7 @@ class HmvcRouteLifecycleTest extends CiIntegrationTestCase
         $response = $this->get(TestUris::CLIENTS_INDEX);
 
         $this->assertResponseOk($response);
-        $this->assertNotSame('', trim($response->body()));
+        $this->assertNotSame('', mb_trim($response->body()));
     }
 
     #[Test]
@@ -27,6 +27,6 @@ class HmvcRouteLifecycleTest extends CiIntegrationTestCase
         $response = $this->get(TestUris::INVOICES_INDEX);
 
         $this->assertResponseOk($response);
-        $this->assertNotSame('', trim($response->body()));
+        $this->assertNotSame('', mb_trim($response->body()));
     }
 }

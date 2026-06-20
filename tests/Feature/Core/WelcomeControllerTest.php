@@ -6,8 +6,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Support\TestUris;
+use Welcome;
 
-#[CoversClass(\Welcome::class)]
+#[CoversClass(Welcome::class)]
 class WelcomeControllerTest extends AbstractTestCase
 {
     #[Test]

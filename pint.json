@@ -1,7 +1,7 @@
 {
     "preset": "per",
     "exclude": [
-        "application/modules/clients/views/view.php"
+        "application/modules/clients/views"
     ],
     "rules": {
         "@PSR12": true,

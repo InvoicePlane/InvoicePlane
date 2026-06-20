@@ -47,6 +47,6 @@ if ( ! function_exists('base_path')) {
 
         return $path === ''
             ? $basePath
-            : $basePath . '/' . ltrim($path, '/');
+            : $basePath . '/' . mb_ltrim($path, '/');
     }
 }
