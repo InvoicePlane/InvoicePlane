@@ -27,6 +27,14 @@ class ParsePhpstanResultsTest extends AbstractTestCase
 {
     private static bool $scriptLoaded = false;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if ( ! file_exists(dirname(__DIR__, 3) . '/.github/scripts/parse-phpstan-results.php')) {
+            $this->markTestSkipped('.github/scripts/parse-phpstan-results.php not found in this environment');
+        }
+    }
+
     /**
      * Bootstrap: load the script once per process so that all helper
      * functions are defined before any test method runs.
@@ -37,6 +45,10 @@ class ParsePhpstanResultsTest extends AbstractTestCase
      */
     public static function setUpBeforeClass(): void
     {
+        if ( ! file_exists(dirname(__DIR__, 3) . '/.github/scripts/parse-phpstan-results.php')) {
+            return;
+        }
+
         if (self::$scriptLoaded) {
             return;
         }

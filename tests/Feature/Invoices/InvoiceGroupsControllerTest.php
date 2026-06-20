@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Feature\Invoices;
+use Tests\AbstractTestCase;
 
 use Invoice_Groups;
 
@@ -12,9 +13,15 @@ use Invoice_Groups;
 #[CoversClass(Tests\Feature\Invoices\InvoiceGroupsController::class)]
 class InvoiceGroupsControllerTest extends AbstractTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+    }
     /**
      * Test index displays paginated list of invoice groups.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_paginated_list_of_invoice_groups(): void
     {
         /**
@@ -46,6 +53,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test index orders invoice groups by name.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_orders_invoice_groups_by_name(): void
     {
         /**
@@ -76,6 +84,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test index paginates results correctly.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_paginates_invoice_groups_at_15_per_page(): void
     {
         /**
@@ -106,6 +115,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form displays create form with default values when no ID provided.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_create_form_with_default_values(): void
     {
         /**
@@ -140,6 +150,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form displays edit form with existing record when ID provided.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_edit_form_with_existing_record(): void
     {
         /* Arrange */
@@ -155,6 +166,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form returns 404 when trying to edit non-existent record.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_404_when_editing_non_existent_invoice_group(): void
     {
         /* Arrange */
@@ -169,6 +181,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form redirects to index when cancel button is clicked.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_redirects_to_index_when_cancel_button_clicked(): void
     {
         /* Arrange */
@@ -183,6 +196,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form creates new invoice group with valid data.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_new_invoice_group_with_valid_data(): void
     {
         /**
@@ -208,6 +222,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form updates existing invoice group with valid data.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_updates_existing_invoice_group_with_valid_data(): void
     {
         /**
@@ -234,6 +249,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form validates required fields.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_validates_required_fields_on_submit(): void
     {
         /* Arrange */
@@ -252,6 +268,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form validates field types and constraints.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_validates_field_types_and_constraints(): void
     {
         /* Arrange */
@@ -268,6 +285,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test delete removes invoice group successfully.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_deletes_invoice_group_successfully(): void
     {
         /* Arrange */
@@ -299,6 +317,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test delete returns 404 for non-existent invoice group.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_404_when_deleting_non_existent_invoice_group(): void
     {
         /* Arrange */
@@ -316,6 +335,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
      * Note: In production, you might want to prevent deletion of groups
      * that have associated invoices, or cascade the deletion
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_deletion_of_invoice_group_with_associated_invoices(): void
     {
         /* Arrange */
@@ -330,6 +350,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form displays success message after creating invoice group.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_success_message_after_creating_invoice_group(): void
     {
         /* Arrange & Act */
@@ -343,6 +364,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test form displays success message after updating invoice group.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_success_message_after_updating_invoice_group(): void
     {
         /* Arrange & Act */
@@ -356,6 +378,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test delete displays success message after deleting invoice group.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_displays_success_message_after_deleting_invoice_group(): void
     {
         /* Arrange & Act */
@@ -369,6 +392,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test invoice numbering format supports year variable.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_supports_year_variable_in_identifier_format(): void
     {
         /* Arrange */
@@ -385,6 +409,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     /**
      * Test invoice numbering format supports ID with left padding.
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_supports_id_with_left_padding_in_identifier_format(): void
     {
         /* Arrange */
