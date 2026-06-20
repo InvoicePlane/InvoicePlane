@@ -27,6 +27,10 @@ class Setup extends MX_Controller
             show_error('The setup is disabled.', 403);
         }
 
+        if (env_bool('SETUP_COMPLETED', false)) {
+            show_error('The setup has already been completed. To re-run the setup, set SETUP_COMPLETED=false in ipconfig.php.', 403);
+        }
+
         parent::__construct();
 
         $this->load->library('session');
@@ -484,6 +488,33 @@ class Setup extends MX_Controller
      *
      * @return array Array with 'valid' (bool) and validated parameters
      */
+    /**
+     * Get user-friendly error message for database configuration validation error.
+     *
+     * @param string $error_code The internal error code from validate_db_config_parameter()
+     * @param string $param_type The parameter type (hostname, username, etc.)
+     *
+     * @return string User-friendly error message
+     */
+    private function get_validation_error_message(string $error_code, string $param_type): string
+    {
+        // Map internal error codes to user-friendly messages
+        // This prevents exposing internal validation logic to potential attackers
+        $messages = [
+            'empty_value'               => 'This field is required.',
+            'newline_detected'          => 'Invalid format. Please check your input.',
+            'null_byte'                 => 'Invalid format. Please check your input.',
+            'invalid_hostname_format'   => 'Invalid hostname format. Please use a valid hostname or IP address.',
+            'invalid_username_format'   => 'Invalid username format. Only alphanumeric characters, dots, hyphens, underscores, and @ are allowed.',
+            'invalid_password_format'   => 'Invalid password format. Please check your password.',
+            'invalid_database_format'   => 'Invalid database name format. Only alphanumeric characters, underscores, and hyphens are allowed.',
+            'invalid_port'              => 'Invalid port number. Please enter a number between 1 and 65535.',
+        ];
+
+        // Return the user-friendly message or a generic error
+        return $messages[$error_code] ?? 'Invalid ' . $param_type . ' format.';
+    }
+
     private function validate_database_config(string $hostname, string $username, string $password, string $database, $port): array
     {
         // Validate hostname
