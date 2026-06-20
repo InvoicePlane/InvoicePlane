@@ -23,7 +23,8 @@ $session = is_array($request['session'] ?? null) ? $request['session'] : [];
 
 if ($session !== []) {
     if (session_status() === PHP_SESSION_NONE) {
-        session_id('ci_test_' . mb_substr(md5((string) json_encode($session)), 0, 12));
+        session_save_path(sys_get_temp_dir());
+        session_id('citest' . mb_substr(md5((string) json_encode($session)), 0, 16));
         session_start();
     }
 
