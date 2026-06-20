@@ -131,7 +131,7 @@ function validate_redirect_url($url, $default_url = '')
     // Check if it's a relative URL (starts with /)
     if (str_starts_with($url, '/')) {
         // Relative URL - prepend base_url
-        return base_url(ltrim($url, '/'));
+        return base_url(mb_ltrim($url, '/'));
     }
 
     // Check if it's an absolute URL on same domain

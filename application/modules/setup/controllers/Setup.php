@@ -165,10 +165,10 @@ class Setup extends MX_Controller
                         ];
                         $this->layout->set('validation_error', $check_database['message']);
                     } else {
-                        $hostname = sanitize_database_config_value(trim((string) $validation_result['hostname']));
-                        $username = sanitize_database_config_value(trim((string) $validation_result['username']));
+                        $hostname = sanitize_database_config_value(mb_trim((string) $validation_result['hostname']));
+                        $username = sanitize_database_config_value(mb_trim((string) $validation_result['username']));
                         $password = sanitize_database_config_value($validation_result['password']);
-                        $database = sanitize_database_config_value(trim((string) $validation_result['database']));
+                        $database = sanitize_database_config_value(mb_trim((string) $validation_result['database']));
 
                         $submitted_configuration = [
                             'hostname' => $hostname,

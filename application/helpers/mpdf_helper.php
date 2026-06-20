@@ -74,7 +74,7 @@ function sanitize_pdf_footer_content(?string $footer): string
     libxml_clear_errors();
     libxml_use_internal_errors($previousInternalErrors);
 
-    $trimmed = trim($sanitized);
+    $trimmed = mb_trim($sanitized);
 
     return $trimmed === '' ? '' : $trimmed;
 }
