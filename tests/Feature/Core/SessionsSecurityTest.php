@@ -36,8 +36,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_a_referer_from_the_same_base_url(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = $this->security->getSafeReferer('https://invoiceplane.example.com/sessions/login');
 
+        /* Assert */
         self::assertSame(
             'https://invoiceplane.example.com/sessions/login',
             $result,
@@ -48,8 +52,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_referer_from_an_external_domain(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = $this->security->getSafeReferer('https://evil.example.com/steal');
 
+        /* Assert */
         self::assertSame(
             'sessions/passwordreset',
             $result,
@@ -60,8 +68,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_the_safe_default_when_referer_is_empty(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = $this->security->getSafeReferer('');
 
+        /* Assert */
         self::assertSame(
             'sessions/passwordreset',
             $result,
@@ -72,8 +84,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_referer_that_starts_with_a_double_slash(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = $this->security->getSafeReferer('//evil.example.com/steal');
 
+        /* Assert */
         self::assertSame(
             'sessions/passwordreset',
             $result,
@@ -84,6 +100,11 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_accepts_an_alphanumeric_password_reset_token(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertTrue(
             $this->security->isValidTokenFormat('abc123XYZ'),
             'A purely alphanumeric token must pass format validation.'
@@ -93,8 +114,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_accepts_a_hex_token_of_typical_length(): void
     {
+        /* Arrange */
+
+        /* Act */
         $token = bin2hex(random_bytes(16));
 
+        /* Assert */
         self::assertTrue(
             $this->security->isValidTokenFormat($token),
             'A 32-character hex token (typical reset token) must pass format validation.'
@@ -104,6 +129,11 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_token_containing_a_path_traversal_sequence(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertFalse(
             $this->security->isValidTokenFormat('../etc/passwd'),
             'A token containing [../] must fail format validation.'
@@ -113,6 +143,11 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_token_containing_a_slash(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertFalse(
             $this->security->isValidTokenFormat('valid/invalid'),
             'A token containing a forward slash must fail format validation.'
@@ -122,6 +157,11 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_token_containing_special_characters(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertFalse(
             $this->security->isValidTokenFormat('token<script>'),
             'A token containing special characters must fail format validation.'
@@ -131,8 +171,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_considers_an_expired_token_as_expired(): void
     {
+        /* Arrange */
+
+        /* Act */
         $expiry = new DateTime('-1 minute', new DateTimeZone('UTC'));
 
+        /* Assert */
         self::assertTrue(
             $this->security->isTokenExpired($expiry->format('Y-m-d H:i:s')),
             'A token with an expiry timestamp in the past must be considered expired.'
@@ -142,8 +186,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_considers_a_future_token_as_not_expired(): void
     {
+        /* Arrange */
+
+        /* Act */
         $expiry = new DateTime('+15 minutes', new DateTimeZone('UTC'));
 
+        /* Assert */
         self::assertFalse(
             $this->security->isTokenExpired($expiry->format('Y-m-d H:i:s')),
             'A token with an expiry timestamp in the future must NOT be considered expired.'
@@ -153,8 +201,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_enforces_the_max_expiry_minutes_cap_of_1440(): void
     {
+        /* Arrange */
+
+        /* Act */
         $requested = $this->security->clampExpiryMinutes(9999);
 
+        /* Assert */
         self::assertSame(
             15,
             $requested,
@@ -165,8 +217,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_a_valid_expiry_minutes_value_within_range(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = $this->security->clampExpiryMinutes(30);
 
+        /* Assert */
         self::assertSame(
             30,
             $result,
@@ -177,8 +233,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_zero_expiry_minutes_and_falls_back_to_default(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = $this->security->clampExpiryMinutes(0);
 
+        /* Assert */
         self::assertSame(
             15,
             $result,
@@ -189,6 +249,11 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_detects_curl_as_a_bot_user_agent(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertTrue(
             $this->security->isBotUserAgent('curl/7.85.0'),
             'curl must be identified as a bot/automated tool.'
@@ -198,6 +263,11 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_detects_python_requests_as_a_bot_user_agent(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertTrue(
             $this->security->isBotUserAgent('python-requests/2.28.0'),
             'python-requests must be identified as a bot.'
@@ -207,6 +277,11 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_detects_an_empty_user_agent_as_a_bot(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertTrue(
             $this->security->isBotUserAgent(''),
             'An empty user-agent must be treated as a bot/automated request.'
@@ -216,8 +291,12 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_flag_a_normal_browser_user_agent_as_a_bot(): void
     {
+        /* Arrange */
+
+        /* Act */
         $browser = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36';
 
+        /* Assert */
         self::assertFalse(
             $this->security->isBotUserAgent($browser),
             'A standard browser user-agent must NOT be flagged as a bot.'
@@ -227,6 +306,7 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_removes_attempts_outside_the_rate_limit_time_window(): void
     {
+        /* Arrange */
         $now        = time();
         $windowSecs = 3600;
 
@@ -238,8 +318,10 @@ class SessionsSecurityTest extends AbstractTestCase
             $now - 30,
         ];
 
+        /* Act */
         $filtered = $this->security->filterAttemptsWithinWindow($attempts, $windowSecs);
 
+        /* Assert */
         self::assertCount(
             3,
             $filtered,
@@ -250,11 +332,14 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_considers_the_ip_rate_limited_when_attempt_count_meets_the_threshold(): void
     {
+        /* Arrange */
         $now      = time();
         $attempts = array_fill(0, 5, $now - 10);
 
+        /* Act */
         $isLimited = $this->security->isRateLimited(attempts: $attempts, maxAttempts: 5, windowSeconds: 3600);
 
+        /* Assert */
         self::assertTrue(
             $isLimited,
             'Exactly 5 attempts against a max of 5 must trigger the rate limit.'
@@ -264,11 +349,14 @@ class SessionsSecurityTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_rate_limit_when_attempt_count_is_below_the_threshold(): void
     {
+        /* Arrange */
         $now      = time();
         $attempts = array_fill(0, 4, $now - 10);
 
+        /* Act */
         $isLimited = $this->security->isRateLimited(attempts: $attempts, maxAttempts: 5, windowSeconds: 3600);
 
+        /* Assert */
         self::assertFalse(
             $isLimited,
             '4 attempts against a max of 5 must NOT trigger the rate limit.'

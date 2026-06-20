@@ -69,8 +69,9 @@ class IntegrationClientRegistryTest extends TestCase
         /* Arrange */
         $providers = $this->registry()->all();
 
-        /* Act + Assert */
+        /* Act */
         foreach ($providers as $code => $className) {
+        /* Assert */
             $this->assertTrue(
                 is_subclass_of($className, IntegrationClientInterface::class),
                 "Provider '{$code}' ({$className}) must implement IntegrationClientInterface"
@@ -125,8 +126,9 @@ class IntegrationClientRegistryTest extends TestCase
         /* Arrange */
         $providers = $this->registry()->all();
 
-        /* Act + Assert */
+        /* Act */
         foreach ($providers as $code => $className) {
+        /* Assert */
             $this->assertNotEmpty(
                 $className::clientCode(),
                 "Provider class {$className} must return a non-empty clientCode()"
@@ -140,8 +142,9 @@ class IntegrationClientRegistryTest extends TestCase
         /* Arrange */
         $providers = $this->registry()->all();
 
-        /* Act + Assert */
+        /* Act */
         foreach ($providers as $code => $className) {
+        /* Assert */
             $this->assertNotEmpty(
                 $className::clientName(),
                 "Provider class {$className} must return a non-empty clientName()"

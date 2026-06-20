@@ -29,6 +29,11 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_detects_a_fully_qualified_class_name_as_namespaced(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertTrue(
             $this->loader->isNamespaced('App\\Services\\Clients\\ClientsService'),
             'A class name containing a backslash must be detected as namespaced.'
@@ -38,6 +43,11 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_detects_a_plain_ci_class_name_as_not_namespaced(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertFalse(
             $this->loader->isNamespaced('Mdl_invoices'),
             'A legacy CI class name without a backslash must NOT be detected as namespaced.'
@@ -47,6 +57,11 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_detects_a_root_namespace_class_as_namespaced(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertTrue(
             $this->loader->isNamespaced('Modules\\Invoices\\Mdl_invoices'),
             'A Modules\\ prefixed FQCN must be detected as namespaced.'
@@ -56,6 +71,11 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_false_for_an_empty_string_class_name(): void
     {
+        /* Arrange */
+
+        /* Act */
+        
+        /* Assert */
         self::assertFalse(
             $this->loader->isNamespaced(''),
             'An empty string must not be identified as a namespaced class.'
@@ -65,8 +85,12 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_derives_the_short_class_name_from_a_fqcn_as_the_default_alias(): void
     {
+        /* Arrange */
+
+        /* Act */
         $alias = $this->loader->deriveAlias('App\\Services\\Clients\\ClientsService');
 
+        /* Assert */
         self::assertSame(
             'clientsService',
             $alias,
@@ -77,8 +101,12 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_derives_the_short_class_name_for_a_single_segment_namespace(): void
     {
+        /* Arrange */
+
+        /* Act */
         $alias = $this->loader->deriveAlias('App\\MyLibrary');
 
+        /* Assert */
         self::assertSame(
             'myLibrary',
             $alias,
@@ -89,8 +117,12 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_uses_the_explicit_object_name_over_the_derived_alias_when_provided(): void
     {
+        /* Arrange */
+
+        /* Act */
         $alias = $this->loader->deriveAlias('App\\Services\\Clients\\ClientsService', 'clients');
 
+        /* Assert */
         self::assertSame(
             'clients',
             $alias,
@@ -101,11 +133,14 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_binds_a_namespaced_class_instance_to_the_ci_superobject_under_the_derived_alias(): void
     {
+        /* Arrange */
         $stub   = new stdClass();
         $target = new FakeCiSuperObject();
 
+        /* Act */
         $this->loader->bindToSuperObject($target, 'App\\Fakes\\FakeService', new FakeService(), null);
 
+        /* Assert */
         self::assertTrue(
             isset($target->fakeService),
             'The loader must bind the instance to the CI super-object using the derived alias [fakeService].'
@@ -121,12 +156,15 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_rebind_a_class_that_is_already_present_on_the_superobject(): void
     {
+        /* Arrange */
         $target              = new FakeCiSuperObject();
         $originalInstance    = new FakeService();
         $target->fakeService = $originalInstance;
 
+        /* Act */
         $this->loader->bindToSuperObject($target, 'App\\Fakes\\FakeService', new FakeService(), null);
 
+        /* Assert */
         self::assertSame(
             $originalInstance,
             $target->fakeService,
@@ -137,10 +175,13 @@ class MY_LoaderTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_uses_a_custom_object_name_when_binding_to_the_superobject(): void
     {
+        /* Arrange */
         $target = new FakeCiSuperObject();
 
+        /* Act */
         $this->loader->bindToSuperObject($target, 'App\\Fakes\\FakeService', new FakeService(), 'myAlias');
 
+        /* Assert */
         self::assertTrue(
             isset($target->myAlias),
             'When a custom object_name is given, the instance must be bound under that name.'

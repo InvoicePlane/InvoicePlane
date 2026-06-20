@@ -63,8 +63,12 @@ class ModuleRoutingTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_resolves_the_module_index_route_and_returns_200_or_redirect(string $uri): void
     {
+        /* Arrange */
+
+        /* Act */
         $response = $this->get($uri);
 
+        /* Assert */
         self::assertThat(
             $response->statusCode(),
             self::logicalOr(
@@ -86,8 +90,12 @@ class ModuleRoutingTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_expose_php_errors_on_authenticated_module_index(string $uri): void
     {
+        /* Arrange */
+
+        /* Act */
         $response = $this->get($uri);
 
+        /* Assert */
         $this->assertResponseHasNoPhpErrors($response);
     }
 
@@ -95,14 +103,17 @@ class ModuleRoutingTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_a_non_trivial_body_for_every_authenticated_module_index(string $uri): void
     {
+        /* Arrange */
         $response = $this->get($uri);
 
         if ($response->isRedirect()) {
+        /* Act */
             self::addToAssertionCount(1);
 
             return;
         }
 
+        /* Assert */
         self::assertGreaterThan(
             200,
             $response->bodyLength(),
