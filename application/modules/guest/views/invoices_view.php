@@ -3,7 +3,7 @@ $global_discount = $invoice->invoice_discount_percent > 0 ? format_amount($invoi
 if ($invoice_tax_rates) {
     $global_taxes = [];
     foreach ($invoice_tax_rates as $invoice_tax_rate) {
-        $global_taxes[] = $invoice_tax_rate->invoice_tax_rate_name . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%): '
+        $global_taxes[] = htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%): '
                           . format_currency($invoice_tax_rate->invoice_tax_rate_amount);
     }
     $global_taxes = implode('<br>', $global_taxes);

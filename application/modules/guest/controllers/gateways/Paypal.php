@@ -4,6 +4,10 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+if (! enum_exists('MerchantResponseDriver', false)) {
+    require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
+}
+
 /*
  * InvoicePlane
  *
@@ -20,6 +24,7 @@ class Paypal extends Base_Controller
     {
         parent::__construct();
         $this->load->helper('file_security');
+        $this->load->model('integrations/merchant_responses_model');
         $this->_create_client();
     }
 
@@ -41,7 +46,13 @@ class Paypal extends Base_Controller
         // Check if the invoice exists and is billable
         $this->load->model('invoices/mdl_invoices');
 
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+
+        // Security: Verify the invoice exists and is guest-visible
+        if ( ! $invoice) {
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted order creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            show_404();
+        }
 
         // Check if the invoice is payable
         if ($invoice->invoice_balance <= 0) {
@@ -147,6 +158,13 @@ class Paypal extends Base_Controller
                     throw new Exception('Missing required PayPal data');
                 }
 
+                // Security: Validate that the invoice is guest-visible before processing payment
+                $verified_invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                if ( ! $verified_invoice) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted payment capture for non-public invoice: ' . sanitize_for_logging($invoice_id));
+                    throw new Exception('Invoice not found or not accessible');
+                }
+
                 $capture_id = (string) $capture_id; // Ensure string type
 
                 // Validate and sanitize the capture_id
@@ -168,14 +186,27 @@ class Paypal extends Base_Controller
                     // Duplicate payment attempt detected
                     log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. PayPal capture ID: ' . sanitize_for_logging($capture_id) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
 
-                    $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
-                    $this->session->set_flashdata('alert_info', trans('online_payment_already_processed'));
-                    $this->session->keep_flashdata('alert_info');
+                    $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                    
+                    // Security: Verify the invoice exists and is guest-visible
+                    if ( ! $invoice) {
+                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invoice no longer guest-visible during duplicate payment check: ' . sanitize_for_logging($invoice_id));
+                        $this->session->set_flashdata('alert_error', trans('invoice_not_found'));
+                        $this->session->keep_flashdata('alert_error');
+                    } else {
+                        $this->session->set_flashdata('alert_info', trans('online_payment_already_processed'));
+                        $this->session->keep_flashdata('alert_info');
+                    }
                 } else {
                     // Check if invoice is already fully paid
-                    $invoice = $this->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+                    $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
-                    if ($invoice->invoice_balance <= 0) {
+                    // Security: Verify the invoice exists and is guest-visible
+                    if ( ! $invoice) {
+                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invoice no longer guest-visible during payment capture: ' . sanitize_for_logging($invoice_id));
+                        $this->session->set_flashdata('alert_error', trans('invoice_not_found'));
+                        $this->session->keep_flashdata('alert_error');
+                    } elseif ($invoice->invoice_balance <= 0) {
                         log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
                         $this->session->set_flashdata('alert_info', trans('invoice_already_paid'));
                         $this->session->keep_flashdata('alert_info');
@@ -208,14 +239,13 @@ class Paypal extends Base_Controller
                  *
                  * merchant_response is now the actual capture status.
                  */
-                $this->db->insert('ip_merchant_responses', [
-                    'invoice_id'                   => $invoice_id,
-                    'merchant_response_successful' => true,
-                    'merchant_response_date'       => date('Y-m-d'),
-                    'merchant_response_driver'     => 'paypal',
-                    'merchant_response'            => $capture_status,
-                    'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
-                ]);
+                $this->merchant_responses_model->create_payment_response(
+                    invoiceId:  $invoice_id,
+                    driver:     MerchantResponseDriver::PayPal,
+                    message:    $capture_status,
+                    reference:  'Resource ID:' . $paypal_object->id,
+                    successful: true,
+                );
             } else {
                 // Payment failed (DECLINED or any other non-success status)
                 $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
@@ -230,14 +260,13 @@ class Paypal extends Base_Controller
                 $processor_response_code = $paypal_object->purchase_units[0]->payments->captures[0]->processor_response->response_code ?? 'Unknown error';
 
                 // Record the failed transaction in the logs along with processor response code.
-                $this->db->insert('ip_merchant_responses', [
-                    'invoice_id'                   => $invoice_id,
-                    'merchant_response_successful' => false,
-                    'merchant_response_date'       => date('Y-m-d'),
-                    'merchant_response_driver'     => 'paypal',
-                    'merchant_response'            => $capture_status . ': ' . $processor_response_code,
-                    'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
-                ]);
+                $this->merchant_responses_model->create_payment_response(
+                    invoiceId:  $invoice_id,
+                    driver:     MerchantResponseDriver::PayPal,
+                    message:    $capture_status . ': ' . $processor_response_code,
+                    reference:  'Resource ID:' . $paypal_object->id,
+                    successful: false,
+                );
 
                 //set error message to be flashed
                 $this->session->set_flashdata(
@@ -253,14 +282,13 @@ class Paypal extends Base_Controller
             $order_details = json_decode($this->lib_paypal->showOrderDetails($order_id));
 
             //record the failed transaction in the logs
-            $this->db->insert('ip_merchant_responses', [
-                'invoice_id'                   => $order_details->purchase_units[0]->payments->captures[0]->invoice_id,
-                'merchant_response_successful' => false,
-                'merchant_response_date'       => date('Y-m-d'),
-                'merchant_response_driver'     => 'paypal',
-                'merchant_response'            => 'name: ' . $response_error->name . '; details: ' . $response_error->details[0]->description,
-                'merchant_response_reference'  => 'Resource ID:' . $order_id,
-            ]);
+            $this->merchant_responses_model->create_payment_response(
+                invoiceId:  $order_details->purchase_units[0]->payments->captures[0]->invoice_id,
+                driver:     MerchantResponseDriver::PayPal,
+                message:    'name: ' . $response_error->name . '; details: ' . $response_error->details[0]->description,
+                reference:  'Resource ID:' . $order_id,
+                successful: false,
+            );
 
             //set error message to be flashed
             $this->session->set_flashdata(
