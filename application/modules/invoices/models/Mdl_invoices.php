@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Invoices extends Response_Model
 {
+    use Password_Encryption_Trait;
+
     public $table = 'ip_invoices';
 
     public $primary_key = 'ip_invoices.invoice_id';
@@ -71,6 +73,29 @@ class Mdl_Invoices extends Response_Model
             DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
             (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date IS NOT NULL) WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
             ip_invoices.*", false);
+    }
+
+    public function save($id = null, $db_array = null)
+    {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('invoice_password', $db_array)) {
+            $db_array['invoice_password'] = $this->encrypt_password($db_array['invoice_password']);
+        }
+
+        return parent::save($id, $db_array);
+    }
+
+    public function encrypt_invoice_password($password): ?string
+    {
+        return $this->encrypt_password($password);
+    }
+
+    public function decrypt_invoice_password($password): string
+    {
+        return $this->decrypt_password($password);
     }
 
     public function default_order_by()
@@ -165,6 +190,14 @@ class Mdl_Invoices extends Response_Model
      */
     public function create($db_array = null, $include_invoice_tax_rates = true)
     {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('invoice_password', $db_array)) {
+            $db_array['invoice_password'] = $this->encrypt_password($db_array['invoice_password']);
+        }
+
         $invoice_id = parent::save(null, $db_array);
 
         $inv           = $this->where('ip_invoices.invoice_id', $invoice_id)->get()->row();

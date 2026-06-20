@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Quotes extends Response_Model
 {
+    use Password_Encryption_Trait;
+
     public $table = 'ip_quotes';
 
     public $primary_key = 'ip_quotes.quote_id';
@@ -74,6 +76,29 @@ class Mdl_Quotes extends Response_Model
             IFnull(ip_quote_amounts.quote_total, '0.00') AS quote_total,
             ip_invoices.invoice_number,
             ip_quotes.*", false);
+    }
+
+    public function save($id = null, $db_array = null)
+    {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('quote_password', $db_array)) {
+            $db_array['quote_password'] = $this->encrypt_password($db_array['quote_password']);
+        }
+
+        return parent::save($id, $db_array);
+    }
+
+    public function encrypt_quote_password($password): ?string
+    {
+        return $this->encrypt_password($password);
+    }
+
+    public function decrypt_quote_password($password): string
+    {
+        return $this->decrypt_password($password);
     }
 
     public function default_order_by()
@@ -155,6 +180,14 @@ class Mdl_Quotes extends Response_Model
      */
     public function create($db_array = null)
     {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('quote_password', $db_array)) {
+            $db_array['quote_password'] = $this->encrypt_password($db_array['quote_password']);
+        }
+
         $quote_id = parent::save(null, $db_array);
 
         // Create an quote amount record
