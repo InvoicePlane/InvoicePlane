@@ -80,7 +80,9 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
         preg_match('/__CI_TEST_RESULT_START__(.*?)__CI_TEST_RESULT_END__/s', $stdout ?: '', $matches);
 
-        if ($exitCode !== 0 || ! isset($matches[1])) {
+        // A non-zero exit is acceptable when CI3 itself called exit() (e.g. show_404 uses exit(4)),
+        // as long as the shutdown handler still emitted a result marker.
+        if (! isset($matches[1])) {
             throw new RuntimeException(
                 "CI request runner failed for [{$payload['method']}] {$payload['uri']}" . PHP_EOL
                 . 'Exit code: ' . $exitCode . PHP_EOL
