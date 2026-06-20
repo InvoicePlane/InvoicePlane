@@ -139,7 +139,7 @@ trait InteractsWithDatabase
         ], $overrides));
     }
 
-    protected function seedInvoice(int $clientId, array $overrides = []): int
+    protected function seedInvoice(int $clientId, array $overrides = [], array $amountOverrides = []): int
     {
         $invoiceId = $this->databaseInsert('ip_invoices', array_merge([
             'user_id'              => 1,
@@ -159,7 +159,7 @@ trait InteractsWithDatabase
         ], $overrides));
 
         // ip_invoice_amounts is required for INNER JOIN queries on this invoice
-        $this->databaseInsert('ip_invoice_amounts', [
+        $this->databaseInsert('ip_invoice_amounts', array_merge([
             'invoice_id'             => $invoiceId,
             'invoice_item_subtotal'  => '0.00',
             'invoice_item_tax_total' => '0.00',
@@ -168,7 +168,7 @@ trait InteractsWithDatabase
             'invoice_paid'           => '0.00',
             'invoice_balance'        => '0.00',
             'invoice_sign'           => 1,
-        ]);
+        ], array_merge(['invoice_id' => $invoiceId], $amountOverrides)));
 
         return $invoiceId;
     }

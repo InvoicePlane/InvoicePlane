@@ -42,6 +42,16 @@ class Merchant_clients_model extends CI_Model
         return json_decode($client['settings_json'] ?? '{}', true) ?: [];
     }
 
+    public function disable_all_except(int $id): void
+    {
+        $this->db
+            ->where('id !=', $id)
+            ->update('ip_merchant_clients', [
+                'enabled'    => 0,
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+    }
+
     public function get_default_enabled()
     {
         return $this->db

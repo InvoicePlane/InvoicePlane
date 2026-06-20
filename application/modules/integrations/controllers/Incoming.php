@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,16 +12,12 @@ class Incoming extends Admin_Controller
 
         $this->load->model('integrations/Merchant_clients_model');
         $this->load->model('integrations/Merchant_responses_model');
-
-        require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
-        require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
-        require_once APPPATH . 'modules/integrations/libraries/IntegrationClient.php';
     }
 
     public function index()
     {
         $this->layout->set([
-            'clients' => $this->Merchant_clients_model->get_enabled_clients(),
+            'clients'  => $this->Merchant_clients_model->get_enabled_clients(),
             'incoming' => $this->Merchant_responses_model->get_incoming(),
         ]);
 
@@ -31,18 +27,19 @@ class Incoming extends Admin_Controller
 
     public function sync($merchant_client_id)
     {
-        $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchant_client_id);
+        $merchantClientId = (int) $merchant_client_id;
+        $merchantClient   = $this->Merchant_clients_model->get_by_id($merchantClientId);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
         }
 
+        $driver   = MerchantResponseDriver::from($merchantClient['merchant_type']);
         $settings = $this->Merchant_clients_model->get_settings($merchantClient);
 
         $registry = new IntegrationClientRegistry();
         $provider = $registry->getClient($merchantClient['merchant_type']);
-
-        $client = new IntegrationClient($provider, $settings);
+        $client   = new IntegrationClient($provider, $settings);
 
         $response = $client->receiveInvoices();
 
@@ -59,12 +56,13 @@ class Incoming extends Admin_Controller
         foreach ($items as $item) {
             if (is_array($item)) {
                 $this->Merchant_responses_model->create_inbound_item(
-                     (int) $merchant_client_id,
-                     $item
+                    $merchantClientId,
+                    $item,
+                    $driver,
                 );
             }
         }
+
         redirect('integrations/incoming');
     }
 }
-

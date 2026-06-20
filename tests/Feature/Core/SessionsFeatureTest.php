@@ -75,14 +75,10 @@ class SessionsFeatureTest extends AbstractTestCase
     public function it_redirects_to_login_when_post_credentials_are_missing(): void
     {
         /* Arrange */
-        $response = $this->post('/sessions/login', [
-            'btn_login' => '1',
-            'email'     => '',
-            'password'  => '',
-        ]);
-        /* Act */
+        $payload = ['btn_login' => '1', 'email' => '', 'password' => ''];
 
-        
+        /* Act */
+        $response = $this->post('/sessions/login', $payload);
 
         /* Assert */
         self::assertTrue(
@@ -95,14 +91,14 @@ class SessionsFeatureTest extends AbstractTestCase
     public function it_redirects_to_login_with_wrong_credentials(): void
     {
         /* Arrange */
-        $response = $this->post('/sessions/login', [
+        $payload = [
             'btn_login' => '1',
             'email'     => 'nobody@nonexistent.example',
             'password'  => 'wrongpassword',
-        ]);
-        /* Act */
+        ];
 
-        
+        /* Act */
+        $response = $this->post('/sessions/login', $payload);
 
         /* Assert */
         self::assertTrue(
@@ -134,11 +130,10 @@ class SessionsFeatureTest extends AbstractTestCase
     public function it_redirects_to_login_when_a_nonexistent_email_is_submitted_to_password_reset(): void
     {
         /* Arrange */
-        $response = $this->post('/sessions/passwordreset', [
-            'btn_reset' => '1',
+        $payload = ['btn_reset' => '1', 'email' => 'nobody_exists_' . time() . '@nonexistent.example'];
+
         /* Act */
-            'email'     => 'nobody_exists_' . time() . '@nonexistent.example',
-        ]);
+        $response = $this->post('/sessions/passwordreset', $payload);
 
         /* Assert */
         self::assertTrue(
@@ -151,15 +146,16 @@ class SessionsFeatureTest extends AbstractTestCase
     public function it_does_not_reveal_whether_the_email_exists_in_the_reset_response(): void
     {
         /* Arrange */
+        $ts = time();
+
+        /* Act */
         $responseReal = $this->post('/sessions/passwordreset', [
             'btn_reset' => '1',
-            'email'     => 'nobody_real_' . time() . '@nonexistent.example',
+            'email'     => 'nobody_real_' . $ts . '@nonexistent.example',
         ]);
-
         $responseFake = $this->post('/sessions/passwordreset', [
             'btn_reset' => '1',
-        /* Act */
-            'email'     => 'nobody_fake_' . time() . '@nonexistent.example',
+            'email'     => 'nobody_fake_' . $ts . '@nonexistent.example',
         ]);
 
         /* Assert */
