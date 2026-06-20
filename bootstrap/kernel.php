@@ -39,3 +39,5 @@ if ( ! function_exists('env_bool')) {
             : filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 }
+
+defined('IP_DEBUG') || define('IP_DEBUG', env_bool('ENABLE_DEBUG', false));
