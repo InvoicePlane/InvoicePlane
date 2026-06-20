@@ -17,7 +17,7 @@ if (file_exists($base . '/ipconfig.php')) {
 
 defined('ENVIRONMENT') || define('ENVIRONMENT', 'testing');
 
-defined('FCPATH') || define('FCPATH', $base . '/');
+defined('FCPATH') || define('FCPATH', $base . '/public/');
 defined('APPPATH') || define('APPPATH', $base . '/application/');
 defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter/system/');
 defined('VIEWPATH') || define('VIEWPATH', APPPATH . 'views/');
@@ -39,3 +39,5 @@ if ( ! function_exists('env_bool')) {
             : filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 }
+
+defined('IP_DEBUG') || define('IP_DEBUG', env_bool('ENABLE_DEBUG', false));
