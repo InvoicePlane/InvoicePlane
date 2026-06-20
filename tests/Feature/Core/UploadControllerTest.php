@@ -2,45 +2,74 @@
 
 namespace Tests\Feature\Core;
 
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
-use Upload;
+use Tests\AbstractTestCase;
 
 /**
  * Core AjaxController Feature Tests.
  *
  * Tests AJAX requests for settings operations.
  */
-#[CoversClass(Upload::class)]
-#[CoversClass(Tests\Feature\Core\UploadController::class)]
-
 class UploadControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test index displays upload page.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_displays_upload_page(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('upload.index'));
+        $response = $this->get('/import');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('core::upload_index');
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /import] returned unexpected status [%d].', $response->statusCode())
+        );
+    }
+
+    #[Test]
+    public function it_does_not_expose_php_errors(): void
+    {
+        /* Arrange */
+        /* (setup done in setUp) */
+
+        /* Act */
+        $response = $this->get('/import');
+
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/import');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/import] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

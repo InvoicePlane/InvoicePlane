@@ -2,69 +2,72 @@
 
 namespace Tests\Unit\Products;
 
-use Mdl_Families;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Mdl_Families::class)]
+/**
+ * Smoke test for the FamiliesServiceTest module via CI3 HTTP harness.
+ */
 class FamiliesServiceTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = app(FamiliesService::class);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_returns_a_builder_from_default_select(): void
-    {
-        $builder = $this->service->defaultSelect();
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
-    }
-
-    #[Test]
-    public function it_returns_a_builder_from_default_order_by(): void
-    {
-        $builder = $this->service->defaultOrderBy();
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
-    }
-
-    #[Test]
-    public function it_requires_family_name_in_validation_rules(): void
-    {
-        $rules = $this->service->validationRules();
-        $this->assertArrayHasKey('family_name', $rules);
-        $this->assertEquals('required', $rules['family_name']['rules']);
-    }
-
-    #[Test]
-    public function it_returns_all_families_from_get_all(): void
-    {
-        $this->seedModelMany('Family', 5);
-
-        $results = $this->service->getAll();
-        $this->assertCount(5, $results);
-    }
-
-    #[Test]
-    public function it_retrieves_all_families(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        Family::create(['family_name' => 'Family 1']);
-        Family::create(['family_name' => 'Family 2']);
-        Family::create(['family_name' => 'Family 3']);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->defaultSelect()->get();
+        $response = $this->get('/families');
 
         /* Assert */
-        $this->assertCount(3, $result);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /families] returned unexpected status [%d].', $response->statusCode())
+        );
+    }
+
+    #[Test]
+    public function it_does_not_expose_php_errors(): void
+    {
+        /* Arrange */
+        /* (authenticated admin via setUp) */
+
+        /* Act */
+        $response = $this->get('/families');
+
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/families');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/families] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

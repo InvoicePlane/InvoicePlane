@@ -2,62 +2,58 @@
 
 namespace Tests\Feature\Core;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Setup;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
 /**
  * Core AjaxController Feature Tests.
  *
  * Tests AJAX requests for settings operations.
  */
-#[CoversClass(Setup::class)]
-#[CoversClass(Tests\Feature\Core\SetupController::class)]
-
 class SetupControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        // public route — no auth needed
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test index displays setup wizard page.
-     */
+    #[Test]
     #[Group('smoke')]
-    #[Test]
-    public function it_displays_setup_wizard_page(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('setup.index'));
+        $response = $this->get('/sessions/login');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('core::setup_index');
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /sessions/login] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
-    /**
-     * Test setup wizard is accessible without authentication.
-     */
     #[Test]
-    public function it_is_accessible_without_authentication(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        // No authentication for initial setup
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('setup.index'));
+        $response = $this->get('/sessions/login');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('core::setup_index');
+        $this->assertResponseHasNoPhpErrors($response);
     }
 }

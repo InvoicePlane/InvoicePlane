@@ -2,170 +2,69 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Tests\Feature\Core\TaxRatesController::class)]
 class TaxRatesControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
     #[Test]
-    public function it_displays_tax_rates_list(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
-        $this->actingAs($user);
-
-        /* Arrange */
-        $taxRate = $this->seedModel('TaxRate');
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('tax_rates.index'));
+        $response = $this->get('/tax_rates');
 
         /* Assert */
-        $response->assertStatus(200);
-        $response->assertViewIs('tax_rates.index');
-        $response->assertSee($taxRate->tax_rate_name);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /tax_rates] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_creates_new_tax_rate(): void
-    {
-        $taxRateData = [
-            'tax_rate_name'    => 'VAT',
-            'tax_rate_percent' => '21.00',
-        ];
-
-        $response = $this->post(route('tax_rates.form'), $taxRateData);
-
-        $response->assertRedirect(route('tax_rates.index'));
-        $this->assertDatabaseHas('ip_tax_rates', [
-            'tax_rate_name'    => 'VAT',
-            'tax_rate_percent' => 21.00,
-        ]);
-    }
-
-    #[Test]
-    public function it_stores_tax_rate_via_form_store(): void
-    {
-        /* Act */
-        /**
-         * Payload:
-         * {
-         *   "tax_rate_name": "VAT",
-         *   "tax_rate_percent": "20.00",
-         *   "btn_submit": true
-         * }
-         */
-        $response = $this->post(route('tax_rates.formStore'), [
-            'tax_rate_name'    => 'VAT',
-            'tax_rate_percent' => '20.00',
-            'btn_submit'       => true,
-        ]);
-
-        /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
-    }
-
-    #[Test]
-    public function it_standardizes_tax_rate_percent_on_creation(): void
-    {
-        $taxRateData = [
-            'tax_rate_name'    => 'Sales Tax',
-            'tax_rate_percent' => '15,50', // European format
-        ];
-
-        $response = $this->post(route('tax_rates.form'), $taxRateData);
-
-        $response->assertRedirect(route('tax_rates.index'));
-        $this->assertDatabaseHas('ip_tax_rates', [
-            'tax_rate_name'    => 'Sales Tax',
-            'tax_rate_percent' => 15.50,
-        ]);
-    }
-
-    #[Test]
-    public function it_updates_existing_tax_rate(): void
-    {
-        $taxRate = $this->seedModel('TaxRate', [
-            'tax_rate_name'    => 'Original Tax',
-            'tax_rate_percent' => 10.00,
-        ]);
-
-        $updateData = [
-            'tax_rate_name'    => 'Updated Tax',
-            'tax_rate_percent' => '19.00',
-        ];
-
-        $response = $this->post(route('tax_rates.form', ['id' => $taxRate->tax_rate_id]), $updateData);
-
-        $response->assertRedirect(route('tax_rates.index'));
-        $this->assertDatabaseHas('ip_tax_rates', [
-            'tax_rate_id'      => $taxRate->tax_rate_id,
-            'tax_rate_name'    => 'Updated Tax',
-            'tax_rate_percent' => 19.00,
-        ]);
-    }
-
-    #[Test]
-    public function it_redirects_when_cancel_button_is_clicked(): void
-    {
-        /* Act */
-        $response = $this->post(route('tax_rates.form'), [
-            'btn_cancel' => true,
-        ]);
-
-        /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
-    }
-
-    #[Test]
-    public function it_deletes_tax_rate(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $taxRate = $this->seedModel('TaxRate');
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('tax_rates.delete', ['id' => $taxRate->id]));
+        $response = $this->get('/tax_rates');
 
         /* Assert */
-        $response->assertRedirect(route('tax_rates.index'));
-        $this->assertDatabaseMissing('ip_tax_rates', ['tax_rate_id' => $taxRate->id]);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
-    public function it_cancels_tax_rate_form_and_redirects(): void
+    public function it_redirects_a_guest_to_login(): void
     {
-        $response = $this->post(route('tax_rates.form'), ['btn_cancel' => true]);
+        /* Arrange */
+        $this->actingAsGuest();
 
-        $response->assertRedirect(route('tax_rates.index'));
-    }
+        /* Act */
+        $response = $this->get('/tax_rates');
 
-    #[Test]
-    public function it_validates_tax_rate_percent_is_numeric(): void
-    {
-        $taxRateData = [
-            'tax_rate_name'    => 'Invalid Tax',
-            'tax_rate_percent' => 'not-a-number',
-        ];
-
-        $response = $this->post(route('tax_rates.form'), $taxRateData);
-
-        $response->assertSessionHasErrors();
-    }
-
-    #[Test]
-    public function it_returns_404_when_editing_nonexistent_tax_rate(): void
-    {
-        $response = $this->get(route('tax_rates.form', ['id' => 99999]));
-
-        $response->assertNotFound();
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/tax_rates] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

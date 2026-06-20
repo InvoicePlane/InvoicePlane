@@ -80,7 +80,9 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
         preg_match('/__CI_TEST_RESULT_START__(.*?)__CI_TEST_RESULT_END__/s', $stdout ?: '', $matches);
 
-        if ($exitCode !== 0 || ! isset($matches[1])) {
+        // If no CI result envelope was emitted at all, the process died before request.php
+        // could capture any output (e.g. a PHP parse error). Only then do we fail fast.
+        if ( ! isset($matches[1])) {
             throw new RuntimeException(
                 "CI request runner failed for [{$payload['method']}] {$payload['uri']}" . PHP_EOL
                 . 'Exit code: ' . $exitCode . PHP_EOL

@@ -1,7 +1,5 @@
 <?php
 
-use core\CiKernel;
-
 if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
@@ -109,7 +107,12 @@ class Modules
     /** Load a module controller **/
     public static function load($module)
     {
-        $ci = CiKernel::instance();
+        $ci = CI::$APP;
+
+        // Allow array form: ['module_name' => $params]
+        if (is_array($module)) {
+            [$module, $params] = [key($module), current($module)];
+        }
 
         $alias = mb_strtolower(basename($module));
 

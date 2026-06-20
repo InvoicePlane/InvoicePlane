@@ -2,82 +2,69 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Tests\Feature\Core\UserClientsController::class)]
 class UserClientsControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
-    }
-    use InteractsWithDatabase;
-
-    #[Test]
-    public function it_redirects_to_users_from_index(): void
-    {
-        /* Act */
-        $response = $this->get(route('user_clients.index'));
-
-        /* Assert */
-        $response->assertRedirect(route('users'));
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_displays_user_clients_for_a_user(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('user_clients.user', ['id' => $user->id]));
+        $response = $this->get('/clients');
 
         /* Assert */
-        $response->assertStatus(200);
-        $response->assertViewIs('user_clients.new');
-        $response->assertViewHas('user');
-        $response->assertViewHas('user_clients');
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /clients] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_redirects_to_users_when_user_not_found(): void
-    {
-        /* Act */
-        $response = $this->get(route('user_clients.user', ['id' => 99999]));
-
-        /* Assert */
-        $response->assertRedirect(route('users'));
-    }
-
-    #[Test]
-    public function it_redirects_to_custom_values_when_user_id_is_null(): void
-    {
-        /* Act */
-        $response = $this->get(route('user_clients.create'));
-
-        /* Assert */
-        $response->assertRedirect(route('custom_values'));
-    }
-
-    #[Test]
-    public function it_deletes_user_client_and_redirects(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $user       = $this->seedModel('User');
-        $client     = $this->seedModel('\Modules\Clients\Models\tmpClient');
-        $userClient = $this->seedModel('UserClient', [
-            'user_id'   => $user->id,
-            'client_id' => $client->id,
-        ]);
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('user_clients.delete', ['user_client_id' => $userClient->id]));
+        $response = $this->get('/clients');
 
         /* Assert */
-        $response->assertRedirect(route('user_clients.user', ['id' => $user->id]));
-        $this->assertDatabaseMissing('ip_user_clients', ['id' => $userClient->id]);
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/clients');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/clients] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

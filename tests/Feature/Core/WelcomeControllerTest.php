@@ -15,7 +15,6 @@ class WelcomeControllerTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
     }
 
     #[Test]
@@ -25,7 +24,7 @@ class WelcomeControllerTest extends AbstractTestCase
         /* (no setup needed) */
 
         /* Act */
-        $response = $this->get(TestUris::HOME);
+        $response = $this->get('/welcome');
 
         /* Assert */
         $this->assertResponseOk($response);

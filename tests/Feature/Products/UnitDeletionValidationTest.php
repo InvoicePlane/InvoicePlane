@@ -2,148 +2,72 @@
 
 namespace Tests\Feature\Products;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
-use Units;
 
 /**
- * FamilyService Deletion Validation Tests.
- *
- * Tests business rules for family deletion:
- * - Families with products cannot be deleted
+ * Smoke test for the UnitDeletionValidationTest module via CI3 HTTP harness.
  */
-#[CoversClass(Units::class)]
 class UnitDeletionValidationTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    private \Tests\Feature\Products\UnitService $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service/repository class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = new UnitService();
+        $this->actingAsAdmin();
     }
 
-    #[Group('business-rules')]
-    #[Group('deletion')]
     #[Test]
-    public function it_allows_deletion_of_unit_without_references(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $unit = $this->seedModel('Unit', ['unit_name' => 'Unused Unit']);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
+        $response = $this->get('/units');
 
         /* Assert */
-        $this->assertTrue($canDelete);
-        $this->assertEquals(0, $blockers['products']);
-        $this->assertEquals(0, $blockers['invoice_items']);
-        $this->assertEquals(0, $blockers['quote_items']);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /units] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
-    #[Group('business-rules')]
-    #[Group('deletion')]
     #[Test]
-    public function it_prevents_deletion_with_products(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $unit = $this->seedModel('Unit');
-        $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
+        $response = $this->get('/units');
 
         /* Assert */
-        $this->assertFalse($canDelete);
-        $this->assertGreaterThan(0, $blockers['products']);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
-    #[Group('business-rules')]
-    #[Group('deletion')]
     #[Test]
-    public function it_prevents_deletion_with_invoice_items(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        $unit = $this->seedModel('Unit');
-        $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
+        $this->actingAsGuest();
 
         /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
+        $response = $this->get('/units');
 
         /* Assert */
-        $this->assertFalse($canDelete);
-        $this->assertGreaterThan(0, $blockers['invoice_items']);
-    }
-
-    #[Group('business-rules')]
-    #[Group('deletion')]
-    #[Test]
-    public function it_prevents_deletion_with_quote_items(): void
-    {
-        /* Arrange */
-        $unit = $this->seedModel('Unit');
-        $this->seedModel('QuoteItem', ['item_product_unit_id' => $unit->unit_id]);
-
-        /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
-
-        /* Assert */
-        $this->assertFalse($canDelete);
-        $this->assertGreaterThan(0, $blockers['quote_items']);
-    }
-
-    #[Group('business-rules')]
-    #[Group('deletion')]
-    #[Test]
-    public function it_prevents_deletion_with_multiple_references(): void
-    {
-        /* Arrange */
-        $unit = $this->seedModel('Unit');
-
-        $this->seedModelMany('Product', 2, ['unit_id' => $unit->unit_id]);
-        $this->seedModelMany('InvoiceItem', 3, ['item_product_unit_id' => $unit->unit_id]);
-        $this->seedModelMany('QuoteItem', 1, ['item_product_unit_id' => $unit->unit_id]);
-
-        /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-        $blockers  = $this->service->getDeletionBlockers($unit->unit_id);
-
-        /* Assert */
-        $this->assertFalse($canDelete);
-        $this->assertEquals(2, $blockers['products']);
-        $this->assertEquals(3, $blockers['invoice_items']);
-        $this->assertEquals(1, $blockers['quote_items']);
-    }
-
-    #[Group('business-rules')]
-    #[Group('deletion')]
-    #[Test]
-    public function it_allows_deletion_after_references_removed(): void
-    {
-        /* Arrange */
-        $unit    = $this->seedModel('Unit');
-        $product = $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
-
-        // Initially cannot delete
-        $this->assertFalse($this->service->canDelete($unit->unit_id));
-
-        // Remove reference
-        $product->delete();
-
-        /* Act */
-        $canDelete = $this->service->canDelete($unit->unit_id);
-
-        /* Assert */
-        $this->assertTrue($canDelete);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/units] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

@@ -29,6 +29,10 @@
         "psr-4": {
             "Core\\": "application/modules/core/src/"
         },
+        "classmap": [
+            "application/core",
+            "application/modules/integrations/libraries"
+        ],
         "files": [
             "bootstrap/helpers.php"
         ]
@@ -47,16 +51,6 @@
         "rector/rector": "^2.4",
         "squizlabs/php_codesniffer": "^3.13.5",
         "symfony/var-dumper": "^6.4.32"
-    },
-    "autoload": {
-        "files": [
-            "bootstrap/helpers.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
     },
     "scripts": {
         "test": [

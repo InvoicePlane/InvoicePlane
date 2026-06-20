@@ -23,7 +23,6 @@ use DateTimeZone;
  * @group security
  * @group sessions
  */
-#[CoversClass(Tests\Feature\Core\SessionsSecurity::class)]
 class SessionsSecurityTest extends AbstractTestCase
 {
     private StubSessionsSecurity $security;

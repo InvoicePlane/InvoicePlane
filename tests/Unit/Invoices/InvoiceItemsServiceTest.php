@@ -2,87 +2,72 @@
 
 namespace Tests\Unit\Invoices;
 
-use Mdl_Items;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Mdl_Items::class)]
+/**
+ * Smoke test for the InvoiceItemsServiceTest module via CI3 HTTP harness.
+ */
 class InvoiceItemsServiceTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    private $service;
-
-    private $itemAmountsService;
-
-    private $invoiceAmountsService;
-
     protected function setUp(): void
     {
         parent::setUp();
+        $this->actingAsAdmin();
+    }
 
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->itemAmountsService    = $this->createMock(ItemAmountsService::class);
-        $this->invoiceAmountsService = $this->createMock(InvoiceAmountsService::class);
+    #[Test]
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
+    {
+        /* Arrange */
+        /* (authenticated admin via setUp) */
 
-        $this->service = new ItemsService(
-            $this->itemAmountsService,
-            $this->invoiceAmountsService
+        /* Act */
+        $response = $this->get('/invoices');
+
+        /* Assert */
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /invoices] returned unexpected status [%d].', $response->statusCode())
         );
     }
 
-    public function test_get_by_invoice_id_returns_items(): void
+    #[Test]
+    public function it_does_not_expose_php_errors(): void
     {
-        $invoice_id = 1;
-        $this->seedModelMany('Item', 3, ['invoice_id' => $invoice_id]);
-        $this->seedModelMany('Item', 2, ['invoice_id' => 2]);
+        /* Arrange */
+        /* (authenticated admin via setUp) */
 
-        $results = $this->service->getByInvoiceId($invoice_id);
-        $this->assertCount(3, $results);
+        /* Act */
+        $response = $this->get('/invoices');
+
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
-    public function test_get_by_invoice_id_returns_collection(): void
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
     {
-        $results = $this->service->getByInvoiceId(1);
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $results);
-    }
+        /* Arrange */
+        $this->actingAsGuest();
 
-    public function test_validation_rules_requires_invoice_id(): void
-    {
-        $rules = $this->service->validationRules();
-        $this->assertArrayHasKey('invoice_id', $rules);
-        $this->assertEquals('required', $rules['invoice_id']['rules']);
-    }
+        /* Act */
+        $response = $this->get('/invoices');
 
-    public function test_delete_removes_item_and_amounts(): void
-    {
-        $item = $this->seedModel('Item', ['invoice_id' => 1]);
-        $this->seedModel('ItemAmount', ['item_id' => $item->item_id]);
-
-        $this->invoiceAmountsService
-            ->expects($this->once())
-            ->method('getGlobalDiscount')
-            ->willReturn(['item' => 0]);
-
-        $this->invoiceAmountsService
-            ->expects($this->once())
-            ->method('calculate');
-
-        $result = $this->service->delete($item->item_id);
-        $this->assertTrue($result);
-        $this->assertDatabaseMissing('ip_invoice_items', ['item_id' => $item->item_id]);
-    }
-
-    public function test_delete_returns_false_for_nonexistent_item(): void
-    {
-        $this->markTestIncomplete('weak test');
-        $result = $this->service->delete(99999);
-        $this->assertFalse($result);
-    }
-
-    public function test_service_has_correct_table(): void
-    {
-        $this->assertEquals('ip_invoice_items', $this->service->table);
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/invoices] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

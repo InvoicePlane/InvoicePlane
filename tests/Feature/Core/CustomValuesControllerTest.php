@@ -2,49 +2,69 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Tests\Feature\Core\CustomValuesController::class)]
 class CustomValuesControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
-    }
-    use InteractsWithDatabase;
-
-    #[Test]
-    public function it_displays_custom_values(): void
-    {
-        /* Arrange */
-        $customValue = $this->seedModel('CustomValue', ['name' => 'Test Value']);
-
-        /* Act */
-        $response = $this->get(route('custom_values.index'));
-
-        /* Assert */
-        $response->assertStatus(200);
-        $response->assertSee('Test Value');
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_displays_and_saves_custom_field(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $customField     = $this->seedModel('\Modules\CustomFields\Models\CustomField', ['name' => 'Test Field']);
-        $customValueData = [
-            'value' => 'New Value',
-            // add other required fields
-        ];
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->post(route('custom_values.field', ['id' => $customField->id]), $customValueData);
+        $response = $this->get('/custom_values');
 
         /* Assert */
-        $this->assertDatabaseHas('custom_values', ['value' => 'New Value']);
-        $response->assertRedirect(route('custom_values'));
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /custom_values] returned unexpected status [%d].', $response->statusCode())
+        );
+    }
+
+    #[Test]
+    public function it_does_not_expose_php_errors(): void
+    {
+        /* Arrange */
+        /* (setup done in setUp) */
+
+        /* Act */
+        $response = $this->get('/custom_values');
+
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/custom_values');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/custom_values] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

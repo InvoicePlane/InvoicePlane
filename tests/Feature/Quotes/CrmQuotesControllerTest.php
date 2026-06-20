@@ -2,138 +2,74 @@
 
 namespace Tests\Feature\Quotes;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Quotes;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
 /**
  * QuotesController (CRM/Guest) Feature Tests.
  *
  * Tests guest portal quote viewing and approval.
  */
-#[CoversClass(Quotes::class)]
 class CrmQuotesControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test index displays guest quotes list.
-     */
+    #[Test]
     #[Group('smoke')]
-    #[Test]
-    public function it_displays_guest_quotes_list(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        // Guest portal accessible without authentication
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('guest.quotes'));
+        $response = $this->get('/quotes');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('crm::guest_quotes');
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /quotes] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
-    /**
-     * Test view displays specific quote by URL key.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_displays_quote_by_url_key(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $quote = $this->seedModel('Quote', ['quote_url_key' => 'test-quote-key']);
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('guest.quotes.view', ['urlKey' => 'test-quote-key']));
+        $response = $this->get('/quotes');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('crm::guest_quote_view');
-        $response->assertViewHas('quote');
-
-        $viewQuote = $response->viewData('quote');
-        $this->assertEquals($quote->quote_id, $viewQuote->quote_id);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
-    /**
-     * Test view returns 404 for invalid URL key.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_returns_404_for_invalid_quote_url_key(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        // No quote with this URL key
+        $this->actingAsGuest();
 
         /* Act */
-        $response = $this->get(route('guest.quotes.view', ['urlKey' => 'non-existent-key']));
+        $response = $this->get('/quotes');
 
         /* Assert */
-        $response->assertNotFound();
-    }
-
-    /**
-     * Test approve updates quote status to approved.
-     */
-    #[Test]
-    public function it_approves_quote_when_approve_called(): void
-    {
-        /* Arrange */
-        $quote = $this->seedModel('Quote', [
-            'quote_url_key'   => 'approve-key',
-            'quote_status_id' => 2, // Sent
-        ]);
-
-        /* Act */
-        $response = $this->get(route('guest.quotes.approve', ['urlKey' => 'approve-key']));
-
-        /* Assert */
-        $response->assertRedirect();
-        $response->assertSessionHas('alert_success');
-
-        $quote->refresh();
-        $this->assertEquals(4, $quote->quote_status_id); // Approved
-    }
-
-    /**
-     * Test approve returns 404 for invalid URL key.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_returns_404_when_approving_non_existent_quote(): void
-    {
-        /* Arrange */
-        // No quote with this URL key
-
-        /* Act */
-        $response = $this->get(route('guest.quotes.approve', ['urlKey' => 'invalid-key']));
-
-        /* Assert */
-        $response->assertNotFound();
-    }
-
-    /**
-     * Test quote operations are accessible without authentication.
-     */
-    #[Test]
-    public function it_is_accessible_without_authentication(): void
-    {
-        /* Arrange */
-        $quote = $this->seedModel('Quote', ['quote_url_key' => 'guest-quote-key']);
-
-        /* Act */
-        $response = $this->get(route('guest.quotes.view', ['urlKey' => 'guest-quote-key']));
-
-        /* Assert */
-        $response->assertOk();
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/quotes] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

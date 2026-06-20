@@ -2,41 +2,69 @@
 
 namespace Tests\Feature\Core;
 
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Settings;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Settings::class)]
-#[CoversClass(Tests\Feature\Core\SettingsController::class)]
 class SettingsControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
+
     #[Test]
-    public function it_displays_settings_page_and_saves_settings(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
-        /* Act */
-        $response = $this->get(route('settings.index'));
-        $response->assertStatus(200);
-        $response->assertSee('Settings'); // Adjust to match actual page content
-
         /* Arrange */
-        $settings = [
-            'tax_rate_decimal_places' => 2,
-            'currency_symbol'         => '$',
-            // add other required fields
-        ];
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->post(route('settings.index'), ['settings' => $settings]);
+        $response = $this->get('/settings');
 
         /* Assert */
-        $this->assertDatabaseHas('ip_settings', ['key' => 'tax_rate_decimal_places', 'value' => '2']);
-        $this->assertDatabaseHas('ip_settings', ['key' => 'currency_symbol', 'value' => '$']);
-        $response->assertRedirect(route('settings.index'));
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /settings] returned unexpected status [%d].', $response->statusCode())
+        );
+    }
+
+    #[Test]
+    public function it_does_not_expose_php_errors(): void
+    {
+        /* Arrange */
+        /* (setup done in setUp) */
+
+        /* Act */
+        $response = $this->get('/settings');
+
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/settings');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/settings] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

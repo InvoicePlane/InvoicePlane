@@ -2,152 +2,74 @@
 
 namespace Feature\Products;
 
-use Modules\Products\Controllers\FamiliesController;
-use Modules\Products\Models\Family;
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
-
-use function Tests\Feature\Invoices\route;
+use Tests\AbstractTestCase;
 
 /**
  * FamiliesController Feature Tests.
  *
  * Tests product family (category) management including list, create, update, and delete.
  */
-#[CoversClass(FamiliesController::class)]
-#[CoversClass(Feature\Products\UnitDeletionValidationFeature::class)]
-
 class UnitDeletionValidationFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
-    }
-    use InteractsWithDatabase;
-
-    #[Group('business-rules')]
-    #[Group('deletion')]
-    #[Group('http')]
-    #[Test]
-    public function it_deletes_unit_without_references(): void
-    {
-        /* Arrange */
-        $unit = $this->seedModel('Unit', ['unit_name' => 'Deletable Unit']);
-
-        /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
-
-        /* Assert */
-        $response->assertRedirect(route('units.index'));
-        $response->assertSessionHas('alert_success');
-        $this->assertDatabaseMissing('ip_units', ['unit_id' => $unit->unit_id]);
+        $this->actingAsAdmin();
     }
 
-    #[Group('business-rules')]
-    #[Group('deletion')]
-    #[Group('http')]
     #[Test]
-    public function it_prevents_deletion_with_products(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $unit = $this->seedModel('Unit');
-        $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response = $this->get('/products');
 
         /* Assert */
-        $response->assertRedirect(route('units.index'));
-        $response->assertSessionHas('alert_error');
-        $this->assertDatabaseHas('ip_units', ['unit_id' => $unit->unit_id]);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /products] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
-    #[Group('business-rules')]
-    #[Group('deletion')]
-    #[Group('http')]
     #[Test]
-    public function it_prevents_deletion_with_invoice_items(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $unit = $this->seedModel('Unit');
-        $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response = $this->get('/products');
 
         /* Assert */
-        $response->assertRedirect(route('units.index'));
-        $response->assertSessionHas('alert_error');
-        $this->assertDatabaseHas('ip_units', ['unit_id' => $unit->unit_id]);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
-    #[Group('business-rules')]
-    #[Group('deletion')]
-    #[Group('http')]
     #[Test]
-    public function it_prevents_deletion_with_quote_items(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        $unit = $this->seedModel('Unit');
-        $this->seedModel('QuoteItem', ['item_product_unit_id' => $unit->unit_id]);
+        $this->actingAsGuest();
 
         /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
+        $response = $this->get('/products');
 
         /* Assert */
-        $response->assertRedirect(route('units.index'));
-        $response->assertSessionHas('alert_error');
-        $this->assertDatabaseHas('ip_units', ['unit_id' => $unit->unit_id]);
-    }
-
-    #[Group('business-rules')]
-    #[Group('deletion')]
-    #[Group('http')]
-    #[Test]
-    public function it_prevents_deletion_with_multiple_references(): void
-    {
-        /* Arrange */
-        $unit = $this->seedModel('Unit');
-
-        $this->seedModelMany('Product', 2, ['unit_id' => $unit->unit_id]);
-        $this->seedModel('InvoiceItem', ['item_product_unit_id' => $unit->unit_id]);
-
-        /* Act */
-        $response = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
-
-        /* Assert */
-        $response->assertRedirect(route('units.index'));
-        $response->assertSessionHas('alert_error');
-        $this->assertDatabaseHas('ip_units', ['unit_id' => $unit->unit_id]);
-    }
-
-    #[Group('business-rules')]
-    #[Group('deletion')]
-    #[Group('http')]
-    #[Test]
-    public function it_allows_deletion_after_references_removed(): void
-    {
-        /* Arrange */
-        $unit    = $this->seedModel('Unit');
-        $product = $this->seedModel('Product', ['unit_id' => $unit->unit_id]);
-
-        // Initially cannot delete
-        $response1 = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
-        $response1->assertSessionHas('alert_error');
-
-        // Remove reference
-        $product->delete();
-
-        /* Act */
-        $response2 = $this->delete(route('units.destroy', ['unit' => $unit->unit_id]));
-
-        /* Assert */
-        $response2->assertRedirect(route('units.index'));
-        $response2->assertSessionHas('alert_success');
-        $this->assertDatabaseMissing('ip_units', ['unit_id' => $unit->unit_id]);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/products] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

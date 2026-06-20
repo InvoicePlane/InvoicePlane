@@ -2,13 +2,9 @@
 
 namespace Tests\Feature\Invoices;
 
-use Modules\Invoices\Models\Invoice;
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Recurring;
-use Tests\Concerns\InteractsWithDatabase;
+use Tests\AbstractTestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
@@ -16,7 +12,6 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests guest portal invoice viewing.
  */
 #[CoversClass(Recurring::class)]
-#[CoversClass(Tests\Feature\Invoices\RecurringController::class)]
 
 /**
  * Test coverage for Invoices Recurring Controller (application/modules/invoices/controllers/Recurring.php).
@@ -26,224 +21,60 @@ class RecurringControllerTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test recurring invoices index displays all recurring configurations.
-     */
+    #[Test]
     #[Group('smoke')]
-    #[Test]
-    public function it_displays_list_of_recurring_invoices(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $user       = $this->seedModel('User');
-        $recurring1 = $this->seedModel('InvoicesRecurring');
-        $recurring2 = $this->seedModel('InvoicesRecurring');
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.recurring'));
+        $response = $this->get('/invoices');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('invoices::recurring_index');
-        $response->assertViewHas('recurring_invoices');
-        $recurringInvoices = $response->viewData('recurring_invoices');
-        $this->assertGreaterThanOrEqual(2, $recurringInvoices->count());
-    }
-
-    /**
-     * Test recurring invoices index includes frequency options.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_includes_recur_frequencies_in_view_data(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.recurring'));
-
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewHas('recur_frequencies');
-        $recurFrequencies = $response->viewData('recur_frequencies');
-        $this->assertIsArray($recurFrequencies);
-    }
-
-    /**
-     * Test pagination works correctly for recurring invoices.
-     */
-    #[Test]
-    public function it_paginates_recurring_invoices_correctly(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-        $this->seedModelMany('InvoicesRecurring', 20);
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.recurring'));
-
-        /* Assert */
-        $response->assertOk();
-        $recurringInvoices = $response->viewData('recurring_invoices');
-        $this->assertLessThanOrEqual(15, $recurringInvoices->count());
-    }
-
-    /**
-     * Test stopping a recurring invoice sets status to 0.
-     */
-    #[Test]
-    public function it_stops_recurring_invoice_and_sets_status_to_zero(): void
-    {
-        /* Arrange */
-        $user      = $this->seedModel('User');
-        $recurring = $this->seedModel('InvoicesRecurring', ['recur_status' => 1]);
-
-        /* Act */
-        $response = $this->actingAs($user)->post(
-            route('invoices.recurring.stop', ['id' => $recurring->invoice_recurring_id])
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /invoices] returned unexpected status [%d].', $response->statusCode())
         );
-
-        /* Assert */
-        $response->assertRedirect();
-        $recurring->refresh();
-        $this->assertEquals(0, $recurring->recur_status);
     }
 
-    /**
-     * Test stopping recurring invoice redirects to index.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_redirects_to_index_after_stopping_recurring_invoice(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $user      = $this->seedModel('User');
-        $recurring = $this->seedModel('InvoicesRecurring');
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->actingAs($user)->post(
-            route('invoices.recurring.stop', ['id' => $recurring->invoice_recurring_id])
+        $response = $this->get('/invoices');
+
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/invoices');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/invoices] must redirect. Got [%d].', $response->statusCode())
         );
-
-        /* Assert */
-        $response->assertRedirect();
-    }
-
-    /**
-     * Test stopping non-existent recurring invoice throws 404.
-     */
-    #[Test]
-    public function it_throws_404_when_stopping_non_existent_recurring_invoice(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /** @var array{id: int} $stopParams */
-        $stopParams = [
-            'id' => 99999,
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.recurring.stop', $stopParams));
-
-        /* Assert */
-        $response->assertNotFound();
-    }
-
-    /**
-     * Test deleting a recurring invoice removes it from database.
-     */
-    #[Group('crud')]
-    #[Test]
-    public function it_deletes_recurring_invoice_from_database(): void
-    {
-        /* Arrange */
-        $user        = $this->seedModel('User');
-        $recurring   = $this->seedModel('InvoicesRecurring');
-        $recurringId = $recurring->invoice_recurring_id;
-
-        /** @var array{id: int} $deleteParams */
-        $deleteParams = [
-            'id' => $recurringId,
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.recurring.delete', $deleteParams));
-
-        /* Assert */
-        $response->assertRedirect();
-        $this->assertNull(InvoicesRecurring::find($recurringId));
-    }
-
-    /**
-     * Test deleting recurring invoice redirects to index.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_redirects_to_index_after_deleting_recurring_invoice(): void
-    {
-        /* Arrange */
-        $user      = $this->seedModel('User');
-        $recurring = $this->seedModel('InvoicesRecurring');
-
-        /** @var array{id: int} $deleteParams */
-        $deleteParams = [
-            'id' => $recurring->invoice_recurring_id,
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.recurring.delete', $deleteParams));
-
-        /* Assert */
-        $response->assertRedirect();
-    }
-
-    /**
-     * Test deleting non-existent recurring invoice throws 404.
-     */
-    #[Test]
-    public function it_throws_404_when_deleting_non_existent_recurring_invoice(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /** @var array{id: int} $deleteParams */
-        $deleteParams = [
-            'id' => 99999,
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(route('invoices.recurring.delete', $deleteParams));
-
-        /* Assert */
-        $response->assertNotFound();
-    }
-
-    /**
-     * Test index includes filter display configuration.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_includes_filter_configuration_in_view_data(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('invoices.recurring'));
-
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewHas('filter_display');
-        $response->assertViewHas('filter_placeholder');
-        $response->assertViewHas('filter_method');
-        $filterDisplay = $response->viewData('filter_display');
-        $filterMethod  = $response->viewData('filter_method');
-        $this->assertTrue($filterDisplay);
-        $this->assertEquals('filter_invoices_recuring', $filterMethod);
     }
 }

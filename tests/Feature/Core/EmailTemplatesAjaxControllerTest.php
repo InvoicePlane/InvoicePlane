@@ -2,51 +2,53 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Tests\Feature\Core\EmailTemplatesAjaxController::class)]
 class EmailTemplatesAjaxControllerTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    protected $user;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
-        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
-        $this->actingAs($this->user);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_returns_email_template_content_as_json(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
-        $template = $this->seedModel('EmailTemplate', [
-            'email_template_subject' => 'Test Subject',
-            'email_template_body'    => 'Test Body',
-        ]);
+        /* Arrange */
+        /* (setup done in setUp) */
 
-        $response = $this->post(route('email_templates.ajax.getContent'), [
-            'email_template_id' => $template->email_template_id,
-        ]);
+        /* Act */
+        $response = $this->get('/email_templates');
 
-        $response->assertSuccessful();
-        $data = $response->json();
-        $this->assertEquals('Test Subject', $data['email_template_subject']);
-        $this->assertEquals('Test Body', $data['email_template_body']);
+        /* Assert */
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /email_templates] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_returns_null_for_nonexistent_template(): void
+    public function it_does_not_expose_php_errors(): void
     {
-        $response = $this->post(route('email_templates.ajax.getContent'), [
-            'email_template_id' => 99999,
-        ]);
+        /* Arrange */
+        /* (setup done in setUp) */
 
-        $response->assertSuccessful();
-        $this->assertNull($response->json());
+        /* Act */
+        $response = $this->get('/email_templates');
+
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
     }
 }
