@@ -6,7 +6,7 @@ final class TestUris
 {
     public const HOME = '/';
 
-    public const CLIENTS_INDEX = '/clients/index';
+    public const CLIENTS_INDEX = '/clients/status/active';
 
     public const INVOICES_INDEX = '/invoices/index';
 
