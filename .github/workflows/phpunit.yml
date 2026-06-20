@@ -35,6 +35,8 @@ jobs:
   test:
     name: PHPUnit (PHP ${{ github.event.inputs.php_version || '8.2' }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     services:
       database:
