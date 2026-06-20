@@ -24,7 +24,7 @@ defined('ENVIRONMENT') || define('ENVIRONMENT', 'testing');
 
 $basePath = $base;
 
-defined('FCPATH') || define('FCPATH', $basePath . '/');
+defined('FCPATH') || define('FCPATH', $basePath . '/public/');
 defined('APPPATH') || define('APPPATH', $basePath . '/application/');
 defined('BASEPATH') || define('BASEPATH', $basePath . '/vendor/pocketarc/codeigniter/system/');
 defined('VIEWPATH') || define('VIEWPATH', APPPATH . 'views/');

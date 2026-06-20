@@ -50,7 +50,7 @@ $base = dirname(__DIR__);
 
 defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter/system/');
 defined('APPPATH') || define('APPPATH', $base . '/application/');
-defined('FCPATH') || define('FCPATH', $base . '/');
+defined('FCPATH') || define('FCPATH', $base . '/public/');
 
 /*
 |--------------------------------------------------------------------------
