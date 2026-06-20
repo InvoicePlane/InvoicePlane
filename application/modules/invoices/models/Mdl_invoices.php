@@ -566,7 +566,12 @@ class Mdl_Invoices extends Response_Model
 
     public function is_overdue()
     {
-        $this->filter_having('is_overdue', 1);
+        if ($this->db->dbdriver === 'sqlite3') {
+            // SQLite3 does not support HAVING on a non-aggregate query with a column alias.
+            $this->filter_where('ip_invoices.invoice_status_id NOT IN (1,4) AND DATEDIFF(NOW(), ip_invoices.invoice_date_due) > 0', null, false);
+        } else {
+            $this->filter_having('is_overdue', 1);
+        }
 
         return $this;
     }
