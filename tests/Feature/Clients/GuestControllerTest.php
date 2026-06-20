@@ -2,13 +2,9 @@
 
 namespace Tests\Feature\Clients;
 
-use Modules\Crm\Controllers\ClientsController;
-use Modules\Crm\Models\Client;
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
+use Tests\AbstractTestCase;
 
 /**
  * ClientsController Deletion Validation Feature Tests.
@@ -16,67 +12,65 @@ use Tests\Concerns\InteractsWithDatabase;
  * Tests HTTP endpoints for client deletion with business rules:
  * - Clients with invoices, quotes, or projects cannot be deleted
  */
-#[CoversClass(ClientsController::class)]
-#[CoversClass(Tests\Feature\Clients\GuestController::class)]
-
 class GuestControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test index displays guest portal home page.
-     */
+    #[Test]
     #[Group('smoke')]
-    #[Test]
-    public function it_displays_guest_portal_home_page(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        // Guest portal may not require authentication
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('guest.index'));
+        $response = $this->get('/clients');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('crm::guest_index');
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /clients] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
-    /**
-     * Test guest portal is accessible without authentication.
-     */
     #[Test]
-    public function it_is_accessible_without_authentication(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        // No authentication
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('guest.index'));
+        $response = $this->get('/clients');
 
         /* Assert */
-        $response->assertOk();
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
-    /**
-     * Test guest portal is also accessible when authenticated.
-     */
     #[Test]
-    public function it_is_accessible_when_authenticated(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        $this->actingAsGuest();
 
         /* Act */
-        $this->actingAs($user);
-        $response = $this->get(route('guest.index'));
+        $response = $this->get('/clients');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('crm::guest_index');
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/clients] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

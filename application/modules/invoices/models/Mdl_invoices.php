@@ -548,7 +548,7 @@ class Mdl_Invoices extends Response_Model
     public function is_open()
     {
         $this->filter_where_in('invoice_status_id', [2, 3]);
-        $this->filter_where('invoice_balance <> "0.00"');
+        $this->filter_where("invoice_balance <> '0.00'");
 
         return $this;
     }

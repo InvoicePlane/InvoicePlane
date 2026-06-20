@@ -2,69 +2,72 @@
 
 namespace Tests\Unit\Payments;
 
-use Mdl_Payment_Methods;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Payment_Methods::class)]
+/**
+ * Smoke test for the PaymentMethodsServiceTest module via CI3 HTTP harness.
+ */
 class PaymentMethodsServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = app(PaymentMethodsService::class);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_retrieves_all_payment_methods(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        PaymentMethod::create([
-            'payment_method_name' => 'Cash',
-        ]);
-        PaymentMethod::create([
-            'payment_method_name' => 'Credit Card',
-        ]);
-        PaymentMethod::create([
-            'payment_method_name' => 'Bank Transfer',
-        ]);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->defaultSelect()->get();
+        $response = $this->get('/payments');
 
         /* Assert */
-        $this->assertCount(3, $result);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /payments] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_returns_validation_rules(): void
-    {
-        /* Act */
-        $rules = $this->service->validationRules();
-
-        /* Assert */
-        $this->assertIsArray($rules);
-        $this->assertArrayHasKey('payment_method_name', $rules);
-    }
-
-    #[Test]
-    public function it_orders_by_name_by_default(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        PaymentMethod::create(['payment_method_name' => 'Zebra Payment']);
-        PaymentMethod::create(['payment_method_name' => 'Apple Pay']);
-        PaymentMethod::create(['payment_method_name' => 'Bitcoin']);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->defaultOrderBy()->get();
+        $response = $this->get('/payments');
 
         /* Assert */
-        $this->assertCount(3, $result);
-        // First should be alphabetically first
-        $this->assertEquals('Apple Pay', $result->first()->payment_method_name);
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/payments');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/payments] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

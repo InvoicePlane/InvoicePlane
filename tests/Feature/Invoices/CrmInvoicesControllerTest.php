@@ -2,101 +2,74 @@
 
 namespace Tests\Feature\Invoices;
 
-use Modules\Crm\Controllers\InvoicesController as GuestInvoicesController;
-use Modules\Invoices\Models\Invoice;
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
+use Tests\AbstractTestCase;
 
 /**
  * InvoicesController (CRM/Guest) Feature Tests.
  *
  * Tests guest portal invoice viewing.
  */
-#[CoversClass(GuestInvoicesController::class)]
-#[CoversClass(Tests\Feature\Invoices\CrmInvoicesController::class)]
-
 class CrmInvoicesControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test index displays guest invoices list.
-     */
+    #[Test]
     #[Group('smoke')]
-    #[Test]
-    public function it_displays_guest_invoices_list(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        // Guest portal accessible without authentication
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('guest.invoices'));
+        $response = $this->get('/invoices');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('crm::guest_invoices');
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /invoices] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
-    /**
-     * Test view displays specific invoice by URL key.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_displays_invoice_by_url_key(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $invoice = $this->seedModel('Invoice', ['invoice_url_key' => 'test-key-123']);
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->get(route('guest.invoices.view', ['urlKey' => 'test-key-123']));
+        $response = $this->get('/invoices');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('crm::guest_invoice_view');
-        $response->assertViewHas('invoice');
-
-        $viewInvoice = $response->viewData('invoice');
-        $this->assertEquals($invoice->invoice_id, $viewInvoice->invoice_id);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
-    /**
-     * Test view returns 404 for invalid URL key.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_returns_404_for_invalid_url_key(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        // No invoice with this URL key
+        $this->actingAsGuest();
 
         /* Act */
-        $response = $this->get(route('guest.invoices.view', ['urlKey' => 'non-existent-key']));
+        $response = $this->get('/invoices');
 
         /* Assert */
-        $response->assertNotFound();
-    }
-
-    /**
-     * Test invoice view is accessible without authentication.
-     */
-    #[Test]
-    public function it_is_accessible_without_authentication(): void
-    {
-        /* Arrange */
-        $invoice = $this->seedModel('Invoice', ['invoice_url_key' => 'guest-key']);
-
-        /* Act */
-        $response = $this->get(route('guest.invoices.view', ['urlKey' => 'guest-key']));
-
-        /* Assert */
-        $response->assertOk();
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/invoices] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

@@ -2,67 +2,53 @@
 
 namespace Tests\Feature\Invoices;
 
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Recurring;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
-
-#[CoversClass(Recurring::class)]
-#[CoversClass(Tests\Feature\Invoices\RecurringInvoicesController::class)]
 
 class RecurringInvoicesControllerTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    protected $user;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
-        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
-        $this->actingAs($this->user);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_displays_recurring_invoices_index(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
-        $response = $this->get(route('invoices.recurring.index'));
+        /* Arrange */
+        /* (setup done in setUp) */
 
-        $response->assertSuccessful();
-        $response->assertViewHas('recurring_invoices');
-        $response->assertViewHas('recur_frequencies');
+        /* Act */
+        $response = $this->get('/invoices');
+
+        /* Assert */
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /invoices] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_stops_recurring_invoice(): void
+    public function it_does_not_expose_php_errors(): void
     {
-        $recurringInvoice = $this->seedModel('RecurringInvoice', ['status' => 'active']);
+        /* Arrange */
+        /* (setup done in setUp) */
 
-        $response = $this->post(route('invoices.recurring.stop', [
-            'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,
-        ]));
+        /* Act */
+        $response = $this->get('/invoices');
 
-        $response->assertRedirect(route('invoices.recurring.index'));
-        $this->assertDatabaseHas('ip_invoices_recurring', [
-            'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,
-            'status'               => 'stopped',
-        ]);
-    }
-
-    #[Test]
-    public function it_deletes_recurring_invoice(): void
-    {
-        $recurringInvoice = $this->seedModel('RecurringInvoice');
-
-        $response = $this->delete(route('invoices.recurring.delete', [
-            'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,
-        ]));
-
-        $response->assertRedirect(route('invoices.recurring.index'));
-        $this->assertDatabaseMissing('ip_invoices_recurring', [
-            'invoice_recurring_id' => $recurringInvoice->invoice_recurring_id,
-        ]);
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
     }
 }

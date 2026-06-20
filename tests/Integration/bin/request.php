@@ -23,7 +23,7 @@ $session = is_array($request['session'] ?? null) ? $request['session'] : [];
 
 if ($session !== []) {
     if (session_status() === PHP_SESSION_NONE) {
-        session_id('ci_test_' . mb_substr(md5((string) json_encode($session)), 0, 12));
+        session_id('citst' . mb_substr(md5((string) json_encode($session)), 0, 12));
         session_start();
     }
 
@@ -38,6 +38,12 @@ $_POST    = $post;
 $_COOKIE  = [];
 $_FILES   = [];
 $_REQUEST = $method === 'POST' ? array_merge($query, $post) : $query;
+
+// CI3 detects CLI mode via is_cli() and uses $_SERVER['argv'] for URI routing.
+// Set argv so _parse_argv() returns the correct URI path instead of defaulting to the
+// default controller (dashboard).
+$_SERVER['argv'] = [basename(__FILE__), mb_ltrim($uri, '/')];
+$_SERVER['argc'] = 2;
 
 $_SERVER['REQUEST_METHOD']     = $method;
 $_SERVER['REQUEST_URI']        = $requestUri;
@@ -60,6 +66,25 @@ $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 
 ob_start();
 $exception = null;
+$resultEmitted = false;
+
+// Use shutdown function to catch exit() calls (e.g. redirect())
+register_shutdown_function(function () use (&$exception, &$resultEmitted) {
+    if ($resultEmitted) {
+        return;
+    }
+    $output = ob_get_clean();
+    $result = [
+        'status'    => http_response_code() ?: 200,
+        'headers'   => headers_list(),
+        'output'    => $output ?? '',
+        'exception' => $exception,
+    ];
+    echo '__CI_TEST_RESULT_START__';
+    echo base64_encode((string) json_encode($result, JSON_THROW_ON_ERROR));
+    echo '__CI_TEST_RESULT_END__';
+    $resultEmitted = true;
+});
 
 try {
     require dirname(__DIR__, 3) . '/public/index.php';
@@ -79,5 +104,6 @@ $result = [
 echo '__CI_TEST_RESULT_START__';
 echo base64_encode((string) json_encode($result, JSON_THROW_ON_ERROR));
 echo '__CI_TEST_RESULT_END__';
+$resultEmitted = true;
 
 exit($exception === null ? 0 : 1);

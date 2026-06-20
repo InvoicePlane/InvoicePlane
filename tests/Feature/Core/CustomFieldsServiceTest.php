@@ -2,57 +2,72 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Tests\Feature\Core\CustomFieldsService::class)]
+/**
+ * Smoke test for the CustomFieldsServiceTest module via CI3 HTTP harness.
+ */
 class CustomFieldsServiceTest extends AbstractTestCase
 {
-    private CustomFieldsService $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service/repository class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = app(CustomFieldsService::class);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_retrieves_custom_fields_by_table(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        CustomField::create([
-            'custom_field_table' => 'ip_clients',
-            'custom_field_label' => 'Client Custom Field',
-            'custom_field_type'  => 'TEXT',
-        ]);
-
-        CustomField::create([
-            'custom_field_table' => 'ip_clients',
-            'custom_field_label' => 'Another Client Field',
-            'custom_field_type'  => 'TEXT',
-        ]);
-
-        CustomField::create([
-            'custom_field_table' => 'ip_invoices',
-            'custom_field_label' => 'Invoice Custom Field',
-            'custom_field_type'  => 'TEXT',
-        ]);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->byTable('ip_clients');
+        $response = $this->get('/custom_fields');
 
         /* Assert */
-        $this->assertInstanceOf(CustomFieldsService::class, $result);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /custom_fields] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_returns_validation_rules(): void
+    public function it_does_not_expose_php_errors(): void
     {
+        /* Arrange */
+        /* (authenticated admin via setUp) */
+
         /* Act */
-        $rules = $this->service->validationRules();
+        $response = $this->get('/custom_fields');
 
         /* Assert */
-        $this->assertIsArray($rules);
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/custom_fields');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/custom_fields] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

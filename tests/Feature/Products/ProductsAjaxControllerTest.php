@@ -2,157 +2,74 @@
 
 namespace Tests\Feature\Products;
 
-use Modules\Products\Controllers\FamiliesController;
-use Modules\Products\Models\Family;
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
+use Tests\AbstractTestCase;
 
 /**
  * FamiliesController Feature Tests.
  *
  * Tests product family (category) management including list, create, update, and delete.
  */
-#[CoversClass(FamiliesController::class)]
-#[CoversClass(Tests\Feature\Products\ProductsAjaxController::class)]
-
 class ProductsAjaxControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test modal_product_lookups displays modal with products.
-     */
+    #[Test]
     #[Group('smoke')]
-    #[Test]
-    public function it_displays_modal_with_products(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
-        $this->seedModelMany('Product', 3);
-        $this->seedModelMany('Family', 2);
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups'));
+        $response = $this->get('/products');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('products::modal_product_lookups');
-        $response->assertViewHas('products');
-        $response->assertViewHas('families');
-        $response->assertViewHas('default_item_tax_rate');
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /products] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
-    /**
-     * Test modal filters products by family.
-     */
     #[Test]
-    public function it_filters_products_by_family(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $user    = $this->seedModel('User');
-        $family1 = $this->seedModel('Family');
-        $family2 = $this->seedModel('Family');
-
-        $product1 = $this->seedModel('Product', ['family_id' => $family1->family_id]);
-        $product2 = $this->seedModel('Product', ['family_id' => $family2->family_id]);
+        /* (setup done in setUp) */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups', [
-            'filter_family' => $family1->family_id,
-        ]));
+        $response = $this->get('/products');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewHas('filter_family', $family1->family_id);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
-    /**
-     * Test modal filters products by search term.
-     */
     #[Test]
-    public function it_filters_products_by_search_term(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
-        $this->seedModel('Product', ['product_name' => 'Widget']);
-        $this->seedModel('Product', ['product_name' => 'Gadget']);
+        $this->actingAsGuest();
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups', [
-            'filter_product' => 'Widget',
-        ]));
+        $response = $this->get('/products');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewHas('filter_product', 'Widget');
-    }
-
-    /**
-     * Test modal returns partial view when filtering.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_returns_partial_view_when_filtering(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups', [
-            'filter_product' => 'test',
-        ]));
-
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('products::partial_product_table_modal');
-    }
-
-    /**
-     * Test modal returns partial view when resetting table.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_returns_partial_view_when_resetting_table(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups', [
-            'reset_table' => '1',
-        ]));
-
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('products::partial_product_table_modal');
-    }
-
-    /**
-     * Test modal includes default tax rate setting.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_includes_default_tax_rate_setting(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('products.ajax.modal_product_lookups'));
-
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewHas('default_item_tax_rate');
-
-        $defaultTaxRate = $response->viewData('default_item_tax_rate');
-        $this->assertIsNumeric($defaultTaxRate);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/products] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

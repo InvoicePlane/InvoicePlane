@@ -2,210 +2,72 @@
 
 namespace Tests\Unit\Projects;
 
-use Mdl_Tasks;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Tasks::class)]
+/**
+ * Smoke test for the TasksServiceTest module via CI3 HTTP harness.
+ */
 class TasksServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = new TasksService();
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_filters_tasks_by_name(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        Task::create([
-            'task_name'        => 'Design Homepage',
-            'task_description' => 'Create wireframes',
-            'task_status'      => 1,
-        ]);
-        Task::create([
-            'task_name'        => 'Build API',
-            'task_description' => 'Design endpoints',
-            'task_status'      => 1,
-        ]);
-        Task::create([
-            'task_name'        => 'Testing',
-            'task_description' => 'Write tests',
-            'task_status'      => 1,
-        ]);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->byTask('Design');
+        $response = $this->get('/tasks');
 
         /* Assert */
-        $this->assertInstanceOf(TasksService::class, $result);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /tasks] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_returns_null_when_getting_invoice_for_null_task_id(): void
-    {
-        /* Act */
-        $result = $this->service->getInvoiceForTask(null);
-
-        /* Assert */
-        $this->assertNull($result);
-    }
-
-    #[Test]
-    public function it_returns_null_when_task_has_no_associated_invoice(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $task = Task::create([
-            'task_name'        => 'Test Task',
-            'task_description' => 'Description',
-            'task_status'      => 1,
-        ]);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->getInvoiceForTask($task->task_id);
+        $response = $this->get('/tasks');
 
         /* Assert */
-        $this->assertNull($result);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
-    public function it_returns_empty_array_when_getting_tasks_to_invoice_with_null_id(): void
-    {
-        /* Act */
-        $result = $this->service->getTasksToInvoice(null);
-
-        /* Assert */
-        $this->assertIsArray($result);
-        $this->assertEmpty($result);
-    }
-
-    #[Test]
-    public function it_returns_tasks_to_invoice_for_unassigned_projects(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        Task::create([
-            'task_name'        => 'Task 1',
-            'task_description' => 'Description 1',
-            'task_status'      => 3,
-            'project_id'       => 0,
-            'task_finish_date' => now()->subDays(2),
-        ]);
-        Task::create([
-            'task_name'        => 'Task 2',
-            'task_description' => 'Description 2',
-            'task_status'      => 3,
-            'project_id'       => 0,
-            'task_finish_date' => now()->subDay(),
-        ]);
-        // Task with different status should not be included
-        Task::create([
-            'task_name'        => 'Task 3',
-            'task_description' => 'Description 3',
-            'task_status'      => 1,
-            'project_id'       => 0,
-        ]);
-
-        // Create invoice
-        $client = tmpClient::create([
-            'client_name'   => 'Test Client',
-            'client_active' => 1,
-        ]);
-        $invoice = Invoice::create([
-            'client_id'         => $client->client_id,
-            'invoice_status_id' => 1,
-        ]);
+        $this->actingAsGuest();
 
         /* Act */
-        $result = $this->service->getTasksToInvoice($invoice->invoice_id);
+        $response = $this->get('/tasks');
 
         /* Assert */
-        $this->assertIsArray($result);
-        $this->assertCount(2, $result);
-    }
-
-    #[Test]
-    public function it_does_nothing_when_updating_on_invoice_delete_with_null_id(): void
-    {
-        /* Arrange */
-        $task = Task::create([
-            'task_name'        => 'Test Task',
-            'task_description' => 'Description',
-            'task_status'      => 1,
-        ]);
-
-        /* Act */
-        $this->service->updateOnInvoiceDelete(null);
-
-        /* Assert */
-        $task->refresh();
-        $this->assertEquals(1, $task->task_status);
-    }
-
-    #[Test]
-    public function it_does_nothing_when_updating_on_project_delete_with_null_id(): void
-    {
-        /* Arrange */
-        $project = Project::create([
-            'project_name' => 'Test Project',
-        ]);
-        $task = Task::create([
-            'task_name'        => 'Test Task',
-            'task_description' => 'Description',
-            'task_status'      => 1,
-            'project_id'       => $project->project_id,
-        ]);
-
-        /* Act */
-        $this->service->updateOnProjectDelete(null);
-
-        /* Assert */
-        $task->refresh();
-        $this->assertEquals($project->project_id, $task->project_id);
-    }
-
-    #[Test]
-    public function it_clears_project_association_when_project_is_deleted(): void
-    {
-        /* Arrange */
-        $project = Project::create([
-            'project_name' => 'Test Project',
-        ]);
-        $task1 = Task::create([
-            'task_name'        => 'Task 1',
-            'task_description' => 'Description 1',
-            'task_status'      => 1,
-            'project_id'       => $project->project_id,
-        ]);
-        $task2 = Task::create([
-            'task_name'        => 'Task 2',
-            'task_description' => 'Description 2',
-            'task_status'      => 1,
-            'project_id'       => $project->project_id,
-        ]);
-
-        /* Act */
-        $this->service->updateOnProjectDelete($project->project_id);
-
-        /* Assert */
-        $task1->refresh();
-        $task2->refresh();
-        $this->assertNull($task1->project_id);
-        $this->assertNull($task2->project_id);
-    }
-
-    #[Test]
-    public function it_returns_status_array(): void
-    {
-        /* Act */
-        $statuses = $this->service->statuses();
-
-        /* Assert */
-        $this->assertIsArray($statuses);
-        $this->assertNotEmpty($statuses);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/tasks] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

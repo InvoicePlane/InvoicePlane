@@ -2,46 +2,72 @@
 
 namespace Tests\Unit\Products;
 
-use Mdl_Units;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Units::class)]
+/**
+ * Smoke test for the UnitServiceTest module via CI3 HTTP harness.
+ */
 class UnitServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = new UnitService();
+        $this->actingAsAdmin();
     }
 
-    #[Group('crud')]
     #[Test]
-    public function it_returns_validation_rules(): void
-    {
-        $rules = $this->service->getValidationRules();
-
-        $this->assertIsArray($rules);
-        $this->assertArrayHasKey('unit_name', $rules);
-        $this->assertArrayHasKey('unit_name_plrl', $rules);
-    }
-
     #[Group('smoke')]
-    #[Test]
-    public function it_returns_empty_string_when_unit_id_is_null(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
-        $result = $this->service->getUnitName(null, 1);
-        $this->assertEquals('', $result);
+        /* Arrange */
+        /* (authenticated admin via setUp) */
+
+        /* Act */
+        $response = $this->get('/units');
+
+        /* Assert */
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /units] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_gets_unit_name(): void
+    public function it_does_not_expose_php_errors(): void
     {
-        $this->markTestIncomplete('Requires database setup with unit data');
+        /* Arrange */
+        /* (authenticated admin via setUp) */
+
+        /* Act */
+        $response = $this->get('/units');
+
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/units');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/units] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

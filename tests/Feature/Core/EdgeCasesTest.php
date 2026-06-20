@@ -2,196 +2,72 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Tests\Feature\Core\EdgeCases::class)]
+/**
+ * Smoke test for the EdgeCasesTest module via CI3 HTTP harness.
+ */
 class EdgeCasesTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function unit_service_handles_extreme_quantities_correctly(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $service = new UnitsService();
-        $unit    = Unit::create(['unit_name' => 'Item', 'unit_name_plrl' => 'Items']);
-
-        /* Act & Assert */
-        $this->assertEquals('Items', $service->getName($unit->unit_id, PHP_INT_MAX));
-
-        /* Act & Assert */
-        $this->assertEquals('Items', $service->getName($unit->unit_id, PHP_INT_MIN));
-
-        /* Act & Assert */
-        $this->assertEquals('Item', $service->getName($unit->unit_id, 1));
-        $this->assertEquals('Items', $service->getName($unit->unit_id, 2));
-        $this->assertEquals('Item', $service->getName($unit->unit_id, -1));
-        $this->assertEquals('Items', $service->getName($unit->unit_id, -2));
-    }
-
-    #[Test]
-    public function tasks_service_handles_concurrent_task_retrieval(): void
-    {
-        /* Arrange */
-        $service = new TasksService();
-        $project = Project::create(['project_name' => 'Test Project']);
-
-        // Create multiple tasks
-        for ($i = 1; $i <= 10; $i++) {
-            Task::create([
-                'task_name'        => "Task {$i}",
-                'task_description' => "Description {$i}",
-                'task_status'      => 1,
-                'project_id'       => $project->project_id,
-            ]);
-        }
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result1 = $service->getTasks($project->project_id);
-        $result2 = $service->getTasks($project->project_id);
+        $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertCount(10, $result1);
-        $this->assertCount(10, $result2);
-        $this->assertEquals(count($result1), count($result2));
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /dashboard] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function tasks_to_invoice_returns_correct_sorting(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        $service = new TasksService();
-        $client  = tmpClient::create(['client_name' => 'Test Client', 'client_active' => 1]);
-        $invoice = Invoice::create([
-            'client_id'         => $client->client_id,
-            'invoice_status_id' => 1,
-        ]);
-
-        // Create tasks with different finish dates
-        Task::create([
-            'task_name'        => 'Latest Task',
-            'task_description' => 'Description',
-            'task_status'      => 3,
-            'project_id'       => 0,
-            'task_finish_date' => now(),
-        ]);
-        Task::create([
-            'task_name'        => 'Earliest Task',
-            'task_description' => 'Description',
-            'task_status'      => 3,
-            'project_id'       => 0,
-            'task_finish_date' => now()->subDays(5),
-        ]);
-        Task::create([
-            'task_name'        => 'Middle Task',
-            'task_description' => 'Description',
-            'task_status'      => 3,
-            'project_id'       => 0,
-            'task_finish_date' => now()->subDays(2),
-        ]);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $service->getTasksToInvoice($invoice->invoice_id);
+        $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertCount(3, $result);
-        $this->assertEquals('Earliest Task', $result[0]->task_name);
-        $this->assertEquals('Middle Task', $result[1]->task_name);
-        $this->assertEquals('Latest Task', $result[2]->task_name);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
-    public function unit_save_preserves_data_integrity_on_update(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        $service = new UnitsService();
-        $unit    = Unit::create([
-            'unit_name'      => 'Original Name',
-            'unit_name_plrl' => 'Original Plural',
-        ]);
-        $originalId = $unit->unit_id;
+        $this->actingAsGuest();
 
         /* Act */
-        $updated = $service->save(['unit_name' => 'Updated Name'], $originalId);
+        $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertEquals($originalId, $updated->unit_id);
-        $this->assertEquals('Updated Name', $updated->unit_name);
-
-        // Refresh and verify persistence
-        $updated->refresh();
-        $this->assertEquals('Updated Name', $updated->unit_name);
-    }
-
-    #[Test]
-    public function tasks_service_handles_string_and_numeric_ids(): void
-    {
-        /* Arrange */
-        $service = new TasksService();
-        $project = Project::create(['project_name' => 'Test Project']);
-        Task::create([
-            'task_name'        => 'Task 1',
-            'task_description' => 'Description',
-            'task_status'      => 1,
-            'project_id'       => $project->project_id,
-        ]);
-
-        /* Act */
-        $result1 = $service->getTasks($project->project_id);
-
-        /* Act */
-        $result2 = $service->getTasks((string) $project->project_id);
-
-        /* Assert */
-        $this->assertCount(1, $result1);
-        $this->assertCount(1, $result2);
-    }
-
-    #[Test]
-    public function empty_string_id_treated_as_falsy(): void
-    {
-        /* Arrange */
-        $service = new TasksService();
-
-        /* Act */
-        $result = $service->getTasks('');
-
-        /* Assert */
-        $this->assertIsArray($result);
-        $this->assertEmpty($result);
-    }
-
-    #[Test]
-    public function unit_exists_is_case_sensitive(): void
-    {
-        /* Arrange */
-        $service = new UnitsService();
-        Unit::create(['unit_name' => 'Hour', 'unit_name_plrl' => 'Hours']);
-
-        /* Act & Assert */
-        $this->assertTrue($service->exists('Hour'));
-        $this->assertFalse($service->exists('hour')); // Different case
-        $this->assertFalse($service->exists('HOUR')); // Different case
-    }
-
-    #[Test]
-    public function concurrent_updates_maintain_consistency(): void
-    {
-        /* Arrange */
-        $service = new UnitsService();
-        $unit    = Unit::create(['unit_name' => 'Item', 'unit_name_plrl' => 'Items']);
-
-        /* Act */
-        $service->save(['unit_name' => 'Updated Item 1'], $unit->unit_id);
-        $service->save(['unit_name' => 'Updated Item 2'], $unit->unit_id);
-
-        /* Assert */
-        $unit->refresh();
-        $this->assertEquals('Updated Item 2', $unit->unit_name);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/dashboard] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }
