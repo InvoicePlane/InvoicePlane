@@ -86,6 +86,8 @@ class Mdl_Users extends Response_Model
             ],
             'user_siren' => [
                 'field' => 'user_siren',
+                'label' => trans('einvoice_siren'),
+                'rules' => 'trim|regex_match[/^[0-9]{9}$/]',
             ],
             'user_address_1' => [
                 'field' => 'user_address_1',
@@ -202,10 +204,12 @@ class Mdl_Users extends Response_Model
             ],
             'user_siren' => [
                 'field' => 'user_siren',
+                'label' => trans('einvoice_siren'),
+                'rules' => 'trim|regex_match[/^[0-9]{9}$/]',
             ],
             'user_address_1' => [
                 'field' => 'user_address_1',
-            ],
+
             'user_address_2' => [
                 'field' => 'user_address_2',
             ],
