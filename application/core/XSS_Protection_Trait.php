@@ -33,6 +33,10 @@ trait XSS_Protection_Trait
      */
     protected function filter_input(): void
     {
+        // Load file_security helper early so sanitize_for_logging() is always available,
+        // even when XSS modification is detected before the logging block is reached.
+        $this->load->helper('file_security');
+
         // Fields that should bypass XSS sanitization
         $bypass_fields = [
             'user_password',      // User password fields need to allow special characters
@@ -123,8 +127,6 @@ trait XSS_Protection_Trait
             $controller_type = $this instanceof Admin_Controller ? 'Admin' : 'Guest';
 
             // Sanitize user-influenced values to prevent log injection
-            $this->load->helper('file_security');
-
             $log_context = [
                 'timestamp'  => date('Y-m-d H:i:s'),
                 'user_id'    => $this->session->userdata('user_id'),

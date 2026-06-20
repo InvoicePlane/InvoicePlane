@@ -207,15 +207,62 @@
     }
 
     function initPayPal() {
+        // Validate CSRF token is available
+        if (!config.csrfTokenName || !config.csrfTokenValue) {
+            console.error('CSRF token not available - payment operations will fail');
+            showCardError('Security token not available. Please refresh the page and try again.');
+            return;
+        }
+
+        // Track current CSRF token (will be updated after createOrder)
+        let currentCsrfToken = config.csrfTokenValue;
+
+        // Helper function to update CSRF token from server response
+        function updateCsrfToken(order) {
+            // Validate order response has required ID
+            if (!order.id) {
+                throw new Error('Invalid order response - missing order ID');
+            }
+            
+            // Update CSRF token if server sent a new one
+            if (order.csrf_token) {
+                currentCsrfToken = order.csrf_token;
+            } else {
+                console.warn('Server did not return refreshed CSRF token - subsequent requests may fail');
+            }
+            
+            return order.id;
+        }
+
         // Standard PayPal buttons
         paypal.Buttons({
             createOrder() {
-                return fetch(config.createOrderUrl, { method: "GET" })
+                const formData = new URLSearchParams();
+                formData.append(config.csrfTokenName, currentCsrfToken);
+                
+                return fetch(config.createOrderUrl, { 
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
                     .then(response => response.json())
-                    .then(order => order.id);
+                    .then(updateCsrfToken);
             },
             onApprove: function(data) {
-                return fetch(config.capturePaymentUrl + data.orderID, { method: 'GET' })
+                const formData = new URLSearchParams();
+                formData.append(config.csrfTokenName, currentCsrfToken);
+                
+                return fetch(config.capturePaymentUrl + data.orderID, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
                     .then(response => {
                         if (!response.ok) throw new Error('Capture failed with HTTP ' + response.status);
                         window.location.replace(config.successUrl);
@@ -242,12 +289,32 @@
 
             const cardFields = paypal.CardFields({
                 createOrder() {
-                    return fetch(config.createOrderUrl, { method: 'GET' })
+                    const formData = new URLSearchParams();
+                    formData.append(config.csrfTokenName, currentCsrfToken);
+                    
+                    return fetch(config.createOrderUrl, { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData
+                    })
                         .then(res => res.json())
-                        .then(order => order.id);
+                        .then(updateCsrfToken);
                 },
                 onApprove(data) {
-                    return fetch(config.capturePaymentUrl + data.orderID, { method: 'GET' })
+                    const formData = new URLSearchParams();
+                    formData.append(config.csrfTokenName, currentCsrfToken);
+                    
+                    return fetch(config.capturePaymentUrl + data.orderID, { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData
+                    })
                         .then(res => {
                             if (!res.ok) throw new Error('Capture failed with HTTP ' + res.status);
                             window.location.replace(config.successUrl);
