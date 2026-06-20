@@ -212,54 +212,6 @@ class Settings extends Admin_Controller
     }
 
     /**
-     * Remove a logo file securely.
-     *
-     * @param string $type The logo type (e.g., 'invoice' or 'login')
-     */
-    public function remove_logo(string $type)
-    {
-        $logoFilename = get_setting($type . '_logo');
-
-        // Security: Validate filename before attempting deletion
-        if (empty($logoFilename)) {
-            log_message('debug', sprintf('Logo removal: No %s logo configured', sanitize_for_logging($type)));
-            $this->session->set_flashdata('alert_error', trans('no_logo_to_remove'));
-            redirect('settings');
-        }
-
-        // Security: Comprehensive file validation using file_security_helper
-        $uploadsDir = './uploads/';
-        $validation = validate_file_access($logoFilename, $uploadsDir);
-
-        if ( ! $validation['valid']) {
-            // Note: validate_file_access always provides an error field, but we use defensive programming here
-            log_message('error', sprintf(
-                'Logo removal blocked: Invalid file path for %s (hash: %s, error: %s)',
-                sanitize_for_logging($type),
-                $validation['hash'],
-                sanitize_for_logging($validation['error'] ?? 'unknown')
-            ));
-            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
-            redirect('settings');
-        }
-
-        // Delete the validated file
-        if ( ! unlink($validation['path'])) {
-            log_message('error', sprintf('Failed to delete %s logo file (hash: %s)', sanitize_for_logging($type), $validation['hash']));
-            $this->session->set_flashdata('alert_error', trans('failed_to_delete_logo'));
-            redirect('settings');
-        }
-
-        // Clear the setting in database
-        $this->mdl_settings->save($type . '_logo', '');
-
-        log_message('info', sprintf('Successfully removed %s logo (hash: %s)', sanitize_for_logging($type), $validation['hash']));
-        $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
-
-        redirect('settings');
-    }
-
-    /**
      * Remove a logo file with security validation.
      *
      * Security: Validates that the logo file path is safe and within the uploads directory
