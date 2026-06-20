@@ -109,7 +109,15 @@ There is no `quickstart.yml`. InvoicePlane does not have `php artisan` commands.
 
 1. Create the template file in `CUSTOM_TEMPLATES_FOLDER/<invoice_templates|quote_templates>/<pdf|public>/MyTemplate.php`.
 2. Configure `CUSTOM_TEMPLATES_FOLDER` in `ipconfig.php` to point to the parent directory.
-3. The template will appear in the UI automatically (validated by `Mdl_Templates::_merge_custom()`).
+3. Add the template name (without `.php`) to the appropriate explicit allowlist constant in `ipconfig.php`:
+   - `CUSTOM_INVOICE_TEMPLATES_PDF` — PDF invoice templates
+   - `CUSTOM_INVOICE_TEMPLATES_PUBLIC` — public/web invoice templates
+   - `CUSTOM_QUOTE_TEMPLATES_PDF` — PDF quote templates
+   - `CUSTOM_QUOTE_TEMPLATES_PUBLIC` — public/web quote templates
+   Example: `CUSTOM_INVOICE_TEMPLATES_PDF=MyTemplate,AnotherTemplate`
+4. The template will appear in the UI once its name is in the allowlist constant.
+
+Note: The filesystem is **never** scanned to discover custom templates (RCE prevention). Only names present in the explicit constants are used.
 
 Alternatively, add the template name to the `ALLOWED_INVOICE_TEMPLATES` or `ALLOWED_QUOTE_TEMPLATES` constant in `application/modules/invoices/models/Mdl_templates.php` and place the file inside `application/views/`.
 
