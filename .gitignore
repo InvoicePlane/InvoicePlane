@@ -7,6 +7,9 @@
 /node_modules
 /vendor
 
+# PHPUnit
+/.phpunit.cache
+
 # Workflow artifacts
 audit-report.json
 updated-packages.txt

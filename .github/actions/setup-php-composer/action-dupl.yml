@@ -1,0 +1,57 @@
+name: 'Setup PHP with Composer Caching'
+description: 'Set up PHP environment and install Composer dependencies with intelligent caching'
+inputs:
+  php-version:
+    description: 'PHP version to use'
+    required: false
+    default: '8.2'
+  php-extensions:
+    description: 'PHP extensions to install (comma-separated)'
+    required: false
+    default: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath'
+  composer-flags:
+    description: 'Flags appended to the composer install command (e.g., --no-dev --optimize-autoloader). Used only when composer-args is empty.'
+    required: false
+    default: '--no-interaction --prefer-dist --optimize-autoloader'
+  composer-args:
+    description: 'Complete argument list passed directly to composer install. When non-empty, this overrides composer-flags and is used as-is.'
+    required: false
+    default: ''
+  working-directory:
+    description: 'Working directory for composer commands'
+    required: false
+    default: '.'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.php-version }}
+        extensions: ${{ inputs.php-extensions }}
+        coverage: none
+
+    - name: Get Composer Cache Directory
+      id: composer-cache
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    - name: Install Composer dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        if [ -n "${{ inputs.composer-args }}" ]; then
+          composer install ${{ inputs.composer-args }}
+        else
+          composer install ${{ inputs.composer-flags }}
+        fi
