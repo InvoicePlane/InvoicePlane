@@ -28,7 +28,7 @@ class HmvcRouteLifecycleTest extends CiIntegrationTestCase
     {
         $this->actingAsAdmin();
 
-        $response = $this->get('/invoices/index');
+        $response = $this->get('/invoices/status/all');
 
         $this->assertResponseOk($response);
         $this->assertNotSame('', mb_trim($response->body()));
