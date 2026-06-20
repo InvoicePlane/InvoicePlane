@@ -3,109 +3,128 @@
 namespace Tests\Concerns;
 
 use InvalidArgumentException;
-use mysqli;
+use PDO;
+use PDOException;
 
 trait InteractsWithDatabase
 {
-    private static ?mysqli $testDb = null;
+    private static ?PDO $testDb = null;
 
     protected function databaseInsert(string $table, array $row): int
     {
         $db = $this->db();
 
-        $columns = array_keys($row);
-        $values  = array_values($row);
+        $columns       = array_keys($row);
+        $placeholders  = array_map(static fn ($col) => ':' . $col, $columns);
+        $quotedColumns = array_map(static fn ($col) => '"' . $col . '"', $columns);
 
-        $escapedColumns = array_map(static fn (int|string $column): string => '`' . $column . '`', $columns);
-        $escapedValues  = array_map([$db, 'real_escape_string'], array_map('strval', $values));
-        $wrappedValues  = array_map(static fn ($value): string => "'{$value}'", $escapedValues);
-
-        $sql = sprintf(
-            'INSERT INTO `%s` (%s) VALUES (%s)',
+        $sql  = sprintf(
+            'INSERT INTO "%s" (%s) VALUES (%s)',
             $table,
-            implode(', ', $escapedColumns),
-            implode(', ', $wrappedValues)
+            implode(', ', $quotedColumns),
+            implode(', ', $placeholders)
         );
+        $stmt = $db->prepare($sql);
 
-        if ( ! $db->query($sql)) {
-            static::fail('Failed inserting test row: ' . $db->error);
+        foreach ($row as $col => $value) {
+            $stmt->bindValue(':' . $col, $value);
         }
 
-        return (int) $db->insert_id;
+        if ( ! $stmt->execute()) {
+            static::fail('Failed inserting test row into ' . $table);
+        }
+
+        return (int) $db->lastInsertId();
     }
 
     protected function databaseUpdate(string $table, array $set, array $where): void
     {
         $db = $this->db();
 
-        $setParts = [];
-        foreach ($set as $key => $value) {
-            $setParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+        $setParts   = array_map(static fn ($col) => '"' . $col . '" = :set_' . $col, array_keys($set));
+        $whereParts = array_map(static fn ($col) => '"' . $col . '" = :wh_' . $col, array_keys($where));
+
+        $sql  = sprintf('UPDATE "%s" SET %s WHERE %s', $table, implode(', ', $setParts), implode(' AND ', $whereParts));
+        $stmt = $db->prepare($sql);
+
+        foreach ($set as $col => $value) {
+            $stmt->bindValue(':set_' . $col, $value);
         }
 
-        $whereParts = [];
-        foreach ($where as $key => $value) {
-            $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+        foreach ($where as $col => $value) {
+            $stmt->bindValue(':wh_' . $col, $value);
         }
 
-        $sql = sprintf('UPDATE `%s` SET %s WHERE %s', $table, implode(', ', $setParts), implode(' AND ', $whereParts));
-        $db->query($sql);
+        $stmt->execute();
     }
 
     protected function databaseDelete(string $table, array $where): void
     {
         $db = $this->db();
 
-        $whereParts = [];
-        foreach ($where as $key => $value) {
-            $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+        $whereParts = array_map(static fn ($col) => '"' . $col . '" = :' . $col, array_keys($where));
+        $sql        = sprintf('DELETE FROM "%s" WHERE %s', $table, implode(' AND ', $whereParts));
+        $stmt       = $db->prepare($sql);
+
+        foreach ($where as $col => $value) {
+            $stmt->bindValue(':' . $col, $value);
         }
 
-        $sql = sprintf('DELETE FROM `%s` WHERE %s', $table, implode(' AND ', $whereParts));
-        $db->query($sql);
+        $stmt->execute();
     }
 
     protected function databaseFetchOne(string $table, array $where): ?array
     {
         $db = $this->db();
 
-        $whereParts = [];
-        foreach ($where as $key => $value) {
-            $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+        $whereParts = array_map(static fn ($col) => '"' . $col . '" = :' . $col, array_keys($where));
+        $sql        = sprintf('SELECT * FROM "%s" WHERE %s LIMIT 1', $table, implode(' AND ', $whereParts));
+        $stmt       = $db->prepare($sql);
+
+        foreach ($where as $col => $value) {
+            $stmt->bindValue(':' . $col, $value);
         }
 
-        $sql    = sprintf('SELECT * FROM `%s` WHERE %s LIMIT 1', $table, implode(' AND ', $whereParts));
-        $result = $db->query($sql);
-        $row    = $result ? $result->fetch_assoc() : false;
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row ?: null;
     }
 
     protected function assertDatabaseHas(string $table, array $conditions): void
     {
-        static::assertNotNull($this->databaseFetchOne($table, $conditions));
+        static::assertNotNull(
+            $this->databaseFetchOne($table, $conditions),
+            "Expected row in [{$table}] not found."
+        );
     }
 
     protected function assertDatabaseMissing(string $table, array $conditions): void
     {
-        static::assertNull($this->databaseFetchOne($table, $conditions));
+        static::assertNull(
+            $this->databaseFetchOne($table, $conditions),
+            "Unexpected row found in [{$table}]."
+        );
     }
 
     protected function assertDatabaseCount(string $table, int $expected, array $conditions = []): void
     {
         $db = $this->db();
 
-        $sql = sprintf('SELECT COUNT(*) AS c FROM `%s`', $table);
+        $sql = sprintf('SELECT COUNT(*) AS c FROM "%s"', $table);
         if ($conditions !== []) {
-            $whereParts = [];
-            foreach ($conditions as $key => $value) {
-                $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
-            }
+            $whereParts = array_map(static fn ($col) => '"' . $col . '" = :' . $col, array_keys($conditions));
             $sql .= ' WHERE ' . implode(' AND ', $whereParts);
         }
 
-        $result = $db->query($sql);
-        $count  = (int) (($result ? $result->fetch_assoc()['c'] : 0));
+        $stmt = $db->prepare($sql);
+
+        foreach ($conditions as $col => $value) {
+            $stmt->bindValue(':' . $col, $value);
+        }
+
+        $stmt->execute();
+        $count = (int) $stmt->fetchColumn();
 
         static::assertSame($expected, $count);
     }
@@ -228,8 +247,6 @@ trait InteractsWithDatabase
             'Modules\\Payments\\Models\\Payment'         => ['ip_payments', 'payment_id'],
             'PaymentMethod'                              => ['ip_payment_methods', 'payment_method_id'],
             'Modules\\Payments\\Models\\PaymentMethod'   => ['ip_payment_methods', 'payment_method_id'],
-            'PaymentLog'                                 => ['ip_payment_logs', 'payment_log_id'],
-            'Modules\\Payments\\Models\\PaymentLog'      => ['ip_payment_logs', 'payment_log_id'],
             'TaxRate'                                    => ['ip_tax_rates', 'tax_rate_id'],
             'Modules\\Core\\Models\\TaxRate'             => ['ip_tax_rates', 'tax_rate_id'],
             'Modules\\Products\\Models\\TaxRate'         => ['ip_tax_rates', 'tax_rate_id'],
@@ -371,9 +388,9 @@ trait InteractsWithDatabase
         return array_merge($defaults, $overrides);
     }
 
-    private function db(): mysqli
+    private function db(): PDO
     {
-        if (self::$testDb instanceof mysqli) {
+        if (self::$testDb instanceof PDO) {
             return self::$testDb;
         }
 
@@ -384,19 +401,27 @@ trait InteractsWithDatabase
         $db           = [];
         require $basePath . '/application/config/database.php';
 
-        $group = $active_group ?? 'default';
-        $cfg   = $db[$group] ?? [];
+        $group  = $active_group ?? 'default';
+        $cfg    = $db[$group] ?? [];
+        $driver = $cfg['dbdriver'] ?? 'mysqli';
 
-        self::$testDb = new mysqli(
-            (string) ($cfg['hostname'] ?? '127.0.0.1'),
-            (string) ($cfg['username'] ?? ''),
-            (string) ($cfg['password'] ?? ''),
-            (string) ($cfg['database'] ?? ''),
-            (int) ($cfg['port'] ?? 3306),
-        );
+        if ($driver === 'sqlite3') {
+            $path         = (string) ($cfg['database'] ?? '');
+            self::$testDb = new PDO('sqlite:' . $path);
+            self::$testDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } else {
+            $host = (string) ($cfg['hostname'] ?? '127.0.0.1');
+            $user = (string) ($cfg['username'] ?? '');
+            $pass = (string) ($cfg['password'] ?? '');
+            $name = (string) ($cfg['database'] ?? '');
+            $port = (int) ($cfg['port'] ?? 3306);
 
-        if (self::$testDb->connect_errno) {
-            static::markTestSkipped('Database unavailable for integration tests: ' . self::$testDb->connect_error);
+            try {
+                self::$testDb = new PDO("mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4", $user, $pass);
+                self::$testDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                static::markTestSkipped('Database unavailable for integration tests: ' . $e->getMessage());
+            }
         }
 
         return self::$testDb;
