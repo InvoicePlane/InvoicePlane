@@ -4,13 +4,14 @@ namespace Tests\Feature\Clients;
 
 use Tests\AbstractTestCase;
 
-#[CoversClass(Tests\Feature\Clients\ClientsFeature::class)]
+use Clients;
+
+#[CoversClass(Clients::class)]
 class ClientsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
         $this->actingAsAdmin();
     }
 
