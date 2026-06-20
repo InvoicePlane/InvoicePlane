@@ -15,13 +15,11 @@ use Tests\AbstractTestCase;
  * @group feature
  * @group integrations
  */
-#[CoversClass(Tests\Feature\Core\IntegrationsFeature::class)]
 class IntegrationsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
         $this->actingAsAdmin();
     }
 
