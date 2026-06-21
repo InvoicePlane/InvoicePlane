@@ -19,36 +19,19 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (setup done in setUp) */
+        $this->databaseInsert('ip_email_templates', [
+            'email_template_title' => 'Test Email Template',
+            'email_template_subject' => 'Test Subject',
+            'email_template_body'    => 'Test body',
+            'email_template_type'    => 'invoice',
+        ]);
 
         /* Act */
         $response = $this->get('/email_templates');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /email_templates] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (setup done in setUp) */
-
-        /* Act */
-        $response = $this->get('/email_templates');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_email_templates', ['email_template_title' => 'Test Email Template']);
+        $this->assertResponseBodyContains($response, '<html');
     }
 }

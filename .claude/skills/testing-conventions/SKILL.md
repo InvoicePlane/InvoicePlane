@@ -55,3 +55,69 @@ review, no matter how correct the assertions are.
 If a phase is genuinely empty (e.g. a pure-assertion unit test with no setup),
 keep the comment and leave a blank line — the structure is the contract, not the
 line count.
+
+---
+
+## Rule — No Shallow Assertions
+
+A test that only checks a status code or the absence of PHP errors is **not a
+test** — it is a false sense of coverage. The following patterns are banned:
+
+**Banned: status-code-only smoke test**
+```php
+// Wrong — the logicalOr catches 200, 301, 302, 500 equally
+$this->assertThat(
+    $response->statusCode(),
+    $this->logicalOr($this->equalTo(200), $this->equalTo(301))
+);
+```
+
+**Banned: `assertResponseHasNoPhpErrors` as the sole assertion**
+```php
+// Wrong — this does not test the route, it tests that PHP didn't crash
+$this->assertResponseHasNoPhpErrors($response);
+```
+
+**Banned: standalone `it_does_not_expose_php_errors` test method** — delete it.
+
+### What to do instead
+
+Seed real data in `/* Arrange */` and assert that data is observable:
+
+```php
+#[Test]
+#[Group('smoke')]
+public function it_lists_active_clients(): void
+{
+    /* Arrange */
+    $clientId = $this->seedClient(['client_name' => 'Acme Corp']);
+
+    /* Act */
+    $response = $this->get('/clients/view/' . $clientId);
+
+    /* Assert */
+    $this->assertResponseStatusCode($response, 200);
+    $this->assertResponseBodyContains($response, 'Acme Corp');
+}
+```
+
+### When the list view does not render seeded rows
+
+CI3 paginated list views (e.g. `/products`, `/tax_rates`, `/clients/status/active`)
+use complex subqueries that do not return rows inserted via PDO in the test
+harness. In that case:
+
+1. Use `assertDatabaseHas` to prove the seed succeeded.
+2. Use `assertResponseBodyContains($response, '<html')` to prove the page rendered.
+3. Where a dedicated view endpoint exists (e.g. `/invoices/view/{id}`,
+   `/quotes/view/{id}`), prefer it — the seeded data will appear in the response.
+
+```php
+/* Assert */
+$this->assertResponseStatusCode($response, 200);
+$this->assertDatabaseHas('ip_products', ['product_name' => 'Acme Widget']);
+$this->assertResponseBodyContains($response, '<html');
+```
+
+Do NOT replace a seeded-data assertion with `assertResponseBodyContains($response, '<html')`
+alone — `assertDatabaseHas` must accompany it.

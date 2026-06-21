@@ -7,9 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * Core AjaxController Feature Tests.
+ * UsersController Feature Tests.
  *
- * Tests AJAX requests for settings operations.
+ * Tests user management list view.
  */
 class UsersControllerTest extends AbstractTestCase
 {
@@ -24,37 +24,23 @@ class UsersControllerTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (setup done in setUp) */
+        $this->databaseInsert('ip_users', [
+            'user_name'          => 'Alice Tester',
+            'user_password'      => password_hash('secret', PASSWORD_DEFAULT),
+            'user_psalt'         => bin2hex(random_bytes(10)),
+            'user_email'         => 'alice@test.local',
+            'user_type'          => 0,
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
 
         /* Act */
         $response = $this->get('/users');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /users] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (setup done in setUp) */
-
-        /* Act */
-        $response = $this->get('/users');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'Alice Tester');
     }
 
     #[Test]

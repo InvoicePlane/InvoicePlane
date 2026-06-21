@@ -7,9 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * Core AjaxController Feature Tests.
+ * TaxRateDeletionValidation Feature Tests.
  *
- * Tests AJAX requests for settings operations.
+ * Tests tax rate deletion validation.
  */
 class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
 {
@@ -24,37 +24,18 @@ class TaxRateDeletionValidationFeatureTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (setup done in setUp) */
+        $this->databaseInsert('ip_tax_rates', [
+            'tax_rate_name'    => 'Deletion Tax Rate',
+            'tax_rate_percent' => '15.00',
+        ]);
 
         /* Act */
         $response = $this->get('/tax_rates');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /tax_rates] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (setup done in setUp) */
-
-        /* Act */
-        $response = $this->get('/tax_rates');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_tax_rates', ['tax_rate_name' => 'Deletion Tax Rate']);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]

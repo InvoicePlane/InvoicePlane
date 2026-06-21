@@ -22,37 +22,28 @@ class TasksServiceTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        $clientId = $this->seedClient(['client_name' => 'Tasks Service Client']);
+        $projectId = $this->databaseInsert('ip_projects', [
+            'client_id'            => $clientId,
+            'project_name'         => 'Tasks Service Project',
+        ]);
+        $this->databaseInsert('ip_tasks', [
+            'project_id'      => $projectId,
+            'task_name'        => 'Service Task Delta',
+            'task_description' => '',
+            'task_price'       => '0.00',
+            'task_finish_date' => date('Y-m-d'),
+            'task_status'      => 1,
+            'tax_rate_id'      => 0,
+        ]);
 
         /* Act */
         $response = $this->get('/tasks');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /tasks] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (authenticated admin via setUp) */
-
-        /* Act */
-        $response = $this->get('/tasks');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_tasks', ['task_name' => 'Service Task Delta']);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]

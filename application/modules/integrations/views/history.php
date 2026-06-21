@@ -28,8 +28,8 @@
                 <td><?php echo htmlsc($row['created_at']); ?></td>
                 <td><?php echo htmlsc($row['direction']); ?></td>
                 <td><?php echo htmlsc($row['status']); ?></td>
-                <td><?php echo htmlsc($row['message']); ?></td>
-                <td><?php echo htmlsc($row['external_id']); ?></td>
+                <td><?php echo htmlsc($row['merchant_response']); ?></td>
+                <td><?php echo htmlsc($row['merchant_response_reference']); ?></td>
                 <td><?php echo htmlsc($row['http_code']); ?></td>
             </tr>
         <?php endforeach; ?>
