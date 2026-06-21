@@ -202,7 +202,7 @@ class MX_Loader extends CI_Loader
                     if ($d1 === null || $d2 === null) { return null; }
                     $t1 = is_numeric($d1) ? (int) $d1 : strtotime((string) $d1);
                     $t2 = is_numeric($d2) ? (int) $d2 : strtotime((string) $d2);
-                    return (int) round(($t1 - $t2) / 86400);
+                    return intdiv((int) ($t1 - $t2), 86400);
                 }, 2);
                 $conn->createFunction('MONTH', static fn ($d) => $d ? (int) date('n', is_numeric($d) ? (int) $d : strtotime((string) $d)) : null, 1);
                 $conn->createFunction('YEAR', static fn ($d) => $d ? (int) date('Y', is_numeric($d) ? (int) $d : strtotime((string) $d)) : null, 1);

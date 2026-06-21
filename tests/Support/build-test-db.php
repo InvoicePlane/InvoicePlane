@@ -24,6 +24,8 @@ $pdo = new PDO('sqlite:' . $dbPath);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $pdo->exec('PRAGMA journal_mode=WAL; PRAGMA foreign_keys=OFF;');
 
+$failures = [];
+
 $sqlDir = __DIR__ . '/../../application/modules/setup/sql';
 $files  = glob($sqlDir . '/*.sql');
 sort($files);
@@ -58,9 +60,16 @@ foreach ($files as $file) {
                 continue;
             }
 
-            fwrite(STDERR, "WARN in {$file}: " . mb_substr($stmt, 0, 80) . " → {$msg}\n");
+            $label = basename($file) . ': ' . mb_substr($stmt, 0, 80);
+            fwrite(STDERR, "ERROR in {$label} → {$msg}\n");
+            $failures[] = $label;
         }
     }
+}
+
+if ($failures !== []) {
+    fwrite(STDERR, "\n" . count($failures) . " migration statement(s) failed — cannot seed.\n");
+    exit(1);
 }
 
 seedDefaults($pdo);

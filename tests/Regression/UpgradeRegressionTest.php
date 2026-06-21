@@ -67,6 +67,7 @@ class UpgradeRegressionTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]
