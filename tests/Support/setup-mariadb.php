@@ -5,6 +5,8 @@
  *
  * Usage:
  *   php tests/Support/setup-mariadb.php [host] [user] [password] [database]
+ *
+ * Exits non-zero if any migration statement fails for a non-idempotent reason.
  */
 
 $host   = $argv[1] ?? '127.0.0.1';
@@ -20,8 +22,10 @@ $sqlDir = __DIR__ . '/../../application/modules/setup/sql';
 $files  = glob($sqlDir . '/*.sql');
 sort($files);
 
+$failures = [];
+
 foreach ($files as $file) {
-    $sql     = file_get_contents($file);
+    $sql      = file_get_contents($file);
     $stripped = preg_replace('/\/\*.*?\*\//s', '', $sql);
     $stripped = preg_replace('/#[^\n]*/', '', $stripped);
     if (trim($stripped) === '') {
@@ -48,21 +52,30 @@ foreach ($files as $file) {
             $pdo->exec($stmt);
         } catch (PDOException $e) {
             $msg = $e->getMessage();
-            // Ignore idempotent errors (duplicate column, table already exists)
+
+            // Idempotent: safe to ignore on re-runs or out-of-order application
             if (
                 str_contains($msg, 'Duplicate column') ||
                 str_contains($msg, 'already exists') ||
-                str_contains($msg, "doesn't exist")
+                str_contains($msg, "doesn't exist") ||
+                str_contains($msg, 'Can\'t DROP')
             ) {
                 continue;
             }
 
-            fwrite(STDERR, "WARN in " . basename($file) . ": " . mb_substr($stmt, 0, 80) . " → {$msg}\n");
+            $label = basename($file) . ': ' . mb_substr($stmt, 0, 120);
+            fwrite(STDERR, "ERROR in {$label}\n  → {$msg}\n");
+            $failures[] = $label;
         }
     }
 }
 
 $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+
+if ($failures !== []) {
+    fwrite(STDERR, "\n" . count($failures) . " migration statement(s) failed — cannot seed.\n");
+    exit(1);
+}
 
 seedDefaults($pdo);
 
@@ -70,23 +83,22 @@ echo "MariaDB test database ready: {$dbName}@{$host}\n";
 
 function seedDefaults(PDO $pdo): void
 {
-    // Settings
     $settings = [
-        ['default_language',        'english'],
-        ['currency_symbol',         '$'],
-        ['currency_symbol_placement','before'],
-        ['date_format',             'Y-m-d'],
-        ['time_format',             'H:i'],
-        ['pdf_engine',              'pdfmake'],
-        ['pdf_paper_size',          'a4'],
-        ['pdf_paper_orientation',   'portrait'],
-        ['read_only_toggle',        'paid'],
-        ['next_invoice_number',     '1'],
-        ['next_quote_number',       '1'],
-        ['invoicenumber_prefix',    ''],
-        ['quotenumber_prefix',      ''],
-        ['disable_setup',           '1'],
-        ['sumex',                   '0'],
+        ['default_language',         'english'],
+        ['currency_symbol',          '$'],
+        ['currency_symbol_placement', 'before'],
+        ['date_format',              'Y-m-d'],
+        ['time_format',              'H:i'],
+        ['pdf_engine',               'pdfmake'],
+        ['pdf_paper_size',           'a4'],
+        ['pdf_paper_orientation',    'portrait'],
+        ['read_only_toggle',         'paid'],
+        ['next_invoice_number',      '1'],
+        ['next_quote_number',        '1'],
+        ['invoicenumber_prefix',     ''],
+        ['quotenumber_prefix',       ''],
+        ['disable_setup',            '1'],
+        ['sumex',                    '0'],
     ];
 
     $stmt = $pdo->prepare('INSERT IGNORE INTO `ip_settings` (`setting_key`,`setting_value`) VALUES (?,?)');
@@ -94,7 +106,6 @@ function seedDefaults(PDO $pdo): void
         $stmt->execute([$key, $val]);
     }
 
-    // Admin user (user_id=1)
     $hash = password_hash('password', PASSWORD_DEFAULT);
     $pdo->exec("INSERT IGNORE INTO `ip_users`
         (`user_id`,`user_name`,`user_email`,`user_password`,`user_psalt`,
@@ -102,13 +113,11 @@ function seedDefaults(PDO $pdo): void
         VALUES (1,'Admin','admin@test.local','{$hash}','salt1234567890123456',
                 1,1,NOW(),NOW())");
 
-    // Default invoice group (invoice_group_id=1)
     $pdo->exec("INSERT IGNORE INTO `ip_invoice_groups`
         (`invoice_group_id`,`invoice_group_name`,`invoice_group_identifier_format`,
          `invoice_group_next_id`,`invoice_group_left_pad`)
         VALUES (1,'Default','INV-{{{id}}}',1,4)");
 
-    // Default payment method (payment_method_id=1)
     $pdo->exec("INSERT IGNORE INTO `ip_payment_methods`
         (`payment_method_id`,`payment_method_name`)
         VALUES (1,'Cash')");
