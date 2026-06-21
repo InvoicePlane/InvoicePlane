@@ -1,5 +1,10 @@
 <?php
 
+// Signal to MY_Exceptions (and any other CI3 extension) that this PHP process
+// is a test subprocess. Errors that would normally echo HTML and exit() will
+// throw RuntimeException instead, making them visible as real PHPUnit failures.
+define('CI_TEST_SUBPROCESS', true);
+
 $encodedRequest = getenv('CI_TEST_REQUEST') ?: '';
 $decodedRequest = base64_decode($encodedRequest, true);
 
