@@ -58,6 +58,23 @@ line count.
 
 ---
 
+## Rule — Test Honesty
+
+A test is **honest** when the data it seeds in `/* Arrange */` is the same data
+it asserts in `/* Assert */`. Seed a client named `'Acme Corp'`, then prove
+`'Acme Corp'` appears in the response. Anything less is theatre.
+
+```
+Arrange → seed something specific
+Act     → call the endpoint
+Assert  → prove that specific thing is visible
+```
+
+If you cannot assert that the seeded data appears in the response, you are not
+testing the endpoint — you are testing that it doesn't crash.
+
+---
+
 ## Rule — No Shallow Assertions
 
 A test that only checks a status code or the absence of PHP errors is **not a
