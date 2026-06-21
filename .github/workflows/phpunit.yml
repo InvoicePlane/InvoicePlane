@@ -2,9 +2,9 @@ name: PHPUnit
 
 on:
   push:
-    branches: [ main, master, 'claude/**', 'feature/**' ]
+    branches: [main, master, 'claude/**', 'feature/**']
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
     inputs:
       php_version:
@@ -91,6 +91,10 @@ jobs:
             echo "Waiting for MariaDB... ($i/30)"
             sleep 2
           done
+          if ! mysql -h 127.0.0.1 -u root -proot invoiceplane_test -e "SELECT 1;" 2>/dev/null; then
+            echo "MariaDB did not become ready in time." >&2
+            exit 1
+          fi
 
       - name: Apply migrations and seed test data
         run: |
