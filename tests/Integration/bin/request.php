@@ -98,10 +98,13 @@ register_shutdown_function(static function () use (&$result_emitted, &$captured_
         return;
     }
 
-    // Force the ob callback to fire, populating $captured_output with any buffered content
-    // including what was written by exit("string") before the shutdown sequence began.
+    // Flush all remaining output buffers down to the callback layer.
+    // ob_end_flush() passes each buffer's content to the next level; when it reaches
+    // the callback ob_start (level 1), the callback fires and populates $captured_output.
+    // This correctly handles content written before exit() without double-capturing
+    // anything that the callback already processed during normal CI3 output flushing.
     while (ob_get_level() > 0) {
-        ob_end_clean();
+        ob_end_flush();
     }
 
     $result = [
@@ -123,9 +126,9 @@ try {
     $ci_exception = $throwable::class . ': ' . $throwable->getMessage() . ' @ ' . $throwable->getFile() . ':' . $throwable->getLine();
 }
 
-// Normal (non-exit) code path: flush the ob buffer to populate $captured_output.
+// Normal (non-exit) code path: flush any remaining buffered content through the callback.
 while (ob_get_level() > 0) {
-    ob_end_clean();
+    ob_end_flush();
 }
 
 if ( ! $result_emitted) {

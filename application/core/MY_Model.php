@@ -201,6 +201,12 @@ class MY_Model extends CI_Model
 
         $isSqlite = in_array($this->db->dbdriver, ['sqlite3', 'sqlite'], true);
 
+        // Save filters before the first run so the data query can reuse them.
+        // run_filters() clears $this->filter after execution, so without this
+        // the SQLite double-pass (COUNT then data) would lose caller-added
+        // filter_select columns (e.g. client_invoice_balance) on the data pass.
+        $savedFilters = $this->filter;
+
         $this->set_defaults();
         $this->run_filters();
 
@@ -217,6 +223,7 @@ class MY_Model extends CI_Model
             }
             $this->total_rows = $this->db->count_all_results($this->table, false);
             $this->db->reset_query();
+            $this->filter = $savedFilters;
             $this->set_defaults();
             $this->run_filters();
             $this->db->qb_select = array_values(array_filter(

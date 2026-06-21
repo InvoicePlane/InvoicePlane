@@ -24,6 +24,9 @@ class TaxRatesControllerTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
+        // Truncate first so accumulated rows from prior runs don't push
+        // the seeded row off page 1 of the paginated list.
+        $this->databaseTruncate('ip_tax_rates');
         $this->databaseInsert('ip_tax_rates', [
             'tax_rate_name'    => 'GST Test',
             'tax_rate_percent' => '10.00',
