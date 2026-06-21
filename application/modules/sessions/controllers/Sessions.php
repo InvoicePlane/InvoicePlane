@@ -655,23 +655,31 @@ class Sessions extends Base_Controller
      */
     private function _get_safe_referer($referer = '')
     {
-        // Use provided referer or HTTP_REFERER
+        $default = 'sessions/passwordreset';
+
         $referer = empty($referer) ? ($_SERVER['HTTP_REFERER'] ?? '') : $referer;
 
-        // If no referer, use default
         if (empty($referer)) {
-            return 'sessions/passwordreset';
+            return $default;
         }
 
-        // Get base URL
         $base_url = base_url();
 
-        // Check if referer starts with base URL (same domain)
-        if (str_starts_with($referer, $base_url)) {
-            return $referer;
+        // If base_url is not configured, str_starts_with($referer, '') is always true
+        // and any external URL would pass. Reject to be safe.
+        if (empty($base_url)) {
+            return $default;
         }
 
-        // Referer is external or invalid, use safe default
-        return 'sessions/passwordreset';
+        // Compare parsed hosts rather than string prefixes to resist
+        // bypass attempts such as https://example.com.evil.com/...
+        $referer_host  = parse_url($referer, PHP_URL_HOST);
+        $base_host     = parse_url($base_url, PHP_URL_HOST);
+
+        if ( ! $referer_host || ! $base_host || $referer_host !== $base_host) {
+            return $default;
+        }
+
+        return $referer;
     }
 }
