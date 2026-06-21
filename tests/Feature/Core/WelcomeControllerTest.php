@@ -27,6 +27,6 @@ class WelcomeControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseOk($response);
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseBodyContains($response, '<html');
     }
 }

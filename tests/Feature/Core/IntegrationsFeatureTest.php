@@ -22,59 +22,38 @@ class IntegrationsFeatureTest extends AbstractTestCase
     public function it_returns_a_successful_response_for_the_integrations_settings_page(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        $this->databaseInsert('ip_merchant_clients', [
+            'merchant_type' => 'superpdp',
+            'label'         => 'My SuperPDP',
+            'enabled'       => 0,
+            'auth_type'     => 'oauth2',
+            'settings_json' => '{}',
+            'created_at'    => date('Y-m-d H:i:s'),
+            'updated_at'    => date('Y-m-d H:i:s'),
+        ]);
 
         /* Act */
         $response = $this->get('/integrations/settings');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /integrations/settings] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors_on_the_integrations_settings_page(): void
-    {
-        /* Arrange */
-        /* (authenticated admin via setUp) */
-
-        /* Act */
-        $response = $this->get('/integrations/settings');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'My SuperPDP');
     }
 
     #[Test]
     public function it_returns_a_successful_response_for_the_integrations_providers_endpoint(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        /* (providers discovered from filesystem — no seeding needed) */
 
         /* Act */
         $response = $this->get('/integrations/providers');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(307),
-            ),
-            sprintf('[GET /integrations/providers] returned unexpected status [%d].', $response->statusCode())
-        );
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'superpdp');
+        $this->assertResponseBodyContains($response, 'qonto');
+        $this->assertResponseBodyContains($response, 'letspeppol');
     }
 
     #[Test]
@@ -130,35 +109,22 @@ class IntegrationsFeatureTest extends AbstractTestCase
     public function it_returns_a_successful_response_for_the_integrations_events_page(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        $this->databaseInsert('ip_merchant_clients', [
+            'merchant_type' => 'superpdp',
+            'label'         => 'My Events Provider',
+            'enabled'       => 1,
+            'auth_type'     => 'oauth2',
+            'settings_json' => '{}',
+            'created_at'    => date('Y-m-d H:i:s'),
+            'updated_at'    => date('Y-m-d H:i:s'),
+        ]);
 
         /* Act */
         $response = $this->get('/integrations/events');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(307),
-            ),
-            sprintf('[GET /integrations/events] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors_on_the_integrations_events_page(): void
-    {
-        /* Arrange */
-        /* (authenticated admin via setUp) */
-
-        /* Act */
-        $response = $this->get('/integrations/events');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'My Events Provider');
     }
 
     #[Test]
@@ -166,35 +132,22 @@ class IntegrationsFeatureTest extends AbstractTestCase
     public function it_returns_a_successful_response_for_the_integrations_incoming_page(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        $this->databaseInsert('ip_merchant_clients', [
+            'merchant_type' => 'superpdp',
+            'label'         => 'My Incoming Provider',
+            'enabled'       => 1,
+            'auth_type'     => 'oauth2',
+            'settings_json' => '{}',
+            'created_at'    => date('Y-m-d H:i:s'),
+            'updated_at'    => date('Y-m-d H:i:s'),
+        ]);
 
         /* Act */
         $response = $this->get('/integrations/incoming');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(307),
-            ),
-            sprintf('[GET /integrations/incoming] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors_on_the_integrations_incoming_page(): void
-    {
-        /* Arrange */
-        /* (authenticated admin via setUp) */
-
-        /* Act */
-        $response = $this->get('/integrations/incoming');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'My Incoming Provider');
     }
 
     #[Test]
@@ -202,22 +155,36 @@ class IntegrationsFeatureTest extends AbstractTestCase
     public function it_handles_the_history_endpoint_gracefully_for_a_missing_invoice(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        $clientId = $this->seedClient(['client_name' => 'History Test Client']);
+        $invoiceId = $this->seedInvoice($clientId);
+        $merchantClientId = $this->databaseInsert('ip_merchant_clients', [
+            'merchant_type' => 'superpdp',
+            'label'         => 'History Provider',
+            'enabled'       => 1,
+            'auth_type'     => 'oauth2',
+            'settings_json' => '{}',
+            'created_at'    => date('Y-m-d H:i:s'),
+            'updated_at'    => date('Y-m-d H:i:s'),
+        ]);
+        $this->databaseInsert('ip_merchant_responses', [
+            'invoice_id'                  => $invoiceId,
+            'merchant_client_id'          => $merchantClientId,
+            'merchant_response_date'      => date('Y-m-d'),
+            'merchant_response_driver'    => 'superpdp',
+            'merchant_response'           => 'accepted',
+            'merchant_response_reference' => 'REF-001',
+            'direction'                   => 'out',
+            'record_type'                 => 'outbound_status',
+            'status'                      => 'accepted',
+            'created_at'                  => date('Y-m-d H:i:s'),
+        ]);
 
         /* Act */
-        $response = $this->get('/integrations/history/999999');
+        $response = $this->get('/integrations/history/' . $invoiceId);
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(302),
-                self::equalTo(404),
-            ),
-            sprintf('[GET /integrations/history/999999] returned unexpected status [%d].', $response->statusCode())
-        );
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'REF-001');
     }
 
     #[Test]

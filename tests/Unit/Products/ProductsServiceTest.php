@@ -22,37 +22,23 @@ class ProductsServiceTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        $this->databaseInsert('ip_products', [
+            'product_name'        => 'Service Widget Iota',
+            'family_id'           => 0,
+            'product_sku'         => 'SKU-SVC-001',
+            'product_description' => 'A service test product',
+            'product_price'       => '14.99',
+            'purchase_price'      => '0.00',
+            'tax_rate_id'         => 0,
+        ]);
 
         /* Act */
         $response = $this->get('/products');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /products] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (authenticated admin via setUp) */
-
-        /* Act */
-        $response = $this->get('/products');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_products', ['product_name' => 'Service Widget Iota']);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]

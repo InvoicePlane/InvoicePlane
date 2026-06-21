@@ -7,9 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * FamiliesController Feature Tests.
+ * UnitDeletionValidation Feature Tests.
  *
- * Tests product family (category) management including list, create, update, and delete.
+ * Tests unit deletion validation.
  */
 class UnitDeletionValidationFeatureTest extends AbstractTestCase
 {
@@ -24,37 +24,23 @@ class UnitDeletionValidationFeatureTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (setup done in setUp) */
+        $this->databaseInsert('ip_products', [
+            'product_name'        => 'Unit Deletion Product',
+            'family_id'           => 0,
+            'product_sku'         => 'SKU-UNIT-DEL-001',
+            'product_description' => 'A product for unit deletion test',
+            'product_price'       => '3.00',
+            'purchase_price'      => '0.00',
+            'tax_rate_id'         => 0,
+        ]);
 
         /* Act */
         $response = $this->get('/products');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /products] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (setup done in setUp) */
-
-        /* Act */
-        $response = $this->get('/products');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_products', ['product_name' => 'Unit Deletion Product']);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]

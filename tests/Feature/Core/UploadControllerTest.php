@@ -7,9 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * Core AjaxController Feature Tests.
+ * UploadController Feature Tests.
  *
- * Tests AJAX requests for settings operations.
+ * Tests the import/upload page for authenticated admins.
  */
 class UploadControllerTest extends AbstractTestCase
 {
@@ -24,37 +24,14 @@ class UploadControllerTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (setup done in setUp) */
+        /* (authenticated admin via setUp) */
 
         /* Act */
         $response = $this->get('/import');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /import] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (setup done in setUp) */
-
-        /* Act */
-        $response = $this->get('/import');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]

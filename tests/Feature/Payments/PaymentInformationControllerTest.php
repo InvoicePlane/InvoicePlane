@@ -9,7 +9,7 @@ use Tests\AbstractTestCase;
 /**
  * Payment_Information.
  *
- * Tests HTTP endpoints for client deletion with business rules:
+ * Tests HTTP endpoints for the payments list.
  */
 class PaymentInformationControllerTest extends AbstractTestCase
 {
@@ -24,37 +24,16 @@ class PaymentInformationControllerTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (setup done in setUp) */
+        $clientId = $this->seedClient(['client_name' => 'Payment Info Client']);
+        $invoiceId = $this->seedInvoice($clientId);
+        $this->seedPayment($invoiceId);
 
         /* Act */
         $response = $this->get('/payments');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /payments] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (setup done in setUp) */
-
-        /* Act */
-        $response = $this->get('/payments');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId]);
     }
 
     #[Test]

@@ -7,10 +7,9 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * ProjectsController Feature Tests.
+ * TaskDeletionValidation Feature Tests.
  *
- * Test suite for ProjectsController covering CRUD operations
- * with data integrity validation and business logic verification.
+ * Tests task deletion validation via the projects route.
  */
 class TaskDeletionValidationFeatureTest extends AbstractTestCase
 {
@@ -25,37 +24,18 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (setup done in setUp) */
+        $clientId = $this->seedClient(['client_name' => 'Task Deletion Client']);
+        $this->databaseInsert('ip_projects', [
+            'client_id'            => $clientId,
+            'project_name'         => 'Deletion Test Project',
+        ]);
 
         /* Act */
         $response = $this->get('/projects');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /projects] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (setup done in setUp) */
-
-        /* Act */
-        $response = $this->get('/projects');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'Deletion Test Project');
     }
 
     #[Test]

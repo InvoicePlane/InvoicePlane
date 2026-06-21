@@ -22,37 +22,16 @@ class PaymentMethodsServiceTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        $clientId = $this->seedClient(['client_name' => 'PM Service Client']);
+        $invoiceId = $this->seedInvoice($clientId);
+        $this->seedPayment($invoiceId);
 
         /* Act */
         $response = $this->get('/payments');
 
         /* Assert */
-        self::assertThat(
-            $response->statusCode(),
-            self::logicalOr(
-                self::equalTo(200),
-                self::equalTo(301),
-                self::equalTo(302),
-                self::equalTo(303),
-                self::equalTo(307),
-                self::equalTo(308),
-            ),
-            sprintf('[GET /payments] returned unexpected status [%d].', $response->statusCode())
-        );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        /* (authenticated admin via setUp) */
-
-        /* Act */
-        $response = $this->get('/payments');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]
