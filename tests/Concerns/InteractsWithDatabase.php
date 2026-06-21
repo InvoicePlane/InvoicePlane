@@ -34,6 +34,25 @@ trait InteractsWithDatabase
         return (int) $db->lastInsertId();
     }
 
+    protected function databaseInsertOrIgnore(string $table, array $row): void
+    {
+        $db = $this->db();
+
+        $columns      = array_keys($row);
+        $placeholders = array_map(static fn ($c) => ':' . $c, $columns);
+
+        $quotedTable   = $this->qi($table);
+        $quotedColumns = implode(', ', array_map($this->qi(...), $columns));
+
+        $sql  = sprintf(
+            'INSERT OR IGNORE INTO %s (%s) VALUES (%s)',
+            $quotedTable,
+            $quotedColumns,
+            implode(', ', $placeholders)
+        );
+        $db->prepare($sql)->execute($row);
+    }
+
     protected function databaseUpdate(string $table, array $set, array $where): void
     {
         $db = $this->db();

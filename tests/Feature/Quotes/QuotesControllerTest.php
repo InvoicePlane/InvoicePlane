@@ -2,15 +2,9 @@
 
 namespace Tests\Feature\Quotes;
 
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-/**
- * QuotesController (CRM/Guest) Feature Tests.
- *
- * Tests guest portal quote viewing and approval.
- */
 class QuotesControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -19,30 +13,99 @@ class QuotesControllerTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
-    #[Test]
-    #[Group('smoke')]
-    public function it_returns_a_successful_response_or_redirect(): void
+    private function seedQuote(array $overrides = []): int
     {
-        /* Arrange */
-        $clientId = $this->seedClient(['client_name' => 'Quote Test Client']);
-        $quoteId  = $this->databaseInsert('ip_quotes', [
-            'client_id'          => $clientId,
+        $clientId = $this->seedClient(['client_name' => 'Quote Client ' . bin2hex(random_bytes(3))]);
+
+        return $this->databaseInsert('ip_quotes', array_merge([
+            'client_id'           => $clientId,
+            'user_id'             => 1,
+            'invoice_group_id'    => 1,
             'quote_date_created'  => date('Y-m-d'),
             'quote_date_modified' => date('Y-m-d'),
-            'user_id'            => 1,
-            'invoice_group_id'   => 1,
-            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-            'quote_number'       => 'QUO-TEST-001',
-            'quote_url_key'      => 'testkey123',
-        ]);
+            'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
+            'quote_number'        => 'QUO-' . bin2hex(random_bytes(4)),
+            'quote_url_key'       => bin2hex(random_bytes(16)),
+            'quote_discount_amount'  => '0',
+            'quote_discount_percent' => '0',
+        ], $overrides));
+    }
+
+    // -------------------------------------------------------------------------
+    // List
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_lists_quotes_by_status(): void
+    {
+        /* Arrange */
+        $quoteId = $this->seedQuote(['quote_number' => 'QUO-LIST-001']);
+
+        /* Act */
+        $response = $this->get('/quotes/status/all');
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_quotes', ['quote_id' => $quoteId, 'quote_number' => 'QUO-LIST-001']);
+        $this->assertResponseBodyContains($response, '<html');
+    }
+
+    // -------------------------------------------------------------------------
+    // View
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_views_a_single_quote_and_shows_the_quote_number(): void
+    {
+        /* Arrange */
+        $quoteId = $this->seedQuote(['quote_number' => 'QUO-VIEW-001']);
 
         /* Act */
         $response = $this->get('/quotes/view/' . $quoteId);
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertResponseBodyContains($response, 'QUO-TEST-001');
+        $this->assertResponseBodyContains($response, 'QUO-VIEW-001');
     }
+
+    // -------------------------------------------------------------------------
+    // Delete
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_deletes_a_quote(): void
+    {
+        /* Arrange */
+        $quoteId = $this->seedQuote(['quote_number' => 'QUO-DEL-001']);
+        $this->assertDatabaseHas('ip_quotes', ['quote_id' => $quoteId]);
+
+        /* Act */
+        $response = $this->post('/quotes/delete/' . $quoteId, []);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertDatabaseMissing('ip_quotes', ['quote_id' => $quoteId]);
+    }
+
+    // -------------------------------------------------------------------------
+    // Edge cases
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_redirects_index_to_all_quotes_list(): void
+    {
+        /* Arrange */
+
+        /* Act */
+        $response = $this->get('/quotes');
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'GET /quotes must redirect to status/all.');
+    }
+
+    // -------------------------------------------------------------------------
+    // Guest redirect — always last
+    // -------------------------------------------------------------------------
 
     #[Test]
     public function it_redirects_a_guest_to_login(): void
@@ -54,9 +117,6 @@ class QuotesControllerTest extends AbstractTestCase
         $response = $this->get('/quotes/status/all');
 
         /* Assert */
-        self::assertTrue(
-            $response->isRedirect(),
-            sprintf('Unauthenticated GET [/quotes] must redirect. Got [%d].', $response->statusCode())
-        );
+        self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
     }
 }
