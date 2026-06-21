@@ -17,10 +17,13 @@ trait InteractsWithDatabase
         $columns      = array_keys($row);
         $placeholders = array_map(static fn ($c) => ':' . $c, $columns);
 
+        $quotedTable   = $this->qi($table);
+        $quotedColumns = implode(', ', array_map($this->qi(...), $columns));
+
         $sql  = sprintf(
-            'INSERT INTO "%s" ("%s") VALUES (%s)',
-            $table,
-            implode('", "', $columns),
+            'INSERT INTO %s (%s) VALUES (%s)',
+            $quotedTable,
+            $quotedColumns,
             implode(', ', $placeholders)
         );
         $stmt = $db->prepare($sql);
@@ -38,17 +41,22 @@ trait InteractsWithDatabase
         $setParts = [];
         $params   = [];
         foreach ($set as $key => $value) {
-            $setParts[] = sprintf('"%s" = :set_%s', $key, $key);
+            $setParts[]            = $this->qi($key) . ' = :set_' . $key;
             $params['set_' . $key] = $value;
         }
 
         $whereParts = [];
         foreach ($where as $key => $value) {
-            $whereParts[]          = sprintf('"%s" = :wh_%s', $key, $key);
-            $params['wh_' . $key]  = $value;
+            $whereParts[]         = $this->qi($key) . ' = :wh_' . $key;
+            $params['wh_' . $key] = $value;
         }
 
-        $sql  = sprintf('UPDATE "%s" SET %s WHERE %s', $table, implode(', ', $setParts), implode(' AND ', $whereParts));
+        $sql  = sprintf(
+            'UPDATE %s SET %s WHERE %s',
+            $this->qi($table),
+            implode(', ', $setParts),
+            implode(' AND ', $whereParts)
+        );
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
     }
@@ -60,11 +68,15 @@ trait InteractsWithDatabase
         $whereParts = [];
         $params     = [];
         foreach ($where as $key => $value) {
-            $whereParts[]   = sprintf('"%s" = :%s', $key, $key);
-            $params[$key]   = $value;
+            $whereParts[] = $this->qi($key) . ' = :' . $key;
+            $params[$key] = $value;
         }
 
-        $sql  = sprintf('DELETE FROM "%s" WHERE %s', $table, implode(' AND ', $whereParts));
+        $sql  = sprintf(
+            'DELETE FROM %s WHERE %s',
+            $this->qi($table),
+            implode(' AND ', $whereParts)
+        );
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
     }
@@ -76,14 +88,18 @@ trait InteractsWithDatabase
         $whereParts = [];
         $params     = [];
         foreach ($where as $key => $value) {
-            $whereParts[]   = sprintf('"%s" = :%s', $key, $key);
-            $params[$key]   = $value;
+            $whereParts[] = $this->qi($key) . ' = :' . $key;
+            $params[$key] = $value;
         }
 
-        $sql    = sprintf('SELECT * FROM "%s" WHERE %s LIMIT 1', $table, implode(' AND ', $whereParts));
-        $stmt   = $db->prepare($sql);
+        $sql  = sprintf(
+            'SELECT * FROM %s WHERE %s LIMIT 1',
+            $this->qi($table),
+            implode(' AND ', $whereParts)
+        );
+        $stmt = $db->prepare($sql);
         $stmt->execute($params);
-        $row    = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row  = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row ?: null;
     }
@@ -109,12 +125,12 @@ trait InteractsWithDatabase
         $db     = $this->db();
         $params = [];
 
-        $sql = sprintf('SELECT COUNT(*) AS c FROM "%s"', $table);
+        $sql = sprintf('SELECT COUNT(*) AS c FROM %s', $this->qi($table));
         if ($conditions !== []) {
             $whereParts = [];
             foreach ($conditions as $key => $value) {
-                $whereParts[]   = sprintf('"%s" = :%s', $key, $key);
-                $params[$key]   = $value;
+                $whereParts[] = $this->qi($key) . ' = :' . $key;
+                $params[$key] = $value;
             }
             $sql .= ' WHERE ' . implode(' AND ', $whereParts);
         }
@@ -142,10 +158,10 @@ trait InteractsWithDatabase
     protected function seedInvoice(int $clientId, array $overrides = [], array $amountOverrides = []): int
     {
         $invoiceId = $this->databaseInsert('ip_invoices', array_merge([
-            'user_id'              => 1,
-            'client_id'            => $clientId,
-            'invoice_group_id'     => 1,
-            'invoice_status_id'    => 1,
+            'user_id'                  => 1,
+            'client_id'                => $clientId,
+            'invoice_group_id'         => 1,
+            'invoice_status_id'        => 1,
             'invoice_date_created'     => date('Y-m-d'),
             'invoice_date_modified'    => date('Y-m-d H:i:s'),
             'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
@@ -176,11 +192,11 @@ trait InteractsWithDatabase
     protected function seedPayment(int $invoiceId, array $overrides = []): int
     {
         return $this->databaseInsert('ip_payments', array_merge([
-            'invoice_id'           => $invoiceId,
-            'payment_method_id'    => 1,
-            'payment_amount' => '100.00',
-            'payment_date'   => date('Y-m-d'),
-            'payment_note'   => '',
+            'invoice_id'        => $invoiceId,
+            'payment_method_id' => 1,
+            'payment_amount'    => '100.00',
+            'payment_date'      => date('Y-m-d'),
+            'payment_note'      => '',
         ], $overrides));
     }
 
@@ -424,8 +440,6 @@ trait InteractsWithDatabase
 
         $group  = $active_group ?? 'default';
         $cfg    = $db[$group] ?? [];
-        $driver = $cfg['dbdriver'] ?? 'mysqli';
-
         $driver = (string) ($cfg['dbdriver'] ?? 'mysqli');
 
         if (in_array($driver, ['sqlite3', 'sqlite'], true)) {
@@ -458,5 +472,20 @@ trait InteractsWithDatabase
         }
 
         return self::$testDb;
+    }
+
+    /**
+     * Quote a single identifier using the appropriate character for the current driver.
+     * SQLite uses double-quotes; MySQL/MariaDB uses backticks.
+     */
+    private function qi(string $identifier): string
+    {
+        $driver = self::$testDb?->getAttribute(PDO::ATTR_DRIVER_NAME) ?? 'mysql';
+
+        if ($driver === 'sqlite') {
+            return '"' . str_replace('"', '""', $identifier) . '"';
+        }
+
+        return '`' . str_replace('`', '``', $identifier) . '`';
     }
 }

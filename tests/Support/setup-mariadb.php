@@ -72,6 +72,8 @@ foreach ($files as $file) {
 
 $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
 
+fixupMissingColumns($pdo);
+
 if ($failures !== []) {
     fwrite(STDERR, "\n" . count($failures) . " migration statement(s) failed — cannot seed.\n");
     exit(1);
@@ -80,6 +82,35 @@ if ($failures !== []) {
 seedDefaults($pdo);
 
 echo "MariaDB test database ready: {$dbName}@{$host}\n";
+
+function fixupMissingColumns(PDO $pdo): void
+{
+    // These columns exist in the production schema but were never captured in
+    // any migration SQL file (same gap patched by build-test-db.php for SQLite).
+    $fixups = [
+        'ALTER TABLE `ip_client_custom`  ADD COLUMN `client_custom_fieldid`    INT(11)',
+        'ALTER TABLE `ip_client_custom`  ADD COLUMN `client_custom_fieldvalue` TEXT',
+        'ALTER TABLE `ip_quote_custom`   ADD COLUMN `quote_custom_fieldid`     INT(11)',
+        'ALTER TABLE `ip_quote_custom`   ADD COLUMN `quote_custom_fieldvalue`  TEXT',
+        'ALTER TABLE `ip_payment_custom` ADD COLUMN `payment_custom_fieldid`   INT(11)',
+        'ALTER TABLE `ip_payment_custom` ADD COLUMN `payment_custom_fieldvalue` TEXT',
+        'ALTER TABLE `ip_invoice_custom` ADD COLUMN `invoice_custom_fieldid`   INT(11)',
+        'ALTER TABLE `ip_invoice_custom` ADD COLUMN `invoice_custom_fieldvalue` TEXT',
+        'ALTER TABLE `ip_user_custom`    ADD COLUMN `user_custom_fieldid`      INT(11)',
+        'ALTER TABLE `ip_user_custom`    ADD COLUMN `user_custom_fieldvalue`   TEXT',
+    ];
+
+    foreach ($fixups as $sql) {
+        try {
+            $pdo->exec($sql);
+        } catch (PDOException $e) {
+            if (str_contains($e->getMessage(), 'Duplicate column') || str_contains($e->getMessage(), 'already exists')) {
+                continue;
+            }
+            fwrite(STDERR, "WARN fixup: " . mb_substr($sql, 0, 80) . " → " . $e->getMessage() . "\n");
+        }
+    }
+}
 
 function seedDefaults(PDO $pdo): void
 {
