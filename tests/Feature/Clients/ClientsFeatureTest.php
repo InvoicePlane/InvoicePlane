@@ -90,10 +90,7 @@ class ClientsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue(
-            $response->isRedirect(),
-            'Expected redirect but got HTTP ' . $response->statusCode() . '. Body: ' . mb_substr($response->body(), 0, 800)
-        );
+        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
         $this->assertDatabaseHas('ip_clients', ['client_name' => 'Acme Corp']);
     }
 

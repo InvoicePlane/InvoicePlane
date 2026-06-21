@@ -262,6 +262,7 @@ function fixupMissingColumns(PDO $pdo): void
         'ALTER TABLE "ip_invoice_custom" ADD COLUMN "invoice_custom_fieldvalue" TEXT',
         'ALTER TABLE "ip_user_custom"    ADD COLUMN "user_custom_fieldid"      INTEGER',
         'ALTER TABLE "ip_user_custom"    ADD COLUMN "user_custom_fieldvalue"   TEXT',
+        'ALTER TABLE "ip_users"          ADD COLUMN "user_all_clients"         INTEGER NOT NULL DEFAULT 0',
     ];
 
     foreach ($fixups as $sql) {
