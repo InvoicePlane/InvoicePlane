@@ -279,7 +279,7 @@ $config['log_threshold'] = IP_DEBUG ? 2 : 1;
 | application/logs/ directory. Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = '';
+$config['log_path'] = defined('FCPATH') ? dirname(FCPATH) . '/storage/logs/' : '';
 
 /*
 |--------------------------------------------------------------------------

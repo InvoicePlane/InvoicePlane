@@ -84,6 +84,11 @@ trait InteractsWithDatabase
         $stmt->execute($params);
     }
 
+    protected function databaseTruncate(string $table): void
+    {
+        $this->db()->exec('DELETE FROM ' . $this->qi($table));
+    }
+
     protected function databaseDelete(string $table, array $where): void
     {
         $db = $this->db();
