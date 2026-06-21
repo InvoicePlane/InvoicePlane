@@ -15,11 +15,16 @@ if ( ! is_array($request)) {
     exit(3);
 }
 
+// Disable CSRF verification in test subprocesses — forms don't carry real tokens.
+putenv('CSRF_PROTECTION=false');
+$_ENV['CSRF_PROTECTION'] = 'false';
+
 $method  = mb_strtoupper((string) ($request['method'] ?? 'GET'));
 $uri     = '/' . mb_ltrim((string) ($request['uri'] ?? '/'), '/');
 $query   = is_array($request['query'] ?? null) ? $request['query'] : [];
 $post    = is_array($request['post'] ?? null) ? $request['post'] : [];
 $session = is_array($request['session'] ?? null) ? $request['session'] : [];
+$isAjax  = (bool) ($request['ajax'] ?? false);
 
 if ($session !== []) {
     if (session_status() === PHP_SESSION_NONE) {
@@ -58,57 +63,50 @@ $_SERVER['SERVER_PORT']        = '80';
 $_SERVER['HTTPS']              = 'off';
 $_SERVER['REMOTE_ADDR']        = '127.0.0.1';
 $_SERVER['HTTP_USER_AGENT']    = 'PHPUnit CI3 Integration Runner';
-$_SERVER['HTTP_ACCEPT']        = 'text/html,application/xhtml+xml';
+$_SERVER['HTTP_ACCEPT']        = $isAjax ? 'application/json' : 'text/html,application/xhtml+xml';
+
+if ($isAjax) {
+    $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+}
 $_SERVER['DOCUMENT_ROOT']      = dirname(__DIR__, 3) . '/public';
 $_SERVER['SCRIPT_FILENAME']    = dirname(__DIR__, 3) . '/public/index.php';
 $_SERVER['REQUEST_TIME']       = time();
 $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 
-// State shared between the shutdown handler and the main try/catch.
-$ci_result    = null;
-$ci_exception = null;
+// Capture all application output via ob callback. PHP calls shutdown functions BEFORE
+// flushing output buffers, so we must call ob_end_clean() inside the shutdown function
+// to force-flush and populate $captured_output before reading it.
+$captured_output = '';
+ob_start(static function (string $chunk) use (&$captured_output): string {
+    $captured_output .= $chunk;
+    return '';
+});
 
-// Register shutdown BEFORE running index.php so it fires even if redirect() calls exit().
-register_shutdown_function(static function () use (&$ci_result, &$ci_exception): void {
-    // If the result was already emitted (normal exit path), do nothing.
-    if ($ci_result !== null) {
+$ci_exception   = null;
+$result_emitted = false;
+
+register_shutdown_function(static function () use (&$result_emitted, &$captured_output, &$ci_exception): void {
+    if ($result_emitted) {
         return;
     }
 
-    $output = ob_get_clean() ?: '';
+    // Force the ob callback to fire, populating $captured_output with any buffered content
+    // including what was written by exit("string") before the shutdown sequence began.
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
 
     $result = [
         'status'    => http_response_code() ?: 200,
         'headers'   => headers_list(),
-        'output'    => $output,
+        'output'    => $captured_output,
         'exception' => $ci_exception,
     ];
 
-    echo '__CI_TEST_RESULT_START__';
-    echo base64_encode((string) json_encode($result, JSON_THROW_ON_ERROR));
-    echo '__CI_TEST_RESULT_END__';
-});
-
-ob_start();
-$exception = null;
-$resultEmitted = false;
-
-// Use shutdown function to catch exit() calls (e.g. redirect())
-register_shutdown_function(function () use (&$exception, &$resultEmitted) {
-    if ($resultEmitted) {
-        return;
-    }
-    $output = ob_get_clean();
-    $result = [
-        'status'    => http_response_code() ?: 200,
-        'headers'   => headers_list(),
-        'output'    => $output ?? '',
-        'exception' => $exception,
-    ];
-    echo '__CI_TEST_RESULT_START__';
-    echo base64_encode((string) json_encode($result, JSON_THROW_ON_ERROR));
-    echo '__CI_TEST_RESULT_END__';
-    $resultEmitted = true;
+    $result_emitted = true;
+    fwrite(STDOUT, '__CI_TEST_RESULT_START__');
+    fwrite(STDOUT, base64_encode((string) json_encode($result, JSON_THROW_ON_ERROR)));
+    fwrite(STDOUT, '__CI_TEST_RESULT_END__');
 });
 
 try {
@@ -117,21 +115,21 @@ try {
     $ci_exception = $throwable::class . ': ' . $throwable->getMessage() . ' @ ' . $throwable->getFile() . ':' . $throwable->getLine();
 }
 
-$output = ob_get_clean();
+// Normal (non-exit) code path: flush the ob buffer to populate $captured_output.
+while (ob_get_level() > 0) {
+    ob_end_clean();
+}
 
-$result = [
-    'status'    => http_response_code() ?: 200,
-    'headers'   => headers_list(),
-    'output'    => $output,
-    'exception' => $ci_exception,
-];
+if ( ! $result_emitted) {
+    $result = [
+        'status'    => http_response_code() ?: 200,
+        'headers'   => headers_list(),
+        'output'    => $captured_output,
+        'exception' => $ci_exception,
+    ];
 
-// Mark as done so the shutdown handler skips.
-$ci_result = $result;
-
-echo '__CI_TEST_RESULT_START__';
-echo base64_encode((string) json_encode($result, JSON_THROW_ON_ERROR));
-echo '__CI_TEST_RESULT_END__';
-$resultEmitted = true;
-
-exit($ci_exception === null ? 0 : 1);
+    $result_emitted = true;
+    fwrite(STDOUT, '__CI_TEST_RESULT_START__');
+    fwrite(STDOUT, base64_encode((string) json_encode($result, JSON_THROW_ON_ERROR)));
+    fwrite(STDOUT, '__CI_TEST_RESULT_END__');
+}

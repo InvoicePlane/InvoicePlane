@@ -44,7 +44,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         ];
     }
 
-    protected function request(string $method, string $uri, array $query = [], array $post = []): HttpResponse
+    protected function request(string $method, string $uri, array $query = [], array $post = [], bool $ajax = false): HttpResponse
     {
         $payload = [
             'method'  => mb_strtoupper($method),
@@ -52,6 +52,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             'query'   => $query,
             'post'    => $post,
             'session' => $this->sessionData,
+            'ajax'    => $ajax,
         ];
 
         $command = sprintf('php %s', escapeshellarg(dirname(__DIR__) . '/tests/Integration/bin/request.php'));
@@ -116,6 +117,11 @@ abstract class AbstractTestCase extends PhpUnitTestCase
     protected function post(string $uri, array $data = [], array $query = []): HttpResponse
     {
         return $this->request('POST', $uri, $query, $data);
+    }
+
+    protected function ajax(string $method, string $uri, array $data = []): HttpResponse
+    {
+        return $this->request(mb_strtoupper($method), $uri, [], $data, true);
     }
 
     protected function delete(string $uri, array $data = [], array $query = []): HttpResponse
