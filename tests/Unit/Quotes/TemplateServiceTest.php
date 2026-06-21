@@ -22,6 +22,7 @@ class TemplateServiceTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
+        $this->databaseTruncate('ip_quotes');
         $clientId = $this->seedClient(['client_name' => 'Template Service Client Xi']);
         $this->databaseInsert('ip_quotes', [
             'client_id'          => $clientId,
