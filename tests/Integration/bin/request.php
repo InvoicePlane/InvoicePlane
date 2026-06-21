@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 // Signal to MY_Exceptions (and any other CI3 extension) that this PHP process
 // is a test subprocess. Errors that would normally echo HTML and exit() will
 // throw RuntimeException instead, making them visible as real PHPUnit failures.

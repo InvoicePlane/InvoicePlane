@@ -41,7 +41,3 @@ if ( ! function_exists('env_bool')) {
 }
 
 defined('IP_DEBUG') || define('IP_DEBUG', env_bool('ENABLE_DEBUG', false));
-
-defined('THEME_FOLDER') || define('THEME_FOLDER', $base . '/resources/assets/');
-
-defined('SUMEX_SETTINGS') || define('SUMEX_SETTINGS', env_bool('SUMEX_SETTINGS', false));
