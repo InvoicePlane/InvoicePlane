@@ -1,9 +1,10 @@
 <?php
 
 namespace Tests\Unit\Router;
-use Tests\AbstractTestCase;
 
+use PHPUnit\Framework\Attributes\Group;
 use ReflectionClass;
+use Tests\AbstractTestCase;
 
 /**
  * Unit tests for MY_Router's two extension points:
@@ -14,9 +15,9 @@ use ReflectionClass;
  * We test the logic in isolation using a test double that exposes
  * the protected aliasPsr4Controller() method and a configurable $moduleAliases map.
  *
- * @group unit
- * @group router
  */
+#[Group('unit')]
+#[Group('router')]
 #[CoversClass(Tests\Unit\Router\MY_Router::class)]
 class MY_RouterTest extends AbstractTestCase
 {

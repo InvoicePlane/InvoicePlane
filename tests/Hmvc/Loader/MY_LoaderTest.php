@@ -1,9 +1,10 @@
 <?php
 
 namespace Tests\Unit\Loader;
-use Tests\AbstractTestCase;
 
+use PHPUnit\Framework\Attributes\Group;
 use stdClass;
+use Tests\AbstractTestCase;
 
 /**
  * Unit tests for MY_Loader's PSR-4 detection and binding logic.
@@ -12,9 +13,9 @@ use stdClass;
  * We test the classification and binding logic without booting CI3 by
  * using plain stubs that replicate the relevant MY_Loader methods.
  *
- * @group unit
- * @group loader
  */
+#[Group('unit')]
+#[Group('loader')]
 #[CoversClass(Tests\Unit\Loader\MY_Loader::class)]
 class MY_LoaderTest extends AbstractTestCase
 {
@@ -228,6 +229,7 @@ class TestableLoader
     }
 }
 
+#[\AllowDynamicProperties]
 class FakeCiSuperObject
 {
     public function __get(string $name): mixed

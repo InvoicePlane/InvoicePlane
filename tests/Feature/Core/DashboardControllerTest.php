@@ -8,10 +8,9 @@ use Tests\AbstractTestCase;
 
 /**
  * Dashboard controller feature tests via CI3 HTTP subprocess harness.
- *
- * @group feature
- * @group dashboard
  */
+#[Group('feature')]
+#[Group('dashboard')]
 class DashboardControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

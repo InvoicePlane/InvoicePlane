@@ -1,9 +1,10 @@
 <?php
 
 namespace Tests\Feature\Core;
-use Tests\AbstractTestCase;
 
 use DateTime;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\AbstractTestCase;
 use DateTimeZone;
 
 /**
@@ -19,10 +20,10 @@ use DateTimeZone;
  *  - IP-based rate-limit window filtering
  *  - MAX_PASSWORD_RESET_EXPIRY_MINUTES enforcement
  *
- * @group unit
- * @group security
- * @group sessions
  */
+#[Group('unit')]
+#[Group('security')]
+#[Group('sessions')]
 class SessionsSecurityTest extends AbstractTestCase
 {
     private StubSessionsSecurity $security;
