@@ -32,7 +32,15 @@ foreach ($files as $file) {
 
     foreach ($statements as $stmt) {
         $stmt = trim($stmt);
-        if ($stmt === '' || $stmt === ';' || str_starts_with($stmt, '--') || str_starts_with($stmt, '/*')) {
+        if ($stmt === '' || $stmt === ';') {
+            continue;
+        }
+
+        // Strip leading comment lines so a comment-prefixed block doesn't
+        // cause the actual DDL on the next line to be silently dropped.
+        $stmt = trim(preg_replace('/^(?:--[^\n]*\n|\/\*.*?\*\/\s*)/s', '', $stmt));
+
+        if ($stmt === '' || $stmt === ';') {
             continue;
         }
 
