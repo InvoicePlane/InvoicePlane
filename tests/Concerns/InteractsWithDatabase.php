@@ -44,8 +44,12 @@ trait InteractsWithDatabase
         $quotedTable   = $this->qi($table);
         $quotedColumns = implode(', ', array_map($this->qi(...), $columns));
 
+        $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $prefix = ($driver === 'sqlite') ? 'INSERT OR IGNORE' : 'INSERT IGNORE';
+
         $sql  = sprintf(
-            'INSERT OR IGNORE INTO %s (%s) VALUES (%s)',
+            '%s INTO %s (%s) VALUES (%s)',
+            $prefix,
             $quotedTable,
             $quotedColumns,
             implode(', ', $placeholders)

@@ -23,10 +23,10 @@ class InvoiceGroupsServiceTest extends AbstractTestCase
     {
         /* Arrange */
         $this->databaseInsert('ip_invoice_groups', [
-            'invoice_group_name'                => 'Service Group Omicron',
-            'invoice_group_next_id'             => 1,
-            'invoice_group_prefix'              => 'SVC',
-            'invoice_group_identifier_format'   => '{number}',
+            'invoice_group_name'              => 'Service Group Omicron',
+            'invoice_group_next_id'           => 1,
+            'invoice_group_identifier_format' => 'SVC-{number}',
+            'invoice_group_left_pad'          => 4,
         ]);
 
         /* Act */

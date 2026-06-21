@@ -130,6 +130,11 @@ function seedDefaults(PDO $pdo): void
         ['quotenumber_prefix',       ''],
         ['disable_setup',            '1'],
         ['sumex',                    '0'],
+        ['quotes_expire_after',      '30'],
+        ['decimal_point',            '.'],
+        ['thousands_separator',      ','],
+        ['tax_rate_decimal_places',  '2'],
+        ['default_item_decimals',    '2'],
     ];
 
     $stmt = $pdo->prepare('INSERT IGNORE INTO `ip_settings` (`setting_key`,`setting_value`) VALUES (?,?)');
