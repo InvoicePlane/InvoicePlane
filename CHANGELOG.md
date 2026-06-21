@@ -17,6 +17,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Expired tokens are automatically cleared from the database
 - Configuration option `PASSWORD_RESET_TOKEN_EXPIRY_MINUTES` added to ipconfig.php.example
 
+---
+
+**HIGH: Fixed Arbitrary File Deletion via Path Traversal - CVSSv3 7.1 (CVE Pending)**
+
+Authenticated administrators could delete arbitrary files on the server through path traversal sequences in logo filename settings. An attacker could set a malicious logo filename (e.g., `../../config/database.php`) via the settings page, then trigger deletion through the remove_logo endpoint.
+
+**Vulnerability Details:**
+- **CWE-22:** Improper Limitation of a Pathname to a Restricted Directory
+- **Attack Vector:** Authenticated administrator could exploit path traversal
+- **Impact:** Application failure, data loss, denial of service through file deletion
+
+**Root Cause:**
+1. Settings save functionality accepted arbitrary logo filenames without validation
+2. The `remove_logo()` function used database values directly for file deletion
+3. No path traversal detection or directory confinement checks
+
+**Fix Implementation:**
+- **Added input validation on settings save** (lines 78-87 in Settings.php)
+  - Logo filenames validated using `validate_safe_filename()` before saving to database
+  - Path traversal sequences rejected with error logging
+  - Invalid filenames blocked with user-friendly error message
+  
+- **Added type parameter validation** (lines 272-282 in Settings.php)
+  - Logo type restricted to allow-list: `['invoice', 'login']`
+  - Invalid types logged and rejected
+  - Prevents arbitrary type parameter injection
+  
+- **Added comprehensive file access validation** (lines 293-323 in Settings.php)
+  - Multi-layer validation using `validate_file_access()` helper
+  - Files must be within `./uploads/` directory (directory confinement)
+  - Path traversal sequences detected and blocked
+  - Null byte injection prevented
+  - Absolute path attempts rejected
+  - All validation failures logged with secure hashing
+  
+- **Enhanced file security helper** (`application/helpers/file_security_helper.php`)
+  - `validate_safe_filename()` - Detects path traversal, null bytes, absolute paths
+  - `validate_file_in_directory()` - Ensures files stay within allowed directory
+  - `validate_file_access()` - Complete file validation with 5 security checks
+  - All functions include secure logging with SHA-256 hashing
+
+**Defense-in-Depth Layers:**
+1. Input validation - Filenames validated on settings save
+2. Type validation - Logo type restricted to allow-list
+3. Path traversal detection - Multiple checks for `../`, `..\\`, `/../`, etc.
+4. Null byte detection - Prevents path truncation attacks
+5. Absolute path rejection - Blocks `/etc/passwd` style attacks
+6. Directory confinement - Files must be in uploads directory
+7. Secure logging - Attack attempts logged with hash (prevents log injection)
+
+**Files Changed:**
+- `application/modules/settings/controllers/Settings.php` - Input validation and file access validation
+- `application/helpers/file_security_helper.php` - File security validation functions
+
+**Impact:**
+- **Before:** Authenticated admin could delete ANY file on the server
+- **After:** Only files in uploads directory can be deleted, with strict validation
+- **Scope:** HIGH - Could cause complete application failure through config deletion
+
+**Affected Versions:** InvoicePlane v1.7.0, v1.7.1  
+**Recommended Action:** **UPGRADE IMMEDIATELY** and audit systems for suspicious file deletions
+
+See `SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md` for full details, proof of concept, and verification procedures.
+
+---
 
 **CRITICAL: Fixed Remote Code Execution (RCE) vulnerability in template system - CVSSv3 9.9**
 

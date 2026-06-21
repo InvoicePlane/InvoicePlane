@@ -2,86 +2,51 @@
 
 namespace Tests\Feature\Core;
 
-use Modules\Core\Controllers\AjaxController as CoreAjaxController;
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 
 /**
- * Core AjaxController Feature Tests.
+ * ViewTemplateSystem Feature Tests.
  *
- * Tests AJAX requests for settings operations.
+ * Tests that the dashboard renders a full HTML page for authenticated admins.
  */
-#[CoversClass(CoreAjaxController::class)]
-#[CoversClass(Tests\Feature\Core\ViewTemplateSystem::class)]
-
 class ViewTemplateSystemTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
 
-    /**
-     * Test that PHP view engine is registered.
-     */
-    public function test_php_view_engine_is_registered(): void
+    #[Test]
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
-        $resolver = $this->app->make('view.engine.resolver');
+        /* Arrange */
+        /* (authenticated admin via setUp) */
 
-        // PHP engine should be registered
-        $phpEngine = $resolver->resolve('php');
-        $this->assertInstanceOf(\Illuminate\View\Engines\PhpEngine::class, $phpEngine);
+        /* Act */
+        $response = $this->get('/dashboard');
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
-    /**
-     * Test that Blade engine is available but secondary.
-     */
-    public function test_blade_engine_is_available_as_secondary(): void
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
     {
-        $resolver = $this->app->make('view.engine.resolver');
+        /* Arrange */
+        $this->actingAsGuest();
 
-        // Blade engine should also be available
-        $bladeEngine = $resolver->resolve('blade');
-        $this->assertInstanceOf(\Illuminate\View\Engines\CompilerEngine::class, $bladeEngine);
-    }
+        /* Act */
+        $response = $this->get('/dashboard');
 
-    /**
-     * Test that plain PHP views can be rendered.
-     */
-    public function test_plain_php_views_can_be_rendered(): void
-    {
-        // Create a temporary PHP view
-        $viewPath = resource_path('views/test_php_template.php');
-        file_put_contents($viewPath, '<?php echo "PHP Template Works: " . $message; ?>');
-
-        try {
-            // Render the view
-            $rendered = view('test_php_template', ['message' => 'Success'])->render();
-
-            /* Assert */
-            $this->assertStringContainsString('PHP Template Works: Success', $rendered);
-        } finally {
-            // Clean up
-            if (file_exists($viewPath)) {
-                unlink($viewPath);
-            }
-        }
-    }
-
-    /**
-     * Test that welcome view uses PHP template.
-     */
-    public function test_welcome_view_is_php_template(): void
-    {
-        $welcomePath = resource_path('views/welcome.php');
-
-        // The welcome view should be a .php file, not .blade.php
-        $this->assertFileExists($welcomePath);
-
-        // Should not have a .blade.php version
-        $bladePath = resource_path('views/welcome.blade.php');
-        $this->assertFileDoesNotExist($bladePath);
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/dashboard] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

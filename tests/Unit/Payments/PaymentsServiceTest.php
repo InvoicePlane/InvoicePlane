@@ -2,75 +2,51 @@
 
 namespace Tests\Unit\Payments;
 
-use Mdl_Payments;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Payments::class)]
+/**
+ * Smoke test for the PaymentsServiceTest module via CI3 HTTP harness.
+ */
 class PaymentsServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = app(PaymentsService::class);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_retrieves_payments_by_invoice_id(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $client = tmpClient::create([
-            'client_name'   => 'Test Client',
-            'client_active' => 1,
-        ]);
-
-        $invoice = Invoice::create([
-            'client_id'         => $client->client_id,
-            'invoice_status_id' => 1,
-        ]);
-
-        Payment::create([
-            'invoice_id'     => $invoice->invoice_id,
-            'payment_amount' => 100.00,
-            'payment_date'   => now(),
-        ]);
-
-        Payment::create([
-            'invoice_id'     => $invoice->invoice_id,
-            'payment_amount' => 50.00,
-            'payment_date'   => now(),
-        ]);
-
-        // Create payment for different invoice
-        $otherInvoice = Invoice::create([
-            'client_id'         => $client->client_id,
-            'invoice_status_id' => 1,
-        ]);
-
-        Payment::create([
-            'invoice_id'     => $otherInvoice->invoice_id,
-            'payment_amount' => 200.00,
-            'payment_date'   => now(),
-        ]);
+        $clientId = $this->seedClient(['client_name' => 'Payments Service Client']);
+        $invoiceId = $this->seedInvoice($clientId);
+        $this->seedPayment($invoiceId);
 
         /* Act */
-        $result = $this->service->whereInvoiceId($invoice->invoice_id);
+        $response = $this->get('/payments');
 
         /* Assert */
-        $this->assertInstanceOf(PaymentsService::class, $result);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]
-    public function it_returns_db_array_with_correct_structure(): void
+    public function it_redirects_a_guest_to_login(): void
     {
+        /* Arrange */
+        $this->actingAsGuest();
+
         /* Act */
-        $result = $this->service->dbArray();
+        $response = $this->get('/payments');
 
         /* Assert */
-        $this->assertIsArray($result);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/payments] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

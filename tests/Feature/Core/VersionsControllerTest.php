@@ -2,45 +2,51 @@
 
 namespace Tests\Feature\Core;
 
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
-use Versions;
+use Tests\AbstractTestCase;
 
 /**
- * Core AjaxController Feature Tests.
+ * VersionsController Feature Tests.
  *
- * Tests AJAX requests for settings operations.
+ * Tests the settings page (which includes version info).
  */
-#[CoversClass(Versions::class)]
-#[CoversClass(Tests\Feature\Core\VersionsController::class)]
-
 class VersionsControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test index displays versions page.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_displays_versions_page(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('versions.index'));
+        $response = $this->get('/settings');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('core::versions_index');
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/settings');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/settings] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

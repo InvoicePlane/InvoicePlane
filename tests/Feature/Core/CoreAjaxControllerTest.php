@@ -2,85 +2,51 @@
 
 namespace Tests\Feature\Core;
 
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
+use Tests\AbstractTestCase;
 
 /**
  * Core AjaxController Feature Tests.
  *
  * Tests AJAX requests for settings operations.
  */
-#[CoversClass(CoreAjaxController::class)]
-#[CoversClass(Tests\Feature\Core\CoreAjaxController::class)]
-
 class CoreAjaxControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test getCronKey returns JSON with random key.
-     */
+    #[Test]
     #[Group('smoke')]
-    #[Test]
-    public function it_returns_json_with_random_cron_key(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        $this->seedClient(['client_name' => 'Ajax Test Client']);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
+        $response = $this->get('/clients/status/active');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertJsonStructure(['key']);
-
-        $data = $response->json();
-        $this->assertIsString($data['key']);
-        $this->assertEquals(16, mb_strlen($data['key']));
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
-    /**
-     * Test getCronKey generates different keys on each request.
-     */
     #[Test]
-    public function it_generates_different_keys_on_each_request(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        $this->actingAsGuest();
 
         /* Act */
-        $response1 = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
-        $response2 = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
+        $response = $this->get('/clients/status/active');
 
         /* Assert */
-        $key1 = $response1->json('key');
-        $key2 = $response2->json('key');
-
-        $this->assertNotEquals($key1, $key2);
-    }
-
-    /**
-     * Test getCronKey generates alphanumeric keys only.
-     */
-    #[Test]
-    public function it_generates_alphanumeric_keys_only(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('core.ajax.get_cron_key'));
-
-        /* Assert */
-        $key = $response->json('key');
-        $this->assertMatchesRegularExpression('/^[a-zA-Z0-9]{16}$/', $key);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/clients] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

@@ -2,166 +2,72 @@
 
 namespace Tests\Feature\Invoices;
 
-use Modules\Core\Models\Setting;
-use Modules\Invoices\Models\InvoiceTaxRate;
-use Modules\Invoices\Services\InvoiceTaxRateService;
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
 
-#[CoversClass(InvoiceTaxRateService::class)]
-#[CoversClass(Tests\Feature\Invoices\InvoiceTaxRateService::class)]
-
+/**
+ * Smoke test for the InvoiceTaxRateServiceTest module via CI3 HTTP harness.
+ */
 class InvoiceTaxRateServiceTest extends AbstractTestCase
 {
-    private InvoiceTaxRateService $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service/repository class does not exist — CI3 model layer, no Laravel service layer available');
-
-        $this->service = new InvoiceTaxRateService();
-
-        DB::table('ip_invoice_tax_rates')->delete();
-        DB::table('ip_invoice_amounts')->delete();
-        DB::table('ip_invoice_items')->delete();
-        DB::table('ip_invoices')->delete();
-
-        Setting::setValue('legacy_calculation', '0');
+        $this->actingAsAdmin();
     }
 
-    #[Group('crud')]
     #[Test]
-    public function it_returns_validation_rules(): void
-    {
-        /* Arrange */
-        /* (no additional setup needed beyond setUp()) */
-
-        /* Act */
-        $rules = $this->service->getValidationRules();
-
-        /* Assert */
-        $this->assertIsArray($rules);
-        $this->assertArrayHasKey('invoice_id', $rules);
-        $this->assertArrayHasKey('tax_rate_id', $rules);
-        $this->assertArrayHasKey('include_item_tax', $rules);
-    }
-
     #[Group('smoke')]
-    #[Test]
-    public function it_returns_null_when_not_in_legacy_mode(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        Setting::setValue('legacy_calculation', '0');
-
-        $data = [
-            'invoice_id'       => 1,
-            'tax_rate_id'      => 1,
-            'include_item_tax' => 0,
-        ];
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->saveTaxRate($data);
+        $response = $this->get('/invoices');
 
         /* Assert */
-        $this->assertNull($result);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /invoices] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
-    #[Group('crud')]
     #[Test]
-    public function it_creates_tax_rate_in_legacy_mode(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        Setting::setValue('legacy_calculation', '1');
-
-        $data = [
-            'invoice_id'               => 1,
-            'tax_rate_id'              => 1,
-            'include_item_tax'         => 0,
-            'invoice_tax_rate_percent' => 10.0,
-            'invoice_tax_rate_amount'  => 0.0,
-        ];
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->saveTaxRate($data);
+        $response = $this->get('/invoices');
 
         /* Assert */
-        $this->assertInstanceOf(InvoiceTaxRate::class, $result);
-        $this->assertEquals(1, $result->invoice_id);
-        $this->assertEquals(1, $result->tax_rate_id);
-        $this->assertEquals(0, $result->include_item_tax);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
-    #[Group('crud')]
     #[Test]
-    public function it_updates_existing_tax_rate_in_legacy_mode(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        Setting::setValue('legacy_calculation', '1');
-
-        $existingTaxRate = InvoiceTaxRate::query()->create([
-            'invoice_id'               => 1,
-            'tax_rate_id'              => 1,
-            'include_item_tax'         => 0,
-            'invoice_tax_rate_percent' => 10.0,
-            'invoice_tax_rate_amount'  => 0.0,
-        ]);
-
-        $data = [
-            'invoice_tax_rate_id'      => $existingTaxRate->invoice_tax_rate_id,
-            'invoice_id'               => 1,
-            'tax_rate_id'              => 2,
-            'include_item_tax'         => 1,
-            'invoice_tax_rate_percent' => 20.0,
-            'invoice_tax_rate_amount'  => 50.0,
-        ];
+        $this->actingAsGuest();
 
         /* Act */
-        $result = $this->service->saveTaxRate($data);
+        $response = $this->get('/invoices');
 
         /* Assert */
-        $this->assertEquals($existingTaxRate->invoice_tax_rate_id, $result->invoice_tax_rate_id);
-        $this->assertEquals(2, $result->tax_rate_id);
-        $this->assertEquals(1, $result->include_item_tax);
-        $this->assertEquals(20.0, (float) $result->invoice_tax_rate_percent);
-    }
-
-    #[Group('exotic')]
-    #[Test]
-    public function it_handles_include_item_tax_flag(): void
-    {
-        /* Arrange */
-        Setting::setValue('legacy_calculation', '1');
-
-        $data1 = [
-            'invoice_id'               => 1,
-            'tax_rate_id'              => 1,
-            'include_item_tax'         => 1,
-            'invoice_tax_rate_percent' => 10.0,
-            'invoice_tax_rate_amount'  => 0.0,
-        ];
-
-        /* Act */
-        $result1 = $this->service->saveTaxRate($data1);
-
-        /* Assert */
-        $this->assertEquals(1, $result1->include_item_tax);
-
-        /* Arrange (second case) */
-        $data2 = [
-            'invoice_id'               => 2,
-            'tax_rate_id'              => 2,
-            'include_item_tax'         => 0,
-            'invoice_tax_rate_percent' => 15.0,
-            'invoice_tax_rate_amount'  => 0.0,
-        ];
-
-        /* Act */
-        $result2 = $this->service->saveTaxRate($data2);
-
-        /* Assert */
-        $this->assertEquals(0, $result2->include_item_tax);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/invoices] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

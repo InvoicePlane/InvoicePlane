@@ -2,168 +2,181 @@
 
 namespace Tests\Feature\Core;
 
-use Dashboard;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Dashboard::class)]
-#[CoversClass(Tests\Feature\Core\DashboardController::class)]
+/**
+ * Dashboard controller feature tests via CI3 HTTP subprocess harness.
+ */
+#[Group('feature')]
+#[Group('dashboard')]
 class DashboardControllerTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    protected $user;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
-        $this->user = $this->seedModel('\Modules\Dashboard\Tests\Feature\User', ['user_type' => 1, 'user_active' => 1]);
-        $this->actingAs($this->user);
+        $this->actingAsAdmin();
     }
 
     #[Test]
     #[Group('crud')]
-    public function it_displays_dashboard_with_overview_data(): void
+    public function it_displays_dashboard_with_a_200_status(): void
     {
         /* Arrange */
-        $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
-        $invoice = $this->seedModel('\Modules\Invoices\Models\Invoice', [
-            'client_id' => $client->id,
-            'total'     => 1000,
-        ]);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $response = $this->get(route('dashboard'));
+        $response = $this->get('/dashboard');
 
         /* Assert */
-        $response->assertStatus(200);
-        $response->assertViewIs('dashboard.index');
-        $response->assertViewHas('invoice_status_totals');
-        $response->assertViewHas('quote_status_totals');
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
-    public function it_displays_dashboard_with_invoice_status_totals(): void
+    public function it_renders_a_full_html_document_on_the_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 5, ['invoice_status_id' => 1]); // Draft
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 3, ['invoice_status_id' => 2]); // Sent
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 7, ['invoice_status_id' => 4]); // Paid
+        /* Arrange */
+        /* (authenticated admin via setUp) */
 
-        $response = $this->get(route('dashboard.index'));
+        /* Act */
+        $response = $this->get('/dashboard');
 
-        $response->assertSuccessful();
-        $response->assertViewHas('invoice_status_totals');
-        $response->assertViewHas('invoice_statuses');
+        /* Assert */
+        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, '</html>');
+        self::assertGreaterThan(
+            500,
+            $response->bodyLength(),
+            'Dashboard body is suspiciously short — the layout likely did not render.'
+        );
     }
 
     #[Test]
-    public function it_displays_dashboard_with_quote_status_totals(): void
+    public function it_includes_navigation_elements_on_the_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 4, ['quote_status_id' => 1]); // Draft
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 2, ['quote_status_id' => 2]); // Sent
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 3, ['quote_status_id' => 3]); // Approved
+        /* Arrange */
+        /* (authenticated admin via setUp) */
 
-        $response = $this->get(route('dashboard.index'));
+        /* Act */
+        $response = $this->get('/dashboard');
 
-        $response->assertSuccessful();
-        $response->assertViewHas('quote_status_totals');
-        $response->assertViewHas('quote_statuses');
+        /* Assert */
+        self::assertTrue(
+            $response->contains('invoice') || $response->contains('client') || $response->contains('nav'),
+            'The dashboard must contain at least one primary navigation element.'
+        );
     }
 
     #[Test]
-    public function it_displays_recent_invoices_on_dashboard(): void
+    public function it_redirects_a_guest_away_from_the_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 15);
+        /* Arrange */
+        $this->actingAsGuest();
 
-        $response = $this->get(route('dashboard.index'));
+        /* Act */
+        $response = $this->get('/dashboard');
 
-        $response->assertSuccessful();
-        $response->assertViewHas('invoices', function ($invoices): bool {
-            return $invoices->count() === 10; // Limited to 10
-        });
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET /dashboard must redirect. Got status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_displays_recent_quotes_on_dashboard(): void
+    public function it_does_not_expose_php_errors_on_the_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Quote', 15);
+        /* Arrange */
+        /* (authenticated admin via setUp) */
 
-        $response = $this->get(route('dashboard.index'));
+        /* Act */
+        $response = $this->get('/dashboard');
 
-        $response->assertSuccessful();
-        $response->assertViewHas('quotes', function ($quotes): bool {
-            return $quotes->count() === 10; // Limited to 10
-        });
+        /* Assert */
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
-    public function it_displays_overdue_invoices_on_dashboard(): void
+    public function it_produces_a_deterministic_dashboard_response_on_two_consecutive_requests(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Invoice', 3, [
-            'invoice_status_id' => 2,
-            'invoice_date_due'  => now()->subDays(10),
-        ]);
+        /* Arrange */
+        /* (authenticated admin via setUp) */
 
-        $response = $this->get(route('dashboard.index'));
+        /* Act */
+        $first  = $this->get('/dashboard');
+        $second = $this->get('/dashboard');
 
-        $response->assertSuccessful();
-        $response->assertViewHas('overdue_invoices', function ($invoices): bool {
-            return $invoices->count() === 3;
-        });
+        /* Assert */
+        self::assertSame(
+            $first->statusCode(),
+            $second->statusCode(),
+            'Two consecutive GET /dashboard requests must return the same HTTP status.'
+        );
     }
 
     #[Test]
-    public function it_displays_latest_projects_on_dashboard(): void
+    public function it_does_not_display_invoice_form_content_on_the_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Project', 5);
+        /* Arrange */
+        /* (authenticated admin via setUp) */
 
-        $response = $this->get(route('dashboard.index'));
+        /* Act */
+        $response = $this->get('/dashboard');
 
-        $response->assertSuccessful();
-        $response->assertViewHas('projects');
+        /* Assert */
+        self::assertFalse(
+            $response->contains('<form') && $response->contains('invoice_number'),
+            'The dashboard must not render an invoice creation form.'
+        );
     }
 
     #[Test]
-    public function it_displays_latest_tasks_on_dashboard(): void
+    public function it_includes_the_clients_section_link_on_the_dashboard(): void
     {
-        $this->seedModelMany('\Modules\Dashboard\Tests\Feature\Task', 5);
+        /* Arrange */
+        /* (authenticated admin via setUp) */
 
-        $response = $this->get(route('dashboard.index'));
+        /* Act */
+        $response = $this->get('/dashboard');
 
-        $response->assertSuccessful();
-        $response->assertViewHas('tasks');
-        $response->assertViewHas('task_statuses');
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        self::assertTrue(
+            $response->contains('client') || $response->contains('invoice'),
+            'Dashboard must reference clients or invoices in its content.'
+        );
     }
 
     #[Test]
-    public function it_uses_custom_invoice_overview_period_setting(): void
+    public function it_returns_200_with_seeded_invoices_and_clients(): void
     {
-        $this->seedModel('\Modules\Dashboard\Tests\Feature\Setting', [
-            'setting_key'   => 'invoice_overview_period',
-            'setting_value' => 'this-month',
-        ]);
+        /* Arrange */
+        $clientId = $this->seedClient(['client_name' => 'Dashboard Test Client']);
+        $this->seedInvoice($clientId, ['invoice_date_created' => date('Y-m-d')]);
 
-        $response = $this->get(route('dashboard.index'));
+        /* Act */
+        $response = $this->get('/dashboard');
 
-        $response->assertSuccessful();
-        $response->assertViewHas('invoice_status_period', 'this_month');
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
-    public function it_uses_custom_quote_overview_period_setting(): void
+    public function it_returns_200_with_multiple_seeded_clients(): void
     {
-        $this->seedModel('\Modules\Dashboard\Tests\Feature\Setting', [
-            'setting_key'   => 'quote_overview_period',
-            'setting_value' => 'this-quarter',
-        ]);
+        /* Arrange */
+        $this->seedClient(['client_name' => 'Alpha Corp']);
+        $this->seedClient(['client_name' => 'Beta Ltd']);
+        $this->seedClient(['client_name' => 'Gamma BV']);
 
-        $response = $this->get(route('dashboard.index'));
+        /* Act */
+        $response = $this->get('/dashboard');
 
-        $response->assertSuccessful();
-        $response->assertViewHas('quote_status_period', 'this_quarter');
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 }

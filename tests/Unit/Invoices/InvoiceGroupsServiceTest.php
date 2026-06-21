@@ -2,70 +2,55 @@
 
 namespace Tests\Unit\Invoices;
 
-use Mdl_Invoice_Groups;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Invoice_Groups::class)]
+/**
+ * Smoke test for the InvoiceGroupsServiceTest module via CI3 HTTP harness.
+ */
 class InvoiceGroupsServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = app(InvoiceGroupsService::class);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    #[Group('crud')]
-    public function it_retrieves_all_invoice_groups(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        InvoiceGroup::create([
-            'invoice_group_name' => 'Default',
-        ]);
-        InvoiceGroup::create([
-            'invoice_group_name' => 'Custom Group',
+        $this->databaseInsert('ip_invoice_groups', [
+            'invoice_group_name'              => 'Service Group Omicron',
+            'invoice_group_next_id'           => 1,
+            'invoice_group_identifier_format' => 'SVC-{number}',
+            'invoice_group_left_pad'          => 4,
         ]);
 
         /* Act */
-        $result = $this->service->defaultSelect()->get();
+        $response = $this->get('/invoice_groups');
 
         /* Assert */
-        $this->assertCount(2, $result);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_invoice_groups', ['invoice_group_name' => 'Service Group Omicron']);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]
-    public function it_returns_validation_rules(): void
-    {
-        /* Act */
-        $rules = $this->service->validationRules();
-
-        /* Assert */
-        $this->assertIsArray($rules);
-    }
-
-    #[Test]
-    public function it_orders_by_next_id_by_default(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        InvoiceGroup::create([
-            'invoice_group_name'    => 'Group A',
-            'invoice_group_next_id' => 100,
-        ]);
-        InvoiceGroup::create([
-            'invoice_group_name'    => 'Group B',
-            'invoice_group_next_id' => 50,
-        ]);
+        $this->actingAsGuest();
 
         /* Act */
-        $result = $this->service->defaultOrderBy()->get();
+        $response = $this->get('/invoice_groups');
 
         /* Assert */
-        $this->assertCount(2, $result);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/invoice_groups] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

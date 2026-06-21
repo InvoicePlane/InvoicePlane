@@ -29,7 +29,7 @@ class Payment_Information extends Base_Controller
         $disable_form = false;
 
         // Check if the invoice exists and is billable
-        $invoice = $this->mdl_invoices->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
+        $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
         if ( ! $invoice) {
             $this->session->set_flashdata('alert_error', lang('invoice_not_found'));

@@ -3,35 +3,58 @@
 namespace Tests\Concerns;
 
 use InvalidArgumentException;
-use mysqli;
+use PDO;
+use PDOException;
 
 trait InteractsWithDatabase
 {
-    private static ?mysqli $testDb = null;
+    private static ?PDO $testDb = null;
 
     protected function databaseInsert(string $table, array $row): int
     {
         $db = $this->db();
 
-        $columns = array_keys($row);
-        $values  = array_values($row);
+        $columns      = array_keys($row);
+        $placeholders = array_map(static fn ($c) => ':' . $c, $columns);
 
-        $escapedColumns = array_map(static fn (int|string $column): string => '`' . $column . '`', $columns);
-        $escapedValues  = array_map([$db, 'real_escape_string'], array_map('strval', $values));
-        $wrappedValues  = array_map(static fn ($value): string => "'{$value}'", $escapedValues);
+        $quotedTable   = $this->qi($table);
+        $quotedColumns = implode(', ', array_map($this->qi(...), $columns));
 
-        $sql = sprintf(
-            'INSERT INTO `%s` (%s) VALUES (%s)',
-            $table,
-            implode(', ', $escapedColumns),
-            implode(', ', $wrappedValues)
+        $sql  = sprintf(
+            'INSERT INTO %s (%s) VALUES (%s)',
+            $quotedTable,
+            $quotedColumns,
+            implode(', ', $placeholders)
         );
-
-        if ( ! $db->query($sql)) {
-            static::fail('Failed inserting test row: ' . $db->error);
+        $stmt = $db->prepare($sql);
+        if ( ! $stmt->execute($row)) {
+            static::fail('Failed inserting test row into ' . $table);
         }
 
-        return (int) $db->insert_id;
+        return (int) $db->lastInsertId();
+    }
+
+    protected function databaseInsertOrIgnore(string $table, array $row): void
+    {
+        $db = $this->db();
+
+        $columns      = array_keys($row);
+        $placeholders = array_map(static fn ($c) => ':' . $c, $columns);
+
+        $quotedTable   = $this->qi($table);
+        $quotedColumns = implode(', ', array_map($this->qi(...), $columns));
+
+        $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $prefix = ($driver === 'sqlite') ? 'INSERT OR IGNORE' : 'INSERT IGNORE';
+
+        $sql  = sprintf(
+            '%s INTO %s (%s) VALUES (%s)',
+            $prefix,
+            $quotedTable,
+            $quotedColumns,
+            implode(', ', $placeholders)
+        );
+        $db->prepare($sql)->execute($row);
     }
 
     protected function databaseUpdate(string $table, array $set, array $where): void
@@ -39,17 +62,26 @@ trait InteractsWithDatabase
         $db = $this->db();
 
         $setParts = [];
+        $params   = [];
         foreach ($set as $key => $value) {
-            $setParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+            $setParts[]            = $this->qi($key) . ' = :set_' . $key;
+            $params['set_' . $key] = $value;
         }
 
         $whereParts = [];
         foreach ($where as $key => $value) {
-            $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+            $whereParts[]         = $this->qi($key) . ' = :wh_' . $key;
+            $params['wh_' . $key] = $value;
         }
 
-        $sql = sprintf('UPDATE `%s` SET %s WHERE %s', $table, implode(', ', $setParts), implode(' AND ', $whereParts));
-        $db->query($sql);
+        $sql  = sprintf(
+            'UPDATE %s SET %s WHERE %s',
+            $this->qi($table),
+            implode(', ', $setParts),
+            implode(' AND ', $whereParts)
+        );
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
     }
 
     protected function databaseDelete(string $table, array $where): void
@@ -57,12 +89,19 @@ trait InteractsWithDatabase
         $db = $this->db();
 
         $whereParts = [];
+        $params     = [];
         foreach ($where as $key => $value) {
-            $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+            $whereParts[] = $this->qi($key) . ' = :' . $key;
+            $params[$key] = $value;
         }
 
-        $sql = sprintf('DELETE FROM `%s` WHERE %s', $table, implode(' AND ', $whereParts));
-        $db->query($sql);
+        $sql  = sprintf(
+            'DELETE FROM %s WHERE %s',
+            $this->qi($table),
+            implode(' AND ', $whereParts)
+        );
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
     }
 
     protected function databaseFetchOne(string $table, array $where): ?array
@@ -70,42 +109,58 @@ trait InteractsWithDatabase
         $db = $this->db();
 
         $whereParts = [];
+        $params     = [];
         foreach ($where as $key => $value) {
-            $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+            $whereParts[] = $this->qi($key) . ' = :' . $key;
+            $params[$key] = $value;
         }
 
-        $sql    = sprintf('SELECT * FROM `%s` WHERE %s LIMIT 1', $table, implode(' AND ', $whereParts));
-        $result = $db->query($sql);
-        $row    = $result ? $result->fetch_assoc() : false;
+        $sql  = sprintf(
+            'SELECT * FROM %s WHERE %s LIMIT 1',
+            $this->qi($table),
+            implode(' AND ', $whereParts)
+        );
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        $row  = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row ?: null;
     }
 
     protected function assertDatabaseHas(string $table, array $conditions): void
     {
-        static::assertNotNull($this->databaseFetchOne($table, $conditions));
+        static::assertNotNull(
+            $this->databaseFetchOne($table, $conditions),
+            "Expected row in [{$table}] not found."
+        );
     }
 
     protected function assertDatabaseMissing(string $table, array $conditions): void
     {
-        static::assertNull($this->databaseFetchOne($table, $conditions));
+        static::assertNull(
+            $this->databaseFetchOne($table, $conditions),
+            "Unexpected row found in [{$table}]."
+        );
     }
 
     protected function assertDatabaseCount(string $table, int $expected, array $conditions = []): void
     {
-        $db = $this->db();
+        $db     = $this->db();
+        $params = [];
 
-        $sql = sprintf('SELECT COUNT(*) AS c FROM `%s`', $table);
+        $sql = sprintf('SELECT COUNT(*) AS c FROM %s', $this->qi($table));
         if ($conditions !== []) {
             $whereParts = [];
             foreach ($conditions as $key => $value) {
-                $whereParts[] = sprintf("`%s`='%s'", $key, $db->real_escape_string((string) $value));
+                $whereParts[] = $this->qi($key) . ' = :' . $key;
+                $params[$key] = $value;
             }
             $sql .= ' WHERE ' . implode(' AND ', $whereParts);
         }
 
-        $result = $db->query($sql);
-        $count  = (int) (($result ? $result->fetch_assoc()['c'] : 0));
+        $stmt  = $db->prepare($sql);
+        $stmt->execute($params);
+        $count = (int) $stmt->fetchColumn();
 
         static::assertSame($expected, $count);
     }
@@ -123,29 +178,48 @@ trait InteractsWithDatabase
         ], $overrides));
     }
 
-    protected function seedInvoice(int $clientId, array $overrides = []): int
+    protected function seedInvoice(int $clientId, array $overrides = [], array $amountOverrides = []): int
     {
-        return $this->databaseInsert('ip_invoices', array_merge([
-            'user_id'              => 1,
-            'client_id'            => $clientId,
-            'invoice_status_id'    => 1,
-            'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due'     => date('Y-m-d', strtotime('+30 days')),
-            'invoice_number'       => 'INV-' . time() . '-' . random_int(100, 999),
-            'invoice_terms'        => '',
-            'invoice_url_key'      => bin2hex(random_bytes(16)),
+        $invoiceId = $this->databaseInsert('ip_invoices', array_merge([
+            'user_id'                  => 1,
+            'client_id'                => $clientId,
+            'invoice_group_id'         => 1,
+            'invoice_status_id'        => 1,
+            'invoice_date_created'     => date('Y-m-d'),
+            'invoice_date_modified'    => date('Y-m-d H:i:s'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+            'invoice_time_created'     => date('H:i:s'),
+            'payment_method'           => 1,
+            'invoice_discount_amount'  => '0.00',
+            'invoice_discount_percent' => '0.00',
+            'invoice_number'           => 'INV-' . time() . '-' . random_int(100, 999),
+            'invoice_terms'            => '',
+            'invoice_url_key'          => bin2hex(random_bytes(16)),
         ], $overrides));
+
+        // ip_invoice_amounts is required for INNER JOIN queries on this invoice
+        $this->databaseInsert('ip_invoice_amounts', array_merge([
+            'invoice_id'             => $invoiceId,
+            'invoice_item_subtotal'  => '0.00',
+            'invoice_item_tax_total' => '0.00',
+            'invoice_tax_total'      => '0.00',
+            'invoice_total'          => '0.00',
+            'invoice_paid'           => '0.00',
+            'invoice_balance'        => '0.00',
+            'invoice_sign'           => 1,
+        ], array_merge(['invoice_id' => $invoiceId], $amountOverrides)));
+
+        return $invoiceId;
     }
 
     protected function seedPayment(int $invoiceId, array $overrides = []): int
     {
         return $this->databaseInsert('ip_payments', array_merge([
-            'invoice_id'           => $invoiceId,
-            'payment_method_id'    => 1,
-            'payment_amount'       => '100.00',
-            'payment_date'         => date('Y-m-d'),
-            'payment_note'         => '',
-            'payment_date_created' => date('Y-m-d H:i:s'),
+            'invoice_id'        => $invoiceId,
+            'payment_method_id' => 1,
+            'payment_amount'    => '100.00',
+            'payment_date'      => date('Y-m-d'),
+            'payment_note'      => '',
         ], $overrides));
     }
 
@@ -228,8 +302,6 @@ trait InteractsWithDatabase
             'Modules\\Payments\\Models\\Payment'         => ['ip_payments', 'payment_id'],
             'PaymentMethod'                              => ['ip_payment_methods', 'payment_method_id'],
             'Modules\\Payments\\Models\\PaymentMethod'   => ['ip_payment_methods', 'payment_method_id'],
-            'PaymentLog'                                 => ['ip_payment_logs', 'payment_log_id'],
-            'Modules\\Payments\\Models\\PaymentLog'      => ['ip_payment_logs', 'payment_log_id'],
             'TaxRate'                                    => ['ip_tax_rates', 'tax_rate_id'],
             'Modules\\Core\\Models\\TaxRate'             => ['ip_tax_rates', 'tax_rate_id'],
             'Modules\\Products\\Models\\TaxRate'         => ['ip_tax_rates', 'tax_rate_id'],
@@ -263,6 +335,7 @@ trait InteractsWithDatabase
             'ip_invoices' => [
                 'user_id'              => 1,
                 'client_id'            => (string) ($overrides['client_id'] ?? 1),
+                'invoice_group_id'     => (string) ($overrides['invoice_group_id'] ?? 1),
                 'invoice_status_id'    => 1,
                 'invoice_date_created' => date('Y-m-d'),
                 'invoice_date_due'     => date('Y-m-d', strtotime('+30 days')),
@@ -270,28 +343,36 @@ trait InteractsWithDatabase
                 'invoice_url_key'      => bin2hex(random_bytes(16)),
             ],
             'ip_projects' => [
-                'client_id'            => (string) ($overrides['client_id'] ?? 1),
-                'project_name'         => 'Test Project ' . bin2hex(random_bytes(3)),
-                'project_date_created' => date('Y-m-d'),
+                'client_id'    => (string) ($overrides['client_id'] ?? 1),
+                'project_name' => 'Test Project ' . bin2hex(random_bytes(3)),
             ],
             'ip_tasks' => [
-                'task_name'       => 'Test Task ' . bin2hex(random_bytes(3)),
-                'task_date_added' => date('Y-m-d H:i:s'),
-                'task_status'     => 1,
-                'project_id'      => (string) ($overrides['project_id'] ?? 0),
+                'task_name'        => 'Test Task ' . bin2hex(random_bytes(3)),
+                'task_description' => '',
+                'task_price'       => '0.00',
+                'task_finish_date' => date('Y-m-d'),
+                'task_status'      => 1,
+                'project_id'       => (string) ($overrides['project_id'] ?? 0),
             ],
             'ip_quotes' => [
                 'client_id'          => (string) ($overrides['client_id'] ?? 1),
+                'user_id'            => 1,
+                'invoice_group_id'   => 1,
                 'quote_date_created' => date('Y-m-d'),
+                'quote_date_modified'=> date('Y-m-d'),
                 'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
                 'quote_number'       => 'QUO-' . time() . '-' . random_int(100, 999),
                 'quote_url_key'      => bin2hex(random_bytes(16)),
             ],
             'ip_users' => [
-                'user_name'     => 'test_' . bin2hex(random_bytes(3)),
-                'user_email'    => 'test+' . bin2hex(random_bytes(3)) . '@example.com',
-                'user_password' => password_hash('secret', PASSWORD_DEFAULT),
-                'user_active'   => 1,
+                'user_name'          => 'test_' . bin2hex(random_bytes(3)),
+                'user_email'         => 'test+' . bin2hex(random_bytes(3)) . '@example.com',
+                'user_password'      => password_hash('secret', PASSWORD_DEFAULT),
+                'user_psalt'         => bin2hex(random_bytes(10)),
+                'user_type'          => 1,
+                'user_active'        => 1,
+                'user_date_created'  => date('Y-m-d H:i:s'),
+                'user_date_modified' => date('Y-m-d H:i:s'),
             ],
             'ip_tax_rates' => [
                 'tax_rate_name'    => 'Test Rate ' . bin2hex(random_bytes(2)),
@@ -371,9 +452,9 @@ trait InteractsWithDatabase
         return array_merge($defaults, $overrides);
     }
 
-    private function db(): mysqli
+    private function db(): PDO
     {
-        if (self::$testDb instanceof mysqli) {
+        if (self::$testDb instanceof PDO) {
             return self::$testDb;
         }
 
@@ -384,21 +465,54 @@ trait InteractsWithDatabase
         $db           = [];
         require $basePath . '/application/config/database.php';
 
-        $group = $active_group ?? 'default';
-        $cfg   = $db[$group] ?? [];
+        $group  = $active_group ?? 'default';
+        $cfg    = $db[$group] ?? [];
+        $driver = (string) ($cfg['dbdriver'] ?? 'mysqli');
 
-        self::$testDb = new mysqli(
-            (string) ($cfg['hostname'] ?? '127.0.0.1'),
-            (string) ($cfg['username'] ?? ''),
-            (string) ($cfg['password'] ?? ''),
-            (string) ($cfg['database'] ?? ''),
-            (int) ($cfg['port'] ?? 3306),
-        );
+        if (in_array($driver, ['sqlite3', 'sqlite'], true)) {
+            $dbPath = (string) ($cfg['database'] ?? 'storage/test.sqlite');
+            if ( ! str_starts_with($dbPath, '/')) {
+                $dbPath = $basePath . '/' . $dbPath;
+            }
+            self::$testDb = new PDO('sqlite:' . $dbPath);
+            self::$testDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        if (self::$testDb->connect_errno) {
-            static::markTestSkipped('Database unavailable for integration tests: ' . self::$testDb->connect_error);
+            return self::$testDb;
+        }
+
+        // MySQL / MariaDB
+        $host = (string) ($cfg['hostname'] ?? '127.0.0.1');
+        $port = (int) ($cfg['port'] ?? 3306);
+        $user = (string) ($cfg['username'] ?? '');
+        $pass = (string) ($cfg['password'] ?? '');
+        $name = (string) ($cfg['database'] ?? '');
+
+        try {
+            self::$testDb = new PDO(
+                sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8', $host, $port, $name),
+                $user,
+                $pass,
+            );
+            self::$testDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            static::markTestSkipped('Database unavailable for integration tests: ' . $e->getMessage());
         }
 
         return self::$testDb;
+    }
+
+    /**
+     * Quote a single identifier using the appropriate character for the current driver.
+     * SQLite uses double-quotes; MySQL/MariaDB uses backticks.
+     */
+    private function qi(string $identifier): string
+    {
+        $driver = self::$testDb?->getAttribute(PDO::ATTR_DRIVER_NAME) ?? 'mysql';
+
+        if ($driver === 'sqlite') {
+            return '"' . str_replace('"', '""', $identifier) . '"';
+        }
+
+        return '`' . str_replace('`', '``', $identifier) . '`';
     }
 }

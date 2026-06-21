@@ -34,18 +34,18 @@ class Mdl_Sessions extends CI_Model
             $this->load->library('crypt');
 
             /*
-             * Password hashing changed after 1.2.0
-             * Check to see if user has logged in since the password change
+             * Legacy pre-1.2.0 path: users without user_psalt still have md5 hashes.
+             * If validated, their password is upgraded to the modern salted hash.
              */
             if ( ! $user->user_psalt) {
                 /*
                  * The user has not logged in, so we're going to attempt to
                  * update their record with the updated hash
                  */
-                if (md5($password) == $user->user_password) {
+                if (hash_equals($user->user_password, md5($password))) {
                     /**
-                     * The md5 login validated - let's update this user
-                     * to the new hash.
+                     * Legacy md5 login validated - upgrade this user to the
+                     * modern salted hash.
                      */
                     $salt = $this->crypt->salt();
                     $hash = $this->crypt->generate_password($password, $salt);
@@ -66,6 +66,7 @@ class Mdl_Sessions extends CI_Model
                 }
             }
 
+            // Modern path: verify against the salted password hash.
             if ($this->crypt->check_password($user->user_password, $password)) {
                 $session_data = [
                     'user_type'     => $user->user_type,

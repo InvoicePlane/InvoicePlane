@@ -46,6 +46,23 @@ final class HttpResponse
         return in_array($this->statusCode, [301, 302, 303, 307, 308], true);
     }
 
+    public function assertRedirect(?string $url = null): static
+    {
+        if ( ! $this->isRedirect()) {
+            throw new \RuntimeException(
+                'Expected a redirect response, but got status ' . $this->statusCode
+            );
+        }
+
+        if ($url !== null && $this->redirectUrl() !== $url) {
+            throw new \RuntimeException(
+                'Expected redirect to ' . $url . ' but got ' . ($this->redirectUrl() ?? '[no Location header]')
+            );
+        }
+
+        return $this;
+    }
+
     public function redirectUrl(): ?string
     {
         return $this->header('Location');

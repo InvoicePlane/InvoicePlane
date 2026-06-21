@@ -1,0 +1,19 @@
+name: No conflict markers
+
+on:
+  push:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if conflict markers are present
+        run: |
+          if git grep -rn --perl-regexp '^(<{7}|={7}(?!=)|>{7})' -- \
+              ':!*.yml' ':!*.yaml' ':!*.pem' ':!*.crt' ':!*.cert' \
+              ':!vendor' ':!node_modules' ':!.claude/' ':!LICENSE.txt'; then
+            echo "::error::Conflict markers found. Resolve all merge conflicts before pushing."
+            exit 1
+          fi

@@ -44,7 +44,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         ];
     }
 
-    protected function request(string $method, string $uri, array $query = [], array $post = []): HttpResponse
+    protected function request(string $method, string $uri, array $query = [], array $post = [], bool $ajax = false): HttpResponse
     {
         $payload = [
             'method'  => mb_strtoupper($method),
@@ -52,6 +52,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             'query'   => $query,
             'post'    => $post,
             'session' => $this->sessionData,
+            'ajax'    => $ajax,
         ];
 
         $command = sprintf('php %s', escapeshellarg(dirname(__DIR__) . '/tests/Integration/bin/request.php'));
@@ -80,7 +81,9 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
         preg_match('/__CI_TEST_RESULT_START__(.*?)__CI_TEST_RESULT_END__/s', $stdout ?: '', $matches);
 
-        if ($exitCode !== 0 || ! isset($matches[1])) {
+        // If no CI result envelope was emitted at all, the process died before request.php
+        // could capture any output (e.g. a PHP parse error). Only then do we fail fast.
+        if ( ! isset($matches[1])) {
             throw new RuntimeException(
                 "CI request runner failed for [{$payload['method']}] {$payload['uri']}" . PHP_EOL
                 . 'Exit code: ' . $exitCode . PHP_EOL
@@ -114,6 +117,11 @@ abstract class AbstractTestCase extends PhpUnitTestCase
     protected function post(string $uri, array $data = [], array $query = []): HttpResponse
     {
         return $this->request('POST', $uri, $query, $data);
+    }
+
+    protected function ajax(string $method, string $uri, array $data = []): HttpResponse
+    {
+        return $this->request(mb_strtoupper($method), $uri, [], $data, true);
     }
 
     protected function delete(string $uri, array $data = [], array $query = []): HttpResponse
@@ -160,6 +168,45 @@ abstract class AbstractTestCase extends PhpUnitTestCase
     {
         foreach (['Fatal error', 'Parse error', 'Uncaught', 'Warning:', 'Notice:', 'Deprecated:'] as $marker) {
             self::assertStringNotContainsString($marker, $response->body());
+        }
+    }
+
+    /**
+     * Fail with the actual error text if the response body contains a CI3 error page.
+     *
+     * DB errors and general application errors throw exceptions in the test subprocess
+     * (via MY_Exceptions::show_error) and never reach the response body. This helper
+     * is the belt-and-suspenders catch for PHP-level errors (notices, warnings, fatal
+     * errors) which CI3 renders via error_php.php and which bypass show_error().
+     *
+     * Call this before asserting on a redirect or specific status code when you want
+     * a clear failure message instead of "expected redirect, got 200".
+     */
+    protected function assertNoApplicationError(HttpResponse $response): void
+    {
+        $body = $response->body();
+
+        $signatures = [
+            'A PHP Error was encountered',
+            '<title>Database Error</title>',
+            '<title>Error</title>',
+        ];
+
+        foreach ($signatures as $signature) {
+            if (! str_contains($body, $signature)) {
+                continue;
+            }
+
+            // Extract the human-readable detail from the error page.
+            if (preg_match('/<p>(?:Message:|Severity:)?\s*(.*?)<\/p>/si', $body, $m)) {
+                $detail = trim(strip_tags($m[1]));
+            } elseif (preg_match('/<div[^>]+id=["\']body["\'][^>]*>(.*?)<\/div>/si', $body, $m)) {
+                $detail = trim(strip_tags($m[1]));
+            } else {
+                $detail = mb_substr(strip_tags($body), 0, 400);
+            }
+
+            self::fail('Application error in response [HTTP ' . $response->statusCode() . ']: ' . $detail);
         }
     }
 

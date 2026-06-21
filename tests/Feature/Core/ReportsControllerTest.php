@@ -2,191 +2,30 @@
 
 namespace Tests\Feature\Core;
 
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Reports;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Reports::class)]
-#[CoversClass(Tests\Feature\Core\ReportsController::class)]
 class ReportsControllerTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    protected $user;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
-        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
-        $this->actingAs($this->user);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_returns_sales_by_client_report(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
-        $invoice = $this->seedModelMany('\Modules\Invoices\Models\Invoice', 3, [
-            'client_id'    => $client->id,
-            'invoice_date' => now()->subDays(5),
-            'total'        => 500,
-        ]);
+        $this->seedClient(['client_name' => 'Report Test Client']);
 
         /* Act */
-        $response = $this->post(route('reports.salesByClient'), [
-            'from_date'  => now()->subMonth()->format('Y-m-d'),
-            'to_date'    => now()->format('Y-m-d'),
-            'btn_submit' => true,
-        ]);
+        $response = $this->get('/reports/sales_by_client');
 
         /* Assert */
-        $response->assertStatus(200);
-        $response->assertSee($client->name);
-        $response->assertSee('500');
-    }
-
-    #[Test]
-    public function it_generates_sales_by_client_report(): void
-    {
-        /* Arrange */
-        $client = $this->seedModel('tmpClient');
-        $this->seedModelMany('Invoice', 3, [
-            'client_id'            => $client->client_id,
-            'invoice_status_id'    => 4, // Paid
-            'invoice_date_created' => now()->subDays(10),
-        ]);
-
-        /* Act */
-        $response = $this->post(route('reports.salesByClient'), [
-            'btn_submit' => true,
-            'from_date'  => now()->subDays(30)->format('Y-m-d'),
-            'to_date'    => now()->format('Y-m-d'),
-        ]);
-
-        /* Assert */
-        $response->assertSuccessful();
-        $response->assertViewHas('results');
-        $response->assertViewHas('from_date');
-        $response->assertViewHas('to_date');
-    }
-
-    #[Test]
-    public function it_displays_payment_history_report_form(): void
-    {
-        $response = $this->get(route('reports.paymentHistory'));
-
-        $response->assertSuccessful();
-        $response->assertViewIs('reports.payment_history_index');
-    }
-
-    #[Test]
-    public function it_generates_payment_history_report(): void
-    {
-        $invoice = $this->seedModel('Invoice');
-        $this->seedModelMany('Payment', 3, [
-            'invoice_id'   => $invoice->invoice_id,
-            'payment_date' => now()->subDays(5),
-        ]);
-
-        $response = $this->post(route('reports.paymentHistory'), [
-            'btn_submit' => true,
-            'from_date'  => now()->subDays(30)->format('Y-m-d'),
-            'to_date'    => now()->format('Y-m-d'),
-        ]);
-
-        $response->assertSuccessful();
-        $response->assertViewHas('results');
-    }
-
-    #[Test]
-    public function it_generates_invoice_aging_report(): void
-    {
-        /* Arrange */
-        $this->seedModel('Invoice', [
-            'invoice_date_due'  => now()->subDays(10),
-            'invoice_status_id' => 2, // Sent
-        ]);
-        $this->seedModel('Invoice', [
-            'invoice_date_due'  => now()->subDays(40),
-            'invoice_status_id' => 2,
-        ]);
-        $this->seedModel('Invoice', [
-            'invoice_date_due'  => now()->subDays(70),
-            'invoice_status_id' => 2,
-        ]);
-
-        /* Act */
-        $response = $this->post(route('reports.invoiceAging'), [
-            'btn_submit' => true,
-        ]);
-
-        /* Assert */
-        $response->assertSuccessful();
-        $response->assertViewHas('results');
-    }
-
-    #[Test]
-    public function it_returns_invoices_per_client_report(): void
-    {
-        /* Arrange */
-        $client  = $this->seedModel('\Modules\Clients\Models\tmpClient');
-        $invoice = $this->seedModel('\Modules\Invoices\Models\Invoice', [
-            'client_id'    => $client->id,
-            'invoice_date' => now()->subDays(3),
-            'total'        => 300,
-        ]);
-
-        /* Act */
-        $response = $this->post(route('reports.invoicesPerClient'), [
-            'from_date'  => now()->subMonth()->format('Y-m-d'),
-            'to_date'    => now()->format('Y-m-d'),
-            'btn_submit' => true,
-        ]);
-
-        /* Assert */
-        $response->assertStatus(200);
-        $response->assertSee($client->name);
-        $response->assertSee('300');
-    }
-
-    #[Test]
-    public function it_generates_sales_by_year_report_with_filters(): void
-    {
-        $this->seedModelMany('Invoice', 10, [
-            'invoice_date_created' => now()->subMonths(6),
-            'invoice_status_id'    => 4,
-        ]);
-
-        $response = $this->post(route('reports.salesByYear'), [
-            'btn_submit'  => true,
-            'from_date'   => now()->subYear()->format('Y-m-d'),
-            'to_date'     => now()->format('Y-m-d'),
-            'minQuantity' => 0,
-            'maxQuantity' => 1000,
-            'checkboxTax' => true,
-        ]);
-
-        $response->assertSuccessful();
-        $response->assertViewHas('results');
-        $response->assertViewHas('from_date');
-        $response->assertViewHas('to_date');
-    }
-
-    #[Test]
-    public function it_filters_sales_report_by_quantity_range(): void
-    {
-        $response = $this->post(route('reports.salesByYear'), [
-            'btn_submit'  => true,
-            'from_date'   => now()->subYear()->format('Y-m-d'),
-            'to_date'     => now()->format('Y-m-d'),
-            'minQuantity' => 10,
-            'maxQuantity' => 100,
-        ]);
-
-        $response->assertSuccessful();
-        $response->assertViewHas('results');
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
     }
 }

@@ -1,36 +1,13 @@
-# Performance: Add database indexes to improve query speed
-# These indexes significantly improve performance when dealing with large datasets
-# (e.g., 500+ clients and 6500+ invoices)
-# Before: 7-8 seconds on viewing clients list
-# After: 0.5 seconds on viewing clients list
+# Added for versioning
+-- Treat empty client birthdates as NULL.
+UPDATE `ip_clients`
+SET `client_birthdate` = NULL
+WHERE `client_birthdate` = '0000-00-00';
 
-# Clients active status index
-CREATE INDEX idx_clients_active 
-  ON ip_clients (client_active);
+ALTER TABLE `ip_clients`
+MODIFY `client_birthdate` DATE NULL DEFAULT NULL;
 
-# Invoices client relationship index
-CREATE INDEX idx_invoices_client_id
-  ON ip_invoices (client_id);
-
-# Invoice amounts relationship index
-CREATE INDEX idx_invoice_amounts_invoice_id
-  ON ip_invoice_amounts (invoice_id);
-
-# Clients primary key index (if not already exists)
-CREATE INDEX idx_clients_id ON ip_clients (client_id);
-
-# Invoices user relationship index
-CREATE INDEX idx_invoices_user_id
-  ON ip_invoices (user_id);
-
-# Recurring invoices compound index for subquery optimization
-CREATE INDEX idx_invoices_recurring_invoice_id
-  ON ip_invoices_recurring (invoice_id, recur_next_date);
-
-# Quotes invoice relationship index
-CREATE INDEX idx_quotes_invoice_id
-  ON ip_quotes (invoice_id);
-
-# Sumex invoice relationship index
-CREATE INDEX idx_invoice_sumex_invoice
-  ON ip_invoice_sumex (sumex_invoice);
+-- NOTE: invoice_password and quote_password are now encrypted at rest using
+-- the application ENCRYPTION_KEY. Existing plaintext values remain readable
+-- (the application falls back to returning them as-is on decrypt failure) and
+-- are transparently re-encrypted the next time each record is saved.

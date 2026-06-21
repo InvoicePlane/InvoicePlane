@@ -65,82 +65,114 @@ class MailerHelperTest extends AbstractTestCase
     #[Test]
     public function it_detects_phpmail_configuration(): void
     {
+        /* Arrange */
         Setting::setValue('email_send_method', 'phpmail');
 
+        /* Act */
         $result = MailerHelper::mailer_configured();
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
     #[Test]
     public function it_detects_sendmail_configuration(): void
     {
+        /* Arrange */
         Setting::setValue('email_send_method', 'sendmail');
 
+        /* Act */
         $result = MailerHelper::mailer_configured();
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
     #[Test]
     public function it_detects_smtp_configuration_with_server(): void
     {
+        /* Arrange */
         Setting::setValue('email_send_method', 'smtp');
         Setting::setValue('smtp_server_address', 'smtp.example.com');
 
+        /* Act */
         $result = MailerHelper::mailer_configured();
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
     #[Test]
     public function it_detects_incomplete_smtp_configuration(): void
     {
+        /* Arrange */
         Setting::setValue('email_send_method', 'smtp');
         Setting::setValue('smtp_server_address', '');
 
+        /* Act */
         $result = MailerHelper::mailer_configured();
 
+        /* Assert */
         $this->assertFalse($result);
     }
 
     #[Test]
     public function it_detects_no_configuration(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::mailer_configured();
 
+        /* Assert */
         $this->assertFalse($result);
     }
 
     #[Test]
     public function it_validates_single_email_address(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('test@example.com');
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
     #[Test]
     public function it_validates_multiple_email_addresses(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('test1@example.com,test2@example.com');
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
     #[Test]
     public function it_rejects_invalid_email(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('invalid-email');
 
+        /* Assert */
         $this->assertFalse($result);
     }
 
     #[Test]
     public function it_rejects_list_with_one_invalid_email(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('valid@example.com,invalid-email');
 
+        /* Assert */
         $this->assertFalse($result);
     }
 
@@ -148,73 +180,109 @@ class MailerHelperTest extends AbstractTestCase
     #[DataProvider('emailValidationProvider')]
     public function it_validates_various_email_formats(string $email, bool $expected): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address($email);
 
+        /* Assert */
         $this->assertSame($expected, $result);
     }
 
     #[Test]
     public function it_validates_email_with_dots(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('first.last@example.com');
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
     #[Test]
     public function it_validates_email_with_hyphens(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('user-name@example.com');
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
     #[Test]
     public function it_validates_email_with_underscores(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('user_name@example.com');
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
     #[Test]
     public function it_rejects_email_with_spaces(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('user name@example.com');
 
+        /* Assert */
         $this->assertFalse($result);
     }
 
     #[Test]
     public function it_rejects_email_with_double_at(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('user@@example.com');
 
+        /* Assert */
         $this->assertFalse($result);
     }
 
     #[Test]
     public function it_validates_multiple_emails_with_spaces_after_comma(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('a@b.com, c@d.com');
 
         // Note: This might fail since filter_var doesn't trim
+        /* Assert */
         $this->assertFalse($result);
     }
 
     #[Test]
     public function it_validates_email_with_country_code_tld(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('user@example.co.uk');
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
     #[Test]
     public function it_validates_email_with_new_tlds(): void
     {
+        /* Arrange */
+
+        /* Act */
         $result = MailerHelper::validate_email_address('user@example.technology');
 
+        /* Assert */
         $this->assertTrue($result);
     }
 
@@ -222,7 +290,11 @@ class MailerHelperTest extends AbstractTestCase
     #[Group('email-methods')]
     public function it_has_email_invoice_method(): void
     {
+        /* Arrange */
+
+        /* Act */
         // Verify the method exists and has correct signature
+        /* Assert */
         $this->assertTrue(
             method_exists(MailerHelper::class, 'email_invoice'),
             'MailerHelper should have email_invoice method'
@@ -243,7 +315,11 @@ class MailerHelperTest extends AbstractTestCase
     #[Group('email-methods')]
     public function it_has_email_quote_method(): void
     {
+        /* Arrange */
+
+        /* Act */
         // Verify the method exists and has correct signature
+        /* Assert */
         $this->assertTrue(
             method_exists(MailerHelper::class, 'email_quote'),
             'MailerHelper should have email_quote method'
@@ -264,6 +340,7 @@ class MailerHelperTest extends AbstractTestCase
     #[Group('email-methods')]
     public function it_validates_email_addresses_in_email_invoice(): void
     {
+        /* Arrange */
         // This test verifies that email_invoice uses validate_email_address internally
         // by checking that invalid email addresses would be caught
 
@@ -272,7 +349,11 @@ class MailerHelperTest extends AbstractTestCase
 
         $invalidEmail = 'invalid-email';
         $validEmail   = 'test@example.com';
+        /* Act */
 
+        
+
+        /* Assert */
         $this->assertFalse(MailerHelper::validate_email_address($invalidEmail));
         $this->assertTrue(MailerHelper::validate_email_address($validEmail));
     }
@@ -281,11 +362,16 @@ class MailerHelperTest extends AbstractTestCase
     #[Group('email-methods')]
     public function it_validates_email_addresses_in_email_quote(): void
     {
+        /* Arrange */
         // Similar to above, verify that email validation is part of the quote email process
 
         $invalidEmail = 'not-an-email';
         $validEmail   = 'user@domain.com';
+        /* Act */
 
+        
+
+        /* Assert */
         $this->assertFalse(MailerHelper::validate_email_address($invalidEmail));
         $this->assertTrue(MailerHelper::validate_email_address($validEmail));
     }
@@ -294,6 +380,7 @@ class MailerHelperTest extends AbstractTestCase
     #[DataProvider('emailParametersProvider')]
     public function it_handles_various_email_parameter_formats(array $params, bool $isValid): void
     {
+        /* Arrange */
         // Test that validate_email_address handles the formats used in email_invoice/email_quote
 
         foreach ($params as $email) {
@@ -301,7 +388,9 @@ class MailerHelperTest extends AbstractTestCase
                 continue; // Skip null values (cc, bcc can be null)
             }
 
+        /* Act */
             $result = MailerHelper::validate_email_address($email);
+        /* Assert */
             $this->assertSame($isValid, $result, "Email '{$email}' validation failed");
         }
     }
@@ -309,13 +398,16 @@ class MailerHelperTest extends AbstractTestCase
     #[Test]
     public function it_check_mail_errors_accepts_empty_array(): void
     {
+        /* Arrange */
         // When no errors, check_mail_errors should not redirect
         // We can't easily test redirect behavior without integration tests,
         // but we can verify the method accepts an empty array
 
         $reflection = new ReflectionMethod(MailerHelper::class, 'check_mail_errors');
+        /* Act */
         $parameters = $reflection->getParameters();
 
+        /* Assert */
         $this->assertCount(2, $parameters);
         $this->assertTrue($parameters[0]->isDefaultValueAvailable());
         $this->assertEquals([], $parameters[0]->getDefaultValue());

@@ -2,96 +2,58 @@
 
 namespace Tests\Unit\Products;
 
-use Mdl_Products;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Products::class)]
+/**
+ * Smoke test for the ProductsServiceTest module via CI3 HTTP harness.
+ */
 class ProductsServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = new ProductsService();
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_returns_products_by_ids(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $product1 = Product::create([
-            'product_name'        => 'Product 1',
-            'product_description' => 'Description 1',
-        ]);
-        $product2 = Product::create([
-            'product_name'        => 'Product 2',
-            'product_description' => 'Description 2',
-        ]);
-        $product3 = Product::create([
-            'product_name'        => 'Product 3',
-            'product_description' => 'Description 3',
+        $this->databaseInsert('ip_products', [
+            'product_name'        => 'Service Widget Iota',
+            'family_id'           => 0,
+            'product_sku'         => 'SKU-SVC-001',
+            'product_description' => 'A service test product',
+            'product_price'       => '14.99',
+            'purchase_price'      => '0.00',
+            'tax_rate_id'         => 0,
         ]);
 
         /* Act */
-        $result = $this->service->getByIds([
-            $product1->product_id,
-            $product3->product_id,
-        ]);
+        $response = $this->get('/products');
 
         /* Assert */
-        $this->assertCount(2, $result);
-        $this->assertTrue($result->contains('product_id', $product1->product_id));
-        $this->assertTrue($result->contains('product_id', $product3->product_id));
-        $this->assertFalse($result->contains('product_id', $product2->product_id));
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_products', ['product_name' => 'Service Widget Iota']);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
     #[Test]
-    public function it_returns_empty_collection_when_no_matching_ids(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        Product::create([
-            'product_name'        => 'Product 1',
-            'product_description' => 'Description 1',
-        ]);
+        $this->actingAsGuest();
 
         /* Act */
-        $result = $this->service->getByIds([99999, 88888]);
+        $response = $this->get('/products');
 
         /* Assert */
-        $this->assertCount(0, $result);
-    }
-
-    #[Test]
-    public function it_returns_empty_collection_when_empty_array_provided(): void
-    {
-        /* Act */
-        $result = $this->service->getByIds([]);
-
-        /* Assert */
-        $this->assertCount(0, $result);
-    }
-
-    #[Test]
-    public function it_handles_duplicate_ids_in_array(): void
-    {
-        /* Arrange */
-        $product = Product::create([
-            'product_name'        => 'Product 1',
-            'product_description' => 'Description 1',
-        ]);
-
-        /* Act */
-        $result = $this->service->getByIds([
-            $product->product_id,
-            $product->product_id,
-            $product->product_id,
-        ]);
-
-        /* Assert */
-        $this->assertCount(1, $result);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/products] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

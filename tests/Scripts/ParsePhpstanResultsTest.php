@@ -212,6 +212,8 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[Test]
     public function it_falls_back_to_other_errors_for_empty_message(): void
     {
+        /* Arrange */
+
         /* Act */
         $result = categorizeError('');
 
@@ -258,6 +260,8 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[DataProvider('categoryLabelProvider')]
     public function it_returns_human_readable_label_for_known_category(string $category, string $expectedLabel): void
     {
+        /* Arrange */
+
         /* Act */
         $result = getCategoryLabel($category);
 
@@ -268,6 +272,8 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[Test]
     public function it_returns_unknown_for_unrecognized_category(): void
     {
+        /* Arrange */
+
         /* Act */
         $result = getCategoryLabel('nonexistent_category');
 
@@ -363,6 +369,8 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[Test]
     public function it_handles_multibyte_characters_correctly(): void
     {
+        /* Arrange */
+
         /* Arrange – 60 multibyte Japanese characters, exceeds custom limit of 20 */
         $message = str_repeat('あ', 60);
 
@@ -381,6 +389,8 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[Test]
     public function it_strips_project_root_prefix_from_absolute_path(): void
     {
+           /* Arrange */
+
         /* Arrange – derive the project root the same way the script does:
            .github/scripts/parse-phpstan-results.php => dirname(__DIR__, 2) from the
            script file's __DIR__ (.github/scripts) gives the project root.          */
@@ -405,13 +415,15 @@ class ParsePhpstanResultsTest extends AbstractTestCase
         /* Act */
         $result = getShortPath($path);
 
-        /* Assert – the result must not contain any backslashes */
+        /* Assert */
         $this->assertStringNotContainsString('\\', $result);
     }
 
     #[Test]
     public function it_returns_path_unchanged_when_no_prefix_matches(): void
     {
+        /* Arrange */
+
         /* Arrange – a path that does not start with the project root or cwd */
         $path = '/some/completely/different/directory/file.php';
 
