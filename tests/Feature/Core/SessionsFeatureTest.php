@@ -11,10 +11,9 @@ use Tests\AbstractTestCase;
  * Covers: login page rendering, credential rejection, logout redirect,
  * password-reset form, token validation guard, bot-detection guard,
  * and the email-enumeration-safe response shape.
- *
- * @group feature
- * @group sessions
  */
+#[Group('feature')]
+#[Group('sessions')]
 class SessionsFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void

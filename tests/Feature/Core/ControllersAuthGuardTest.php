@@ -16,9 +16,9 @@ use Tests\AbstractTestCase;
  *
  * Routes are taken directly from the controllers in dir2.txt.
  *
- * @group feature
- * @group auth
  */
+#[Group('feature')]
+#[Group('auth')]
 class ControllersAuthGuardTest extends AbstractTestCase
 {
     protected function setUp(): void

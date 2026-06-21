@@ -22,9 +22,9 @@ use Tests\AbstractTestCase;
  *
  * Routes are derived from every controller file listed in dir2.txt.
  *
- * @group feature
- * @group routing
  */
+#[Group('feature')]
+#[Group('routing')]
 class ModuleRoutingTest extends AbstractTestCase
 {
     protected function setUp(): void

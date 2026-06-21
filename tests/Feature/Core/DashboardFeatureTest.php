@@ -7,10 +7,9 @@ use Tests\AbstractTestCase;
 
 /**
  * Feature tests for the Dashboard module.
- *
- * @group feature
- * @group dashboard
  */
+#[Group('feature')]
+#[Group('dashboard')]
 class DashboardFeatureTest extends AbstractTestCase
 {
     protected function setUp(): void

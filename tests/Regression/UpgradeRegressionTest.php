@@ -15,8 +15,8 @@ use Tests\AbstractTestCase;
  *   - MY_Router or MY_Loader are modified
  *   - MX (Wiredesign HMVC) is updated
  *
- * @group regression
  */
+#[Group('regression')]
 class UpgradeRegressionTest extends AbstractTestCase
 {
     protected function setUp(): void
