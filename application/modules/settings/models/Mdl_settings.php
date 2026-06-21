@@ -54,9 +54,13 @@ class Mdl_Settings extends CI_Model
             return;
         }
 
-        // Load all existing settings once to determine which are updates vs inserts
+        // Load existing settings once, scoped to only the keys we care about,
+        // so the query remains efficient even when ip_settings grows large.
         $existing_keys = [];
-        $query         = $this->db->select('setting_key')->get('ip_settings');
+        $query         = $this->db
+            ->select('setting_key')
+            ->where_in('setting_key', array_keys($settings))
+            ->get('ip_settings');
         foreach ($query->result() as $row) {
             $existing_keys[$row->setting_key] = true;
         }
@@ -78,6 +82,9 @@ class Mdl_Settings extends CI_Model
             }
         }
 
+        // Perform both inserts and updates atomically.
+        $this->db->trans_start();
+
         // Perform batch insert for new settings
         if ( ! empty($to_insert)) {
             $this->db->insert_batch('ip_settings', $to_insert);
@@ -88,6 +95,8 @@ class Mdl_Settings extends CI_Model
         if ( ! empty($to_update)) {
             $this->db->update_batch('ip_settings', $to_update, 'setting_key');
         }
+
+        $this->db->trans_complete();
     }
 
     /**
@@ -151,6 +160,36 @@ class Mdl_Settings extends CI_Model
     public function gateway_settings($key)
     {
         return $this->db->like('setting_key', 'gateway_' . mb_strtolower($key), 'after')->get('ip_settings')->result();
+    }
+
+    /**
+     * Returns all ip_settings rows for a given integration type.
+     *
+     * Keys follow the convention "integration_{type}_{field}", e.g.
+     *   integration_superpdp_oauth_client_id
+     *   integration_letspeppol_api_key
+     *
+     * Returns an associative array of field => value so callers do not
+     * have to parse the prefix themselves.
+     *
+     * @param  string $type  The merchant_type value, e.g. 'superpdp'
+     * @return array<string, string>
+     */
+    public function integration_settings(string $type): array
+    {
+        $prefix = 'integration_' . mb_strtolower($type) . '_';
+        $rows   = $this->db
+            ->like('setting_key', $prefix, 'after')
+            ->get('ip_settings')
+            ->result();
+
+        $settings = [];
+        foreach ($rows as $row) {
+            $field            = substr($row->setting_key, strlen($prefix));
+            $settings[$field] = $row->setting_value;
+        }
+
+        return $settings;
     }
 
     /**

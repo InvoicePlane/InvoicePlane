@@ -2,82 +2,53 @@
 
 namespace Feature\Payments;
 
-use Modules\Crm\Models\Client;
-use Payment_Information;
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
-
-use function Tests\Feature\Clients\route;
+use Tests\AbstractTestCase;
 
 /**
  * Payment_Information.
  *
- * Tests HTTP endpoints for client deletion with business rules:
+ * Tests HTTP endpoints for the payments list.
  */
-#[CoversClass(Payment_Information::class)]
-#[CoversClass(Feature\Payments\PaymentInformationController::class)]
-
 class PaymentInformationControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test index displays payment information page.
-     */
+    #[Test]
     #[Group('smoke')]
-    #[Test]
-    public function it_displays_payment_information_page(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        // Payment info may be accessible to guests
+        $clientId = $this->seedClient(['client_name' => 'Payment Info Client']);
+        $invoiceId = $this->seedInvoice($clientId);
+        $this->seedPayment($invoiceId);
 
         /* Act */
-        $response = $this->get(route('payment_information.index'));
+        $response = $this->get('/payments');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('crm::guest_payment_info');
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId]);
     }
 
-    /**
-     * Test payment information is accessible without authentication.
-     */
     #[Test]
-    public function it_is_accessible_without_authentication(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        // No authentication required
+        $this->actingAsGuest();
 
         /* Act */
-        $response = $this->get(route('payment_information.index'));
+        $response = $this->get('/payments');
 
         /* Assert */
-        $response->assertOk();
-    }
-
-    /**
-     * Test payment information is also accessible when authenticated.
-     */
-    #[Test]
-    public function it_is_accessible_when_authenticated(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /* Act */
-        $this->actingAs($user);
-        $response = $this->get(route('payment_information.index'));
-
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('crm::guest_payment_info');
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/payments] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

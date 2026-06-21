@@ -2,45 +2,51 @@
 
 namespace Tests\Feature\Core;
 
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
-use Upload;
+use Tests\AbstractTestCase;
 
 /**
- * Core AjaxController Feature Tests.
+ * UploadController Feature Tests.
  *
- * Tests AJAX requests for settings operations.
+ * Tests the import/upload page for authenticated admins.
  */
-#[CoversClass(Upload::class)]
-#[CoversClass(Tests\Feature\Core\UploadController::class)]
-
 class UploadControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires Laravel service layer — not available in CI3');
+        $this->actingAsAdmin();
     }
-    use InteractsWithDatabase;
 
-    /**
-     * Test index displays upload page.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_displays_upload_page(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('upload.index'));
+        $response = $this->get('/import');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('core::upload_index');
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/import');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/import] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

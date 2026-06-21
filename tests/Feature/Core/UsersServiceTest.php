@@ -2,58 +2,72 @@
 
 namespace Tests\Feature\Core;
 
-use Mdl_Users;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Users::class)]
-#[CoversClass(Tests\Feature\Core\UsersService::class)]
+/**
+ * Smoke test for the UsersServiceTest module via CI3 HTTP harness.
+ */
 class UsersServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service/repository class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = app(UsersService::class);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    #[Group('crud')]
-    public function it_retrieves_all_users(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        User::create([
-            'user_name'     => 'John Doe',
-            'user_email'    => 'john@example.com',
-            'user_password' => bcrypt('password'),
-        ]);
-        User::create([
-            'user_name'     => 'Jane Doe',
-            'user_email'    => 'jane@example.com',
-            'user_password' => bcrypt('password'),
-        ]);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->defaultSelect()->get();
+        $response = $this->get('/users');
 
         /* Assert */
-        $this->assertCount(2, $result);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /users] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_returns_validation_rules(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        /* (no setup needed) */
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $rules = $this->service->validationRules();
+        $response = $this->get('/users');
 
         /* Assert */
-        $this->assertIsArray($rules);
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/users');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/users] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

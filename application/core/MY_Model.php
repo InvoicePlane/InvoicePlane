@@ -154,6 +154,27 @@ class MY_Model extends CI_Model
 
         $this->run_filters();
 
+        // SQL_CALC_FOUND_ROWS is MySQL-only — strip it silently for SQLite.
+        // CI3's select() splits on commas, so the keyword may share a token with
+        // real columns (e.g. "SQL_CALC_FOUND_ROWS ip_clients.*"). Strip the keyword
+        // from the token instead of discarding the whole token.
+        if (in_array($this->db->dbdriver, ['sqlite3', 'sqlite'], true)) {
+            $this->db->qb_select = array_values(array_filter(
+                array_map(
+                    static fn ($s) => trim(preg_replace('/SQL_CALC_FOUND_ROWS\s*/i', '', $s)),
+                    $this->db->qb_select,
+                ),
+                static fn ($s) => $s !== '',
+            ));
+
+            // SQLite requires GROUP BY when HAVING is present without GROUP BY.
+            // Peek at the compiled SQL (non-destructive) to detect this.
+            $preview = $this->db->get_compiled_select('', false);
+            if (preg_match('/\bHAVING\b/i', $preview) && ! preg_match('/\bGROUP BY\b/i', $preview) && $this->primary_key) {
+                $this->db->group_by($this->primary_key);
+            }
+        }
+
         $this->query = $this->db->get($this->table);
 
         $this->filter = [];
@@ -178,13 +199,44 @@ class MY_Model extends CI_Model
         $default_list_limit = $this->mdl_settings->setting('default_list_limit');
         $per_page           = (empty($default_list_limit) ? $this->default_limit : $default_list_limit);
 
+        $isSqlite = in_array($this->db->dbdriver, ['sqlite3', 'sqlite'], true);
+
         $this->set_defaults();
         $this->run_filters();
+
+        // SQL_CALC_FOUND_ROWS is MySQL-only — strip it for SQLite and use COUNT(*) instead
+        if ($isSqlite) {
+            $this->db->qb_select = array_values(array_filter(
+                array_map(static fn ($s) => trim(preg_replace('/SQL_CALC_FOUND_ROWS\s*/i', '', $s)), $this->db->qb_select),
+                static fn ($s) => $s !== '',
+            ));
+            // SQLite requires GROUP BY when HAVING is present without GROUP BY
+            $preview = $this->db->get_compiled_select('', false);
+            if (preg_match('/\bHAVING\b/i', $preview) && ! preg_match('/\bGROUP BY\b/i', $preview) && $this->primary_key) {
+                $this->db->group_by($this->primary_key);
+            }
+            $this->total_rows = $this->db->count_all_results($this->table, false);
+            $this->db->reset_query();
+            $this->set_defaults();
+            $this->run_filters();
+            $this->db->qb_select = array_values(array_filter(
+                array_map(static fn ($s) => trim(preg_replace('/SQL_CALC_FOUND_ROWS\s*/i', '', $s)), $this->db->qb_select),
+                static fn ($s) => $s !== '',
+            ));
+            $preview = $this->db->get_compiled_select('', false);
+            if (preg_match('/\bHAVING\b/i', $preview) && ! preg_match('/\bGROUP BY\b/i', $preview) && $this->primary_key) {
+                $this->db->group_by($this->primary_key);
+            }
+        }
 
         $this->db->limit($per_page, $this->offset);
         $this->query = $this->db->get($this->table);
 
-        $this->total_rows      = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
+        if ($isSqlite) {
+            // total_rows already set above
+        } else {
+            $this->total_rows = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
+        }
         $this->total_pages     = ceil($this->total_rows / $per_page);
         $this->previous_offset = $this->offset - $per_page;
         $this->next_offset     = $this->offset + $per_page;
@@ -472,6 +524,17 @@ class MY_Model extends CI_Model
             if (method_exists($this, $native_method)) {
                 $this->{$native_method}();
             }
+        }
+
+        // SQL_CALC_FOUND_ROWS is MySQL-only — strip it for SQLite (same logic as get()/paginate()).
+        if (in_array($this->db->dbdriver, ['sqlite3', 'sqlite'], true) && ! empty($this->db->qb_select)) {
+            $this->db->qb_select = array_values(array_filter(
+                array_map(
+                    static fn ($s) => trim(preg_replace('/SQL_CALC_FOUND_ROWS\s*/i', '', $s)),
+                    $this->db->qb_select,
+                ),
+                static fn ($s) => $s !== '',
+            ));
         }
     }
 

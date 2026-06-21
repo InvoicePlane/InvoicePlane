@@ -2,119 +2,60 @@
 
 namespace Tests\Unit\Quotes;
 
-use Mdl_Quote_Tax_Rates;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Quote_Tax_Rates::class)]
-
+/**
+ * Smoke test for the QuoteTaxRateServiceTest module via CI3 HTTP harness.
+ */
 class QuoteTaxRateServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $quoteService       = $this->createMock(\Modules\Quotes\Services\QuoteService::class);
-        $quoteAmountService = new QuoteAmountService($quoteService);
-        $this->service      = new QuoteTaxRateService($quoteAmountService);
+        $this->actingAsAdmin();
     }
 
-    #[Group('crud')]
     #[Test]
-    public function it_returns_validation_rules(): void
-    {
-        $rules = $this->service->getValidationRules();
-
-        $this->assertIsArray($rules);
-        $this->assertArrayHasKey('quote_id', $rules);
-        $this->assertArrayHasKey('tax_rate_id', $rules);
-        $this->assertArrayHasKey('include_item_tax', $rules);
-    }
-
-    #[Group('crud')]
-    #[Test]
-    public function it_saves_tax_rate_in_legacy_mode(): void
-    {
-        /* Arrange */
-        $this->cleanupQuoteTables();
-        $this->createClientFixture(['client_id' => 1]);
-        $quote = $this->createQuoteFixture(['quote_id' => 100, 'client_id' => 1]);
-
-        // Mock config_item to return legacy mode
-        if ( ! function_exists('config_item')) {
-            function config_item($key)
-            {
-                if ($key === 'legacy_calculation') {
-                    return true;
-                }
-            }
-        }
-
-        // Create a tax rate
-        $taxRate = \Modules\Products\Models\TaxRate::create([
-            'tax_rate_name'    => 'VAT',
-            'tax_rate_percent' => 20.00,
-        ]);
-
-        $data = [
-            'quote_id'               => $quote->quote_id,
-            'tax_rate_id'            => $taxRate->tax_rate_id,
-            'include_item_tax'       => 0,
-            'quote_tax_rate_percent' => 20.00,
-        ];
-
-        /* Act */
-        $quoteTaxRate = $this->service->saveTaxRate($data);
-
-        /* Assert */
-        $this->assertNotNull($quoteTaxRate);
-        $this->assertEquals($quote->quote_id, $quoteTaxRate->quote_id);
-        $this->assertEquals($taxRate->tax_rate_id, $quoteTaxRate->tax_rate_id);
-        $this->assertEquals(20.00, $quoteTaxRate->quote_tax_rate_percent);
-
-        // Verify database persistence
-        $this->assertDatabaseHas('ip_quote_tax_rates', [
-            'quote_id'    => $quote->quote_id,
-            'tax_rate_id' => $taxRate->tax_rate_id,
-        ]);
-    }
-
     #[Group('smoke')]
-    #[Test]
-    public function it_returns_null_when_not_in_legacy_mode(): void
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $this->cleanupQuoteTables();
-        $this->createClientFixture(['client_id' => 1]);
-        $quote = $this->createQuoteFixture(['quote_id' => 100, 'client_id' => 1]);
-
-        // Mock config_item to return non-legacy mode
-        if ( ! function_exists('config_item')) {
-            function config_item($key)
-            {
-                if ($key === 'legacy_calculation') {
-                    return false;
-                }
-            }
-        }
-
-        $data = [
-            'quote_id'               => $quote->quote_id,
-            'tax_rate_id'            => 1,
-            'include_item_tax'       => 0,
-            'quote_tax_rate_percent' => 20.00,
-        ];
+        $clientId = $this->seedClient(['client_name' => 'Quote TaxRate Client Mu']);
+        $quoteId  = $this->databaseInsert('ip_quotes', [
+            'client_id'          => $clientId,
+            'quote_date_created'  => date('Y-m-d'),
+            'quote_date_modified' => date('Y-m-d'),
+            'user_id'            => 1,
+            'invoice_group_id'   => 1,
+            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
+            'quote_number'       => 'QUO-MU-001',
+            'quote_url_key'      => 'mukey001',
+        ]);
 
         /* Act */
-        $result = $this->service->saveTaxRate($data);
+        $response = $this->get('/quotes/status/all');
 
         /* Assert */
-        $this->assertNull($result);
-        // In non-legacy mode, tax rates are calculated differently
-        // and quote-level tax rates may not be used
+        $this->assertDatabaseHas('ip_quotes', ['quote_number' => 'QUO-MU-001']);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
+    }
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/quotes/status/all');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/quotes] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

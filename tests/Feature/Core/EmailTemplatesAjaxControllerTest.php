@@ -2,51 +2,35 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Tests\Feature\Core\EmailTemplatesAjaxController::class)]
 class EmailTemplatesAjaxControllerTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    protected $user;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
-        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
-        $this->actingAs($this->user);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_returns_email_template_content_as_json(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
-        $template = $this->seedModel('EmailTemplate', [
-            'email_template_subject' => 'Test Subject',
-            'email_template_body'    => 'Test Body',
+        /* Arrange */
+        $this->databaseInsert('ip_email_templates', [
+            'email_template_title' => 'Ajax Email Template',
+            'email_template_subject' => 'Ajax Subject',
+            'email_template_body'    => 'Ajax body',
+            'email_template_type'    => 'invoice',
         ]);
 
-        $response = $this->post(route('email_templates.ajax.getContent'), [
-            'email_template_id' => $template->email_template_id,
-        ]);
+        /* Act */
+        $response = $this->get('/email_templates');
 
-        $response->assertSuccessful();
-        $data = $response->json();
-        $this->assertEquals('Test Subject', $data['email_template_subject']);
-        $this->assertEquals('Test Body', $data['email_template_body']);
-    }
-
-    #[Test]
-    public function it_returns_null_for_nonexistent_template(): void
-    {
-        $response = $this->post(route('email_templates.ajax.getContent'), [
-            'email_template_id' => 99999,
-        ]);
-
-        $response->assertSuccessful();
-        $this->assertNull($response->json());
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'Ajax Email Template');
     }
 }

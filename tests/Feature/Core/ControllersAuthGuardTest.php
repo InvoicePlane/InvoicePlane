@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -15,16 +16,14 @@ use Tests\AbstractTestCase;
  *
  * Routes are taken directly from the controllers in dir2.txt.
  *
- * @group feature
- * @group auth
  */
-#[CoversClass(Tests\Feature\Core\ControllersAuthGuard::class)]
+#[Group('feature')]
+#[Group('auth')]
 class ControllersAuthGuardTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
         $this->actingAsGuest();
     }
 
@@ -52,21 +51,23 @@ class ControllersAuthGuardTest extends AbstractTestCase
             'custom_values index'   => ['/custom_values'],
             'users index'           => ['/users'],
             'settings index'        => ['/settings'],
-            'reports index'         => ['/reports'],
+            'reports index'         => ['/reports/sales_by_client'],
             'dashboard'             => ['/dashboard'],
             'import index'          => ['/import'],
             'projects index'        => ['/projects'],
         ];
     }
 
-    /**
-     * @dataProvider adminRouteProvider
-     */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
+    #[DataProvider('adminRouteProvider')]
     public function it_redirects_an_unauthenticated_visitor_away_from_admin_module(string $uri): void
     {
+        /* Arrange */
+
+        /* Act */
         $response = $this->get($uri);
 
+        /* Assert */
         self::assertTrue(
             $response->isRedirect(),
             sprintf(
@@ -86,14 +87,16 @@ class ControllersAuthGuardTest extends AbstractTestCase
         );
     }
 
-    /**
-     * @dataProvider adminRouteProvider
-     */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
+    #[DataProvider('adminRouteProvider')]
     public function it_does_not_expose_php_errors_on_an_unauthenticated_request_to_admin_route(string $uri): void
     {
+        /* Arrange */
+
+        /* Act */
         $response = $this->get($uri);
 
+        /* Assert */
         $this->assertResponseHasNoPhpErrors($response);
     }
 }

@@ -191,6 +191,34 @@ class MX_Loader extends CI_Loader
 
         CI::$APP->db = DB($params, $query_builder);
 
+        // SQLite3: register MySQL-compatible UDFs so raw queries using NOW(), MONTH(), etc. work.
+        if (CI::$APP->db->dbdriver === 'sqlite3') {
+            CI::$APP->db->initialize();
+            $conn = CI::$APP->db->conn_id;
+            if ($conn instanceof SQLite3) {
+                $conn->createFunction('NOW', static fn () => date('Y-m-d H:i:s'), 0);
+                $conn->createFunction('DATE', static fn ($d) => $d ? date('Y-m-d', is_numeric($d) ? (int) $d : strtotime((string) $d)) : null, 1);
+                $conn->createFunction('DATEDIFF', static function ($d1, $d2) {
+                    if ($d1 === null || $d2 === null) { return null; }
+                    $t1 = is_numeric($d1) ? (int) $d1 : strtotime((string) $d1);
+                    $t2 = is_numeric($d2) ? (int) $d2 : strtotime((string) $d2);
+                    return intdiv((int) ($t1 - $t2), 86400);
+                }, 2);
+                $conn->createFunction('MONTH', static fn ($d) => $d ? (int) date('n', is_numeric($d) ? (int) $d : strtotime((string) $d)) : null, 1);
+                $conn->createFunction('YEAR', static fn ($d) => $d ? (int) date('Y', is_numeric($d) ? (int) $d : strtotime((string) $d)) : null, 1);
+                $conn->createFunction('QUARTER', static fn ($d) => $d ? (int) ceil((int) date('n', is_numeric($d) ? (int) $d : strtotime((string) $d)) / 3) : null, 1);
+                $conn->createFunction('IF', static fn ($cond, $t, $f) => $cond ? $t : $f, 3);
+                $conn->createFunction('IFNULL', static fn ($v, $alt) => $v ?? $alt, 2);
+                $conn->createFunction('CONCAT', static fn (...$args) => implode('', array_map(static fn ($v) => (string) ($v ?? ''), $args)), -1);
+                $conn->createFunction('DATE_FORMAT', static function ($date, $format) {
+                    if ($date === null) { return null; }
+                    $ts  = is_numeric($date) ? (int) $date : strtotime((string) $date);
+                    $map = ['%Y' => 'Y', '%m' => 'm', '%d' => 'd', '%H' => 'H', '%i' => 'i', '%s' => 's', '%M' => 'F', '%b' => 'M'];
+                    return date(strtr($format, $map), $ts);
+                }, 2);
+            }
+        }
+
         return $this;
     }
 

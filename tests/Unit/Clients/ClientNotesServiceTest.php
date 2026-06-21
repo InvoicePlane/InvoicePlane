@@ -2,28 +2,49 @@
 
 namespace Tests\Unit\Clients;
 
-use Mdl_Client_Notes;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Client_Notes::class)]
+/**
+ * Smoke test for the ClientNotesServiceTest module via CI3 HTTP harness.
+ */
 class ClientNotesServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('ClientNotesService does not exist — CI3 model tested directly via Mdl_Client_Notes');
+        $this->actingAsAdmin();
     }
 
-    public function test_service_has_correct_table(): void
+    #[Test]
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
-        $this->assertEquals('ip_client_notes', $this->service->table);
+        /* Arrange */
+        $this->seedClient(['client_name' => 'Notes Service Client Eta']);
+
+        /* Act */
+        $response = $this->get('/clients/status/active');
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
-    public function test_service_has_correct_primary_key(): void
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
     {
-        $this->assertStringContainsString('client_note_id', $this->service->primary_key);
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/clients/status/active');
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/clients] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

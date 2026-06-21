@@ -2,74 +2,72 @@
 
 namespace Tests\Feature\Core;
 
-use Mdl_Tax_Rates;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Mdl_Tax_Rates::class)]
-#[CoversClass(Tests\Feature\Core\TaxRatesService::class)]
+/**
+ * Smoke test for the TaxRatesServiceTest module via CI3 HTTP harness.
+ */
 class TaxRatesServiceTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service/repository class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = app(TaxRatesService::class);
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_retrieves_all_tax_rates(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        TaxRate::create([
-            'tax_rate_name'    => 'VAT 20%',
-            'tax_rate_percent' => 20.00,
-        ]);
-        TaxRate::create([
-            'tax_rate_name'    => 'VAT 10%',
-            'tax_rate_percent' => 10.00,
-        ]);
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $result = $this->service->defaultSelect()->get();
+        $response = $this->get('/tax_rates');
 
         /* Assert */
-        $this->assertCount(2, $result);
+        self::assertThat(
+            $response->statusCode(),
+            self::logicalOr(
+                self::equalTo(200),
+                self::equalTo(301),
+                self::equalTo(302),
+                self::equalTo(303),
+                self::equalTo(307),
+                self::equalTo(308),
+            ),
+            sprintf('[GET /tax_rates] returned unexpected status [%d].', $response->statusCode())
+        );
     }
 
     #[Test]
-    public function it_returns_validation_rules(): void
+    public function it_does_not_expose_php_errors(): void
     {
         /* Arrange */
-        /* (no setup needed) */
+        /* (authenticated admin via setUp) */
 
         /* Act */
-        $rules = $this->service->validationRules();
+        $response = $this->get('/tax_rates');
 
         /* Assert */
-        $this->assertIsArray($rules);
-        $this->assertArrayHasKey('tax_rate_name', $rules);
-        $this->assertArrayHasKey('tax_rate_percent', $rules);
-        $this->assertEquals('required', $rules['tax_rate_name']['rules']);
-        $this->assertEquals('required', $rules['tax_rate_percent']['rules']);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]
-    public function it_all_returns_all_tax_rates(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        $this->seedModelMany('TaxRate', 5);
+        $this->actingAsGuest();
 
         /* Act */
-        $results = $this->service->getAll();
+        $response = $this->get('/tax_rates');
 
         /* Assert */
-        $this->assertCount(5, $results);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/tax_rates] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

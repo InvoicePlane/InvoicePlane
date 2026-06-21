@@ -2,121 +2,53 @@
 
 namespace Tests\Unit\Projects;
 
-use Mdl_Projects;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Projects::class)]
+/**
+ * Smoke test for the ProjectsServiceTest module via CI3 HTTP harness.
+ */
 class ProjectsServiceTest extends AbstractTestCase
 {
-    private $service;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->service = new ProjectsService();
+        $this->actingAsAdmin();
     }
 
     #[Test]
-    public function it_returns_tasks_for_a_project(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $project = Project::create([
-            'project_name' => 'Test Project',
-        ]);
-
-        Task::create([
-            'task_name'        => 'Task 1',
-            'task_description' => 'Description 1',
-            'task_status'      => 1,
-            'project_id'       => $project->project_id,
-        ]);
-        Task::create([
-            'task_name'        => 'Task 2',
-            'task_description' => 'Description 2',
-            'task_status'      => 2,
-            'project_id'       => $project->project_id,
-        ]);
-
-        // Create a task for a different project
-        $otherProject = Project::create([
-            'project_name' => 'Other Project',
-        ]);
-        Task::create([
-            'task_name'        => 'Other Task',
-            'task_description' => 'Other Description',
-            'task_status'      => 1,
-            'project_id'       => $otherProject->project_id,
+        $clientId = $this->seedClient(['client_name' => 'Projects Service Client']);
+        $this->databaseInsert('ip_projects', [
+            'client_id'            => $clientId,
+            'project_name'         => 'Service Project Epsilon',
         ]);
 
         /* Act */
-        $result = $this->service->getTasks($project->project_id);
+        $response = $this->get('/projects');
 
         /* Assert */
-        $this->assertIsArray($result);
-        $this->assertCount(2, $result);
-        $this->assertEquals('Task 1', $result[0]->task_name);
-        $this->assertEquals('Task 2', $result[1]->task_name);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'Service Project Epsilon');
     }
 
     #[Test]
-    public function it_returns_empty_array_when_project_has_no_tasks(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        $project = Project::create([
-            'project_name' => 'Empty Project',
-        ]);
+        $this->actingAsGuest();
 
         /* Act */
-        $result = $this->service->getTasks($project->project_id);
+        $response = $this->get('/projects');
 
         /* Assert */
-        $this->assertIsArray($result);
-        $this->assertEmpty($result);
-    }
-
-    #[Test]
-    public function it_returns_empty_array_when_project_id_is_null(): void
-    {
-        /* Act */
-        $result = $this->service->getTasks(null);
-
-        /* Assert */
-        $this->assertIsArray($result);
-        $this->assertEmpty($result);
-    }
-
-    #[Test]
-    public function it_returns_empty_array_when_project_id_is_zero(): void
-    {
-        /* Act */
-        $result = $this->service->getTasks(0);
-
-        /* Assert */
-        $this->assertIsArray($result);
-        $this->assertEmpty($result);
-    }
-
-    #[Test]
-    public function it_returns_empty_array_when_project_id_is_false(): void
-    {
-        /* Act */
-        $result = $this->service->getTasks(false);
-
-        /* Assert */
-        $this->assertIsArray($result);
-        $this->assertEmpty($result);
-    }
-
-    #[Test]
-    public function it_returns_validation_rules(): void
-    {
-        /* Act */
-        $rules = $this->service->validationRules();
-
-        /* Assert */
-        $this->assertIsArray($rules);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/projects] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

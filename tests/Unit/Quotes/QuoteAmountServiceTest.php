@@ -2,137 +2,60 @@
 
 namespace Tests\Unit\Quotes;
 
-use Mdl_Quote_Amounts;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(Mdl_Quote_Amounts::class)]
-
+/**
+ * Smoke test for the QuoteAmountServiceTest module via CI3 HTTP harness.
+ */
 class QuoteAmountServiceTest extends AbstractTestCase
 {
-    private $service;
-
-    private $quoteService;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Service class does not exist — CI3 model layer, no Laravel service layer available');
-        $this->quoteService = new QuoteService();
-        $this->service      = new QuoteAmountService($this->quoteService);
+        $this->actingAsAdmin();
     }
 
-    #[Group('exotic')]
     #[Test]
-    public function it_calculates_global_discount(): void
+    #[Group('smoke')]
+    public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $this->cleanupQuoteTables();
-        $this->createClientFixture(['client_id' => 1]);
-        $quote = $this->createQuoteFixture(['quote_id' => 100, 'client_id' => 1]);
-
-        // Create items with amounts
-        $item = \Modules\Quotes\Models\QuoteItem::create([
-            'quote_id'      => $quote->quote_id,
-            'item_name'     => 'Test Item',
-            'item_quantity' => 1,
-            'item_price'    => 100.00,
-        ]);
-
-        // Create item amount with discount
-        \Modules\Quotes\Models\QuoteItemAmount::create([
-            'item_id'        => $item->item_id,
-            'item_subtotal'  => 100.00,
-            'item_tax_total' => 10.00,
-            'item_discount'  => 5.00,
-            'item_total'     => 105.00,
+        $clientId = $this->seedClient(['client_name' => 'Quote Amt Client Lambda']);
+        $quoteId  = $this->databaseInsert('ip_quotes', [
+            'client_id'          => $clientId,
+            'quote_date_created'  => date('Y-m-d'),
+            'quote_date_modified' => date('Y-m-d'),
+            'user_id'            => 1,
+            'invoice_group_id'   => 1,
+            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
+            'quote_number'       => 'QUO-LAMBDA-001',
+            'quote_url_key'      => 'lambdakey001',
         ]);
 
         /* Act */
-        $globalDiscount = $this->service->getGlobalDiscount($quote->quote_id);
+        $response = $this->get('/quotes/status/all');
 
         /* Assert */
-        // Global discount = subtotal - (total - tax + discount)
-        // = 100 - (105 - 10 + 5) = 100 - 100 = 0
-        $this->assertEquals(0.00, $globalDiscount);
+        $this->assertDatabaseHas('ip_quotes', ['quote_number' => 'QUO-LAMBDA-001']);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
-    #[Group('exotic')]
     #[Test]
-    public function it_calculates_discount_for_legacy_mode(): void
+    public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */
-        $this->cleanupQuoteTables();
-        $this->createClientFixture(['client_id' => 1]);
-        $quote = $this->createQuoteFixture([
-            'quote_id'               => 100,
-            'client_id'              => 1,
-            'quote_discount_amount'  => 10.00,
-            'quote_discount_percent' => 5.00,
-        ]);
-
-        $quoteTotal    = 200.00;
-        $decimalPlaces = 2;
+        $this->actingAsGuest();
 
         /* Act */
-        $result = $this->service->calculateDiscount($quote->quote_id, $quoteTotal, $decimalPlaces);
+        $response = $this->get('/quotes/status/all');
 
         /* Assert */
-        // Total: 200.00
-        // After amount discount: 200 - 10 = 190.00
-        // After percent discount: 190 - (190 * 5/100) = 190 - 9.50 = 180.50
-        $this->assertEquals(180.50, $result);
-    }
-
-    #[Test]
-    public function it_gets_total_quoted_for_all_time(): void
-    {
-        /* Arrange */
-        $this->cleanupQuoteTables();
-        $this->createClientFixture(['client_id' => 1]);
-
-        // Create multiple quotes with amounts
-        $quote1 = $this->createQuoteFixture([
-            'quote_id'           => 100,
-            'client_id'          => 1,
-            'quote_date_created' => '2024-01-15',
-        ]);
-        $quote2 = $this->createQuoteFixture([
-            'quote_id'           => 101,
-            'client_id'          => 1,
-            'quote_date_created' => '2024-02-15',
-        ]);
-
-        \Modules\Quotes\Models\QuoteAmount::create([
-            'quote_id'             => $quote1->quote_id,
-            'quote_item_subtotal'  => 100.00,
-            'quote_item_tax_total' => 10.00,
-            'quote_total'          => 110.00,
-        ]);
-
-        \Modules\Quotes\Models\QuoteAmount::create([
-            'quote_id'             => $quote2->quote_id,
-            'quote_item_subtotal'  => 200.00,
-            'quote_item_tax_total' => 20.00,
-            'quote_total'          => 220.00,
-        ]);
-
-        /* Act */
-        $total = $this->service->getTotalQuoted();
-
-        /* Assert */
-        $this->assertEquals(330.00, $total); // 110 + 220
-    }
-
-    #[Test]
-    public function it_gets_status_totals_for_period(): void
-    {
-        $totals = $this->service->getStatusTotals('this-month');
-
-        $this->assertIsArray($totals);
-        // Should have entries for all 6 statuses
-        $this->assertCount(6, $totals);
+        self::assertTrue(
+            $response->isRedirect(),
+            sprintf('Unauthenticated GET [/quotes] must redirect. Got [%d].', $response->statusCode())
+        );
     }
 }

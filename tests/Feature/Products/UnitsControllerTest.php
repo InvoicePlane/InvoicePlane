@@ -1,97 +1,305 @@
 <?php
 
-namespace Feature\Products;
+namespace Tests\Feature\Products;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
-use Units;
 
-#[CoversClass(Units::class)]
 class UnitsControllerTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    protected $user;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
-        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
-        $this->actingAs($this->user);
+        $this->actingAsAdmin();
+    }
+
+    // -------------------------------------------------------------------------
+    // List
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_lists_units(): void
+    {
+        /* Arrange */
+        $this->databaseInsert('ip_units', [
+            'unit_name'      => 'Listed Unit',
+            'unit_name_plrl' => 'Listed Units',
+        ]);
+
+        /* Act */
+        $response = $this->get('/units');
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_units', ['unit_name' => 'Listed Unit']);
+        $this->assertResponseBodyContains($response, '<html');
+    }
+
+    // -------------------------------------------------------------------------
+    // Create
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_renders_the_create_unit_form(): void
+    {
+        /* Arrange */
+
+        /* Act */
+        $response = $this->get('/units/form');
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
     }
 
     #[Test]
-    public function it_displays_units_index(): void
+    public function it_creates_a_unit(): void
     {
-        $response = $this->get(route('units.index'));
+        /**
+         * POST /units/form
+         * {
+         *     "unit_name": "Kilogram",
+         *     "unit_name_plrl": "Kilograms",
+         *     "is_update": "0",
+         *     "btn_submit": "1"
+         * }
+         */
 
-        $response->assertSuccessful();
-        $response->assertViewHas('units');
-    }
+        /* Arrange */
 
-    #[Test]
-    public function it_creates_new_unit(): void
-    {
-        $unitData = [
+        /* Act */
+        $response = $this->post('/units/form', [
             'unit_name'      => 'Kilogram',
             'unit_name_plrl' => 'Kilograms',
-        ];
-
-        $response = $this->post(route('units.form'), $unitData);
-
-        $response->assertRedirect(route('units.index'));
-        $this->assertDatabaseHas('ip_units', [
-            'unit_name' => 'Kilogram',
+            'is_update'      => '0',
+            'btn_submit'     => '1',
         ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertDatabaseHas('ip_units', ['unit_name' => 'Kilogram']);
     }
 
-    #[Test]
-    public function it_prevents_duplicate_unit_names(): void
-    {
-        $this->seedModel('Unit', ['unit_name' => 'Existing Unit']);
-
-        $unitData = [
-            'unit_name'      => 'Existing Unit',
-            'unit_name_plrl' => 'Existing Units',
-            'is_update'      => 0,
-        ];
-
-        $response = $this->post(route('units.form'), $unitData);
-
-        $response->assertRedirect(route('units.form'));
-        $response->assertSessionHas('alert_error');
-    }
+    // -------------------------------------------------------------------------
+    // Update
+    // -------------------------------------------------------------------------
 
     #[Test]
-    public function it_updates_existing_unit(): void
+    public function it_renders_the_edit_form_showing_existing_unit_name(): void
     {
-        $unit = $this->seedModel('Unit', ['unit_name' => 'Original Unit']);
-
-        $updateData = [
-            'unit_name'      => 'Updated Unit',
-            'unit_name_plrl' => 'Updated Units',
-        ];
-
-        $response = $this->post(route('units.form', ['id' => $unit->unit_id]), $updateData);
-
-        $response->assertRedirect(route('units.index'));
-        $this->assertDatabaseHas('ip_units', [
-            'unit_id'   => $unit->unit_id,
-            'unit_name' => 'Updated Unit',
+        /* Arrange */
+        $id = $this->databaseInsert('ip_units', [
+            'unit_name'      => 'Editable Unit',
+            'unit_name_plrl' => 'Editable Units',
         ]);
+
+        /* Act */
+        $response = $this->get('/units/form/' . $id);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+        $this->assertResponseBodyContains($response, 'Editable Unit');
     }
 
     #[Test]
-    public function it_deletes_unit(): void
+    public function it_updates_a_unit(): void
     {
-        $unit = $this->seedModel('Unit');
+        /**
+         * POST /units/form/{id}
+         * {
+         *     "unit_name": "Renamed Unit",
+         *     "unit_name_plrl": "Renamed Units",
+         *     "is_update": "1",
+         *     "btn_submit": "1"
+         * }
+         */
 
-        $response = $this->delete(route('units.delete', ['id' => $unit->unit_id]));
+        /* Arrange */
+        $id = $this->databaseInsert('ip_units', [
+            'unit_name'      => 'Original Unit',
+            'unit_name_plrl' => 'Original Units',
+        ]);
 
-        $response->assertRedirect(route('units.index'));
-        $this->assertDatabaseMissing('ip_units', ['unit_id' => $unit->unit_id]);
+        /* Act */
+        $response = $this->post('/units/form/' . $id, [
+            'unit_name'      => 'Renamed Unit',
+            'unit_name_plrl' => 'Renamed Units',
+            'is_update'      => '1',
+            'btn_submit'     => '1',
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertDatabaseHas('ip_units', ['unit_name' => 'Renamed Unit']);
+        $this->assertDatabaseMissing('ip_units', ['unit_name' => 'Original Unit']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Delete
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_deletes_a_unit(): void
+    {
+        /* Arrange */
+        $id = $this->databaseInsert('ip_units', [
+            'unit_name'      => 'Deletable Unit',
+            'unit_name_plrl' => 'Deletable Units',
+        ]);
+        $this->assertDatabaseHas('ip_units', ['unit_name' => 'Deletable Unit']);
+
+        /* Act */
+        $response = $this->post('/units/delete/' . $id, []);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertDatabaseMissing('ip_units', ['unit_name' => 'Deletable Unit']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Validation failures — missing required fields
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_fails_to_create_without_unit_name(): void
+    {
+        /**
+         * POST /units/form
+         * {
+         *     "unit_name": "",
+         *     "unit_name_plrl": "Items",
+         *     "is_update": "0",
+         *     "btn_submit": "1"
+         * }
+         */
+
+        /* Arrange */
+
+        /* Act */
+        $response = $this->post('/units/form', [
+            'unit_name'      => '',
+            'unit_name_plrl' => 'Items',
+            'is_update'      => '0',
+            'btn_submit'     => '1',
+        ]);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+    }
+
+    #[Test]
+    public function it_fails_to_create_without_unit_name_plural(): void
+    {
+        /**
+         * POST /units/form
+         * {
+         *     "unit_name": "Item",
+         *     "unit_name_plrl": "",
+         *     "is_update": "0",
+         *     "btn_submit": "1"
+         * }
+         */
+
+        /* Arrange */
+
+        /* Act */
+        $response = $this->post('/units/form', [
+            'unit_name'      => 'Item',
+            'unit_name_plrl' => '',
+            'is_update'      => '0',
+            'btn_submit'     => '1',
+        ]);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseMissing('ip_units', ['unit_name' => 'Item']);
+    }
+
+    #[Test]
+    public function it_fails_to_update_without_unit_name(): void
+    {
+        /**
+         * POST /units/form/{id}
+         * {
+         *     "unit_name": "",
+         *     "unit_name_plrl": "Original Units",
+         *     "is_update": "1",
+         *     "btn_submit": "1"
+         * }
+         */
+
+        /* Arrange */
+        $id = $this->databaseInsert('ip_units', [
+            'unit_name'      => 'Will Not Change',
+            'unit_name_plrl' => 'Will Not Change Plural',
+        ]);
+
+        /* Act */
+        $response = $this->post('/units/form/' . $id, [
+            'unit_name'      => '',
+            'unit_name_plrl' => 'Will Not Change Plural',
+            'is_update'      => '1',
+            'btn_submit'     => '1',
+        ]);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseHas('ip_units', ['unit_name' => 'Will Not Change']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Edge cases
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_redirects_when_creating_a_duplicate_unit(): void
+    {
+        /**
+         * POST /units/form (duplicate)
+         * {
+         *     "unit_name": "Duplicate Unit",
+         *     "unit_name_plrl": "Duplicate Units",
+         *     "is_update": "0",
+         *     "btn_submit": "1"
+         * }
+         */
+
+        /* Arrange */
+        $this->databaseInsert('ip_units', [
+            'unit_name'      => 'Duplicate Unit',
+            'unit_name_plrl' => 'Duplicate Units',
+        ]);
+
+        /* Act */
+        $response = $this->post('/units/form', [
+            'unit_name'      => 'Duplicate Unit',
+            'unit_name_plrl' => 'Duplicate Units',
+            'is_update'      => '0',
+            'btn_submit'     => '1',
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Creating a duplicate unit must redirect with flash error.');
+    }
+
+    // -------------------------------------------------------------------------
+    // Guest redirect — always last
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/units');
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
     }
 }

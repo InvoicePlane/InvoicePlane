@@ -2,348 +2,247 @@
 
 namespace Tests\Feature\Products;
 
-use Families;
-use Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Concerns\InteractsWithDatabase;
-
-/**
- * FamiliesController Feature Tests.
- *
- * Tests product family (category) management including list, create, update, and delete.
- */
-#[CoversClass(Families::class)]
-#[CoversClass(Tests\Feature\Products\FamiliesController::class)]
+use Tests\AbstractTestCase;
 
 class FamiliesControllerTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    protected $user;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
-        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
-        $this->actingAs($this->user);
+        $this->actingAsAdmin();
     }
 
-    /**
-     * Test index displays paginated list of families.
-     */
-    #[Group('smoke')]
+    // -------------------------------------------------------------------------
+    // List
+    // -------------------------------------------------------------------------
+
     #[Test]
-    public function it_displays_paginated_list_of_families(): void
+    public function it_lists_families(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
-        $this->seedModelMany('Family', 5);
+        $this->databaseInsert('ip_families', ['family_name' => 'Listed Family']);
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('families.index'));
+        $response = $this->get('/families');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('products::families_index');
-        $response->assertViewHas('families');
-        $response->assertViewHas('filter_display', true);
-        $response->assertViewHas('filter_placeholder');
-        $response->assertViewHas('filter_method', 'filter_families');
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_families', ['family_name' => 'Listed Family']);
+        $this->assertResponseBodyContains($response, '<html');
     }
 
-    /**
-     * Test form displays create form.
-     */
-    #[Group('smoke')]
+    // -------------------------------------------------------------------------
+    // Create
+    // -------------------------------------------------------------------------
+
     #[Test]
-    public function it_displays_create_form(): void
+    public function it_renders_the_create_family_form(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
 
         /* Act */
-        $response = $this->actingAs($user)->get(route('families.form'));
+        $response = $this->get('/families/form');
 
         /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('products::families_form');
-        $response->assertViewHas('family');
-        $response->assertViewHas('is_update', false);
-
-        $family = $response->viewData('family');
-        $this->assertInstanceOf(Family::class, $family);
-        $this->assertFalse($family->exists);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
     }
 
-    /**
-     * Test form displays edit form with existing family.
-     */
-    #[Group('smoke')]
     #[Test]
-    public function it_displays_edit_form_with_existing_family(): void
+    public function it_creates_a_family(): void
     {
-        /* Arrange */
-        $user   = $this->seedModel('User');
-        $family = $this->seedModel('Family');
-
-        /* Act */
-        $response = $this->actingAs($user)->get(route('families.form', ['id' => $family->family_id]));
-
-        /* Assert */
-        $response->assertOk();
-        $response->assertViewIs('products::families_form');
-        $response->assertViewHas('family');
-        $response->assertViewHas('is_update', true);
-
-        $viewFamily = $response->viewData('family');
-        $this->assertEquals($family->family_id, $viewFamily->family_id);
-    }
-
-    /**
-     * Test form creates new family with valid data.
-     */
-    #[Group('crud')]
-    #[Test]
-    public function it_creates_new_family_with_valid_data(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
         /**
+         * POST /families/form
          * {
          *     "family_name": "Electronics",
+         *     "is_update": "0",
          *     "btn_submit": "1"
-         * }.
+         * }
          */
-        $familyData = [
-            'family_name' => 'Electronics',
-            'btn_submit'  => '1',
-        ];
+
+        /* Arrange */
 
         /* Act */
-        $response = $this->actingAs($user)->post(route('families.form'), $familyData);
+        $response = $this->post('/families/form', [
+            'family_name' => 'Electronics',
+            'is_update'   => '0',
+            'btn_submit'  => '1',
+        ]);
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
-        $response->assertSessionHas('alert_success');
-
-        $this->assertDatabaseHas('ip_families', [
-            'family_name' => 'Electronics',
-        ]);
+        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertDatabaseHas('ip_families', ['family_name' => 'Electronics']);
     }
 
+    // -------------------------------------------------------------------------
+    // Update
+    // -------------------------------------------------------------------------
+
     #[Test]
-    public function it_creates_new_family(): void
-    {
-        $familyData = [
-            'family_name' => 'Test Family',
-            'is_update'   => 0,
-        ];
-
-        $response = $this->post(route('families.form'), $familyData);
-
-        $response->assertRedirect(route('families.index'));
-        $this->assertDatabaseHas('ip_families', [
-            'family_name' => 'Test Family',
-        ]);
-    }
-
-    /**
-     * Test form updates existing family.
-     */
-    #[Group('crud')]
-    #[Test]
-    public function it_updates_existing_family_with_valid_data(): void
+    public function it_renders_the_edit_form_showing_existing_family_name(): void
     {
         /* Arrange */
-        $user   = $this->seedModel('User');
-        $family = $this->seedModel('Family', ['family_name' => 'Old Name']);
+        $id = $this->databaseInsert('ip_families', ['family_name' => 'Editable Family']);
 
+        /* Act */
+        $response = $this->get('/families/form/' . $id);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+        $this->assertResponseBodyContains($response, 'Editable Family');
+    }
+
+    #[Test]
+    public function it_updates_a_family(): void
+    {
         /**
+         * POST /families/form/{id}
          * {
-         *     "family_name": "Updated Name",
+         *     "family_name": "Renamed Family",
+         *     "is_update": "1",
          *     "btn_submit": "1"
-         * }.
+         * }
          */
-        $updateData = [
-            'family_name' => 'Updated Name',
+
+        /* Arrange */
+        $id = $this->databaseInsert('ip_families', ['family_name' => 'Original Family']);
+
+        /* Act */
+        $response = $this->post('/families/form/' . $id, [
+            'family_name' => 'Renamed Family',
+            'is_update'   => '1',
             'btn_submit'  => '1',
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(route('families.form', ['id' => $family->family_id]), $updateData);
-
-        /* Assert */
-        $response->assertRedirect(route('families.index'));
-        $response->assertSessionHas('alert_success');
-
-        $this->assertDatabaseHas('ip_families', [
-            'family_id'   => $family->family_id,
-            'family_name' => 'Updated Name',
         ]);
-    }
-
-    /**
-     * Test form redirects on cancel.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_redirects_to_index_on_cancel(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /**
-         * {
-         *     "btn_cancel": "1"
-         * }.
-         */
-        $cancelData = [
-            'btn_cancel' => '1',
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(route('families.form'), $cancelData);
 
         /* Assert */
-        $response->assertRedirect(route('families.index'));
+        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertDatabaseHas('ip_families', ['family_name' => 'Renamed Family']);
+        $this->assertDatabaseMissing('ip_families', ['family_name' => 'Original Family']);
     }
 
-    /**
-     * Test form validates required family name.
-     */
+    // -------------------------------------------------------------------------
+    // Delete
+    // -------------------------------------------------------------------------
+
     #[Test]
-    public function it_validates_required_family_name(): void
+    public function it_deletes_a_family(): void
     {
         /* Arrange */
-        $user = $this->seedModel('User');
+        $id = $this->databaseInsert('ip_families', ['family_name' => 'Deletable Family']);
+        $this->assertDatabaseHas('ip_families', ['family_name' => 'Deletable Family']);
 
+        /* Act */
+        $response = $this->post('/families/delete/' . $id, []);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertDatabaseMissing('ip_families', ['family_name' => 'Deletable Family']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Validation failures — missing required fields
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_fails_to_create_without_family_name(): void
+    {
         /**
+         * POST /families/form
          * {
          *     "family_name": "",
+         *     "is_update": "0",
          *     "btn_submit": "1"
-         * }.
+         * }
          */
-        $invalidData = [
+
+        /* Arrange */
+
+        /* Act */
+        $response = $this->post('/families/form', [
             'family_name' => '',
+            'is_update'   => '0',
             'btn_submit'  => '1',
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(route('families.form'), $invalidData);
-
-        /* Assert */
-        $response->assertSessionHasErrors('family_name');
-    }
-
-    /**
-     * Test form validates unique family name.
-     */
-    #[Test]
-    public function it_validates_unique_family_name(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-        $this->seedModel('Family', ['family_name' => 'Existing Family']);
-
-        /**
-         * {
-         *     "family_name": "Existing Family",
-         *     "btn_submit": "1"
-         * }.
-         */
-        $duplicateData = [
-            'family_name' => 'Existing Family',
-            'btn_submit'  => '1',
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(route('families.form'), $duplicateData);
-
-        /* Assert */
-        $response->assertSessionHasErrors('family_name');
-    }
-
-    /**
-     * Test delete removes family.
-     */
-    #[Group('crud')]
-    #[Test]
-    public function it_deletes_family(): void
-    {
-        /* Arrange */
-        $family = $this->seedModel('Family');
-
-        /**
-         * {
-         *     "family_id": 1
-         * }.
-         */
-        $deletePayload = [
-            'family_id' => $family->family_id,
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(
-            route('families.delete', ['id' => $family->family_id]),
-            $deletePayload
-        );
-
-        /* Assert */
-        $response->assertRedirect(route('families.index'));
-        $this->assertDatabaseMissing('ip_families', ['family_id' => $family->family_id]);
-        $response->assertSessionHas('alert_success');
-
-        $this->assertDatabaseMissing('ip_families', [
-            'family_id' => $family->family_id,
         ]);
-    }
-
-    /**
-     * Test delete returns 404 for non-existent family.
-     */
-    #[Group('smoke')]
-    #[Test]
-    public function it_returns_404_when_deleting_non_existent_family(): void
-    {
-        /* Arrange */
-        $user = $this->seedModel('User');
-
-        /**
-         * {
-         *     "family_id": 99999
-         * }.
-         */
-        $deletePayload = [
-            'family_id' => 99999,
-        ];
-
-        /* Act */
-        $response = $this->actingAs($user)->post(
-            route('families.delete', ['id' => 99999]),
-            $deletePayload
-        );
 
         /* Assert */
-        $response->assertNotFound();
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
     }
 
     #[Test]
-    public function it_prevents_duplicate_family_names(): void
+    public function it_fails_to_update_without_family_name(): void
     {
-        $this->seedModel('Family', ['family_name' => 'Existing Family']);
+        /**
+         * POST /families/form/{id}
+         * {
+         *     "family_name": "",
+         *     "is_update": "1",
+         *     "btn_submit": "1"
+         * }
+         */
 
-        $familyData = [
-            'family_name' => 'Existing Family',
-            'is_update'   => 0,
-        ];
+        /* Arrange */
+        $id = $this->databaseInsert('ip_families', ['family_name' => 'Will Not Change']);
 
-        $response = $this->post(route('families.form'), $familyData);
+        /* Act */
+        $response = $this->post('/families/form/' . $id, [
+            'family_name' => '',
+            'is_update'   => '1',
+            'btn_submit'  => '1',
+        ]);
 
-        $response->assertRedirect(route('families.form'));
-        $response->assertSessionHas('alert_error');
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseHas('ip_families', ['family_name' => 'Will Not Change']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Edge cases
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_redirects_when_creating_a_duplicate_family(): void
+    {
+        /**
+         * POST /families/form (duplicate)
+         * {
+         *     "family_name": "Duplicate Family",
+         *     "is_update": "0",
+         *     "btn_submit": "1"
+         * }
+         */
+
+        /* Arrange */
+        $this->databaseInsert('ip_families', ['family_name' => 'Duplicate Family']);
+
+        /* Act */
+        $response = $this->post('/families/form', [
+            'family_name' => 'Duplicate Family',
+            'is_update'   => '0',
+            'btn_submit'  => '1',
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Creating a duplicate family must redirect with flash error.');
+    }
+
+    // -------------------------------------------------------------------------
+    // Guest redirect — always last
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/families');
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
     }
 }

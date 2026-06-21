@@ -4,110 +4,289 @@ namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
-#[CoversClass(Tests\Feature\Core\EmailTemplatesController::class)]
 class EmailTemplatesControllerTest extends AbstractTestCase
 {
-    use InteractsWithDatabase;
-
-    protected $user;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
-        $this->user = $this->seedModel('User', ['user_type' => 1, 'user_active' => 1]);
-        $this->actingAs($this->user);
+        $this->actingAsAdmin();
     }
 
-    #[Test]
-    public function it_displays_email_templates_index(): void
-    {
-        $response = $this->get(route('email_templates.index'));
-
-        $response->assertSuccessful();
-        $response->assertViewHas('email_templates');
-    }
+    // -------------------------------------------------------------------------
+    // List
+    // -------------------------------------------------------------------------
 
     #[Test]
-    public function it_creates_new_email_template(): void
+    public function it_lists_email_templates(): void
     {
-        $templateData = [
-            'email_template_title'   => 'Test Template',
-            'email_template_subject' => 'Test Subject',
-            'email_template_body'    => 'Test body content',
-            'email_template_type'    => 'invoice',
-            'is_update'              => 0,
-        ];
-
-        $response = $this->post(route('email_templates.form'), $templateData);
-
-        $response->assertRedirect(route('email_templates.index'));
-        $this->assertDatabaseHas('ip_email_templates', [
-            'email_template_title' => 'Test Template',
+        /* Arrange */
+        $this->databaseInsert('ip_email_templates', [
+            'email_template_title'   => 'Listed Template',
+            'email_template_subject' => 'Hello',
+            'email_template_body'    => 'Body text',
         ]);
+
+        /* Act */
+        $response = $this->get('/email_templates');
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertDatabaseHas('ip_email_templates', ['email_template_title' => 'Listed Template']);
+        $this->assertResponseBodyContains($response, '<html');
+    }
+
+    // -------------------------------------------------------------------------
+    // Create
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_renders_the_create_email_template_form(): void
+    {
+        /* Arrange */
+
+        /* Act */
+        $response = $this->get('/email_templates/form');
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
     }
 
     #[Test]
-    public function it_prevents_duplicate_email_template_titles(): void
+    public function it_creates_an_email_template(): void
     {
-        $this->seedModel('EmailTemplate', ['email_template_title' => 'Existing Template']);
+        /**
+         * POST /email_templates/form
+         * {
+         *     "email_template_title": "Invoice Reminder",
+         *     "email_template_subject": "Your invoice is due",
+         *     "email_template_body": "Please pay your invoice.",
+         *     "is_update": "0",
+         *     "btn_submit": "1"
+         * }
+         */
 
-        $templateData = [
-            'email_template_title'   => 'Existing Template',
+        /* Arrange */
+
+        /* Act */
+        $response = $this->post('/email_templates/form', [
+            'email_template_title'   => 'Invoice Reminder',
+            'email_template_subject' => 'Your invoice is due',
+            'email_template_body'    => 'Please pay your invoice.',
+            'is_update'              => '0',
+            'btn_submit'             => '1',
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertDatabaseHas('ip_email_templates', ['email_template_title' => 'Invoice Reminder']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Update
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_renders_the_edit_form_showing_existing_template_title(): void
+    {
+        /* Arrange */
+        $id = $this->databaseInsert('ip_email_templates', [
+            'email_template_title'   => 'Editable Template',
             'email_template_subject' => 'Subject',
             'email_template_body'    => 'Body',
-            'is_update'              => 0,
-        ];
-
-        $response = $this->post(route('email_templates.form'), $templateData);
-
-        $response->assertRedirect(route('email_templates.form'));
-        $response->assertSessionHas('alert_error');
-    }
-
-    #[Test]
-    public function it_updates_existing_email_template(): void
-    {
-        $template = $this->seedModel('EmailTemplate', [
-            'email_template_title' => 'Original Template',
         ]);
 
-        $updateData = [
-            'email_template_title'   => 'Updated Template',
-            'email_template_subject' => 'Updated Subject',
-            'email_template_body'    => 'Updated body',
-        ];
+        /* Act */
+        $response = $this->get('/email_templates/form/' . $id);
 
-        $response = $this->post(route('email_templates.form', ['id' => $template->email_template_id]), $updateData);
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+        $this->assertResponseBodyContains($response, 'Editable Template');
+    }
 
-        $response->assertRedirect(route('email_templates.index'));
-        $this->assertDatabaseHas('ip_email_templates', [
-            'email_template_id'    => $template->email_template_id,
-            'email_template_title' => 'Updated Template',
+    #[Test]
+    public function it_updates_an_email_template(): void
+    {
+        /**
+         * POST /email_templates/form/{id}
+         * {
+         *     "email_template_title": "Renamed Template",
+         *     "email_template_subject": "Updated subject",
+         *     "email_template_body": "Updated body.",
+         *     "is_update": "1",
+         *     "btn_submit": "1"
+         * }
+         */
+
+        /* Arrange */
+        $id = $this->databaseInsert('ip_email_templates', [
+            'email_template_title'   => 'Original Template',
+            'email_template_subject' => 'Subject',
+            'email_template_body'    => 'Body',
         ]);
+
+        /* Act */
+        $response = $this->post('/email_templates/form/' . $id, [
+            'email_template_title'   => 'Renamed Template',
+            'email_template_subject' => 'Updated subject',
+            'email_template_body'    => 'Updated body.',
+            'is_update'              => '1',
+            'btn_submit'             => '1',
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertDatabaseHas('ip_email_templates', ['email_template_title' => 'Renamed Template']);
+        $this->assertDatabaseMissing('ip_email_templates', ['email_template_title' => 'Original Template']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Delete
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_deletes_an_email_template(): void
+    {
+        /* Arrange */
+        $id = $this->databaseInsert('ip_email_templates', [
+            'email_template_title'   => 'Deletable Template',
+            'email_template_subject' => 'Subject',
+            'email_template_body'    => 'Body',
+        ]);
+        $this->assertDatabaseHas('ip_email_templates', ['email_template_title' => 'Deletable Template']);
+
+        /* Act */
+        $response = $this->post('/email_templates/delete/' . $id, []);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertDatabaseMissing('ip_email_templates', ['email_template_title' => 'Deletable Template']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Validation failures — missing required fields
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_fails_to_create_without_email_template_title(): void
+    {
+        /**
+         * POST /email_templates/form
+         * {
+         *     "email_template_title": "",
+         *     "email_template_subject": "Subject",
+         *     "email_template_body": "Body",
+         *     "is_update": "0",
+         *     "btn_submit": "1"
+         * }
+         */
+
+        /* Arrange */
+
+        /* Act */
+        $response = $this->post('/email_templates/form', [
+            'email_template_title'   => '',
+            'email_template_subject' => 'Subject',
+            'email_template_body'    => 'Body',
+            'is_update'              => '0',
+            'btn_submit'             => '1',
+        ]);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
     }
 
     #[Test]
-    public function it_deletes_email_template(): void
+    public function it_fails_to_update_without_email_template_title(): void
     {
-        $template = $this->seedModel('EmailTemplate');
+        /**
+         * POST /email_templates/form/{id}
+         * {
+         *     "email_template_title": "",
+         *     "email_template_subject": "Subject",
+         *     "email_template_body": "Body",
+         *     "is_update": "1",
+         *     "btn_submit": "1"
+         * }
+         */
 
-        $response = $this->delete(route('email_templates.delete', ['id' => $template->email_template_id]));
+        /* Arrange */
+        $id = $this->databaseInsert('ip_email_templates', [
+            'email_template_title'   => 'Will Not Change',
+            'email_template_subject' => 'Subject',
+            'email_template_body'    => 'Body',
+        ]);
 
-        $response->assertRedirect(route('email_templates.index'));
-        $this->assertDatabaseMissing('ip_email_templates', ['email_template_id' => $template->email_template_id]);
+        /* Act */
+        $response = $this->post('/email_templates/form/' . $id, [
+            'email_template_title'   => '',
+            'email_template_subject' => 'Subject',
+            'email_template_body'    => 'Body',
+            'is_update'              => '1',
+            'btn_submit'             => '1',
+        ]);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseHas('ip_email_templates', ['email_template_title' => 'Will Not Change']);
     }
 
-    #[Test]
-    public function it_loads_email_template_form_with_custom_fields(): void
-    {
-        $response = $this->get(route('email_templates.form'));
+    // -------------------------------------------------------------------------
+    // Edge cases
+    // -------------------------------------------------------------------------
 
-        $response->assertSuccessful();
-        $response->assertViewHas('custom_fields');
-        $response->assertViewHas('invoice_templates');
-        $response->assertViewHas('quote_templates');
+    #[Test]
+    public function it_redirects_when_creating_a_duplicate_email_template(): void
+    {
+        /**
+         * POST /email_templates/form (duplicate)
+         * {
+         *     "email_template_title": "Duplicate Template",
+         *     "email_template_subject": "Subject",
+         *     "email_template_body": "Body",
+         *     "is_update": "0",
+         *     "btn_submit": "1"
+         * }
+         */
+
+        /* Arrange */
+        $this->databaseInsert('ip_email_templates', [
+            'email_template_title'   => 'Duplicate Template',
+            'email_template_subject' => 'Subject',
+            'email_template_body'    => 'Body',
+        ]);
+
+        /* Act */
+        $response = $this->post('/email_templates/form', [
+            'email_template_title'   => 'Duplicate Template',
+            'email_template_subject' => 'Subject',
+            'email_template_body'    => 'Body',
+            'is_update'              => '0',
+            'btn_submit'             => '1',
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Creating a duplicate email template must redirect with flash error.');
+    }
+
+    // -------------------------------------------------------------------------
+    // Guest redirect — always last
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_redirects_a_guest_to_login(): void
+    {
+        /* Arrange */
+        $this->actingAsGuest();
+
+        /* Act */
+        $response = $this->get('/email_templates');
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
     }
 }

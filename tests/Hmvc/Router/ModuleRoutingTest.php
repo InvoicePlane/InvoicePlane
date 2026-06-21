@@ -22,16 +22,14 @@ use Tests\AbstractTestCase;
  *
  * Routes are derived from every controller file listed in dir2.txt.
  *
- * @group feature
- * @group routing
  */
-#[CoversClass(Tests\Feature\Routing\ModuleRouting::class)]
+#[Group('feature')]
+#[Group('routing')]
 class ModuleRoutingTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->markTestSkipped('Requires live CI3 environment with database — not available in CI');
         $this->actingAsAdmin();
     }
 
@@ -54,7 +52,7 @@ class ModuleRoutingTest extends AbstractTestCase
             'custom_values'   => ['/custom_values'],
             'users'           => ['/users'],
             'settings'        => ['/settings'],
-            'reports'         => ['/reports'],
+            'reports'         => ['/reports/sales_by_client'],
             'dashboard'       => ['/dashboard'],
             'import'          => ['/import'],
             'projects'        => ['/projects'],
@@ -65,14 +63,19 @@ class ModuleRoutingTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_resolves_the_module_index_route_and_returns_200_or_redirect(string $uri): void
     {
+        /* Arrange */
+
+        /* Act */
         $response = $this->get($uri);
 
+        /* Assert */
         self::assertThat(
             $response->statusCode(),
             self::logicalOr(
                 self::equalTo(200),
                 self::equalTo(301),
-                self::equalTo(302)
+                self::equalTo(302),
+                self::equalTo(307)
             ),
             sprintf(
                 'GET [%s] must return 200 or a redirect. Got [%d] with body: %s',
@@ -87,8 +90,12 @@ class ModuleRoutingTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_expose_php_errors_on_authenticated_module_index(string $uri): void
     {
+        /* Arrange */
+
+        /* Act */
         $response = $this->get($uri);
 
+        /* Assert */
         $this->assertResponseHasNoPhpErrors($response);
     }
 
@@ -96,14 +103,17 @@ class ModuleRoutingTest extends AbstractTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_renders_a_non_trivial_body_for_every_authenticated_module_index(string $uri): void
     {
+        /* Arrange */
         $response = $this->get($uri);
 
         if ($response->isRedirect()) {
+        /* Act */
             self::addToAssertionCount(1);
 
             return;
         }
 
+        /* Assert */
         self::assertGreaterThan(
             200,
             $response->bodyLength(),

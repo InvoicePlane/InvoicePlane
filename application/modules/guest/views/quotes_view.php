@@ -3,7 +3,7 @@ $global_discount = $quote->quote_discount_percent > 0 ? format_amount($quote->qu
 if ($quote_tax_rates) {
     $global_taxes = [];
     foreach ($quote_tax_rates as $quote_tax_rate) {
-        $global_taxes[] = $quote_tax_rate->quote_tax_rate_name . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%): '
+        $global_taxes[] = htmlsc($quote_tax_rate->quote_tax_rate_name) . ' (' . format_amount($quote_tax_rate->quote_tax_rate_percent) . '%): '
                           . format_currency($quote_tax_rate->quote_tax_rate_amount);
     }
     $global_taxes = implode('<br>', $global_taxes);

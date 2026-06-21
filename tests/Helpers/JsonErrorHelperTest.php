@@ -27,10 +27,13 @@ class JsonErrorHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_empty_array_when_no_post_data(): void
     {
+        /* Arrange */
         $_POST = [];
 
+        /* Act */
         $result = JsonErrorHelper::json_errors();
 
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -38,25 +41,31 @@ class JsonErrorHelperTest extends AbstractTestCase
     #[Test]
     public function it_returns_array_of_errors(): void
     {
+        /* Arrange */
         // Simulate POST data
         $_POST = ['field1' => 'value1', 'field2' => 'value2'];
 
+        /* Act */
         $result = JsonErrorHelper::json_errors();
 
+        /* Assert */
         $this->assertIsArray($result);
     }
 
     #[Test]
     public function it_processes_multiple_post_fields(): void
     {
+        /* Arrange */
         $_POST = [
             'email'    => 'invalid-email',
             'name'     => 'John Doe',
             'password' => 'short',
         ];
 
+        /* Act */
         $result = JsonErrorHelper::json_errors();
 
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertArrayHasKey('email', $result);
         $this->assertArrayHasKey('name', $result);
