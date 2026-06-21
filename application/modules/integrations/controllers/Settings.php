@@ -48,6 +48,40 @@ class Settings extends Admin_Controller
             show_error('Method not allowed', 405);
         }
 
+        // Validate URL fields for SSRF before touching the database.
+        // Full URLs (token_url, api_base_url) must be HTTPS and must not
+        // resolve to private/internal IP ranges.
+        // Endpoint path fields must be relative paths, not full URLs.
+        $this->load->library('SsrfGuard');
+
+        $urlFields  = ['token_url', 'api_base_url'];
+        $pathFields = [
+            'upload_endpoint', 'invoice_endpoint', 'send_invoice_endpoint',
+            'invoice_status_endpoint', 'incoming_invoices_endpoint', 'invoice_events_endpoint',
+        ];
+
+        foreach ($urlFields as $field) {
+            $value = (string) ($this->input->post($field) ?? '');
+            try {
+                $this->ssrfguard->validate($value);
+            } catch (\InvalidArgumentException $e) {
+                $this->session->set_flashdata('error', $e->getMessage());
+                redirect('integrations/settings/edit/' . (int) $id);
+                return;
+            }
+        }
+
+        foreach ($pathFields as $field) {
+            $value = (string) ($this->input->post($field) ?? '');
+            try {
+                $this->ssrfguard->validateRelativePath($value);
+            } catch (\InvalidArgumentException $e) {
+                $this->session->set_flashdata('error', $e->getMessage());
+                redirect('integrations/settings/edit/' . (int) $id);
+                return;
+            }
+        }
+
         $settings = [
             'client_id' => $this->input->post('client_id'),
             'client_secret' => $this->input->post('client_secret'),

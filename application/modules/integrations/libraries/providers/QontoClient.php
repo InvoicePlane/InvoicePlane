@@ -230,9 +230,13 @@ class QontoClient implements IntegrationClientInterface
         $ch = curl_init();
 
         $options = [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_URL              => $url,
+            CURLOPT_RETURNTRANSFER   => true,
+            CURLOPT_HTTPHEADER       => $headers,
+            // Defence-in-depth: reject non-HTTPS at the curl layer even if
+            // a URL somehow bypasses save-time SsrfGuard validation.
+            CURLOPT_PROTOCOLS        => CURLPROTO_HTTPS,
+            CURLOPT_REDIR_PROTOCOLS  => CURLPROTO_HTTPS,
         ];
 
         if ($method === RequestMethod::POST) {

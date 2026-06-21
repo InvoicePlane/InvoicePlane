@@ -89,6 +89,21 @@ trait InteractsWithDatabase
         $this->db()->exec('DELETE FROM ' . $this->qi($table));
     }
 
+    /**
+     * Fetch a single row by SQLite rowid (the internal row identifier).
+     * Useful when the id column is NULL because MySQL-only AUTO_INCREMENT is
+     * ignored by SQLite — in that case lastInsertId() returns the rowid.
+     */
+    protected function databaseFetchByRowid(string $table, int $rowid): array
+    {
+        $stmt = $this->db()->prepare(
+            'SELECT * FROM ' . $this->qi($table) . ' WHERE rowid = ?'
+        );
+        $stmt->execute([$rowid]);
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
+    }
+
     protected function databaseDelete(string $table, array $where): void
     {
         $db = $this->db();

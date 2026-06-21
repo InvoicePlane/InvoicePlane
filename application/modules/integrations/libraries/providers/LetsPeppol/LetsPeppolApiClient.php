@@ -63,10 +63,12 @@ class LetsPeppolApiClient
         $ch = curl_init();
 
         curl_setopt_array($ch, [
-            CURLOPT_URL => $tokenUrl,
-            CURLOPT_POST => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
+            CURLOPT_URL             => $tokenUrl,
+            CURLOPT_POST            => true,
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_PROTOCOLS       => CURLPROTO_HTTPS,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTPS,
+            CURLOPT_HTTPHEADER      => [
                 'Accept: application/json',
                 'Content-Type: application/x-www-form-urlencoded',
             ],
@@ -109,9 +111,11 @@ class LetsPeppolApiClient
         $ch = curl_init();
 
         $options = [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_URL             => $url,
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_HTTPHEADER      => $headers,
+            CURLOPT_PROTOCOLS       => CURLPROTO_HTTPS,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTPS,
         ];
 
         if ($method === RequestMethod::POST) {
