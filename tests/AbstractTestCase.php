@@ -171,6 +171,45 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         }
     }
 
+    /**
+     * Fail with the actual error text if the response body contains a CI3 error page.
+     *
+     * DB errors and general application errors throw exceptions in the test subprocess
+     * (via MY_Exceptions::show_error) and never reach the response body. This helper
+     * is the belt-and-suspenders catch for PHP-level errors (notices, warnings, fatal
+     * errors) which CI3 renders via error_php.php and which bypass show_error().
+     *
+     * Call this before asserting on a redirect or specific status code when you want
+     * a clear failure message instead of "expected redirect, got 200".
+     */
+    protected function assertNoApplicationError(HttpResponse $response): void
+    {
+        $body = $response->body();
+
+        $signatures = [
+            'A PHP Error was encountered',
+            '<title>Database Error</title>',
+            '<title>Error</title>',
+        ];
+
+        foreach ($signatures as $signature) {
+            if (! str_contains($body, $signature)) {
+                continue;
+            }
+
+            // Extract the human-readable detail from the error page.
+            if (preg_match('/<p>(?:Message:|Severity:)?\s*(.*?)<\/p>/si', $body, $m)) {
+                $detail = trim(strip_tags($m[1]));
+            } elseif (preg_match('/<div[^>]+id=["\']body["\'][^>]*>(.*?)<\/div>/si', $body, $m)) {
+                $detail = trim(strip_tags($m[1]));
+            } else {
+                $detail = mb_substr(strip_tags($body), 0, 400);
+            }
+
+            self::fail('Application error in response [HTTP ' . $response->statusCode() . ']: ' . $detail);
+        }
+    }
+
     protected function assertResponseMatchesSnapshot(HttpResponse $response, string $snapshotName): void
     {
         $dir = dirname(__DIR__) . '/tests/__snapshots__';
