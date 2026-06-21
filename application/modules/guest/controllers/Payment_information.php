@@ -92,10 +92,13 @@ class Payment_Information extends Base_Controller
             'payment_provider' => $payment_provider,
         ];
 
-        // Security: Fix control flow logic - load view first, then conditionally load payment provider
         $this->load->view('guest/payment_information', $data);
 
         if ($payment_provider) {
+            // Only dispatch to drivers that are in the computed allowlist.
+            if ( ! in_array($payment_provider, $available_drivers, true)) {
+                show_404();
+            }
             $this->{$payment_provider}($invoice_url_key);
         }
     }
