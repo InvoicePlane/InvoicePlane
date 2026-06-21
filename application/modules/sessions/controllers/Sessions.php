@@ -42,25 +42,14 @@ class Sessions extends Base_Controller
         ];
 
         if ($this->input->post('btn_login')) {
-            $this->db->where('user_email', $this->input->post('email'));
-            $query = $this->db->get('ip_users');
-            $user  = $query->row();
-
-            // Check if the user exists
-            if (empty($user)) {
-                $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
-                redirect('sessions/login');
-            } elseif ($user->user_active == 0) {
-                // Check if the user is marked as active (not implemented: Todo?)
-                $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
-                redirect('sessions/login');
-            } elseif ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
+            if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
                 if ($this->session->userdata('user_type') == 1) {
                     redirect('dashboard');
                 } elseif ($this->session->userdata('user_type') == 2) {
                     redirect('guest');
                 }
             } else {
+                // Generic message for all failure cases to prevent account/status enumeration.
                 $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
                 redirect('sessions/login');
             }
@@ -76,20 +65,64 @@ class Sessions extends Base_Controller
     public function authenticate($email_address, $password): bool
     {
         $this->load->model('mdl_sessions');
-        //check if user is banned
+
+        // IP-based rate limiting mirrors the password-reset throttle.
+        if ($this->_is_ip_rate_limited_login()) {
+            log_message('warning', 'Login IP rate limit exceeded from: ' . $this->input->ip_address());
+
+            return false;
+        }
+
+        // Per-account lockout (email-keyed).
         $login_log = $this->_login_log_check($email_address);
         if (empty($login_log) || $login_log->log_count < 10) {
             if ($this->mdl_sessions->auth($email_address, $password)) {
                 $this->_login_log_reset($email_address);
+                $this->_reset_ip_login_attempts();
 
                 return true;
             }
 
-            //track failed attempt
             $this->_login_log_addfailure($email_address);
+            $this->_record_ip_login_attempt();
         }
 
         return false;
+    }
+
+    /**
+     * Returns true when the current IP has exceeded the login attempt threshold.
+     */
+    private function _is_ip_rate_limited_login(): bool
+    {
+        $max_attempts   = (int) env('LOGIN_IP_MAX_ATTEMPTS', 20);
+        $window_minutes = (int) env('LOGIN_IP_WINDOW_MINUTES', 15);
+        $session_key    = 'login_attempts_ip_' . md5($this->input->ip_address());
+        $attempts       = $this->session->userdata($session_key) ?: [];
+        $cutoff         = time() - ($window_minutes * 60);
+        $attempts       = array_values(array_filter($attempts, fn ($t) => $t > $cutoff));
+
+        return count($attempts) >= $max_attempts;
+    }
+
+    /**
+     * Records one failed login attempt for the current IP.
+     */
+    private function _record_ip_login_attempt(): void
+    {
+        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
+        $attempts    = $this->session->userdata($session_key) ?: [];
+        $attempts[]  = time();
+        $this->session->set_userdata($session_key, $attempts);
+    }
+
+    /**
+     * Clears IP-based login attempt counter on successful authentication.
+     */
+    private function _reset_ip_login_attempts(): void
+    {
+        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
+        $this->session->unset_userdata($session_key);
     }
 
     public function logout()
