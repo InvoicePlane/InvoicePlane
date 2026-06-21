@@ -77,6 +77,8 @@ class Mdl_Sessions extends CI_Model
                     'user_language' => $user->user_language ?? 'system',
                 ];
 
+                // Regenerate session ID on login to prevent session fixation attacks.
+                $this->session->sess_regenerate(true);
                 $this->session->set_userdata($session_data);
 
                 return true;
