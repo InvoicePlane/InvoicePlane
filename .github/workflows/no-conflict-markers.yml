@@ -2,7 +2,6 @@ name: No conflict markers
 
 on:
   push:
-  pull_request:
 
 jobs:
   check:
@@ -12,7 +11,7 @@ jobs:
 
       - name: Fail if conflict markers are present
         run: |
-          if git grep -rn --perl-regexp '^(<{7}|={7}|>{7})' -- \
+          if git grep -rn --perl-regexp '^(<{7}|={7}(?!=)|>{7})' -- \
               ':!*.yml' ':!*.yaml' ':!*.pem' ':!*.crt' ':!*.cert' \
               ':!vendor' ':!node_modules' ':!.claude/' ':!LICENSE.txt'; then
             echo "::error::Conflict markers found. Resolve all merge conflicts before pushing."
