@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Livello_1"
+   data-name="Livello 1"
+   viewBox="0 0 500 500"
+   version="1.1"
+   sodipodi:docname="file-document.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview391"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="2.6700352"
+     inkscape:cx="265.72683"
+     inkscape:cy="269.28484"
+     inkscape:window-width="3716"
+     inkscape:window-height="2126"
+     inkscape:window-x="113"
+     inkscape:window-y="222"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Livello_1" />
+  <defs
+     id="defs374">
+    <style
+       id="style372">.cls-1{fill:#579bd4;}.cls-2{fill:#d6d6d6;}.cls-3{font-size:31.64px;font-family:MyriadPro-Regular, Myriad Pro;}.cls-3,.cls-4{fill:#fff;}</style>
+  </defs>
+  <title
+     id="title376">document_Tavola disegno 1</title>
+  <path
+     class="cls-1"
+     d="M411.31,118.48v328a12,12,0,0,1-12,12H100.69a12,12,0,0,1-12-12V53.54a12,12,0,0,1,12-12H315.82Z"
+     id="path378" />
+  <path
+     class="cls-2"
+     d="M315.82,41.54v63.54a13.44,13.44,0,0,0,13.4,13.4h82.1Z"
+     id="path380" />
+  <rect
+     class="cls-4"
+     x="133.33"
+     y="220.33"
+     width="235.49313"
+     height="11.330002"
+     rx="5.6700001"
+     ry="5.6650009"
+     id="rect386" />
+  <rect
+     class="cls-4"
+     x="133.59877"
+     y="259.94305"
+     width="235.49313"
+     height="11.330002"
+     rx="5.6700001"
+     ry="5.6650009"
+     id="rect386-0"
+     style="fill:#ffffff" />
+  <rect
+     class="cls-4"
+     x="134.10938"
+     y="299.81381"
+     width="235.49313"
+     height="11.330002"
+     rx="5.6700001"
+     ry="5.6650009"
+     id="rect386-3"
+     style="fill:#ffffff" />
+  <rect
+     class="cls-4"
+     x="134.10938"
+     y="339.81381"
+     width="235.49313"
+     height="11.330002"
+     rx="5.6700001"
+     ry="5.6650009"
+     id="rect386-6"
+     style="fill:#ffffff" />
+  <rect
+     class="cls-4"
+     x="134.10938"
+     y="379.81381"
+     width="235.49313"
+     height="11.330002"
+     rx="5.6700001"
+     ry="5.6650009"
+     id="rect386-5"
+     style="fill:#ffffff" />
+  <rect
+     class="cls-4"
+     x="133.33"
+     y="181.36"
+     width="130.41"
+     height="11.33"
+     rx="5.6700001"
+     ry="5.6700001"
+     id="rect388" />
+</svg>

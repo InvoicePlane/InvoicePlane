@@ -85,7 +85,7 @@ function validate_file_in_directory(string $filePath, string $baseDirectory): bo
     }
 
     // Ensure base directory ends with separator for exact matching
-    $realBaseWithSep = mb_rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    $realBaseWithSep = rtrim($realBase, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
     // Validate file is within base directory
     return str_starts_with($realFile, $realBaseWithSep);
@@ -238,7 +238,7 @@ function validate_file_access(string $filename, string $baseDirectory): array
     }
 
     // Step 3: Construct full path
-    $fullPath = mb_rtrim($baseDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $basename['filename'];
+    $fullPath = rtrim($baseDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $basename['filename'];
 
     // Step 4: Check if file exists
     if ( ! file_exists($fullPath)) {
@@ -331,7 +331,7 @@ function validate_db_filename(string $filename, string $base_dir): ?array
 
     // Step 3: Construct full path
     $safe_filename = $basename_result['filename'];
-    $full_path     = mb_rtrim($base_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $safe_filename;
+    $full_path     = rtrim($base_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $safe_filename;
 
     // Step 4: If file exists, validate it's within the base directory
     // This prevents symlink attacks or other filesystem tricks

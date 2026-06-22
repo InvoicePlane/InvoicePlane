@@ -31,6 +31,7 @@ class Setup extends MX_Controller
             show_error('The setup has already been completed. To re-run the setup, set SETUP_COMPLETED=false in ipconfig.php.', 403);
         }
 
+
         parent::__construct();
 
         $this->load->library('session');
@@ -169,10 +170,10 @@ class Setup extends MX_Controller
                         ];
                         $this->layout->set('validation_error', $check_database['message']);
                     } else {
-                        $hostname = sanitize_database_config_value(mb_trim((string) $validation_result['hostname']));
-                        $username = sanitize_database_config_value(mb_trim((string) $validation_result['username']));
+                        $hostname = sanitize_database_config_value(trim((string) $validation_result['hostname']));
+                        $username = sanitize_database_config_value(trim((string) $validation_result['username']));
                         $password = sanitize_database_config_value($validation_result['password']);
-                        $database = sanitize_database_config_value(mb_trim((string) $validation_result['database']));
+                        $database = sanitize_database_config_value(trim((string) $validation_result['database']));
 
                         $submitted_configuration = [
                             'hostname' => $hostname,
@@ -451,16 +452,6 @@ class Setup extends MX_Controller
     }
 
     /**
-     * Validate database configuration parameters to prevent injection attacks.
-     *
-     * @param string     $hostname Database hostname
-     * @param string     $username Database username
-     * @param string     $password Database password
-     * @param string     $database Database name
-     * @param string|int $port     Database port
-     *
-     * @return array Array with 'valid' (bool) and validated parameters
-     */
     /**
      * Get user-friendly error message for database configuration validation error.
      *
@@ -474,20 +465,31 @@ class Setup extends MX_Controller
         // Map internal error codes to user-friendly messages
         // This prevents exposing internal validation logic to potential attackers
         $messages = [
-            'empty_value'               => 'This field is required.',
-            'newline_detected'          => 'Invalid format. Please check your input.',
-            'null_byte'                 => 'Invalid format. Please check your input.',
-            'invalid_hostname_format'   => 'Invalid hostname format. Please use a valid hostname or IP address.',
-            'invalid_username_format'   => 'Invalid username format. Only alphanumeric characters, dots, hyphens, underscores, and @ are allowed.',
-            'invalid_password_format'   => 'Invalid password format. Please check your password.',
-            'invalid_database_format'   => 'Invalid database name format. Only alphanumeric characters, underscores, and hyphens are allowed.',
-            'invalid_port'              => 'Invalid port number. Please enter a number between 1 and 65535.',
+            'empty_value'             => 'This field is required.',
+            'newline_detected'        => 'Invalid format. Please check your input.',
+            'null_byte'               => 'Invalid format. Please check your input.',
+            'invalid_hostname_format' => 'Invalid hostname format. Please use a valid hostname or IP address.',
+            'invalid_username_format' => 'Invalid username format. Only alphanumeric characters, dots, hyphens, underscores, and @ are allowed.',
+            'invalid_password_format' => 'Invalid password format. Please check your password.',
+            'invalid_database_format' => 'Invalid database name format. Only alphanumeric characters, underscores, and hyphens are allowed.',
+            'invalid_port'            => 'Invalid port number. Please enter a number between 1 and 65535.',
         ];
 
         // Return the user-friendly message or a generic error
         return $messages[$error_code] ?? 'Invalid ' . $param_type . ' format.';
     }
 
+    /**
+     * Validate database configuration parameters to prevent injection attacks.
+     *
+     * @param string     $hostname Database hostname
+     * @param string     $username Database username
+     * @param string     $password Database password
+     * @param string     $database Database name
+     * @param string|int $port     Database port
+     *
+     * @return array Array with 'valid' (bool) and validated parameters
+     */
     private function validate_database_config(string $hostname, string $username, string $password, string $database, $port): array
     {
         // Validate hostname

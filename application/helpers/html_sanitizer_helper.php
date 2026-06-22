@@ -30,7 +30,7 @@ if ( ! defined('BASEPATH')) {
 function is_plain_text(string $content): bool
 {
     // Return false for empty strings to avoid unnecessary nl2br() processing
-    if (mb_trim($content) === '') {
+    if (trim($content) === '') {
         return false;
     }
 

@@ -36,12 +36,15 @@ DB_PORT=
 # the default is 10 days.
 SESS_EXPIRATION=864000
 SESS_MATCH_IP=true
+<<<<<<< HEAD
 # Database table used to store sessions when SESS_DRIVER=database.
 # Only needed if you override the default table name.
 SESS_TABLE_NAME=ip_sessions
 # Name of the session cookie sent to the browser.
 # Only needed if you need to avoid a collision with another application on the same domain.
 SESS_COOKIE_NAME=ip_session
+=======
+>>>>>>> develop
 
 # Default Global Amounts Calculation mode - Since 1.6.3
 # This change Taxes and discounts calcuation mode

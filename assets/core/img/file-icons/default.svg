@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Livello_1"
+   data-name="Livello 1"
+   viewBox="0 0 500 500"
+   version="1.1"
+   sodipodi:docname="default.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview15"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="3.492"
+     inkscape:cx="349.51317"
+     inkscape:cy="193.58534"
+     inkscape:window-width="3716"
+     inkscape:window-height="2126"
+     inkscape:window-x="113"
+     inkscape:window-y="222"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Livello_1" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">.cls-1{fill:#7f7f7f;}.cls-2{fill:#d6d6d6;}.cls-3{font-size:59.45px;fill:#fff;font-family:MyriadPro-Regular, Myriad Pro;}</style>
+  </defs>
+  <title
+     id="title6">default_Tavola disegno 1</title>
+  <path
+     class="cls-1"
+     d="M411.31,118.48v328a12,12,0,0,1-12,12H100.69a12,12,0,0,1-12-12V53.54a12,12,0,0,1,12-12H315.82Z"
+     id="path8" />
+  <path
+     class="cls-2"
+     d="M315.82,41.54v63.54a13.44,13.44,0,0,0,13.4,13.4h82.1Z"
+     id="path10" />
+</svg>
