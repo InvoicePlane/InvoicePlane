@@ -163,36 +163,6 @@ class Mdl_Settings extends CI_Model
     }
 
     /**
-     * Returns all ip_settings rows for a given integration type.
-     *
-     * Keys follow the convention "integration_{type}_{field}", e.g.
-     *   integration_superpdp_oauth_client_id
-     *   integration_letspeppol_api_key
-     *
-     * Returns an associative array of field => value so callers do not
-     * have to parse the prefix themselves.
-     *
-     * @param  string $type  The merchant_type value, e.g. 'superpdp'
-     * @return array<string, string>
-     */
-    public function integration_settings(string $type): array
-    {
-        $prefix = 'integration_' . mb_strtolower($type) . '_';
-        $rows   = $this->db
-            ->like('setting_key', $prefix, 'after')
-            ->get('ip_settings')
-            ->result();
-
-        $settings = [];
-        foreach ($rows as $row) {
-            $field            = substr($row->setting_key, strlen($prefix));
-            $settings[$field] = $row->setting_value;
-        }
-
-        return $settings;
-    }
-
-    /**
      * @param $key
      * @param $value
      */

@@ -135,7 +135,7 @@ if ($req_einvoicing) {
 <?php
     if ($xml_templates) {
         if ($client_id) {
-            $this->layout->load_view('clients/partial_client_integrations');
+            $this->layout->load_view('clients/partial_client_einvoicing');
         } else {
             ?>
                         <div class="alert alert-warning small" style="font-size:medium;">

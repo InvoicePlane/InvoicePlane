@@ -10,12 +10,19 @@ module.exports = function(grunt) {
   grunt.initConfig({
     clean: {
       basic: [
-        "public/assets/**/*.css",
-        "public/assets/**/*.css.map",
-        "public/assets/core/js/*.js",
-        "public/assets/core/fonts/*"
+        "assets/**/*.css",
+        "assets/**/*.css.map",
+        "!assets/core/css/custom.css",
+        "!assets/core/css/custom-pdf.css", // CSS
+        "!assets/core/css/paypal.css", // CSS
+        "assets/core/js/*.js",
+        "!assets/core/js/scripts.js",
+        "!assets/core/js/jquery-ui.js", // JS
+        "!assets/core/js/paypal.js", // JS
+        "assets/core/fonts/*",
+        "!assets/core/fonts/.gitignore" // Fonts
       ],
-      build: ["public/assets/core/js/dependencies.js", "public/assets/core/js/legacy.js"]
+      build: ["assets/default/js/dependencies.js", "assets/default/js/legacy.js"]
     },
 
     sass: {
@@ -25,12 +32,9 @@ module.exports = function(grunt) {
           outputStyle: "expanded",
           sourceMap: true
         },
-        files: grunt.file.expandMapping(["resources/assets/**/sass/*.scss"], "css", {
+        files: grunt.file.expandMapping(["assets/**/sass/*.scss"], "css", {
           rename: function(dest, matched) {
-            return matched
-              .replace("resources/assets/", "public/assets/")
-              .replace(/\/sass\//, "/" + dest + "/")
-              .replace(/\.scss$/, ".css");
+            return matched.replace(/\/sass\//, "/" + dest + "/").replace(/\.scss$/, ".css");
           }
         })
       },
@@ -39,12 +43,9 @@ module.exports = function(grunt) {
           implementation: sass,
           outputStyle: "compressed"
         },
-        files: grunt.file.expandMapping(["resources/assets/**/sass/*.scss"], "css", {
+        files: grunt.file.expandMapping(["assets/**/sass/*.scss"], "css", {
           rename: function(dest, matched) {
-            return matched
-              .replace("resources/assets/", "public/assets/")
-              .replace(/\/sass\//, "/" + dest + "/")
-              .replace(/\.scss$/, ".css");
+            return matched.replace(/\/sass\//, "/" + dest + "/").replace(/\.scss$/, ".css");
           }
         })
       }
@@ -56,47 +57,47 @@ module.exports = function(grunt) {
           map: true,
           processors: [require("autoprefixer")]
         },
-        src: ["public/assets/**/css/*.css"]
+        src: ["assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
       },
       build: {
         options: {
           map: false,
           processors: [require("autoprefixer")]
         },
-        src: ["public/assets/**/css/*.css"]
+        src: ["assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
       }
     },
 
     concat: {
       legacy: {
         src: ["node_modules/html5shiv/dist/html5shiv.js"],
-        dest: "public/assets/core/js/legacy.js"
+        dest: "assets/core/js/legacy.js"
       },
       dependencies: {
         src: [
           "node_modules/jquery/dist/jquery.js",
           "node_modules/js-cookie/src/js.cookie.js",
-          "resources/assets/core/js/jquery-ui.js",
+          "assets/core/js/jquery-ui.js",
           "node_modules/bootstrap-sass/assets/javascripts/bootstrap.js",
           "node_modules/bootstrap-datepicker/js/bootstrap-datepicker.js",
           "node_modules/select2/dist/js/select2.full.js",
           "node_modules/dropzone/dist/dropzone.js",
           "node_modules/clipboard/dist/clipboard.js"
         ],
-        dest: "public/assets/core/js/dependencies.js"
+        dest: "assets/core/js/dependencies.js"
       },
       zxcvbn: {
         src: ["node_modules/zxcvbn/dist/zxcvbn.js"],
-        dest: "public/assets/core/js/zxcvbn.js"
+        dest: "assets/core/js/zxcvbn.js"
       }
     },
 
     uglify: {
       build: {
         files: {
-          "public/assets/core/js/legacy.min.js": ["public/assets/core/js/legacy.js"],
-          "public/assets/core/js/dependencies.min.js": ["public/assets/core/js/dependencies.js"],
-          "public/assets/core/js/scripts.min.js": ["resources/assets/core/js/scripts.js"]
+          "assets/core/js/legacy.min.js": ["assets/core/js/legacy.js"],
+          "assets/core/js/dependencies.min.js": ["assets/core/js/dependencies.js"],
+          "assets/core/js/scripts.min.js": ["assets/core/js/scripts.js"]
         }
       }
     },
@@ -106,40 +107,32 @@ module.exports = function(grunt) {
         expand: true,
         flatten: true,
         src: ["node_modules/bootstrap-datepicker/js/locales/**"],
-        dest: "public/assets/core/js/locales/",
+        dest: "assets/core/js/locales/",
         filter: "isFile"
       },
       select2locale: {
         expand: true,
         flatten: true,
         src: ["node_modules/select2/dist/js/i18n/**"],
-        dest: "public/assets/core/js/locales/select2/",
+        dest: "assets/core/js/locales/select2/",
         filter: "isFile"
       },
       fontawesome: {
         expand: true,
         flatten: true,
         src: ["node_modules/font-awesome/fonts/*"],
-        dest: "public/assets/core/fonts"
+        dest: "assets/core/fonts"
       },
       devjs: {
         files: [
           {
-            cwd: "public/assets/core/js/",
-            src: ["*.js"],
-            dest: "public/assets/core/js/",
+            cwd: "assets/core/js/",
+            src: ["*.js", "!jquery-ui.js"],
+            dest: "assets/core/js/",
             expand: true,
             rename: function(dest, src) {
               return (dest + src).replace(".js", ".min.js");
             }
-          },
-          {
-            src: ["resources/assets/core/js/scripts.js"],
-            dest: "public/assets/core/js/scripts.min.js"
-          },
-          {
-            src: ["resources/assets/core/js/paypal.js"],
-            dest: "public/assets/core/js/paypal.min.js"
           }
         ]
       }
@@ -147,11 +140,11 @@ module.exports = function(grunt) {
 
     watch: {
       sass: {
-        files: "resources/assets/**/*.scss",
+        files: "assets/**/*.scss",
         tasks: ["sass:dev", "postcss:dev"]
       },
       js: {
-        files: "resources/assets/core/js/scripts.js",
+        files: "assets/core/js/scripts.js",
         tasks: ["uglify"]
       }
     }

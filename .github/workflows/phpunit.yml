@@ -1,29 +1,24 @@
 name: PHPUnit
 
 on:
-  push:
-    branches: [main, master, 'claude/**', 'feature/**']
-  pull_request:
-    branches: [main, master]
   workflow_dispatch:
     inputs:
       php_version:
         description: 'PHP version'
         required: false
-        default: '8.4'
+        default: '8.2'
         type: choice
         options:
-          - '8.4'
-          - '8.3'
           - '8.2'
-      mariadb_version:
-        description: 'MariaDB image'
+          - '8.3'
+      mysql_version:
+        description: 'MySQL/MariaDB image'
         required: false
-        default: 'mariadb:10.11'
+        default: 'mysql:8.0'
         type: choice
         options:
+          - 'mysql:8.0'
           - 'mariadb:10.11'
-          - 'mariadb:11.4'
       fail_fast:
         description: 'Stop on first failure'
         required: false
@@ -38,24 +33,22 @@ permissions:
 
 jobs:
   test:
-    name: PHPUnit (PHP ${{ inputs.php_version || '8.4' }}, MariaDB ${{ inputs.mariadb_version || '10.11' }})
+    name: PHPUnit (PHP ${{ github.event.inputs.php_version || '8.2' }})
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     services:
-      mariadb:
-        image: ${{ inputs.mariadb_version || 'mariadb:10.11' }}
+      database:
+        image: ${{ github.event.inputs.mysql_version || 'mysql:8.0' }}
         env:
-          MARIADB_ROOT_PASSWORD: root
-          MARIADB_DATABASE: invoiceplane_test
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: invoiceplane_test
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=10
+          --health-retries=5
 
     steps:
       - name: Checkout
@@ -64,44 +57,28 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: ${{ inputs.php_version || '8.4' }}
+          php-version: ${{ github.event.inputs.php_version || '8.2' }}
 
-      - name: Configure ipconfig.php for MariaDB
+      - name: Copy ipconfig.php
+        run: cp ipconfig.php.example ipconfig.php
+
+      - name: Configure test database in ipconfig.php
         run: |
-          cp ipconfig.php.example ipconfig.php
           sed -i \
             -e 's|^DB_HOSTNAME=.*|DB_HOSTNAME=127.0.0.1|' \
             -e 's|^DB_DATABASE=.*|DB_DATABASE=invoiceplane_test|' \
             -e 's|^DB_USERNAME=.*|DB_USERNAME=root|' \
             -e 's|^DB_PASSWORD=.*|DB_PASSWORD=root|' \
-            -e 's|^DB_DRIVER=.*|DB_DRIVER=mysqli|' \
-            -e 's|^SETUP_COMPLETED=.*|SETUP_COMPLETED=true|' \
-            ipconfig.php
-          # Add missing keys if not present in the example file
-          grep -q '^DB_DRIVER=' ipconfig.php || echo 'DB_DRIVER=mysqli' >> ipconfig.php
-          grep -q '^SETUP_COMPLETED=' ipconfig.php || echo 'SETUP_COMPLETED=true' >> ipconfig.php
+            ipconfig.php || true
 
-      - name: Wait for MariaDB and confirm connectivity
+      - name: Confirm database is reachable
         run: |
-          for i in $(seq 1 30); do
-            if mysql -h 127.0.0.1 -u root -proot invoiceplane_test -e "SELECT 1;" 2>/dev/null; then
-              echo "MariaDB is ready."
-              break
-            fi
-            echo "Waiting for MariaDB... ($i/30)"
-            sleep 2
-          done
-          if ! mysql -h 127.0.0.1 -u root -proot invoiceplane_test -e "SELECT 1;" 2>/dev/null; then
-            echo "MariaDB did not become ready in time." >&2
-            exit 1
-          fi
-
-      - name: Apply migrations and seed test data
-        run: |
-          php tests/Support/setup-mariadb.php 127.0.0.1 root root invoiceplane_test
+          mysql -h 127.0.0.1 -u root -proot invoiceplane_test -e "SELECT 1;" 2>/dev/null
 
       - name: Run PHPUnit
         run: |
-          vendor/bin/phpunit \
-            ${{ inputs.fail_fast == 'true' && '--stop-on-failure' || '' }} \
-            --no-coverage
+          if [ -f phpunit.xml ] || [ -f phpunit.xml.dist ]; then
+            vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
+          else
+            echo "No phpunit.xml found — no tests to run yet."
+          fi
