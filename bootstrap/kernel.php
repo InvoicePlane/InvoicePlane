@@ -51,8 +51,6 @@ if ( ! function_exists('env_bool')) {
 
 defined('IP_DEBUG') || define('IP_DEBUG', env_bool('ENABLE_DEBUG', false));
 
-require_once __DIR__ . '/constants.php';
-
 // THEME_FOLDER points to the compiled/source asset tree under resources/assets/.
 // Subdirectories there (core/, invoiceplane/, invoiceplane_blue/, …) are the
 // available themes as listed by Settings. Do not change this to views/themes/.
