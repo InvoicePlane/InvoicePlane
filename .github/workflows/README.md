@@ -36,7 +36,7 @@ A reusable composite action that sets up PHP and installs Composer dependencies 
 
 ### 1. Production Release (`release.yml`)
 
-**Trigger:** Manual dispatch only (workflow_dispatch)
+**Trigger:** Automatically runs on every push to the `master` branch
 
 **Purpose:** Creates a production-ready release package of InvoicePlane v2 and publishes it as a GitHub Release
 
@@ -173,10 +173,9 @@ The default `GITHUB_TOKEN` has restricted permissions and cannot create pull req
 4. **Creates pull request** - Automated PR with update details
 
 **Update Types:**
-- `security-updates` - Only security fixes (default for scheduled runs)
-- `common-packages` - Updates commonly changed packages (vite, laravel-vite-plugin, tailwindcss, etc.)
+- `security-only` - Only security fixes (default for scheduled runs)
 - `patch-minor` - Patch and minor version updates
-- `all-latest-with-build` - All updates to latest versions including major versions
+- `all-dependencies` - All updates including major versions
 
 **Required Secrets:**
 
