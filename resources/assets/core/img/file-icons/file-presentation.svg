@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Livello_1"
+   data-name="Livello 1"
+   viewBox="0 0 500 500"
+   version="1.1"
+   sodipodi:docname="file-presentation.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview955"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="1.746"
+     inkscape:cx="250"
+     inkscape:cy="249.71363"
+     inkscape:window-width="3716"
+     inkscape:window-height="2126"
+     inkscape:window-x="113"
+     inkscape:window-y="222"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Livello_1" />
+  <defs
+     id="defs934">
+    <style
+       id="style932">.cls-1{fill:#f9bf2c;}.cls-2{fill:#d6d6d6;}.cls-3{font-size:31.64px;font-family:MyriadPro-Regular, Myriad Pro;}.cls-3,.cls-7{fill:#fff;}.cls-4{letter-spacing:-0.07em;}.cls-5{letter-spacing:-0.08em;}.cls-6{fill:#e6e7e8;}</style>
+  </defs>
+  <title
+     id="title936">spreadsheet_Tavola disegno 1</title>
+  <path
+     class="cls-1"
+     d="M411.31,118.48v328a12,12,0,0,1-12,12H100.69a12,12,0,0,1-12-12V53.54a12,12,0,0,1,12-12H315.82Z"
+     id="path938" />
+  <path
+     class="cls-2"
+     d="M315.82,41.54v63.54a13.44,13.44,0,0,0,13.4,13.4h82.1Z"
+     id="path940" />
+  <path
+     class="cls-6"
+     d="M 245.43119,293.51447 H 353.83508 A 108.40389,108.40389 0 1 1 245.43119,185.11058 h 0.47445 z"
+     id="path950"
+     style="stroke-width:1.75724" />
+  <path
+     class="cls-7"
+     d="M 254.56881,286.48553 V 178.08164 A 108.40389,108.40389 0 0 1 362.9727,286.48553 Z"
+     id="path952"
+     style="stroke-width:1.75724" />
+</svg>
