@@ -84,3 +84,7 @@ defined('EXIT_USER_INPUT') || define('EXIT_USER_INPUT', 7); // invalid user inpu
 defined('EXIT_DATABASE') || define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN') || define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX') || define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+// Optional path for admin-supplied invoice/quote/credit templates.
+// Empty string disables the custom template folder feature.
+defined('CUSTOM_TEMPLATES_FOLDER') || define('CUSTOM_TEMPLATES_FOLDER', '');

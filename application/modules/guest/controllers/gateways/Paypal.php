@@ -4,6 +4,11 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+if (! enum_exists('MerchantResponseDriver', false)) {
+    require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
+}
+
+
 /*
  * InvoicePlane
  *
@@ -20,6 +25,7 @@ class Paypal extends Base_Controller
     {
         parent::__construct();
         $this->load->helper('file_security');
+        $this->load->model('integrations/merchant_responses_model');
         $this->_create_client();
     }
 
@@ -234,14 +240,13 @@ class Paypal extends Base_Controller
                  *
                  * merchant_response is now the actual capture status.
                  */
-                $this->db->insert('ip_merchant_responses', [
-                    'invoice_id'                   => $invoice_id,
-                    'merchant_response_successful' => true,
-                    'merchant_response_date'       => date('Y-m-d'),
-                    'merchant_response_driver'     => 'paypal',
-                    'merchant_response'            => $capture_status,
-                    'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
-                ]);
+                $this->merchant_responses_model->create_payment_response(
+                    invoiceId:  $invoice_id,
+                    driver:     MerchantResponseDriver::PayPal,
+                    message:    $capture_status,
+                    reference:  'Resource ID:' . $paypal_object->id,
+                    successful: true,
+                );
             } else {
                 // Payment failed (DECLINED or any other non-success status)
                 $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
@@ -256,14 +261,13 @@ class Paypal extends Base_Controller
                 $processor_response_code = $paypal_object->purchase_units[0]->payments->captures[0]->processor_response->response_code ?? 'Unknown error';
 
                 // Record the failed transaction in the logs along with processor response code.
-                $this->db->insert('ip_merchant_responses', [
-                    'invoice_id'                   => $invoice_id,
-                    'merchant_response_successful' => false,
-                    'merchant_response_date'       => date('Y-m-d'),
-                    'merchant_response_driver'     => 'paypal',
-                    'merchant_response'            => $capture_status . ': ' . $processor_response_code,
-                    'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
-                ]);
+                $this->merchant_responses_model->create_payment_response(
+                    invoiceId:  $invoice_id,
+                    driver:     MerchantResponseDriver::PayPal,
+                    message:    $capture_status . ': ' . $processor_response_code,
+                    reference:  'Resource ID:' . $paypal_object->id,
+                    successful: false,
+                );
 
                 //set error message to be flashed
                 $this->session->set_flashdata(
@@ -279,14 +283,13 @@ class Paypal extends Base_Controller
             $order_details = json_decode($this->lib_paypal->showOrderDetails($order_id));
 
             //record the failed transaction in the logs
-            $this->db->insert('ip_merchant_responses', [
-                'invoice_id'                   => $order_details->purchase_units[0]->payments->captures[0]->invoice_id,
-                'merchant_response_successful' => false,
-                'merchant_response_date'       => date('Y-m-d'),
-                'merchant_response_driver'     => 'paypal',
-                'merchant_response'            => 'name: ' . $response_error->name . '; details: ' . $response_error->details[0]->description,
-                'merchant_response_reference'  => 'Resource ID:' . $order_id,
-            ]);
+            $this->merchant_responses_model->create_payment_response(
+                invoiceId:  $order_details->purchase_units[0]->payments->captures[0]->invoice_id,
+                driver:     MerchantResponseDriver::PayPal,
+                message:    'name: ' . $response_error->name . '; details: ' . $response_error->details[0]->description,
+                reference:  'Resource ID:' . $order_id,
+                successful: false,
+            );
 
             //set error message to be flashed
             $this->session->set_flashdata(
