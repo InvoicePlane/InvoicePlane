@@ -11,9 +11,6 @@ jobs:
   phpstan:
     name: Static Analysis
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
 
     steps:
       - name: Checkout repository

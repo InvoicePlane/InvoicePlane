@@ -2,7 +2,6 @@
     "preset": "per",
     "exclude": [
         "application/views/**/pdf/",
-        "application/modules/clients/views",
         "resources",
         "storage"
     ],

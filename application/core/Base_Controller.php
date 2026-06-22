@@ -51,9 +51,6 @@ class Base_Controller extends MX_Controller
             $this->load->library(['encryption', 'form_validation', 'session', 'ClientTitleEnum']);
             $this->load->database();
 
-            // SQLite3 MySQL-compat UDFs are registered in MX/Loader::database() on connection creation.
-
-
             $this->load->helper(['trans', 'number', 'pager', 'invoice', 'date', 'form', 'echo', 'user', 'client', 'country']);
 
             // Load setting model and load settings

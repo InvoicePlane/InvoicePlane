@@ -16,8 +16,7 @@ require_once dirname(__FILE__) . '/Config.php';
  * @see    http://codeigniter.com
  *
  * Description:
- * This library extends CI_Controller and creates the application object that
- * allows modules to use the HMVC design pattern via CI::$APP.
+ * This library creates a CI class which allows the use of modules in an application.
  *
  * Install this file as application/third_party/MX/Ci.php
  *
@@ -44,14 +43,14 @@ require_once dirname(__FILE__) . '/Config.php';
  * THE SOFTWARE.
  **/
 #[AllowDynamicProperties]
-class CI extends CI_Controller
+class CI
 {
     public static $APP;
 
     public function __construct()
     {
-        // assign the application instance to ourselves (we ARE the CI_Controller)
-        self::$APP = $this;
+        // assign the application instance
+        self::$APP = CI_Controller::get_instance();
 
         global $LANG, $CFG;
 
@@ -63,8 +62,6 @@ class CI extends CI_Controller
         if ( ! $CFG instanceof MX_Config) {
             $CFG = new MX_Config();
         }
-
-        parent::__construct();
     }
 }
 
