@@ -1,7 +1,10 @@
 {
     "preset": "per",
     "exclude": [
-        "application/modules/clients/views"
+        "application/modules/clients/views",
+        "application/views/**/pdf/",
+        "resources",
+        "storage"
     ],
     "rules": {
         "@PSR12": true,
