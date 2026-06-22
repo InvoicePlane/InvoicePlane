@@ -7,21 +7,13 @@ if ( ! defined('BASEPATH')) {
 defined('EXT') || define('EXT', '.php');
 
 global $CFG;
-$CFG = &load_class('Config', 'core');
 
-$locations = [];
-
-if ($CFG && method_exists($CFG, 'item')) {
-    $locations = $CFG->item('modules_locations');
-}
-
-if ( ! is_array($locations)) {
-    $locations = [
+// get module locations from config settings or use the default module location and offset
+if ( ! is_array(Modules::$locations = $CFG->item('modules_locations'))) {
+    Modules::$locations = [
         APPPATH . 'modules/' => '../modules/',
     ];
 }
-
-Modules::$locations = $locations;
 
 // PHP5 spl_autoload
 spl_autoload_register('Modules::autoload');
@@ -107,31 +99,35 @@ class Modules
     /** Load a module controller **/
     public static function load($module)
     {
-        $ci = CI::$APP;
-
-        // Allow array form: ['module_name' => $params]
         if (is_array($module)) {
-            [$module, $params] = [key($module), current($module)];
+            list($module, $params) = @myEach($module);
+        } else {
+            $params = null;
         }
 
-        $alias = mb_strtolower(basename($module));
+        // get the requested controller class name
+        $alias = $module == null ? '' : mb_strtolower(basename($module));
 
+        // create or return an existing controller from the registry
         if ( ! isset(self::$registry[$alias])) {
-            [$class] = $ci->router->locate(explode('/', $module));
+            // find the controller
+            list($class) = $module == null ? CI::$APP->router->locate([]) : CI::$APP->router->locate(explode('/', $module));
 
+            // controller cannot be located
             if (empty($class)) {
                 return;
             }
 
-            $path = APPPATH . 'controllers/' . $ci->router->directory;
+            // set the module directory
+            $path = APPPATH . 'controllers/' . CI::$APP->router->directory;
 
-            $class .= $ci->config->item('controller_suffix');
-
+            // load the controller class
+            $class .= CI::$APP->config->item('controller_suffix');
             self::load_file(ucfirst($class), $path);
 
-            $controller = ucfirst($class);
-
-            self::$registry[$alias] = new $controller();
+            // create and register the new controller
+            $controller             = ucfirst($class);
+            self::$registry[$alias] = new $controller($params);
         }
 
         return self::$registry[$alias];

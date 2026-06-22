@@ -4,11 +4,6 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-if (! enum_exists('MerchantResponseDriver', false)) {
-    require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
-}
-
-
 /*
  * InvoicePlane
  *
@@ -32,7 +27,6 @@ class Stripe extends Base_Controller
         parent::__construct();
         $this->load->library('crypt');
         $this->load->model('invoices/mdl_invoices');
-        $this->load->model('integrations/merchant_responses_model');
         $this->load->helper('file_security');
 
         $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
@@ -185,13 +179,14 @@ class Stripe extends Base_Controller
             // Check stripe server ok
             $ok = $session->status !== null; // Stripe is accessible?
             // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts)
-            $this->merchant_responses_model->create_payment_response(
-                invoiceId:  $invoice->invoice_id,
-                driver:     MerchantResponseDriver::Stripe,
-                message:    ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
-                reference:  $ok ? 'intent_id: ' . $session->payment_intent : 'none',
-                successful: $ok,
-            );
+            $this->db->insert('ip_merchant_responses', [
+                'invoice_id'                   => $invoice->invoice_id,
+                'merchant_response_successful' => (int) $ok, // response server API (no)ok
+                'merchant_response_date'       => date('Y-m-d'),
+                'merchant_response_driver'     => __CLASS__,
+                'merchant_response'            => ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
+                'merchant_response_reference'  => $ok ? 'intent_id: ' . $session->payment_intent : 'none',
+            ]);
 
             // Notify user
             $this->session->set_flashdata('alert_' . $paid, $user_msg);
