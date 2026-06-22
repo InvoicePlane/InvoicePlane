@@ -218,7 +218,7 @@ class Paypal extends Base_Controller
                             'payment_external_id' => $capture_id,
                         ]);
 
-                        $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), $invoice->invoice_number));
+                        $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), htmlsc($invoice->invoice_number)));
                         $this->session->keep_flashdata('alert_success');
                     }
                 }
