@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Livello_1"
+   data-name="Livello 1"
+   viewBox="0 0 500 500"
+   version="1.1"
+   sodipodi:docname="file-audio.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview37"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="1.746"
+     inkscape:cx="250"
+     inkscape:cy="249.71363"
+     inkscape:window-width="3716"
+     inkscape:window-height="2126"
+     inkscape:window-x="113"
+     inkscape:window-y="222"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Livello_1" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">.cls-1{fill:#7b499d;}.cls-2{fill:#d6d6d6;}.cls-3,.cls-4{fill:#fff;}.cls-4{font-size:31.64px;font-family:MyriadPro-Regular, Myriad Pro;}.cls-5{letter-spacing:-0.03em;}</style>
+  </defs>
+  <title
+     id="title6">audio_Tavola disegno 1</title>
+  <path
+     class="cls-1"
+     d="M411.31,118.48v328a12,12,0,0,1-12,12H100.69a12,12,0,0,1-12-12V53.54a12,12,0,0,1,12-12H315.82Z"
+     id="path8" />
+  <path
+     class="cls-2"
+     d="M315.82,41.54v63.54a13.44,13.44,0,0,0,13.4,13.4h82.1Z"
+     id="path10" />
+  <rect
+     class="cls-3"
+     x="139.25999"
+     y="245.77"
+     width="11.5"
+     height="48.459999"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect12" />
+  <rect
+     class="cls-3"
+     x="156.50999"
+     y="231.39999"
+     width="11.5"
+     height="77.209999"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect14" />
+  <rect
+     class="cls-3"
+     x="173.75"
+     y="194.33"
+     width="11.5"
+     height="151.33"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect16" />
+  <rect
+     class="cls-3"
+     x="191"
+     y="225.85001"
+     width="11.5"
+     height="88.290001"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect18" />
+  <rect
+     class="cls-3"
+     x="208.25"
+     y="203.78"
+     width="11.5"
+     height="132.44"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect20" />
+  <rect
+     class="cls-3"
+     x="225.5"
+     y="231.39999"
+     width="11.5"
+     height="77.209999"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect22" />
+  <rect
+     class="cls-3"
+     x="242.75"
+     y="245.77"
+     width="11.5"
+     height="48.459999"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect24" />
+  <rect
+     class="cls-3"
+     x="294.37958"
+     y="225.30934"
+     width="11.5"
+     height="88.290001"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect18-5"
+     style="fill:#ffffff" />
+  <rect
+     class="cls-3"
+     x="311.62958"
+     y="203.23933"
+     width="11.5"
+     height="132.44"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect20-7"
+     style="fill:#ffffff" />
+  <rect
+     class="cls-3"
+     x="328.87958"
+     y="230.85933"
+     width="11.5"
+     height="77.209999"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect22-8"
+     style="fill:#ffffff" />
+  <rect
+     class="cls-3"
+     x="346.12958"
+     y="245.22934"
+     width="11.5"
+     height="48.459999"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect24-7"
+     style="fill:#ffffff" />
+  <rect
+     class="cls-3"
+     x="260"
+     y="203.78"
+     width="11.5"
+     height="132.44"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect26" />
+  <rect
+     class="cls-3"
+     x="277.23999"
+     y="234.17"
+     width="11.5"
+     height="71.660004"
+     rx="4.6700001"
+     ry="4.6700001"
+     id="rect28" />
+</svg>

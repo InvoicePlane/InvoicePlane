@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Livello_1"
+   data-name="Livello 1"
+   viewBox="0 0 500 500"
+   version="1.1"
+   sodipodi:docname="file-pdf.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1219"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="2.4692169"
+     inkscape:cx="502.79099"
+     inkscape:cy="247.85186"
+     inkscape:window-width="3716"
+     inkscape:window-height="2126"
+     inkscape:window-x="113"
+     inkscape:window-y="222"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text1216" />
+  <defs
+     id="defs1208">
+    <style
+       id="style1206">.cls-1{fill:#ef4136;}.cls-2{fill:#d6d6d6;}.cls-3{font-size:84.64px;fill:#fff;font-family:MyriadPro-Regular, Myriad Pro;}</style>
+  </defs>
+  <title
+     id="title1210">pdf_Tavola disegno 1</title>
+  <path
+     class="cls-1"
+     d="M411.31,118.48v328a12,12,0,0,1-12,12H100.69a12,12,0,0,1-12-12V53.54a12,12,0,0,1,12-12H315.82Z"
+     id="path1212" />
+  <path
+     class="cls-2"
+     d="M315.82,41.54v63.54a13.44,13.44,0,0,0,13.4,13.4h82.1Z"
+     id="path1214" />
+  <g
+     aria-label="PDF"
+     id="text1216"
+     style="font-size:146.667px;font-family:MyriadPro-Regular, 'Myriad Pro';fill:#ffffff"
+     class="cls-3">
+    <path
+       d="m 138.40339,344.1084 h 12.76003 v -39.60009 c 2.93334,0.73333 6.45335,0.88 10.26669,0.88 12.4667,0 23.46672,-3.66668 30.2134,-10.85336 4.98668,-5.13335 7.62669,-12.17336 7.62669,-21.12005 0,-8.80002 -3.22667,-15.9867 -8.65335,-20.68005 -5.86668,-5.28001 -15.10671,-8.21335 -27.72007,-8.21335 -10.26669,0 -18.33337,0.88 -24.49339,1.90667 z m 12.76003,-88.44021 c 2.20001,-0.58667 6.45335,-1.02667 12.0267,-1.02667 14.08003,0 23.32005,6.30669 23.32005,19.36005 0,13.64003 -9.38669,21.12005 -24.78672,21.12005 -4.25335,0 -7.77336,-0.29334 -10.56003,-1.02667 z"
+       style="font-size:146.667px;font-family:MyriadPro-Regular, 'Myriad Pro';fill:#ffffff"
+       id="path18555" />
+    <path
+       d="m 216.43018,343.81506 c 6.45335,0.73334 14.08003,1.17334 23.17339,1.17334 19.21337,0 34.46674,-4.98668 43.70676,-14.2267 9.24002,-9.09335 14.2267,-22.29338 14.2267,-38.42676 0,-15.9867 -5.13334,-27.42673 -13.93336,-35.49341 -8.65336,-8.06669 -21.70672,-12.32003 -40.0401,-12.32003 -10.12002,0 -19.36004,0.88 -27.13339,2.05334 z m 12.76003,-87.85353 c 3.37334,-0.73334 8.36002,-1.32001 14.96003,-1.32001 26.98673,0 40.18676,14.81337 40.0401,38.13343 0,26.69339 -14.81337,41.94676 -42.09344,41.94676 -4.98667,0 -9.68002,-0.14667 -12.90669,-0.73334 z"
+       style="font-size:146.667px;font-family:MyriadPro-Regular, 'Myriad Pro';fill:#ffffff"
+       id="path18557" />
+    <path
+       d="m 314.11018,344.1084 h 12.76003 v -44.73344 h 37.40008 v -10.56002 h -37.40008 v -32.85341 h 40.48009 v -10.70669 h -53.24012 z"
+       style="font-size:146.667px;font-family:MyriadPro-Regular, 'Myriad Pro';fill:#ffffff"
+       id="path18559" />
+  </g>
+</svg>

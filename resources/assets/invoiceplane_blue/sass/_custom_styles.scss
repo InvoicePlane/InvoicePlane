@@ -1,0 +1,19 @@
+/*
+|   =========================================================
+|   Custom styles
+|   =========================================================
+*/
+
+a:hover, a:active, a:focus {
+  outline: 0;
+  text-decoration: none;
+}
+
+body *:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.form-control, .panel {
+  box-shadow: none;
+}
