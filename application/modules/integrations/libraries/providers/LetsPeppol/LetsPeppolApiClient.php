@@ -2,18 +2,15 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once __DIR__ . '/LetsPeppolHttpClientInterface.php';
-require_once __DIR__ . '/LetsPeppolCurlHttpClient.php';
-
 class LetsPeppolApiClient
 {
     private ?string $accessToken = null;
     private array $settings = [];
-    private LetsPeppolHttpClientInterface $http;
+    private ApiClientInterface $http;
 
-    public function __construct(?LetsPeppolHttpClientInterface $http = null)
+    public function __construct(?ApiClientInterface $http = null)
     {
-        $this->http = $http ?? new LetsPeppolCurlHttpClient();
+        $this->http = $http ?? new GuzzleApiClient();
     }
 
     public function configure(array $settings): void
@@ -31,19 +28,36 @@ class LetsPeppolApiClient
         return $this->accessToken;
     }
 
+    /**
+     * Obtain a bearer token from the OAuth2 client-credentials endpoint.
+     *
+     * Request (form-encoded POST to token_url):
+     *   grant_type    client_credentials
+     *   client_id     {settings.client_id}
+     *   client_secret {settings.client_secret}
+     *   scope         openid
+     *
+     * Response (JSON):
+     *   access_token  string  Bearer token for subsequent API calls
+     *   token_type    string  "Bearer"
+     *   expires_in    int     Seconds until expiry
+     */
     public function authenticate(): void
     {
-        $decoded = $this->http->fetchToken(
-            $this->settings['token_url'],
-            $this->settings['client_id'],
-            $this->settings['client_secret']
-        );
+        $result = $this->http->request(RequestMethod::POST, $this->settings['token_url'], [
+            'form_params' => [
+                'grant_type'    => 'client_credentials',
+                'client_id'     => $this->settings['client_id'],
+                'client_secret' => $this->settings['client_secret'],
+                'scope'         => 'openid',
+            ],
+        ]);
 
-        if (empty($decoded['access_token'])) {
-            throw new RuntimeException('LetsPeppol OAuth failed: no access_token in response.');
+        if (empty($result['response']['access_token'])) {
+            throw new \RuntimeException('LetsPeppol OAuth failed: no access_token in response.');
         }
 
-        $this->accessToken = $decoded['access_token'];
+        $this->accessToken = $result['response']['access_token'];
     }
 
     public function buildUrl(string $endpoint, ?string $id = null): string
@@ -64,6 +78,14 @@ class LetsPeppolApiClient
             $url .= '?' . http_build_query($query);
         }
 
-        return $this->http->send($method, $url, $payload, $multipart, $this->accessToken);
+        $options = ['bearer' => $this->accessToken];
+
+        if ($multipart) {
+            $options['multipart'] = $payload;
+        } elseif (!empty($payload)) {
+            $options['json'] = $payload;
+        }
+
+        return $this->http->request($method, $url, $options);
     }
 }

@@ -8,10 +8,10 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RequestMethod;
 use RuntimeException;
-use Tests\Fakes\Integration\FakeLetsPeppolHttpClient;
+use Tests\Fakes\Integration\ApiClientFake;
 
 /**
- * Unit tests for LetsPeppolApiClient using FakeLetsPeppolHttpClient.
+ * Unit tests for LetsPeppolApiClient using ApiClientFake.
  *
  * These tests target the ApiClient layer directly — not the high-level
  * LetsPeppolClient or its endpoint objects. They prove that:
@@ -38,7 +38,7 @@ class LetsPeppolApiClientTest extends TestCase
 
     private function makeClient(array $responses = [], array $tokenResponse = ['access_token' => 'tok-abc']): array
     {
-        $http   = new FakeLetsPeppolHttpClient($responses, $tokenResponse);
+        $http   = new ApiClientFake($responses, $tokenResponse);
         $client = new LetsPeppolApiClient($http);
         $client->configure($this->settings());
 
@@ -112,7 +112,7 @@ class LetsPeppolApiClientTest extends TestCase
     public function it_propagates_a_network_exception_from_fetch_token(): void
     {
         /* Arrange */
-        $http   = new FakeLetsPeppolHttpClient([], ['access_token' => 'tok'], 'LetsPeppol OAuth error: timeout');
+        $http   = new ApiClientFake([], ['access_token' => 'tok'], 'LetsPeppol OAuth error: timeout');
         $client = new LetsPeppolApiClient($http);
         $client->configure($this->settings());
 
@@ -252,7 +252,7 @@ class LetsPeppolApiClientTest extends TestCase
     public function it_strips_duplicate_slashes_between_base_and_path(): void
     {
         /* Arrange */
-        $http   = new FakeLetsPeppolHttpClient();
+        $http   = new ApiClientFake();
         $client = new LetsPeppolApiClient($http);
         $client->configure(array_merge($this->settings(), ['api_base_url' => 'https://api.letspeppol.eu/']));
 
@@ -271,7 +271,7 @@ class LetsPeppolApiClientTest extends TestCase
     public function it_uses_the_token_from_authenticate_in_a_subsequent_request(): void
     {
         /* Arrange */
-        $http   = new FakeLetsPeppolHttpClient([], ['access_token' => 'flow-token']);
+        $http   = new ApiClientFake([], ['access_token' => 'flow-token']);
         $client = new LetsPeppolApiClient($http);
         $client->configure($this->settings());
 
@@ -290,7 +290,7 @@ class LetsPeppolApiClientTest extends TestCase
     public function it_sends_multiple_requests_all_carrying_the_same_token(): void
     {
         /* Arrange */
-        $http   = new FakeLetsPeppolHttpClient([], ['access_token' => 'multi-token']);
+        $http   = new ApiClientFake([], ['access_token' => 'multi-token']);
         $client = new LetsPeppolApiClient($http);
         $client->configure($this->settings());
         $client->authenticate();
