@@ -1,31 +1,30 @@
-<div class="headerbar">
-    <h1 class="headerbar-title"><?php _trans('einvoice'); ?></h1>
+<div id="headerbar">
+    <h1 class="headerbar-title"><?php _trans('einvoice'); ?> <?php _trans('providers'); ?></h1>
+
+    <div class="headerbar-item pull-right">
+        <a class="btn btn-default btn-sm" href="<?php echo site_url('einvoice/incoming'); ?>">
+            <i class="fa fa-inbox"></i> <?php _trans('incoming_invoices'); ?>
+        </a>
+
+        <a class="btn btn-default btn-sm" href="<?php echo site_url('einvoice/events'); ?>">
+            <i class="fa fa-history"></i> <?php _trans('einvoice_events'); ?>
+        </a>
+    </div>
 </div>
 
-<div class="content">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <?php _trans('providers'); ?>
-        </div>
+<div id="content" class="table-content">
 
-        <div class="panel-body">
-            <a href="<?php echo site_url('einvoice/incoming'); ?>" class="btn btn-default">
-                <i class="fa fa-inbox"></i> <?php _trans('incoming_invoices'); ?>
-            </a>
+    <?php $this->layout->load_view('layout/alerts'); ?>
 
-            <a href="<?php echo site_url('einvoice/events'); ?>" class="btn btn-default">
-                <i class="fa fa-history"></i> <?php _trans('einvoice_events'); ?>
-            </a>
-        </div>
-
-        <table class="table table-striped">
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
             <thead>
-            <tr>
-                <th><?php _trans('provider'); ?></th>
-                <th><?php _trans('label'); ?></th>
-                <th><?php _trans('status'); ?></th>
-                <th><?php _trans('actions'); ?></th>
-            </tr>
+                <tr>
+                    <th><?php _trans('provider'); ?></th>
+                    <th><?php _trans('label'); ?></th>
+                    <th><?php _trans('status'); ?></th>
+                    <th><?php _trans('actions'); ?></th>
+                </tr>
             </thead>
             <tbody>
             <?php foreach ($providers as $provider) : ?>
