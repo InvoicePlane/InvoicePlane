@@ -59,10 +59,17 @@ class Einvoice extends Admin_Controller
         $documentDir = FCPATH . 'uploads/einvoice/outgoing/';
 
         if (!is_dir($documentDir)) {
-            mkdir($documentDir, 0775, true);
+            if (!mkdir($documentDir, 0775, true) && !is_dir($documentDir)) {
+                show_error('Unable to create e-invoice output directory.');
+                return;
+            }
         }
 
         $documentPath = $documentDir . 'invoice_' . $invoiceId . '.pdf';
+        if (file_exists($documentPath) && !unlink($documentPath)) {
+            show_error('Unable to replace existing invoice PDF.');
+            return;
+	}
 
         $pdfContent = generate_invoice_pdf($invoiceId, false, null, null);
 
@@ -72,9 +79,15 @@ class Einvoice extends Admin_Controller
         }
 
         if (is_string($pdfContent) && file_exists($pdfContent)) {
-            copy($pdfContent, $documentPath);
+            if (!copy($pdfContent, $documentPath)) {
+                show_error('Unable to copy generated invoice PDF.');
+                return;
+            }
         } else {
-            file_put_contents($documentPath, $pdfContent);
+            if (file_put_contents($documentPath, $pdfContent) === false) {
+                show_error('Unable to write generated invoice PDF.');
+                return;
+            }
         }
 
         if (!file_exists($documentPath) || filesize($documentPath) === 0) {
