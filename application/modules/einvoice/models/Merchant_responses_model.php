@@ -136,7 +136,7 @@ class Merchant_responses_model extends CI_Model
            'direction' => 'in',
            'record_type' => 'invoice_event',
            'invoice_id' => null,
-           'external_id' => $event['invoice_id'] ?? $event['external_id'] ?? $event['id'] ?? null,
+           'external_id' => $event['external_id'] ?? $event['id'] ?? $event['invoice_id'] ?? null,
            'status' => $event['status'] ?? $event['type'] ?? 'event',
            'message' => $event['message'] ?? $event['event_type'] ?? null,
            'http_code' => $event['http_code'] ?? null,
