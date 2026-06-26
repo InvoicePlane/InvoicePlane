@@ -162,11 +162,13 @@ class Einvoice extends Admin_Controller
                        'message' => $e->getMessage(),
                  ], JSON_PRETTY_PRINT));
             return;
-        }
-        $items = $response['response']['data']
-            ?? $response['response']['items']
-            ?? $response['response']['invoices']
-            ?? $response['response']
+	}
+        $payload = is_array($response['response'] ?? null) ? $response['response'] : [];
+
+        $items = $payload['data']
+            ?? $payload['items']
+            ?? $payload['invoices']
+            ?? $payload
             ?? [];
 
         if (isset($items['id']) || isset($items['external_id'])) {
