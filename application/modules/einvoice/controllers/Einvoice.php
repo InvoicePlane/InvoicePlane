@@ -39,9 +39,6 @@ class Einvoice extends Admin_Controller
         $settings = $this->Merchant_clients_model->get_settings($merchantClient);
 
         $registry = new MerchantProviderRegistry();
-        $provider = $registry->getProvider($merchantClient['merchant_type']);
-
-        $client = new MerchantClient($provider, $settings);
 
         $this->load->helper('pdf');
         $this->load->model('invoices/mdl_invoices');
@@ -93,8 +90,15 @@ class Einvoice extends Admin_Controller
 
         $metadata = $provider->buildInvoicePayload($invoice, $items, $metadata);
 
-        $response = $client->sendInvoice($documentPath, $metadata);
-
+        try {
+            $provider = $registry->getProvider($merchantClient['merchant_type']);
+            $client = new MerchantClient($provider, $settings);
+            $response = $client->sendInvoice($documentPath, $metadata);
+        } catch (RuntimeException $e) {
+            $this->session->set_flashdata('alert_error', $e->getMessage());
+            redirect('invoices/view/' . (int) $invoiceId);
+            return;
+        }
         $this->Merchant_responses_model->create_outbound(
             $merchantClientId,
             $invoiceId,
@@ -131,11 +135,21 @@ class Einvoice extends Admin_Controller
 
         $settings = $this->Merchant_clients_model->get_settings($merchantClient);
         $registry = new MerchantProviderRegistry();
-        $provider = $registry->getProvider($merchantClient['merchant_type']);
-        $client = new MerchantClient($provider, $settings);
 
-        $response = $client->receiveInvoices();
-
+        try {
+            $provider = $registry->getProvider($merchantClient['merchant_type']);
+            $client = new MerchantClient($provider, $settings);
+            $response = $client->receiveInvoices();
+	} catch (RuntimeException $e) {
+	    $this->output
+                 ->set_content_type('application/json')
+                 ->set_status_header(500)
+                 ->set_output(json_encode([
+                       'success' => false,
+                       'message' => $e->getMessage(),
+                 ], JSON_PRETTY_PRINT));
+            return;
+        }
         $items = $response['response']['data']
             ?? $response['response']['items']
             ?? $response['response']['invoices']
@@ -172,10 +186,21 @@ class Einvoice extends Admin_Controller
         $settings = $this->Merchant_clients_model->get_settings($merchantClient);
 
         $registry = new MerchantProviderRegistry();
-        $provider = $registry->getProvider($merchantClient['merchant_type']);
-        $client = new MerchantClient($provider, $settings);
 
-        $events = $client->getInvoiceEvents();
+        try {
+            $provider = $registry->getProvider($merchantClient['merchant_type']);
+            $client = new MerchantClient($provider, $settings);
+            $events = $client->getInvoiceEvents();
+        } catch (RuntimeException $e) {
+            $this->output
+                 ->set_content_type('application/json')
+                 ->set_status_header(500)
+                 ->set_output(json_encode([
+                     'success' => false,
+                     'message' => $e->getMessage(),
+                 ], JSON_PRETTY_PRINT));
+            return;
+        }
 
         $items = $events['response']['data']
             ?? $events['response']['items']
@@ -270,6 +295,77 @@ class Einvoice extends Admin_Controller
         }
 
         redirect('invoices/view/' . (int) $invoiceId);
+    }
+
+    public function status($invoiceId, $merchantClientId): void
+    {
+        $invoiceId = (int) $invoiceId;
+        $merchantClientId = (int) $merchantClientId;
+
+        $merchantClient = $this->Merchant_clients_model->get_by_id($merchantClientId);
+
+        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+            show_error(trans('merchant_client_not_found'));
+            return;
+        }
+
+        $lastResponse = $this->Merchant_responses_model
+            ->get_last_response_by_invoice($invoiceId);
+
+        if (!$lastResponse) {
+            $this->session->set_flashdata(
+                'alert_error',
+                trans('einvoice_no_transmission_found')
+            );
+
+            redirect('invoices/view/' . $invoiceId);
+            return;
+        }
+
+        if (empty($lastResponse['external_id'])) {
+            $this->session->set_flashdata(
+                'alert_error',
+                trans('einvoice_no_external_reference')
+            );
+
+            redirect('invoices/view/' . $invoiceId);
+            return;
+        }
+
+        $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+        $registry = new MerchantProviderRegistry();
+
+        try {
+            $provider = $registry->getProvider($merchantClient['merchant_type']);
+            $client = new MerchantClient($provider, $settings);
+
+            $status = $client->getInvoiceStatus($lastResponse['external_id']);
+        } catch (RuntimeException $e) {
+            $this->session->set_flashdata('alert_error', $e->getMessage());
+
+            redirect('invoices/view/' . $invoiceId);
+            return;
+        }
+
+        $this->Merchant_responses_model->save_status(
+            $invoiceId,
+	    $status,
+            $lastResponse
+        );
+
+        if (!empty($status['success'])) {
+            $this->session->set_flashdata(
+                'alert_success',
+                'PDP status: ' . ($status['status'] ?? 'unknown')
+            );
+        } else {
+            $this->session->set_flashdata(
+                'alert_error',
+                $status['message'] ?? 'Unable to retrieve status'
+            );
+        }
+
+        redirect('invoices/view/' . $invoiceId);
     }
 
     public function history($invoiceId)
