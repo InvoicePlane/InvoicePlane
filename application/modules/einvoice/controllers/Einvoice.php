@@ -252,7 +252,11 @@ class Einvoice extends Admin_Controller
         }
 
         $lastResponse = $this->Merchant_responses_model
-            ->get_last_response_by_invoice((int) $invoiceId);
+            ->get_last_response_by_invoice_and_client(
+                (int) $invoiceId,
+                (int) $merchantClientId
+            );
+
 
         if (!$lastResponse) {
             $this->session->set_flashdata(
