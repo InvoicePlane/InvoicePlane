@@ -41,4 +41,13 @@ class IntegrationClient
         $this->authenticate();
         return $this->provider->getInvoiceEvents($filters);
     }
+
+    public function lookupParticipant(string $participantId): array
+    {
+        if ( ! method_exists($this->provider, 'participants')) {
+            return ['success' => false, 'response' => ['reachable' => false], 'message' => 'Provider does not support participant lookup'];
+        }
+        $this->authenticate();
+        return $this->provider->participants()->lookup($participantId);
+    }
 }

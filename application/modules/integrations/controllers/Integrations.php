@@ -14,6 +14,10 @@ class Integrations extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClient.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseStatus.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDirection.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseType.php';
     }
 
     public function providers(): void
@@ -95,14 +99,13 @@ class Integrations extends Admin_Controller
 
         $response = $client->sendInvoice($documentPath, $metadata);
 
+        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
+
         $this->Merchant_responses_model->create_outbound(
             $merchantClientId,
             $invoiceId,
             $response,
-            [
-                'document_path' => $documentPath,
-                'metadata' => $metadata,
-            ]
+            $driver
         );
 
         if (!empty($response['success'])) {
@@ -270,6 +273,40 @@ class Integrations extends Admin_Controller
         }
 
         redirect('invoices/view/' . (int) $invoiceId);
+    }
+
+    public function validate_participant(): void
+    {
+        if ($this->input->method() !== 'post') {
+            show_error('Method not allowed', 405);
+        }
+
+        $participantId = trim((string) $this->input->post('participant_id'));
+
+        $merchantClient = $this->Merchant_clients_model->get_default_enabled();
+
+        if ( ! $merchantClient) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['reachable' => false, 'error' => trans('peppol_no_provider')]));
+            return;
+        }
+
+        $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+        $registry = new IntegrationClientRegistry();
+        $provider = $registry->getClient($merchantClient['merchant_type']);
+        $client   = new IntegrationClient($provider, $settings);
+
+        $result   = $client->lookupParticipant($participantId);
+        $response = $result['response'] ?? [];
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode([
+                'reachable' => (bool) ($response['reachable'] ?? false),
+                'name'      => $response['name'] ?? null,
+                'country'   => $response['country'] ?? null,
+            ]));
     }
 
     public function history($invoiceId)

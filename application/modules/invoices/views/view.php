@@ -337,6 +337,38 @@ if ($einvoice->user) {
                     </a>
                 </li>
                 <li class="divider"></li>
+<?php
+if ( ! empty($enabled_merchant_clients)) {
+    foreach ($enabled_merchant_clients as $mc) {
+        $needs_peppol = in_array($mc['merchant_type'], ['letspeppol', 'superpdp'], true);
+        $has_id       = ! empty($invoice->client_peppol_id);
+        if ($needs_peppol && ! $has_id) {
+            ?>
+                <li class="disabled" data-toggle="tooltip" title="<?php _trans('peppol_id_missing'); ?>">
+                    <a href="#" onclick="return false;">
+                        <i class="fa fa-paper-plane fa-margin"></i>
+                        <?php _trans('send_via_integration'); ?> <?php echo htmlsc($mc['label']); ?>
+                    </a>
+                </li>
+<?php
+        } else {
+            ?>
+                <li>
+                    <form method="post" action="<?php echo site_url('integrations/send_invoice/' . $invoice_id . '/' . (int) $mc['id']); ?>" style="display:inline;">
+                        <button type="submit" class="btn btn-link" style="padding:3px 20px;text-align:left;width:100%;">
+                            <i class="fa fa-paper-plane fa-margin"></i>
+                            <?php _trans('send_via_integration'); ?> <?php echo htmlsc($mc['label']); ?>
+                        </button>
+                    </form>
+                </li>
+<?php
+        }
+    }
+    ?>
+                <li class="divider"></li>
+<?php
+}
+?>
                 <li>
                     <a href="#" id="btn_create_recurring"
                        data-invoice-id="<?php echo $invoice_id; ?>">

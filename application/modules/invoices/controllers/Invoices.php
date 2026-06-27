@@ -191,12 +191,16 @@ class Invoices extends Admin_Controller
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
         $change_user = $change_user->user_type > 1;
 
+        $this->load->model('integrations/Merchant_clients_model');
+        $enabled_merchant_clients = $this->Merchant_clients_model->get_enabled_clients();
+
         $this->layout->set(
             [
-                'invoice'           => $invoice,
-                'items'             => $items,
-                'invoice_id'        => $invoice_id,
-                'einvoice'          => $einvoice,
+                'invoice'                  => $invoice,
+                'items'                    => $items,
+                'invoice_id'               => $invoice_id,
+                'einvoice'                 => $einvoice,
+                'enabled_merchant_clients' => $enabled_merchant_clients,
                 'change_user'       => $change_user,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
