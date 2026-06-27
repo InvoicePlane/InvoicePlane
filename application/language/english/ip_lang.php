@@ -847,9 +847,10 @@ $lang = [
     // E-Invoice
     'einvoice'                                 => 'E-Invoicing',
     'einvoice_provider'                        => 'E-Invoicing Provider',
+    'einvoice_providers'                       => 'E-Invoicing Providers',
     'einvoice_provider_settings'               => 'Provider settings',
     'incoming_invoices'                        => 'Incoming Supplier Invoices',
-    'einvoice_events'                          => 'Electronic Invoicing Events',
+    'einvoice_events'                          => 'E-Invoicing Events',
     'einvoice_history'                         => 'E-Invoicing History',
     'external_id'                              => 'External ID',
     'provider'                                 => 'Provider',
@@ -877,6 +878,7 @@ $lang = [
     'not_sent'                                 => 'Not sent',
     'check_status'                             => 'Check status',
     'merchant_client_not_found'                => 'Merchant client not found or disabled.',
+    'transmit_to_provider'                     => 'Transmit to provider',
 
     // Clients/Enums/ClientTitleEnum
     'mr'        => 'mr',

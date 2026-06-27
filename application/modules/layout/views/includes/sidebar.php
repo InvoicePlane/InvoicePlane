@@ -11,7 +11,7 @@
                class="tip" data-placement="right">
                 <i class="fa fa-file"></i>
             </a>
-	</li>
+        </li>
         <li>
             <a href="<?php echo site_url('invoices/index'); ?>" title="<?php _trans('invoices'); ?>"
                 class="tip" data-placement="right">
@@ -19,9 +19,9 @@
              </a>
         </li>
         <li>
-            <a href="<?php echo site_url('einvoice/settings'); ?>" title="<?php _trans('einvoice'); ?>"
+            <a href="<?php echo site_url('einvoice/events'); ?>" title="<?php _trans('einvoice'); ?>"
                class="tip" data-placement="right">
-                <i class="fa fa-paper-plane"></i>
+                <i class="fa fa-exchange"></i>
             </a>
         </li>
         <li>

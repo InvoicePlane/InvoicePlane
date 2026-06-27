@@ -319,7 +319,7 @@ if ($invoice->invoice_balance != 0) {
 <?php
 // eInvoice & user fields OK: Show download XML Option
 if ($einvoice->user) {
-	        $einvoice_provider = $einvoice_provider ?? null;
+    $einvoice_provider = $einvoice_provider ?? null;
     ?>
                 <li>
                     <a href="#" id="btn_generate_xml"
@@ -327,28 +327,30 @@ if ($einvoice->user) {
                         <i class="fa fa-file-code-o fa-margin"></i>
                         <?php _trans('download_xml'); ?>
                     </a>
-		</li>
-<?php if (!empty($einvoice_provider) && !empty($einvoice_provider['id'])) : ?>
+                </li>
+<?php
+    if (!empty($einvoice_provider) && !empty($einvoice_provider['id'])) {
+?>
                 <li>
-                   <a href="<?php echo site_url('einvoice/send_invoice/' . $invoice->invoice_id . '/' . $einvoice_provider['id']); ?>">
-		               <i class="fa fa-paper-plane"></i>
-                       Transmettre PA/PDP
-                   </a>
-		</li>
+                    <a href="<?php echo site_url('einvoice/send_invoice/' . $invoice->invoice_id . '/' . $einvoice_provider['id']); ?>">
+                        <i class="fa fa-exchange fa-margin"></i>
+                        <?php _trans('transmit_to_provider'); ?>
+                    </a>
+                </li>
                 <li>
                       <a href="<?php echo site_url('einvoice/status/' . $invoice_id  . '/' . $einvoice_provider['id']); ?>">
-                         <i class="fa fa-refresh"></i>
+                         <i class="fa fa-refresh fa-margin"></i>
                          <?php _trans('check_status'); ?>
                       </a>
-		</li>
-<?php endif; ?>
+                </li>
                 <li>
                       <a href="<?php echo site_url('einvoice/history/' . $invoice_id); ?>">
-                         <i class="fa fa-history"></i>
+                         <i class="fa fa-history fa-margin"></i>
                          <?php _trans('view_history'); ?>
                      </a>
-		</li>
+                </li>
 <?php
+    }
 }
 ?>
                 <li>
