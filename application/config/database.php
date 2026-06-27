@@ -81,7 +81,7 @@ $db['default'] = [
     'username'     => env('DB_USERNAME'),
     'password'     => env('DB_PASSWORD'),
     'database'     => env('DB_DATABASE'),
-    'dbdriver'     => 'mysqli',
+    'dbdriver'     => env('DB_DRIVER') ?: 'mysqli',
     'dbprefix'     => '',
     'pconnect'     => false,
     'db_debug'     => (ENVIRONMENT !== 'production'),

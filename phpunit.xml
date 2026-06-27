@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    backupGlobals="false"
+    backupStaticProperties="false"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+        <testsuite name="Helpers">
+            <directory>tests/Helpers</directory>
+        </testsuite>
+        <testsuite name="Hmvc">
+            <directory>tests/Hmvc</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <testsuite name="Regression">
+            <directory>tests/Regression</directory>
+        </testsuite>
+        <testsuite name="Scripts">
+            <directory>tests/Scripts</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
