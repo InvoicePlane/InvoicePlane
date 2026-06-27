@@ -309,16 +309,25 @@ class Integrations extends Admin_Controller
             ]));
     }
 
-    public function history($invoiceId)
+    public function history($invoiceId): void
     {
-        $this->load->model('integrations/Merchant_responses_model');
-
         $this->layout->set([
             'invoice_id' => (int) $invoiceId,
-            'history' => $this->Merchant_responses_model->get_by_invoice((int) $invoiceId),
+            'history'    => $this->Merchant_responses_model->get_outbound_by_invoice((int) $invoiceId),
         ]);
 
         $this->layout->buffer('content', 'integrations/history');
+        $this->layout->render();
+    }
+
+    public function history_client($clientId): void
+    {
+        $this->layout->set([
+            'client_id' => (int) $clientId,
+            'history'   => $this->Merchant_responses_model->get_by_client((int) $clientId),
+        ]);
+
+        $this->layout->buffer('content', 'integrations/history_client');
         $this->layout->render();
     }
 }

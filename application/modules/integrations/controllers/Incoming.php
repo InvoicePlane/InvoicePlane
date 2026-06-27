@@ -16,13 +16,31 @@ class Incoming extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClient.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseStatus.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDirection.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseType.php';
     }
 
     public function index()
     {
+        // Build peppol_id → client lookup map.
+        $raw_clients = $this->db
+            ->select('client_id, client_name, client_peppol_id')
+            ->where('client_peppol_id IS NOT NULL')
+            ->where('client_peppol_id !=', '')
+            ->get('ip_clients')
+            ->result_array();
+
+        $client_map = [];
+        foreach ($raw_clients as $c) {
+            $client_map[$c['client_peppol_id']] = $c;
+        }
+
         $this->layout->set([
-            'clients' => $this->Merchant_clients_model->get_enabled_clients(),
-            'incoming' => $this->Merchant_responses_model->get_incoming(),
+            'clients'    => $this->Merchant_clients_model->get_enabled_clients(),
+            'incoming'   => $this->Merchant_responses_model->get_incoming(),
+            'client_map' => $client_map,
         ]);
 
         $this->layout->buffer('content', 'integrations/incoming');
@@ -56,11 +74,15 @@ class Incoming extends Admin_Controller
             $items = [$items];
         }
 
+        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
+
         foreach ($items as $item) {
             if (is_array($item)) {
                 $this->Merchant_responses_model->create_inbound_item(
-                     (int) $merchant_client_id,
-                     $item
+                    (int) $merchant_client_id,
+                    $item,
+                    $driver,
+                    $item['sender'] ?? $item['peppol_participant_id'] ?? null,
                 );
             }
         }
