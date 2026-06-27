@@ -192,7 +192,9 @@ class Invoices extends Admin_Controller
         $change_user = $change_user->user_type > 1;
 
         $this->load->model('integrations/Merchant_clients_model');
+        $this->load->model('integrations/Merchant_responses_model');
         $enabled_merchant_clients = $this->Merchant_clients_model->get_enabled_clients();
+        $send_history             = $this->Merchant_responses_model->get_outbound_by_invoice((int) $invoice_id);
 
         $this->layout->set(
             [
@@ -201,6 +203,7 @@ class Invoices extends Admin_Controller
                 'invoice_id'               => $invoice_id,
                 'einvoice'                 => $einvoice,
                 'enabled_merchant_clients' => $enabled_merchant_clients,
+                'send_history'             => $send_history,
                 'change_user'       => $change_user,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),

@@ -287,18 +287,22 @@ class Clients extends Admin_Controller
         $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
         $this->mdl_client_custom->prep_form($client_id);
 
+        $this->load->model('integrations/Merchant_responses_model');
+        $integration_history = $this->Merchant_responses_model->get_by_client((int) $client_id);
+
         $this->layout->set(
             [
-                'client'           => $client,
-                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices'         => $this->mdl_invoices->result(),
-                'quotes'           => $this->mdl_quotes->result(),
-                'payments'         => $this->mdl_payments->result(),
-                'custom_fields'    => $custom_fields,
-                'quote_statuses'   => $this->mdl_quotes->statuses(),
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
-                'activeTab'        => $activeTab,
-                'req_einvoicing'   => $req_einvoicing,
+                'client'              => $client,
+                'client_notes'        => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'invoices'            => $this->mdl_invoices->result(),
+                'quotes'              => $this->mdl_quotes->result(),
+                'payments'            => $this->mdl_payments->result(),
+                'custom_fields'       => $custom_fields,
+                'quote_statuses'      => $this->mdl_quotes->statuses(),
+                'invoice_statuses'    => $this->mdl_invoices->statuses(),
+                'activeTab'           => $activeTab,
+                'req_einvoicing'      => $req_einvoicing,
+                'integration_history' => $integration_history,
             ]
         );
 

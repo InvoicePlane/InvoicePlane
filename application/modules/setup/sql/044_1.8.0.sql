@@ -87,6 +87,10 @@ ALTER TABLE `ip_merchant_responses`
     COMMENT 'Full datetime precision; merchant_response_date stores the DATE portion'
     AFTER `peppol_document_type`,
 
+  ADD COLUMN `raw_payload` LONGTEXT NULL
+    COMMENT 'Full provider JSON response for incoming documents; NULL for outbound rows'
+    AFTER `created_at`,
+
   ADD INDEX `idx_merchant_client_id` (`merchant_client_id`),
   ADD INDEX `idx_record_type`        (`record_type`),
   ADD INDEX `idx_status`             (`status`);

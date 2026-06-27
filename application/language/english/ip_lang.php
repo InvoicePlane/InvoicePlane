@@ -873,4 +873,11 @@ $lang = [
     'einvoice_no_external_reference' => 'No external reference found for the last transmission.',
     'send_via_integration'           => 'Send via',
     'peppol_id_missing'              => 'Peppol Electronic Address missing on client',
+    'send_history'                   => 'Send History',
+    'integration_history'            => 'Integration History',
+    'no_send_history'                => 'No send history yet.',
+    'no_incoming_invoices'           => 'No incoming invoices.',
+    'external_id'                    => 'External ID',
+    'http_code'                      => 'HTTP',
+    'provider'                       => 'Provider',
 ];

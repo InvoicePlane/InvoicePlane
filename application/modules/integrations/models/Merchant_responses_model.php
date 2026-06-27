@@ -119,14 +119,28 @@ class Merchant_responses_model extends CI_Model
         ?string $peppolParticipantId = null,
         ?PeppolDocumentType $peppolDocumentType = null,
     ): int {
-        $status = MerchantResponseStatus::tryFrom($invoice['status'] ?? '') ?? MerchantResponseStatus::Received;
+        $status    = MerchantResponseStatus::tryFrom($invoice['status'] ?? '') ?? MerchantResponseStatus::Received;
+        $externalId = $invoice['id'] ?? $invoice['external_id'] ?? null;
+
+        // Deduplication: skip if this external ID already exists for this provider.
+        if ($externalId !== null) {
+            $existing = $this->db
+                ->where('merchant_client_id', $merchantClientId)
+                ->where('merchant_response_reference', $externalId)
+                ->where('direction', MerchantResponseDirection::In->value)
+                ->count_all_results(self::TABLE);
+
+            if ($existing > 0) {
+                return 0;
+            }
+        }
 
         $this->db->insert(self::TABLE, [
             'invoice_id'                   => null,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
             'merchant_response'            => $invoice['message'] ?? null,
-            'merchant_response_reference'  => $invoice['id'] ?? $invoice['external_id'] ?? null,
+            'merchant_response_reference'  => $externalId,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
             'direction'                    => MerchantResponseDirection::In->value,
@@ -136,6 +150,7 @@ class Merchant_responses_model extends CI_Model
             'peppol_participant_id'        => $peppolParticipantId,
             'peppol_document_type'         => $peppolDocumentType?->value,
             'created_at'                   => date('Y-m-d H:i:s'),
+            'raw_payload'                  => json_encode($invoice),
         ]);
 
         return (int) $this->db->insert_id();
@@ -204,6 +219,28 @@ class Merchant_responses_model extends CI_Model
         return $this->db
             ->where('invoice_id', $invoiceId)
             ->order_by('created_at', 'DESC')
+            ->get(self::TABLE)
+            ->result_array();
+    }
+
+    public function get_outbound_by_invoice(int $invoiceId): array
+    {
+        return $this->db
+            ->where('invoice_id', $invoiceId)
+            ->where('direction', MerchantResponseDirection::Out->value)
+            ->order_by('created_at', 'DESC')
+            ->get(self::TABLE)
+            ->result_array();
+    }
+
+    public function get_by_client(int $clientId): array
+    {
+        return $this->db
+            ->select(self::TABLE . '.*, ip_invoices.invoice_number, ip_invoices.invoice_date_created')
+            ->join('ip_invoices', 'ip_invoices.invoice_id = ' . self::TABLE . '.invoice_id', 'left')
+            ->where('ip_invoices.client_id', $clientId)
+            ->where(self::TABLE . '.direction', MerchantResponseDirection::Out->value)
+            ->order_by(self::TABLE . '.created_at', 'DESC')
             ->get(self::TABLE)
             ->result_array();
     }
