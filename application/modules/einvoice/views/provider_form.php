@@ -106,7 +106,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="disable_pre_check" value="1"
-                                    <?php echo !empty($settings['disable_pre_check']) ? 'checked' : ''; ?>>
+                                    <?php echo empty($settings['disable_pre_check']) ? '' : 'checked'; ?>>
                                 <?php _trans('disable_pre_check'); ?>
                             </label>
                         </div>

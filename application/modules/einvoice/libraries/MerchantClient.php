@@ -1,10 +1,13 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+declare(strict_types=1);
+
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class MerchantClient
 {
     private MerchantProviderInterface $provider;
+
     private array $settings;
 
     public function __construct(MerchantProviderInterface $provider, array $settings)
