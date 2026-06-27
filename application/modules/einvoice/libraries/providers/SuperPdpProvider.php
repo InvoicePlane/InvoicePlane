@@ -1,10 +1,11 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class SuperPdpProvider implements MerchantProviderInterface
 {
     private ?string $accessToken = null;
+
     private array $settings = [];
 
     public static function providerCode(): string
@@ -92,15 +93,16 @@ class SuperPdpProvider implements MerchantProviderInterface
             throw new RuntimeException('Missing SuperPDP API base URL.');
         }
 
-        if (empty($this->accessToken)) {
+        if (in_array($this->accessToken, [null, '', '0'], true)) {
             throw new RuntimeException('Missing SuperPDP access token.');
         }
 
-	if (empty($this->settings['invoice_endpoint'])) {
+        if (empty($this->settings['invoice_endpoint'])) {
            throw new RuntimeException(
               'Missing invoice endpoint configuration.'
            );
         }
+
         $endpoint = $this->settings['invoice_endpoint'];
 
         $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
@@ -111,11 +113,11 @@ class SuperPdpProvider implements MerchantProviderInterface
 
         $ch = curl_init();
 
-	// Paramètres spécifiques SuperPDP
+        // Paramètres spécifiques SuperPDP
 
         $postFields = [
             'file' => new CURLFile($documentPath, 'application/pdf', basename($documentPath)),
-	    'metadata' => json_encode($metadata),
+            'metadata' => json_encode($metadata),
         ];
 
         curl_setopt_array($ch, [
@@ -170,11 +172,12 @@ class SuperPdpProvider implements MerchantProviderInterface
 
     public function getInvoiceStatus(string $externalId): array
     {
-	if (empty($this->settings['invoice_status_endpoint'])) {
+        if (empty($this->settings['invoice_status_endpoint'])) {
             throw new RuntimeException(
                'Missing invoice status endpoint configuration.'
             );
         }
+
         $endpoint = $this->settings['invoice_status_endpoint'];
         $endpoint = str_replace('{id}', urlencode($externalId), $endpoint);
 
@@ -221,7 +224,7 @@ class SuperPdpProvider implements MerchantProviderInterface
 
     public function receiveInvoices(array $filters = []): array
     {
-	if (empty($this->settings['incoming_invoices_endpoint'])) {
+        if (empty($this->settings['incoming_invoices_endpoint'])) {
             throw new RuntimeException(
                'Missing incoming invoices endpoint configuration.'
             );
@@ -231,7 +234,7 @@ class SuperPdpProvider implements MerchantProviderInterface
 
         $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
 
-        if (!empty($filters)) {
+        if ($filters !== []) {
             $url .= '?' . http_build_query($filters);
         }
 
@@ -275,7 +278,7 @@ class SuperPdpProvider implements MerchantProviderInterface
 
     public function getInvoiceEvents(array $filters = []): array
     {
-	if (empty($this->settings['invoice_events_endpoint'])) {
+        if (empty($this->settings['invoice_events_endpoint'])) {
             throw new RuntimeException(
                'Missing invoice events endpoint configuration.'
             );
@@ -284,7 +287,7 @@ class SuperPdpProvider implements MerchantProviderInterface
         $endpoint = $this->settings['invoice_events_endpoint'];
         $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
 
-        if (!empty($filters)) {
+        if ($filters !== []) {
             $url .= '?' . http_build_query($filters);
         }
 

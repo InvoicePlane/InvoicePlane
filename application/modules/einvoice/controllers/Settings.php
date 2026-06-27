@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class Settings extends Admin_Controller
 {
@@ -62,10 +60,10 @@ class Settings extends Admin_Controller
             'invoice_status_endpoint' => $this->input->post('invoice_status_endpoint'),
             'incoming_invoices_endpoint' => $this->input->post('incoming_invoices_endpoint'),
             'invoice_events_endpoint' => $this->input->post('invoice_events_endpoint'),
-            'disable_pre_check' => $this->input->post('disable_pre_check') ? true : false,
+            'disable_pre_check' => (bool) $this->input->post('disable_pre_check'),
         ];
 
-        $settings = array_filter($settings, static function ($value) {
+        $settings = array_filter($settings, static function ($value): bool {
             return $value !== null;
         });
 

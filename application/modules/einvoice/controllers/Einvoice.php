@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class Einvoice extends Admin_Controller
 {
@@ -67,7 +67,7 @@ class Einvoice extends Admin_Controller
 
         $documentPath = $documentDir . 'invoice_' . $invoiceId . '.pdf';
 
-        $pdfContent = generate_invoice_pdf($invoiceId, false, null, null);
+        $pdfContent = generate_invoice_pdf($invoiceId, false);
 
         if (empty($pdfContent)) {
             show_error('InvoicePlane did not return PDF content.');
@@ -223,9 +223,8 @@ class Einvoice extends Admin_Controller
             redirect('invoices/view/' . (int) $invoiceId);
         }
 
-	$this->load->model('einvoice/Merchant_clients_model');
-        $settings = $this->Merchant_clients_model
-            ->get_settings($merchantClient);
+        $this->load->model('einvoice/Merchant_clients_model');
+        $settings = $this->Merchant_clients_model->get_settings($merchantClient);
 
         $registry = new MerchantProviderRegistry();
 
@@ -245,7 +244,7 @@ class Einvoice extends Admin_Controller
 
             redirect('invoices/view/' . (int) $invoiceId);
             return;
-	}
+    }
 
         $status = $client->getInvoiceStatus(
             $lastResponse['external_id']
@@ -253,8 +252,8 @@ class Einvoice extends Admin_Controller
 
         $this->Merchant_responses_model->save_status(
             (int) $invoiceId,
-	    $status,
-	    $lastResponse
+        $status,
+        $lastResponse
         );
 
         if (!empty($status['success'])) {
