@@ -48,6 +48,29 @@ class Settings extends Admin_Controller
             show_error('Method not allowed', 405);
         }
 
+        $urlFields  = ['token_url', 'api_base_url'];
+        $pathFields = ['upload_endpoint', 'invoice_endpoint', 'send_invoice_endpoint',
+                       'invoice_status_endpoint', 'incoming_invoices_endpoint', 'invoice_events_endpoint'];
+
+        foreach ($urlFields as $field) {
+            $val = (string) $this->input->post($field);
+            if ($val === '') {
+                continue;
+            }
+            if ( ! $this->_is_safe_url($val)) {
+                redirect('integrations/settings/edit/' . (int) $id);
+                return;
+            }
+        }
+
+        foreach ($pathFields as $field) {
+            $val = (string) $this->input->post($field);
+            if ($val !== '' && filter_var($val, FILTER_VALIDATE_URL) !== false) {
+                redirect('integrations/settings/edit/' . (int) $id);
+                return;
+            }
+        }
+
         $settings = [
             'client_id' => $this->input->post('client_id'),
             'client_secret' => $this->input->post('client_secret'),
@@ -91,6 +114,30 @@ class Settings extends Admin_Controller
         $this->Merchant_clients_model->update_client((int) $id, $data);
 
         redirect('integrations/settings');
+    }
+
+    private function _is_safe_url(string $url): bool
+    {
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return false;
+        }
+
+        $parsed = parse_url($url);
+        if (($parsed['scheme'] ?? '') !== 'https') {
+            return false;
+        }
+
+        $host = $parsed['host'] ?? '';
+        if ($host === '') {
+            return false;
+        }
+
+        $ip = filter_var($host, FILTER_VALIDATE_IP);
+        if ($ip !== false && ! filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            return false;
+        }
+
+        return true;
     }
 
     private function sync_provider_registry(): void

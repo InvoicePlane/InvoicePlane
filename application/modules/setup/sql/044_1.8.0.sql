@@ -98,3 +98,23 @@ ALTER TABLE `ip_merchant_responses`
 -- ---------------------------------------------------------
 
 DROP TABLE IF EXISTS `ip_einvoice_responses`;
+
+
+-- ---------------------------------------------------------
+-- Add Peppol electronic address to clients.
+--
+-- Format: {ICD}:{national-identifier}
+--   Czech Republic (IČO)  : 0130:27325502
+--   Netherlands   (KVK)   : 0106:87654321
+--   France        (SIRET) : 0009:12345678900012
+--   Norway        (Org.nr): 0192:123456789
+--   EU VAT-based          : 9906:NL123456789B01
+--
+-- This single field covers all European (and global) Peppol participants.
+-- No country-specific columns (SIREN, KVK, IČO…) are needed.
+-- ---------------------------------------------------------
+
+ALTER TABLE `ip_clients`
+  ADD COLUMN `client_peppol_id` VARCHAR(100) NULL
+    COMMENT 'Peppol electronic address: {ICD}:{identifier}, e.g. 0130:27325502 (CZ IČO)'
+    AFTER `client_einvoicing_version`;

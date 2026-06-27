@@ -154,6 +154,14 @@ class MY_Model extends CI_Model
 
         $this->run_filters();
 
+        // SQLite does not support MySQL's SQL_CALC_FOUND_ROWS hint; strip it silently.
+        if (in_array($this->db->dbdriver, ['sqlite', 'sqlite3'], true)) {
+            $this->db->qb_select = array_map(
+                static fn (string $s) => preg_replace('/\bSQL_CALC_FOUND_ROWS\s+/i', '', $s),
+                $this->db->qb_select
+            );
+        }
+
         $this->query = $this->db->get($this->table);
 
         $this->filter = [];
