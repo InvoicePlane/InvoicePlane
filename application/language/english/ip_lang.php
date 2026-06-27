@@ -857,4 +857,20 @@ $lang = [
     // Types
     'true'  => 'True',
     'false' => 'False',
+
+    // Peppol / Integrations
+    'peppol_participant_id'          => 'Peppol Electronic Address',
+    'peppol_participant_id_help'     => 'Enter as {scheme}:{identifier}, e.g. 0130:27325502 (CZ IČO), 0106:87654321 (NL KVK), 0009:12345678900012 (FR SIRET).',
+    'peppol_validate'                => 'Validate',
+    'peppol_reachable'               => 'Reachable on Peppol network',
+    'peppol_not_reachable'           => 'Not found on Peppol network',
+    'peppol_no_provider'             => 'No Peppol provider configured',
+    'merchant_client_not_found'      => 'merchant_client_not_found',
+    'invoice_not_found'              => 'invoice_not_found',
+    'einvoice_send_success'          => 'Invoice sent successfully via integration.',
+    'einvoice_send_failed'           => 'Failed to send invoice via integration',
+    'einvoice_no_transmission_found' => 'No transmission record found for this invoice.',
+    'einvoice_no_external_reference' => 'No external reference found for the last transmission.',
+    'send_via_integration'           => 'Send via',
+    'peppol_id_missing'              => 'Peppol Electronic Address missing on client',
 ];

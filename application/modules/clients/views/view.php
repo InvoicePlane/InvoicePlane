@@ -234,6 +234,12 @@ foreach ($custom_fields as $custom_field) {
                                     <td><?php _htmlsc($client->client_tax_code); ?></td>
                                 </tr>
 <?php } ?>
+<?php if ( ! empty($client->client_peppol_id)) { ?>
+                                <tr>
+                                    <th><?php _trans('peppol_participant_id'); ?></th>
+                                    <td><?php _htmlsc($client->client_peppol_id); ?></td>
+                                </tr>
+<?php } ?>
 
 <?php
 
