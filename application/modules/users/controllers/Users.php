@@ -69,6 +69,7 @@ class Users extends Admin_Controller
                     'user_name'     => $new_details->user_name,
                     'user_email'    => $new_details->user_email,
                     'user_company'  => $new_details->user_company,
+                    'user_einvoice_identifier'    => $new_details->user_einvoice_identifier,
                     'user_language' => $new_details->user_language ?? 'system',
                 ];
 
