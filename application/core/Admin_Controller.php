@@ -33,6 +33,10 @@ class Admin_Controller extends User_Controller
 
     protected function setCacheHeaders()
     {
+        // Set X- csrf token header on all response for XHR (server-side AJAX helper, cookie replacement)
+        // DevNote: $this->output->set_header('X-'...); not work, but why?
+        header('X-' . config_item('csrf_token_name') . ': ' . $this->security->get_csrf_hash());
+
         $this->output
             ->set_header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0')
             ->set_header('Pragma: no-cache')
@@ -44,7 +48,6 @@ class Admin_Controller extends User_Controller
             $this->output->set_header('X-Content-Type-Options: nosniff');
         }
     }
-
 
     protected function ensure_valid_post_request(string $redirect_url): bool
     {

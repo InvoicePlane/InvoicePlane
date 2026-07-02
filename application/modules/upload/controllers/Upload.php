@@ -121,9 +121,13 @@ class Upload extends Admin_Controller
 
     public function get_file($filename): void
     {
-        // Security: Removed urldecode() - CodeIgniter already handles URL decoding
-        // First sanitize to handle the url_key_filename format
-        $filename = $this->sanitize_file_name($filename);
+        // First decode url & sanitize to handle the url_key_filename format
+        // Note: Work with all files - $filename is URL encoded (See helpers/dropzone_helper.php)
+        // REAL EXAMPLE :
+        // http://localhost/ip/index.php/upload/get_file/1iKyYIgzZpewUa8EtN0MOXAGdTBDRfsC_Capture%20d%E2%80%99%C3%A9cran%20du%202025-10-15%2002-43-47.png
+        // dump: $filename => 1iKyYIgzZpewUa8EtN0MOXAGdTBDRfsC_Capture%20d%E2%80%99%C3%A9cran%20du%202025-10-15%2002-43-47.png
+        $filename = $this->sanitize_file_name(urldecode($filename)); # todo? remove urldecode (Q: Realy Need for security? It sanitized & safe validated after).
+        // dump: $filename => 1iKyYIgzZpewUa8EtN0MOXAGdTBDRfsC_Capture d’écran du 2025-10-15 02-43-47.png
 
         $underscorePos = mb_strpos($filename, '_');
         if ($underscorePos === false) {
