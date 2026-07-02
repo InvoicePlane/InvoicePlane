@@ -68,7 +68,8 @@ class Sessions extends Base_Controller
 
         // IP-based rate limiting mirrors the password-reset throttle.
         if ($this->_is_ip_rate_limited_login()) {
-            log_message('warning', 'Login IP rate limit exceeded from: ' . $this->input->ip_address());
+            $this->load->helper('file_security');
+            log_message('warning', 'Login IP rate limit exceeded from: ' . sanitize_for_logging($this->input->ip_address()));
 
             return false;
         }
@@ -250,34 +251,34 @@ class Sessions extends Base_Controller
 
         // Check if the password reset form was used
         if ($this->input->post('btn_reset', true)) {
+            $this->load->helper('file_security');
             $email = $this->input->post('email', true);
 
             // Validate email format first
             if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                log_message('error', trans('log_invalid_email_format') . ': ' . $email . ' from IP: ' . $this->input->ip_address());
+                log_message('error', trans('log_invalid_email_format') . ' (hash: ' . hash('sha256', (string) $email) . ') from IP: ' . sanitize_for_logging($this->input->ip_address()));
                 redirect('sessions/login');
             }
 
             if (empty($email)) {
-                log_message('warning', trans('log_empty_email_submitted') . ' from IP: ' . $this->input->ip_address());
+                log_message('warning', trans('log_empty_email_submitted') . ' from IP: ' . sanitize_for_logging($this->input->ip_address()));
                 redirect('sessions/login');
             }
 
             // Security: Block automated tools and bots
             if ($this->_is_bot_request()) {
-                log_message('warning', trans('log_password_reset_bot_detected') . ': ' . $this->input->ip_address() . ' User-Agent: ' . $this->input->user_agent());
+                log_message('warning', trans('log_password_reset_bot_detected') . ': ' . sanitize_for_logging($this->input->ip_address()) . ' User-Agent: ' . sanitize_for_logging($this->input->user_agent()));
                 redirect('sessions/login');
             }
 
             // Security: Check IP-based rate limiting first (prevents email enumeration)
             if ($this->_is_ip_rate_limited_password_reset()) {
-                log_message('warning', trans('log_password_reset_ip_rate_limit') . ' from: ' . $this->input->ip_address());
+                log_message('warning', trans('log_password_reset_ip_rate_limit') . ' from: ' . sanitize_for_logging($this->input->ip_address()));
                 redirect('sessions/login');
             }
 
             // Security: Prevent brute force attacks by counting password reset attempts per email
             if ($this->_is_email_rate_limited_password_reset($email)) {
-                $this->load->helper('file_security');
                 log_message('warning', trans('log_password_reset_email_rate_limit') . ' (hash: ' . hash('sha256', $email) . ') from IP: ' . sanitize_for_logging($this->input->ip_address()));
                 redirect('sessions/login');
             }
@@ -386,7 +387,7 @@ class Sessions extends Base_Controller
                 // User doesn't exist - show same success message to prevent enumeration
                 // DO NOT send email to prevent abuse and RBL issues
                 $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
-                log_message('info', trans('log_password_reset_nonexistent_email') . ': ' . $email . ' from IP: ' . $this->input->ip_address());
+                log_message('info', trans('log_password_reset_nonexistent_email') . ' (hash: ' . hash('sha256', $email) . ') from IP: ' . sanitize_for_logging($this->input->ip_address()));
             }
 
             redirect('sessions/login');
@@ -454,7 +455,8 @@ class Sessions extends Base_Controller
 
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
-            log_message('info', trans('log_ip_rate_limit_check') . ': ' . count($attempts) . ' attempts from IP: ' . $ip_address);
+            $this->load->helper('file_security');
+            log_message('info', trans('log_ip_rate_limit_check') . ': ' . count($attempts) . ' attempts from IP: ' . sanitize_for_logging($ip_address));
 
             return true;
         }
