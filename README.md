@@ -229,16 +229,16 @@ To add a custom template:
 
 ## Session Storage
 
-Session files are stored in `storage/framework/sessions/` by default. This directory can be
-moved **outside the document root** for additional security — set `SESS_SAVE_PATH` in
-`ipconfig.php` to an absolute path:
+Session files are stored in PHP's default session save path (`sys_get_temp_dir()`) unless
+overridden. Set `SESS_SAVE_PATH` in `ipconfig.php` to an absolute path to store sessions
+elsewhere, e.g. outside the document root for additional security:
 
 ```
 SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
 ```
 
-The `storage/` directory follows the same convention as Laravel. If you mount a volume in
-Docker, include it in your persistent volumes (see [Container Deployment](#container-deployment) below).
+If you mount a volume in Docker, include the configured path in your persistent volumes
+(see [Container Deployment](#container-deployment) below).
 
 ---
 
@@ -269,7 +269,7 @@ runs any pending database migrations automatically on startup.
 | `DB_PORT` | `3306` | Database port |
 | `CI_ENV` | `production` | Set to `development` to show all PHP errors |
 | `ENABLE_DEBUG` | `false` | Enable advanced debug logging |
-| `SESS_SAVE_PATH` | `storage/framework/sessions` | Directory for session files. Set to an absolute path outside the document root for extra security. |
+| `SESS_SAVE_PATH` | PHP's `sys_get_temp_dir()` | Directory for session files. Set to an absolute path outside the document root for extra security. |
 | `SESS_COOKIE_NAME` | `ip_session` | Session cookie name |
 | `SESS_TABLE_NAME` | `ip_sessions` | Session database table name (only used when `SESS_DRIVER=database`) |
 | `SESS_EXPIRATION` | `864000` | Session lifetime in seconds (0 = expire on browser close) |
