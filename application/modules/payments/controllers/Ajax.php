@@ -37,7 +37,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        echo json_encode($response);
+        exit(json_encode($response));
     }
 
     public function modal_add_payment()
