@@ -80,36 +80,12 @@ jobs:
           echo "✓ Translations structure validated" | tee -a "$LOG_FILE"
 
       # Step 3: Set up PHP and Composer (before frontend build)
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - name: Set up PHP and Composer
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
-          extensions: gd, bcmath, dom, intl, xml, zip, mbstring, pdo_mysql
-          coverage: none
-
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
-      - name: Install Composer dependencies (production)
-        run: |
-          set -e
-          set -o pipefail
-          
-          LOG_FILE="${{ env.LOG_DIR }}/composer-install.log"
-          
-          echo "Installing Composer dependencies (production mode)..." | tee -a "$LOG_FILE"
-          composer install --no-dev --optimize-autoloader \
-            --no-interaction --prefer-dist 2>&1 | tee -a "$LOG_FILE"
-          echo "✓ Composer dependencies installed" | tee -a "$LOG_FILE"
+          php-extensions: gd, bcmath, intl, xml, zip, mbstring, pdo_mysql, curl
+          composer-args: --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
       # Step 4: Set up Node.js for frontend build
       - name: Set up Node.js

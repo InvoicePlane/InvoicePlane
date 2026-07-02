@@ -171,7 +171,7 @@ class Stripe extends Base_Controller
                                 . ', session ID: ' . $session->id                                   // Unique identifier for the object.
                                 : ($session->cancel ? $session->cancellation_reason : $session->last_payment_error); // Cancelled
             // User (& error) message
-            $user_msg = $paid ? sprintf(trans('online_payment_successful'), '#' . $invoice->invoice_number)
+            $user_msg = $paid ? sprintf(trans('online_payment_successful'), '#' . htmlsc($invoice->invoice_number))
                               : trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
         } catch (Error|Exception|ErrorException $e) {
             $user_msg = trans('online_payment_error') . (empty($user_msg) ? '' : '<br>' . $user_msg);
