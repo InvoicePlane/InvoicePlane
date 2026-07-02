@@ -10,6 +10,12 @@ IP_URL=
 # Having problems? Enable debug by changing the value to 'true' to enable advanced logging
 ENABLE_DEBUG=false
 
+# Having saving troubles?
+# Uncomment to disable csrf regenerated on each page load and POST (AJAX)
+# CSRF_REGENERATE=false
+# Disable server csrf check on each POST (AJAX)
+# CSRF_PROTECTION=false
+
 # To Show all PHP errors, change the value to 'development' (Or comment the following line)
 CI_ENV=production
 

@@ -507,11 +507,11 @@ $config['global_xss_filtering'] = false;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection']   = env('CSRF_PROTECTION', true);
+$config['csrf_protection']   = env_bool('CSRF_PROTECTION', 'true');
 $config['csrf_token_name']   = '_ip_csrf';
 $config['csrf_cookie_name']  = 'ip_csrf_cookie';
 $config['csrf_expire']       = env('SESS_EXPIRATION', 3600);
-$config['csrf_regenerate']   = true;
+$config['csrf_regenerate']   = env_bool('CSRF_REGENERATE', 'true');
 $config['csrf_exclude_uris'] = [];
 
 /*
