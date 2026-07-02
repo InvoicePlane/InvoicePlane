@@ -386,7 +386,7 @@ After completing the upgrade, verify:
 
 1. Subscribe to InvoicePlane security announcements
 2. Keep InvoicePlane updated with latest security patches
-3. Review the [SECURITY.md](SECURITY.md) file for reporting procedures
+3. Review the [SECURITY.md](../../SECURITY.md) file for reporting procedures
 4. Consider professional security audit if heavily customized
 5. Implement defense-in-depth security measures (WAF, IDS, etc.)
 

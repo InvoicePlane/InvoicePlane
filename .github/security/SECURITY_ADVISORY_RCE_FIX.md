@@ -79,21 +79,32 @@ private const ALLOWED_INVOICE_TEMPLATES = [
 
 public function get_invoice_templates($type = 'pdf')
 {
-    // Security: Return static whitelist only - NEVER scan filesystem
+    // Security: built-in templates come from the static whitelist only — the
+    // application's own template directories are NEVER scanned.
     if ($type === 'pdf') {
-        return self::ALLOWED_INVOICE_TEMPLATES['pdf'];
+        $built_in = self::ALLOWED_INVOICE_TEMPLATES['pdf'];
     } elseif ($type === 'public') {
-        return self::ALLOWED_INVOICE_TEMPLATES['public'];
+        $built_in = self::ALLOWED_INVOICE_TEMPLATES['public'];
+    } else {
+        return [];
     }
-    return [];
+
+    // Merge any admin-approved custom templates declared in ipconfig.php.
+    return $this->_merge_custom('invoice_templates/' . $type, $built_in);
 }
 ```
 
 **Key Changes:**
 - Removed `directory_map()` calls that scanned the filesystem
-- Replaced with hardcoded `ALLOWED_INVOICE_TEMPLATES` and `ALLOWED_QUOTE_TEMPLATES` constants
-- Templates are NEVER loaded dynamically from the filesystem
-- Even if an attacker writes `evil.php` to the templates directory, it will NOT be in the whitelist
+- Built-in templates are served from the hardcoded `ALLOWED_INVOICE_TEMPLATES` and
+  `ALLOWED_QUOTE_TEMPLATES` constants — the application's own template directories are
+  **never** scanned
+- Custom templates are opt-in through **explicit allowlists in `ipconfig.php`**
+  (`CUSTOM_TEMPLATES_FOLDER` + `CUSTOM_INVOICE_TEMPLATES_*` / `CUSTOM_QUOTE_TEMPLATES_*`),
+  resolved by the `_merge_custom()` helper — never through a filesystem scan. See
+  [Adding New Templates (Post-Fix)](#adding-new-templates-post-fix).
+- Even if an attacker writes `evil.php` to a templates directory, it will NOT appear in the
+  whitelist unless its exact name is also listed in the operator-controlled `ipconfig.php`
 
 ### 2. Enhanced Validation (Defense-in-Depth)
 
@@ -246,24 +257,46 @@ If you are running InvoicePlane v1.7.0 or v1.7.1:
 
 ## Adding New Templates (Post-Fix)
 
-To add a new template in v1.7.2+:
+The `ALLOWED_INVOICE_TEMPLATES` / `ALLOWED_QUOTE_TEMPLATES` constants in `Mdl_templates.php`
+hold the **built-in defaults only**. Operators are **not** expected to edit that file — doing so
+means patching application source on every upgrade. Instead, custom templates are declared
+through an explicit, operator-controlled allowlist in **`ipconfig.php`** (or the equivalent
+environment variables in a container deployment). The filesystem is still never scanned, so the
+RCE protection is fully preserved.
 
-1. **Create the template file** in the appropriate directory
-2. **Add the template name to the static whitelist** in `Mdl_templates.php`:
-   ```php
-   private const ALLOWED_INVOICE_TEMPLATES = [
-       'pdf' => [
-           'InvoicePlane',
-           'InvoicePlane - paid',
-           'InvoicePlane - overdue',
-           'MyCustomTemplate',  // Add your template here
-       ],
-       // ...
-   ];
+To add a custom template in v1.7.2+:
+
+1. **Create the template `.php` file** inside the directory referenced by
+   `CUSTOM_TEMPLATES_FOLDER`, mirroring the built-in structure:
    ```
-3. **Deploy both changes together** (template file + code update)
+   <CUSTOM_TEMPLATES_FOLDER>/invoice_templates/pdf/MyTemplate.php
+   <CUSTOM_TEMPLATES_FOLDER>/invoice_templates/public/MyTemplate.php
+   <CUSTOM_TEMPLATES_FOLDER>/quote_templates/pdf/MyTemplate.php
+   <CUSTOM_TEMPLATES_FOLDER>/quote_templates/public/MyTemplate.php
+   ```
 
-**Important:** The template will NOT work until it's added to the static whitelist in the code.
+2. **Declare the folder and the exact template name(s)** in `ipconfig.php`. Only names listed
+   here are ever exposed — quote values that contain spaces or hyphens:
+   ```ini
+   CUSTOM_TEMPLATES_FOLDER=/var/lib/invoiceplane/templates
+   CUSTOM_INVOICE_TEMPLATES_PDF="MyTemplate,Corporate - Modern"
+   CUSTOM_INVOICE_TEMPLATES_PUBLIC="MyTemplate"
+   CUSTOM_QUOTE_TEMPLATES_PDF="MyTemplate"
+   CUSTOM_QUOTE_TEMPLATES_PUBLIC="MyTemplate"
+   ```
+   Template names may only contain letters, digits, spaces, hyphens (`-`) and underscores (`_`).
+   Any name that fails this check is skipped and logged (see `_merge_custom()`).
+
+3. The template then appears in **Settings → Invoice / Quote** alongside the built-in templates.
+
+**Important:** A template file on disk does nothing on its own. It becomes selectable **only**
+after its exact name is added to the matching `CUSTOM_*` allowlist in `ipconfig.php`. This is the
+mechanism that preserves the RCE fix — approval lives in operator-controlled configuration, not
+in whatever files happen to exist on disk.
+
+> **Editing `Mdl_templates.php` directly** is reserved for changing the shipped defaults within
+> the project itself (e.g. a maintainer adding a new bundled template in a release). Deployments
+> should always use the `ipconfig.php` allowlist above.
 
 ## Technical Details for Security Researchers
 
@@ -308,13 +341,16 @@ Even if layers 1-6 are somehow bypassed, layer 7 provides a final safety check.
 - Attacker controls filesystem → Attacker controls whitelist
 
 **After Fix:**
-- Attack surface = ONLY templates in hardcoded constant
-- Static whitelist = immutable code constant
-- Attacker controls filesystem → Whitelist unchanged
+- Attack surface = built-in constants **plus** names explicitly listed in the operator-controlled
+  `ipconfig.php` allowlist — nothing else
+- Whitelist source = immutable code constants + operator configuration, never a filesystem scan
+- Attacker controls filesystem → Whitelist unchanged (a dropped file is ignored unless its exact
+  name is also present in `ipconfig.php`, which the web server process cannot modify)
 
 ## Credits
 
-- **Vulnerability Discovery:** [Researcher Name/Handle]
+- **Vulnerability Discovery:** [@Vijay-raghav7](https://github.com/Vijay-raghav7), reported via a
+  private [GitHub Security Advisory](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-v735-2x3r-gwpp)
 - **Fix Implementation:** InvoicePlane Security Team
 - **Review:** InvoicePlane Core Team
 
@@ -334,6 +370,7 @@ Even if layers 1-6 are somehow bypassed, layer 7 provides a final safety check.
 
 ## Contact
 
-For security concerns, please email: security@invoiceplane.com
-
-Do not disclose security vulnerabilities publicly until a fix is available.
+Report security issues privately by opening a
+[GitHub Security Advisory](https://github.com/InvoicePlane/InvoicePlane/security/advisories/new)
+(see [SECURITY.md](../../SECURITY.md)). Do not disclose security vulnerabilities publicly until a
+fix is available.
