@@ -84,7 +84,7 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
-          php-extensions: gd, bcmath, dom, intl, xml, zip, mbstring, pdo_mysql
+          php-extensions: gd, bcmath, intl, xml, zip, mbstring, pdo_mysql, curl
           composer-args: --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
       # Step 4: Set up Node.js for frontend build
