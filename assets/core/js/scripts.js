@@ -348,14 +348,6 @@ function insert_html_tag(tag_type, destination_id) {
     }
 }
 
-// Get CSRF configuration from meta tags - since v1.6.3
-const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content'); // Default: _ip_csrf
-
-// Get CSRF token value from meta tag instead of reading HttpOnly cookie
-// This allows the cookie to have HttpOnly=true for XSS protection while still providing
-// the token to JavaScript for AJAX requests. The server rotates this value on each page load.
-let csrf_token_value = document.querySelector('meta[name="csrf_token_value"]').getAttribute('content');
-
 const legacy_calculation = parseInt(document.querySelector('meta[name="legacy_calculation"]').getAttribute('content')); // Default: 1 (legacy on)
 
 // For Quote & Invoice views. Verify and set alert on item tax fields. All or not rule - since v1.6.3
@@ -393,9 +385,17 @@ function check_items_tax_usages(e) {
      }
 }
 
+// Get CSRF configuration from meta tags - since v1.6.3
+const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').getAttribute('content');   // Default: _ip_csrf
+
+// The server rotates this value on each page load and POST (And It's updated by ajaxComplete) - since v1.7.2
+const csrf_meta = document.querySelector('meta[name="csrf_token_value"]');
+// Get CSRF token value from meta tag
+var csrf_token_value = csrf_meta.getAttribute('content');
+
 $(function () {
     // Automatic CSRF protection for all jQuery POST requests
-    // Uses meta tag value instead of reading HttpOnly cookie directly
+    // Uses meta tag value or header X-' + csrf_token_name'
     $.ajaxPrefilter(function (options) {
         if (options.type === 'post' || options.type === 'POST' || options.type === 'Post') {
             if (options.data === '') {
@@ -406,11 +406,13 @@ $(function () {
         }
     });
 
-    // Note: CSRF token regeneration is enabled (csrf_regenerate = true in config)
-    // The token changes after each POST request, but we don't have server-side code
-    // to return the new token in response headers. The token is refreshed on page loads
-    // via the meta tag. For AJAX-heavy workflows, consider disabling csrf_regenerate
-    // or implementing server-side token refresh in response headers.
+    // javascript get header in $(document).ajaxComplete
+    $(document).ajaxComplete(function (event, xhr) {
+        // Update csrf_token_value + meta by response header from all completed xhr request
+        const csrf_value = xhr.getResponseHeader('X-' + csrf_token_name); // header names are case-insensitive
+        csrf_token_value = csrf_value ? csrf_value : csrf_token_value;
+        csrf_meta.setAttribute('content', csrf_token_value);
+    });
 
     // Update CSRF token on all form submissions
     $('form').on('submit', function(){
