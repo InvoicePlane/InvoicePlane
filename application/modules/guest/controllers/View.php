@@ -147,13 +147,14 @@ class View extends Base_Controller
                 show_404();
             }
 
-            if ( ! $invoice_template) {
-                $invoice_template = get_setting('pdf_invoice_template');
+            $this->load->helper(['pdf', 'template']);
+
+            // Security: Validate PDF template to prevent LFI
+            if ($invoice_template) {
+                $invoice_template = validate_pdf_template($invoice_template, 'invoice');
             }
 
-            $this->load->helper('pdf');
-
-            generate_invoice_sumex($invoice->invoice_id);
+            generate_invoice_sumex($invoice->invoice_id, $stream, $invoice_template, true);
         }
     }
 
