@@ -21,11 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: Set up PHP and Composer
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.2'
-          coverage: none
+          skip-composer-install: 'true'
 
       - name: Run php -l on all PHP files
         run: |
