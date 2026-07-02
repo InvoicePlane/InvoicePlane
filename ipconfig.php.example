@@ -17,11 +17,8 @@ X_FRAME_OPTIONS=SAMEORIGIN
 ENABLE_X_CONTENT_TYPE_OPTIONS=true
 
 # Session settings
-# Leave SESS_SAVE_PATH empty to use the auto-detected absolute path:
-#   <project-root>/storage/framework/sessions/
-# The project root is resolved at runtime (next to vendor/), so the path is always
-# absolute and correct whether index.php lives in the project root or in public/.
-# To store sessions outside the document root entirely, set an absolute path:
+# Leave SESS_SAVE_PATH empty to use PHP's default session save path (sys_get_temp_dir()).
+# To store sessions elsewhere, e.g. outside the document root, set an absolute path:
 #   SESS_SAVE_PATH=/srv/invoiceplane/sessions
 SESS_SAVE_PATH=
 # Override the session cookie name
