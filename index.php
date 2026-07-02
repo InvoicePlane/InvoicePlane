@@ -236,15 +236,6 @@ define('BASEPATH', $system_path);
 // Path to the front controller (this file) directory
 define('FCPATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 
-// Project root: where composer.json, vendor/, and storage/ live.
-// When index.php is in the project root, ROOTPATH === FCPATH.
-// When index.php lives inside a public/ subdirectory, ROOTPATH steps up one level
-// so that storage/ stays outside the document root alongside vendor/.
-// Detection uses composer.json (always committed) rather than vendor/ (may not be installed).
-define('ROOTPATH', is_file(FCPATH . 'composer.json')
-    ? FCPATH
-    : dirname(rtrim(FCPATH, '/\\')) . DIRECTORY_SEPARATOR);
-
 // Name of the "system" directory
 define('SYSDIR', basename(BASEPATH));
 

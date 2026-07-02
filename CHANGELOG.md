@@ -220,11 +220,10 @@ site.
 - **`CLAUDE.md`** — quick-start guide for AI coding agents and new contributors: CI3 mental
   model, non-negotiable security rules, key helper functions table, code style, testing
   commands, and common pitfalls.
-- **Session storage at `storage/framework/sessions/`** by default — consistent with Laravel
-  conventions. Set `SESS_SAVE_PATH` to an absolute path outside the document root for
-  additional security. The `storage/` directory can be volume-mounted in containers.
 - **`SESS_SAVE_PATH`, `SESS_TABLE_NAME`, `SESS_COOKIE_NAME`, `SESS_REGENERATE_DESTROY`**
-  documented in `ipconfig.php.example` with comments.
+  documented in `ipconfig.php.example` with comments. `SESS_SAVE_PATH` can be set to an
+  absolute path outside the document root for additional security; it defaults to PHP's
+  system temp directory, unchanged from previous releases.
 - **Template allowlist format clarified:** Quote the whole value in `ipconfig.php` when
   template names contain spaces or hyphens:
   ```
