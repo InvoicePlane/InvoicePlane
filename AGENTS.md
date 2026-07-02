@@ -40,8 +40,8 @@ assets/
 pint.json           Code style configuration (Pint / PHP CS Fixer)
 phpstan.neon        Static analysis configuration
 ipconfig.php.example  Application configuration template
-CHANGELOG.md
-UPGRADE.md
+.github/CHANGELOG.md
+.github/docs/UPGRADE.md
 AGENTS.md           (this file)
 .junie/guidelines.md  Extended development guidelines
 ```

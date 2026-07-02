@@ -427,7 +427,7 @@ curl "http://invoiceplane.local/index.php/settings/remove_logo/invoice"
   https://owasp.org/www-community/attacks/Path_Traversal
 
 - **InvoicePlane Security Policy:**  
-  https://github.com/InvoicePlane/InvoicePlane/blob/master/SECURITY.md
+  https://github.com/InvoicePlane/InvoicePlane/blob/develop/SECURITY.md
 
 - **Fix Commit:**  
   https://github.com/InvoicePlane/InvoicePlane (v1.7.2 release)

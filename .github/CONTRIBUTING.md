@@ -119,7 +119,7 @@ Engage with the InvoicePlane community by:
 
 ### Setting Up Your Development Environment
 
-Follow the three-phase development workflow outlined in [INSTALLATION.md](INSTALLATION.md):
+Follow the three-phase development workflow outlined in [INSTALLATION.md](docs/INSTALLATION.md):
 
 #### Phase 1: Prepare (Initial Setup)
 
@@ -166,7 +166,7 @@ Access:
 4. **Run linters**: `composer check`
 5. **Commit and push** your changes
 
-For detailed workflow instructions, see [INSTALLATION.md - Development Workflow](INSTALLATION.md#development-workflow).
+For detailed workflow instructions, see [INSTALLATION.md - Development Workflow](docs/INSTALLATION.md#development-workflow).
 
 ### Coding Standards
 
