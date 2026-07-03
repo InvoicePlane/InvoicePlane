@@ -64,7 +64,6 @@ class Incoming extends Admin_Controller
                 );
             }
         }
-
         redirect('einvoice/incoming');
     }
 }

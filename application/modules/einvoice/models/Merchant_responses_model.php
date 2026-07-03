@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') || exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class Merchant_responses_model extends CI_Model
 {
@@ -143,7 +143,7 @@ class Merchant_responses_model extends CI_Model
            'request_json' => null,
            'response_json' => json_encode($event),
            'created_at' => date('Y-m-d H:i:s'),
-           'updated_at' => date('Y-m-d H:i:s'),
+           'updated_at' => date('Y-m-d H:i:s'),	
         ];
 
         $this->db->insert('ip_einvoice_responses', $data);
