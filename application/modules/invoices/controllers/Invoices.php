@@ -191,30 +191,27 @@ class Invoices extends Admin_Controller
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
         $change_user = $change_user->user_type > 1;
 
-        $this->load->model('einvoice/Merchant_responses_model');
-        $this->load->model('einvoice/Merchant_clients_model');
-
-        $einvoice_status = $this->Merchant_responses_model
-            ->get_last_response_by_invoice((int) $invoice_id);
-        $einvoice_provider = $this->Merchant_clients_model
-            ->get_default_enabled();
+        $this->load->model('integrations/Merchant_clients_model');
+        $this->load->model('integrations/Merchant_responses_model');
+        $enabled_merchant_clients = $this->Merchant_clients_model->get_enabled_clients();
+        $send_history             = $this->Merchant_responses_model->get_outbound_by_invoice((int) $invoice_id);
 
         $this->layout->set(
             [
-                'invoice'           => $invoice,
-                'items'             => $items,
-                'invoice_id'        => $invoice_id,
-                'einvoice'          => $einvoice,
-                'einvoice_status'   => $einvoice_status,
-                'einvoice_provider' => $einvoice_provider,
-                'change_user'       => $change_user,
-                'tax_rates'         => $this->mdl_tax_rates->get()->result(),
-                'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-                'units'             => $this->mdl_units->get()->result(),
-                'payment_methods'   => $this->mdl_payment_methods->get()->result(),
-                'custom_fields'     => $custom_fields,
-                'custom_values'     => $custom_values,
-                'custom_js_vars'    => [
+                'invoice'                  => $invoice,
+                'items'                    => $items,
+                'invoice_id'               => $invoice_id,
+                'einvoice'                 => $einvoice,
+                'enabled_merchant_clients' => $enabled_merchant_clients,
+                'send_history'             => $send_history,
+                'change_user'              => $change_user,
+                'tax_rates'                => $this->mdl_tax_rates->get()->result(),
+                'invoice_tax_rates'        => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
+                'units'                    => $this->mdl_units->get()->result(),
+                'payment_methods'          => $this->mdl_payment_methods->get()->result(),
+                'custom_fields'            => $custom_fields,
+                'custom_values'            => $custom_values,
+                'custom_js_vars'           => [
                     'currency_symbol'           => get_setting('currency_symbol'),
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
                     'decimal_point'             => get_setting('decimal_point'),
