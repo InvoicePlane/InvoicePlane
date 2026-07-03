@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1 class="headerbar-title">
         <?php _trans('einvoice_history'); ?> #<?php echo htmlsc($invoice_id); ?>
     </h1>
