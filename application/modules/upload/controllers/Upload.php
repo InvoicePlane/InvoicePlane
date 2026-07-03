@@ -82,7 +82,7 @@ class Upload extends Admin_Controller
             exit('{}');
         }
 
-        exit(json_encode($result));
+        $this->json_encode_ajax($result);
     }
 
     public function delete_file(string $url_key): void

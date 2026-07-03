@@ -75,4 +75,10 @@ class Base_Controller extends MX_Controller
             $this->load->module('layout');
         }
     }
+
+    // centralize Ajax controllers response - since 1.7.2
+    protected function json_encode_ajax(array|object $response): void
+    {
+        echo json_encode($response);
+    }
 }
