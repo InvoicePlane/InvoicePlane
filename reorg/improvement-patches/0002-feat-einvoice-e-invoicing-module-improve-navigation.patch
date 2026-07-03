@@ -1,0 +1,164 @@
+From eab048760558cf0bd43d7c8931b3707059e620bc Mon Sep 17 00:00:00 2001
+From: Thomas Ingles <thomas@sudwebdesign.fr>
+Date: Sat, 27 Jun 2026 09:45:01 +0200
+Subject: [PATCH 2/5] feat(einvoice): e-invoicing module: improve navigation
+
+Idea: Add 'einvoice/index' to show incomes, events (& history?)
+---
+ application/language/english/ip_lang.php      |  4 ++-
+ .../invoices/views/partial_invoice_table.php  |  5 ++++
+ application/modules/invoices/views/view.php   | 28 ++++++++++---------
+ .../modules/layout/views/includes/navbar.php  |  7 ++---
+ .../modules/layout/views/includes/sidebar.php |  6 ++--
+ 5 files changed, 28 insertions(+), 22 deletions(-)
+
+diff --git a/application/language/english/ip_lang.php b/application/language/english/ip_lang.php
+index 0275fa8..580afd2 100755
+--- a/application/language/english/ip_lang.php
++++ b/application/language/english/ip_lang.php
+@@ -847,9 +847,10 @@ $lang = [
+     // E-Invoice
+     'einvoice'                                 => 'E-Invoicing',
+     'einvoice_provider'                        => 'E-Invoicing Provider',
++    'einvoice_providers'                       => 'E-Invoicing Providers',
+     'einvoice_provider_settings'               => 'Provider settings',
+     'incoming_invoices'                        => 'Incoming Supplier Invoices',
+-    'einvoice_events'                          => 'Electronic Invoicing Events',
++    'einvoice_events'                          => 'E-Invoicing Events',
+     'einvoice_history'                         => 'E-Invoicing History',
+     'external_id'                              => 'External ID',
+     'provider'                                 => 'Provider',
+@@ -877,6 +878,7 @@ $lang = [
+     'not_sent'                                 => 'Not sent',
+     'check_status'                             => 'Check status',
+     'merchant_client_not_found'                => 'Merchant client not found or disabled.',
++    'transmit_to_provider'                     => 'Transmit to provider',
+ 
+     // Clients/Enums/ClientTitleEnum
+     'mr'        => 'mr',
+diff --git a/application/modules/invoices/views/partial_invoice_table.php b/application/modules/invoices/views/partial_invoice_table.php
+index 024fb68..3eb9e8e 100644
+--- a/application/modules/invoices/views/partial_invoice_table.php
++++ b/application/modules/invoices/views/partial_invoice_table.php
+@@ -87,6 +87,11 @@ $invoice_idx                    = 1;
+ <?php
+     }
+                 ?>
++                            <li>
++                                <a href="<?php echo site_url('einvoice/history/' . $invoice->invoice_id); ?>">
++                                    <i class="fa fa-exchange fa-margin"></i> <?php _trans('einvoice_history'); ?>
++                                </a>
++                            </li>
+                             <li>
+                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
+                                    target="_blank">
+diff --git a/application/modules/invoices/views/view.php b/application/modules/invoices/views/view.php
+index eb7b6f3..0ed81fc 100644
+--- a/application/modules/invoices/views/view.php
++++ b/application/modules/invoices/views/view.php
+@@ -319,7 +319,7 @@ if ($invoice->invoice_balance != 0) {
+ <?php
+ // eInvoice & user fields OK: Show download XML Option
+ if ($einvoice->user) {
+-	        $einvoice_provider = $einvoice_provider ?? null;
++    $einvoice_provider = $einvoice_provider ?? null;
+     ?>
+                 <li>
+                     <a href="#" id="btn_generate_xml"
+@@ -327,28 +327,30 @@ if ($einvoice->user) {
+                         <i class="fa fa-file-code-o fa-margin"></i>
+                         <?php _trans('download_xml'); ?>
+                     </a>
+-		</li>
+-<?php if (!empty($einvoice_provider) && !empty($einvoice_provider['id'])) : ?>
++                </li>
++<?php
++    if (!empty($einvoice_provider) && !empty($einvoice_provider['id'])) {
++?>
+                 <li>
+-                   <a href="<?php echo site_url('einvoice/send_invoice/' . $invoice->invoice_id . '/' . $einvoice_provider['id']); ?>">
+-		               <i class="fa fa-paper-plane"></i>
+-                       Transmettre PA/PDP
+-                   </a>
+-		</li>
++                    <a href="<?php echo site_url('einvoice/send_invoice/' . $invoice->invoice_id . '/' . $einvoice_provider['id']); ?>">
++                        <i class="fa fa-exchange fa-margin"></i>
++                        <?php _trans('transmit_to_provider'); ?>
++                    </a>
++                </li>
+                 <li>
+                       <a href="<?php echo site_url('einvoice/status/' . $invoice_id  . '/' . $einvoice_provider['id']); ?>">
+-                         <i class="fa fa-refresh"></i>
++                         <i class="fa fa-refresh fa-margin"></i>
+                          <?php _trans('check_status'); ?>
+                       </a>
+-		</li>
+-<?php endif; ?>
++                </li>
+                 <li>
+                       <a href="<?php echo site_url('einvoice/history/' . $invoice_id); ?>">
+-                         <i class="fa fa-history"></i>
++                         <i class="fa fa-history fa-margin"></i>
+                          <?php _trans('view_history'); ?>
+                      </a>
+-		</li>
++                </li>
+ <?php
++    }
+ }
+ ?>
+                 <li>
+diff --git a/application/modules/layout/views/includes/navbar.php b/application/modules/layout/views/includes/navbar.php
+index e630149..28d5bfd 100644
+--- a/application/modules/layout/views/includes/navbar.php
++++ b/application/modules/layout/views/includes/navbar.php
+@@ -47,12 +47,8 @@
+                         <li><a href="#" class="create-invoice"><?php _trans('create_invoice'); ?></a></li>
+                         <li><?php echo anchor('invoices/index', trans('view_invoices')); ?></li>
+                         <li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
++                        <li><?php echo anchor('einvoice/incoming', trans('incoming_invoices')); ?></li>
+                     </ul>
+-		</li>
+-                <li class="dropdown">
+-                    <a href="<?php echo site_url('einvoice/settings'); ?>" style="color:white;font-weight:bold;">
+-                        <?php _trans('E-Invoicing'); ?>
+-                    </a>
+                 </li>
+ 
+                 <li class="dropdown">
+@@ -154,6 +150,7 @@
+                         <li><?php echo anchor('users/index', trans('user_accounts')); ?></li>
+                         <li class="divider hidden-xs hidden-sm"></li>
+                         <li><?php echo anchor('settings', trans('system_settings')); ?></li>
++                        <li><?php echo anchor('einvoice/settings', trans('einvoice_providers')); ?></li>
+                         <li><?php echo anchor('import', trans('import_data')); ?></li>
+                     </ul>
+                 </li>
+diff --git a/application/modules/layout/views/includes/sidebar.php b/application/modules/layout/views/includes/sidebar.php
+index 037a3fe..0f94eb6 100644
+--- a/application/modules/layout/views/includes/sidebar.php
++++ b/application/modules/layout/views/includes/sidebar.php
+@@ -11,7 +11,7 @@
+                class="tip" data-placement="right">
+                 <i class="fa fa-file"></i>
+             </a>
+-	</li>
++        </li>
+         <li>
+             <a href="<?php echo site_url('invoices/index'); ?>" title="<?php _trans('invoices'); ?>"
+                 class="tip" data-placement="right">
+@@ -19,9 +19,9 @@
+              </a>
+         </li>
+         <li>
+-            <a href="<?php echo site_url('einvoice/settings'); ?>" title="<?php _trans('einvoice'); ?>"
++            <a href="<?php echo site_url('einvoice/events'); ?>" title="<?php _trans('einvoice'); ?>"
+                class="tip" data-placement="right">
+-                <i class="fa fa-paper-plane"></i>
++                <i class="fa fa-exchange"></i>
+             </a>
+         </li>
+         <li>
+-- 
+2.43.0
+

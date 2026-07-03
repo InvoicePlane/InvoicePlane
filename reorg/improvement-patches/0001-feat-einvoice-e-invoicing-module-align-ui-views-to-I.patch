@@ -1,0 +1,352 @@
+From c6604053bf86be45326f12286d09d87ea34a4451 Mon Sep 17 00:00:00 2001
+From: Thomas Ingles <thomas@sudwebdesign.fr>
+Date: Fri, 26 Jun 2026 19:58:49 +0200
+Subject: [PATCH 1/5] feat(einvoice): e-invoicing module: align ui views to IP
+ design
+
+---
+ application/modules/einvoice/views/events.php | 50 +++++++++--------
+ .../modules/einvoice/views/history.php        | 54 ++++++++++---------
+ .../modules/einvoice/views/incoming.php       | 50 +++++++++--------
+ .../modules/einvoice/views/provider_form.php  | 34 +++++-------
+ .../modules/einvoice/views/settings.php       | 45 ++++++++--------
+ 5 files changed, 117 insertions(+), 116 deletions(-)
+
+diff --git a/application/modules/einvoice/views/events.php b/application/modules/einvoice/views/events.php
+index c0843bd..8081d90 100644
+--- a/application/modules/einvoice/views/events.php
++++ b/application/modules/einvoice/views/events.php
+@@ -1,9 +1,9 @@
+-<div class="headerbar">
++<div id="headerbar">
+     <h1 class="headerbar-title"><?php _trans('einvoice_events'); ?></h1>
+ 
+     <div class="headerbar-item pull-right">
+         <?php foreach ($clients as $client) : ?>
+-            <a href="<?php echo site_url('einvoice/events/sync/' . $client['id']); ?>" class="btn btn-primary">
++            <a class="btn btn-primary btn-sm" href="<?php echo site_url('einvoice/events/sync/' . $client['id']); ?>">
+                 <i class="fa fa-refresh"></i>
+                 <?php _trans('sync'); ?> <?php echo htmlsc($client['label']); ?>
+             </a>
+@@ -11,27 +11,31 @@
+     </div>
+ </div>
+ 
+-<div class="content">
+-    <table class="table table-striped">
+-        <thead>
+-        <tr>
+-            <th><?php _trans('date'); ?></th>
+-            <th><?php _trans('provider'); ?></th>
+-            <th><?php _trans('status'); ?></th>
+-            <th><?php _trans('message'); ?></th>
+-            <th><?php _trans('http_code'); ?></th>
+-        </tr>
+-        </thead>
+-        <tbody>
+-        <?php foreach ($events as $row) : ?>
++<div id="content" class="table-content">
++    <?php $this->layout->load_view('layout/alerts'); ?>
++
++    <div class="table-responsive">
++        <table class="table table-striped">
++            <thead>
+             <tr>
+-                <td><?php echo htmlsc($row['created_at']); ?></td>
+-                <td><?php echo htmlsc($row['merchant_client_id']); ?></td>
+-                <td><?php echo htmlsc($row['status']); ?></td>
+-                <td><?php echo htmlsc($row['message']); ?></td>
+-                <td><?php echo htmlsc($row['http_code']); ?></td>
++                <th><?php _trans('date'); ?></th>
++                <th><?php _trans('provider'); ?></th>
++                <th><?php _trans('status'); ?></th>
++                <th><?php _trans('message'); ?></th>
++                <th><?php _trans('http_code'); ?></th>
+             </tr>
+-        <?php endforeach; ?>
+-        </tbody>
+-    </table>
++            </thead>
++            <tbody>
++            <?php foreach ($events as $row) : ?>
++                <tr>
++                    <td><?php echo htmlsc($row['created_at']); ?></td>
++                    <td><?php echo htmlsc($row['merchant_client_id']); ?></td>
++                    <td><?php echo htmlsc($row['status']); ?></td>
++                    <td><?php echo htmlsc($row['message']); ?></td>
++                    <td><?php echo htmlsc($row['http_code']); ?></td>
++                </tr>
++            <?php endforeach; ?>
++            </tbody>
++        </table>
++    </div>
+ </div>
+diff --git a/application/modules/einvoice/views/history.php b/application/modules/einvoice/views/history.php
+index 6354965..c228c09 100644
+--- a/application/modules/einvoice/views/history.php
++++ b/application/modules/einvoice/views/history.php
+@@ -1,38 +1,42 @@
+-<div class="headerbar">
++<div id="headerbar">
+     <h1 class="headerbar-title">
+         <?php _trans('einvoice_history'); ?> #<?php echo htmlsc($invoice_id); ?>
+     </h1>
+ 
+     <div class="headerbar-item pull-right">
+-        <a href="<?php echo site_url('invoices/view/' . $invoice_id); ?>" class="btn btn-default">
++        <a class="btn btn-default btn-sm" href="<?php echo site_url('invoices/view/' . $invoice_id); ?>">
+             <i class="fa fa-arrow-left"></i> <?php _trans('back'); ?>
+         </a>
+     </div>
+ </div>
+ 
+-<div class="content">
+-    <table class="table table-striped">
+-        <thead>
+-        <tr>
+-            <th><?php _trans('date'); ?></th>
+-            <th><?php _trans('direction'); ?></th>
+-            <th><?php _trans('status'); ?></th>
+-            <th><?php _trans('message'); ?></th>
+-            <th><?php _trans('external_id'); ?></th>
+-            <th><?php _trans('http_code'); ?></th>
+-        </tr>
+-        </thead>
+-        <tbody>
+-        <?php foreach ($history as $row) : ?>
++<div id="content" class="table-content">
++    <?php $this->layout->load_view('layout/alerts'); ?>
++
++    <div class="table-responsive">
++        <table class="table table-striped">
++            <thead>
+             <tr>
+-                <td><?php echo htmlsc($row['created_at']); ?></td>
+-                <td><?php echo htmlsc($row['direction']); ?></td>
+-                <td><?php echo htmlsc($row['status']); ?></td>
+-                <td><?php echo htmlsc($row['message']); ?></td>
+-                <td><?php echo htmlsc($row['external_id']); ?></td>
+-                <td><?php echo htmlsc($row['http_code']); ?></td>
++                <th><?php _trans('date'); ?></th>
++                <th><?php _trans('direction'); ?></th>
++                <th><?php _trans('status'); ?></th>
++                <th><?php _trans('message'); ?></th>
++                <th><?php _trans('external_id'); ?></th>
++                <th><?php _trans('http_code'); ?></th>
+             </tr>
+-        <?php endforeach; ?>
+-        </tbody>
+-    </table>
++            </thead>
++            <tbody>
++            <?php foreach ($history as $row) : ?>
++                <tr>
++                    <td><?php echo htmlsc($row['created_at']); ?></td>
++                    <td><?php echo htmlsc($row['direction']); ?></td>
++                    <td><?php echo htmlsc($row['status']); ?></td>
++                    <td><?php echo htmlsc($row['message']); ?></td>
++                    <td><?php echo htmlsc($row['external_id']); ?></td>
++                    <td><?php echo htmlsc($row['http_code']); ?></td>
++                </tr>
++            <?php endforeach; ?>
++            </tbody>
++        </table>
++    </div>
+ </div>
+diff --git a/application/modules/einvoice/views/incoming.php b/application/modules/einvoice/views/incoming.php
+index f4c88be..e47f934 100644
+--- a/application/modules/einvoice/views/incoming.php
++++ b/application/modules/einvoice/views/incoming.php
+@@ -1,9 +1,9 @@
+-<div class="headerbar">
++<div id="headerbar">
+     <h1 class="headerbar-title"><?php _trans('incoming_invoices'); ?></h1>
+ 
+     <div class="headerbar-item pull-right">
+         <?php foreach ($clients as $client) : ?>
+-            <a href="<?php echo site_url('einvoice/incoming/sync/' . $client['id']); ?>" class="btn btn-primary">
++            <a class="btn btn-primary btn-sm" href="<?php echo site_url('einvoice/incoming/sync/' . $client['id']); ?>">
+                 <i class="fa fa-refresh"></i>
+                 <?php _trans('sync'); ?> <?php echo htmlsc($client['label']); ?>
+             </a>
+@@ -11,27 +11,31 @@
+     </div>
+ </div>
+ 
+-<div class="content">
+-    <table class="table table-striped">
+-        <thead>
+-        <tr>
+-            <th><?php _trans('date'); ?></th>
+-            <th><?php _trans('provider'); ?></th>
+-            <th><?php _trans('status'); ?></th>
+-            <th><?php _trans('message'); ?></th>
+-            <th><?php _trans('external_id'); ?></th>
+-        </tr>
+-        </thead>
+-        <tbody>
+-        <?php foreach ($incoming as $row) : ?>
++<div id="content" class="table-content">
++    <?php $this->layout->load_view('layout/alerts'); ?>
++
++    <div class="table-responsive">
++        <table class="table table-striped">
++            <thead>
+             <tr>
+-                <td><?php echo htmlsc($row['created_at']); ?></td>
+-                <td><?php echo htmlsc($row['merchant_client_id']); ?></td>
+-                <td><?php echo htmlsc($row['status']); ?></td>
+-                <td><?php echo htmlsc($row['message']); ?></td>
+-                <td><?php echo htmlsc($row['external_id']); ?></td>
++                <th><?php _trans('date'); ?></th>
++                <th><?php _trans('provider'); ?></th>
++                <th><?php _trans('status'); ?></th>
++                <th><?php _trans('message'); ?></th>
++                <th><?php _trans('external_id'); ?></th>
+             </tr>
+-        <?php endforeach; ?>
+-        </tbody>
+-    </table>
++            </thead>
++            <tbody>
++            <?php foreach ($incoming as $row) : ?>
++                <tr>
++                    <td><?php echo htmlsc($row['created_at']); ?></td>
++                    <td><?php echo htmlsc($row['merchant_client_id']); ?></td>
++                    <td><?php echo htmlsc($row['status']); ?></td>
++                    <td><?php echo htmlsc($row['message']); ?></td>
++                    <td><?php echo htmlsc($row['external_id']); ?></td>
++                </tr>
++            <?php endforeach; ?>
++            </tbody>
++        </table>
++    </div>
+ </div>
+diff --git a/application/modules/einvoice/views/provider_form.php b/application/modules/einvoice/views/provider_form.php
+index ae81c44..5f5a43f 100644
+--- a/application/modules/einvoice/views/provider_form.php
++++ b/application/modules/einvoice/views/provider_form.php
+@@ -1,13 +1,13 @@
+-<div class="headerbar">
+-    <h1 class="headerbar-title"><?php _trans('einvoice_provider'); ?></h1>
+-</div>
++<form method="post" action="<?php echo site_url('einvoice/settings/save/' . $provider['id']); ?>">
+ 
+-<div class="content">
+-    <form method="post" action="<?php echo site_url('einvoice/settings/save/' . $provider['id']); ?>">
++    <?php _csrf_field(); ?>
+ 
+-        <input type="hidden"
+-               name="<?php echo $this->security->get_csrf_token_name(); ?>"
+-               value="<?php echo $this->security->get_csrf_hash(); ?>">
++    <div id="headerbar">
++        <h1 class="headerbar-title"><?php _trans('einvoice_provider'); ?></h1>
++        <?php $this->layout->load_view('layout/header_buttons'); ?>
++    </div>
++
++    <div id="content">
+ 
+         <div class="row">
+             <div class="col-xs-12 col-md-8 col-md-offset-2">
+@@ -44,7 +44,7 @@
+ 
+                 <div class="panel panel-default">
+                     <div class="panel-heading">
+-                        SuperPDP API
++                        <?php _trans('settings'); ?> (API)
+                     </div>
+ 
+                     <div class="panel-body">
+@@ -58,7 +58,7 @@
+                         <div class="form-group">
+                             <label for="client_secret"><?php _trans('client_secret'); ?></label>
+                             <input type="password" name="client_secret" id="client_secret" class="form-control"
+-                                   value="<?php echo htmlsc($settings['client_secret'] ?? ''); ?>">
++                                   value="<?php echo htmlsc($settings['client_secret'] ?? ''); ?>" autocomplete="off">
+                         </div>
+ 
+                         <div class="form-group">
+@@ -112,20 +112,10 @@
+                         </div>
+ 
+                     </div>
+-
+-                    <div class="panel-footer">
+-                        <button type="submit" class="btn btn-success">
+-                            <i class="fa fa-check"></i> <?php _trans('save'); ?>
+-                        </button>
+-
+-                        <a href="<?php echo site_url('einvoice/settings'); ?>" class="btn btn-default">
+-                            <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
+-                        </a>
+-                    </div>
+                 </div>
+ 
+             </div>
+         </div>
+ 
+-    </form>
+-</div>
++    </div>
++</form>
+diff --git a/application/modules/einvoice/views/settings.php b/application/modules/einvoice/views/settings.php
+index d3ecb50..168f22b 100644
+--- a/application/modules/einvoice/views/settings.php
++++ b/application/modules/einvoice/views/settings.php
+@@ -1,31 +1,30 @@
+-<div class="headerbar">
+-    <h1 class="headerbar-title"><?php _trans('einvoice'); ?></h1>
+-</div>
++<div id="headerbar">
++    <h1 class="headerbar-title"><?php _trans('einvoice'); ?> <?php _trans('providers'); ?></h1>
++
++    <div class="headerbar-item pull-right">
++        <a class="btn btn-default btn-sm" href="<?php echo site_url('einvoice/incoming'); ?>">
++            <i class="fa fa-inbox"></i> <?php _trans('incoming_invoices'); ?>
++        </a>
+ 
+-<div class="content">
+-    <div class="panel panel-default">
+-        <div class="panel-heading">
+-            <?php _trans('providers'); ?>
+-        </div>
++        <a class="btn btn-default btn-sm" href="<?php echo site_url('einvoice/events'); ?>">
++            <i class="fa fa-history"></i> <?php _trans('einvoice_events'); ?>
++        </a>
++    </div>
++</div>
+ 
+-        <div class="panel-body">
+-            <a href="<?php echo site_url('einvoice/incoming'); ?>" class="btn btn-default">
+-                <i class="fa fa-inbox"></i> <?php _trans('incoming_invoices'); ?>
+-            </a>
++<div id="content" class="table-content">
+ 
+-            <a href="<?php echo site_url('einvoice/events'); ?>" class="btn btn-default">
+-                <i class="fa fa-history"></i> <?php _trans('einvoice_events'); ?>
+-            </a>
+-        </div>
++    <?php $this->layout->load_view('layout/alerts'); ?>
+ 
+-        <table class="table table-striped">
++    <div class="table-responsive">
++        <table class="table table-hover table-striped">
+             <thead>
+-            <tr>
+-                <th><?php _trans('provider'); ?></th>
+-                <th><?php _trans('label'); ?></th>
+-                <th><?php _trans('status'); ?></th>
+-                <th><?php _trans('actions'); ?></th>
+-            </tr>
++                <tr>
++                    <th><?php _trans('provider'); ?></th>
++                    <th><?php _trans('label'); ?></th>
++                    <th><?php _trans('status'); ?></th>
++                    <th><?php _trans('actions'); ?></th>
++                </tr>
+             </thead>
+             <tbody>
+             <?php foreach ($providers as $provider) : ?>
+-- 
+2.43.0
+
