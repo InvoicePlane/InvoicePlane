@@ -31,7 +31,7 @@ class Ajax extends Admin_Controller
         $permissiveSearchUsers = $this->input->get('permissive_search_users');
 
         if (empty($query)) {
-            exit(json_encode($response));
+            $this->json_encode_ajax($response);
         }
 
         // Search for chars "in the middle" of users names
@@ -59,7 +59,7 @@ class Ajax extends Admin_Controller
         }
 
         // Return the results
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     /**
@@ -87,7 +87,7 @@ class Ajax extends Admin_Controller
         }
 
         // Return the results
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function save_preference_permissive_search_users()

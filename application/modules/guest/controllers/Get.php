@@ -139,8 +139,7 @@ class Get extends Base_Controller
             exit(self::EMPTY_JSON_RESPONSE);
         }
 
-        echo json_encode($result);
-        exit;
+        $this->json_encode_ajax($result);
     }
 
     /**
