@@ -18,7 +18,6 @@
     <meta name="robots" content="NOINDEX,NOFOLLOW">
     <meta name="_csrf" content="<?php echo $this->security->get_csrf_hash() ?>">
     <meta name="csrf_token_name" content="<?php echo config_item('csrf_token_name'); ?>">
-    <meta name="csrf_cookie_name" content="<?php echo config_item('csrf_cookie_name'); ?>">
     <meta name="csrf_token_value" content="<?php echo $this->security->get_csrf_hash(); ?>">
     <meta name="legacy_calculation" content="<?php echo (int) (config_item('legacy_calculation')); ?>">
 
