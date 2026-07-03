@@ -319,7 +319,6 @@ if ($invoice->invoice_balance != 0) {
 <?php
 // eInvoice & user fields OK: Show download XML Option
 if ($einvoice->user) {
-	        $einvoice_provider = $einvoice_provider ?? null;
     ?>
                 <li>
                     <a href="#" id="btn_generate_xml"
@@ -327,27 +326,7 @@ if ($einvoice->user) {
                         <i class="fa fa-file-code-o fa-margin"></i>
                         <?php _trans('download_xml'); ?>
                     </a>
-		</li>
-<?php if (!empty($einvoice_provider) && !empty($einvoice_provider['id'])) : ?>
-                <li>
-                   <a href="<?php echo site_url('einvoice/send_invoice/' . $invoice->invoice_id . '/' . $einvoice_provider['id']); ?>">
-		               <i class="fa fa-paper-plane"></i>
-                       Transmettre PA/PDP
-                   </a>
-		</li>
-                <li>
-                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id  . '/' . $einvoice_provider['id']); ?>">
-                         <i class="fa fa-refresh"></i>
-                         <?php _trans('check_status'); ?>
-                      </a>
-		</li>
-<?php endif; ?>
-                <li>
-                      <a href="<?php echo site_url('einvoice/history/' . $invoice_id); ?>">
-                         <i class="fa fa-history"></i>
-                         <?php _trans('view_history'); ?>
-                     </a>
-		</li>
+                </li>
 <?php
 }
 ?>
@@ -358,6 +337,38 @@ if ($einvoice->user) {
                     </a>
                 </li>
                 <li class="divider"></li>
+<?php
+if ( ! empty($enabled_merchant_clients)) {
+    foreach ($enabled_merchant_clients as $mc) {
+        $needs_peppol = in_array($mc['merchant_type'], ['letspeppol', 'superpdp'], true);
+        $has_id       = ! empty($invoice->client_peppol_id);
+        if ($needs_peppol && ! $has_id) {
+            ?>
+                <li class="disabled" data-toggle="tooltip" title="<?php _trans('peppol_id_missing'); ?>">
+                    <a href="#" onclick="return false;">
+                        <i class="fa fa-paper-plane fa-margin"></i>
+                        <?php _trans('send_via_integration'); ?> <?php echo htmlsc($mc['label']); ?>
+                    </a>
+                </li>
+<?php
+        } else {
+            ?>
+                <li>
+                    <form method="post" action="<?php echo site_url('integrations/send_invoice/' . $invoice_id . '/' . (int) $mc['id']); ?>" style="display:inline;">
+                        <button type="submit" class="btn btn-link" style="padding:3px 20px;text-align:left;width:100%;">
+                            <i class="fa fa-paper-plane fa-margin"></i>
+                            <?php _trans('send_via_integration'); ?> <?php echo htmlsc($mc['label']); ?>
+                        </button>
+                    </form>
+                </li>
+<?php
+        }
+    }
+    ?>
+                <li class="divider"></li>
+<?php
+}
+?>
                 <li>
                     <a href="#" id="btn_create_recurring"
                        data-invoice-id="<?php echo $invoice_id; ?>">
@@ -636,50 +647,6 @@ if ($invoice->invoice_status_id != 1) {
 
                         </div>
                     </div>
-
-<?php if (!empty($einvoice_status)) : ?>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <?php _trans('electronic_invoicing'); ?>
-                        </div>
-
-                        <div class="panel-body">
-                            <p>
-                                <strong><?php _trans('status'); ?>:</strong>
-                                <?php echo htmlsc($einvoice_status['status'] ?? trans('not_sent')); ?>
-                            </p>
-
-                            <?php if (!empty($einvoice_status['external_id'])) : ?>
-                                <p>
-                                    <strong>External ID:</strong>
-                                    <?php echo htmlsc($einvoice_status['external_id']); ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <?php if (!empty($einvoice_status['message'])) : ?>
-                                <p>
-                                    <strong><?php _trans('message'); ?>:</strong>
-                                    <?php echo htmlsc($einvoice_status['message']); ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <?php if (!empty($einvoice_status['updated_at'])) : ?>
-                                <p>
-                                    <strong><?php _trans('last_update'); ?>:</strong>
-                                    <?php echo htmlsc($einvoice_status['updated_at']); ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/1'); ?>"
-                               class="btn btn-default btn-sm">
-                                <i class="fa fa-refresh"></i>
-                                <?php _trans('check_status'); ?>
-                            </a>
-                        </div>
-                    </div>
-<?php endif; ?>
-
-
                 </div>
 
             </div>
@@ -747,6 +714,50 @@ if ($default_custom) {
         </div>
     </div>
 </div>
+
+<?php if ( ! empty($send_history)) : ?>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><?php _trans('send_history'); ?></div>
+            <table class="table table-condensed no-margin">
+                <thead>
+                <tr>
+                    <th><?php _trans('date'); ?></th>
+                    <th><?php _trans('provider'); ?></th>
+                    <th><?php _trans('status'); ?></th>
+                    <th><?php _trans('peppol_participant_id'); ?></th>
+                    <th><?php _trans('external_id'); ?></th>
+                    <th><?php _trans('http_code'); ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($send_history as $row) : ?>
+                    <tr>
+                        <td><?php echo htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
+                        <td><?php echo htmlsc($row['merchant_response_driver']); ?></td>
+                        <td>
+                            <?php
+                            $s     = $row['status'] ?? '';
+                            $badge = match(true) {
+                                in_array($s, ['sent', 'accepted', 'delivered'], true) => 'success',
+                                in_array($s, ['error', 'rejected', 'failed'], true)   => 'danger',
+                                default                                                => 'warning',
+                            };
+                            ?>
+                            <span class="label label-<?php echo $badge; ?>"><?php echo htmlsc($s); ?></span>
+                        </td>
+                        <td><?php echo htmlsc($row['peppol_participant_id'] ?? ''); ?></td>
+                        <td><?php echo htmlsc($row['merchant_response_reference']); ?></td>
+                        <td><?php echo htmlsc($row['http_code']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <?php
 _dropzone_script($invoice->invoice_url_key, $invoice->client_id);
