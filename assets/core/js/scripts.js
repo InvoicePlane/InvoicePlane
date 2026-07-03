@@ -390,8 +390,8 @@ const csrf_token_name = document.querySelector('meta[name="csrf_token_name"]').g
 
 // The server rotates this value on each page load and POST (And It's updated by ajaxComplete) - since v1.7.2
 const csrf_meta = document.querySelector('meta[name="csrf_token_value"]');
-// Get CSRF token value from meta tag
-var csrf_token_value = csrf_meta.getAttribute('content');
+// Get CSRF token value from meta tag (became false when meta tag missing)
+var csrf_token_value = csrf_meta ? csrf_meta.getAttribute('content') : false;
 
 $(function () {
     // Automatic CSRF protection for all jQuery POST requests
@@ -407,11 +407,18 @@ $(function () {
     });
 
     // javascript get header in $(document).ajaxComplete
-    $(document).ajaxComplete(function (event, xhr) {
+    $(document).ajaxComplete(function (event, xhr, settings) {
         // Update csrf_token_value + meta by response header from all completed xhr request
         const csrf_value = xhr.getResponseHeader('X-' + csrf_token_name); // header names are case-insensitive
         csrf_token_value = csrf_value ? csrf_value : csrf_token_value;
-        csrf_meta.setAttribute('content', csrf_token_value);
+        // If the meta tag is ever absent, and don't breaks all of scripts.js.
+        // The guard fails soft instead and report on console.
+        if (csrf_meta !== null) {
+            csrf_meta.setAttribute('content', csrf_token_value);
+        } else {
+            console.log('⚠️ The "meta" tag "csrf_token_value" seem missing in layout of:', window.location.href,
+                        'ajaxComplete called by:', settings.url);
+        }
     });
 
     // Update CSRF token on all form submissions
