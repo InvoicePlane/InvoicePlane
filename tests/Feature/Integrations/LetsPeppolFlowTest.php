@@ -36,83 +36,6 @@ class LetsPeppolFlowTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
-
-    /**
-     * Insert a LetsPeppol merchant client with an explicit id.
-     *
-     * SQLite's INT AUTO_INCREMENT PRIMARY KEY does not auto-fill the id column
-     * (unlike MySQL). We generate the id explicitly so that lookups by id work
-     * in the HTTP subprocess.
-     */
-    private function seedLetsPeppolClient(array $overrides = []): int
-    {
-        $id = array_key_exists('id', $overrides) ? $overrides['id'] : random_int(10000, 59999);
-
-        $this->databaseInsert('ip_merchant_clients', array_merge([
-            'id'            => $id,
-            'merchant_type' => 'letspeppol',
-            'label'         => 'Test LetsPeppol',
-            'enabled'       => 1,
-            'auth_type'     => 'oauth2',
-            'settings_json' => json_encode([
-                'client_id'                    => 'cid-test',
-                'client_secret'                => 'csecret-test',
-                'token_url'                    => 'https://api.letspeppol.eu/oauth2/token',
-                'api_base_url'                 => 'https://api.letspeppol.eu',
-                'invoice_endpoint'             => '/v1/invoices',
-                'invoice_status_endpoint'      => '/v1/invoices/{id}',
-                'incoming_invoices_endpoint'   => '/v1/incoming-invoices',
-                'invoice_events_endpoint'      => '/v1/invoice-events',
-                'credit_note_endpoint'         => '/v1/credit-notes',
-                'participants_endpoint'        => '/v1/participants',
-                'participant_lookup_endpoint'  => '/v1/participants/{id}',
-                'transmissions_endpoint'       => '/v1/transmissions',
-                'transmission_status_endpoint' => '/v1/transmissions/{id}',
-                'documents_endpoint'           => '/v1/documents',
-                'document_endpoint'            => '/v1/documents/{id}',
-            ]),
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ], $overrides));
-
-        return $id;
-    }
-
-    private function seedOtherProvider(int $id, array $overrides = []): void
-    {
-        $this->databaseInsert('ip_merchant_clients', array_merge([
-            'id'            => $id,
-            'merchant_type' => 'superpdp',
-            'label'         => 'Old Provider',
-            'enabled'       => 1,
-            'auth_type'     => 'oauth2',
-            'settings_json' => '{}',
-            'created_at'    => date('Y-m-d H:i:s'),
-            'updated_at'    => date('Y-m-d H:i:s'),
-        ], $overrides));
-    }
-
-    private function seedOutboundResponse(int $invoiceId, int $merchantClientId, array $overrides = []): int
-    {
-        return $this->databaseInsert('ip_merchant_responses', array_merge([
-            'invoice_id'                   => $invoiceId,
-            'merchant_client_id'           => $merchantClientId,
-            'merchant_response_date'       => date('Y-m-d'),
-            'merchant_response_driver'     => 'letspeppol',
-            'merchant_response'            => 'Invoice queued for Peppol delivery',
-            'merchant_response_reference'  => 'lp-ext-' . random_int(1000, 9999),
-            'merchant_response_successful' => 1,
-            'direction'                    => 'out',
-            'record_type'                  => 'outbound_status',
-            'status'                       => 'sent',
-            'http_code'                    => 201,
-            'created_at'                   => date('Y-m-d H:i:s'),
-        ], $overrides));
-    }
-
     // =========================================================================
     // Provider registry
     // =========================================================================
@@ -452,8 +375,8 @@ class LetsPeppolFlowTest extends AbstractTestCase
     public function it_returns_an_error_when_send_invoice_references_an_unknown_merchant_client(): void
     {
         /* Arrange */
-        $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId                    = $this->seedClient();
+        $invoiceId                   = $this->seedInvoice($clientId);
         $nonexistentMerchantClientId = 99999;
 
         /* Act & Assert */
@@ -551,5 +474,82 @@ class LetsPeppolFlowTest extends AbstractTestCase
             'status'                       => 'error',
             'http_code'                    => 422,
         ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * Insert a LetsPeppol merchant client with an explicit id.
+     *
+     * SQLite's INT AUTO_INCREMENT PRIMARY KEY does not auto-fill the id column
+     * (unlike MySQL). We generate the id explicitly so that lookups by id work
+     * in the HTTP subprocess.
+     */
+    private function seedLetsPeppolClient(array $overrides = []): int
+    {
+        $id = array_key_exists('id', $overrides) ? $overrides['id'] : random_int(10000, 59999);
+
+        $this->databaseInsert('ip_merchant_clients', array_merge([
+            'id'            => $id,
+            'merchant_type' => 'letspeppol',
+            'label'         => 'Test LetsPeppol',
+            'enabled'       => 1,
+            'auth_type'     => 'oauth2',
+            'settings_json' => json_encode([
+                'client_id'                    => 'cid-test',
+                'client_secret'                => 'csecret-test',
+                'token_url'                    => 'https://api.letspeppol.eu/oauth2/token',
+                'api_base_url'                 => 'https://api.letspeppol.eu',
+                'invoice_endpoint'             => '/v1/invoices',
+                'invoice_status_endpoint'      => '/v1/invoices/{id}',
+                'incoming_invoices_endpoint'   => '/v1/incoming-invoices',
+                'invoice_events_endpoint'      => '/v1/invoice-events',
+                'credit_note_endpoint'         => '/v1/credit-notes',
+                'participants_endpoint'        => '/v1/participants',
+                'participant_lookup_endpoint'  => '/v1/participants/{id}',
+                'transmissions_endpoint'       => '/v1/transmissions',
+                'transmission_status_endpoint' => '/v1/transmissions/{id}',
+                'documents_endpoint'           => '/v1/documents',
+                'document_endpoint'            => '/v1/documents/{id}',
+            ]),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ], $overrides));
+
+        return $id;
+    }
+
+    private function seedOtherProvider(int $id, array $overrides = []): void
+    {
+        $this->databaseInsert('ip_merchant_clients', array_merge([
+            'id'            => $id,
+            'merchant_type' => 'superpdp',
+            'label'         => 'Old Provider',
+            'enabled'       => 1,
+            'auth_type'     => 'oauth2',
+            'settings_json' => '{}',
+            'created_at'    => date('Y-m-d H:i:s'),
+            'updated_at'    => date('Y-m-d H:i:s'),
+        ], $overrides));
+    }
+
+    private function seedOutboundResponse(int $invoiceId, int $merchantClientId, array $overrides = []): int
+    {
+        return $this->databaseInsert('ip_merchant_responses', array_merge([
+            'invoice_id'                   => $invoiceId,
+            'merchant_client_id'           => $merchantClientId,
+            'merchant_response_date'       => date('Y-m-d'),
+            'merchant_response_driver'     => 'letspeppol',
+            'merchant_response'            => 'Invoice queued for Peppol delivery',
+            'merchant_response_reference'  => 'lp-ext-' . random_int(1000, 9999),
+            'merchant_response_successful' => 1,
+            'direction'                    => 'out',
+            'record_type'                  => 'outbound_status',
+            'status'                       => 'sent',
+            'http_code'                    => 201,
+            'created_at'                   => date('Y-m-d H:i:s'),
+        ], $overrides));
     }
 }

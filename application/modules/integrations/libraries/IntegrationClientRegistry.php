@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class IntegrationClientRegistry
 {
@@ -25,6 +25,42 @@ class IntegrationClientRegistry
     public function all(): array
     {
         return $this->providers;
+    }
+
+    public function syncDatabaseProviders(): void
+    {
+        $CI = &get_instance();
+
+        foreach ($this->providers as $clientCode => $clientClass) {
+            $existing = $CI->db
+                ->where('merchant_type', $clientCode)
+                ->get('ip_merchant_clients')
+                ->row_array();
+
+            if ($existing) {
+                log_message(
+                    'debug',
+                    'eInvoice provider already registered: ' . $clientCode
+                );
+                continue;
+            }
+
+            $settings = [];
+
+            if (method_exists($clientClass, 'defaultSettings')) {
+                $settings = $clientClass::defaultSettings();
+            }
+
+            $CI->db->insert('ip_merchant_clients', [
+                'merchant_type' => $clientCode,
+                'label'         => $clientClass::clientName(),
+                'enabled'       => 0,
+                'auth_type'     => $this->guessAuthType($settings),
+                'settings_json' => json_encode($settings),
+                'created_at'    => date('Y-m-d H:i:s'),
+                'updated_at'    => date('Y-m-d H:i:s'),
+            ]);
+        }
     }
 
     private function loadProviders(): void
@@ -58,55 +94,19 @@ class IntegrationClientRegistry
 
             $className = basename($file, '.php');
 
-            if (!class_exists($className)) {
+            if ( ! class_exists($className)) {
                 continue;
             }
 
-            if (!is_subclass_of($className, IntegrationClientInterface::class)) {
+            if ( ! is_subclass_of($className, IntegrationClientInterface::class)) {
                 continue;
             }
 
-            if (!method_exists($className, 'clientCode')) {
+            if ( ! method_exists($className, 'clientCode')) {
                 continue;
             }
 
             $this->providers[$className::clientCode()] = $className;
-        }
-    }
-
-    public function syncDatabaseProviders(): void
-    {
-        $CI = &get_instance();
-
-        foreach ($this->providers as $clientCode => $clientClass) {
-            $existing = $CI->db
-                ->where('merchant_type', $clientCode)
-                ->get('ip_merchant_clients')
-                ->row_array();
-
-	    if ($existing) {
-                log_message(
-                    'debug',
-                    'eInvoice provider already registered: ' . $clientCode
-                );
-                continue;
-            }
-
-            $settings = [];
-
-            if (method_exists($clientClass, 'defaultSettings')) {
-                $settings = $clientClass::defaultSettings();
-            }
-
-            $CI->db->insert('ip_merchant_clients', [
-                'merchant_type' => $clientCode,
-                'label' => $clientClass::clientName(),
-                'enabled' => 0,
-                'auth_type' => $this->guessAuthType($settings),
-                'settings_json' => json_encode($settings),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ]);
         }
     }
 
@@ -123,4 +123,3 @@ class IntegrationClientRegistry
         return 'none';
     }
 }
-

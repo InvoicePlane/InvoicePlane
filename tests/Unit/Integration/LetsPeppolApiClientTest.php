@@ -24,27 +24,6 @@ use Tests\Fakes\Integration\ApiClientFake;
 #[Group('unit')]
 class LetsPeppolApiClientTest extends TestCase
 {
-    private function settings(): array
-    {
-        return [
-            'client_id'     => 'test-client-id',
-            'client_secret' => 'test-client-secret',
-            'token_url'     => 'https://api.letspeppol.eu/oauth2/token',
-            'api_base_url'  => 'https://api.letspeppol.eu',
-            'invoice_endpoint' => '/v1/invoices',
-            'invoice_status_endpoint' => '/v1/invoices/{id}',
-        ];
-    }
-
-    private function makeClient(array $responses = [], array $tokenResponse = ['access_token' => 'tok-abc']): array
-    {
-        $http   = new ApiClientFake($responses, $tokenResponse);
-        $client = new LetsPeppolApiClient($http);
-        $client->configure($this->settings());
-
-        return [$client, $http];
-    }
-
     // -------------------------------------------------------------------------
     // configure / getSettings
     // -------------------------------------------------------------------------
@@ -79,7 +58,7 @@ class LetsPeppolApiClientTest extends TestCase
         /* Assert */
         self::assertCount(1, $http->tokenLog);
         self::assertSame('https://api.letspeppol.eu/oauth2/token', $http->tokenLog[0]['tokenUrl']);
-        self::assertSame('test-client-id',     $http->tokenLog[0]['clientId']);
+        self::assertSame('test-client-id', $http->tokenLog[0]['clientId']);
         self::assertSame('test-client-secret', $http->tokenLog[0]['clientSecret']);
     }
 
@@ -176,7 +155,7 @@ class LetsPeppolApiClientTest extends TestCase
 
         /* Assert */
         self::assertStringContainsString('status=new', $http->requestLog[0]['url']);
-        self::assertStringContainsString('page=2',     $http->requestLog[0]['url']);
+        self::assertStringContainsString('page=2', $http->requestLog[0]['url']);
     }
 
     #[Test]
@@ -201,7 +180,7 @@ class LetsPeppolApiClientTest extends TestCase
         /* Assert */
         self::assertTrue($result['success']);
         self::assertSame('inv-123', $result['external_id']);
-        self::assertSame(201,       $result['http_code']);
+        self::assertSame(201, $result['http_code']);
     }
 
     // -------------------------------------------------------------------------
@@ -280,10 +259,13 @@ class LetsPeppolApiClientTest extends TestCase
         $client->request(RequestMethod::GET, 'https://api.letspeppol.eu/v1/invoices');
 
         /* Assert */
-        self::assertCount(1, $http->tokenLog,   'fetchToken must be called exactly once.');
+        self::assertCount(1, $http->tokenLog, 'fetchToken must be called exactly once.');
         self::assertCount(1, $http->requestLog, 'send must be called exactly once.');
-        self::assertSame('flow-token', $http->requestLog[0]['bearerToken'],
-            'The token from authenticate() must be passed to every subsequent send().');
+        self::assertSame(
+            'flow-token',
+            $http->requestLog[0]['bearerToken'],
+            'The token from authenticate() must be passed to every subsequent send().'
+        );
     }
 
     #[Test]
@@ -303,5 +285,26 @@ class LetsPeppolApiClientTest extends TestCase
         self::assertCount(2, $http->requestLog);
         self::assertSame('multi-token', $http->requestLog[0]['bearerToken']);
         self::assertSame('multi-token', $http->requestLog[1]['bearerToken']);
+    }
+
+    private function settings(): array
+    {
+        return [
+            'client_id'               => 'test-client-id',
+            'client_secret'           => 'test-client-secret',
+            'token_url'               => 'https://api.letspeppol.eu/oauth2/token',
+            'api_base_url'            => 'https://api.letspeppol.eu',
+            'invoice_endpoint'        => '/v1/invoices',
+            'invoice_status_endpoint' => '/v1/invoices/{id}',
+        ];
+    }
+
+    private function makeClient(array $responses = [], array $tokenResponse = ['access_token' => 'tok-abc']): array
+    {
+        $http   = new ApiClientFake($responses, $tokenResponse);
+        $client = new LetsPeppolApiClient($http);
+        $client->configure($this->settings());
+
+        return [$client, $http];
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class LetsPeppolCreditNoteEndpoint
 {
     public function __construct(private LetsPeppolApiClient $client) {}
 
     /**
-     * POST {credit_note_endpoint}  (multipart)
+     * POST {credit_note_endpoint}  (multipart).
      *
      * Request:
      *   file      file    PDF credit note document (UBL or PEPPOL BIS)
@@ -31,7 +31,7 @@ class LetsPeppolCreditNoteEndpoint
             'file' => new \CURLFile($documentPath, 'application/pdf', basename($documentPath)),
         ];
 
-        if (!empty($metadata)) {
+        if ( ! empty($metadata)) {
             $payload['metadata'] = json_encode($metadata);
         }
 
@@ -39,7 +39,7 @@ class LetsPeppolCreditNoteEndpoint
     }
 
     /**
-     * GET {credit_note_status_endpoint}  →  /v1/credit-notes/{id}
+     * GET {credit_note_status_endpoint}  →  /v1/credit-notes/{id}.
      *
      * Response (JSON):
      *   id      string  credit note external ID
@@ -53,7 +53,7 @@ class LetsPeppolCreditNoteEndpoint
             throw new \RuntimeException('Missing LetsPeppol credit note status endpoint configuration.');
         }
 
-        $url = $this->client->buildUrl($settings['credit_note_status_endpoint'], $externalId);
+        $url      = $this->client->buildUrl($settings['credit_note_status_endpoint'], $externalId);
         $response = $this->client->request(RequestMethod::GET, $url);
 
         return array_merge($response, ['external_id' => $externalId]);

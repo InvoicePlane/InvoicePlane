@@ -1,13 +1,13 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class LetsPeppolTransmissionEndpoint
 {
     public function __construct(private LetsPeppolApiClient $client) {}
 
     /**
-     * GET {transmission_status_endpoint}  →  /v1/transmissions/{id}
+     * GET {transmission_status_endpoint}  →  /v1/transmissions/{id}.
      *
      * Response (JSON):
      *   id          string  transmission ID
@@ -23,14 +23,14 @@ class LetsPeppolTransmissionEndpoint
             throw new \RuntimeException('Missing LetsPeppol transmission status endpoint configuration.');
         }
 
-        $url = $this->client->buildUrl($settings['transmission_status_endpoint'], $transmissionId);
+        $url      = $this->client->buildUrl($settings['transmission_status_endpoint'], $transmissionId);
         $response = $this->client->request(RequestMethod::GET, $url);
 
         return array_merge($response, ['external_id' => $transmissionId]);
     }
 
     /**
-     * GET {transmissions_endpoint}?{filters}
+     * GET {transmissions_endpoint}?{filters}.
      *
      * Response (JSON):
      *   data[]  array  list of transmission objects

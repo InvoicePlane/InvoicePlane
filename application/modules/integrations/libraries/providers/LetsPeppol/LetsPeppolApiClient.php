@@ -1,11 +1,13 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class LetsPeppolApiClient
 {
     private ?string $accessToken = null;
+
     private array $settings = [];
+
     private ApiClientInterface $http;
 
     public function __construct(?ApiClientInterface $http = null)
@@ -74,7 +76,7 @@ class LetsPeppolApiClient
         bool $multipart = false,
         array $query = []
     ): array {
-        if (!empty($query)) {
+        if ( ! empty($query)) {
             $url .= '?' . http_build_query($query);
         }
 
@@ -82,7 +84,7 @@ class LetsPeppolApiClient
 
         if ($multipart) {
             $options['multipart'] = $payload;
-        } elseif (!empty($payload)) {
+        } elseif ( ! empty($payload)) {
             $options['json'] = $payload;
         }
 

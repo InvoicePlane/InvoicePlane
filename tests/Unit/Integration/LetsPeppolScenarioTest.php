@@ -19,62 +19,6 @@ use Tests\Fakes\Integration\FakeLetsPeppolApiClient;
 class LetsPeppolScenarioTest extends TestCase
 {
     // -----------------------------------------------------------------------
-    // Helpers
-    // -----------------------------------------------------------------------
-
-    private function defaultSettings(): array
-    {
-        return [
-            'client_id'                    => 'my-client-id',
-            'client_secret'                => 'my-client-secret',
-            'token_url'                    => 'https://api.letspeppol.eu/oauth2/token',
-            'api_base_url'                 => 'https://api.letspeppol.eu',
-            'invoice_endpoint'             => '/v1/invoices',
-            'invoice_status_endpoint'      => '/v1/invoices/{id}',
-            'incoming_invoices_endpoint'   => '/v1/incoming-invoices',
-            'invoice_events_endpoint'      => '/v1/invoice-events',
-            'credit_note_endpoint'         => '/v1/credit-notes',
-            'credit_note_status_endpoint'  => '/v1/credit-notes/{id}',
-            'participants_endpoint'        => '/v1/participants',
-            'participant_lookup_endpoint'  => '/v1/participants/{id}',
-            'transmissions_endpoint'       => '/v1/transmissions',
-            'transmission_status_endpoint' => '/v1/transmissions/{id}',
-            'documents_endpoint'           => '/v1/documents',
-            'document_endpoint'            => '/v1/documents/{id}',
-        ];
-    }
-
-    /** Build a provider + fake HTTP client pre-loaded with $responses. */
-    private function makeProvider(
-        array   $responses     = [],
-        array   $tokenResponse = ['access_token' => 'tok-abc'],
-        ?string $tokenError    = null
-    ): array {
-        $fake     = new FakeLetsPeppolApiClient($responses, $tokenResponse, $tokenError);
-        $provider = new LetsPeppolClient($fake);
-
-        return [$provider, $fake];
-    }
-
-    /** Authenticate the provider against defaultSettings() and return it. */
-    private function authenticatedProvider(array $responses = []): array
-    {
-        [$provider, $fake] = $this->makeProvider($responses);
-        $provider->authenticate($this->defaultSettings());
-
-        return [$provider, $fake];
-    }
-
-    /** Create a real temp PDF-like file so file_exists() passes. */
-    private function tempDocumentPath(): string
-    {
-        $path = sys_get_temp_dir() . '/letspeppol_test_' . uniqid() . '.pdf';
-        file_put_contents($path, '%PDF-1.4 fake content');
-
-        return $path;
-    }
-
-    // -----------------------------------------------------------------------
     // Participant lookup — green-checkmark scenario
     // -----------------------------------------------------------------------
 
@@ -83,9 +27,9 @@ class LetsPeppolScenarioTest extends TestCase
     {
         /* Arrange */
         $participantResponse = [
-            'success'     => true,
-            'http_code'   => 200,
-            'response'    => [
+            'success'   => true,
+            'http_code' => 200,
+            'response'  => [
                 'id'        => '0088:1234567890',
                 'name'      => 'ACME Corp',
                 'country'   => 'NL',
@@ -212,7 +156,7 @@ class LetsPeppolScenarioTest extends TestCase
             'response'    => ['id' => 'inv-ext-001', 'status' => 'processing'],
         ];
         [$provider, $fake] = $this->authenticatedProvider([$sendResponse]);
-        $path = $this->tempDocumentPath();
+        $path              = $this->tempDocumentPath();
 
         /* Act */
         $result = $provider->sendInvoice($path, ['peppol_id' => '0088:1234567890']);
@@ -230,9 +174,9 @@ class LetsPeppolScenarioTest extends TestCase
     public function it_sends_the_bearer_token_on_the_invoice_send_request(): void
     {
         /* Arrange */
-        $sendResponse = ['success' => true, 'http_code' => 201, 'response' => ['id' => 'inv-ext-002', 'status' => 'processing']];
+        $sendResponse      = ['success' => true, 'http_code' => 201, 'response' => ['id' => 'inv-ext-002', 'status' => 'processing']];
         [$provider, $fake] = $this->authenticatedProvider([$sendResponse]);
-        $path = $this->tempDocumentPath();
+        $path              = $this->tempDocumentPath();
 
         /* Act */
         $provider->sendInvoice($path, []);
@@ -271,7 +215,7 @@ class LetsPeppolScenarioTest extends TestCase
             'response'  => ['errors' => ['ubl_schema' => 'XSD validation failed']],
         ];
         [$provider, $fake] = $this->authenticatedProvider([$rejectedResponse]);
-        $path = $this->tempDocumentPath();
+        $path              = $this->tempDocumentPath();
 
         /* Act */
         $result = $provider->sendInvoice($path, []);
@@ -296,7 +240,7 @@ class LetsPeppolScenarioTest extends TestCase
             'response'  => [],
         ];
         [$provider, $fake] = $this->authenticatedProvider([$unauthorizedResponse]);
-        $path = $this->tempDocumentPath();
+        $path              = $this->tempDocumentPath();
 
         /* Act */
         $result = $provider->sendInvoice($path, []);
@@ -355,7 +299,7 @@ class LetsPeppolScenarioTest extends TestCase
     public function it_sends_the_bearer_token_on_the_status_check_request(): void
     {
         /* Arrange */
-        $statusResponse = ['success' => true, 'http_code' => 200, 'response' => ['id' => 'x', 'status' => 'processing']];
+        $statusResponse    = ['success' => true, 'http_code' => 200, 'response' => ['id' => 'x', 'status' => 'processing']];
         [$provider, $fake] = $this->authenticatedProvider([$statusResponse]);
 
         /* Act */
@@ -391,7 +335,7 @@ class LetsPeppolScenarioTest extends TestCase
         ];
 
         [$provider, $fake] = $this->makeProvider([$lookupResponse, $sendResponse, $statusResponse]);
-        $path = $this->tempDocumentPath();
+        $path              = $this->tempDocumentPath();
 
         /* Act */
         $provider->authenticate($this->defaultSettings());
@@ -463,7 +407,7 @@ class LetsPeppolScenarioTest extends TestCase
             ['success' => true, 'http_code' => 200, 'response' => ['id' => 'x', 'status' => 'processing']],
         ];
         [$provider, $fake] = $this->authenticatedProvider($responses);
-        $path = $this->tempDocumentPath();
+        $path              = $this->tempDocumentPath();
 
         /* Act */
         $provider->participants()->lookup('0088:1234567890');
@@ -515,7 +459,7 @@ class LetsPeppolScenarioTest extends TestCase
             'response'  => ['id' => 'cn-ext-01', 'status' => 'processing'],
         ];
         [$provider, $fake] = $this->authenticatedProvider([$sendResponse]);
-        $path = $this->tempDocumentPath();
+        $path              = $this->tempDocumentPath();
 
         /* Act */
         $result = $provider->creditNotes()->send($path, ['peppol_id' => '0088:1234567890']);
@@ -545,5 +489,60 @@ class LetsPeppolScenarioTest extends TestCase
         /* Assert */
         $this->assertSame('cn-ext-01', $result['external_id']);
         $this->assertSame('sent', $result['response']['status']);
+    }
+    // -----------------------------------------------------------------------
+    // Helpers
+    // -----------------------------------------------------------------------
+
+    private function defaultSettings(): array
+    {
+        return [
+            'client_id'                    => 'my-client-id',
+            'client_secret'                => 'my-client-secret',
+            'token_url'                    => 'https://api.letspeppol.eu/oauth2/token',
+            'api_base_url'                 => 'https://api.letspeppol.eu',
+            'invoice_endpoint'             => '/v1/invoices',
+            'invoice_status_endpoint'      => '/v1/invoices/{id}',
+            'incoming_invoices_endpoint'   => '/v1/incoming-invoices',
+            'invoice_events_endpoint'      => '/v1/invoice-events',
+            'credit_note_endpoint'         => '/v1/credit-notes',
+            'credit_note_status_endpoint'  => '/v1/credit-notes/{id}',
+            'participants_endpoint'        => '/v1/participants',
+            'participant_lookup_endpoint'  => '/v1/participants/{id}',
+            'transmissions_endpoint'       => '/v1/transmissions',
+            'transmission_status_endpoint' => '/v1/transmissions/{id}',
+            'documents_endpoint'           => '/v1/documents',
+            'document_endpoint'            => '/v1/documents/{id}',
+        ];
+    }
+
+    /** Build a provider + fake HTTP client pre-loaded with $responses. */
+    private function makeProvider(
+        array $responses = [],
+        array $tokenResponse = ['access_token' => 'tok-abc'],
+        ?string $tokenError = null
+    ): array {
+        $fake     = new FakeLetsPeppolApiClient($responses, $tokenResponse, $tokenError);
+        $provider = new LetsPeppolClient($fake);
+
+        return [$provider, $fake];
+    }
+
+    /** Authenticate the provider against defaultSettings() and return it. */
+    private function authenticatedProvider(array $responses = []): array
+    {
+        [$provider, $fake] = $this->makeProvider($responses);
+        $provider->authenticate($this->defaultSettings());
+
+        return [$provider, $fake];
+    }
+
+    /** Create a real temp PDF-like file so file_exists() passes. */
+    private function tempDocumentPath(): string
+    {
+        $path = sys_get_temp_dir() . '/letspeppol_test_' . uniqid() . '.pdf';
+        file_put_contents($path, '%PDF-1.4 fake content');
+
+        return $path;
     }
 }

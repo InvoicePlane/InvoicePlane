@@ -1,24 +1,29 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class LetsPeppolClient implements IntegrationClientInterface
 {
     private LetsPeppolApiClient $apiClient;
+
     private LetsPeppolInvoiceEndpoint $invoices;
+
     private LetsPeppolParticipantEndpoint $participants;
+
     private LetsPeppolCreditNoteEndpoint $creditNotes;
+
     private LetsPeppolTransmissionEndpoint $transmissions;
+
     private LetsPeppolDocumentEndpoint $documents;
 
     public function __construct(?LetsPeppolApiClient $apiClient = null)
     {
-        $this->apiClient    = $apiClient ?? new LetsPeppolApiClient();
-        $this->invoices     = new LetsPeppolInvoiceEndpoint($this->apiClient);
-        $this->participants = new LetsPeppolParticipantEndpoint($this->apiClient);
-        $this->creditNotes  = new LetsPeppolCreditNoteEndpoint($this->apiClient);
+        $this->apiClient     = $apiClient ?? new LetsPeppolApiClient();
+        $this->invoices      = new LetsPeppolInvoiceEndpoint($this->apiClient);
+        $this->participants  = new LetsPeppolParticipantEndpoint($this->apiClient);
+        $this->creditNotes   = new LetsPeppolCreditNoteEndpoint($this->apiClient);
         $this->transmissions = new LetsPeppolTransmissionEndpoint($this->apiClient);
-        $this->documents    = new LetsPeppolDocumentEndpoint($this->apiClient);
+        $this->documents     = new LetsPeppolDocumentEndpoint($this->apiClient);
     }
 
     public static function clientCode(): string
@@ -69,7 +74,7 @@ class LetsPeppolClient implements IntegrationClientInterface
 
     public function sendInvoice(string $documentPath, array $metadata): array
     {
-        if (!file_exists($documentPath)) {
+        if ( ! file_exists($documentPath)) {
             throw new RuntimeException('Invoice document not found: ' . $documentPath);
         }
 

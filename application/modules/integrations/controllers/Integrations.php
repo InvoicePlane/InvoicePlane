@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class Integrations extends Admin_Controller
 {
@@ -30,13 +30,14 @@ class Integrations extends Admin_Controller
 
     public function send_invoice($invoiceId, $merchantClientId): void
     {
-        $invoiceId = (int) $invoiceId;
+        $invoiceId        = (int) $invoiceId;
         $merchantClientId = (int) $merchantClientId;
 
         $merchantClient = $this->Merchant_clients_model->get_by_id($merchantClientId);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
+
             return;
         }
 
@@ -53,8 +54,9 @@ class Integrations extends Admin_Controller
 
         $invoice = $this->mdl_invoices->get_by_id($invoiceId);
 
-        if (!$invoice) {
+        if ( ! $invoice) {
             show_error(trans('invoice_not_found'));
+
             return;
         }
 
@@ -65,7 +67,7 @@ class Integrations extends Admin_Controller
 
         $documentDir = FCPATH . 'uploads/integrations/outgoing/';
 
-        if (!is_dir($documentDir)) {
+        if ( ! is_dir($documentDir)) {
             mkdir($documentDir, 0775, true);
         }
 
@@ -75,6 +77,7 @@ class Integrations extends Admin_Controller
 
         if (empty($pdfContent)) {
             show_error('InvoicePlane did not return PDF content.');
+
             return;
         }
 
@@ -84,15 +87,16 @@ class Integrations extends Admin_Controller
             file_put_contents($documentPath, $pdfContent);
         }
 
-        if (!file_exists($documentPath) || filesize($documentPath) === 0) {
+        if ( ! file_exists($documentPath) || filesize($documentPath) === 0) {
             show_error('Invoice PDF not found after generation.');
+
             return;
         }
 
         $metadata = [
             'invoice_id' => $invoiceId,
-            'format' => 'factur-x',
-            'profile' => 'EN16931',
+            'format'     => 'factur-x',
+            'profile'    => 'EN16931',
         ];
 
         $metadata = $provider->buildInvoicePayload($invoice, $items, $metadata);
@@ -108,7 +112,7 @@ class Integrations extends Admin_Controller
             $driver
         );
 
-        if (!empty($response['success'])) {
+        if ( ! empty($response['success'])) {
             $this->session->set_flashdata(
                 'alert_success',
                 trans('einvoice_send_success')
@@ -127,15 +131,16 @@ class Integrations extends Admin_Controller
     {
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchantClientId);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
+
             return;
         }
 
         $settings = $this->Merchant_clients_model->get_settings($merchantClient);
         $registry = new IntegrationClientRegistry();
         $provider = $registry->getClient($merchantClient['merchant_type']);
-        $client = new IntegrationClient($provider, $settings);
+        $client   = new IntegrationClient($provider, $settings);
 
         $response = $client->receiveInvoices();
 
@@ -167,8 +172,9 @@ class Integrations extends Admin_Controller
     {
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchantClientId);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
+
             return;
         }
 
@@ -176,7 +182,7 @@ class Integrations extends Admin_Controller
 
         $registry = new IntegrationClientRegistry();
         $provider = $registry->getClient($merchantClient['merchant_type']);
-        $client = new IntegrationClient($provider, $settings);
+        $client   = new IntegrationClient($provider, $settings);
 
         $events = $client->getInvoiceEvents();
 
@@ -210,14 +216,14 @@ class Integrations extends Admin_Controller
             (int) $merchantClientId
         );
 
-        if (!$merchantClient) {
+        if ( ! $merchantClient) {
             show_error(trans('merchant_client_not_found'));
         }
 
         $lastResponse = $this->Merchant_responses_model
             ->get_last_response_by_invoice((int) $invoiceId);
 
-        if (!$lastResponse) {
+        if ( ! $lastResponse) {
             $this->session->set_flashdata(
                 'alert_error',
                 trans('einvoice_no_transmission_found')
@@ -226,7 +232,7 @@ class Integrations extends Admin_Controller
             redirect('invoices/view/' . (int) $invoiceId);
         }
 
-	$this->load->model('integrations/Merchant_clients_model');
+        $this->load->model('integrations/Merchant_clients_model');
         $settings = $this->Merchant_clients_model
             ->get_settings($merchantClient);
 
@@ -242,13 +248,14 @@ class Integrations extends Admin_Controller
         );
         if (empty($lastResponse['external_id'])) {
             $this->session->set_flashdata(
-                 'alert_error',
-                 trans('einvoice_no_external_reference')
+                'alert_error',
+                trans('einvoice_no_external_reference')
             );
 
             redirect('invoices/view/' . (int) $invoiceId);
+
             return;
-	}
+        }
 
         $status = $client->getInvoiceStatus(
             $lastResponse['external_id']
@@ -256,11 +263,11 @@ class Integrations extends Admin_Controller
 
         $this->Merchant_responses_model->save_status(
             (int) $invoiceId,
-	    $status,
-	    $lastResponse
+            $status,
+            $lastResponse
         );
 
-        if (!empty($status['success'])) {
+        if ( ! empty($status['success'])) {
             $this->session->set_flashdata(
                 'alert_success',
                 'PDP status: ' . ($status['status'] ?? 'unknown')
@@ -289,6 +296,7 @@ class Integrations extends Admin_Controller
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode(['reachable' => false, 'error' => trans('peppol_no_provider')]));
+
             return;
         }
 

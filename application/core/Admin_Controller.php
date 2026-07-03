@@ -45,7 +45,6 @@ class Admin_Controller extends User_Controller
         }
     }
 
-
     protected function ensure_valid_post_request(string $redirect_url): bool
     {
         if ($this->input->method(true) !== 'POST') {

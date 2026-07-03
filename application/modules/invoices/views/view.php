@@ -738,13 +738,13 @@ if ($default_custom) {
                         <td><?php echo htmlsc($row['merchant_response_driver']); ?></td>
                         <td>
                             <?php
-                            $s     = $row['status'] ?? '';
-                            $badge = match(true) {
-                                in_array($s, ['sent', 'accepted', 'delivered'], true) => 'success',
-                                in_array($s, ['error', 'rejected', 'failed'], true)   => 'danger',
-                                default                                                => 'warning',
-                            };
-                            ?>
+                            $s = $row['status'] ?? '';
+                    $badge     = match(true) {
+                        in_array($s, ['sent', 'accepted', 'delivered'], true) => 'success',
+                        in_array($s, ['error', 'rejected', 'failed'], true)   => 'danger',
+                        default                                               => 'warning',
+                    };
+                    ?>
                             <span class="label label-<?php echo $badge; ?>"><?php echo htmlsc($s); ?></span>
                         </td>
                         <td><?php echo htmlsc($row['peppol_participant_id'] ?? ''); ?></td>

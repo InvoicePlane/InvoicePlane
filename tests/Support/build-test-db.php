@@ -13,7 +13,6 @@
  * Usage:
  *   php tests/Support/build-test-db.php [/path/to/database.sqlite]
  */
-
 $dbPath = $argv[1] ?? __DIR__ . '/../../storage/test.sqlite';
 
 $dir = dirname($dbPath);
@@ -58,9 +57,9 @@ foreach ($files as $file) {
             // Tolerate "duplicate column" and similar upgrade-idempotency errors
             $msg = $e->getMessage();
             if (
-                str_contains($msg, 'duplicate column') ||
-                str_contains($msg, 'already exists') ||
-                str_contains($msg, 'no such column')
+                str_contains($msg, 'duplicate column')
+                || str_contains($msg, 'already exists')
+                || str_contains($msg, 'no such column')
             ) {
                 // ignore — migration ran on already-updated schema
                 continue;
@@ -202,8 +201,8 @@ function expandAlterTable(string $sql): string
                 } elseif (preg_match('/^ADD\s+(?:UNIQUE\s+)?(?:INDEX|KEY)\s+(?:"([^"]+)"|\w+)\s*(\([^)]+\))/is', $clause, $im)) {
                     $idxName = $im[1] ?? 'idx_' . md5($clause);
                     $cols    = $im[2];
-                    $unique  = stripos($clause, 'UNIQUE') !== false ? 'UNIQUE ' : '';
-                    $out[] = "CREATE {$unique}INDEX IF NOT EXISTS \"{$idxName}\" ON {$table} {$cols}";
+                    $unique  = mb_stripos($clause, 'UNIQUE') !== false ? 'UNIQUE ' : '';
+                    $out[]   = "CREATE {$unique}INDEX IF NOT EXISTS \"{$idxName}\" ON {$table} {$cols}";
                 } else {
                     // Unknown clause — emit as comment
                     $out[] = '-- skipped: ' . preg_replace('/\s+/', ' ', $clause);
@@ -231,7 +230,7 @@ function seedDefaults(PDO $pdo): void
     $settings = [
         ['setting_key' => 'default_language',       'setting_value' => 'english'],
         ['setting_key' => 'currency_symbol',         'setting_value' => '$'],
-        ['setting_key' => 'currency_symbol_placement','setting_value' => 'before'],
+        ['setting_key' => 'currency_symbol_placement', 'setting_value' => 'before'],
         ['setting_key' => 'date_format',             'setting_value' => 'Y-m-d'],
         ['setting_key' => 'time_format',             'setting_value' => 'H:i'],
         ['setting_key' => 'pdf_engine',              'setting_value' => 'pdfmake'],

@@ -43,12 +43,12 @@
                     <td>
                         <?php
                         $status = $row['status'] ?? '';
-                        $badge  = match(true) {
-                            in_array($status, ['sent', 'accepted', 'delivered'], true) => 'success',
-                            in_array($status, ['error', 'rejected', 'failed'], true)   => 'danger',
-                            default                                                     => 'warning',
-                        };
-                        ?>
+                $badge          = match(true) {
+                    in_array($status, ['sent', 'accepted', 'delivered'], true) => 'success',
+                    in_array($status, ['error', 'rejected', 'failed'], true)   => 'danger',
+                    default                                                    => 'warning',
+                };
+                ?>
                         <span class="label label-<?php echo $badge; ?>"><?php echo htmlsc($status); ?></span>
                     </td>
                     <td><?php echo htmlsc($row['merchant_response']); ?></td>

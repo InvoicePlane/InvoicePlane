@@ -3,6 +3,7 @@
 namespace Tests\Unit\Integration;
 
 use PHPUnit\Framework\TestCase;
+use RequestMethod;
 use RuntimeException;
 use SuperPdpClient;
 
@@ -12,10 +13,15 @@ use SuperPdpClient;
 class FakeSuperPdpClient extends SuperPdpClient
 {
     public array $requestLog = [];
+
     public array $tokenLog = [];
+
     private array $responses;
+
     private int $callIndex = 0;
+
     private array $tokenResponse;
+
     private ?string $tokenError;
 
     public function __construct(
@@ -23,9 +29,9 @@ class FakeSuperPdpClient extends SuperPdpClient
         array $tokenResponse = ['access_token' => 'fake-token'],
         ?string $tokenError = null
     ) {
-        $this->responses = $responses;
+        $this->responses     = $responses;
         $this->tokenResponse = $tokenResponse;
-        $this->tokenError = $tokenError;
+        $this->tokenError    = $tokenError;
     }
 
     protected function oauthFetchToken(string $tokenUrl, string $clientId, string $clientSecret): array
@@ -40,7 +46,7 @@ class FakeSuperPdpClient extends SuperPdpClient
     }
 
     protected function request(
-        \RequestMethod $method,
+        RequestMethod $method,
         string $url,
         array $payload = [],
         bool $multipart = false,
@@ -49,34 +55,19 @@ class FakeSuperPdpClient extends SuperPdpClient
         $this->requestLog[] = compact('method', 'url', 'payload', 'multipart', 'requestDebug');
 
         return $this->responses[$this->callIndex++] ?? [
-            'success' => true,
+            'success'     => true,
             'external_id' => null,
-            'status' => 'sent',
-            'message' => 'ok',
-            'http_code' => 200,
-            'request' => ['url' => $url, 'method' => $method->value],
-            'response' => [],
+            'status'      => 'sent',
+            'message'     => 'ok',
+            'http_code'   => 200,
+            'request'     => ['url' => $url, 'method' => $method->value],
+            'response'    => [],
         ];
     }
 }
 
 class SuperPdpClientTest extends TestCase
 {
-    private function defaultSettings(): array
-    {
-        return [
-            'client_id' => 'cid',
-            'client_secret' => 'csecret',
-            'token_url' => 'https://api.superpdp.tech/oauth2/token',
-            'api_base_url' => 'https://api.superpdp.tech',
-            'invoice_endpoint' => '/v1.beta/invoices',
-            'invoice_status_endpoint' => '/v1.beta/invoices/{id}',
-            'incoming_invoices_endpoint' => '/v1.beta/invoices',
-            'invoice_events_endpoint' => '/v1.beta/invoice_events',
-            'disable_pre_check' => false,
-        ];
-    }
-
     // --- authenticate ---
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -100,8 +91,8 @@ class SuperPdpClientTest extends TestCase
     public function it_rejects_authenticate_when_client_id_is_missing(): void
     {
         /* Arrange */
-        $provider = new FakeSuperPdpClient();
-        $settings = $this->defaultSettings();
+        $provider              = new FakeSuperPdpClient();
+        $settings              = $this->defaultSettings();
         $settings['client_id'] = '';
 
         /* Act */
@@ -116,8 +107,8 @@ class SuperPdpClientTest extends TestCase
     public function it_rejects_authenticate_when_client_secret_is_missing(): void
     {
         /* Arrange */
-        $provider = new FakeSuperPdpClient();
-        $settings = $this->defaultSettings();
+        $provider                  = new FakeSuperPdpClient();
+        $settings                  = $this->defaultSettings();
         $settings['client_secret'] = '';
 
         /* Act */
@@ -131,8 +122,8 @@ class SuperPdpClientTest extends TestCase
     public function it_rejects_authenticate_when_token_url_is_missing(): void
     {
         /* Arrange */
-        $provider = new FakeSuperPdpClient();
-        $settings = $this->defaultSettings();
+        $provider              = new FakeSuperPdpClient();
+        $settings              = $this->defaultSettings();
         $settings['token_url'] = '';
 
         /* Act */
@@ -227,7 +218,7 @@ class SuperPdpClientTest extends TestCase
 
         /* Assert */
         $this->assertTrue($result['success']);
-        $this->assertSame(\RequestMethod::POST, $provider->requestLog[0]['method']);
+        $this->assertSame(RequestMethod::POST, $provider->requestLog[0]['method']);
         $this->assertTrue($provider->requestLog[0]['multipart']);
     }
 
@@ -235,9 +226,9 @@ class SuperPdpClientTest extends TestCase
     public function it_appends_the_disable_pre_check_flag_to_the_url(): void
     {
         /* Arrange */
-        $settings = $this->defaultSettings();
+        $settings                      = $this->defaultSettings();
         $settings['disable_pre_check'] = true;
-        $provider = new FakeSuperPdpClient();
+        $provider                      = new FakeSuperPdpClient();
         $provider->authenticate($settings);
         $tmp = tempnam(sys_get_temp_dir(), 'inv') . '.pdf';
         file_put_contents($tmp, '%PDF-1.4');
@@ -274,9 +265,9 @@ class SuperPdpClientTest extends TestCase
     public function it_rejects_get_status_when_the_endpoint_setting_is_missing(): void
     {
         /* Arrange */
-        $settings = $this->defaultSettings();
+        $settings                            = $this->defaultSettings();
         $settings['invoice_status_endpoint'] = '';
-        $provider = new FakeSuperPdpClient();
+        $provider                            = new FakeSuperPdpClient();
         $provider->authenticate($settings);
 
         /* Act */
@@ -306,9 +297,9 @@ class SuperPdpClientTest extends TestCase
     public function it_rejects_receive_when_the_endpoint_setting_is_missing(): void
     {
         /* Arrange */
-        $settings = $this->defaultSettings();
+        $settings                               = $this->defaultSettings();
         $settings['incoming_invoices_endpoint'] = '';
-        $provider = new FakeSuperPdpClient();
+        $provider                               = new FakeSuperPdpClient();
         $provider->authenticate($settings);
 
         /* Act */
@@ -331,16 +322,16 @@ class SuperPdpClientTest extends TestCase
         $provider->getInvoiceEvents();
 
         /* Assert */
-        $this->assertSame(\RequestMethod::GET, $provider->requestLog[0]['method']);
+        $this->assertSame(RequestMethod::GET, $provider->requestLog[0]['method']);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_get_events_when_the_endpoint_setting_is_missing(): void
     {
         /* Arrange */
-        $settings = $this->defaultSettings();
+        $settings                            = $this->defaultSettings();
         $settings['invoice_events_endpoint'] = '';
-        $provider = new FakeSuperPdpClient();
+        $provider                            = new FakeSuperPdpClient();
         $provider->authenticate($settings);
 
         /* Act */
@@ -398,9 +389,24 @@ class SuperPdpClientTest extends TestCase
         $metadata = ['ref' => 'INV-001', 'custom' => true];
 
         /* Act */
-        $result = $provider->buildInvoicePayload((object)[], [], $metadata);
+        $result = $provider->buildInvoicePayload((object) [], [], $metadata);
 
         /* Assert */
         $this->assertSame($metadata, $result);
+    }
+
+    private function defaultSettings(): array
+    {
+        return [
+            'client_id'                  => 'cid',
+            'client_secret'              => 'csecret',
+            'token_url'                  => 'https://api.superpdp.tech/oauth2/token',
+            'api_base_url'               => 'https://api.superpdp.tech',
+            'invoice_endpoint'           => '/v1.beta/invoices',
+            'invoice_status_endpoint'    => '/v1.beta/invoices/{id}',
+            'incoming_invoices_endpoint' => '/v1.beta/invoices',
+            'invoice_events_endpoint'    => '/v1.beta/invoice_events',
+            'disable_pre_check'          => false,
+        ];
     }
 }

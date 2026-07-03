@@ -1,13 +1,13 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class LetsPeppolParticipantEndpoint
 {
     public function __construct(private LetsPeppolApiClient $client) {}
 
     /**
-     * GET {participant_lookup_endpoint}  →  /v1/participants/{id}
+     * GET {participant_lookup_endpoint}  →  /v1/participants/{id}.
      *
      * Response (JSON):
      *   id          string  participant identifier (e.g. "0088:1234567890")
@@ -29,7 +29,7 @@ class LetsPeppolParticipantEndpoint
     }
 
     /**
-     * GET {participants_endpoint}?{filters}
+     * GET {participants_endpoint}?{filters}.
      *
      * Response (JSON):
      *   data[]  array  list of participant objects

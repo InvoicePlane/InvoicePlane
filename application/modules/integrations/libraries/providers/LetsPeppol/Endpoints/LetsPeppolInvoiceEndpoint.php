@@ -1,13 +1,13 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class LetsPeppolInvoiceEndpoint
 {
     public function __construct(private LetsPeppolApiClient $client) {}
 
     /**
-     * POST {invoice_endpoint}  (multipart)
+     * POST {invoice_endpoint}  (multipart).
      *
      * Request:
      *   file      file    PDF invoice document (UBL or PEPPOL BIS)
@@ -31,7 +31,7 @@ class LetsPeppolInvoiceEndpoint
             'file' => new \CURLFile($documentPath, 'application/pdf', basename($documentPath)),
         ];
 
-        if (!empty($metadata)) {
+        if ( ! empty($metadata)) {
             $payload['metadata'] = json_encode($metadata);
         }
 
@@ -39,7 +39,7 @@ class LetsPeppolInvoiceEndpoint
     }
 
     /**
-     * GET {invoice_status_endpoint}  →  /v1/invoices/{id}
+     * GET {invoice_status_endpoint}  →  /v1/invoices/{id}.
      *
      * Response (JSON):
      *   id      string  invoice external ID
@@ -53,14 +53,14 @@ class LetsPeppolInvoiceEndpoint
             throw new \RuntimeException('Missing LetsPeppol invoice status endpoint configuration.');
         }
 
-        $url = $this->client->buildUrl($settings['invoice_status_endpoint'], $externalId);
+        $url      = $this->client->buildUrl($settings['invoice_status_endpoint'], $externalId);
         $response = $this->client->request(RequestMethod::GET, $url);
 
         return array_merge($response, ['external_id' => $externalId]);
     }
 
     /**
-     * GET {incoming_invoices_endpoint}?{filters}
+     * GET {incoming_invoices_endpoint}?{filters}.
      *
      * Response (JSON):
      *   data[]  array  list of incoming invoice objects
@@ -80,7 +80,7 @@ class LetsPeppolInvoiceEndpoint
     }
 
     /**
-     * GET {invoice_events_endpoint}?{filters}
+     * GET {invoice_events_endpoint}?{filters}.
      *
      * Response (JSON):
      *   data[]  array  list of invoice event objects (status changes, delivery attempts)

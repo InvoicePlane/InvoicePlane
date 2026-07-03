@@ -1,13 +1,13 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class LetsPeppolDocumentEndpoint
 {
     public function __construct(private LetsPeppolApiClient $client) {}
 
     /**
-     * GET {document_endpoint}  →  /v1/documents/{id}
+     * GET {document_endpoint}  →  /v1/documents/{id}.
      *
      * Response (JSON):
      *   id           string  document ID
@@ -29,7 +29,7 @@ class LetsPeppolDocumentEndpoint
     }
 
     /**
-     * GET {documents_endpoint}?{filters}
+     * GET {documents_endpoint}?{filters}.
      *
      * Response (JSON):
      *   data[]  array  list of document objects

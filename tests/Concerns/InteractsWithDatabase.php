@@ -27,6 +27,7 @@ trait InteractsWithDatabase
             $testFile     = $basePath . '/storage/test.sqlite';
             self::$testDb = null;
             copy($cleanFile, $testFile);
+
             return;
         }
 
@@ -59,7 +60,7 @@ trait InteractsWithDatabase
         $quotedTable   = $this->qi($table);
         $quotedColumns = implode(', ', array_map($this->qi(...), $columns));
 
-        $sql  = sprintf(
+        $sql = sprintf(
             'INSERT INTO %s (%s) VALUES (%s)',
             $quotedTable,
             $quotedColumns,
@@ -86,7 +87,7 @@ trait InteractsWithDatabase
         $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
         $prefix = ($driver === 'sqlite') ? 'INSERT OR IGNORE' : 'INSERT IGNORE';
 
-        $sql  = sprintf(
+        $sql = sprintf(
             '%s INTO %s (%s) VALUES (%s)',
             $prefix,
             $quotedTable,
@@ -113,7 +114,7 @@ trait InteractsWithDatabase
             $params['wh_' . $key] = $value;
         }
 
-        $sql  = sprintf(
+        $sql = sprintf(
             'UPDATE %s SET %s WHERE %s',
             $this->qi($table),
             implode(', ', $setParts),
@@ -146,7 +147,7 @@ trait InteractsWithDatabase
         );
         $stmt->execute([$rowid]);
 
-        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
     protected function databaseDelete(string $table, array $where): void
@@ -160,7 +161,7 @@ trait InteractsWithDatabase
             $params[$key] = $value;
         }
 
-        $sql  = sprintf(
+        $sql = sprintf(
             'DELETE FROM %s WHERE %s',
             $this->qi($table),
             implode(' AND ', $whereParts)
@@ -180,14 +181,14 @@ trait InteractsWithDatabase
             $params[$key] = $value;
         }
 
-        $sql  = sprintf(
+        $sql = sprintf(
             'SELECT * FROM %s WHERE %s LIMIT 1',
             $this->qi($table),
             implode(' AND ', $whereParts)
         );
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
-        $row  = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row ?: null;
     }
@@ -223,7 +224,7 @@ trait InteractsWithDatabase
             $sql .= ' WHERE ' . implode(' AND ', $whereParts);
         }
 
-        $stmt  = $db->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute($params);
         $count = (int) $stmt->fetchColumn();
 
@@ -420,14 +421,14 @@ trait InteractsWithDatabase
                 'project_id'       => (string) ($overrides['project_id'] ?? 0),
             ],
             'ip_quotes' => [
-                'client_id'          => (string) ($overrides['client_id'] ?? 1),
-                'user_id'            => 1,
-                'invoice_group_id'   => 1,
-                'quote_date_created' => date('Y-m-d'),
-                'quote_date_modified'=> date('Y-m-d'),
-                'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-                'quote_number'       => 'QUO-' . time() . '-' . random_int(100, 999),
-                'quote_url_key'      => bin2hex(random_bytes(16)),
+                'client_id'           => (string) ($overrides['client_id'] ?? 1),
+                'user_id'             => 1,
+                'invoice_group_id'    => 1,
+                'quote_date_created'  => date('Y-m-d'),
+                'quote_date_modified' => date('Y-m-d'),
+                'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
+                'quote_number'        => 'QUO-' . time() . '-' . random_int(100, 999),
+                'quote_url_key'       => bin2hex(random_bytes(16)),
             ],
             'ip_users' => [
                 'user_name'          => 'test_' . bin2hex(random_bytes(3)),

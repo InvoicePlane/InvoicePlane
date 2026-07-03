@@ -91,41 +91,6 @@ class Sessions extends Base_Controller
         return false;
     }
 
-    /**
-     * Returns true when the current IP has exceeded the login attempt threshold.
-     */
-    private function _is_ip_rate_limited_login(): bool
-    {
-        $max_attempts   = (int) env('LOGIN_IP_MAX_ATTEMPTS', 20);
-        $window_minutes = (int) env('LOGIN_IP_WINDOW_MINUTES', 15);
-        $session_key    = 'login_attempts_ip_' . md5($this->input->ip_address());
-        $attempts       = $this->session->userdata($session_key) ?: [];
-        $cutoff         = time() - ($window_minutes * 60);
-        $attempts       = array_values(array_filter($attempts, fn ($t) => $t > $cutoff));
-
-        return count($attempts) >= $max_attempts;
-    }
-
-    /**
-     * Records one failed login attempt for the current IP.
-     */
-    private function _record_ip_login_attempt(): void
-    {
-        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
-        $attempts    = $this->session->userdata($session_key) ?: [];
-        $attempts[]  = time();
-        $this->session->set_userdata($session_key, $attempts);
-    }
-
-    /**
-     * Clears IP-based login attempt counter on successful authentication.
-     */
-    private function _reset_ip_login_attempts(): void
-    {
-        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
-        $this->session->unset_userdata($session_key);
-    }
-
     public function logout()
     {
         $this->session->sess_destroy();
@@ -394,6 +359,41 @@ class Sessions extends Base_Controller
         }
 
         return $this->load->view('session_passwordreset');
+    }
+
+    /**
+     * Returns true when the current IP has exceeded the login attempt threshold.
+     */
+    private function _is_ip_rate_limited_login(): bool
+    {
+        $max_attempts   = (int) env('LOGIN_IP_MAX_ATTEMPTS', 20);
+        $window_minutes = (int) env('LOGIN_IP_WINDOW_MINUTES', 15);
+        $session_key    = 'login_attempts_ip_' . md5($this->input->ip_address());
+        $attempts       = $this->session->userdata($session_key) ?: [];
+        $cutoff         = time() - ($window_minutes * 60);
+        $attempts       = array_values(array_filter($attempts, fn ($t) => $t > $cutoff));
+
+        return count($attempts) >= $max_attempts;
+    }
+
+    /**
+     * Records one failed login attempt for the current IP.
+     */
+    private function _record_ip_login_attempt(): void
+    {
+        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
+        $attempts    = $this->session->userdata($session_key) ?: [];
+        $attempts[]  = time();
+        $this->session->set_userdata($session_key, $attempts);
+    }
+
+    /**
+     * Clears IP-based login attempt counter on successful authentication.
+     */
+    private function _reset_ip_login_attempts(): void
+    {
+        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
+        $this->session->unset_userdata($session_key);
     }
 
     /**
@@ -676,8 +676,8 @@ class Sessions extends Base_Controller
 
         // Compare parsed hosts rather than string prefixes to resist
         // bypass attempts such as https://example.com.evil.com/...
-        $referer_host  = parse_url($referer, PHP_URL_HOST);
-        $base_host     = parse_url($base_url, PHP_URL_HOST);
+        $referer_host = parse_url($referer, PHP_URL_HOST);
+        $base_host    = parse_url($base_url, PHP_URL_HOST);
 
         if ( ! $referer_host || ! $base_host || $referer_host !== $base_host) {
             return $default;

@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class CurlApiClient implements ApiClientInterface
 {
@@ -8,7 +8,7 @@ class CurlApiClient implements ApiClientInterface
     {
         $headers = ['Accept: application/json'];
 
-        if (!empty($options['bearer'])) {
+        if ( ! empty($options['bearer'])) {
             $headers[] = 'Authorization: Bearer ' . $options['bearer'];
         }
 
@@ -16,7 +16,7 @@ class CurlApiClient implements ApiClientInterface
             $headers[] = $h;
         }
 
-        if (!empty($options['query'])) {
+        if ( ! empty($options['query'])) {
             $url .= '?' . http_build_query($options['query']);
         }
 

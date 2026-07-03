@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -51,7 +51,7 @@ class Incoming extends Admin_Controller
     {
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchant_client_id);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
         }
 
@@ -89,4 +89,3 @@ class Incoming extends Admin_Controller
         redirect('integrations/incoming');
     }
 }
-

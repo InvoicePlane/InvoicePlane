@@ -1,10 +1,11 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class QontoClient implements IntegrationClientInterface
 {
     private array $settings = [];
+
     private ApiClientInterface $http;
 
     public function __construct(?ApiClientInterface $http = null)
@@ -25,15 +26,15 @@ class QontoClient implements IntegrationClientInterface
     public static function defaultSettings(): array
     {
         return [
-            'access_token' => '',
-            'staging_token' => '',
-            'api_base_url' => 'https://thirdparty.qonto.com',
-            'upload_endpoint' => '/v2/client_invoices/uploads',
-            'invoice_endpoint' => '/v2/client_invoices',
-            'send_invoice_endpoint' => '/v2/client_invoices/{id}/send_by_einvoice',
-            'invoice_status_endpoint' => '/v2/client_invoices/{id}',
+            'access_token'               => '',
+            'staging_token'              => '',
+            'api_base_url'               => 'https://thirdparty.qonto.com',
+            'upload_endpoint'            => '/v2/client_invoices/uploads',
+            'invoice_endpoint'           => '/v2/client_invoices',
+            'send_invoice_endpoint'      => '/v2/client_invoices/{id}/send_by_einvoice',
+            'invoice_status_endpoint'    => '/v2/client_invoices/{id}',
             'incoming_invoices_endpoint' => '/v2/supplier_invoices',
-            'invoice_events_endpoint' => '/v2/client_invoices/{id}',
+            'invoice_events_endpoint'    => '/v2/client_invoices/{id}',
         ];
     }
 
@@ -57,7 +58,7 @@ class QontoClient implements IntegrationClientInterface
 
     public function sendInvoice(string $documentPath, array $metadata): array
     {
-        if (!file_exists($documentPath)) {
+        if ( ! file_exists($documentPath)) {
             throw new \RuntimeException('Invoice document not found: ' . $documentPath);
         }
 
@@ -77,14 +78,14 @@ class QontoClient implements IntegrationClientInterface
 
         if (empty($invoicePayload)) {
             return [
-                'success' => false,
+                'success'     => false,
                 'external_id' => null,
-                'status' => 'error',
-                'message' => 'Missing qonto_invoice_payload metadata. Qonto requires invoice data to create the client invoice.',
-                'http_code' => null,
-                'request' => [
+                'status'      => 'error',
+                'message'     => 'Missing qonto_invoice_payload metadata. Qonto requires invoice data to create the client invoice.',
+                'http_code'   => null,
+                'request'     => [
                     'document_path' => $documentPath,
-                    'metadata' => $metadata,
+                    'metadata'      => $metadata,
                 ],
                 'response' => $uploadResponse,
             ];
@@ -102,15 +103,15 @@ class QontoClient implements IntegrationClientInterface
 
         $sendResponse = $this->sendClientInvoiceByEinvoice($clientInvoiceId);
 
-        $sendResponse['external_id'] = $clientInvoiceId;
-        $sendResponse['request']['upload_id'] = $uploadId;
+        $sendResponse['external_id']                  = $clientInvoiceId;
+        $sendResponse['request']['upload_id']         = $uploadId;
         $sendResponse['request']['client_invoice_id'] = $clientInvoiceId;
 
         return $sendResponse;
     }
 
     /**
-     * GET /v2/client_invoices/{id}
+     * GET /v2/client_invoices/{id}.
      *
      * Response (JSON):
      *   client_invoice.id      string
@@ -122,7 +123,7 @@ class QontoClient implements IntegrationClientInterface
         $this->requireSetting('invoice_status_endpoint');
 
         $endpoint = str_replace('{id}', urlencode($externalId), $this->settings['invoice_status_endpoint']);
-        $url = $this->buildUrl($endpoint);
+        $url      = $this->buildUrl($endpoint);
 
         $response = $this->request(RequestMethod::GET, $url);
 
@@ -132,18 +133,18 @@ class QontoClient implements IntegrationClientInterface
             ?? [];
 
         return [
-            'success' => $response['success'],
+            'success'     => $response['success'],
             'external_id' => $externalId,
-            'status' => $invoice['status'] ?? $response['status'],
-            'message' => $response['message'],
-            'http_code' => $response['http_code'],
-            'request' => $response['request'],
-            'response' => $response['response'],
+            'status'      => $invoice['status'] ?? $response['status'],
+            'message'     => $response['message'],
+            'http_code'   => $response['http_code'],
+            'request'     => $response['request'],
+            'response'    => $response['response'],
         ];
     }
 
     /**
-     * GET /v2/supplier_invoices?{filters}
+     * GET /v2/supplier_invoices?{filters}.
      *
      * Response (JSON):
      *   data[]  array  list of supplier invoice objects
@@ -159,7 +160,7 @@ class QontoClient implements IntegrationClientInterface
     }
 
     /**
-     * GET /v2/client_invoices/{id}?{filters}
+     * GET /v2/client_invoices/{id}?{filters}.
      *
      * Response (JSON):
      *   client_invoice  object  includes status history events
@@ -173,8 +174,56 @@ class QontoClient implements IntegrationClientInterface
         return $this->request(RequestMethod::GET, $url);
     }
 
+    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
+    {
+        $metadata['qonto_invoice_payload'] = [
+            'client_invoice' => [
+                'number'     => $invoice->invoice_number,
+                'issue_date' => $invoice->invoice_date_created,
+                'due_date'   => $invoice->invoice_date_due,
+                'currency'   => $invoice->client_currency ?: 'EUR',
+                'client'     => [
+                    'name'  => $invoice->client_name,
+                    'email' => $invoice->client_email,
+                ],
+                'line_items' => array_map(static function ($item) {
+                    return [
+                        'title'       => $item->item_name,
+                        'description' => $item->item_description,
+                        'quantity'    => (float) $item->item_quantity,
+                        'unit_price'  => (float) $item->item_price,
+                    ];
+                }, $items),
+            ],
+        ];
+
+        return $metadata;
+    }
+
+    protected function request(
+        RequestMethod $method,
+        string $url,
+        array $payload = [],
+        bool $multipart = false,
+        array $requestDebug = []
+    ): array {
+        $options = ['bearer' => $this->settings['access_token']];
+
+        if ( ! empty($this->settings['staging_token'])) {
+            $options['headers'] = ['X-Qonto-Staging-Token: ' . $this->settings['staging_token']];
+        }
+
+        if ($multipart) {
+            $options['multipart'] = $payload;
+        } elseif ($method === RequestMethod::POST && ! empty($payload)) {
+            $options['json'] = $payload;
+        }
+
+        return $this->http->request($method, $url, $options);
+    }
+
     /**
-     * POST /v2/client_invoices/uploads  (multipart)
+     * POST /v2/client_invoices/uploads  (multipart).
      *
      * Request:
      *   client_invoices_upload  file  PDF invoice file
@@ -207,7 +256,7 @@ class QontoClient implements IntegrationClientInterface
 
         if ($response['success'] && empty($uploadId)) {
             $response['success'] = false;
-            $response['status'] = 'error';
+            $response['status']  = 'error';
             $response['message'] = 'Qonto upload succeeded but no upload ID was returned.';
         }
 
@@ -215,7 +264,7 @@ class QontoClient implements IntegrationClientInterface
     }
 
     /**
-     * POST /v2/client_invoices
+     * POST /v2/client_invoices.
      *
      * Request (JSON):
      *   client_invoice.number     string
@@ -246,7 +295,7 @@ class QontoClient implements IntegrationClientInterface
 
         if ($response['success'] && empty($clientInvoiceId)) {
             $response['success'] = false;
-            $response['status'] = 'error';
+            $response['status']  = 'error';
             $response['message'] = 'Qonto invoice creation succeeded but no client invoice ID was returned.';
         }
 
@@ -254,7 +303,7 @@ class QontoClient implements IntegrationClientInterface
     }
 
     /**
-     * POST /v2/client_invoices/{id}/send_by_einvoice
+     * POST /v2/client_invoices/{id}/send_by_einvoice.
      *
      * Request: empty body
      *
@@ -277,33 +326,11 @@ class QontoClient implements IntegrationClientInterface
         ]);
     }
 
-    protected function request(
-        RequestMethod $method,
-        string $url,
-        array $payload = [],
-        bool $multipart = false,
-        array $requestDebug = []
-    ): array {
-        $options = ['bearer' => $this->settings['access_token']];
-
-        if (!empty($this->settings['staging_token'])) {
-            $options['headers'] = ['X-Qonto-Staging-Token: ' . $this->settings['staging_token']];
-        }
-
-        if ($multipart) {
-            $options['multipart'] = $payload;
-        } elseif ($method === RequestMethod::POST && !empty($payload)) {
-            $options['json'] = $payload;
-        }
-
-        return $this->http->request($method, $url, $options);
-    }
-
     private function buildUrl(string $endpoint, array $query = []): string
     {
         $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
 
-        if (!empty($query)) {
+        if ( ! empty($query)) {
             $url .= '?' . http_build_query($query);
         }
 
@@ -315,31 +342,5 @@ class QontoClient implements IntegrationClientInterface
         if (empty($this->settings[$key])) {
             throw new \RuntimeException('Missing Qonto setting: ' . $key);
         }
-    }
-
-    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
-    {
-        $metadata['qonto_invoice_payload'] = [
-            'client_invoice' => [
-                'number' => $invoice->invoice_number,
-                'issue_date' => $invoice->invoice_date_created,
-                'due_date' => $invoice->invoice_date_due,
-                'currency' => $invoice->client_currency ?: 'EUR',
-                'client' => [
-                    'name' => $invoice->client_name,
-                    'email' => $invoice->client_email,
-                ],
-                'line_items' => array_map(static function ($item) {
-                    return [
-                        'title' => $item->item_name,
-                        'description' => $item->item_description,
-                        'quantity' => (float) $item->item_quantity,
-                        'unit_price' => (float) $item->item_price,
-                    ];
-                }, $items),
-            ],
-        ];
-
-        return $metadata;
     }
 }

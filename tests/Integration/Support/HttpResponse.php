@@ -39,8 +39,8 @@ class HttpResponse
     public function redirectUrl(): string
     {
         foreach ($this->headers as $header) {
-            if (stripos($header, 'Location:') === 0) {
-                return trim(substr($header, 9));
+            if (mb_stripos($header, 'Location:') === 0) {
+                return trim(mb_substr($header, 9));
             }
         }
 
