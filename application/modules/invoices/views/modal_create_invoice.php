@@ -11,7 +11,7 @@
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
-            // will create the new client if necessar
+            // will create the new client if necessary
             $.post("<?php echo site_url('invoices/ajax/create'); ?>", {
                     client_id: $('#create_invoice_client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
