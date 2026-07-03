@@ -24,24 +24,28 @@ class MerchantClient
     public function sendInvoice(string $documentPath, array $metadata): array
     {
         $this->authenticate();
+
         return $this->provider->sendInvoice($documentPath, $metadata);
     }
 
     public function getInvoiceStatus(string $externalId): array
     {
         $this->authenticate();
+
         return $this->provider->getInvoiceStatus($externalId);
     }
 
     public function receiveInvoices(array $filters = []): array
     {
         $this->authenticate();
+
         return $this->provider->receiveInvoices($filters);
     }
 
     public function getInvoiceEvents(array $filters = []): array
     {
         $this->authenticate();
+
         return $this->provider->getInvoiceEvents($filters);
     }
 }

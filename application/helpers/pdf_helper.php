@@ -70,8 +70,8 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper(['country', 'client']);
 
-    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-    $invoice = $CI->mdl_invoices->get_payments($invoice);
+    $invoice                   = $CI->mdl_invoices->get_by_id($invoice_id);
+    $invoice                   = $CI->mdl_invoices->get_payments($invoice);
     $invoice->invoice_password = $CI->mdl_invoices->decrypt_invoice_password($invoice->invoice_password);
 
     // Override system language with client language
@@ -219,7 +219,7 @@ function generate_invoice_sumex($invoice_id, $stream = true, $invoice_template =
     $CI = & get_instance();
 
     $CI->load->model('invoices/mdl_items');
-    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+    $invoice                   = $CI->mdl_invoices->get_by_id($invoice_id);
     $invoice->invoice_password = $CI->mdl_invoices->decrypt_invoice_password($invoice->invoice_password);
 
     if ($invoice_template) {
@@ -308,7 +308,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         ]
     );
 
-    $quote = $CI->mdl_quotes->get_by_id($quote_id);
+    $quote                 = $CI->mdl_quotes->get_by_id($quote_id);
     $quote->quote_password = $CI->mdl_quotes->decrypt_quote_password($quote->quote_password);
 
     // Override language with system language

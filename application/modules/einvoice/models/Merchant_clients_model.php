@@ -52,4 +52,3 @@ class Merchant_clients_model extends CI_Model
             ->row_array();
     }
 }
-

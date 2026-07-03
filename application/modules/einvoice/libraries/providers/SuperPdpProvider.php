@@ -21,15 +21,15 @@ class SuperPdpProvider implements MerchantProviderInterface
     public static function defaultSettings(): array
     {
         return [
-            'client_id' => '',
-            'client_secret' => '',
-            'token_url' => 'https://api.superpdp.tech/oauth2/token',
-            'api_base_url' => 'https://api.superpdp.tech',
-            'invoice_endpoint' => '/v1.beta/invoices',
-            'invoice_status_endpoint' => '/v1.beta/invoices/{id}',
+            'client_id'                  => '',
+            'client_secret'              => '',
+            'token_url'                  => 'https://api.superpdp.tech/oauth2/token',
+            'api_base_url'               => 'https://api.superpdp.tech',
+            'invoice_endpoint'           => '/v1.beta/invoices',
+            'invoice_status_endpoint'    => '/v1.beta/invoices/{id}',
             'incoming_invoices_endpoint' => '/v1.beta/invoices',
-            'invoice_events_endpoint' => '/v1.beta/invoice_events',
-            'disable_pre_check' => false,
+            'invoice_events_endpoint'    => '/v1.beta/invoice_events',
+            'disable_pre_check'          => false,
         ];
     }
 
@@ -38,9 +38,9 @@ class SuperPdpProvider implements MerchantProviderInterface
         $this->settings = $settings;
 
         if (
-            empty($settings['client_id']) ||
-            empty($settings['client_secret']) ||
-            empty($settings['token_url'])
+            empty($settings['client_id'])
+            || empty($settings['client_secret'])
+            || empty($settings['token_url'])
         ) {
             throw new RuntimeException('Missing SuperPDP OAuth2 settings.');
         }
@@ -48,23 +48,23 @@ class SuperPdpProvider implements MerchantProviderInterface
         $ch = curl_init();
 
         curl_setopt_array($ch, [
-            CURLOPT_URL => $settings['token_url'],
-            CURLOPT_POST => true,
+            CURLOPT_URL            => $settings['token_url'],
+            CURLOPT_POST           => true,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
+            CURLOPT_HTTPHEADER     => [
                 'Accept: application/json',
                 'Content-Type: application/x-www-form-urlencoded',
             ],
             CURLOPT_POSTFIELDS => http_build_query([
-                'grant_type' => 'client_credentials',
-                'client_id' => $settings['client_id'],
+                'grant_type'    => 'client_credentials',
+                'client_id'     => $settings['client_id'],
                 'client_secret' => $settings['client_secret'],
             ]),
         ]);
 
         $rawResponse = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
+        $httpCode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError   = curl_error($ch);
 
         curl_close($ch);
 
@@ -85,7 +85,7 @@ class SuperPdpProvider implements MerchantProviderInterface
 
     public function sendInvoice(string $documentPath, array $metadata): array
     {
-        if (!file_exists($documentPath)) {
+        if ( ! file_exists($documentPath)) {
             throw new RuntimeException('Invoice document not found: ' . $documentPath);
         }
 
@@ -98,17 +98,17 @@ class SuperPdpProvider implements MerchantProviderInterface
         }
 
         if (empty($this->settings['invoice_endpoint'])) {
-           throw new RuntimeException(
-              'Missing invoice endpoint configuration.'
-           );
+            throw new RuntimeException(
+                'Missing invoice endpoint configuration.'
+            );
         }
 
         $endpoint = $this->settings['invoice_endpoint'];
 
         $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
 
-        if (!empty($this->settings['disable_pre_check'])) {
-           $url .= '?disable_pre_check=1';
+        if ( ! empty($this->settings['disable_pre_check'])) {
+            $url .= '?disable_pre_check=1';
         }
 
         $ch = curl_init();
@@ -116,15 +116,15 @@ class SuperPdpProvider implements MerchantProviderInterface
         // Paramètres spécifiques SuperPDP
 
         $postFields = [
-            'file' => new CURLFile($documentPath, 'application/pdf', basename($documentPath)),
+            'file'     => new CURLFile($documentPath, 'application/pdf', basename($documentPath)),
             'metadata' => json_encode($metadata),
         ];
 
         curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_POST => true,
+            CURLOPT_URL            => $url,
+            CURLOPT_POST           => true,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
+            CURLOPT_HTTPHEADER     => [
                 'Authorization: Bearer ' . $this->accessToken,
                 'Accept: application/json',
             ],
@@ -132,8 +132,8 @@ class SuperPdpProvider implements MerchantProviderInterface
         ]);
 
         $rawResponse = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
+        $httpCode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError   = curl_error($ch);
 
         curl_close($ch);
 
@@ -141,30 +141,30 @@ class SuperPdpProvider implements MerchantProviderInterface
 
         if ($curlError) {
             return [
-                'success' => false,
+                'success'     => false,
                 'external_id' => null,
-                'status' => 'error',
-                'message' => $curlError,
-                'http_code' => $httpCode,
-                'request' => [
-                    'url' => $url,
+                'status'      => 'error',
+                'message'     => $curlError,
+                'http_code'   => $httpCode,
+                'request'     => [
+                    'url'           => $url,
                     'document_path' => $documentPath,
-                    'metadata' => $metadata,
+                    'metadata'      => $metadata,
                 ],
                 'response' => $rawResponse,
             ];
         }
 
         return [
-            'success' => $httpCode >= 200 && $httpCode < 300,
+            'success'     => $httpCode >= 200 && $httpCode < 300,
             'external_id' => $decoded['id'] ?? $decoded['external_id'] ?? null,
-            'status' => $decoded['status'] ?? ($httpCode >= 200 && $httpCode < 300 ? 'sent' : 'error'),
-            'message' => $decoded['message'] ?? 'SuperPDP API response received',
-            'http_code' => $httpCode,
-            'request' => [
-                'url' => $url,
+            'status'      => $decoded['status'] ?? ($httpCode >= 200 && $httpCode < 300 ? 'sent' : 'error'),
+            'message'     => $decoded['message'] ?? 'SuperPDP API response received',
+            'http_code'   => $httpCode,
+            'request'     => [
+                'url'           => $url,
                 'document_path' => $documentPath,
-                'metadata' => $metadata,
+                'metadata'      => $metadata,
             ],
             'response' => $decoded ?: $rawResponse,
         ];
@@ -174,7 +174,7 @@ class SuperPdpProvider implements MerchantProviderInterface
     {
         if (empty($this->settings['invoice_status_endpoint'])) {
             throw new RuntimeException(
-               'Missing invoice status endpoint configuration.'
+                'Missing invoice status endpoint configuration.'
             );
         }
 
@@ -186,39 +186,39 @@ class SuperPdpProvider implements MerchantProviderInterface
         $ch = curl_init();
 
         curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
+            CURLOPT_URL            => $url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
+            CURLOPT_HTTPHEADER     => [
                 'Authorization: Bearer ' . $this->accessToken,
                 'Accept: application/json',
             ],
         ]);
 
         $rawResponse = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
+        $httpCode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError   = curl_error($ch);
         curl_close($ch);
 
         $decoded = json_decode($rawResponse, true);
 
         if ($curlError) {
             return [
-                'success' => false,
+                'success'     => false,
                 'external_id' => $externalId,
-                'status' => 'error',
-                'message' => $curlError,
-                'http_code' => $httpCode,
-                'response' => $rawResponse,
+                'status'      => 'error',
+                'message'     => $curlError,
+                'http_code'   => $httpCode,
+                'response'    => $rawResponse,
             ];
         }
 
         return [
-            'success' => $httpCode >= 200 && $httpCode < 300,
+            'success'     => $httpCode >= 200 && $httpCode < 300,
             'external_id' => $externalId,
-            'status' => $decoded['status'] ?? 'unknown',
-            'message' => $decoded['message'] ?? 'SuperPDP status response received',
-            'http_code' => $httpCode,
-            'response' => $decoded ?: $rawResponse,
+            'status'      => $decoded['status'] ?? 'unknown',
+            'message'     => $decoded['message'] ?? 'SuperPDP status response received',
+            'http_code'   => $httpCode,
+            'response'    => $decoded ?: $rawResponse,
         ];
     }
 
@@ -226,7 +226,7 @@ class SuperPdpProvider implements MerchantProviderInterface
     {
         if (empty($this->settings['incoming_invoices_endpoint'])) {
             throw new RuntimeException(
-               'Missing incoming invoices endpoint configuration.'
+                'Missing incoming invoices endpoint configuration.'
             );
         }
 
@@ -241,17 +241,17 @@ class SuperPdpProvider implements MerchantProviderInterface
         $ch = curl_init();
 
         curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
+            CURLOPT_URL            => $url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
+            CURLOPT_HTTPHEADER     => [
                 'Authorization: Bearer ' . $this->accessToken,
                 'Accept: application/json',
             ],
         ]);
 
         $rawResponse = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
+        $httpCode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError   = curl_error($ch);
 
         curl_close($ch);
 
@@ -259,20 +259,20 @@ class SuperPdpProvider implements MerchantProviderInterface
 
         if ($curlError) {
             return [
-                'success' => false,
-                'status' => 'error',
-                'message' => $curlError,
+                'success'   => false,
+                'status'    => 'error',
+                'message'   => $curlError,
                 'http_code' => $httpCode,
-                'response' => $rawResponse,
+                'response'  => $rawResponse,
             ];
         }
 
         return [
-            'success' => $httpCode >= 200 && $httpCode < 300,
-            'status' => $httpCode >= 200 && $httpCode < 300 ? 'received' : 'error',
-            'message' => 'Incoming invoices response received',
+            'success'   => $httpCode >= 200 && $httpCode < 300,
+            'status'    => $httpCode >= 200 && $httpCode < 300 ? 'received' : 'error',
+            'message'   => 'Incoming invoices response received',
             'http_code' => $httpCode,
-            'response' => $decoded ?: $rawResponse,
+            'response'  => $decoded ?: $rawResponse,
         ];
     }
 
@@ -280,12 +280,12 @@ class SuperPdpProvider implements MerchantProviderInterface
     {
         if (empty($this->settings['invoice_events_endpoint'])) {
             throw new RuntimeException(
-               'Missing invoice events endpoint configuration.'
+                'Missing invoice events endpoint configuration.'
             );
         }
 
         $endpoint = $this->settings['invoice_events_endpoint'];
-        $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
+        $url      = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
 
         if ($filters !== []) {
             $url .= '?' . http_build_query($filters);
@@ -294,17 +294,17 @@ class SuperPdpProvider implements MerchantProviderInterface
         $ch = curl_init();
 
         curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
+            CURLOPT_URL            => $url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
+            CURLOPT_HTTPHEADER     => [
                 'Authorization: Bearer ' . $this->accessToken,
                 'Accept: application/json',
             ],
         ]);
 
         $rawResponse = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
+        $httpCode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError   = curl_error($ch);
 
         curl_close($ch);
 
@@ -312,20 +312,20 @@ class SuperPdpProvider implements MerchantProviderInterface
 
         if ($curlError) {
             return [
-                'success' => false,
-                'status' => 'error',
-                'message' => $curlError,
+                'success'   => false,
+                'status'    => 'error',
+                'message'   => $curlError,
                 'http_code' => $httpCode,
-                'response' => $rawResponse,
+                'response'  => $rawResponse,
             ];
         }
 
         return [
-            'success' => $httpCode >= 200 && $httpCode < 300,
-            'status' => $httpCode >= 200 && $httpCode < 300 ? 'events_received' : 'error',
-            'message' => 'Invoice events response received',
+            'success'   => $httpCode >= 200 && $httpCode < 300,
+            'status'    => $httpCode >= 200 && $httpCode < 300 ? 'events_received' : 'error',
+            'message'   => 'Invoice events response received',
             'http_code' => $httpCode,
-            'response' => $decoded ?: $rawResponse,
+            'response'  => $decoded ?: $rawResponse,
         ];
     }
 

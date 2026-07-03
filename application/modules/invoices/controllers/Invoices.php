@@ -191,13 +191,12 @@ class Invoices extends Admin_Controller
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
         $change_user = $change_user->user_type > 1;
 
-
         $this->load->model('einvoice/Merchant_responses_model');
-	    $this->load->model('einvoice/Merchant_clients_model');
+        $this->load->model('einvoice/Merchant_clients_model');
 
         $einvoice_status = $this->Merchant_responses_model
             ->get_last_response_by_invoice((int) $invoice_id);
-	    $einvoice_provider = $this->Merchant_clients_model
+        $einvoice_provider = $this->Merchant_clients_model
             ->get_default_enabled();
 
         $this->layout->set(
@@ -206,8 +205,8 @@ class Invoices extends Admin_Controller
                 'items'             => $items,
                 'invoice_id'        => $invoice_id,
                 'einvoice'          => $einvoice,
-	            'einvoice_status' => $einvoice_status,
-	            'einvoice_provider' => $einvoice_provider,
+                'einvoice_status'   => $einvoice_status,
+                'einvoice_provider' => $einvoice_provider,
                 'change_user'       => $change_user,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
@@ -245,7 +244,7 @@ class Invoices extends Admin_Controller
         }
 
         // Get the status of the invoice
-        $invoice        = $this->mdl_invoices->get_by_id($invoice_id);
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
         if ( ! $invoice) {
             show_404();
@@ -309,10 +308,10 @@ class Invoices extends Admin_Controller
         }
 
         // eInvoice library to Generate the appropriate UBL/CII or false
-        $xml_id    = $einvoice->name; // $invoice->client_einvoicing_version
-        $options   = [];
-        $generator = $xml_id;
-        $path      = APPPATH . 'helpers/XMLconfigs/';
+        $xml_id          = $einvoice->name; // $invoice->client_einvoicing_version
+        $options         = [];
+        $generator       = $xml_id;
+        $path            = APPPATH . 'helpers/XMLconfigs/';
         $is_valid_xml_id = is_string($xml_id) && preg_match('/^[A-Za-z0-9-]+$/', $xml_id) === 1;
         if ($is_valid_xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
             $embed_xml = $xml_setting['embedXML'];

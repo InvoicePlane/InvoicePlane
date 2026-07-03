@@ -26,13 +26,14 @@ class Einvoice extends Admin_Controller
 
     public function send_invoice($invoiceId, $merchantClientId): void
     {
-        $invoiceId = (int) $invoiceId;
+        $invoiceId        = (int) $invoiceId;
         $merchantClientId = (int) $merchantClientId;
 
         $merchantClient = $this->Merchant_clients_model->get_by_id($merchantClientId);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
+
             return;
         }
 
@@ -49,8 +50,9 @@ class Einvoice extends Admin_Controller
 
         $invoice = $this->mdl_invoices->get_by_id($invoiceId);
 
-        if (!$invoice) {
+        if ( ! $invoice) {
             show_error(trans('invoice_not_found'));
+
             return;
         }
 
@@ -61,7 +63,7 @@ class Einvoice extends Admin_Controller
 
         $documentDir = FCPATH . 'uploads/einvoice/outgoing/';
 
-        if (!is_dir($documentDir)) {
+        if ( ! is_dir($documentDir)) {
             mkdir($documentDir, 0775, true);
         }
 
@@ -71,6 +73,7 @@ class Einvoice extends Admin_Controller
 
         if (empty($pdfContent)) {
             show_error('InvoicePlane did not return PDF content.');
+
             return;
         }
 
@@ -80,15 +83,16 @@ class Einvoice extends Admin_Controller
             file_put_contents($documentPath, $pdfContent);
         }
 
-        if (!file_exists($documentPath) || filesize($documentPath) === 0) {
+        if ( ! file_exists($documentPath) || filesize($documentPath) === 0) {
             show_error('Invoice PDF not found after generation.');
+
             return;
         }
 
         $metadata = [
             'invoice_id' => $invoiceId,
-            'format' => 'factur-x',
-            'profile' => 'EN16931',
+            'format'     => 'factur-x',
+            'profile'    => 'EN16931',
         ];
 
         $metadata = $provider->buildInvoicePayload($invoice, $items, $metadata);
@@ -101,11 +105,11 @@ class Einvoice extends Admin_Controller
             $response,
             [
                 'document_path' => $documentPath,
-                'metadata' => $metadata,
+                'metadata'      => $metadata,
             ]
         );
 
-        if (!empty($response['success'])) {
+        if ( ! empty($response['success'])) {
             $this->session->set_flashdata(
                 'alert_success',
                 trans('einvoice_send_success')
@@ -124,15 +128,16 @@ class Einvoice extends Admin_Controller
     {
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchantClientId);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
+
             return;
         }
 
         $settings = $this->Merchant_clients_model->get_settings($merchantClient);
         $registry = new MerchantProviderRegistry();
         $provider = $registry->getProvider($merchantClient['merchant_type']);
-        $client = new MerchantClient($provider, $settings);
+        $client   = new MerchantClient($provider, $settings);
 
         $response = $client->receiveInvoices();
 
@@ -164,8 +169,9 @@ class Einvoice extends Admin_Controller
     {
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchantClientId);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
+
             return;
         }
 
@@ -173,7 +179,7 @@ class Einvoice extends Admin_Controller
 
         $registry = new MerchantProviderRegistry();
         $provider = $registry->getProvider($merchantClient['merchant_type']);
-        $client = new MerchantClient($provider, $settings);
+        $client   = new MerchantClient($provider, $settings);
 
         $events = $client->getInvoiceEvents();
 
@@ -207,14 +213,14 @@ class Einvoice extends Admin_Controller
             (int) $merchantClientId
         );
 
-        if (!$merchantClient) {
+        if ( ! $merchantClient) {
             show_error(trans('merchant_client_not_found'));
         }
 
         $lastResponse = $this->Merchant_responses_model
             ->get_last_response_by_invoice((int) $invoiceId);
 
-        if (!$lastResponse) {
+        if ( ! $lastResponse) {
             $this->session->set_flashdata(
                 'alert_error',
                 trans('einvoice_no_transmission_found')
@@ -238,13 +244,14 @@ class Einvoice extends Admin_Controller
         );
         if (empty($lastResponse['external_id'])) {
             $this->session->set_flashdata(
-                 'alert_error',
-                 trans('einvoice_no_external_reference')
+                'alert_error',
+                trans('einvoice_no_external_reference')
             );
 
             redirect('invoices/view/' . (int) $invoiceId);
+
             return;
-    }
+        }
 
         $status = $client->getInvoiceStatus(
             $lastResponse['external_id']
@@ -252,11 +259,11 @@ class Einvoice extends Admin_Controller
 
         $this->Merchant_responses_model->save_status(
             (int) $invoiceId,
-        $status,
-        $lastResponse
+            $status,
+            $lastResponse
         );
 
-        if (!empty($status['success'])) {
+        if ( ! empty($status['success'])) {
             $this->session->set_flashdata(
                 'alert_success',
                 'PDP status: ' . ($status['status'] ?? 'unknown')
@@ -277,7 +284,7 @@ class Einvoice extends Admin_Controller
 
         $this->layout->set([
             'invoice_id' => (int) $invoiceId,
-            'history' => $this->Merchant_responses_model->get_by_invoice((int) $invoiceId),
+            'history'    => $this->Merchant_responses_model->get_by_invoice((int) $invoiceId),
         ]);
 
         $this->layout->buffer('content', 'einvoice/history');

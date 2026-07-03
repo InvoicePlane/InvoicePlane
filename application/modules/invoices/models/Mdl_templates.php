@@ -202,7 +202,7 @@ class Mdl_Templates extends CI_Model
                 $custom_names[] = $name;
             } else {
                 // Sanitize before logging: strip control characters to prevent log injection.
-                $safe_name = preg_replace('/[\x00-\x1f\x7f]/', '', substr($name, 0, 64));
+                $safe_name = preg_replace('/[\x00-\x1f\x7f]/', '', mb_substr($name, 0, 64));
                 log_message('warning', 'Mdl_Templates: skipping invalid custom template name: ' . $safe_name);
             }
         }
