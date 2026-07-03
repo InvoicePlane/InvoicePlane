@@ -191,7 +191,7 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
 
     // Clean filename (same of sanitize_file_name in Upload.php)
     function sanitizeName(filename) {
-        return filename.trim().replace(/[^\p{L}\p{N}\s\-_'’.]/gu, '').replace('..', '');
+        return filename.trim().replace(/[^\p{L}\p{N}\s\-_'’.]/gu, '').replaceAll('..', '');
     }
 
     const is_guest = <?php echo $guest; ?>;
