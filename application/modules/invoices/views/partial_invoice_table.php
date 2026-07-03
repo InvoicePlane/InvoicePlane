@@ -88,11 +88,6 @@ $invoice_idx                    = 1;
     }
                 ?>
                             <li>
-                                <a href="<?php echo site_url('einvoice/history/' . $invoice->invoice_id); ?>">
-                                    <i class="fa fa-exchange fa-margin"></i> <?php _trans('einvoice_history'); ?>
-                                </a>
-                            </li>
-                            <li>
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                    target="_blank">
                                     <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
@@ -101,6 +96,11 @@ $invoice_idx                    = 1;
                             <li>
                                 <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
                                     <i class="fa fa-send fa-margin"></i> <?php _trans('send_email'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo site_url('integrations/history/' . $invoice->invoice_id); ?>">
+                                    <i class="fa fa-exchange fa-margin"></i> <?php _trans('einvoice_history'); ?>
                                 </a>
                             </li>
                             <li>
