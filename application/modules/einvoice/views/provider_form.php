@@ -1,13 +1,13 @@
-<form method="post" action="<?php echo site_url('einvoice/settings/save/' . $provider['id']); ?>">
+<div class="headerbar">
+    <h1 class="headerbar-title"><?php _trans('einvoice_provider'); ?></h1>
+</div>
 
-    <?php _csrf_field(); ?>
+<div class="content">
+    <form method="post" action="<?php echo site_url('einvoice/settings/save/' . $provider['id']); ?>">
 
-    <div id="headerbar">
-        <h1 class="headerbar-title"><?php _trans('einvoice_provider'); ?></h1>
-        <?php $this->layout->load_view('layout/header_buttons'); ?>
-    </div>
-
-    <div id="content">
+        <input type="hidden"
+               name="<?php echo $this->security->get_csrf_token_name(); ?>"
+               value="<?php echo $this->security->get_csrf_hash(); ?>">
 
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">
@@ -44,7 +44,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?php _trans('settings'); ?> (API)
+                        SuperPDP API
                     </div>
 
                     <div class="panel-body">
@@ -58,7 +58,7 @@
                         <div class="form-group">
                             <label for="client_secret"><?php _trans('client_secret'); ?></label>
                             <input type="password" name="client_secret" id="client_secret" class="form-control"
-                                   value="<?php echo htmlsc($settings['client_secret'] ?? ''); ?>" autocomplete="off">
+                                   value="<?php echo htmlsc($settings['client_secret'] ?? ''); ?>">
                         </div>
 
                         <div class="form-group">
@@ -112,10 +112,20 @@
                         </div>
 
                     </div>
+
+                    <div class="panel-footer">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-check"></i> <?php _trans('save'); ?>
+                        </button>
+
+                        <a href="<?php echo site_url('einvoice/settings'); ?>" class="btn btn-default">
+                            <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
+                        </a>
+                    </div>
                 </div>
 
             </div>
         </div>
 
-    </div>
-</form>
+    </form>
+</div>
