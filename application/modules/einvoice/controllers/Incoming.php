@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -21,7 +21,7 @@ class Incoming extends Admin_Controller
     public function index()
     {
         $this->layout->set([
-            'clients' => $this->Merchant_clients_model->get_enabled_clients(),
+            'clients'  => $this->Merchant_clients_model->get_enabled_clients(),
             'incoming' => $this->Merchant_responses_model->get_incoming(),
         ]);
 
@@ -33,7 +33,7 @@ class Incoming extends Admin_Controller
     {
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchant_client_id);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
         }
 
@@ -59,12 +59,11 @@ class Incoming extends Admin_Controller
         foreach ($items as $item) {
             if (is_array($item)) {
                 $this->Merchant_responses_model->create_inbound_item(
-                     (int) $merchant_client_id,
-                     $item
+                    (int) $merchant_client_id,
+                    $item
                 );
             }
         }
         redirect('einvoice/incoming');
     }
 }
-

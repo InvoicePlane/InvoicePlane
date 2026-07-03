@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -22,9 +22,10 @@ class Sync extends Admin_Controller
     {
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchant_client_id);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             $this->session->set_flashdata('alert_error', trans('merchant_client_not_found'));
             redirect('einvoice/settings');
+
             return;
         }
 
@@ -32,9 +33,9 @@ class Sync extends Admin_Controller
 
         $registry = new MerchantProviderRegistry();
         $provider = $registry->getProvider($merchantClient['merchant_type']);
-        $client = new MerchantClient($provider, $settings);
+        $client   = new MerchantClient($provider, $settings);
 
-        $incoming = $client->receiveInvoices();
+        $incoming      = $client->receiveInvoices();
         $incomingItems = $incoming['response']['data']
             ?? $incoming['response']['items']
             ?? $incoming['response']['invoices']
@@ -54,7 +55,7 @@ class Sync extends Admin_Controller
             }
         }
 
-        $events = $client->getInvoiceEvents();
+        $events     = $client->getInvoiceEvents();
         $eventItems = $events['response']['data']
             ?? $events['response']['items']
             ?? $events['response']['events']

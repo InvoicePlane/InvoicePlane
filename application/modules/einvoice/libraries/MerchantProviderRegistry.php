@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class MerchantProviderRegistry
 {
@@ -27,33 +27,6 @@ class MerchantProviderRegistry
         return $this->providers;
     }
 
-    private function loadProviders(): void
-    {
-        require_once APPPATH . 'modules/einvoice/libraries/MerchantProviderInterface.php';
-
-        $providerPath = APPPATH . 'modules/einvoice/libraries/providers/';
-
-        foreach (glob($providerPath . '*Provider.php') as $file) {
-            require_once $file;
-
-            $className = basename($file, '.php');
-
-            if (!class_exists($className)) {
-                continue;
-            }
-
-            if (!is_subclass_of($className, MerchantProviderInterface::class)) {
-                continue;
-            }
-
-            if (!method_exists($className, 'providerCode')) {
-                continue;
-            }
-
-            $this->providers[$className::providerCode()] = $className;
-        }
-    }
-
     public function syncDatabaseProviders(): void
     {
         $CI = &get_instance();
@@ -64,7 +37,7 @@ class MerchantProviderRegistry
                 ->get('ip_merchant_clients')
                 ->row_array();
 
-	    if ($existing) {
+            if ($existing) {
                 log_message(
                     'debug',
                     'eInvoice provider already registered: ' . $providerCode
@@ -80,13 +53,40 @@ class MerchantProviderRegistry
 
             $CI->db->insert('ip_merchant_clients', [
                 'merchant_type' => $providerCode,
-                'label' => $providerClass::providerName(),
-                'enabled' => 0,
-                'auth_type' => $this->guessAuthType($settings),
+                'label'         => $providerClass::providerName(),
+                'enabled'       => 0,
+                'auth_type'     => $this->guessAuthType($settings),
                 'settings_json' => json_encode($settings),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
+                'created_at'    => date('Y-m-d H:i:s'),
+                'updated_at'    => date('Y-m-d H:i:s'),
             ]);
+        }
+    }
+
+    private function loadProviders(): void
+    {
+        require_once APPPATH . 'modules/einvoice/libraries/MerchantProviderInterface.php';
+
+        $providerPath = APPPATH . 'modules/einvoice/libraries/providers/';
+
+        foreach (glob($providerPath . '*Provider.php') as $file) {
+            require_once $file;
+
+            $className = basename($file, '.php');
+
+            if ( ! class_exists($className)) {
+                continue;
+            }
+
+            if ( ! is_subclass_of($className, MerchantProviderInterface::class)) {
+                continue;
+            }
+
+            if ( ! method_exists($className, 'providerCode')) {
+                continue;
+            }
+
+            $this->providers[$className::providerCode()] = $className;
         }
     }
 
@@ -103,4 +103,3 @@ class MerchantProviderRegistry
         return 'none';
     }
 }
-

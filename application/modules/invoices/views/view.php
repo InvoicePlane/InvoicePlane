@@ -319,7 +319,7 @@ if ($invoice->invoice_balance != 0) {
 <?php
 // eInvoice & user fields OK: Show download XML Option
 if ($einvoice->user) {
-	        $einvoice_provider = $einvoice_provider ?? null;
+    $einvoice_provider ??= null;
     ?>
                 <li>
                     <a href="#" id="btn_generate_xml"
@@ -328,7 +328,7 @@ if ($einvoice->user) {
                         <?php _trans('download_xml'); ?>
                     </a>
 		</li>
-<?php if (!empty($einvoice_provider) && !empty($einvoice_provider['id'])) : ?>
+<?php if ( ! empty($einvoice_provider) && ! empty($einvoice_provider['id'])) : ?>
                 <li>
                    <a href="<?php echo site_url('einvoice/send_invoice/' . $invoice->invoice_id . '/' . $einvoice_provider['id']); ?>">
 		               <i class="fa fa-paper-plane"></i>
@@ -336,7 +336,7 @@ if ($einvoice->user) {
                    </a>
 		</li>
                 <li>
-                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id  . '/' . $einvoice_provider['id']); ?>">
+                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/' . $einvoice_provider['id']); ?>">
                          <i class="fa fa-refresh"></i>
                          <?php _trans('check_status'); ?>
                       </a>
@@ -637,7 +637,7 @@ if ($invoice->invoice_status_id != 1) {
                         </div>
                     </div>
 
-<?php if (!empty($einvoice_status)) : ?>
+<?php if ( ! empty($einvoice_status)) : ?>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <?php _trans('electronic_invoicing'); ?>
@@ -649,21 +649,21 @@ if ($invoice->invoice_status_id != 1) {
                                 <?php echo htmlsc($einvoice_status['status'] ?? trans('not_sent')); ?>
                             </p>
 
-                            <?php if (!empty($einvoice_status['external_id'])) : ?>
+                            <?php if ( ! empty($einvoice_status['external_id'])) : ?>
                                 <p>
                                     <strong>External ID:</strong>
                                     <?php echo htmlsc($einvoice_status['external_id']); ?>
                                 </p>
                             <?php endif; ?>
 
-                            <?php if (!empty($einvoice_status['message'])) : ?>
+                            <?php if ( ! empty($einvoice_status['message'])) : ?>
                                 <p>
                                     <strong><?php _trans('message'); ?>:</strong>
                                     <?php echo htmlsc($einvoice_status['message']); ?>
                                 </p>
                             <?php endif; ?>
 
-                            <?php if (!empty($einvoice_status['updated_at'])) : ?>
+                            <?php if ( ! empty($einvoice_status['updated_at'])) : ?>
                                 <p>
                                     <strong><?php _trans('last_update'); ?>:</strong>
                                     <?php echo htmlsc($einvoice_status['updated_at']); ?>
