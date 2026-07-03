@@ -123,10 +123,10 @@ class Upload extends Admin_Controller
     {
         // First decode url & sanitize to handle the url_key_filename format
         // Note: Work with all files - $filename is URL encoded (See helpers/dropzone_helper.php)
-        // REAL EXAMPLE :
-        // http://localhost/ip/index.php/upload/get_file/1iKyYIgzZpewUa8EtN0MOXAGdTBDRfsC_Capture%20d%E2%80%99%C3%A9cran%20du%202025-10-15%2002-43-47.png
-        // dump: $filename => 1iKyYIgzZpewUa8EtN0MOXAGdTBDRfsC_Capture%20d%E2%80%99%C3%A9cran%20du%202025-10-15%2002-43-47.png
-        $filename = $this->sanitize_file_name(urldecode($filename)); # todo? remove urldecode (Q: Realy Need for security? It sanitized & safe validated after).
+        // [Old] urldecode() decodes + to a space, so a stored filename containing a literal + gets mangled.
+        // [New] rawurldecode() decodes %20/%E2%80%99 etc.identically but leaves + alone.
+        //       Still fully guarded by sanitize_file_name → validate_safe_filename → validate_file_in_directory afterwards.
+        $filename = $this->sanitize_file_name(rawurldecode($filename)); // rawurldecode: keep literal '+' (urldecode turns it into a space)
         // dump: $filename => 1iKyYIgzZpewUa8EtN0MOXAGdTBDRfsC_Capture d’écran du 2025-10-15 02-43-47.png
 
         $underscorePos = mb_strpos($filename, '_');
