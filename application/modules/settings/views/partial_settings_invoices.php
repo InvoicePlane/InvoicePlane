@@ -667,7 +667,7 @@ foreach ($email_templates_invoice as $email_template) {
         </div>
 <?php
                 } // End If Sumex
-?>
+                ?>
 
     </div>
 </div>

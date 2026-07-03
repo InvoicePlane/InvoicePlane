@@ -269,6 +269,6 @@ if ($sumex) {
         </div>
 <?php
 }
-?>
+    ?>
     </div>
 </div>

@@ -29,7 +29,7 @@ class QrCode
 
         $CI->load->helper('template');
 
-        $this->invoice         = $params['invoice'];
+        $this->invoice = $params['invoice'];
 
         // Determine recipient with the following priority:
         // First priority: Get recipient from qr code settings
@@ -42,7 +42,7 @@ class QrCode
         if (empty($recipient)) {
             $recipient = $this->invoice->user_name;
         }
-        $this->recipient = $recipient;
+        $this->recipient       = $recipient;
         $this->iban            = $this->invoice->user_iban ?: $CI->mdl_settings->setting('qr_code_iban');
         $this->bic             = $this->invoice->user_bic ?: $CI->mdl_settings->setting('qr_code_bic');
         $this->currencyCode    = $CI->mdl_settings->setting('currency_code');

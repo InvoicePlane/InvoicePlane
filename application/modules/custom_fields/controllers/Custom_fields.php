@@ -98,12 +98,12 @@ class Custom_Fields extends Admin_Controller
 
         $this->layout->set(
             [
-                'custom_field_id'       => $id,
-                'custom_field_tables'   => $custom_tables,
-                'custom_field_types'    => $this->mdl_custom_fields->custom_types(),
-                'custom_field_usage'    => $this->mdl_custom_fields->used($id),
-                'custom_field_location' => $this->mdl_custom_fields->form_value('custom_field_location'),
-                'positions'             => $this->mdl_custom_fields->get_positions(),
+                'custom_field_id'            => $id,
+                'custom_field_tables'        => $custom_tables,
+                'custom_field_types'         => $this->mdl_custom_fields->custom_types(),
+                'custom_field_usage'         => $this->mdl_custom_fields->used($id),
+                'custom_field_location'      => $this->mdl_custom_fields->form_value('custom_field_location'),
+                'positions'                  => $this->mdl_custom_fields->get_positions(),
                 'custom_field_default_table' => $default_table,
             ]
         );
