@@ -199,7 +199,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         ];
 
         foreach ($signatures as $signature) {
-            if (! str_contains($body, $signature)) {
+            if ( ! str_contains($body, $signature)) {
                 continue;
             }
 

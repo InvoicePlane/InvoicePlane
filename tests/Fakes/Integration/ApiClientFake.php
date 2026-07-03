@@ -2,6 +2,7 @@
 
 namespace Tests\Fakes\Integration;
 
+use ApiClientInterface;
 use RequestMethod;
 use RuntimeException;
 
@@ -16,7 +17,7 @@ use RuntimeException;
  * the tokenResponse queue and recorded in tokenLog separately so that tests
  * can assert on authenticate() calls without consuming the responses queue.
  */
-class ApiClientFake implements \ApiClientInterface
+class ApiClientFake implements ApiClientInterface
 {
     /** Entries: [method, url, payload, multipart, bearerToken] — matches legacy FakeLetsPeppolHttpClient shape. */
     public array $requestLog = [];
@@ -25,14 +26,17 @@ class ApiClientFake implements \ApiClientInterface
     public array $tokenLog = [];
 
     private array   $responses;
+
     private int     $callIndex;
+
     private array   $tokenResponse;
+
     private ?string $tokenError;
 
     public function __construct(
-        array   $responses     = [],
-        array   $tokenResponse = ['access_token' => 'fake-token'],
-        ?string $tokenError    = null
+        array $responses = [],
+        array $tokenResponse = ['access_token' => 'fake-token'],
+        ?string $tokenError = null
     ) {
         $this->responses     = $responses;
         $this->callIndex     = 0;
@@ -42,7 +46,7 @@ class ApiClientFake implements \ApiClientInterface
 
     public function request(RequestMethod $method, string $url, array $options = []): array
     {
-        if (!empty($options['form_params']['grant_type'])) {
+        if ( ! empty($options['form_params']['grant_type'])) {
             return $this->handleTokenRequest($url, $options['form_params']);
         }
 

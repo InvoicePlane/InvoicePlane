@@ -23,12 +23,12 @@ defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter
 defined('VIEWPATH') || define('VIEWPATH', APPPATH . 'views/');
 
 // Upload / filesystem path constants (previously defined in the legacy root index.php).
-defined('IPCONFIG_FILE')          || define('IPCONFIG_FILE',          $base . '/ipconfig.php');
-defined('LOGS_FOLDER')            || define('LOGS_FOLDER',            APPPATH . 'logs/');
-defined('UPLOADS_FOLDER')         || define('UPLOADS_FOLDER',         FCPATH . 'uploads/');
+defined('IPCONFIG_FILE') || define('IPCONFIG_FILE', $base . '/ipconfig.php');
+defined('LOGS_FOLDER') || define('LOGS_FOLDER', APPPATH . 'logs/');
+defined('UPLOADS_FOLDER') || define('UPLOADS_FOLDER', FCPATH . 'uploads/');
 defined('UPLOADS_ARCHIVE_FOLDER') || define('UPLOADS_ARCHIVE_FOLDER', UPLOADS_FOLDER . 'archive/');
-defined('UPLOADS_CFILES_FOLDER')  || define('UPLOADS_CFILES_FOLDER',  UPLOADS_FOLDER . 'customer_files/');
-defined('UPLOADS_TEMP_FOLDER')    || define('UPLOADS_TEMP_FOLDER',    UPLOADS_FOLDER . 'temp/');
+defined('UPLOADS_CFILES_FOLDER') || define('UPLOADS_CFILES_FOLDER', UPLOADS_FOLDER . 'customer_files/');
+defined('UPLOADS_TEMP_FOLDER') || define('UPLOADS_TEMP_FOLDER', UPLOADS_FOLDER . 'temp/');
 defined('UPLOADS_TEMP_MPDF_FOLDER') || define('UPLOADS_TEMP_MPDF_FOLDER', UPLOADS_TEMP_FOLDER . 'mpdf/');
 
 if ( ! function_exists('env')) {
@@ -69,7 +69,7 @@ defined('SUMEX_SETTINGS') || define('SUMEX_SETTINGS', env_bool('SUMEX_SETTINGS',
 // ---------------------------------------------------------------------------
 if (defined('CI_TEST_SUBPROCESS')) {
     set_error_handler(static function (int $severity, string $message, string $file, int $line): bool {
-        if (!($severity & error_reporting())) {
+        if ( ! ($severity & error_reporting())) {
             return false;
         }
         throw new \ErrorException($message, 0, $severity, $file, $line);
@@ -81,7 +81,7 @@ if (defined('CI_TEST_SUBPROCESS')) {
     });
 } elseif (env_bool('EXTENSIVE_LOGGING', false) || IP_DEBUG) {
     set_error_handler(static function (int $severity, string $message, string $file, int $line): bool {
-        if (!($severity & error_reporting())) {
+        if ( ! ($severity & error_reporting())) {
             return false;
         }
         $levels = [
@@ -96,14 +96,15 @@ if (defined('CI_TEST_SUBPROCESS')) {
             E_STRICT            => 'STRICT',
             E_RECOVERABLE_ERROR => 'ERROR',
         ];
-        $level = $levels[$severity] ?? 'ERROR';
-        $logDir = defined('FCPATH') ? dirname(FCPATH) . '/storage/logs/' : sys_get_temp_dir() . '/';
+        $level   = $levels[$severity] ?? 'ERROR';
+        $logDir  = defined('FCPATH') ? dirname(FCPATH) . '/storage/logs/' : sys_get_temp_dir() . '/';
         $logFile = $logDir . 'log-' . date('Y-m-d') . '.php';
-        $entry = date('Y-m-d H:i:s') . ' ' . $level . ' -- ' . $message . ' (' . $file . ':' . $line . ')' . PHP_EOL;
-        if (!file_exists($logFile)) {
+        $entry   = date('Y-m-d H:i:s') . ' ' . $level . ' -- ' . $message . ' (' . $file . ':' . $line . ')' . PHP_EOL;
+        if ( ! file_exists($logFile)) {
             file_put_contents($logFile, "<?php defined('BASEPATH') || exit; ?>" . PHP_EOL, FILE_APPEND | LOCK_EX);
         }
         file_put_contents($logFile, $entry, FILE_APPEND | LOCK_EX);
+
         // Return false so PHP's default handler also runs (shows error in output when display_errors=on).
         return false;
     });

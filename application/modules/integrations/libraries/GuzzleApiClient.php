@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
@@ -23,7 +23,7 @@ class GuzzleApiClient implements ApiClientInterface
     {
         $headers = ['Accept' => 'application/json'];
 
-        if (!empty($options['bearer'])) {
+        if ( ! empty($options['bearer'])) {
             $headers['Authorization'] = 'Bearer ' . $options['bearer'];
         }
 
@@ -32,7 +32,7 @@ class GuzzleApiClient implements ApiClientInterface
             $headers[$name] = $value;
         }
 
-        if (!empty($options['query'])) {
+        if ( ! empty($options['query'])) {
             $url .= '?' . http_build_query($options['query']);
         }
 
@@ -47,9 +47,9 @@ class GuzzleApiClient implements ApiClientInterface
         }
 
         try {
-            $response  = $this->guzzle->request($method->value, $url, $guzzleOptions);
-            $httpCode  = $response->getStatusCode();
-            $decoded   = json_decode((string) $response->getBody(), true) ?? [];
+            $response = $this->guzzle->request($method->value, $url, $guzzleOptions);
+            $httpCode = $response->getStatusCode();
+            $decoded  = json_decode((string) $response->getBody(), true) ?? [];
         } catch (ConnectException $e) {
             throw new \RuntimeException('API connection error: ' . $e->getMessage(), 0, $e);
         } catch (RequestException $e) {

@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -22,7 +22,7 @@ class Events extends Admin_Controller
     {
         $this->layout->set([
             'clients' => $this->Merchant_clients_model->get_enabled_clients(),
-            'events' => $this->Merchant_responses_model->get_events(),
+            'events'  => $this->Merchant_responses_model->get_events(),
         ]);
 
         $this->layout->buffer('content', 'integrations/events');
@@ -33,7 +33,7 @@ class Events extends Admin_Controller
     {
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchant_client_id);
 
-        if (!$merchantClient || (int) $merchantClient['enabled'] !== 1) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
         }
 
@@ -41,7 +41,7 @@ class Events extends Admin_Controller
 
         $registry = new IntegrationClientRegistry();
         $provider = $registry->getClient($merchantClient['merchant_type']);
-        $client = new IntegrationClient($provider, $settings);
+        $client   = new IntegrationClient($provider, $settings);
 
         $response = $client->getInvoiceEvents();
 

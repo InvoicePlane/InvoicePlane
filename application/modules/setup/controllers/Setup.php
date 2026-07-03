@@ -27,7 +27,6 @@ class Setup extends MX_Controller
             show_error('The setup has already been completed. To re-run the setup, set SETUP_COMPLETED=false in ipconfig.php.', 403);
         }
 
-
         parent::__construct();
 
         $this->load->library('session');
@@ -448,7 +447,7 @@ class Setup extends MX_Controller
     }
 
     /**
-    /**
+     * /**
      * Get user-friendly error message for database configuration validation error.
      *
      * @param string $error_code The internal error code from validate_db_config_parameter()

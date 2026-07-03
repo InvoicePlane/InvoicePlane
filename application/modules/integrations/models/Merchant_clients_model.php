@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class Merchant_clients_model extends CI_Model
 {
@@ -52,4 +52,3 @@ class Merchant_clients_model extends CI_Model
             ->row_array();
     }
 }
-

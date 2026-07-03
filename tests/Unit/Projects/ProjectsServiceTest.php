@@ -25,8 +25,8 @@ class ProjectsServiceTest extends AbstractTestCase
         /* Arrange */
         $clientId = $this->seedClient(['client_name' => 'Projects Service Client']);
         $this->databaseInsert('ip_projects', [
-            'client_id'            => $clientId,
-            'project_name'         => 'Service Project Epsilon',
+            'client_id'    => $clientId,
+            'project_name' => 'Service Project Epsilon',
         ]);
 
         /* Act */

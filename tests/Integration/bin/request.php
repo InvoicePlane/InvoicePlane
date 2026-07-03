@@ -63,7 +63,10 @@ $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 // route, defaulting to the dashboard controller.  Override is_cli() here so
 // the URI class uses REQUEST_URI, matching a real web-server request.
 if ( ! function_exists('is_cli')) {
-    function is_cli(): bool { return false; }
+    function is_cli(): bool
+    {
+        return false;
+    }
 }
 
 ob_start();

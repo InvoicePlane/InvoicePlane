@@ -1,11 +1,13 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class SuperPdpClient implements IntegrationClientInterface
 {
     private ?string $accessToken = null;
+
     private array $settings = [];
+
     private ApiClientInterface $http;
 
     public function __construct(?ApiClientInterface $http = null)
@@ -26,15 +28,15 @@ class SuperPdpClient implements IntegrationClientInterface
     public static function defaultSettings(): array
     {
         return [
-            'client_id' => '',
-            'client_secret' => '',
-            'token_url' => 'https://api.superpdp.tech/oauth2/token',
-            'api_base_url' => 'https://api.superpdp.tech',
-            'invoice_endpoint' => '/v1.beta/invoices',
-            'invoice_status_endpoint' => '/v1.beta/invoices/{id}',
+            'client_id'                  => '',
+            'client_secret'              => '',
+            'token_url'                  => 'https://api.superpdp.tech/oauth2/token',
+            'api_base_url'               => 'https://api.superpdp.tech',
+            'invoice_endpoint'           => '/v1.beta/invoices',
+            'invoice_status_endpoint'    => '/v1.beta/invoices/{id}',
             'incoming_invoices_endpoint' => '/v1.beta/invoices',
-            'invoice_events_endpoint' => '/v1.beta/invoice_events',
-            'disable_pre_check' => false,
+            'invoice_events_endpoint'    => '/v1.beta/invoice_events',
+            'disable_pre_check'          => false,
         ];
     }
 
@@ -43,9 +45,9 @@ class SuperPdpClient implements IntegrationClientInterface
         $this->settings = $settings;
 
         if (
-            empty($settings['client_id']) ||
-            empty($settings['client_secret']) ||
-            empty($settings['token_url'])
+            empty($settings['client_id'])
+            || empty($settings['client_secret'])
+            || empty($settings['token_url'])
         ) {
             throw new \RuntimeException('Missing SuperPDP OAuth2 settings.');
         }
@@ -77,7 +79,7 @@ class SuperPdpClient implements IntegrationClientInterface
     }
 
     /**
-     * POST /v1.beta/invoices  (multipart)
+     * POST /v1.beta/invoices  (multipart).
      *
      * Request:
      *   file      file    PDF invoice document
@@ -90,7 +92,7 @@ class SuperPdpClient implements IntegrationClientInterface
      */
     public function sendInvoice(string $documentPath, array $metadata): array
     {
-        if (!file_exists($documentPath)) {
+        if ( ! file_exists($documentPath)) {
             throw new \RuntimeException('Invoice document not found: ' . $documentPath);
         }
 
@@ -108,23 +110,23 @@ class SuperPdpClient implements IntegrationClientInterface
 
         $url = $this->buildUrl($this->settings['invoice_endpoint']);
 
-        if (!empty($this->settings['disable_pre_check'])) {
+        if ( ! empty($this->settings['disable_pre_check'])) {
             $url .= '?disable_pre_check=1';
         }
 
         $payload = [
-            'file' => new \CURLFile($documentPath, 'application/pdf', basename($documentPath)),
+            'file'     => new \CURLFile($documentPath, 'application/pdf', basename($documentPath)),
             'metadata' => json_encode($metadata),
         ];
 
         return $this->request(RequestMethod::POST, $url, $payload, true, [
             'document_path' => $documentPath,
-            'metadata' => $metadata,
+            'metadata'      => $metadata,
         ]);
     }
 
     /**
-     * GET /v1.beta/invoices/{id}
+     * GET /v1.beta/invoices/{id}.
      *
      * Response (JSON):
      *   id      string  invoice external ID
@@ -137,7 +139,7 @@ class SuperPdpClient implements IntegrationClientInterface
         }
 
         $endpoint = str_replace('{id}', urlencode($externalId), $this->settings['invoice_status_endpoint']);
-        $url = $this->buildUrl($endpoint);
+        $url      = $this->buildUrl($endpoint);
 
         $response = $this->request(RequestMethod::GET, $url, [], false, ['external_id' => $externalId]);
 
@@ -145,7 +147,7 @@ class SuperPdpClient implements IntegrationClientInterface
     }
 
     /**
-     * GET /v1.beta/invoices?{filters}
+     * GET /v1.beta/invoices?{filters}.
      *
      * Response (JSON):
      *   data[]  array  list of invoice objects
@@ -162,7 +164,7 @@ class SuperPdpClient implements IntegrationClientInterface
     }
 
     /**
-     * GET /v1.beta/invoice_events?{filters}
+     * GET /v1.beta/invoice_events?{filters}.
      *
      * Response (JSON):
      *   data[]  array  list of invoice event objects
@@ -184,7 +186,7 @@ class SuperPdpClient implements IntegrationClientInterface
     }
 
     /**
-     * POST {token_url}  (form-encoded)
+     * POST {token_url}  (form-encoded).
      *
      * Request:
      *   grant_type     client_credentials
@@ -206,7 +208,7 @@ class SuperPdpClient implements IntegrationClientInterface
             ],
         ]);
 
-        if (!$result['success']) {
+        if ( ! $result['success']) {
             throw new \RuntimeException('SuperPDP OAuth error: ' . $result['message']);
         }
 
@@ -224,7 +226,7 @@ class SuperPdpClient implements IntegrationClientInterface
 
         if ($multipart) {
             $options['multipart'] = $payload;
-        } elseif ($method === RequestMethod::POST && !empty($payload)) {
+        } elseif ($method === RequestMethod::POST && ! empty($payload)) {
             $options['json'] = $payload;
         }
 
@@ -235,7 +237,7 @@ class SuperPdpClient implements IntegrationClientInterface
     {
         $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
 
-        if (!empty($query)) {
+        if ( ! empty($query)) {
             $url .= '?' . http_build_query($query);
         }
 

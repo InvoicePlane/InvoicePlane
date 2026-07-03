@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 
 class Merchant_responses_model extends CI_Model
 {
@@ -119,7 +119,7 @@ class Merchant_responses_model extends CI_Model
         ?string $peppolParticipantId = null,
         ?PeppolDocumentType $peppolDocumentType = null,
     ): int {
-        $status    = MerchantResponseStatus::tryFrom($invoice['status'] ?? '') ?? MerchantResponseStatus::Received;
+        $status     = MerchantResponseStatus::tryFrom($invoice['status'] ?? '') ?? MerchantResponseStatus::Received;
         $externalId = $invoice['id'] ?? $invoice['external_id'] ?? null;
 
         // Deduplication: skip if this external ID already exists for this provider.
