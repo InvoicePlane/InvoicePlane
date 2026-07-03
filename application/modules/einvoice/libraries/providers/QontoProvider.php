@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') || exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class QontoProvider implements MerchantProviderInterface
 {
@@ -293,7 +293,7 @@ class QontoProvider implements MerchantProviderInterface
     {
         $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
 
-        if ($query !== []) {
+        if (!empty($query)) {
             $url .= '?' . http_build_query($query);
         }
 
@@ -319,7 +319,7 @@ class QontoProvider implements MerchantProviderInterface
                     'name' => $invoice->client_name,
                     'email' => $invoice->client_email,
                 ],
-                'line_items' => array_map(static function ($item): array {
+                'line_items' => array_map(static function ($item) {
                     return [
                         'title' => $item->item_name,
                         'description' => $item->item_description,
