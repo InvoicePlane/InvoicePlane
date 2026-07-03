@@ -99,6 +99,11 @@ $invoice_idx                    = 1;
                                 </a>
                             </li>
                             <li>
+                                <a href="<?php echo site_url('integrations/history/' . $invoice->invoice_id); ?>">
+                                    <i class="fa fa-exchange fa-margin"></i> <?php _trans('einvoice_history'); ?>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="#" class="invoice-add-payment"
                                    data-invoice-id="<?php echo $invoice->invoice_id; ?>"
                                    data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
