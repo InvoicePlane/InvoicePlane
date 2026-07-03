@@ -1,4 +1,4 @@
-<div class="headerbar">
+<div id="headerbar">
     <h1 class="headerbar-title"><?php _trans('integration_history'); ?></h1>
 
     <div class="headerbar-item pull-right">
