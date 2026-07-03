@@ -47,8 +47,12 @@
                         <li><a href="#" class="create-invoice"><?php _trans('create_invoice'); ?></a></li>
                         <li><?php echo anchor('invoices/index', trans('view_invoices')); ?></li>
                         <li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
-                        <li><?php echo anchor('einvoice/incoming', trans('incoming_invoices')); ?></li>
                     </ul>
+		</li>
+                <li class="dropdown">
+                    <a href="<?php echo site_url('einvoice/settings'); ?>" style="color:white;font-weight:bold;">
+                        <?php _trans('E-Invoicing'); ?>
+                    </a>
                 </li>
 
                 <li class="dropdown">
@@ -150,7 +154,6 @@
                         <li><?php echo anchor('users/index', trans('user_accounts')); ?></li>
                         <li class="divider hidden-xs hidden-sm"></li>
                         <li><?php echo anchor('settings', trans('system_settings')); ?></li>
-                        <li><?php echo anchor('einvoice/settings', trans('einvoice_providers')); ?></li>
                         <li><?php echo anchor('import', trans('import_data')); ?></li>
                     </ul>
                 </li>
