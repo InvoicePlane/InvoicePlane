@@ -2,8 +2,22 @@
 
 Investigation of the branches involved in the requested split, what actually
 holds vs. what the plan assumed, and exact commands to execute each achievable
-piece. Nothing outward-facing has been pushed — this document + the isolated
-patch series live on `claude/einvoicing-branch-reorganization-ci28h7` for review.
+piece.
+
+## Executed status
+
+- **Step 1 (feature → -improved): DONE.** Built `-improved` with `einvoice/`
+  replaced by prep/v180's `integrations/` module (+ wiring, composer classmap;
+  test/entry-point scaffolding excluded). Pushed to
+  `InvoicePlane/InvoicePlane:claude/einvoicing-branch-reorganization-ci28h7` and
+  opened **PR #1614 → einvoicing-provider-integration-improved**.
+- **Step 3 (clean prep/v180): BUILT, NOT PUSHED.** Local commit reduces
+  underdogg `prep/v180` to phpunit harness + `public/index.php` prep only
+  (integrations feature removed, −7360 lines). Force-updating shared `prep/v180`
+  awaits explicit go-ahead.
+- **Step 2 (4 einvoice UI improvements → einvoicing-provider-integration):
+  DEFERRED** until PR #1614 merges, per the requested sequencing. Patch series
+  in `reorg/improvement-patches/`.
 
 ## Branch inventory (SHAs at time of writing)
 
