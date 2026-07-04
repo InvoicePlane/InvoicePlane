@@ -347,7 +347,7 @@ if ( ! empty($enabled_merchant_clients)) {
                 <li class="disabled" data-toggle="tooltip" title="<?php _trans('peppol_id_missing'); ?>">
                     <a href="#" onclick="return false;">
                         <i class="fa fa-paper-plane fa-margin"></i>
-                        <?php _trans('send_via_integration'); ?> <?php echo htmlsc($mc['label']); ?>
+                        <?php _trans('send_via_integration'); ?> <?php _htmlsc($mc['label']); ?>
                     </a>
                 </li>
 <?php
@@ -357,7 +357,7 @@ if ( ! empty($enabled_merchant_clients)) {
                     <form method="post" action="<?php echo site_url('integrations/send_invoice/' . $invoice_id . '/' . (int) $mc['id']); ?>" style="display:inline;">
                         <button type="submit" class="btn btn-link" style="padding:3px 20px;text-align:left;width:100%;">
                             <i class="fa fa-paper-plane fa-margin"></i>
-                            <?php _trans('send_via_integration'); ?> <?php echo htmlsc($mc['label']); ?>
+                            <?php _trans('send_via_integration'); ?> <?php _htmlsc($mc['label']); ?>
                         </button>
                     </form>
                 </li>
@@ -523,7 +523,7 @@ if ($einvoice->name) {
                                     <label for="invoice_number"><?php _trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number" class="form-control"
 <?php if ($invoice->invoice_number) : ?>
-                                           value="<?php echo htmlsc($invoice->invoice_number); ?>"
+                                           value="<?php _htmlsc($invoice->invoice_number); ?>"
 <?php else : ?>
                                            placeholder="<?php _trans('not_set'); ?>"
 <?php endif; ?>
@@ -595,7 +595,7 @@ foreach ($payment_methods as $payment_method) {
     ?>
                                         <option <?php check_select($invoice->payment_method, $payment_method->payment_method_id) ?>
                                             value="<?php echo $payment_method->payment_method_id; ?>">
-                                            <?php echo htmlsc($payment_method->payment_method_name); ?>
+                                            <?php _htmlsc($payment_method->payment_method_name); ?>
                                         </option>
 <?php
 } // End foreach
@@ -734,8 +734,8 @@ if ($default_custom) {
                 <tbody>
                 <?php foreach ($send_history as $row) : ?>
                     <tr>
-                        <td><?php echo htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
-                        <td><?php echo htmlsc($row['merchant_response_driver']); ?></td>
+                        <td><?php _htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
+                        <td><?php _htmlsc($row['merchant_response_driver']); ?></td>
                         <td>
                             <?php
                             $s = $row['status'] ?? '';
@@ -745,11 +745,11 @@ if ($default_custom) {
                         default                                               => 'warning',
                     };
                     ?>
-                            <span class="label label-<?php echo $badge; ?>"><?php echo htmlsc($s); ?></span>
+                            <span class="label label-<?php echo $badge; ?>"><?php _htmlsc($s); ?></span>
                         </td>
-                        <td><?php echo htmlsc($row['peppol_participant_id'] ?? ''); ?></td>
-                        <td><?php echo htmlsc($row['merchant_response_reference']); ?></td>
-                        <td><?php echo htmlsc($row['http_code']); ?></td>
+                        <td><?php _htmlsc($row['peppol_participant_id'] ?? ''); ?></td>
+                        <td><?php _htmlsc($row['merchant_response_reference']); ?></td>
+                        <td><?php _htmlsc($row['http_code']); ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

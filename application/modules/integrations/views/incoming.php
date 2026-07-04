@@ -5,7 +5,7 @@
         <?php foreach ($clients as $client) : ?>
             <a href="<?php echo site_url('integrations/incoming/sync/' . $client['id']); ?>" class="btn btn-primary">
                 <i class="fa fa-refresh"></i>
-                <?php _trans('sync'); ?> <?php echo htmlsc($client['label']); ?>
+                <?php _trans('sync'); ?> <?php _htmlsc($client['label']); ?>
             </a>
         <?php endforeach; ?>
     </div>
@@ -31,23 +31,23 @@
         <?php else : ?>
             <?php foreach ($incoming as $row) : ?>
                 <tr>
-                    <td><?php echo htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
-                    <td><?php echo htmlsc($row['merchant_response_driver']); ?></td>
+                    <td><?php _htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
+                    <td><?php _htmlsc($row['merchant_response_driver']); ?></td>
                     <td>
                         <?php if ( ! empty($row['peppol_participant_id'])) : ?>
-                            <?php echo htmlsc($row['peppol_participant_id']); ?>
+                            <?php _htmlsc($row['peppol_participant_id']); ?>
                             <?php if ( ! empty($client_map[$row['peppol_participant_id']])) : ?>
                                 — <a href="<?php echo site_url('clients/view/' . $client_map[$row['peppol_participant_id']]['client_id']); ?>">
-                                    <?php echo htmlsc($client_map[$row['peppol_participant_id']]['client_name']); ?>
+                                    <?php _htmlsc($client_map[$row['peppol_participant_id']]['client_name']); ?>
                                 </a>
                             <?php endif; ?>
                         <?php else : ?>
                             —
                         <?php endif; ?>
                     </td>
-                    <td><?php echo htmlsc($row['status']); ?></td>
-                    <td><?php echo htmlsc($row['merchant_response']); ?></td>
-                    <td><?php echo htmlsc($row['merchant_response_reference']); ?></td>
+                    <td><?php _htmlsc($row['status']); ?></td>
+                    <td><?php _htmlsc($row['merchant_response']); ?></td>
+                    <td><?php _htmlsc($row['merchant_response_reference']); ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php endif; ?>

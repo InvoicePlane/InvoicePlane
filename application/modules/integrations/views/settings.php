@@ -30,8 +30,8 @@
             <tbody>
             <?php foreach ($providers as $provider) : ?>
                 <tr>
-                    <td><?php echo htmlsc($provider['merchant_type']); ?></td>
-                    <td><?php echo htmlsc($provider['label']); ?></td>
+                    <td><?php _htmlsc($provider['merchant_type']); ?></td>
+                    <td><?php _htmlsc($provider['label']); ?></td>
                     <td>
                         <?php echo (int) $provider['enabled'] === 1 ? trans('enabled') : trans('disabled'); ?>
                     </td>
