@@ -11,19 +11,26 @@
                class="tip" data-placement="right">
                 <i class="fa fa-file"></i>
             </a>
-	</li>
+        </li>
         <li>
             <a href="<?php echo site_url('invoices/index'); ?>" title="<?php _trans('invoices'); ?>"
-                class="tip" data-placement="right">
-                <i class="fa fa-file-text"></i>
-             </a>
-        </li>
-        <li>
-            <a href="<?php echo site_url('einvoice/settings'); ?>" title="<?php _trans('einvoice'); ?>"
                class="tip" data-placement="right">
-                <i class="fa fa-paper-plane"></i>
+                <i class="fa fa-file-text"></i>
             </a>
         </li>
+<?php
+// eInvoice ON: Show Settings link
+if (get_setting('einvoicing') == '1') {
+    ?>
+        <li>
+            <a href="<?php echo site_url('integrations/settings'); ?>" title="<?php _trans('einvoice'); ?>"
+               class="tip" data-placement="right">
+                <i class="fa fa-exchange"></i>
+            </a>
+        </li>
+<?php
+}
+?>
         <li>
             <a href="<?php echo site_url('payments/index'); ?>" title="<?php _trans('payments'); ?>"
                class="tip" data-placement="right">
@@ -49,6 +56,6 @@
                class="tip" data-placement="right">
                 <i class="fa fa-cogs"></i>
             </a>
-	</li>
+        </li>
     </ul>
 </div>
