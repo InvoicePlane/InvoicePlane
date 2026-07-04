@@ -55,7 +55,7 @@ foreach ($results as $result) {
     ?>
 
         <tr>
-            <td style="border-bottom: none;text-align:center;"><?php echo $result->VAT_ID; ?></td>
+            <td style="border-bottom: none;text-align:center;"><?php _htmlsc($result->VAT_ID); ?></td>
             <td style="border-bottom: none;text-align:center;" rowspan="<?php echo $numRows; ?>"
                 valign="top"><?php _htmlsc($result->Name); ?></td>
             <td style="border-bottom: none;text-align:center;"><?php _trans('annual'); ?></td>
