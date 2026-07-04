@@ -336,19 +336,23 @@ if ($einvoice->user) {
                         <?php _trans('send_email'); ?>
                     </a>
                 </li>
+<?php
+// eInvoice & user fields OK: Show Send via provider
+if ($einvoice->user) {
+    ?>
                 <li class="divider"></li>
 <?php
-if ( ! empty($enabled_merchant_clients)) {
-    foreach ($enabled_merchant_clients as $mc) {
-        $needs_peppol = in_array($mc['merchant_type'], ['letspeppol', 'superpdp'], true);
-        $has_id       = ! empty($invoice->client_peppol_id);
-        if ($needs_peppol && ! $has_id) {
-            $lst = 'class="disabled" data-toggle="tooltip" title="' . trans('peppol_id_missing') . '"';
-            $lnk = 'javascript:void(0);';
-        } else {
-            $lst = 'class="active"';
-            $lnk = site_url('integrations/send_invoice/' . $invoice_id . '/' . (int) $mc['id']);
-        }
+    if ( ! empty($enabled_merchant_clients)) {
+        foreach ($enabled_merchant_clients as $mc) {
+            $needs_peppol = in_array($mc['merchant_type'], ['letspeppol', 'superpdp'], true);
+            $has_id       = ! empty($invoice->client_peppol_id);
+            if ($needs_peppol && ! $has_id) {
+                $lst = 'class="disabled" data-toggle="tooltip" title="' . trans('peppol_id_missing') . '"';
+                $lnk = 'javascript:void(0);';
+            } else {
+                $lst = 'class="active"';
+                $lnk = site_url('integrations/send_invoice/' . $invoice_id . '/' . (int) $mc['id']);
+            }
 ?>
                 <li <?php echo $lst; ?>>
                     <a href="<?php echo $lnk; ?>">
@@ -357,11 +361,12 @@ if ( ! empty($enabled_merchant_clients)) {
                     </a>
                 </li>
 <?php
-    }
+        }
     ?>
                 <li class="divider"></li>
 <?php
-}
+    }
+} // fi: eInvoice & user fields OK (provider)
 ?>
                 <li>
                     <a href="#" id="btn_create_recurring"
