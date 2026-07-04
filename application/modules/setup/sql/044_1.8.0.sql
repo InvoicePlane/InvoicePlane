@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `ip_merchant_clients` (
   `label`         VARCHAR(255)  NULL,
   `enabled`       TINYINT(1)    DEFAULT 0,
   `auth_type`     VARCHAR(50)   DEFAULT 'oauth2',
-  `settings_json` LONGTEXT      NULL,
+  `settings_json` LONGTEXT      NULL COMMENT 'legacy — superseded by ip_settings integration_* keys',
   `created_at`    DATETIME      NULL,
   `updated_at`    DATETIME      NULL,
 
@@ -49,36 +49,46 @@ CREATE TABLE IF NOT EXISTS `ip_merchant_clients` (
 ALTER TABLE `ip_merchant_responses`
 
   ADD COLUMN `merchant_client_id` INT(11) NULL
+    COMMENT 'FK to ip_merchant_clients — NULL for legacy payment-gateway rows'
     AFTER `invoice_id`,
 
   ADD COLUMN `direction` VARCHAR(3) NOT NULL DEFAULT 'out'
+    COMMENT 'MerchantResponseDirection enum value: in | out'
     AFTER `merchant_client_id`,
 
   ADD COLUMN `record_type` VARCHAR(50) NOT NULL DEFAULT 'payment'
+    COMMENT 'MerchantResponseType enum value: payment | outbound_status | incoming_invoice | invoice_event'
     AFTER `direction`,
 
   ADD COLUMN `status` VARCHAR(50) NULL
+    COMMENT 'MerchantResponseStatus enum value'
     AFTER `record_type`,
 
   ADD COLUMN `http_code` SMALLINT NULL
     AFTER `status`,
 
   ADD COLUMN `error_code` VARCHAR(100) NULL
+    COMMENT 'Structured error code as returned by the provider'
     AFTER `http_code`,
 
   ADD COLUMN `error_detail` VARCHAR(500) NULL
+    COMMENT 'Human-readable error detail — not a raw JSON dump'
     AFTER `error_code`,
 
   ADD COLUMN `peppol_participant_id` VARCHAR(100) NULL
+    COMMENT 'Sender or receiver PEPPOL participant identifier, e.g. 0106:12345678'
     AFTER `error_detail`,
 
   ADD COLUMN `peppol_document_type` VARCHAR(255) NULL
+    COMMENT 'PeppolDocumentType enum value — the BIS document type URN'
     AFTER `peppol_participant_id`,
 
   ADD COLUMN `created_at` DATETIME NULL
+    COMMENT 'Full datetime precision — merchant_response_date stores the DATE portion'
     AFTER `peppol_document_type`,
 
   ADD COLUMN `raw_payload` LONGTEXT NULL
+    COMMENT 'Full provider JSON response for incoming documents — NULL for outbound rows'
     AFTER `created_at`,
 
   ADD INDEX `idx_merchant_client_id` (`merchant_client_id`),
@@ -110,4 +120,5 @@ DROP TABLE IF EXISTS `ip_einvoice_responses`;
 
 ALTER TABLE `ip_clients`
   ADD COLUMN `client_peppol_id` VARCHAR(100) NULL
+    COMMENT 'Peppol electronic address: {ICD}:{identifier}, e.g. 0130:27325502 (CZ IČO)'
     AFTER `client_einvoicing_version`;
