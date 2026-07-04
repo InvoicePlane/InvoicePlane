@@ -5,9 +5,7 @@
 <div id="content">
     <form method="post" action="<?php echo site_url('integrations/settings/save/' . $provider['id']); ?>">
 
-        <input type="hidden"
-               name="<?php echo $this->security->get_csrf_token_name(); ?>"
-               value="<?php echo $this->security->get_csrf_hash(); ?>">
+        <?php _csrf_field(); ?>
 
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">
