@@ -2,7 +2,7 @@
     <h1 class="headerbar-title"><?php _trans('einvoice_provider'); ?></h1>
 </div>
 
-<div class="content">
+<div id="content">
     <form method="post" action="<?php echo site_url('integrations/settings/save/' . $provider['id']); ?>">
 
         <input type="hidden"

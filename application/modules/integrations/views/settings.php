@@ -2,7 +2,7 @@
     <h1 class="headerbar-title"><?php _trans('einvoice'); ?></h1>
 </div>
 
-<div class="content">
+<div id="content">
     <div class="panel panel-default">
         <div class="panel-heading">
             <?php _trans('providers'); ?>
