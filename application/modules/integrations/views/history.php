@@ -1,6 +1,6 @@
 <div id="headerbar">
     <h1 class="headerbar-title">
-        <?php _trans('einvoice_history'); ?> #<?php echo htmlsc($invoice_id); ?>
+        <?php _trans('einvoice_history'); ?> #<?php _htmlsc($invoice_id); ?>
     </h1>
 
     <div class="headerbar-item pull-right">
@@ -25,12 +25,12 @@
         <tbody>
         <?php foreach ($history as $row) : ?>
             <tr>
-                <td><?php echo htmlsc($row['created_at']); ?></td>
-                <td><?php echo htmlsc($row['direction']); ?></td>
-                <td><?php echo htmlsc($row['status']); ?></td>
-                <td><?php echo htmlsc($row['merchant_response']); ?></td>
-                <td><?php echo htmlsc($row['merchant_response_reference']); ?></td>
-                <td><?php echo htmlsc($row['http_code']); ?></td>
+                <td><?php _htmlsc($row['created_at']); ?></td>
+                <td><?php _htmlsc($row['direction']); ?></td>
+                <td><?php _htmlsc($row['status']); ?></td>
+                <td><?php _htmlsc($row['merchant_response']); ?></td>
+                <td><?php _htmlsc($row['merchant_response_reference']); ?></td>
+                <td><?php _htmlsc($row['http_code']); ?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>

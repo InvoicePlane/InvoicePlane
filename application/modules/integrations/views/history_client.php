@@ -29,17 +29,17 @@
         <?php else : ?>
             <?php foreach ($history as $row) : ?>
                 <tr>
-                    <td><?php echo htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
+                    <td><?php _htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
                     <td>
                         <?php if ( ! empty($row['invoice_id'])) : ?>
                             <a href="<?php echo site_url('invoices/view/' . $row['invoice_id']); ?>">
-                                <?php echo htmlsc($row['invoice_number'] ?? '#' . $row['invoice_id']); ?>
+                                <?php _htmlsc($row['invoice_number'] ?? '#' . $row['invoice_id']); ?>
                             </a>
                         <?php else : ?>
                             —
                         <?php endif; ?>
                     </td>
-                    <td><?php echo htmlsc($row['merchant_response_driver']); ?></td>
+                    <td><?php _htmlsc($row['merchant_response_driver']); ?></td>
                     <td>
                         <?php
                         $status = $row['status'] ?? '';
@@ -49,11 +49,11 @@
                     default                                                    => 'warning',
                 };
                 ?>
-                        <span class="label label-<?php echo $badge; ?>"><?php echo htmlsc($status); ?></span>
+                        <span class="label label-<?php echo $badge; ?>"><?php _htmlsc($status); ?></span>
                     </td>
-                    <td><?php echo htmlsc($row['merchant_response']); ?></td>
-                    <td><?php echo htmlsc($row['merchant_response_reference']); ?></td>
-                    <td><?php echo htmlsc($row['http_code']); ?></td>
+                    <td><?php _htmlsc($row['merchant_response']); ?></td>
+                    <td><?php _htmlsc($row['merchant_response_reference']); ?></td>
+                    <td><?php _htmlsc($row['http_code']); ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php endif; ?>

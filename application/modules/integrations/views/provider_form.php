@@ -30,13 +30,13 @@
                         <div class="form-group">
                             <label for="label"><?php _trans('label'); ?></label>
                             <input type="text" name="label" id="label" class="form-control"
-                                   value="<?php echo htmlsc($provider['label']); ?>">
+                                   value="<?php _htmlsc($provider['label']); ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="auth_type"><?php _trans('auth_type'); ?></label>
                             <input type="text" name="auth_type" id="auth_type" class="form-control"
-                                   value="<?php echo htmlsc($provider['auth_type']); ?>">
+                                   value="<?php _htmlsc($provider['auth_type']); ?>">
                         </div>
 
                     </div>
@@ -52,55 +52,55 @@
                         <div class="form-group">
                             <label for="client_id"><?php _trans('client_id'); ?></label>
                             <input type="text" name="client_id" id="client_id" class="form-control"
-                                   value="<?php echo htmlsc($settings['client_id'] ?? ''); ?>">
+                                   value="<?php _htmlsc($settings['client_id'] ?? ''); ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="client_secret"><?php _trans('client_secret'); ?></label>
                             <input type="password" name="client_secret" id="client_secret" class="form-control"
-                                   value="<?php echo htmlsc($settings['client_secret'] ?? ''); ?>" autocomplete="off">
+                                   value="<?php _htmlsc($settings['client_secret'] ?? ''); ?>" autocomplete="off">
                         </div>
 
                         <div class="form-group">
                             <label for="token_url"><?php _trans('token_url'); ?></label>
                             <input type="text" name="token_url" id="token_url" class="form-control"
                                    placeholder="https://api.superpdp.tech/oauth2/token"
-                                   value="<?php echo htmlsc($settings['token_url'] ?? ''); ?>">
+                                   value="<?php _htmlsc($settings['token_url'] ?? ''); ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="api_base_url"><?php _trans('api_base_url'); ?></label>
                             <input type="text" name="api_base_url" id="api_base_url" class="form-control"
                                    placeholder="https://api.superpdp.tech"
-                                   value="<?php echo htmlsc($settings['api_base_url'] ?? ''); ?>">
+                                   value="<?php _htmlsc($settings['api_base_url'] ?? ''); ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="invoice_endpoint"><?php _trans('invoice_endpoint'); ?></label>
                             <input type="text" name="invoice_endpoint" id="invoice_endpoint" class="form-control"
                                    placeholder="/v1.beta/invoices"
-                                   value="<?php echo htmlsc($settings['invoice_endpoint'] ?? ''); ?>">
+                                   value="<?php _htmlsc($settings['invoice_endpoint'] ?? ''); ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="invoice_status_endpoint"><?php _trans('invoice_status_endpoint'); ?></label>
                             <input type="text" name="invoice_status_endpoint" id="invoice_status_endpoint" class="form-control"
                                    placeholder="/v1.beta/invoices/{id}"
-                                   value="<?php echo htmlsc($settings['invoice_status_endpoint'] ?? ''); ?>">
+                                   value="<?php _htmlsc($settings['invoice_status_endpoint'] ?? ''); ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="incoming_invoices_endpoint"><?php _trans('incoming_invoices_endpoint'); ?></label>
                             <input type="text" name="incoming_invoices_endpoint" id="incoming_invoices_endpoint" class="form-control"
                                    placeholder="/v1.beta/invoices"
-                                   value="<?php echo htmlsc($settings['incoming_invoices_endpoint'] ?? ''); ?>">
+                                   value="<?php _htmlsc($settings['incoming_invoices_endpoint'] ?? ''); ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="invoice_events_endpoint"><?php _trans('invoice_events_endpoint'); ?></label>
                             <input type="text" name="invoice_events_endpoint" id="invoice_events_endpoint" class="form-control"
                                    placeholder="/v1.beta/invoice_events"
-                                   value="<?php echo htmlsc($settings['invoice_events_endpoint'] ?? ''); ?>">
+                                   value="<?php _htmlsc($settings['invoice_events_endpoint'] ?? ''); ?>">
                         </div>
 
                         <div class="checkbox">
