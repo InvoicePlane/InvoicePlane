@@ -53,21 +53,3 @@ defined('BASEPATH') || exit('No direct script access allowed');
 $route['default_controller']   = 'dashboard';
 $route['404_override']         = '';
 $route['translate_uri_dashes'] = false;
-
-$route['einvoice/settings']             = 'einvoice/settings/index';
-$route['einvoice/settings/edit/(:num)'] = 'einvoice/settings/edit/$1';
-$route['einvoice/settings/save/(:num)'] = 'einvoice/settings/save/$1';
-
-$route['einvoice/send_invoice/(:num)/(:num)'] = 'einvoice/einvoice/send_invoice/$1/$2';
-
-$route['einvoice/incoming']             = 'einvoice/incoming/index';
-$route['einvoice/incoming/sync/(:num)'] = 'einvoice/incoming/sync/$1';
-
-$route['einvoice/events']             = 'einvoice/events/index';
-$route['einvoice/events/sync/(:num)'] = 'einvoice/events/sync/$1';
-
-$route['einvoice/sync/(:num)'] = 'einvoice/sync/run/$1';
-
-$route['einvoice/status/(:num)/(:num)'] = 'einvoice/einvoice/status/$1/$2';
-
-$route['einvoice/history/(:num)'] = 'einvoice/einvoice/history/$1';
