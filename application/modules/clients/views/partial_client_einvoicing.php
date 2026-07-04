@@ -1,5 +1,6 @@
 <script type="text/javascript">
     $(function () {
+        // Check if found on Peppol network (Post to integrations/validate_participant)
         $('#btn_peppol_validate').on('click', function () {
             var participantId = $('#client_peppol_id').val().trim();
             var $result = $('#peppol_validate_result');
@@ -23,9 +24,7 @@
                 $result.html('<span class="text-danger"><i class="fa fa-times"></i> <?php _trans('peppol_not_reachable'); ?></span>');
             });
         });
-    });
 
-    $(function () {
         // Cache jQuery selectors
         const $client_start_einvoicing = $('#client_start_einvoicing');
         const $toggle_einvoicing = $('.toggle_einvoicing');
@@ -187,7 +186,7 @@ foreach ($req_einvoicing->users as $user_id => $user) {
                            placeholder="0130:27325502"
                            value="<?php echo htmlsc($this->mdl_clients->form_value('client_peppol_id')); ?>">
                     <span class="input-group-btn">
-                        <button type="button" id="btn_peppol_validate" class="btn btn-default"
+                        <button type="button" id="btn_peppol_validate" class="btn btn-sm btn-default"
                                 <?php echo $has_peppol_provider ? '' : 'disabled="disabled"'; ?>>
                             <?php _trans('peppol_validate'); ?>
                         </button>

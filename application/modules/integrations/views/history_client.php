@@ -2,7 +2,7 @@
     <h1 class="headerbar-title"><?php _trans('integration_history'); ?></h1>
 
     <div class="headerbar-item pull-right">
-        <a href="<?php echo site_url('clients/view/' . $client_id); ?>" class="btn btn-default">
+        <a href="<?php echo site_url('clients/view/' . $client_id); ?>" class="btn btn-sm btn-default">
             <i class="fa fa-arrow-left"></i> <?php _trans('back'); ?>
         </a>
     </div>
