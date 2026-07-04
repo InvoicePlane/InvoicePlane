@@ -54,10 +54,6 @@ class Mdl_Clients extends Response_Model
                 'field' => 'client_surname',
                 'label' => trans('client_surname'),
             ],
-            'client_einvoice_identifier' => [
-                'field' => 'client_einvoice_identifier',
-                'label' => trans('client_einvoice_identifier'),
-            ],
             'client_active' => [
                 'field' => 'client_active',
             ],
