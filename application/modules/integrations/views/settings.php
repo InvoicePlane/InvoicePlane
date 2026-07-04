@@ -1,5 +1,5 @@
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php _trans('einvoice'); ?> <?php _trans('providers'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('einvoice_providers'); ?></h1>
     <div class="headerbar-item pull-right">
         <a href="<?php echo site_url('integrations/incoming'); ?>" class="btn btn-sm btn-default">
             <i class="fa fa-inbox"></i> <?php _trans('incoming_invoices'); ?>
