@@ -370,16 +370,17 @@ class Mdl_Setup extends CI_Model
      */
     private function execute_contents(string|bool $contents)
     {
-        $commands = explode(';', $contents);
+        if ( ! is_string($contents)) {
+            return;
+        }
+
+        $this->load->helper('sql');
+        $commands = split_sql_statements($contents);
 
         foreach ($commands as $command) {
-            if ( ! mb_trim($command)) {
-                continue;
-            }
-
             $this->db->db_debug = IP_DEBUG;
 
-            $this->db->query(mb_trim($command) . ';');
+            $this->db->query($command . ';');
 
             $error = $this->db->error();
             if ($error['code'] !== 0) {
