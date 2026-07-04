@@ -1,9 +1,9 @@
-<div id="headerbar">
-    <h1 class="headerbar-title"><?php _trans('einvoice_provider'); ?></h1>
-</div>
+<form method="post" action="<?php echo site_url('integrations/settings/save/' . $provider['id']); ?>">
+    <div id="headerbar">
+        <h1 class="headerbar-title"><?php _trans('einvoice_provider'); ?></h1>
+    </div>
 
-<div id="content">
-    <form method="post" action="<?php echo site_url('integrations/settings/save/' . $provider['id']); ?>">
+    <div id="content">
 
         <?php _csrf_field(); ?>
 
@@ -125,5 +125,5 @@
             </div>
         </div>
 
-    </form>
-</div>
+    </div>
+</form>
