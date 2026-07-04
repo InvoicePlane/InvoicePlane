@@ -9,11 +9,14 @@
             <a href="<?php echo site_url('projects/form/' . $project->project_id); ?>" class="btn btn-default">
                 <i class="fa fa-edit"></i> <?php _trans('edit'); ?>
             </a>
-            <a class="btn btn-danger"
-               href="<?php echo site_url('projects/delete/' . $project->project_id); ?>"
-               onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
-                <i class="fa fa-trash-o"></i> <?php _trans('delete'); ?>
-            </a>
+            <form action="<?php echo site_url('projects/delete/' . $project->project_id); ?>"
+                  method="post" style="display:inline-block;">
+                <?php _csrf_field(); ?>
+                <button type="submit" class="btn btn-sm btn-danger"
+                        onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
+                    <i class="fa fa-trash-o"></i> <?php _trans('delete'); ?>
+                </button>
+            </form>
         </div>
     </div>
 </div>

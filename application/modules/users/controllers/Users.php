@@ -54,7 +54,11 @@ class Users extends Admin_Controller
         }
 
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
-            $id = $this->mdl_users->save($id);
+            // Build the db_array, then explicitly add the admin-authorized
+            // privilege field so it isn't silently mass-assigned from POST.
+            $db_array              = $this->mdl_users->db_array();
+            $db_array['user_type'] = (int) $this->input->post('user_type');
+            $id                    = $this->mdl_users->save($id, $db_array);
 
             $this->load->model('custom_fields/mdl_user_custom');
             $this->mdl_user_custom->save_custom($id, $this->input->post('custom'));

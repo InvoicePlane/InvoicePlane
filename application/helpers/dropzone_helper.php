@@ -191,7 +191,7 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
 
     // Clean filename (same of sanitize_file_name in Upload.php)
     function sanitizeName(filename) {
-        return filename.trim().replace(/[^\p{L}\p{N}\s\-_'’.]/gu, '');
+        return filename.trim().replace(/[^\p{L}\p{N}\s\-_'’.]/gu, '').replaceAll('..', '');
     }
 
     const is_guest = <?php echo $guest; ?>;
@@ -231,9 +231,14 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
     });
     // Uploading process complete
     myDropzone.on('complete', function (file) {
-        // Check if logged out (303) redirected to sessions/login. .
-        if(file.xhr && file.xhr.responseURL.match(/sessions\/login/) !== null) {
-            this.emit('error', file, `<?php _trans('upload_dz_disconnected'); ?>`);
+        if(file.xhr) {
+            // Check if logged out (303) redirected to sessions/login. .
+            if(file.xhr.responseURL.match(/sessions\/login/) !== null) {
+                this.emit('error', file, `<?php _trans('upload_dz_disconnected'); ?>`);
+            }
+            // Update csrf_token_value by response header from the completed request
+            const csrf_value = file.xhr.getResponseHeader('X-' + csrf_token_name); // header names are case-insensitive
+            csrf_token_value = csrf_value ? csrf_value : csrf_token_value;
         }
     });
 
@@ -264,7 +269,7 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
     // File accepted, start upload
     myDropzone.on('sending', function (file, xhr, formData) {
         // Get new crsf_token for multiple upload on same page
-        formData.append('<?php echo config_item('csrf_token_name'); ?>', Cookies.get('<?php echo config_item('csrf_cookie_name'); ?>'));
+        formData.append(csrf_token_name, csrf_token_value);
         // Show the total progress bar
         document.querySelector('#total-progress').style.opacity = '1';
     });
