@@ -179,7 +179,7 @@ class Integrations extends Admin_Controller
                     'success' => false,
                     'message' => $e->getMessage(),
                 ], JSON_PRETTY_PRINT));
-
+        }
         $items = $response['response']['data']
             ?? $response['response']['items']
             ?? $response['response']['invoices']
