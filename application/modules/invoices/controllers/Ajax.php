@@ -107,7 +107,7 @@ class Ajax extends Admin_Controller
                         ],
                     ];
 
-                    exit(json_encode($response));
+                    $this->json_encode_ajax($response);
                 }
             }
 
@@ -127,7 +127,7 @@ class Ajax extends Admin_Controller
                         ],
                     ];
 
-                    exit(json_encode($response));
+                    $this->json_encode_ajax($response);
                 }
             }
 
@@ -225,11 +225,11 @@ class Ajax extends Admin_Controller
                     'validation_errors' => $result,
                 ];
 
-                exit(json_encode($response));
+                $this->json_encode_ajax($response);
             }
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function save_invoice_tax_rate()
@@ -250,7 +250,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     /**
@@ -280,7 +280,7 @@ class Ajax extends Admin_Controller
         }
 
         // Return the response
-        exit(json_encode(['success' => $success]));
+        $this->json_encode_ajax(['success' => $success]);
     }
 
     public function get_item()
@@ -289,7 +289,7 @@ class Ajax extends Admin_Controller
 
         $item = $this->mdl_items->get_by_id($this->security->xss_clean($this->input->post('item_id', true)));
 
-        echo json_encode($item);
+        $this->json_encode_ajax($item);
     }
 
     public function modal_copy_invoice()
@@ -346,7 +346,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function modal_change_user()
@@ -395,7 +395,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function modal_change_client()
@@ -444,7 +444,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function modal_create_invoice()
@@ -485,7 +485,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function create_recurring()
@@ -506,7 +506,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function modal_create_recurring()
@@ -595,6 +595,6 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 }

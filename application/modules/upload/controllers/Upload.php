@@ -82,7 +82,7 @@ class Upload extends Admin_Controller
             exit('{}');
         }
 
-        exit(json_encode($result));
+        $this->json_encode_ajax($result);
     }
 
     public function delete_file(string $url_key): void
@@ -121,9 +121,13 @@ class Upload extends Admin_Controller
 
     public function get_file($filename): void
     {
-        // Security: Removed urldecode() - CodeIgniter already handles URL decoding
-        // First sanitize to handle the url_key_filename format
-        $filename = $this->sanitize_file_name($filename);
+        // First decode url & sanitize to handle the url_key_filename format
+        // Note: Work with all files - $filename is URL encoded (See helpers/dropzone_helper.php)
+        // [Old] urldecode() decodes + to a space, so a stored filename containing a literal + gets mangled.
+        // [New] rawurldecode() decodes %20/%E2%80%99 etc. identically but leaves + alone.
+        //       Still fully guarded by sanitize_file_name → validate_safe_filename → validate_file_in_directory afterwards.
+        $filename = $this->sanitize_file_name(rawurldecode($filename)); // rawurldecode: keep literal '+' (urldecode turns it into a space)
+        // dump: $filename => 1iKyYIgzZpewUa8EtN0MOXAGdTBDRfsC_Capture d’écran du 2025-10-15 02-43-47.png
 
         $underscorePos = mb_strpos($filename, '_');
         if ($underscorePos === false) {

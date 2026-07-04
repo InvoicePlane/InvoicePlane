@@ -1,10 +1,10 @@
 <div id="fullpage-loader" style="display: none">
     <div class="loader-content">
         <i id="loader-icon" class="fa fa-cog fa-spin"></i>
-        <img id="loader-error-icon" src="<?php echo base_url('assets/core/img/loader-error.svg'); ?>" 
-             alt="<?php echo html_escape(trans('loading_error')); ?>">
         <div id="loader-error" class="loader-error-message" style="display: none">
             <div class="alert alert-danger">
+                <img id="loader-error-icon" src="<?php echo base_url('assets/core/img/loader-error.svg'); ?>"
+                     alt="<?php echo html_escape(trans('loading_error')); ?>">
                 <strong><i class="fa fa-exclamation-triangle"></i> <?php _trans('loading_error'); ?></strong>
                 <div class="loader-error-actions">
                     <a href="https://wiki.invoiceplane.com/<?php _trans('cldr'); ?>/1.0/general/faq"

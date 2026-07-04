@@ -1,4 +1,5 @@
 <form method="post" class="form-horizontal">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('email_invoice'); ?></h1>

@@ -29,6 +29,11 @@ InvoicePlane is a self-hosted, open-source invoicing application written in **PH
 - Use `validate_safe_filename()` for any user-supplied filename.
 - Do not introduce `mb_strlen` / `mb_substr` on raw binary data (Cryptor).
 
+## Documentation / changelog rules
+
+- **Never change CVSSv3 scores, CWE identifiers, or Severity labels** in vulnerability tables unless explicitly instructed. They are set by the researchers and release manager.
+- When asked to populate empty cells in a vulnerability table, only fill in cells that currently contain `—`. Do not alter neighbouring columns (score, CWE, severity) as a side-effect.
+
 ## Testing
 
 - Tests are written with **PHPUnit** (no Laravel TestCase — use plain PHPUnit).

@@ -107,9 +107,9 @@ validation and directory confinement.
 ### References
 
 **Official Documentation:**
-- Security Advisory: https://github.com/InvoicePlane/InvoicePlane/blob/master/SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md
-- Changelog: https://github.com/InvoicePlane/InvoicePlane/blob/master/CHANGELOG.md
-- Security Policy: https://github.com/InvoicePlane/InvoicePlane/blob/master/SECURITY.md
+- Security Advisory: https://github.com/InvoicePlane/InvoicePlane/blob/develop/.github/security/SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md
+- Changelog: https://github.com/InvoicePlane/InvoicePlane/blob/develop/.github/CHANGELOG.md
+- Security Policy: https://github.com/InvoicePlane/InvoicePlane/blob/develop/SECURITY.md
 
 **Fix Commit:**
 - Repository: https://github.com/InvoicePlane/InvoicePlane
