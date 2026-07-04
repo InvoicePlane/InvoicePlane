@@ -343,26 +343,20 @@ if ( ! empty($enabled_merchant_clients)) {
         $needs_peppol = in_array($mc['merchant_type'], ['letspeppol', 'superpdp'], true);
         $has_id       = ! empty($invoice->client_peppol_id);
         if ($needs_peppol && ! $has_id) {
-            ?>
-                <li class="disabled" data-toggle="tooltip" title="<?php _trans('peppol_id_missing'); ?>">
-                    <a href="#" onclick="return false;">
+            $lst = 'class="disabled" data-toggle="tooltip" title="' . trans('peppol_id_missing') . '"';
+            $lnk = 'javascript:void(0);';
+        } else {
+            $lst = 'class="active"';
+            $lnk = site_url('integrations/send_invoice/' . $invoice_id . '/' . (int) $mc['id']);
+        }
+?>
+                <li <?php echo $lst; ?>>
+                    <a href="<?php echo $lnk; ?>">
                         <i class="fa fa-paper-plane fa-margin"></i>
                         <?php _trans('send_via_integration'); ?> <?php _htmlsc($mc['label']); ?>
                     </a>
                 </li>
 <?php
-        } else {
-            ?>
-                <li>
-                    <form method="post" action="<?php echo site_url('integrations/send_invoice/' . $invoice_id . '/' . (int) $mc['id']); ?>" style="display:inline;">
-                        <button type="submit" class="btn btn-link" style="padding:3px 20px;text-align:left;width:100%;">
-                            <i class="fa fa-paper-plane fa-margin"></i>
-                            <?php _trans('send_via_integration'); ?> <?php _htmlsc($mc['label']); ?>
-                        </button>
-                    </form>
-                </li>
-<?php
-        }
     }
     ?>
                 <li class="divider"></li>
