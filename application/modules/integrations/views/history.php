@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="content">
+<div id="content">
     <table class="table table-striped">
         <thead>
         <tr>
