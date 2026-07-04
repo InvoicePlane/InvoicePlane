@@ -3,7 +3,7 @@
 
     <div class="headerbar-item pull-right">
         <?php foreach ($clients as $client) : ?>
-            <a href="<?php echo site_url('integrations/incoming/sync/' . $client['id']); ?>" class="btn btn-primary">
+            <a href="<?php echo site_url('integrations/incoming/sync/' . $client['id']); ?>" class="btn btn-sm btn-primary">
                 <i class="fa fa-refresh"></i>
                 <?php _trans('sync'); ?> <?php _htmlsc($client['label']); ?>
             </a>

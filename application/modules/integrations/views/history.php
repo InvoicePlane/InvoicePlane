@@ -4,7 +4,7 @@
     </h1>
 
     <div class="headerbar-item pull-right">
-        <a href="<?php echo site_url('invoices/view/' . $invoice_id); ?>" class="btn btn-default">
+        <a href="<?php echo site_url('invoices/view/' . $invoice_id); ?>" class="btn btn-sm btn-default">
             <i class="fa fa-arrow-left"></i> <?php _trans('back'); ?>
         </a>
     </div>

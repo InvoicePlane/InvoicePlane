@@ -11,11 +11,11 @@
         </div>
 
         <div class="panel-body">
-            <a href="<?php echo site_url('integrations/incoming'); ?>" class="btn btn-default">
+            <a href="<?php echo site_url('integrations/incoming'); ?>" class="btn btn-sm btn-default">
                 <i class="fa fa-inbox"></i> <?php _trans('incoming_invoices'); ?>
             </a>
 
-            <a href="<?php echo site_url('integrations/events'); ?>" class="btn btn-default">
+            <a href="<?php echo site_url('integrations/events'); ?>" class="btn btn-sm btn-default">
                 <i class="fa fa-history"></i> <?php _trans('einvoice_events'); ?>
             </a>
         </div>
