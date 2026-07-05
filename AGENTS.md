@@ -40,8 +40,8 @@ assets/
 pint.json           Code style configuration (Pint / PHP CS Fixer)
 phpstan.neon        Static analysis configuration
 ipconfig.php.example  Application configuration template
-CHANGELOG.md
-UPGRADE.md
+.github/CHANGELOG.md
+.github/docs/UPGRADE.md
 AGENTS.md           (this file)
 .junie/guidelines.md  Extended development guidelines
 ```
@@ -103,6 +103,12 @@ There is no `quickstart.yml`. InvoicePlane does not have `php artisan` commands.
 - **Do not use `mb_*` functions on binary data** in cryptographic operations.
 - **Do not add `header("Location: " . $_SERVER['HTTP_REFERER'])` patterns** — use `get_safe_referer()`.
 - **Do not log raw user input** — always use `sanitize_for_logging()`.
+
+## Documentation / changelog rules
+
+- **Do NOT change CVSSv3 scores, CWE identifiers, or Severity labels** in vulnerability tables unless the user explicitly asks. These are set by the security researchers and maintainer.
+- When populating empty cells (`—`) in a vulnerability table, touch only those empty cells. Leave all other columns in the same row unchanged.
+- GHSA advisory links follow the pattern: `https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-xxxx-xxxx-xxxx`
 - Pint (`vendor/bin/pint`) formats PHP code style. Running it with the `"="` alignment set to `align_single_space_minimal` previously caused an "illegal offset" error on mixed PHP/HTML view files. The `pint.json` has been updated to use `single_space` for `=` to prevent this.
 
 ## Adding a new template

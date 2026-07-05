@@ -50,5 +50,11 @@
             "Composer\\Config::disableProcessTimeout",
             "vendor/bin/pint"
         ]
+    },
+    "autoload": {
+        "classmap": [
+            "application/modules/integrations/libraries/",
+            "application/modules/integrations/models/"
+        ]
     }
 }

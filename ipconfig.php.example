@@ -10,12 +10,29 @@ IP_URL=
 # Having problems? Enable debug by changing the value to 'true' to enable advanced logging
 ENABLE_DEBUG=false
 
+# Having saving troubles?
+# Uncomment to disable csrf regenerated on each page load and POST (AJAX)
+# CSRF_REGENERATE=false
+# Disable server csrf check on each POST (AJAX)
+# CSRF_PROTECTION=false
+
 # To Show all PHP errors, change the value to 'development' (Or comment the following line)
 CI_ENV=production
 
 X_FRAME_OPTIONS=SAMEORIGIN
 ENABLE_X_CONTENT_TYPE_OPTIONS=true
-SESS_REGENERATE_DESTROY=false
+
+# Session settings
+# Leave SESS_SAVE_PATH empty to use PHP's default session save path (sys_get_temp_dir()).
+# To store sessions elsewhere, e.g. outside the document root, set an absolute path:
+#   SESS_SAVE_PATH=/srv/invoiceplane/sessions
+SESS_SAVE_PATH=
+# Override the session cookie name
+SESS_COOKIE_NAME=ip_session
+# Override the session database table name (only used when SESS_DRIVER=database)
+SESS_TABLE_NAME=ip_sessions
+# Destroy the old session ID after regeneration — prevents session fixation attacks.
+SESS_REGENERATE_DESTROY=true
 
 # Set this setting to 'true' if you want to disable the setup for security purposes
 DISABLE_SETUP=false
@@ -36,6 +53,12 @@ DB_PORT=
 # the default is 10 days.
 SESS_EXPIRATION=864000
 SESS_MATCH_IP=true
+# Database table used to store sessions when SESS_DRIVER=database.
+# Only needed if you override the default table name.
+SESS_TABLE_NAME=ip_sessions
+# Name of the session cookie sent to the browser.
+# Only needed if you need to avoid a collision with another application on the same domain.
+SESS_COOKIE_NAME=ip_session
 
 # Default Global Amounts Calculation mode - Since 1.6.3
 # This change Taxes and discounts calcuation mode
@@ -91,10 +114,16 @@ SEC_STRIP_EXIF_FROM_IMAGES=false
 CUSTOM_TEMPLATES_FOLDER=
 
 # Explicit allowlist of custom template names (without .php extension).
-# Comma-separated list of names that are made available alongside the built-in templates.
-# The corresponding PHP file must exist in CUSTOM_TEMPLATES_FOLDER under the matching sub-path.
-# Example: CUSTOM_INVOICE_TEMPLATES_PDF=MyTemplate,AnotherTemplate
-# Security: only names matching [a-zA-Z0-9 _-]+ are accepted; filesystem scanning is not used.
+#
+# Security: The filesystem is NEVER scanned for templates (prevents Remote Code Execution).
+# Only template names listed here are made available in the UI.
+# Names must contain only letters, digits, spaces, hyphens, and underscores.
+#
+# Format: comma-separated names. Quote the whole value when names contain spaces or hyphens.
+#   CUSTOM_INVOICE_TEMPLATES_PDF="My Template,Another Template"
+#   CUSTOM_INVOICE_TEMPLATES_PDF="Corporate - Modern,Corporate - Classic"
+#
+# The corresponding .php file must exist in CUSTOM_TEMPLATES_FOLDER under the matching sub-path.
 CUSTOM_INVOICE_TEMPLATES_PDF=
 CUSTOM_INVOICE_TEMPLATES_PUBLIC=
 CUSTOM_QUOTE_TEMPLATES_PDF=
