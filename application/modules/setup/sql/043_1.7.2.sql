@@ -1,4 +1,3 @@
-# Added for versioning
 -- Treat empty client birthdates as NULL.
 UPDATE `ip_clients`
 SET `client_birthdate` = NULL

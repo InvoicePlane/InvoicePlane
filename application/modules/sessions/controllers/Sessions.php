@@ -42,25 +42,14 @@ class Sessions extends Base_Controller
         ];
 
         if ($this->input->post('btn_login')) {
-            $this->db->where('user_email', $this->input->post('email'));
-            $query = $this->db->get('ip_users');
-            $user  = $query->row();
-
-            // Check if the user exists
-            if (empty($user)) {
-                $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
-                redirect('sessions/login');
-            } elseif ($user->user_active == 0) {
-                // Check if the user is marked as active (not implemented: Todo?)
-                $this->session->set_flashdata('alert_error', trans('loginalert_user_inactive'));
-                redirect('sessions/login');
-            } elseif ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
+            if ($this->authenticate($this->input->post('email'), $this->input->post('password'))) {
                 if ($this->session->userdata('user_type') == 1) {
                     redirect('dashboard');
                 } elseif ($this->session->userdata('user_type') == 2) {
                     redirect('guest');
                 }
             } else {
+                // Generic message for all failure cases to prevent account/status enumeration.
                 $this->session->set_flashdata('alert_error', trans('loginalert_credentials_incorrect'));
                 redirect('sessions/login');
             }
@@ -76,17 +65,27 @@ class Sessions extends Base_Controller
     public function authenticate($email_address, $password): bool
     {
         $this->load->model('mdl_sessions');
-        //check if user is banned
+
+        // IP-based rate limiting mirrors the password-reset throttle.
+        if ($this->_is_ip_rate_limited_login()) {
+            $this->load->helper('file_security');
+            log_message('warning', 'Login IP rate limit exceeded from: ' . sanitize_for_logging($this->input->ip_address()));
+
+            return false;
+        }
+
+        // Per-account lockout (email-keyed).
         $login_log = $this->_login_log_check($email_address);
         if (empty($login_log) || $login_log->log_count < 10) {
             if ($this->mdl_sessions->auth($email_address, $password)) {
                 $this->_login_log_reset($email_address);
+                $this->_reset_ip_login_attempts();
 
                 return true;
             }
 
-            //track failed attempt
             $this->_login_log_addfailure($email_address);
+            $this->_record_ip_login_attempt();
         }
 
         return false;
@@ -107,7 +106,7 @@ class Sessions extends Base_Controller
         // Check if a token was provided
         if ($token) {
             if (preg_match("/[^[:alnum:]\-_]/", $token)) {
-                log_message('error', 'Incoming token is not alphanumeric ' . $token);
+                log_message('error', 'Incoming token is not alphanumeric (hash: ' . hash('sha256', $token) . ')');
                 redirect('/');
             }
 
@@ -217,34 +216,35 @@ class Sessions extends Base_Controller
 
         // Check if the password reset form was used
         if ($this->input->post('btn_reset', true)) {
+            $this->load->helper('file_security');
             $email = $this->input->post('email', true);
 
             // Validate email format first
             if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                log_message('error', trans('log_invalid_email_format') . ': ' . $email . ' from IP: ' . $this->input->ip_address());
+                log_message('error', trans('log_invalid_email_format') . ' (hash: ' . hash('sha256', (string) $email) . ') from IP: ' . sanitize_for_logging($this->input->ip_address()));
                 redirect('sessions/login');
             }
 
             if (empty($email)) {
-                log_message('warning', trans('log_empty_email_submitted') . ' from IP: ' . $this->input->ip_address());
+                log_message('warning', trans('log_empty_email_submitted') . ' from IP: ' . sanitize_for_logging($this->input->ip_address()));
                 redirect('sessions/login');
             }
 
             // Security: Block automated tools and bots
             if ($this->_is_bot_request()) {
-                log_message('warning', trans('log_password_reset_bot_detected') . ': ' . $this->input->ip_address() . ' User-Agent: ' . $this->input->user_agent());
+                log_message('warning', trans('log_password_reset_bot_detected') . ': ' . sanitize_for_logging($this->input->ip_address()) . ' User-Agent: ' . sanitize_for_logging($this->input->user_agent()));
                 redirect('sessions/login');
             }
 
             // Security: Check IP-based rate limiting first (prevents email enumeration)
             if ($this->_is_ip_rate_limited_password_reset()) {
-                log_message('warning', trans('log_password_reset_ip_rate_limit') . ' from: ' . $this->input->ip_address());
+                log_message('warning', trans('log_password_reset_ip_rate_limit') . ' from: ' . sanitize_for_logging($this->input->ip_address()));
                 redirect('sessions/login');
             }
 
             // Security: Prevent brute force attacks by counting password reset attempts per email
             if ($this->_is_email_rate_limited_password_reset($email)) {
-                log_message('warning', trans('log_password_reset_email_rate_limit') . ' for: ' . $email . ' from IP: ' . $this->input->ip_address());
+                log_message('warning', trans('log_password_reset_email_rate_limit') . ' (hash: ' . hash('sha256', $email) . ') from IP: ' . sanitize_for_logging($this->input->ip_address()));
                 redirect('sessions/login');
             }
 
@@ -352,13 +352,48 @@ class Sessions extends Base_Controller
                 // User doesn't exist - show same success message to prevent enumeration
                 // DO NOT send email to prevent abuse and RBL issues
                 $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
-                log_message('info', trans('log_password_reset_nonexistent_email') . ': ' . $email . ' from IP: ' . $this->input->ip_address());
+                log_message('info', trans('log_password_reset_nonexistent_email') . ' (hash: ' . hash('sha256', $email) . ') from IP: ' . sanitize_for_logging($this->input->ip_address()));
             }
 
             redirect('sessions/login');
         }
 
         return $this->load->view('session_passwordreset');
+    }
+
+    /**
+     * Returns true when the current IP has exceeded the login attempt threshold.
+     */
+    private function _is_ip_rate_limited_login(): bool
+    {
+        $max_attempts   = (int) env('LOGIN_IP_MAX_ATTEMPTS', 20);
+        $window_minutes = (int) env('LOGIN_IP_WINDOW_MINUTES', 15);
+        $session_key    = 'login_attempts_ip_' . md5($this->input->ip_address());
+        $attempts       = $this->session->userdata($session_key) ?: [];
+        $cutoff         = time() - ($window_minutes * 60);
+        $attempts       = array_values(array_filter($attempts, fn ($t) => $t > $cutoff));
+
+        return count($attempts) >= $max_attempts;
+    }
+
+    /**
+     * Records one failed login attempt for the current IP.
+     */
+    private function _record_ip_login_attempt(): void
+    {
+        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
+        $attempts    = $this->session->userdata($session_key) ?: [];
+        $attempts[]  = time();
+        $this->session->set_userdata($session_key, $attempts);
+    }
+
+    /**
+     * Clears IP-based login attempt counter on successful authentication.
+     */
+    private function _reset_ip_login_attempts(): void
+    {
+        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
+        $this->session->unset_userdata($session_key);
     }
 
     /**
@@ -420,7 +455,8 @@ class Sessions extends Base_Controller
 
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
-            log_message('info', trans('log_ip_rate_limit_check') . ': ' . count($attempts) . ' attempts from IP: ' . $ip_address);
+            $this->load->helper('file_security');
+            log_message('info', trans('log_ip_rate_limit_check') . ': ' . count($attempts) . ' attempts from IP: ' . sanitize_for_logging($ip_address));
 
             return true;
         }
@@ -481,7 +517,7 @@ class Sessions extends Base_Controller
 
         // Check if rate limited
         if (count($attempts) >= $max_attempts) {
-            log_message('info', trans('log_email_rate_limit_check') . ': ' . count($attempts) . ' attempts for email: ' . $email);
+            log_message('info', trans('log_email_rate_limit_check') . ': ' . count($attempts) . ' attempts (hash: ' . hash('sha256', $email) . ')');
 
             return true;
         }
@@ -622,23 +658,31 @@ class Sessions extends Base_Controller
      */
     private function _get_safe_referer($referer = '')
     {
-        // Use provided referer or HTTP_REFERER
+        $default = 'sessions/passwordreset';
+
         $referer = empty($referer) ? ($_SERVER['HTTP_REFERER'] ?? '') : $referer;
 
-        // If no referer, use default
         if (empty($referer)) {
-            return 'sessions/passwordreset';
+            return $default;
         }
 
-        // Get base URL
         $base_url = base_url();
 
-        // Check if referer starts with base URL (same domain)
-        if (str_starts_with($referer, $base_url)) {
-            return $referer;
+        // If base_url is not configured, str_starts_with($referer, '') is always true
+        // and any external URL would pass. Reject to be safe.
+        if (empty($base_url)) {
+            return $default;
         }
 
-        // Referer is external or invalid, use safe default
-        return 'sessions/passwordreset';
+        // Compare parsed hosts rather than string prefixes to resist
+        // bypass attempts such as https://example.com.evil.com/...
+        $referer_host = parse_url($referer, PHP_URL_HOST);
+        $base_host    = parse_url($base_url, PHP_URL_HOST);
+
+        if ( ! $referer_host || ! $base_host || $referer_host !== $base_host) {
+            return $default;
+        }
+
+        return $referer;
     }
 }
