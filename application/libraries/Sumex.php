@@ -306,8 +306,8 @@ class Sumex
         }
 
         $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $this->invoice->invoice_number);
-        // Create the SUMEX XML file (embed)
-        $path = UPLOADS_TEMP_FOLDER . $filename . '.xml';
+        // Create the SUMEX XML file (embed) in non-web-accessible storage directory for security
+        $path = STORAGE_TEMP_FOLDER . $filename . '.xml';
         file_put_contents($path, $this->xml());
         $associatedFiles = [[
             'path'           => $path,

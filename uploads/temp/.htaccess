@@ -1,4 +1,4 @@
-<FilesMatch "\.pdf$">
+<FilesMatch "\.(pdf|xml)$">
 Order allow,deny
 Deny from all
 </FilesMatch>
