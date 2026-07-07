@@ -215,12 +215,16 @@ class Settings extends Admin_Controller
      * Remove a logo file with security validation.
      *
      * Security: Validates that the logo file path is safe and within the uploads directory
-     * to prevent arbitrary file deletion attacks.
+     * to prevent arbitrary file deletion attacks. Requires POST request and valid CSRF token.
      *
      * @param string $type Logo type ('invoice' or 'login')
      */
     public function remove_logo(string $type)
     {
+        if ( ! $this->ensure_valid_post_request('settings')) {
+            return;
+        }
+
         // Security: Validate type parameter against allowed values
         $allowed_types = ['invoice', 'login'];
         if ( ! in_array($type, $allowed_types, true)) {

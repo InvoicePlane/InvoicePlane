@@ -406,15 +406,26 @@
                                     ?>
                                 <br/>
                                 <div class="alert alert-danger">
-                                    <strong><?php _trans('warning'); ?>:</strong> 
-                                    <?php _trans('svg_logo_blocked_security'); ?> 
-                                    <?php echo anchor('settings/remove_logo/login', trans('remove_logo')); ?>
+                                    <strong><?php _trans('warning'); ?>:</strong>
+                                    <?php _trans('svg_logo_blocked_security'); ?>
+                                    <form method="post" action="<?php echo base_url(); ?>settings/remove_logo/login" style="display:inline;">
+                                        <?php _csrf_field(); ?>
+                                        <button type="submit" class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
+                                            <?php _trans('remove_logo'); ?>
+                                        </button>
+                                    </form>
                                 </div>
                             <?php } else { ?>
                                 <br/>
                                 <img class="personal_logo"
                                     src="<?php echo base_url(); ?>uploads/<?php echo htmlsc($login_logo_file); ?>"><br>
-                                <?php echo anchor('settings/remove_logo/login', trans('remove_logo')); ?><br/>
+                                <form method="post" action="<?php echo base_url(); ?>settings/remove_logo/login" style="display:inline;">
+                                    <?php _csrf_field(); ?>
+                                    <button type="submit" class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
+                                        <?php _trans('remove_logo'); ?>
+                                    </button>
+                                </form>
+                                <br/>
                             <?php }
                             } ?>
                             <input type="file" name="login_logo" id="login_logo" class="form-control"/>
