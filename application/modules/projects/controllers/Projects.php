@@ -103,6 +103,10 @@ class Projects extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('projects/index')) {
+            return;
+        }
+
         $this->load->model('tasks/mdl_tasks');
         $this->mdl_tasks->update_on_project_delete($id);
 
