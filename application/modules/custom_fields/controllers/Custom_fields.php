@@ -116,6 +116,10 @@ class Custom_Fields extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('custom_fields/index')) {
+            return;
+        }
+
         if ( ! $this->mdl_custom_fields->delete($id)) {
             $this->session->set_flashdata('alert_info', trans('id') . sprintf(' "%s" ', $id) . trans('custom_fields_used_not_deletable'));
         }
