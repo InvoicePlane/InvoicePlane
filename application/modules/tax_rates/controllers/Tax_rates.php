@@ -70,6 +70,10 @@ class Tax_Rates extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('tax_rates/index')) {
+            return;
+        }
+
         $this->mdl_tax_rates->delete($id);
         redirect('tax_rates');
     }
