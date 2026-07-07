@@ -68,6 +68,11 @@ class Mdl_Sessions extends CI_Model
 
             // Modern path: verify against the salted password hash.
             if ($this->crypt->check_password($user->user_password, $password)) {
+                // Verify the account is active before granting authentication.
+                if ((int) $user->user_active !== 1) {
+                    return false;
+                }
+
                 $session_data = [
                     'user_type'     => $user->user_type,
                     'user_id'       => $user->user_id,
