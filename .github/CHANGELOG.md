@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Security
+- **CSRF Protection Hardening**: Added explicit POST and CSRF token validation to all delete endpoints across 12 modules (Projects, Tasks, Users, Invoice Groups, Payment Methods, Custom Fields, Units, Tax Rates, Custom Values, Clients, Products, and Settings logo removal). Implements defense-in-depth protection against cross-site request forgery attacks by validating both HTTP method and CSRF tokens at the controller level, preventing direct GET access to state-changing operations.
+
+---
+
 ## [1.7.2] - 2026-04-06
 
 InvoicePlane 1.7.2 is a **security-focused release**. It resolves every vulnerability
