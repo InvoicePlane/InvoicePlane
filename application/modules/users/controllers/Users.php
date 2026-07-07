@@ -190,6 +190,10 @@ class Users extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('users/index')) {
+            return;
+        }
+
         if ($id != 1) {
             $this->mdl_users->delete($id);
         }
