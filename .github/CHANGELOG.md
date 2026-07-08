@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Security
+- **Object-Level Authorization (IDOR Prevention)**: Added comprehensive authorization checks to prevent Insecure Direct Object Reference (IDOR) vulnerabilities. Authenticated administrators can no longer enumerate or access records outside their authorized scope. New authorization helpers (`user_has_client_access()`, `user_has_project_access()`, `user_can_manage_user_client()`) enforce access control on `/clients/view/{id}`, `/projects/view/{id}`, and user-client authorization endpoints. Protects multi-user and multi-tenant deployments from lateral administrative abuse and data exposure.
 - **CSRF Protection Hardening**: Added explicit POST and CSRF token validation to all delete endpoints across 12 modules (Projects, Tasks, Users, Invoice Groups, Payment Methods, Custom Fields, Units, Tax Rates, Custom Values, Clients, Products, and Settings logo removal). Implements defense-in-depth protection against cross-site request forgery attacks by validating both HTTP method and CSRF tokens at the controller level, preventing direct GET access to state-changing operations.
 
 ---
