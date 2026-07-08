@@ -54,7 +54,11 @@ class Users extends Admin_Controller
         }
 
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
-            $id = $this->mdl_users->save($id);
+            // Build the db_array, then explicitly add the admin-authorized
+            // privilege field so it isn't silently mass-assigned from POST.
+            $db_array              = $this->mdl_users->db_array();
+            $db_array['user_type'] = (int) $this->input->post('user_type');
+            $id                    = $this->mdl_users->save($id, $db_array);
 
             $this->load->model('custom_fields/mdl_user_custom');
             $this->mdl_user_custom->save_custom($id, $this->input->post('custom'));
@@ -64,12 +68,13 @@ class Users extends Admin_Controller
                 $new_details = $this->mdl_users->get_by_id($id);
 
                 $session_data = [
-                    'user_type'     => $new_details->user_type,
-                    'user_id'       => $new_details->user_id,
-                    'user_name'     => $new_details->user_name,
-                    'user_email'    => $new_details->user_email,
-                    'user_company'  => $new_details->user_company,
-                    'user_language' => $new_details->user_language ?? 'system',
+                    'user_type'                => $new_details->user_type,
+                    'user_id'                  => $new_details->user_id,
+                    'user_name'                => $new_details->user_name,
+                    'user_email'               => $new_details->user_email,
+                    'user_company'             => $new_details->user_company,
+                    'user_einvoice_identifier' => $new_details->user_einvoice_identifier,
+                    'user_language'            => $new_details->user_language ?? 'system',
                 ];
 
                 $this->session->set_userdata($session_data);
@@ -186,6 +191,10 @@ class Users extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('users/index')) {
+            return;
+        }
+
         if ($id != 1) {
             $this->mdl_users->delete($id);
         }
@@ -200,6 +209,15 @@ class Users extends Admin_Controller
     public function delete_user_client(string $user_id, $user_client_id)
     {
         $this->load->model('mdl_user_clients');
+
+        if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
+            show_error(trans('access_denied'), 403);
+        }
+
+        $user_client = $this->mdl_user_clients->get_by_id($user_client_id);
+        if ( ! $user_client) {
+            show_404();
+        }
 
         $this->mdl_user_clients->delete($user_client_id);
 

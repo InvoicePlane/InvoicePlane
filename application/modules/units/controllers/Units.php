@@ -80,6 +80,10 @@ class Units extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('units/index')) {
+            return;
+        }
+
         $this->mdl_units->delete($id);
         redirect('units');
     }

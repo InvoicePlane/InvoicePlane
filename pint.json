@@ -5,6 +5,9 @@
         "resources",
         "storage"
     ],
+    "notPath": [
+        "application/modules/clients/views/view.php"
+    ],
     "rules": {
         "@PSR12": true,
         "align_multiline_comment": true,

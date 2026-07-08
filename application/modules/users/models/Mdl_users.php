@@ -16,6 +16,13 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Users extends Response_Model
 {
+    /**
+     * Fields that must never be written from raw POST data regardless of
+     * validation rules. Controllers that legitimately need to set these
+     * must build and pass their own $db_array to save().
+     */
+    private const PROTECTED_FIELDS = ['user_type', 'user_active', 'user_psalt'];
+
     public $table = 'ip_users';
 
     public $primary_key = 'ip_users.user_id';
@@ -83,6 +90,11 @@ class Mdl_Users extends Response_Model
             ],
             'user_company' => [
                 'field' => 'user_company',
+            ],
+            'user_einvoice_identifier' => [
+                'field' => 'user_einvoice_identifier',
+                'label' => trans('user_einvoice_identifier'),
+                'rules' => 'trim|regex_match[/^[0-9]{9}$/]',
             ],
             'user_address_1' => [
                 'field' => 'user_address_1',
@@ -197,6 +209,11 @@ class Mdl_Users extends Response_Model
             'user_company' => [
                 'field' => 'user_company',
             ],
+            'user_einvoice_identifier' => [
+                'field' => 'user_einvoice_identifier',
+                'label' => trans('user_einvoice_identifier'),
+                'rules' => 'trim|regex_match[/^[0-9]{9}$/]',
+            ],
             'user_address_1' => [
                 'field' => 'user_address_1',
             ],
@@ -287,6 +304,11 @@ class Mdl_Users extends Response_Model
     public function db_array()
     {
         $db_array = parent::db_array();
+
+        // Strip privilege-escalation fields from POST-sourced data.
+        foreach (self::PROTECTED_FIELDS as $field) {
+            unset($db_array[$field]);
+        }
 
         if (isset($db_array['user_password'])) {
             unset($db_array['user_passwordv']);

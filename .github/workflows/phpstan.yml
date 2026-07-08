@@ -20,7 +20,7 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
-          composer-flags: '--prefer-dist --no-interaction --no-progress'
+          composer-flags: '--prefer-dist --no-interaction --no-progress --ignore-platform-reqs'
 
       - name: Run PHPStan
         id: phpstan

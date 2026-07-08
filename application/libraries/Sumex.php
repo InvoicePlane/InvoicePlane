@@ -262,9 +262,21 @@ class Sumex
         // Override system language with client language
         set_language($this->invoice->client_language);
 
+        // Security: Always validate the invoice template to prevent path traversal attacks
+        // Load template helper for validate_template_name() and select_pdf_invoice_template()
+        $CI->load->helper('template');
         if ( ! $invoice_template) {
-            $CI->load->helper('template');
             $invoice_template = select_pdf_invoice_template($this->invoice);
+        } else {
+            // Defense-in-depth: Validate incoming template parameter even if caller validated it
+            // This prevents LFI/path traversal if Sumex::pdf() is called from other code paths
+            $validated = validate_template_name($invoice_template, 'invoice', 'pdf');
+            if ($validated === false) {
+                log_message('error', 'Invalid PDF invoice template parameter in Sumex::pdf(): ' . sanitize_for_logging($invoice_template) . ', using default');
+                $invoice_template = select_pdf_invoice_template($this->invoice);
+            } else {
+                $invoice_template = $validated;
+            }
         }
 
         $payment_method = false;
@@ -294,8 +306,8 @@ class Sumex
         }
 
         $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $this->invoice->invoice_number);
-        // Create the SUMEX XML file (embed)
-        $path = UPLOADS_TEMP_FOLDER . $filename . '.xml';
+        // Create the SUMEX XML file (embed) in non-web-accessible storage directory for security
+        $path = STORAGE_TEMP_FOLDER . $filename . '.xml';
         file_put_contents($path, $this->xml());
         $associatedFiles = [[
             'path'           => $path,

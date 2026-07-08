@@ -80,7 +80,10 @@ class Projects extends Admin_Controller
             redirect('projects');
         }
 
-        $this->load->model('projects/mdl_projects');
+        if ( ! $this->mdl_projects->can_user_access($project_id)) {
+            show_error(trans('access_denied'), 403);
+        }
+
         $project = $this->mdl_projects->get_by_id($project_id);
 
         if ( ! $project) {
@@ -103,6 +106,10 @@ class Projects extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('projects/index')) {
+            return;
+        }
+
         $this->load->model('tasks/mdl_tasks');
         $this->mdl_tasks->update_on_project_delete($id);
 

@@ -15,12 +15,6 @@ if ( ! defined('BASEPATH')) {
 
 class Get extends Base_Controller
 {
-    public $targetPath = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/'
-
-    public $ctype_default = 'application/octet-stream';
-
-    public $content_types = [];
-
     /**
      * The expected length of url_key strings.
      * url_keys are 32-character random alphanumeric strings.
@@ -33,6 +27,12 @@ class Get extends Base_Controller
      */
     private const EMPTY_JSON_RESPONSE = '{}';
 
+    public $targetPath = UPLOADS_CFILES_FOLDER; // UPLOADS_FOLDER . 'customer_files/'
+
+    public $ctype_default = 'application/octet-stream';
+
+    public $content_types = [];
+
     /**
      * Upload constructor.
      */
@@ -44,84 +44,6 @@ class Get extends Base_Controller
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');
         $this->content_types = $this->mdl_uploads->content_types;
-    }
-
-    /**
-     * Extract url_key from a filename with format {url_key}_{original_filename}.
-     * Note: url_keys are case-sensitive alphanumeric strings.
-     *
-     * @param string $filename The filename to parse
-     *
-     * @return string|null The extracted url_key or null if not found
-     */
-    private function extract_url_key_from_filename(string $filename): ?string
-    {
-        // Match exactly 32 alphanumeric characters followed by underscore
-        if (preg_match('/^([a-zA-Z0-9]{32})_/', $filename, $matches)) {
-            return $matches[1];
-        }
-
-        return null;
-    }
-
-    /**
-     * Verify that the url_key belongs to a guest-visible invoice or quote.
-     * Returns true if the url_key is valid and guest-visible, false otherwise.
-     *
-     * @param string $url_key The url_key to validate
-     *
-     * @return bool
-     */
-    private function is_url_key_guest_visible(string $url_key): bool
-    {
-        // Validate url_key format before database query (defense in depth)
-        if ( ! $this->is_valid_url_key_format($url_key)) {
-            return false;
-        }
-
-        // Check if url_key belongs to a guest-visible invoice (status_id IN (2,3,4))
-        if ($this->check_document_visibility($this->mdl_invoices, 'invoice_url_key', $url_key)) {
-            return true;
-        }
-
-        // Check if url_key belongs to a guest-visible quote (status_id IN (2,3,4,5))
-        if ($this->check_document_visibility($this->mdl_quotes, 'quote_url_key', $url_key)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Validate that a url_key matches the expected format.
-     * url_keys must be exactly 32 alphanumeric characters.
-     *
-     * @param string $url_key The url_key to validate
-     *
-     * @return bool True if format is valid, false otherwise
-     */
-    private function is_valid_url_key_format(string $url_key): bool
-    {
-        // url_key must be exactly 32 alphanumeric characters (no special chars, no directory traversal)
-        return preg_match('/^[a-zA-Z0-9]{' . self::URL_KEY_LENGTH . '}$/', $url_key) === 1;
-    }
-
-    /**
-     * Check if a document with the given url_key is guest-visible.
-     *
-     * @param Response_Model $model     The model (mdl_invoices or mdl_quotes)
-     * @param string         $key_field The field name for the url_key
-     * @param string         $url_key   The url_key to check
-     *
-     * @return bool True if the document is guest-visible, false otherwise
-     */
-    private function check_document_visibility(Response_Model $model, string $key_field, string $url_key): bool
-    {
-        $result = $model->guest_visible()
-            ->where($key_field, $url_key)
-            ->get();
-
-        return $result->num_rows() === 1;
     }
 
     public function show_files($url_key = null): void
@@ -139,8 +61,7 @@ class Get extends Base_Controller
             exit(self::EMPTY_JSON_RESPONSE);
         }
 
-        echo json_encode($result);
-        exit;
+        $this->json_encode_ajax($result);
     }
 
     /**
@@ -215,5 +136,79 @@ class Get extends Base_Controller
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
         readfile($realFile);
+    }
+
+    /**
+     * Extract url_key from a filename with format {url_key}_{original_filename}.
+     * Note: url_keys are case-sensitive alphanumeric strings.
+     *
+     * @param string $filename The filename to parse
+     *
+     * @return string|null The extracted url_key or null if not found
+     */
+    private function extract_url_key_from_filename(string $filename): ?string
+    {
+        // Match exactly 32 alphanumeric characters followed by underscore
+        if (preg_match('/^([a-zA-Z0-9]{32})_/', $filename, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Verify that the url_key belongs to a guest-visible invoice or quote.
+     * Returns true if the url_key is valid and guest-visible, false otherwise.
+     *
+     * @param string $url_key The url_key to validate
+     *
+     * @return bool
+     */
+    private function is_url_key_guest_visible(string $url_key): bool
+    {
+        // Validate url_key format before database query (defense in depth)
+        if ( ! $this->is_valid_url_key_format($url_key)) {
+            return false;
+        }
+
+        // Check if url_key belongs to a guest-visible invoice (status_id IN (2,3,4))
+        if ($this->check_document_visibility($this->mdl_invoices, 'invoice_url_key', $url_key)) {
+            return true;
+        }
+
+        // Check if url_key belongs to a guest-visible quote (status_id IN (2,3,4,5))
+        return (bool) ($this->check_document_visibility($this->mdl_quotes, 'quote_url_key', $url_key));
+    }
+
+    /**
+     * Validate that a url_key matches the expected format.
+     * url_keys must be exactly 32 alphanumeric characters.
+     *
+     * @param string $url_key The url_key to validate
+     *
+     * @return bool True if format is valid, false otherwise
+     */
+    private function is_valid_url_key_format(string $url_key): bool
+    {
+        // url_key must be exactly 32 alphanumeric characters (no special chars, no directory traversal)
+        return preg_match('/^[a-zA-Z0-9]{' . self::URL_KEY_LENGTH . '}$/', $url_key) === 1;
+    }
+
+    /**
+     * Check if a document with the given url_key is guest-visible.
+     *
+     * @param Response_Model $model     The model (mdl_invoices or mdl_quotes)
+     * @param string         $key_field The field name for the url_key
+     * @param string         $url_key   The url_key to check
+     *
+     * @return bool True if the document is guest-visible, false otherwise
+     */
+    private function check_document_visibility(Response_Model $model, string $key_field, string $url_key): bool
+    {
+        $result = $model->guest_visible()
+            ->where($key_field, $url_key)
+            ->get();
+
+        return $result->num_rows() === 1;
     }
 }

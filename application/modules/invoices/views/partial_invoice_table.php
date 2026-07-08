@@ -16,7 +16,7 @@
 
         <tbody>
 <?php
-$invoice_idx                    = 1;
+            $invoice_idx        = 1;
             $invoice_count      = count($invoices);
             $invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
             foreach ($invoices as $invoice) {
@@ -98,6 +98,18 @@ $invoice_idx                    = 1;
                                     <i class="fa fa-send fa-margin"></i> <?php _trans('send_email'); ?>
                                 </a>
                             </li>
+<?php
+                // eInvoice ON: Show History
+                if (get_setting('einvoicing') == '1') {
+                    ?>
+                            <li>
+                                <a href="<?php echo site_url('integrations/history/' . $invoice->invoice_id); ?>">
+                                    <i class="fa fa-exchange fa-margin"></i> <?php _trans('einvoice_history'); ?>
+                                </a>
+                            </li>
+<?php
+                }
+                ?>
                             <li>
                                 <a href="#" class="invoice-add-payment"
                                    data-invoice-id="<?php echo $invoice->invoice_id; ?>"
@@ -108,11 +120,11 @@ $invoice_idx                    = 1;
                                 </a>
                             </li>
 <?php
-                    if (
-                        $invoice->invoice_status_id == 1
-                        || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
-                    ) {
-                        ?>
+                                if (
+                                    $invoice->invoice_status_id == 1
+                                    || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)
+                                ) {
+                                    ?>
                             <li>
                                 <form action="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
                                       method="POST">
@@ -124,7 +136,7 @@ $invoice_idx                    = 1;
                                 </form>
                             </li>
 <?php
-                    }
+                                }
                 ?>
                         </ul>
                     </div>

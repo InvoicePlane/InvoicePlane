@@ -45,15 +45,15 @@ jobs:
         if: >
           github.event.inputs.update_type == 'security-patch' ||
           github.event_name == 'schedule'
-        run: composer update --with-dependencies --prefer-stable --no-interaction
+        run: composer update --with-dependencies --prefer-stable --no-interaction --ignore-platform-reqs
 
       - name: Update (patch & minor)
         if: github.event.inputs.update_type == 'patch-minor'
-        run: composer update --prefer-stable --no-interaction
+        run: composer update --prefer-stable --no-interaction --ignore-platform-reqs
 
       - name: Update (all)
         if: github.event.inputs.update_type == 'all-dependencies'
-        run: composer bump && composer update
+        run: composer bump && composer update --ignore-platform-reqs
 
       - name: Check for changes
         id: changes

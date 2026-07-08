@@ -45,11 +45,15 @@ protected function filter_input(): void
 |----------|-----------|
 | XSS | Sanitize input; encode output |
 | LFI / Path Traversal | Validate file paths; use hardcoded whitelists |
-| Log Injection | Sanitize data before logging |
+| Log Injection | `sanitize_for_logging()` / `hash('sha256', $v)` before every `log_message()` |
 | Header Injection | Sanitize filenames in HTTP headers |
 | SVG XSS | Block SVG uploads entirely |
-| Open Redirect | Validate referer URLs with `get_safe_referer()` |
+| Open Redirect | Validate referer URLs with `get_safe_referer()`; never raw `$_SERVER['HTTP_REFERER']` |
 | RCE via template | Static `ALLOWED_*_TEMPLATES` constants; never scan filesystem |
+| Clickjacking | `X-Frame-Options: SAMEORIGIN` set by default in `Admin_Controller` |
+| Info leakage | `Referrer-Policy: strict-origin-when-cross-origin` set by default |
+| Session fixation | `SESS_REGENERATE_DESTROY=true` — old session destroyed on regeneration |
+| Cookie theft via XSS | `cookie_httponly = true` — session cookie inaccessible to JavaScript |
 
 ---
 
@@ -291,17 +295,19 @@ public function it_blocks_path_traversal(): void
 - [ ] All user input is sanitized (or the bypass is explicitly justified).
 - [ ] All output is encoded in the correct context.
 - [ ] File paths are validated with `validate_safe_filename()` / `validate_file_in_directory()`.
-- [ ] Log messages are sanitized with `sanitize_for_logging()`.
+- [ ] Log messages use `sanitize_for_logging()` or `hash('sha256', $v)` — no raw user data.
 - [ ] SQL queries use Active Record / parameterized statements; no string concatenation with user data.
 - [ ] File uploads validate extension and MIME type.
-- [ ] Redirects use `get_safe_referer()` or a validated internal URL.
+- [ ] Redirects use `get_safe_referer()` or a validated internal URL — never raw `$_SERVER['HTTP_REFERER']`.
+- [ ] Every POST form has `<?php _csrf_field(); ?>`.
+- [ ] `cookie_httponly = true` is not changed — session cookies must never be JS-accessible.
 
 ### Code Quality
 
 - [ ] No duplicated logic (DRY principle applied).
 - [ ] Helper functions used for shared operations.
 - [ ] Single responsibility per function / method.
-- [ ] Complex logic is commented.
+- [ ] Early returns used instead of deeply nested conditionals.
 - [ ] Error handling is consistent with the rest of the module.
 - [ ] Tests cover the critical paths.
 
@@ -311,3 +317,10 @@ public function it_blocks_path_traversal(): void
 - [ ] Helpers are loaded explicitly with `$this->load->helper()`.
 - [ ] No direct use of `$_GET`, `$_POST`, or `$_SERVER` — use `$this->input->*()`.
 - [ ] No `php artisan` commands — InvoicePlane does not use Laravel.
+
+### Changelog / Documentation
+
+- [ ] When filling in empty cells (`—`) in a vulnerability table, **only** those cells are changed — CVSSv3 scores, CWE IDs, and Severity labels in other columns of the same row are left untouched.
+- [ ] GHSA advisory IDs and reporter handles are sourced from the GitHub Security Advisories page; they are never guessed or inferred.
+- [ ] Reporter column uses linked GitHub handles: `[@handle](https://github.com/handle)`.
+- [ ] GHSA links follow the pattern `https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-xxxx-xxxx-xxxx`.

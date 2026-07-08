@@ -104,7 +104,15 @@ class User_Clients extends Admin_Controller
      */
     public function delete($user_client_id)
     {
+        if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
+            show_error(trans('access_denied'), 403);
+        }
+
         $ref = $this->mdl_user_clients->get_by_id($user_client_id);
+
+        if ( ! $ref) {
+            show_404();
+        }
 
         $this->mdl_user_clients->delete($user_client_id);
         redirect('user_clients/user/' . $ref->user_id);
