@@ -15,7 +15,6 @@ use Tests\AbstractTestCase;
  * removed during a refactor, every one of these will fail immediately.
  *
  * Routes are taken directly from the controllers in dir2.txt.
- *
  */
 #[Group('feature')]
 #[Group('auth')]

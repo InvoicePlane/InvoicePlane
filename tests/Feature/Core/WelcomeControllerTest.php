@@ -10,7 +10,6 @@ use Welcome;
 #[CoversClass(Welcome::class)]
 class WelcomeControllerTest extends AbstractTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();

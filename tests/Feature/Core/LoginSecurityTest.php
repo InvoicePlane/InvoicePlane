@@ -100,7 +100,7 @@ class LoginSecurityTest extends AbstractTestCase
         ];
 
         /* Act */
-        $unknownResponse      = $this->post('/sessions/login', $unknownPayload);
+        $unknownResponse       = $this->post('/sessions/login', $unknownPayload);
         $wrongPasswordResponse = $this->post('/sessions/login', $wrongPasswordPayload);
 
         /* Assert */

@@ -22,7 +22,7 @@ class PaymentMethodDeletionValidationTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient(['client_name' => 'PM Deletion Client']);
+        $clientId  = $this->seedClient(['client_name' => 'PM Deletion Client']);
         $invoiceId = $this->seedInvoice($clientId);
         $this->seedPayment($invoiceId);
 

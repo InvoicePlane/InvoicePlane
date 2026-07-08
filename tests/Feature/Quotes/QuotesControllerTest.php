@@ -13,24 +13,6 @@ class QuotesControllerTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
-    private function seedQuote(array $overrides = []): int
-    {
-        $clientId = $this->seedClient(['client_name' => 'Quote Client ' . bin2hex(random_bytes(3))]);
-
-        return $this->databaseInsert('ip_quotes', array_merge([
-            'client_id'           => $clientId,
-            'user_id'             => 1,
-            'invoice_group_id'    => 1,
-            'quote_date_created'  => date('Y-m-d'),
-            'quote_date_modified' => date('Y-m-d'),
-            'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
-            'quote_number'        => 'QUO-' . bin2hex(random_bytes(4)),
-            'quote_url_key'       => bin2hex(random_bytes(16)),
-            'quote_discount_amount'  => '0',
-            'quote_discount_percent' => '0',
-        ], $overrides));
-    }
-
     // -------------------------------------------------------------------------
     // List
     // -------------------------------------------------------------------------
@@ -118,5 +100,23 @@ class QuotesControllerTest extends AbstractTestCase
 
         /* Assert */
         self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
+    }
+
+    private function seedQuote(array $overrides = []): int
+    {
+        $clientId = $this->seedClient(['client_name' => 'Quote Client ' . bin2hex(random_bytes(3))]);
+
+        return $this->databaseInsert('ip_quotes', array_merge([
+            'client_id'              => $clientId,
+            'user_id'                => 1,
+            'invoice_group_id'       => 1,
+            'quote_date_created'     => date('Y-m-d'),
+            'quote_date_modified'    => date('Y-m-d'),
+            'quote_date_expires'     => date('Y-m-d', strtotime('+30 days')),
+            'quote_number'           => 'QUO-' . bin2hex(random_bytes(4)),
+            'quote_url_key'          => bin2hex(random_bytes(16)),
+            'quote_discount_amount'  => '0',
+            'quote_discount_percent' => '0',
+        ], $overrides));
     }
 }

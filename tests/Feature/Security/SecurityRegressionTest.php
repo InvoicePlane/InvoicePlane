@@ -306,7 +306,7 @@ class SecurityRegressionTest extends AbstractTestCase
         );
 
         // The stored value must not have changed to the traversal path.
-        $stored = $this->databaseFetchOne('ip_settings', ['setting_key' => 'invoice_logo']);
+        $stored      = $this->databaseFetchOne('ip_settings', ['setting_key' => 'invoice_logo']);
         $storedValue = $stored['setting_value'] ?? ($originalLogo['setting_value'] ?? '');
 
         self::assertStringNotContainsString(
@@ -337,7 +337,7 @@ class SecurityRegressionTest extends AbstractTestCase
             'A path-traversal login_logo value must cause a redirect (validation rejection), not a 200.'
         );
 
-        $stored = $this->databaseFetchOne('ip_settings', ['setting_key' => 'login_logo']);
+        $stored      = $this->databaseFetchOne('ip_settings', ['setting_key' => 'login_logo']);
         $storedValue = $stored['setting_value'] ?? ($originalLogo['setting_value'] ?? '');
 
         self::assertStringNotContainsString(

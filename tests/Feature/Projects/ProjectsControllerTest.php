@@ -62,7 +62,7 @@ class ProjectsControllerTest extends AbstractTestCase
          *     "project_name": "Build a Rocket",
          *     "client_id": "<clientId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -112,7 +112,7 @@ class ProjectsControllerTest extends AbstractTestCase
          *     "project_name": "Renamed Project",
          *     "client_id": "<clientId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -193,7 +193,7 @@ class ProjectsControllerTest extends AbstractTestCase
          *     "project_name": "",
          *     "client_id": "<clientId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -220,7 +220,7 @@ class ProjectsControllerTest extends AbstractTestCase
          *     "project_name": "",
          *     "client_id": "<clientId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */

@@ -58,7 +58,7 @@ class FamiliesControllerTest extends AbstractTestCase
          *     "family_name": "Electronics",
          *     "is_update": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -103,7 +103,7 @@ class FamiliesControllerTest extends AbstractTestCase
          *     "family_name": "Renamed Family",
          *     "is_update": "1",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -154,7 +154,7 @@ class FamiliesControllerTest extends AbstractTestCase
          *     "family_name": "",
          *     "is_update": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -180,7 +180,7 @@ class FamiliesControllerTest extends AbstractTestCase
          *     "family_name": "",
          *     "is_update": "1",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -206,7 +206,7 @@ class FamiliesControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_when_creating_a_duplicate_family(): void
     {
-        /**
+        /*
          * POST /families/form (duplicate)
          * {
          *     "family_name": "Duplicate Family",

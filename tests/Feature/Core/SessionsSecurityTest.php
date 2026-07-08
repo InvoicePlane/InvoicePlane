@@ -3,9 +3,9 @@
 namespace Tests\Feature\Core;
 
 use DateTime;
+use DateTimeZone;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\AbstractTestCase;
-use DateTimeZone;
 
 /**
  * Unit tests for Sessions controller security helpers.
@@ -19,7 +19,6 @@ use DateTimeZone;
  *  - bot user-agent detection
  *  - IP-based rate-limit window filtering
  *  - MAX_PASSWORD_RESET_EXPIRY_MINUTES enforcement
- *
  */
 #[Group('unit')]
 #[Group('security')]
@@ -104,7 +103,7 @@ class SessionsSecurityTest extends AbstractTestCase
         /* Arrange */
 
         /* Act */
-        
+
         /* Assert */
         self::assertTrue(
             $this->security->isValidTokenFormat('abc123XYZ'),
@@ -133,7 +132,7 @@ class SessionsSecurityTest extends AbstractTestCase
         /* Arrange */
 
         /* Act */
-        
+
         /* Assert */
         self::assertFalse(
             $this->security->isValidTokenFormat('../etc/passwd'),
@@ -147,7 +146,7 @@ class SessionsSecurityTest extends AbstractTestCase
         /* Arrange */
 
         /* Act */
-        
+
         /* Assert */
         self::assertFalse(
             $this->security->isValidTokenFormat('valid/invalid'),
@@ -161,7 +160,7 @@ class SessionsSecurityTest extends AbstractTestCase
         /* Arrange */
 
         /* Act */
-        
+
         /* Assert */
         self::assertFalse(
             $this->security->isValidTokenFormat('token<script>'),
@@ -253,7 +252,7 @@ class SessionsSecurityTest extends AbstractTestCase
         /* Arrange */
 
         /* Act */
-        
+
         /* Assert */
         self::assertTrue(
             $this->security->isBotUserAgent('curl/7.85.0'),
@@ -267,7 +266,7 @@ class SessionsSecurityTest extends AbstractTestCase
         /* Arrange */
 
         /* Act */
-        
+
         /* Assert */
         self::assertTrue(
             $this->security->isBotUserAgent('python-requests/2.28.0'),
@@ -281,7 +280,7 @@ class SessionsSecurityTest extends AbstractTestCase
         /* Arrange */
 
         /* Act */
-        
+
         /* Assert */
         self::assertTrue(
             $this->security->isBotUserAgent(''),
