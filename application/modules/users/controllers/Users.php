@@ -207,13 +207,11 @@ class Users extends Admin_Controller
      */
     public function delete_user_client(string $user_id, $user_client_id)
     {
-        $this->load->helper('security');
+        $this->load->model('mdl_user_clients');
 
-        if ( ! user_can_manage_user_client($user_client_id)) {
+        if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
             show_error(trans('access_denied'), 403);
         }
-
-        $this->load->model('mdl_user_clients');
 
         $user_client = $this->mdl_user_clients->get_by_id($user_client_id);
         if ( ! $user_client) {
