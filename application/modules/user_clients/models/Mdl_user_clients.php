@@ -103,4 +103,31 @@ class Mdl_User_Clients extends MY_Model
 
         $this->set_all_clients_user($new_users);
     }
+
+    /**
+     * Check if the current user can manage (delete/edit) this user-client authorization mapping.
+     *
+     * Security: Prevents IDOR vulnerabilities by verifying the user can manage
+     * the user_client mapping (typically only admins).
+     *
+     * @param int $user_client_id The user_client ID to check
+     *
+     * @return bool True if user can manage, false otherwise
+     */
+    public function can_user_manage($user_client_id)
+    {
+        $CI = & get_instance();
+
+        // Normalize to integer to prevent type juggling
+        $user_type      = (int) $CI->session->userdata('user_type');
+        $user_client_id = (int) $user_client_id;
+
+        // Only admin users (type 1) can manage user-client mappings
+        if ($user_type === 1) {
+            return true;
+        }
+
+        // Non-admin users cannot manage authorization mappings
+        return false;
+    }
 }

@@ -80,13 +80,10 @@ class Projects extends Admin_Controller
             redirect('projects');
         }
 
-        $this->load->helper('security');
-
-        if ( ! user_has_project_access($project_id)) {
+        if ( ! $this->mdl_projects->can_user_access($project_id)) {
             show_error(trans('access_denied'), 403);
         }
 
-        $this->load->model('projects/mdl_projects');
         $project = $this->mdl_projects->get_by_id($project_id);
 
         if ( ! $project) {
