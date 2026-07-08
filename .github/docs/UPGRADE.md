@@ -19,17 +19,21 @@ This guide provides instructions for upgrading InvoicePlane to newer versions.
 
 ### Security fixes in this release
 
+> The full, GHSA-linked list of every vulnerability fixed in v1.7.2 lives in the
+> [CHANGELOG](../CHANGELOG.md#172---2026-04-06). The table below is a quick reference to
+> the most impactful fixes.
+
 | Severity | Vulnerability | Details |
 |----------|--------------|---------|
-| **Critical** | Remote Code Execution via dynamic template whitelist (bypass of v1.7.1 LFI fix) | [SECURITY_ADVISORY_RCE_FIX.md](SECURITY_ADVISORY_RCE_FIX.md) |
-| **Critical** | Broken authentication – password reset tokens never expired | CHANGELOG.md |
-| **High** | Open redirect via unvalidated `HTTP_REFERER` | [ADDITIONAL_SECURITY_FIXES_v1.7.2.md](ADDITIONAL_SECURITY_FIXES_v1.7.2.md) |
-| **Medium** | SQL query hardened in guest payments | ADDITIONAL_SECURITY_FIXES_v1.7.2.md |
-| **Medium** | `HTTP_REFERER` injection in AJAX filter controllers | ADDITIONAL_SECURITY_FIXES_v1.7.2.md |
-| **Medium** | PHPMailer SMTP debug output logged unsanitized (log injection) | CHANGELOG.md |
-| **Medium** | `phpmail_send()` masked send failures by always returning `true` | CHANGELOG.md |
-| **Low** | Binary data corruption in `Cryptor::decryptString()` (`mb_strlen`/`mb_substr`) | CHANGELOG.md |
-| **Low** | GitHub Actions `GITHUB_TOKEN` over-broad permissions | CHANGELOG.md |
+| **Critical** | Remote Code Execution via dynamic template whitelist (bypass of v1.7.1 LFI fix) | [SECURITY_ADVISORY_RCE_FIX.md](../security/SECURITY_ADVISORY_RCE_FIX.md) |
+| **Critical** | Broken authentication – password reset tokens never expired | [CHANGELOG](../CHANGELOG.md) |
+| **High** | Open redirect via unvalidated `HTTP_REFERER` | [CHANGELOG](../CHANGELOG.md) |
+| **Medium** | SQL query hardened in guest payments | [CHANGELOG](../CHANGELOG.md) |
+| **Medium** | `HTTP_REFERER` injection in AJAX filter controllers | [CHANGELOG](../CHANGELOG.md) |
+| **Medium** | PHPMailer SMTP debug output logged unsanitized (log injection) | [CHANGELOG](../CHANGELOG.md) |
+| **Medium** | `phpmail_send()` masked send failures by always returning `true` | [CHANGELOG](../CHANGELOG.md) |
+| **Low** | Binary data corruption in `Cryptor::decryptString()` (`mb_strlen`/`mb_substr`) | [CHANGELOG](../CHANGELOG.md) |
+| **Low** | GitHub Actions `GITHUB_TOKEN` over-broad permissions | [CHANGELOG](../CHANGELOG.md) |
 
 ### Behavioral changes that may require action
 
@@ -162,8 +166,13 @@ find application/views/invoice_templates/ application/views/quote_templates/ \
 
 ### 5. Verify the upgrade
 
+Confirm the template system no longer scans the filesystem and only serves allow-listed
+templates by following the manual verification steps in the
+[RCE advisory](../security/SECURITY_ADVISORY_RCE_FIX.md#verification). For the arbitrary
+file-deletion fix, run the bundled checker:
+
 ```bash
-php verify_rce_fix.php
+php .github/security/verify_file_deletion_fix.php
 ```
 
 Expected output: all checks pass with no warnings.

@@ -84,6 +84,10 @@ class Tasks extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('tasks/index')) {
+            return;
+        }
+
         $this->mdl_tasks->delete($id);
         redirect('tasks');
     }

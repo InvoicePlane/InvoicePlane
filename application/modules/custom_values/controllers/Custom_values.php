@@ -165,6 +165,10 @@ class Custom_Values extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('custom_values/index')) {
+            return;
+        }
+
         if ( ! $this->mdl_custom_values->delete($id)) {
             $this->session->set_flashdata('alert_info', trans('id') . sprintf(' "%s" ', $id) . trans('custom_values_used_not_deletable'));
         }

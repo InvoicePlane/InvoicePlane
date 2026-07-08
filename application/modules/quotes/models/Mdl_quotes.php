@@ -563,4 +563,48 @@ class Mdl_Quotes extends Response_Model
             $this->db->update('ip_quotes');
         }
     }
+
+    /**
+     * Check if the current user has access to this quote.
+     *
+     * Security: Prevents IDOR vulnerabilities for quote access.
+     *
+     * @param int $quote_id The quote ID to check
+     *
+     * @return bool True if user has access, false otherwise
+     */
+    public function can_user_access($quote_id)
+    {
+        $CI = & get_instance();
+
+        // Normalize to integer to prevent type juggling
+        $user_type = (int) $CI->session->userdata('user_type');
+        $user_id   = (int) $CI->session->userdata('user_id');
+        $quote_id  = (int) $quote_id;
+
+        // Admin users have access to all quotes
+        if ($user_type === 1) {
+            return true;
+        }
+
+        // Get the quote
+        $quote = $this->get_by_id($quote_id);
+        if ( ! $quote) {
+            return false;
+        }
+
+        // Guest users (type 2) - check if quote belongs to their assigned clients
+        if ($user_type === 2) {
+            $CI->load->model('user_clients/mdl_user_clients');
+
+            $user_clients = $CI->mdl_user_clients->assigned_to($user_id)->get()->result();
+            // Ensure all client IDs are integers for strict comparison
+            $client_ids = array_map('intval', array_column($user_clients, 'client_id'));
+
+            return in_array((int) $quote->client_id, $client_ids, true);
+        }
+
+        // Regular users - check if they created the quote
+        return (int) $quote->user_id === $user_id;
+    }
 }

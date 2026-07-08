@@ -36,7 +36,7 @@ reference for developers and security reviewers.
 **PRs:** [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505),
 [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506)  
 **CVSS:** 9.9 Critical  
-**Advisory:** `SECURITY_ADVISORY_RCE_FIX.md`
+**Advisory:** `.github/security/SECURITY_ADVISORY_RCE_FIX.md`
 
 ### What Was Wrong
 
@@ -417,7 +417,7 @@ user sees an error and the file is never written.
 [#1510](https://github.com/InvoicePlane/InvoicePlane/pull/1510),
 [#1529](https://github.com/InvoicePlane/InvoicePlane/pull/1529)  
 **CVSS:** 7.1 High  
-**Advisory:** `SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md`
+**Advisory:** `.github/security/SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md`
 
 ### What Was Wrong
 
@@ -489,8 +489,8 @@ sequences, and validates the resolved path with `realpath()` + `validate_file_in
 to catch symlink escapes.
 
 **CVE documentation (PR #1529)**  
-`SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md`, `CVE_REQUEST_SUMMARY.md`, and
-`verify_file_deletion_fix.php` were added to document the vulnerability for CVE allocation
+`.github/security/SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md`, `.github/security/CVE_REQUEST_SUMMARY.md`, and
+`.github/security/verify_file_deletion_fix.php` were added to document the vulnerability for CVE allocation
 and provide operators with a verification script.
 
 ---

@@ -9,7 +9,7 @@ $(".client-id-select").select2({
                 query: params.term,
                 permissive_search_clients: $('input#input_permissive_search_clients').val(),
                 page: params.page,
-                <?php echo config_item('csrf_token_name'); ?>: Cookies.get('<?php echo config_item('csrf_cookie_name'); ?>')
+                [csrf_token_name]: csrf_token_value // dynamic property https://stackoverflow.com/a/35579786
             };
         },
         processResults: function (data) {

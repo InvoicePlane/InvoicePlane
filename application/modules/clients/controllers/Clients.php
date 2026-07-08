@@ -220,6 +220,10 @@ class Clients extends Admin_Controller
      */
     public function view($client_id, $activeTab = 'detail', $page = 0): void
     {
+        if ( ! $this->mdl_clients->can_user_access($client_id)) {
+            show_error(trans('access_denied'), 403);
+        }
+
         $client = $this->mdl_clients
             ->with_total()
             ->with_total_balance()
@@ -331,6 +335,10 @@ class Clients extends Admin_Controller
      */
     public function delete($client_id): void
     {
+        if ( ! $this->ensure_valid_post_request('clients/index')) {
+            return;
+        }
+
         $this->mdl_clients->delete($client_id);
         redirect('clients');
     }

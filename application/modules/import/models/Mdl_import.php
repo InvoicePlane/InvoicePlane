@@ -134,7 +134,14 @@ class Mdl_Import extends Response_Model
                 $db_array = [];
                 // Loop through each of the values in the row
                 foreach ($headers as $header) {
-                    $db_array[$header] = ($data[array_keys($fileheaders, $header)[0]] != null) ? $data[array_keys($fileheaders, $header)[0]] : '';
+                    $value = ($data[array_keys($fileheaders, $header)[0]] != null) ? $data[array_keys($fileheaders, $header)[0]] : '';
+
+                    // Sanitize CSV client data to prevent injection attacks
+                    if ($file == 'clients.csv') {
+                        $value = strip_tags($this->security->xss_clean($value));
+                    }
+
+                    $db_array[$header] = $value;
                 }
 
                 // Create a couple of default values if file is clients.csv

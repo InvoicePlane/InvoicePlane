@@ -190,6 +190,10 @@ class Users extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('users/index')) {
+            return;
+        }
+
         if ($id != 1) {
             $this->mdl_users->delete($id);
         }
@@ -204,6 +208,15 @@ class Users extends Admin_Controller
     public function delete_user_client(string $user_id, $user_client_id)
     {
         $this->load->model('mdl_user_clients');
+
+        if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
+            show_error(trans('access_denied'), 403);
+        }
+
+        $user_client = $this->mdl_user_clients->get_by_id($user_client_id);
+        if ( ! $user_client) {
+            show_404();
+        }
 
         $this->mdl_user_clients->delete($user_client_id);
 

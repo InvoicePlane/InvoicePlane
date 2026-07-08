@@ -702,4 +702,49 @@ class Mdl_Invoices extends Response_Model
             $this->db->update('ip_invoices');
         }
     }
+
+    /**
+     * Check if the current user has access to this invoice.
+     *
+     * Security: Prevents IDOR (Insecure Direct Object Reference) vulnerabilities
+     * by verifying the user owns or has access to the requested invoice.
+     *
+     * @param int $invoice_id The invoice ID to check
+     *
+     * @return bool True if user has access, false otherwise
+     */
+    public function can_user_access($invoice_id)
+    {
+        $CI = & get_instance();
+
+        // Normalize to integer to prevent type juggling
+        $user_type  = (int) $CI->session->userdata('user_type');
+        $user_id    = (int) $CI->session->userdata('user_id');
+        $invoice_id = (int) $invoice_id;
+
+        // Admin users have access to all invoices
+        if ($user_type === 1) {
+            return true;
+        }
+
+        // Get the invoice
+        $invoice = $this->get_by_id($invoice_id);
+        if ( ! $invoice) {
+            return false;
+        }
+
+        // Guest users (type 2) - check if invoice belongs to their assigned clients
+        if ($user_type === 2) {
+            $CI->load->model('user_clients/mdl_user_clients');
+
+            $user_clients = $CI->mdl_user_clients->assigned_to($user_id)->get()->result();
+            // Ensure all client IDs are integers for strict comparison
+            $client_ids = array_map('intval', array_column($user_clients, 'client_id'));
+
+            return in_array((int) $invoice->client_id, $client_ids, true);
+        }
+
+        // Regular users - check if they created the invoice
+        return (int) $invoice->user_id === $user_id;
+    }
 }

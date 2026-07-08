@@ -84,6 +84,10 @@ class Products extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('products/index')) {
+            return;
+        }
+
         $this->mdl_products->delete($id);
         redirect('products');
     }

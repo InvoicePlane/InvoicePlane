@@ -9,20 +9,125 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Security Vulnerability Summary
-
-| Vulnerability | Severity | CVSSv3 | CWE | Security Advisory | Reported By | Fixed In |
-|---|---|---|---|---|---|---|
-| XSS session hijack via `cookie_httponly=false` | High | 7.4 | CWE-1004 | — | Internal audit | #1567 |
-| Clickjacking — `X-Frame-Options` not always sent | Medium | 4.3 | CWE-1021 | — | Internal audit | #1567 |
-| Session fixation — `SESS_REGENERATE_DESTROY` defaulted `false` | Medium | 6.8 | CWE-384 | — | Internal audit | #1567 |
-| Log injection via password-reset token/email | Low | 3.7 | CWE-117 | — | Internal audit | #1567 |
-| Open redirect via raw `$_SERVER['HTTP_REFERER']` | Medium | 6.1 | CWE-601 | — | Internal audit | #1567 |
-| Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | #1567 |
+### Security
+- **Object-Level Authorization (IDOR Prevention)**: Added comprehensive authorization checks to prevent Insecure Direct Object Reference (IDOR) vulnerabilities. Authenticated administrators can no longer enumerate or access records outside their authorized scope. New authorization helpers (`user_has_client_access()`, `user_has_project_access()`, `user_can_manage_user_client()`) enforce access control on `/clients/view/{id}`, `/projects/view/{id}`, and user-client authorization endpoints. Protects multi-user and multi-tenant deployments from lateral administrative abuse and data exposure.
+- **CSRF Protection Hardening**: Added explicit POST and CSRF token validation to all delete endpoints across 12 modules (Projects, Tasks, Users, Invoice Groups, Payment Methods, Custom Fields, Units, Tax Rates, Custom Values, Clients, Products, and Settings logo removal). Implements defense-in-depth protection against cross-site request forgery attacks by validating both HTTP method and CSRF tokens at the controller level, preventing direct GET access to state-changing operations.
 
 ---
 
-### Security
+## [1.7.2] - 2026-04-06
+
+InvoicePlane 1.7.2 is a **security-focused release**. It resolves every vulnerability
+responsibly disclosed against v1.7.0 / v1.7.1 and hardens the application, session handling,
+and container tooling throughout. **If you run v1.7.0 or v1.7.1, upgrade immediately** — this
+release fixes a critical (CVSSv3 9.9) Remote Code Execution vulnerability.
+
+### Thank you
+
+Huge thanks to the security researchers who responsibly disclosed these issues through private
+[GitHub Security Advisories](https://github.com/InvoicePlane/InvoicePlane/security/advisories).
+Without your reports this release would not have been possible:
+
+[@akgul7990](https://github.com/akgul7990),
+[@ali-iltizar](https://github.com/ali-iltizar),
+[@Chittu13](https://github.com/Chittu13),
+[@cyabell](https://github.com/cyabell),
+[@FelipeSilvany](https://github.com/FelipeSilvany),
+[@HuajiHD](https://github.com/HuajiHD),
+[@iiihaiii](https://github.com/iiihaiii),
+[@kitu232](https://github.com/kitu232),
+[@lighthousekeeper1212](https://github.com/lighthousekeeper1212),
+[@radoi-teodor](https://github.com/radoi-teodor),
+[@tikket1](https://github.com/tikket1),
+[@udaypali](https://github.com/udaypali),
+[@Vijay-raghav7](https://github.com/Vijay-raghav7).
+
+And thank you to the contributors whose code shipped in this release:
+[@drewangell](https://github.com/drewangell) (Stripe/PayPal, Advanced Credit Cards & Venmo),
+[@mpldr](https://github.com/mpldr) (Docker application container, configurable QR-code size),
+and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
+
+### Security Vulnerability Summary
+
+> Each **GHSA** link is the canonical record of the report and its reporter — use them to trace
+> and credit disclosures. CVE identifiers are shown where assigned. Please do not disclose
+> details of any issue publicly before its advisory is published.
+
+| Vulnerability | Severity | CVSSv3 | CWE | Security Advisory (GHSA) | Reported By | Fixed In |
+|---|---|---|---|---|---|---|
+| RCE via template filesystem scan | Critical | 9.9 | CWE-693 | [SECURITY_ADVISORY_RCE_FIX.md](security/SECURITY_ADVISORY_RCE_FIX.md) · [[#1505]: Remote Code Execution via Writable Templates Directory in InvoicePlane v1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-v735-2x3r-gwpp) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505), [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506) |
+| Broken auth: password-reset tokens never expired | Critical | 9.8 | CWE-640 | [[#1514]: Improper Password Reset Token Expiration](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-5r28-6rw3-25c2) | [@ali-iltizar](https://github.com/ali-iltizar) | [#1514](https://github.com/InvoicePlane/InvoicePlane/pull/1514) |
+| Arbitrary file deletion via path traversal | High | 7.1 | CWE-22 | [SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md](security/SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md) · [[#1512]: [CVE-2026-40298]: Authenticated Arbitrary File Deletion via Path Traversal in "Invoice Logo" Setting](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-65v2-4g37-rxjw), [[#1510]: [CVE-2026-39978]: Authenticated path traversal in logo removal allows arbitrary file deletion outside uploads](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-45vj-9p52-f8mq) | [@ali-iltizar](https://github.com/ali-iltizar), [@iiihaiii](https://github.com/iiihaiii) | [#1512](https://github.com/InvoicePlane/InvoicePlane/pull/1512), [#1510](https://github.com/InvoicePlane/InvoicePlane/pull/1510) |
+| Weak PRNG in password-reset tokens | High | 7.5 | CWE-338 | [[#1494]: Predictable Password Reset Token via md5(time()) Enables Account Takeover](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-jfgr-778p-m943) | [@tikket1](https://github.com/tikket1) | [#1494](https://github.com/InvoicePlane/InvoicePlane/pull/1494) |
+| SQL/DDL injection in tax rate decimal places | High | 8.8 | CWE-89 | [[#1481]: SQL Injection via Unsanitized Tax Rate Decimal Places Field in Settings](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x6rh-cr7q-5w7j), [[#1488]: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') in invoiceplane/invoiceplane](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-34g5-4hfc-g983) | [@tikket1](https://github.com/tikket1), [@udaypali](https://github.com/udaypali) | [#1481](https://github.com/InvoicePlane/InvoicePlane/pull/1481), [#1488](https://github.com/InvoicePlane/InvoicePlane/pull/1488) |
+| Configuration injection in DB setup wizard | High | 8.8 | CWE-77 | [[#1513]: Configuration Injection in Setup Module Leading to Environment Manipulation (db_hostname Injection)](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-ffq5-mw9f-mv6j) | [@akgul7990](https://github.com/akgul7990) | [#1513](https://github.com/InvoicePlane/InvoicePlane/pull/1513) |
+| IDOR + CSRF on guest quote approve/reject | High | 8.1 | CWE-639, CWE-352 | [[#1482]: Guest Quote Approval/Reject Horizontal Privilege Escalation](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-pjf5-c2m5-7m4x), [[#1471]: Guest user IDOR: Quote approve/reject missing client_id scoping](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-6xj3-274m-4mvg) | [@HuajiHD](https://github.com/HuajiHD), [@lighthousekeeper1212](https://github.com/lighthousekeeper1212) | [#1471](https://github.com/InvoicePlane/InvoicePlane/pull/1471), [#1482](https://github.com/InvoicePlane/InvoicePlane/pull/1482), [#1487](https://github.com/InvoicePlane/InvoicePlane/pull/1487) |
+| Auth bypass in guest invoice/payment endpoints | Medium | 6.5 | CWE-284 | [[#1517]: Improper Access Control in Guest Payment Flow Allows Access to Non-Public Invoices](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-f95x-25mh-wcxv) | [@FelipeSilvany](https://github.com/FelipeSilvany) | [#1517](https://github.com/InvoicePlane/InvoicePlane/pull/1517), [#1537](https://github.com/InvoicePlane/InvoicePlane/pull/1537) |
+| Setup wizard accessible post-installation | Medium | 5.3 | CWE-285 | [[#1491]: Unauthenticated Setup Reconfiguration](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-37pr-q48j-46gg), [[#1511]: Unauthenticated Setup Wizard Re-entry Allows Configuration Overwrite in InvoicePlane 1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-2j6j-6f6q-57vq), [[#1518]: Unauthenticated Re-execution of Installation Wizard After Setup Allows Overwrite of Database Configuration, Denial of Service, and Potential Data Compromise](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-jx5h-6r8f-m2h3) | [@HuajiHD](https://github.com/HuajiHD), [@iiihaiii](https://github.com/iiihaiii), [@kitu232](https://github.com/kitu232) | [#1491](https://github.com/InvoicePlane/InvoicePlane/pull/1491), [#1511](https://github.com/InvoicePlane/InvoicePlane/pull/1511), [#1518](https://github.com/InvoicePlane/InvoicePlane/pull/1518) |
+| SSRF via PDF footer content | Medium | 6.5 | CWE-918 | [[#1492]: SSRF via admin-stored PDF footer HTML](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-vgq9-469p-q7j3) | [@radoi-teodor](https://github.com/radoi-teodor) | [#1492](https://github.com/InvoicePlane/InvoicePlane/pull/1492) |
+| Open redirect via `HTTP_REFERER` | Medium | 6.1 | CWE-601 | [[#1505]: Remote Code Execution via Writable Templates Directory in InvoicePlane v1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-v735-2x3r-gwpp) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505) |
+| Payment gateway API credentials in plaintext | Medium | 6.5 | CWE-312 | [[#1515]: Sensitive Data Exposure via HTML Source Code (Stripe & PayPal API Keys)](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-8543-x4j8-jj4q) | [@ali-iltizar](https://github.com/ali-iltizar) | [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) |
+| Duplicate payment processing (Stripe callback replay) | Low–Medium | 5.3 | CWE-362 | [[#1496]: Stripe Callback Replay](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-6cpc-hr8h-xgr2) | [@HuajiHD](https://github.com/HuajiHD) | [#1496](https://github.com/InvoicePlane/InvoicePlane/pull/1496) |
+| Email template preview XSS | Low–Medium | 5.4 | CWE-79 | [[#1486]: Stored XSS via Email Templates in InvoicePlane <= 1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-4wqv-84px-8jc6) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1486](https://github.com/InvoicePlane/InvoicePlane/pull/1486), [#1500](https://github.com/InvoicePlane/InvoicePlane/pull/1500), [#1516](https://github.com/InvoicePlane/InvoicePlane/pull/1516) |
+| EXIF metadata in uploaded images | Low | 3.5 | CWE-212 | [[#1507]: Sensitive Information Disclosure via Unstripped EXIF Metadata in Attachments](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-7f67-2v6p-275v) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1507](https://github.com/InvoicePlane/InvoicePlane/pull/1507) |
+| PHPMailer debug output in AJAX responses | Low–Medium | 4.3 | CWE-209 | — | Internal audit | [#1495](https://github.com/InvoicePlane/InvoicePlane/pull/1495) |
+| XSS session hijack via `cookie_httponly=false` | High | 7.4 | CWE-1004 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+| Clickjacking — `X-Frame-Options` not always sent | Medium | 4.3 | CWE-1021 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+| Session fixation — `SESS_REGENERATE_DESTROY` defaulted `false` | Medium | 6.8 | CWE-384 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+| Log injection via password-reset token/email | Low | 3.7 | CWE-117 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+| Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+
+### Security fixes by pull request
+
+*Ordered by severity, then CVSS, then PR number.*
+
+- [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505), [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506) — **RCE:** replace `directory_map()` template whitelist with static constants + `ipconfig.php` allowlist; fix five open-redirect instances; add `security_helper.php`
+- [#1500](https://github.com/InvoicePlane/InvoicePlane/pull/1500), [#1516](https://github.com/InvoicePlane/InvoicePlane/pull/1516) — **Stored XSS:** comprehensive, application-wide output escaping (32 findings across 17 view files in 4 modules)
+- [#1471](https://github.com/InvoicePlane/InvoicePlane/pull/1471), [#1482](https://github.com/InvoicePlane/InvoicePlane/pull/1482), [#1487](https://github.com/InvoicePlane/InvoicePlane/pull/1487) — **IDOR + CSRF:** guest quote approve/reject and payment gateways now enforce client scoping and require POST
+- [#1494](https://github.com/InvoicePlane/InvoicePlane/pull/1494) — **Weak PRNG:** replace password-reset token generation with `random_bytes(32)` (256-bit entropy)
+- [#1481](https://github.com/InvoicePlane/InvoicePlane/pull/1481), [#1488](https://github.com/InvoicePlane/InvoicePlane/pull/1488) — **SQL/DDL injection:** harden tax-rate decimal-places setting (`TaxRateDecimalPlacesProcessor`, transaction wrap, unit tests) ([#1479](https://github.com/InvoicePlane/InvoicePlane/issues/1479))
+- [#1513](https://github.com/InvoicePlane/InvoicePlane/pull/1513) — **Config injection:** block newline injection in the database setup wizard
+- [#1512](https://github.com/InvoicePlane/InvoicePlane/pull/1512), [#1510](https://github.com/InvoicePlane/InvoicePlane/pull/1510) — **Arbitrary file deletion:** path-traversal guards for logo deletion; `validate_db_filename()`, symlink protection, attachment-name XSS prevention
+- [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) — **Credential exposure:** Stripe/PayPal API keys no longer rendered into HTML source
+- [#1517](https://github.com/InvoicePlane/InvoicePlane/pull/1517), [#1537](https://github.com/InvoicePlane/InvoicePlane/pull/1537) — **Auth bypass:** guest invoice/payment endpoints gain a `guest_visible()` filter (no draft-invoice access)
+- [#1491](https://github.com/InvoicePlane/InvoicePlane/pull/1491), [#1511](https://github.com/InvoicePlane/InvoicePlane/pull/1511), [#1518](https://github.com/InvoicePlane/InvoicePlane/pull/1518) — **Setup wizard:** locked after install (`SETUP_COMPLETED`), with an admin security-warning system
+- [#1492](https://github.com/InvoicePlane/InvoicePlane/pull/1492) — **SSRF:** sanitize PDF footer content before mPDF rendering
+- [#1486](https://github.com/InvoicePlane/InvoicePlane/pull/1486), [#1499](https://github.com/InvoicePlane/InvoicePlane/pull/1499) — **Email preview XSS:** render previews as sanitized/plain text instead of raw HTML
+- [#1496](https://github.com/InvoicePlane/InvoicePlane/pull/1496) — **Payment replay:** unique `payment_external_id` index prevents duplicate Stripe/PayPal processing
+- [#1495](https://github.com/InvoicePlane/InvoicePlane/pull/1495) — **Info leak:** route PHPMailer SMTP debug to the CI log via `sanitize_for_logging()` (no longer breaks AJAX)
+- [#1507](https://github.com/InvoicePlane/InvoicePlane/pull/1507) — **EXIF:** optional metadata stripping from uploads (`SEC_STRIP_EXIF_FROM_IMAGES`, off by default)
+- [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) — **Session & infrastructure hardening:** `cookie_httponly=true`, default `X-Frame-Options: SAMEORIGIN`, session-fixation fix, log-injection sanitization, `Referrer-Policy` header (details below)
+- [#1536](https://github.com/InvoicePlane/InvoicePlane/pull/1536) — Review follow-ups: `entrypoint.sh` config-injection guard, XSS trait fix, logo URL escaping, custom-template allowlisting, `Mdl_reports` cast fix
+
+### Bug fixes
+
+- [#1426](https://github.com/InvoicePlane/InvoicePlane/pull/1426) — Fix remittance slip / QR-code remittance text ([#1140](https://github.com/InvoicePlane/InvoicePlane/issues/1140))
+- [#1449](https://github.com/InvoicePlane/InvoicePlane/pull/1449) — Fix `quote_templates/public` showing the client on both header and footer
+- [#1451](https://github.com/InvoicePlane/InvoicePlane/pull/1451) — Fix QR-code generation for batch invoice processing
+- [#1465](https://github.com/InvoicePlane/InvoicePlane/pull/1465) — Simplify redundant conditionals in email template tags
+- [#1473](https://github.com/InvoicePlane/InvoicePlane/pull/1473) — Fix undefined-array-key error for mPDF footer names on PHP 8.3+ ([#1180](https://github.com/InvoicePlane/InvoicePlane/issues/1180))
+- [#1478](https://github.com/InvoicePlane/InvoicePlane/pull/1478) — Add missing `attachment()` method to the guest `Get` controller
+
+### Features & improvements
+
+- [#1289](https://github.com/InvoicePlane/InvoicePlane/pull/1289) — Re-introduce Stripe & PayPal; add PayPal Advanced Credit Cards and Venmo support ([#1288](https://github.com/InvoicePlane/InvoicePlane/issues/1288))
+- [#1489](https://github.com/InvoicePlane/InvoicePlane/pull/1489) — Allow configuring the QR-code size on invoices ([#1376](https://github.com/InvoicePlane/InvoicePlane/issues/1376))
+
+### Performance & code quality
+
+- [#1483](https://github.com/InvoicePlane/InvoicePlane/pull/1483) — Batch settings save: reduce DB queries from ~70 to 3 (transaction-wrapped)
+- [#1503](https://github.com/InvoicePlane/InvoicePlane/pull/1503) — Add database indexes on frequently queried columns
+
+### Infrastructure & CI
+
+- [#1466](https://github.com/InvoicePlane/InvoicePlane/pull/1466) — Move the setup-php-composer composite action into `.github/actions/`
+- [#1490](https://github.com/InvoicePlane/InvoicePlane/pull/1490) — Add a Laravel Pint code-style check
+- [#1509](https://github.com/InvoicePlane/InvoicePlane/pull/1509) — Add the Docker application container (combined web server + PHP)
+- [#1529](https://github.com/InvoicePlane/InvoicePlane/pull/1529) — Document the arbitrary file-deletion vulnerability for CVE allocation
+
+---
+
+### Security — session & infrastructure hardening ([#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567))
 
 **HIGH: Fixed XSS session-hijack vector — `cookie_httponly` was `false` (CWE-1004)**
 
@@ -233,34 +338,7 @@ site.
 
 ---
 
-## [1.7.2] - 2026-04-06
-
-### Security Vulnerability Summary
-
-| Vulnerability | Severity | CVSSv3 | CWE | Security Advisory | Reported By | Fixed In |
-|---|---|---|---|---|---|---|
-| RCE via template filesystem scan | Critical | 9.9 | CWE-693 | [SECURITY_ADVISORY_RCE_FIX.md](SECURITY_ADVISORY_RCE_FIX.md) · [[#1505]: Remote Code Execution via Writable Templates Directory in InvoicePlane v1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-v735-2x3r-gwpp) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505), [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506) |
-| Broken auth: password-reset tokens never expired | Critical | 9.8 | CWE-640 | [[#1514]: Improper Password Reset Token Expiration](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-5r28-6rw3-25c2) | [@ali-iltizar](https://github.com/ali-iltizar) | [#1514](https://github.com/InvoicePlane/InvoicePlane/pull/1514) |
-| Arbitrary file deletion via path traversal | High | 7.1 | CWE-22 | [SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md](SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md) · [[#1512]: [CVE-2026-40298]: Authenticated Arbitrary File Deletion via Path Traversal in "Invoice Logo" Setting](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-65v2-4g37-rxjw), [[#1510]: [CVE-2026-39978]: Authenticated path traversal in logo removal allows arbitrary file deletion outside uploads](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-45vj-9p52-f8mq) | [@ali-iltizar](https://github.com/ali-iltizar), [@iiihaiii](https://github.com/iiihaiii) | [#1512](https://github.com/InvoicePlane/InvoicePlane/pull/1512), [#1510](https://github.com/InvoicePlane/InvoicePlane/pull/1510) |
-| Weak PRNG in password-reset tokens | High | 7.5 | CWE-338 | [[#1494]: Predictable Password Reset Token via md5(time()) Enables Account Takeover](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-jfgr-778p-m943) | [@tikket1](https://github.com/tikket1) | [#1494](https://github.com/InvoicePlane/InvoicePlane/pull/1494) |
-| SQL/DDL injection in tax rate decimal places | High | 8.8 | CWE-89 | [[#1481]: SQL Injection via Unsanitized Tax Rate Decimal Places Field in Settings](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x6rh-cr7q-5w7j), [[#1488]: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection') in invoiceplane/invoiceplane](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-34g5-4hfc-g983) | [@tikket1](https://github.com/tikket1), [@udaypali](https://github.com/udaypali) | [#1481](https://github.com/InvoicePlane/InvoicePlane/pull/1481), [#1488](https://github.com/InvoicePlane/InvoicePlane/pull/1488) |
-| Configuration injection in DB setup wizard | High | 8.8 | CWE-77 | [[#1513]: Configuration Injection in Setup Module Leading to Environment Manipulation (db_hostname Injection)](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-ffq5-mw9f-mv6j) | [@akgul7990](https://github.com/akgul7990) | [#1513](https://github.com/InvoicePlane/InvoicePlane/pull/1513) |
-| IDOR + CSRF on guest quote approve/reject | High | 8.1 | CWE-639, CWE-352 | [[#1482]: Guest Quote Approval/Reject Horizontal Privilege Escalation](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-pjf5-c2m5-7m4x), [[#1471]: Guest user IDOR: Quote approve/reject missing client_id scoping](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-6xj3-274m-4mvg) | [@HuajiHD](https://github.com/HuajiHD), [@lighthousekeeper1212](https://github.com/lighthousekeeper1212) | [#1471](https://github.com/InvoicePlane/InvoicePlane/pull/1471), [#1482](https://github.com/InvoicePlane/InvoicePlane/pull/1482), [#1487](https://github.com/InvoicePlane/InvoicePlane/pull/1487) |
-| Auth bypass in guest invoice/payment endpoints | Medium | 6.5 | CWE-284 | [[#1517]: Improper Access Control in Guest Payment Flow Allows Access to Non-Public Invoices](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-f95x-25mh-wcxv) | [@FelipeSilvany](https://github.com/FelipeSilvany) | [#1517](https://github.com/InvoicePlane/InvoicePlane/pull/1517), [#1537](https://github.com/InvoicePlane/InvoicePlane/pull/1537) |
-| Setup wizard accessible post-installation | Medium | 5.3 | CWE-285 | [[#1491]: Unauthenticated Setup Reconfiguration](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-37pr-q48j-46gg), [[#1511]: Unauthenticated Setup Wizard Re-entry Allows Configuration Overwrite in InvoicePlane 1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-2j6j-6f6q-57vq), [[#1518]: Unauthenticated Re-execution of Installation Wizard After Setup Allows Overwrite of Database Configuration, Denial of Service, and Potential Data Compromise](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-jx5h-6r8f-m2h3) | [@HuajiHD](https://github.com/HuajiHD), [@iiihaiii](https://github.com/iiihaiii), [@kitu232](https://github.com/kitu232) | [#1491](https://github.com/InvoicePlane/InvoicePlane/pull/1491), [#1511](https://github.com/InvoicePlane/InvoicePlane/pull/1511), [#1518](https://github.com/InvoicePlane/InvoicePlane/pull/1518) |
-| SSRF via PDF footer content | Medium | 6.5 | CWE-918 | [[#1492]: SSRF via admin-stored PDF footer HTML](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-vgq9-469p-q7j3) | [@radoi-teodor](https://github.com/radoi-teodor) | [#1492](https://github.com/InvoicePlane/InvoicePlane/pull/1492) |
-| Open redirect via `HTTP_REFERER` | Medium | 6.1 | CWE-601 | [[#1505]: Remote Code Execution via Writable Templates Directory in InvoicePlane v1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-v735-2x3r-gwpp) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505) |
-| Payment gateway API credentials in plaintext | Medium | 6.5 | CWE-312 | [[#1515]: Sensitive Data Exposure via HTML Source Code (Stripe & PayPal API Keys)](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-8543-x4j8-jj4q) | [@ali-iltizar](https://github.com/ali-iltizar) | [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) |
-| PHPMailer debug output in AJAX responses | Low–Medium | 4.3 | CWE-209 | — | Internal audit | [#1495](https://github.com/InvoicePlane/InvoicePlane/pull/1495) |
-| Duplicate payment processing | Low–Medium | 5.3 | CWE-362 | [[#1496]: Stripe Callback Replay](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-6cpc-hr8h-xgr2) | [@HuajiHD](https://github.com/HuajiHD) | [#1496](https://github.com/InvoicePlane/InvoicePlane/pull/1496) |
-| Email template preview XSS | Low–Medium | 5.4 | CWE-79 | [[#1486]: Stored XSS via Email Templates in InvoicePlane <= 1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-4wqv-84px-8jc6) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1486](https://github.com/InvoicePlane/InvoicePlane/pull/1486) |
-| EXIF metadata in uploaded images | Low | 3.5 | CWE-212 | [[#1507]: Sensitive Information Disclosure via Unstripped EXIF Metadata in Attachments](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-7f67-2v6p-275v) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1507](https://github.com/InvoicePlane/InvoicePlane/pull/1507) |
-
-> † GHSA advisories are currently private drafts; links become public once CVEs are assigned and the release is final. Researchers listed in [RELEASE_NOTES_v1.7.2_PR_TABLE.md](RELEASE_NOTES_v1.7.2_PR_TABLE.md#contributor-acknowledgements).
-
----
-
-### Security
+### Security — reported vulnerability fixes
 
 **CRITICAL: Fixed Remote Code Execution (RCE) vulnerability in template system - CVSSv3 9.9**
 
@@ -806,4 +884,6 @@ For changes in version 1.6.4 and earlier, please see the git commit history.
 
 ## Security Disclosure
 
-If you discover a security vulnerability in InvoicePlane, please email **[mail@invoiceplane.com](mailto:mail@invoiceplane.com)** before disclosing it publicly. We will address all security concerns promptly.
+If you discover a security vulnerability in InvoicePlane, please report it privately by opening a
+[GitHub Security Advisory](https://github.com/InvoicePlane/InvoicePlane/security/advisories/new)
+before disclosing it publicly. See [SECURITY.md](../SECURITY.md) for the full policy.

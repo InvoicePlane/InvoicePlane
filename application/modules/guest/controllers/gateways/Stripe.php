@@ -145,15 +145,30 @@ class Stripe extends Base_Controller
                     $paid     = false; // Mark as not paid to show info message instead of success
                     $user_msg = trans('invoice_already_paid');
                 } else {
-                    // Save the payment (visible in guest user)
-                    $this->mdl_payments->save(null, [
-                        'invoice_id'          => $invoice->invoice_id,
-                        'payment_date'        => date('Y-m-d'),
-                        'payment_amount'      => $session->amount_total / 100,
-                        'payment_method_id'   => get_setting('gateway_stripe_payment_method'),
-                        'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
-                        'payment_external_id' => $payment_intent,
-                    ]);
+                    // Validate currency and amount before recording payment
+                    $expected_currency = mb_strtoupper((string) get_setting('gateway_stripe_currency'));
+                    $capture_currency  = mb_strtoupper((string) ($session->currency ?? ''));
+                    $capture_amount    = $session->amount_total / 100;
+
+                    if ($capture_currency !== $expected_currency) {
+                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: currency mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . $expected_currency . ', received: ' . $capture_currency);
+                        $paid     = false;
+                        $user_msg = trans('online_payment_payment_failed');
+                    } elseif ((float) $capture_amount + 0.0001 < (float) $invoice->invoice_balance) {
+                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($capture_amount));
+                        $paid     = false;
+                        $user_msg = trans('online_payment_payment_failed');
+                    } else {
+                        // Save the payment (visible in guest user)
+                        $this->mdl_payments->save(null, [
+                            'invoice_id'          => $invoice->invoice_id,
+                            'payment_date'        => date('Y-m-d'),
+                            'payment_amount'      => $capture_amount,
+                            'payment_method_id'   => get_setting('gateway_stripe_payment_method'),
+                            'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
+                            'payment_external_id' => $payment_intent,
+                        ]);
+                    }
                 }
             }
 

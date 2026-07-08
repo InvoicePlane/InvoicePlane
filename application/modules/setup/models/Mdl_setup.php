@@ -25,7 +25,7 @@ class Mdl_Setup extends CI_Model
     {
         $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
 
-        $this->execute_contents($file_contents);
+        $this->execute_contents($file_contents, '000_1.0.0.sql');
 
         $this->save_version('000_1.0.0.sql');
 
@@ -90,7 +90,7 @@ class Mdl_Setup extends CI_Model
             }
 
             $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/' . $sql_file);
-            $this->execute_contents($file_contents);
+            $this->execute_contents($file_contents, $sql_file);
             $this->save_version($sql_file);
 
             $upgrade_method = 'upgrade_' . str_replace('.', '_', mb_substr($sql_file, 0, -4));
@@ -368,18 +368,23 @@ class Mdl_Setup extends CI_Model
     /**
      * @param string $contents
      */
-    private function execute_contents(string|bool $contents)
+    private function execute_contents(string|bool $contents, string $source = '')
     {
-        $commands = explode(';', $contents);
+        if ( ! is_string($contents)) {
+            $this->errors[] = 'Setup aborted: could not read migration SQL'
+                . ($source !== '' ? " '" . $source . "'" : '')
+                . ' (file_get_contents() returned ' . gettype($contents) . ' instead of a string).';
+
+            return;
+        }
+
+        $this->load->helper('sql');
+        $commands = split_sql_statements($contents);
 
         foreach ($commands as $command) {
-            if ( ! mb_trim($command)) {
-                continue;
-            }
-
             $this->db->db_debug = IP_DEBUG;
 
-            $this->db->query(mb_trim($command) . ';');
+            $this->db->query($command . ';');
 
             $error = $this->db->error();
             if ($error['code'] !== 0) {
