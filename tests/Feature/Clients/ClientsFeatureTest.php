@@ -76,7 +76,7 @@ class ClientsFeatureTest extends AbstractTestCase
          *     "client_name": "Acme Corp",
          *     "btn_submit": "1",
          *     "is_update": "0"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -108,7 +108,7 @@ class ClientsFeatureTest extends AbstractTestCase
          *     "client_country": "NL",
          *     "btn_submit": "1",
          *     "is_update": "0"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -163,7 +163,7 @@ class ClientsFeatureTest extends AbstractTestCase
          *     "client_name": "Renamed Corp",
          *     "btn_submit": "1",
          *     "is_update": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -214,7 +214,7 @@ class ClientsFeatureTest extends AbstractTestCase
          *     "client_name": "",
          *     "btn_submit": "1",
          *     "is_update": "0"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -242,7 +242,7 @@ class ClientsFeatureTest extends AbstractTestCase
          *     "client_name": "",
          *     "btn_submit": "1",
          *     "is_update": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -296,7 +296,7 @@ class ClientsFeatureTest extends AbstractTestCase
     #[Test]
     public function it_redirects_when_creating_a_duplicate_client(): void
     {
-        /**
+        /*
          * POST /clients/form (duplicate)
          * {
          *     "client_name": "Duplicate Corp",

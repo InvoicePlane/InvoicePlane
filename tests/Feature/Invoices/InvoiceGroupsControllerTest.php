@@ -65,7 +65,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          *     "invoice_group_next_id": "1",
          *     "invoice_group_left_pad": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -119,7 +119,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          *     "invoice_group_next_id": "5",
          *     "invoice_group_left_pad": "3",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -184,7 +184,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          *     "invoice_group_next_id": "1",
          *     "invoice_group_left_pad": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -214,7 +214,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          *     "invoice_group_next_id": "1",
          *     "invoice_group_left_pad": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -245,7 +245,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
          *     "invoice_group_next_id": "1",
          *     "invoice_group_left_pad": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */

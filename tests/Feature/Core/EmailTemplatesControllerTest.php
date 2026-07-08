@@ -64,7 +64,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
          *     "email_template_body": "Please pay your invoice.",
          *     "is_update": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -117,7 +117,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
          *     "email_template_body": "Updated body.",
          *     "is_update": "1",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -180,7 +180,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
          *     "email_template_body": "Body",
          *     "is_update": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -210,7 +210,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
          *     "email_template_body": "Body",
          *     "is_update": "1",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -242,7 +242,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_when_creating_a_duplicate_email_template(): void
     {
-        /**
+        /*
          * POST /email_templates/form (duplicate)
          * {
          *     "email_template_title": "Duplicate Template",

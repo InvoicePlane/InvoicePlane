@@ -79,6 +79,32 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
         ];
     }
 
+    public static function blockedApiBaseUrls(): array
+    {
+        return [
+            'loopback'          => ['https://127.0.0.1/', 'loopback'],
+            'RFC-1918 class A'  => ['https://10.1.2.3/', 'RFC-1918 A'],
+            'RFC-1918 class B'  => ['https://172.16.0.1/', 'RFC-1918 B'],
+            'RFC-1918 class C'  => ['https://192.168.0.1/', 'RFC-1918 C'],
+            'link-local'        => ['https://169.254.0.1/', 'link-local'],
+            'IPv6 loopback'     => ['https://[::1]/', 'IPv6 loopback'],
+            'IPv6 unique-local' => ['https://[fd00::1]/', 'IPv6 unique-local'],
+            'plain http'        => ['http://api.example.com/', 'non-HTTPS'],
+        ];
+    }
+
+    public static function blockedTokenUrls(): array
+    {
+        return [
+            'loopback'         => ['https://127.0.0.1/token', 'loopback'],
+            'RFC-1918 class A' => ['https://10.0.0.1/oauth/token', 'RFC-1918 A'],
+            'link-local'       => ['https://169.254.169.254/latest/api-token', 'AWS metadata (link-local)'],
+            'CGNAT'            => ['https://100.64.0.1/token', 'CGNAT shared address space'],
+            'http scheme'      => ['http://auth.example.com/token', 'non-HTTPS'],
+            'file scheme'      => ['file:///etc/passwd', 'file:// scheme'],
+        ];
+    }
+
     // -------------------------------------------------------------------------
     // Proof tests — what was broken before the fix
     // -------------------------------------------------------------------------
@@ -138,20 +164,6 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
         $this->assertUrlNotPersistedInRow($url);
     }
 
-    public static function blockedApiBaseUrls(): array
-    {
-        return [
-            'loopback'          => ['https://127.0.0.1/', 'loopback'],
-            'RFC-1918 class A'  => ['https://10.1.2.3/', 'RFC-1918 A'],
-            'RFC-1918 class B'  => ['https://172.16.0.1/', 'RFC-1918 B'],
-            'RFC-1918 class C'  => ['https://192.168.0.1/', 'RFC-1918 C'],
-            'link-local'        => ['https://169.254.0.1/', 'link-local'],
-            'IPv6 loopback'     => ['https://[::1]/', 'IPv6 loopback'],
-            'IPv6 unique-local' => ['https://[fd00::1]/', 'IPv6 unique-local'],
-            'plain http'        => ['http://api.example.com/', 'non-HTTPS'],
-        ];
-    }
-
     // -------------------------------------------------------------------------
     // Blocked token_url addresses
     // -------------------------------------------------------------------------
@@ -172,18 +184,6 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
             "Blocked token_url [{$url}] ({$reason}) must redirect. Got: " . $response->statusCode()
         );
         $this->assertUrlNotPersistedInRow($url);
-    }
-
-    public static function blockedTokenUrls(): array
-    {
-        return [
-            'loopback'          => ['https://127.0.0.1/token', 'loopback'],
-            'RFC-1918 class A'  => ['https://10.0.0.1/oauth/token', 'RFC-1918 A'],
-            'link-local'        => ['https://169.254.169.254/latest/api-token', 'AWS metadata (link-local)'],
-            'CGNAT'             => ['https://100.64.0.1/token', 'CGNAT shared address space'],
-            'http scheme'       => ['http://auth.example.com/token', 'non-HTTPS'],
-            'file scheme'       => ['file:///etc/passwd', 'file:// scheme'],
-        ];
     }
 
     // -------------------------------------------------------------------------
@@ -301,9 +301,8 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
         self::assertContains(
             $url,
             $settings,
-            "The valid URL [{$url}] should appear in settings_json values after a successful save. " .
-            "Got: " . ($row['settings_json'] ?? '(empty)')
+            "The valid URL [{$url}] should appear in settings_json values after a successful save. "
+            . 'Got: ' . ($row['settings_json'] ?? '(empty)')
         );
     }
-
 }

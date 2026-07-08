@@ -20,7 +20,7 @@ class EmailTemplatesAjaxControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $this->databaseInsert('ip_email_templates', [
-            'email_template_title' => 'Ajax Email Template',
+            'email_template_title'   => 'Ajax Email Template',
             'email_template_subject' => 'Ajax Subject',
             'email_template_body'    => 'Ajax body',
             'email_template_type'    => 'invoice',

@@ -20,19 +20,6 @@ class TasksControllerTest extends AbstractTestCase
         ]);
     }
 
-    private function taskRow(array $overrides = []): array
-    {
-        return array_merge([
-            'project_id'       => $this->projectId,
-            'task_name'        => 'Default Task',
-            'task_description' => '',
-            'task_price'       => '0.00',
-            'task_finish_date' => date('Y-m-d'),
-            'task_status'      => 1,
-            'tax_rate_id'      => 0,
-        ], $overrides);
-    }
-
     // -------------------------------------------------------------------------
     // List
     // -------------------------------------------------------------------------
@@ -83,7 +70,7 @@ class TasksControllerTest extends AbstractTestCase
          *     "task_status": "1",
          *     "tax_rate_id": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -138,7 +125,7 @@ class TasksControllerTest extends AbstractTestCase
          *     "task_status": "1",
          *     "tax_rate_id": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -196,7 +183,7 @@ class TasksControllerTest extends AbstractTestCase
          *     "task_finish_date": "2026-12-31",
          *     "project_id": "<projectId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -229,7 +216,7 @@ class TasksControllerTest extends AbstractTestCase
          *     "task_finish_date": "2026-12-31",
          *     "project_id": "<projectId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -263,7 +250,7 @@ class TasksControllerTest extends AbstractTestCase
          *     "task_finish_date": "",
          *     "project_id": "<projectId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -297,7 +284,7 @@ class TasksControllerTest extends AbstractTestCase
          *     "task_finish_date": "2026-12-31",
          *     "project_id": "<projectId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -336,5 +323,18 @@ class TasksControllerTest extends AbstractTestCase
 
         /* Assert */
         self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
+    }
+
+    private function taskRow(array $overrides = []): array
+    {
+        return array_merge([
+            'project_id'       => $this->projectId,
+            'task_name'        => 'Default Task',
+            'task_description' => '',
+            'task_price'       => '0.00',
+            'task_finish_date' => date('Y-m-d'),
+            'task_status'      => 1,
+            'tax_rate_id'      => 0,
+        ], $overrides);
     }
 }

@@ -61,7 +61,7 @@ class TaxRatesControllerTest extends AbstractTestCase
          *     "tax_rate_name": "Standard VAT",
          *     "tax_rate_percent": "21.00",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -109,7 +109,7 @@ class TaxRatesControllerTest extends AbstractTestCase
          *     "tax_rate_name": "Renamed VAT",
          *     "tax_rate_percent": "15.00",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -166,7 +166,7 @@ class TaxRatesControllerTest extends AbstractTestCase
          *     "tax_rate_name": "",
          *     "tax_rate_percent": "21.00",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -192,7 +192,7 @@ class TaxRatesControllerTest extends AbstractTestCase
          *     "tax_rate_name": "Incomplete VAT",
          *     "tax_rate_percent": "",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -219,7 +219,7 @@ class TaxRatesControllerTest extends AbstractTestCase
          *     "tax_rate_name": "",
          *     "tax_rate_percent": "21.00",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */

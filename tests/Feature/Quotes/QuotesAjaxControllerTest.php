@@ -8,6 +8,7 @@ use Tests\AbstractTestCase;
 class QuotesAjaxControllerTest extends AbstractTestCase
 {
     private int $clientId;
+
     private int $invoiceGroupId;
 
     protected function setUp(): void
@@ -38,7 +39,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
          *     "client_id": "<clientId>",
          *     "quote_date_created": "2026-06-21",
          *     "invoice_group_id": "<invoiceGroupId>"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -67,7 +68,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
          *     "client_id": "",
          *     "quote_date_created": "2026-06-21",
          *     "invoice_group_id": "<invoiceGroupId>"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -93,7 +94,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
          *     "client_id": "<clientId>",
          *     "quote_date_created": "",
          *     "invoice_group_id": "<invoiceGroupId>"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -119,7 +120,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
          *     "client_id": "<clientId>",
          *     "quote_date_created": "2026-06-21",
          *     "invoice_group_id": ""
-         * }
+         * }.
          */
 
         /* Arrange */

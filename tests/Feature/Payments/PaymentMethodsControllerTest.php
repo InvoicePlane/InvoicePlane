@@ -60,7 +60,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
          *     "payment_method_name": "Bank Transfer",
          *     "is_update": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -107,7 +107,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
          *     "payment_method_name": "Renamed Method",
          *     "is_update": "1",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -162,7 +162,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
          *     "payment_method_name": "",
          *     "is_update": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -188,7 +188,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
          *     "payment_method_name": "",
          *     "is_update": "1",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -216,7 +216,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_when_creating_a_duplicate_payment_method(): void
     {
-        /**
+        /*
          * POST /payment_methods/form (duplicate)
          * {
          *     "payment_method_name": "Duplicate Method",

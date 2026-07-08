@@ -8,6 +8,7 @@ use Tests\AbstractTestCase;
 class ProductsControllerTest extends AbstractTestCase
 {
     private int $familyId;
+
     private int $taxRateId;
 
     protected function setUp(): void
@@ -19,19 +20,6 @@ class ProductsControllerTest extends AbstractTestCase
             'tax_rate_name'    => 'Test Tax',
             'tax_rate_percent' => '21.00',
         ]);
-    }
-
-    private function productRow(array $overrides = []): array
-    {
-        return array_merge([
-            'product_name'        => 'Default Widget',
-            'product_sku'         => '',
-            'product_description' => '',
-            'product_price'       => '9.99',
-            'purchase_price'      => '0.00',
-            'family_id'           => $this->familyId,
-            'tax_rate_id'         => $this->taxRateId,
-        ], $overrides);
     }
 
     // -------------------------------------------------------------------------
@@ -80,7 +68,7 @@ class ProductsControllerTest extends AbstractTestCase
          *     "product_price": "19.99",
          *     "family_id": "<familyId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -115,7 +103,7 @@ class ProductsControllerTest extends AbstractTestCase
          *     "purchase_price": "15.00",
          *     "family_id": "<familyId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -169,7 +157,7 @@ class ProductsControllerTest extends AbstractTestCase
          *     "product_price": "24.99",
          *     "family_id": "<familyId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -226,7 +214,7 @@ class ProductsControllerTest extends AbstractTestCase
          *     "product_price": "9.99",
          *     "family_id": "<familyId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -258,7 +246,7 @@ class ProductsControllerTest extends AbstractTestCase
          *     "product_price": "",
          *     "family_id": "<familyId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -291,7 +279,7 @@ class ProductsControllerTest extends AbstractTestCase
          *     "product_price": "9.99",
          *     "family_id": "<familyId>",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -330,5 +318,18 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Assert */
         self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
+    }
+
+    private function productRow(array $overrides = []): array
+    {
+        return array_merge([
+            'product_name'        => 'Default Widget',
+            'product_sku'         => '',
+            'product_description' => '',
+            'product_price'       => '9.99',
+            'purchase_price'      => '0.00',
+            'family_id'           => $this->familyId,
+            'tax_rate_id'         => $this->taxRateId,
+        ], $overrides);
     }
 }

@@ -68,7 +68,7 @@ class PaymentsFeatureTest extends AbstractTestCase
          *     "payment_date": "2026-06-21",
          *     "payment_note": "Test payment",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -129,7 +129,7 @@ class PaymentsFeatureTest extends AbstractTestCase
          *     "payment_date": "2026-06-21",
          *     "payment_note": "Updated payment",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -188,7 +188,7 @@ class PaymentsFeatureTest extends AbstractTestCase
          *     "payment_amount": "100.00",
          *     "payment_date": "2026-06-21",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -216,7 +216,7 @@ class PaymentsFeatureTest extends AbstractTestCase
          *     "payment_amount": "",
          *     "payment_date": "2026-06-21",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -246,7 +246,7 @@ class PaymentsFeatureTest extends AbstractTestCase
          *     "payment_amount": "100.00",
          *     "payment_date": "",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */

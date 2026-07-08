@@ -24,7 +24,7 @@ class PaypalControllerTest extends AbstractTestCase
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient(['client_name' => 'Paypal Test Client']);
+        $clientId  = $this->seedClient(['client_name' => 'Paypal Test Client']);
         $invoiceId = $this->seedInvoice($clientId);
         $this->seedPayment($invoiceId);
 

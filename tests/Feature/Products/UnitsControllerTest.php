@@ -62,7 +62,7 @@ class UnitsControllerTest extends AbstractTestCase
          *     "unit_name_plrl": "Kilograms",
          *     "is_update": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -112,7 +112,7 @@ class UnitsControllerTest extends AbstractTestCase
          *     "unit_name_plrl": "Renamed Units",
          *     "is_update": "1",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -171,7 +171,7 @@ class UnitsControllerTest extends AbstractTestCase
          *     "unit_name_plrl": "Items",
          *     "is_update": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -199,7 +199,7 @@ class UnitsControllerTest extends AbstractTestCase
          *     "unit_name_plrl": "",
          *     "is_update": "0",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -228,7 +228,7 @@ class UnitsControllerTest extends AbstractTestCase
          *     "unit_name_plrl": "Original Units",
          *     "is_update": "1",
          *     "btn_submit": "1"
-         * }
+         * }.
          */
 
         /* Arrange */
@@ -258,7 +258,7 @@ class UnitsControllerTest extends AbstractTestCase
     #[Test]
     public function it_redirects_when_creating_a_duplicate_unit(): void
     {
-        /**
+        /*
          * POST /units/form (duplicate)
          * {
          *     "unit_name": "Duplicate Unit",

@@ -26,8 +26,8 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
         /* Arrange */
         $clientId = $this->seedClient(['client_name' => 'Task Deletion Client']);
         $this->databaseInsert('ip_projects', [
-            'client_id'            => $clientId,
-            'project_name'         => 'Deletion Test Project',
+            'client_id'    => $clientId,
+            'project_name' => 'Deletion Test Project',
         ]);
 
         /* Act */

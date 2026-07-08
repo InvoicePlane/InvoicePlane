@@ -155,8 +155,8 @@ class IntegrationsFeatureTest extends AbstractTestCase
     public function it_handles_the_history_endpoint_gracefully_for_a_missing_invoice(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient(['client_name' => 'History Test Client']);
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId         = $this->seedClient(['client_name' => 'History Test Client']);
+        $invoiceId        = $this->seedInvoice($clientId);
         $merchantClientId = $this->databaseInsert('ip_merchant_clients', [
             'merchant_type' => 'superpdp',
             'label'         => 'History Provider',

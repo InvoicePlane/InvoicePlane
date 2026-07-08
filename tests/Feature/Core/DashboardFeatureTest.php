@@ -99,7 +99,7 @@ class DashboardFeatureTest extends AbstractTestCase
     public function it_produces_a_deterministic_dashboard_response_on_two_consecutive_requests(): void
     {
         /* Arrange */
-        $first  = $this->get('/dashboard');
+        $first = $this->get('/dashboard');
         /* Act */
         $second = $this->get('/dashboard');
 
