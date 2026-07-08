@@ -35,6 +35,7 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
 
     protected function setUp(): void
     {
+        $this->setUpDatabase();
         parent::setUp();
         $this->actingAsAdmin();
 
@@ -47,9 +48,35 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
                 'api_base_url' => 'https://api.superpdp.tech',
                 'token_url'    => 'https://api.superpdp.tech/oauth2/token',
             ]),
-            'created_at'    => date('Y-m-d H:i:s'),
-            'updated_at'    => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
+    }
+
+    public static function blockedApiBaseUrls(): array
+    {
+        return [
+            'loopback'          => ['https://127.0.0.1/', 'loopback'],
+            'RFC-1918 class A'  => ['https://10.1.2.3/', 'RFC-1918 A'],
+            'RFC-1918 class B'  => ['https://172.16.0.1/', 'RFC-1918 B'],
+            'RFC-1918 class C'  => ['https://192.168.0.1/', 'RFC-1918 C'],
+            'link-local'        => ['https://169.254.0.1/', 'link-local'],
+            'IPv6 loopback'     => ['https://[::1]/', 'IPv6 loopback'],
+            'IPv6 unique-local' => ['https://[fd00::1]/', 'IPv6 unique-local'],
+            'plain http'        => ['http://api.example.com/', 'non-HTTPS'],
+        ];
+    }
+
+    public static function blockedTokenUrls(): array
+    {
+        return [
+            'loopback'         => ['https://127.0.0.1/token', 'loopback'],
+            'RFC-1918 class A' => ['https://10.0.0.1/oauth/token', 'RFC-1918 A'],
+            'link-local'       => ['https://169.254.169.254/latest/api-token', 'AWS metadata (link-local)'],
+            'CGNAT'            => ['https://100.64.0.1/token', 'CGNAT shared address space'],
+            'http scheme'      => ['http://auth.example.com/token', 'non-HTTPS'],
+            'file scheme'      => ['file:///etc/passwd', 'file:// scheme'],
+        ];
     }
 
     // -------------------------------------------------------------------------
@@ -61,7 +88,7 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
     {
         /* Arrange */
         $maliciousUrl = 'http://169.254.169.254';
-        $payload = $this->validPayload(['api_base_url' => $maliciousUrl]);
+        $payload      = $this->validPayload(['api_base_url' => $maliciousUrl]);
 
         /* Act */
         $response = $this->post('/integrations/settings/save/' . $this->rowid, $payload);
@@ -79,7 +106,7 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
     {
         /* Arrange */
         $maliciousUrl = 'https://10.0.0.1/oauth/token';
-        $payload = $this->validPayload(['token_url' => $maliciousUrl]);
+        $payload      = $this->validPayload(['token_url' => $maliciousUrl]);
 
         /* Act */
         $response = $this->post('/integrations/settings/save/' . $this->rowid, $payload);
@@ -168,7 +195,7 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
     {
         /* Arrange */
         $maliciousUrl = 'https://attacker.example.com/steal';
-        $payload = $this->validPayload(['invoice_endpoint' => $maliciousUrl]);
+        $payload      = $this->validPayload(['invoice_endpoint' => $maliciousUrl]);
 
         /* Act */
         $response = $this->post('/integrations/settings/save/' . $this->rowid, $payload);
@@ -183,7 +210,7 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
     {
         /* Arrange */
         $maliciousUrl = 'https://attacker2.example.com/exfil';
-        $payload = $this->validPayload(['upload_endpoint' => $maliciousUrl]);
+        $payload      = $this->validPayload(['upload_endpoint' => $maliciousUrl]);
 
         /* Act */
         $response = $this->post('/integrations/settings/save/' . $this->rowid, $payload);
@@ -202,7 +229,7 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
     {
         /* Arrange */
         $validUrl = 'https://api.superpdp.tech';
-        $payload = $this->validPayload([
+        $payload  = $this->validPayload([
             'api_base_url' => $validUrl,
             'token_url'    => 'https://api.superpdp.tech/oauth2/token',
         ]);

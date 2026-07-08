@@ -112,10 +112,18 @@
                         </div>
 
                     </div>
-                </div>
+
+                    <div class="panel-footer">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-check"></i> <?php _trans('save'); ?>
+                        </button>
+
+                        <a href="<?php echo site_url('integrations/settings'); ?>" class="btn btn-default">
+                            <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
+                        </a>                </div>
 
             </div>
         </div>
 
     </div>
-</form>
+</form></div>
