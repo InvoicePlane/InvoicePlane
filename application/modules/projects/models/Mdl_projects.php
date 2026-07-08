@@ -77,4 +77,39 @@ class Mdl_Projects extends Response_Model
 
         return $result;
     }
+
+    /**
+     * Check if the current user has access to this project.
+     *
+     * Security: Prevents IDOR vulnerabilities for project access by verifying
+     * the user can access the project's associated client.
+     *
+     * @param int $project_id The project ID to check
+     *
+     * @return bool True if user has access, false otherwise
+     */
+    public function can_user_access($project_id)
+    {
+        $CI = & get_instance();
+
+        // Normalize to integer to prevent type juggling
+        $project_id = (int) $project_id;
+
+        // Admin users (type 1) have access to all projects
+        if ((int) $CI->session->userdata('user_type') === 1) {
+            return true;
+        }
+
+        // For other user types, check if they have access to the project's client
+        $project = $this->get_by_id($project_id);
+
+        if ( ! $project) {
+            return false;
+        }
+
+        // Check if user has access to the project's client
+        $this->load->model('clients/mdl_clients');
+
+        return $this->mdl_clients->can_user_access((int) $project->client_id);
+    }
 }
