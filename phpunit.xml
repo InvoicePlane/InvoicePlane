@@ -13,8 +13,14 @@
          failOnWarning="true"
          verbose="true">
     <testsuites>
-        <testsuite name="Security Tests">
-            <directory>tests/Unit/Security</directory>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
         </testsuite>
     </testsuites>
 

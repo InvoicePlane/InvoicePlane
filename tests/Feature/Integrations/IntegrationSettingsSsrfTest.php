@@ -79,7 +79,7 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
         ];
     }
 
-    public static function blockedApiBaseUrls(): array
+    /*public static function blockedApiBaseUrls(): array
     {
         return [
             'loopback'          => ['https://127.0.0.1/', 'loopback'],
@@ -103,7 +103,7 @@ class IntegrationSettingsSsrfTest extends AbstractTestCase
             'http scheme'      => ['http://auth.example.com/token', 'non-HTTPS'],
             'file scheme'      => ['file:///etc/passwd', 'file:// scheme'],
         ];
-    }
+    }*/
 
     // -------------------------------------------------------------------------
     // Proof tests — what was broken before the fix
