@@ -68,9 +68,9 @@ These are documented fully in `AGENTS.md` and `.junie/guidelines.md`. Short form
 Before pushing:
 ```bash
 php -l application/**/*.php   # Syntax check (finds parse errors)
-vendor/bin/phpunit            # run all tests
-vendor/bin/pint               # fix code style
-vendor/bin/phpstan analyse    # static analysis
+vendor/bin/phpunit          # run all tests
+vendor/bin/pint             # fix code style
+vendor/bin/phpstan analyse  # static analysis
 ```
 
 **CRITICAL:** `php -l` must be run before any push to prevent parse errors in GitHub Actions. The workflow `.github/workflows/php-lint.yml` will block commits with syntax errors, so catch them locally first. This catches issues like embedded `<?php` tags in comments that confuse the lexer.
