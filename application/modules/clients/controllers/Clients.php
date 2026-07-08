@@ -220,6 +220,12 @@ class Clients extends Admin_Controller
      */
     public function view($client_id, $activeTab = 'detail', $page = 0): void
     {
+        $this->load->helper('security');
+
+        if ( ! user_has_client_access($client_id)) {
+            show_error(trans('access_denied'), 403);
+        }
+
         $client = $this->mdl_clients
             ->with_total()
             ->with_total_balance()
