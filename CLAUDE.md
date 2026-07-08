@@ -63,13 +63,17 @@ These are documented fully in `AGENTS.md` and `.junie/guidelines.md`. Short form
 - Method names: `snake_case`; test methods: `it_<snake_case>` with `#[Test]`.
 - No comments unless the *why* is non-obvious.
 
-## Testing
+## Testing & Code Quality
 
+Before pushing:
 ```bash
-vendor/bin/phpunit          # run all tests
-vendor/bin/pint             # fix code style
-vendor/bin/phpstan analyse  # static analysis
+php -l application/**/*.php   # Syntax check (finds parse errors)
+vendor/bin/phpunit            # run all tests
+vendor/bin/pint               # fix code style
+vendor/bin/phpstan analyse    # static analysis
 ```
+
+**CRITICAL:** `php -l` must be run before any push to prevent parse errors in GitHub Actions. The workflow `.github/workflows/php-lint.yml` will block commits with syntax errors, so catch them locally first. This catches issues like embedded `<?php` tags in comments that confuse the lexer.
 
 Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `TestCase`.
 
