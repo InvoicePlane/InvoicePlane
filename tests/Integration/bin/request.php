@@ -20,6 +20,13 @@ $uri     = '/' . ltrim((string) ($request['uri'] ?? '/'), '/');
 $query   = is_array($request['query'] ?? null) ? $request['query'] : [];
 $post    = is_array($request['post'] ?? null) ? $request['post'] : [];
 $session = is_array($request['session'] ?? null) ? $request['session'] : [];
+$isAjax  = ! empty($request['ajax']);
+
+// Ajax controllers (Base_Controller::$ajax_controller) show_404() unless the
+// request looks like an XHR, so advertise it when the test asked for ajax().
+if ($isAjax) {
+    $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+}
 
 if ($session !== []) {
     if (session_status() === PHP_SESSION_NONE) {
@@ -97,7 +104,20 @@ register_shutdown_function(static function () use (&$exception): void {
 try {
     require dirname(__DIR__, 3) . '/public/index.php';
 } catch (Throwable $throwable) {
-    $exception = $throwable::class . ': ' . $throwable->getMessage() . ' @ ' . $throwable->getFile() . ':' . $throwable->getLine();
+    // MY_Exceptions turns show_error()/show_404() into a RuntimeException carrying
+    // the HTTP status code (in the testing environment). A 4xx is a normal
+    // application response (e.g. a 404), not a crash, so surface it as such and
+    // let the test assert on the status code instead of catching a fatal.
+    $code = $throwable->getCode();
+    if ($throwable instanceof RuntimeException && $code >= 400 && $code < 500) {
+        http_response_code($code);
+        // Emit a minimal body carrying the status reason phrase so tests can
+        // assert on it (MY_Exceptions throws before CI can render its error view).
+        $phrases = [400 => 'Bad Request', 401 => 'Unauthorized', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 422 => 'Unprocessable Entity', 429 => 'Too Many Requests'];
+        echo $code . ' ' . ($phrases[$code] ?? 'Client Error') . ': ' . $throwable->getMessage();
+    } else {
+        $exception = $throwable::class . ': ' . $throwable->getMessage() . ' @ ' . $throwable->getFile() . ':' . $throwable->getLine();
+    }
 }
 
 define('CI_TEST_RESULT_SENT', true);

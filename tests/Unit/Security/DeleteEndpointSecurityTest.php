@@ -102,8 +102,11 @@ class DeleteEndpointSecurityTest extends TestCase
         $failed = [];
 
         foreach (self::PROTECTED_DELETE_ENDPOINTS as $endpoint) {
-            $module          = mb_strtolower(str_replace('_', '-', $endpoint['module']));
+            // Module directories use underscores (e.g. invoice_groups), and the
+            // guarded action is the last route segment (delete, remove_logo, ...).
+            $module          = mb_strtolower($endpoint['module']);
             $controller_path = dirname(__DIR__, 3) . '/application/modules/' . $module . '/controllers/';
+            $action          = mb_substr((string) mb_strrchr($endpoint['route'], '/'), 1);
 
             $controller_file = null;
             foreach (glob($controller_path . '*.php') as $file) {
@@ -119,16 +122,19 @@ class DeleteEndpointSecurityTest extends TestCase
             }
 
             $content = file_get_contents($controller_file);
+            $pattern = '/public\s+function\s+' . preg_quote($action, '/') . '\s*\(/';
 
-            // Extract the delete method
-            if ( ! preg_match('/public\s+function\s+delete\s*\(/', $content)) {
-                $failed[] = "{$endpoint['module']}: delete() method not found";
+            if ( ! preg_match($pattern, $content)) {
+                $failed[] = "{$endpoint['module']}: {$action}() method not found";
                 continue;
             }
 
-            // Verify ensure_valid_post_request is called early in the method
-            if ( ! preg_match('/public\s+function\s+delete\s*\([^)]*\)\s*(?::\s*\w+)?\s*\{[^}]*ensure_valid_post_request/s', $content)) {
-                $failed[] = "{$endpoint['module']}: delete() does not call ensure_valid_post_request()";
+            // Extract the method body and verify it guards the request via CSRF.
+            $bodyPattern = '/public\s+function\s+' . preg_quote($action, '/')
+                . '\s*\([^)]*\)\s*(?::\s*\w+)?\s*\{(.*?)(?:\n\s*public\s+function|\Z)/s';
+            if (preg_match($bodyPattern, $content, $matches)
+                && ! str_contains($matches[1], 'ensure_valid_post_request')) {
+                $failed[] = "{$endpoint['module']}: {$action}() does not call ensure_valid_post_request()";
             }
         }
 
@@ -292,8 +298,15 @@ class DeleteEndpointSecurityTest extends TestCase
         $config_file = dirname(__DIR__, 3) . '/application/config/config.php';
         $content     = file_get_contents($config_file);
 
-        $this->assertStringContainsString("'csrf_exclude_uris'", $content);
-        $this->assertStringContainsString("'csrf_exclude_uris' => []", $content);
+        $this->assertStringContainsString('csrf_exclude_uris', $content);
+        // config.php sets this with array-assignment syntax
+        // ($config['csrf_exclude_uris'] = []); assert it is empty regardless of
+        // the exact spacing used, so no URIs are excluded from CSRF checks.
+        $this->assertMatchesRegularExpression(
+            "/csrf_exclude_uris'\]\s*=\s*\[\s*\]/",
+            $content,
+            'csrf_exclude_uris must be an empty array (no URIs excluded from CSRF).'
+        );
     }
 
     /**
