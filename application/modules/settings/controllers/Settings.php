@@ -69,7 +69,7 @@ class Settings extends Admin_Controller
 
                 if (isset($settings[$key . '_field_is_password']) && $value !== '') {
                     // Encrypt passwords but don't save empty passwords
-                    $batch_settings[$key] = $this->crypt->encode(mb_trim($value));
+                    $batch_settings[$key] = $this->crypt->encode(trim($value));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
                     $batch_settings[$key] = standardize_amount($value);

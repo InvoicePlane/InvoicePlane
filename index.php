@@ -206,7 +206,7 @@ if (($_temp = realpath($system_path)) !== false) {
 } else {
     // Ensure there's a trailing slash
     $system_path = strtr(
-        mb_rtrim($system_path, '/\\'),
+        rtrim($system_path, '/\\'),
         '/\\',
         DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
     ) . DIRECTORY_SEPARATOR;
@@ -245,14 +245,14 @@ if (is_dir($application_folder)) {
         $application_folder = $_temp;
     } else {
         $application_folder = strtr(
-            mb_rtrim($application_folder, '/\\'),
+            rtrim($application_folder, '/\\'),
             '/\\',
             DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
         );
     }
 } elseif (is_dir(BASEPATH . $application_folder . DIRECTORY_SEPARATOR)) {
     $application_folder = BASEPATH . strtr(
-        mb_trim($application_folder, '/\\'),
+        trim($application_folder, '/\\'),
         '/\\',
         DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
     );
@@ -272,14 +272,14 @@ if ( ! isset($view_folder[0]) && is_dir(APPPATH . 'views' . DIRECTORY_SEPARATOR)
         $view_folder = $_temp;
     } else {
         $view_folder = strtr(
-            mb_rtrim($view_folder, '/\\'),
+            rtrim($view_folder, '/\\'),
             '/\\',
             DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
         );
     }
 } elseif (is_dir(APPPATH . $view_folder . DIRECTORY_SEPARATOR)) {
     $view_folder = APPPATH . strtr(
-        mb_trim($view_folder, '/\\'),
+        trim($view_folder, '/\\'),
         '/\\',
         DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
     );

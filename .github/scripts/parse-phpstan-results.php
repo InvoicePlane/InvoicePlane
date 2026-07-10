@@ -194,7 +194,7 @@ function getShortPath(string $path): string
     // Derive project root based on this script's location: .github/scripts => project root is two levels up
     $projectRoot = dirname(__DIR__, 2);
     if (is_string($projectRoot) && $projectRoot !== '') {
-        $normalizedRoot = mb_rtrim(str_replace('\\', '/', $projectRoot), '/') . '/';
+        $normalizedRoot = rtrim(str_replace('\\', '/', $projectRoot), '/') . '/';
 
         if (str_starts_with($normalizedPath, $normalizedRoot)) {
             $normalizedPath = mb_substr($normalizedPath, mb_strlen($normalizedRoot));
@@ -204,7 +204,7 @@ function getShortPath(string $path): string
     // Fallback: also try stripping the current working directory if it is a prefix
     $cwd = getcwd();
     if (is_string($cwd) && $cwd !== '') {
-        $normalizedCwd = mb_rtrim(str_replace('\\', '/', $cwd), '/') . '/';
+        $normalizedCwd = rtrim(str_replace('\\', '/', $cwd), '/') . '/';
 
         if (str_starts_with($normalizedPath, $normalizedCwd)) {
             $normalizedPath = mb_substr($normalizedPath, mb_strlen($normalizedCwd));
@@ -221,7 +221,7 @@ function trimMessage(string $message, int $maxLength = 150): string
 {
     // Remove excessive whitespace
     $message = preg_replace('/\s+/', ' ', $message);
-    $message = mb_trim($message);
+    $message = trim($message);
 
     // Truncate if too long (multibyte-safe)
     if (mb_strlen($message, 'UTF-8') > $maxLength) {

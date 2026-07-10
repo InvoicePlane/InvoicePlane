@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
-         cacheResultFile=".phpunit.cache/test-results"
+         cacheDirectory=".phpunit.cache"
          executionOrder="depends,defects"
-         forceCoversAnnotation="false"
-         beStrictAboutCoversAnnotatedMissingCoversUse="false"
-         beStrictAboutMissingCoversAnnotation="false"
+         requireCoverageMetadata="false"
+         beStrictAboutCoverageMetadata="false"
          beStrictAboutTestsThatDoNotTestAnything="true"
-         beStrictAboutTodoTestedCode="true"
          failOnRisky="true"
-         failOnWarning="true"
-         verbose="true">
+         failOnWarning="true">
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
@@ -24,8 +21,7 @@
         </testsuite>
     </testsuites>
 
-    <coverage cacheDirectory=".phpunit.cache/code-coverage"
-              processUncoveredFiles="true">
+    <source>
         <include>
             <directory suffix=".php">application</directory>
         </include>
@@ -34,7 +30,7 @@
             <directory>application/core</directory>
             <directory>application/views</directory>
         </exclude>
-    </coverage>
+    </source>
 
     <php>
         <ini name="error_reporting" value="-1"/>
