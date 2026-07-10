@@ -108,7 +108,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         }
 
         return new HttpResponse(
-            $result['output'] ?? '',
+            base64_decode((string) ($result['output'] ?? ''), true) ?: '',
             (int) ($result['status'] ?? 200),
             $result['headers'] ?? [],
             (string) $stderr,

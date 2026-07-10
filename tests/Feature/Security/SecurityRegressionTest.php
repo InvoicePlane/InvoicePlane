@@ -346,4 +346,65 @@ class SecurityRegressionTest extends AbstractTestCase
             'A traversal path must never be persisted as the login_logo setting value.'
         );
     }
+
+    // -----------------------------------------------------------------------
+    // 5. RCE — PDF template whitelist (CVE-pending, PR #1505, CVSS 9.9)
+    //
+    // select_pdf_invoice_template() / validate_template_name() must reject any
+    // template name that isn't in Mdl_Templates::ALLOWED_INVOICE_TEMPLATES,
+    // no matter what an attacker supplies via the generate_pdf() URL segment,
+    // and fall back to the safe default instead of including an arbitrary file.
+    // -----------------------------------------------------------------------
+
+    #[Test]
+    public function it_falls_back_to_the_default_template_for_a_path_traversal_pdf_template_name(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $clientId  = $this->seedClient(['client_name' => 'Template RCE Client']);
+        $invoiceId = $this->seedInvoice($clientId);
+
+        $traversalPayloads = [
+            '..%2F..%2F..%2Fapplication%2Fconfig%2Fdatabase',
+            '....%2F%2F....%2F%2Fetc%2F%2Fpasswd',
+            '%2e%2e%2fapplication%2fconfig%2fdatabase',
+        ];
+
+        foreach ($traversalPayloads as $payload) {
+            /* Act */
+            $response = $this->get("/invoices/generate_pdf/{$invoiceId}/1/{$payload}");
+
+            /* Assert */
+            self::assertNotSame(
+                500,
+                $response->statusCode(),
+                "Traversal payload [{$payload}] as the PDF template name must not crash the request."
+            );
+
+            self::assertStringNotContainsString(
+                'DB_PASSWORD',
+                $response->body(),
+                "Traversal payload [{$payload}] must not leak application/config/database.php content."
+            );
+        }
+    }
+
+    #[Test]
+    public function it_falls_back_to_the_default_template_for_an_unlisted_pdf_template_name(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $clientId  = $this->seedClient(['client_name' => 'Template Whitelist Client']);
+        $invoiceId = $this->seedInvoice($clientId);
+
+        /* Act */
+        $response = $this->get("/invoices/generate_pdf/{$invoiceId}/1/EvilAttackerTemplate");
+
+        /* Assert */
+        self::assertNotSame(
+            500,
+            $response->statusCode(),
+            'A template name outside the static whitelist must not crash the request — it must fall back to the safe default.'
+        );
+    }
 }

@@ -23,9 +23,12 @@ defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter
 defined('VIEWPATH') || define('VIEWPATH', APPPATH . 'views/');
 
 // Upload / filesystem path constants (previously defined in the legacy root index.php).
+// uploads/ lives at the repo root (like resources/assets/ below), not under
+// public/ — do not change this to FCPATH-relative, it would resolve to a
+// public/uploads/ directory that doesn't exist.
 defined('IPCONFIG_FILE') || define('IPCONFIG_FILE', $base . '/ipconfig.php');
 defined('LOGS_FOLDER') || define('LOGS_FOLDER', APPPATH . 'logs/');
-defined('UPLOADS_FOLDER') || define('UPLOADS_FOLDER', FCPATH . 'uploads/');
+defined('UPLOADS_FOLDER') || define('UPLOADS_FOLDER', $base . '/uploads/');
 defined('UPLOADS_ARCHIVE_FOLDER') || define('UPLOADS_ARCHIVE_FOLDER', UPLOADS_FOLDER . 'archive/');
 defined('UPLOADS_CFILES_FOLDER') || define('UPLOADS_CFILES_FOLDER', UPLOADS_FOLDER . 'customer_files/');
 defined('UPLOADS_TEMP_FOLDER') || define('UPLOADS_TEMP_FOLDER', UPLOADS_FOLDER . 'temp/');
