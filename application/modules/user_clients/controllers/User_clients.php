@@ -63,7 +63,7 @@ class User_Clients extends Admin_Controller
         if ( ! $user_id) {
             redirect('custom_values');
         } elseif ($this->input->post('btn_cancel')) {
-            redirect('user_clients/field/' . $user_id);
+            redirect('user_clients/user/' . $user_id);
         }
 
         if ($this->mdl_user_clients->run_validation()) {
