@@ -8,7 +8,7 @@ inputs:
   php-extensions:
     description: 'PHP extensions to install (comma-separated)'
     required: false
-    default: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath'
+    default: 'mbstring, xml, ctype, json, fileinfo, curl, pdo, sqlite, mysql, bcmath'
   composer-flags:
     description: 'Flags appended to the composer install command (e.g., --no-dev --optimize-autoloader). Used only when composer-args is empty.'
     required: false

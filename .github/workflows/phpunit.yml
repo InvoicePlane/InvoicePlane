@@ -12,7 +12,11 @@ name: PHPUnit
 # required.
 
 on:
+  # Not every push to every branch — only the shared integration branch and
+  # pull requests. Feature-branch work is covered when it opens/updates a PR.
   push:
+    branches:
+      - prep/v180
   pull_request:
   schedule:
     - cron: '0 6 * * 1'   # Mondays 06:00 UTC — full version sweep
@@ -91,6 +95,10 @@ jobs:
             -e 's|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=0123456789abcdef0123456789abcdef|' \
             ipconfig.php
           echo 'DB_DRIVER=sqlite3' >> ipconfig.php
+          # The test runner posts form data directly; it does not carry a CSRF
+          # token, so disable CSRF for the functional suite (the dedicated CSRF
+          # tests assert protection statically, not via live POSTs).
+          echo 'CSRF_PROTECTION=false' >> ipconfig.php
 
       - name: Run PHPUnit
         run: |
