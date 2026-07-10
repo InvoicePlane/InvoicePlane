@@ -90,6 +90,10 @@ class Email_Templates extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('email_templates')) {
+            return;
+        }
+
         $this->mdl_email_templates->delete($id);
         redirect('email_templates');
     }
