@@ -238,11 +238,11 @@ class Modules
         $file     = array_pop($segments);
         $file_ext = (pathinfo($file, PATHINFO_EXTENSION) !== '' && pathinfo($file, PATHINFO_EXTENSION) !== '0') ? $file : $file . EXT;
 
-        $path                       = mb_ltrim(implode('/', $segments) . '/', '/');
+        $path                       = ltrim(implode('/', $segments) . '/', '/');
         $module ? $modules[$module] = $path : $modules = [];
 
         if ($segments !== []) {
-            $modules[array_shift($segments)] = mb_ltrim(implode('/', $segments) . '/', '/');
+            $modules[array_shift($segments)] = ltrim(implode('/', $segments) . '/', '/');
         }
 
         foreach (self::$locations as $location => $offset) {

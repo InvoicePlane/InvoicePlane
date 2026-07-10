@@ -1,24 +1,33 @@
 name: PHPUnit
 
+# PHP version policy:
+#   - Every push / pull request runs the suite on the PHP 8.2 floor
+#     (composer.json requires ^8.2), so day-to-day CI stays fast.
+#   - The weekly schedule and manual runs sweep every supported version
+#     (8.2, 8.3, 8.4) so upper-version regressions are still caught,
+#     without paying for a full matrix on every push.
+#
+# The test harness uses a self-contained SQLite database (the committed
+# storage/test-clean.sqlite fixture), so no external database service is
+# required.
+
 on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'   # Mondays 06:00 UTC — full version sweep
   workflow_dispatch:
     inputs:
       php_version:
-        description: 'PHP version'
+        description: 'PHP version to test (or "all" for 8.2, 8.3 and 8.4)'
         required: false
-        default: '8.2'
+        default: 'all'
         type: choice
         options:
+          - 'all'
           - '8.2'
           - '8.3'
-      mysql_version:
-        description: 'MySQL/MariaDB image'
-        required: false
-        default: 'mysql:8.0'
-        type: choice
-        options:
-          - 'mysql:8.0'
-          - 'mariadb:10.11'
+          - '8.4'
       fail_fast:
         description: 'Stop on first failure'
         required: false
@@ -32,23 +41,37 @@ permissions:
   contents: read
 
 jobs:
-  test:
-    name: PHPUnit (PHP ${{ github.event.inputs.php_version || '8.2' }})
+  # Resolve which PHP versions this run should cover.
+  matrix:
+    name: Resolve PHP versions
     runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.resolve.outputs.versions }}
+    steps:
+      - id: resolve
+        run: |
+          case "${{ github.event_name }}" in
+            schedule)
+              versions='["8.2","8.3","8.4"]' ;;
+            workflow_dispatch)
+              if [ "${{ github.event.inputs.php_version }}" = "all" ]; then
+                versions='["8.2","8.3","8.4"]'
+              else
+                versions='["${{ github.event.inputs.php_version }}"]'
+              fi ;;
+            *)
+              versions='["8.2"]' ;;
+          esac
+          echo "versions=$versions" >> "$GITHUB_OUTPUT"
 
-    services:
-      database:
-        image: ${{ github.event.inputs.mysql_version || 'mysql:8.0' }}
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: invoiceplane_test
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+  test:
+    name: PHPUnit (PHP ${{ matrix.php }})
+    needs: matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ${{ fromJSON(needs.matrix.outputs.versions) }}
 
     steps:
       - name: Checkout
@@ -57,28 +80,18 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: ${{ github.event.inputs.php_version || '8.2' }}
+          php-version: ${{ matrix.php }}
 
-      - name: Copy ipconfig.php
-        run: cp ipconfig.php.example ipconfig.php
-
-      - name: Configure test database in ipconfig.php
+      - name: Prepare test configuration (SQLite)
         run: |
+          cp ipconfig.php.example ipconfig.php
           sed -i \
-            -e 's|^DB_HOSTNAME=.*|DB_HOSTNAME=127.0.0.1|' \
-            -e 's|^DB_DATABASE=.*|DB_DATABASE=invoiceplane_test|' \
-            -e 's|^DB_USERNAME=.*|DB_USERNAME=root|' \
-            -e 's|^DB_PASSWORD=.*|DB_PASSWORD=root|' \
-            ipconfig.php || true
-
-      - name: Confirm database is reachable
-        run: |
-          mysql -h 127.0.0.1 -u root -proot invoiceplane_test -e "SELECT 1;" 2>/dev/null
+            -e 's|^DB_DATABASE=.*|DB_DATABASE=storage/test.sqlite|' \
+            -e 's|^SETUP_COMPLETED=.*|SETUP_COMPLETED=true|' \
+            -e 's|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=0123456789abcdef0123456789abcdef|' \
+            ipconfig.php
+          echo 'DB_DRIVER=sqlite3' >> ipconfig.php
 
       - name: Run PHPUnit
         run: |
-          if [ -f phpunit.xml ] || [ -f phpunit.xml.dist ]; then
-            vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
-          else
-            echo "No phpunit.xml found — no tests to run yet."
-          fi
+          vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
