@@ -1,15 +1,16 @@
 name: PHPUnit
 
 # PHP version policy:
-#   - Every push / pull request runs the suite on the PHP 8.2 floor
-#     (composer.json requires ^8.2), so day-to-day CI stays fast.
+#   - Every push to prep/v180 and every pull request runs the suite on the
+#     PHP 8.2 floor (composer.json requires ^8.2), so day-to-day CI stays fast.
 #   - The weekly schedule and manual runs sweep every supported version
-#     (8.2, 8.3, 8.4) so upper-version regressions are still caught,
-#     without paying for a full matrix on every push.
+#     (8.2, 8.3, 8.4) so upper-version regressions are still caught, without
+#     paying for a full matrix on every push.
 #
-# The test harness uses a self-contained SQLite database (the committed
-# storage/test-clean.sqlite fixture), so no external database service is
-# required.
+# Database: the suite runs against MariaDB rather than SQLite, so it exercises
+# the same SQL (NOW(), IF(), DATEDIFF(), ...) the application uses in
+# production. The schema is imported from the setup migrations and the baseline
+# rows are seeded via tests/Support/seed-test-db.php.
 
 on:
   # Not every push to every branch — only the shared integration branch and
@@ -72,10 +73,32 @@ jobs:
     name: PHPUnit (PHP ${{ matrix.php }})
     needs: matrix
     runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: invoiceplane_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
     strategy:
       fail-fast: false
       matrix:
         php: ${{ fromJSON(needs.matrix.outputs.versions) }}
+
+    env:
+      DB_HOSTNAME: 127.0.0.1
+      DB_PORT: '3306'
+      DB_DATABASE: invoiceplane_test
+      DB_USERNAME: root
+      DB_PASSWORD: root
 
     steps:
       - name: Checkout
@@ -86,15 +109,30 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
 
-      - name: Prepare test configuration (SQLite)
+      - name: Build MariaDB schema and seed baseline
+        run: |
+          export MYSQL_PWD="$DB_PASSWORD"
+          # Relax sql_mode so inserts behave like the SQLite fixture did.
+          mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" -e "SET GLOBAL sql_mode='';"
+          # Import the schema from the ordered setup migrations (they are MySQL DDL).
+          for f in $(ls application/modules/setup/sql/*.sql | sort); do
+            mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" --force "$DB_DATABASE" < "$f"
+          done
+          php tests/Support/seed-test-db.php
+
+      - name: Prepare test configuration (MySQL)
         run: |
           cp ipconfig.php.example ipconfig.php
           sed -i \
-            -e 's|^DB_DATABASE=.*|DB_DATABASE=storage/test.sqlite|' \
+            -e "s|^DB_HOSTNAME=.*|DB_HOSTNAME=${DB_HOSTNAME}|" \
+            -e "s|^DB_PORT=.*|DB_PORT=${DB_PORT}|" \
+            -e "s|^DB_DATABASE=.*|DB_DATABASE=${DB_DATABASE}|" \
+            -e "s|^DB_USERNAME=.*|DB_USERNAME=${DB_USERNAME}|" \
+            -e "s|^DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD}|" \
             -e 's|^SETUP_COMPLETED=.*|SETUP_COMPLETED=true|' \
             -e 's|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=0123456789abcdef0123456789abcdef|' \
             ipconfig.php
-          echo 'DB_DRIVER=sqlite3' >> ipconfig.php
+          echo 'DB_DRIVER=mysqli' >> ipconfig.php
           # The test runner posts form data directly; it does not carry a CSRF
           # token, so disable CSRF for the functional suite (the dedicated CSRF
           # tests assert protection statically, not via live POSTs).
