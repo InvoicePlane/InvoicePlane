@@ -33,6 +33,8 @@ defined('UPLOADS_ARCHIVE_FOLDER') || define('UPLOADS_ARCHIVE_FOLDER', UPLOADS_FO
 defined('UPLOADS_CFILES_FOLDER') || define('UPLOADS_CFILES_FOLDER', UPLOADS_FOLDER . 'customer_files/');
 defined('UPLOADS_TEMP_FOLDER') || define('UPLOADS_TEMP_FOLDER', UPLOADS_FOLDER . 'temp/');
 defined('UPLOADS_TEMP_MPDF_FOLDER') || define('UPLOADS_TEMP_MPDF_FOLDER', UPLOADS_TEMP_FOLDER . 'mpdf/');
+// storage/ also lives at the repo root, not under public/ — same reasoning as uploads/ above.
+defined('STORAGE_TEMP_FOLDER') || define('STORAGE_TEMP_FOLDER', $base . '/storage/temp/');
 
 if ( ! function_exists('env')) {
     function env(string $key, mixed $default = null): mixed

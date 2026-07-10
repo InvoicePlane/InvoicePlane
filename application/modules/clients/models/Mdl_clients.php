@@ -337,9 +337,9 @@ class Mdl_Clients extends Response_Model
         $CI = & get_instance();
 
         // Normalize to integer to prevent type juggling
-        $user_type = (int) $CI->session->userdata('user_type');
-        $user_id   = (int) $CI->session->userdata('user_id');
-        $client_id = (int) $client_id;
+        $user_type  = (int) $CI->session->userdata('user_type');
+        $user_id    = (int) $CI->session->userdata('user_id');
+        $client_id  = (int) $client_id;
 
         // Admin users (type 1) have access to all clients
         if ($user_type === 1) {
