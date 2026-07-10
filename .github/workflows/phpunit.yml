@@ -118,6 +118,9 @@ jobs:
           for f in $(ls application/modules/setup/sql/*.sql | sort); do
             mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" --force "$DB_DATABASE" < "$f"
           done
+          # Apply the schema changes InvoicePlane makes via Mdl_setup's PHP
+          # upgrade_*() methods (not the SQL migrations) — see the file header.
+          mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" "$DB_DATABASE" < tests/Support/schema_fixups.sql
           php tests/Support/seed-test-db.php
 
       - name: Prepare test configuration (MySQL)
