@@ -21,6 +21,16 @@ class HttpResponse
         return $this->statusCode;
     }
 
+    public function bodyLength(): int
+    {
+        return strlen($this->body);
+    }
+
+    public function contains(string $needle): bool
+    {
+        return $needle !== '' && str_contains($this->body, $needle);
+    }
+
     public function headers(): array
     {
         return $this->headers;
