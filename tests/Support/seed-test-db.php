@@ -11,7 +11,6 @@
  *   DB_HOSTNAME=127.0.0.1 DB_DATABASE=invoiceplane_test \
  *   DB_USERNAME=root DB_PASSWORD=root php tests/Support/seed-test-db.php
  */
-
 $host = getenv('DB_HOSTNAME') ?: '127.0.0.1';
 $port = getenv('DB_PORT') ?: '3306';
 $name = getenv('DB_DATABASE') ?: 'invoiceplane_test';
