@@ -39,45 +39,6 @@ trait InteractsWithDatabase
     }
 
     /**
-     * Resolve the configured DB driver without opening a connection.
-     */
-    private function resolveDriver(): string
-    {
-        $basePath = dirname(__DIR__, 2);
-        require_once $basePath . '/bootstrap/kernel.php';
-
-        $active_group = null;
-        $db           = [];
-        require $basePath . '/application/config/database.php';
-
-        $cfg = $db[$active_group ?? 'default'] ?? [];
-
-        return (string) ($cfg['dbdriver'] ?? 'mysqli');
-    }
-
-    /**
-     * Truncate all application tables and reseed the baseline rows so each
-     * MySQL/MariaDB test starts from the same clean state the SQLite fixture
-     * provides.
-     */
-    private function resetMysqlDatabase(): void
-    {
-        $db = $this->db();
-
-        $db->exec('SET FOREIGN_KEY_CHECKS = 0');
-        $tables = $db->query(
-            'SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()'
-        )->fetchAll(PDO::FETCH_COLUMN);
-        foreach ($tables as $table) {
-            $db->exec('TRUNCATE TABLE ' . $this->qi((string) $table));
-        }
-        $db->exec('SET FOREIGN_KEY_CHECKS = 1');
-
-        require_once dirname(__DIR__) . '/Support/seed_baseline.php';
-        ip_seed_baseline($db);
-    }
-
-    /**
      * Drop the cached PDO connection so the next DB call opens a fresh one.
      *
      * Use this after an HTTP subprocess writes to the database to ensure the
@@ -359,6 +320,45 @@ trait InteractsWithDatabase
         }
 
         return $items;
+    }
+
+    /**
+     * Resolve the configured DB driver without opening a connection.
+     */
+    private function resolveDriver(): string
+    {
+        $basePath = dirname(__DIR__, 2);
+        require_once $basePath . '/bootstrap/kernel.php';
+
+        $active_group = null;
+        $db           = [];
+        require $basePath . '/application/config/database.php';
+
+        $cfg = $db[$active_group ?? 'default'] ?? [];
+
+        return (string) ($cfg['dbdriver'] ?? 'mysqli');
+    }
+
+    /**
+     * Truncate all application tables and reseed the baseline rows so each
+     * MySQL/MariaDB test starts from the same clean state the SQLite fixture
+     * provides.
+     */
+    private function resetMysqlDatabase(): void
+    {
+        $db = $this->db();
+
+        $db->exec('SET FOREIGN_KEY_CHECKS = 0');
+        $tables = $db->query(
+            'SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()'
+        )->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($tables as $table) {
+            $db->exec('TRUNCATE TABLE ' . $this->qi((string) $table));
+        }
+        $db->exec('SET FOREIGN_KEY_CHECKS = 1');
+
+        require_once dirname(__DIR__) . '/Support/seed_baseline.php';
+        ip_seed_baseline($db);
     }
 
     /**
