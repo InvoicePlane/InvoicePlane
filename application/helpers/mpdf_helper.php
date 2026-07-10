@@ -109,7 +109,7 @@ function pdf_create(
 
     // mPDF loading
     $mpdf = new \Mpdf\Mpdf([
-        'tempDir'                 => UPLOADS_TEMP_MPDF_FOLDER,
+        'tempDir' => UPLOADS_TEMP_MPDF_FOLDER,
         'whitelistStreamWrappers' => ['http', 'https'],
     ]);
 

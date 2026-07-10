@@ -1,31 +1,5 @@
 <script type="text/javascript">
     $(function () {
-        $('#btn_peppol_validate').on('click', function () {
-            var participantId = $('#client_peppol_id').val().trim();
-            var $result = $('#peppol_validate_result');
-
-            if (!participantId) return;
-
-            $result.html('<span class="text-muted"><?php _trans('peppol_validate'); ?>…</span>').show();
-
-            $.post('<?php echo site_url('integrations/validate_participant'); ?>',
-                {participant_id: participantId},
-                function (data) {
-                    if (data.reachable) {
-                        $result.html('<span class="text-success"><i class="fa fa-check"></i> <?php _trans('peppol_reachable'); ?>' +
-                            (data.name ? ' — ' + $('<span>').text(data.name).html() : '') + '</span>');
-                    } else {
-                        $result.html('<span class="text-danger"><i class="fa fa-times"></i> <?php _trans('peppol_not_reachable'); ?></span>');
-                    }
-                },
-                'json'
-            ).fail(function () {
-                $result.html('<span class="text-danger"><i class="fa fa-times"></i> <?php _trans('peppol_not_reachable'); ?></span>');
-            });
-        });
-    });
-
-    $(function () {
         // Check if found on Peppol network (Post to integrations/validate_participant)
         $('#btn_peppol_validate').on('click', function () {
             var participantId = $('#client_peppol_id').val().trim();

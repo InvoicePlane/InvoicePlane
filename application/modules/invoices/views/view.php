@@ -368,7 +368,7 @@ if ($einvoice->user) {
                 $lst = 'class="active"';
                 $lnk = site_url('integrations/send_invoice/' . $invoice_id . '/' . (int) $mc['id']);
             }
-            ?>
+?>
                 <li <?php echo $lst; ?>>
                     <a href="<?php echo $lnk; ?>">
                         <i class="fa fa-paper-plane fa-margin"></i>
@@ -377,7 +377,7 @@ if ($einvoice->user) {
                 </li>
 <?php
         }
-        ?>
+    ?>
                 <li class="divider"></li>
 <?php
     }

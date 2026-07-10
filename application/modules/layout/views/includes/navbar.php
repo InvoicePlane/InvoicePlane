@@ -54,7 +54,7 @@ if (get_setting('einvoicing') == '1') {
                         <li><?php echo anchor('integrations/incoming', trans('incoming_invoices')); ?></li>
 <?php
 }
-                ?>
+?>
                     </ul>
                 </li>
 
@@ -158,13 +158,13 @@ if (get_setting('einvoicing') == '1') {
                         <li class="divider hidden-xs hidden-sm"></li>
                         <li><?php echo anchor('settings', trans('system_settings')); ?></li>
 <?php
-                // eInvoice ON: Show incomings link
-                if (get_setting('einvoicing') == '1') {
-                    ?>
+// eInvoice ON: Show incomings link
+if (get_setting('einvoicing') == '1') {
+    ?>
                         <li><?php echo anchor('integrations/settings', trans('einvoice_providers')); ?></li>
 <?php
-                }
-                ?>
+}
+?>
                         <li><?php echo anchor('import', trans('import_data')); ?></li>
                     </ul>
                 </li>
