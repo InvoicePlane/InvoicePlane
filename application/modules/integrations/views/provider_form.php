@@ -44,7 +44,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?php _trans('settings'); ?> (<?php _htmlsc($provider['merchant_type']); ?>)
+                        <?php _trans('settings'); ?> (<?php _htmlsc($provider['merchant_type']);  ?>)
                     </div>
 
                     <div class="panel-body">
@@ -112,18 +112,10 @@
                         </div>
 
                     </div>
-
-                    <div class="panel-footer">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fa fa-check"></i> <?php _trans('save'); ?>
-                        </button>
-
-                        <a href="<?php echo site_url('integrations/settings'); ?>" class="btn btn-default">
-                            <i class="fa fa-times"></i> <?php _trans('cancel'); ?>
-                        </a>                </div>
+                </div>
 
             </div>
         </div>
 
     </div>
-</form></div>
+</form>

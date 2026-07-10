@@ -14,19 +14,19 @@ if ( ! function_exists('split_sql_statements')) {
      * comments (/* ... *\/) so semicolons inside them are never treated as
      * statement terminators.
      *
-     * @return string[] trimmed statements, in order, with empty ones removed
+     * @return string[] Trimmed statements, in order, with empty ones removed.
      */
     function split_sql_statements(string $sql): array
     {
         $statements = [];
         $buffer     = '';
-        $length     = mb_strlen($sql);
+        $length     = strlen($sql);
 
-        $in_single = false; // '...'
-        $in_double = false; // "..."
-        $in_ident  = false; // `...`
-        $in_line   = false; // -- or #  until end of line
-        $in_block  = false; // /* ... */
+        $in_single  = false; // '...'
+        $in_double  = false; // "..."
+        $in_ident   = false; // `...`
+        $in_line    = false; // -- or #  until end of line
+        $in_block   = false; // /* ... */
 
         for ($i = 0; $i < $length; $i++) {
             $ch   = $sql[$i];
