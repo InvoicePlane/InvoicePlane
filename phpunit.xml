@@ -19,6 +19,9 @@
         <testsuite name="Integration">
             <directory>tests/Integration</directory>
         </testsuite>
+        <testsuite name="Scripts">
+            <directory>tests/Scripts</directory>
+        </testsuite>
     </testsuites>
 
     <source>
