@@ -146,6 +146,90 @@ class LoginSecurityTest extends AbstractTestCase
     }
 
     // -------------------------------------------------------------------------
+    // Inactive-account lockout — correct credentials must not authenticate
+    // a deactivated user (Mdl_sessions::auth() user_active check).
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_denies_login_for_an_inactive_user_even_with_the_correct_password(): void
+    {
+        /* Arrange */
+        $email = 'inactive-' . bin2hex(random_bytes(4)) . '@test.local';
+        $this->databaseInsert('ip_users', [
+            'user_name'          => 'Inactive User',
+            'user_password'      => password_hash('correct-password', PASSWORD_BCRYPT),
+            'user_psalt'         => bin2hex(random_bytes(10)),
+            'user_email'         => $email,
+            'user_type'          => 1,
+            'user_active'        => 0,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        $payload = [
+            'btn_login' => '1',
+            'email'     => $email,
+            'password'  => 'correct-password',
+        ];
+
+        /* Act */
+        $response = $this->post('/sessions/login', $payload);
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            'A login attempt for an inactive user must redirect, not authenticate. Got: ' . $response->statusCode()
+        );
+        // Mdl_sessions::auth() must return false for an inactive account, which routes
+        // through Sessions::authenticate()'s failure branch and records a login-log
+        // failure entry. If the user_active check were removed, auth() would return
+        // true on the correct password, the success branch would run instead, and
+        // this row would never be written — making this assertion a real regression
+        // guard for the auth-bypass fix rather than a redirect-only smoke test.
+        $this->assertDatabaseHas('ip_login_log', [
+            'login_name' => $email,
+            'log_count'  => 1,
+        ]);
+    }
+
+    #[Test]
+    public function it_allows_login_for_an_active_user_with_the_correct_password(): void
+    {
+        /* Arrange */
+        $email = 'active-' . bin2hex(random_bytes(4)) . '@test.local';
+        $this->databaseInsert('ip_users', [
+            'user_name'          => 'Active User',
+            'user_password'      => password_hash('correct-password', PASSWORD_BCRYPT),
+            'user_psalt'         => bin2hex(random_bytes(10)),
+            'user_email'         => $email,
+            'user_type'          => 1,
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        $payload = [
+            'btn_login' => '1',
+            'email'     => $email,
+            'password'  => 'correct-password',
+        ];
+
+        /* Act */
+        $response = $this->post('/sessions/login', $payload);
+
+        /* Assert */
+        self::assertTrue(
+            $response->isRedirect(),
+            'A successful login must redirect to the dashboard. Got: ' . $response->statusCode()
+        );
+        // No failure log for a genuinely successful login — contrast with the
+        // inactive-user case above, which always writes one.
+        $this->assertDatabaseMissing('ip_login_log', [
+            'login_name' => $email,
+        ]);
+    }
+
+    // -------------------------------------------------------------------------
     // IP-based rate limiting
     // -------------------------------------------------------------------------
 
