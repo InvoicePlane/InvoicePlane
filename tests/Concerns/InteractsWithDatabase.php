@@ -20,23 +20,61 @@ trait InteractsWithDatabase
      */
     protected function setUpDatabase(): void
     {
-        $basePath  = dirname(__DIR__, 2);
-        $cleanFile = $basePath . '/storage/test-clean.sqlite';
+        $basePath = dirname(__DIR__, 2);
 
-        if (file_exists($cleanFile)) {
-            $testFile     = $basePath . '/storage/test.sqlite';
-            self::$testDb = null;
-            copy($cleanFile, $testFile);
+        if (in_array($this->resolveDriver(), ['sqlite', 'sqlite3'], true)) {
+            // SQLite: reset by copying the pre-built clean fixture over the live file.
+            $cleanFile = $basePath . '/storage/test-clean.sqlite';
+            if (file_exists($cleanFile)) {
+                self::$testDb = null;
+                copy($cleanFile, $basePath . '/storage/test.sqlite');
+            }
 
             return;
         }
 
-        // MySQL: no file-copy isolation available — truncate test-owned tables.
+        // MySQL / MariaDB: no file-copy isolation — truncate every table and
+        // reseed the same baseline the SQLite fixture carries.
+        $this->resetMysqlDatabase();
+    }
+
+    /**
+     * Resolve the configured DB driver without opening a connection.
+     */
+    private function resolveDriver(): string
+    {
+        $basePath = dirname(__DIR__, 2);
+        require_once $basePath . '/bootstrap/kernel.php';
+
+        $active_group = null;
+        $db           = [];
+        require $basePath . '/application/config/database.php';
+
+        $cfg = $db[$active_group ?? 'default'] ?? [];
+
+        return (string) ($cfg['dbdriver'] ?? 'mysqli');
+    }
+
+    /**
+     * Truncate all application tables and reseed the baseline rows so each
+     * MySQL/MariaDB test starts from the same clean state the SQLite fixture
+     * provides.
+     */
+    private function resetMysqlDatabase(): void
+    {
         $db = $this->db();
-        if ($db->getAttribute(PDO::ATTR_DRIVER_NAME) !== 'sqlite') {
-            $db->exec('DELETE FROM `ip_merchant_responses`');
-            $db->exec('DELETE FROM `ip_merchant_clients`');
+
+        $db->exec('SET FOREIGN_KEY_CHECKS = 0');
+        $tables = $db->query(
+            'SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()'
+        )->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($tables as $table) {
+            $db->exec('TRUNCATE TABLE ' . $this->qi((string) $table));
         }
+        $db->exec('SET FOREIGN_KEY_CHECKS = 1');
+
+        require_once dirname(__DIR__) . '/Support/seed_baseline.php';
+        ip_seed_baseline($db);
     }
 
     /**
