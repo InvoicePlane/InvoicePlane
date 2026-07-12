@@ -29,9 +29,6 @@ Docker setup (see `.github/workflows/compose-yml-test.yml`).
 ```bash
 composer install
 yarn install && yarn build
-cp ipconfig.php.example ipconfig.php
-# edit ipconfig.php: set IP_URL=http://ivpl.local and DB_* to match the values below
-
 echo "127.0.0.1 ivpl.local" | sudo tee -a /etc/hosts
 
 docker compose -f docker-compose.yml up -d --build
@@ -42,9 +39,20 @@ Four separate services — `php` ([php-fpm](php-fpm/Dockerfile), **PHP 8.2**), `
 ([phpmyadmin](phpmyadmin/Dockerfile)) — that bind-mount the working tree into the containers
 rather than building the app into the image. Because of that, PHP dependencies and frontend
 assets must already be installed on the host (`composer install`, `yarn install && yarn build`)
-and `ipconfig.php` must already exist before starting it — the containers don't do any of that
-for you. There's also no automated migration step here; run the setup wizard at
-`http://ivpl.local/index.php/setup` to initialize the database.
+before starting it — the containers don't do that for you.
+
+Unlike `compose.yml`, `ipconfig.php` doesn't need to exist beforehand: [`php-fpm`'s
+`dev-entrypoint.sh`](php-fpm/dev-entrypoint.sh) generates one from the environment variables
+already set in `docker-compose.yml`, but — deliberately unlike
+[`compose.yml`'s entrypoint](entrypoint.sh) — only if `ipconfig.php` doesn't already exist, so
+any manual edits you make afterward are never overwritten. It also does **not** set
+`DISABLE_SETUP`, so the web setup wizard at `http://ivpl.local/index.php/setup` stays reachable
+— useful since this is the container you'd use to develop/test InvoicePlane itself, setup wizard
+included. It still runs pending migrations automatically on every start (best-effort — it won't
+stop the container from starting if the database isn't initialized yet).
+
+If you'd rather configure by hand, `cp ipconfig.php.example ipconfig.php` and edit it *before*
+`docker compose up` — the entrypoint will see it already exists and leave it alone.
 
 > **Hostname:** [`nginx/invoiceplane.conf`](nginx/invoiceplane.conf) sets `server_name
 > ivpl.local` — add `127.0.0.1 ivpl.local` to `/etc/hosts` and use that hostname (not
