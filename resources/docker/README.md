@@ -11,9 +11,9 @@ docker compose up -d --build
 
 Builds a single image from [`resources/docker/Containerfile`](Containerfile): a multi-stage
 build that runs `composer install` and `yarn build` for you, then serves the app with Apache.
-Configuration is entirely through environment variables — no `ipconfig.php` needed. See the
-[Container Deployment](../../README.md#container-deployment) section of the main README for
-the full list of variables.
+Configuration is entirely through environment variables — no `ipconfig.php` needed. See
+[CONTAINER_DEPLOYMENT.md](../../.github/docs/CONTAINER_DEPLOYMENT.md) for the full list of
+variables.
 
 This is what's used for local development/testing and is tested in CI on every change to the
 Docker setup (see `.github/workflows/docker.yml`).
