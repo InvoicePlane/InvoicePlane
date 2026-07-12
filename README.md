@@ -14,6 +14,7 @@ _A libre self-hosted web application designed to help you manage invoices, clien
 
 <br>
 
+[![Discord](https://img.shields.io/badge/Chat%3A-Discord-5865F2.svg?logo=discord&logoColor=white)](https://discord.gg/PPzD2hTrXt)
 [![Wiki](https://img.shields.io/badge/Help%3A-Official%20Wiki-429ae1.svg)](https://wiki.invoiceplane.com/)
 [![Community Forums](https://img.shields.io/badge/Help%3A-Community%20Forums-429ae1.svg)](https://community.invoiceplane.com/)
 [![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://github.com/invoiceplane/invoiceplane/issues/)
@@ -23,31 +24,18 @@ _A libre self-hosted web application designed to help you manage invoices, clien
 
 ---
 
-## What's New in Version 1.7.2
+## Release Notes
 
-**InvoicePlane 1.7.2 is a security-focused release.** It resolves every vulnerability
-responsibly disclosed against v1.7.0 / v1.7.1 — including a critical (CVSSv3 9.9) Remote Code
-Execution issue — and hardens the application, session handling, and container tooling throughout.
+Every release is documented in [CHANGELOG.md](.github/CHANGELOG.md), including security fixes
+with their GHSA advisories, CVSS scores, and reporting credits. Downloadable packages and the
+per-version release notes are published on the
+[GitHub Releases](https://github.com/InvoicePlane/InvoicePlane/releases) page. Formal security
+advisories live in [`.github/security/`](.github/security/); step-by-step upgrade instructions
+are in [UPGRADE.md](.github/docs/UPGRADE.md).
 
-**If you run v1.7.0 or v1.7.1, upgrade immediately.**
-
-Highlights:
-
-- **Remote Code Execution (Critical):** the invoice/quote template system never scans the
-  filesystem. Built-in templates come from a static allowlist; custom templates are opt-in via
-  `ipconfig.php` (see [Custom Invoice & Quote Templates](#custom-invoice--quote-templates)).
-- **Arbitrary file deletion, path traversal, SSRF, SQL/DDL injection, IDOR/CSRF, auth bypass** —
-  fixed across guest, settings, setup, and payment flows.
-- **Password reset hardening:** cryptographically secure tokens (`random_bytes(32)`) with a
-  configurable expiry (default 15 minutes).
-- **Session & transport hardening:** `cookie_httponly` is always `true`, `X-Frame-Options`
-  defaults to `SAMEORIGIN`, session fixation is closed, and a `Referrer-Policy` header is sent.
-
-> **Full details:** the [CHANGELOG](.github/CHANGELOG.md#172---2026-04-06) contains the complete,
-> GHSA-linked vulnerability table (CWE, CVSS, reporter, and fixing PR for every issue) and the
-> categorized list of all changes. Formal advisories live in
-> [`.github/security/`](.github/security/). For step-by-step upgrade instructions see
-> [UPGRADE.md](.github/docs/UPGRADE.md).
+> **Security releases matter here.** Check the CHANGELOG before upgrading, and subscribe to
+> [GitHub Releases](https://github.com/InvoicePlane/InvoicePlane/releases) notifications so you
+> don't miss one.
 
 ---
 
@@ -70,22 +58,17 @@ Highlights:
 git clone https://github.com/InvoicePlane/InvoicePlane.git
 cd InvoicePlane
 
-# Install dependencies
-composer install
-yarn install
-yarn build
-
-# Configure the application
-cp ipconfig.php.example ipconfig.php
-# Edit ipconfig.php: set IP_URL and DB_* values
-
-# Start Docker containers (PHP 8.2, MariaDB, nginx, phpMyAdmin)
-docker-compose up -d
+# Build and start the app + database — dependencies, assets, and
+# configuration are all handled inside the container.
+docker compose up -d --build
 
 # Access the application
-# InvoicePlane: http://localhost
-# phpMyAdmin:   http://localhost:8081
+# InvoicePlane: http://localhost:4895
 ```
+
+> `compose.yml` is for local development/testing only — it ships a fixed `ENCRYPTION_KEY` and
+> database password. For a real deployment, see [Container Deployment](#container-deployment)
+> for the environment variables to set instead.
 
 ### Production Installation
 
@@ -236,10 +219,14 @@ On first startup the entrypoint creates an admin account if the database is empt
 
 ## Community and Support
 
-Join our community for support, discussions, and contributions:
+**[Join our Discord](https://discord.gg/PPzD2hTrXt)** — it's the fastest way to reach users,
+developers, and contributors in real time, whether you need help, want to report something, or
+are interested in contributing.
 
+Other resources:
+
+- **Discord:** [discord.gg/PPzD2hTrXt](https://discord.gg/PPzD2hTrXt) — real-time chat with the community.
 - **Community Forums:** [community.invoiceplane.com](https://community.invoiceplane.com/) — ask questions, share knowledge, and get help from the community.
-- **Discord:** [Join our Discord](https://discord.gg/PPzD2hTrXt) — chat with users, developers, and contributors in real time.
 - **Issue Tracker:** [GitHub Issues](https://github.com/InvoicePlane/InvoicePlane/issues) — report bugs and request features.
 - **Wiki & Documentation:** [wiki.invoiceplane.com](https://wiki.invoiceplane.com/) — find guides, FAQs, and detailed setup instructions.
 
