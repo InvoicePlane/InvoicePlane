@@ -89,7 +89,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 
 *Ordered by severity, then CVSS, then PR number.*
 
-- [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505), [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506) — **RCE:** replace `directory_map()` template whitelist with static constants + `ipconfig.php` allowlist; fix five open-redirect instances; add `security_helper.php`
+- [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505), [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506) — **RCE:** replace `directory_map()` template whitelist with static constants + `ipconfig.php` allowlist; fix five open-redirect instances; add `security_helper.php`. See [CUSTOM_TEMPLATES.md](docs/CUSTOM_TEMPLATES.md) for the resulting custom-template usage guide.
 - [#1500](https://github.com/InvoicePlane/InvoicePlane/pull/1500), [#1516](https://github.com/InvoicePlane/InvoicePlane/pull/1516) — **Stored XSS:** comprehensive, application-wide output escaping (32 findings across 17 view files in 4 modules)
 - [#1471](https://github.com/InvoicePlane/InvoicePlane/pull/1471), [#1482](https://github.com/InvoicePlane/InvoicePlane/pull/1482), [#1487](https://github.com/InvoicePlane/InvoicePlane/pull/1487) — **IDOR + CSRF:** guest quote approve/reject and payment gateways now enforce client scoping and require POST
 - [#1494](https://github.com/InvoicePlane/InvoicePlane/pull/1494) — **Weak PRNG:** replace password-reset token generation with `random_bytes(32)` (256-bit entropy)
