@@ -4,9 +4,15 @@ name: Release on Tag
 #   1. Push a version tag and it builds automatically, e.g.:
 #        git tag 1.7.2-rc1
 #        git push origin 1.7.2-rc1
-#   2. workflow_dispatch — run it manually against any branch/ref by typing
-#      the version to build (there's no auto-increment for v1, so it must be
-#      supplied explicitly).
+#   2. workflow_dispatch — run it manually and pick rc/stable. The base
+#      version (e.g. "1.7.2") is auto-detected from the highest-numbered file
+#      in application/modules/setup/sql — that's the "final" version the
+#      codebase's schema migrations are currently building towards, and it's
+#      more current than package.json (which regularly lags behind it).
+#      - rc: auto-increments the rc number for that base version
+#            (rc1, rc2, ...), scanning existing tags for the highest one.
+#      - stable: tags the bare base version (errors if that tag already
+#            exists).
 #
 # The build reuses build-scripts/workflow.sh so CI runs the exact same
 # pipeline as a local `make release` (composer install --no-dev, yarn install
@@ -19,10 +25,14 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+-*'    # pre-release, e.g. 1.7.2-rc1, 1.7.2-beta1
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to build (e.g. 1.7.2-rc1) — required for manual runs'
+      release_type:
+        description: 'Release type (rc, stable)'
         required: true
-        type: string
+        default: 'rc'
+        type: choice
+        options:
+          - rc
+          - stable
 
 permissions:
   contents: write   # create the draft release + upload assets
@@ -75,7 +85,37 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ]; then
             VERSION="${GITHUB_REF_NAME}"
           else
-            VERSION="${{ github.event.inputs.version }}"
+            # Manual dispatch: auto-increment from the version the codebase's
+            # schema migrations are currently building towards (the
+            # highest-numbered file in application/modules/setup/sql), rather
+            # than requiring the version to be typed in by hand.
+            SQL_DIR="application/modules/setup/sql"
+            LATEST_SQL_FILE=$(find "$SQL_DIR" -maxdepth 1 -type f -name '[0-9][0-9][0-9]_*.sql' | sort | tail -n 1)
+            if [ -z "$LATEST_SQL_FILE" ]; then
+              echo "ERROR: No migration files found in $SQL_DIR — cannot determine the base version."
+              exit 1
+            fi
+            BASE_VERSION=$(basename "$LATEST_SQL_FILE" .sql | sed -E 's/^[0-9]+_//')
+            echo "Base version from latest schema migration ($(basename "$LATEST_SQL_FILE")): ${BASE_VERSION}"
+
+            case "${{ github.event.inputs.release_type }}" in
+              stable)
+                VERSION="${BASE_VERSION}"
+                if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
+                  echo "ERROR: Tag ${VERSION} already exists."
+                  exit 1
+                fi
+                ;;
+              rc)
+                LAST_RC=$(git tag -l "${BASE_VERSION}-rc*" | sed -E "s/^${BASE_VERSION}-rc//" | sort -n | tail -n 1)
+                NEXT_RC=$(( ${LAST_RC:-0} + 1 ))
+                VERSION="${BASE_VERSION}-rc${NEXT_RC}"
+                ;;
+              *)
+                echo "ERROR: Invalid release_type: ${{ github.event.inputs.release_type }}"
+                exit 1
+                ;;
+            esac
           fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           if [[ "${VERSION}" =~ (-rc|-alpha|-beta|-dev) ]]; then
@@ -185,6 +225,7 @@ jobs:
           IP_DIR: ${{ github.workspace }}
           BUILD_DIR: ${{ runner.temp }}/build
           PACKAGE_NAME: ip-${{ steps.version.outputs.version }}.zip
+          IP_VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
           bash "${RUNNER_TEMP}/workflow.sh"
