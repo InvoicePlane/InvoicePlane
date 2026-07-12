@@ -2,24 +2,25 @@ name: Release on Tag
 
 # Two ways to trigger this:
 #   1. Push a version tag and it builds automatically, e.g.:
-#        git tag 1.7.2-rc.1
-#        git push origin 1.7.2-rc.1
+#        git tag v1.7.2-rc-1
+#        git push origin v1.7.2-rc-1
 #   2. workflow_dispatch — run it manually and pick rc/beta/stable. The base
 #      version (e.g. "1.7.2") is auto-detected from the highest-numbered file
 #      in application/modules/setup/sql — that's the "final" version the
 #      codebase's schema migrations are currently building towards, and it's
 #      more current than package.json (which regularly lags behind it).
 #      - rc / beta: auto-increments that suffix's counter for the base
-#            version (rc.1, rc.2, ... / beta.1, beta.2, ...), scanning
+#            version (rc-1, rc-2, ... / beta-1, beta-2, ...), scanning
 #            existing tags for the highest one.
 #      - stable: tags the bare base version (errors if that tag already
 #            exists).
 #
-# Pre-release identifiers use a dot before the number (rc.1, not rc1 or
-# rc-1): that's the semver-correct form for numeric ordering (rc.2 < rc.10
-# compares correctly; "rc2"/"rc10" as one identifier would sort as strings
-# and get rc10 before rc2), and it matches release.yml's v2 convention
-# (alpha.1, beta.1) so both release lines read the same way.
+# Tags use a "v" prefix and a hyphen before the pre-release number
+# (v1.7.2-rc-1, v1.7.2-beta-1) — matching this repo's actual tag history
+# (v1.7.0, v1.7.1, v1.7.2-beta-1, v1.6.1-beta-1, ... — every real tag has the
+# v prefix) and package.json's existing style ("1.7.1-beta-1"). package.json
+# and application/modules/setup/sql/*.sql never carry the v prefix — only
+# git tags do.
 #
 # Either way, build-scripts/workflow.sh cross-checks the resolved version's
 # base against package.json and the latest schema migration before it lets
@@ -32,8 +33,8 @@ name: Release on Tag
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+'      # stable, e.g. 1.7.2
-      - '[0-9]+.[0-9]+.[0-9]+-*'    # pre-release, e.g. 1.7.2-rc.1, 1.7.2-beta.1
+      - 'v[0-9]+.[0-9]+.[0-9]+'      # stable, e.g. v1.7.2
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'    # pre-release, e.g. v1.7.2-rc-1, v1.7.2-beta-1
   workflow_dispatch:
     inputs:
       release_type:
@@ -114,12 +115,12 @@ jobs:
             case "$RELEASE_TYPE" in
               stable)
                 # Duplicate-tag / regression checks happen in the next step.
-                VERSION="${BASE_VERSION}"
+                VERSION="v${BASE_VERSION}"
                 ;;
               rc|beta)
-                LAST_NUM=$(git tag -l "${BASE_VERSION}-${RELEASE_TYPE}.*" | sed -E "s/^${BASE_VERSION}-${RELEASE_TYPE}\.//" | sort -n | tail -n 1)
+                LAST_NUM=$(git tag -l "v${BASE_VERSION}-${RELEASE_TYPE}-*" | sed -E "s/^v${BASE_VERSION}-${RELEASE_TYPE}-//" | sort -n | tail -n 1)
                 NEXT_NUM=$(( ${LAST_NUM:-0} + 1 ))
-                VERSION="${BASE_VERSION}-${RELEASE_TYPE}.${NEXT_NUM}"
+                VERSION="v${BASE_VERSION}-${RELEASE_TYPE}-${NEXT_NUM}"
                 ;;
               *)
                 echo "ERROR: Invalid release_type: ${RELEASE_TYPE}"
@@ -143,8 +144,10 @@ jobs:
 
           # fetch-depth: 0 + fetch-tags: true above already pulled every tag,
           # so the full repo history answers this without hitting the GitHub
-          # API separately.
-          LATEST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$' | sort -V | tail -n 1 || true)
+          # API separately. Scoped to v1.x tags only — v2.0.0-alpha.1 etc.
+          # belong to the unrelated v2 (release.yml) line and must not be
+          # compared against here.
+          LATEST_TAG=$(git tag -l | grep -E '^v1\.[0-9]+\.[0-9]+(-.*)?$' | sort -V | tail -n 1 || true)
           if [ -z "$LATEST_TAG" ]; then
             echo "No existing tags — nothing to compare against."
             exit 0
@@ -174,18 +177,40 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="${{ steps.version.outputs.version }}"
+          BASE_VERSION="${VERSION#v}"
+          BASE_VERSION="${BASE_VERSION%%-*}"
           NOTES="${RUNNER_TEMP}/RELEASE_NOTES.md"
+          CHANGELOG=".github/CHANGELOG.md"
+
           {
             echo "# InvoicePlane ${VERSION}"
             echo ""
-            PREV_TAG="$(git describe --tags --abbrev=0 "${VERSION}^" 2>/dev/null || true)"
-            if [ -n "${PREV_TAG}" ]; then
-              echo "## Changes since ${PREV_TAG}"
-              echo ""
-              git log "${PREV_TAG}..${VERSION}" --pretty=format:'- %s (%h)' 2>/dev/null || true
+
+            # Prefer the maintainer-written CHANGELOG.md entry for this version
+            # ("## [1.7.2] - ...") over a bare commit list — it's the actual
+            # "what's new" writeup, not just noise from every merged PR.
+            START_LINE=$(grep -n "^## \[${BASE_VERSION}\]" "$CHANGELOG" 2>/dev/null | head -1 | cut -d: -f1 || true)
+            if [ -n "${START_LINE:-}" ]; then
+              echo "Sourcing release notes from CHANGELOG.md's [${BASE_VERSION}] entry." >&2
+              END_LINE=$(awk -v start="$START_LINE" 'NR>start && /^## \[/{print NR; exit}' "$CHANGELOG")
+              if [ -z "$END_LINE" ]; then
+                END_LINE=$(wc -l < "$CHANGELOG")
+              else
+                END_LINE=$((END_LINE - 1))
+              fi
+              sed -n "$((START_LINE + 1)),${END_LINE}p" "$CHANGELOG"
             else
-              echo "Automated release build for ${VERSION}."
+              echo "No CHANGELOG.md entry found for [${BASE_VERSION}] — falling back to the commit list." >&2
+              PREV_TAG="$(git describe --tags --abbrev=0 "${VERSION}^" 2>/dev/null || true)"
+              if [ -n "${PREV_TAG}" ]; then
+                echo "## Changes since ${PREV_TAG}"
+                echo ""
+                git log "${PREV_TAG}..${VERSION}" --pretty=format:'- %s (%h)' 2>/dev/null || true
+              else
+                echo "Automated release build for ${VERSION}."
+              fi
             fi
+
             echo ""
             echo ""
             echo "---"
