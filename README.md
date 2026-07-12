@@ -67,7 +67,8 @@ docker compose up -d --build
 ```
 
 > `compose.yml` is for local development/testing only — it ships a fixed `ENCRYPTION_KEY` and
-> database password. For a real deployment, see
+> database password (uploads, storage, and the database do persist across restarts via named
+> volumes). For a real deployment, see
 > [CONTAINER_DEPLOYMENT.md](.github/docs/CONTAINER_DEPLOYMENT.md) for the environment variables
 > to set instead.
 
