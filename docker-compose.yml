@@ -1,0 +1,108 @@
+---
+version: "3"
+
+networks:
+  invoiceplane:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.0.0/17
+
+volumes:
+  invoiceplane-db:
+    driver: "local"
+  nginx_logs:
+    driver: "local"
+
+services:
+  # --- PHP 8.1
+  php:
+    container_name: "invoiceplane-php"
+    build:
+      context: ./resources/docker/php-fpm
+      args:
+        - PUID=1000
+        - PGID=1000
+        - TZ=UTC
+    links:
+      - db
+    expose:
+      - "9000"
+    dns: 8.8.8.8
+    depends_on:
+      - db
+    networks:
+      invoiceplane:
+        ipv4_address: 172.25.0.11
+    volumes:
+      - .:/var/www/projects/invoiceplane:delegated
+      - ./resources/docker/php-fpm/php-dev.ini:/usr/local/etc/php/php.ini
+
+  # --- nginx 1.23
+  nginx:
+    container_name: "invoiceplane-nginx"
+    build:
+      context: ./resources/docker/nginx
+    links:
+      - php
+    ports:
+      - "80:80"
+    dns: 8.8.8.8
+    depends_on:
+      - php
+    networks:
+      invoiceplane:
+        ipv4_address: 172.25.0.12
+    volumes:
+      - .:/var/www/projects/invoiceplane:delegated
+      - nginx_logs:/var/log/nginx
+      - ./resources/docker/nginx/invoiceplane.conf:/etc/nginx/conf.d/invoiceplane.conf:ro
+
+  # --- MariaDB 10.9
+  db:
+    container_name: "invoiceplane-db"
+    build:
+      context: ./resources/docker/mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=ipdevdb
+      - MARIADB_USER=ipdevdb
+      - MARIADB_PASSWORD=ipdevdb
+      - MARIADB_DATABASE=invoiceplane_db
+    ports:
+      - "3306:3306"
+    networks:
+      invoiceplane:
+        ipv4_address: 172.25.0.13
+    volumes:
+      - "invoiceplane-db:/var/lib/mysql"
+
+  phpmyadmin:
+    container_name: "invoiceplane-dbadmin"
+    build:
+      context: ./resources/docker/phpmyadmin
+    environment:
+      - PMA_HOST=invoiceplane-db
+      #- PMA_USER=root
+      #- PMA_PASSWORD=ipdevdb
+      #- PMA_ROOT_PASSWORD=ipdevdb
+      - MYSQL_DATABASE=invoiceplane_db
+      - MYSQL_USER=ipdevdb
+      - MYSQL_PASSWORD=ipdevdb
+      - MYSQL_ROOT_PASSWORD=ipdevdb
+      - MAX_EXECUTION_TIME=600
+      - MEMORY_LIMIT=256M
+      - UPLOAD_LIMIT=2G
+    depends_on:
+      - db
+    links:
+      - db
+    restart: always
+    volumes:
+      - ./resources/docker/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+      - ./resources/docker/databases:/var/www/html/tmp/upload_databases
+    ports:
+      - "8081:80"
+    networks:
+      invoiceplane:
+        ipv4_address: 172.25.0.16
