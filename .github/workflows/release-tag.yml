@@ -2,17 +2,28 @@ name: Release on Tag
 
 # Two ways to trigger this:
 #   1. Push a version tag and it builds automatically, e.g.:
-#        git tag 1.7.2-rc1
-#        git push origin 1.7.2-rc1
-#   2. workflow_dispatch — run it manually and pick rc/stable. The base
+#        git tag 1.7.2-rc.1
+#        git push origin 1.7.2-rc.1
+#   2. workflow_dispatch — run it manually and pick rc/beta/stable. The base
 #      version (e.g. "1.7.2") is auto-detected from the highest-numbered file
 #      in application/modules/setup/sql — that's the "final" version the
 #      codebase's schema migrations are currently building towards, and it's
 #      more current than package.json (which regularly lags behind it).
-#      - rc: auto-increments the rc number for that base version
-#            (rc1, rc2, ...), scanning existing tags for the highest one.
+#      - rc / beta: auto-increments that suffix's counter for the base
+#            version (rc.1, rc.2, ... / beta.1, beta.2, ...), scanning
+#            existing tags for the highest one.
 #      - stable: tags the bare base version (errors if that tag already
 #            exists).
+#
+# Pre-release identifiers use a dot before the number (rc.1, not rc1 or
+# rc-1): that's the semver-correct form for numeric ordering (rc.2 < rc.10
+# compares correctly; "rc2"/"rc10" as one identifier would sort as strings
+# and get rc10 before rc2), and it matches release.yml's v2 convention
+# (alpha.1, beta.1) so both release lines read the same way.
+#
+# Either way, build-scripts/workflow.sh cross-checks the resolved version's
+# base against package.json and the latest schema migration before it lets
+# the build proceed — see that script for details.
 #
 # The build reuses build-scripts/workflow.sh so CI runs the exact same
 # pipeline as a local `make release` (composer install --no-dev, yarn install
@@ -22,16 +33,17 @@ on:
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'      # stable, e.g. 1.7.2
-      - '[0-9]+.[0-9]+.[0-9]+-*'    # pre-release, e.g. 1.7.2-rc1, 1.7.2-beta1
+      - '[0-9]+.[0-9]+.[0-9]+-*'    # pre-release, e.g. 1.7.2-rc.1, 1.7.2-beta.1
   workflow_dispatch:
     inputs:
       release_type:
-        description: 'Release type (rc, stable)'
+        description: 'Release type (rc, beta, stable)'
         required: true
         default: 'rc'
         type: choice
         options:
           - rc
+          - beta
           - stable
 
 permissions:
@@ -98,21 +110,19 @@ jobs:
             BASE_VERSION=$(basename "$LATEST_SQL_FILE" .sql | sed -E 's/^[0-9]+_//')
             echo "Base version from latest schema migration ($(basename "$LATEST_SQL_FILE")): ${BASE_VERSION}"
 
-            case "${{ github.event.inputs.release_type }}" in
+            RELEASE_TYPE="${{ github.event.inputs.release_type }}"
+            case "$RELEASE_TYPE" in
               stable)
+                # Duplicate-tag / regression checks happen in the next step.
                 VERSION="${BASE_VERSION}"
-                if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
-                  echo "ERROR: Tag ${VERSION} already exists."
-                  exit 1
-                fi
                 ;;
-              rc)
-                LAST_RC=$(git tag -l "${BASE_VERSION}-rc*" | sed -E "s/^${BASE_VERSION}-rc//" | sort -n | tail -n 1)
-                NEXT_RC=$(( ${LAST_RC:-0} + 1 ))
-                VERSION="${BASE_VERSION}-rc${NEXT_RC}"
+              rc|beta)
+                LAST_NUM=$(git tag -l "${BASE_VERSION}-${RELEASE_TYPE}.*" | sed -E "s/^${BASE_VERSION}-${RELEASE_TYPE}\.//" | sort -n | tail -n 1)
+                NEXT_NUM=$(( ${LAST_NUM:-0} + 1 ))
+                VERSION="${BASE_VERSION}-${RELEASE_TYPE}.${NEXT_NUM}"
                 ;;
               *)
-                echo "ERROR: Invalid release_type: ${{ github.event.inputs.release_type }}"
+                echo "ERROR: Invalid release_type: ${RELEASE_TYPE}"
                 exit 1
                 ;;
             esac
@@ -124,6 +134,40 @@ jobs:
             echo "prerelease=false" >> "$GITHUB_OUTPUT"
           fi
           echo "Building version: ${VERSION}"
+
+      - name: Verify version against the latest existing tag
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          BASE_VERSION="${VERSION%%-*}"
+
+          # fetch-depth: 0 + fetch-tags: true above already pulled every tag,
+          # so the full repo history answers this without hitting the GitHub
+          # API separately.
+          LATEST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$' | sort -V | tail -n 1 || true)
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No existing tags — nothing to compare against."
+            exit 0
+          fi
+
+          LATEST_BASE="${LATEST_TAG%%-*}"
+          echo "Latest existing tag: ${LATEST_TAG} (base ${LATEST_BASE})"
+          echo "Building: ${VERSION} (base ${BASE_VERSION})"
+
+          HIGHEST_BASE=$(printf '%s\n%s\n' "$LATEST_BASE" "$BASE_VERSION" | sort -V | tail -n 1)
+          if [ "$HIGHEST_BASE" = "$LATEST_BASE" ] && [ "$BASE_VERSION" != "$LATEST_BASE" ]; then
+            echo "ERROR: Building ${VERSION} (base ${BASE_VERSION}), which is older than the"
+            echo "       latest existing tag ${LATEST_TAG} (base ${LATEST_BASE}). Refusing to"
+            echo "       release a regression — check the tag/version being built."
+            exit 1
+          fi
+
+          if [ "${{ github.event_name }}" != "push" ] && git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
+            echo "ERROR: Tag ${VERSION} already exists."
+            exit 1
+          fi
+
+          echo "Version check passed against the latest existing tag."
 
       - name: Generate release notes
         id: notes
