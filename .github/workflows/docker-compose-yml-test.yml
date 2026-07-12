@@ -2,11 +2,13 @@ name: docker-compose.yml Check
 
 # Builds and smoke-tests docker-compose.yml — the separated dev services setup
 # (php-fpm, nginx, mariadb, phpmyadmin) that bind-mounts the working tree and
-# expects composer/yarn to have already run locally, plus an ipconfig.php —
-# the classic pre-Containerfile dev setup. "Smoke-tested" means: it builds,
-# the containers come up and stay up, and the web server responds to an HTTP
-# request (even the setup wizard counts) — this is not a full functional/
-# install test.
+# expects composer/yarn to have already run locally — the classic
+# pre-Containerfile dev setup. ipconfig.php is generated automatically by
+# dev-entrypoint.sh from the environment variables baked into docker-compose.yml
+# (this job intentionally does NOT pre-create it, so it also exercises that
+# generation path). "Smoke-tested" means: it builds, the containers come up
+# and stay up, and the web server responds to an HTTP request (even the setup
+# wizard counts) — this is not a full functional/install test.
 #
 # nginx/invoiceplane.conf sets server_name ivpl.local, so this needs an
 # /etc/hosts entry to resolve — see resources/docker/README.md.
@@ -67,19 +69,6 @@ jobs:
 
       - name: Add ivpl.local to /etc/hosts
         run: echo "127.0.0.1 ivpl.local" | sudo tee -a /etc/hosts
-
-      - name: Configure ipconfig.php
-        run: |
-          cp ipconfig.php.example ipconfig.php
-          sed -i \
-            -e 's|^IP_URL=.*|IP_URL=http://ivpl.local|' \
-            -e 's|^DB_HOSTNAME=.*|DB_HOSTNAME=db|' \
-            -e 's|^DB_USERNAME=.*|DB_USERNAME=ipdevdb|' \
-            -e 's|^DB_PASSWORD=.*|DB_PASSWORD=ipdevdb|' \
-            -e 's|^DB_DATABASE=.*|DB_DATABASE=invoiceplane_db|' \
-            -e 's|^DB_PORT=.*|DB_PORT=3306|' \
-            -e 's|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=ci-smoke-test-key-not-for-production-00|' \
-            ipconfig.php
 
       - name: Build and start containers
         run: docker compose -f docker-compose.yml up -d --build
