@@ -1,8 +1,12 @@
 name: Release on Tag
 
-# Push a version tag and this builds the release automatically, e.g.:
-#   git tag 1.7.2-rc1
-#   git push origin 1.7.2-rc1
+# Two ways to trigger this:
+#   1. Push a version tag and it builds automatically, e.g.:
+#        git tag 1.7.2-rc1
+#        git push origin 1.7.2-rc1
+#   2. workflow_dispatch — run it manually against any branch/ref by typing
+#      the version to build (there's no auto-increment for v1, so it must be
+#      supplied explicitly).
 #
 # The build reuses build-scripts/workflow.sh so CI runs the exact same
 # pipeline as a local `make release` (composer install --no-dev, yarn install
@@ -13,6 +17,12 @@ on:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'      # stable, e.g. 1.7.2
       - '[0-9]+.[0-9]+.[0-9]+-*'    # pre-release, e.g. 1.7.2-rc1, 1.7.2-beta1
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build (e.g. 1.7.2-rc1) — required for manual runs'
+        required: true
+        type: string
 
 permissions:
   contents: write   # create the draft release + upload assets
@@ -62,7 +72,11 @@ jobs:
         id: version
         run: |
           set -euo pipefail
-          VERSION="${GITHUB_REF_NAME}"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            VERSION="${GITHUB_REF_NAME}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           if [[ "${VERSION}" =~ (-rc|-alpha|-beta|-dev) ]]; then
             echo "prerelease=true" >> "$GITHUB_OUTPUT"
