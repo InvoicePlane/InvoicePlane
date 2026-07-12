@@ -84,4 +84,8 @@ RUN groupmod -o -g ${PGID} www-data && \
 
 WORKDIR /var/www/projects/invoiceplane
 
+COPY ./dev-entrypoint.sh /usr/local/bin/dev-entrypoint.sh
+RUN chmod +x /usr/local/bin/dev-entrypoint.sh
+
+ENTRYPOINT ["dev-entrypoint.sh"]
 CMD ["php-fpm"]
