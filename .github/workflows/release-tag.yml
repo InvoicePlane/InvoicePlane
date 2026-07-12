@@ -1,0 +1,216 @@
+name: Release on Tag
+
+# Push a version tag and this builds the release automatically, e.g.:
+#   git tag 1.7.2-rc1
+#   git push origin 1.7.2-rc1
+#
+# The build reuses build-scripts/workflow.sh so CI runs the exact same
+# pipeline as a local `make release` (composer install --no-dev, yarn install
+# --frozen-lockfile && yarn grunt, aggressive vendor cleanup, package).
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'      # stable, e.g. 1.7.2
+      - '[0-9]+.[0-9]+.[0-9]+-*'    # pre-release, e.g. 1.7.2-rc1, 1.7.2-beta1
+
+permissions:
+  contents: write   # create the draft release + upload assets
+
+jobs:
+  build-release:
+    name: Build and package release
+    runs-on: ubuntu-latest
+
+    steps:
+      # ----------------------------------------------------------------
+      # Sources: InvoicePlane (at the tag) + themes + e-invoices + build-scripts
+      # ----------------------------------------------------------------
+      - name: Checkout InvoicePlane (tag)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Checkout build-scripts (for workflow.sh)
+        uses: actions/checkout@v4
+        with:
+          repository: InvoicePlane/build-scripts
+          path: _build-scripts
+
+      - name: Checkout themes
+        uses: actions/checkout@v4
+        with:
+          repository: InvoicePlane/InvoicePlane-Themes
+          path: _themes
+
+      - name: Checkout e-invoices
+        uses: actions/checkout@v4
+        with:
+          repository: InvoicePlane/InvoicePlane-e-invoices
+          path: _e-invoices
+
+      - name: Stage build script outside the packaged tree
+        run: |
+          set -euo pipefail
+          cp _build-scripts/workflow.sh "${RUNNER_TEMP}/workflow.sh"
+
+      # ----------------------------------------------------------------
+      # Resolve the version from the tag
+      # ----------------------------------------------------------------
+      - name: Resolve version
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          if [[ "${VERSION}" =~ (-rc|-alpha|-beta|-dev) ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Building version: ${VERSION}"
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          NOTES="${RUNNER_TEMP}/RELEASE_NOTES.md"
+          {
+            echo "# InvoicePlane ${VERSION}"
+            echo ""
+            PREV_TAG="$(git describe --tags --abbrev=0 "${VERSION}^" 2>/dev/null || true)"
+            if [ -n "${PREV_TAG}" ]; then
+              echo "## Changes since ${PREV_TAG}"
+              echo ""
+              git log "${PREV_TAG}..${VERSION}" --pretty=format:'- %s (%h)' 2>/dev/null || true
+            else
+              echo "Automated release build for ${VERSION}."
+            fi
+            echo ""
+            echo ""
+            echo "---"
+            echo "Built: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          } > "${NOTES}"
+          echo "path=${NOTES}" >> "$GITHUB_OUTPUT"
+          cat "${NOTES}"
+
+      # ----------------------------------------------------------------
+      # Compose the source tree: themes -> assets, e-invoices -> application
+      # ----------------------------------------------------------------
+      - name: Copy in themes
+        run: |
+          set -euo pipefail
+          mkdir -p assets
+          for theme in und_ip_nord next_ip_dark; do
+            if [ -d "_themes/v1/${theme}" ]; then
+              cp -r "_themes/v1/${theme}" assets/
+              echo "Copied theme: ${theme}"
+            else
+              echo "Theme ${theme} not found, skipping."
+            fi
+          done
+
+      - name: Copy in e-invoice configs and templates
+        run: |
+          set -euo pipefail
+          cp -rf _e-invoices/application/. application/
+          echo "Copied e-invoice configs and templates into application/"
+
+      # ----------------------------------------------------------------
+      # Translations from Crowdin (optional — needs the API secrets)
+      # ----------------------------------------------------------------
+      - name: Download translations from Crowdin
+        id: crowdin
+        continue-on-error: true
+        uses: crowdin/github-action@v2
+        with:
+          download_translations: true
+          create_pull_request: false
+          config: 'crowdin.yml'
+        env:
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      # ----------------------------------------------------------------
+      # Toolchain
+      # ----------------------------------------------------------------
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: gd, bcmath, dom, intl, xml, zip, mbstring, curl
+          tools: composer
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'yarn'
+
+      - name: Display tool versions
+        run: |
+          php -v | head -n 1
+          composer --version
+          node -v
+          yarn -v
+
+      # ----------------------------------------------------------------
+      # Build + clean + package via the shared workflow.sh
+      # ----------------------------------------------------------------
+      - name: Remove helper checkouts from the packaged tree
+        run: |
+          set -euo pipefail
+          # These live inside the workspace only so actions/checkout could write
+          # them; they must not end up in the release archive.
+          rm -rf _build-scripts _themes _e-invoices langs
+
+      - name: Build release with build-scripts/workflow.sh
+        env:
+          IP_DIR: ${{ github.workspace }}
+          BUILD_DIR: ${{ runner.temp }}/build
+          PACKAGE_NAME: ip-${{ steps.version.outputs.version }}.zip
+        run: |
+          set -euo pipefail
+          bash "${RUNNER_TEMP}/workflow.sh"
+
+      # ----------------------------------------------------------------
+      # Publish: artifact + draft GitHub release
+      # ----------------------------------------------------------------
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ip-${{ steps.version.outputs.version }}
+          path: |
+            ${{ runner.temp }}/build/ip-${{ steps.version.outputs.version }}.zip
+            ${{ runner.temp }}/build/sha256.txt
+            ${{ runner.temp }}/build/md5.txt
+          retention-days: 90
+
+      - name: Create draft GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: InvoicePlane ${{ steps.version.outputs.version }}
+          body_path: ${{ steps.notes.outputs.path }}
+          draft: true
+          prerelease: ${{ steps.version.outputs.prerelease }}
+          files: |
+            ${{ runner.temp }}/build/ip-${{ steps.version.outputs.version }}.zip
+            ${{ runner.temp }}/build/sha256.txt
+            ${{ runner.temp }}/build/md5.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          {
+            echo "## Release build complete"
+            echo ""
+            echo "**Version:** \`${{ steps.version.outputs.version }}\`"
+            echo "**Pre-release:** ${{ steps.version.outputs.prerelease }}"
+            echo "**Package:** \`ip-${{ steps.version.outputs.version }}.zip\`"
+            echo ""
+            echo "A **draft** release was created — review and publish it when ready."
+          } >> "$GITHUB_STEP_SUMMARY"
