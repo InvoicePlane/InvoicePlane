@@ -22,7 +22,7 @@ Uploads, session/cache storage, and the database persist across restarts via nam
 (`invoiceplane-uploads`, `invoiceplane-storage`, `invoiceplane-db`).
 
 This is what's used for local development/testing and is tested in CI on every change to the
-Docker setup (see `.github/workflows/docker.yml`).
+Docker setup (see `.github/workflows/compose-yml-test.yml`).
 
 ## `docker-compose.yml` — separated dev services (legacy)
 
@@ -30,25 +30,28 @@ Docker setup (see `.github/workflows/docker.yml`).
 composer install
 yarn install && yarn build
 cp ipconfig.php.example ipconfig.php
-# edit ipconfig.php: set IP_URL and DB_* to match the values below
+# edit ipconfig.php: set IP_URL=http://ivpl.local and DB_* to match the values below
+
+echo "127.0.0.1 ivpl.local" | sudo tee -a /etc/hosts
 
 docker compose -f docker-compose.yml up -d --build
 ```
 
-Four separate services — `php` ([php-fpm](php-fpm/Dockerfile), **PHP 8.1**), `nginx`
+Four separate services — `php` ([php-fpm](php-fpm/Dockerfile), **PHP 8.2**), `nginx`
 ([nginx](nginx/Dockerfile)), `db` ([mariadb](mariadb/Dockerfile)), and `phpmyadmin`
 ([phpmyadmin](phpmyadmin/Dockerfile)) — that bind-mount the working tree into the containers
 rather than building the app into the image. Because of that, PHP dependencies and frontend
 assets must already be installed on the host (`composer install`, `yarn install && yarn build`)
 and `ipconfig.php` must already exist before starting it — the containers don't do any of that
 for you. There's also no automated migration step here; run the setup wizard at
-`http://localhost/index.php/setup` to initialize the database.
+`http://ivpl.local/index.php/setup` to initialize the database.
 
-> **PHP 8.1 note:** this is one version behind the 8.2 used everywhere else in this repo's CI
-> (lint, Pint, PHPUnit, the release build, and `compose.yml` above), and sits right at the floor
-> `endroid/qr-code` requires (`^8.1`) with no headroom. It works today, but a future dependency
-> bump could break it with no CI coverage to catch it. Kept as-is since this file mirrors a
-> historical setup rather than active tooling — flag it if it should be bumped to 8.2 too.
+> **Hostname:** [`nginx/invoiceplane.conf`](nginx/invoiceplane.conf) sets `server_name
+> ivpl.local` — add `127.0.0.1 ivpl.local` to `/etc/hosts` and use that hostname (not
+> `localhost`) in your browser and in `IP_URL`. `.local` names don't resolve without an explicit
+> hosts entry or mDNS. Since this is the only nginx server block, requests to `localhost` do
+> still get routed here — but `IP_URL` (and anything InvoicePlane derives from it: redirects,
+> generated links, cookies) will be wrong unless you access it as `ivpl.local`.
 
 Default database credentials baked into the compose file: `DB_HOSTNAME=db`,
 `DB_USERNAME=ipdevdb`, `DB_PASSWORD=ipdevdb`, `DB_DATABASE=invoiceplane_db`. phpMyAdmin is
@@ -57,5 +60,5 @@ restarts; `uploads`/`storage` are bind-mounted from the working tree, so they pe
 
 This predates the Containerfile-based approach above. It's kept because the individual
 Dockerfiles are still useful for developing against a specific service in isolation, and it's
-also tested in CI (see `.github/workflows/docker.yml`) — but for a normal "just run the app"
-workflow, use `compose.yml` instead.
+also tested in CI (see `.github/workflows/docker-compose-yml-test.yml`) — but for a normal
+"just run the app" workflow, use `compose.yml` instead.

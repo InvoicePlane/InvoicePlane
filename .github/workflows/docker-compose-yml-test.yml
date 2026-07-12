@@ -1,0 +1,111 @@
+name: docker-compose.yml Check
+
+# Builds and smoke-tests docker-compose.yml — the separated dev services setup
+# (php-fpm, nginx, mariadb, phpmyadmin) that bind-mounts the working tree and
+# expects composer/yarn to have already run locally, plus an ipconfig.php —
+# the classic pre-Containerfile dev setup. "Smoke-tested" means: it builds,
+# the containers come up and stay up, and the web server responds to an HTTP
+# request (even the setup wizard counts) — this is not a full functional/
+# install test.
+#
+# nginx/invoiceplane.conf sets server_name ivpl.local, so this needs an
+# /etc/hosts entry to resolve — see resources/docker/README.md.
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'docker-compose.yml'
+      - 'resources/docker/php-fpm/**'
+      - 'resources/docker/nginx/**'
+      - 'resources/docker/mariadb/**'
+      - 'resources/docker/phpmyadmin/**'
+      - 'ipconfig.php.example'
+      - '.github/workflows/docker-compose-yml-test.yml'
+  pull_request:
+    paths:
+      - 'docker-compose.yml'
+      - 'resources/docker/php-fpm/**'
+      - 'resources/docker/nginx/**'
+      - 'resources/docker/mariadb/**'
+      - 'resources/docker/phpmyadmin/**'
+      - 'ipconfig.php.example'
+      - '.github/workflows/docker-compose-yml-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docker-compose-yml:
+    name: docker-compose.yml (separated dev services)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'yarn'
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Install JS dependencies and build assets
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+
+      - name: Add ivpl.local to /etc/hosts
+        run: echo "127.0.0.1 ivpl.local" | sudo tee -a /etc/hosts
+
+      - name: Configure ipconfig.php
+        run: |
+          cp ipconfig.php.example ipconfig.php
+          sed -i \
+            -e 's|^IP_URL=.*|IP_URL=http://ivpl.local|' \
+            -e 's|^DB_HOSTNAME=.*|DB_HOSTNAME=db|' \
+            -e 's|^DB_USERNAME=.*|DB_USERNAME=ipdevdb|' \
+            -e 's|^DB_PASSWORD=.*|DB_PASSWORD=ipdevdb|' \
+            -e 's|^DB_DATABASE=.*|DB_DATABASE=invoiceplane_db|' \
+            -e 's|^DB_PORT=.*|DB_PORT=3306|' \
+            -e 's|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=ci-smoke-test-key-not-for-production-00|' \
+            ipconfig.php
+
+      - name: Build and start containers
+        run: docker compose -f docker-compose.yml up -d --build
+
+      - name: Wait for the app to respond
+        run: |
+          set -e
+          for i in $(seq 1 30); do
+            if curl -fsS -o /dev/null -H "Host: ivpl.local" "http://ivpl.local/"; then
+              echo "App responded after ${i}0s"
+              exit 0
+            fi
+            echo "Waiting for app... (${i}0s)"
+            sleep 10
+          done
+          echo "ERROR: app never responded on http://ivpl.local/"
+          exit 1
+
+      - name: Show container status
+        if: always()
+        run: docker compose -f docker-compose.yml ps
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose -f docker-compose.yml logs
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f docker-compose.yml down -v
