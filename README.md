@@ -2,25 +2,18 @@
 
 # _InvoicePlane_
 
-<div align="center">
-
 _A libre self-hosted web application designed to help you manage invoices, clients, and payments efficiently._
-
-<br>
 
 [![Curent version](https://img.shields.io/badge/dynamic/json.svg?label=Current%20Version&url=https%3A%2F%2Fapi.github.com%2Frepos%2FInvoicePlane%2FInvoicePlane%2Freleases%2Flatest&query=%24.name&colorB=%23429ae1)](https://www.invoiceplane.com/)
 [![Downloads](https://img.shields.io/github/downloads/invoiceplane/invoiceplane/total?colorB=%23429ae1)](https://www.invoiceplane.com/)
 [![Translation](https://img.shields.io/badge/Translations-%40%20Crowdin-429ae1)](https://translations.invoiceplane.com/project/fusioninvoice)
 
-<br>
 
 [![Discord](https://img.shields.io/badge/Chat%3A-Discord-5865F2.svg?logo=discord&logoColor=white)](https://discord.gg/PPzD2hTrXt)
 [![Wiki](https://img.shields.io/badge/Help%3A-Official%20Wiki-429ae1.svg)](https://wiki.invoiceplane.com/)
 [![Community Forums](https://img.shields.io/badge/Help%3A-Community%20Forums-429ae1.svg)](https://community.invoiceplane.com/)
 [![Issue Tracker](https://img.shields.io/badge/Development%3A-Issue%20Tracker-429ae1.svg)](https://github.com/invoiceplane/invoiceplane/issues/)
 [![Contribution Guide](https://img.shields.io/badge/Development%3A-Contribution%20Guide-429ae1.svg)](.github/CONTRIBUTING.md)
-
-</div>
 
 ---
 
@@ -41,8 +34,10 @@ are in [UPGRADE.md](.github/docs/UPGRADE.md).
 
 ## Key Features
 
-- **Invoice & Quote Management:** Create, send, and manage professional invoices and quotes effortlessly.
+- **Invoice & Quote Management:** Effortlessly Create, send, and manage professional Invoices and Quotes.
 - **Client Management:** Maintain detailed client records, including contact information and transaction history.
+- **Product Management:** Maintain products to add to your Invoices.
+- **Project & Tasks Management:** Maintain tasks to add to your Invoices.
 - **Payment Tracking:** Monitor payments, set up reminders, and integrate with multiple payment gateways.
 - **Customization:** Tailor templates, themes, and settings to match your brand preferences.
 - **Reporting:** Generate insightful reports to track your financial performance.
@@ -66,10 +61,12 @@ docker compose up -d --build
 # InvoicePlane: http://localhost:4895
 ```
 
+See [Installation instructions](.github/docs/INSTALLATION.md)
+
 > `compose.yml` is for local development/testing only — it ships a fixed `ENCRYPTION_KEY` and
 > database password (uploads, storage, and the database do persist across restarts via named
 > volumes). For a real deployment, see
-> [CONTAINER_DEPLOYMENT.md](.github/docs/CONTAINER_DEPLOYMENT.md) for the environment variables
+> [Container (Docker) Deployment Instructions](.github/docs/CONTAINER_DEPLOYMENT.md) for the environment variables
 > to set instead.
 
 ### Production Installation
@@ -79,7 +76,7 @@ docker compose up -d --build
 3. Copy `ipconfig.php.example` to `ipconfig.php` and set your base URL and database credentials.
 4. Navigate to `http://your-domain.com/index.php/setup` to run the installer.
 
-For a detailed installation guide, see [INSTALLATION.md](.github/docs/INSTALLATION.md).
+For a detailed installation guide, see [Installation instructions](.github/docs/INSTALLATION.md).
 
 ---
 
@@ -97,9 +94,8 @@ To remove `index.php` from your URLs:
 
 ## Custom Invoice & Quote Templates
 
-Custom templates are added via an explicit allowlist in `ipconfig.php` — the filesystem is
-never scanned, which is what prevents the RCE class of vulnerability fixed in 1.7.2. See
-[CUSTOM_TEMPLATES.md](.github/docs/CUSTOM_TEMPLATES.md) for the how-to.
+Since version 1.7.2 **custom template names** are added via an **allowlist** in `ipconfig.php` — the filesystem is
+See [CUSTOM_TEMPLATES.md](.github/docs/CUSTOM_TEMPLATES.md) for the how-to.
 
 ---
 
@@ -110,11 +106,11 @@ overridden. Set `SESS_SAVE_PATH` in `ipconfig.php` to an absolute path to store 
 elsewhere, e.g. outside the document root for additional security:
 
 ```
-SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
+SESS_SAVE_PATH=/var/lib/invoiceplane/storage/framework/sessions
 ```
 
 If you mount a volume in Docker, include the configured path in your persistent volumes
-(see [CONTAINER_DEPLOYMENT.md](.github/docs/CONTAINER_DEPLOYMENT.md)).
+(see [Container (Docker) Deployment Instructions](.github/docs/CONTAINER_DEPLOYMENT.md)).
 
 ---
 
@@ -124,7 +120,7 @@ A pre-built container image is available, configured entirely through environmen
 no `ipconfig.php` file needed. The entrypoint generates the configuration and runs any pending
 database migrations automatically on startup.
 
-See [CONTAINER_DEPLOYMENT.md](.github/docs/CONTAINER_DEPLOYMENT.md) for the full list of
+See [Container (Docker) Deployment Instructions](.github/docs/CONTAINER_DEPLOYMENT.md) for the full list of
 required/optional environment variables, default admin user setup, and persistent volumes.
 
 ---
@@ -165,49 +161,15 @@ For contribution guidelines, see [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ---
 
-## Security Vulnerabilities
+## Security
 
 If you discover a security vulnerability, please report it privately by opening a
 [GitHub Security Advisory](https://github.com/InvoicePlane/InvoicePlane/security/advisories/new)
-before disclosing it publicly. See our [Security Policy](SECURITY.md) for the full process. Past
-advisories are published in [`.github/security/`](.github/security/).
-
-### Important Security Notice: SVG Logo Files
-
-**SVG (Scalable Vector Graphics) files are not accepted for logo uploads.**
-
-#### Why are SVG files disabled?
-
-SVG files can contain embedded JavaScript code that could be exploited to perform Cross-Site
-Scripting (XSS) attacks. Since InvoicePlane handles sensitive financial data, SVG uploads are
-blocked entirely as a proactive security measure.
-
-#### What file formats are supported?
-
-- **PNG** (recommended for logos with transparency)
-- **JPG/JPEG** (recommended for photographs)
-- **GIF** (recommended for simple graphics)
-
-#### What happens to my existing SVG logo?
-
-If you previously uploaded an SVG logo:
-- It will not display in the application (blocked for security)
-- A warning message will appear on the settings page
-- You can remove it and upload a replacement in a supported format
-
-#### How do I convert my SVG logo?
-
-**Online tools:**
-- [CloudConvert](https://cloudconvert.com/svg-to-png)
-- [Convertio](https://convertio.co/svg-png/)
-
-**Desktop software:**
-- [Inkscape](https://inkscape.org/) (free, open-source) — File → Export PNG Image → set resolution → Export
-- Adobe Illustrator
-- GIMP
+before disclosing it publicly. See our [Security Policy](SECURITY.md) for the full process.
 
 #### Need help?
 
+[**Ask on Discord**](https://discord.gg/PPzD2hTrXt)
 Visit our [Community Forums](https://community.invoiceplane.com/) for assistance with logo conversion.
 
 ---

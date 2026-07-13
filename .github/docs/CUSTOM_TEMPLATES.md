@@ -3,7 +3,7 @@
 > **Security note:** The filesystem is never scanned for templates. This prevents Remote Code
 > Execution (RCE) attacks where an attacker writes a PHP file to the templates directory and
 > then triggers it via the admin panel. This allowlist-based mechanism was introduced as part of
-> the [1.7.2 security release](../CHANGELOG.md#172---2026-04-06) — see
+> the [1.7.2 security release](../CHANGELOG.md#172---2026-07-14) — see
 > [SECURITY_ADVISORY_RCE_FIX.md](../security/SECURITY_ADVISORY_RCE_FIX.md) for the full advisory.
 
 To add a custom template:

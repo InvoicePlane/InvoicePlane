@@ -23,10 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.7.2] - 2026-04-06
+## [1.7.2] - 2026-07-14
 
 InvoicePlane 1.7.2 is a **security-focused release**. It resolves every vulnerability
-responsibly disclosed against v1.7.0 / v1.7.1 and hardens the application, session handling,
+responsibly disclosed against v1.7.2 and hardens the application, session handling,
 and container tooling throughout. **If you run v1.7.0 or v1.7.1, upgrade immediately** — this
 release fixes a critical (CVSSv3 9.9) Remote Code Execution vulnerability.
 
