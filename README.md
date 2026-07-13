@@ -19,8 +19,7 @@ _A libre self-hosted web application designed to help you manage invoices, clien
 
 ## Release Notes
 
-Every release is documented in [CHANGELOG.md](.github/CHANGELOG.md), including security fixes
-with their GHSA advisories, CVSS scores, and reporting credits. Downloadable packages and the
+Every release is documented in [CHANGELOG.md](.github/CHANGELOG.md). Downloadable packages and the
 per-version release notes are published on the
 [GitHub Releases](https://github.com/InvoicePlane/InvoicePlane/releases) page. Formal security
 advisories live in [`.github/security/`](.github/security/); step-by-step upgrade instructions
