@@ -37,14 +37,16 @@ class Ajax extends Admin_Controller
         $moreClientsQuery = $permissiveSearchClients ? '%' : '';
 
         // Search for clients
-        $escapedQuery = $this->db->escape_str($query);
-        $escapedQuery = str_replace('%', '', $escapedQuery);
+        // Strip LIKE wildcards from user input, then pass the pattern as a bound
+        // value so CodeIgniter escapes it — never concatenate input into the SQL.
+        $searchTerm    = str_replace(['%', '_'], '', (string) $query);
+        $searchPattern = $moreClientsQuery . $searchTerm . '%';
 
         $clients = $this->mdl_clients
             ->where('client_active', 1)
-            ->having("client_name LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
-            ->or_having("client_surname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
-            ->or_having("client_fullname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
+            ->having('client_name LIKE', $searchPattern)
+            ->or_having('client_surname LIKE', $searchPattern)
+            ->or_having('client_fullname LIKE', $searchPattern)
             ->order_by('client_name')
             ->get()
             ->result();
