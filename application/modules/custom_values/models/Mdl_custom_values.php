@@ -123,7 +123,7 @@ class Mdl_Custom_Values extends MY_Model
             return $get ? [] : $this->db;
         }
 
-        if ( ! in_array($cf->custom_field_table, array_keys($this->custom_tables()), true)) {
+        if ( ! $this->mdl_custom_fields->is_allowed_table($cf->custom_field_table)) {
             return $get ? [] : $this->db;
         }
 
