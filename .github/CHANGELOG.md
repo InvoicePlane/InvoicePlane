@@ -28,7 +28,7 @@ record *why* and *how*.
 
 ---
 
-## [1.7.2] - 2026-07-14
+## [1.7.2] - 2026-07-17
 
 InvoicePlane 1.7.2 is a **security-focused release**. It resolves every vulnerability
 responsibly disclosed against v1.7.0 / v1.7.1 and hardens the application, session handling,
