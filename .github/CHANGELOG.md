@@ -25,18 +25,32 @@ Huge thanks to the security researchers who responsibly disclosed these issues t
 [GitHub Security Advisories](https://github.com/InvoicePlane/InvoicePlane/security/advisories).
 Without your reports this release would not have been possible:
 
+[@0raN9ewww](https://github.com/0raN9ewww),
+[@5ud0er](https://github.com/5ud0er),
 [@akgul7990](https://github.com/akgul7990),
+[@alanturing881](https://github.com/alanturing881),
 [@ali-iltizar](https://github.com/ali-iltizar),
+[@capt-bl4ck0ut](https://github.com/capt-bl4ck0ut),
+[@chakrapani150](https://github.com/chakrapani150),
 [@Chittu13](https://github.com/Chittu13),
 [@cyabell](https://github.com/cyabell),
+[@de3erve-hunter](https://github.com/de3erve-hunter),
+[@EvidentObscurity](https://github.com/EvidentObscurity),
 [@FelipeSilvany](https://github.com/FelipeSilvany),
+[@FORIMOC](https://github.com/FORIMOC),
+[@geo-chen](https://github.com/geo-chen),
 [@HuajiHD](https://github.com/HuajiHD),
 [@iiihaiii](https://github.com/iiihaiii),
 [@kitu232](https://github.com/kitu232),
 [@lighthousekeeper1212](https://github.com/lighthousekeeper1212),
+[@mattmumford-git](https://github.com/mattmumford-git),
+[@PLpaPLpa](https://github.com/PLpaPLpa),
+[@QiaoNPC](https://github.com/QiaoNPC),
 [@radoi-teodor](https://github.com/radoi-teodor),
 [@tikket1](https://github.com/tikket1),
+[@tonghuaroot](https://github.com/tonghuaroot),
 [@udaypali](https://github.com/udaypali),
+[@venkatesh2003631](https://github.com/venkatesh2003631),
 [@Vijay-raghav7](https://github.com/Vijay-raghav7).
 
 And thank you to the contributors whose code shipped in this release:
@@ -66,7 +80,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 | Payment gateway API credentials in plaintext | Medium | 6.5 | CWE-312 | [[#1515]: Sensitive Data Exposure via HTML Source Code (Stripe & PayPal API Keys)](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-8543-x4j8-jj4q) | [@ali-iltizar](https://github.com/ali-iltizar) | [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) |
 | Duplicate payment processing (Stripe callback replay) | Low–Medium | 5.3 | CWE-362 | [[#1496]: Stripe Callback Replay](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-6cpc-hr8h-xgr2) | [@HuajiHD](https://github.com/HuajiHD) | [#1496](https://github.com/InvoicePlane/InvoicePlane/pull/1496) |
 | Email template preview XSS | Low–Medium | 5.4 | CWE-79 | [[#1486]: Stored XSS via Email Templates in InvoicePlane <= 1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-4wqv-84px-8jc6) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1486](https://github.com/InvoicePlane/InvoicePlane/pull/1486), [#1500](https://github.com/InvoicePlane/InvoicePlane/pull/1500), [#1516](https://github.com/InvoicePlane/InvoicePlane/pull/1516) |
-| Stored XSS via client email in invoice/quote mailer | — | — | CWE-79 | — | — | [#1635](https://github.com/InvoicePlane/InvoicePlane/pull/1635) |
+| Stored XSS via client email in invoice/quote mailer | Medium | — | CWE-79 | [[GHSA-477r-xmgc-vcvj]: Stored Cross-Site Scripting (XSS) via Client Email in Invoice and Quote Mailer Forms](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-477r-xmgc-vcvj) | [@capt-bl4ck0ut](https://github.com/capt-bl4ck0ut) | [#1635](https://github.com/InvoicePlane/InvoicePlane/pull/1635) |
 | EXIF metadata in uploaded images | Low | 3.5 | CWE-212 | [[#1507]: Sensitive Information Disclosure via Unstripped EXIF Metadata in Attachments](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-7f67-2v6p-275v) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1507](https://github.com/InvoicePlane/InvoicePlane/pull/1507) |
 | PHPMailer debug output in AJAX responses | Low–Medium | 4.3 | CWE-209 | — | Internal audit | [#1495](https://github.com/InvoicePlane/InvoicePlane/pull/1495) |
 | XSS session hijack via `cookie_httponly=false` | High | 7.4 | CWE-1004 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
