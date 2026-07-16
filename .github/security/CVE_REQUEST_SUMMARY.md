@@ -100,7 +100,7 @@ validation and directory confinement.
 | Date | Event |
 |------|-------|
 | Unknown | Vulnerability discovered (researcher to provide date) |
-| 2026-04-06 | Fix developed and tested |
+| 2026-07-17 | Fix developed and tested |
 | 2026-04-19 | CVE request submitted |
 | 2026-07-14 | Fix released in InvoicePlane v1.7.2 |
 | 2026-07-14 | Security advisory created and published |
