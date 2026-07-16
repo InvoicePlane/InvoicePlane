@@ -101,9 +101,9 @@ validation and directory confinement.
 |------|-------|
 | Unknown | Vulnerability discovered (researcher to provide date) |
 | 2026-07-17 | Fix developed and tested |
-| 2026-04-19 | CVE request submitted |
-| 2026-07-14 | Fix released in InvoicePlane v1.7.2 |
-| 2026-07-14 | Security advisory created and published |
+| 2026-07-17 | CVE request submitted |
+| 2026-07-17 | Fix released in InvoicePlane v1.7.2 |
+| 2026-07-17 | Security advisory created and published |
 | Assigned | CVE-2026-39978 and CVE-2026-40298 |
 
 ### References
@@ -115,7 +115,7 @@ validation and directory confinement.
 
 **Fix Commit:**
 - Repository: https://github.com/InvoicePlane/InvoicePlane
-- Release: v1.7.2 (2026-07-14)
+- Release: v1.7.2 (2026-07-17)
 - Files changed:
   - `application/modules/settings/controllers/Settings.php`
   - `application/helpers/file_security_helper.php`
