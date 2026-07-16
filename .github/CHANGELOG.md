@@ -5,33 +5,17 @@ All notable changes to InvoicePlane will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
----
-
-## [Unreleased]
-
-### Security
-
-> The GHSA links below point to **draft** (unpublished) security advisories — only maintainers
-> and collaborators can view them until they're published. They will 404 for external readers
-> until then.
-
-- **Authentication Bypass via Deactivated Accounts**: `Mdl_Sessions::auth()` now rejects a login attempt for a deactivated user (`user_active != 1`) even when the supplied password is correct. Previously, disabling an account (e.g. after an employee leaves) did not actually prevent that account's credentials from being used to log in. [[GHSA-jw57-6692-jh2q]: Disabled Users Can Still Authenticate](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-jw57-6692-jh2q) (High) — reported by [@mattmumford-git](https://github.com/mattmumford-git).
-- **SUMEX Invoice XML Information Disclosure**: SUMEX invoice XML files (Swiss medical invoicing) are now written to a non-web-accessible `storage/temp/` directory instead of the public `uploads/temp/` folder, preventing unauthenticated access to sensitive invoice data via direct HTTP requests. [[GHSA-583r-4pw9-6rc9]: Sensitive SUMEX Invoice XML Disclosure via Web-Accessible Temporary Directory](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-583r-4pw9-6rc9) (High) — reported by [@mattmumford-git](https://github.com/mattmumford-git).
-- **Access Control on `uploads/import`**: Added a `Deny from all` `.htaccess` to `uploads/import/`, the directory that holds in-progress CSV imports (`invoices.csv`, `payments.csv`, `invoice_items.csv`, ...), preventing direct web access to plaintext financial data while an import is in progress. [[GHSA-wv2c-c285-9hrq]: Sensitive Import CSV Disclosure via Web-Accessible Import Directory](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-wv2c-c285-9hrq) (High) — reported by [@mattmumford-git](https://github.com/mattmumford-git).
-- **Object-Level Authorization (IDOR Prevention)**: Added authorization checks to prevent Insecure Direct Object Reference (IDOR) vulnerabilities. Access checks now live as model methods — `Mdl_Clients::can_user_access()`, `Mdl_Projects::can_user_access()`, `Mdl_User_Clients::can_user_manage()`, `Mdl_Invoices::can_user_access()`, `Mdl_Quotes::can_user_access()` — rather than the `security_helper.php` functions used in earlier drafts of this change (`user_has_client_access()`, `user_has_project_access()`, `user_can_manage_user_client()`, `user_has_invoice_access()`, `user_has_quote_access()`, all since removed). `/clients/view/{id}` and `/projects/view/{id}` call these checks; the invoice/quote equivalents were added for consistency but are not yet wired into a controller. [[GHSA-h4xh-4jwc-485r]: Authorization Bypass Through User-Controlled Key in InvoicePlane/InvoicePlane](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-h4xh-4jwc-485r) (High) — reported by [@0raN9ewww](https://github.com/0raN9ewww).
-- **CSRF Protection Hardening**: Added explicit POST and CSRF token validation to all delete endpoints across 12 modules (Projects, Tasks, Users, Invoice Groups, Payment Methods, Custom Fields, Units, Tax Rates, Custom Values, Clients, Products, and Settings logo removal). Implements defense-in-depth protection against cross-site request forgery attacks by validating both HTTP method and CSRF tokens at the controller level, preventing direct GET access to state-changing operations. [[GHSA-qx8h-35wf-cgqf]: CSRF via GET-Based Logo Removal in Settings](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-qx8h-35wf-cgqf) (Moderate) — reported by [@mattmumford-git](https://github.com/mattmumford-git); [[GHSA-mhvh-4j3w-7pvj]: Missing CSRF Protection on State-Changing delete Actions](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-mhvh-4j3w-7pvj) (High) — reported by [@venkatesh2003631](https://github.com/venkatesh2003631).
-- **Strict type comparison in User_Controller auth gate**: Changed the core `user_type`/`required_key` session check from loose (`!=`) to strict (`!==`) comparison to remove PHP type-juggling risk in the application's primary authorization checkpoint. [[GHSA-TODO]: TODO](TODO) (Low) — reported by [@TODO](TODO).
-- **Log injection in Cron::recur()**: Sanitized the user-supplied `cron_key` before writing it to the application log via `sanitize_for_logging()`, preventing CRLF-based fake log entry injection. (CWE-117) [[GHSA-TODO]: TODO](TODO) (Low) — reported by [@TODO](TODO).
-- **IDOR in Users::change_password()**: Protected the primary administrator account (`user_id=1`) from having its password changed by any other admin, matching the protection `Users::delete()` already applies. Previously any admin could silently take over any other admin's account, including the primary administrator, via a direct POST. Admins can still reset any other user's password while logged in, as intended — a separate, already-hardened self-service reset-via-email flow (`sessions/passwordreset`) covers the logged-out case. [[GHSA-TODO]: TODO](TODO) (High) — reported by [@TODO](TODO).
-- **CSRF on destructive delete endpoints**: Added POST + CSRF token validation to seven `delete()`-style methods that Base_Controller's `delete`-substring URL check does not protect at the token level (Email_templates, Payments, Families, Import, Recurring, User_clients, and Users::delete_user_client), allowing cross-origin forced deletion of financial/config records via auto-submitting forms. [[GHSA-TODO]: TODO](TODO) (High) — reported by [@TODO](TODO).
-- **CSRF on Recurring Invoice Stop**: Added POST + CSRF token validation to `Recurring::stop()`, which previously allowed silently stopping recurring billing via a simple unauthenticated-method GET request (e.g. an `<img>` tag), enabling zero-interaction financial-loss CSRF. [[GHSA-TODO]: TODO](TODO) (High) — reported by [@TODO](TODO).
+Full write-ups for individual vulnerabilities live in the published
+[GitHub Security Advisories](https://github.com/InvoicePlane/InvoicePlane/security/advisories)
+and in [`.github/security/`](security/). This changelog records *what* changed; the advisories
+record *why* and *how*.
 
 ---
 
-## [1.7.2] - 2026-07-14
+## [1.7.2] - 2026-07-17
 
 InvoicePlane 1.7.2 is a **security-focused release**. It resolves every vulnerability
-responsibly disclosed against v1.7.2 and hardens the application, session handling,
+responsibly disclosed against v1.7.0 / v1.7.1 and hardens the application, session handling,
 and container tooling throughout. **If you run v1.7.0 or v1.7.1, upgrade immediately** — this
 release fixes a critical (CVSSv3 9.9) Remote Code Execution vulnerability.
 
@@ -90,756 +74,93 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 | Session fixation — `SESS_REGENERATE_DESTROY` defaulted `false` | Medium | 6.8 | CWE-384 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
 | Log injection via password-reset token/email | Low | 3.7 | CWE-117 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
 | Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
+| Session auth check used loose comparison (`user_type`/`required_key`) | Low | — | CWE-697 | — | — | [#1640](https://github.com/InvoicePlane/InvoicePlane/pull/1640) |
+| Log injection via unsanitized `cron_key` in `Cron::recur()` | Low | — | CWE-117 | — | — | [#1639](https://github.com/InvoicePlane/InvoicePlane/pull/1639) |
+| IDOR: any admin could change the primary admin's password | High | — | CWE-639 | — | — | [#1638](https://github.com/InvoicePlane/InvoicePlane/pull/1638) |
+| CSRF on seven `delete()`-style endpoints missing token validation | High | — | CWE-352 | — | — | [#1637](https://github.com/InvoicePlane/InvoicePlane/pull/1637) |
+| CSRF bypass in `Recurring::stop()` via GET request | High | — | CWE-352 | — | — | [#1636](https://github.com/InvoicePlane/InvoicePlane/pull/1636) |
 
-### Security fixes by pull request
+### Security fixes
 
 *Ordered by severity, then CVSS, then PR number.*
 
 - [#1505](https://github.com/InvoicePlane/InvoicePlane/pull/1505), [#1506](https://github.com/InvoicePlane/InvoicePlane/pull/1506) — **RCE:** replace `directory_map()` template whitelist with static constants + `ipconfig.php` allowlist; fix five open-redirect instances; add `security_helper.php`. See [CUSTOM_TEMPLATES.md](docs/CUSTOM_TEMPLATES.md) for the resulting custom-template usage guide.
-- [#1500](https://github.com/InvoicePlane/InvoicePlane/pull/1500), [#1516](https://github.com/InvoicePlane/InvoicePlane/pull/1516) — **Stored XSS:** comprehensive, application-wide output escaping (32 findings across 17 view files in 4 modules)
-- **Stored XSS (mailer):** escape `client_email` with `htmlsc()` in the invoice/quote mailer views (`to_email` value attribute) — a follow-up sink missed by the earlier sweep — plus `valid_email` validation on `client_email` in `Mdl_Clients` as defense-in-depth
-- [#1471](https://github.com/InvoicePlane/InvoicePlane/pull/1471), [#1482](https://github.com/InvoicePlane/InvoicePlane/pull/1482), [#1487](https://github.com/InvoicePlane/InvoicePlane/pull/1487) — **IDOR + CSRF:** guest quote approve/reject and payment gateways now enforce client scoping and require POST
-- [#1494](https://github.com/InvoicePlane/InvoicePlane/pull/1494) — **Weak PRNG:** replace password-reset token generation with `random_bytes(32)` (256-bit entropy)
-- [#1481](https://github.com/InvoicePlane/InvoicePlane/pull/1481), [#1488](https://github.com/InvoicePlane/InvoicePlane/pull/1488) — **SQL/DDL injection:** harden tax-rate decimal-places setting (`TaxRateDecimalPlacesProcessor`, transaction wrap, unit tests) ([#1479](https://github.com/InvoicePlane/InvoicePlane/issues/1479))
-- [#1513](https://github.com/InvoicePlane/InvoicePlane/pull/1513) — **Config injection:** block newline injection in the database setup wizard
-- [#1512](https://github.com/InvoicePlane/InvoicePlane/pull/1512), [#1510](https://github.com/InvoicePlane/InvoicePlane/pull/1510) — **Arbitrary file deletion:** path-traversal guards for logo deletion; `validate_db_filename()`, symlink protection, attachment-name XSS prevention
-- [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) — **Credential exposure:** Stripe/PayPal API keys no longer rendered into HTML source
-- [#1517](https://github.com/InvoicePlane/InvoicePlane/pull/1517), [#1537](https://github.com/InvoicePlane/InvoicePlane/pull/1537) — **Auth bypass:** guest invoice/payment endpoints gain a `guest_visible()` filter (no draft-invoice access)
-- [#1491](https://github.com/InvoicePlane/InvoicePlane/pull/1491), [#1511](https://github.com/InvoicePlane/InvoicePlane/pull/1511), [#1518](https://github.com/InvoicePlane/InvoicePlane/pull/1518) — **Setup wizard:** locked after install (`SETUP_COMPLETED`), with an admin security-warning system
-- [#1492](https://github.com/InvoicePlane/InvoicePlane/pull/1492) — **SSRF:** sanitize PDF footer content before mPDF rendering
-- [#1486](https://github.com/InvoicePlane/InvoicePlane/pull/1486), [#1499](https://github.com/InvoicePlane/InvoicePlane/pull/1499) — **Email preview XSS:** render previews as sanitized/plain text instead of raw HTML
-- [#1496](https://github.com/InvoicePlane/InvoicePlane/pull/1496) — **Payment replay:** unique `payment_external_id` index prevents duplicate Stripe/PayPal processing
-- [#1495](https://github.com/InvoicePlane/InvoicePlane/pull/1495) — **Info leak:** route PHPMailer SMTP debug to the CI log via `sanitize_for_logging()` (no longer breaks AJAX)
-- [#1507](https://github.com/InvoicePlane/InvoicePlane/pull/1507) — **EXIF:** optional metadata stripping from uploads (`SEC_STRIP_EXIF_FROM_IMAGES`, off by default)
-- [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) — **Session & infrastructure hardening:** `cookie_httponly=true`, default `X-Frame-Options: SAMEORIGIN`, session-fixation fix, log-injection sanitization, `Referrer-Policy` header (details below)
-- [#1536](https://github.com/InvoicePlane/InvoicePlane/pull/1536) — Review follow-ups: `entrypoint.sh` config-injection guard, XSS trait fix, logo URL escaping, custom-template allowlisting, `Mdl_reports` cast fix
-
-### Bug fixes
-
-- [#1426](https://github.com/InvoicePlane/InvoicePlane/pull/1426) — Fix remittance slip / QR-code remittance text ([#1140](https://github.com/InvoicePlane/InvoicePlane/issues/1140))
-- [#1449](https://github.com/InvoicePlane/InvoicePlane/pull/1449) — Fix `quote_templates/public` showing the client on both header and footer
-- [#1451](https://github.com/InvoicePlane/InvoicePlane/pull/1451) — Fix QR-code generation for batch invoice processing
-- [#1465](https://github.com/InvoicePlane/InvoicePlane/pull/1465) — Simplify redundant conditionals in email template tags
-- [#1473](https://github.com/InvoicePlane/InvoicePlane/pull/1473) — Fix undefined-array-key error for mPDF footer names on PHP 8.3+ ([#1180](https://github.com/InvoicePlane/InvoicePlane/issues/1180))
-- [#1478](https://github.com/InvoicePlane/InvoicePlane/pull/1478) — Add missing `attachment()` method to the guest `Get` controller
-
-### Features & improvements
-
-- [#1289](https://github.com/InvoicePlane/InvoicePlane/pull/1289) — Re-introduce Stripe & PayPal; add PayPal Advanced Credit Cards and Venmo support ([#1288](https://github.com/InvoicePlane/InvoicePlane/issues/1288))
-- [#1489](https://github.com/InvoicePlane/InvoicePlane/pull/1489) — Allow configuring the QR-code size on invoices ([#1376](https://github.com/InvoicePlane/InvoicePlane/issues/1376))
-
-### Performance & code quality
-
-- [#1483](https://github.com/InvoicePlane/InvoicePlane/pull/1483) — Batch settings save: reduce DB queries from ~70 to 3 (transaction-wrapped)
-- [#1503](https://github.com/InvoicePlane/InvoicePlane/pull/1503) — Add database indexes on frequently queried columns
-
-### Infrastructure & CI
-
-- [#1466](https://github.com/InvoicePlane/InvoicePlane/pull/1466) — Move the setup-php-composer composite action into `.github/actions/`
-- [#1490](https://github.com/InvoicePlane/InvoicePlane/pull/1490) — Add a Laravel Pint code-style check
-- [#1509](https://github.com/InvoicePlane/InvoicePlane/pull/1509) — Add the Docker application container (combined web server + PHP)
-- [#1529](https://github.com/InvoicePlane/InvoicePlane/pull/1529) — Document the arbitrary file-deletion vulnerability for CVE allocation
-
----
-
-### Security — session & infrastructure hardening ([#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567))
-
-**HIGH: Fixed XSS session-hijack vector — `cookie_httponly` was `false` (CWE-1004)**
-
-The session cookie was accessible to JavaScript because `cookie_httponly` was hardcoded to
-`false` in `application/config/config.php`. Any XSS vulnerability in the application —
-present or future — could be used to steal the authenticated session cookie and fully
-impersonate the victim.
-
-**Vulnerability Details:**
-- **CWE-1004:** Sensitive Cookie Without 'HttpOnly' Flag
-- **Attack Vector:** Any reflected or stored XSS in the application
-- **Impact:** Complete session takeover; attacker gains full admin access as the victim
-
-**Root Cause:**
-1. `$config['cookie_httponly']` was hardcoded to `false` in the committed config file
-2. No environment-variable override existed — the value could not be corrected without
-   editing source code
-
-**Fix Implementation:**
-- **Hardcoded `cookie_httponly` to `true`** in `application/config/config.php`
-  - Value is intentionally not configurable — there is no legitimate use case for making
-    session cookies readable by JavaScript
-  - Closes the primary vector for XSS-based session hijacking application-wide
-
-**Defense-in-Depth Layers:**
-1. HttpOnly flag — prevents JS from reading the cookie even when XSS is present
-2. Existing `XSS_Protection_Trait` input filtering — reduces likelihood of XSS reaching the browser
-3. CSRF tokens on every state-changing form — prevents forged requests even without session theft
-4. `cookie_secure` option — forces HTTPS-only transmission when `COOKIE_SECURE=true`
-
-**Files Changed:**
-- `application/config/config.php` — `cookie_httponly` set unconditionally to `true`
-
-**Impact:**
-- **Before:** Any XSS vulnerability, however minor, led to immediate session compromise
-- **After:** Session cookies are invisible to JavaScript; XSS can no longer steal sessions
-
-**Affected Versions:** All InvoicePlane versions prior to this fix  
-**Recommended Action:** **UPGRADE IMMEDIATELY**
-
----
-
-**MEDIUM: Fixed Clickjacking — `X-Frame-Options` was not sent by default (CWE-1021)**
-
-`X-Frame-Options` was only emitted when the `X_FRAME_OPTIONS` environment variable was
-explicitly set. In the default configuration (no variable set), the header was absent,
-leaving every admin page embeddable inside a cross-origin `<iframe>` and vulnerable to
-clickjacking attacks.
-
-**Vulnerability Details:**
-- **CWE-1021:** Improper Restriction of Rendered UI Layers or Frames
-- **Attack Vector:** An attacker hosts a page that frames an InvoicePlane admin URL;
-  the victim clicks an invisible button that performs an admin action
-- **Impact:** Unauthorized actions performed silently in the victim's authenticated session
-
-**Root Cause:**
-1. `setCacheHeaders()` in `Admin_Controller` only sent the header when the env var was present
-2. New deployments that did not set `X_FRAME_OPTIONS` were unprotected out of the box
-
-**Fix Implementation:**
-- **`X-Frame-Options` is now always sent**, defaulting to `SAMEORIGIN`
-  - `env('X_FRAME_OPTIONS', 'SAMEORIGIN')` — safe default applied if env var is absent
-  - `SAMEORIGIN` blocks cross-origin framing while permitting same-domain iframes
-
-**Files Changed:**
-- `application/core/Admin_Controller.php` — `setCacheHeaders()` always sends `X-Frame-Options`
-
-**Impact:**
-- **Before:** Default deployments had no clickjacking protection
-- **After:** All admin pages send `X-Frame-Options: SAMEORIGIN` by default
-
-**Affected Versions:** All InvoicePlane versions prior to this fix  
-**Recommended Action:** Upgrade; if you need a different policy, set `X_FRAME_OPTIONS` in `ipconfig.php`
-
----
-
-**MEDIUM: Fixed Session Fixation — `SESS_REGENERATE_DESTROY` defaulted to `false` (CWE-384)**
-
-When CodeIgniter regenerates the session ID (every 300 seconds by default), the old session
-file was kept on disk rather than destroyed. An attacker who obtained the old session ID —
-before regeneration — retained a valid session indefinitely.
-
-**Vulnerability Details:**
-- **CWE-384:** Session Fixation
-- **Attack Vector:** Attacker captures a session ID (e.g., via network sniffing on HTTP,
-  or through an application vulnerability) before it is regenerated
-- **Impact:** Attacker retains authenticated access even after session regeneration
-
-**Root Cause:**
-1. `SESS_REGENERATE_DESTROY` env var defaulted to `false`
-2. Old session files accumulated in the session store and remained valid
-
-**Fix Implementation:**
-- **`SESS_REGENERATE_DESTROY` now defaults to `true`**
-  - `env_bool('SESS_REGENERATE_DESTROY', true)` — destroy-on-regen is opt-out, not opt-in
-  - Old session token is invalidated the moment the new one is issued
-
-**Files Changed:**
-- `application/config/config.php` — `sess_regenerate_destroy` default changed to `true`
-- `ipconfig.php.example` — documents the new default
-
-**Impact:**
-- **Before:** Old session files remained valid after regeneration; fixation window was unlimited
-- **After:** Old session is destroyed on regeneration; fixation window is eliminated
-
-**Affected Versions:** All InvoicePlane versions prior to this fix  
-**Recommended Action:** Upgrade; existing sessions are unaffected (they regenerate on next request)
-
----
-
-**LOW: Fixed Log Injection in password-reset flow — token and email logged verbatim (CWE-117)**
-
-The password-reset controller logged the raw token string and the raw email address in
-`log_message()` calls. Because these values are controlled by the requester, an attacker
-could inject newline characters (`\r\n`) and fake additional log lines, corrupting log
-integrity and potentially evading intrusion-detection rules.
-
-**Vulnerability Details:**
-- **CWE-117:** Improper Output Neutralization for Logs
-- **Attack Vector:** Attacker sends a password-reset request with a crafted email or
-  manipulates the token value
-- **Impact:** False log entries injected; log analysis tools produce misleading results
-
-**Root Cause:**
-1. `log_message('error', '... token: ' . $token)` — raw token in log
-2. `log_message('warning', '... for: ' . $email)` — raw email in log
-
-**Fix Implementation:**
-- **All sensitive values replaced with SHA-256 hashes before logging**
-  - `hash('sha256', $token)` — token identity traceable without exposing the secret
-  - `hash('sha256', $email)` — email identity correlatable without exposing PII
-  - Consistent with `hash_for_logging()` pattern from `file_security_helper.php`
-
-**Files Changed:**
-- `application/modules/sessions/controllers/Sessions.php` — token and email hashed before `log_message()`
-
-**Impact:**
-- **Before:** Log files contained plaintext tokens (guessable from logs) and raw email addresses (PII leak)
-- **After:** Logs contain only SHA-256 hashes; correlation is preserved without exposing secrets
-
-**Affected Versions:** All InvoicePlane versions prior to this fix  
-**Recommended Action:** Rotate any password-reset tokens issued before this fix
-
----
-
-**MEDIUM: Fixed Open Redirect via raw `$_SERVER['HTTP_REFERER']` — CWE-601**
-
-Two locations used `$_SERVER['HTTP_REFERER']` directly as a redirect target without
-validating that the URL belonged to the same application domain. An attacker could craft a
-link that, after form submission, redirected the victim to an attacker-controlled phishing
-site.
-
-**Vulnerable Locations:**
-1. `application/modules/custom_fields/views/form.php` — raw referer used to pre-select the
-   custom-field table dropdown
-2. `application/helpers/mailer_helper.php` — `check_mail_errors()` redirected to the raw referer
-   on mail failure
-
-**Fix Implementation:**
-- **Replaced raw `HTTP_REFERER` with `get_safe_referer()`** from `security_helper.php`
-  - Validates the referer URL belongs to the application base URL
-  - External URLs are silently replaced with `base_url()` as a safe fallback
-  - No user-visible change for legitimate navigations
-
-- **Removed referer from the view entirely** (`custom_fields/views/form.php`)
-  - Default table is now derived server-side in the controller from the validated safe referer
-  - View receives a `$custom_field_default_table` variable — no JS or PHP reads `HTTP_REFERER`
-
-**Files Changed:**
-- `application/helpers/mailer_helper.php` — `check_mail_errors()` uses `get_safe_referer()`
-- `application/modules/custom_fields/controllers/Custom_fields.php` — derives default table server-side
-- `application/modules/custom_fields/views/form.php` — reads `$custom_field_default_table` from controller
-
-**Impact:**
-- **Before:** Mail-failure redirects and custom-field links could redirect victims off-site
-- **After:** All redirect URLs validated against the application base URL; off-domain URLs rejected
-
-**Affected Versions:** All InvoicePlane versions prior to this fix  
-**Recommended Action:** Upgrade
-
----
-
-### Fixed
-
-- **Session config bug:** `sess_table_name` and `sess_cookie_name` both incorrectly read from
-  the `SESS_DRIVER` environment variable instead of their own dedicated `SESS_TABLE_NAME` and
-  `SESS_COOKIE_NAME` variables. This made it impossible to rename the session cookie or table
-  without also changing the driver name.
-- **`not_configured.php`:** `<form method="post">` was present without a CSRF field or a
-  submit button (the form cannot be submitted, but the missing CSRF field violated the
-  project's security rules). `<?php _csrf_field(); ?>` has been added.
+- [#1500](https://github.com/InvoicePlane/InvoicePlane/pull/1500), [#1516](https://github.com/InvoicePlane/InvoicePlane/pull/1516) — **Stored XSS:** comprehensive, application-wide output escaping (32 findings across 17 view files in 4 modules).
+- [#1635](https://github.com/InvoicePlane/InvoicePlane/pull/1635) — **Stored XSS (mailer):** escape `client_email` with `htmlsc()` in the invoice/quote mailer views (`to_email` value attribute) — a follow-up sink missed by the earlier sweep — plus `valid_email` validation on `client_email` in `Mdl_Clients` as defense-in-depth.
+- [#1471](https://github.com/InvoicePlane/InvoicePlane/pull/1471), [#1482](https://github.com/InvoicePlane/InvoicePlane/pull/1482), [#1487](https://github.com/InvoicePlane/InvoicePlane/pull/1487) — **IDOR + CSRF:** guest quote approve/reject and payment gateways now enforce client scoping and require POST.
+- [#1494](https://github.com/InvoicePlane/InvoicePlane/pull/1494) — **Weak PRNG:** replace password-reset token generation with `random_bytes(32)` (256-bit entropy).
+- [#1481](https://github.com/InvoicePlane/InvoicePlane/pull/1481), [#1488](https://github.com/InvoicePlane/InvoicePlane/pull/1488) — **SQL/DDL injection:** harden tax-rate decimal-places setting (`TaxRateDecimalPlacesProcessor`, transaction wrap, unit tests) ([#1479](https://github.com/InvoicePlane/InvoicePlane/issues/1479)).
+- [#1513](https://github.com/InvoicePlane/InvoicePlane/pull/1513) — **Config injection:** block newline injection in the database setup wizard.
+- [#1512](https://github.com/InvoicePlane/InvoicePlane/pull/1512), [#1510](https://github.com/InvoicePlane/InvoicePlane/pull/1510) — **Arbitrary file deletion:** path-traversal guards for logo deletion; `validate_db_filename()`, symlink protection, attachment-name XSS prevention.
+- [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) — **Credential exposure:** Stripe/PayPal API keys no longer rendered into HTML source.
+- [#1517](https://github.com/InvoicePlane/InvoicePlane/pull/1517), [#1537](https://github.com/InvoicePlane/InvoicePlane/pull/1537) — **Auth bypass:** guest invoice/payment endpoints gain a `guest_visible()` filter (no draft-invoice access).
+- [#1491](https://github.com/InvoicePlane/InvoicePlane/pull/1491), [#1511](https://github.com/InvoicePlane/InvoicePlane/pull/1511), [#1518](https://github.com/InvoicePlane/InvoicePlane/pull/1518) — **Setup wizard:** locked after install (`SETUP_COMPLETED`), with an admin security-warning system.
+- [#1492](https://github.com/InvoicePlane/InvoicePlane/pull/1492) — **SSRF:** sanitize PDF footer content before mPDF rendering.
+- [#1486](https://github.com/InvoicePlane/InvoicePlane/pull/1486), [#1499](https://github.com/InvoicePlane/InvoicePlane/pull/1499) — **Email preview XSS:** render previews as sanitized/plain text instead of raw HTML.
+- [#1496](https://github.com/InvoicePlane/InvoicePlane/pull/1496) — **Payment replay:** unique `payment_external_id` index prevents duplicate Stripe/PayPal processing.
+- [#1495](https://github.com/InvoicePlane/InvoicePlane/pull/1495) — **Info leak:** route PHPMailer SMTP debug to the CI log via `sanitize_for_logging()` (no longer breaks AJAX).
+- [#1507](https://github.com/InvoicePlane/InvoicePlane/pull/1507) — **EXIF:** optional metadata stripping from uploads (`SEC_STRIP_EXIF_FROM_IMAGES`, off by default).
+- [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) — **Session & infrastructure hardening:** `cookie_httponly=true`, default `X-Frame-Options: SAMEORIGIN`, session-fixation fix (`SESS_REGENERATE_DESTROY=true`), password-reset log-injection sanitization, and a `Referrer-Policy` header.
+- [#1536](https://github.com/InvoicePlane/InvoicePlane/pull/1536) — Review follow-ups: `entrypoint.sh` config-injection guard, XSS trait fix, logo URL escaping, custom-template allowlisting, `Mdl_reports` cast fix.
+- **Auth bypass (deactivated accounts):** `Mdl_Sessions::auth()` now rejects a login for a deactivated user (`user_active != 1`) even with the correct password.
+- **SUMEX XML disclosure:** SUMEX invoice XML is written to a non-web-accessible `storage/temp/` directory instead of the public `uploads/temp/` folder.
+- **Import CSV disclosure:** added a `Deny from all` `.htaccess` to `uploads/import/`, blocking web access to in-progress CSV imports.
+- **Object-level authorization (IDOR):** added `can_user_access()` / `can_user_manage()` model checks for clients, projects, user-clients, invoices, and quotes; wired into `/clients/view/{id}` and `/projects/view/{id}`.
+- **CSRF hardening:** explicit POST + CSRF-token validation on the delete endpoints across 12 modules (defense-in-depth against forged state-changing requests).
+- [#1640](https://github.com/InvoicePlane/InvoicePlane/pull/1640) — **Auth checkpoint hardening:** use strict (`!==`) comparison for the `user_type`/`required_key` session check in `Admin_Controller`/`Guest_Controller`, removing a PHP type-juggling risk in the app's primary authorization checkpoint.
+- [#1639](https://github.com/InvoicePlane/InvoicePlane/pull/1639) — **Log injection:** sanitize `cron_key` before logging in `Cron::recur()`.
+- [#1638](https://github.com/InvoicePlane/InvoicePlane/pull/1638) — **IDOR:** protect the primary administrator (`user_id=1`) from having their password changed by another admin via `Users::change_password()`.
+- [#1637](https://github.com/InvoicePlane/InvoicePlane/pull/1637) — **CSRF:** add POST + CSRF-token validation to seven delete-style endpoints that relied only on `Base_Controller`'s URL-substring check.
+- [#1636](https://github.com/InvoicePlane/InvoicePlane/pull/1636) — **CSRF:** add POST + CSRF-token validation to `Recurring::stop()`, previously reachable via a bare GET request.
 
 ### Added
 
-- **`CLAUDE.md`** — quick-start guide for AI coding agents and new contributors: CI3 mental
-  model, non-negotiable security rules, key helper functions table, code style, testing
-  commands, and common pitfalls.
-- **`SESS_SAVE_PATH`, `SESS_TABLE_NAME`, `SESS_COOKIE_NAME`, `SESS_REGENERATE_DESTROY`**
-  documented in `ipconfig.php.example` with comments. `SESS_SAVE_PATH` can be set to an
-  absolute path outside the document root for additional security; it defaults to PHP's
-  system temp directory, unchanged from previous releases.
-- **Template allowlist format clarified:** Quote the whole value in `ipconfig.php` when
-  template names contain spaces or hyphens:
-  ```
-  CUSTOM_INVOICE_TEMPLATES_PDF="Corporate - Modern,My Template"
-  ```
-- **`Referrer-Policy: strict-origin-when-cross-origin`** header sent on every admin response.
-
----
-
-### Security — reported vulnerability fixes
-
-**CRITICAL: Fixed Remote Code Execution (RCE) vulnerability in template system - CVSSv3 9.9**
-
-This is a patch bypass of the v1.7.1 LFI fix. The vulnerability allowed authenticated
-administrators to achieve Remote Code Execution as any unauthenticated visitor.
-
-**Root Cause:**
-The v1.7.1 template validation system used `directory_map()` to dynamically construct the
-whitelist at runtime. Because template directories were writable by the web server, attackers
-could:
-1. Write a PHP webshell to the templates directory
-2. Have it automatically added to the "trusted" whitelist on next scan
-3. Set it as the active template via admin settings
-4. Trigger execution by any unauthenticated visitor accessing a public invoice URL
-
-**Fix Implementation:**
-- **Replaced dynamic whitelist with static hardcoded constants** (CWE-693 fix)
-  - Template names are now defined in code constants, NEVER scanned from filesystem
-  - Even if attacker writes `evil.php` to the templates directory, it will NOT be in the whitelist
-  - Primary defense against RCE attacks
-
-- **Enhanced validation with 7 security layers** (defense-in-depth)
-  1. Empty/non-string value rejection
-  2. Path traversal detection using `validate_safe_filename()`
-  3. Type parameter validation (invoice/quote only)
-  4. Scope parameter validation (pdf/public only)
-  5. Static whitelist validation (CRITICAL — blocks any file not in hardcoded list)
-  6. Character validation (alphanumeric, spaces, hyphens, underscores only)
-  7. Comprehensive security logging
-
-- **Added file existence verification before template inclusion** (CWE-98 mitigation)
-  - Verifies template file exists before including it
-  - Falls back to default template if configured template is invalid
-  - Shows error if even default template is missing
-  - Prevents arbitrary file inclusion even if whitelist is somehow bypassed
-
-- **Added template directory permission checking** (CWE-732 monitoring)
-  - New `check_template_directory_permissions()` method in `Mdl_templates`
-  - Detects if template directories are writable by web server
-  - Allows administrators to audit and fix permission issues
-
-**Defense-in-Depth Layers:**
-1. Static whitelist — only explicitly listed templates can be loaded
-2. Character allowlist — template names restricted to `[A-Za-z0-9 _-]`
-3. Path traversal detection — `../`, `..\\`, null bytes, absolute paths all rejected
-4. Type/scope validation — parameters restricted to known values
-5. File existence check — template file must exist on disk
-6. Directory permission audit — admins alerted when template dirs are world-writable
-7. Secure logging — all validation failures logged with hashed values
-
-**Files Changed:**
-- `application/modules/invoices/models/Mdl_templates.php` — static whitelist implementation
-- `application/helpers/template_helper.php` — enhanced multi-layer validation
-- `application/modules/guest/controllers/View.php` — file existence verification
-
-**Impact:**
-- **Before:** Attacker with admin access could execute arbitrary PHP code on the server
-- **After:** Only templates explicitly defined in code constants can be loaded
-
-**Affected Versions:** InvoicePlane v1.7.0, v1.7.1  
-**Recommended Action:** **UPGRADE IMMEDIATELY** and audit template directories for malicious files
-
-See `SECURITY_ADVISORY_RCE_FIX.md` for full details and verification procedures.
-
----
-
-**CRITICAL: Fixed Broken Authentication — Password reset tokens never expired**
-
-Password reset tokens were generated and stored indefinitely. An old reset link remained
-valid forever, allowing an attacker who obtained a token (e.g., from an email log, forwarded
-email, or shoulder-surfing) to reset the victim's password at any future time.
-
-**Vulnerability Details:**
-- **CWE-640:** Weak Password Recovery Mechanism for Forgotten Password
-- **Attack Vector:** Attacker acquires a valid-but-unused reset token from any source
-- **Impact:** Full account takeover; attacker sets a new password of their choosing
-
-**Root Cause:**
-1. `user_passwordreset_token` stored in the database with no creation timestamp
-2. No expiry check in the reset validation flow
-3. Tokens generated with `md5(time() + email + mt_rand())` — weak PRNG (see below)
-
-**Fix Implementation:**
-- **Added `user_passwordreset_token_expiry` column** to the `ip_users` table
-  - Stores the UTC timestamp when the token was issued
-  - Database migration added for existing installations
-
-- **Token expiry enforced on validation**
-  - Default window: 15 minutes (`PASSWORD_RESET_TOKEN_EXPIRY_MINUTES` env var)
-  - Expired tokens are rejected and cleared from the database
-
-- **Tokens cleared on use or expiry**
-  - Successful password change: token deleted immediately
-  - Expired check: token deleted to prevent reuse
-
-**Files Changed:**
-- `application/modules/sessions/models/Mdl_user_passwordreset.php` — expiry logic
-- `application/modules/sessions/controllers/Sessions.php` — expiry validation
-- `ipconfig.php.example` — `PASSWORD_RESET_TOKEN_EXPIRY_MINUTES` documented
-
-**Impact:**
-- **Before:** Reset tokens valid indefinitely; stolen link = permanent account takeover
-- **After:** Tokens expire after 15 minutes (configurable); links are useless after expiry
-
-**Affected Versions:** InvoicePlane v1.7.0, v1.7.1  
-**Recommended Action:** **UPGRADE IMMEDIATELY** and run the database migration at `/index.php/setup`
-
----
-
-**HIGH: Fixed Arbitrary File Deletion via Path Traversal - CVSSv3 7.1 (CWE-22)**
-
-Authenticated administrators could delete arbitrary files on the server through path
-traversal sequences in logo filename settings. An attacker could set a malicious logo
-filename (e.g., `../../config/database.php`) via the settings page, then trigger deletion
-through the `remove_logo` endpoint.
-
-**Vulnerability Details:**
-- **CWE-22:** Improper Limitation of a Pathname to a Restricted Directory
-- **Attack Vector:** Authenticated administrator could exploit path traversal
-- **Impact:** Application failure, data loss, denial of service through deletion of critical files
-
-**Root Cause:**
-1. Settings save functionality accepted arbitrary logo filenames without validation
-2. The `remove_logo()` function used database values directly for file deletion
-3. No path traversal detection or directory confinement checks
-
-**Fix Implementation:**
-- **Added input validation on settings save** (`Settings.php` lines 78–87)
-  - Logo filenames validated using `validate_safe_filename()` before saving to database
-  - Path traversal sequences rejected with error logging
-  - Invalid filenames blocked with a user-friendly error message
-
-- **Added type parameter validation** (`Settings.php` lines 272–282)
-  - Logo type restricted to allow-list: `['invoice', 'login']`
-  - Invalid types logged and rejected
-  - Prevents arbitrary type parameter injection
-
-- **Added comprehensive file access validation** (`Settings.php` lines 293–323)
-  - Multi-layer validation using `validate_file_access()` helper
-  - Files must be within `./uploads/` directory (directory confinement)
-  - Path traversal sequences detected and blocked
-  - Null byte injection prevented
-  - Absolute path attempts rejected
-  - All validation failures logged with secure hashing
-
-- **Enhanced file security helper** (`application/helpers/file_security_helper.php`)
-  - `validate_safe_filename()` — detects path traversal, null bytes, absolute paths
-  - `validate_file_in_directory()` — ensures files stay within the allowed directory
-  - `validate_file_access()` — complete file validation with 5 security checks
-
-**Defense-in-Depth Layers:**
-1. Input validation — filenames validated on settings save
-2. Type validation — logo type restricted to allow-list
-3. Path traversal detection — multiple checks for `../`, `..\\`, `/../`, etc.
-4. Null byte detection — prevents path truncation attacks
-5. Absolute path rejection — blocks `/etc/passwd`-style attacks
-6. Directory confinement — files must be inside `uploads/`
-7. Secure logging — attack attempts logged with hash (prevents log injection)
-
-**Files Changed:**
-- `application/modules/settings/controllers/Settings.php` — input and file access validation
-- `application/helpers/file_security_helper.php` — file security validation functions
-
-**Impact:**
-- **Before:** Authenticated admin could delete ANY file on the server
-- **After:** Only files inside `uploads/` can be deleted, with strict path validation
-
-**Affected Versions:** InvoicePlane v1.7.0, v1.7.1  
-**Recommended Action:** **UPGRADE IMMEDIATELY** and audit systems for suspicious file deletions
-
-See `SECURITY_ADVISORY_ARBITRARY_FILE_DELETION.md` for full details, proof of concept, and verification procedures.
-
----
-
-**HIGH: Fixed Weak PRNG in password reset tokens (CWE-338)**
-
-Password reset tokens were generated using `md5(time() + email + mt_rand())`. This is
-predictable: `time()` is known to within a few seconds, `mt_rand()` is a non-cryptographic
-PRNG seeded from a guessable value, and MD5 is a fast hash. An attacker can brute-force
-the token space within a practical time window.
-
-**Fix Implementation:**
-- **Replaced with `random_bytes(32)`** — 256 bits of OS-provided cryptographic entropy
-- Token stored as hex string (`bin2hex()`) for safe database and URL handling
-- Combined with the token-expiry fix (above), the attack window is now 15 minutes
-  against a 256-bit random token — computationally infeasible
-
-**Files Changed:**
-- `application/helpers/security_helper.php` — `generate_secure_token()` / `generate_password_reset_token()`
-- `application/modules/sessions/controllers/Sessions.php` — uses new token generation
-
-**Impact:**
-- **Before:** Tokens predictable to an attacker with knowledge of the request timestamp
-- **After:** 256-bit random token; brute-force in any realistic time window is impossible
-
-**Affected Versions:** InvoicePlane v1.7.0, v1.7.1  
-**Recommended Action:** Invalidate all existing password-reset tokens after upgrading
-
----
-
-**HIGH: Fixed SQL/DDL Injection in tax rate decimal places (CWE-89)**
-
-The tax rate decimal places value was interpolated directly into an `ALTER TABLE` SQL statement
-without sanitization. An attacker with admin access could supply a crafted value to execute
-arbitrary DDL statements on the database.
-
-**Fix Implementation:**
-- **Strict integer validation** added before the value is used in the query
-- Value cast to `(int)` and range-checked (must be 0–10)
-- Invalid values rejected with an error; the `ALTER TABLE` is never executed
-
-**Files Changed:**
-- `application/modules/tax_rates/controllers/Tax_rates.php` — strict integer validation
-
-**Impact:**
-- **Before:** Arbitrary DDL execution possible by an authenticated admin
-- **After:** Only valid integer values in the expected range reach the query
-
-**Affected Versions:** InvoicePlane v1.7.0, v1.7.1
-
----
-
-**HIGH: Fixed Configuration Injection in database setup wizard (CWE-77)**
-
-User-supplied database credentials entered during the setup wizard were written verbatim to
-`ipconfig.php` without escaping special characters. A specially crafted hostname, username,
-or password could inject arbitrary configuration directives or PHP code into the config file.
-
-**Fix Implementation:**
-- All credential values sanitised before writing to `ipconfig.php`
-- Values that cannot be safely represented (contain line-break or control characters)
-  are rejected with an error rather than written
-- Setup wizard marks `SETUP_COMPLETED=true` on completion to block future access
-
-**Files Changed:**
-- `application/modules/setup/controllers/Setup.php` — sanitisation before config write
-
-**Impact:**
-- **Before:** Attacker controlling the setup wizard could inject PHP into `ipconfig.php`
-- **After:** Only safe, properly escaped values are written to the config file
-
-**Affected Versions:** InvoicePlane v1.7.0, v1.7.1
-
----
-
-**HIGH: Fixed IDOR + CSRF on guest quote approve/reject endpoints**
-
-The guest quote approve and reject endpoints (`/guest/quotes/approve`, `/guest/quotes/reject`)
-accepted any quote ID without verifying that the requesting guest owned the quote, and did
-not require a CSRF token. An attacker could approve or reject any quote in the system by
-sending a crafted request.
-
-**Fix Implementation:**
-- **Ownership check added** — `user_has_quote_access()` called before processing; requests
-  for quotes not belonging to the guest's client are rejected with HTTP 403
-- **CSRF token required** — `verify_csrf_token()` called on every state-changing request
-  to these endpoints
-
-**Files Changed:**
-- `application/modules/guest/controllers/Quotes.php` — ownership check and CSRF verification
-
-**Impact:**
-- **Before:** Any unauthenticated user could approve or reject any quote by guessing its ID
-- **After:** Only the owning guest can approve/reject their own quotes, with CSRF protection
-
-**Affected Versions:** InvoicePlane v1.7.0, v1.7.1
-
----
-
-**MEDIUM: Fixed Authorization Bypass in guest invoice/payment endpoints (CWE-284)**
-
-Guest users could access invoices and initiate payments for invoices not assigned to their
-client accounts by manipulating the invoice ID in the URL.
-
-**Fix Implementation:**
-- `user_has_invoice_access()` guard added to all guest invoice and payment endpoints
-- Requests for invoices not belonging to the guest's client are rejected with HTTP 403
-
-**Files Changed:**
-- `application/modules/guest/controllers/View.php`
-- `application/modules/guest/controllers/Payments.php`
-- `application/helpers/security_helper.php` — `user_has_invoice_access()` / `user_has_quote_access()`
-
----
-
-**MEDIUM: Fixed Setup Wizard accessible post-installation (CWE-285)**
-
-The setup wizard remained reachable after installation, allowing an attacker to overwrite
-database credentials or re-run the installer on an existing installation.
-
-**Fix Implementation:**
-- `SETUP_COMPLETED=true` (set automatically by the wizard on success) blocks all setup routes
-- `DISABLE_SETUP=true` provides an additional explicit lockout for environments where the flag
-  was not set automatically (existing installations)
-- Admin warning displayed in the dashboard if neither flag is set
-
----
-
-**MEDIUM: Fixed SSRF via PDF footer content (CWE-918)**
-
-User-controlled content in invoice footers could contain HTML that triggered server-side
-HTTP requests via mPDF's resource-loading engine (e.g., `<img src="http://attacker.com/...">`)
-exposing internal network topology.
-
-**Fix Implementation:**
-- Footer content sanitised before being passed to the PDF renderer
-- External resource URLs stripped from footer HTML
-
----
-
-**MEDIUM: Fixed Open Redirect via unvalidated `HTTP_REFERER` (CWE-601)**
-
-Multiple endpoints redirected directly to `$_SERVER['HTTP_REFERER']` without validating that
-the URL belonged to the same application origin.
-
-**Fix Implementation:**
-- All usages replaced with `get_safe_referer()` from `security_helper.php`
-- Referer validated against `base_url()`; external URLs replaced with `base_url()` as default
-
----
-
-**MEDIUM: Fixed Payment Gateway API Credential Exposure (CWE-312)**
-
-Payment gateway API keys (Stripe, PayPal) were stored in plaintext in the database. Anyone
-with read access to the database could extract live API credentials.
-
-**Fix Implementation:**
-- Credentials encrypted at rest using `Cryptor` with the application's `ENCRYPTION_KEY`
-- Decrypted transparently at runtime; no change to the UI or gateway behaviour
-
----
-
-**LOW–MEDIUM: Fixed PHPMailer Debug Output in AJAX Responses (CWE-209)**
-
-PHPMailer's SMTP debug output (server banners, authentication strings, error messages) was
-appended directly to JSON responses in AJAX contexts, leaking server information to the
-browser and potentially to browser extensions or network observers.
-
-**Fix Implementation:**
-- Debug output suppressed in AJAX context
-- SMTP debug strings passed through `sanitize_for_logging()` before any logging
-
----
-
-**LOW–MEDIUM: Fixed Duplicate Payment Processing (CWE-362)**
-
-Stripe and PayPal payment callbacks (webhooks) could process the same payment event twice
-under network-retry conditions, resulting in duplicate records or duplicate payouts.
-
-**Fix Implementation:**
-- Idempotency check added: incoming payment ID verified against existing records before processing
-- Duplicate events are acknowledged and discarded without creating new payment records
-
----
-
-**LOW–MEDIUM: Fixed Email Template Preview XSS (CWE-79)**
-
-The email-template preview endpoint returned the raw template HTML without sanitisation.
-Template content containing `<script>` tags or event handlers would execute in the admin's
-browser when the preview was opened.
-
-**Fix Implementation:**
-- HTML Purifier applied to template body before rendering the preview
-- Sanitisation uses `sanitize_email_template_html()` from `html_sanitizer_helper.php`
-
----
-
-**LOW: EXIF Metadata in Uploaded Images (CWE-212)**
-
-Uploaded images could contain EXIF metadata including GPS coordinates, timestamps, and
-camera information, inadvertently exposing client location data or photographer identity.
-
-**Opt-in Fix:**
-- Set `SEC_STRIP_EXIF_FROM_IMAGES=true` in `ipconfig.php` to enable automatic EXIF stripping
-- Supported formats: JPEG, PNG, GIF, WEBP
-- Disabled by default to avoid unexpected image changes in existing workflows
-
----
-
-**LOW: Fixed Binary Data Corruption in `Cryptor::decryptString()` (CWE-704)**
-
-`mb_strlen()` and `mb_substr()` were used to split raw binary ciphertext (IV + encrypted
-data). Under multibyte-string internal encodings, these functions operate on characters
-rather than bytes, corrupting the extracted IV and causing intermittent decryption failures.
-
-**Fix Implementation:**
-- Replaced with byte-safe `strlen()` and `substr()` throughout `Cryptor`
-
-**Files Changed:**
-- `application/libraries/Cryptor.php`
-
----
-
-**LOW: Restricted GitHub Actions `GITHUB_TOKEN` permissions (CWE-272)**
-
-The `phpunit.yml`, `quickstart.yml`, and `setup.yml` workflows did not declare explicit
-`permissions` blocks, granting the default broad token scope to all workflow jobs.
-
-**Fix Implementation:**
-- Added `permissions: contents: read` at the workflow level in all three files
-
----
-
-**MEDIUM: Sanitized PHPMailer SMTP debug output — log injection prevention (CWE-117)**
-
-SMTP debug strings (server banners, addresses, status responses) were logged verbatim.
-Because these strings can contain data from the remote SMTP server, they could be used
-to inject false log entries or control characters.
-
-**Fix Implementation:**
-- The `Debugoutput` callback passes all strings through `sanitize_for_logging()` before
-  writing to the CI log
-
----
-
-**MEDIUM: Fixed `phpmail_send()` always returning `true` on failure (CWE-252)**
-
-`phpmail_send()` always returned `true` regardless of whether the underlying `$mail->send()`
-call succeeded. This masked delivery failures from callers, causing "Email sent successfully"
-log lines to appear inside the failure branch.
-
-**Fix Implementation:**
-- Function now returns the actual `bool` result of `$mail->send()`
-- Success log message moved to the success branch
-- Failure branch sets flash error data only
-
-> **Breaking change for custom integrations:** Any code that called `phpmail_send()` and
-> treated the return value as always-truthy must be updated. Handle `false` as a send failure.
-
----
-
-### Added
-
-- `sanitize_for_logging()` helper — single source of truth for log injection prevention (CWE-117)
-- `validate_safe_filename()` and `validate_file_in_directory()` helpers — path traversal prevention (CWE-22)
-- `get_safe_referer()` helper — open-redirect-safe referer resolution (CWE-601)
-- `verify_csrf_token()` helper — timing-safe CSRF verification
-- `user_has_invoice_access()` / `user_has_quote_access()` helpers — IDOR guards
-- `validate_template_name()` — 7-layer template validation (empty check, path traversal, type, scope, static whitelist, character set, logging)
-- `generate_secure_token()` / `generate_password_reset_token()` — CSPRNG-based token generation
-- XSS sanitisation now covers deeply nested POST arrays, with full field-path logging
-- Rate limiting for password reset requests — per IP (`PASSWORD_RESET_IP_MAX_ATTEMPTS`, `PASSWORD_RESET_IP_WINDOW_MINUTES`) and per email (`PASSWORD_RESET_EMAIL_MAX_ATTEMPTS`, `PASSWORD_RESET_EMAIL_WINDOW_HOURS`)
-- `PASSWORD_RESET_TOKEN_EXPIRY_MINUTES` env var (default `15`)
-- `SEC_STRIP_EXIF_FROM_IMAGES` env var (default `false`)
-- Custom template discovery via `CUSTOM_TEMPLATES_FOLDER` — templates placed in that directory appear alongside built-in templates in admin selectors. Template names are validated against the allowlist before use (RCE fix preserved).
-- `CUSTOM_INVOICE_TEMPLATES_PDF`, `CUSTOM_INVOICE_TEMPLATES_PUBLIC`, `CUSTOM_QUOTE_TEMPLATES_PDF`, `CUSTOM_QUOTE_TEMPLATES_PUBLIC` env vars for explicit template allowlists
+- **`CLAUDE.md`** — quick-start guide for AI coding agents and new contributors: CI3 mental model, non-negotiable security rules, key helper functions, code style, testing commands, and common pitfalls.
+- Security helpers, each a single source of truth for one concern: `sanitize_for_logging()` (log-injection prevention, CWE-117), `validate_safe_filename()` / `validate_file_in_directory()` (path-traversal prevention, CWE-22), `get_safe_referer()` (open-redirect-safe referer resolution, CWE-601), `verify_csrf_token()` (timing-safe CSRF verification), and `generate_secure_token()` / `generate_password_reset_token()` (CSPRNG-based tokens).
+- `validate_template_name()` — 7-layer template validation (empty check, path traversal, type, scope, static whitelist, character set, logging).
+- Rate limiting for password-reset requests — per IP (`PASSWORD_RESET_IP_MAX_ATTEMPTS`, `PASSWORD_RESET_IP_WINDOW_MINUTES`) and per email (`PASSWORD_RESET_EMAIL_MAX_ATTEMPTS`, `PASSWORD_RESET_EMAIL_WINDOW_HOURS`).
+- `PASSWORD_RESET_TOKEN_EXPIRY_MINUTES` env var (default `15`) and `SEC_STRIP_EXIF_FROM_IMAGES` env var (default `false`).
+- Session env vars `SESS_SAVE_PATH`, `SESS_TABLE_NAME`, `SESS_COOKIE_NAME`, and `SESS_REGENERATE_DESTROY`, all documented in `ipconfig.php.example`. `SESS_SAVE_PATH` may point outside the document root for additional security; it still defaults to PHP's system temp directory.
+- Allowlist-based custom template discovery via `CUSTOM_TEMPLATES_FOLDER` plus the explicit `CUSTOM_INVOICE_TEMPLATES_PDF`, `CUSTOM_INVOICE_TEMPLATES_PUBLIC`, `CUSTOM_QUOTE_TEMPLATES_PDF`, and `CUSTOM_QUOTE_TEMPLATES_PUBLIC` env vars. Names containing spaces or hyphens must be quoted, e.g. `CUSTOM_INVOICE_TEMPLATES_PDF="Corporate - Modern,My Template"`.
+- `Referrer-Policy: strict-origin-when-cross-origin` header sent on every admin response.
 
 ### Changed
 
-- **Email template preview** — the live preview panel now displays the raw template source as plain text instead of rendering it as HTML. Eliminates DOM-based XSS risk from user-controlled template content set as `innerHTML` without sanitization.
-- **`phpmail_send()` return value** — now returns `false` on delivery failure (previously always `true`). Any code relying on the return value must be updated.
+- Re-introduced Stripe & PayPal, adding PayPal Advanced Credit Cards and Venmo support ([#1289](https://github.com/InvoicePlane/InvoicePlane/pull/1289), [#1288](https://github.com/InvoicePlane/InvoicePlane/issues/1288)).
+- The QR-code size on invoices is now configurable ([#1489](https://github.com/InvoicePlane/InvoicePlane/pull/1489), [#1376](https://github.com/InvoicePlane/InvoicePlane/issues/1376)).
+- The email-template live preview now displays the raw template source as plain text instead of rendering it as HTML, eliminating a DOM-based XSS vector.
+- XSS input sanitisation now covers deeply nested POST arrays, with full field-path logging.
+- **Breaking:** `phpmail_send()` now returns the actual `bool` result of the send instead of always returning `true`. Any integration that treated the return value as always-truthy must handle `false` as a delivery failure.
+
+### Fixed
+
+- [#1426](https://github.com/InvoicePlane/InvoicePlane/pull/1426) — Remittance slip / QR-code remittance text ([#1140](https://github.com/InvoicePlane/InvoicePlane/issues/1140)).
+- [#1449](https://github.com/InvoicePlane/InvoicePlane/pull/1449) — `quote_templates/public` showing the client on both header and footer.
+- [#1451](https://github.com/InvoicePlane/InvoicePlane/pull/1451) — QR-code generation for batch invoice processing.
+- [#1465](https://github.com/InvoicePlane/InvoicePlane/pull/1465) — Simplify redundant conditionals in email template tags.
+- [#1473](https://github.com/InvoicePlane/InvoicePlane/pull/1473) — Undefined-array-key error for mPDF footer names on PHP 8.3+ ([#1180](https://github.com/InvoicePlane/InvoicePlane/issues/1180)).
+- [#1478](https://github.com/InvoicePlane/InvoicePlane/pull/1478) — Add the missing `attachment()` method to the guest `Get` controller.
+- Session config bug: `sess_table_name` and `sess_cookie_name` incorrectly read from the `SESS_DRIVER` env var instead of their own `SESS_TABLE_NAME` / `SESS_COOKIE_NAME` variables, making it impossible to rename the session cookie or table without also changing the driver name.
+- `not_configured.php`: added the missing `<?php _csrf_field(); ?>` to a `<form method="post">` that violated the project's CSRF rule.
+- `Cryptor::decryptString()`: use byte-safe `strlen()` / `substr()` instead of `mb_strlen()` / `mb_substr()` when splitting binary ciphertext, fixing intermittent decryption failures under multibyte internal encodings.
 
 ### Removed
 
-- SVG logo upload support — SVGs can contain embedded JavaScript (XSS vector)
-- Dynamic filesystem scanning for template discovery — replaced with static allowlist constants (RCE prevention)
+- SVG logo upload support — SVGs can carry embedded JavaScript (an XSS vector). Convert existing logos to PNG, JPG, or GIF (see [SVG_FILES.md](security/SVG_FILES.md)).
+- Dynamic filesystem scanning for template discovery — replaced with static allowlist constants (RCE prevention).
 
-### Fixed Issues
+### Performance
 
-- #1433 — LFI vulnerabilities in PDF template handling
-- #1388, #1387 — Unsafe jQuery plugin vulnerabilities (Code scanning alerts #8, #10)
-- #1389 — Workflow does not contain permissions (Code scanning alert #5)
-- #1383 — File access vulnerabilities across multiple controllers
-- #1381 — E-invoicing field migration and version checking
-- #1380 — Dependency update: `qs` package bump
-- #1377 — QR code image width reduced to 100 px
-- #1375 — Email address verification now accepts both comma and semicolon separators
-- #1373 — Removed deprecated library dependencies
-- #1367, #1368 — Various bug fixes
-- Code scanning alerts #6, #7, #9, #11, #12, #13, #14, #15 — workflow permissions and XSS patterns
+- [#1483](https://github.com/InvoicePlane/InvoicePlane/pull/1483) — Batch settings save: reduce DB queries from ~70 to 3 (transaction-wrapped).
+- [#1503](https://github.com/InvoicePlane/InvoicePlane/pull/1503) — Add database indexes on frequently queried columns.
 
-### Fields Sanitized for XSS Protection
+### Infrastructure & CI
 
-The following fields were sanitized and properly escaped to prevent XSS attacks:
-
-- `invoice_number` — escaped in all templates and views
-- `quote_number` — escaped in all templates and views
-- `tax_rate_name` — sanitized on input, escaped on output
-- `payment_method_name` — sanitized on input, escaped on output
-- `custom_field_label` — protected in all custom field displays
-- Client address fields — sanitized for safe display
-- `sumex_observations` — sanitized on input
-- `quote_password` — sanitized on input
-- `quote_notes` — sanitized on input
-- Email template content — HTML Purifier applied before rendering
-- File names in upload operations — sanitized before logging (prevents log injection)
+- [#1466](https://github.com/InvoicePlane/InvoicePlane/pull/1466) — Move the setup-php-composer composite action into `.github/actions/`.
+- [#1490](https://github.com/InvoicePlane/InvoicePlane/pull/1490) — Add a Laravel Pint code-style check.
+- [#1509](https://github.com/InvoicePlane/InvoicePlane/pull/1509) — Add the Docker application container (combined web server + PHP).
+- [#1529](https://github.com/InvoicePlane/InvoicePlane/pull/1529) — Document the arbitrary file-deletion vulnerability for CVE allocation.
+- Declared explicit `permissions: contents: read` in the `phpunit.yml`, `quickstart.yml`, and `setup.yml` workflows (CWE-272).
 
 ---
 
@@ -847,47 +168,32 @@ The following fields were sanitized and properly escaped to prevent XSS attacks:
 
 ### Added
 
-- PHP 8.2+ compatibility (minimum PHP 8.1 required; PHP 7.x no longer supported)
-- Updated all Composer and Yarn dependencies
+- PHP 8.2+ compatibility (minimum PHP 8.1 required; PHP 7.x no longer supported).
+- Updated all Composer and Yarn dependencies.
 
 ### Security
 
-**CRITICAL: Fixed Local File Inclusion (LFI) vulnerabilities (#1433)**
-- Template validation added to PDF generation endpoints
-- Invoice and quote template parameters now validated before use
-- Prevented directory traversal attacks through template selection
-- Added security logging for template operations
+- **Critical — Local File Inclusion (LFI) in PDF template handling ([#1433](https://github.com/InvoicePlane/InvoicePlane/issues/1433)):** invoice and quote template parameters are now validated before use, blocking directory traversal through template selection, with security logging added for template operations.
+- **Critical — Cross-Site Scripting (XSS):** quote/invoice numbers, tax-rate names, payment-method names, custom-field labels, client addresses, SUMEX observations, and quote notes are now escaped in all templates and views; email templates use proper HTML escaping throughout.
+- **High — Log poisoning in the file-upload controller:** file names are sanitized before logging to prevent control-character injection.
+- **High — SVG logo files blocked:** SVGs can contain embedded JavaScript; convert to PNG, JPG, or GIF instead.
 
-**CRITICAL: Fixed Cross-Site Scripting (XSS) vulnerabilities**
-- Quote and invoice number fields now properly escaped in all templates
-- Tax rate names, payment method names, and custom field labels sanitized
-- Client addresses, Sumex observations, quote notes sanitized for display
-- Email templates use proper HTML escaping throughout
+### Fixed
 
-**HIGH: Fixed log poisoning in file upload controller**
-- File names sanitized before logging
-- Prevents control character injection in log files
-
-**HIGH: SVG logo files blocked**
-- SVGs can contain embedded JavaScript that executes in user browsers
-- Blocked entirely; users should convert to PNG, JPG, or GIF
-
-### Fixed Issues
-
-- #1388, #1387 — Unsafe jQuery plugin vulnerabilities
-- #1389 — Missing workflow permissions in GitHub Actions
-- #1383 — File access vulnerabilities across all controllers
-- #1381 — Version checking and logging for `client_einvoicing` fields
-- #1380 — Dependency: `qs` package bump
-- #1377 — QR code image width reduced to 100 px
-- #1375 — Email address verification: comma and semicolon separators
-- #1373 — Removed deprecated library dependencies
-- #1367, #1368 — Various bug fixes
+- [#1388](https://github.com/InvoicePlane/InvoicePlane/issues/1388), [#1387](https://github.com/InvoicePlane/InvoicePlane/issues/1387) — Unsafe jQuery plugin vulnerabilities.
+- [#1389](https://github.com/InvoicePlane/InvoicePlane/issues/1389) — Missing workflow permissions in GitHub Actions.
+- [#1383](https://github.com/InvoicePlane/InvoicePlane/issues/1383) — File access vulnerabilities across controllers.
+- [#1381](https://github.com/InvoicePlane/InvoicePlane/issues/1381) — Version checking and logging for `client_einvoicing` fields.
+- [#1380](https://github.com/InvoicePlane/InvoicePlane/issues/1380) — Dependency: `qs` package bump.
+- [#1377](https://github.com/InvoicePlane/InvoicePlane/issues/1377) — QR code image width reduced to 100 px.
+- [#1375](https://github.com/InvoicePlane/InvoicePlane/issues/1375) — Email address verification now accepts both comma and semicolon separators.
+- [#1373](https://github.com/InvoicePlane/InvoicePlane/issues/1373) — Removed deprecated library dependencies.
+- [#1367](https://github.com/InvoicePlane/InvoicePlane/issues/1367), [#1368](https://github.com/InvoicePlane/InvoicePlane/issues/1368) — Various bug fixes.
 
 ### Removed
 
-- PHP 7.x compatibility
-- Deprecated library dependencies
+- PHP 7.x compatibility.
+- Deprecated library dependencies.
 
 ---
 
