@@ -66,7 +66,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 | Payment gateway API credentials in plaintext | Medium | 6.5 | CWE-312 | [[#1515]: Sensitive Data Exposure via HTML Source Code (Stripe & PayPal API Keys)](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-8543-x4j8-jj4q) | [@ali-iltizar](https://github.com/ali-iltizar) | [#1515](https://github.com/InvoicePlane/InvoicePlane/pull/1515) |
 | Duplicate payment processing (Stripe callback replay) | Low–Medium | 5.3 | CWE-362 | [[#1496]: Stripe Callback Replay](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-6cpc-hr8h-xgr2) | [@HuajiHD](https://github.com/HuajiHD) | [#1496](https://github.com/InvoicePlane/InvoicePlane/pull/1496) |
 | Email template preview XSS | Low–Medium | 5.4 | CWE-79 | [[#1486]: Stored XSS via Email Templates in InvoicePlane <= 1.7.1](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-4wqv-84px-8jc6) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1486](https://github.com/InvoicePlane/InvoicePlane/pull/1486), [#1500](https://github.com/InvoicePlane/InvoicePlane/pull/1500), [#1516](https://github.com/InvoicePlane/InvoicePlane/pull/1516) |
-| Stored XSS via client email in invoice/quote mailer | — | — | CWE-79 | — | — | — |
+| Stored XSS via client email in invoice/quote mailer | — | — | CWE-79 | — | — | [#1635](https://github.com/InvoicePlane/InvoicePlane/pull/1635) |
 | EXIF metadata in uploaded images | Low | 3.5 | CWE-212 | [[#1507]: Sensitive Information Disclosure via Unstripped EXIF Metadata in Attachments](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-7f67-2v6p-275v) | [@Vijay-raghav7](https://github.com/Vijay-raghav7) | [#1507](https://github.com/InvoicePlane/InvoicePlane/pull/1507) |
 | PHPMailer debug output in AJAX responses | Low–Medium | 4.3 | CWE-209 | — | Internal audit | [#1495](https://github.com/InvoicePlane/InvoicePlane/pull/1495) |
 | XSS session hijack via `cookie_httponly=false` | High | 7.4 | CWE-1004 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
@@ -164,7 +164,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 
 ---
 
-## [1.7.0] — 2024
+## [1.7.0] - 2024
 
 ### Added
 
