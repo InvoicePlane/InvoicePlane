@@ -356,10 +356,10 @@ Even if layers 1-6 are somehow bypassed, layer 7 provides a final safety check.
 
 ## Timeline
 
-- **2026-04-05:** Vulnerability reported
-- **2026-04-06:** Fix developed and tested
-- **2026-04-06:** v1.7.2 released with fix
-- **2026-04-06:** Security advisory published
+- **2026-07-17:** Vulnerability reported
+- **2026-07-17:** Fix developed and tested
+- **2026-07-17:** v1.7.2 released with fix
+- **2026-07-17:** Security advisory published
 
 ## References
 
