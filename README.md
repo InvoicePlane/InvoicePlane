@@ -33,7 +33,7 @@ are in [UPGRADE.md](.github/docs/UPGRADE.md).
 
 ## Key Features
 
-- **Invoice & Quote Management:** Effortlessly Create, send, and manage professional Invoices and Quotes.
+- **Invoice & Quote Management:** Effortlessly create, send, and manage professional invoices and quotes.
 - **Client Management:** Maintain detailed client records, including contact information and transaction history.
 - **Product Management:** Maintain products to add to your Invoices.
 - **Project & Tasks Management:** Maintain tasks to add to your Invoices.
@@ -93,8 +93,9 @@ To remove `index.php` from your URLs:
 
 ## Custom Invoice & Quote Templates
 
-Since version 1.7.2 **custom template names** are added via an **allowlist** in `ipconfig.php` — the filesystem is
-See [CUSTOM_TEMPLATES.md](.github/docs/CUSTOM_TEMPLATES.md) for the how-to.
+Since version 1.7.2, **custom template names** are added through an **allowlist** in `ipconfig.php` —
+the filesystem is never scanned, which is what keeps the template system safe from remote code
+execution. See [CUSTOM_TEMPLATES.md](.github/docs/CUSTOM_TEMPLATES.md) for the how-to.
 
 ---
 
@@ -166,10 +167,9 @@ If you discover a security vulnerability, please report it privately by opening 
 [GitHub Security Advisory](https://github.com/InvoicePlane/InvoicePlane/security/advisories/new)
 before disclosing it publicly. See our [Security Policy](SECURITY.md) for the full process.
 
-#### Need help?
-
-[**Ask on Discord**](https://discord.gg/PPzD2hTrXt)
-Visit our [Community Forums](https://community.invoiceplane.com/) for assistance with logo conversion.
+Published advisories and per-version security notes are collected in
+[`.github/security/`](.github/security/) and on the
+[GitHub Security Advisories](https://github.com/InvoicePlane/InvoicePlane/security/advisories) page.
 
 ---
 
