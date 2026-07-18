@@ -81,6 +81,10 @@ class Families extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('families')) {
+            return;
+        }
+
         $this->mdl_families->delete($id);
         redirect('families');
     }
