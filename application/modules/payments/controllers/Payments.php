@@ -176,6 +176,10 @@ class Payments extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('payments')) {
+            return;
+        }
+
         $this->mdl_payments->delete($id);
         redirect('payments');
     }
