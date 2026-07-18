@@ -6,6 +6,8 @@
 # Dependencies
 /node_modules
 /vendor
+/.yarn
+/.yarnrc.yml
 
 # Workflow artifacts
 audit-report.json
