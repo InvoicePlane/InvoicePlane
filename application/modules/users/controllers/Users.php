@@ -172,6 +172,12 @@ class Users extends Admin_Controller
      */
     public function change_password(string $user_id)
     {
+        if ((int) $user_id === 1 && (string) $user_id !== (string) $this->session->userdata('user_id')) {
+            show_error(trans('access_denied'), 403);
+
+            return;
+        }
+
         if ($this->input->post('btn_cancel')) {
             redirect('users');
         }
