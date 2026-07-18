@@ -1,0 +1,64 @@
+name: compose.yml Check
+
+# Builds and smoke-tests compose.yml — the self-contained setup (single
+# Containerfile: composer + yarn + php-apache built in, config via env vars).
+# "Smoke-tested" means: it builds, the container comes up and stays up, and
+# the web server responds to an HTTP request (even the setup wizard counts) —
+# this is not a full functional/install test.
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'compose.yml'
+      - 'resources/docker/Containerfile'
+      - 'resources/docker/entrypoint.sh'
+      - '.github/workflows/compose-yml-test.yml'
+  pull_request:
+    paths:
+      - 'compose.yml'
+      - 'resources/docker/Containerfile'
+      - 'resources/docker/entrypoint.sh'
+      - '.github/workflows/compose-yml-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compose-yml:
+    name: compose.yml (self-contained)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and start containers
+        run: docker compose -f compose.yml up -d --build
+
+      - name: Wait for the app to respond
+        run: |
+          set -e
+          for i in $(seq 1 30); do
+            if curl -fsS -o /dev/null "http://localhost:4895/"; then
+              echo "App responded after ${i}0s"
+              exit 0
+            fi
+            echo "Waiting for app... (${i}0s)"
+            sleep 10
+          done
+          echo "ERROR: app never responded on http://localhost:4895/"
+          exit 1
+
+      - name: Show container status
+        if: always()
+        run: docker compose -f compose.yml ps
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose -f compose.yml logs
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f compose.yml down -v

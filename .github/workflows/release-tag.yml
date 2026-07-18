@@ -1,0 +1,340 @@
+name: Release on Tag
+
+# Two ways to trigger this:
+#   1. Push a version tag and it builds automatically, e.g.:
+#        git tag v1.7.2-rc-1
+#        git push origin v1.7.2-rc-1
+#   2. workflow_dispatch — run it manually and pick rc/beta/stable. The base
+#      version (e.g. "1.7.2") is auto-detected from the highest-numbered file
+#      in application/modules/setup/sql — that's the "final" version the
+#      codebase's schema migrations are currently building towards, and it's
+#      more current than package.json (which regularly lags behind it).
+#      - rc / beta: auto-increments that suffix's counter for the base
+#            version (rc-1, rc-2, ... / beta-1, beta-2, ...), scanning
+#            existing tags for the highest one.
+#      - stable: tags the bare base version (errors if that tag already
+#            exists).
+#
+# Tags use a "v" prefix and a hyphen before the pre-release number
+# (v1.7.2-rc-1, v1.7.2-beta-1) — matching this repo's actual tag history
+# (v1.7.0, v1.7.1, v1.7.2-beta-1, v1.6.1-beta-1, ... — every real tag has the
+# v prefix) and package.json's existing style ("1.7.1-beta-1"). package.json
+# and application/modules/setup/sql/*.sql never carry the v prefix — only
+# git tags do.
+#
+# Either way, build-scripts/workflow.sh cross-checks the resolved version's
+# base against package.json and the latest schema migration before it lets
+# the build proceed — see that script for details.
+#
+# The build reuses build-scripts/workflow.sh so CI runs the exact same
+# pipeline as a local `make release` (composer install --no-dev, yarn install
+# --frozen-lockfile && yarn grunt, aggressive vendor cleanup, package).
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'      # stable, e.g. v1.7.2
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'    # pre-release, e.g. v1.7.2-rc-1, v1.7.2-beta-1
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type (rc, beta, stable)'
+        required: true
+        default: 'rc'
+        type: choice
+        options:
+          - rc
+          - beta
+          - stable
+
+permissions:
+  contents: write   # create the draft release + upload assets
+
+jobs:
+  build-release:
+    name: Build and package release
+    runs-on: ubuntu-latest
+
+    steps:
+      # ----------------------------------------------------------------
+      # Sources: InvoicePlane (at the tag) + themes + e-invoices + build-scripts
+      # ----------------------------------------------------------------
+      - name: Checkout InvoicePlane (tag)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Checkout build-scripts (for workflow.sh)
+        uses: actions/checkout@v4
+        with:
+          repository: InvoicePlane/build-scripts
+          path: _build-scripts
+
+      - name: Checkout themes
+        uses: actions/checkout@v4
+        with:
+          repository: InvoicePlane/InvoicePlane-Themes
+          path: _themes
+
+      - name: Checkout e-invoices
+        uses: actions/checkout@v4
+        with:
+          repository: InvoicePlane/InvoicePlane-e-invoices
+          path: _e-invoices
+
+      - name: Stage build script outside the packaged tree
+        run: |
+          set -euo pipefail
+          cp _build-scripts/workflow.sh "${RUNNER_TEMP}/workflow.sh"
+
+      # ----------------------------------------------------------------
+      # Resolve the version from the tag
+      # ----------------------------------------------------------------
+      - name: Resolve version
+        id: version
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "push" ]; then
+            VERSION="${GITHUB_REF_NAME}"
+          else
+            # Manual dispatch: auto-increment from the version the codebase's
+            # schema migrations are currently building towards (the
+            # highest-numbered file in application/modules/setup/sql), rather
+            # than requiring the version to be typed in by hand.
+            SQL_DIR="application/modules/setup/sql"
+            LATEST_SQL_FILE=$(find "$SQL_DIR" -maxdepth 1 -type f -name '[0-9][0-9][0-9]_*.sql' | sort | tail -n 1)
+            if [ -z "$LATEST_SQL_FILE" ]; then
+              echo "ERROR: No migration files found in $SQL_DIR — cannot determine the base version."
+              exit 1
+            fi
+            BASE_VERSION=$(basename "$LATEST_SQL_FILE" .sql | sed -E 's/^[0-9]+_//')
+            echo "Base version from latest schema migration ($(basename "$LATEST_SQL_FILE")): ${BASE_VERSION}"
+
+            RELEASE_TYPE="${{ github.event.inputs.release_type }}"
+            case "$RELEASE_TYPE" in
+              stable)
+                # Duplicate-tag / regression checks happen in the next step.
+                VERSION="v${BASE_VERSION}"
+                ;;
+              rc|beta)
+                LAST_NUM=$(git tag -l "v${BASE_VERSION}-${RELEASE_TYPE}-*" | sed -E "s/^v${BASE_VERSION}-${RELEASE_TYPE}-//" | sort -n | tail -n 1)
+                NEXT_NUM=$(( ${LAST_NUM:-0} + 1 ))
+                VERSION="v${BASE_VERSION}-${RELEASE_TYPE}-${NEXT_NUM}"
+                ;;
+              *)
+                echo "ERROR: Invalid release_type: ${RELEASE_TYPE}"
+                exit 1
+                ;;
+            esac
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          if [[ "${VERSION}" =~ (-rc|-alpha|-beta|-dev) ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Building version: ${VERSION}"
+
+      - name: Verify version against the latest existing tag
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          BASE_VERSION="${VERSION%%-*}"
+
+          # fetch-depth: 0 + fetch-tags: true above already pulled every tag,
+          # so the full repo history answers this without hitting the GitHub
+          # API separately. Scoped to v1.x tags only — v2.0.0-alpha.1 etc.
+          # belong to the unrelated v2 (release.yml) line and must not be
+          # compared against here.
+          LATEST_TAG=$(git tag -l | grep -E '^v1\.[0-9]+\.[0-9]+(-.*)?$' | sort -V | tail -n 1 || true)
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No existing tags — nothing to compare against."
+            exit 0
+          fi
+
+          LATEST_BASE="${LATEST_TAG%%-*}"
+          echo "Latest existing tag: ${LATEST_TAG} (base ${LATEST_BASE})"
+          echo "Building: ${VERSION} (base ${BASE_VERSION})"
+
+          HIGHEST_BASE=$(printf '%s\n%s\n' "$LATEST_BASE" "$BASE_VERSION" | sort -V | tail -n 1)
+          if [ "$HIGHEST_BASE" = "$LATEST_BASE" ] && [ "$BASE_VERSION" != "$LATEST_BASE" ]; then
+            echo "ERROR: Building ${VERSION} (base ${BASE_VERSION}), which is older than the"
+            echo "       latest existing tag ${LATEST_TAG} (base ${LATEST_BASE}). Refusing to"
+            echo "       release a regression — check the tag/version being built."
+            exit 1
+          fi
+
+          if [ "${{ github.event_name }}" != "push" ] && git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
+            echo "ERROR: Tag ${VERSION} already exists."
+            exit 1
+          fi
+
+          echo "Version check passed against the latest existing tag."
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          BASE_VERSION="${VERSION#v}"
+          BASE_VERSION="${BASE_VERSION%%-*}"
+          NOTES="${RUNNER_TEMP}/RELEASE_NOTES.md"
+          CHANGELOG=".github/CHANGELOG.md"
+
+          {
+            echo "# InvoicePlane ${VERSION}"
+            echo ""
+
+            # Prefer the maintainer-written CHANGELOG.md entry for this version
+            # ("## [1.7.2] - ...") over a bare commit list — it's the actual
+            # "what's new" writeup, not just noise from every merged PR.
+            START_LINE=$(grep -n "^## \[${BASE_VERSION}\]" "$CHANGELOG" 2>/dev/null | head -1 | cut -d: -f1 || true)
+            if [ -n "${START_LINE:-}" ]; then
+              echo "Sourcing release notes from CHANGELOG.md's [${BASE_VERSION}] entry." >&2
+              END_LINE=$(awk -v start="$START_LINE" 'NR>start && /^## \[/{print NR; exit}' "$CHANGELOG")
+              if [ -z "$END_LINE" ]; then
+                END_LINE=$(wc -l < "$CHANGELOG")
+              else
+                END_LINE=$((END_LINE - 1))
+              fi
+              sed -n "$((START_LINE + 1)),${END_LINE}p" "$CHANGELOG"
+            else
+              echo "No CHANGELOG.md entry found for [${BASE_VERSION}] — falling back to the commit list." >&2
+              PREV_TAG="$(git describe --tags --abbrev=0 "${VERSION}^" 2>/dev/null || true)"
+              if [ -n "${PREV_TAG}" ]; then
+                echo "## Changes since ${PREV_TAG}"
+                echo ""
+                git log "${PREV_TAG}..${VERSION}" --pretty=format:'- %s (%h)' 2>/dev/null || true
+              else
+                echo "Automated release build for ${VERSION}."
+              fi
+            fi
+
+            echo ""
+            echo ""
+            echo "---"
+            echo "Built: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          } > "${NOTES}"
+          echo "path=${NOTES}" >> "$GITHUB_OUTPUT"
+          cat "${NOTES}"
+
+      # ----------------------------------------------------------------
+      # Compose the source tree: themes -> assets, e-invoices -> application
+      # ----------------------------------------------------------------
+      - name: Copy in themes
+        run: |
+          set -euo pipefail
+          mkdir -p assets
+          for theme in und_ip_nord next_ip_dark; do
+            if [ -d "_themes/v1/${theme}" ]; then
+              cp -r "_themes/v1/${theme}" assets/
+              echo "Copied theme: ${theme}"
+            else
+              echo "Theme ${theme} not found, skipping."
+            fi
+          done
+
+      - name: Copy in e-invoice configs and templates
+        run: |
+          set -euo pipefail
+          cp -rf _e-invoices/application/. application/
+          echo "Copied e-invoice configs and templates into application/"
+
+      # ----------------------------------------------------------------
+      # Translations from Crowdin (optional — needs the API secrets)
+      # ----------------------------------------------------------------
+      - name: Download translations from Crowdin
+        id: crowdin
+        continue-on-error: true
+        uses: crowdin/github-action@v2
+        with:
+          download_translations: true
+          create_pull_request: false
+          config: 'crowdin.yml'
+        env:
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      # ----------------------------------------------------------------
+      # Toolchain
+      # ----------------------------------------------------------------
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: gd, bcmath, dom, intl, xml, zip, mbstring, curl
+          tools: composer
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'yarn'
+
+      - name: Display tool versions
+        run: |
+          php -v | head -n 1
+          composer --version
+          node -v
+          yarn -v
+
+      # ----------------------------------------------------------------
+      # Build + clean + package via the shared workflow.sh
+      # ----------------------------------------------------------------
+      - name: Remove helper checkouts from the packaged tree
+        run: |
+          set -euo pipefail
+          # These live inside the workspace only so actions/checkout could write
+          # them; they must not end up in the release archive.
+          rm -rf _build-scripts _themes _e-invoices langs
+
+      - name: Build release with build-scripts/workflow.sh
+        env:
+          IP_DIR: ${{ github.workspace }}
+          BUILD_DIR: ${{ runner.temp }}/build
+          PACKAGE_NAME: ip-${{ steps.version.outputs.version }}.zip
+          IP_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          bash "${RUNNER_TEMP}/workflow.sh"
+
+      # ----------------------------------------------------------------
+      # Publish: artifact + draft GitHub release
+      # ----------------------------------------------------------------
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ip-${{ steps.version.outputs.version }}
+          path: |
+            ${{ runner.temp }}/build/ip-${{ steps.version.outputs.version }}.zip
+            ${{ runner.temp }}/build/sha256.txt
+            ${{ runner.temp }}/build/md5.txt
+          retention-days: 90
+
+      - name: Create draft GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: InvoicePlane ${{ steps.version.outputs.version }}
+          body_path: ${{ steps.notes.outputs.path }}
+          draft: true
+          prerelease: ${{ steps.version.outputs.prerelease }}
+          files: |
+            ${{ runner.temp }}/build/ip-${{ steps.version.outputs.version }}.zip
+            ${{ runner.temp }}/build/sha256.txt
+            ${{ runner.temp }}/build/md5.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          {
+            echo "## Release build complete"
+            echo ""
+            echo "**Version:** \`${{ steps.version.outputs.version }}\`"
+            echo "**Pre-release:** ${{ steps.version.outputs.prerelease }}"
+            echo "**Package:** \`ip-${{ steps.version.outputs.version }}.zip\`"
+            echo ""
+            echo "A **draft** release was created — review and publish it when ready."
+          } >> "$GITHUB_STEP_SUMMARY"

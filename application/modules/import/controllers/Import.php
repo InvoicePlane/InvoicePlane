@@ -110,6 +110,10 @@ class Import extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('import')) {
+            return;
+        }
+
         $this->mdl_import->delete($id);
         redirect('import');
     }

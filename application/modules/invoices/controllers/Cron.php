@@ -23,7 +23,9 @@ class Cron extends Base_Controller
     {
         // Check the provided cron key
         if ( ! hash_equals((string) get_setting('cron_key'), (string) $cron_key)) {
-            log_message('error', '[Cron Recurring Invoices] Wrong cron key provided! ' . $cron_key);
+            $this->load->helper('file_security');
+            log_message('error', '[Cron Recurring Invoices] Wrong cron key provided! '
+                . sanitize_for_logging((string) $cron_key));
             show_error(trans('wrong_cron_key_provided'), 500);
             exit('Wrong cron key!');
         }

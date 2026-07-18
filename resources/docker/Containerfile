@@ -13,7 +13,7 @@ COPY Gruntfile.js ./
 COPY assets ./assets
 RUN yarn build
 
-FROM php:8.5-apache
+FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		libfreetype6-dev \

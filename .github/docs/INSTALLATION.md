@@ -92,40 +92,51 @@ The **Prepare** phase sets up your development environment for the first time.
    ```
    This compiles SASS to CSS and minifies JavaScript files using Grunt.
 
-5. **Configure Application:**
+5. **Configure Application** (optional — only if you're not using `docker-compose.yml`'s
+   automatic config generation, see below):
    ```bash
    cp ipconfig.php.example ipconfig.php
    ```
    Edit `ipconfig.php` to set:
-   - Database credentials (use values from `docker-compose.yml` for local dev)
-   - Base URL (use `http://localhost` for local dev)
+   - Database credentials (use the values from `docker-compose.yml` for local dev:
+     `DB_HOSTNAME=db`, `DB_USERNAME=ipdevdb`, `DB_PASSWORD=ipdevdb`, `DB_DATABASE=invoiceplane_db`)
+   - `IP_URL=http://ivpl.local` for local dev (see the hostname note below)
    - Environment settings
 
 ### StartMeUp: Start Development Environment
 
-The **StartMeUp** phase launches your development environment.
+The **StartMeUp** phase launches your development environment. Two Docker setups are available
+— see [resources/docker/README.md](../../resources/docker/README.md) for the full comparison.
 
 #### Using Docker (Recommended)
 
-Docker provides a consistent development environment with PHP, MariaDB, nginx, and phpMyAdmin.
+`docker-compose.yml` provides separated `php`/`nginx`/`db`/`phpmyadmin` services that bind-mount
+your working tree, so PHP/frontend edits are reflected immediately without a rebuild — this is
+the one to use for active development. (`compose.yml` is the other option: a single
+self-contained image, good for quickly spinning up InvoicePlane to test something, but not for
+iterating on code — see [resources/docker/README.md](../../resources/docker/README.md).)
+
+Add `127.0.0.1 ivpl.local` to your `/etc/hosts` file first — the bundled nginx config expects
+that hostname, not `localhost`.
 
 **Start Docker:**
 ```bash
-docker-compose up -d
+docker compose -f docker-compose.yml up -d --build
 ```
+`ipconfig.php` is generated automatically on first run if you skipped step 5 above.
 
 **View Logs:**
 ```bash
-docker-compose logs -f
+docker compose -f docker-compose.yml logs -f
 ```
 
 **Stop Services:**
 ```bash
-docker-compose down
+docker compose -f docker-compose.yml down
 ```
 
 **Access Points:**
-- **InvoicePlane**: <http://localhost>
+- **InvoicePlane**: <http://ivpl.local>
 - **phpMyAdmin**: <http://localhost:8081>
   - Username: `ipdevdb`
   - Password: `ipdevdb`
@@ -143,7 +154,7 @@ The **Workflow** phase covers your day-to-day development activities.
 
 1. **Start Docker Environment** (if using Docker):
    ```bash
-   docker-compose up -d
+   docker compose -f docker-compose.yml up -d
    ```
 
 2. **Make Code Changes:**
@@ -217,7 +228,10 @@ The **Workflow** phase covers your day-to-day development activities.
 
 ## Docker Installation
 
-Docker provides the easiest and most consistent development environment for InvoicePlane.
+Docker provides the easiest and most consistent development environment for InvoicePlane. This
+repository ships two different compose files for two different purposes — see
+[resources/docker/README.md](../../resources/docker/README.md) for the full comparison. This
+section covers `docker-compose.yml`, the one for active development.
 
 ### Prerequisites
 
@@ -239,41 +253,44 @@ Docker provides the easiest and most consistent development environment for Invo
    yarn build
    ```
 
-3. **Configure Application:**
+3. **Add the required hostname** — the bundled nginx config expects `ivpl.local`, not
+   `localhost`:
+   ```bash
+   echo "127.0.0.1 ivpl.local" | sudo tee -a /etc/hosts
+   ```
+
+4. **Configure Application** (optional): `ipconfig.php` is generated automatically on first
+   start. To configure it yourself instead:
    ```bash
    cp ipconfig.php.example ipconfig.php
    ```
    Edit `ipconfig.php` with these settings for Docker:
    ```ini
-   # Database settings
-   DB_HOSTNAME=invoiceplane-db
+   # Database settings — DB_HOSTNAME is the compose service name, not the container name
+   DB_HOSTNAME=db
    DB_USERNAME=ipdevdb
    DB_PASSWORD=ipdevdb
    DB_DATABASE=invoiceplane_db
    DB_PORT=3306
-   
-   # URL settings
-   URL_BASE=http://localhost/
+
+   # URL settings — the config key is IP_URL, not URL_BASE
+   IP_URL=http://ivpl.local
    ```
 
-4. **Start Services:**
+5. **Start Services:**
    ```bash
-   # PHP 8.1 (default)
-   docker-compose up -d
-   
-   # OR PHP 8.2+
-   docker-compose -f docker-compose.php82.yml up -d
+   docker compose -f docker-compose.yml up -d --build
    ```
 
-5. **Complete Setup:**
-   - Navigate to <http://localhost/index.php/setup>
+6. **Complete Setup:**
+   - Navigate to <http://ivpl.local/index.php/setup>
    - Follow the setup wizard
-   - Use the database credentials from step 3
+   - Use the database credentials from step 4
 
 ### Docker Services Included
 
-- **PHP-FPM**: PHP 8.1 or 8.2+ (based on your choice)
-- **Nginx**: Web server on port 80
+- **PHP-FPM**: PHP 8.2
+- **Nginx**: Web server on port 80 (`http://ivpl.local`)
 - **MariaDB**: Database server on port 3306
 - **phpMyAdmin**: Database management on port 8081
 
@@ -281,19 +298,19 @@ Docker provides the easiest and most consistent development environment for Invo
 
 ```bash
 # View logs
-docker-compose logs -f
+docker compose -f docker-compose.yml logs -f
 
 # View logs for specific service
-docker-compose logs -f php
+docker compose -f docker-compose.yml logs -f php
 
 # Restart services
-docker-compose restart
+docker compose -f docker-compose.yml restart
 
 # Stop services
-docker-compose down
+docker compose -f docker-compose.yml down
 
 # Rebuild containers (after Dockerfile changes)
-docker-compose up -d --build
+docker compose -f docker-compose.yml up -d --build
 
 # Access PHP container shell
 docker exec -it invoiceplane-php bash
