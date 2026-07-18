@@ -49,6 +49,7 @@ For open-source projects, you can contact:
 | **Vulnerability Severity** | HIGH |
 | **CVSS v3.1 Base Score** | 7.1 |
 | **CVSS v3.1 Vector** | CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:H |
+| **Assigned CVE IDs** | CVE-2026-39978, CVE-2026-40298 |
 
 ### CVSS v3.1 Score Breakdown
 
@@ -99,10 +100,11 @@ validation and directory confinement.
 | Date | Event |
 |------|-------|
 | Unknown | Vulnerability discovered (researcher to provide date) |
-| 2026-04-06 | Vulnerability fixed in InvoicePlane v1.7.2 |
-| 2026-04-19 | Security advisory created and published |
-| 2026-04-19 | CVE request submitted (to be confirmed) |
-| TBD | CVE ID assigned |
+| 2026-07-17 | Fix developed and tested |
+| 2026-07-17 | CVE request submitted |
+| 2026-07-17 | Fix released in InvoicePlane v1.7.2 |
+| 2026-07-17 | Security advisory created and published |
+| Assigned | CVE-2026-39978 and CVE-2026-40298 |
 
 ### References
 
@@ -113,7 +115,7 @@ validation and directory confinement.
 
 **Fix Commit:**
 - Repository: https://github.com/InvoicePlane/InvoicePlane
-- Release: v1.7.2 (2026-04-06)
+- Release: v1.7.2 (2026-07-17)
 - Files changed:
   - `application/modules/settings/controllers/Settings.php`
   - `application/helpers/file_security_helper.php`
@@ -232,7 +234,7 @@ echo "[*] Attack complete. Check if target file was deleted."
 ### Credit and Acknowledgments
 
 **Reported By:**
-- Security Researcher (name to be provided by reporter)
+- [@ali-iltizar](https://github.com/ali-iltizar) and [@iiihaiii](https://github.com/iiihaiii)
 
 **Fixed By:**
 - InvoicePlane Core Development Team
@@ -334,6 +336,5 @@ Contact:
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** 2026-04-19  
-**Status:** Ready for CVE Request Submission
+**Document Version:** 1.1  
+**Status:** CVE-2026-39978 and CVE-2026-40298 assigned

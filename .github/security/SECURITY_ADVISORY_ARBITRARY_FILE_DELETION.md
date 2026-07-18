@@ -1,4 +1,4 @@
-# Security Advisory: Arbitrary File Deletion Vulnerability (CVE Pending)
+# Security Advisory: Arbitrary File Deletion Vulnerability (CVE-2026-39978, CVE-2026-40298)
 
 ## Overview
 
@@ -9,7 +9,8 @@
 **CWE:** CWE-22 (Improper Limitation of a Pathname to a Restricted Directory)  
 **Affected Versions:** InvoicePlane v1.7.0, v1.7.1  
 **Fixed Version:** InvoicePlane v1.7.2  
-**CVE ID:** Pending Allocation  
+**CVE ID:** CVE-2026-39978, CVE-2026-40298  
+**Advisories:** [GHSA-45vj-9p52-f8mq](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-45vj-9p52-f8mq), [GHSA-65v2-4g37-rxjw](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-65v2-4g37-rxjw)  
 
 ## Vulnerability Description
 
@@ -259,7 +260,7 @@ function validate_safe_filename(string $filename): array
 
     // Check for Windows drive letters
     if (preg_match('/^[a-zA-Z]:/', $filename)) {
-        return ['valid' => false, 'hash' => $hash, 'error' => 'drive_letter');
+        return ['valid' => false, 'hash' => $hash, 'error' => 'drive_letter'];
     }
 
     return ['valid' => true, 'hash' => $hash];
@@ -391,10 +392,9 @@ curl "http://invoiceplane.local/index.php/settings/remove_logo/invoice"
 
 ## Timeline
 
-- **Discovery Date:** Not publicly disclosed (discovered internally)
-- **Initial Fix:** 2026-04-06 (v1.7.2 release)
-- **Public Disclosure:** 2026-04-19 (this advisory)
-- **CVE Request:** 2026-04-19 (pending allocation)
+- **Reported:** Privately disclosed via GitHub Security Advisory
+- **Fixed:** InvoicePlane v1.7.2
+- **CVE Assigned:** CVE-2026-39978, CVE-2026-40298
 
 ## CVE Allocation Information
 
@@ -434,7 +434,8 @@ curl "http://invoiceplane.local/index.php/settings/remove_logo/invoice"
 
 ## Credits
 
-- **Reported by:** Security researcher (to be credited upon CVE allocation)
+- **Reported by:** [@ali-iltizar](https://github.com/ali-iltizar) and [@iiihaiii](https://github.com/iiihaiii),
+  via private [GitHub Security Advisories](https://github.com/InvoicePlane/InvoicePlane/security/advisories)
 - **Fixed by:** InvoicePlane Core Development Team
 - **Advisory by:** InvoicePlane Security Team
 
@@ -449,6 +450,5 @@ For security concerns or questions about this advisory:
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** 2026-04-19  
-**Status:** CVE Pending Allocation
+**Document Version:** 1.1  
+**Status:** Published — CVE-2026-39978 and CVE-2026-40298 assigned
