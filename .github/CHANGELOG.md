@@ -32,6 +32,7 @@ Without your reports this release would not have been possible:
 [@ali-iltizar](https://github.com/ali-iltizar),
 [@capt-bl4ck0ut](https://github.com/capt-bl4ck0ut),
 [@chakrapani150](https://github.com/chakrapani150),
+[@Char0n1507](https://github.com/Char0n1507),
 [@Chittu13](https://github.com/Chittu13),
 [@cyabell](https://github.com/cyabell),
 [@de3erve-hunter](https://github.com/de3erve-hunter),
@@ -113,11 +114,11 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 | Session fixation — `SESS_REGENERATE_DESTROY` defaulted `false` | Medium | 6.8 | CWE-384 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
 | Log injection via password-reset token/email | Low | 3.7 | CWE-117 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
 | Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | [#1567](https://github.com/InvoicePlane/InvoicePlane/pull/1567) |
-| Session auth check used loose comparison (`user_type`/`required_key`) | Low | — | CWE-697 | — | — | [#1640](https://github.com/InvoicePlane/InvoicePlane/pull/1640) |
-| Log injection via unsanitized `cron_key` in `Cron::recur()` | Low | — | CWE-117 | — | — | [#1639](https://github.com/InvoicePlane/InvoicePlane/pull/1639) |
-| IDOR: any admin could change the primary admin's password | High | — | CWE-639 | — | — | [#1638](https://github.com/InvoicePlane/InvoicePlane/pull/1638) |
-| CSRF on seven `delete()`-style endpoints missing token validation | High | — | CWE-352 | — | — | [#1637](https://github.com/InvoicePlane/InvoicePlane/pull/1637) |
-| CSRF bypass in `Recurring::stop()` via GET request | High | — | CWE-352 | — | — | [#1636](https://github.com/InvoicePlane/InvoicePlane/pull/1636) |
+| Session auth check used loose comparison (`user_type`/`required_key`) | Low | 4.8 | CWE-697 | [[GHSA-346c-gqqq-mrm2]: Loose Type Comparison in Core Authentication Check (Defense-in-Depth)](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-346c-gqqq-mrm2) | [@Char0n1507](https://github.com/Char0n1507) | [#1640](https://github.com/InvoicePlane/InvoicePlane/pull/1640) |
+| Log injection via unsanitized `cron_key` in `Cron::recur()` | Low | 5.3 | CWE-117 | [[GHSA-g53q-v2pv-xr83]: Log Injection via Unsanitized User Input in Cron Key Error Logging](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-g53q-v2pv-xr83) | [@Char0n1507](https://github.com/Char0n1507) | [#1639](https://github.com/InvoicePlane/InvoicePlane/pull/1639) |
+| IDOR: any admin could change the primary admin's password | High | 6.5 | CWE-639 | [[GHSA-x38q-xhjj-jr8w]: IDOR: Horizontal Privilege Escalation via Password Change Without Authorization Check](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x38q-xhjj-jr8w) | [@Char0n1507](https://github.com/Char0n1507) | [#1638](https://github.com/InvoicePlane/InvoicePlane/pull/1638) |
+| CSRF on seven `delete()`-style endpoints missing token validation | High | 6.5 | CWE-352 | [[GHSA-9372-vj68-hmc3]: Missing CSRF Token Validation on Multiple Delete Endpoints](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-9372-vj68-hmc3) | [@Char0n1507](https://github.com/Char0n1507) | [#1637](https://github.com/InvoicePlane/InvoicePlane/pull/1637) |
+| CSRF bypass in `Recurring::stop()` via GET request | High | 6.5 | CWE-352 | [[GHSA-qf9q-2hxm-4wh9]: CSRF: Recurring Invoice State Change via GET Request Without CSRF Protection](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-qf9q-2hxm-4wh9) | [@Char0n1507](https://github.com/Char0n1507) | [#1636](https://github.com/InvoicePlane/InvoicePlane/pull/1636) |
 
 ### Security fixes
 
