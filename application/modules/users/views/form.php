@@ -96,7 +96,7 @@ if ( ! $id) {
                                 <input type="password" name="user_passwordv" id="user_passwordv" class="form-control" required>
                             </div>
 <?php
-} else { // Edit user
+} elseif ($this->session->userdata('user_id') == $id) { // Edit own account
     ?>
                             <div class="form-group">
                                 <a href="<?php echo site_url('users/change_password/' . $id); ?>"
