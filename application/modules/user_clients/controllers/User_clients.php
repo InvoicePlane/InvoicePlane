@@ -104,7 +104,7 @@ class User_Clients extends Admin_Controller
      */
     public function delete($user_client_id)
     {
-        if ( ! $this->ensure_valid_post_request('clients')) {
+        if ( ! $this->ensure_valid_post_request('user_clients/index')) {
             return;
         }
 

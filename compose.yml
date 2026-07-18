@@ -16,6 +16,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - invoiceplane-uploads:/var/www/html/uploads
+      - invoiceplane-storage:/var/www/html/storage
 
   db:
     image: mariadb:11
@@ -30,3 +33,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - invoiceplane-db:/var/lib/mysql
+
+volumes:
+  invoiceplane-uploads:
+  invoiceplane-storage:
+  invoiceplane-db:

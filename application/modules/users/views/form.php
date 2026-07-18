@@ -102,7 +102,7 @@ if ( ! $id) {
                                 <input type="password" name="user_passwordv" id="user_passwordv" class="form-control" required>
                             </div>
 <?php
-} else { // Edit user
+} elseif ($id != 1 || $this->session->userdata('user_id') == $id) { // Not primary admin, or editing own account
     ?>
                             <div class="form-group">
                                 <a href="<?php echo site_url('users/change_password/' . $id); ?>"

@@ -1,0 +1,54 @@
+# Crowdin configuration for InvoicePlane translations.
+#
+# Source strings live in application/language/english/*_lang.php. Crowdin
+# uploads those as the source of truth and downloads translated copies back
+# into application/language/<name>, using the same locale -> folder-name
+# mapping as build-scripts/languages.json (keep the two in sync manually if
+# a new language is added on Crowdin).
+#
+# Required repository secrets (Settings -> Secrets and variables -> Actions):
+#   CROWDIN_PROJECT_ID
+#   CROWDIN_PERSONAL_TOKEN
+
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_PERSONAL_TOKEN
+base_path: .
+
+files:
+  - source: /application/language/english/*_lang.php
+    translation: /application/language/%language%/%original_file_name%
+    languages_mapping:
+      language:
+        ar: arabic
+        az: azerbaijani
+        ca: catalan
+        cs: czech
+        da: danish
+        de: german
+        el: greek
+        es-AR: spanish Argentina
+        es-ES: spanish
+        et: estonian
+        fa: persian
+        fi: finnish
+        fr: french
+        hr: croatian
+        id: indonesian
+        it: italian
+        ja: japanese
+        ko: korean
+        lt: lithuanian
+        lv: latvian
+        nl: dutch
+        no: norwegian
+        pl: polish
+        pt-BR: portuguese brazilian
+        pt-PT: portuguese
+        ro: romanian
+        sl: slovenian
+        sq: albanian
+        sv-SE: swedish
+        th: thai
+        tr: turkish
+        vi: vietnamese
+        zh-CN: chinese simplified

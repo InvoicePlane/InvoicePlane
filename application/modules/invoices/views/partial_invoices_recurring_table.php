@@ -41,9 +41,13 @@ foreach ($recurring_invoices as $invoice) {
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?php echo site_url('invoices/recurring/stop/' . $invoice->invoice_recurring_id); ?>">
-                                            <i class="fa fa-ban fa-margin"></i> <?php _trans('stop'); ?>
-                                        </a>
+                                        <form action="<?php echo site_url('invoices/recurring/stop/' . $invoice->invoice_recurring_id); ?>"
+                                              method="POST">
+                                            <?php _csrf_field(); ?>
+                                            <button type="submit" class="dropdown-button">
+                                                <i class="fa fa-ban fa-margin"></i> <?php _trans('stop'); ?>
+                                            </button>
+                                        </form>
                                     </li>
                                     <li>
                                         <form action="<?php echo site_url('invoices/recurring/delete/' . $invoice->invoice_recurring_id); ?>"

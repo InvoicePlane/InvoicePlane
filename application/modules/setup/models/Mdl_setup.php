@@ -220,8 +220,23 @@ class Mdl_Setup extends CI_Model
                 UNIQUE (user_id, user_custom_fieldid)
             );');
 
+        // Security (CWE-89): $value['table'] is a stored custom_field_table value
+        // that is interpolated below as a raw table identifier. A pre-1.5.0 install
+        // could have had an arbitrary value stored through the (then-unguarded)
+        // custom-field workflow, so restrict it to the known custom tables.
+        $allowed_custom_tables = [];
+        foreach ($tables as $allowed_table) {
+            $allowed_custom_tables[] = 'ip_' . $allowed_table . '_custom';
+        }
+
         // Migrate Data
         foreach ($drop_columns as $value) {
+            if ( ! in_array($value['table'], $allowed_custom_tables, true)) {
+                $this->load->helper('file_security');
+                log_message('error', 'Skipping custom field with invalid table during 1.5.0 upgrade: ' . sanitize_for_logging((string) $value['table']));
+                continue;
+            }
+
             $res = $this->db->query('SELECT * FROM ' . $value['table']);
 
             preg_match('/^ip_(.*?)_custom$/i', $value['table'], $matches);

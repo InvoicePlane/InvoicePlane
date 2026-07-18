@@ -1,5 +1,15 @@
 name: Build Production Release
 
+# Two ways to trigger this:
+#   1. workflow_dispatch — pick a release_type (alpha/beta/stable) and the
+#      version is auto-incremented from the previous v2 tag (existing v2
+#      behaviour, unchanged).
+#   2. push a v2-style tag (e.g. v2.0.0-alpha.1, v2.0.0-beta.1) — builds
+#      exactly that tag, no auto-increment. Mirrors release-tag.yml's
+#      tag-triggered flow for v1.
+#
+# The bare stable tag pattern is intentionally left commented out below:
+# v2 isn't ready for an automatic stable release yet. Uncomment it once it is.
 on:
   workflow_dispatch:
     inputs:
@@ -12,8 +22,15 @@ on:
           - alpha
           - beta
           - stable
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+-alpha.[0-9]+'   # pre-release, e.g. v2.0.0-alpha.1
+      - 'v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+'    # pre-release, e.g. v2.0.0-beta.1
+      # - 'v[0-9]+.[0-9]+.[0-9]+'              # stable — not wired up yet
 
 env:
+  # Only meaningful for workflow_dispatch runs; tag-triggered runs derive
+  # their own release label from the pushed tag inside the version step.
   RELEASE_TYPE: ${{ github.event.inputs.release_type || 'alpha' }}
   LOG_DIR: 'workflow_logs'
 
@@ -194,126 +211,161 @@ jobs:
           set -o pipefail
           
           LOG_FILE="${{ env.LOG_DIR }}/version.log"
-          
+
           echo "=========================================" | tee -a "$LOG_FILE"
           echo "Generating Version Tag" | tee -a "$LOG_FILE"
           echo "=========================================" | tee -a "$LOG_FILE"
-          
-          # Get the latest tag or start with v2.0.0-alpha.1
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v2.0.0-alpha.1")
-          echo "Previous tag: ${PREVIOUS_TAG}" | tee -a "$LOG_FILE"
-          
-          # Extract version numbers and suffix
-          VERSION=${PREVIOUS_TAG#v}
-          
-          # Parse version with alpha/beta suffix
-          if [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)-alpha\.([0-9]+)$ ]]; then
-            MAJOR="${BASH_REMATCH[1]}"
-            MINOR="${BASH_REMATCH[2]}"
-            PATCH="${BASH_REMATCH[3]}"
-            ALPHA_NUM="${BASH_REMATCH[4]}"
-          elif [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)-beta\.([0-9]+)$ ]]; then
-            MAJOR="${BASH_REMATCH[1]}"
-            MINOR="${BASH_REMATCH[2]}"
-            PATCH="${BASH_REMATCH[3]}"
-            BETA_NUM="${BASH_REMATCH[4]}"
-          elif [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-            MAJOR="${BASH_REMATCH[1]}"
-            MINOR="${BASH_REMATCH[2]}"
-            PATCH="${BASH_REMATCH[3]}"
+
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # Tag-triggered: build exactly the pushed tag, no auto-increment
+            # (mirrors release-tag.yml's v1 flow). The tag already exists as
+            # a ref (fetch-tags: true), so the changelog can diff up to it.
+            NEW_TAG="${GITHUB_REF_NAME}"
+            NEW_VERSION="${NEW_TAG#v}"
+            PREVIOUS_TAG=$(git describe --tags --abbrev=0 "${NEW_TAG}^" 2>/dev/null || echo "")
+            CHANGELOG_END_REF="${NEW_TAG}"
+            echo "Tag-triggered build: ${NEW_TAG}" | tee -a "$LOG_FILE"
+
+            if [[ "${NEW_TAG}" =~ -alpha\. ]]; then
+              RELEASE_LABEL="alpha"
+              PRERELEASE=true
+            elif [[ "${NEW_TAG}" =~ -beta\. ]]; then
+              RELEASE_LABEL="beta"
+              PRERELEASE=true
+            else
+              RELEASE_LABEL="stable"
+              PRERELEASE=false
+            fi
           else
-            # Default to 2.0.0 if parsing fails
-            MAJOR=2
-            MINOR=0
-            PATCH=0
+            # workflow_dispatch: auto-increment from the previous tag based on
+            # the selected release_type (existing v2 behaviour, unchanged).
+            # NEW_TAG doesn't exist as a ref yet at this point (the release
+            # step creates it), so the changelog diffs up to HEAD instead.
+            RELEASE_LABEL="${{ env.RELEASE_TYPE }}"
+            CHANGELOG_END_REF="HEAD"
+
+            # Get the latest tag or start with v2.0.0-alpha.1
+            PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v2.0.0-alpha.1")
+            echo "Previous tag: ${PREVIOUS_TAG}" | tee -a "$LOG_FILE"
+
+            # Extract version numbers and suffix
+            VERSION=${PREVIOUS_TAG#v}
+
+            # Parse version with alpha/beta suffix
+            if [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)-alpha\.([0-9]+)$ ]]; then
+              MAJOR="${BASH_REMATCH[1]}"
+              MINOR="${BASH_REMATCH[2]}"
+              PATCH="${BASH_REMATCH[3]}"
+              ALPHA_NUM="${BASH_REMATCH[4]}"
+            elif [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)-beta\.([0-9]+)$ ]]; then
+              MAJOR="${BASH_REMATCH[1]}"
+              MINOR="${BASH_REMATCH[2]}"
+              PATCH="${BASH_REMATCH[3]}"
+              BETA_NUM="${BASH_REMATCH[4]}"
+            elif [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              MAJOR="${BASH_REMATCH[1]}"
+              MINOR="${BASH_REMATCH[2]}"
+              PATCH="${BASH_REMATCH[3]}"
+            else
+              # Default to 2.0.0 if parsing fails
+              MAJOR=2
+              MINOR=0
+              PATCH=0
+            fi
+
+            # Increment version based on release type
+            case "${{ env.RELEASE_TYPE }}" in
+              alpha)
+                # Validate not downgrading from beta
+                if [ -n "$BETA_NUM" ]; then
+                  echo "ERROR: Cannot switch from beta to alpha. Current version is beta, use beta or stable release type." | tee -a "$LOG_FILE"
+                  exit 1
+                fi
+                if [ -n "$ALPHA_NUM" ]; then
+                  NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-alpha.$((ALPHA_NUM + 1))"
+                else
+                  NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-alpha.1"
+                fi
+                PRERELEASE=true
+                ;;
+              beta)
+                # Validate not downgrading from stable
+                if [ -z "$ALPHA_NUM" ] && [ -z "$BETA_NUM" ] && [ "$PREVIOUS_TAG" != "v2.0.0-alpha.1" ]; then
+                  echo "ERROR: Cannot switch from stable to beta. Current version is stable, use stable release type." | tee -a "$LOG_FILE"
+                  exit 1
+                fi
+                if [ -n "$BETA_NUM" ]; then
+                  NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-beta.$((BETA_NUM + 1))"
+                else
+                  NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-beta.1"
+                fi
+                PRERELEASE=true
+                ;;
+              stable)
+                # Validate not skipping beta (strict progression: alpha → beta → stable)
+                if [ -n "$ALPHA_NUM" ]; then
+                  echo "ERROR: Cannot switch directly from alpha to stable. Current version is alpha, use beta release type first." | tee -a "$LOG_FILE"
+                  exit 1
+                fi
+                # If current version is a pre-release (beta), promote it to stable without bumping
+                if [ -n "$BETA_NUM" ]; then
+                  NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+                else
+                  # From an already-stable version, bump MINOR and reset PATCH
+                  MINOR=$((MINOR + 1))
+                  NEW_VERSION="${MAJOR}.${MINOR}.0"
+                fi
+                PRERELEASE=false
+                ;;
+              *)
+                echo "ERROR: Invalid RELEASE_TYPE: ${{ env.RELEASE_TYPE }}" | tee -a "$LOG_FILE"
+                exit 1
+                ;;
+            esac
+
+            NEW_TAG="v${NEW_VERSION}"
           fi
-          
-          # Increment version based on release type
-          case "${{ env.RELEASE_TYPE }}" in
-            alpha)
-              # Validate not downgrading from beta
-              if [ -n "$BETA_NUM" ]; then
-                echo "ERROR: Cannot switch from beta to alpha. Current version is beta, use beta or stable release type." | tee -a "$LOG_FILE"
-                exit 1
-              fi
-              if [ -n "$ALPHA_NUM" ]; then
-                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-alpha.$((ALPHA_NUM + 1))"
-              else
-                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-alpha.1"
-              fi
-              ;;
-            beta)
-              # Validate not downgrading from stable
-              if [ -z "$ALPHA_NUM" ] && [ -z "$BETA_NUM" ] && [ "$PREVIOUS_TAG" != "v2.0.0-alpha.1" ]; then
-                echo "ERROR: Cannot switch from stable to beta. Current version is stable, use stable release type." | tee -a "$LOG_FILE"
-                exit 1
-              fi
-              if [ -n "$BETA_NUM" ]; then
-                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-beta.$((BETA_NUM + 1))"
-              else
-                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-beta.1"
-              fi
-              ;;
-            stable)
-              # Validate not skipping beta (strict progression: alpha → beta → stable)
-              if [ -n "$ALPHA_NUM" ]; then
-                echo "ERROR: Cannot switch directly from alpha to stable. Current version is alpha, use beta release type first." | tee -a "$LOG_FILE"
-                exit 1
-              fi
-              # If current version is a pre-release (beta), promote it to stable without bumping
-              if [ -n "$BETA_NUM" ]; then
-                NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
-              else
-                # From an already-stable version, bump MINOR and reset PATCH
-                MINOR=$((MINOR + 1))
-                NEW_VERSION="${MAJOR}.${MINOR}.0"
-              fi
-              ;;
-            *)
-              echo "ERROR: Invalid RELEASE_TYPE: ${{ env.RELEASE_TYPE }}" | tee -a "$LOG_FILE"
-              exit 1
-              ;;
-          esac
-          
-          NEW_TAG="v${NEW_VERSION}"
+
           echo "New tag: ${NEW_TAG}" | tee -a "$LOG_FILE"
-          
+
           # Store for later steps
           echo "NEW_TAG=${NEW_TAG}" >> $GITHUB_ENV
           echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
           echo "PREVIOUS_TAG=${PREVIOUS_TAG}" >> $GITHUB_ENV
           echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
-          
+          echo "prerelease=${PRERELEASE}" >> $GITHUB_OUTPUT
+          echo "release_label=${RELEASE_LABEL}" >> $GITHUB_OUTPUT
+
           echo "✓ Version tag generated" | tee -a "$LOG_FILE"
           echo "=========================================" | tee -a "$LOG_FILE"
-          
+
           # Generate release notes between tags
           echo "Generating release notes..." | tee -a "$LOG_FILE"
           echo "# Release ${NEW_TAG}" > RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
-          echo "**Release Type:** ${{ env.RELEASE_TYPE }}" >> RELEASE_NOTES.md
+          echo "**Release Type:** ${RELEASE_LABEL}" >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
-          
-          if [ "$PREVIOUS_TAG" = "v2.0.0-alpha.1" ]; then
+
+          if [ -z "$PREVIOUS_TAG" ] || [ "$PREVIOUS_TAG" = "v2.0.0-alpha.1" ]; then
             echo "## Initial Release" >> RELEASE_NOTES.md
             echo "" >> RELEASE_NOTES.md
             echo "This is the first release of InvoicePlane v2." >> RELEASE_NOTES.md
           else
             echo "## Changes since ${PREVIOUS_TAG}" >> RELEASE_NOTES.md
             echo "" >> RELEASE_NOTES.md
-            
+
             # Fetch previous tag for comparison
             git fetch origin tag ${PREVIOUS_TAG} 2>/dev/null || true
-            
+
             # Generate changelog
-            git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s (%h)" >> RELEASE_NOTES.md 2>/dev/null || \
+            git log ${PREVIOUS_TAG}..${CHANGELOG_END_REF} --pretty=format:"- %s (%h)" >> RELEASE_NOTES.md 2>/dev/null || \
               echo "- Initial release" >> RELEASE_NOTES.md
           fi
-          
+
           echo "" >> RELEASE_NOTES.md
           echo "---" >> RELEASE_NOTES.md
           echo "Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> RELEASE_NOTES.md
-          
+
           echo "✓ Release notes generated" | tee -a "$LOG_FILE"
           cat RELEASE_NOTES.md | tee -a "$LOG_FILE"
 
@@ -410,7 +462,7 @@ jobs:
             sha256.txt
             md5.txt
           draft: true
-          prerelease: ${{ env.RELEASE_TYPE != 'stable' }}
+          prerelease: ${{ steps.version.outputs.prerelease }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -423,7 +475,7 @@ jobs:
           echo "INVOICEPLANE V2 WORKFLOW COMPLETED" | tee -a "$LOG_FILE"
           echo "=========================================" | tee -a "$LOG_FILE"
           echo "Release: ${{ env.NEW_TAG }}" | tee -a "$LOG_FILE"
-          echo "Type: ${{ env.RELEASE_TYPE }}" | tee -a "$LOG_FILE"
+          echo "Type: ${{ steps.version.outputs.release_label }}" | tee -a "$LOG_FILE"
           echo "Package: ${{ env.RELEASE_FILE }}" | tee -a "$LOG_FILE"
           echo "Artifact name: ip-${{ env.NEW_VERSION }}" | tee -a "$LOG_FILE"
           echo "" | tee -a "$LOG_FILE"
@@ -442,7 +494,7 @@ jobs:
           echo "## Release Build Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Version:** \`${{ env.NEW_TAG }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "**Type:** ${{ env.RELEASE_TYPE }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Type:** ${{ steps.version.outputs.release_label }}" >> $GITHUB_STEP_SUMMARY
           echo "**Package:** \`${{ env.RELEASE_FILE }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Download" >> $GITHUB_STEP_SUMMARY

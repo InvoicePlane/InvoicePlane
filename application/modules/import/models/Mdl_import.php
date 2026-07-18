@@ -428,8 +428,22 @@ class Mdl_Import extends Response_Model
 
         // Loop through details and delete each of the imported records
         foreach ($import_details as $import_detail) {
-            $this->db->query('DELETE FROM ' . $import_detail->import_table_name
-            . ' WHERE ' . $this->primary_keys[$import_detail->import_table_name] . ' = ' . $import_detail->import_record_id);
+            // Security (CWE-89): import_table_name is a stored value used here as a
+            // raw table identifier. Only the four known import tables are ever
+            // written, but revalidate against the allowlist before interpolating,
+            // take the primary key column from that trusted map, and bind the
+            // record id as an integer instead of concatenating it.
+            if ( ! array_key_exists($import_detail->import_table_name, $this->primary_keys)) {
+                $this->load->helper('file_security');
+                log_message('error', 'Skipping import detail with invalid table: ' . sanitize_for_logging((string) $import_detail->import_table_name));
+                continue;
+            }
+
+            $this->db->query(
+                'DELETE FROM ' . $import_detail->import_table_name
+                . ' WHERE ' . $this->primary_keys[$import_detail->import_table_name] . ' = ?',
+                [(int) $import_detail->import_record_id]
+            );
         }
 
         // Delete the master import record
