@@ -1,4 +1,4 @@
-FROM php:8.1-fpm
+FROM php:8.2-fpm
 
 # Set environment variables
 ARG TZ=UTC
@@ -84,4 +84,8 @@ RUN groupmod -o -g ${PGID} www-data && \
 
 WORKDIR /var/www/projects/invoiceplane
 
+COPY ./dev-entrypoint.sh /usr/local/bin/dev-entrypoint.sh
+RUN chmod +x /usr/local/bin/dev-entrypoint.sh
+
+ENTRYPOINT ["dev-entrypoint.sh"]
 CMD ["php-fpm"]
