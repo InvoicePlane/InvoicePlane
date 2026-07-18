@@ -50,6 +50,10 @@ class Recurring extends Admin_Controller
      */
     public function stop($invoice_recurring_id)
     {
+        if ( ! $this->ensure_valid_post_request('invoices/recurring/index')) {
+            return;
+        }
+
         $this->mdl_invoices_recurring->stop($invoice_recurring_id);
         redirect('invoices/recurring/index');
     }
