@@ -19,8 +19,8 @@ on:
     branches:
       - prep/v180
   pull_request:
-  schedule:
-    - cron: '0 6 * * 1'   # Mondays 06:00 UTC — full version sweep
+  #schedule:
+  #  - cron: '0 6 * * 1'   # Mondays 06:00 UTC — full version sweep
   workflow_dispatch:
     inputs:
       php_version:
