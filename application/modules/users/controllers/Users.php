@@ -207,6 +207,10 @@ class Users extends Admin_Controller
      */
     public function delete_user_client(string $user_id, $user_client_id)
     {
+        if ( ! $this->ensure_valid_post_request('users/form/' . $user_id)) {
+            return;
+        }
+
         $this->load->model('mdl_user_clients');
 
         if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
