@@ -11,6 +11,9 @@ class Settings extends Admin_Controller
         parent::__construct();
 
         $this->load->model('integrations/Merchant_clients_model');
+
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationSettingsForm.php';
     }
 
     public function index()
@@ -31,11 +34,27 @@ class Settings extends Admin_Controller
 
         if ( ! $provider) {
             show_error(trans('merchant_client_not_found'));
+
+            return;
         }
 
+        try {
+            $definition = (new IntegrationClientRegistry())
+                ->getSettingsDefinition($provider['merchant_type']);
+        } catch (Throwable $e) {
+            log_message('error', 'Unable to load integration settings schema: ' . sanitize_for_logging($e->getMessage()));
+            show_error(trans('merchant_client_not_found'));
+
+            return;
+        }
+
+        $storedSettings = json_decode($provider['settings_json'] ?? '{}', true) ?: [];
+        $provider['auth_type'] = $definition['auth_type'];
+
         $this->layout->set([
-            'provider' => $provider,
-            'settings' => json_decode($provider['settings_json'] ?? '{}', true) ?: [],
+            'provider'        => $provider,
+            'settings'        => array_replace($definition['defaults'], $storedSettings),
+            'settings_schema' => $definition['schema'],
         ]);
 
         $this->layout->buffer('content', 'integrations/provider_form');
@@ -59,60 +78,30 @@ class Settings extends Admin_Controller
         }
 
         $existingSettings = json_decode($provider['settings_json'] ?? '{}', true) ?: [];
-        $urlFields  = ['token_url', 'api_base_url'];
-        $pathFields = ['upload_endpoint', 'invoice_endpoint', 'send_invoice_endpoint',
-            'invoice_status_endpoint', 'incoming_invoices_endpoint', 'invoice_events_endpoint'];
 
-        foreach ($urlFields as $field) {
-            $val = (string) $this->input->post($field);
-            if ($val === '') {
-                continue;
-            }
-            if ( ! $this->_is_safe_url($val)) {
-                redirect('integrations/settings/edit/' . (int) $id);
+        try {
+            $definition = (new IntegrationClientRegistry())
+                ->getSettingsDefinition($provider['merchant_type']);
+            $settings = IntegrationSettingsForm::collect(
+                $definition['schema'],
+                $existingSettings,
+                fn (string $field) => $this->input->post($field)
+            );
+            $settingsJson = json_encode($settings, JSON_THROW_ON_ERROR);
+        } catch (Throwable $e) {
+            log_message('error', 'Invalid integration settings: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', trans('einvoice_provider_settings_invalid'));
+            redirect('integrations/settings/edit/' . (int) $id);
 
-                return;
-            }
+            return;
         }
 
-        foreach ($pathFields as $field) {
-            $val = (string) $this->input->post($field);
-            if ($val !== '' && filter_var($val, FILTER_VALIDATE_URL) !== false) {
-                redirect('integrations/settings/edit/' . (int) $id);
+        $label = $this->input->post('label');
+        if ( ! is_string($label) || trim($label) === '' || mb_strlen($label) > 255) {
+            $this->session->set_flashdata('alert_error', trans('einvoice_provider_settings_invalid'));
+            redirect('integrations/settings/edit/' . (int) $id);
 
-                return;
-            }
-        }
-
-        $settings = [
-            'client_id'                  => $this->input->post('client_id'),
-            'client_secret'              => $this->input->post('client_secret'),
-            'access_token'               => $this->input->post('access_token'),
-            'api_key'                    => $this->input->post('api_key'),
-            'staging_token'              => $this->input->post('staging_token'),
-            'token_url'                  => $this->input->post('token_url'),
-            'api_base_url'               => $this->input->post('api_base_url'),
-            'upload_endpoint'            => $this->input->post('upload_endpoint'),
-            'invoice_endpoint'           => $this->input->post('invoice_endpoint'),
-            'send_invoice_endpoint'      => $this->input->post('send_invoice_endpoint'),
-            'invoice_status_endpoint'    => $this->input->post('invoice_status_endpoint'),
-            'incoming_invoices_endpoint' => $this->input->post('incoming_invoices_endpoint'),
-            'invoice_events_endpoint'    => $this->input->post('invoice_events_endpoint'),
-            'disable_pre_check'          => $this->input->post('disable_pre_check') ? true : false,
-        ];
-
-        $settings = array_filter($settings, static function ($value) {
-            return $value !== null;
-        });
-
-        foreach (['client_secret', 'access_token', 'api_key', 'staging_token'] as $sensitiveField) {
-            if (($settings[$sensitiveField] ?? '') === '') {
-                if (array_key_exists($sensitiveField, $existingSettings)) {
-                    $settings[$sensitiveField] = $existingSettings[$sensitiveField];
-                } else {
-                    unset($settings[$sensitiveField]);
-                }
-            }
+            return;
         }
 
         $enabled = $this->input->post('enabled') ? 1 : 0;
@@ -129,10 +118,10 @@ class Settings extends Admin_Controller
         }
 
         $data = [
-            'label'         => $this->input->post('label'),
+            'label'         => trim($label),
             'enabled'       => $enabled,
-            'auth_type'     => $this->input->post('auth_type') ?: 'oauth2',
-            'settings_json' => json_encode($settings),
+            'auth_type'     => $definition['auth_type'],
+            'settings_json' => $settingsJson,
             'updated_at'    => date('Y-m-d H:i:s'),
         ];
 
@@ -147,27 +136,6 @@ class Settings extends Admin_Controller
         }
 
         redirect('integrations/settings');
-    }
-
-    private function _is_safe_url(string $url): bool
-    {
-        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            return false;
-        }
-
-        $parsed = parse_url($url);
-        if (($parsed['scheme'] ?? '') !== 'https') {
-            return false;
-        }
-
-        $host = $parsed['host'] ?? '';
-        if ($host === '') {
-            return false;
-        }
-
-        $ip = filter_var($host, FILTER_VALIDATE_IP);
-
-        return ! ($ip !== false && ! filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE));
     }
 
     private function sync_provider_registry(): void

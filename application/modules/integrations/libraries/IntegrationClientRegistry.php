@@ -13,13 +13,31 @@ class IntegrationClientRegistry
 
     public function getClient(string $clientCode): IntegrationClientInterface
     {
-        if (empty($this->providers[$clientCode])) {
-            throw new RuntimeException('Unknown e-invoicing provider: ' . $clientCode);
-        }
-
-        $clientClass = $this->providers[$clientCode];
+        $clientClass = $this->getClientClass($clientCode);
 
         return new $clientClass();
+    }
+
+    public function getSettingsDefinition(string $clientCode): array
+    {
+        $clientClass = $this->getClientClass($clientCode);
+        $defaults    = $clientClass::defaultSettings();
+        $authType    = $clientClass::authType();
+
+        if ( ! in_array($authType, ['none', 'oauth2', 'bearer', 'api_key'], true)) {
+            throw new RuntimeException('Unsupported provider authentication type: ' . $clientCode);
+        }
+
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationSettingsForm.php';
+
+        return [
+            'auth_type' => $authType,
+            'defaults'  => $defaults,
+            'schema'    => IntegrationSettingsForm::normalizeSchema(
+                $clientClass::settingsSchema(),
+                $defaults
+            ),
+        ];
     }
 
     public function all(): array
@@ -40,23 +58,19 @@ class IntegrationClientRegistry
             if ($existing) {
                 log_message(
                     'debug',
-                    'eInvoice provider already registered: ' . $clientCode
+                    'eInvoice provider already registered: ' . sanitize_for_logging($clientCode)
                 );
                 continue;
             }
 
-            $settings = [];
-
-            if (method_exists($clientClass, 'defaultSettings')) {
-                $settings = $clientClass::defaultSettings();
-            }
+            $definition = $this->getSettingsDefinition($clientCode);
 
             $CI->db->insert('ip_merchant_clients', [
                 'merchant_type' => $clientCode,
                 'label'         => $clientClass::clientName(),
                 'enabled'       => 0,
-                'auth_type'     => $this->guessAuthType($settings),
-                'settings_json' => json_encode($settings),
+                'auth_type'     => $definition['auth_type'],
+                'settings_json' => json_encode($definition['defaults']),
                 'created_at'    => date('Y-m-d H:i:s'),
                 'updated_at'    => date('Y-m-d H:i:s'),
             ]);
@@ -106,20 +120,25 @@ class IntegrationClientRegistry
                 continue;
             }
 
-            $this->providers[$className::clientCode()] = $className;
+            $clientCode = $className::clientCode();
+            if (preg_match('/^[a-z][a-z0-9_-]*$/', $clientCode) !== 1) {
+                throw new RuntimeException('Invalid e-invoicing provider code.');
+            }
+
+            if (isset($this->providers[$clientCode])) {
+                throw new RuntimeException('Duplicate e-invoicing provider code: ' . $clientCode);
+            }
+
+            $this->providers[$clientCode] = $className;
         }
     }
 
-    private function guessAuthType(array $settings): string
+    private function getClientClass(string $clientCode): string
     {
-        if (isset($settings['client_id']) || isset($settings['client_secret'])) {
-            return 'oauth2';
+        if (empty($this->providers[$clientCode])) {
+            throw new RuntimeException('Unknown e-invoicing provider: ' . $clientCode);
         }
 
-        if (isset($settings['access_token']) || isset($settings['api_key'])) {
-            return 'api_key';
-        }
-
-        return 'none';
+        return $this->providers[$clientCode];
     }
 }

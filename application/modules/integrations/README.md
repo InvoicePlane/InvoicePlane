@@ -28,12 +28,12 @@ einvoice/
 │   └── Events.php
 │
 ├── libraries/
-│   ├── MerchantClient.php
-│   ├── MerchantProviderInterface.php
-│   ├── MerchantProviderRegistry.php
+│   ├── IntegrationClient.php
+│   ├── IntegrationClientInterface.php
+│   ├── IntegrationClientRegistry.php
 │   └── providers/
-│       ├── SuperPdpProvider.php
-│       └── QontoProvider.php
+│       ├── SuperPdpClient.php
+│       └── QontoClient.php
 │
 ├── models/
 │   ├── Merchant_clients_model.php
@@ -142,13 +142,13 @@ allows the system to:
 Every provider must implement:
 
 ```php
-MerchantProviderInterface
+IntegrationClientInterface
 ```
 
 The:
 
 ```php
-MerchantProviderRegistry
+IntegrationClientRegistry
 ```
 
 automatically discovers and registers available providers.
@@ -156,7 +156,7 @@ automatically discovers and registers available providers.
 Provider discovery is performed dynamically using:
 
 ```php
-glob('*Provider.php')
+glob('*Client.php')
 ```
 
 This makes the module easily extensible.
@@ -364,25 +364,56 @@ Stores invoice exchange history.
 
 # Adding a New Provider
 
-Create a new file:
+Create a file whose name ends with `Client.php`:
 
 ```text
-libraries/providers/MyProvider.php
+libraries/providers/MyClient.php
 ```
 
-Example implementation:
+The class implements its API logic and declares the fields rendered by the
+generic settings form. No controller or view changes are required.
 
 ```php
-class MyProvider implements MerchantProviderInterface
+class MyClient implements IntegrationClientInterface
 {
-    public static function providerCode(): string
+    public static function clientCode(): string
     {
         return 'myprovider';
     }
 
-    public static function providerName(): string
+    public static function clientName(): string
     {
         return 'My Provider';
+    }
+
+    public static function authType(): string
+    {
+        return 'bearer';
+    }
+
+    public static function defaultSettings(): array
+    {
+        return [
+            'api_token'    => '',
+            'api_base_url' => 'https://api.example.com',
+        ];
+    }
+
+    public static function settingsSchema(): array
+    {
+        return [
+            'api_token' => [
+                'type'      => 'password',
+                'label'     => 'API Token',
+                'required'  => true,
+                'sensitive' => true,
+            ],
+            'api_base_url' => [
+                'type'     => 'url',
+                'label'    => 'api_base_url',
+                'required' => true,
+            ],
+        ];
     }
 
     public function authenticate(array $settings): bool
@@ -392,23 +423,40 @@ class MyProvider implements MerchantProviderInterface
 
     public function sendInvoice(string $documentPath, array $metadata): array
     {
+        return [];
     }
 
     public function getInvoiceStatus(string $externalId): array
     {
+        return [];
     }
 
-    public function receiveInvoices(): array
+    public function receiveInvoices(array $filters = []): array
     {
+        return [];
     }
 
-    public function getInvoiceEvents(): array
+    public function getInvoiceEvents(array $filters = []): array
     {
+        return [];
+    }
+
+    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
+    {
+        return $metadata;
+    }
+
+    public function fetchToken(array $settings): string
+    {
+        return $settings['api_token'] ?? '';
     }
 }
 ```
 
-The registry will automatically detect and register the new provider.
+Supported field types are `text`, `password`, `url`, `path`, `checkbox`, and
+`select`. The registry discovers the file, creates its database entry, and the
+form is generated from `settingsSchema()`. Sensitive values are never rendered,
+and submitting an empty sensitive field preserves the stored secret.
 
 ---
 

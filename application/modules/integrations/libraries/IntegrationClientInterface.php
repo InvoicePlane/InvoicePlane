@@ -8,6 +8,12 @@ interface IntegrationClientInterface
 
     public static function clientName(): string;
 
+    public static function authType(): string;
+
+    public static function defaultSettings(): array;
+
+    public static function settingsSchema(): array;
+
     public function authenticate(array $settings): bool;
 
     public function sendInvoice(string $documentPath, array $metadata): array;

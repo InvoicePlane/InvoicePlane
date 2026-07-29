@@ -39,7 +39,9 @@ class GuzzleApiClient implements ApiClientInterface
 
         $guzzleOptions = ['headers' => $headers];
 
-        if (isset($options['json'])) {
+        if (isset($options['body'])) {
+            $guzzleOptions['body'] = $options['body'];
+        } elseif (isset($options['json'])) {
             $guzzleOptions['json'] = $options['json'];
         } elseif (isset($options['form_params'])) {
             $guzzleOptions['form_params'] = $options['form_params'];

@@ -1,0 +1,414 @@
+# InvoicePlane E-Invoicing Provider Integration
+
+## Overview
+
+The `integrations` module connects InvoicePlane to external e-invoicing
+platforms such as SuperPDP, Qonto, and LetsPeppol.
+
+It provides:
+
+- provider discovery and registration;
+- provider-specific configuration through a generic form;
+- OAuth2, bearer-token, API-key, or unauthenticated integrations;
+- outgoing invoice transmission;
+- invoice status retrieval;
+- incoming supplier invoice synchronization;
+- provider event synchronization;
+- unified transmission history in `ip_merchant_responses`.
+
+Provider business logic remains in PHP, but controllers and views do not need
+to know which settings a provider requires. Each provider declares its own
+configuration schema.
+
+## Architecture
+
+```text
+InvoicePlane invoice
+        |
+        v
+Integrations controller
+        |
+        v
+IntegrationClient
+        |
+        v
+IntegrationClientInterface implementation
+        |
+        v
+External e-invoicing API
+```
+
+The main components are:
+
+| Component | Responsibility |
+|---|---|
+| `IntegrationClientInterface` | Contract implemented by every provider |
+| `IntegrationClientRegistry` | Discovers providers and registers them in the database |
+| `IntegrationSettingsForm` | Normalizes schemas, validates input, and preserves secrets |
+| `IntegrationClient` | Authenticates and delegates operations to a provider |
+| `Merchant_clients_model` | Loads provider configuration |
+| `Merchant_responses_model` | Stores outgoing, incoming, and event records |
+| `provider_form.php` | Renders fields declared by the provider schema |
+
+## Provider Discovery
+
+Provider classes must:
+
+1. be placed under:
+
+   ```text
+   application/modules/integrations/libraries/providers/
+   ```
+
+2. use a filename ending with `Client.php`;
+3. implement `IntegrationClientInterface`;
+4. return a unique provider code from `clientCode()`.
+
+The registry scans:
+
+```text
+providers/*Client.php
+providers/*/*Client.php
+```
+
+Opening the integration settings page synchronizes discovered providers with
+the `ip_merchant_clients` table. A newly discovered provider is disabled by
+default.
+
+Provider codes must match:
+
+```text
+^[a-z][a-z0-9_-]*$
+```
+
+Duplicate provider codes are rejected.
+
+## Dynamic Configuration Form
+
+Every provider declares:
+
+- `authType()` — `none`, `oauth2`, `bearer`, or `api_key`;
+- `defaultSettings()` — initial values and default endpoints;
+- `settingsSchema()` — field types and validation metadata.
+
+Supported field types are:
+
+| Type | Behaviour |
+|---|---|
+| `text` | Text value |
+| `password` | Sensitive value, never rendered back into the form |
+| `url` | Required to be a valid HTTPS URL |
+| `path` | Relative API path beginning with `/` |
+| `checkbox` | Normalized to a boolean |
+| `select` | Restricted to the declared options |
+
+Each schema field may contain:
+
+```php
+[
+    'type'        => 'text',
+    'label'       => 'User-facing label or translation key',
+    'required'    => true,
+    'sensitive'   => false,
+    'placeholder' => 'Optional placeholder',
+    'options'     => [], // Required for select fields
+]
+```
+
+Only fields declared in `settingsSchema()` are accepted when the form is
+submitted. Additional POST parameters are ignored.
+
+Sensitive values are rendered as empty password fields. Submitting an empty
+sensitive field preserves the stored value.
+
+## Configuration Storage
+
+Provider registrations are stored in:
+
+```text
+ip_merchant_clients
+```
+
+Important columns:
+
+| Column | Description |
+|---|---|
+| `merchant_type` | Unique provider code |
+| `label` | User-facing account name |
+| `enabled` | Whether the provider is active |
+| `auth_type` | Authentication mode declared by the provider |
+| `settings_json` | Provider configuration |
+
+Credentials in `settings_json` are not displayed in the browser, but they are
+not encrypted at rest by this module. Database access must therefore be
+restricted appropriately.
+
+The current settings workflow enables one provider at a time. Enabling a
+provider disables the other registered providers.
+
+## Provider Lifecycle
+
+### Sending an invoice
+
+1. The controller loads the selected provider registration.
+2. InvoicePlane generates the invoice PDF.
+3. The provider builds its metadata using `buildInvoicePayload()`.
+4. `IntegrationClient` calls `authenticate()`.
+5. Authentication must return `true`; otherwise the operation stops.
+6. `sendInvoice()` transmits the document.
+7. The normalized response is stored in `ip_merchant_responses`.
+
+### Retrieving a status
+
+1. The last outgoing response is selected by both invoice ID and provider ID.
+2. Its external reference is passed to `getInvoiceStatus()`.
+3. The returned status is stored as a new history entry.
+
+### Synchronizing incoming invoices and events
+
+1. The provider is authenticated.
+2. `receiveInvoices()` or `getInvoiceEvents()` is called.
+3. `IntegrationResponseNormalizer` extracts supported response collections.
+4. Malformed or non-JSON payloads produce an empty collection.
+5. Valid items are stored in `ip_merchant_responses`.
+
+All state-changing browser actions use POST requests with CSRF protection.
+
+## Expected Provider Response
+
+Provider methods should return a normalized array:
+
+```php
+[
+    'success'     => true,
+    'external_id' => 'remote-invoice-id',
+    'status'      => 'sent',
+    'message'     => 'Invoice accepted',
+    'http_code'   => 202,
+    'request'     => [],
+    'response'    => [],
+]
+```
+
+Incoming and event responses may expose collections under keys such as:
+
+```text
+response.data
+response.items
+response.invoices
+response.events
+```
+
+## Complete Provider Example
+
+Create:
+
+```text
+application/modules/integrations/libraries/providers/ExampleClient.php
+```
+
+```php
+<?php
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class ExampleClient implements IntegrationClientInterface
+{
+    private array $settings = [];
+
+    private ApiClientInterface $http;
+
+    public function __construct(?ApiClientInterface $http = null)
+    {
+        $this->http = $http ?? new CurlApiClient();
+    }
+
+    public static function clientCode(): string
+    {
+        return 'example';
+    }
+
+    public static function clientName(): string
+    {
+        return 'Example E-Invoicing';
+    }
+
+    public static function authType(): string
+    {
+        return 'bearer';
+    }
+
+    public static function defaultSettings(): array
+    {
+        return [
+            'access_token'               => '',
+            'api_base_url'               => 'https://api.example.com',
+            'invoice_endpoint'           => '/v1/invoices',
+            'invoice_status_endpoint'    => '/v1/invoices/{id}',
+            'incoming_invoices_endpoint' => '/v1/incoming-invoices',
+            'invoice_events_endpoint'    => '/v1/invoice-events',
+            'sandbox'                    => false,
+        ];
+    }
+
+    public static function settingsSchema(): array
+    {
+        return [
+            'access_token' => [
+                'type'      => 'password',
+                'label'     => 'Access Token',
+                'required'  => true,
+                'sensitive' => true,
+            ],
+            'api_base_url' => [
+                'type'     => 'url',
+                'label'    => 'API Base URL',
+                'required' => true,
+            ],
+            'invoice_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'Invoice endpoint',
+                'required' => true,
+            ],
+            'invoice_status_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'Invoice status endpoint',
+                'required' => true,
+            ],
+            'incoming_invoices_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'Incoming invoices endpoint',
+                'required' => true,
+            ],
+            'invoice_events_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'Invoice events endpoint',
+                'required' => true,
+            ],
+            'sandbox' => [
+                'type'  => 'checkbox',
+                'label' => 'Use sandbox',
+            ],
+        ];
+    }
+
+    public function authenticate(array $settings): bool
+    {
+        if (empty($settings['access_token']) || empty($settings['api_base_url'])) {
+            throw new RuntimeException('Missing Example provider credentials.');
+        }
+
+        $this->settings = $settings;
+
+        return true;
+    }
+
+    public function sendInvoice(string $documentPath, array $metadata): array
+    {
+        if ( ! is_file($documentPath)) {
+            throw new RuntimeException('Invoice document not found.');
+        }
+
+        return $this->request(
+            RequestMethod::POST,
+            $this->settings['invoice_endpoint'],
+            [
+                'multipart' => [
+                    'file' => new CURLFile(
+                        $documentPath,
+                        'application/pdf',
+                        basename($documentPath)
+                    ),
+                    'metadata' => json_encode($metadata, JSON_THROW_ON_ERROR),
+                ],
+            ]
+        );
+    }
+
+    public function getInvoiceStatus(string $externalId): array
+    {
+        $endpoint = str_replace(
+            '{id}',
+            rawurlencode($externalId),
+            $this->settings['invoice_status_endpoint']
+        );
+
+        return $this->request(RequestMethod::GET, $endpoint);
+    }
+
+    public function receiveInvoices(array $filters = []): array
+    {
+        return $this->request(
+            RequestMethod::GET,
+            $this->settings['incoming_invoices_endpoint'],
+            ['query' => $filters]
+        );
+    }
+
+    public function getInvoiceEvents(array $filters = []): array
+    {
+        return $this->request(
+            RequestMethod::GET,
+            $this->settings['invoice_events_endpoint'],
+            ['query' => $filters]
+        );
+    }
+
+    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
+    {
+        $metadata['invoice_number'] = $invoice->invoice_number;
+
+        return $metadata;
+    }
+
+    public function fetchToken(array $settings): string
+    {
+        return (string) ($settings['access_token'] ?? '');
+    }
+
+    private function request(
+        RequestMethod $method,
+        string $endpoint,
+        array $options = []
+    ): array {
+        $url = rtrim($this->settings['api_base_url'], '/')
+            . '/'
+            . ltrim($endpoint, '/');
+
+        $options['bearer'] = $this->settings['access_token'];
+
+        if ( ! empty($this->settings['sandbox'])) {
+            $options['headers'][] = 'X-Example-Sandbox: true';
+        }
+
+        return $this->http->request($method, $url, $options);
+    }
+}
+```
+
+After adding the file:
+
+1. open **Settings → E-Invoicing**;
+2. the registry creates the provider entry;
+3. select **Example E-Invoicing**;
+4. complete the generated form;
+5. enable and save the provider.
+
+No controller or view modification is required.
+
+## Security Requirements
+
+Provider implementations should:
+
+- use HTTPS endpoints only;
+- never log credentials, tokens, or raw user input;
+- pass external values through `sanitize_for_logging()` before logging;
+- define secrets as `password` fields with `sensitive => true`;
+- use the shared API clients and their connection/request timeouts;
+- validate files before upload;
+- throw an exception when required configuration is missing;
+- return normalized arrays instead of raw response bodies.
+
+Do not allow settings submitted from the browser to select arbitrary PHP
+classes or files. Provider discovery is restricted to trusted source files
+implementing `IntegrationClientInterface`.
