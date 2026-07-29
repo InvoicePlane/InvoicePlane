@@ -25,6 +25,11 @@ class SuperPdpClient implements IntegrationClientInterface
         return 'SuperPDP';
     }
 
+    public static function authType(): string
+    {
+        return 'oauth2';
+    }
+
     public static function defaultSettings(): array
     {
         return [
@@ -37,6 +42,57 @@ class SuperPdpClient implements IntegrationClientInterface
             'incoming_invoices_endpoint' => '/v1.beta/invoices',
             'invoice_events_endpoint'    => '/v1.beta/invoice_events',
             'disable_pre_check'          => false,
+        ];
+    }
+
+    public static function settingsSchema(): array
+    {
+        return [
+            'client_id' => [
+                'type'     => 'text',
+                'label'    => 'client_id',
+                'required' => true,
+            ],
+            'client_secret' => [
+                'type'      => 'password',
+                'label'     => 'client_secret',
+                'required'  => true,
+                'sensitive' => true,
+            ],
+            'token_url' => [
+                'type'     => 'url',
+                'label'    => 'token_url',
+                'required' => true,
+            ],
+            'api_base_url' => [
+                'type'     => 'url',
+                'label'    => 'api_base_url',
+                'required' => true,
+            ],
+            'invoice_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'invoice_endpoint',
+                'required' => true,
+            ],
+            'invoice_status_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'invoice_status_endpoint',
+                'required' => true,
+            ],
+            'incoming_invoices_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'incoming_invoices_endpoint',
+                'required' => true,
+            ],
+            'invoice_events_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'invoice_events_endpoint',
+                'required' => true,
+            ],
+            'disable_pre_check' => [
+                'type'  => 'checkbox',
+                'label' => 'disable_pre_check',
+            ],
         ];
     }
 
@@ -79,20 +135,15 @@ class SuperPdpClient implements IntegrationClientInterface
     }
 
     /**
-     * POST /v1.beta/invoices  (multipart).
+     * POST /v1.beta/invoices with the raw PDF as the request body.
      *
-     * Request:
-     *   file      file    PDF invoice document
-     *   metadata  string  JSON-encoded metadata object
-     *
-     * Response (JSON):
-     *   id              string  external invoice ID
-     *   status          string  processing|sent|error
-     *   external_id     string  alias for id
+     * Optional query parameters:
+     *   external_id        caller-provided invoice reference
+     *   disable_pre_check  skip provider pre-validation
      */
     public function sendInvoice(string $documentPath, array $metadata): array
     {
-        if ( ! file_exists($documentPath)) {
+        if ( ! is_file($documentPath) || ! is_readable($documentPath)) {
             throw new \RuntimeException('Invoice document not found: ' . $documentPath);
         }
 
@@ -108,20 +159,29 @@ class SuperPdpClient implements IntegrationClientInterface
             throw new \RuntimeException('Missing invoice endpoint configuration.');
         }
 
-        $url = $this->buildUrl($this->settings['invoice_endpoint']);
-
-        if ( ! empty($this->settings['disable_pre_check'])) {
-            $url .= '?disable_pre_check=1';
+        $document = file_get_contents($documentPath);
+        if ($document === false) {
+            throw new \RuntimeException('Unable to read invoice document: ' . $documentPath);
         }
 
-        $payload = [
-            'file'     => new \CURLFile($documentPath, 'application/pdf', basename($documentPath)),
-            'metadata' => json_encode($metadata),
-        ];
+        $query      = [];
+        $externalId = $metadata['external_id'] ?? $metadata['invoice_id'] ?? null;
 
-        return $this->request(RequestMethod::POST, $url, $payload, true, [
-            'document_path' => $documentPath,
-            'metadata'      => $metadata,
+        if (is_scalar($externalId) && (string) $externalId !== '') {
+            $query['external_id'] = (string) $externalId;
+        }
+
+        if ( ! empty($this->settings['disable_pre_check'])) {
+            $query['disable_pre_check'] = true;
+        }
+
+        return $this->http->request(RequestMethod::POST, $this->buildUrl($this->settings['invoice_endpoint']), [
+            'bearer'  => $this->accessToken,
+            'body'    => $document,
+            'headers' => [
+                'Content-Type: application/pdf',
+            ],
+            'query'   => $query,
         ]);
     }
 

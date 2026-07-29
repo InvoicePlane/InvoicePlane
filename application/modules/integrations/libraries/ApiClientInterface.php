@@ -10,6 +10,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *   json        array    JSON-encoded request body (sets Content-Type: application/json)
  *   form_params array    URL-encoded form body (sets Content-Type: application/x-www-form-urlencoded)
  *   multipart   array    Multipart fields; values may be CURLFile objects for file uploads
+ *   body        string   Raw request body; set Content-Type through headers when required
  *   query       array    Query-string parameters appended to $url
  *   headers     array    Extra "Name: value" header strings added verbatim
  *

@@ -28,12 +28,12 @@ einvoice/
 │   └── Events.php
 │
 ├── libraries/
-│   ├── MerchantClient.php
-│   ├── MerchantProviderInterface.php
-│   ├── MerchantProviderRegistry.php
+│   ├── IntegrationClient.php
+│   ├── IntegrationClientInterface.php
+│   ├── IntegrationClientRegistry.php
 │   └── providers/
-│       ├── SuperPdpProvider.php
-│       └── QontoProvider.php
+│       ├── SuperPdpClient.php
+│       └── QontoClient.php
 │
 ├── models/
 │   ├── Merchant_clients_model.php
@@ -142,13 +142,13 @@ permet :
 Chaque fournisseur doit implémenter :
 
 ```php
-MerchantProviderInterface
+IntegrationClientInterface
 ```
 
 Le registre :
 
 ```php
-MerchantProviderRegistry
+IntegrationClientRegistry
 ```
 
 détecte automatiquement les nouveaux fournisseurs.
@@ -156,7 +156,7 @@ détecte automatiquement les nouveaux fournisseurs.
 Lors du chargement :
 
 ```php
-glob('*Provider.php')
+glob('*Client.php')
 ```
 
 est utilisé pour enregistrer dynamiquement les fournisseurs disponibles.
@@ -364,25 +364,56 @@ Historique des échanges.
 
 # Ajout d'un nouveau fournisseur
 
-Créer :
+Créer un fichier dont le nom se termine par `Client.php` :
 
 ```text
-libraries/providers/MyProvider.php
+libraries/providers/MyClient.php
 ```
 
-Exemple :
+La classe fournit sa logique API et décrit les champs que le formulaire générique
+doit afficher. Aucun contrôleur ni aucune vue ne doit être modifié.
 
 ```php
-class MyProvider implements MerchantProviderInterface
+class MyClient implements IntegrationClientInterface
 {
-    public static function providerCode(): string
+    public static function clientCode(): string
     {
         return 'myprovider';
     }
 
-    public static function providerName(): string
+    public static function clientName(): string
     {
         return 'My Provider';
+    }
+
+    public static function authType(): string
+    {
+        return 'bearer';
+    }
+
+    public static function defaultSettings(): array
+    {
+        return [
+            'api_token'   => '',
+            'api_base_url' => 'https://api.example.com',
+        ];
+    }
+
+    public static function settingsSchema(): array
+    {
+        return [
+            'api_token' => [
+                'type'      => 'password',
+                'label'     => 'API Token',
+                'required'  => true,
+                'sensitive' => true,
+            ],
+            'api_base_url' => [
+                'type'     => 'url',
+                'label'    => 'api_base_url',
+                'required' => true,
+            ],
+        ];
     }
 
     public function authenticate(array $settings): bool
@@ -392,23 +423,40 @@ class MyProvider implements MerchantProviderInterface
 
     public function sendInvoice(string $documentPath, array $metadata): array
     {
+        return [];
     }
 
     public function getInvoiceStatus(string $externalId): array
     {
+        return [];
     }
 
-    public function receiveInvoices(): array
+    public function receiveInvoices(array $filters = []): array
     {
+        return [];
     }
 
-    public function getInvoiceEvents(): array
+    public function getInvoiceEvents(array $filters = []): array
     {
+        return [];
+    }
+
+    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
+    {
+        return $metadata;
+    }
+
+    public function fetchToken(array $settings): string
+    {
+        return $settings['api_token'] ?? '';
     }
 }
 ```
 
-Le registre détectera automatiquement le nouveau fournisseur.
+Types de champs disponibles : `text`, `password`, `url`, `path`, `checkbox`
+et `select`. Le registre détecte le fichier, crée l'entrée en base et le formulaire
+est construit à partir de `settingsSchema()`. Les champs sensibles ne sont jamais
+réaffichés et une valeur vide conserve le secret enregistré.
 
 ---
 

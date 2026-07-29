@@ -35,8 +35,7 @@
 
                         <div class="form-group">
                             <label for="auth_type"><?php _trans('auth_type'); ?></label>
-                            <input type="text" name="auth_type" id="auth_type" class="form-control"
-                                   value="<?php _htmlsc($provider['auth_type']); ?>">
+                            <p class="form-control-static"><?php _htmlsc($provider['auth_type']); ?></p>
                         </div>
 
                     </div>
@@ -49,67 +48,56 @@
 
                     <div class="panel-body">
 
-                        <div class="form-group">
-                            <label for="client_id"><?php _trans('client_id'); ?></label>
-                            <input type="text" name="client_id" id="client_id" class="form-control"
-                                   value="<?php _htmlsc($settings['client_id'] ?? ''); ?>">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="client_secret"><?php _trans('client_secret'); ?></label>
-                            <input type="password" name="client_secret" id="client_secret" class="form-control"
-                                   value="" autocomplete="new-password">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="token_url"><?php _trans('token_url'); ?></label>
-                            <input type="text" name="token_url" id="token_url" class="form-control"
-                                   placeholder="https://api.superpdp.tech/oauth2/token"
-                                   value="<?php _htmlsc($settings['token_url'] ?? ''); ?>">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="api_base_url"><?php _trans('api_base_url'); ?></label>
-                            <input type="text" name="api_base_url" id="api_base_url" class="form-control"
-                                   placeholder="https://api.superpdp.tech"
-                                   value="<?php _htmlsc($settings['api_base_url'] ?? ''); ?>">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="invoice_endpoint"><?php _trans('invoice_endpoint'); ?></label>
-                            <input type="text" name="invoice_endpoint" id="invoice_endpoint" class="form-control"
-                                   placeholder="/v1.beta/invoices"
-                                   value="<?php _htmlsc($settings['invoice_endpoint'] ?? ''); ?>">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="invoice_status_endpoint"><?php _trans('invoice_status_endpoint'); ?></label>
-                            <input type="text" name="invoice_status_endpoint" id="invoice_status_endpoint" class="form-control"
-                                   placeholder="/v1.beta/invoices/{id}"
-                                   value="<?php _htmlsc($settings['invoice_status_endpoint'] ?? ''); ?>">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="incoming_invoices_endpoint"><?php _trans('incoming_invoices_endpoint'); ?></label>
-                            <input type="text" name="incoming_invoices_endpoint" id="incoming_invoices_endpoint" class="form-control"
-                                   placeholder="/v1.beta/invoices"
-                                   value="<?php _htmlsc($settings['incoming_invoices_endpoint'] ?? ''); ?>">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="invoice_events_endpoint"><?php _trans('invoice_events_endpoint'); ?></label>
-                            <input type="text" name="invoice_events_endpoint" id="invoice_events_endpoint" class="form-control"
-                                   placeholder="/v1.beta/invoice_events"
-                                   value="<?php _htmlsc($settings['invoice_events_endpoint'] ?? ''); ?>">
-                        </div>
-
+<?php foreach ($settings_schema as $fieldName => $field) : ?>
+    <?php
+    $currentValue   = $settings[$fieldName] ?? $field['default'];
+    $hasStoredValue = $field['sensitive'] && $currentValue !== null && $currentValue !== '';
+    $isRequired     = $field['required'] && ! $hasStoredValue;
+    ?>
+    <?php if ($field['type'] === 'checkbox') : ?>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="disable_pre_check" value="1"
-                                    <?php echo ! empty($settings['disable_pre_check']) ? 'checked' : ''; ?>>
-                                <?php _trans('disable_pre_check'); ?>
+                                <input type="checkbox"
+                                       name="<?php _htmlsc($fieldName); ?>"
+                                       value="1"<?php echo ! empty($currentValue) ? ' checked' : ''; ?>>
+                                <?php _trans($field['label']); ?>
                             </label>
                         </div>
+    <?php else : ?>
+                        <div class="form-group">
+                            <label for="<?php _htmlsc($fieldName); ?>">
+                                <?php _trans($field['label']); ?>
+                                <?php if ($field['required']) : ?> *<?php endif; ?>
+                            </label>
+        <?php if ($field['type'] === 'select') : ?>
+                            <select name="<?php _htmlsc($fieldName); ?>"
+                                    id="<?php _htmlsc($fieldName); ?>"
+                                    class="form-control"<?php echo $isRequired ? ' required' : ''; ?>>
+            <?php foreach ($field['options'] as $optionValue => $optionLabel) : ?>
+                                <option value="<?php _htmlsc($optionValue); ?>"
+                                    <?php echo (string) $currentValue === (string) $optionValue ? ' selected' : ''; ?>>
+                                    <?php _trans($optionLabel); ?>
+                                </option>
+            <?php endforeach; ?>
+                            </select>
+        <?php else : ?>
+            <?php
+            $inputType   = $field['type'] === 'password' ? 'password' : ($field['type'] === 'url' ? 'url' : 'text');
+            $inputValue  = $field['sensitive'] ? '' : (string) $currentValue;
+            $placeholder = $hasStoredValue ? trans('leave_blank_to_keep') : $field['placeholder'];
+            ?>
+                            <input type="<?php _htmlsc($inputType); ?>"
+                                   name="<?php _htmlsc($fieldName); ?>"
+                                   id="<?php _htmlsc($fieldName); ?>"
+                                   class="form-control"
+                                   value="<?php _htmlsc($inputValue); ?>"
+                                   placeholder="<?php _htmlsc($placeholder); ?>"
+                                   <?php echo $field['sensitive'] ? 'autocomplete="new-password"' : ''; ?>
+                                   <?php echo $isRequired ? 'required' : ''; ?>>
+        <?php endif; ?>
+                        </div>
+    <?php endif; ?>
+<?php endforeach; ?>
 
                     </div>
                 </div>

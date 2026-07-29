@@ -36,6 +36,11 @@ class LetsPeppolClient implements IntegrationClientInterface
         return 'LetsPeppol';
     }
 
+    public static function authType(): string
+    {
+        return 'oauth2';
+    }
+
     public static function defaultSettings(): array
     {
         return [
@@ -55,6 +60,93 @@ class LetsPeppolClient implements IntegrationClientInterface
             'transmission_status_endpoint' => '/v1/transmissions/{id}',
             'documents_endpoint'           => '/v1/documents',
             'document_endpoint'            => '/v1/documents/{id}',
+        ];
+    }
+
+    public static function settingsSchema(): array
+    {
+        return [
+            'client_id' => [
+                'type'     => 'text',
+                'label'    => 'client_id',
+                'required' => true,
+            ],
+            'client_secret' => [
+                'type'      => 'password',
+                'label'     => 'client_secret',
+                'required'  => true,
+                'sensitive' => true,
+            ],
+            'token_url' => [
+                'type'     => 'url',
+                'label'    => 'token_url',
+                'required' => true,
+            ],
+            'api_base_url' => [
+                'type'     => 'url',
+                'label'    => 'api_base_url',
+                'required' => true,
+            ],
+            'invoice_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'invoice_endpoint',
+                'required' => true,
+            ],
+            'invoice_status_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'invoice_status_endpoint',
+                'required' => true,
+            ],
+            'incoming_invoices_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'incoming_invoices_endpoint',
+                'required' => true,
+            ],
+            'invoice_events_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'invoice_events_endpoint',
+                'required' => true,
+            ],
+            'credit_note_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'credit_note_endpoint',
+                'required' => true,
+            ],
+            'credit_note_status_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'credit_note_status_endpoint',
+                'required' => true,
+            ],
+            'participants_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'participants_endpoint',
+                'required' => true,
+            ],
+            'participant_lookup_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'participant_lookup_endpoint',
+                'required' => true,
+            ],
+            'transmissions_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'transmissions_endpoint',
+                'required' => true,
+            ],
+            'transmission_status_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'transmission_status_endpoint',
+                'required' => true,
+            ],
+            'documents_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'documents_endpoint',
+                'required' => true,
+            ],
+            'document_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'document_endpoint',
+                'required' => true,
+            ],
         ];
     }
 

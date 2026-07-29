@@ -32,7 +32,10 @@ class CurlApiClient implements ApiClientInterface
             CURLOPT_TIMEOUT         => 30,
         ];
 
-        if (isset($options['form_params'])) {
+        if (isset($options['body'])) {
+            $curlOptions[CURLOPT_POST]       = true;
+            $curlOptions[CURLOPT_POSTFIELDS] = $options['body'];
+        } elseif (isset($options['form_params'])) {
             $curlOptions[CURLOPT_POST]       = true;
             $curlOptions[CURLOPT_POSTFIELDS] = http_build_query($options['form_params']);
             $headers[]                       = 'Content-Type: application/x-www-form-urlencoded';
