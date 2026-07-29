@@ -46,8 +46,19 @@ class Settings extends Admin_Controller
     {
         if ($this->input->method() !== 'post') {
             show_error('Method not allowed', 405);
+
+            return;
         }
 
+        $provider = $this->Merchant_clients_model->get_by_id((int) $id);
+
+        if ( ! $provider) {
+            show_error(trans('merchant_client_not_found'));
+
+            return;
+        }
+
+        $existingSettings = json_decode($provider['settings_json'] ?? '{}', true) ?: [];
         $urlFields  = ['token_url', 'api_base_url'];
         $pathFields = ['upload_endpoint', 'invoice_endpoint', 'send_invoice_endpoint',
             'invoice_status_endpoint', 'incoming_invoices_endpoint', 'invoice_events_endpoint'];
@@ -94,7 +105,19 @@ class Settings extends Admin_Controller
             return $value !== null;
         });
 
+        foreach (['client_secret', 'access_token', 'api_key', 'staging_token'] as $sensitiveField) {
+            if (($settings[$sensitiveField] ?? '') === '') {
+                if (array_key_exists($sensitiveField, $existingSettings)) {
+                    $settings[$sensitiveField] = $existingSettings[$sensitiveField];
+                } else {
+                    unset($settings[$sensitiveField]);
+                }
+            }
+        }
+
         $enabled = $this->input->post('enabled') ? 1 : 0;
+
+        $this->db->trans_start();
 
         if ($enabled === 1) {
             $this->db
@@ -114,6 +137,14 @@ class Settings extends Admin_Controller
         ];
 
         $this->Merchant_clients_model->update_client((int) $id, $data);
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === false) {
+            $this->session->set_flashdata('alert_error', 'Unable to save provider settings.');
+            redirect('integrations/settings/edit/' . (int) $id);
+
+            return;
+        }
 
         redirect('integrations/settings');
     }

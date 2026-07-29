@@ -14,6 +14,7 @@ class Integrations extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClient.php';
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationResponseNormalizer.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseStatus.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDirection.php';
@@ -30,6 +31,10 @@ class Integrations extends Admin_Controller
 
     public function send_invoice($invoiceId, $merchantClientId): void
     {
+        if ( ! $this->isPostRequest()) {
+            return;
+        }
+
         $invoiceId        = (int) $invoiceId;
         $merchantClientId = (int) $merchantClientId;
 
@@ -40,13 +45,6 @@ class Integrations extends Admin_Controller
 
             return;
         }
-
-        $settings = $this->Merchant_clients_model->get_settings($merchantClient);
-
-        $registry = new IntegrationClientRegistry();
-        $provider = $registry->getClient($merchantClient['merchant_type']);
-
-        $client = new IntegrationClient($provider, $settings);
 
         $this->load->helper('pdf');
         $this->load->model('invoices/mdl_invoices');
@@ -116,15 +114,16 @@ class Integrations extends Admin_Controller
             'profile'    => 'EN16931',
         ];
 
-        $metadata = $provider->buildInvoicePayload($invoice, $items, $metadata);
-
         try {
+            $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+            $registry = new IntegrationClientRegistry();
+            $provider = $registry->getClient($merchantClient['merchant_type']);
+            $client   = new IntegrationClient($provider, $settings);
+            $metadata = $provider->buildInvoicePayload($invoice, $items, $metadata);
             $response = $client->sendInvoice($documentPath, $metadata);
-
-            $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
-
-        } catch (RuntimeException $e) {
-            $this->session->set_flashdata('alert_error', $e->getMessage());
+        } catch (Throwable $e) {
+            log_message('error', 'E-invoice send failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', trans('einvoice_send_failed'));
             redirect('invoices/view/' . (int) $invoiceId);
 
             return;
@@ -147,7 +146,7 @@ class Integrations extends Admin_Controller
         } else {
             $this->session->set_flashdata(
                 'alert_error',
-                trans('einvoice_send_failed') . ' : ' . ($response['message'] ?? '')
+                trans('einvoice_send_failed')
             );
         }
 
@@ -156,6 +155,10 @@ class Integrations extends Admin_Controller
 
     public function receive($merchantClientId): void
     {
+        if ( ! $this->isPostRequest()) {
+            return;
+        }
+
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchantClientId);
 
         if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
@@ -170,33 +173,29 @@ class Integrations extends Admin_Controller
             $provider = $registry->getClient($merchantClient['merchant_type']);
             $client   = new IntegrationClient($provider, $settings);
 
-           $response = $client->receiveInvoices();
-        } catch (RuntimeException $e) {
+            $response = $client->receiveInvoices();
+        } catch (Throwable $e) {
+            log_message('error', 'E-invoice receive failed: ' . sanitize_for_logging($e->getMessage()));
             $this->output
                 ->set_content_type('application/json')
                 ->set_status_header(500)
                 ->set_output(json_encode([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => 'Provider request failed.',
                 ], JSON_PRETTY_PRINT));
-        }
-        $items = $response['response']['data']
-            ?? $response['response']['items']
-            ?? $response['response']['invoices']
-            ?? $response['response']
-            ?? [];
 
-        if (isset($items['id']) || isset($items['external_id'])) {
-            $items = [$items];
+            return;
         }
+
+        $items  = IntegrationResponseNormalizer::extractItems($response, ['data', 'items', 'invoices']);
+        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
 
         foreach ($items as $item) {
-            if (is_array($item)) {
-                $this->Merchant_responses_model->create_inbound_item(
-                    (int) $merchantClientId,
-                    $item
-                );
-            }
+            $this->Merchant_responses_model->create_inbound_item(
+                (int) $merchantClientId,
+                $item,
+                $driver
+            );
         }
 
         $this->output
@@ -206,6 +205,10 @@ class Integrations extends Admin_Controller
 
     public function sync_events($merchantClientId)
     {
+        if ( ! $this->isPostRequest()) {
+            return;
+        }
+
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchantClientId);
 
         if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
@@ -222,35 +225,28 @@ class Integrations extends Admin_Controller
             $client   = new IntegrationClient($provider, $settings);
 
             $events   = $client->getInvoiceEvents();
-        } catch (RuntimeException $e) {
+        } catch (Throwable $e) {
+            log_message('error', 'E-invoice event sync failed: ' . sanitize_for_logging($e->getMessage()));
             $this->output
                 ->set_content_type('application/json')
                 ->set_status_header(500)
                 ->set_output(json_encode([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => 'Provider request failed.',
                 ], JSON_PRETTY_PRINT));
 
             return;
         }
 
-        $items = $events['response']['data']
-            ?? $events['response']['items']
-            ?? $events['response']['events']
-            ?? $events['response']
-            ?? [];
-
-        if (isset($items['id']) || isset($items['external_id'])) {
-            $items = [$items];
-        }
+        $items  = IntegrationResponseNormalizer::extractItems($events, ['data', 'items', 'events']);
+        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
 
         foreach ($items as $item) {
-            if (is_array($item)) {
-                $this->Merchant_responses_model->create_event_item(
-                    (int) $merchantClientId,
-                    $item
-                );
-            }
+            $this->Merchant_responses_model->create_event_item(
+                (int) $merchantClientId,
+                $item,
+                $driver
+            );
         }
 
         $this->output
@@ -260,16 +256,22 @@ class Integrations extends Admin_Controller
 
     public function status($invoiceId, $merchantClientId)
     {
+        if ( ! $this->isPostRequest()) {
+            return;
+        }
+
         $merchantClient = $this->Merchant_clients_model->get_by_id(
             (int) $merchantClientId
         );
 
-        if ( ! $merchantClient) {
+        if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
+
+            return;
         }
 
         $lastResponse = $this->Merchant_responses_model
-            ->get_last_response_by_invoice((int) $invoiceId);
+            ->get_last_response_by_invoice((int) $invoiceId, (int) $merchantClientId);
 
         if ( ! $lastResponse) {
             $this->session->set_flashdata(
@@ -278,23 +280,11 @@ class Integrations extends Admin_Controller
             );
 
             redirect('invoices/view/' . (int) $invoiceId);
+
+            return;
         }
 
-        $this->load->model('integrations/Merchant_clients_model');
-        $settings = $this->Merchant_clients_model
-            ->get_settings($merchantClient);
-
-        $registry = new IntegrationClientRegistry();
-
-        $provider = $registry->getClient(
-            $merchantClient['merchant_type']
-        );
-
-        $client = new IntegrationClient(
-            $provider,
-            $settings
-        );
-        if (empty($lastResponse['external_id'])) {
+        if (empty($lastResponse['merchant_response_reference'])) {
             $this->session->set_flashdata(
                 'alert_error',
                 trans('einvoice_no_external_reference')
@@ -305,13 +295,28 @@ class Integrations extends Admin_Controller
             return;
         }
 
-        $status = $client->getInvoiceStatus(
-            $lastResponse['external_id']
-        );
+        try {
+            $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+            $registry = new IntegrationClientRegistry();
+            $provider = $registry->getClient($merchantClient['merchant_type']);
+            $client   = new IntegrationClient($provider, $settings);
+            $status   = $client->getInvoiceStatus(
+                $lastResponse['merchant_response_reference']
+            );
+        } catch (Throwable $e) {
+            log_message('error', 'E-invoice status request failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', 'Unable to retrieve status');
+            redirect('invoices/view/' . (int) $invoiceId);
+
+            return;
+        }
+
+        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
 
         $this->Merchant_responses_model->save_status(
             (int) $invoiceId,
             $status,
+            $driver,
             $lastResponse
         );
 
@@ -334,9 +339,20 @@ class Integrations extends Admin_Controller
     {
         if ($this->input->method() !== 'post') {
             show_error('Method not allowed', 405);
+
+            return;
         }
 
         $participantId = trim((string) $this->input->post('participant_id'));
+
+        if ($participantId === '' || mb_strlen($participantId) > 100) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_status_header(422)
+                ->set_output(json_encode(['reachable' => false, 'error' => 'Invalid participant identifier.']));
+
+            return;
+        }
 
         $merchantClient = $this->Merchant_clients_model->get_default_enabled();
 
@@ -348,12 +364,22 @@ class Integrations extends Admin_Controller
             return;
         }
 
-        $settings = $this->Merchant_clients_model->get_settings($merchantClient);
-        $registry = new IntegrationClientRegistry();
-        $provider = $registry->getClient($merchantClient['merchant_type']);
-        $client   = new IntegrationClient($provider, $settings);
+        try {
+            $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+            $registry = new IntegrationClientRegistry();
+            $provider = $registry->getClient($merchantClient['merchant_type']);
+            $client   = new IntegrationClient($provider, $settings);
+            $result   = $client->lookupParticipant($participantId);
+        } catch (Throwable $e) {
+            log_message('error', 'Peppol participant validation failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->output
+                ->set_content_type('application/json')
+                ->set_status_header(502)
+                ->set_output(json_encode(['reachable' => false, 'error' => 'Provider request failed.']));
 
-        $result   = $client->lookupParticipant($participantId);
+            return;
+        }
+
         $response = $result['response'] ?? [];
 
         $this->output
@@ -385,5 +411,16 @@ class Integrations extends Admin_Controller
 
         $this->layout->buffer('content', 'integrations/history_client');
         $this->layout->render();
+    }
+
+    private function isPostRequest(): bool
+    {
+        if ($this->input->method() === 'post') {
+            return true;
+        }
+
+        show_error('Method not allowed', 405);
+
+        return false;
     }
 }

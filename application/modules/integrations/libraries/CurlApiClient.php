@@ -28,6 +28,8 @@ class CurlApiClient implements ApiClientInterface
             CURLOPT_HTTPHEADER      => $headers,
             CURLOPT_PROTOCOLS       => CURLPROTO_HTTPS,
             CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTPS,
+            CURLOPT_CONNECTTIMEOUT  => 10,
+            CURLOPT_TIMEOUT         => 30,
         ];
 
         if (isset($options['form_params'])) {
@@ -39,8 +41,13 @@ class CurlApiClient implements ApiClientInterface
             $curlOptions[CURLOPT_POST]       = true;
             $curlOptions[CURLOPT_POSTFIELDS] = $options['multipart'];
         } elseif (isset($options['json'])) {
+            $json = json_encode($options['json']);
+            if ($json === false) {
+                throw new RuntimeException('Unable to encode the provider request as JSON.');
+            }
+
             $curlOptions[CURLOPT_POST]       = true;
-            $curlOptions[CURLOPT_POSTFIELDS] = json_encode($options['json']);
+            $curlOptions[CURLOPT_POSTFIELDS] = $json;
             $headers[]                       = 'Content-Type: application/json';
             $curlOptions[CURLOPT_HTTPHEADER] = $headers;
         } elseif ($method === RequestMethod::POST) {

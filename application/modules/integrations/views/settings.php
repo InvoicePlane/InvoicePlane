@@ -37,11 +37,15 @@
                           class="btn btn-sm btn-default">
                           <?php _trans('edit'); ?>
                        </a>
-                       <a href="<?php echo site_url('integrations/sync/run/' . $provider['id']); ?>"
-                          class="btn btn-sm btn-primary">
-                          <i class="fa fa-refresh"></i>
-                          <?php _trans('sync'); ?>
-                       </a>
+                       <form method="post"
+                             action="<?php echo site_url('integrations/sync/run/' . (int) $provider['id']); ?>"
+                             style="display: inline;">
+                           <?php _csrf_field(); ?>
+                           <button type="submit" class="btn btn-sm btn-primary">
+                               <i class="fa fa-refresh"></i>
+                               <?php _trans('sync'); ?>
+                           </button>
+                       </form>
                     </td>
                 </tr>
             <?php endforeach; ?>

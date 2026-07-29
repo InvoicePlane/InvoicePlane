@@ -13,9 +13,10 @@ class GuzzleApiClient implements ApiClientInterface
     public function __construct(?Client $guzzle = null)
     {
         $this->guzzle = $guzzle ?? new Client([
-            'http_errors' => false,
-            'verify'      => true,
-            'timeout'     => 30,
+            'connect_timeout' => 10,
+            'http_errors'     => false,
+            'verify'          => true,
+            'timeout'         => 30,
         ]);
     }
 
