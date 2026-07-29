@@ -330,10 +330,14 @@ if ($einvoice->user) {
                 </li>
 <?php if ( ! empty($einvoice_provider) && ! empty($einvoice_provider['id'])) : ?>
                 <li>
-                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/' . $einvoice_provider['id']); ?>">
-                         <i class="fa fa-refresh"></i>
-                         <?php _trans('check_status'); ?>
-                      </a>
+                    <form method="post"
+                          action="<?php echo site_url('integrations/status/' . (int) $invoice_id . '/' . (int) $einvoice_provider['id']); ?>">
+                        <?php _csrf_field(); ?>
+                        <button type="submit" class="btn btn-link">
+                            <i class="fa fa-refresh"></i>
+                            <?php _trans('check_status'); ?>
+                        </button>
+                    </form>
                 </li>
 <?php endif; ?>
                 <li>
@@ -363,17 +367,26 @@ if ($einvoice->user) {
             $has_id       = ! empty($invoice->client_peppol_id);
             if ($needs_peppol && ! $has_id) {
                 $lst = 'class="disabled" data-toggle="tooltip" title="' . trans('peppol_id_missing') . '"';
-                $lnk = 'javascript:void(0);';
             } else {
                 $lst = 'class="active"';
-                $lnk = site_url('integrations/send_invoice/' . $invoice_id . '/' . (int) $mc['id']);
             }
 ?>
                 <li <?php echo $lst; ?>>
-                    <a href="<?php echo $lnk; ?>">
+<?php if ($needs_peppol && ! $has_id) : ?>
+                    <a href="javascript:void(0);">
                         <i class="fa fa-paper-plane fa-margin"></i>
                         <?php _trans('send_via_integration'); ?> <?php _htmlsc($mc['label']); ?>
                     </a>
+<?php else : ?>
+                    <form method="post"
+                          action="<?php echo site_url('integrations/send_invoice/' . (int) $invoice_id . '/' . (int) $mc['id']); ?>">
+                        <?php _csrf_field(); ?>
+                        <button type="submit" class="btn btn-link">
+                            <i class="fa fa-paper-plane fa-margin"></i>
+                            <?php _trans('send_via_integration'); ?> <?php _htmlsc($mc['label']); ?>
+                        </button>
+                    </form>
+<?php endif; ?>
                 </li>
 <?php
         }
@@ -695,11 +708,16 @@ if ($invoice->invoice_status_id != 1) {
                                 </p>
                             <?php endif; ?>
 
-                            <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/1'); ?>"
-                               class="btn btn-default btn-sm">
-                                <i class="fa fa-refresh"></i>
-                                <?php _trans('check_status'); ?>
-                            </a>
+<?php if ( ! empty($einvoice_provider['id'])) : ?>
+                            <form method="post"
+                                  action="<?php echo site_url('integrations/status/' . (int) $invoice_id . '/' . (int) $einvoice_provider['id']); ?>">
+                                <?php _csrf_field(); ?>
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <i class="fa fa-refresh"></i>
+                                    <?php _trans('check_status'); ?>
+                                </button>
+                            </form>
+<?php endif; ?>
                         </div>
                     </div>
 <?php endif; ?>

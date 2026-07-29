@@ -21,28 +21,28 @@ class IntegrationClient
 
     public function sendInvoice(string $documentPath, array $metadata): array
     {
-        $this->authenticate();
+        $this->ensureAuthenticated();
 
         return $this->provider->sendInvoice($documentPath, $metadata);
     }
 
     public function getInvoiceStatus(string $externalId): array
     {
-        $this->authenticate();
+        $this->ensureAuthenticated();
 
         return $this->provider->getInvoiceStatus($externalId);
     }
 
     public function receiveInvoices(array $filters = []): array
     {
-        $this->authenticate();
+        $this->ensureAuthenticated();
 
         return $this->provider->receiveInvoices($filters);
     }
 
     public function getInvoiceEvents(array $filters = []): array
     {
-        $this->authenticate();
+        $this->ensureAuthenticated();
 
         return $this->provider->getInvoiceEvents($filters);
     }
@@ -52,8 +52,15 @@ class IntegrationClient
         if ( ! method_exists($this->provider, 'participants')) {
             return ['success' => false, 'response' => ['reachable' => false], 'message' => 'Provider does not support participant lookup'];
         }
-        $this->authenticate();
+        $this->ensureAuthenticated();
 
         return $this->provider->participants()->lookup($participantId);
+    }
+
+    private function ensureAuthenticated(): void
+    {
+        if ( ! $this->authenticate()) {
+            throw new RuntimeException('E-invoicing provider authentication failed.');
+        }
     }
 }

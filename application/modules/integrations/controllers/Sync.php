@@ -16,10 +16,18 @@ class Sync extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClient.php';
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationResponseNormalizer.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
     }
 
     public function run($merchant_client_id)
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Method not allowed', 405);
+
+            return;
+        }
+
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchant_client_id);
 
         if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
@@ -30,50 +38,40 @@ class Sync extends Admin_Controller
             return;
         }
 
-        $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+        try {
+            $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+            $registry = new IntegrationClientRegistry();
+            $provider = $registry->getClient($merchantClient['merchant_type']);
+            $client   = new IntegrationClient($provider, $settings);
+            $incoming = $client->receiveInvoices();
+            $events   = $client->getInvoiceEvents();
+        } catch (Throwable $e) {
+            log_message('error', 'Manual e-invoice sync failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', 'Provider request failed.');
+            redirect('integrations/settings');
 
-        $registry = new IntegrationClientRegistry();
-        $provider = $registry->getClient($merchantClient['merchant_type']);
-        $client   = new IntegrationClient($provider, $settings);
-
-        $incoming      = $client->receiveInvoices();
-        $incomingItems = $incoming['response']['data']
-            ?? $incoming['response']['items']
-            ?? $incoming['response']['invoices']
-            ?? $incoming['response']
-            ?? [];
-
-        if (isset($incomingItems['id']) || isset($incomingItems['external_id'])) {
-            $incomingItems = [$incomingItems];
+            return;
         }
+
+        $driver        = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
+        $incomingItems = IntegrationResponseNormalizer::extractItems($incoming, ['data', 'items', 'invoices']);
 
         foreach ($incomingItems as $item) {
-            if (is_array($item)) {
-                $this->Merchant_responses_model->create_inbound_item(
-                    (int) $merchant_client_id,
-                    $item
-                );
-            }
+            $this->Merchant_responses_model->create_inbound_item(
+                (int) $merchant_client_id,
+                $item,
+                $driver
+            );
         }
 
-        $events     = $client->getInvoiceEvents();
-        $eventItems = $events['response']['data']
-            ?? $events['response']['items']
-            ?? $events['response']['events']
-            ?? $events['response']
-            ?? [];
-
-        if (isset($eventItems['id']) || isset($eventItems['external_id'])) {
-            $eventItems = [$eventItems];
-        }
+        $eventItems = IntegrationResponseNormalizer::extractItems($events, ['data', 'items', 'events']);
 
         foreach ($eventItems as $item) {
-            if (is_array($item)) {
-                $this->Merchant_responses_model->create_event_item(
-                    (int) $merchant_client_id,
-                    $item
-                );
-            }
+            $this->Merchant_responses_model->create_event_item(
+                (int) $merchant_client_id,
+                $item,
+                $driver
+            );
         }
 
         $this->session->set_flashdata(

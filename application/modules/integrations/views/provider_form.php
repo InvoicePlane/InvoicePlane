@@ -58,7 +58,7 @@
                         <div class="form-group">
                             <label for="client_secret"><?php _trans('client_secret'); ?></label>
                             <input type="password" name="client_secret" id="client_secret" class="form-control"
-                                   value="<?php _htmlsc($settings['client_secret'] ?? ''); ?>" autocomplete="off">
+                                   value="" autocomplete="new-password">
                         </div>
 
                         <div class="form-group">

@@ -16,6 +16,7 @@ class Incoming extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClient.php';
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationResponseNormalizer.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseStatus.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDirection.php';
@@ -49,42 +50,44 @@ class Incoming extends Admin_Controller
 
     public function sync($merchant_client_id)
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Method not allowed', 405);
+
+            return;
+        }
+
         $merchantClient = $this->Merchant_clients_model->get_by_id((int) $merchant_client_id);
 
         if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
             show_error(trans('merchant_client_not_found'));
+
+            return;
         }
 
-        $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+        try {
+            $settings = $this->Merchant_clients_model->get_settings($merchantClient);
+            $registry = new IntegrationClientRegistry();
+            $provider = $registry->getClient($merchantClient['merchant_type']);
+            $client   = new IntegrationClient($provider, $settings);
+            $response = $client->receiveInvoices();
+        } catch (Throwable $e) {
+            log_message('error', 'Incoming e-invoice sync failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', 'Provider request failed.');
+            redirect('integrations/incoming');
 
-        $registry = new IntegrationClientRegistry();
-        $provider = $registry->getClient($merchantClient['merchant_type']);
-
-        $client = new IntegrationClient($provider, $settings);
-
-        $response = $client->receiveInvoices();
-
-        $items = $response['response']['data']
-            ?? $response['response']['items']
-            ?? $response['response']['invoices']
-            ?? $response['response']
-            ?? [];
-
-        if (isset($items['id']) || isset($items['external_id'])) {
-            $items = [$items];
+            return;
         }
 
+        $items  = IntegrationResponseNormalizer::extractItems($response, ['data', 'items', 'invoices']);
         $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
 
         foreach ($items as $item) {
-            if (is_array($item)) {
-                $this->Merchant_responses_model->create_inbound_item(
-                    (int) $merchant_client_id,
-                    $item,
-                    $driver,
-                    $item['sender'] ?? $item['peppol_participant_id'] ?? null,
-                );
-            }
+            $this->Merchant_responses_model->create_inbound_item(
+                (int) $merchant_client_id,
+                $item,
+                $driver,
+                $item['sender'] ?? $item['peppol_participant_id'] ?? null,
+            );
         }
         redirect('integrations/incoming');
     }

@@ -203,12 +203,19 @@ class Merchant_responses_model extends CI_Model
             ->result_array();
     }
 
-    public function get_last_response_by_invoice(int $invoiceId): array
+    public function get_last_response_by_invoice(int $invoiceId, ?int $merchantClientId = null): array
     {
-        return $this->db
+        $query = $this->db
             ->where('invoice_id', $invoiceId)
-            ->where('direction', MerchantResponseDirection::Out->value)
+            ->where('direction', MerchantResponseDirection::Out->value);
+
+        if ($merchantClientId !== null) {
+            $query->where('merchant_client_id', $merchantClientId);
+        }
+
+        return $query
             ->order_by('created_at', 'DESC')
+            ->order_by('merchant_response_id', 'DESC')
             ->limit(1)
             ->get(self::TABLE)
             ->row_array() ?: [];

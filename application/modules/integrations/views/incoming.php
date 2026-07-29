@@ -3,10 +3,15 @@
 
     <div class="headerbar-item pull-right">
         <?php foreach ($clients as $client) : ?>
-            <a href="<?php echo site_url('integrations/incoming/sync/' . $client['id']); ?>" class="btn btn-sm btn-primary">
-                <i class="fa fa-refresh"></i>
-                <?php _trans('sync'); ?> <?php _htmlsc($client['label']); ?>
-            </a>
+            <form method="post"
+                  action="<?php echo site_url('integrations/incoming/sync/' . (int) $client['id']); ?>"
+                  style="display: inline;">
+                <?php _csrf_field(); ?>
+                <button type="submit" class="btn btn-sm btn-primary">
+                    <i class="fa fa-refresh"></i>
+                    <?php _trans('sync'); ?> <?php _htmlsc($client['label']); ?>
+                </button>
+            </form>
         <?php endforeach; ?>
     </div>
 </div>
