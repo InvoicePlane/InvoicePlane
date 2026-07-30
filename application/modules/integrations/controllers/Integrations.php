@@ -19,6 +19,12 @@ class Integrations extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseStatus.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDirection.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseType.php';
+        require_once APPPATH . 'modules/integrations/libraries/PeppolDocumentType.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceProfile.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceProfileRegistry.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceArtifact.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentValidator.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentService.php';
     }
 
     public function providers(): void
@@ -46,7 +52,7 @@ class Integrations extends Admin_Controller
             return;
         }
 
-        $this->load->helper('pdf');
+        $this->load->helper(['pdf', 'e-invoice']);
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('invoices/mdl_items');
 
@@ -63,58 +69,24 @@ class Integrations extends Admin_Controller
             ->get()
             ->result();
 
-        $documentDir = FCPATH . 'uploads/integrations/outgoing/';
-
-        if ( ! is_dir($documentDir)) {
-            if ( ! mkdir($documentDir, 0775, true) && ! is_dir($documentDir)) {
-                show_error('Unable to create e-invoice output directory.');
-
-                return;
-            }
-        }
-
-        $documentPath = $documentDir . 'invoice_' . $invoiceId . '.pdf';
-        if (file_exists($documentPath) && ! unlink($documentPath)) {
-            show_error('Unable to replace existing invoice PDF.');
-
-            return;
-        }
-
-        $pdfContent = generate_invoice_pdf($invoiceId, false, null, null);
-
-        if (empty($pdfContent)) {
-            show_error('InvoicePlane did not return PDF content.');
-
-            return;
-        }
-
-        if (is_string($pdfContent) && file_exists($pdfContent)) {
-            if ( ! copy($pdfContent, $documentPath)) {
-                show_error('Unable to copy generated invoice PDF.');
-
-                return;
-            }
-        } else {
-            if (file_put_contents($documentPath, $pdfContent) === false) {
-                show_error('Unable to write generated invoice PDF.');
-
-                return;
-            }
-        }
-
-        if ( ! file_exists($documentPath) || filesize($documentPath) === 0) {
-            show_error('Invoice PDF not found after generation.');
-
-            return;
-        }
-
-        $metadata = [
-            'invoice_id' => $invoiceId,
-            'format'     => 'factur-x',
-            'profile'    => 'EN16931',
-        ];
-
         try {
+            $profileCode = (string) ($invoice->client_einvoicing_version ?? '');
+            $profile     = EInvoiceProfileRegistry::builtIn()->get($profileCode);
+            if ( ! $profile->supportsProvider($merchantClient['merchant_type'])) {
+                throw new RuntimeException('The selected provider does not support this e-invoice profile.');
+            }
+
+            $service     = new EInvoiceDocumentService();
+            $artifact    = $service->generate(
+                $invoiceId,
+                $invoice,
+                $items,
+                $profile,
+                FCPATH . 'uploads/integrations/outgoing/'
+            );
+            $documentPath = $artifact->path();
+            $metadata     = array_merge(['invoice_id' => $invoiceId], $artifact->metadata());
+
             $settings = $this->Merchant_clients_model->get_settings($merchantClient);
             $registry = new IntegrationClientRegistry();
             $provider = $registry->getClient($merchantClient['merchant_type']);

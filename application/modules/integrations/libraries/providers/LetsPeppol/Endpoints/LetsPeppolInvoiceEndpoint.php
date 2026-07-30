@@ -10,7 +10,7 @@ class LetsPeppolInvoiceEndpoint
      * POST {invoice_endpoint}  (multipart).
      *
      * Request:
-     *   file      file    PDF invoice document (UBL or PEPPOL BIS)
+     *   file      file    UBL or other supported e-invoice document
      *   metadata  string  JSON-encoded metadata object (optional)
      *
      * Response (JSON):
@@ -27,8 +27,9 @@ class LetsPeppolInvoiceEndpoint
 
         $url = $this->client->buildUrl($settings['invoice_endpoint']);
 
-        $payload = [
-            'file' => new \CURLFile($documentPath, 'application/pdf', basename($documentPath)),
+        $mimeType = $metadata['mime_type'] ?? 'application/octet-stream';
+        $payload  = [
+            'file' => new \CURLFile($documentPath, $mimeType, basename($documentPath)),
         ];
 
         if ( ! empty($metadata)) {
