@@ -19,7 +19,7 @@ final class EInvoiceDocumentValidator
         }
 
         if ($profile->extension() === 'pdf') {
-            $errors = $this->validatePdf($path);
+            $errors = $this->validatePdf($path, $profile);
         } else {
             $errors = $this->validateXml($path, $profile);
         }
@@ -30,7 +30,7 @@ final class EInvoiceDocumentValidator
     /**
      * @return string[]
      */
-    private function validatePdf(string $path): array
+    private function validatePdf(string $path, EInvoiceProfile $profile): array
     {
         $handle = fopen($path, 'rb');
         if ($handle === false) {
@@ -40,7 +40,28 @@ final class EInvoiceDocumentValidator
         $signature = fread($handle, 5);
         fclose($handle);
 
-        return $signature === '%PDF-' ? [] : ['Document is not a PDF file.'];
+        if ($signature !== '%PDF-') {
+            return ['Document is not a PDF file.'];
+        }
+
+        if ( ! $profile->embedded()) {
+            return [];
+        }
+
+        $contents = file_get_contents($path);
+        if ($contents === false) {
+            return ['Document cannot be read.'];
+        }
+
+        if ( ! str_contains($contents, '/EmbeddedFiles') && ! str_contains($contents, '/AF')) {
+            return ['Hybrid PDF does not declare an embedded file.'];
+        }
+
+        if ($profile->xmlName() !== '' && ! str_contains($contents, $profile->xmlName())) {
+            return ['Hybrid PDF does not contain the expected XML attachment name.'];
+        }
+
+        return [];
     }
 
     /**

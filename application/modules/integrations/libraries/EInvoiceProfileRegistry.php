@@ -90,6 +90,25 @@ final class EInvoiceProfileRegistry
                 PeppolDocumentType::BillingInvoice->value,
                 ['letspeppol']
             ),
+            new EInvoiceProfile(
+                'Facturxv10',
+                'Factur-X v1.0.7 - EN 16931',
+                'FR',
+                'Facturxv10',
+                'factur-x',
+                'cii',
+                'application/pdf',
+                'pdf',
+                true,
+                'factur-x.xml',
+                [
+                    'GuidelineSpecifiedDocumentContextParameterID' => 'urn:cen.eu:en16931:2017',
+                ],
+                'urn:cen.eu:en16931:2017',
+                null,
+                null,
+                ['superpdp', 'qonto']
+            ),
         ]);
     }
 }
