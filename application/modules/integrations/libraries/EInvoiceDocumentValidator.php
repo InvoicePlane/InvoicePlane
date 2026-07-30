@@ -121,14 +121,20 @@ final class EInvoiceDocumentValidator
         $xpath  = new DOMXPath($document);
 
         if ($profile->customizationId() !== null) {
-            $nodes = $xpath->query('//*[local-name()="CustomizationID"]');
+            $query = $profile->syntax() === 'cii'
+                ? '//*[local-name()="GuidelineSpecifiedDocumentContextParameter"]/*[local-name()="ID"]'
+                : '//*[local-name()="CustomizationID"]';
+            $nodes = $xpath->query($query);
             if ($nodes === false || $nodes->length === 0 || trim($nodes->item(0)->textContent) !== $profile->customizationId()) {
                 $errors[] = 'CustomizationID does not match the selected profile.';
             }
         }
 
         if ($profile->profileId() !== null) {
-            $nodes = $xpath->query('//*[local-name()="ProfileID"]');
+            $query = $profile->syntax() === 'cii'
+                ? '//*[local-name()="BusinessProcessSpecifiedDocumentContextParameter"]/*[local-name()="ID"]'
+                : '//*[local-name()="ProfileID"]';
+            $nodes = $xpath->query($query);
             if ($nodes === false || $nodes->length === 0 || trim($nodes->item(0)->textContent) !== $profile->profileId()) {
                 $errors[] = 'ProfileID does not match the selected profile.';
             }
