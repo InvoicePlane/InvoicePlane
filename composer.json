@@ -14,6 +14,7 @@
         "endroid/qr-code": "^4.8",
         "ezyang/htmlpurifier": "^4.19",
         "guzzlehttp/guzzle": "^7.10",
+        "josemmo/facturae-php": "^1.8",
         "moneyphp/money": "^4.8",
         "mpdf/mpdf": "^8.2",
         "paragonie/random_compat": "^2.0",
