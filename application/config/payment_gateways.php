@@ -198,12 +198,12 @@ $config['payment_gateways'] = [
             'label' => 'Secure Hash',
         ),
     ), */
-    /* 'Mollie' => array(
-        'apiKey' => array(
-            'type' => 'text',
+    'Mollie' => [
+        'apiKey' => [
+            'type'  => 'password',
             'label' => 'Api Key',
-        ),
-    ), */
+        ],
+    ],
     /* 'MultiSafepay' => array(
         'accountId' => array(
             'type' => 'text',

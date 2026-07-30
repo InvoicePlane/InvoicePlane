@@ -16,6 +16,7 @@
         "guzzlehttp/guzzle": "^7.14",
         "moneyphp/money": "^4.9",
         "mpdf/mpdf": "^8.3",
+        "omnipay/mollie": "^5.5",
         "paragonie/random_compat": "^2.0",
         "phpmailer/phpmailer": "^6.12",
         "pocketarc/codeigniter": "3.4",
