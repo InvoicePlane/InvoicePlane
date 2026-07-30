@@ -9,11 +9,11 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * @copyright   Copyright (c) 2012 - 2025 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
- * 
+ *
  * Sources:
  *  - https://ksef.podatki.gov.pl/media/4u1bmhx4/information-sheet-on-the-fa-3-logical-structure.pdf
  *  - https://github.com/odoo/odoo/blob/19.0/addons/l10n_pl_edi/data/fa3_template.xml
- * 
+ *
  * Known limitations:
  *  - Invoice types:
  *      - Only basic VAT invoices (corrective, advance and final invoices are not supported)
@@ -613,11 +613,11 @@ class Ksefv20Xml
 
     /**
      * Converts an array structure to XML elements with support for attributes
-     * 
+     *
      * @param array $data Array structure to convert
      * @param DOMElement|null $parent Parent element to append to
      * @return DOMElement|null The created element
-     * 
+     *
      * Usage examples:
      * - Simple: ['Name' => 'John'] -> <Name>John</Name>
      * - Nested: ['Person' => ['Name' => 'John']] -> <Person><Name>John</Name></Person>

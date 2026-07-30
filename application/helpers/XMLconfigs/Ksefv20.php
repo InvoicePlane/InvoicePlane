@@ -2,7 +2,7 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 /*
  * KSeF 2.0 — FA(3) logical structure
- * 
+ *
  * Documentation: https://ksef.podatki.gov.pl/
  * Test app: https://ap-test.ksef.mf.gov.pl/
  * Production app: https://ap.ksef.mf.gov.pl/
