@@ -1,5 +1,5 @@
     <div class="table-responsive">
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped" id="task-table">
 
             <thead>
             <tr>
@@ -76,3 +76,13 @@ foreach ($tasks as $task) {
 
         </table>
     </div>
+<script>
+    $(document).ready(function() {
+        $("#task-table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "order": []
+        });
+    });
+</script>

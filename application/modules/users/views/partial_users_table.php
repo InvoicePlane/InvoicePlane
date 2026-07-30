@@ -1,5 +1,5 @@
     <div class="table-responsive">
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped" id="user-table">
 
             <thead>
             <tr>
@@ -66,3 +66,13 @@ foreach ($users as $user) {
             </tbody>
         </table>
     </div>
+<script>
+    $(document).ready(function() {
+        $("#user-table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "order": []
+        });
+    });
+</script>
