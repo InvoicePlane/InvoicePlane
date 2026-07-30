@@ -4,6 +4,12 @@
     "homepage": "https://invoiceplane.com",
     "license": "MIT",
     "type": "project",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/s2software/fatturapa.git"
+        }
+    ],
     "config": {
         "sort-packages": true,
         "allow-plugins": {
@@ -20,6 +26,7 @@
         "paragonie/random_compat": "^2.0",
         "phpmailer/phpmailer": "^6.12",
         "pocketarc/codeigniter": "3.3",
+        "s2software/fatturapa": "dev-master",
         "setasign/fpdf": "^1.8",
         "setasign/fpdi": "^2.6",
         "smhg/sepa-qr-data": "^1.2",
