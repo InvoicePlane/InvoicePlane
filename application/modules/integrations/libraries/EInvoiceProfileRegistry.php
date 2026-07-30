@@ -396,6 +396,31 @@ final class EInvoiceProfileRegistry
                 ],
                 'urn:cen.eu:en16931:2017'
             ),
+            new EInvoiceProfile(
+                'Ublciusv10ro',
+                'RO_CIUS UBL Invoice 1.0',
+                'RO',
+                'Ublv24',
+                'ro-cius',
+                'ubl',
+                'application/xml',
+                'xml',
+                false,
+                '',
+                [
+                    'CustomizationID' => 'urn:cen.eu:en16931:2017#compliant#urn:efactura.mfinante.ro:CIUS-RO:1.0.1',
+                    'BuyerReference'  => true,
+                    'client_eas_code' => '9947',
+                    'user_eas_code'   => '9947',
+                    'EndpointID'      => 'vat_id',
+                    'PartyIdentification' => false,
+                    'PartyLegalEntity'    => [
+                        'CompanyID' => 'tax_code',
+                        'SchemeID'  => false,
+                    ],
+                ],
+                'urn:cen.eu:en16931:2017#compliant#urn:efactura.mfinante.ro:CIUS-RO:1.0.1'
+            ),
         ]);
     }
 }
