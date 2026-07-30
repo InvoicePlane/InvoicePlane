@@ -421,6 +421,21 @@ final class EInvoiceProfileRegistry
                 ],
                 'urn:cen.eu:en16931:2017#compliant#urn:efactura.mfinante.ro:CIUS-RO:1.0.1'
             ),
+            new EInvoiceProfile(
+                'Ksefv20',
+                'KSeF 2.0 - FA(3)',
+                'PL',
+                'Ksefv20',
+                'ksef-fa3',
+                'ksef',
+                'application/xml',
+                'xml',
+                false,
+                '',
+                [
+                    'custom_fields' => [],
+                ]
+            ),
         ]);
     }
 }
