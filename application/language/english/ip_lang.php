@@ -857,4 +857,22 @@ $lang = [
     // Types
     'true'  => 'True',
     'false' => 'False',
+
+    // Clicksend
+    'clicksend'                        => 'ClickSend',
+    'clicksend_api_username'           => 'ClickSend API Username',
+    'clicksend_api_key'                => 'ClickSend API Key',
+    'clicksend_return_address_id'      => 'ClickSend Return Address ID',
+    'clicksend_return_address_id_info' => 'Leave empty to automatically create a return address from your company details.',
+    'clicksend_check_price'            => 'Check Price',
+    'check_api_credentials'            => 'Check API Credentials',
+    'api_credentials_required'         => 'API username and API key are required.',
+    'api_key_placeholder'              => 'Enter new API key to update',
+    'sendletter_invoice'               => 'Send Letter',
+    'letter_standard_duplex'           => 'Default Duplex Printing',
+    'letter_standard_color'            => 'Default Color Printing',
+    'print_duplex'                     => 'Duplex Printing',
+    'print_color'                      => 'Color Printing',
+    'letter_successfully_sent'         => 'Letter successfully sent',
+    'address_missing'                  => 'Name, street address and country are required.',
 ];
