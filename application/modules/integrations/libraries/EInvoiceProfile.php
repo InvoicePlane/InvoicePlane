@@ -21,7 +21,8 @@ final class EInvoiceProfile
         private array $options = [],
         private ?string $customizationId = null,
         private ?string $profileId = null,
-        private ?string $documentType = null
+        private ?string $documentType = null,
+        private array $providers = []
     ) {
         if (preg_match('/^[A-Za-z0-9_-]+$/', $code) !== 1) {
             throw new InvalidArgumentException('Invalid e-invoice profile code.');
@@ -104,5 +105,10 @@ final class EInvoiceProfile
     public function documentType(): ?string
     {
         return $this->documentType;
+    }
+
+    public function supportsProvider(string $provider): bool
+    {
+        return in_array($provider, $this->providers, true);
     }
 }
