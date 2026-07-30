@@ -320,6 +320,82 @@ final class EInvoiceProfileRegistry
                 null,
                 ['superpdp', 'qonto']
             ),
+            new EInvoiceProfile(
+                'Ublxrechnungv30de',
+                'XRechnung UBL 3.0',
+                'DE',
+                'Ublv24',
+                'xrechnung-3',
+                'ubl',
+                'application/xml',
+                'xml',
+                false,
+                '',
+                [
+                    'CustomizationID' => 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
+                    'ProfileID'       => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+                    'BuyerReference'  => true,
+                    'client_eas_code' => '0204',
+                    'user_eas_code'   => '0204',
+                    'EndpointID'      => 'tax_code',
+                    'PartyIdentification' => false,
+                    'PartyLegalEntity'    => [
+                        'CompanyID' => 'tax_code',
+                        'SchemeID'  => false,
+                    ],
+                ],
+                'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
+                'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+                PeppolDocumentType::BillingInvoice->value,
+                ['letspeppol']
+            ),
+            new EInvoiceProfile(
+                'Xrechnungciiv30de',
+                'XRechnung CII 3.0',
+                'DE',
+                'Facturxv10',
+                'xrechnung-3',
+                'cii',
+                'application/xml',
+                'xml',
+                false,
+                '',
+                [
+                    'BusinessProcessSpecifiedDocumentContextParameterID' => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+                    'GuidelineSpecifiedDocumentContextParameterID'       => 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
+                    'CII'             => true,
+                    'client_eas_code' => '0204',
+                    'user_eas_code'   => '0204',
+                    'URIUniversalCommunication' => [
+                        'client' => [
+                            'URIID'    => 'client_vat_id',
+                            'schemeID' => '9930',
+                        ],
+                        'user' => [
+                            'URIID'    => 'user_vat_id',
+                            'schemeID' => '9930',
+                        ],
+                    ],
+                ],
+                'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
+                'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0'
+            ),
+            new EInvoiceProfile(
+                'Zugferdv23',
+                'ZUGFeRD v2.3 - EN 16931',
+                'DE',
+                'Facturxv10',
+                'zugferd-2.3',
+                'cii',
+                'application/pdf',
+                'pdf',
+                true,
+                'factur-x.xml',
+                [
+                    'GuidelineSpecifiedDocumentContextParameterID' => 'urn:cen.eu:en16931:2017',
+                ],
+                'urn:cen.eu:en16931:2017'
+            ),
         ]);
     }
 }
