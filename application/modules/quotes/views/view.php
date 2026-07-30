@@ -76,6 +76,8 @@ if ($quote->quote_status_id == 1) {
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
+                    quote_work_order: $('#quote_work_order').val(),
+                    quote_agreement: $('#quote_agreement').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                 },
                 function (data) {
@@ -438,6 +440,16 @@ foreach ($quote_statuses as $key => $status) {
                                     </label>
                                     <input type="text" id="quote_password" class="form-control"
                                            value="<?php _htmlsc($quote->quote_password) ?>">
+                                </div>
+                                <div class="quote-properties">
+                                    <label for="quote_work_order"><?php _trans('quote_work_order'); ?></label>
+                                    <input type="text" id="quote_work_order" class="form-control"
+                                           value="<?php _htmlsc($quote->quote_work_order); ?>">
+                                </div>
+                                <div class="quote-properties">
+                                    <label for="quote_agreement"><?php _trans('quote_agreement'); ?></label>
+                                    <input type="text" id="quote_agreement" class="form-control"
+                                           value="<?php _htmlsc($quote->quote_agreement); ?>">
                                 </div>
 
 <?php

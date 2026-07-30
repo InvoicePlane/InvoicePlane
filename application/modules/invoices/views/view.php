@@ -49,6 +49,13 @@ if ( ! $items) {
                 invoice_id: <?php echo $invoice_id; ?>
             });
         });
+
+        $('#change-related-quote').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_related_quote'); ?>", {
+                invoice_id: <?php echo $invoice_id; ?>,
+                client_id: "<?php echo $this->db->escape_str($invoice->client_id); ?>",
+            });
+        });
 <?php
 if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
     ?>
@@ -98,6 +105,9 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                     invoice_discount_amount: $('#invoice_discount_amount').val(),
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
                     invoice_terms: $('#invoice_terms').val(),
+                    invoice_quote_number: $('#invoice_quote_number').val(),
+                    invoice_work_order: $('#invoice_work_order').val(),
+                    invoice_agreement: $('#invoice_agreement').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                     payment_method: $('#payment_method').val(),
                 },
@@ -576,6 +586,33 @@ foreach ($payment_methods as $payment_method) {
                                     <input type="text" id="invoice_password" class="form-control"
                                            value="<?php _htmlsc($invoice->invoice_password); ?>"
                                            <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>>
+                                </div>
+
+                                <div class="invoice-properties">
+                                    <label for="invoice_quote_number"><?php _trans('invoice_quote_number'); ?></label>
+                                    <div class="input-group">
+                                        <input type="text" id="invoice_quote_number" class="form-control"
+                                               value="<?php _htmlsc($invoice->invoice_quote_number); ?>">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" id="change-related-quote"
+                                                    data-client-id="<?php echo (int) $invoice->client_id; ?>">
+                                                <i class="fa fa-search fa-fw"></i>
+                                                <?php _trans('change_related_quote'); ?>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="invoice-properties">
+                                    <label for="invoice_work_order"><?php _trans('invoice_work_order'); ?></label>
+                                    <input type="text" id="invoice_work_order" class="form-control"
+                                           value="<?php _htmlsc($invoice->invoice_work_order); ?>">
+                                </div>
+
+                                <div class="invoice-properties">
+                                    <label for="invoice_agreement"><?php _trans('invoice_agreement'); ?></label>
+                                    <input type="text" id="invoice_agreement" class="form-control"
+                                           value="<?php _htmlsc($invoice->invoice_agreement); ?>">
                                 </div>
                             </div>
 

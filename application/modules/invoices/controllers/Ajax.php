@@ -150,6 +150,9 @@ class Ajax extends Admin_Controller
                 'invoice_password'         => $this->security->xss_clean($this->input->post('invoice_password')),
                 'invoice_terms'            => $this->security->xss_clean($this->input->post('invoice_terms')),
                 'payment_method'           => $this->security->xss_clean($this->input->post('payment_method')),
+                'invoice_quote_number'     => $this->security->xss_clean($this->input->post('invoice_quote_number')),
+                'invoice_work_order'       => $this->security->xss_clean($this->input->post('invoice_work_order')),
+                'invoice_agreement'        => $this->security->xss_clean($this->input->post('invoice_agreement')),
                 'invoice_discount_amount'  => standardize_amount($invoice_discount_amount),
                 'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
             ];
@@ -396,6 +399,23 @@ class Ajax extends Admin_Controller
         }
 
         $this->json_encode_ajax($response);
+    }
+
+    public function modal_related_quote()
+    {
+        $this->load->module('layout');
+        $this->load->model('quotes/mdl_quotes');
+
+        $client_id  = (int) $this->security->xss_clean($this->input->post('client_id'));
+        $invoice_id = $this->security->xss_clean($this->input->post('invoice_id'));
+
+        $data = [
+            'invoice_id' => $invoice_id,
+            'client_id'  => $client_id,
+            'quotes'     => $this->mdl_quotes->by_client($client_id)->get()->result(),
+        ];
+
+        $this->layout->load_view('invoices/modal_related_quote', $data);
     }
 
     public function modal_change_client()
