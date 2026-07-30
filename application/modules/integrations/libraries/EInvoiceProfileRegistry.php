@@ -240,6 +240,21 @@ final class EInvoiceProfileRegistry
                     'series' => 'IP',
                 ]
             ),
+            new EInvoiceProfile(
+                'Fatturapav12',
+                'FatturaPA v1.2.2',
+                'IT',
+                'Fatturapav12',
+                'fatturapa-1.2.2',
+                'fatturapa',
+                'application/xml',
+                'xml',
+                false,
+                '',
+                [
+                    'regimefisc' => 'RF01',
+                ]
+            ),
         ]);
     }
 }
