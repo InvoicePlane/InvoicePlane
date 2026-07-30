@@ -436,6 +436,21 @@ final class EInvoiceProfileRegistry
                     'custom_fields' => [],
                 ]
             ),
+            new EInvoiceProfile(
+                'Facturaev32',
+                'Facturae 3.2.1',
+                'ES',
+                'Facturaev32',
+                'facturae-3.2.1',
+                'facturae',
+                'application/xml',
+                'xml',
+                false,
+                '',
+                [
+                    'series' => 'IP',
+                ]
+            ),
         ]);
     }
 }
