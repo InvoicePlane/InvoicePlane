@@ -12,12 +12,14 @@ class Events extends Admin_Controller
 
         $this->load->model('integrations/Merchant_clients_model');
         $this->load->model('integrations/Merchant_responses_model');
+        $this->load->model('integrations/Integration_sync_runs_model');
 
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClient.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationResponseNormalizer.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationSyncService.php';
     }
 
     public function index()
@@ -48,11 +50,7 @@ class Events extends Admin_Controller
         }
 
         try {
-            $settings = $this->Merchant_clients_model->get_settings($merchantClient);
-            $registry = new IntegrationClientRegistry();
-            $provider = $registry->getClient($merchantClient['merchant_type']);
-            $client   = new IntegrationClient($provider, $settings);
-            $response = $client->getInvoiceEvents();
+            $result = $this->syncService()->run((int) $merchant_client_id, 'manual', 'events');
         } catch (Throwable $e) {
             log_message('error', 'E-invoice event sync failed: ' . sanitize_for_logging($e->getMessage()));
             $this->session->set_flashdata('alert_error', 'Provider request failed.');
@@ -61,17 +59,28 @@ class Events extends Admin_Controller
             return;
         }
 
-        $items  = IntegrationResponseNormalizer::extractItems($response, ['data', 'items', 'events']);
-        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
-
-        foreach ($items as $item) {
-            $this->Merchant_responses_model->create_event_item(
-                (int) $merchant_client_id,
-                $item,
-                $driver
-            );
-        }
+        $this->session->set_flashdata(
+            $result['status'] === 'success' ? 'alert_success' : 'alert_error',
+            sprintf(
+                '%d event(s) stored; %d already present. Run %s (%s).',
+                $result['events']['created'],
+                $result['events']['skipped'],
+                $result['correlation_id'],
+                $result['status']
+            )
+        );
 
         redirect('integrations/events');
+    }
+
+    private function syncService(): IntegrationSyncService
+    {
+        return new IntegrationSyncService(
+            $this->db,
+            $this->Merchant_clients_model,
+            $this->Merchant_responses_model,
+            $this->Integration_sync_runs_model,
+            UPLOADS_ARCHIVE_FOLDER
+        );
     }
 }

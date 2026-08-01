@@ -11,6 +11,7 @@ class Settings extends Admin_Controller
         parent::__construct();
 
         $this->load->model('integrations/Merchant_clients_model');
+        $this->load->model('integrations/Integration_sync_runs_model');
 
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationSettingsForm.php';
@@ -21,7 +22,8 @@ class Settings extends Admin_Controller
         $this->sync_provider_registry();
 
         $this->layout->set([
-            'providers' => $this->Merchant_clients_model->get_all(),
+            'providers'        => $this->Merchant_clients_model->get_all(),
+            'latest_sync_runs' => $this->Integration_sync_runs_model->latest_by_client(),
         ]);
 
         $this->layout->buffer('content', 'integrations/settings');

@@ -12,6 +12,7 @@ class Incoming extends Admin_Controller
 
         $this->load->model('integrations/Merchant_clients_model');
         $this->load->model('integrations/Merchant_responses_model');
+        $this->load->model('integrations/Integration_sync_runs_model');
 
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
@@ -30,6 +31,7 @@ class Incoming extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentValidator.php';
         require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceDocumentService.php';
         require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceSynchronizer.php';
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationSyncService.php';
     }
 
     public function index()
@@ -74,11 +76,7 @@ class Incoming extends Admin_Controller
         }
 
         try {
-            $settings = $this->Merchant_clients_model->get_settings($merchantClient);
-            $registry = new IntegrationClientRegistry();
-            $provider = $registry->getClient($merchantClient['merchant_type']);
-            $client   = new IntegrationClient($provider, $settings);
-            $response = $client->receiveInvoices();
+            $result = $this->syncService()->run((int) $merchant_client_id, 'manual', 'incoming');
         } catch (Throwable $e) {
             log_message('error', 'Incoming e-invoice sync failed: ' . sanitize_for_logging($e->getMessage()));
             $this->session->set_flashdata('alert_error', 'Provider request failed.');
@@ -87,26 +85,15 @@ class Incoming extends Admin_Controller
             return;
         }
 
-        $items  = IntegrationResponseNormalizer::extractItems($response, ['data', 'items', 'invoices']);
-        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
-
-        $result = (new IncomingInvoiceSynchronizer())->synchronize(
-            $client,
-            $merchantClient['merchant_type'],
-            (int) $merchant_client_id,
-            $driver,
-            $items,
-            $this->Merchant_responses_model,
-            UPLOADS_ARCHIVE_FOLDER
-        );
-
         $this->session->set_flashdata(
-            $result['failed'] === 0 ? 'alert_success' : 'alert_error',
+            $result['status'] === 'success' ? 'alert_success' : 'alert_error',
             sprintf(
-                '%d incoming invoice(s) archived; %d already present; %d rejected.',
-                $result['archived'],
-                $result['skipped'],
-                $result['failed']
+                '%d incoming invoice(s) archived; %d already present; %d rejected. Run %s (%s).',
+                $result['incoming']['archived'],
+                $result['incoming']['skipped'],
+                $result['incoming']['failed'],
+                $result['correlation_id'],
+                $result['status']
             )
         );
         redirect('integrations/incoming');
@@ -157,5 +144,16 @@ class Incoming extends Admin_Controller
             ->set_content_type($mimeType)
             ->set_header('Content-Disposition: attachment; filename="' . $filename . '"')
             ->set_output($content);
+    }
+
+    private function syncService(): IntegrationSyncService
+    {
+        return new IntegrationSyncService(
+            $this->db,
+            $this->Merchant_clients_model,
+            $this->Merchant_responses_model,
+            $this->Integration_sync_runs_model,
+            UPLOADS_ARCHIVE_FOLDER
+        );
     }
 }

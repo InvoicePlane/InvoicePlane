@@ -10,6 +10,7 @@ class Integrations extends Admin_Controller
 
         $this->load->model('integrations/Merchant_clients_model');
         $this->load->model('integrations/Merchant_responses_model');
+        $this->load->model('integrations/Integration_sync_runs_model');
 
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
@@ -30,6 +31,7 @@ class Integrations extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentService.php';
         require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceDocumentService.php';
         require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceSynchronizer.php';
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationSyncService.php';
     }
 
     public function providers(): void
@@ -145,12 +147,7 @@ class Integrations extends Admin_Controller
         }
 
         try {
-            $settings = $this->Merchant_clients_model->get_settings($merchantClient);
-            $registry = new IntegrationClientRegistry();
-            $provider = $registry->getClient($merchantClient['merchant_type']);
-            $client   = new IntegrationClient($provider, $settings);
-
-            $response = $client->receiveInvoices();
+            $result = $this->syncService()->run((int) $merchantClientId, 'api', 'incoming');
         } catch (Throwable $e) {
             log_message('error', 'E-invoice receive failed: ' . sanitize_for_logging($e->getMessage()));
             $this->output
@@ -164,22 +161,13 @@ class Integrations extends Admin_Controller
             return;
         }
 
-        $items  = IntegrationResponseNormalizer::extractItems($response, ['data', 'items', 'invoices']);
-        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
-
-        $localSync = (new IncomingInvoiceSynchronizer())->synchronize(
-            $client,
-            $merchantClient['merchant_type'],
-            (int) $merchantClientId,
-            $driver,
-            $items,
-            $this->Merchant_responses_model,
-            UPLOADS_ARCHIVE_FOLDER
-        );
-
         $this->output
             ->set_content_type('application/json')
-            ->set_output(json_encode(array_merge($response, ['local_sync' => $localSync]), JSON_PRETTY_PRINT));
+            ->set_status_header($result['status'] === 'failed' ? 502 : ($result['status'] === 'skipped' ? 409 : 200))
+            ->set_output(json_encode([
+                'success' => $result['status'] === 'success',
+                'run'     => $result,
+            ], JSON_PRETTY_PRINT));
     }
 
     public function sync_events($merchantClientId)
@@ -197,13 +185,7 @@ class Integrations extends Admin_Controller
         }
 
         try {
-            $settings = $this->Merchant_clients_model->get_settings($merchantClient);
-
-            $registry = new IntegrationClientRegistry();
-            $provider = $registry->getClient($merchantClient['merchant_type']);
-            $client   = new IntegrationClient($provider, $settings);
-
-            $events = $client->getInvoiceEvents();
+            $result = $this->syncService()->run((int) $merchantClientId, 'api', 'events');
         } catch (Throwable $e) {
             log_message('error', 'E-invoice event sync failed: ' . sanitize_for_logging($e->getMessage()));
             $this->output
@@ -217,20 +199,13 @@ class Integrations extends Admin_Controller
             return;
         }
 
-        $items  = IntegrationResponseNormalizer::extractItems($events, ['data', 'items', 'events']);
-        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
-
-        foreach ($items as $item) {
-            $this->Merchant_responses_model->create_event_item(
-                (int) $merchantClientId,
-                $item,
-                $driver
-            );
-        }
-
         $this->output
             ->set_content_type('application/json')
-            ->set_output(json_encode($events, JSON_PRETTY_PRINT));
+            ->set_status_header($result['status'] === 'failed' ? 502 : ($result['status'] === 'skipped' ? 409 : 200))
+            ->set_output(json_encode([
+                'success' => $result['status'] === 'success',
+                'run'     => $result,
+            ], JSON_PRETTY_PRINT));
     }
 
     public function status($invoiceId, $merchantClientId)
@@ -402,5 +377,16 @@ class Integrations extends Admin_Controller
         show_error('Method not allowed', 405);
 
         return false;
+    }
+
+    private function syncService(): IntegrationSyncService
+    {
+        return new IntegrationSyncService(
+            $this->db,
+            $this->Merchant_clients_model,
+            $this->Merchant_responses_model,
+            $this->Integration_sync_runs_model,
+            UPLOADS_ARCHIVE_FOLDER
+        );
     }
 }
