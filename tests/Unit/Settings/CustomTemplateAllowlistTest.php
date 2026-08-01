@@ -18,11 +18,11 @@ use PHPUnit\Framework\TestCase;
  * defined()/constant(). Nothing used to define those constants, so custom
  * templates never surfaced.
  *
- * The fix defines them from their ipconfig.php keys in the bootstrap. There are
- * two independent bootstraps in this repo:
- *   - the legacy root index.php (shipped to production; nginx serves it), and
- *   - bootstrap/constants.php (used by public/index.php and the test harness).
- * Both must wire the constants or the fix is silently absent on one path.
+ * The fix defines them from their ipconfig.php keys in the bootstrap. The repo
+ * now has a single boot path: bootstrap/constants.php, required by
+ * public/index.php (the sole document root) and by the test harness. The legacy
+ * root index.php was removed so there is no second bootstrap to drift against —
+ * the constants must be wired here or the fix is absent everywhere.
  *
  * These tests drive the *real* wiring: they set the ipconfig value in $_ENV
  * (as Dotenv does at runtime), require the actual bootstrap/constants.php, and
@@ -197,16 +197,21 @@ class CustomTemplateAllowlistTest extends TestCase
         self::assertNotContains('../evil', $templates, 'The invalid name must be dropped, not the whole list.');
     }
 
-    // -- Bootstrap wiring guard: both production and harness paths must define all four --
+    // -- Bootstrap wiring guard: the single boot path must define all four --
 
     #[Test]
-    public function both_bootstraps_wire_all_four_allowlist_constants_from_ipconfig(): void
+    public function the_single_bootstrap_wires_all_four_allowlist_constants_from_ipconfig(): void
     {
-        $repoRoot   = dirname(__DIR__, 3);
-        $bootstraps = [
-            'index.php'              => (string) file_get_contents($repoRoot . '/index.php'),
-            'bootstrap/constants.php' => (string) file_get_contents($repoRoot . '/bootstrap/constants.php'),
-        ];
+        $repoRoot = dirname(__DIR__, 3);
+
+        // The legacy root index.php was removed; public/index.php -> bootstrap/constants.php
+        // is now the only boot path, so this is the one file that must wire the constants.
+        self::assertFileDoesNotExist(
+            $repoRoot . '/index.php',
+            'The legacy root index.php must stay removed so a second bootstrap cannot drift out of sync.'
+        );
+
+        $source = (string) file_get_contents($repoRoot . '/bootstrap/constants.php');
 
         $constants = [
             'CUSTOM_INVOICE_TEMPLATES_PDF',
@@ -215,15 +220,13 @@ class CustomTemplateAllowlistTest extends TestCase
             'CUSTOM_QUOTE_TEMPLATES_PUBLIC',
         ];
 
-        foreach ($bootstraps as $file => $source) {
-            foreach ($constants as $constant) {
-                $pattern = '/define\(\s*[\'"]' . preg_quote($constant, '/') . '[\'"]\s*,\s*env\(/';
-                self::assertMatchesRegularExpression(
-                    $pattern,
-                    $source,
-                    sprintf('%s must define %s from its ipconfig env key, or the fix is absent on that boot path.', $file, $constant)
-                );
-            }
+        foreach ($constants as $constant) {
+            $pattern = '/define\(\s*[\'"]' . preg_quote($constant, '/') . '[\'"]\s*,\s*env\(/';
+            self::assertMatchesRegularExpression(
+                $pattern,
+                $source,
+                sprintf('bootstrap/constants.php must define %s from its ipconfig env key, or the fix is absent.', $constant)
+            );
         }
     }
 }
