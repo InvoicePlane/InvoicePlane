@@ -17,6 +17,7 @@ It provides:
 - invoice status retrieval;
 - incoming supplier invoice synchronization;
 - provider event synchronization;
+- scheduled synchronization, health checks, and an operational run ledger;
 - unified transmission history in `ip_merchant_responses`.
 
 Provider business logic remains in PHP, but controllers and views do not need
@@ -73,6 +74,32 @@ The main components are:
 | `Merchant_clients_model` | Loads provider configuration |
 | `Merchant_responses_model` | Stores outgoing, incoming, and event records |
 | `provider_form.php` | Renders fields declared by the provider schema |
+
+## Getting Started
+
+Before enabling a provider:
+
+1. install the locked Composer dependencies with `composer install`;
+2. run the InvoicePlane setup/upgrade wizard so migrations `044_1.8.0.sql`
+   through `047_1.8.3.sql` are applied in order;
+3. verify that `ENCRYPTION_KEY` is populated in `ipconfig.php` and keep a
+   recoverable backup of that key;
+4. make sure `uploads/archive` and `uploads/integrations/outgoing` are writable
+   by the PHP and cron users;
+5. install Java 8 or newer and, when receiving Factur-X documents, Poppler's
+   `pdfdetach` command;
+6. open **Settings -> E-Invoicing** to register the built-in providers, edit
+   one provider, enter the credentials and endpoints issued for the target
+   tenant, then enable it;
+7. send a test invoice using a profile explicitly mapped to that provider and
+   confirm its status in the transmission history;
+8. run a manual synchronization, inspect **Incoming invoices**, **Events**, and
+   **Operations**, then configure cron and monitoring as described below.
+
+The UI currently allows only one provider to be enabled at a time. Provider
+defaults are integration presets, not a substitute for the API contract and
+credentials supplied by the provider. Test in the provider's sandbox whenever
+one is available before enabling production traffic.
 
 ## E-Invoice Document Profiles
 
@@ -237,6 +264,11 @@ Provider registrations are stored in:
 ip_merchant_clients
 ```
 
+Transmission, incoming-document, status, and event records are stored in
+`ip_merchant_responses`. Synchronization health and counters are stored
+separately in `ip_integration_sync_runs` so operational retention never removes
+invoice history or archived documents.
+
 Important columns:
 
 | Column | Description |
@@ -326,12 +358,13 @@ All state-changing browser actions use POST requests with CSRF protection.
 ### Operational synchronization guarantees
 
 Every incoming/event synchronization, whether started from the administration
-UI, the JSON controller, or cron, passes through `IntegrationSyncService`:
+UI, the authenticated JSON controller, or cron, passes through
+`IntegrationSyncService`:
 
 1. a durable `running` record and 32-character correlation ID are created;
 2. a non-blocking MySQL advisory lock is acquired for the provider account;
-3. provider list/event reads receive at most three attempts with exponential
-   delays of 250 ms, 500 ms, then completion or failure;
+3. provider incoming-list and event-list reads receive at most three attempts
+   with exponential delays of 250 ms and 500 ms before completion or failure;
 4. authentication, validation, archive, deduplication, and event persistence
    share the same execution context;
 5. the run is finalized as `success`, `partial`, `failed`, or `skipped` with
@@ -368,6 +401,8 @@ php index.php integrations/cli/sync 3
 Each provider produces one JSON line suitable for log ingestion. Exit code `0`
 means every run succeeded, `1` means at least one run was partial, failed, or
 skipped, and `2` means the command arguments or provider selection were invalid.
+The optional provider argument is the numeric `ip_merchant_clients.id`, not the
+provider code.
 
 The health command checks that an enabled provider exists, its encrypted
 configuration can be read, the archive is writable, its latest result is not
@@ -425,9 +460,11 @@ processing, not delivered.
 ### SuperPDP and LetsPeppol
 
 Both connectors normalize nested IDs, statuses, collections, and provider
-errors while preserving the complete decoded response for audit. A successful
-send without an external document ID fails closed because subsequent status
-tracking would otherwise be impossible.
+errors. Their decoded responses pass through `IntegrationPayloadSanitizer`
+before audit persistence, so secrets, signed-URL queries, document bodies,
+personal identifiers, binary values, and oversized fields are not retained
+verbatim. A successful send without an external document ID fails closed
+because subsequent status tracking would otherwise be impossible.
 
 SuperPDP endpoints and the LetsPeppol invoice, participant, credit-note,
 transmission, and document endpoints remain configurable. Their defaults are
@@ -697,20 +734,39 @@ national-format integrations:
 composer install
 ```
 
-UBL and Factur-X regulatory validation also requires Java 8 or newer to be available as
-`java`. The versioned Saxon-HE engine and Schematron stylesheets are bundled
-with the module; validation fails closed if the engine cannot run.
+UBL and Factur-X regulatory validation also requires Java 8 or newer to be
+available as `java`. The versioned Saxon-HE engine and Schematron stylesheets
+are bundled with the module; validation fails closed if the engine cannot run.
 
 Incoming Factur-X reception additionally requires Poppler's `pdfdetach`
 command. It is used only to extract `factur-x.xml`; reception fails closed when
 the command is unavailable, times out, or the attachment cannot be read.
 
-Database setup/upgrade must apply `045_1.8.1.sql`, which adds the incoming
-document path, filename, MIME type, size, SHA-256, detected profile, and
-validation-result columns to `ip_merchant_responses`, followed by
-`046_1.8.2.sql`, which documents the encrypted settings and minimized audit
-payload storage contracts. `047_1.8.3.sql` creates the operational
-`ip_integration_sync_runs` ledger required by web and CLI synchronization.
+Database setup/upgrade must apply these migrations in order:
+
+| Migration | Purpose |
+|---|---|
+| `044_1.8.0.sql` | Creates the provider registry, extends `ip_merchant_responses`, and adds the client Peppol identifier |
+| `045_1.8.1.sql` | Adds incoming-document archive metadata and validation results |
+| `046_1.8.2.sql` | Defines encrypted settings and minimized audit-payload storage contracts |
+| `047_1.8.3.sql` | Creates the `ip_integration_sync_runs` operational ledger |
+
+Do not run these files selectively or with an application-framework CLI. Use
+InvoicePlane's CodeIgniter setup/upgrade workflow.
+
+After deployment, perform these read-only/runtime checks from the InvoicePlane
+directory:
+
+```bash
+composer check-platform-reqs
+java -version
+pdfdetach -v
+php index.php integrations/cli/health 60
+```
+
+`pdfdetach` is optional when incoming Factur-X reception is not used. The
+health command becomes meaningful after an enabled provider has completed at
+least one successful synchronization.
 
 The current lock file includes the security-updated Guzzle HTTP stack used by
 the LetsPeppol provider (`guzzlehttp/guzzle` 7.15.2,
