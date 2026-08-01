@@ -101,8 +101,7 @@ public function get_invoice_templates($type = 'pdf')
   **never** scanned
 - Custom templates are opt-in through **explicit allowlists in `ipconfig.php`**
   (`CUSTOM_TEMPLATES_FOLDER` + `CUSTOM_INVOICE_TEMPLATES_*` / `CUSTOM_QUOTE_TEMPLATES_*`),
-  resolved by the `_merge_custom()` helper — never through a filesystem scan. See
-  [Adding New Templates (Post-Fix)](#adding-new-templates-post-fix).
+  resolved by the `_merge_custom()` helper — never through a filesystem scan.
 - Even if an attacker writes `evil.php` to a templates directory, it will NOT appear in the
   whitelist unless its exact name is also listed in the operator-controlled `ipconfig.php`
 
@@ -353,13 +352,6 @@ Even if layers 1-6 are somehow bypassed, layer 7 provides a final safety check.
   private [GitHub Security Advisory](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-v735-2x3r-gwpp)
 - **Fix Implementation:** InvoicePlane Security Team
 - **Review:** InvoicePlane Core Team
-
-## Timeline
-
-- **2026-07-17:** Vulnerability reported
-- **2026-07-17:** Fix developed and tested
-- **2026-07-17:** v1.7.2 released with fix
-- **2026-07-17:** Security advisory published
 
 ## References
 
