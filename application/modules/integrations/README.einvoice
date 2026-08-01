@@ -274,7 +274,43 @@ provider disables the other registered providers.
 4. Malformed or non-JSON payloads produce an empty collection.
 5. Valid items are stored in `ip_merchant_responses`.
 
+Repeated event synchronization is idempotent: an identical raw event from the
+same provider is stored only once.
+
 All state-changing browser actions use POST requests with CSRF protection.
+
+## Provider Connector Contracts
+
+### Qonto
+
+The Qonto connector implements the documented ERP flow for already-issued
+invoices:
+
+1. import one validated Factur-X PDF through `POST /v2/client_invoices/bulk`;
+2. retain the returned `invoice_id`;
+3. request asynchronous e-invoice submission through
+   `POST /v2/client_invoices/{id}/send_by_einvoice`;
+4. retrieve the client invoice and normalize its latest
+   `einvoicing_lifecycle_events[].status_code`;
+5. list supplier invoices and flatten client-invoice lifecycle events for the
+   regular incoming/event synchronization jobs.
+
+The connector rejects non-PDF files and documents over Qonto's 5 MB per-file
+limit before making a request. Qonto's e-invoicing submission is a production-
+only capability; its successful `204` response means accepted for asynchronous
+processing, not delivered.
+
+### SuperPDP and LetsPeppol
+
+Both connectors normalize nested IDs, statuses, collections, and provider
+errors while preserving the complete decoded response for audit. A successful
+send without an external document ID fails closed because subsequent status
+tracking would otherwise be impossible.
+
+SuperPDP endpoints and the LetsPeppol invoice, participant, credit-note,
+transmission, and document endpoints remain configurable. Their defaults are
+integration presets and must be checked against the API contract and
+credentials issued for the target tenant.
 
 ## Expected Provider Response
 

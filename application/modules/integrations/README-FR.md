@@ -231,22 +231,32 @@ Paramètres :
 ### Endpoints par défaut
 
 ```text
-POST /v2/client_invoices/uploads
-POST /v2/client_invoices
+POST /v2/client_invoices/bulk
 POST /v2/client_invoices/{id}/send_by_einvoice
 GET  /v2/client_invoices/{id}
+GET  /v2/client_invoices
 GET  /v2/supplier_invoices
 ```
 
 ### Particularité
 
-Qonto nécessite :
+Pour une facture déjà émise par InvoicePlane, Qonto nécessite :
 
-1. Upload du PDF
-2. Création de la facture
-3. Envoi en e-invoicing
+1. L'import du PDF Factur-X original, sans régénération.
+2. L'envoi en e-invoicing de l'identifiant de facture retourné.
 
-Le module exécute automatiquement ces trois étapes.
+Le module exécute automatiquement ces deux étapes, traite la réponse `204`
+comme un traitement asynchrone et récupère les événements du cycle de vie
+français depuis la ressource de la facture client.
+
+---
+
+## LetsPeppol
+
+LetsPeppol utilise OAuth2 Client Credentials et accepte les profils UBL Peppol
+BIS Billing et XRechnung activés dans le registre. Les endpoints de facture,
+statut, réception, événement, participant, avoir, document et transmission
+sont configurables selon le contrat souscrit auprès du fournisseur.
 
 ---
 
@@ -545,6 +555,7 @@ Consultation utilisateur
 | ----------- | ----- | ------ | --------- | ---------- |
 | SuperPDP    | Oui   | Oui    | Oui       | Oui        |
 | Qonto       | Oui   | Oui    | Oui       | Oui        |
+| LetsPeppol  | Oui   | Oui    | Oui       | Oui        |
 
 ---
 

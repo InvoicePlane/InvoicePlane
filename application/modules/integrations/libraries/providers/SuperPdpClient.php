@@ -175,14 +175,24 @@ class SuperPdpClient implements IntegrationClientInterface
             $query['disable_pre_check'] = true;
         }
 
-        return $this->http->request(RequestMethod::POST, $this->buildUrl($this->settings['invoice_endpoint']), [
+        $response = $this->http->request(RequestMethod::POST, $this->buildUrl($this->settings['invoice_endpoint']), [
             'bearer'  => $this->accessToken,
             'body'    => $document,
             'headers' => [
                 'Content-Type: application/pdf',
             ],
-            'query'   => $query,
+            'query' => $query,
         ]);
+
+        $response = ProviderResponseNormalizer::entity($response, ['invoice', 'data']);
+
+        if ( ! empty($response['success']) && empty($response['external_id'])) {
+            $response['success'] = false;
+            $response['status']  = 'error';
+            $response['message'] = 'SuperPDP accepted the invoice but returned no external ID.';
+        }
+
+        return $response;
     }
 
     /**
@@ -201,7 +211,10 @@ class SuperPdpClient implements IntegrationClientInterface
         $endpoint = str_replace('{id}', urlencode($externalId), $this->settings['invoice_status_endpoint']);
         $url      = $this->buildUrl($endpoint);
 
-        $response = $this->request(RequestMethod::GET, $url, [], false, ['external_id' => $externalId]);
+        $response = ProviderResponseNormalizer::entity(
+            $this->request(RequestMethod::GET, $url, [], false, ['external_id' => $externalId]),
+            ['invoice', 'data']
+        );
 
         return array_merge($response, ['external_id' => $externalId]);
     }
@@ -220,7 +233,11 @@ class SuperPdpClient implements IntegrationClientInterface
 
         $url = $this->buildUrl($this->settings['incoming_invoices_endpoint'], $filters);
 
-        return $this->request(RequestMethod::GET, $url);
+        return ProviderResponseNormalizer::collection(
+            $this->request(RequestMethod::GET, $url),
+            ['invoices', 'items', 'data'],
+            'invoices'
+        );
     }
 
     /**
@@ -237,7 +254,11 @@ class SuperPdpClient implements IntegrationClientInterface
 
         $url = $this->buildUrl($this->settings['invoice_events_endpoint'], $filters);
 
-        return $this->request(RequestMethod::GET, $url);
+        return ProviderResponseNormalizer::collection(
+            $this->request(RequestMethod::GET, $url),
+            ['events', 'items', 'data'],
+            'events'
+        );
     }
 
     public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
@@ -290,7 +311,13 @@ class SuperPdpClient implements IntegrationClientInterface
             $options['json'] = $payload;
         }
 
-        return $this->http->request($method, $url, $options);
+        $response = $this->http->request($method, $url, $options);
+
+        if ($requestDebug !== []) {
+            $response['request'] = array_merge($response['request'] ?? [], $requestDebug);
+        }
+
+        return $response;
     }
 
     private function buildUrl(string $endpoint, array $query = []): string

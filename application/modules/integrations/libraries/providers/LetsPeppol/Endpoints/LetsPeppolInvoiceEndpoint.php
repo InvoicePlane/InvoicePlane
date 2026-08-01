@@ -21,6 +21,10 @@ class LetsPeppolInvoiceEndpoint
     {
         $settings = $this->client->getSettings();
 
+        if ( ! is_file($documentPath) || ! is_readable($documentPath)) {
+            throw new \RuntimeException('Invoice document not found: ' . $documentPath);
+        }
+
         if (empty($settings['invoice_endpoint'])) {
             throw new \RuntimeException('Missing LetsPeppol invoice endpoint configuration.');
         }
@@ -33,10 +37,21 @@ class LetsPeppolInvoiceEndpoint
         ];
 
         if ( ! empty($metadata)) {
-            $payload['metadata'] = json_encode($metadata);
+            $payload['metadata'] = json_encode($metadata, JSON_THROW_ON_ERROR);
         }
 
-        return $this->client->request(RequestMethod::POST, $url, $payload, multipart: true);
+        $response = ProviderResponseNormalizer::entity(
+            $this->client->request(RequestMethod::POST, $url, $payload, multipart: true),
+            ['invoice', 'data']
+        );
+
+        if ( ! empty($response['success']) && empty($response['external_id'])) {
+            $response['success'] = false;
+            $response['status']  = 'error';
+            $response['message'] = 'LetsPeppol accepted the invoice but returned no external ID.';
+        }
+
+        return $response;
     }
 
     /**
@@ -55,7 +70,10 @@ class LetsPeppolInvoiceEndpoint
         }
 
         $url      = $this->client->buildUrl($settings['invoice_status_endpoint'], $externalId);
-        $response = $this->client->request(RequestMethod::GET, $url);
+        $response = ProviderResponseNormalizer::entity(
+            $this->client->request(RequestMethod::GET, $url),
+            ['invoice', 'data']
+        );
 
         return array_merge($response, ['external_id' => $externalId]);
     }
@@ -77,7 +95,11 @@ class LetsPeppolInvoiceEndpoint
 
         $url = $this->client->buildUrl($settings['incoming_invoices_endpoint']);
 
-        return $this->client->request(RequestMethod::GET, $url, query: $filters);
+        return ProviderResponseNormalizer::collection(
+            $this->client->request(RequestMethod::GET, $url, query: $filters),
+            ['invoices', 'items', 'data'],
+            'invoices'
+        );
     }
 
     /**
@@ -96,6 +118,10 @@ class LetsPeppolInvoiceEndpoint
 
         $url = $this->client->buildUrl($settings['invoice_events_endpoint']);
 
-        return $this->client->request(RequestMethod::GET, $url, query: $filters);
+        return ProviderResponseNormalizer::collection(
+            $this->client->request(RequestMethod::GET, $url, query: $filters),
+            ['events', 'items', 'data'],
+            'events'
+        );
     }
 }
