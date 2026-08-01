@@ -11,38 +11,23 @@ trait InteractsWithDatabase
     private static ?PDO $testDb = null;
 
     /**
-     * Reset the SQLite test database to a clean baseline before each test.
+     * Reset the MariaDB test database to a clean baseline before each test.
      *
-     * Copies storage/test-clean.sqlite (schema + static seed rows) over the
-     * live test.sqlite, giving each test a fresh slate without re-running
-     * migrations. Also clears the static PDO snapshot so the next db() call
-     * opens a connection to the new file.
+     * Truncates every table and reseeds the baseline rows, giving each test a
+     * fresh slate. MariaDB is the only supported test database (it exercises the
+     * same SQL the application runs in production — NOW(), IF(), DATEDIFF(), …);
+     * db() rejects any other driver.
      */
     protected function setUpDatabase(): void
     {
-        $basePath = dirname(__DIR__, 2);
-
-        if (in_array($this->resolveDriver(), ['sqlite', 'sqlite3'], true)) {
-            // SQLite: reset by copying the pre-built clean fixture over the live file.
-            $cleanFile = $basePath . '/storage/test-clean.sqlite';
-            if (file_exists($cleanFile)) {
-                self::$testDb = null;
-                copy($cleanFile, $basePath . '/storage/test.sqlite');
-            }
-
-            return;
-        }
-
-        // MySQL / MariaDB: no file-copy isolation — truncate every table and
-        // reseed the same baseline the SQLite fixture carries.
         $this->resetMysqlDatabase();
     }
 
     /**
      * Drop the cached PDO connection so the next DB call opens a fresh one.
      *
-     * Use this after an HTTP subprocess writes to the database to ensure the
-     * test process doesn't read a SQLite WAL snapshot that pre-dates the write.
+     * Use this after an HTTP subprocess writes to the database so the test
+     * process reconnects and sees every row the subprocess committed.
      */
     protected function resetDatabaseConnection(): void
     {
@@ -83,12 +68,8 @@ trait InteractsWithDatabase
         $quotedTable   = $this->qi($table);
         $quotedColumns = implode(', ', array_map($this->qi(...), $columns));
 
-        $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $prefix = ($driver === 'sqlite') ? 'INSERT OR IGNORE' : 'INSERT IGNORE';
-
         $sql = sprintf(
-            '%s INTO %s (%s) VALUES (%s)',
-            $prefix,
+            'INSERT IGNORE INTO %s (%s) VALUES (%s)',
             $quotedTable,
             $quotedColumns,
             implode(', ', $placeholders)
@@ -129,20 +110,14 @@ trait InteractsWithDatabase
     }
 
     /**
-     * Fetch a single row by its insert id.
-     *
-     * On SQLite the id column may be NULL (AUTO_INCREMENT is MySQL-only), so we
-     * fall back to `rowid` which always holds the last-insert value on SQLite.
-     * On MySQL we use the `id` column (standard AUTO_INCREMENT primary key).
+     * Fetch a single row by its insert id (the `id` AUTO_INCREMENT column).
      */
     protected function databaseFetchByRowid(string $table, int $rowid): array
     {
-        $db     = $this->db();
-        $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $col    = $driver === 'sqlite' ? 'rowid' : 'id';
+        $db = $this->db();
 
         $stmt = $db->prepare(
-            'SELECT * FROM ' . $this->qi($table) . ' WHERE ' . $this->qi($col) . ' = ?'
+            'SELECT * FROM ' . $this->qi($table) . ' WHERE ' . $this->qi('id') . ' = ?'
         );
         $stmt->execute([$rowid]);
 
@@ -323,26 +298,8 @@ trait InteractsWithDatabase
     }
 
     /**
-     * Resolve the configured DB driver without opening a connection.
-     */
-    private function resolveDriver(): string
-    {
-        $basePath = dirname(__DIR__, 2);
-        require_once $basePath . '/bootstrap/kernel.php';
-
-        $active_group = null;
-        $db           = [];
-        require $basePath . '/application/config/database.php';
-
-        $cfg = $db[$active_group ?? 'default'] ?? [];
-
-        return (string) ($cfg['dbdriver'] ?? 'mysqli');
-    }
-
-    /**
      * Truncate all application tables and reseed the baseline rows so each
-     * MySQL/MariaDB test starts from the same clean state the SQLite fixture
-     * provides.
+     * MariaDB test starts from the same clean state.
      */
     private function resetMysqlDatabase(): void
     {
@@ -573,18 +530,17 @@ trait InteractsWithDatabase
         $cfg    = $db[$group] ?? [];
         $driver = (string) ($cfg['dbdriver'] ?? 'mysqli');
 
-        if (in_array($driver, ['sqlite3', 'sqlite'], true)) {
-            $dbPath = (string) ($cfg['database'] ?? 'storage/test.sqlite');
-            if ( ! str_starts_with($dbPath, '/')) {
-                $dbPath = $basePath . '/' . $dbPath;
-            }
-            self::$testDb = new PDO('sqlite:' . $dbPath);
-            self::$testDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            return self::$testDb;
+        // MariaDB/MySQL is the only supported test database. Fail loudly rather
+        // than silently falling back, so a stray dbdriver can never let the
+        // suite pass against a database the application never runs on.
+        if ( ! in_array($driver, ['mysqli', 'mysql', 'pdo'], true)) {
+            static::fail(sprintf(
+                'Unsupported test database driver "%s": the test suite requires MariaDB/MySQL. '
+                . 'Set DB_DRIVER=mysqli and the DB_* connection variables.',
+                $driver
+            ));
         }
 
-        // MySQL / MariaDB
         $host = (string) ($cfg['hostname'] ?? '127.0.0.1');
         $port = (int) ($cfg['port'] ?? 3306);
         $user = (string) ($cfg['username'] ?? '');
@@ -606,17 +562,10 @@ trait InteractsWithDatabase
     }
 
     /**
-     * Quote a single identifier using the appropriate character for the current driver.
-     * SQLite uses double-quotes; MySQL/MariaDB uses backticks.
+     * Quote a single identifier with MariaDB/MySQL backticks.
      */
     private function qi(string $identifier): string
     {
-        $driver = self::$testDb?->getAttribute(PDO::ATTR_DRIVER_NAME) ?? 'mysql';
-
-        if ($driver === 'sqlite') {
-            return '"' . str_replace('"', '""', $identifier) . '"';
-        }
-
         return '`' . str_replace('`', '``', $identifier) . '`';
     }
 }

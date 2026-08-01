@@ -60,10 +60,9 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             'ajax'    => $ajax,
         ];
 
-        // Close any open PDO connection before spawning the subprocess.
-        // SQLite WAL mode: uncommitted or un-checkpointed writes are invisible
-        // to other connections. Closing the connection triggers a checkpoint so
-        // the subprocess always sees every insert made during Arrange.
+        // Close any open PDO connection before spawning the subprocess so the
+        // subprocess reconnects to MariaDB and sees every row committed during
+        // Arrange (a shared connection could otherwise hide uncommitted writes).
         $this->resetDatabaseConnection();
 
         $command = sprintf('php %s', escapeshellarg(dirname(__DIR__) . '/tests/Integration/bin/request.php'));
