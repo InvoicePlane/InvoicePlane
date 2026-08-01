@@ -65,6 +65,10 @@ The main components are:
 | `RemoteUrlGuard` | Restricts provider-supplied download URLs to pinned public HTTPS destinations |
 | `IntegrationSettingsCipher` | Authenticates and encrypts provider configuration at rest |
 | `IntegrationPayloadSanitizer` | Redacts and bounds provider data before audit persistence |
+| `IntegrationSyncService` | Runs incoming/event synchronization with locking, retries, metrics, and correlation IDs |
+| `IntegrationSyncLock` | Uses a connection-scoped MySQL advisory lock to prevent overlap per provider |
+| `IntegrationRetryPolicy` | Applies bounded exponential retries to idempotent provider reads |
+| `Integration_sync_runs_model` | Persists operational outcomes and health history |
 | `EInvoiceArtifact` | Carries the generated path, profile, validation result, and transmission metadata |
 | `Merchant_clients_model` | Loads provider configuration |
 | `Merchant_responses_model` | Stores outgoing, incoming, and event records |
@@ -318,6 +322,78 @@ Repeated event synchronization is idempotent: an identical raw event from the
 same provider is stored only once.
 
 All state-changing browser actions use POST requests with CSRF protection.
+
+### Operational synchronization guarantees
+
+Every incoming/event synchronization, whether started from the administration
+UI, the JSON controller, or cron, passes through `IntegrationSyncService`:
+
+1. a durable `running` record and 32-character correlation ID are created;
+2. a non-blocking MySQL advisory lock is acquired for the provider account;
+3. provider list/event reads receive at most three attempts with exponential
+   delays of 250 ms, 500 ms, then completion or failure;
+4. authentication, validation, archive, deduplication, and event persistence
+   share the same execution context;
+5. the run is finalized as `success`, `partial`, `failed`, or `skipped` with
+   duration, attempts, counters, and a sanitized error summary;
+6. the advisory lock is released in a `finally` block and is also released by
+   MySQL if the process or connection terminates.
+
+Automatic retries apply only to idempotent reads and only for connection or
+timeout failures, HTTP 429, and HTTP 5xx responses. Invoice transmission POSTs
+are deliberately never retried automatically because a provider timeout can
+leave their remote outcome unknown.
+
+A run still marked `running` after one hour is marked failed when the next run
+starts. An overlapping invocation is recorded as `skipped` and exits without
+contacting the provider. The settings screen shows the latest status, timestamp,
+and shortened correlation ID for each provider. **Settings → E-Invoicing →
+Operations** exposes the 100 latest runs with their counters, duration,
+correlation ID, and sanitized failure summary.
+
+### Cron and monitoring
+
+Run all enabled providers every 15 minutes from the InvoicePlane directory:
+
+```cron
+*/15 * * * * cd /path/to/invoiceplane && php index.php integrations/cli/sync >> /var/log/invoiceplane-einvoice.log 2>&1
+```
+
+Run one provider by database ID:
+
+```bash
+php index.php integrations/cli/sync 3
+```
+
+Each provider produces one JSON line suitable for log ingestion. Exit code `0`
+means every run succeeded, `1` means at least one run was partial, failed, or
+skipped, and `2` means the command arguments or provider selection were invalid.
+
+The health command checks that an enabled provider exists, its encrypted
+configuration can be read, the archive is writable, its latest result is not
+failed/partial, and its last success is recent enough:
+
+```bash
+php index.php integrations/cli/health 60
+```
+
+It prints JSON and exits `0` when healthy, `1` when unhealthy, or `2` for an
+invalid maximum age. Use it from a service monitor rather than exposing a
+public HTTP health route.
+
+Operational run history can be bounded independently from statutory invoice
+archives. The following command removes completed run records older than 90
+days; it never deletes invoices, incoming documents, or transmission history:
+
+```bash
+php index.php integrations/cli/prune 90
+```
+
+For example, schedule that cleanup once per day after backups:
+
+```cron
+20 2 * * * cd /path/to/invoiceplane && php index.php integrations/cli/prune 90
+```
 
 ## Provider Connector Contracts
 
@@ -633,7 +709,8 @@ Database setup/upgrade must apply `045_1.8.1.sql`, which adds the incoming
 document path, filename, MIME type, size, SHA-256, detected profile, and
 validation-result columns to `ip_merchant_responses`, followed by
 `046_1.8.2.sql`, which documents the encrypted settings and minimized audit
-payload storage contracts.
+payload storage contracts. `047_1.8.3.sql` creates the operational
+`ip_integration_sync_runs` ledger required by web and CLI synchronization.
 
 The current lock file includes the security-updated Guzzle HTTP stack used by
 the LetsPeppol provider (`guzzlehttp/guzzle` 7.15.2,
