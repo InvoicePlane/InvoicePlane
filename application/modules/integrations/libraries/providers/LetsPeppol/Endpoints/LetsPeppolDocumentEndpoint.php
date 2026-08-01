@@ -25,7 +25,10 @@ class LetsPeppolDocumentEndpoint
 
         $url = $this->client->buildUrl($settings['document_endpoint'], $documentId);
 
-        return $this->client->request(RequestMethod::GET, $url);
+        return ProviderResponseNormalizer::entity(
+            $this->client->request(RequestMethod::GET, $url),
+            ['document', 'data']
+        );
     }
 
     /**
@@ -45,6 +48,10 @@ class LetsPeppolDocumentEndpoint
 
         $url = $this->client->buildUrl($settings['documents_endpoint']);
 
-        return $this->client->request(RequestMethod::GET, $url, query: $filters);
+        return ProviderResponseNormalizer::collection(
+            $this->client->request(RequestMethod::GET, $url, query: $filters),
+            ['documents', 'items', 'data'],
+            'documents'
+        );
     }
 }

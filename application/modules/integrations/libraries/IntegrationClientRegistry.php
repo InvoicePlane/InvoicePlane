@@ -80,6 +80,7 @@ class IntegrationClientRegistry
     private function loadProviders(): void
     {
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
+        require_once APPPATH . 'modules/integrations/libraries/ProviderResponseNormalizer.php';
 
         $clientPath = APPPATH . 'modules/integrations/libraries/providers/';
 

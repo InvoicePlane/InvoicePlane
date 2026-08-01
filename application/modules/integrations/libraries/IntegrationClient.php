@@ -11,7 +11,7 @@ class IntegrationClient
     public function __construct(IntegrationClientInterface $provider, array $settings)
     {
         $this->provider = $provider;
-        $this->settings = $settings;
+        $this->settings = array_replace($provider::defaultSettings(), $settings);
     }
 
     public function authenticate(): bool

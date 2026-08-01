@@ -24,7 +24,10 @@ class LetsPeppolTransmissionEndpoint
         }
 
         $url      = $this->client->buildUrl($settings['transmission_status_endpoint'], $transmissionId);
-        $response = $this->client->request(RequestMethod::GET, $url);
+        $response = ProviderResponseNormalizer::entity(
+            $this->client->request(RequestMethod::GET, $url),
+            ['transmission', 'data']
+        );
 
         return array_merge($response, ['external_id' => $transmissionId]);
     }
@@ -46,6 +49,10 @@ class LetsPeppolTransmissionEndpoint
 
         $url = $this->client->buildUrl($settings['transmissions_endpoint']);
 
-        return $this->client->request(RequestMethod::GET, $url, query: $filters);
+        return ProviderResponseNormalizer::collection(
+            $this->client->request(RequestMethod::GET, $url, query: $filters),
+            ['transmissions', 'items', 'data'],
+            'transmissions'
+        );
     }
 }

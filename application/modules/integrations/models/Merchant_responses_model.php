@@ -175,13 +175,26 @@ class Merchant_responses_model extends CI_Model
         ?string $peppolParticipantId = null,
         ?PeppolDocumentType $peppolDocumentType = null,
     ): int {
-        $status = MerchantResponseStatus::fromExternal($event['status_code'] ?? $event['status'] ?? null);
+        $status     = MerchantResponseStatus::fromExternal($event['status_code'] ?? $event['status'] ?? null);
+        $rawPayload = json_encode($event);
+
+        if (is_string($rawPayload)) {
+            $existing = $this->db
+                ->where('merchant_client_id', $merchantClientId)
+                ->where('record_type', MerchantResponseType::InvoiceEvent->value)
+                ->where('raw_payload', $rawPayload)
+                ->count_all_results(self::TABLE);
+
+            if ($existing > 0) {
+                return 0;
+            }
+        }
 
         $this->db->insert(self::TABLE, [
             'invoice_id'                   => null,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => $event['message'] ?? $event['event_type'] ?? null,
+            'merchant_response'            => $event['message'] ?? $event['reason_message'] ?? $event['reason'] ?? $event['event_type'] ?? null,
             'merchant_response_reference'  => $event['invoice_id'] ?? $event['external_id'] ?? $event['id'] ?? null,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
@@ -192,7 +205,7 @@ class Merchant_responses_model extends CI_Model
             'peppol_participant_id'        => $peppolParticipantId,
             'peppol_document_type'         => $peppolDocumentType?->value,
             'created_at'                   => date('Y-m-d H:i:s'),
-            'raw_payload'                  => json_encode($event),
+            'raw_payload'                  => $rawPayload,
         ]);
 
         return (int) $this->db->insert_id();

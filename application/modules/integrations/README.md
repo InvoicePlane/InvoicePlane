@@ -231,22 +231,32 @@ Configuration parameters:
 ### Default Endpoints
 
 ```text
-POST /v2/client_invoices/uploads
-POST /v2/client_invoices
+POST /v2/client_invoices/bulk
 POST /v2/client_invoices/{id}/send_by_einvoice
 GET  /v2/client_invoices/{id}
+GET  /v2/client_invoices
 GET  /v2/supplier_invoices
 ```
 
 ### Specific Workflow
 
-Qonto requires a three-step process:
+For invoices already issued by InvoicePlane, Qonto requires a two-step process:
 
-1. Upload the PDF document.
-2. Create the invoice record.
-3. Submit the invoice through the e-invoicing workflow.
+1. Import the original Factur-X PDF without regenerating it.
+2. Submit the returned client-invoice ID through the e-invoicing workflow.
 
-The module automatically executes these steps.
+The module automatically executes these steps, treats the `204` submission
+response as asynchronous, and reads French lifecycle events from the client
+invoice resource.
+
+---
+
+## LetsPeppol
+
+LetsPeppol uses OAuth2 client credentials and accepts the Peppol BIS Billing
+and XRechnung UBL profiles enabled in the profile registry. Invoice, status,
+incoming-invoice, event, participant, credit-note, document, and transmission
+endpoints are configurable because their paths depend on the provider contract.
 
 ---
 
@@ -548,6 +558,7 @@ User Consultation
 | -------- | ------------- | --------------- | ----------------- | ------ |
 | SuperPDP | Yes           | Yes             | Yes               | Yes    |
 | Qonto    | Yes           | Yes             | Yes               | Yes    |
+| LetsPeppol | Yes         | Yes             | Yes               | Yes    |
 
 ---
 

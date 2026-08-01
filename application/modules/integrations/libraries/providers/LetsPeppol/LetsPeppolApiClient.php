@@ -55,6 +55,10 @@ class LetsPeppolApiClient
             ],
         ]);
 
+        if (empty($result['success'])) {
+            throw new \RuntimeException('LetsPeppol OAuth request failed: ' . ($result['message'] ?? 'unknown error'));
+        }
+
         if (empty($result['response']['access_token'])) {
             throw new \RuntimeException('LetsPeppol OAuth failed: no access_token in response.');
         }

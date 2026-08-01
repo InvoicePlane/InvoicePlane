@@ -21,6 +21,10 @@ class LetsPeppolCreditNoteEndpoint
     {
         $settings = $this->client->getSettings();
 
+        if ( ! is_file($documentPath) || ! is_readable($documentPath)) {
+            throw new \RuntimeException('Credit note document not found: ' . $documentPath);
+        }
+
         if (empty($settings['credit_note_endpoint'])) {
             throw new \RuntimeException('Missing LetsPeppol credit note endpoint configuration.');
         }
@@ -32,10 +36,21 @@ class LetsPeppolCreditNoteEndpoint
         ];
 
         if ( ! empty($metadata)) {
-            $payload['metadata'] = json_encode($metadata);
+            $payload['metadata'] = json_encode($metadata, JSON_THROW_ON_ERROR);
         }
 
-        return $this->client->request(RequestMethod::POST, $url, $payload, multipart: true);
+        $response = ProviderResponseNormalizer::entity(
+            $this->client->request(RequestMethod::POST, $url, $payload, multipart: true),
+            ['credit_note', 'data']
+        );
+
+        if ( ! empty($response['success']) && empty($response['external_id'])) {
+            $response['success'] = false;
+            $response['status']  = 'error';
+            $response['message'] = 'LetsPeppol accepted the credit note but returned no external ID.';
+        }
+
+        return $response;
     }
 
     /**
@@ -54,7 +69,10 @@ class LetsPeppolCreditNoteEndpoint
         }
 
         $url      = $this->client->buildUrl($settings['credit_note_status_endpoint'], $externalId);
-        $response = $this->client->request(RequestMethod::GET, $url);
+        $response = ProviderResponseNormalizer::entity(
+            $this->client->request(RequestMethod::GET, $url),
+            ['credit_note', 'data']
+        );
 
         return array_merge($response, ['external_id' => $externalId]);
     }

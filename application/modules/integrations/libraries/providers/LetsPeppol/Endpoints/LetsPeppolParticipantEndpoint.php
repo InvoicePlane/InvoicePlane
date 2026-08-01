@@ -25,7 +25,10 @@ class LetsPeppolParticipantEndpoint
 
         $url = $this->client->buildUrl($settings['participant_lookup_endpoint'], $participantId);
 
-        return $this->client->request(RequestMethod::GET, $url);
+        return ProviderResponseNormalizer::entity(
+            $this->client->request(RequestMethod::GET, $url),
+            ['participant', 'data']
+        );
     }
 
     /**
@@ -45,6 +48,10 @@ class LetsPeppolParticipantEndpoint
 
         $url = $this->client->buildUrl($settings['participants_endpoint']);
 
-        return $this->client->request(RequestMethod::GET, $url, query: $filters);
+        return ProviderResponseNormalizer::collection(
+            $this->client->request(RequestMethod::GET, $url, query: $filters),
+            ['participants', 'items', 'data'],
+            'participants'
+        );
     }
 }

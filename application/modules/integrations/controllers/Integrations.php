@@ -355,14 +355,15 @@ class Integrations extends Admin_Controller
             return;
         }
 
-        $response = $result['response'] ?? [];
+        $response    = $result['response'] ?? [];
+        $participant = $response['entity'] ?? $response['participant'] ?? $response;
 
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode([
-                'reachable' => (bool) ($response['reachable'] ?? false),
-                'name'      => $response['name'] ?? null,
-                'country'   => $response['country'] ?? null,
+                'reachable' => (bool) ($participant['reachable'] ?? false),
+                'name'      => $participant['name'] ?? null,
+                'country'   => $participant['country'] ?? null,
             ]));
     }
 
