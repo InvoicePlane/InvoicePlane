@@ -4,8 +4,8 @@
  * Canonical baseline seed for the MySQL/MariaDB test database.
  *
  * Inserts the minimal rows the application needs to boot (settings, an admin
- * user, a default invoice group) — the same baseline baked into the SQLite
- * fixture (storage/test-clean.sqlite). Shared by the CI schema-build step and
+ * user, a default invoice group) into the MariaDB test database. Shared by the
+ * CI schema-build step and
  * by the per-test reset in tests/Concerns/InteractsWithDatabase.php so the two
  * never drift.
  */
