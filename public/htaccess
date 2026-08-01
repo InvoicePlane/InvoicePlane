@@ -1,0 +1,19 @@
+### InvoicePlane htaccess (public/ document root)
+###
+### Rename this file to ".htaccess" when the web server document root is the
+### public/ directory. It mirrors the legacy root htaccess.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  ### uncomment to force HTTPS
+  # RewriteCond %{HTTPS} off
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+  RewriteRule ^index\.php$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  ### uncomment and adjust if installed in subdirectory
+  # RewriteRule . /subfolder/index.php [L]
+  RewriteRule . /index.php [L]
+</IfModule>
