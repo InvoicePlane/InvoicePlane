@@ -48,7 +48,14 @@ class Settings extends Admin_Controller
             return;
         }
 
-        $storedSettings = json_decode($provider['settings_json'] ?? '{}', true) ?: [];
+        try {
+            $storedSettings = $this->Merchant_clients_model->get_settings($provider);
+        } catch (Throwable $e) {
+            log_message('error', 'Unable to decrypt integration settings: ' . sanitize_for_logging($e->getMessage()));
+            show_error('Unable to decrypt provider settings. Check ENCRYPTION_KEY.', 500);
+
+            return;
+        }
         $provider['auth_type'] = $definition['auth_type'];
 
         $this->layout->set([
@@ -77,17 +84,19 @@ class Settings extends Admin_Controller
             return;
         }
 
-        $existingSettings = json_decode($provider['settings_json'] ?? '{}', true) ?: [];
-
         try {
-            $definition = (new IntegrationClientRegistry())
+            $existingSettings = $this->Merchant_clients_model->get_settings($provider);
+            $definition       = (new IntegrationClientRegistry())
                 ->getSettingsDefinition($provider['merchant_type']);
             $settings = IntegrationSettingsForm::collect(
                 $definition['schema'],
                 $existingSettings,
                 fn (string $field) => $this->input->post($field)
             );
-            $settingsJson = json_encode($settings, JSON_THROW_ON_ERROR);
+            $settingsJson = $this->Merchant_clients_model->protect_settings(
+                $provider['merchant_type'],
+                $settings
+            );
         } catch (Throwable $e) {
             log_message('error', 'Invalid integration settings: ' . sanitize_for_logging($e->getMessage()));
             $this->session->set_flashdata('alert_error', trans('einvoice_provider_settings_invalid'));

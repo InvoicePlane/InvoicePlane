@@ -2,6 +2,8 @@
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
+require_once APPPATH . 'modules/integrations/libraries/IntegrationPayloadSanitizer.php';
+
 class Merchant_responses_model extends CI_Model
 {
     private const TABLE = 'ip_merchant_responses';
@@ -48,7 +50,7 @@ class Merchant_responses_model extends CI_Model
             'invoice_id'                   => $invoiceId,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => $providerResponse['message'] ?? null,
+            'merchant_response'            => IntegrationPayloadSanitizer::text($providerResponse['message'] ?? null),
             'merchant_response_reference'  => $providerResponse['external_id'] ?? null,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
@@ -57,9 +59,9 @@ class Merchant_responses_model extends CI_Model
             'status'                       => $status->value,
             'http_code'                    => $providerResponse['http_code'] ?? null,
             'error_code'                   => $errorCode,
-            'error_detail'                 => $errorDetail,
+            'error_detail'                 => IntegrationPayloadSanitizer::text($errorDetail, 500),
             'created_at'                   => date('Y-m-d H:i:s'),
-            'raw_payload'                  => json_encode($providerResponse),
+            'raw_payload'                  => IntegrationPayloadSanitizer::json($providerResponse),
         ]);
 
         return (int) $this->db->insert_id();
@@ -79,7 +81,7 @@ class Merchant_responses_model extends CI_Model
             'invoice_id'                   => null,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => $providerResponse['message'] ?? null,
+            'merchant_response'            => IntegrationPayloadSanitizer::text($providerResponse['message'] ?? null),
             'merchant_response_reference'  => $providerResponse['external_id'] ?? null,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
@@ -88,7 +90,7 @@ class Merchant_responses_model extends CI_Model
             'status'                       => $status->value,
             'http_code'                    => $providerResponse['http_code'] ?? null,
             'created_at'                   => date('Y-m-d H:i:s'),
-            'raw_payload'                  => json_encode($providerResponse),
+            'raw_payload'                  => IntegrationPayloadSanitizer::json($providerResponse),
         ]);
 
         return (int) $this->db->insert_id();
@@ -106,7 +108,7 @@ class Merchant_responses_model extends CI_Model
             'invoice_id'                   => $invoiceId,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => $status['message'] ?? null,
+            'merchant_response'            => IntegrationPayloadSanitizer::text($status['message'] ?? null),
             'merchant_response_reference'  => $status['external_id'] ?? $lastResponse['merchant_response_reference'] ?? null,
             'merchant_response_successful' => $resolvedStatus->isSuccessful(),
             'merchant_client_id'           => $lastResponse['merchant_client_id'] ?? null,
@@ -115,7 +117,7 @@ class Merchant_responses_model extends CI_Model
             'status'                       => $resolvedStatus->value,
             'http_code'                    => $status['http_code'] ?? null,
             'created_at'                   => date('Y-m-d H:i:s'),
-            'raw_payload'                  => json_encode($status),
+            'raw_payload'                  => IntegrationPayloadSanitizer::json($status),
         ]);
 
         return (int) $this->db->insert_id();
@@ -156,12 +158,17 @@ class Merchant_responses_model extends CI_Model
             'document_validation_status',
             'document_validation_error',
         ]));
+        if (array_key_exists('document_validation_error', $document)) {
+            $document['document_validation_error'] = IntegrationPayloadSanitizer::text(
+                $document['document_validation_error']
+            );
+        }
 
         $data = array_merge([
             'invoice_id'                   => null,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => $invoice['message'] ?? null,
+            'merchant_response'            => IntegrationPayloadSanitizer::text($invoice['message'] ?? null),
             'merchant_response_reference'  => $externalId,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
@@ -172,7 +179,7 @@ class Merchant_responses_model extends CI_Model
             'peppol_participant_id'        => $peppolParticipantId,
             'peppol_document_type'         => $peppolDocumentType?->value,
             'created_at'                   => date('Y-m-d H:i:s'),
-            'raw_payload'                  => json_encode($invoice),
+            'raw_payload'                  => IntegrationPayloadSanitizer::json($invoice),
         ], $document);
 
         if ($existing !== []) {
@@ -209,25 +216,25 @@ class Merchant_responses_model extends CI_Model
         ?PeppolDocumentType $peppolDocumentType = null,
     ): int {
         $status     = MerchantResponseStatus::fromExternal($event['status_code'] ?? $event['status'] ?? null);
-        $rawPayload = json_encode($event);
+        $rawPayload = IntegrationPayloadSanitizer::json($event);
 
-        if (is_string($rawPayload)) {
-            $existing = $this->db
-                ->where('merchant_client_id', $merchantClientId)
-                ->where('record_type', MerchantResponseType::InvoiceEvent->value)
-                ->where('raw_payload', $rawPayload)
-                ->count_all_results(self::TABLE);
+        $existing = $this->db
+            ->where('merchant_client_id', $merchantClientId)
+            ->where('record_type', MerchantResponseType::InvoiceEvent->value)
+            ->where('raw_payload', $rawPayload)
+            ->count_all_results(self::TABLE);
 
-            if ($existing > 0) {
-                return 0;
-            }
+        if ($existing > 0) {
+            return 0;
         }
 
         $this->db->insert(self::TABLE, [
-            'invoice_id'                   => null,
-            'merchant_response_date'       => date('Y-m-d'),
-            'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => $event['message'] ?? $event['reason_message'] ?? $event['reason'] ?? $event['event_type'] ?? null,
+            'invoice_id'               => null,
+            'merchant_response_date'   => date('Y-m-d'),
+            'merchant_response_driver' => $driver->value,
+            'merchant_response'        => IntegrationPayloadSanitizer::text(
+                $event['message'] ?? $event['reason_message'] ?? $event['reason'] ?? $event['event_type'] ?? null
+            ),
             'merchant_response_reference'  => $event['invoice_id'] ?? $event['external_id'] ?? $event['id'] ?? null,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,

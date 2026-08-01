@@ -64,13 +64,14 @@ class IntegrationClientRegistry
             }
 
             $definition = $this->getSettingsDefinition($clientCode);
+            $settings   = (new IntegrationSettingsCipher())->encrypt($definition['defaults'], $clientCode);
 
             $CI->db->insert('ip_merchant_clients', [
                 'merchant_type' => $clientCode,
                 'label'         => $clientClass::clientName(),
                 'enabled'       => 0,
                 'auth_type'     => $definition['auth_type'],
-                'settings_json' => json_encode($definition['defaults']),
+                'settings_json' => $settings,
                 'created_at'    => date('Y-m-d H:i:s'),
                 'updated_at'    => date('Y-m-d H:i:s'),
             ]);
@@ -82,6 +83,7 @@ class IntegrationClientRegistry
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/ProviderResponseNormalizer.php';
         require_once APPPATH . 'modules/integrations/libraries/RemoteUrlGuard.php';
+        require_once APPPATH . 'modules/integrations/libraries/IntegrationSettingsCipher.php';
 
         $clientPath = APPPATH . 'modules/integrations/libraries/providers/';
 
