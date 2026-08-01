@@ -77,8 +77,8 @@ class Integrations extends Admin_Controller
                 throw new RuntimeException('The selected provider does not support this e-invoice profile.');
             }
 
-            $service     = new EInvoiceDocumentService();
-            $artifact    = $service->generate(
+            $service  = new EInvoiceDocumentService();
+            $artifact = $service->generate(
                 $invoiceId,
                 $invoice,
                 $items,
@@ -197,7 +197,7 @@ class Integrations extends Admin_Controller
             $provider = $registry->getClient($merchantClient['merchant_type']);
             $client   = new IntegrationClient($provider, $settings);
 
-            $events   = $client->getInvoiceEvents();
+            $events = $client->getInvoiceEvents();
         } catch (Throwable $e) {
             log_message('error', 'E-invoice event sync failed: ' . sanitize_for_logging($e->getMessage()));
             $this->output

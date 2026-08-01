@@ -119,9 +119,9 @@ final class EInvoiceSchematronValidator
         stream_set_blocking($pipes[1], false);
         stream_set_blocking($pipes[2], false);
 
-        $deadline  = microtime(true) + self::PROCESS_TIMEOUT_SECONDS;
-        $timedOut  = false;
-        $exitCode  = -1;
+        $deadline = microtime(true) + self::PROCESS_TIMEOUT_SECONDS;
+        $timedOut = false;
+        $exitCode = -1;
 
         do {
             // Drain both streams so the child process cannot block on a full pipe.
@@ -186,7 +186,7 @@ final class EInvoiceSchematronValidator
 
         $errors = [];
         foreach ($assertions as $assertion) {
-            $flag = strtolower(trim($assertion->attributes?->getNamedItem('flag')?->nodeValue ?? 'fatal'));
+            $flag = mb_strtolower(trim($assertion->attributes?->getNamedItem('flag')?->nodeValue ?? 'fatal'));
             if (in_array($flag, ['warning', 'info'], true)) {
                 continue;
             }
