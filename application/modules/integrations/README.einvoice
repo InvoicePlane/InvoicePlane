@@ -106,12 +106,13 @@ Before transmission, `EInvoiceDocumentValidator` verifies that the artifact is
 present and non-empty, then checks:
 
 - XML well-formedness with external network access disabled;
+- UBL Invoice and CreditNote syntax against the normative OASIS UBL 2.1 XSD;
 - the expected XML root for UBL, CII, KSeF, Facturae, or FatturaPA;
 - configured `CustomizationID` and `ProfileID` values;
 - the PDF signature and expected embedded-file declaration/name for hybrid PDFs.
 
-These checks are structural safeguards. They do not replace validation against
-the official national XSD and Schematron rules.
+These checks include normative UBL syntax validation but do not yet execute the
+EN 16931, Peppol, or national Schematron business rules.
 
 On success, the artifact adds `format`, `profile`, `syntax`, `mime_type`, and,
 when available, `document_type` to the metadata passed to the provider.

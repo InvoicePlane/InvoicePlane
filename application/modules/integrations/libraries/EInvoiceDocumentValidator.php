@@ -10,6 +10,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
  */
 final class EInvoiceDocumentValidator
 {
+    private const UBL_21_SCHEMA_DIRECTORY = __DIR__ . '/../resources/validation/ubl-2.1/xsd/maindoc/';
+
     public function validate(string $path, EInvoiceProfile $profile): EInvoiceArtifact
     {
         $errors = [];
@@ -81,7 +83,13 @@ final class EInvoiceDocumentValidator
         if ( ! $loaded || $document->documentElement === null) {
             $errors[] = 'Document is not well-formed XML.';
         } else {
-            $errors = array_merge($errors, $this->validateRoot($document, $profile));
+            $rootErrors = $this->validateRoot($document, $profile);
+            $errors     = array_merge($errors, $rootErrors);
+
+            if ($rootErrors === [] && $profile->syntax() === 'ubl') {
+                $errors = array_merge($errors, $this->validateUblSchema($document));
+            }
+
             $errors = array_merge($errors, $this->validateIdentifiers($document, $profile));
         }
 
@@ -110,6 +118,56 @@ final class EInvoiceDocumentValidator
         }
 
         return [];
+    }
+
+    /**
+     * Validate UBL invoices against the normative OASIS UBL 2.1 schemas.
+     *
+     * Profile-specific EN 16931 and national rules require Schematron and are
+     * intentionally kept separate from this syntax validation layer.
+     *
+     * @return string[]
+     */
+    private function validateUblSchema(DOMDocument $document): array
+    {
+        $schemaFiles = [
+            'Invoice'    => 'UBL-Invoice-2.1.xsd',
+            'CreditNote' => 'UBL-CreditNote-2.1.xsd',
+        ];
+        $root       = $document->documentElement?->localName ?? '';
+        $schemaFile = $schemaFiles[$root] ?? null;
+
+        if ($schemaFile === null) {
+            return ['UBL 2.1 XSD validation does not support this document type.'];
+        }
+
+        $schemaPath = realpath(self::UBL_21_SCHEMA_DIRECTORY . $schemaFile);
+        if ($schemaPath === false || ! is_readable($schemaPath)) {
+            return ['The required UBL 2.1 XSD validation artifact is unavailable.'];
+        }
+
+        libxml_clear_errors();
+        $valid        = $document->schemaValidate($schemaPath, LIBXML_NONET);
+        $libxmlErrors = libxml_get_errors();
+        libxml_clear_errors();
+
+        if ($valid) {
+            return [];
+        }
+
+        if ($libxmlErrors === []) {
+            return ['Document does not conform to the OASIS UBL 2.1 XSD.'];
+        }
+
+        return array_values(array_unique(array_map(
+            static function (LibXMLError $error): string {
+                $message = preg_replace('/\s+/', ' ', trim($error->message));
+                $line    = $error->line > 0 ? ' at line ' . $error->line : '';
+
+                return 'UBL 2.1 XSD' . $line . ': ' . $message;
+            },
+            $libxmlErrors
+        )));
     }
 
     /**
