@@ -113,9 +113,39 @@ php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
 Two gotchas: `--no-dev` omits the `Tests\` autoload-dev mapping, so `dump-autoload --dev`
 (step 3) is required or every test dies with `Class "Tests\AbstractTestCase" not found`;
 and plain `dump-autoload` inherits the last install's `--no-dev` state, so pass `--dev`
-explicitly. Feature tests still need a MySQL DB + `ipconfig.php` (they return 307s in a
-bare sandbox); Unit tests run fully. Do **not** put a real-format GitHub token in
-`auth.json` — the proxy won't rewrite it and every dist download then fails.
+explicitly. Do **not** put a real-format GitHub token in `auth.json` — the proxy won't
+rewrite it and every dist download then fails.
+
+### MariaDB test database in the sandbox (Feature/Integration tests)
+
+**MariaDB is the only supported test database** — the harness rejects any other driver
+(`InteractsWithDatabase::db()` fails loud). Unit tests run without a DB; Feature and
+Integration tests need one, and without it they don't error — they return 307 redirects.
+
+Do **not** reinvent the setup each session. One idempotent script installs MariaDB, starts
+it, (re)builds the `invoiceplane_test` schema from the setup SQL migrations, seeds the
+baseline, and writes `ipconfig.php` — matching `.github/workflows/phpunit.yml` exactly:
+
+```bash
+bash tests/Support/sandbox-mariadb.sh          # provision (safe to re-run)
+export DB_HOSTNAME=127.0.0.1 DB_PORT=3306 DB_DATABASE=invoiceplane_test \
+       DB_USERNAME=root DB_PASSWORD=root       # parent phpunit process needs these too
+php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
+```
+
+Expected result on a green tree: **562 tests, 0 failures**, ~200 skipped (skips are
+intentional — snapshot/"requires running server" guards, not DB problems).
+
+Gotchas learned the hard way:
+- `mysqld_safe` can be reaped in the sandbox; re-running the script restarts it. If a run
+  suddenly shows ~192 *errors* (not failures), the DB died — restart and rebuild.
+- **Export the `DB_*` vars before phpunit.** The request subprocess reads DB config from
+  `ipconfig.php` via `$_ENV` (Dotenv), but the phpunit *parent* process resolves it through
+  `env()`. Skipping the export changes the parent's behaviour and inflates the failure count.
+- Session identity in the harness (`actingAsAdmin()`) must be **string-typed** (`user_type
+  => '1'`), because `User_Controller` guards with `!== (string)$required_val` and a real
+  DB-backed login stores strings. Int-typed session data silently redirects every admin
+  request to the login page (307). This is wired correctly now — don't regress it.
 
 ## Common pitfalls
 
