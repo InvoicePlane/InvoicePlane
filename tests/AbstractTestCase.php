@@ -15,9 +15,14 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
     protected function actingAsAdmin(int $userId = 1): void
     {
+        // Session identity values must be strings: a real DB-backed login stores
+        // them as the strings mysqli returns, and User_Controller guards with a
+        // strict `!== (string) $required_val`. Injecting ints here would make
+        // `1 !== '1'` true, destroy the session, and redirect every admin
+        // request to the login page (HTTP 307).
         $this->sessionData = [
-            'user_id'       => $userId,
-            'user_type'     => 1,
+            'user_id'       => (string) $userId,
+            'user_type'     => '1',
             'user_email'    => 'admin@test.local',
             'user_name'     => 'Test Admin',
             'user_company'  => 'Test Co',
@@ -35,8 +40,8 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         $data = is_array($user) ? $user : get_object_vars($user);
 
         $this->sessionData = [
-            'user_id'       => (int) ($data['user_id'] ?? 1),
-            'user_type'     => (int) ($data['user_type'] ?? 1),
+            'user_id'       => (string) ($data['user_id'] ?? 1),
+            'user_type'     => (string) ($data['user_type'] ?? 1),
             'user_email'    => (string) ($data['user_email'] ?? 'admin@test.local'),
             'user_name'     => (string) ($data['user_name'] ?? 'Test User'),
             'user_company'  => (string) ($data['user_company'] ?? 'Test Company'),
