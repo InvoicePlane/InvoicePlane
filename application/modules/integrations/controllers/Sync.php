@@ -18,6 +18,18 @@ class Sync extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClient.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationResponseNormalizer.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDriver.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseStatus.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDirection.php';
+        require_once APPPATH . 'modules/integrations/libraries/MerchantResponseType.php';
+        require_once APPPATH . 'modules/integrations/libraries/PeppolDocumentType.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceProfile.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceProfileRegistry.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceArtifact.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceSchematronValidator.php';
+        require_once APPPATH . 'modules/integrations/libraries/FrenchEInvoiceValidator.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentValidator.php';
+        require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceDocumentService.php';
+        require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceSynchronizer.php';
     }
 
     public function run($merchant_client_id)
@@ -56,13 +68,15 @@ class Sync extends Admin_Controller
         $driver        = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
         $incomingItems = IntegrationResponseNormalizer::extractItems($incoming, ['data', 'items', 'invoices']);
 
-        foreach ($incomingItems as $item) {
-            $this->Merchant_responses_model->create_inbound_item(
-                (int) $merchant_client_id,
-                $item,
-                $driver
-            );
-        }
+        $incomingResult = (new IncomingInvoiceSynchronizer())->synchronize(
+            $client,
+            $merchantClient['merchant_type'],
+            (int) $merchant_client_id,
+            $driver,
+            $incomingItems,
+            $this->Merchant_responses_model,
+            UPLOADS_ARCHIVE_FOLDER
+        );
 
         $eventItems = IntegrationResponseNormalizer::extractItems($events, ['data', 'items', 'events']);
 
@@ -75,8 +89,14 @@ class Sync extends Admin_Controller
         }
 
         $this->session->set_flashdata(
-            'alert_success',
-            trans('einvoice_manual_sync_success')
+            $incomingResult['failed'] === 0 ? 'alert_success' : 'alert_error',
+            sprintf(
+                '%s %d incoming invoice(s) archived; %d already present; %d rejected.',
+                trans('einvoice_manual_sync_success'),
+                $incomingResult['archived'],
+                $incomingResult['skipped'],
+                $incomingResult['failed']
+            )
         );
 
         redirect('integrations/events');

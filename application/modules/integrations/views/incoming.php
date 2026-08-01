@@ -29,12 +29,13 @@
                 <th><?php _trans('status'); ?></th>
                 <th><?php _trans('message'); ?></th>
                 <th><?php _trans('external_id'); ?></th>
+                <th>Document</th>
             </tr>
             </thead>
             <tbody>
             <?php if (empty($incoming)) : ?>
                 <tr>
-                    <td colspan="6" class="text-center text-muted"><?php _trans('no_incoming_invoices'); ?></td>
+                    <td colspan="7" class="text-center text-muted"><?php _trans('no_incoming_invoices'); ?></td>
                 </tr>
             <?php else : ?>
                 <?php foreach ($incoming as $row) : ?>
@@ -56,6 +57,20 @@
                         <td><?php _htmlsc($row['status']); ?></td>
                         <td><?php _htmlsc($row['merchant_response']); ?></td>
                         <td><?php _htmlsc($row['merchant_response_reference']); ?></td>
+                        <td>
+                            <?php if (($row['document_validation_status'] ?? null) === 'valid') : ?>
+                                <a href="<?php echo site_url('integrations/incoming/download/' . (int) $row['merchant_response_id']); ?>"
+                                   class="btn btn-xs btn-default">
+                                    <i class="fa fa-download"></i> <?php _trans('download'); ?>
+                                </a>
+                            <?php elseif (($row['document_validation_status'] ?? null) === 'failed') : ?>
+                                <span class="text-danger" title="<?php _htmlsc($row['document_validation_error'] ?? ''); ?>">
+                                    <i class="fa fa-exclamation-triangle"></i> Rejected
+                                </span>
+                            <?php else : ?>
+                                —
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>

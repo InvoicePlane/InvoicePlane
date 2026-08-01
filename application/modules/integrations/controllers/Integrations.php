@@ -28,6 +28,8 @@ class Integrations extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/FrenchEReportingValidator.php';
         require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentValidator.php';
         require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentService.php';
+        require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceDocumentService.php';
+        require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceSynchronizer.php';
     }
 
     public function providers(): void
@@ -165,17 +167,19 @@ class Integrations extends Admin_Controller
         $items  = IntegrationResponseNormalizer::extractItems($response, ['data', 'items', 'invoices']);
         $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
 
-        foreach ($items as $item) {
-            $this->Merchant_responses_model->create_inbound_item(
-                (int) $merchantClientId,
-                $item,
-                $driver
-            );
-        }
+        $localSync = (new IncomingInvoiceSynchronizer())->synchronize(
+            $client,
+            $merchantClient['merchant_type'],
+            (int) $merchantClientId,
+            $driver,
+            $items,
+            $this->Merchant_responses_model,
+            UPLOADS_ARCHIVE_FOLDER
+        );
 
         $this->output
             ->set_content_type('application/json')
-            ->set_output(json_encode($response, JSON_PRETTY_PRINT));
+            ->set_output(json_encode(array_merge($response, ['local_sync' => $localSync]), JSON_PRETTY_PRINT));
     }
 
     public function sync_events($merchantClientId)

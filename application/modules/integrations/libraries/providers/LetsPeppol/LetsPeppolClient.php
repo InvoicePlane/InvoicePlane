@@ -183,6 +183,49 @@ class LetsPeppolClient implements IntegrationClientInterface
         return $this->invoices->incoming($filters);
     }
 
+    public function downloadInvoiceDocument(array $invoice): array
+    {
+        $document = $invoice;
+        $encoded  = $this->encodedDocument($document);
+
+        if ($encoded === null) {
+            $documentId = $invoice['document_id'] ?? $invoice['id'] ?? null;
+            if ( ! is_string($documentId) || $documentId === '') {
+                throw new RuntimeException('LetsPeppol incoming invoice has no document ID.');
+            }
+
+            $response = $this->documents->get($documentId);
+            if (empty($response['success'])) {
+                return $response + ['content' => null, 'filename' => null, 'mime_type' => null];
+            }
+
+            $document = $response['response']['entity']
+                ?? $response['response']['document']
+                ?? $response['response']['data']
+                ?? [];
+            $encoded = $this->encodedDocument($document);
+        }
+
+        if ($encoded === null) {
+            throw new RuntimeException('LetsPeppol document response has no base64 content.');
+        }
+
+        $content = base64_decode($encoded, true);
+        if ($content === false) {
+            throw new RuntimeException('LetsPeppol incoming document is not valid base64.');
+        }
+
+        return [
+            'success'   => true,
+            'content'   => $content,
+            'filename'  => $document['filename'] ?? $document['file_name'] ?? 'letspeppol-invoice.xml',
+            'mime_type' => $document['mime_type'] ?? $document['content_type'] ?? 'application/xml',
+            'message'   => 'LetsPeppol document decoded.',
+            'http_code' => 200,
+            'response'  => [],
+        ];
+    }
+
     public function getInvoiceEvents(array $filters = []): array
     {
         return $this->invoices->events($filters);
@@ -219,5 +262,16 @@ class LetsPeppolClient implements IntegrationClientInterface
     public function documents(): LetsPeppolDocumentEndpoint
     {
         return $this->documents;
+    }
+
+    private function encodedDocument(array $document): ?string
+    {
+        foreach (['content_base64', 'document_content', 'content'] as $key) {
+            if (isset($document[$key]) && is_string($document[$key]) && $document[$key] !== '') {
+                return $document[$key];
+            }
+        }
+
+        return null;
     }
 }

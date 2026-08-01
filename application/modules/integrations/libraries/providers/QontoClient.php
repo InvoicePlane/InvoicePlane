@@ -8,9 +8,12 @@ class QontoClient implements IntegrationClientInterface
 
     private ApiClientInterface $http;
 
-    public function __construct(?ApiClientInterface $http = null)
+    private RemoteUrlGuard $urlGuard;
+
+    public function __construct(?ApiClientInterface $http = null, ?RemoteUrlGuard $urlGuard = null)
     {
-        $this->http = $http ?? new CurlApiClient();
+        $this->http     = $http ?? new CurlApiClient();
+        $this->urlGuard = $urlGuard ?? new RemoteUrlGuard();
     }
 
     public static function clientCode(): string
@@ -39,6 +42,7 @@ class QontoClient implements IntegrationClientInterface
             'send_invoice_endpoint'      => '/v2/client_invoices/{id}/send_by_einvoice',
             'invoice_status_endpoint'    => '/v2/client_invoices/{id}',
             'incoming_invoices_endpoint' => '/v2/supplier_invoices',
+            'attachment_endpoint'        => '/v2/attachments/{id}',
         ];
     }
 
@@ -84,6 +88,11 @@ class QontoClient implements IntegrationClientInterface
             'incoming_invoices_endpoint' => [
                 'type'     => 'path',
                 'label'    => 'incoming_invoices_endpoint',
+                'required' => true,
+            ],
+            'attachment_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'attachment_endpoint',
                 'required' => true,
             ],
         ];
@@ -201,6 +210,7 @@ class QontoClient implements IntegrationClientInterface
     {
         $this->requireSetting('incoming_invoices_endpoint');
 
+        $filters += ['filter[source][]' => 'e_invoicing', 'per_page' => 100];
         $url = $this->buildUrl($this->settings['incoming_invoices_endpoint'], $filters);
 
         $response = $this->request(RequestMethod::GET, $url);
@@ -211,6 +221,57 @@ class QontoClient implements IntegrationClientInterface
         }
 
         return $response;
+    }
+
+    public function downloadInvoiceDocument(array $invoice): array
+    {
+        $this->requireSetting('attachment_endpoint');
+
+        $attachmentId = $invoice['attachment_id'] ?? $invoice['display_attachment_id'] ?? null;
+        if ( ! is_string($attachmentId) || $attachmentId === '') {
+            throw new \RuntimeException('Qonto supplier invoice has no downloadable attachment ID.');
+        }
+
+        $endpoint = str_replace('{id}', rawurlencode($attachmentId), $this->settings['attachment_endpoint']);
+        $metadata = $this->request(RequestMethod::GET, $this->buildUrl($endpoint));
+        if (empty($metadata['success'])) {
+            return $metadata + ['content' => null, 'filename' => null, 'mime_type' => null];
+        }
+
+        $attachment = $metadata['response']['attachment']
+            ?? $metadata['response']['data']['attributes']
+            ?? $metadata['response']['data']
+            ?? [];
+        if ( ! is_array($attachment)) {
+            throw new \RuntimeException('Qonto attachment metadata is malformed.');
+        }
+
+        $url = $attachment['url'] ?? null;
+        if ( ! is_string($url) || $url === '') {
+            throw new \RuntimeException('Qonto attachment metadata has no download URL.');
+        }
+
+        $declaredSize = filter_var($attachment['file_size'] ?? null, FILTER_VALIDATE_INT);
+        if ($declaredSize !== false && $declaredSize > 15 * 1024 * 1024) {
+            throw new \RuntimeException('Qonto attachment exceeds the 15 MB incoming-document limit.');
+        }
+
+        $resolved = $this->urlGuard->validateAndResolve($url);
+        $download = $this->http->request(RequestMethod::GET, $url, [
+            'binary'             => true,
+            'max_response_bytes' => 15 * 1024 * 1024,
+            'resolve'            => [$resolved['host'], $resolved['port'], $resolved['ip']],
+        ]);
+
+        return [
+            'success'   => $download['success'],
+            'content'   => $download['body'] ?? null,
+            'filename'  => $invoice['file_name'] ?? $attachment['file_name'] ?? 'qonto-invoice.pdf',
+            'mime_type' => $attachment['file_content_type'] ?? $download['content_type'] ?? null,
+            'message'   => $download['message'],
+            'http_code' => $download['http_code'],
+            'response'  => ['attachment_id' => $attachmentId],
+        ];
     }
 
     /**

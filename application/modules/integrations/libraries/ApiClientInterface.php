@@ -13,6 +13,9 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *   body        string   Raw request body; set Content-Type through headers when required
  *   query       array    Query-string parameters appended to $url
  *   headers     array    Extra "Name: value" header strings added verbatim
+ *   binary      bool     Return the response bytes under body instead of decoding JSON
+ *   max_response_bytes int Reject a binary response larger than this limit
+ *   resolve     array    Optional cURL host pin: [host, port, resolved public IP]
  *
  * Returned envelope always contains:
  *   success     bool
@@ -22,6 +25,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *   http_code   int
  *   request     array
  *   response    array   decoded JSON body (empty array when body is absent or non-JSON)
+ *   body        string  response bytes when the binary option is enabled
+ *   content_type string response Content-Type without parameters
  */
 interface ApiClientInterface
 {

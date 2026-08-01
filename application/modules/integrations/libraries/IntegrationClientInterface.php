@@ -22,6 +22,8 @@ interface IntegrationClientInterface
 
     public function receiveInvoices(array $filters = []): array;
 
+    public function downloadInvoiceDocument(array $invoice): array;
+
     public function getInvoiceEvents(array $filters = []): array;
 
     public function buildInvoicePayload($invoice, array $items, array $metadata = []): array;

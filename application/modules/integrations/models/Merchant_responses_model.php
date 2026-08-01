@@ -127,6 +127,7 @@ class Merchant_responses_model extends CI_Model
         MerchantResponseDriver $driver,
         ?string $peppolParticipantId = null,
         ?PeppolDocumentType $peppolDocumentType = null,
+        array $document = [],
     ): int {
         $status = MerchantResponseStatus::fromExternal(
             $invoice['status_code'] ?? $invoice['status'] ?? null,
@@ -134,20 +135,29 @@ class Merchant_responses_model extends CI_Model
         );
         $externalId = $invoice['id'] ?? $invoice['external_id'] ?? null;
 
-        // Deduplication: skip if this external ID already exists for this provider.
+        $existing = [];
         if ($externalId !== null) {
             $existing = $this->db
                 ->where('merchant_client_id', $merchantClientId)
                 ->where('merchant_response_reference', $externalId)
                 ->where('direction', MerchantResponseDirection::In->value)
-                ->count_all_results(self::TABLE);
-
-            if ($existing > 0) {
-                return 0;
-            }
+                ->where('record_type', MerchantResponseType::IncomingInvoice->value)
+                ->get(self::TABLE)
+                ->row_array() ?: [];
         }
 
-        $this->db->insert(self::TABLE, [
+        $document = array_intersect_key($document, array_flip([
+            'document_path',
+            'document_name',
+            'document_mime_type',
+            'document_size',
+            'document_sha256',
+            'document_profile',
+            'document_validation_status',
+            'document_validation_error',
+        ]));
+
+        $data = array_merge([
             'invoice_id'                   => null,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
@@ -163,9 +173,32 @@ class Merchant_responses_model extends CI_Model
             'peppol_document_type'         => $peppolDocumentType?->value,
             'created_at'                   => date('Y-m-d H:i:s'),
             'raw_payload'                  => json_encode($invoice),
-        ]);
+        ], $document);
+
+        if ($existing !== []) {
+            unset($data['created_at']);
+
+            $this->db
+                ->where('merchant_response_id', $existing['merchant_response_id'])
+                ->update(self::TABLE, $data);
+
+            return (int) $existing['merchant_response_id'];
+        }
+
+        $this->db->insert(self::TABLE, $data);
 
         return (int) $this->db->insert_id();
+    }
+
+    public function has_valid_incoming_document(int $merchantClientId, string $externalId): bool
+    {
+        return $this->db
+            ->where('merchant_client_id', $merchantClientId)
+            ->where('merchant_response_reference', $externalId)
+            ->where('direction', MerchantResponseDirection::In->value)
+            ->where('record_type', MerchantResponseType::IncomingInvoice->value)
+            ->where('document_validation_status', 'valid')
+            ->count_all_results(self::TABLE) > 0;
     }
 
     public function create_event_item(
@@ -218,6 +251,16 @@ class Merchant_responses_model extends CI_Model
             ->order_by('created_at', 'DESC')
             ->get(self::TABLE)
             ->result_array();
+    }
+
+    public function get_incoming_by_id(int $responseId): array
+    {
+        return $this->db
+            ->where('merchant_response_id', $responseId)
+            ->where('record_type', MerchantResponseType::IncomingInvoice->value)
+            ->where('direction', MerchantResponseDirection::In->value)
+            ->get(self::TABLE)
+            ->row_array() ?: [];
     }
 
     public function get_events(): array
