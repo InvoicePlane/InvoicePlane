@@ -101,8 +101,7 @@ public function get_invoice_templates($type = 'pdf')
   **never** scanned
 - Custom templates are opt-in through **explicit allowlists in `ipconfig.php`**
   (`CUSTOM_TEMPLATES_FOLDER` + `CUSTOM_INVOICE_TEMPLATES_*` / `CUSTOM_QUOTE_TEMPLATES_*`),
-  resolved by the `_merge_custom()` helper — never through a filesystem scan. See
-  [Adding New Templates (Post-Fix)](#adding-new-templates-post-fix).
+  resolved by the `_merge_custom()` helper — never through a filesystem scan.
 - Even if an attacker writes `evil.php` to a templates directory, it will NOT appear in the
   whitelist unless its exact name is also listed in the operator-controlled `ipconfig.php`
 
