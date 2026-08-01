@@ -25,37 +25,6 @@ final class EInvoiceProfileRegistry
         }
     }
 
-    public function register(EInvoiceProfile $profile): void
-    {
-        if (isset($this->profiles[$profile->code()])) {
-            throw new LogicException('Duplicate e-invoice profile code.');
-        }
-
-        $this->profiles[$profile->code()] = $profile;
-    }
-
-    public function get(string $code): EInvoiceProfile
-    {
-        if ( ! isset($this->profiles[$code])) {
-            throw new OutOfBoundsException('Unsupported e-invoice profile.');
-        }
-
-        return $this->profiles[$code];
-    }
-
-    public function has(string $code): bool
-    {
-        return isset($this->profiles[$code]);
-    }
-
-    /**
-     * @return array<string, EInvoiceProfile>
-     */
-    public function all(): array
-    {
-        return $this->profiles;
-    }
-
     public static function builtIn(): self
     {
         return new self([
@@ -92,7 +61,7 @@ final class EInvoiceProfileRegistry
             ),
             new EInvoiceProfile(
                 'Facturxv10',
-                'Factur-X v1.0.7 - EN 16931',
+                'Factur-X v1.09 - EN 16931',
                 'FR',
                 'Facturxv10',
                 'factur-x',
@@ -103,6 +72,7 @@ final class EInvoiceProfileRegistry
                 'factur-x.xml',
                 [
                     'GuidelineSpecifiedDocumentContextParameterID' => 'urn:cen.eu:en16931:2017',
+                    'FrenchSiren'                                  => true,
                 ],
                 'urn:cen.eu:en16931:2017',
                 null,
@@ -121,12 +91,12 @@ final class EInvoiceProfileRegistry
                 false,
                 '',
                 [
-                    'CustomizationID' => 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
-                    'ProfileID'       => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
-                    'BuyerReference'  => true,
-                    'client_eas_code' => '0204',
-                    'user_eas_code'   => '0204',
-                    'EndpointID'      => 'tax_code',
+                    'CustomizationID'     => 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
+                    'ProfileID'           => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+                    'BuyerReference'      => true,
+                    'client_eas_code'     => '0204',
+                    'user_eas_code'       => '0204',
+                    'EndpointID'          => 'tax_code',
                     'PartyIdentification' => false,
                     'PartyLegalEntity'    => [
                         'CompanyID' => 'tax_code',
@@ -152,10 +122,10 @@ final class EInvoiceProfileRegistry
                 [
                     'BusinessProcessSpecifiedDocumentContextParameterID' => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
                     'GuidelineSpecifiedDocumentContextParameterID'       => 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
-                    'CII'             => true,
-                    'client_eas_code' => '0204',
-                    'user_eas_code'   => '0204',
-                    'URIUniversalCommunication' => [
+                    'CII'                                                => true,
+                    'client_eas_code'                                    => '0204',
+                    'user_eas_code'                                      => '0204',
+                    'URIUniversalCommunication'                          => [
                         'client' => [
                             'URIID'    => 'client_vat_id',
                             'schemeID' => '9930',
@@ -197,11 +167,11 @@ final class EInvoiceProfileRegistry
                 false,
                 '',
                 [
-                    'CustomizationID' => 'urn:cen.eu:en16931:2017#compliant#urn:efactura.mfinante.ro:CIUS-RO:1.0.1',
-                    'BuyerReference'  => true,
-                    'client_eas_code' => '9947',
-                    'user_eas_code'   => '9947',
-                    'EndpointID'      => 'vat_id',
+                    'CustomizationID'     => 'urn:cen.eu:en16931:2017#compliant#urn:efactura.mfinante.ro:CIUS-RO:1.0.1',
+                    'BuyerReference'      => true,
+                    'client_eas_code'     => '9947',
+                    'user_eas_code'       => '9947',
+                    'EndpointID'          => 'vat_id',
                     'PartyIdentification' => false,
                     'PartyLegalEntity'    => [
                         'CompanyID' => 'tax_code',
@@ -256,5 +226,36 @@ final class EInvoiceProfileRegistry
                 ]
             ),
         ]);
+    }
+
+    public function register(EInvoiceProfile $profile): void
+    {
+        if (isset($this->profiles[$profile->code()])) {
+            throw new LogicException('Duplicate e-invoice profile code.');
+        }
+
+        $this->profiles[$profile->code()] = $profile;
+    }
+
+    public function get(string $code): EInvoiceProfile
+    {
+        if ( ! isset($this->profiles[$code])) {
+            throw new OutOfBoundsException('Unsupported e-invoice profile.');
+        }
+
+        return $this->profiles[$code];
+    }
+
+    public function has(string $code): bool
+    {
+        return isset($this->profiles[$code]);
+    }
+
+    /**
+     * @return array<string, EInvoiceProfile>
+     */
+    public function all(): array
+    {
+        return $this->profiles;
     }
 }

@@ -41,6 +41,7 @@ final class EInvoiceDocumentService
         }
 
         if ($profile->embedded()) {
+            $this->validateEmbeddedData($invoice, $items, $profile, $invoiceId);
             $this->writePdf($invoiceId, $documentPath);
         } else {
             $this->writeXml($invoice, $items, $profile, $invoiceId, $documentPath);
@@ -69,6 +70,33 @@ final class EInvoiceDocumentService
 
         if (file_put_contents($documentPath, $pdf) === false) {
             throw new RuntimeException('Unable to write the generated invoice PDF.');
+        }
+    }
+
+    private function validateEmbeddedData(
+        object $invoice,
+        array $items,
+        EInvoiceProfile $profile,
+        int $invoiceId
+    ): void {
+        $temporaryName = 'integration_embedded_' . $invoiceId . '_' . bin2hex(random_bytes(8));
+        $temporaryPath = generate_xml_invoice_file(
+            $invoice,
+            $items,
+            $profile->generator(),
+            $temporaryName,
+            $profile->options()
+        );
+
+        try {
+            $errors = $this->validator->validateStructuredData($temporaryPath, $profile);
+            if ($errors !== []) {
+                throw new RuntimeException('Embedded e-invoice XML validation failed: ' . implode(' | ', $errors));
+            }
+        } finally {
+            if (is_file($temporaryPath) && ! unlink($temporaryPath)) {
+                log_message('warning', 'Unable to remove validated e-invoice temporary file.');
+            }
         }
     }
 

@@ -58,6 +58,8 @@ The main components are:
 | `EInvoiceProfileRegistry` | Explicitly allow-lists document profiles and provider compatibility |
 | `EInvoiceDocumentService` | Generates the selected XML or hybrid PDF artifact |
 | `EInvoiceDocumentValidator` | Performs fail-closed structural and profile identifier checks |
+| `FrenchEInvoiceValidator` | Enforces deterministic DGFiP startup-scope invoice rules |
+| `FrenchEReportingValidator` | Validates French F10 reports against DGFiP v3.2 XSDs |
 | `EInvoiceArtifact` | Carries the generated path, profile, validation result, and transmission metadata |
 | `Merchant_clients_model` | Loads provider configuration |
 | `Merchant_responses_model` | Stores outgoing, incoming, and event records |
@@ -75,7 +77,7 @@ The current built-in profiles are:
 | Code | Profile | Syntax | Output | Enabled provider transmission |
 |---|---|---|---|---|
 | `UblPeppolV21` | Peppol BIS Billing 3.0 (UBL 2.1) | UBL | XML | LetsPeppol |
-| `Facturxv10` | Factur-X v1.0.7 EN 16931 | CII | Hybrid PDF with `factur-x.xml` | SuperPDP, Qonto |
+| `Facturxv10` | Factur-X v1.09 EN 16931 | CII | Hybrid PDF with `factur-x.xml` | SuperPDP, Qonto |
 | `Ublxrechnungv30de` | XRechnung UBL 3.0 | UBL | XML | LetsPeppol |
 | `Xrechnungciiv30de` | XRechnung CII 3.0 | CII | XML | Not mapped yet |
 | `Zugferdv23` | ZUGFeRD v2.3 EN 16931 | CII | Hybrid PDF with `factur-x.xml` | Not mapped yet |
@@ -109,6 +111,8 @@ present and non-empty, then checks:
 - UBL Invoice and CreditNote syntax against the normative OASIS UBL 2.1 XSD;
 - UBL semantic rules against EN 16931 validation artifacts 1.3.16;
 - Peppol UBL business and national rules against BIS Billing 3.0.21;
+- embedded Factur-X XML against the Factur-X 1.09 EN 16931 XSD and Schematron;
+- French seller/buyer SIREN and electronic-address rules from DGFiP v3.2;
 - the expected XML root for UBL, CII, KSeF, Facturae, or FatturaPA;
 - configured `CustomizationID` and `ProfileID` values;
 - the PDF signature and expected embedded-file declaration/name for hybrid PDFs.
@@ -116,6 +120,31 @@ present and non-empty, then checks:
 Fatal Schematron assertions block transmission; warnings and informational
 assertions do not. National Schematron rules outside the Peppol ruleset still
 need their own versioned validation artifacts.
+
+For hybrid Factur-X output, the structured CII payload is generated and fully
+validated before the PDF is produced. A malformed payload therefore never
+reaches SuperPDP or Qonto even when the surrounding PDF is readable.
+
+### French reform scope
+
+The French startup scope follows DGFiP external specification 3.2 (30 April
+2026):
+
+- seller and buyer SIRENs are emitted as `BT-30` and `BT-47` with ISO 6523
+  scheme `0002` and must contain exactly nine digits;
+- the same routed identifiers are checked in `BT-34` and `BT-49`;
+- mandatory French legal notes and the restricted invoice-number syntax are
+  checked before transmission;
+- provider events carrying official lifecycle codes `200` through `213`,
+  `250`/`251`, `300`/`301`, or `601` are normalized without losing their
+  business outcome;
+- `FrenchEReportingValidator` validates F10 transaction/payment reports with
+  the official DGFiP v3.2 XSD set.
+
+Checks requiring the live national directory (notably whether a SIREN exists
+and is routable) remain the responsibility of the accredited platform. The
+module validates F10 documents but does not yet expose a generic F10 submission
+operation because that transport depends on each platform's API.
 
 On success, the artifact adds `format`, `profile`, `syntax`, `mime_type`, and,
 when available, `document_type` to the metadata passed to the provider.
@@ -483,7 +512,7 @@ national-format integrations:
 composer install
 ```
 
-UBL regulatory validation also requires Java 8 or newer to be available as
+UBL and Factur-X regulatory validation also requires Java 8 or newer to be available as
 `java`. The versioned Saxon-HE engine and Schematron stylesheets are bundled
 with the module; validation fails closed if the engine cannot run.
 

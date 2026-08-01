@@ -24,6 +24,8 @@ class Integrations extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/EInvoiceProfileRegistry.php';
         require_once APPPATH . 'modules/integrations/libraries/EInvoiceArtifact.php';
         require_once APPPATH . 'modules/integrations/libraries/EInvoiceSchematronValidator.php';
+        require_once APPPATH . 'modules/integrations/libraries/FrenchEInvoiceValidator.php';
+        require_once APPPATH . 'modules/integrations/libraries/FrenchEReportingValidator.php';
         require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentValidator.php';
         require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentService.php';
     }
