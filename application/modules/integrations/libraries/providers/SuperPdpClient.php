@@ -40,6 +40,7 @@ class SuperPdpClient implements IntegrationClientInterface
             'invoice_endpoint'           => '/v1.beta/invoices',
             'invoice_status_endpoint'    => '/v1.beta/invoices/{id}',
             'incoming_invoices_endpoint' => '/v1.beta/invoices',
+            'incoming_document_endpoint' => '/v1.beta/invoices/{id}/document',
             'invoice_events_endpoint'    => '/v1.beta/invoice_events',
             'disable_pre_check'          => false,
         ];
@@ -82,6 +83,11 @@ class SuperPdpClient implements IntegrationClientInterface
             'incoming_invoices_endpoint' => [
                 'type'     => 'path',
                 'label'    => 'incoming_invoices_endpoint',
+                'required' => true,
+            ],
+            'incoming_document_endpoint' => [
+                'type'     => 'path',
+                'label'    => 'incoming_document_endpoint',
                 'required' => true,
             ],
             'invoice_events_endpoint' => [
@@ -240,6 +246,40 @@ class SuperPdpClient implements IntegrationClientInterface
         );
     }
 
+    public function downloadInvoiceDocument(array $invoice): array
+    {
+        $inline = $this->decodeInlineDocument($invoice);
+        if ($inline !== null) {
+            return $inline;
+        }
+
+        if (empty($this->settings['incoming_document_endpoint'])) {
+            throw new \RuntimeException('Missing incoming document endpoint configuration.');
+        }
+
+        $externalId = $invoice['document_id'] ?? $invoice['external_id'] ?? $invoice['id'] ?? null;
+        if ( ! is_string($externalId) || $externalId === '') {
+            throw new \RuntimeException('SuperPDP incoming invoice has no document ID.');
+        }
+
+        $endpoint = str_replace('{id}', rawurlencode($externalId), $this->settings['incoming_document_endpoint']);
+        $download = $this->http->request(RequestMethod::GET, $this->buildUrl($endpoint), [
+            'bearer'             => $this->accessToken,
+            'binary'             => true,
+            'max_response_bytes' => 15 * 1024 * 1024,
+        ]);
+
+        return [
+            'success'   => $download['success'],
+            'content'   => $download['body'] ?? null,
+            'filename'  => $invoice['filename'] ?? $invoice['file_name'] ?? 'superpdp-invoice.pdf',
+            'mime_type' => $download['content_type'] ?? $invoice['mime_type'] ?? null,
+            'message'   => $download['message'],
+            'http_code' => $download['http_code'],
+            'response'  => ['document_id' => $externalId],
+        ];
+    }
+
     /**
      * GET /v1.beta/invoice_events?{filters}.
      *
@@ -329,5 +369,28 @@ class SuperPdpClient implements IntegrationClientInterface
         }
 
         return $url;
+    }
+
+    private function decodeInlineDocument(array $invoice): ?array
+    {
+        $encoded = $invoice['content_base64'] ?? $invoice['document_content'] ?? $invoice['content'] ?? null;
+        if ( ! is_string($encoded) || $encoded === '') {
+            return null;
+        }
+
+        $content = base64_decode($encoded, true);
+        if ($content === false) {
+            throw new \RuntimeException('SuperPDP incoming document is not valid base64.');
+        }
+
+        return [
+            'success'   => true,
+            'content'   => $content,
+            'filename'  => $invoice['filename'] ?? $invoice['file_name'] ?? 'superpdp-invoice.xml',
+            'mime_type' => $invoice['mime_type'] ?? 'application/xml',
+            'message'   => 'Inline SuperPDP document decoded.',
+            'http_code' => 200,
+            'response'  => [],
+        ];
     }
 }

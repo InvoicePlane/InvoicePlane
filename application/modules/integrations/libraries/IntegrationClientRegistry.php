@@ -81,6 +81,7 @@ class IntegrationClientRegistry
     {
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/ProviderResponseNormalizer.php';
+        require_once APPPATH . 'modules/integrations/libraries/RemoteUrlGuard.php';
 
         $clientPath = APPPATH . 'modules/integrations/libraries/providers/';
 

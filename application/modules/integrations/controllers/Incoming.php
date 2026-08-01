@@ -21,6 +21,15 @@ class Incoming extends Admin_Controller
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseStatus.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseDirection.php';
         require_once APPPATH . 'modules/integrations/libraries/MerchantResponseType.php';
+        require_once APPPATH . 'modules/integrations/libraries/PeppolDocumentType.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceProfile.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceProfileRegistry.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceArtifact.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceSchematronValidator.php';
+        require_once APPPATH . 'modules/integrations/libraries/FrenchEInvoiceValidator.php';
+        require_once APPPATH . 'modules/integrations/libraries/EInvoiceDocumentValidator.php';
+        require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceDocumentService.php';
+        require_once APPPATH . 'modules/integrations/libraries/IncomingInvoiceSynchronizer.php';
     }
 
     public function index()
@@ -81,14 +90,72 @@ class Incoming extends Admin_Controller
         $items  = IntegrationResponseNormalizer::extractItems($response, ['data', 'items', 'invoices']);
         $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
 
-        foreach ($items as $item) {
-            $this->Merchant_responses_model->create_inbound_item(
-                (int) $merchant_client_id,
-                $item,
-                $driver,
-                $item['sender'] ?? $item['peppol_participant_id'] ?? null,
-            );
-        }
+        $result = (new IncomingInvoiceSynchronizer())->synchronize(
+            $client,
+            $merchantClient['merchant_type'],
+            (int) $merchant_client_id,
+            $driver,
+            $items,
+            $this->Merchant_responses_model,
+            UPLOADS_ARCHIVE_FOLDER
+        );
+
+        $this->session->set_flashdata(
+            $result['failed'] === 0 ? 'alert_success' : 'alert_error',
+            sprintf(
+                '%d incoming invoice(s) archived; %d already present; %d rejected.',
+                $result['archived'],
+                $result['skipped'],
+                $result['failed']
+            )
+        );
         redirect('integrations/incoming');
+    }
+
+    public function download($responseId): void
+    {
+        $this->load->helper('file_security');
+
+        $incoming     = $this->Merchant_responses_model->get_incoming_by_id((int) $responseId);
+        $relativePath = $incoming['document_path'] ?? null;
+
+        if ($incoming === []
+            || $incoming['document_validation_status'] !== 'valid'
+            || ! is_string($relativePath)
+            || $relativePath === '') {
+            show_404();
+
+            return;
+        }
+
+        $path = UPLOADS_ARCHIVE_FOLDER . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+        if ( ! is_file($path) || ! validate_file_in_directory($path, UPLOADS_ARCHIVE_FOLDER)) {
+            show_404();
+
+            return;
+        }
+
+        $mimeType = in_array($incoming['document_mime_type'], ['application/pdf', 'application/xml'], true)
+            ? $incoming['document_mime_type']
+            : 'application/octet-stream';
+        $filename = sanitize_filename_for_header(
+            $incoming['document_name'] ?: basename($path)
+        );
+
+        $content = file_get_contents($path);
+        if ($content === false) {
+            show_404();
+
+            return;
+        }
+
+        $this->output
+            ->set_header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0')
+            ->set_header('Pragma: no-cache')
+            ->set_header('X-Content-Type-Options: nosniff')
+            ->set_header('Content-Length: ' . mb_strlen($content, '8bit'))
+            ->set_content_type($mimeType)
+            ->set_header('Content-Disposition: attachment; filename="' . $filename . '"')
+            ->set_output($content);
     }
 }

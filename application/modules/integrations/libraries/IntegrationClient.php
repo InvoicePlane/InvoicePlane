@@ -4,6 +4,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class IntegrationClient
 {
+    private bool $authenticated = false;
+
     private IntegrationClientInterface $provider;
 
     private array $settings;
@@ -16,7 +18,11 @@ class IntegrationClient
 
     public function authenticate(): bool
     {
-        return $this->provider->authenticate($this->settings);
+        if ( ! $this->authenticated) {
+            $this->authenticated = $this->provider->authenticate($this->settings);
+        }
+
+        return $this->authenticated;
     }
 
     public function sendInvoice(string $documentPath, array $metadata): array
@@ -38,6 +44,13 @@ class IntegrationClient
         $this->ensureAuthenticated();
 
         return $this->provider->receiveInvoices($filters);
+    }
+
+    public function downloadInvoiceDocument(array $invoice): array
+    {
+        $this->ensureAuthenticated();
+
+        return $this->provider->downloadInvoiceDocument($invoice);
     }
 
     public function getInvoiceEvents(array $filters = []): array

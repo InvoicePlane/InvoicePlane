@@ -60,6 +60,9 @@ The main components are:
 | `EInvoiceDocumentValidator` | Performs fail-closed structural and profile identifier checks |
 | `FrenchEInvoiceValidator` | Enforces deterministic DGFiP startup-scope invoice rules |
 | `FrenchEReportingValidator` | Validates French F10 reports against DGFiP v3.2 XSDs |
+| `IncomingInvoiceSynchronizer` | Downloads each new supplier invoice and records its validation result |
+| `IncomingInvoiceDocumentService` | Identifies, validates, hashes, and archives incoming XML or Factur-X documents |
+| `RemoteUrlGuard` | Restricts provider-supplied download URLs to pinned public HTTPS destinations |
 | `EInvoiceArtifact` | Carries the generated path, profile, validation result, and transmission metadata |
 | `Merchant_clients_model` | Loads provider configuration |
 | `Merchant_responses_model` | Stores outgoing, incoming, and event records |
@@ -269,10 +272,29 @@ provider disables the other registered providers.
 ### Synchronizing incoming invoices and events
 
 1. The provider is authenticated.
-2. `receiveInvoices()` or `getInvoiceEvents()` is called.
+2. `receiveInvoices()` lists available supplier invoices.
 3. `IntegrationResponseNormalizer` extracts supported response collections.
-4. Malformed or non-JSON payloads produce an empty collection.
-5. Valid items are stored in `ip_merchant_responses`.
+4. Each previously unseen invoice is downloaded with
+   `downloadInvoiceDocument()` and capped at 15 MB.
+5. XML syntax/profile and regulatory rules are validated. For Factur-X, the
+   PDF signature and its extracted `factur-x.xml` attachment are validated.
+6. Only valid documents are archived under
+   `uploads/archive/incoming/<provider>/<sha256>.<xml|pdf>` and exposed through
+   the authenticated **Incoming invoices** download action.
+7. The provider metadata, SHA-256, detected profile, local archive path, and
+   validation result are recorded in `ip_merchant_responses`.
+8. Rejected documents are not archived; their bounded validation error is
+   recorded so the next synchronization can retry them.
+
+Incoming synchronization is idempotent by provider account and external
+invoice ID. A document already archived as valid is neither downloaded nor
+inserted again. The archive is content-addressed, so identical validated bytes
+also share the same local file.
+
+This flow provides receipt, regulatory validation, durable storage, audit
+metadata, and secure retrieval. InvoicePlane currently has no purchase-ledger
+domain, so an incoming supplier invoice is not converted into a sales invoice,
+accounting entry, approval workflow, or payment instruction.
 
 Repeated event synchronization is idempotent: an identical raw event from the
 same provider is stored only once.
@@ -295,6 +317,12 @@ invoices:
 5. list supplier invoices and flatten client-invoice lifecycle events for the
    regular incoming/event synchronization jobs.
 
+For incoming invoices, Qonto supplier invoices are filtered to the
+`e_invoicing` source. The connector retrieves the invoice attachment metadata,
+then downloads the short-lived attachment URL without forwarding the Qonto
+bearer token. The URL must be HTTPS on port 443 and resolve only to public IP
+addresses; the resolved address is pinned for the request.
+
 The connector rejects non-PDF files and documents over Qonto's 5 MB per-file
 limit before making a request. Qonto's e-invoicing submission is a production-
 only capability; its successful `204` response means accepted for asynchronous
@@ -311,6 +339,11 @@ SuperPDP endpoints and the LetsPeppol invoice, participant, credit-note,
 transmission, and document endpoints remain configurable. Their defaults are
 integration presets and must be checked against the API contract and
 credentials issued for the target tenant.
+
+SuperPDP and LetsPeppol reception accepts either a strict base64-encoded
+document returned inline by the provider or a binary response from the
+configured incoming-document endpoint. An empty, oversized, undecodable, or
+unidentifiable document fails closed and remains eligible for retry.
 
 ## Expected Provider Response
 
@@ -485,6 +518,28 @@ class ExampleClient implements IntegrationClientInterface
         );
     }
 
+    public function downloadInvoiceDocument(array $invoice): array
+    {
+        $externalId = (string) ($invoice['id'] ?? '');
+        if ($externalId === '') {
+            throw new RuntimeException('Incoming invoice has no external ID.');
+        }
+
+        $response = $this->request(
+            RequestMethod::GET,
+            '/v1/incoming-invoices/' . rawurlencode($externalId) . '/document',
+            ['binary' => true, 'max_response_bytes' => 15 * 1024 * 1024]
+        );
+
+        return [
+            'success'   => $response['success'],
+            'content'   => $response['body'] ?? null,
+            'filename'  => 'incoming-' . $externalId . '.xml',
+            'mime_type' => $response['content_type'] ?? null,
+            'message'   => $response['message'],
+        ];
+    }
+
     public function getInvoiceEvents(array $filters = []): array
     {
         return $this->request(
@@ -552,6 +607,14 @@ UBL and Factur-X regulatory validation also requires Java 8 or newer to be avail
 `java`. The versioned Saxon-HE engine and Schematron stylesheets are bundled
 with the module; validation fails closed if the engine cannot run.
 
+Incoming Factur-X reception additionally requires Poppler's `pdfdetach`
+command. It is used only to extract `factur-x.xml`; reception fails closed when
+the command is unavailable, times out, or the attachment cannot be read.
+
+Database setup/upgrade must apply `045_1.8.1.sql`, which adds the incoming
+document path, filename, MIME type, size, SHA-256, detected profile, and
+validation-result columns to `ip_merchant_responses`.
+
 The current lock file includes the security-updated Guzzle HTTP stack used by
 the LetsPeppol provider (`guzzlehttp/guzzle` 7.15.2,
 `guzzlehttp/promises` 2.5.1, and `guzzlehttp/psr7` 2.13.0). It also includes
@@ -567,6 +630,8 @@ Provider implementations should:
 - pass external values through `sanitize_for_logging()` before logging;
 - define secrets as `password` fields with `sensitive => true`;
 - use the shared API clients and their connection/request timeouts;
+- cap binary responses and pin validated public-IP resolutions for externally
+  supplied download URLs;
 - validate files before upload;
 - throw an exception when required configuration is missing;
 - return normalized arrays instead of raw response bodies.

@@ -14,6 +14,7 @@ class GuzzleApiClient implements ApiClientInterface
     {
         $this->guzzle = $guzzle ?? new Client([
             'connect_timeout' => 10,
+            'allow_redirects' => false,
             'http_errors'     => false,
             'verify'          => true,
             'timeout'         => 30,
@@ -37,7 +38,14 @@ class GuzzleApiClient implements ApiClientInterface
             $url .= '?' . http_build_query($options['query']);
         }
 
-        $guzzleOptions = ['headers' => $headers];
+        $binary        = ! empty($options['binary']);
+        $guzzleOptions = ['headers' => $headers, 'stream' => $binary];
+
+        if (isset($options['resolve']) && is_array($options['resolve']) && count($options['resolve']) === 3) {
+            [$host, $port, $ip]                     = $options['resolve'];
+            $resolvedAddress                        = str_contains($ip, ':') ? '[' . $ip . ']' : $ip;
+            $guzzleOptions['curl'][CURLOPT_RESOLVE] = [sprintf('%s:%d:%s', $host, $port, $resolvedAddress)];
+        }
 
         if (isset($options['body'])) {
             $guzzleOptions['body'] = $options['body'];
@@ -52,7 +60,11 @@ class GuzzleApiClient implements ApiClientInterface
         try {
             $response = $this->guzzle->request($method->value, $url, $guzzleOptions);
             $httpCode = $response->getStatusCode();
-            $decoded  = json_decode((string) $response->getBody(), true) ?? [];
+            $rawBody  = $binary
+                ? $this->readBinaryBody($response->getBody(), (int) ($options['max_response_bytes'] ?? 15 * 1024 * 1024))
+                : (string) $response->getBody();
+
+            $decoded = $binary ? [] : (json_decode($rawBody, true) ?? []);
         } catch (ConnectException $e) {
             throw new \RuntimeException('API connection error: ' . $e->getMessage(), 0, $e);
         } catch (RequestException $e) {
@@ -62,25 +74,34 @@ class GuzzleApiClient implements ApiClientInterface
                 : [];
 
             return [
-                'success'     => false,
-                'external_id' => null,
-                'status'      => 'error',
-                'message'     => $e->getMessage(),
-                'http_code'   => $httpCode,
-                'request'     => ['url' => $url, 'method' => $method->value],
-                'response'    => $decoded,
+                'success'      => false,
+                'external_id'  => null,
+                'status'       => 'error',
+                'message'      => $e->getMessage(),
+                'http_code'    => $httpCode,
+                'request'      => ['url' => $url, 'method' => $method->value],
+                'response'     => $decoded,
+                'body'         => '',
+                'content_type' => '',
             ];
         }
 
-        return [
-            'success'     => $httpCode >= 200 && $httpCode < 300,
-            'external_id' => $decoded['id'] ?? null,
-            'status'      => $decoded['status'] ?? ($httpCode >= 200 && $httpCode < 300 ? 'sent' : 'error'),
-            'message'     => $decoded['message'] ?? 'API response received',
-            'http_code'   => $httpCode,
-            'request'     => ['url' => $url, 'method' => $method->value],
-            'response'    => $decoded,
+        $result = [
+            'success'      => $httpCode >= 200 && $httpCode < 300,
+            'external_id'  => $decoded['id'] ?? null,
+            'status'       => $decoded['status'] ?? ($httpCode >= 200 && $httpCode < 300 ? 'sent' : 'error'),
+            'message'      => $decoded['message'] ?? 'API response received',
+            'http_code'    => $httpCode,
+            'request'      => ['url' => $url, 'method' => $method->value],
+            'response'     => $decoded,
+            'content_type' => mb_strtolower(trim(explode(';', $response->getHeaderLine('Content-Type'), 2)[0])),
         ];
+
+        if ($binary) {
+            $result['body'] = $rawBody;
+        }
+
+        return $result;
     }
 
     private function buildMultipart(array $payload): array
@@ -101,5 +122,22 @@ class GuzzleApiClient implements ApiClientInterface
         }
 
         return $parts;
+    }
+
+    private function readBinaryBody(\Psr\Http\Message\StreamInterface $stream, int $maximumBytes): string
+    {
+        $body         = '';
+        $maximumBytes = max(1, $maximumBytes);
+
+        while ( ! $stream->eof()) {
+            $chunk = $stream->read(8192);
+            if (mb_strlen($body, '8bit') + mb_strlen($chunk, '8bit') > $maximumBytes) {
+                throw new RuntimeException('Provider document exceeds the download size limit.');
+            }
+
+            $body .= $chunk;
+        }
+
+        return $body;
     }
 }
