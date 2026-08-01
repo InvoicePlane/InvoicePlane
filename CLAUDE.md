@@ -77,6 +77,25 @@ vendor/bin/phpstan analyse    # static analysis
 
 Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `TestCase`.
 
+### Bootstrapping `vendor/` in the Claude Code web sandbox
+
+Regular local dev and CI are unaffected — this note is only for the Claude-Code-on-web
+sandbox, where the container starts with no `vendor/` and a plain `composer install` fails
+with `Could not authenticate against github.com`. In that environment, `git` reaches GitHub
+through an authenticating proxy but Composer's HTTP **dist** downloads do not, so install
+from source with a token-free Composer home:
+
+```bash
+CH=$(mktemp -d); printf '{}\n' > "$CH/auth.json"; printf '{"config":{}}\n' > "$CH/config.json"
+COMPOSER_HOME="$CH" composer install --prefer-source --ignore-platform-req=ext-bcmath
+```
+
+Everything clones except the dist-only `phpstan/phpstan` phar (a transitive dev dep via
+rector); there is no per-package skip flag for `install`. To only run PHPUnit, install
+`phpunit/phpunit` the same way in a throwaway project and run it with `--bootstrap
+tests/bootstrap.php` against the test path. Do **not** put a real-format GitHub token in
+`auth.json` — the proxy won't rewrite it and every dist download then fails.
+
 ## Common pitfalls
 
 - **Do NOT call `php artisan`** — InvoicePlane is not Laravel.
