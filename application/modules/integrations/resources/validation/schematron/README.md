@@ -1,4 +1,4 @@
-# EN 16931 and Peppol Schematron validation
+# EN 16931, Factur-X, and Peppol Schematron validation
 
 This directory contains the runtime used to execute the official UBL business
 rules before an e-invoice is sent.
@@ -25,6 +25,11 @@ the rules from OpenPeppol's `PEPPOL-EN16931-UBL.sch` using SchXslt 1.11.1:
   `26f2568d392005cf2a01f89c33f15d407f01b1eb707c36c3e7445a6df9369964`;
 - compiler artifact SHA-256:
   `11a4b097660387d4ba48960287bf4f57de81540a2a251b35e7c5c466cf9d69d9`.
+
+`rules/Factur-X_1.09_EN16931.xsl` is the precompiled CII stylesheet for
+Factur-X 1.09 EN 16931. `rules/FACTUR-X_EN16931_codedb.xml` contains its
+versioned code lists. Their source and license are documented in
+`../factur-x-1.09/README.md`.
 
 ## Engine
 

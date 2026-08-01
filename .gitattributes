@@ -3,3 +3,5 @@ application/modules/integrations/resources/validation/ubl-2.1/** -whitespace
 application/modules/integrations/resources/validation/schematron/**/*.jar binary
 application/modules/integrations/resources/validation/schematron/engine/LICENSE-* -whitespace
 application/modules/integrations/resources/validation/schematron/rules/** -whitespace
+application/modules/integrations/resources/validation/factur-x-1.09/** -whitespace
+application/modules/integrations/resources/validation/france-v3.2/** -whitespace

@@ -12,9 +12,14 @@ final class EInvoiceDocumentValidator
 {
     private const UBL_21_SCHEMA_DIRECTORY = __DIR__ . '/../resources/validation/ubl-2.1/xsd/maindoc/';
 
-    public function __construct(private ?EInvoiceSchematronValidator $schematronValidator = null)
-    {
+    private const FACTUR_X_109_SCHEMA = __DIR__ . '/../resources/validation/factur-x-1.09/en16931/Factur-X_EN16931.xsd';
+
+    public function __construct(
+        private ?EInvoiceSchematronValidator $schematronValidator = null,
+        private ?FrenchEInvoiceValidator $frenchValidator = null
+    ) {
         $this->schematronValidator ??= new EInvoiceSchematronValidator();
+        $this->frenchValidator ??= new FrenchEInvoiceValidator();
     }
 
     public function validate(string $path, EInvoiceProfile $profile): EInvoiceArtifact
@@ -32,6 +37,16 @@ final class EInvoiceDocumentValidator
         }
 
         return new EInvoiceArtifact($path, $profile, $errors);
+    }
+
+    /**
+     * Validate the structured payload before it is embedded in a hybrid PDF.
+     *
+     * @return string[]
+     */
+    public function validateStructuredData(string $path, EInvoiceProfile $profile): array
+    {
+        return $this->validateXml($path, $profile);
     }
 
     /**
@@ -91,9 +106,13 @@ final class EInvoiceDocumentValidator
             $rootErrors = $this->validateRoot($document, $profile);
             $errors     = array_merge($errors, $rootErrors);
 
-            if ($rootErrors === [] && $profile->syntax() === 'ubl') {
-                $schemaErrors = $this->validateUblSchema($document);
-                $errors       = array_merge($errors, $schemaErrors);
+            if ($rootErrors === [] && in_array($profile->syntax(), ['ubl', 'cii'], true)) {
+                $schemaErrors = match ($profile->syntax()) {
+                    'ubl'   => $this->validateUblSchema($document),
+                    'cii'   => $this->validateCiiSchema($document, $profile),
+                    default => [],
+                };
+                $errors = array_merge($errors, $schemaErrors);
 
                 if ($schemaErrors === []) {
                     $errors = array_merge($errors, $this->schematronValidator->validate($path, $profile));
@@ -101,6 +120,7 @@ final class EInvoiceDocumentValidator
             }
 
             $errors = array_merge($errors, $this->validateIdentifiers($document, $profile));
+            $errors = array_merge($errors, $this->frenchValidator->validate($document, $profile));
         }
 
         libxml_clear_errors();
@@ -175,6 +195,49 @@ final class EInvoiceDocumentValidator
                 $line    = $error->line > 0 ? ' at line ' . $error->line : '';
 
                 return 'UBL 2.1 XSD' . $line . ': ' . $message;
+            },
+            $libxmlErrors
+        )));
+    }
+
+    /**
+     * Validate the current French Factur-X EN 16931 profile.
+     *
+     * Other CII profiles keep their identifier checks until their own
+     * versioned validation artifacts are bundled.
+     *
+     * @return string[]
+     */
+    private function validateCiiSchema(DOMDocument $document, EInvoiceProfile $profile): array
+    {
+        if ($profile->format() !== 'factur-x') {
+            return [];
+        }
+
+        $schemaPath = realpath(self::FACTUR_X_109_SCHEMA);
+        if ($schemaPath === false || ! is_readable($schemaPath)) {
+            return ['The required Factur-X 1.09 EN 16931 XSD is unavailable.'];
+        }
+
+        libxml_clear_errors();
+        $valid        = $document->schemaValidate($schemaPath, LIBXML_NONET);
+        $libxmlErrors = libxml_get_errors();
+        libxml_clear_errors();
+
+        if ($valid) {
+            return [];
+        }
+
+        if ($libxmlErrors === []) {
+            return ['Document does not conform to the Factur-X 1.09 EN 16931 XSD.'];
+        }
+
+        return array_values(array_unique(array_map(
+            static function (LibXMLError $error): string {
+                $message = preg_replace('/\s+/', ' ', trim($error->message));
+                $line    = $error->line > 0 ? ' at line ' . $error->line : '';
+
+                return 'Factur-X 1.09 EN 16931 XSD' . $line . ': ' . $message;
             },
             $libxmlErrors
         )));

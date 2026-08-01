@@ -3,7 +3,7 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 /**
- * Executes versioned EN 16931 and Peppol Schematron rules with Saxon-HE.
+ * Executes versioned EN 16931, Factur-X, and Peppol rules with Saxon-HE.
  */
 final class EInvoiceSchematronValidator
 {
@@ -20,17 +20,18 @@ final class EInvoiceSchematronValidator
      */
     public function validate(string $path, EInvoiceProfile $profile): array
     {
-        if ($profile->syntax() !== 'ubl') {
-            return [];
-        }
-
-        $rules = [
-            'EN 16931 1.3.16' => 'EN16931-UBL-validation-1.3.16.xslt',
-        ];
-
-        if ($profile->format() === 'peppol-bis-billing-3') {
-            $rules['Peppol BIS Billing 3.0.21'] = 'PEPPOL-EN16931-UBL-3.0.21.xslt';
-        }
+        $rules = match ($profile->format()) {
+            'factur-x' => [
+                'Factur-X 1.09 EN 16931' => 'Factur-X_1.09_EN16931.xsl',
+            ],
+            'peppol-bis-billing-3' => [
+                'EN 16931 1.3.16'           => 'EN16931-UBL-validation-1.3.16.xslt',
+                'Peppol BIS Billing 3.0.21' => 'PEPPOL-EN16931-UBL-3.0.21.xslt',
+            ],
+            default => $profile->syntax() === 'ubl'
+                ? ['EN 16931 1.3.16' => 'EN16931-UBL-validation-1.3.16.xslt']
+                : [],
+        };
 
         $errors = [];
         foreach ($rules as $ruleName => $ruleFile) {

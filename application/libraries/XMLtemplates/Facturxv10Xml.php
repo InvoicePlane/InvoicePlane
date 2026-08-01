@@ -9,14 +9,14 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * @copyright   Copyright (c) 2012 - 2025 InvoicePlane.com
  * @license     https://invoiceplane.com/license.txt
  * @link        https://invoiceplane.com
- * @Note        Zugferd 2.3 & Factur-X 1.0.7 compatibible
+ * @Note        ZUGFeRD and Factur-X 1.09 compatible
  *
  * @Important   Need LEGACY_CALCULATION=false (In ip_config)
  *               For embeded xml are valid (discounts calculation)
  */
 
 /**
- * Class Facturxv10Xml
+ * Class Facturxv10Xml.
  */
 
 include_once __DIR__ . '/BaseXml.php'; // ! important
@@ -32,16 +32,6 @@ class Facturxv10Xml extends BaseXml
         parent::__construct($params);
     }
 
-    protected function cleanedSiren($value): string
-    {
-        return preg_replace('/\D/', '', (string) ($value ?? ''));
-    }
-
-    protected function invoiceReference(): string
-    {
-        // French BR-FR-02 allows alphanumeric characters and + - _ / only.
-        return preg_replace('/[^A-Za-z0-9+_\/-]/', '-', (string) $this->invoice->invoice_number);
-    }
     public function xml(): void
     {
         parent::xml();
@@ -56,6 +46,17 @@ class Facturxv10Xml extends BaseXml
         // return $this->doc->saveXML();
     }
 
+    protected function cleanedSiren($value): string
+    {
+        return preg_replace('/\D/', '', (string) ($value ?? ''));
+    }
+
+    protected function invoiceReference(): string
+    {
+        // French BR-FR-02 allows alphanumeric characters and + - _ / only.
+        return preg_replace('/[^A-Za-z0-9+_\/-]/', '-', (string) $this->invoice->invoice_number);
+    }
+
     protected function xmlRoot()
     {
         $node = $this->doc->createElement('rsm:CrossIndustryInvoice');
@@ -64,6 +65,7 @@ class Facturxv10Xml extends BaseXml
         $node->setAttribute('xmlns:rsm', 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100');
         $node->setAttribute('xmlns:udt', 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100');
         $node->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+
         return $node;
     }
 
@@ -71,7 +73,7 @@ class Facturxv10Xml extends BaseXml
     {
         $node = $this->doc->createElement('rsm:ExchangedDocumentContext');
         // XRechnung-CII-validation
-        if (! empty($id = @$this->options['BusinessProcessSpecifiedDocumentContextParameterID'])) {
+        if ( ! empty($id = @$this->options['BusinessProcessSpecifiedDocumentContextParameterID'])) {
             $businessNode = $this->doc->createElement('ram:BusinessProcessSpecifiedDocumentContextParameter');
             $businessNode->appendChild($this->doc->createElement('ram:ID', $id));
             $node->appendChild($businessNode);
@@ -134,6 +136,7 @@ class Facturxv10Xml extends BaseXml
     {
         $el = $this->doc->createElement('udt:DateTimeString', $this->formattedDate($date));
         $el->setAttribute('format', 102);
+
         return $el;
     }
 
@@ -157,9 +160,9 @@ class Facturxv10Xml extends BaseXml
 
     protected function xmlSpecifiedTradePaymentTerms()
     {
-        $date = date_create($this->invoice->invoice_date_due);
+        $date         = date_create($this->invoice->invoice_date_due);
         $PaymentTerms = trans('due_date') . ' ' . date_format($date, get_setting('date_format'));
-        $terms = trim(htmlsc(strip_tags($this->invoice->invoice_terms)));
+        $terms        = trim(htmlsc(strip_tags($this->invoice->invoice_terms)));
         if ($terms !== '' && $terms !== '0') {
             $PaymentTerms .= PHP_EOL . trans('terms') . PHP_EOL . $terms;
         }
@@ -168,7 +171,7 @@ class Facturxv10Xml extends BaseXml
         $node->appendChild($this->doc->createElement('ram:Description', $PaymentTerms));
 
         // Machine-readable due date (BT-9). Must follow ram:Description per the CII schema.
-        if (! empty($this->invoice->invoice_date_due)) {
+        if ( ! empty($this->invoice->invoice_date_due)) {
             $dueDateNode = $this->doc->createElement('ram:DueDateDateTime');
             $dueDateNode->appendChild($this->dateElement($this->invoice->invoice_date_due));
             $node->appendChild($dueDateNode);
@@ -182,12 +185,13 @@ class Facturxv10Xml extends BaseXml
         $node = $this->doc->createElement('ram:ApplicableHeaderTradeAgreement');
 
         // XRechnung-CII-validation ram:BuyerReference
-        if (! empty($this->options['CII'])) {
+        if ( ! empty($this->options['CII'])) {
             $node->appendChild($this->doc->createElement('ram:BuyerReference', 'N/A'));
         }
 
         $node->appendChild($this->xmlSellerTradeParty());
         $node->appendChild($this->xmlBuyerTradeParty());
+
         return $node;
     }
 
@@ -221,11 +225,11 @@ class Facturxv10Xml extends BaseXml
 
         $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->{$prop[1]}))); // *_name
 
-        // SpecifiedLegalOrganization
-        // For France, FactPulse / XP Z12-012 expects seller SIREN in BT-30: exactly 9 digits.
-        if ($who == 'user') {
+        // French XP Z12-012 identifiers use SIREN for both legal entities.
+        if ( ! empty($this->options['FrenchSiren'])) {
+            $siren   = $who === 'user' ? $this->invoice->user_siren ?? '' : $this->invoice->client_tax_code ?? '';
             $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
-            $idNode  = $this->doc->createElement('ram:ID', $this->cleanedSiren($this->invoice->user_siren ?? ''));
+            $idNode  = $this->doc->createElement('ram:ID', $this->cleanedSiren($siren));
             $idNode->setAttribute('schemeID', '0002');
             $sloNode->appendChild($idNode);
             $node->appendChild($sloNode);
@@ -246,7 +250,7 @@ class Facturxv10Xml extends BaseXml
             $ciiNode->appendChild($this->doc->createElement('ram:PersonName', $this->invoice->{$ciip[0]})); // *_invoicing_contact
             // Phone
             $telNode = $this->doc->createElement('ram:TelephoneUniversalCommunication');
-            $tel = $this->invoice->{$ciip[1]} ?: $this->invoice->{$ciip[2]}; // *_phone or *_mobile
+            $tel     = $this->invoice->{$ciip[1]} ?: $this->invoice->{$ciip[2]}; // *_phone or *_mobile
             $telNode->appendChild($this->doc->createElement('ram:CompleteNumber', $tel));
             $ciiNode->appendChild($telNode);
             // E-mail
@@ -263,7 +267,7 @@ class Facturxv10Xml extends BaseXml
             // Not for MINIMUM profile : Only CountryID is expected
             $addressNode->appendChild($this->doc->createElement('ram:PostcodeCode', htmlsc($this->invoice->{$prop[2]}))); // *_zip
             $addressNode->appendChild($this->doc->createElement('ram:LineOne', htmlsc($this->invoice->{$prop[3]}))); // *_address_1
-            if($addr = $this->invoice->{$prop[4]}) { // *_address_2
+            if ($addr = $this->invoice->{$prop[4]}) { // *_address_2
                 $addressNode->appendChild($this->doc->createElement('ram:LineTwo', htmlsc($addr))); // *_address_2
             }
 
@@ -278,16 +282,16 @@ class Facturxv10Xml extends BaseXml
 
         // French PDP routing identifiers:
         // - BT-34 seller electronic address: user_siren, schemeID 0002 (SIREN)
-        // - BT-49 buyer electronic address: client_company, schemeID 0002 (SIREN)
+        // - BT-49 buyer electronic address: client_tax_code, schemeID 0002 (SIREN)
         $electronicAddress = '';
         if ($who == 'user') {
             $electronicAddress = $this->cleanedSiren($this->invoice->user_siren ?? '');
         } elseif ($who == 'client') {
-            $electronicAddress = $this->cleanedSiren($this->invoice->client_company ?? '');
+            $electronicAddress = $this->cleanedSiren($this->invoice->client_tax_code ?? '');
         }
 
         $uriNode = $this->doc->createElement('ram:URIUniversalCommunication');
-        $idNode = $this->doc->createElement('ram:URIID', $electronicAddress);
+        $idNode  = $this->doc->createElement('ram:URIID', $electronicAddress);
         $idNode->setAttribute('schemeID', '0002');
         $uriNode->appendChild($idNode);
         $node->appendChild($uriNode);
@@ -307,10 +311,11 @@ class Facturxv10Xml extends BaseXml
     protected function xmlSpecifiedTaxRegistration($schemeID, $content)
     {
         $node = $this->doc->createElement('ram:SpecifiedTaxRegistration');
-        $el = $this->doc->createElement('ram:ID', $content);
+        $el   = $this->doc->createElement('ram:ID', $content);
         $el->setAttribute('schemeID', $schemeID);
 
         $node->appendChild($el);
+
         return $node;
     }
 
@@ -322,7 +327,7 @@ class Facturxv10Xml extends BaseXml
 
             // ActualDeliverySupplyChainEvent
             $eventNode = $this->doc->createElement('ram:ActualDeliverySupplyChainEvent');
-            $dateNode = $this->doc->createElement('ram:OccurrenceDateTime');
+            $dateNode  = $this->doc->createElement('ram:OccurrenceDateTime');
             $dateNode->appendChild($this->dateElement($this->invoice->invoice_date_created));
             $eventNode->appendChild($dateNode);
 
@@ -351,12 +356,12 @@ class Facturxv10Xml extends BaseXml
             }
 
             // taxes
-            if( ! $this->notax) { // hard? todo? legacy_calculation: like if have discounts (how to find item(s) with amount > of amount discount to get/dispatch % of global VAT's
+            if ( ! $this->notax) { // hard? todo? legacy_calculation: like if have discounts (how to find item(s) with amount > of amount discount to get/dispatch % of global VAT's
                 foreach ($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal) {
                     $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal[0])); // 'S' by default
                 }
             } else {// Not subject to VAT
-                $percent = $this->invoice->invoice_item_tax_total; // it's 0.00 same of invoice_tax_total
+                $percent  = $this->invoice->invoice_item_tax_total; // it's 0.00 same of invoice_tax_total
                 $subtotal = $this->invoice->invoice_item_subtotal; // invoice_subtotal
                 $node->appendChild($this->xmlApplicableTradeTax($percent, $subtotal, 'O')); // "O" pour "Exonéré" (Out of scope).
             }
@@ -373,7 +378,7 @@ class Facturxv10Xml extends BaseXml
             $period->appendChild($dateNode);
             $node->appendChild($period);
 
-            if($this->invoice->invoice_discount_amount_total != 0) {
+            if ($this->invoice->invoice_discount_amount_total != 0) {
                 // If global discount (ram:AppliedTradeAllowanceCharge)
                 // Must be after BillingSpecifiedPeriod and before SpecifiedTradePaymentTerms !important
                 // SpecifiedTradeAllowanceCharge
@@ -386,6 +391,7 @@ class Facturxv10Xml extends BaseXml
 
         // sums
         $node->appendChild($this->xmlSpecifiedTradeSettlementHeaderMonetarySummation());
+
         return $node;
     }
 
@@ -395,7 +401,7 @@ class Facturxv10Xml extends BaseXml
         // Note: If empty itemsSubtotalGroupedByTaxPercent ($this->notax) Only one `SpecifiedTradeAllowanceCharge` ;)
         if ($this->invoice->invoice_discount_amount_total != 0 && $this->itemsSubtotalGroupedByTaxPercent) {
             $category = 'S';
-            $amounts = [];
+            $amounts  = [];
             // Loop on itemsSubtotalGroupedByTaxPercent to dispatch discount by VAT's rate
             foreach ($this->itemsSubtotalGroupedByTaxPercent as $percent => $subtotal) {
                 // Don't divide per 0
@@ -468,7 +474,7 @@ class Facturxv10Xml extends BaseXml
     /**
      * @param string $name
      * @param number $amount
-     * @param bool $addCode
+     * @param bool   $addCode
      *
      * return node
      */
@@ -488,9 +494,9 @@ class Facturxv10Xml extends BaseXml
 
     protected function xmlSpecifiedTradeSettlementPaymentMeans()
     {
-        $iban = trim((string) ($this->invoice->user_iban ?? ''));
-	$bankAccount = trim((string) ($this->invoice->user_bank ?? ''));
-        $node = $this->doc->createElement('ram:SpecifiedTradeSettlementPaymentMeans');
+        $iban        = trim((string) ($this->invoice->user_iban ?? ''));
+        $bankAccount = trim((string) ($this->invoice->user_bank ?? ''));
+        $node        = $this->doc->createElement('ram:SpecifiedTradeSettlementPaymentMeans');
 
         $node->appendChild($this->doc->createElement('ram:TypeCode', '30'));
 
@@ -498,9 +504,9 @@ class Facturxv10Xml extends BaseXml
         if ($iban === '' && $bankAccount === '') {
             // Do not generate BG-16 at all when BT-84 is missing.
             // If TypeCode 30 is present without IBANID/ProprietaryID, EN16931 BR-50/BR-61 fails.
-            return null;
+            return;
         }
-	$payeeNode = $this->doc->createElement('ram:PayeePartyCreditorFinancialAccount');
+        $payeeNode = $this->doc->createElement('ram:PayeePartyCreditorFinancialAccount');
         if ($iban !== '') {
             $payeeNode->appendChild($this->doc->createElement('ram:IBANID', $iban));
         } else {
@@ -528,7 +534,7 @@ class Facturxv10Xml extends BaseXml
             $node->appendChild($this->currencyElement('ram:AllowanceTotalAmount', $this->invoice->invoice_discount_amount_subtotal)); // optional
 
             $invoiceTotal = $this->invoice->invoice_total; // ApplicableTradeTax>CategoryCode=O
-            if( ! $this->notax) {
+            if ( ! $this->notax) {
                 $invoiceTotal = $this->invoice->invoice_item_subtotal;
             }
         }
@@ -543,6 +549,7 @@ class Facturxv10Xml extends BaseXml
         }
 
         $node->appendChild($this->currencyElement('ram:DuePayableAmount', $this->invoice->invoice_balance));
+
         return $node;
     }
 
@@ -612,7 +619,7 @@ class Facturxv10Xml extends BaseXml
         $price = $item->item_price;
 
         // XRechnung-CII-validation
-        if (! empty($this->options['CII'])) {
+        if ( ! empty($this->options['CII'])) {
             // Item net price MUST equal (Gross price - Allowance amount) when gross price is provided.
             $price -= $item->item_discount_amount;
         }
@@ -633,6 +640,7 @@ class Facturxv10Xml extends BaseXml
     {
         $el = $this->doc->createElement($name, $this->formattedFloat($quantity, $this->item_decimals));
         $el->setAttribute('unitCode', 'C62');
+
         return $el;
     }
 

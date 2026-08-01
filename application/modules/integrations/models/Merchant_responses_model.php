@@ -39,7 +39,10 @@ class Merchant_responses_model extends CI_Model
         ?string $errorCode = null,
         ?string $errorDetail = null,
     ): int {
-        $status = MerchantResponseStatus::tryFrom($providerResponse['status'] ?? '') ?? MerchantResponseStatus::Sent;
+        $status = MerchantResponseStatus::fromExternal(
+            $providerResponse['status_code'] ?? $providerResponse['status'] ?? null,
+            MerchantResponseStatus::Sent
+        );
 
         $this->db->insert(self::TABLE, [
             'invoice_id'                   => $invoiceId,
@@ -56,6 +59,7 @@ class Merchant_responses_model extends CI_Model
             'error_code'                   => $errorCode,
             'error_detail'                 => $errorDetail,
             'created_at'                   => date('Y-m-d H:i:s'),
+            'raw_payload'                  => json_encode($providerResponse),
         ]);
 
         return (int) $this->db->insert_id();
@@ -66,7 +70,10 @@ class Merchant_responses_model extends CI_Model
         array $providerResponse,
         MerchantResponseDriver $driver,
     ): int {
-        $status = MerchantResponseStatus::tryFrom($providerResponse['status'] ?? '') ?? MerchantResponseStatus::Received;
+        $status = MerchantResponseStatus::fromExternal(
+            $providerResponse['status_code'] ?? $providerResponse['status'] ?? null,
+            MerchantResponseStatus::Received
+        );
 
         $this->db->insert(self::TABLE, [
             'invoice_id'                   => null,
@@ -81,6 +88,7 @@ class Merchant_responses_model extends CI_Model
             'status'                       => $status->value,
             'http_code'                    => $providerResponse['http_code'] ?? null,
             'created_at'                   => date('Y-m-d H:i:s'),
+            'raw_payload'                  => json_encode($providerResponse),
         ]);
 
         return (int) $this->db->insert_id();
@@ -92,7 +100,7 @@ class Merchant_responses_model extends CI_Model
         MerchantResponseDriver $driver,
         array $lastResponse = [],
     ): int {
-        $resolvedStatus = MerchantResponseStatus::tryFrom($status['status'] ?? '') ?? MerchantResponseStatus::Unknown;
+        $resolvedStatus = MerchantResponseStatus::fromExternal($status['status_code'] ?? $status['status'] ?? null);
 
         $this->db->insert(self::TABLE, [
             'invoice_id'                   => $invoiceId,
@@ -107,6 +115,7 @@ class Merchant_responses_model extends CI_Model
             'status'                       => $resolvedStatus->value,
             'http_code'                    => $status['http_code'] ?? null,
             'created_at'                   => date('Y-m-d H:i:s'),
+            'raw_payload'                  => json_encode($status),
         ]);
 
         return (int) $this->db->insert_id();
@@ -119,7 +128,10 @@ class Merchant_responses_model extends CI_Model
         ?string $peppolParticipantId = null,
         ?PeppolDocumentType $peppolDocumentType = null,
     ): int {
-        $status     = MerchantResponseStatus::tryFrom($invoice['status'] ?? '') ?? MerchantResponseStatus::Received;
+        $status = MerchantResponseStatus::fromExternal(
+            $invoice['status_code'] ?? $invoice['status'] ?? null,
+            MerchantResponseStatus::Received
+        );
         $externalId = $invoice['id'] ?? $invoice['external_id'] ?? null;
 
         // Deduplication: skip if this external ID already exists for this provider.
@@ -163,7 +175,7 @@ class Merchant_responses_model extends CI_Model
         ?string $peppolParticipantId = null,
         ?PeppolDocumentType $peppolDocumentType = null,
     ): int {
-        $status = MerchantResponseStatus::tryFrom($event['status'] ?? '') ?? MerchantResponseStatus::Unknown;
+        $status = MerchantResponseStatus::fromExternal($event['status_code'] ?? $event['status'] ?? null);
 
         $this->db->insert(self::TABLE, [
             'invoice_id'                   => null,
@@ -180,6 +192,7 @@ class Merchant_responses_model extends CI_Model
             'peppol_participant_id'        => $peppolParticipantId,
             'peppol_document_type'         => $peppolDocumentType?->value,
             'created_at'                   => date('Y-m-d H:i:s'),
+            'raw_payload'                  => json_encode($event),
         ]);
 
         return (int) $this->db->insert_id();
