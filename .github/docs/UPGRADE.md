@@ -87,7 +87,7 @@ selected, but they did **not** appear in the admin template dropdown selectors. 
 way to select them via the UI.
 
 **After:** When `CUSTOM_TEMPLATES_FOLDER` is set in `ipconfig.php`, templates in that folder
-are discovered, validated, and listed alongside the built-in templates in the selector.
+are listed alongside the built-in templates in the selector.
 
 **Requirements for custom templates to be listed:**
 - The file must have a `.php` extension.
