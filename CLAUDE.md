@@ -91,9 +91,30 @@ COMPOSER_HOME="$CH" composer install --prefer-source --ignore-platform-req=ext-b
 ```
 
 Everything clones except the dist-only `phpstan/phpstan` phar (a transitive dev dep via
-rector); there is no per-package skip flag for `install`. To only run PHPUnit, install
-`phpunit/phpunit` the same way in a throwaway project and run it with `--bootstrap
-tests/bootstrap.php` against the test path. Do **not** put a real-format GitHub token in
+rector); there is no per-package skip flag for `install`, and that one failure aborts the
+run **before** the autoloader is generated, so `vendor/autoload.php` never gets written.
+
+To get a clean, working autoloader anyway, install runtime-only (`--no-dev` drops the
+`phpstan` dev chain entirely), then add PHPUnit separately for the test run:
+
+```bash
+# 1. runtime deps + a real vendor/autoload.php (no phpstan, so it completes)
+COMPOSER_HOME="$CH" composer install --prefer-source --no-dev --ignore-platform-req=ext-bcmath
+
+# 2. PHPUnit in a throwaway project (same token-free trick)
+cd /tmp/punit && COMPOSER_HOME="$CH" composer require --prefer-source --dev \
+  "phpunit/phpunit:^10.5" --ignore-platform-req=ext-bcmath
+
+# 3. re-add the Tests\ PSR-4 mapping the --no-dev install left out, then run
+cd <repo> && COMPOSER_HOME="$CH" composer dump-autoload --dev
+php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
+```
+
+Two gotchas: `--no-dev` omits the `Tests\` autoload-dev mapping, so `dump-autoload --dev`
+(step 3) is required or every test dies with `Class "Tests\AbstractTestCase" not found`;
+and plain `dump-autoload` inherits the last install's `--no-dev` state, so pass `--dev`
+explicitly. Feature tests still need a MySQL DB + `ipconfig.php` (they return 307s in a
+bare sandbox); Unit tests run fully. Do **not** put a real-format GitHub token in
 `auth.json` — the proxy won't rewrite it and every dist download then fails.
 
 ## Common pitfalls
