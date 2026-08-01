@@ -57,4 +57,12 @@ defined('EXIT__AUTO_MAX') || define('EXIT__AUTO_MAX', 125);
 // Empty string disables the custom template folder feature.
 defined('CUSTOM_TEMPLATES_FOLDER') || define('CUSTOM_TEMPLATES_FOLDER', '');
 
+// Explicit allowlists of custom template names, consumed by Mdl_Templates.
+// env() is defined in kernel.php before this file is required; an unset key
+// yields null, which Mdl_Templates::_merge_custom() treats as "no custom templates".
+defined('CUSTOM_INVOICE_TEMPLATES_PDF') || define('CUSTOM_INVOICE_TEMPLATES_PDF', env('CUSTOM_INVOICE_TEMPLATES_PDF'));
+defined('CUSTOM_INVOICE_TEMPLATES_PUBLIC') || define('CUSTOM_INVOICE_TEMPLATES_PUBLIC', env('CUSTOM_INVOICE_TEMPLATES_PUBLIC'));
+defined('CUSTOM_QUOTE_TEMPLATES_PDF') || define('CUSTOM_QUOTE_TEMPLATES_PDF', env('CUSTOM_QUOTE_TEMPLATES_PDF'));
+defined('CUSTOM_QUOTE_TEMPLATES_PUBLIC') || define('CUSTOM_QUOTE_TEMPLATES_PUBLIC', env('CUSTOM_QUOTE_TEMPLATES_PUBLIC'));
+
 // THEME_FOLDER and SUMEX_SETTINGS are defined in kernel.php — not here.
