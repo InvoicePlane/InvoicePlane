@@ -117,7 +117,7 @@ if [ -n "${CUSTOM_TEMPLATES_FOLDER:-}" ]; then
     fi
 fi
 
-cd /var/www/html && php index.php setup/cli/migrate
-php index.php setup/cli/create_default_user
+cd /var/www/html && php public/index.php setup/cli/migrate
+php public/index.php setup/cli/create_default_user
 
 exec "$@"

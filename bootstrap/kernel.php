@@ -15,12 +15,45 @@ if (file_exists($base . '/ipconfig.php')) {
     $dotenv->safeLoad();
 }
 
-defined('ENVIRONMENT') || define('ENVIRONMENT', 'testing');
+// Application environment + error reporting. Ported from the legacy root
+// index.php (now removed) so the public/ front controller is the single boot
+// path. CI_ENV is supplied by the web server / CLI; default to 'production'
+// (errors hidden) so a misconfigured deploy fails safe rather than leaking.
+if ( ! defined('ENVIRONMENT')) {
+    define('ENVIRONMENT', $_SERVER['CI_ENV'] ?? 'production');
+}
+
+switch (ENVIRONMENT) {
+    case 'development':
+        error_reporting(-1);
+        ini_set('display_errors', '1');
+        break;
+
+    case 'testing':
+    case 'production':
+        ini_set('display_errors', '0');
+        error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
+        break;
+
+    default:
+        // Unknown environment: fail loud for web requests, keep going for CLI/tests.
+        if (PHP_SAPI !== 'cli') {
+            header('HTTP/1.1 503 Service Unavailable.', true, 503);
+            echo 'The application environment is not set correctly.';
+            exit(1);
+        }
+}
 
 defined('FCPATH') || define('FCPATH', $base . '/public/');
 defined('APPPATH') || define('APPPATH', $base . '/application/');
 defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter/system/');
 defined('VIEWPATH') || define('VIEWPATH', APPPATH . 'views/');
+
+// Legacy CI3 path constants. Some third-party/CI internals still reference
+// these; define them to match the stock front controller so nothing that
+// reads them breaks now that the root index.php is gone.
+defined('SELF') || define('SELF', basename($_SERVER['SCRIPT_NAME'] ?? 'index.php'));
+defined('SYSDIR') || define('SYSDIR', basename(rtrim(BASEPATH, '/\\')));
 
 // Upload / filesystem path constants (previously defined in the legacy root index.php).
 // uploads/ lives at the repo root (like resources/assets/ below), not under
@@ -64,6 +97,10 @@ require_once __DIR__ . '/constants.php';
 defined('THEME_FOLDER') || define('THEME_FOLDER', $base . '/resources/assets/');
 
 defined('SUMEX_SETTINGS') || define('SUMEX_SETTINGS', env_bool('SUMEX_SETTINGS', false));
+
+// Endpoint the Sumex library POSTs XML to in order to get a PDF back
+// (application/libraries/Sumex.php). Ported from the legacy root index.php.
+defined('SUMEX_URL') || define('SUMEX_URL', env('SUMEX_URL'));
 
 // ---------------------------------------------------------------------------
 // PHP error / exception handlers
@@ -114,3 +151,23 @@ if (defined('CI_TEST_SUBPROCESS')) {
         return false;
     });
 }
+
+// ---------------------------------------------------------------------------
+// Writable temp dirs (ported from the legacy root index.php).
+// Ensure storage/temp exists, then sweep stale generated PDF/XML temp files on
+// every boot so they don't accumulate. Runs on the real web/CLI path only —
+// the unit-test harness requires constants.php directly and never loads this.
+// ---------------------------------------------------------------------------
+if ( ! is_dir(STORAGE_TEMP_FOLDER)) {
+    @mkdir(STORAGE_TEMP_FOLDER, 0755, true);
+}
+
+$__ip_temp_files = array_merge(
+    glob(UPLOADS_TEMP_FOLDER . '*.pdf') ?: [],
+    glob(UPLOADS_TEMP_FOLDER . '*.xml') ?: [],
+    glob(STORAGE_TEMP_FOLDER . '*.xml') ?: []
+);
+
+array_map('unlink', array_filter($__ip_temp_files, 'is_file'));
+
+unset($__ip_temp_files);

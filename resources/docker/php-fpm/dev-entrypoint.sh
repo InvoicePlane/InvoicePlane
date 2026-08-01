@@ -83,8 +83,8 @@ fi
 # start (idempotent) but not fatal if it fails — e.g. the database may not
 # be initialized yet if you haven't been through /index.php/setup, and
 # DISABLE_SETUP is never forced here, so that's a normal state to be in.
-if [ -f "$APP_ROOT/index.php" ]; then
-    if ! (cd "$APP_ROOT" && php index.php setup/cli/migrate); then
+if [ -f "$APP_ROOT/public/index.php" ]; then
+    if ! (cd "$APP_ROOT" && php public/index.php setup/cli/migrate); then
         echo "WARNING: migration step failed — normal if the app hasn't been through /setup yet. Continuing." >&2
     fi
 fi
