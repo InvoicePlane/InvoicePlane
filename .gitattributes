@@ -1,0 +1,2 @@
+# Preserve unmodified third-party regulatory artifacts, including upstream whitespace.
+application/modules/integrations/resources/validation/ubl-2.1/** -whitespace
