@@ -63,6 +63,8 @@ The main components are:
 | `IncomingInvoiceSynchronizer` | Downloads each new supplier invoice and records its validation result |
 | `IncomingInvoiceDocumentService` | Identifies, validates, hashes, and archives incoming XML or Factur-X documents |
 | `RemoteUrlGuard` | Restricts provider-supplied download URLs to pinned public HTTPS destinations |
+| `IntegrationSettingsCipher` | Authenticates and encrypts provider configuration at rest |
+| `IntegrationPayloadSanitizer` | Redacts and bounds provider data before audit persistence |
 | `EInvoiceArtifact` | Carries the generated path, profile, validation result, and transmission metadata |
 | `Merchant_clients_model` | Loads provider configuration |
 | `Merchant_responses_model` | Stores outgoing, incoming, and event records |
@@ -239,11 +241,19 @@ Important columns:
 | `label` | User-facing account name |
 | `enabled` | Whether the provider is active |
 | `auth_type` | Authentication mode declared by the provider |
-| `settings_json` | Provider configuration |
+| `settings_json` | AES-256-GCM encrypted provider configuration (`ipenc:v1` envelope) |
 
-Credentials in `settings_json` are not displayed in the browser, but they are
-not encrypted at rest by this module. Database access must therefore be
-restricted appropriately.
+Provider settings are encrypted with authenticated AES-256-GCM using a key
+derived from InvoicePlane's `ENCRYPTION_KEY`. The provider code is authenticated
+as additional data, preventing an encrypted configuration from being moved to
+another provider record. Decryption fails closed when the key is missing,
+changed, or the ciphertext has been altered.
+
+Legacy plaintext JSON remains readable for upgrade compatibility and is
+immediately rewritten as an encrypted envelope the next time that provider is
+loaded. New provider registrations and every settings save are encrypted from
+the outset. Back up `ENCRYPTION_KEY` separately: losing or rotating it without
+reencrypting the data makes provider credentials unrecoverable.
 
 The current settings workflow enables one provider at a time. Enabling a
 provider disables the other registered providers.
@@ -295,6 +305,14 @@ This flow provides receipt, regulatory validation, durable storage, audit
 metadata, and secure retrieval. InvoicePlane currently has no purchase-ledger
 domain, so an incoming supplier invoice is not converted into a sales invoice,
 accounting entry, approval workflow, or payment instruction.
+
+Audit payloads are data-minimized before database storage. Credentials,
+authorization headers, signed-URL queries, embedded document bodies, common
+personal and financial identifiers, binary data, and oversized values are
+redacted or truncated. Provider messages receive the same token, URL-query,
+control-character, and length filtering. Existing application access controls
+and database backups must still be protected because business metadata remains
+present.
 
 Repeated event synchronization is idempotent: an identical raw event from the
 same provider is stored only once.
@@ -613,7 +631,9 @@ the command is unavailable, times out, or the attachment cannot be read.
 
 Database setup/upgrade must apply `045_1.8.1.sql`, which adds the incoming
 document path, filename, MIME type, size, SHA-256, detected profile, and
-validation-result columns to `ip_merchant_responses`.
+validation-result columns to `ip_merchant_responses`, followed by
+`046_1.8.2.sql`, which documents the encrypted settings and minimized audit
+payload storage contracts.
 
 The current lock file includes the security-updated Guzzle HTTP stack used by
 the LetsPeppol provider (`guzzlehttp/guzzle` 7.15.2,
@@ -629,6 +649,8 @@ Provider implementations should:
 - never log credentials, tokens, or raw user input;
 - pass external values through `sanitize_for_logging()` before logging;
 - define secrets as `password` fields with `sensitive => true`;
+- keep `ENCRYPTION_KEY` outside source control, back it up securely, and do not
+  change it without a provider-settings re-encryption procedure;
 - use the shared API clients and their connection/request timeouts;
 - cap binary responses and pin validated public-IP resolutions for externally
   supplied download URLs;

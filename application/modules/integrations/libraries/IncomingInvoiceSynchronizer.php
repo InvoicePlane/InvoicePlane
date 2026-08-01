@@ -2,6 +2,8 @@
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
+require_once APPPATH . 'modules/integrations/libraries/IntegrationPayloadSanitizer.php';
+
 final class IncomingInvoiceSynchronizer
 {
     public function __construct(private ?IncomingInvoiceDocumentService $documents = null)
@@ -53,7 +55,7 @@ final class IncomingInvoiceSynchronizer
                 );
                 $result['archived']++;
             } catch (Throwable $e) {
-                $message         = mb_substr($e->getMessage(), 0, 1000);
+                $message         = IntegrationPayloadSanitizer::text($e->getMessage()) ?? 'Incoming document validation failed.';
                 $item['status']  = 'error';
                 $item['message'] = 'Incoming document rejected: ' . $message;
                 $document        = [
