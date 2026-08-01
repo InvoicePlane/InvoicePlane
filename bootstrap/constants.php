@@ -53,9 +53,14 @@ defined('EXIT_DATABASE') || define('EXIT_DATABASE', 8);
 defined('EXIT__AUTO_MIN') || define('EXIT__AUTO_MIN', 9);
 defined('EXIT__AUTO_MAX') || define('EXIT__AUTO_MAX', 125);
 
-// Optional path for admin-supplied invoice/quote/credit templates.
-// Empty string disables the custom template folder feature.
-defined('CUSTOM_TEMPLATES_FOLDER') || define('CUSTOM_TEMPLATES_FOLDER', '');
+// Optional path for admin-supplied invoice/quote/credit templates, read from
+// the CUSTOM_TEMPLATES_FOLDER ipconfig key (mirrors the legacy root index.php).
+// null disables the feature; a set value is normalised to a trailing slash.
+if ( ! defined('CUSTOM_TEMPLATES_FOLDER')) {
+    $__custom_tpl = env('CUSTOM_TEMPLATES_FOLDER');
+    define('CUSTOM_TEMPLATES_FOLDER', $__custom_tpl ? rtrim($__custom_tpl, '/\\') . DIRECTORY_SEPARATOR : null);
+    unset($__custom_tpl);
+}
 
 // Explicit allowlists of custom template names, consumed by Mdl_Templates.
 // env() is defined in kernel.php before this file is required; an unset key
