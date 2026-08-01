@@ -10,6 +10,9 @@ It provides:
 - provider discovery and registration;
 - provider-specific configuration through a generic form;
 - OAuth2, bearer-token, API-key, or unauthenticated integrations;
+- an explicit registry of supported e-invoice document profiles;
+- XML and hybrid PDF generation for European and national formats;
+- local structural validation before transmission;
 - outgoing invoice transmission;
 - invoice status retrieval;
 - incoming supplier invoice synchronization;
@@ -23,13 +26,19 @@ configuration schema.
 ## Architecture
 
 ```text
-InvoicePlane invoice
+InvoicePlane invoice + client profile
         |
         v
-Integrations controller
+EInvoiceProfileRegistry
         |
         v
-IntegrationClient
+EInvoiceDocumentService -> EInvoiceDocumentValidator
+        |
+        v
+EInvoiceArtifact (XML or hybrid PDF + metadata)
+        |
+        v
+Integrations controller -> IntegrationClient
         |
         v
 IntegrationClientInterface implementation
@@ -46,9 +55,66 @@ The main components are:
 | `IntegrationClientRegistry` | Discovers providers and registers them in the database |
 | `IntegrationSettingsForm` | Normalizes schemas, validates input, and preserves secrets |
 | `IntegrationClient` | Authenticates and delegates operations to a provider |
+| `EInvoiceProfileRegistry` | Explicitly allow-lists document profiles and provider compatibility |
+| `EInvoiceDocumentService` | Generates the selected XML or hybrid PDF artifact |
+| `EInvoiceDocumentValidator` | Performs fail-closed structural and profile identifier checks |
+| `EInvoiceArtifact` | Carries the generated path, profile, validation result, and transmission metadata |
 | `Merchant_clients_model` | Loads provider configuration |
 | `Merchant_responses_model` | Stores outgoing, incoming, and event records |
 | `provider_form.php` | Renders fields declared by the provider schema |
+
+## E-Invoice Document Profiles
+
+The client field `client_einvoicing_version` selects a profile code. Profiles
+eligible for provider transmission are explicitly registered by
+`EInvoiceProfileRegistry::builtIn()`; installing an XML generator file alone
+does not make it transmissible.
+
+The current built-in profiles are:
+
+| Code | Profile | Syntax | Output | Enabled provider transmission |
+|---|---|---|---|---|
+| `UblPeppolV21` | Peppol BIS Billing 3.0 (UBL 2.1) | UBL | XML | LetsPeppol |
+| `Facturxv10` | Factur-X v1.0.7 EN 16931 | CII | Hybrid PDF with `factur-x.xml` | SuperPDP, Qonto |
+| `Ublxrechnungv30de` | XRechnung UBL 3.0 | UBL | XML | LetsPeppol |
+| `Xrechnungciiv30de` | XRechnung CII 3.0 | CII | XML | Not mapped yet |
+| `Zugferdv23` | ZUGFeRD v2.3 EN 16931 | CII | Hybrid PDF with `factur-x.xml` | Not mapped yet |
+| `Ublciusv10ro` | RO_CIUS UBL Invoice 1.0 | UBL | XML | Not mapped yet |
+| `Ksefv20` | KSeF 2.0 FA(3) | KSeF | XML | Not mapped yet |
+| `Facturaev32` | Facturae 3.2.1 | Facturae | XML | Not mapped yet |
+| `Fatturapav12` | FatturaPA v1.2.2 | FatturaPA | XML | Not mapped yet |
+
+Profiles without a provider mapping can be selected for local e-invoice
+generation elsewhere in InvoicePlane, but `send_invoice()` rejects them before
+any provider request is made. To enable transmission, add the provider code to
+the profile's explicit `providers` list after confirming that the provider
+accepts that format.
+
+### Generation and validation
+
+`EInvoiceDocumentService` writes outgoing artifacts to:
+
+```text
+uploads/integrations/outgoing/invoice_<invoice-id>.<extension>
+```
+
+For XML profiles, the service uses the generator declared by the profile under
+`application/libraries/XMLtemplates/`. For embedded profiles, the regular PDF
+pipeline produces a hybrid PDF containing the profile XML attachment.
+
+Before transmission, `EInvoiceDocumentValidator` verifies that the artifact is
+present and non-empty, then checks:
+
+- XML well-formedness with external network access disabled;
+- the expected XML root for UBL, CII, KSeF, Facturae, or FatturaPA;
+- configured `CustomizationID` and `ProfileID` values;
+- the PDF signature and expected embedded-file declaration/name for hybrid PDFs.
+
+These checks are structural safeguards. They do not replace validation against
+the official national XSD and Schematron rules.
+
+On success, the artifact adds `format`, `profile`, `syntax`, `mime_type`, and,
+when available, `document_type` to the metadata passed to the provider.
 
 ## Provider Discovery
 
@@ -151,12 +217,15 @@ provider disables the other registered providers.
 ### Sending an invoice
 
 1. The controller loads the selected provider registration.
-2. InvoicePlane generates the invoice PDF.
-3. The provider builds its metadata using `buildInvoicePayload()`.
-4. `IntegrationClient` calls `authenticate()`.
-5. Authentication must return `true`; otherwise the operation stops.
-6. `sendInvoice()` transmits the document.
-7. The normalized response is stored in `ip_merchant_responses`.
+2. The client's `client_einvoicing_version` is resolved through the explicit
+   profile registry.
+3. The selected profile must list the provider as supported.
+4. InvoicePlane generates and locally validates an XML or hybrid PDF artifact.
+5. Artifact metadata is passed to `buildInvoicePayload()`.
+6. `IntegrationClient` calls `authenticate()`.
+7. Authentication must return `true`; otherwise the operation stops.
+8. `sendInvoice()` transmits the generated artifact.
+9. The normalized response is stored in `ip_merchant_responses`.
 
 ### Retrieving a status
 
@@ -309,6 +378,8 @@ class ExampleClient implements IntegrationClientInterface
             throw new RuntimeException('Invoice document not found.');
         }
 
+        $mimeType = (string) ($metadata['mime_type'] ?? 'application/octet-stream');
+
         return $this->request(
             RequestMethod::POST,
             $this->settings['invoice_endpoint'],
@@ -316,7 +387,7 @@ class ExampleClient implements IntegrationClientInterface
                 'multipart' => [
                     'file' => new CURLFile(
                         $documentPath,
-                        'application/pdf',
+                        $mimeType,
                         basename($documentPath)
                     ),
                     'metadata' => json_encode($metadata, JSON_THROW_ON_ERROR),
@@ -394,13 +465,31 @@ After adding the file:
 4. complete the generated form;
 5. enable and save the provider.
 
-No controller or view modification is required.
+No controller or view modification is required for provider discovery or its
+settings form. Outgoing transmission additionally requires adding `example` to
+the `providers` list of every compatible profile in
+`EInvoiceProfileRegistry::builtIn()`.
+
+## Runtime Dependencies
+
+Install the Composer dependencies from the lock file before using provider or
+national-format integrations:
+
+```bash
+composer install
+```
+
+The current lock file includes the security-updated Guzzle HTTP stack used by
+the LetsPeppol provider (`guzzlehttp/guzzle` 7.15.2,
+`guzzlehttp/promises` 2.5.1, and `guzzlehttp/psr7` 2.13.0). It also includes
+the Facturae and FatturaPA libraries required by their respective generators.
 
 ## Security Requirements
 
 Provider implementations should:
 
 - use HTTPS endpoints only;
+- keep the Composer lock file on security-supported HTTP client versions;
 - never log credentials, tokens, or raw user input;
 - pass external values through `sanitize_for_logging()` before logging;
 - define secrets as `password` fields with `sensitive => true`;
