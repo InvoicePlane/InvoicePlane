@@ -308,6 +308,12 @@ $_custom_tpl = env('CUSTOM_TEMPLATES_FOLDER');
 define('CUSTOM_TEMPLATES_FOLDER', $_custom_tpl ? rtrim($_custom_tpl, '/\\') . DIRECTORY_SEPARATOR : null);
 unset($_custom_tpl);
 
+// Explicit allowlists of custom template names, consumed by Mdl_Templates
+define('CUSTOM_INVOICE_TEMPLATES_PDF', env('CUSTOM_INVOICE_TEMPLATES_PDF'));
+define('CUSTOM_INVOICE_TEMPLATES_PUBLIC', env('CUSTOM_INVOICE_TEMPLATES_PUBLIC'));
+define('CUSTOM_QUOTE_TEMPLATES_PDF', env('CUSTOM_QUOTE_TEMPLATES_PDF'));
+define('CUSTOM_QUOTE_TEMPLATES_PUBLIC', env('CUSTOM_QUOTE_TEMPLATES_PUBLIC'));
+
 // Ensure storage temp directory exists
 if ( ! is_dir(STORAGE_TEMP_FOLDER)) {
     @mkdir(STORAGE_TEMP_FOLDER, 0755, true);
