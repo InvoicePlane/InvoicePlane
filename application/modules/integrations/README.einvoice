@@ -107,12 +107,15 @@ present and non-empty, then checks:
 
 - XML well-formedness with external network access disabled;
 - UBL Invoice and CreditNote syntax against the normative OASIS UBL 2.1 XSD;
+- UBL semantic rules against EN 16931 validation artifacts 1.3.16;
+- Peppol UBL business and national rules against BIS Billing 3.0.21;
 - the expected XML root for UBL, CII, KSeF, Facturae, or FatturaPA;
 - configured `CustomizationID` and `ProfileID` values;
 - the PDF signature and expected embedded-file declaration/name for hybrid PDFs.
 
-These checks include normative UBL syntax validation but do not yet execute the
-EN 16931, Peppol, or national Schematron business rules.
+Fatal Schematron assertions block transmission; warnings and informational
+assertions do not. National Schematron rules outside the Peppol ruleset still
+need their own versioned validation artifacts.
 
 On success, the artifact adds `format`, `profile`, `syntax`, `mime_type`, and,
 when available, `document_type` to the metadata passed to the provider.
@@ -479,6 +482,10 @@ national-format integrations:
 ```bash
 composer install
 ```
+
+UBL regulatory validation also requires Java 8 or newer to be available as
+`java`. The versioned Saxon-HE engine and Schematron stylesheets are bundled
+with the module; validation fails closed if the engine cannot run.
 
 The current lock file includes the security-updated Guzzle HTTP stack used by
 the LetsPeppol provider (`guzzlehttp/guzzle` 7.15.2,

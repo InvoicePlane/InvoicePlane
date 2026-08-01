@@ -12,6 +12,11 @@ final class EInvoiceDocumentValidator
 {
     private const UBL_21_SCHEMA_DIRECTORY = __DIR__ . '/../resources/validation/ubl-2.1/xsd/maindoc/';
 
+    public function __construct(private ?EInvoiceSchematronValidator $schematronValidator = null)
+    {
+        $this->schematronValidator ??= new EInvoiceSchematronValidator();
+    }
+
     public function validate(string $path, EInvoiceProfile $profile): EInvoiceArtifact
     {
         $errors = [];
@@ -87,7 +92,12 @@ final class EInvoiceDocumentValidator
             $errors     = array_merge($errors, $rootErrors);
 
             if ($rootErrors === [] && $profile->syntax() === 'ubl') {
-                $errors = array_merge($errors, $this->validateUblSchema($document));
+                $schemaErrors = $this->validateUblSchema($document);
+                $errors       = array_merge($errors, $schemaErrors);
+
+                if ($schemaErrors === []) {
+                    $errors = array_merge($errors, $this->schematronValidator->validate($path, $profile));
+                }
             }
 
             $errors = array_merge($errors, $this->validateIdentifiers($document, $profile));
