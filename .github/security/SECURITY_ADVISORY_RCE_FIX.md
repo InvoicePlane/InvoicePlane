@@ -354,13 +354,6 @@ Even if layers 1-6 are somehow bypassed, layer 7 provides a final safety check.
 - **Fix Implementation:** InvoicePlane Security Team
 - **Review:** InvoicePlane Core Team
 
-## Timeline
-
-- **2026-07-17:** Vulnerability reported
-- **2026-07-17:** Fix developed and tested
-- **2026-07-17:** v1.7.2 released with fix
-- **2026-07-17:** Security advisory published
-
 ## References
 
 - [CWE-732: Incorrect Permission Assignment for Critical Resource](https://cwe.mitre.org/data/definitions/732.html)
