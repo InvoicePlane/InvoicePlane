@@ -239,31 +239,3 @@ function verify_csrf_token(): bool
 
     return false;
 }
-
-/**
- * Generate a cryptographically secure random token.
- *
- * Security: Uses random_bytes() (a CSPRNG) rather than random_string('alnum', ...),
- * whose alnum mode is backed by str_shuffle()/mt_rand() (the Mersenne Twister PRNG)
- * and is NOT cryptographically secure. These tokens (invoice_url_key, quote_url_key,
- * cron_key) are the sole access-control mechanism for unauthenticated access to
- * sensitive financial data, so they must be unpredictable (CWE-338 / CWE-330).
- *
- * The result is lowercase hexadecimal of exactly $length characters, giving
- * 4 bits of entropy per character (128 bits for the default 32-character token).
- *
- * @param int $length Number of hexadecimal characters to return (default 32).
- *
- * @return string Lowercase hexadecimal token of exactly $length characters.
- */
-function generate_secure_token(int $length = 32): string
-{
-    if ($length < 1) {
-        $length = 32;
-    }
-
-    // Each byte yields two hex characters; generate enough bytes then truncate.
-    $bytes = random_bytes((int) ceil($length / 2));
-
-    return substr(bin2hex($bytes), 0, $length);
-}

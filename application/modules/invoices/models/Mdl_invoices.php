@@ -477,9 +477,10 @@ class Mdl_Invoices extends Response_Model
      */
     public function get_url_key()
     {
-        $this->load->helper('security');
+        $this->load->helper('ip_security');
 
-        return generate_secure_token(32);
+        // 16 bytes -> 32 hexadecimal characters (matches the guest-view url_key format).
+        return generate_secure_token(16);
     }
 
     /**
