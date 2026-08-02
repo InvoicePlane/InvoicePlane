@@ -57,7 +57,7 @@ final class EInvoiceProfileRegistry
                 'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
                 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
                 PeppolDocumentType::BillingInvoice->value,
-                ['letspeppol']
+                ['letspeppol', 'acube', 'dokapi', 'arratech', 'storecove']
             ),
             new EInvoiceProfile(
                 'Facturxv10',
@@ -208,7 +208,11 @@ final class EInvoiceProfileRegistry
                 '',
                 [
                     'series' => 'IP',
-                ]
+                ],
+                null,
+                null,
+                null,
+                ['b2brouter']
             ),
             new EInvoiceProfile(
                 'Fatturapav12',
@@ -223,7 +227,11 @@ final class EInvoiceProfileRegistry
                 '',
                 [
                     'regimefisc' => 'RF01',
-                ]
+                ],
+                null,
+                null,
+                null,
+                ['acube']
             ),
         ]);
     }
