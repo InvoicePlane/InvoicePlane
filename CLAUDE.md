@@ -147,6 +147,32 @@ Gotchas learned the hard way:
   DB-backed login stores strings. Int-typed session data silently redirects every admin
   request to the login page (307). This is wired correctly now — don't regress it.
 
+#### Debugging a Feature-test request subprocess (do it right or you chase ghosts)
+
+`AbstractTestCase::request()` spawns `tests/Integration/bin/request.php` via `proc_open`
+with a **clean env** — only `CI_TEST_REQUEST` is passed, nothing inherited. To reproduce a
+single request exactly as the suite does, match that clean env:
+
+```bash
+PAYLOAD=$(php -r 'echo base64_encode(json_encode(["method"=>"GET","uri"=>"/clients","query"=>[],"post"=>[],"session"=>["user_id"=>"1","user_type"=>"1","user_email"=>"admin@test.local","user_language"=>"system"],"ajax"=>false]));')
+env -i CI_TEST_REQUEST="$PAYLOAD" php tests/Integration/bin/request.php   # <-- env -i is mandatory
+```
+
+Do **not** run it as `CI_TEST_REQUEST=… php …` from a shell where you exported `DB_*`: that
+inline form leaks the exported vars into the child, and then a confusing chain fires —
+Dotenv's `createImmutable` (in `bootstrap/kernel.php`) **skips** any key already present in
+the OS env, CLI never copies the OS env into `$_ENV` (default `variables_order` has no `E`),
+and kernel's `env()` reads **only** `$_ENV`. Net effect: `env('DB_HOSTNAME')` returns null
+and you get a bogus "Unable to connect to the database" that never happens under the real
+`proc_open` (clean-env) path. The clean-env child instead loads `ipconfig.php` into `$_ENV`
+normally and connects fine.
+
+To find *where* a 307 comes from, temporarily add one line to CI3's `redirect()`
+(`vendor/pocketarc/codeigniter/system/helpers/url_helper.php`) dumping `$uri` +
+`debug_backtrace()` to a tmp file, run the clean-env request above, then revert. That is how
+the login-redirect (int session) vs. the app's own `clients/status/active` redirect were
+told apart.
+
 ## Common pitfalls
 
 - **Do NOT call `php artisan`** — InvoicePlane is not Laravel.
