@@ -20,7 +20,7 @@ class Ajax extends Admin_Controller
 
     public function get_cron_key()
     {
-        $this->load->helper('string');
-        echo random_string('alnum', 16);
+        $this->load->helper('security');
+        echo generate_secure_token(16);
     }
 }

@@ -347,9 +347,9 @@ class Mdl_Quotes extends Response_Model
      */
     public function get_url_key()
     {
-        $this->load->helper('string');
+        $this->load->helper('security');
 
-        return random_string('alnum', 32);
+        return generate_secure_token(32);
     }
 
     /**
