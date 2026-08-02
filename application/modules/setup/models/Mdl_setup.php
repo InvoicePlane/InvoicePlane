@@ -424,7 +424,7 @@ class Mdl_Setup extends CI_Model
 
     private function install_default_settings()
     {
-        $this->load->helper('string');
+        $this->load->helper('security');
 
         $default_settings = [
             'default_language'             => $this->session->userdata('ip_lang'),
@@ -438,7 +438,7 @@ class Mdl_Setup extends CI_Model
             'default_quote_group'          => 4,
             'thousands_separator'          => ',',
             'decimal_point'                => '.',
-            'cron_key'                     => random_string('alnum', 16),
+            'cron_key'                     => generate_secure_token(16),
             'tax_rate_decimal_places'      => 2,
             'pdf_invoice_template'         => 'InvoicePlane',
             'pdf_invoice_template_paid'    => 'InvoicePlane - paid',
