@@ -59,7 +59,17 @@ class Upload extends Admin_Controller
             respond_file_message(400, 'upload_error_invalid_extension', $file_ext);
         }
 
-        $this->move_uploaded_file($tempFile, $filePath, $fileName);
+        // Generate a unique filename to avoid path traversal and overwrite issues
+        $file_ext = mb_strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+        $uniqueName = uniqid('upload_', true) . '.' . $file_ext;
+        $filePath = $this->get_target_file_path($url_key, $uniqueName);
+        $this->create_dir(dirname($filePath));
+        if ( ! is_writable(dirname($filePath))) {
+            respond_file_message(410, 'upload_error_folder_not_writable', dirname($filePath), '', '');
+        }
+        $this->move_uploaded_file($_FILES['file']['tmp_name'], $filePath, $uniqueName);
+        // Save metadata using sanitized original filename
+        $this->save_file_metadata($customerId, $url_key, $this->sanitize_file_name($originalFilename));
 
         $this->save_file_metadata($customerId, $url_key, $fileName);
 
