@@ -28,10 +28,10 @@ To add a custom template:
 
 3. The template will appear in **Settings → Invoice / Quote** once it is listed.
 
-> The filesystem is never scanned to build the selector — it lists **only** the names you
-> explicitly allowlist in step 2. `CUSTOM_TEMPLATES_FOLDER` is used only at render time to locate
-> the file on disk, so setting the folder without listing a name in step 2 lists nothing. This is
-> the RCE prevention mechanism.
+> The filesystem is never scanned to build the selector. Built-in templates always appear in the
+> selector, and custom templates appear **only** if you explicitly allowlist their names in step 2.
+> `CUSTOM_TEMPLATES_FOLDER` is used only at render time to locate the file on disk, so setting the
+> folder alone will not expose any custom templates. This is the RCE prevention mechanism.
 
 For container deployments, `CUSTOM_TEMPLATES_FOLDER` and the allowlist variables above are set
 as environment variables instead — see [CONTAINER_DEPLOYMENT.md](CONTAINER_DEPLOYMENT.md).

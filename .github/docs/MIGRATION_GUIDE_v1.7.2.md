@@ -325,8 +325,8 @@ via `ipconfig.php`, so they survive future upgrades. This is a **two-step** oper
    ```ini
    CUSTOM_INVOICE_TEMPLATES_PDF="YourCustomTemplate"
    ```
-   Only names listed here appear in the selector; setting the folder alone lists nothing. Use the
-   exact same name your database already stores so existing invoices/quotes keep their template.
+   Built-in templates always appear in the selector; custom templates appear only if listed here.
+   Use the exact same name your database already stores so existing invoices/quotes keep their template.
 
 See [CUSTOM_TEMPLATES.md](CUSTOM_TEMPLATES.md) for the full walkthrough.
 

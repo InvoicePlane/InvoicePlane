@@ -87,9 +87,9 @@ filesystem. Any `.php` file present in the directory appeared in the selector au
 the same dynamic scan that caused the RCE vulnerability (see #4 below).
 
 **After:** The filesystem is **never** scanned. The selector is built from the built-in
-templates plus **only** the custom template names you explicitly allowlist. Adding a custom
-template is a **two-step** operation — both steps are required, and setting the folder alone
-lists nothing:
+templates plus **only** the custom template names you explicitly allowlist. Built-in templates
+always appear in the selector. Adding a custom template is a **two-step** operation — both steps
+are required:
 
 1. **Place the `.php` file** under `CUSTOM_TEMPLATES_FOLDER`, in the sub-path that matches the
    template's type and scope:
@@ -126,21 +126,25 @@ if you previously kept custom templates inside `application/views/`.
 **Who is affected:** Installations with custom invoice or quote templates stored **inside the
 application's `application/views/` directory**.
 
-**Background:** The RCE fix replaced the dynamic filesystem scan with a hardcoded constant
-whitelist that lists only the built-in templates. Templates stored outside the application
-(via `CUSTOM_TEMPLATES_FOLDER`) are now the supported way to add custom templates.
+**Background:** The RCE fix replaced the dynamic filesystem scan with an allowlist mechanism.
+Built-in templates are listed in hardcoded constants; custom templates can be added via explicit
+allowlist config variables. Templates stored outside the application (via `CUSTOM_TEMPLATES_FOLDER`)
+with explicit allowlisting are now the supported way to add custom templates.
 
 **Action required:** If you previously added custom templates directly into
 `application/views/invoice_templates/` or `application/views/quote_templates/`, move them
 to a directory outside the web root and configure `CUSTOM_TEMPLATES_FOLDER` in
-`ipconfig.php` to point to that directory:
+`ipconfig.php` to point to that directory, then add each template name to the matching
+allowlist variable:
 
 ```ini
 # ipconfig.php
 CUSTOM_TEMPLATES_FOLDER=/srv/invoiceplane-templates/
+CUSTOM_INVOICE_TEMPLATES_PDF="MyCustomTemplate"
 ```
 
 Then place your templates in e.g. `/srv/invoiceplane-templates/invoice_templates/pdf/MyTemplate.php`.
+See section #3 above for the full two-step process.
 
 Alternatively, if you prefer to keep templates inside the application, add each template name
 to the appropriate constant in `application/modules/invoices/models/Mdl_templates.php`:
