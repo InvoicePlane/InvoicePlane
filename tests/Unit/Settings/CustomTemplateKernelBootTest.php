@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomTemplateKernelBootTest extends TestCase
 {
-    private function bootKernelWith(array $env): void
+    private function boot_kernel_with(array $env): void
     {
         foreach ($env as $key => $value) {
             $_ENV[$key] = $value;
@@ -43,7 +43,7 @@ class CustomTemplateKernelBootTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_populates_the_invoice_pdf_allowlist_constant_through_the_real_kernel(): void
     {
-        $this->bootKernelWith(['CUSTOM_INVOICE_TEMPLATES_PDF' => 'My Kernel Template']);
+        $this->boot_kernel_with(['CUSTOM_INVOICE_TEMPLATES_PDF' => 'My Kernel Template']);
 
         self::assertTrue(
             defined('CUSTOM_INVOICE_TEMPLATES_PDF'),
@@ -61,7 +61,7 @@ class CustomTemplateKernelBootTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_defines_all_four_allowlist_constants_after_boot(): void
     {
-        $this->bootKernelWith([
+        $this->boot_kernel_with([
             'CUSTOM_INVOICE_TEMPLATES_PDF'    => 'Inv PDF',
             'CUSTOM_INVOICE_TEMPLATES_PUBLIC' => 'Inv Web',
             'CUSTOM_QUOTE_TEMPLATES_PDF'      => 'Quote PDF',
@@ -79,7 +79,7 @@ class CustomTemplateKernelBootTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_defines_the_env_helper_before_wiring_the_constants(): void
     {
-        $this->bootKernelWith([]);
+        $this->boot_kernel_with(['CUSTOM_INVOICE_TEMPLATES_PDF' => '']);
 
         // The custom-template constants are defined from env(); if kernel.php did
         // not provide env() before requiring constants.php, boot would fatal.
