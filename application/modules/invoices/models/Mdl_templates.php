@@ -63,8 +63,10 @@ class Mdl_Templates extends CI_Model
      *
      * Security: Built-in templates are returned from the static whitelist only — the
      * application's own template directories are NEVER scanned to prevent RCE.
-     * When CUSTOM_TEMPLATES_FOLDER is configured, templates from that admin-supplied
-     * directory are discovered, strictly validated, and merged with the built-in list.
+     * The returned list is the built-in whitelist plus any custom template names explicitly
+     * enumerated in the CUSTOM_INVOICE_TEMPLATES_PDF / CUSTOM_INVOICE_TEMPLATES_PUBLIC
+     * allowlist constants (see _merge_custom()). CUSTOM_TEMPLATES_FOLDER is NOT scanned to
+     * build this list; it only provides the file's location on disk at render time.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -88,8 +90,10 @@ class Mdl_Templates extends CI_Model
      *
      * Security: Built-in templates are returned from the static whitelist only — the
      * application's own template directories are NEVER scanned to prevent RCE.
-     * When CUSTOM_TEMPLATES_FOLDER is configured, templates from that admin-supplied
-     * directory are discovered, strictly validated, and merged with the built-in list.
+     * The returned list is the built-in whitelist plus any custom template names explicitly
+     * enumerated in the CUSTOM_QUOTE_TEMPLATES_PDF / CUSTOM_QUOTE_TEMPLATES_PUBLIC
+     * allowlist constants (see _merge_custom()). CUSTOM_TEMPLATES_FOLDER is NOT scanned to
+     * build this list; it only provides the file's location on disk at render time.
      *
      * @param string $type Template type ('pdf' or 'public')
      *

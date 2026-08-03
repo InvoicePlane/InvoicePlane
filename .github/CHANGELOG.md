@@ -159,7 +159,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 - Rate limiting for password-reset requests — per IP (`PASSWORD_RESET_IP_MAX_ATTEMPTS`, `PASSWORD_RESET_IP_WINDOW_MINUTES`) and per email (`PASSWORD_RESET_EMAIL_MAX_ATTEMPTS`, `PASSWORD_RESET_EMAIL_WINDOW_HOURS`).
 - `PASSWORD_RESET_TOKEN_EXPIRY_MINUTES` env var (default `15`) and `SEC_STRIP_EXIF_FROM_IMAGES` env var (default `false`).
 - Session env vars `SESS_SAVE_PATH`, `SESS_TABLE_NAME`, `SESS_COOKIE_NAME`, and `SESS_REGENERATE_DESTROY`, all documented in `ipconfig.php.example`. `SESS_SAVE_PATH` may point outside the document root for additional security; it still defaults to PHP's system temp directory.
-- Allowlist-based custom template discovery via `CUSTOM_TEMPLATES_FOLDER` plus the explicit `CUSTOM_INVOICE_TEMPLATES_PDF`, `CUSTOM_INVOICE_TEMPLATES_PUBLIC`, `CUSTOM_QUOTE_TEMPLATES_PDF`, and `CUSTOM_QUOTE_TEMPLATES_PUBLIC` env vars. Names containing spaces or hyphens must be quoted, e.g. `CUSTOM_INVOICE_TEMPLATES_PDF="Corporate - Modern,My Template"`.
+- Allowlist-based custom templates: the template selector is built from the built-in whitelist plus the names explicitly listed in the `CUSTOM_INVOICE_TEMPLATES_PDF`, `CUSTOM_INVOICE_TEMPLATES_PUBLIC`, `CUSTOM_QUOTE_TEMPLATES_PDF`, and `CUSTOM_QUOTE_TEMPLATES_PUBLIC` env vars. `CUSTOM_TEMPLATES_FOLDER` locates the corresponding `.php` file on disk at render time and is never scanned to populate the selector, so setting it alone lists nothing. Names containing spaces or hyphens must be quoted, e.g. `CUSTOM_INVOICE_TEMPLATES_PDF="Corporate - Modern,My Template"`.
 - `Referrer-Policy: strict-origin-when-cross-origin` header sent on every admin response.
 
 ### Changed
