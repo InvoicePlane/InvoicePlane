@@ -162,7 +162,7 @@ Gotchas learned the hard way:
   it → `null` and 891 assertions / 200 skips. Same mechanism hits CI, where `DB_*` is a
   job-level `env:` (so CI skips the 183 too). If you must have `DB_*` exported for other
   tooling, unset them just for phpunit: `env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE
-  -u DB_USERNAME -u DB_PASSWORD php … phpunit …`.
+  -u DB_USERNAME -u DB_PASSWORD php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php`.
 
 Pre-existing failures (on a clean prep/v180, unrelated to any merge): the 3
 `LetsPeppolFlowTest::it_returns_an_error_when_send_invoice_*` tests assume

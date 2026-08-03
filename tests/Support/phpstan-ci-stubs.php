@@ -44,7 +44,7 @@ function show_404(string $page = '', bool $log_error = true): void {}
 
 function html_escape(mixed $var, bool $double_encode = true): mixed {}
 
-function lang(string $line, string $for = '', array $attributes = []): string {}
+function lang(string $line, string $for = '', array $attributes = []): string|false {}
 
 function form_error(string $field = '', string $prefix = '', string $suffix = ''): string {}
 

@@ -23,6 +23,12 @@ parameters:
     bootstrapFiles:
         - tests/Support/phpstan-bootstrap.php
 
+    # Stub-only signature file for CI3 system functions (site_url, redirect,
+    # log_message, lang, …). Registered as stubFiles rather than loaded via
+    # bootstrapFiles so PHPStan treats them as pure signature declarations.
+    stubFiles:
+        - tests/Support/phpstan-ci-stubs.php
+
     ignoreErrors:
         # CI3 magic loading: controllers/models access framework services and
         # sub-models as dynamic properties ($this->db, $this->load, $this->input,

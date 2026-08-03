@@ -21,8 +21,3 @@ defined('ENVIRONMENT') || define('ENVIRONMENT', 'testing');
 foreach (glob(APPPATH . 'helpers/*_helper.php') ?: [] as $helper) {
     require_once $helper;
 }
-
-// CI3 *system* functions (site_url, redirect, log_message, …) are declared by
-// the framework at runtime. Declaring their signatures here lets static analysis
-// resolve calls to them without executing framework code.
-require_once __DIR__ . '/phpstan-ci-stubs.php';
