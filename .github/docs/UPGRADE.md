@@ -78,23 +78,44 @@ affected — this change only affects the in-browser preview.
 **Action required:** None. Existing templates continue to send as HTML. If you need to
 visually check HTML formatting, send a test email instead of relying on the preview panel.
 
-#### 3. Custom templates now appear in the template selector
+#### 3. Custom templates can be listed in the template selector
 
-**Who is affected:** Installations that use `CUSTOM_TEMPLATES_FOLDER`.
+**Who is affected:** Installations that use custom invoice or quote templates.
 
 **Before:** Templates placed in `CUSTOM_TEMPLATES_FOLDER` were loaded correctly when
 selected, but they did **not** appear in the admin template dropdown selectors. There was no
 way to select them via the UI.
 
-**After:** When `CUSTOM_TEMPLATES_FOLDER` is set in `ipconfig.php`, templates in that folder
-are listed alongside the built-in templates in the selector.
+**After:** A custom template can be listed alongside the built-in templates in the selector,
+but this requires **two** explicit steps. Consistent with section #4, the folder is **never
+scanned** to discover templates — setting `CUSTOM_TEMPLATES_FOLDER` alone lists nothing.
 
-**Requirements for custom templates to be listed:**
-- The file must have a `.php` extension.
-- The file name (without extension) must consist of alphanumeric characters, spaces, hyphens
-  (`-`), and underscores (`_`) only. Files with other characters in the name are skipped and
-  a warning is written to the CI log.
-- Sub-directories inside `CUSTOM_TEMPLATES_FOLDER` are ignored.
+**Requirements for a custom template to be listed:**
+
+1. **Place the `.php` file** under `CUSTOM_TEMPLATES_FOLDER`, in the sub-path that matches the
+   template's kind and scope:
+   ```
+   <CUSTOM_TEMPLATES_FOLDER>/invoice_templates/pdf/MyTemplate.php
+   <CUSTOM_TEMPLATES_FOLDER>/invoice_templates/public/MyTemplate.php
+   <CUSTOM_TEMPLATES_FOLDER>/quote_templates/pdf/MyTemplate.php
+   <CUSTOM_TEMPLATES_FOLDER>/quote_templates/public/MyTemplate.php
+   ```
+   The folder only tells InvoicePlane **where the file lives** at render time; it does not add
+   the template to the selector.
+
+2. **Add the template name** (without the `.php` extension) to the matching allowlist variable
+   in `ipconfig.php`. Only names present in these variables appear in the selector:
+   ```ini
+   CUSTOM_INVOICE_TEMPLATES_PDF="MyTemplate,Corporate - Modern"
+   CUSTOM_INVOICE_TEMPLATES_PUBLIC="MyTemplate"
+   CUSTOM_QUOTE_TEMPLATES_PDF="MyTemplate"
+   CUSTOM_QUOTE_TEMPLATES_PUBLIC="MyTemplate"
+   ```
+
+**Filename / name rules:** The template name may consist of alphanumeric characters, spaces,
+hyphens (`-`), and underscores (`_`) only. Any allowlist entry that contains other characters
+is skipped and a warning is written to the CI log. See
+[CUSTOM_TEMPLATES.md](CUSTOM_TEMPLATES.md) for the full walkthrough.
 
 #### 4. Template whitelist now covers only built-in templates
 
