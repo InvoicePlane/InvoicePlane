@@ -119,8 +119,11 @@ rewrite it and every dist download then fails.
 ### MariaDB test database in the sandbox (Feature/Integration tests)
 
 **MariaDB is the only supported test database** — the harness rejects any other driver
-(`InteractsWithDatabase::db()` fails loud). Unit tests run without a DB; Feature and
-Integration tests need one, and without it they don't error — they return 307 redirects.
+(`InteractsWithDatabase::db()` fails loud on a non-MariaDB driver, but on a *connection*
+failure it `markTestSkipped`s). Unit tests run without a DB; Feature and Integration tests
+need one. When the parent process can't connect they don't fail — they silently **skip**
+(and any that don't gate on `db()` fall through to 307 login redirects). That silent-skip is
+exactly the trap documented below: a "green" 200-skip run can mean the DB tests never ran.
 
 Do **not** reinvent the setup each session. One idempotent script installs MariaDB, starts
 it, (re)builds the `invoiceplane_test` schema from the setup SQL migrations, seeds the
@@ -128,20 +131,46 @@ baseline, and writes `ipconfig.php` — matching `.github/workflows/phpunit.yml`
 
 ```bash
 bash tests/Support/sandbox-mariadb.sh          # provision (safe to re-run)
-export DB_HOSTNAME=127.0.0.1 DB_PORT=3306 DB_DATABASE=invoiceplane_test \
-       DB_USERNAME=root DB_PASSWORD=root       # parent phpunit process needs these too
+# Do NOT export DB_* here — see the gotcha below. The script writes ipconfig.php,
+# and the parent phpunit process reads its DB config from there via env().
 php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
 ```
 
-Expected result on a green tree: **562 tests, 0 failures**, ~200 skipped (skips are
-intentional — snapshot/"requires running server" guards, not DB problems).
+Expected result once the DB parent connection actually works (see next gotcha):
+**562 tests, ~17 skipped, 1298 assertions**, with **3 pre-existing failures** in
+`Tests\Feature\Integrations\LetsPeppolFlowTest` (see "Pre-existing failures" below).
+The ~17 skips are the genuine guards (snapshot / "requires running server" / manual
+code-review). A run that reports **562 / 0 failures / ~200 skipped / 891 assertions**
+is **not** green — it is the *masked* profile where the DB-backed integration tests
+never ran (183 of them silently skipped). CI on prep/v180 currently shows exactly this
+masked profile (verified: run 30726779008, `Skipped: 200`, MariaDB log full of
+`Access denied for user ''@'…'`), so those integration tests provide **zero coverage in CI**.
 
 Gotchas learned the hard way:
 - `mysqld_safe` can be reaped in the sandbox; re-running the script restarts it. If a run
   suddenly shows ~192 *errors* (not failures), the DB died — restart and rebuild.
-- **Export the `DB_*` vars before phpunit.** The request subprocess reads DB config from
-  `ipconfig.php` via `$_ENV` (Dotenv), but the phpunit *parent* process resolves it through
-  `env()`. Skipping the export changes the parent's behaviour and inflates the failure count.
+- **Do NOT export the `DB_*` vars before phpunit — exporting *breaks* the parent's DB
+  connection in this sandbox.** The request subprocess runs in a clean env and reads
+  `ipconfig.php` into `$_ENV` fine either way. But the phpunit *parent* resolves DB config
+  through `env()`, which reads **only `$_ENV`**. This sandbox's PHP has `variables_order=GPCS`
+  (no `E`), so exported vars land in `getenv()`/`$_SERVER` but never `$_ENV`; Dotenv's
+  `createImmutable` then **skips** those keys (it sees them already set) and never copies the
+  `ipconfig.php` values into `$_ENV`. Net effect: `env('DB_USERNAME')` returns `null`, the
+  parent's `InteractsWithDatabase::db()` connects as `''@'localhost'` → *Access denied* →
+  every DB-backed test calls `markTestSkipped`. Verified empirically: **without** the export
+  `env('DB_HOSTNAME')` → `127.0.0.1` and the suite does 1298 assertions / 17 skips; **with**
+  it → `null` and 891 assertions / 200 skips. Same mechanism hits CI, where `DB_*` is a
+  job-level `env:` (so CI skips the 183 too). If you must have `DB_*` exported for other
+  tooling, unset them just for phpunit: `env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE
+  -u DB_USERNAME -u DB_PASSWORD php … phpunit …`.
+
+Pre-existing failures (on a clean prep/v180, unrelated to any merge): the 3
+`LetsPeppolFlowTest::it_returns_an_error_when_send_invoice_*` tests assume
+`show_error()` becomes a catchable `RuntimeException`. That only holds in-process — under
+the real `proc_open` request subprocess, `show_error()` renders a **500 error page** (body
+`merchant_client_not_found`) and the child returns `exception: null`, so `expectException`
+fails. These surface only once the parent DB connection works (otherwise they skip). They
+are broken *test* assumptions, not app bugs — the controller behaves correctly.
 - Session identity in the harness (`actingAsAdmin()`) must be **string-typed** (`user_type
   => '1'`), because `User_Controller` guards with `!== (string)$required_val` and a real
   DB-backed login stores strings. Int-typed session data silently redirects every admin
@@ -172,6 +201,43 @@ To find *where* a 307 comes from, temporarily add one line to CI3's `redirect()`
 `debug_backtrace()` to a tmp file, run the clean-env request above, then revert. That is how
 the login-redirect (int session) vs. the app's own `clients/status/active` redirect were
 told apart.
+
+### Hard-blocked hosts in the sandbox (don't retry these)
+
+The agent proxy does not just fail to authenticate for some hosts — it returns an outright
+**403 policy denial** for `api.github.com` and `codeload.github.com`. Composer **dist**
+(zipball) downloads go through those hosts, so there is no dist fallback at all — `--prefer-source`
+(git through the proxy) is mandatory, never dist. `apt` is likewise blocked, so a missing PHP
+extension like `ext-bcmath` cannot be installed — use `--ignore-platform-req=ext-bcmath`, never
+"install the extension". Do not burn time probing these hosts; they will not start working.
+(Note: plain `https://github.com/…/releases/download/…` **does** work through the outbound HTTPS
+proxy — that's how the PHPStan phar is fetched below. Only the composer api/codeload path is blocked.)
+
+### Static analysis (PHPStan) in the sandbox
+
+Composer cannot install `phpstan/phpstan` here (dist-only phar behind the blocked hosts above),
+but the release phar downloads fine via the HTTPS proxy:
+
+```bash
+curl -sSL -o /tmp/phpstan.phar https://github.com/phpstan/phpstan/releases/download/1.12.34/phpstan.phar
+php /tmp/phpstan.phar analyse --memory-limit=1G     # config: phpstan.neon (level 0)
+```
+
+CI3 has **no PSR-4 autoloading or classmap**, so PHPStan needs help resolving symbols. The
+committed config already wires this up — do not re-derive it:
+- `bootstrapFiles: tests/Support/phpstan-bootstrap.php` defines the CI path constants and
+  `require`s every `application/helpers/*_helper.php` (so helper functions resolve) plus
+  `tests/Support/phpstan-ci-stubs.php` (side-effect-free signatures for CI *system* functions
+  like `site_url`, `redirect`, `log_message`, `random_string`, …).
+- `scanDirectories` covers `application/modules`, `core`, `libraries`, `third_party/MX` and
+  `vendor/pocketarc/codeigniter/system/core` so HMVC classes/traits and base classes
+  (`CI_Model`, `CI_Controller`, `MX_Controller`) resolve.
+- Remaining genuinely-dynamic CI3 magic is suppressed by `identifier:`-based ignores
+  (`property.notFound`, `method.notFound`, `class.extendsUnknownClass`, `class.nameCase`,
+  `class.noParent`), and the handful of real legacy findings live in `phpstan-baseline.neon`.
+
+A clean run is **`[OK] No errors`**. If you add code that references a new CI system function,
+add its signature to `phpstan-ci-stubs.php` rather than baselining the `function.notFound`.
 
 ## Common pitfalls
 
