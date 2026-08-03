@@ -11,20 +11,32 @@
  */
 
 /** @return object */
-function get_instance() {}
+function &get_instance() {}
 
-function site_url(string|array $uri = '', ?string $protocol = null): string {}
+function site_url(string|array $uri = '', ?string $protocol = null): string
+{
+}
 
-function base_url(string|array $uri = '', ?string $protocol = null): string {}
+function base_url(string|array $uri = '', ?string $protocol = null): string
+{
+}
 
-function anchor(string|array $uri = '', string $title = '', string|array $attributes = ''): string {}
+function anchor(string|array $uri = '', string $title = '', string|array $attributes = ''): string
+{
+}
 
-function redirect(string $uri = '', string $method = 'auto', ?int $code = null): void {}
+function redirect(string $uri = '', string $method = 'auto', ?int $code = null): void
+{
+}
 
 /** @return mixed */
-function config_item(string $item) {}
+function config_item(string $item)
+{
+}
 
-function log_message(string $level, string $message): bool {}
+function log_message(string $level, string $message): void
+{
+}
 
 function show_error(string|array $message, int $status_code = 500, string $heading = 'An Error Was Encountered'): void {}
 

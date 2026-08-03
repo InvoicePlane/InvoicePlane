@@ -27,19 +27,35 @@ parameters:
         # CI3 magic loading: controllers/models access framework services and
         # sub-models as dynamic properties ($this->db, $this->load, $this->input,
         # $this->mdl_*). These cannot be resolved statically without full stubs.
-        - identifier: property.notFound
+        -
+            identifier: property.notFound
+            path: application/modules/*
 
         # Sub-models and library methods are resolved dynamically by CI3's loader.
-        - identifier: method.notFound
+        -
+            identifier: method.notFound
+            path: application/modules/*
 
         # Base controllers/models (Admin_Controller, MY_Model, Response_Model, …)
         # are registered by CI3's HMVC loader, not autoloaded.
-        - identifier: class.extendsUnknownClass
+        -
+            identifier: class.extendsUnknownClass
+            paths:
+                - application/modules/*
+                - application/core/*
 
         # CI3 is case-insensitive when loading classes via its loader.
-        - identifier: class.nameCase
+        -
+            identifier: class.nameCase
+            paths:
+                - application/modules/*
+                - application/core/*
 
         # parent::__construct() in controllers whose base class is loaded at runtime.
-        - identifier: class.noParent
+        -
+            identifier: class.noParent
+            paths:
+                - application/modules/*
+                - application/core/*
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false
