@@ -61,11 +61,12 @@ class Mdl_Templates extends CI_Model
     /**
      * Get the list of allowed invoice templates.
      *
-     * Security: The selector is built from the static built-in whitelist plus the names
-     * explicitly listed in the CUSTOM_*_TEMPLATES allowlist constants — no directory,
-     * neither the application's own nor CUSTOM_TEMPLATES_FOLDER, is EVER scanned (prevents RCE).
-     * CUSTOM_TEMPLATES_FOLDER only supplies the file's location at render time; on its own it
-     * lists nothing. See _merge_custom() for how the allowlisted names are validated and merged.
+     * Security: Built-in templates are returned from the static whitelist only — the
+     * application's own template directories are NEVER scanned to prevent RCE.
+     * The returned list is the built-in whitelist plus any custom template names explicitly
+     * enumerated in the CUSTOM_INVOICE_TEMPLATES_PDF / CUSTOM_INVOICE_TEMPLATES_PUBLIC
+     * allowlist constants (see _merge_custom()). CUSTOM_TEMPLATES_FOLDER is NOT scanned to
+     * build this list; it only provides the file's location on disk at render time.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -87,11 +88,12 @@ class Mdl_Templates extends CI_Model
     /**
      * Get the list of allowed quote templates.
      *
-     * Security: The selector is built from the static built-in whitelist plus the names
-     * explicitly listed in the CUSTOM_*_TEMPLATES allowlist constants — no directory,
-     * neither the application's own nor CUSTOM_TEMPLATES_FOLDER, is EVER scanned (prevents RCE).
-     * CUSTOM_TEMPLATES_FOLDER only supplies the file's location at render time; on its own it
-     * lists nothing. See _merge_custom() for how the allowlisted names are validated and merged.
+     * Security: Built-in templates are returned from the static whitelist only — the
+     * application's own template directories are NEVER scanned to prevent RCE.
+     * The returned list is the built-in whitelist plus any custom template names explicitly
+     * enumerated in the CUSTOM_QUOTE_TEMPLATES_PDF / CUSTOM_QUOTE_TEMPLATES_PUBLIC
+     * allowlist constants (see _merge_custom()). CUSTOM_TEMPLATES_FOLDER is NOT scanned to
+     * build this list; it only provides the file's location on disk at render time.
      *
      * @param string $type Template type ('pdf' or 'public')
      *

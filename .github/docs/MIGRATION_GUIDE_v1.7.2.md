@@ -308,11 +308,30 @@ echo "0 0 1 * * /usr/local/bin/invoiceplane_security_audit.sh > /var/log/invoice
 
 ### Issue: Custom Templates Stop Working
 
-**Symptom:** Custom template you created no longer works after upgrade
+**Symptom:** A custom template you created no longer appears in the selector, or an
+invoice/quote that referenced it falls back to the default template, after upgrading.
 
-**Cause:** Custom templates are not in the static whitelist
+**Cause:** v1.7.2 no longer scans the filesystem to build the template selector (this was the
+RCE fix). A template is only offered if its name is on the explicit allowlist — a template name
+already stored in your database from a previous version is **not** enough on its own, and
+copying the `.php` file into place does not make it appear either.
 
-**Solution:** Add your custom template to the whitelist in code:
+**Solution (recommended):** Keep your templates outside `application/views/` and allowlist them
+via `ipconfig.php`, so they survive future upgrades. This is a **two-step** operation:
+
+1. Move the template file to `CUSTOM_TEMPLATES_FOLDER`, under the sub-path that matches its type
+   and scope, e.g. `<CUSTOM_TEMPLATES_FOLDER>/invoice_templates/pdf/YourCustomTemplate.php`.
+2. Add its name (without `.php`) to the matching allowlist variable in `ipconfig.php`:
+   ```ini
+   CUSTOM_INVOICE_TEMPLATES_PDF="YourCustomTemplate"
+   ```
+   Built-in templates always appear in the selector; custom templates appear only if listed here.
+   Use the exact same name your database already stores so existing invoices/quotes keep their template.
+
+See [CUSTOM_TEMPLATES.md](CUSTOM_TEMPLATES.md) for the full walkthrough.
+
+**Alternative:** If you prefer to keep the template inside the application, add its name to the
+appropriate constant in `application/modules/invoices/models/Mdl_templates.php` and redeploy:
 
 1. Edit `application/modules/invoices/models/Mdl_templates.php`
 2. Add your template name to the appropriate array:
