@@ -61,7 +61,7 @@ class Upload extends Admin_Controller
 
         // Generate a unique filename to avoid path traversal and overwrite issues
         $file_ext = mb_strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
-        $uniqueName = uniqid('upload_', true) . '.' . $file_ext;
+        $uniqueName = bin2hex(random_bytes(16)) . '.' . $file_ext;
         $filePath = $this->get_target_file_path($url_key, $uniqueName);
         $this->create_dir(dirname($filePath));
         if ( ! is_writable(dirname($filePath))) {
