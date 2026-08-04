@@ -13,6 +13,7 @@ class CustomFieldsServiceTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
+        $this->setUpDatabase();
         parent::setUp();
         $this->actingAsAdmin();
     }
@@ -69,5 +70,47 @@ class CustomFieldsServiceTest extends AbstractTestCase
             $response->isRedirect(),
             sprintf('Unauthenticated GET [/custom_fields] must redirect. Got [%d].', $response->statusCode())
         );
+    }
+
+    #[Test]
+    public function it_creates_a_custom_field_for_an_allowed_table(): void
+    {
+        /* Act */
+        $response = $this->post('/custom_fields/form', [
+            'custom_field_table'    => 'ip_client_custom',
+            'custom_field_label'    => 'Client Reference',
+            'custom_field_type'     => 'TEXT',
+            'custom_field_order'    => '1',
+            'custom_field_location' => '0',
+            'btn_submit'            => '1',
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Successful custom field create must redirect.');
+        $this->assertDatabaseHas('ip_custom_fields', [
+            'custom_field_table' => 'ip_client_custom',
+            'custom_field_label' => 'Client Reference',
+            'custom_field_type'  => 'TEXT',
+        ]);
+    }
+
+    #[Test]
+    public function it_rejects_custom_field_table_names_outside_the_allowlist(): void
+    {
+        /* Act */
+        $response = $this->post('/custom_fields/form', [
+            'custom_field_table'    => 'ip_client_custom; DROP TABLE ip_users; --',
+            'custom_field_label'    => 'Injected Table',
+            'custom_field_type'     => 'TEXT',
+            'custom_field_order'    => '1',
+            'custom_field_location' => '0',
+            'btn_submit'            => '1',
+        ]);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertDatabaseMissing('ip_custom_fields', ['custom_field_label' => 'Injected Table']);
+        $this->assertDatabaseHas('ip_users', ['user_email' => 'admin@test.local']);
     }
 }
