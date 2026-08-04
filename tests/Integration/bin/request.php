@@ -62,6 +62,7 @@ $_SERVER['HTTP_USER_AGENT']    = 'PHPUnit CI3 Integration Runner';
 $_SERVER['HTTP_ACCEPT']        = 'text/html,application/xhtml+xml';
 $_SERVER['DOCUMENT_ROOT']      = dirname(__DIR__, 3) . '/public';
 $_SERVER['SCRIPT_FILENAME']    = dirname(__DIR__, 3) . '/public/index.php';
+$_SERVER['CI_ENV']             = 'testing';
 $_SERVER['REQUEST_TIME']       = time();
 $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 

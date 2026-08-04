@@ -34,10 +34,12 @@ function ip_seed_baseline(PDO $pdo): void
         $stmt->execute([$key, $value]);
     }
 
+    $now = date('Y-m-d H:i:s');
+
     $pdo->prepare(
-        'INSERT INTO `ip_users` (`user_name`, `user_email`, `user_password`, `user_type`, `user_active`)'
-        . ' VALUES (?, ?, ?, ?, ?)'
-    )->execute(['Admin', 'admin@test.local', password_hash('password', PASSWORD_DEFAULT), 1, 1]);
+        'INSERT INTO `ip_users` (`user_name`, `user_email`, `user_password`, `user_type`, `user_active`, `user_date_created`, `user_date_modified`)'
+        . ' VALUES (?, ?, ?, ?, ?, ?, ?)'
+    )->execute(['Admin', 'admin@test.local', password_hash('password', PASSWORD_DEFAULT), 1, 1, $now, $now]);
 
     $pdo->prepare(
         'INSERT INTO `ip_invoice_groups`'
