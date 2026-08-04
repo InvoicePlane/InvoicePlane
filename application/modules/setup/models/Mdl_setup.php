@@ -380,6 +380,41 @@ class Mdl_Setup extends CI_Model
         }
     }
 
+    public function upgrade_043_1_7_2()
+    {
+        if ( ! $this->session->userdata('is_upgrade')) {
+            return;
+        }
+
+        $this->load->model('settings/mdl_settings');
+        $this->mdl_settings->load_settings();
+        $this->load->model('invoices/mdl_templates');
+
+        $missing_allowlisted_template_settings = $this->mdl_templates->get_missing_allowlisted_template_settings();
+
+        if (empty($missing_allowlisted_template_settings)) {
+            return;
+        }
+
+        $template_list = '<ul>';
+        foreach ($missing_allowlisted_template_settings as $ipconfig_key => $template_names) {
+            $template_list .= '<li><code>' . html_escape($ipconfig_key) . '</code>: '
+                . html_escape(implode(', ', $template_names)) . '</li>';
+        }
+        $template_list .= '</ul>';
+
+        $setup_notice = [
+            'type'    => 'alert-warning',
+            'content' => '<strong>' . trans('custom_templates_upgrade_required') . '</strong><br>'
+                . trans('custom_templates_upgrade_required_message') . '<br>'
+                . trans('custom_templates_upgrade_required_ipconfig')
+                . $template_list
+                . trans('custom_templates_upgrade_required_docs'),
+        ];
+
+        $this->session->set_userdata('setup_notice', $setup_notice);
+    }
+
     /**
      * @param string $contents
      */
