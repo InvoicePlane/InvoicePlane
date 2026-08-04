@@ -29,10 +29,15 @@ class Reports extends Admin_Controller
     public function sales_by_client()
     {
         if ($this->input->post('btn_submit')) {
+            $posted_from_date = $this->input->post('from_date');
+            $posted_to_date   = $this->input->post('to_date');
+            $from_date        = date_to_mysql($posted_from_date);
+            $to_date          = date_to_mysql($posted_to_date);
+
             $data = [
-                'results'   => $this->mdl_reports->sales_by_client($this->input->post('from_date'), $this->input->post('to_date')),
-                'from_date' => $this->input->post('from_date'),
-                'to_date'   => $this->input->post('to_date'),
+                'results'   => $this->mdl_reports->sales_by_client($posted_from_date, $posted_to_date),
+                'from_date' => date_from_mysql($from_date, true),
+                'to_date'   => date_from_mysql($to_date, true),
             ];
 
             $html = $this->load->view('reports/sales_by_client', $data, true);
@@ -48,10 +53,15 @@ class Reports extends Admin_Controller
     public function invoices_per_client()
     {
         if ($this->input->post('btn_submit')) {
+            $posted_from_date = $this->input->post('from_date');
+            $posted_to_date   = $this->input->post('to_date');
+            $from_date        = date_to_mysql($posted_from_date);
+            $to_date          = date_to_mysql($posted_to_date);
+
             $data = [
-                'results'   => $this->mdl_reports->invoices_per_client($this->input->post('from_date'), $this->input->post('to_date')),
-                'from_date' => $this->input->post('from_date'),
-                'to_date'   => $this->input->post('to_date'),
+                'results'   => $this->mdl_reports->invoices_per_client($posted_from_date, $posted_to_date),
+                'from_date' => date_from_mysql($from_date, true),
+                'to_date'   => date_from_mysql($to_date, true),
             ];
 
             $html = $this->load->view('reports/invoices_per_client', $data, true);
@@ -67,10 +77,15 @@ class Reports extends Admin_Controller
     public function payment_history()
     {
         if ($this->input->post('btn_submit')) {
+            $posted_from_date = $this->input->post('from_date');
+            $posted_to_date   = $this->input->post('to_date');
+            $from_date        = date_to_mysql($posted_from_date);
+            $to_date          = date_to_mysql($posted_to_date);
+
             $data = [
-                'results'   => $this->mdl_reports->payment_history($this->input->post('from_date'), $this->input->post('to_date')),
-                'from_date' => $this->input->post('from_date'),
-                'to_date'   => $this->input->post('to_date'),
+                'results'   => $this->mdl_reports->payment_history($posted_from_date, $posted_to_date),
+                'from_date' => date_from_mysql($from_date, true),
+                'to_date'   => date_from_mysql($to_date, true),
             ];
 
             $html = $this->load->view('reports/payment_history', $data, true);
@@ -103,10 +118,15 @@ class Reports extends Admin_Controller
     public function sales_by_year()
     {
         if ($this->input->post('btn_submit')) {
+            $posted_from_date = $this->input->post('from_date');
+            $posted_to_date   = $this->input->post('to_date');
+            $from_date        = date_to_mysql($posted_from_date);
+            $to_date          = date_to_mysql($posted_to_date);
+
             $data = [
-                'results'   => $this->mdl_reports->sales_by_year($this->input->post('from_date'), $this->input->post('to_date'), $this->input->post('minQuantity'), $this->input->post('maxQuantity'), $this->input->post('checkboxTax')),
-                'from_date' => $this->input->post('from_date'),
-                'to_date'   => $this->input->post('to_date'),
+                'results'   => $this->mdl_reports->sales_by_year($posted_from_date, $posted_to_date, $this->input->post('minQuantity'), $this->input->post('maxQuantity'), $this->input->post('checkboxTax')),
+                'from_date' => date_from_mysql($from_date, true),
+                'to_date'   => date_from_mysql($to_date, true),
             ];
 
             $html = $this->load->view('reports/sales_by_year', $data, true);
