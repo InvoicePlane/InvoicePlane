@@ -122,7 +122,6 @@ class Integrations extends Admin_Controller
             $response = $client->sendInvoice($documentPath, $metadata);
 
             $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
-
         } catch (RuntimeException $e) {
             $this->session->set_flashdata('alert_error', $e->getMessage());
             redirect('invoices/view/' . (int) $invoiceId);
@@ -170,7 +169,7 @@ class Integrations extends Admin_Controller
             $provider = $registry->getClient($merchantClient['merchant_type']);
             $client   = new IntegrationClient($provider, $settings);
 
-           $response = $client->receiveInvoices();
+            $response = $client->receiveInvoices();
         } catch (RuntimeException $e) {
             $this->output
                 ->set_content_type('application/json')
@@ -221,7 +220,7 @@ class Integrations extends Admin_Controller
             $provider = $registry->getClient($merchantClient['merchant_type']);
             $client   = new IntegrationClient($provider, $settings);
 
-            $events   = $client->getInvoiceEvents();
+            $events = $client->getInvoiceEvents();
         } catch (RuntimeException $e) {
             $this->output
                 ->set_content_type('application/json')

@@ -30,7 +30,13 @@ if (get_setting('einvoicing') == '1') {
         </li>
 <?php
 }
-?>
+            ?>
+        <li>
+            <a href="<?php echo site_url('integrations/settings'); ?>" title="<?php _trans('einvoice'); ?>"
+               class="tip" data-placement="right">
+                <i class="fa fa-exchange"></i>
+            </a>
+        </li>
         <li>
             <a href="<?php echo site_url('payments/index'); ?>" title="<?php _trans('payments'); ?>"
                class="tip" data-placement="right">

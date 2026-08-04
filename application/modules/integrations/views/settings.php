@@ -37,7 +37,7 @@
                           class="btn btn-sm btn-default">
                           <?php _trans('edit'); ?>
                        </a>
-                       <a href="<?php echo site_url('integrations/sync/run/' . $provider['id']); ?>"
+                       <a href="<?php echo site_url('integrations/sync/' . $provider['id']); ?>"
                           class="btn btn-sm btn-primary">
                           <i class="fa fa-refresh"></i>
                           <?php _trans('sync'); ?>
