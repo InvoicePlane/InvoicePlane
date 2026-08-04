@@ -133,7 +133,7 @@ function get_xml_template_files(): array
  * Set the calculation mode for Quote/Invoice view & many more (tricks)
  * Returns the XML template (UBL/CII) fullname of a given client_e-invoice_version value.
  *
- * @param $xml_Id
+ * @param $xml_id
  *
  * @used in get_einvoice_usage
  *
@@ -182,7 +182,6 @@ function get_admin_active_users($user_id = ''): array
  *
  * @param object $client
  * @param int    $user_id : get result only with it (or all if null)
- * @param bool   $vat     : check vat user field(s) are filled
  *
  * @return object $req_fields
  */
