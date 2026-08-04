@@ -57,7 +57,7 @@ The `Changelog?` column only checks whether the GHSA ID appears in `.github/CHAN
 
 | GHSA | State | Severity | Root cause class | Reporter | CVE | Affected versions | Changelog? | Current bucket | Notes / next audit |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| GHSA-pp5w-98m2-gvc8 | triage | high | Setup/install lockout | FelipeSilvany | - | 1.7.2 RC1 | no | Needs code | New setup-wizard sequel. Audit setup lockout after install and direct upgrade-operation invocation. |
+| GHSA-pp5w-98m2-gvc8 | triage | high | Setup/install lockout | FelipeSilvany | - | 1.7.2 RC1 | yes | Fixed and documented | Valid RC1 regression fixed by #1659. Covered by `SetupControllerTest::it_locks_every_http_setup_route_after_setup_is_completed`; unlocked `/setup` flow remains covered by `SetupControllerTest::it_allows_the_setup_flow_when_setup_is_explicitly_unlocked`. |
 | GHSA-p7w2-hmm5-qw7m | draft | medium | Password reset rate limiting | Char0n1507 | - | < current | yes | Needs test only | Verify DB-backed counters survive missing/rotated session cookies. |
 | GHSA-p875-mj5j-x2fc | draft | medium | User password authorization | Char0n1507 | - | < current | yes | Fixed and documented | Covered by `UsersControllerTest::it_prevents_a_non_primary_admin_from_changing_another_users_password`. |
 | GHSA-wcqc-qqv5-65ph | draft | medium | Timing-safe token comparison | alham-rizvi | - | 1.7.2 | yes | Needs test only | Assert password-reset token comparison uses `hash_equals()` and invalid tokens do not mutate state. |
@@ -147,7 +147,7 @@ Published advisories predate the current draft queue. They should not block RC2 
 
 ## Immediate Release Audit Order
 
-1. Setup/install lockout family: GHSA-pp5w-98m2-gvc8, GHSA-jx5h-6r8f-m2h3, GHSA-ffq5-mw9f-mv6j, GHSA-2j6j-6f6q-57vq, GHSA-37pr-q48j-46gg.
+1. Setup/install lockout family: GHSA-jx5h-6r8f-m2h3, GHSA-ffq5-mw9f-mv6j, GHSA-2j6j-6f6q-57vq, GHSA-37pr-q48j-46gg. GHSA-pp5w-98m2-gvc8 is fixed and covered, but keep it linked to this family for release notes.
 2. Guest/public object authorization family: guest invoice visibility, guest payment visibility, guest attachments, quote approve/reject, and password-change authorization.
 3. File/path/template family: upload download/delete, logo deletion, guest file download, mPDF `file://`, template allowlists, and writable template directories.
 4. SQL family: tax decimal places, settings identifiers, custom-field table identifiers, import table identifiers, Ajax `HAVING`.
