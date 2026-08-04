@@ -79,6 +79,31 @@
 
             <div class="col-xs-12 col-md-8 col-md-offset-2">
                 <?php $this->layout->load_view('layout/alerts'); ?>
+
+                <?php if ( ! empty($missing_allowlisted_template_settings)) { ?>
+                    <div class="alert alert-warning">
+                        <p>
+                            <strong><?php _trans('custom_templates_upgrade_required'); ?></strong>
+                        </p>
+                        <p>
+                            <?php _trans('custom_templates_upgrade_required_message'); ?>
+                        </p>
+                        <p>
+                            <?php _trans('custom_templates_upgrade_required_ipconfig'); ?>
+                        </p>
+                        <ul>
+                            <?php foreach ($missing_allowlisted_template_settings as $ipconfig_key => $template_names) { ?>
+                                <li>
+                                    <code><?php echo htmlsc($ipconfig_key); ?></code>:
+                                    <?php echo htmlsc(implode(', ', $template_names)); ?>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                        <p>
+                            <?php echo trans('custom_templates_upgrade_required_docs'); ?>
+                        </p>
+                    </div>
+                <?php } ?>
             </div>
 
             <div id="settings-general" class="tab-pane active">

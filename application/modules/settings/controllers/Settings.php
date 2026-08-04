@@ -177,6 +177,7 @@ class Settings extends Admin_Controller
         $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
         $pdf_quote_templates      = $this->mdl_templates->get_quote_templates('pdf');
         $public_quote_templates   = $this->mdl_templates->get_quote_templates('public');
+        $missing_allowlisted_template_settings = $this->mdl_templates->get_missing_allowlisted_template_settings();
 
         // Get all themes
         $available_themes = $this->mdl_settings->get_themes();
@@ -191,6 +192,7 @@ class Settings extends Admin_Controller
                 'pdf_invoice_templates'    => $pdf_invoice_templates,
                 'public_quote_templates'   => $public_quote_templates,
                 'pdf_quote_templates'      => $pdf_quote_templates,
+                'missing_allowlisted_template_settings' => $missing_allowlisted_template_settings,
                 'languages'                => get_available_languages(),
                 'countries'                => get_country_list(trans('cldr')),
                 'date_formats'             => date_formats(),

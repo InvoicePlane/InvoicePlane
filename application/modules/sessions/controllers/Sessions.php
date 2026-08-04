@@ -192,7 +192,7 @@ class Sessions extends Base_Controller
                 redirect($this->_get_safe_referer());
             }
 
-            if (empty($user->user_passwordreset_token) || $this->input->post('token') !== $user->user_passwordreset_token) {
+            if (empty($user->user_passwordreset_token) || ! hash_equals((string) $user->user_passwordreset_token, (string) $this->input->post('token'))) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_wrong_auth_code'));
                 redirect($this->_get_safe_referer());
             }
