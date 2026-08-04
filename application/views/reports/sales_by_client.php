@@ -6,7 +6,7 @@
 </head>
 <body>
 
-    <h3 class="report_title"><?php _trans('sales_by_client'); ?><br><small><?php echo $from_date . ' - ' . $to_date ?></small></h3>
+    <h3 class="report_title"><?php _trans('sales_by_client'); ?><br><small><?php echo htmlsc($from_date) . ' - ' . htmlsc($to_date); ?></small></h3>
 
     <table>
         <tr>
