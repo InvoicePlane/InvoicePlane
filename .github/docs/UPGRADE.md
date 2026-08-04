@@ -78,44 +78,80 @@ affected — this change only affects the in-browser preview.
 **Action required:** None. Existing templates continue to send as HTML. If you need to
 visually check HTML formatting, send a test email instead of relying on the preview panel.
 
-#### 3. Custom templates now appear in the template selector
+#### 3. Custom templates are added via an explicit allowlist (no filesystem scan)
 
-**Who is affected:** Installations that use `CUSTOM_TEMPLATES_FOLDER`.
+**Who is affected:** Installations that add their own invoice or quote templates.
 
-**Before:** Templates placed in `CUSTOM_TEMPLATES_FOLDER` were loaded correctly when
-selected, but they did **not** appear in the admin template dropdown selectors. There was no
-way to select them via the UI.
+**Before:** The template selector was built by scanning the templates directory on the
+filesystem. Any `.php` file present in the directory appeared in the selector automatically —
+the same dynamic scan that caused the RCE vulnerability (see #4 below).
 
-**After:** When `CUSTOM_TEMPLATES_FOLDER` is set in `ipconfig.php`, templates in that folder
-are listed alongside the built-in templates in the selector.
+**After:** The filesystem is **never** scanned. The selector is built from the built-in
+templates plus **only** the custom template names you explicitly allowlist. Built-in templates
+always appear in the selector. Adding a custom template is a **two-step** operation — both steps
+are required:
 
-**Requirements for custom templates to be listed:**
-- The file must have a `.php` extension.
-- The file name (without extension) must consist of alphanumeric characters, spaces, hyphens
-  (`-`), and underscores (`_`) only. Files with other characters in the name are skipped and
-  a warning is written to the CI log.
-- Sub-directories inside `CUSTOM_TEMPLATES_FOLDER` are ignored.
+1. **Place the `.php` file** under `CUSTOM_TEMPLATES_FOLDER`, in the sub-path that matches the
+   template's type and scope:
+   ```
+   <CUSTOM_TEMPLATES_FOLDER>/invoice_templates/pdf/MyTemplate.php
+   <CUSTOM_TEMPLATES_FOLDER>/invoice_templates/public/MyTemplate.php
+   <CUSTOM_TEMPLATES_FOLDER>/quote_templates/pdf/MyTemplate.php
+   <CUSTOM_TEMPLATES_FOLDER>/quote_templates/public/MyTemplate.php
+   ```
+   `CUSTOM_TEMPLATES_FOLDER` only tells InvoicePlane where the file lives on disk at render
+   time. On its own it adds **nothing** to the selector.
+
+2. **Add the template name** (without `.php`) to the matching allowlist variable in
+   `ipconfig.php`. Only names listed in these variables appear in the selector:
+   ```ini
+   CUSTOM_INVOICE_TEMPLATES_PDF="MyTemplate,Corporate - Modern"
+   CUSTOM_INVOICE_TEMPLATES_PUBLIC="MyTemplate"
+   CUSTOM_QUOTE_TEMPLATES_PDF="MyTemplate"
+   CUSTOM_QUOTE_TEMPLATES_PUBLIC="MyTemplate"
+   ```
+   Quote the value when a name contains spaces or hyphens.
+
+**Requirements for a custom template name:**
+- The corresponding `.php` file must exist under `CUSTOM_TEMPLATES_FOLDER` at the matching
+  sub-path (step 1).
+- The name may contain only alphanumeric characters, spaces, hyphens (`-`), and underscores
+  (`_`). Names with any other character are skipped and a warning is written to the CI log.
+
+See [CUSTOM_TEMPLATES.md](CUSTOM_TEMPLATES.md) for the full walkthrough, and section #4 below
+if you previously kept custom templates inside `application/views/`.
+
+**Upgrade aid:** After upgrading and running `/setup`, the Settings page checks the saved PDF
+and public template settings in the database. If one of those settings names a template that is
+not built in and not present in the matching `CUSTOM_*_TEMPLATES` allowlist, InvoicePlane shows
+an administrator warning with the exact template name and `ipconfig.php` variable to update.
+This warning intentionally uses only saved database settings; InvoicePlane still does not scan
+template folders to discover unused template files.
 
 #### 4. Template whitelist now covers only built-in templates
 
 **Who is affected:** Installations with custom invoice or quote templates stored **inside the
 application's `application/views/` directory**.
 
-**Background:** The RCE fix replaced the dynamic filesystem scan with a hardcoded constant
-whitelist that lists only the built-in templates. Templates stored outside the application
-(via `CUSTOM_TEMPLATES_FOLDER`) are now the supported way to add custom templates.
+**Background:** The RCE fix replaced the dynamic filesystem scan with an allowlist mechanism.
+Built-in templates are listed in hardcoded constants; custom templates can be added via explicit
+allowlist config variables. Templates stored outside the application (via `CUSTOM_TEMPLATES_FOLDER`)
+with explicit allowlisting are now the supported way to add custom templates.
 
 **Action required:** If you previously added custom templates directly into
 `application/views/invoice_templates/` or `application/views/quote_templates/`, move them
 to a directory outside the web root and configure `CUSTOM_TEMPLATES_FOLDER` in
-`ipconfig.php` to point to that directory:
+`ipconfig.php` to point to that directory, then add each template name to the matching
+allowlist variable:
 
 ```ini
 # ipconfig.php
 CUSTOM_TEMPLATES_FOLDER=/srv/invoiceplane-templates/
+CUSTOM_INVOICE_TEMPLATES_PDF="MyCustomTemplate"
 ```
 
 Then place your templates in e.g. `/srv/invoiceplane-templates/invoice_templates/pdf/MyTemplate.php`.
+See section #3 above for the full two-step process.
 
 Alternatively, if you prefer to keep templates inside the application, add each template name
 to the appropriate constant in `application/modules/invoices/models/Mdl_templates.php`:
@@ -152,6 +188,12 @@ before applying the upgrade, especially if you are upgrading from v1.7.0 or v1.7
 Open `http://yourdomain.com/index.php/setup` and follow the on-screen instructions. The
 setup wizard runs the required database migrations automatically, including adding the
 `user_passwordreset_token_expiry` column for the password reset token expiry fix.
+
+After `/setup` completes, log in as an administrator and open **Settings**. If InvoicePlane
+finds saved custom template names that are not listed in `ipconfig.php`, it shows a warning
+with the names to copy into `CUSTOM_INVOICE_TEMPLATES_PDF`,
+`CUSTOM_INVOICE_TEMPLATES_PUBLIC`, `CUSTOM_QUOTE_TEMPLATES_PDF`, or
+`CUSTOM_QUOTE_TEMPLATES_PUBLIC`.
 
 ### 4. Set secure template directory permissions
 

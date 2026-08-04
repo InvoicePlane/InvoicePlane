@@ -29,6 +29,7 @@ Without your reports this release would not have been possible:
 [@5ud0er](https://github.com/5ud0er),
 [@akgul7990](https://github.com/akgul7990),
 [@alanturing881](https://github.com/alanturing881),
+[@alham-rizvi](https://github.com/alham-rizvi),
 [@ali-iltizar](https://github.com/ali-iltizar),
 [@capt-bl4ck0ut](https://github.com/capt-bl4ck0ut),
 [@chakrapani150](https://github.com/chakrapani150),
@@ -117,6 +118,8 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 | IDOR: any admin could change the primary admin's password | Medium | [IDOR: Horizontal Privilege Escalation via Password Change Without Authorization Check](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x38q-xhjj-jr8w) | [@Char0n1507](https://github.com/Char0n1507) | [#1638](https://github.com/InvoicePlane/InvoicePlane/pull/1638) |
 | CSRF on seven `delete()`-style endpoints missing token validation | Medium | [Missing CSRF Token Validation on Multiple Delete Endpoints](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-9372-vj68-hmc3) | [@Char0n1507](https://github.com/Char0n1507) | [#1637](https://github.com/InvoicePlane/InvoicePlane/pull/1637) |
 | CSRF bypass in `Recurring::stop()` via GET request | Medium | [CSRF: Recurring Invoice State Change via GET Request Without CSRF Protection](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-qf9q-2hxm-4wh9) | [@Char0n1507](https://github.com/Char0n1507) | [#1636](https://github.com/InvoicePlane/InvoicePlane/pull/1636) |
+| Guest invoice/quote access keys and CRON authentication key generated with non-cryptographic PRNG | Medium | [Guest invoice/quote access keys and the CRON authentication key are generated with a non-cryptographic PRNG](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-chqc-v432-8pj8) | [@alham-rizvi](https://github.com/alham-rizvi) | [#1651](https://github.com/InvoicePlane/InvoicePlane/pull/1651) |
+| Password reset token compared with non-constant-time operator | Medium | [Password reset token is compared with a non-constant-time operator instead of hash_equals()](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-wcqc-qqv5-65ph) | [@alham-rizvi](https://github.com/alham-rizvi) | [#1651](https://github.com/InvoicePlane/InvoicePlane/pull/1651) |
 
 ### Security fixes
 
@@ -150,6 +153,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 - [#1638](https://github.com/InvoicePlane/InvoicePlane/pull/1638) — **IDOR:** protect the primary administrator (`user_id=1`) from having their password changed by another admin via `Users::change_password()`.
 - [#1637](https://github.com/InvoicePlane/InvoicePlane/pull/1637) — **CSRF:** add POST + CSRF-token validation to seven delete-style endpoints that relied only on `Base_Controller`'s URL-substring check.
 - [#1636](https://github.com/InvoicePlane/InvoicePlane/pull/1636) — **CSRF:** add POST + CSRF-token validation to `Recurring::stop()`, previously reachable via a bare GET request.
+- [#1651](https://github.com/InvoicePlane/InvoicePlane/pull/1651) — **Token hardening:** generate guest invoice/quote access keys and the CRON authentication key with a CSPRNG, and compare password-reset tokens with `hash_equals()`.
 
 ### Added
 
@@ -159,7 +163,8 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 - Rate limiting for password-reset requests — per IP (`PASSWORD_RESET_IP_MAX_ATTEMPTS`, `PASSWORD_RESET_IP_WINDOW_MINUTES`) and per email (`PASSWORD_RESET_EMAIL_MAX_ATTEMPTS`, `PASSWORD_RESET_EMAIL_WINDOW_HOURS`).
 - `PASSWORD_RESET_TOKEN_EXPIRY_MINUTES` env var (default `15`) and `SEC_STRIP_EXIF_FROM_IMAGES` env var (default `false`).
 - Session env vars `SESS_SAVE_PATH`, `SESS_TABLE_NAME`, `SESS_COOKIE_NAME`, and `SESS_REGENERATE_DESTROY`, all documented in `ipconfig.php.example`. `SESS_SAVE_PATH` may point outside the document root for additional security; it still defaults to PHP's system temp directory.
-- Allowlist-based custom template discovery via `CUSTOM_TEMPLATES_FOLDER` plus the explicit `CUSTOM_INVOICE_TEMPLATES_PDF`, `CUSTOM_INVOICE_TEMPLATES_PUBLIC`, `CUSTOM_QUOTE_TEMPLATES_PDF`, and `CUSTOM_QUOTE_TEMPLATES_PUBLIC` env vars. Names containing spaces or hyphens must be quoted, e.g. `CUSTOM_INVOICE_TEMPLATES_PDF="Corporate - Modern,My Template"`.
+- Allowlist-based custom templates: the template selector is built from the built-in whitelist plus the names explicitly listed in the `CUSTOM_INVOICE_TEMPLATES_PDF`, `CUSTOM_INVOICE_TEMPLATES_PUBLIC`, `CUSTOM_QUOTE_TEMPLATES_PDF`, and `CUSTOM_QUOTE_TEMPLATES_PUBLIC` env vars. Built-in templates always appear in the selector; custom templates appear only if explicitly allowlisted. `CUSTOM_TEMPLATES_FOLDER` locates the corresponding `.php` file on disk at render time and is never scanned to populate the selector. Names containing spaces or hyphens must be quoted, e.g. `CUSTOM_INVOICE_TEMPLATES_PDF="Corporate - Modern,My Template"`.
+- Settings page warning for saved custom invoice and quote template names that are not yet present in the matching `ipconfig.php` allowlist. This helps administrators copy selected legacy template names into `CUSTOM_INVOICE_TEMPLATES_PDF`, `CUSTOM_INVOICE_TEMPLATES_PUBLIC`, `CUSTOM_QUOTE_TEMPLATES_PDF`, or `CUSTOM_QUOTE_TEMPLATES_PUBLIC` after upgrading.
 - `Referrer-Policy: strict-origin-when-cross-origin` header sent on every admin response.
 
 ### Changed

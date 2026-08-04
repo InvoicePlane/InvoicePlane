@@ -63,8 +63,10 @@ class Mdl_Templates extends CI_Model
      *
      * Security: Built-in templates are returned from the static whitelist only — the
      * application's own template directories are NEVER scanned to prevent RCE.
-     * When CUSTOM_TEMPLATES_FOLDER is configured, templates from that admin-supplied
-     * directory are discovered, strictly validated, and merged with the built-in list.
+     * The returned list is the built-in whitelist plus any custom template names explicitly
+     * enumerated in the CUSTOM_INVOICE_TEMPLATES_PDF / CUSTOM_INVOICE_TEMPLATES_PUBLIC
+     * allowlist constants (see _merge_custom()). CUSTOM_TEMPLATES_FOLDER is NOT scanned to
+     * build this list; it only provides the file's location on disk at render time.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -88,8 +90,10 @@ class Mdl_Templates extends CI_Model
      *
      * Security: Built-in templates are returned from the static whitelist only — the
      * application's own template directories are NEVER scanned to prevent RCE.
-     * When CUSTOM_TEMPLATES_FOLDER is configured, templates from that admin-supplied
-     * directory are discovered, strictly validated, and merged with the built-in list.
+     * The returned list is the built-in whitelist plus any custom template names explicitly
+     * enumerated in the CUSTOM_QUOTE_TEMPLATES_PDF / CUSTOM_QUOTE_TEMPLATES_PUBLIC
+     * allowlist constants (see _merge_custom()). CUSTOM_TEMPLATES_FOLDER is NOT scanned to
+     * build this list; it only provides the file's location on disk at render time.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -140,6 +144,68 @@ class Mdl_Templates extends CI_Model
         }
 
         return $warnings;
+    }
+
+    /**
+     * Find selected template settings that are not available in the current allowlists.
+     *
+     * This helps administrators upgrading from versions that discovered template files
+     * automatically. If a saved template name is not built in and not listed in
+     * ipconfig.php, it will not appear in the UI until it is added to the matching
+     * CUSTOM_*_TEMPLATES setting.
+     *
+     * @return array<string, array<int, string>>
+     */
+    public function get_missing_allowlisted_template_settings(): array
+    {
+        $checks = [
+            'CUSTOM_INVOICE_TEMPLATES_PDF' => [
+                'allowed'  => $this->get_invoice_templates('pdf'),
+                'settings' => [
+                    'pdf_invoice_template',
+                    'pdf_invoice_template_paid',
+                    'pdf_invoice_template_overdue',
+                ],
+            ],
+            'CUSTOM_INVOICE_TEMPLATES_PUBLIC' => [
+                'allowed'  => $this->get_invoice_templates('public'),
+                'settings' => [
+                    'public_invoice_template',
+                ],
+            ],
+            'CUSTOM_QUOTE_TEMPLATES_PDF' => [
+                'allowed'  => $this->get_quote_templates('pdf'),
+                'settings' => [
+                    'pdf_quote_template',
+                ],
+            ],
+            'CUSTOM_QUOTE_TEMPLATES_PUBLIC' => [
+                'allowed'  => $this->get_quote_templates('public'),
+                'settings' => [
+                    'public_quote_template',
+                ],
+            ],
+        ];
+
+        $missing = [];
+
+        foreach ($checks as $ipconfig_key => $check) {
+            foreach ($check['settings'] as $setting_key) {
+                $template_name = get_setting($setting_key);
+
+                if ($template_name === '' || in_array($template_name, $check['allowed'], true)) {
+                    continue;
+                }
+
+                $missing[$ipconfig_key][] = $template_name;
+            }
+        }
+
+        foreach ($missing as $ipconfig_key => $template_names) {
+            $missing[$ipconfig_key] = array_values(array_unique($template_names));
+        }
+
+        return $missing;
     }
 
     /**

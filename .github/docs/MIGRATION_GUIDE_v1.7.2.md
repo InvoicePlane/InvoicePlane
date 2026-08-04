@@ -72,6 +72,10 @@ WHERE setting_key LIKE '%template%';
 
 **WARNING: If any PDF or public template setting contains an unexpected value, investigate immediately.**
 
+If the unexpected value is a legitimate custom template that you recognize, keep the value and
+plan to add that template name to the matching `ipconfig.php` allowlist during the upgrade.
+Template names must be copied without the `.php` extension.
+
 ### 3. Review Web Server Logs
 
 Check for suspicious access patterns:
@@ -308,26 +312,50 @@ echo "0 0 1 * * /usr/local/bin/invoiceplane_security_audit.sh > /var/log/invoice
 
 ### Issue: Custom Templates Stop Working
 
-**Symptom:** Custom template you created no longer works after upgrade
+**Symptom:** A custom template you created no longer appears in the selector, or an
+invoice/quote that referenced it falls back to the default template, after upgrading.
 
-**Cause:** Custom templates are not in the static whitelist
+**Cause:** v1.7.2 no longer scans the filesystem to build the template selector (this was the
+RCE fix). A template is only offered if its name is on the explicit allowlist — a template name
+already stored in your database from a previous version is **not** enough on its own, and
+copying the `.php` file into place does not make it appear either.
 
-**Solution:** Add your custom template to the whitelist in code:
+**Solution (recommended):** Keep your templates outside `application/views/` and allowlist them
+via `ipconfig.php`, so they survive future upgrades. This is a **two-step** operation:
 
-1. Edit `application/modules/invoices/models/Mdl_templates.php`
-2. Add your template name to the appropriate array:
-   ```php
-   private const ALLOWED_INVOICE_TEMPLATES = [
-       'pdf' => [
-           'InvoicePlane',
-           'InvoicePlane - paid',
-           'InvoicePlane - overdue',
-           'YourCustomTemplate',  // Add this line
-       ],
-       // ...
-   ];
+1. Move the template file to `CUSTOM_TEMPLATES_FOLDER`, under the sub-path that matches its type
+   and scope, e.g. `<CUSTOM_TEMPLATES_FOLDER>/invoice_templates/pdf/YourCustomTemplate.php`.
+2. Add its name (without `.php`) to the matching allowlist variable in `ipconfig.php`:
+   ```ini
+   CUSTOM_INVOICE_TEMPLATES_PDF="YourCustomTemplate"
    ```
-3. Redeploy the application
+   Built-in templates always appear in the selector; custom templates appear only if listed here.
+   Use the exact same name your database already stores so existing invoices/quotes keep their template.
+
+See [CUSTOM_TEMPLATES.md](CUSTOM_TEMPLATES.md) for the full walkthrough. A complete
+`ipconfig.php` example looks like this:
+
+```ini
+CUSTOM_TEMPLATES_FOLDER=/srv/invoiceplane-templates/
+CUSTOM_INVOICE_TEMPLATES_PDF="MyTemplate,Corporate - Modern"
+CUSTOM_INVOICE_TEMPLATES_PUBLIC="MyTemplate"
+CUSTOM_QUOTE_TEMPLATES_PDF="MyTemplate"
+CUSTOM_QUOTE_TEMPLATES_PUBLIC="MyTemplate"
+```
+
+The template files must exist under the matching sub-path:
+
+```text
+/srv/invoiceplane-templates/invoice_templates/pdf/MyTemplate.php
+/srv/invoiceplane-templates/invoice_templates/public/MyTemplate.php
+/srv/invoiceplane-templates/quote_templates/pdf/MyTemplate.php
+/srv/invoiceplane-templates/quote_templates/public/MyTemplate.php
+```
+
+After running `/setup`, open **Settings** as an administrator. If a saved database setting uses
+a custom template that is not yet in `ipconfig.php`, InvoicePlane shows a warning with the
+exact template name and the `CUSTOM_*_TEMPLATES` variable to update. The warning cannot list
+unused custom template files because InvoicePlane no longer scans template directories.
 
 ### Issue: "Template file not found" Error
 
@@ -355,7 +383,7 @@ chown www-data:www-data application/views/invoice_templates/public/InvoicePlane_
 **Solution:** This is the correct security posture. To add new templates:
 
 1. Add the file via SSH/SFTP with elevated privileges
-2. Add the template to the code whitelist
+2. Add the template name to the matching `CUSTOM_*_TEMPLATES` variable in `ipconfig.php`
 3. Deploy both changes
 4. Set file back to read-only: `chmod 444 new_template.php`
 
