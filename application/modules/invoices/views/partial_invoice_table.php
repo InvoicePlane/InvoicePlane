@@ -86,7 +86,7 @@
                             </li>
 <?php
     }
-    ?>
+                ?>
                             <li>
                                 <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                                    target="_blank">
@@ -99,17 +99,22 @@
                                 </a>
                             </li>
 <?php
-    // eInvoice ON: Show History
-    if (get_setting('einvoicing') == '1') {
-        ?>
+                // eInvoice ON: Show History
+                if (get_setting('einvoicing') == '1') {
+                    ?>
                             <li>
                                 <a href="<?php echo site_url('integrations/history/' . $invoice->invoice_id); ?>">
                                     <i class="fa fa-exchange fa-margin"></i> <?php _trans('einvoice_history'); ?>
                                 </a>
                             </li>
 <?php
-    }
-    ?>
+                }
+                ?>
+                            <li>
+                                <a href="<?php echo site_url('integrations/history/' . $invoice->invoice_id); ?>">
+                                    <i class="fa fa-exchange fa-margin"></i> <?php _trans('einvoice_history'); ?>
+                                </a>
+                            </li>
                             <li>
                                 <a href="#" class="invoice-add-payment"
                                    data-invoice-id="<?php echo $invoice->invoice_id; ?>"
