@@ -71,10 +71,12 @@ class UserClientsServiceTest extends AbstractTestCase
         $controllerFile = APPPATH . 'modules/user_clients/controllers/User_clients.php';
         $content        = file_get_contents($controllerFile);
 
-        /* Act & Assert */
-        self::assertStringNotContainsString(
-            "redirect('user_clients/field/",
-            $content,
+        /* Act */
+        $routeStillPointsAtMissingFieldMethod = str_contains($content, "redirect('user_clients/field/");
+
+        /* Assert */
+        self::assertFalse(
+            $routeStillPointsAtMissingFieldMethod,
             "create()'s cancel path must not redirect to user_clients/field/ — "
             . 'that route does not exist (the controller method is user(), not field()).'
         );

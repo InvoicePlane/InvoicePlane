@@ -43,8 +43,17 @@ class QontoClientTest extends TestCase
     #[Test]
     public function it_exposes_client_code_and_name(): void
     {
-        self::assertSame('qonto', QontoClient::clientCode());
-        self::assertSame('Qonto PA', QontoClient::clientName());
+        /* Arrange */
+        $expectedCode = 'qonto';
+        $expectedName = 'Qonto PA';
+
+        /* Act */
+        $clientCode = QontoClient::clientCode();
+        $clientName = QontoClient::clientName();
+
+        /* Assert */
+        self::assertSame($expectedCode, $clientCode);
+        self::assertSame($expectedName, $clientName);
     }
 
     #[Test]
@@ -71,8 +80,11 @@ class QontoClientTest extends TestCase
         /* Arrange */
         $client = new QontoClient(new ApiClientFake());
 
-        /* Act & Assert */
-        self::assertTrue($client->authenticate($this->settings()));
+        /* Act */
+        $authenticated = $client->authenticate($this->settings());
+
+        /* Assert */
+        self::assertTrue($authenticated);
     }
 
     #[Test]
@@ -271,7 +283,8 @@ class QontoClientTest extends TestCase
         /* Act */
         $result = $client->sendInvoice($document, $metadata);
 
-        /* Assert — three HTTP calls in order */
+        /* Assert */
+        /* three HTTP calls in order */
         self::assertCount(3, $http->requestLog);
         self::assertTrue($http->requestLog[0]['multipart']);
         self::assertSame(RequestMethod::POST, $http->requestLog[1]['method']);
@@ -318,7 +331,8 @@ class QontoClientTest extends TestCase
         /* Act */
         $result = $client->sendInvoice($document, []);
 
-        /* Assert — only the upload call was made, and an error is returned */
+        /* Assert */
+        /* only the upload call was made, and an error is returned */
         self::assertCount(1, $http->requestLog);
         self::assertFalse($result['success']);
         self::assertStringContainsString('qonto_invoice_payload', $result['message']);

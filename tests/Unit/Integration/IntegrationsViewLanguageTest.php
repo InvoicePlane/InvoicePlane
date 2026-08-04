@@ -22,9 +22,11 @@ class IntegrationsViewLanguageTest extends TestCase
     #[Test]
     public function it_defines_every_translation_key_used_by_the_integration_views(): void
     {
+        /* Arrange */
         $lang    = $this->englishLang();
         $missing = [];
 
+        /* Act */
         foreach ($this->viewFiles() as $file) {
             foreach ($this->translationKeysIn($file) as $key) {
                 if ( ! array_key_exists($key, $lang)) {
@@ -33,6 +35,7 @@ class IntegrationsViewLanguageTest extends TestCase
             }
         }
 
+        /* Assert */
         self::assertSame([], $missing, 'Undefined translation keys: ' . implode(', ', $missing));
     }
 

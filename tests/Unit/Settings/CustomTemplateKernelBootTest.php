@@ -43,8 +43,13 @@ class CustomTemplateKernelBootTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_populates_the_invoice_pdf_allowlist_constant_through_the_real_kernel(): void
     {
-        $this->boot_kernel_with(['CUSTOM_INVOICE_TEMPLATES_PDF' => 'My Kernel Template']);
+        /* Arrange */
+        $env = ['CUSTOM_INVOICE_TEMPLATES_PDF' => 'My Kernel Template'];
 
+        /* Act */
+        $this->boot_kernel_with($env);
+
+        /* Assert */
         self::assertTrue(
             defined('CUSTOM_INVOICE_TEMPLATES_PDF'),
             'kernel.php must define the custom-template allowlist constants (via constants.php).'
@@ -79,8 +84,13 @@ class CustomTemplateKernelBootTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_defines_the_env_helper_before_wiring_the_constants(): void
     {
-        $this->boot_kernel_with(['CUSTOM_INVOICE_TEMPLATES_PDF' => '']);
+        /* Arrange */
+        $env = ['CUSTOM_INVOICE_TEMPLATES_PDF' => ''];
 
+        /* Act */
+        $this->boot_kernel_with($env);
+
+        /* Assert */
         // The custom-template constants are defined from env(); if kernel.php did
         // not provide env() before requiring constants.php, boot would fatal.
         self::assertTrue(function_exists('env'), 'kernel.php must define the env() helper.');

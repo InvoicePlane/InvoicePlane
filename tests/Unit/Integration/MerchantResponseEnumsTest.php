@@ -49,7 +49,14 @@ class MerchantResponseEnumsTest extends TestCase
     #[DataProvider('statusSuccessProvider')]
     public function it_maps_status_to_success_state(MerchantResponseStatus $status, ?bool $expected): void
     {
-        self::assertSame($expected, $status->isSuccessful());
+        /* Arrange */
+        $expectedSuccessState = $expected;
+
+        /* Act */
+        $successState = $status->isSuccessful();
+
+        /* Assert */
+        self::assertSame($expectedSuccessState, $successState);
     }
 
     #[Test]
@@ -67,8 +74,17 @@ class MerchantResponseEnumsTest extends TestCase
     #[Test]
     public function it_resolves_a_status_from_its_backing_value(): void
     {
-        self::assertSame(MerchantResponseStatus::Accepted, MerchantResponseStatus::from('accepted'));
-        self::assertNull(MerchantResponseStatus::tryFrom('not-a-status'));
+        /* Arrange */
+        $acceptedValue = 'accepted';
+        $unknownValue  = 'not-a-status';
+
+        /* Act */
+        $acceptedStatus = MerchantResponseStatus::from($acceptedValue);
+        $unknownStatus  = MerchantResponseStatus::tryFrom($unknownValue);
+
+        /* Assert */
+        self::assertSame(MerchantResponseStatus::Accepted, $acceptedStatus);
+        self::assertNull($unknownStatus);
     }
 
     // -------------------------------------------------------------------------
@@ -87,8 +103,17 @@ class MerchantResponseEnumsTest extends TestCase
     #[Test]
     public function it_backs_directions_with_stable_values(): void
     {
-        self::assertSame('in', MerchantResponseDirection::In->value);
-        self::assertSame('out', MerchantResponseDirection::Out->value);
+        /* Arrange */
+        $expectedInboundValue  = 'in';
+        $expectedOutboundValue = 'out';
+
+        /* Act */
+        $inboundValue  = MerchantResponseDirection::In->value;
+        $outboundValue = MerchantResponseDirection::Out->value;
+
+        /* Assert */
+        self::assertSame($expectedInboundValue, $inboundValue);
+        self::assertSame($expectedOutboundValue, $outboundValue);
     }
 
     #[Test]
@@ -105,9 +130,17 @@ class MerchantResponseEnumsTest extends TestCase
     #[Test]
     public function it_matches_provider_driver_codes_to_the_client_codes(): void
     {
-        /* The driver enum values must line up with each provider's clientCode(). */
-        self::assertSame(QontoClient::clientCode(), MerchantResponseDriver::Qonto->value);
-        self::assertSame(SuperPdpClient::clientCode(), MerchantResponseDriver::SuperPdp->value);
+        /* Arrange */
+        $qontoClientCode    = QontoClient::clientCode();
+        $superPdpClientCode = SuperPdpClient::clientCode();
+
+        /* Act */
+        $qontoDriverCode    = MerchantResponseDriver::Qonto->value;
+        $superPdpDriverCode = MerchantResponseDriver::SuperPdp->value;
+
+        /* Assert */
+        self::assertSame($qontoClientCode, $qontoDriverCode);
+        self::assertSame($superPdpClientCode, $superPdpDriverCode);
     }
 
     // -------------------------------------------------------------------------
@@ -128,14 +161,17 @@ class MerchantResponseEnumsTest extends TestCase
     #[Test]
     public function it_exposes_the_bis_billing_invoice_document_id(): void
     {
-        self::assertStringContainsString(
-            'billing:3.0',
-            PeppolDocumentType::BillingInvoice->value
-        );
-        self::assertStringContainsString(
-            'CreditNote',
-            PeppolDocumentType::BillingCreditNote->value
-        );
+        /* Arrange */
+        $invoiceDocumentId    = PeppolDocumentType::BillingInvoice->value;
+        $creditNoteDocumentId = PeppolDocumentType::BillingCreditNote->value;
+
+        /* Act */
+        $invoiceUsesBisBilling    = str_contains($invoiceDocumentId, 'billing:3.0');
+        $creditNoteUsesCreditNote = str_contains($creditNoteDocumentId, 'CreditNote');
+
+        /* Assert */
+        self::assertTrue($invoiceUsesBisBilling);
+        self::assertTrue($creditNoteUsesCreditNote);
     }
 
     #[Test]

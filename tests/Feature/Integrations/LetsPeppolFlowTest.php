@@ -379,11 +379,12 @@ class LetsPeppolFlowTest extends AbstractTestCase
         $invoiceId                   = $this->seedInvoice($clientId);
         $nonexistentMerchantClientId = 99999;
 
-        /* Act & Assert */
+        /* Act */
         // show_error() becomes RuntimeException in the test harness.
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches('/merchant_client_not_found/');
 
+        /* Assert */
         $this->post('/integrations/send_invoice/' . $invoiceId . '/' . $nonexistentMerchantClientId);
     }
 
@@ -395,10 +396,11 @@ class LetsPeppolFlowTest extends AbstractTestCase
         $invoiceId        = $this->seedInvoice($clientId);
         $merchantClientId = $this->seedLetsPeppolClient(['enabled' => 0]);
 
-        /* Act & Assert */
+        /* Act */
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches('/merchant_client_not_found/');
 
+        /* Assert */
         $this->post('/integrations/send_invoice/' . $invoiceId . '/' . $merchantClientId);
     }
 
@@ -409,9 +411,10 @@ class LetsPeppolFlowTest extends AbstractTestCase
         $merchantClientId     = $this->seedLetsPeppolClient();
         $nonexistentInvoiceId = 99999;
 
-        /* Act & Assert */
+        /* Act */
         $this->expectException(RuntimeException::class);
 
+        /* Assert */
         $this->post('/integrations/send_invoice/' . $nonexistentInvoiceId . '/' . $merchantClientId);
     }
 

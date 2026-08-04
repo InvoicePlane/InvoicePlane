@@ -28,7 +28,14 @@ class TaxRateDecimalPlacesProcessorTest extends TestCase
     #[Test]
     public function it_accepts_an_integer_within_range(): void
     {
-        self::assertSame(4, $this->processor->validateAndNormalize('4', 0, 10));
+        /* Arrange */
+        $value = '4';
+
+        /* Act */
+        $normalized = $this->processor->validateAndNormalize($value, 0, 10);
+
+        /* Assert */
+        self::assertSame(4, $normalized);
     }
 
     #[Test]
@@ -42,9 +49,14 @@ class TaxRateDecimalPlacesProcessorTest extends TestCase
     #[Test]
     public function it_rejects_a_non_numeric_string(): void
     {
+        /* Arrange */
+        $value = 'abc';
+
+        /* Act */
         $this->expectException(InvalidArgumentException::class);
 
-        $this->processor->validateAndNormalize('abc', 0, 10);
+        /* Assert */
+        $this->processor->validateAndNormalize($value, 0, 10);
     }
 
     #[Test]
@@ -58,9 +70,14 @@ class TaxRateDecimalPlacesProcessorTest extends TestCase
     #[Test]
     public function it_rejects_a_negative_value_below_the_min_range(): void
     {
+        /* Arrange */
+        $value = -1;
+
+        /* Act */
         $this->expectException(InvalidArgumentException::class);
 
-        $this->processor->validateAndNormalize(-1, 0, 10);
+        /* Assert */
+        $this->processor->validateAndNormalize($value, 0, 10);
     }
 
     #[Test]
@@ -74,7 +91,15 @@ class TaxRateDecimalPlacesProcessorTest extends TestCase
     #[Test]
     public function it_reports_a_schema_change_only_when_the_value_actually_differs(): void
     {
-        self::assertFalse($this->processor->shouldAlterSchema(4, 4));
-        self::assertTrue($this->processor->shouldAlterSchema(4, 6));
+        /* Arrange */
+        $currentPrecision = 4;
+
+        /* Act */
+        $unchangedPrecisionRequiresAlter = $this->processor->shouldAlterSchema($currentPrecision, 4);
+        $changedPrecisionRequiresAlter   = $this->processor->shouldAlterSchema($currentPrecision, 6);
+
+        /* Assert */
+        self::assertFalse($unchangedPrecisionRequiresAlter);
+        self::assertTrue($changedPrecisionRequiresAlter);
     }
 }
