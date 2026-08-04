@@ -72,6 +72,10 @@ WHERE setting_key LIKE '%template%';
 
 **WARNING: If any PDF or public template setting contains an unexpected value, investigate immediately.**
 
+If the unexpected value is a legitimate custom template that you recognize, keep the value and
+plan to add that template name to the matching `ipconfig.php` allowlist during the upgrade.
+Template names must be copied without the `.php` extension.
+
 ### 3. Review Web Server Logs
 
 Check for suspicious access patterns:
@@ -328,25 +332,30 @@ via `ipconfig.php`, so they survive future upgrades. This is a **two-step** oper
    Built-in templates always appear in the selector; custom templates appear only if listed here.
    Use the exact same name your database already stores so existing invoices/quotes keep their template.
 
-See [CUSTOM_TEMPLATES.md](CUSTOM_TEMPLATES.md) for the full walkthrough.
+See [CUSTOM_TEMPLATES.md](CUSTOM_TEMPLATES.md) for the full walkthrough. A complete
+`ipconfig.php` example looks like this:
 
-**Alternative:** If you prefer to keep the template inside the application, add its name to the
-appropriate constant in `application/modules/invoices/models/Mdl_templates.php` and redeploy:
+```ini
+CUSTOM_TEMPLATES_FOLDER=/srv/invoiceplane-templates/
+CUSTOM_INVOICE_TEMPLATES_PDF="MyTemplate,Corporate - Modern"
+CUSTOM_INVOICE_TEMPLATES_PUBLIC="MyTemplate"
+CUSTOM_QUOTE_TEMPLATES_PDF="MyTemplate"
+CUSTOM_QUOTE_TEMPLATES_PUBLIC="MyTemplate"
+```
 
-1. Edit `application/modules/invoices/models/Mdl_templates.php`
-2. Add your template name to the appropriate array:
-   ```php
-   private const ALLOWED_INVOICE_TEMPLATES = [
-       'pdf' => [
-           'InvoicePlane',
-           'InvoicePlane - paid',
-           'InvoicePlane - overdue',
-           'YourCustomTemplate',  // Add this line
-       ],
-       // ...
-   ];
-   ```
-3. Redeploy the application
+The template files must exist under the matching sub-path:
+
+```text
+/srv/invoiceplane-templates/invoice_templates/pdf/MyTemplate.php
+/srv/invoiceplane-templates/invoice_templates/public/MyTemplate.php
+/srv/invoiceplane-templates/quote_templates/pdf/MyTemplate.php
+/srv/invoiceplane-templates/quote_templates/public/MyTemplate.php
+```
+
+After running `/setup`, open **Settings** as an administrator. If a saved database setting uses
+a custom template that is not yet in `ipconfig.php`, InvoicePlane shows a warning with the
+exact template name and the `CUSTOM_*_TEMPLATES` variable to update. The warning cannot list
+unused custom template files because InvoicePlane no longer scans template directories.
 
 ### Issue: "Template file not found" Error
 
@@ -374,7 +383,7 @@ chown www-data:www-data application/views/invoice_templates/public/InvoicePlane_
 **Solution:** This is the correct security posture. To add new templates:
 
 1. Add the file via SSH/SFTP with elevated privileges
-2. Add the template to the code whitelist
+2. Add the template name to the matching `CUSTOM_*_TEMPLATES` variable in `ipconfig.php`
 3. Deploy both changes
 4. Set file back to read-only: `chmod 444 new_template.php`
 

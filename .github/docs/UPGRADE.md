@@ -121,6 +121,13 @@ are required:
 See [CUSTOM_TEMPLATES.md](CUSTOM_TEMPLATES.md) for the full walkthrough, and section #4 below
 if you previously kept custom templates inside `application/views/`.
 
+**Upgrade aid:** After upgrading and running `/setup`, the Settings page checks the saved PDF
+and public template settings in the database. If one of those settings names a template that is
+not built in and not present in the matching `CUSTOM_*_TEMPLATES` allowlist, InvoicePlane shows
+an administrator warning with the exact template name and `ipconfig.php` variable to update.
+This warning intentionally uses only saved database settings; InvoicePlane still does not scan
+template folders to discover unused template files.
+
 #### 4. Template whitelist now covers only built-in templates
 
 **Who is affected:** Installations with custom invoice or quote templates stored **inside the
@@ -181,6 +188,12 @@ before applying the upgrade, especially if you are upgrading from v1.7.0 or v1.7
 Open `http://yourdomain.com/index.php/setup` and follow the on-screen instructions. The
 setup wizard runs the required database migrations automatically, including adding the
 `user_passwordreset_token_expiry` column for the password reset token expiry fix.
+
+After `/setup` completes, log in as an administrator and open **Settings**. If InvoicePlane
+finds saved custom template names that are not listed in `ipconfig.php`, it shows a warning
+with the names to copy into `CUSTOM_INVOICE_TEMPLATES_PDF`,
+`CUSTOM_INVOICE_TEMPLATES_PUBLIC`, `CUSTOM_QUOTE_TEMPLATES_PDF`, or
+`CUSTOM_QUOTE_TEMPLATES_PUBLIC`.
 
 ### 4. Set secure template directory permissions
 
