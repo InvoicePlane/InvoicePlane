@@ -122,6 +122,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 | CSRF bypass in `Recurring::stop()` via GET request | Medium | [CSRF: Recurring Invoice State Change via GET Request Without CSRF Protection](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-qf9q-2hxm-4wh9) | [@Char0n1507](https://github.com/Char0n1507) | [#1636](https://github.com/InvoicePlane/InvoicePlane/pull/1636) |
 | Guest invoice/quote access keys and CRON authentication key generated with non-cryptographic PRNG | Medium | [Guest invoice/quote access keys and the CRON authentication key are generated with a non-cryptographic PRNG](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-chqc-v432-8pj8) | [@alham-rizvi](https://github.com/alham-rizvi) | [#1651](https://github.com/InvoicePlane/InvoicePlane/pull/1651) |
 | Password reset token compared with non-constant-time operator | Medium | [Password reset token is compared with a non-constant-time operator instead of hash_equals()](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-wcqc-qqv5-65ph) | [@alham-rizvi](https://github.com/alham-rizvi) | [#1651](https://github.com/InvoicePlane/InvoicePlane/pull/1651) |
+| Sensitive user fields exposed through email-template placeholders | Medium | — | [@Char0n1507](https://github.com/Char0n1507) | [#1660](https://github.com/InvoicePlane/InvoicePlane/pull/1660) |
 
 ### Security fixes
 
@@ -158,6 +159,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 - [#1637](https://github.com/InvoicePlane/InvoicePlane/pull/1637) — **CSRF:** add POST + CSRF-token validation to seven delete-style endpoints that relied only on `Base_Controller`'s URL-substring check.
 - [#1636](https://github.com/InvoicePlane/InvoicePlane/pull/1636) — **CSRF:** add POST + CSRF-token validation to `Recurring::stop()`, previously reachable via a bare GET request.
 - [#1651](https://github.com/InvoicePlane/InvoicePlane/pull/1651) — **Token hardening:** generate guest invoice/quote access keys and the CRON authentication key with a CSPRNG, and compare password-reset tokens with `hash_equals()`.
+- [#1660](https://github.com/InvoicePlane/InvoicePlane/pull/1660) — **Email template data exposure:** `parse_template()` now substitutes only documented invoice, quote, client, user, SUMEX, and custom-field tags; unknown placeholders render empty instead of reflecting arbitrary properties from the selected database row. Invoice and quote queries also select explicit public `ip_users` columns, excluding password hashes, salts, and password-reset tokens. Thanks to [@Char0n1507](https://github.com/Char0n1507) for the responsible disclosure.
 
 ### Added
 
