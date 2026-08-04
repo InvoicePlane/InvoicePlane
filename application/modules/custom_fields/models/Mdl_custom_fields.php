@@ -327,7 +327,7 @@ class Mdl_Custom_Fields extends MY_Model
     /**
      * @param int    $field_id
      * @param string $custom_field_model
-     * @param int    $model_id
+     * @param object $object
      *
      * @return string
      */

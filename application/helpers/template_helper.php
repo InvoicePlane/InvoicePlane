@@ -57,7 +57,6 @@ function render_template_view(string $template_subpath, array $data, bool $retur
  *
  * @param $object
  * @param $body
- * @param $model_id
  *
  * @return mixed
  */
@@ -208,7 +207,7 @@ function parse_template($object, $body)
 /**
  * Returns the translated invoice status.
  *
- * @param $invoice->invoice_status_id
+ * @param $id
  *
  * @return string
  */
