@@ -26,17 +26,29 @@ class ParsePhpstanResultsTest extends AbstractTestCase
 {
     private static bool $scriptLoaded = false;
 
+    private static function scriptPath(): string
+    {
+        return dirname(__DIR__, 2) . '/.github/scripts/parse-phpstan-results.php';
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if ( ! file_exists(self::scriptPath())) {
+            $this->markTestSkipped('.github/scripts/parse-phpstan-results.php not found in this environment');
+        }
+    }
+
     /**
      * Bootstrap: load the script once per process so that all helper
      * functions are defined before any test method runs.
      *
-     * The script is a CLI tool that reads a file named in $argv[1], so we
-     * create a temporary PHPStan JSON fixture with at least one error to
-     * avoid the early exit(0) branch that fires when totalErrors === 0.
+     * The script exposes helper functions and guards CLI execution so tests
+     * can include it without triggering top-level output or exit().
      */
     public static function setUpBeforeClass(): void
     {
-        if ( ! file_exists(dirname(__DIR__, 2) . '/.github/scripts/parse-phpstan-results.php')) {
+        if ( ! file_exists(self::scriptPath())) {
             return;
         }
 
@@ -71,20 +83,12 @@ class ParsePhpstanResultsTest extends AbstractTestCase
 
         // Suppress the Markdown output the bootstrap code echoes to stdout.
         ob_start();
-        require_once dirname(__DIR__, 2) . '/.github/scripts/parse-phpstan-results.php';
-        ob_end_clean();
+        require_once self::scriptPath();
+        $output = ob_get_clean();
 
-        @unlink($tmpFile);
+        self::assertSame('', $output);
 
         self::$scriptLoaded = true;
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        if ( ! file_exists(dirname(__DIR__, 2) . '/.github/scripts/parse-phpstan-results.php')) {
-            $this->markTestSkipped('.github/scripts/parse-phpstan-results.php not found in this environment');
-        }
     }
 
     // -------------------------------------------------------------------------
@@ -372,8 +376,7 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     public function it_handles_multibyte_characters_correctly(): void
     {
         /* Arrange */
-
-        /* Arrange – 60 multibyte Japanese characters, exceeds custom limit of 20 */
+        /* 60 multibyte Japanese characters, exceeds custom limit of 20 */
         $message = str_repeat('あ', 60);
 
         /* Act */
@@ -391,13 +394,10 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[Test]
     public function it_strips_project_root_prefix_from_absolute_path(): void
     {
-        /* Arrange */
-
         /* Arrange – derive the project root the same way the script does:
            .github/scripts/parse-phpstan-results.php => dirname(__DIR__, 2) from the
            script file's __DIR__ (.github/scripts) gives the project root.          */
-        $scriptDir    = dirname(__DIR__, 2) . '/.github/scripts';
-        $projectRoot  = dirname($scriptDir, 2);
+        $projectRoot  = dirname(self::scriptPath(), 3);
         $absolutePath = $projectRoot . '/application/modules/invoices/models/Mdl_invoices.php';
 
         /* Act */
@@ -425,8 +425,7 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     public function it_returns_path_unchanged_when_no_prefix_matches(): void
     {
         /* Arrange */
-
-        /* Arrange – a path that does not start with the project root or cwd */
+        /* a path that does not start with the project root or cwd */
         $path = '/some/completely/different/directory/file.php';
 
         /* Act */

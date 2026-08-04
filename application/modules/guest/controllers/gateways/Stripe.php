@@ -41,7 +41,7 @@ class Stripe extends Base_Controller
      *
      * @param string $invoice_url_key the url key that is used to retrive the invoice
      *
-     * @return json the client secret in a json format
+     * @return void
      */
     public function create_checkout_session($invoice_url_key)
     {
@@ -97,6 +97,12 @@ class Stripe extends Base_Controller
      */
     public function callback(string $checkout_session_id)
     {
+        $invoice = null;
+        $paid = 'error';
+        $response = '';
+        $session = null;
+        $user_msg = '';
+
         try {
             // Retrieve the Checkout Session from Stripe
             $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
@@ -214,7 +220,7 @@ class Stripe extends Base_Controller
             // Notify user
             $this->session->set_flashdata('alert_' . $paid, $user_msg);
             // Attempt to redirect them to the invoice. invoice_url_key? No, return to invoices view
-            redirect('guest/view/invoice' . (empty($invoice->invoice_url_key) ? 's' : '/' . $invoice->invoice_url_key));
+            redirect('guest/view/invoice' . (empty($invoice?->invoice_url_key) ? 's' : '/' . $invoice?->invoice_url_key));
         }
     }
 
