@@ -47,14 +47,6 @@
                         <li><a href="#" class="create-invoice"><?php _trans('create_invoice'); ?></a></li>
                         <li><?php echo anchor('invoices/index', trans('view_invoices')); ?></li>
                         <li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
-<?php
-// eInvoice ON: Show incomings link
-if (get_setting('einvoicing') == '1') {
-    ?>
-                        <li><?php echo anchor('integrations/incoming', trans('incoming_invoices')); ?></li>
-<?php
-}
-                ?>
                     </ul>
                 </li>
 
@@ -157,14 +149,6 @@ if (get_setting('einvoicing') == '1') {
                         <li><?php echo anchor('users/index', trans('user_accounts')); ?></li>
                         <li class="divider hidden-xs hidden-sm"></li>
                         <li><?php echo anchor('settings', trans('system_settings')); ?></li>
-<?php
-                // eInvoice ON: Show incomings link
-                if (get_setting('einvoicing') == '1') {
-                    ?>
-                        <li><?php echo anchor('integrations/settings', trans('einvoice_providers')); ?></li>
-<?php
-                }
-                ?>
                         <li><?php echo anchor('import', trans('import_data')); ?></li>
                     </ul>
                 </li>
