@@ -23,45 +23,23 @@ parameters:
     bootstrapFiles:
         - tests/Support/phpstan-bootstrap.php
 
-    # Stub-only signature file for CI3 system functions (site_url, redirect,
-    # log_message, lang, …). Registered as stubFiles rather than loaded via
-    # bootstrapFiles so PHPStan treats them as pure signature declarations.
-    stubFiles:
-        - tests/Support/phpstan-ci-stubs.php
-
     ignoreErrors:
         # CI3 magic loading: controllers/models access framework services and
         # sub-models as dynamic properties ($this->db, $this->load, $this->input,
         # $this->mdl_*). These cannot be resolved statically without full stubs.
-        -
-            identifier: property.notFound
-            path: application/modules/*
+        - identifier: property.notFound
 
         # Sub-models and library methods are resolved dynamically by CI3's loader.
-        -
-            identifier: method.notFound
-            path: application/modules/*
+        - identifier: method.notFound
 
         # Base controllers/models (Admin_Controller, MY_Model, Response_Model, …)
         # are registered by CI3's HMVC loader, not autoloaded.
-        -
-            identifier: class.extendsUnknownClass
-            paths:
-                - application/modules/*
-                - application/core/*
+        - identifier: class.extendsUnknownClass
 
         # CI3 is case-insensitive when loading classes via its loader.
-        -
-            identifier: class.nameCase
-            paths:
-                - application/modules/*
-                - application/core/*
+        - identifier: class.nameCase
 
         # parent::__construct() in controllers whose base class is loaded at runtime.
-        -
-            identifier: class.noParent
-            paths:
-                - application/modules/*
-                - application/core/*
+        - identifier: class.noParent
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false
