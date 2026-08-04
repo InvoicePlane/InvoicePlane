@@ -13,12 +13,14 @@
 audit-report.json
 updated-packages.txt
 pint_output.log
+/.phpunit.result.cache
 
 # Other files
 .htaccess
 .idea
 .todo
 .sass-cache
+/application/cache/htmlpurifier/
 adminer.php
 /nbproject
 /patches
