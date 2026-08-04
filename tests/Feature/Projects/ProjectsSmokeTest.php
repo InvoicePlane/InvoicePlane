@@ -1,15 +1,16 @@
 <?php
 
-namespace Tests\Unit\Projects;
+namespace Tests\Feature\Projects;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * Smoke test for the ProjectsServiceTest module via CI3 HTTP harness.
+ * Smoke coverage for the projects module via the CI3 HTTP harness.
  */
-class ProjectsServiceTest extends AbstractTestCase
+#[Group('projects')]
+class ProjectsSmokeTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
@@ -20,6 +21,7 @@ class ProjectsServiceTest extends AbstractTestCase
 
     #[Test]
     #[Group('smoke')]
+    #[Group('projects')]
     public function it_returns_a_successful_response_or_redirect(): void
     {
         /* Arrange */
@@ -38,6 +40,7 @@ class ProjectsServiceTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('projects')]
     public function it_redirects_a_guest_to_login(): void
     {
         /* Arrange */

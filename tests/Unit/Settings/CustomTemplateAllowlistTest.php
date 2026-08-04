@@ -60,11 +60,16 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_lists_a_custom_invoice_pdf_template_configured_in_ipconfig(): void
     {
+        /* Arrange */
         $model = $this->bootModelWith(['CUSTOM_INVOICE_TEMPLATES_PDF' => 'My Custom Template']);
 
+        /* Act */
+        $templates = $model->get_invoice_templates('pdf');
+
+        /* Assert */
         self::assertContains(
             'My Custom Template',
-            $model->get_invoice_templates('pdf'),
+            $templates,
             'A custom invoice PDF template configured in ipconfig.php must appear in the settings dropdown.'
         );
     }
@@ -88,11 +93,16 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_lists_a_custom_quote_pdf_template_configured_in_ipconfig(): void
     {
+        /* Arrange */
         $model = $this->bootModelWith(['CUSTOM_QUOTE_TEMPLATES_PDF' => 'My Quote Template']);
 
+        /* Act */
+        $templates = $model->get_quote_templates('pdf');
+
+        /* Assert */
         self::assertContains(
             'My Quote Template',
-            $model->get_quote_templates('pdf'),
+            $templates,
             'A custom quote PDF template configured in ipconfig.php must appear in the settings dropdown.'
         );
     }
@@ -116,10 +126,13 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_keeps_built_in_templates_alongside_a_custom_one(): void
     {
+        /* Arrange */
         $model = $this->bootModelWith(['CUSTOM_INVOICE_TEMPLATES_PDF' => 'My Custom Template']);
 
+        /* Act */
         $templates = $model->get_invoice_templates('pdf');
 
+        /* Assert */
         self::assertContains('My Custom Template', $templates, 'The custom template must be listed.');
         self::assertContains('InvoicePlane', $templates, 'Built-in templates must still be listed after merging in a custom one.');
     }
@@ -142,11 +155,16 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_returns_only_built_ins_when_no_custom_templates_are_configured(): void
     {
+        /* Arrange */
         $model = $this->bootModelWith([]);
 
+        /* Act */
+        $templates = $model->get_invoice_templates('pdf');
+
+        /* Assert */
         self::assertSame(
             ['InvoicePlane', 'InvoicePlane - paid', 'InvoicePlane - overdue'],
-            $model->get_invoice_templates('pdf'),
+            $templates,
             'With nothing configured the list must be exactly the built-in whitelist, unchanged.'
         );
     }
@@ -175,11 +193,16 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_rejects_a_php_extension_custom_template_name(): void
     {
+        /* Arrange */
         $model = $this->bootModelWith(['CUSTOM_INVOICE_TEMPLATES_PDF' => 'evil.php']);
 
+        /* Act */
+        $templates = $model->get_invoice_templates('pdf');
+
+        /* Assert */
         self::assertNotContains(
             'evil.php',
-            $model->get_invoice_templates('pdf'),
+            $templates,
             'A name containing a file extension (the "." is disallowed) must be rejected.'
         );
     }
@@ -200,17 +223,13 @@ class CustomTemplateAllowlistTest extends TestCase
     // -- Bootstrap wiring guard: the single boot path must define all four --
 
     #[Test]
-    public function the_single_bootstrap_wires_all_four_allowlist_constants_from_ipconfig(): void
+    public function it_wires_all_four_allowlist_constants_from_ipconfig_through_the_single_bootstrap(): void
     {
+        /* Arrange */
         $repoRoot = dirname(__DIR__, 3);
 
         // The legacy root index.php was removed; public/index.php -> bootstrap/constants.php
         // is now the only boot path, so this is the one file that must wire the constants.
-        self::assertFileDoesNotExist(
-            $repoRoot . '/index.php',
-            'The legacy root index.php must stay removed so a second bootstrap cannot drift out of sync.'
-        );
-
         $source = (string) file_get_contents($repoRoot . '/bootstrap/constants.php');
 
         $constants = [
@@ -220,11 +239,24 @@ class CustomTemplateAllowlistTest extends TestCase
             'CUSTOM_QUOTE_TEMPLATES_PUBLIC',
         ];
 
+        /* Act */
+        $definedFromEnvironment = [];
         foreach ($constants as $constant) {
-            $pattern = '/define\(\s*[\'"]' . preg_quote($constant, '/') . '[\'"]\s*,\s*env\(/';
-            self::assertMatchesRegularExpression(
-                $pattern,
-                $source,
+            $definedFromEnvironment[$constant] = (bool) preg_match(
+                '/define\(\s*[\'"]' . preg_quote($constant, '/') . '[\'"]\s*,\s*env\(/',
+                $source
+            );
+        }
+
+        /* Assert */
+        self::assertFileDoesNotExist(
+            $repoRoot . '/index.php',
+            'The legacy root index.php must stay removed so a second bootstrap cannot drift out of sync.'
+        );
+
+        foreach ($definedFromEnvironment as $constant => $wasDefinedFromEnvironment) {
+            self::assertTrue(
+                $wasDefinedFromEnvironment,
                 sprintf('bootstrap/constants.php must define %s from its ipconfig env key, or the fix is absent.', $constant)
             );
         }

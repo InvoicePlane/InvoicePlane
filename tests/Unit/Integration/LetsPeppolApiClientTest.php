@@ -81,9 +81,11 @@ class LetsPeppolApiClientTest extends TestCase
         /* Arrange */
         [$client] = $this->makeClient([], ['error' => 'invalid_client']);
 
-        /* Act & Assert */
+        /* Act */
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('no access_token');
+
+        /* Assert */
         $client->authenticate();
     }
 
@@ -95,9 +97,11 @@ class LetsPeppolApiClientTest extends TestCase
         $client = new LetsPeppolApiClient($http);
         $client->configure($this->settings());
 
-        /* Act & Assert */
+        /* Act */
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('timeout');
+
+        /* Assert */
         $client->authenticate();
     }
 

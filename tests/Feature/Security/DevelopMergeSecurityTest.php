@@ -35,13 +35,16 @@ class DevelopMergeSecurityTest extends AbstractTestCase
         /* Arrange */
         require_once dirname(__DIR__, 3) . '/bootstrap/kernel.php';
 
+        /* Act */
+        $storageTempFolder = STORAGE_TEMP_FOLDER;
+
         /* Assert */
         self::assertTrue(defined('STORAGE_TEMP_FOLDER'), 'STORAGE_TEMP_FOLDER must be defined by bootstrap/kernel.php.');
         self::assertTrue(defined('FCPATH'), 'FCPATH must be defined by bootstrap/kernel.php.');
 
         self::assertStringStartsNotWith(
             FCPATH,
-            STORAGE_TEMP_FOLDER,
+            $storageTempFolder,
             'STORAGE_TEMP_FOLDER must live outside the public web root (FCPATH), '
             . 'otherwise SUMEX XML files are directly downloadable by an unauthenticated attacker.'
         );
@@ -79,6 +82,9 @@ class DevelopMergeSecurityTest extends AbstractTestCase
         /* Arrange */
         $htaccessPath = dirname(APPPATH) . '/uploads/import/.htaccess';
 
+        /* Act */
+        $rules = file_get_contents($htaccessPath);
+
         /* Assert */
         self::assertFileExists(
             $htaccessPath,
@@ -88,7 +94,7 @@ class DevelopMergeSecurityTest extends AbstractTestCase
         );
         self::assertStringContainsString(
             'Deny from all',
-            file_get_contents($htaccessPath),
+            $rules,
             'uploads/import/.htaccess must deny all direct web access.'
         );
     }

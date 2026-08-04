@@ -34,13 +34,20 @@ class IntegrationClientRegistryTest extends TestCase
     #[Test]
     public function it_discovers_the_bundled_providers(): void
     {
+        /* Arrange */
+        $expectedProviders = [
+            'qonto'      => QontoClient::class,
+            'superpdp'   => SuperPdpClient::class,
+            'letspeppol' => LetsPeppolClient::class,
+        ];
+
         /* Act */
         $providers = $this->registry->all();
 
         /* Assert */
-        self::assertSame(QontoClient::class, $providers['qonto']);
-        self::assertSame(SuperPdpClient::class, $providers['superpdp']);
-        self::assertSame(LetsPeppolClient::class, $providers['letspeppol']);
+        foreach ($expectedProviders as $code => $providerClass) {
+            self::assertSame($providerClass, $providers[$code]);
+        }
     }
 
     #[Test]
@@ -58,12 +65,21 @@ class IntegrationClientRegistryTest extends TestCase
     #[Test]
     public function it_only_registers_integration_client_implementations(): void
     {
-        foreach ($this->registry->all() as $clientClass) {
-            self::assertTrue(
-                is_subclass_of($clientClass, IntegrationClientInterface::class),
-                "{$clientClass} must implement IntegrationClientInterface"
-            );
-        }
+        /* Arrange */
+        $providers = $this->registry->all();
+
+        /* Act */
+        $invalidProviders = array_filter(
+            $providers,
+            static fn (string $clientClass): bool => ! is_subclass_of($clientClass, IntegrationClientInterface::class)
+        );
+
+        /* Assert */
+        self::assertSame(
+            [],
+            $invalidProviders,
+            'Every registered provider must implement IntegrationClientInterface.'
+        );
     }
 
     #[Test]
@@ -80,9 +96,17 @@ class IntegrationClientRegistryTest extends TestCase
     #[Test]
     public function it_returns_a_fresh_instance_on_each_resolution(): void
     {
+        /* Arrange */
+        $clientCode = 'qonto';
+
+        /* Act */
+        $firstClient  = $this->registry->getClient($clientCode);
+        $secondClient = $this->registry->getClient($clientCode);
+
+        /* Assert */
         self::assertNotSame(
-            $this->registry->getClient('qonto'),
-            $this->registry->getClient('qonto')
+            $firstClient,
+            $secondClient
         );
     }
 

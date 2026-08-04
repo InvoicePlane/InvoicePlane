@@ -193,10 +193,11 @@ class LetsPeppolScenarioTest extends TestCase
         /* Arrange */
         [$provider] = $this->authenticatedProvider();
 
-        /* Act & Assert */
+        /* Act */
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Invoice document not found');
 
+        /* Assert */
         $provider->sendInvoice('/tmp/does-not-exist.pdf', []);
     }
 
