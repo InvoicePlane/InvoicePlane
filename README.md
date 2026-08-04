@@ -4,7 +4,7 @@
 
 _A libre self-hosted web application designed to help you manage invoices, clients, and payments efficiently._
 
-[![Curent version](https://img.shields.io/badge/dynamic/json.svg?label=Current%20Version&url=https%3A%2F%2Fapi.github.com%2Frepos%2FInvoicePlane%2FInvoicePlane%2Freleases%2Flatest&query=%24.name&colorB=%23429ae1)](https://www.invoiceplane.com/)
+[![Current version](https://img.shields.io/badge/dynamic/json.svg?label=Current%20Version&url=https%3A%2F%2Fapi.github.com%2Frepos%2FInvoicePlane%2FInvoicePlane%2Freleases%2Flatest&query=%24.name&colorB=%23429ae1)](https://www.invoiceplane.com/)
 [![Downloads](https://img.shields.io/github/downloads/invoiceplane/invoiceplane/total?colorB=%23429ae1)](https://www.invoiceplane.com/)
 [![Translation](https://img.shields.io/badge/Translations-%40%20Crowdin-429ae1)](https://translations.invoiceplane.com/project/fusioninvoice)
 
@@ -95,7 +95,9 @@ To remove `index.php` from your URLs:
 
 Since version 1.7.2, **custom template names** are added through an **allowlist** in `ipconfig.php` —
 the filesystem is never scanned, which is what keeps the template system safe from remote code
-execution. See [CUSTOM_TEMPLATES.md](.github/docs/CUSTOM_TEMPLATES.md) for the how-to.
+execution. See [CUSTOM_TEMPLATES.md](.github/docs/CUSTOM_TEMPLATES.md) for the how-to, and
+[UPGRADE.md](.github/docs/UPGRADE.md) before upgrading an installation that already uses custom
+templates.
 
 ---
 
