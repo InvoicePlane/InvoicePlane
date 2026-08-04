@@ -105,9 +105,6 @@ foreach ($custom_fields as $custom_field) {
     <li<?php echo $activeTab == 'quotes' ? ' class="active"' : ''; ?>><a data-toggle="tab" href="#client-quotes"><?php _trans('quotes'); ?></a></li>
     <li<?php echo $activeTab == 'invoices' ? ' class="active"' : ''; ?>><a data-toggle="tab" href="#client-invoices"><?php _trans('invoices'); ?></a></li>
     <li<?php echo $activeTab == 'payments' ? ' class="active"' : ''; ?>><a data-toggle="tab" href="#client-payments"><?php _trans('payments'); ?></a></li>
-    <?php if ( ! empty($integration_history)) : ?>
-    <li<?php echo $activeTab == 'integrations' ? ' class="active"' : ''; ?>><a data-toggle="tab" href="#client-integrations"><?php _trans('integration_history'); ?></a></li>
-    <?php endif; ?>
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
@@ -237,13 +234,6 @@ foreach ($custom_fields as $custom_field) {
                                     <td><?php _htmlsc($client->client_tax_code); ?></td>
                                 </tr>
 <?php } ?>
-<?php if ( ! empty($client->client_peppol_id)) { ?>
-                                <tr>
-                                    <th><?php _trans('peppol_participant_id'); ?></th>
-                                    <td><?php _htmlsc($client->client_peppol_id); ?></td>
-                                </tr>
-<?php } ?>
-
 <?php
 
 $default_custom = false;
@@ -572,51 +562,5 @@ foreach (explode(' ', 'quote invoice payment') as $what) {
 <?php
 }
 ?>
-        <?php if ( ! empty($integration_history)) : ?>
-        <div id="client-integrations" class="tab-pane table-content<?php echo $activeTab == 'integrations' ? ' active' : ''; ?>">
-            <table class="table table-striped no-margin">
-                <thead>
-                <tr>
-                    <th><?php _trans('date'); ?></th>
-                    <th><?php _trans('invoice'); ?></th>
-                    <th><?php _trans('provider'); ?></th>
-                    <th><?php _trans('status'); ?></th>
-                    <th><?php _trans('external_id'); ?></th>
-                    <th><?php _trans('http_code'); ?></th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($integration_history as $row) : ?>
-                    <tr>
-                        <td><?php echo htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
-                        <td>
-                            <?php if ( ! empty($row['invoice_id'])) : ?>
-                                <a href="<?php echo site_url('invoices/view/' . $row['invoice_id']); ?>">
-                                    <?php echo htmlsc($row['invoice_number'] ?? '#' . $row['invoice_id']); ?>
-                                </a>
-                            <?php else : ?>
-                                —
-                            <?php endif; ?>
-                        </td>
-                        <td><?php echo htmlsc($row['merchant_response_driver']); ?></td>
-                        <td>
-                            <?php
-                            $s     = $row['status'] ?? '';
-                            $badge = match(true) {
-                                in_array($s, ['sent', 'accepted', 'delivered'], true) => 'success',
-                                in_array($s, ['error', 'rejected', 'failed'], true)   => 'danger',
-                                default                                                => 'warning',
-                            };
-                            ?>
-                            <span class="label label-<?php echo $badge; ?>"><?php echo htmlsc($s); ?></span>
-                        </td>
-                        <td><?php echo htmlsc($row['merchant_response_reference']); ?></td>
-                        <td><?php echo htmlsc($row['http_code']); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-        <?php endif; ?>
     </div>
 </div>

@@ -197,9 +197,6 @@ class Clients extends Admin_Controller
 
         $this->load->helper(['custom_values', 'e-invoice']); // e-invoice - since 1.6.3
 
-        $this->load->model('integrations/Merchant_clients_model');
-        $has_peppol_provider = (bool) $this->Merchant_clients_model->get_default_enabled();
-
         $this->layout->set(
             [
                 'client_id'            => $id,
@@ -211,7 +208,6 @@ class Clients extends Admin_Controller
                 'client_title_choices' => $this->get_client_title_choices(),
                 'xml_templates'        => get_xml_template_files(), // eInvoicing
                 'req_einvoicing'       => $req_einvoicing,
-                'has_peppol_provider'  => $has_peppol_provider,
             ]
         );
 
@@ -291,9 +287,6 @@ class Clients extends Admin_Controller
         $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
         $this->mdl_client_custom->prep_form($client_id);
 
-        $this->load->model('integrations/Merchant_responses_model');
-        $integration_history = $this->Merchant_responses_model->get_by_client((int) $client_id);
-
         $this->layout->set(
             [
                 'client'              => $client,
@@ -306,7 +299,6 @@ class Clients extends Admin_Controller
                 'invoice_statuses'    => $this->mdl_invoices->statuses(),
                 'activeTab'           => $activeTab,
                 'req_einvoicing'      => $req_einvoicing,
-                'integration_history' => $integration_history,
             ]
         );
 

@@ -191,25 +191,12 @@ class Invoices extends Admin_Controller
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
         $change_user = $change_user->user_type > 1;
 
-        $this->load->model('integrations/Merchant_clients_model');
-        $this->load->model('integrations/Merchant_responses_model');
-
-        $einvoice_status   = $this->Merchant_responses_model->get_last_response_by_invoice((int) $invoice_id);
-        $einvoice_provider = $this->Merchant_clients_model->get_default_enabled();
-
-        $enabled_merchant_clients = $this->Merchant_clients_model->get_enabled_clients();
-        $send_history             = $this->Merchant_responses_model->get_outbound_by_invoice((int) $invoice_id);
-
         $this->layout->set(
             [
                 'invoice'                  => $invoice,
                 'items'                    => $items,
                 'invoice_id'               => $invoice_id,
                 'einvoice'                 => $einvoice,
-                'einvoice_status'          => $einvoice_status,
-                'einvoice_provider'        => $einvoice_provider,
-                'enabled_merchant_clients' => $enabled_merchant_clients,
-                'send_history'             => $send_history,
                 'change_user'              => $change_user,
                 'tax_rates'                => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates'        => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
