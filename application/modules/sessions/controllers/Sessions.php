@@ -425,7 +425,7 @@ class Sessions extends Base_Controller
     }
 
     /**
-     * Check if IP address has exceeded rate limit for password resets using session storage.
+     * Check if IP address has exceeded rate limit for password resets.
      *
      * @param int $max_attempts   Maximum attempts allowed per hour
      * @param int $window_minutes Time window in minutes
@@ -434,29 +434,14 @@ class Sessions extends Base_Controller
      */
     private function _is_ip_rate_limited_password_reset()
     {
-        $max_attempts   = env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
-        $window_minutes = env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
+        $max_attempts   = (int) env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
+        $window_minutes = (int) env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
+        $ip_address     = $this->input->ip_address();
+        $login_log      = $this->_login_log_check($this->_password_reset_ip_log_key($ip_address));
 
-        $ip_address  = $this->input->ip_address();
-        $session_key = 'password_reset_attempts_' . md5($ip_address);
-
-        // Get current attempts from session
-        $attempts = $this->session->userdata($session_key);
-
-        if ( ! $attempts) {
-            $attempts = [];
-        }
-
-        // Clean up old attempts outside the time window
-        $cutoff_time = time() - ($window_minutes * 60);
-        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
-            return $timestamp > $cutoff_time;
-        });
-
-        // Check if rate limited
-        if (count($attempts) >= $max_attempts) {
+        if ( ! empty($login_log) && $login_log->log_count >= $max_attempts && $this->_login_log_is_within_window($login_log, $window_minutes * 60)) {
             $this->load->helper('file_security');
-            log_message('info', trans('log_ip_rate_limit_check') . ': ' . count($attempts) . ' attempts from IP: ' . sanitize_for_logging($ip_address));
+            log_message('info', trans('log_ip_rate_limit_check') . ': ' . (int) $login_log->log_count . ' attempts from IP: ' . sanitize_for_logging($ip_address));
 
             return true;
         }
@@ -469,25 +454,16 @@ class Sessions extends Base_Controller
      */
     private function _record_password_reset_attempt()
     {
-        $ip_address  = $this->input->ip_address();
-        $session_key = 'password_reset_attempts_' . md5($ip_address);
+        $window_minutes = (int) env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
 
-        // Get current attempts from session
-        $attempts = $this->session->userdata($session_key);
-
-        if ( ! $attempts) {
-            $attempts = [];
-        }
-
-        // Add current timestamp
-        $attempts[] = time();
-
-        // Store back to session
-        $this->session->set_userdata($session_key, $attempts);
+        $this->_record_password_reset_log_attempt(
+            $this->_password_reset_ip_log_key($this->input->ip_address()),
+            $window_minutes * 60
+        );
     }
 
     /**
-     * Check if email-based rate limit exceeded for password resets using session storage.
+     * Check if email-based rate limit exceeded for password resets.
      *
      * @param string $email        Email address to check
      * @param int    $max_attempts Maximum attempts allowed
@@ -497,27 +473,12 @@ class Sessions extends Base_Controller
      */
     private function _is_email_rate_limited_password_reset($email)
     {
-        $max_attempts = env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3);
-        $window_hours = env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
+        $max_attempts = (int) env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3);
+        $window_hours = (int) env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
+        $login_log    = $this->_login_log_check($this->_password_reset_email_log_key($email));
 
-        $session_key = 'password_reset_email_' . md5($email);
-
-        // Get current attempts from session
-        $attempts = $this->session->userdata($session_key);
-
-        if ( ! $attempts) {
-            $attempts = [];
-        }
-
-        // Clean up old attempts outside the time window
-        $cutoff_time = time() - ($window_hours * 3600);
-        $attempts    = array_filter($attempts, function ($timestamp) use ($cutoff_time) {
-            return $timestamp > $cutoff_time;
-        });
-
-        // Check if rate limited
-        if (count($attempts) >= $max_attempts) {
-            log_message('info', trans('log_email_rate_limit_check') . ': ' . count($attempts) . ' attempts (hash: ' . hash('sha256', $email) . ')');
+        if ( ! empty($login_log) && $login_log->log_count >= $max_attempts && $this->_login_log_is_within_window($login_log, $window_hours * 3600)) {
+            log_message('info', trans('log_email_rate_limit_check') . ': ' . (int) $login_log->log_count . ' attempts (hash: ' . hash('sha256', $email) . ')');
 
             return true;
         }
@@ -532,20 +493,45 @@ class Sessions extends Base_Controller
      */
     private function _record_email_password_reset_attempt($email)
     {
-        $session_key = 'password_reset_email_' . md5($email);
+        $window_hours = (int) env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
 
-        // Get current attempts from session
-        $attempts = $this->session->userdata($session_key);
+        $this->_record_password_reset_log_attempt(
+            $this->_password_reset_email_log_key($email),
+            $window_hours * 3600
+        );
+    }
 
-        if ( ! $attempts) {
-            $attempts = [];
+    private function _password_reset_ip_log_key(string $ip_address): string
+    {
+        return 'password_reset_ip:' . hash('sha256', $ip_address);
+    }
+
+    private function _password_reset_email_log_key(string $email): string
+    {
+        return 'password_reset_email:' . hash('sha256', mb_strtolower($email));
+    }
+
+    private function _record_password_reset_log_attempt(string $login_name, int $window_seconds): void
+    {
+        $login_log = $this->_login_log_check($login_name);
+
+        if ( ! empty($login_log) && ! $this->_login_log_is_within_window($login_log, $window_seconds)) {
+            $this->_login_log_reset($login_name);
+            $login_log = null;
         }
 
-        // Add current timestamp
-        $attempts[] = time();
+        $this->_login_log_addfailure($login_name);
+    }
 
-        // Store back to session
-        $this->session->set_userdata($session_key, $attempts);
+    private function _login_log_is_within_window(object $login_log, int $window_seconds): bool
+    {
+        try {
+            $timestamp = new DateTime($login_log->log_create_timestamp);
+        } catch (Exception) {
+            return false;
+        }
+
+        return $timestamp->getTimestamp() > (time() - $window_seconds);
     }
 
     /**
