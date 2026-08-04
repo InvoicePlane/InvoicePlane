@@ -27,6 +27,10 @@ class Setup extends MX_Controller
             show_error('The setup is disabled.', 403);
         }
 
+        if (env_bool('SETUP_COMPLETED', false)) {
+            show_error('The setup is locked because installation has already been completed.', 403);
+        }
+
         parent::__construct();
 
         $this->load->library('session');
