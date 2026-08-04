@@ -13,6 +13,8 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
     protected array $sessionData = [];
 
+    protected array $environmentData = [];
+
     protected function actingAsAdmin(int $userId = 1): void
     {
         // Session identity values must be strings: a real DB-backed login stores
@@ -49,6 +51,11 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         ];
     }
 
+    protected function withEnvironment(array $environment): void
+    {
+        $this->environmentData = array_merge($this->environmentData, $environment);
+    }
+
     protected function request(string $method, string $uri, array $query = [], array $post = [], bool $ajax = false): HttpResponse
     {
         $payload = [
@@ -57,6 +64,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             'query'   => $query,
             'post'    => $post,
             'session' => $this->sessionData,
+            'env'     => $this->environmentData,
             'ajax'    => $ajax,
         ];
 

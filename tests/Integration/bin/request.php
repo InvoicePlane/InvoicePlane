@@ -20,6 +20,7 @@ $uri     = '/' . ltrim((string) ($request['uri'] ?? '/'), '/');
 $query   = is_array($request['query'] ?? null) ? $request['query'] : [];
 $post    = is_array($request['post'] ?? null) ? $request['post'] : [];
 $session = is_array($request['session'] ?? null) ? $request['session'] : [];
+$env     = is_array($request['env'] ?? null) ? $request['env'] : [];
 $isAjax  = ! empty($request['ajax']);
 
 // Ajax controllers (Base_Controller::$ajax_controller) show_404() unless the
@@ -65,6 +66,16 @@ $_SERVER['SCRIPT_FILENAME']    = dirname(__DIR__, 3) . '/public/index.php';
 $_SERVER['CI_ENV']             = 'testing';
 $_SERVER['REQUEST_TIME']       = time();
 $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
+
+foreach ($env as $key => $value) {
+    if ( ! is_string($key)) {
+        continue;
+    }
+
+    $_ENV[$key]    = (string) $value;
+    $_SERVER[$key] = (string) $value;
+    putenv($key . '=' . (string) $value);
+}
 
 // CI3 uses is_cli() to decide whether to parse $argv instead of REQUEST_URI.
 // In CLI mode (PHP_SAPI=cli) it would ignore REQUEST_URI and return an empty
