@@ -15,6 +15,7 @@ class UsersControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
+        $this->setUpDatabase();
         parent::setUp();
         $this->actingAsAdmin();
     }
@@ -57,6 +58,89 @@ class UsersControllerTest extends AbstractTestCase
             $response->isRedirect(),
             sprintf('Unauthenticated GET [/users] must redirect. Got [%d].', $response->statusCode())
         );
+    }
+
+    #[Test]
+    public function it_creates_a_user_with_a_hashed_password(): void
+    {
+        /* Act */
+        $response = $this->post('/users/form', [
+            'user_type'      => '2',
+            'user_email'     => 'new-user@test.local',
+            'user_name'      => 'New User',
+            'user_password'  => 'correct horse battery staple',
+            'user_passwordv' => 'correct horse battery staple',
+            'user_language'  => 'system',
+            'user_company'   => 'Example Co',
+            'btn_submit'     => '1',
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Successful user create must redirect.');
+
+        $user = $this->databaseFetchOne('ip_users', ['user_email' => 'new-user@test.local']);
+        self::assertNotNull($user);
+        self::assertSame('2', (string) $user['user_type']);
+        self::assertNotSame('correct horse battery staple', $user['user_password']);
+        self::assertTrue(password_verify('correct horse battery staple', $user['user_password']));
+    }
+
+    #[Test]
+    public function it_does_not_create_a_user_when_password_confirmation_does_not_match(): void
+    {
+        /* Act */
+        $response = $this->post('/users/form', [
+            'user_type'      => '2',
+            'user_email'     => 'mismatch@test.local',
+            'user_name'      => 'Mismatch User',
+            'user_password'  => 'correct horse battery staple',
+            'user_passwordv' => 'different password',
+            'user_language'  => 'system',
+            'btn_submit'     => '1',
+        ]);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseMissing('ip_users', ['user_email' => 'mismatch@test.local']);
+    }
+
+    #[Test]
+    public function it_updates_a_user_without_mass_assigning_protected_fields(): void
+    {
+        /* Arrange */
+        $originalSalt = bin2hex(random_bytes(10));
+        $userId = $this->databaseInsert('ip_users', [
+            'user_name'          => 'Editable User',
+            'user_password'      => password_hash('existing-secret', PASSWORD_DEFAULT),
+            'user_psalt'         => $originalSalt,
+            'user_email'         => 'editable@test.local',
+            'user_type'          => 2,
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        /* Act */
+        $response = $this->post('/users/form/' . $userId, [
+            'user_type'     => '2',
+            'user_email'    => 'renamed@test.local',
+            'user_name'     => 'Renamed User',
+            'user_language' => 'system',
+            'user_active'   => '0',
+            'user_psalt'    => 'attacker-controlled-salt',
+            'btn_submit'    => '1',
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect(), 'Successful user update must redirect.');
+
+        $user = $this->databaseFetchOne('ip_users', ['user_id' => $userId]);
+        self::assertNotNull($user);
+        self::assertSame('Renamed User', $user['user_name']);
+        self::assertSame('renamed@test.local', $user['user_email']);
+        self::assertSame('1', (string) $user['user_active']);
+        self::assertSame($originalSalt, $user['user_psalt']);
     }
 
     #[Test]
