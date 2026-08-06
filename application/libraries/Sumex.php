@@ -204,6 +204,14 @@ class Sumex
         $this->_company['gln']    = $this->invoice->user_gln;
         $this->_company['rcc']    = $this->invoice->user_rcc;
 
+        // Security: restrict to a strict character allowlist before these values are
+        // embedded as XML attribute values / used to build the ESR coding line, so a
+        // downstream consumer with a non-validating parser cannot be misled by
+        // attribute-breakout characters (e.g. `"`) smuggled through invoice_number or
+        // user_subscribernumber.
+        $this->_invoiceNumber    = $this->sanitizeXmlAttributeToken($this->invoice->invoice_number);
+        $this->_subscriberNumber = $this->sanitizeSubscriberNumber($this->invoice->user_subscribernumber);
+
         $this->_casedate   = $this->invoice->sumex_casedate;
         $this->_casenumber = $this->invoice->sumex_casenumber;
         $this->_insuredid  = $this->invoice->client_insurednumber;
@@ -379,6 +387,24 @@ class Sumex
         return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $value);
     }
 
+    /**
+     * Restricts a value to a strict allowlist (alphanumeric, `-_./`) before it is used
+     * as an XML attribute value, e.g. invoice_number as the request_id / payment_reason.
+     */
+    protected function sanitizeXmlAttributeToken(?string $value): string
+    {
+        return preg_replace('/[^A-Za-z0-9\-_.\/]/', '', (string) $value);
+    }
+
+    /**
+     * Restricts the ESR participant number to digits and dashes per the ESR/QR spec,
+     * before it is used as an XML attribute value or fed into invoice_genCodeline().
+     */
+    protected function sanitizeSubscriberNumber(?string $value): string
+    {
+        return preg_replace('/[^0-9\-]/', '', (string) $value);
+    }
+
     protected function xmlRoot()
     {
         $node = $this->doc->createElement('invoice:request');
@@ -424,7 +450,7 @@ class Sumex
 
         $invoiceInvoice = $this->doc->createElement('invoice:invoice');
         $invoiceInvoice->setAttribute('request_timestamp', time());
-        $invoiceInvoice->setAttribute('request_id', $this->invoice->invoice_number);
+        $invoiceInvoice->setAttribute('request_id', $this->_invoiceNumber);
         $invoiceInvoice->setAttribute('request_date', date("Y-m-d\TH:i:s", strtotime($this->invoice->invoice_date_modified)));
 
         $invoiceBody = $this->xmlInvoiceBody();
@@ -478,7 +504,7 @@ class Sumex
     {
         $node = $this->doc->createElement('invoice:esr9');
 
-        $subNumb = $this->invoice->user_subscribernumber;
+        $subNumb = $this->_subscriberNumber;
 
         $node->setAttribute('participant_number', $subNumb); // MUST begin with 01
         $node->setAttribute('type', '16or27'); // 16or27 = 01, 16or27plus = 04
@@ -529,9 +555,9 @@ class Sumex
         $node = $this->doc->createElement('invoice:esrRed');
 
         $reason            = $this->doc->createElement('invoice:payment_reason');
-        $reason->nodeValue = $this->invoice->invoice_number;
+        $reason->nodeValue = $this->_invoiceNumber;
 
-        $subNumb = $this->invoice->user_subscribernumber;
+        $subNumb = $this->_subscriberNumber;
         // postal_account: coding_line2
         // bank_account: coding_line1 + coding_line2
         // Assume always postal: This should be have an option in the future
