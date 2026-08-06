@@ -1,0 +1,3 @@
+# Deny direct web access to everything under storage/ (session data, logs,
+# cache, and temporary SUMEX invoice XML containing patient PII)
+Deny from all
