@@ -113,6 +113,24 @@ function sanitize_filename_for_header(string $filename): string
 }
 
 /**
+ * Sanitize a document number (invoice/quote number) for safe use as part of a
+ * generated filename or path component.
+ *
+ * Whitelists alphanumerics, dashes and underscores, replacing everything else
+ * with an underscore. This closes gaps a denylist of `\` and `/` alone would
+ * miss - Windows drive-letter injection (`:`), bare `..` traversal segments,
+ * and other path metacharacters (CWE-22 / CWE-73).
+ *
+ * @param string $number The raw document number
+ *
+ * @return string The sanitized value, safe to concatenate into a filename
+ */
+function sanitize_document_number_for_filename(string $number): string
+{
+    return preg_replace('/[^A-Za-z0-9_-]/', '_', $number);
+}
+
+/**
  * Get a safe hash of a filename for logging purposes.
  *
  * Prevents log injection attacks by never logging untrusted data directly
