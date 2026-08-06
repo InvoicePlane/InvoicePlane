@@ -201,6 +201,9 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        // Baseline seeding always creates one default invoice group; a failed
+        // create must not add a second one.
+        $this->assertDatabaseCount('ip_invoice_groups', 1);
     }
 
     #[Test]

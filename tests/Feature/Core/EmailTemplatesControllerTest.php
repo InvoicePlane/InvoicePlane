@@ -197,6 +197,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_email_templates', 0);
     }
 
     #[Test]
@@ -271,6 +272,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
 
         /* Assert */
         self::assertTrue($response->isRedirect(), 'Creating a duplicate email template must redirect with flash error.');
+        $this->assertDatabaseCount('ip_email_templates', 1, ['email_template_title' => 'Duplicate Template']);
     }
 
     // -------------------------------------------------------------------------

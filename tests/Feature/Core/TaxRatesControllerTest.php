@@ -181,6 +181,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_tax_rates', 0);
     }
 
     #[Test]

@@ -83,6 +83,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         /* Assert */
         $json = json_decode($response->body(), true);
         self::assertSame(0, $json['success'] ?? null, 'Missing client_id must return success=0.');
+        $this->assertDatabaseCount('ip_quotes', 0);
     }
 
     #[Test]
@@ -109,6 +110,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         /* Assert */
         $json = json_decode($response->body(), true);
         self::assertSame(0, $json['success'] ?? null, 'Missing quote_date_created must return success=0.');
+        $this->assertDatabaseCount('ip_quotes', 0);
     }
 
     #[Test]
@@ -135,6 +137,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
         /* Assert */
         $json = json_decode($response->body(), true);
         self::assertSame(0, $json['success'] ?? null, 'Missing invoice_group_id must return success=0.');
+        $this->assertDatabaseCount('ip_quotes', 0);
     }
 
     // -------------------------------------------------------------------------

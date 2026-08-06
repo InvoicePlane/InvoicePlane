@@ -15,6 +15,20 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
     protected array $environmentData = [];
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Every subclass gets a truncated-and-reseeded database by default. Most
+        // callers used to have to remember to call setUpDatabase() themselves;
+        // the majority didn't, which meant rows from earlier tests in the same
+        // run silently leaked into later ones. That only stayed invisible
+        // because so few assertions checked absence/exact counts — the moment
+        // one does (assertDatabaseMissing/assertDatabaseCount), leaked state
+        // makes it fail nondeterministically depending on execution order.
+        $this->setUpDatabase();
+    }
+
     protected function actingAsAdmin(int $userId = 1): void
     {
         // Session identity values must be strings: a real DB-backed login stores

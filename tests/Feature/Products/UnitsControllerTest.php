@@ -187,6 +187,7 @@ class UnitsControllerTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_units', 0);
     }
 
     #[Test]
@@ -284,6 +285,7 @@ class UnitsControllerTest extends AbstractTestCase
 
         /* Assert */
         self::assertTrue($response->isRedirect(), 'Creating a duplicate unit must redirect with flash error.');
+        $this->assertDatabaseCount('ip_units', 1, ['unit_name' => 'Duplicate Unit']);
     }
 
     // -------------------------------------------------------------------------
