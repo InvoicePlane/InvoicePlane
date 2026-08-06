@@ -47,6 +47,7 @@ Without your reports this release would not have been possible:
 [@lighthousekeeper1212](https://github.com/lighthousekeeper1212),
 [@mattmumford-git](https://github.com/mattmumford-git),
 [@PLpaPLpa](https://github.com/PLpaPLpa),
+[@polybjorn](https://github.com/polybjorn),
 [@QiaoNPC](https://github.com/QiaoNPC),
 [@radoi-teodor](https://github.com/radoi-teodor),
 [@tikket1](https://github.com/tikket1),
@@ -128,7 +129,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 | Missing CSRF protection on bulk `recalculate_all_invoices()` / `recalculate_all_quotes()` endpoints | Medium | — | Internal audit | [#1664](https://github.com/InvoicePlane/InvoicePlane/pull/1664) |
 | Unescaped logo filename in PDF invoice header (`invoice_logo_pdf()`) | Low | — | Internal audit | [#1664](https://github.com/InvoicePlane/InvoicePlane/pull/1664) |
 | Log injection via unsanitized `checkout_session_id` in the Stripe guest payment callback | Low | — | Internal audit | [#1664](https://github.com/InvoicePlane/InvoicePlane/pull/1664) |
-| Permanent account lockout: failed-login counter can never pass 10, so the 12-hour auto-unlock is unreachable dead code | High | — | Internal audit | [#1668](https://github.com/InvoicePlane/InvoicePlane/pull/1668) |
+| Permanent account lockout: failed-login counter can never pass 10, so the 12-hour auto-unlock is unreachable dead code | High | [Account lockout is permanent: the 12-hour auto-unlock is unreachable dead code](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-cjwm-qx8w-hrq2) | [@polybjorn](https://github.com/polybjorn) | [#1668](https://github.com/InvoicePlane/InvoicePlane/pull/1668) |
 
 ### Security fixes
 
@@ -172,7 +173,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 - [#1664](https://github.com/InvoicePlane/InvoicePlane/pull/1664) — **Stored XSS (PDF):** `invoice_logo_pdf()` interpolated the logo filename into `<img src="...">` unescaped, unlike its sibling `invoice_logo()`; now wrapped in `html_escape()`.
 - [#1664](https://github.com/InvoicePlane/InvoicePlane/pull/1664) — **Log injection:** the Stripe guest callback logged the raw, unauthenticated `checkout_session_id` without `sanitize_for_logging()`, and a second error-log call only stripped the literal `<br>` string, not CRLF; both call sites now sanitize consistently.
 - [#1664](https://github.com/InvoicePlane/InvoicePlane/pull/1664) — **Hardening (defense-in-depth):** `Mailer.php`'s `json_encode()` calls for the email-template compose modal now use `JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT`, matching the existing pattern in `email_templates/views/form.php`; `Upload::delete_file()` now uses the shared `validate_file_in_directory()` helper instead of an ad-hoc `realpath()` check; `country_helper.php` validates the `$cldr` locale segment against an allowlist pattern before using it in an `include` path; and the password-reset request no longer issues a token to a deactivated account (mirroring the login-time `user_active` check) while preserving the identical response used to prevent email enumeration.
-- [#1668](https://github.com/InvoicePlane/InvoicePlane/pull/1668) — **Permanent account lockout:** `Sessions::authenticate()`'s per-account lockout guard (`log_count < 10`) also gated the failure-recording call, so `log_count` could never pass 10 - the unlock branch in `_login_log_check()`, gated on `log_count > 10`, was therefore unreachable dead code and locked-out accounts stayed locked forever, recoverable only via a manual database `DELETE`. Separately, that unlock branch measured elapsed time with `DateInterval::$h`, which is only the 0-23 hour *component* of the difference, not the total elapsed hours, so even a reachable check would misfire past the first day. `_login_log_check()` now unlocks at `log_count >= 10` (matching the actual, unchanged 10-attempt threshold) using the same Unix-timestamp-based window check already used for password-reset rate limiting (`_login_log_is_within_window()`), so the 12-hour lockout now actually expires.
+- [#1668](https://github.com/InvoicePlane/InvoicePlane/pull/1668) — **Permanent account lockout:** `Sessions::authenticate()`'s per-account lockout guard (`log_count < 10`) also gated the failure-recording call, so `log_count` could never pass 10 - the unlock branch in `_login_log_check()`, gated on `log_count > 10`, was therefore unreachable dead code and locked-out accounts stayed locked forever, recoverable only via a manual database `DELETE`. Separately, that unlock branch measured elapsed time with `DateInterval::$h`, which is only the 0-23 hour *component* of the difference, not the total elapsed hours, so even a reachable check would misfire past the first day. `_login_log_check()` now unlocks at `log_count >= 10` (matching the actual, unchanged 10-attempt threshold) using the same Unix-timestamp-based window check already used for password-reset rate limiting (`_login_log_is_within_window()`), so the 12-hour lockout now actually expires. Thanks to [@polybjorn](https://github.com/polybjorn) for the responsible disclosure.
 
 ### Added
 
