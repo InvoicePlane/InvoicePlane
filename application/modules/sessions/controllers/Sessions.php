@@ -427,9 +427,6 @@ class Sessions extends Base_Controller
     /**
      * Check if IP address has exceeded rate limit for password resets.
      *
-     * @param int $max_attempts   Maximum attempts allowed per hour
-     * @param int $window_minutes Time window in minutes
-     *
      * @return bool True if rate limited, false otherwise
      */
     private function _is_ip_rate_limited_password_reset()
@@ -465,9 +462,7 @@ class Sessions extends Base_Controller
     /**
      * Check if email-based rate limit exceeded for password resets.
      *
-     * @param string $email        Email address to check
-     * @param int    $max_attempts Maximum attempts allowed
-     * @param int    $window_hours Time window in hours
+     * @param string $email Email address to check
      *
      * @return bool True if rate limited, false otherwise
      */
