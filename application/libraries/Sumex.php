@@ -165,6 +165,10 @@ class Sumex
         'storno' => '0',
     ];
 
+    public $_invoiceNumber = '';
+
+    public $_subscriberNumber = '';
+
     public function __construct(array $params)
     {
         $CI = &get_instance();
@@ -182,21 +186,21 @@ class Sumex
         $this->_storno = $this->_options['storno'];
         $this->_copy   = $this->_options['copy'];
 
-        $this->_patient['givenName']  = $this->invoice->client_name;
-        $this->_patient['familyName'] = $this->invoice->client_surname;
+        $this->_patient['givenName']  = $this->sanitizeXmlText($this->invoice->client_name);
+        $this->_patient['familyName'] = $this->sanitizeXmlText($this->invoice->client_surname);
         $this->_patient['birthdate']  = $this->invoice->client_birthdate;
         $this->_patient['gender']     = ($this->invoice->client_gender == '0' ? 'male' : 'female');
-        $this->_patient['street']     = $this->invoice->client_address_1;
-        $this->_patient['zip']        = $this->invoice->client_zip;
-        $this->_patient['city']       = $this->invoice->client_city;
-        $this->_patient['phone']      = ($this->invoice->client_phone == '' ? null : $this->invoice->client_phone);
+        $this->_patient['street']     = $this->sanitizeXmlText($this->invoice->client_address_1);
+        $this->_patient['zip']        = $this->sanitizeXmlText($this->invoice->client_zip);
+        $this->_patient['city']       = $this->sanitizeXmlText($this->invoice->client_city);
+        $this->_patient['phone']      = ($this->invoice->client_phone == '' ? null : $this->sanitizeXmlText($this->invoice->client_phone));
         $this->_patient['avs']        = $this->invoice->client_avs;
 
-        $this->_company['name']   = $this->invoice->user_company;
-        $this->_company['street'] = $this->invoice->user_address_1;
-        $this->_company['zip']    = $this->invoice->user_zip;
-        $this->_company['city']   = $this->invoice->user_city;
-        $this->_company['phone']  = $this->invoice->user_phone;
+        $this->_company['name']   = $this->sanitizeXmlText($this->invoice->user_company);
+        $this->_company['street'] = $this->sanitizeXmlText($this->invoice->user_address_1);
+        $this->_company['zip']    = $this->sanitizeXmlText($this->invoice->user_zip);
+        $this->_company['city']   = $this->sanitizeXmlText($this->invoice->user_city);
+        $this->_company['phone']  = $this->sanitizeXmlText($this->invoice->user_phone);
         $this->_company['gln']    = $this->invoice->user_gln;
         $this->_company['rcc']    = $this->invoice->user_rcc;
 
@@ -217,8 +221,8 @@ class Sumex
             'start'        => $this->invoice->sumex_treatmentstart,
             'end'          => $this->invoice->sumex_treatmentend,
             'reason'       => $treatments[$this->invoice->sumex_reason],
-            'diagnosis'    => $this->invoice->sumex_diagnosis,
-            'observations' => $this->invoice->sumex_observations,
+            'diagnosis'    => $this->sanitizeXmlText($this->invoice->sumex_diagnosis),
+            'observations' => $this->sanitizeXmlText($this->invoice->sumex_observations),
         ];
 
         $esrTypes       = ['9', 'red'];
@@ -305,8 +309,9 @@ class Sumex
             $custom_fields['quote'] = $CI->mdl_custom_fields->get_values_for_fields('mdl_quote_custom', $this->invoice->quote_id);
         }
 
-        $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $this->invoice->invoice_number);
-        // Create the SUMEX XML file (embed) in non-web-accessible storage directory for security
+        $CI->load->helper('file_security');
+        $filename = trans('invoice') . '_' . sanitize_document_number_for_filename($this->invoice->invoice_number);
+        // Create the SUMEX XML file (embed) in storage/temp/
         $path = STORAGE_TEMP_FOLDER . $filename . '.xml';
         file_put_contents($path, $this->xml());
         $associatedFiles = [[
@@ -359,6 +364,19 @@ class Sumex
         $this->doc->appendChild($this->root);
 
         return $this->doc->saveXML();
+    }
+
+    /**
+     * Strips XML control characters (U+0000-U+0008, U+000B, U+000C, U+000E-U+001F, U+007F)
+     * that DOMNode::nodeValue does not escape, before the value is embedded in the SUMEX XML.
+     */
+    protected function sanitizeXmlText(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $value);
     }
 
     protected function xmlRoot()
