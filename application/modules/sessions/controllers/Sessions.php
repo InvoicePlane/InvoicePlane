@@ -411,17 +411,17 @@ class Sessions extends Base_Controller
     {
         $login_log_query = $this->db->where('login_name', $username)->get('ip_login_log')->row();
 
-        if ( ! empty($login_log_query) && $login_log_query->log_count > 10) {
-            $current_time = new DateTime();
-            $interval     = $current_time->diff(new DateTime($login_log_query->log_create_timestamp));
-            //if the last recorded failed attempt is over 12 hours ago, then unlock the account
-            //the fails are only counted up to 11, this means that the account is also unlocked
-            //if the last failed 11th login attempt is over 12 hours ago.
-            if ($interval->h > 12) {
-                $this->_login_log_reset($username);
+        // Security: the lockout threshold in authenticate() stops recording failures once
+        // log_count reaches 10, so it never exceeds 10 - this must check >= 10, not > 10, or
+        // the unlock branch below is unreachable and the lockout never expires. The window
+        // check reuses _login_log_is_within_window() (Unix-timestamp based) instead of
+        // DateInterval::$h, which is only the 0-23 hour *component* of the difference, not
+        // the total elapsed hours.
+        if ( ! empty($login_log_query) && $login_log_query->log_count >= 10
+            && ! $this->_login_log_is_within_window($login_log_query, 12 * 3600)) {
+            $this->_login_log_reset($username);
 
-                return;
-            }
+            return;
         }
 
         return $login_log_query;
