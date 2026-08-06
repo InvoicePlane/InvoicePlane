@@ -16,10 +16,6 @@ class TaskDeletionValidationFeatureTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Start from a clean database so the seeded project lands on the first
-        // page of the (paginated) projects list instead of being buried behind
-        // rows other tests left behind.
-        $this->setUpDatabase();
         $this->actingAsAdmin();
     }
 

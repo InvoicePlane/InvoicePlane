@@ -231,6 +231,7 @@ class ClientsFeatureTest extends AbstractTestCase
         // Validation failure in CI3 re-renders the form at 200
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_clients', 0);
     }
 
     #[Test]
@@ -318,6 +319,7 @@ class ClientsFeatureTest extends AbstractTestCase
         /* Assert */
         // CI3 controller redirects back with a flash error when the client already exists
         self::assertTrue($response->isRedirect(), 'Creating a duplicate client must redirect.');
+        $this->assertDatabaseCount('ip_clients', 1, ['client_name' => 'Duplicate Corp']);
     }
 
     #[Test]

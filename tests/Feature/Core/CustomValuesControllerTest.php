@@ -10,7 +10,6 @@ class CustomValuesControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
-        $this->setUpDatabase();
         parent::setUp();
         $this->actingAsAdmin();
     }

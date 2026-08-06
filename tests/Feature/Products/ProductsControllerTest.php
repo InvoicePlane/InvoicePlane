@@ -234,6 +234,7 @@ class ProductsControllerTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_products', 0);
     }
 
     #[Test]

@@ -204,6 +204,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_payments', 0);
     }
 
     #[Test]
@@ -234,6 +235,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_payments', 0);
     }
 
     #[Test]
@@ -264,6 +266,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_payments', 0);
     }
 
     // -------------------------------------------------------------------------

@@ -169,6 +169,7 @@ class FamiliesControllerTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_families', 0);
     }
 
     #[Test]
@@ -227,6 +228,7 @@ class FamiliesControllerTest extends AbstractTestCase
 
         /* Assert */
         self::assertTrue($response->isRedirect(), 'Creating a duplicate family must redirect with flash error.');
+        $this->assertDatabaseCount('ip_families', 1, ['family_name' => 'Duplicate Family']);
     }
 
     // -------------------------------------------------------------------------

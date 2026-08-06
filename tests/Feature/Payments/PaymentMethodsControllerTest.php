@@ -177,6 +177,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<form');
+        $this->assertDatabaseCount('ip_payment_methods', 0);
     }
 
     #[Test]
@@ -237,6 +238,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
 
         /* Assert */
         self::assertTrue($response->isRedirect(), 'Creating a duplicate payment method must redirect with flash error.');
+        $this->assertDatabaseCount('ip_payment_methods', 1, ['payment_method_name' => 'Duplicate Method']);
     }
 
     // -------------------------------------------------------------------------
