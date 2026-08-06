@@ -2,15 +2,16 @@
 
 namespace Tests\Feature\Clients;
 
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * ClientsController Deletion Validation Feature Tests.
+ * ClientsController deletion behavior.
  *
- * Tests HTTP endpoints for client deletion with business rules:
- * - Clients with invoices, quotes, or projects cannot be deleted
+ * Deleting a client is not blocked by related records — Mdl_clients::delete()
+ * cascades: it removes the client row, then delete_orphans() (orphan_helper.php)
+ * cleans up every row left dangling by that deletion, including the client's
+ * own invoices and notes.
  */
 class ClientDeletionValidationFeatureTest extends AbstractTestCase
 {
@@ -21,18 +22,27 @@ class ClientDeletionValidationFeatureTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('smoke')]
-    public function it_returns_a_successful_response_or_redirect(): void
+    public function it_deletes_a_client_and_cascades_its_orphaned_invoice_and_notes(): void
     {
         /* Arrange */
-        $this->seedClient(['client_name' => 'Deletion Validation Client']);
+        $clientId  = $this->seedClient(['client_name' => 'Cascade Delete Client']);
+        $invoiceId = $this->seedInvoice($clientId);
+        $noteId    = $this->databaseInsert('ip_client_notes', [
+            'client_id'        => $clientId,
+            'client_note_date' => date('Y-m-d'),
+            'client_note'      => 'A note that should be cleaned up',
+        ]);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertDatabaseHas('ip_client_notes', ['client_note_id' => $noteId]);
 
         /* Act */
-        $response = $this->get('/clients/status/active');
+        $response = $this->post('/clients/delete/' . $clientId, []);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
-        $this->assertResponseBodyContains($response, '<html');
+        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertDatabaseMissing('ip_clients', ['client_id' => $clientId]);
+        $this->assertDatabaseMissing('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertDatabaseMissing('ip_client_notes', ['client_note_id' => $noteId]);
     }
 
     #[Test]
