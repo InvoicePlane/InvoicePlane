@@ -103,7 +103,7 @@ class Upload extends Admin_Controller
 
         $finalPath = $this->targetPath . $url_key . '_' . $filename;
 
-        if (realpath($this->targetPath) === mb_substr(realpath($finalPath), 0, mb_strlen(realpath($this->targetPath))) && ( ! file_exists($finalPath) || @unlink($finalPath))) {
+        if (validate_file_in_directory($finalPath, $this->targetPath) && ( ! file_exists($finalPath) || @unlink($finalPath))) {
             $this->mdl_uploads->delete_file($url_key, $filename);
             respond_file_message(200, 'upload_file_deleted_successfully', $filename);
         }

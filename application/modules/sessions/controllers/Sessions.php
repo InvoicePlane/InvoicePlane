@@ -257,9 +257,9 @@ class Sessions extends Base_Controller
             $user = $this->db->get('ip_users')->row();
 
             // Security: Always show the same message regardless of whether email exists
-            // This prevents email enumeration attacks
-            if ($user) {
-                // User exists - send actual reset email
+            // or the account is active - this prevents both email and active-status enumeration
+            if ($user && (int) $user->user_active === 1) {
+                // User exists and is active - send actual reset email
                 // Use cryptographically secure token generation (fixes CVE-2021-29023)
                 $this->load->helper('ip_security');
                 $token = generate_password_reset_token();
@@ -349,10 +349,13 @@ class Sessions extends Base_Controller
                     $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
                 }
             } else {
-                // User doesn't exist - show same success message to prevent enumeration
+                // User doesn't exist or is inactive - show same success message to prevent enumeration
                 // DO NOT send email to prevent abuse and RBL issues
                 $this->session->set_flashdata('alert_success', trans('email_successfully_sent'));
-                log_message('info', trans('log_password_reset_nonexistent_email') . ' (hash: ' . hash('sha256', $email) . ') from IP: ' . sanitize_for_logging($this->input->ip_address()));
+                $log_key = $user
+                    ? 'log_password_reset_inactive_user'
+                    : 'log_password_reset_nonexistent_email';
+                log_message('info', trans($log_key) . ' (hash: ' . hash('sha256', $email) . ') from IP: ' . sanitize_for_logging($this->input->ip_address()));
             }
 
             redirect('sessions/login');

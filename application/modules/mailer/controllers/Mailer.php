@@ -61,7 +61,7 @@ class Mailer extends Admin_Controller
         $email_template    = '{}';
 
         if ($email_template_id) {
-            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
+            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         }
 
         // Get all custom fields
@@ -117,7 +117,7 @@ class Mailer extends Admin_Controller
         $email_template    = '{}';
 
         if ($email_template_id) {
-            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
+            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         }
 
         // Get all custom fields
