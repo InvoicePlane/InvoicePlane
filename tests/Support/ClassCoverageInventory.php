@@ -301,22 +301,34 @@ final class ClassCoverageInventory
         $classStem  = preg_replace('/^Mdl_/', '', $class) ?: $class;
         $classWords = strtolower((string) preg_replace('/[^a-z0-9]+/i', '', $classStem));
         $sourceStem = strtolower((string) preg_replace('/[^a-z0-9]+/i', '', basename($sourcePath, '.php')));
-        $module     = self::moduleFor($sourcePath);
+        $kind       = self::kindFor($sourcePath);
+        $routeStem  = strtolower(basename($sourcePath, '.php'));
 
         foreach (self::testFiles($repoRoot) as $test) {
             $relative = self::relativePath($repoRoot, $test);
             $content  = (string) file_get_contents($test);
             $testStem = strtolower((string) preg_replace('/[^a-z0-9]+/i', '', basename($test, '.php')));
-            $path      = strtolower($relative);
 
-            if (
-                self::containsClassReference($content, $class)
+            $textMatch = self::containsClassReference($content, $class)
                 || (strlen($classWords) >= 5 && str_contains($testStem, $classWords))
-                || (strlen($sourceStem) >= 5 && str_contains($testStem, $sourceStem))
-                || ($module !== 'application' && str_contains($path, '/' . strtolower($module) . '/'))
-            ) {
-                $candidates[] = $relative;
+                || (strlen($sourceStem) >= 5 && str_contains($testStem, $sourceStem));
+
+            if ( ! $textMatch) {
+                continue;
             }
+
+            // A textual/filename match only proves the test file is *about* this
+            // class in name. For controllers that isn't enough — a test can be
+            // named after one controller while its HTTP calls actually exercise a
+            // different one in the same module (e.g. a "CronControllerTest" that
+            // only GETs the Invoices listing page). Require the test to actually
+            // issue a request whose URI targets this controller's own route
+            // segment before crediting it as coverage.
+            if ($kind === 'controller' && ! self::exercisesRoute($content, $routeStem)) {
+                continue;
+            }
+
+            $candidates[] = $relative;
         }
 
         sort($candidates);
@@ -331,6 +343,32 @@ final class ClassCoverageInventory
         }
 
         return preg_match('/(?<![A-Za-z0-9_])' . preg_quote($class, '/') . '(?![A-Za-z0-9_])/', $content) === 1;
+    }
+
+    private static function exercisesRoute(string $content, string $routeStem): bool
+    {
+        if ($routeStem === '') {
+            return true;
+        }
+
+        $uris = [];
+
+        if (preg_match_all('/->(?:get|post|delete)\(\s*[\'"]([^\'"]*)[\'"]/', $content, $matches) > 0) {
+            $uris = array_merge($uris, $matches[1]);
+        }
+
+        if (preg_match_all('/->ajax\(\s*[\'"][A-Za-z]+[\'"]\s*,\s*[\'"]([^\'"]*)[\'"]/', $content, $ajaxMatches) > 0) {
+            $uris = array_merge($uris, $ajaxMatches[1]);
+        }
+
+        foreach ($uris as $uri) {
+            $segments = array_filter(explode('/', strtolower($uri)));
+            if (in_array($routeStem, $segments, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
