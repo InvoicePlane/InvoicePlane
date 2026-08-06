@@ -248,6 +248,15 @@ class Sumex
         // Make PDF with Sumex (embed)
         if (SUMEX_URL) {
             // External by XML post. See https://github.com/InvoicePlane/InvoicePlane/pull/453
+            // Security: restrict to https:// to prevent SSRF via file://, gopher://, internal
+            // hosts, or cloud metadata endpoints if SUMEX_URL is misconfigured (CWE-918).
+            $scheme = parse_url(SUMEX_URL, PHP_URL_SCHEME);
+            if (mb_strtolower((string) $scheme) !== 'https') {
+                log_message('error', 'SUMEX_URL must use the https:// scheme, refusing to send SUMEX request');
+
+                return false;
+            }
+
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, SUMEX_URL);
             curl_setopt($ch, CURLOPT_POST, true);
@@ -255,6 +264,11 @@ class Sumex
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
             curl_setopt($ch, CURLOPT_TIMEOUT, 180); //timeout in seconds
             curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+            curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
+            curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTPS);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             $out = curl_exec($ch);
             curl_close($ch);
 
