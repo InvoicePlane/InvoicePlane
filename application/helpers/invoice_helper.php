@@ -52,7 +52,7 @@ function invoice_logo_pdf(): string
             return '';
         }
 
-        return '<img src="' . $absolutePath . '/uploads/' . $logo_file . '" id="invoice-logo">';
+        return '<img src="' . html_escape($absolutePath . '/uploads/' . $logo_file) . '" id="invoice-logo">';
     }
 
     return '';

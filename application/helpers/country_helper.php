@@ -23,7 +23,9 @@ if ( ! defined('BASEPATH')) {
  */
 function get_country_list(string $cldr)
 {
-    if (file_exists(APPPATH . 'helpers/country-list/' . $cldr . '/country.php')) {
+    // Security: Only allow locale-shaped directory names to prevent path traversal
+    if (preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $cldr) === 1
+        && file_exists(APPPATH . 'helpers/country-list/' . $cldr . '/country.php')) {
         return include APPPATH . 'helpers/country-list/' . $cldr . '/country.php';
     }
 

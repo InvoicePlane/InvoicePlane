@@ -359,6 +359,10 @@ class Invoices extends Admin_Controller
 
     public function recalculate_all_invoices(): void
     {
+        if ( ! $this->ensure_valid_post_request('invoices/index')) {
+            return;
+        }
+
         $this->db->select('invoice_id');
         $invoice_ids = $this->db->get('ip_invoices')->result();
 

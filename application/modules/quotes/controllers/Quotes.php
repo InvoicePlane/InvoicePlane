@@ -252,6 +252,10 @@ class Quotes extends Admin_Controller
 
     public function recalculate_all_quotes()
     {
+        if ( ! $this->ensure_valid_post_request('quotes/index')) {
+            return;
+        }
+
         $this->db->select('quote_id');
         $quote_ids = $this->db->get('ip_quotes')->result();
 

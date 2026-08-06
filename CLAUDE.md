@@ -52,10 +52,13 @@ These are documented fully in `AGENTS.md` and `.junie/guidelines.md`. Short form
 | `sanitize_filename_for_header()` | `file_security_helper.php`  | CRLF-safe Content-Disposition      |
 | `get_safe_referer()`             | `security_helper.php`       | Open-redirect-safe referer URL     |
 | `verify_csrf_token()`            | `security_helper.php`       | Timing-safe CSRF check             |
-| `user_has_invoice_access()`      | `security_helper.php`       | IDOR guard for invoices            |
-| `user_has_quote_access()`        | `security_helper.php`       | IDOR guard for quotes              |
 | `validate_template_name()`       | `template_helper.php`       | Static-whitelist template check    |
 | `sanitize_email_template_html()` | `html_sanitizer_helper.php` | HTML Purifier for email bodies     |
+
+**IDOR guarding for invoices/quotes**: there is no shared `user_has_invoice_access()` /
+`user_has_quote_access()` helper. Guest controllers instead scope every query inline with
+`where_in('client_id', $this->user_clients)` and/or `url_key` matching — follow that same inline
+pattern in new guest-facing code rather than inventing a wrapper function.
 
 ## Code style
 
