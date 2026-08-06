@@ -99,7 +99,7 @@ class Stripe extends Base_Controller
             $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
 
             // Debug logging
-            log_message('debug', __CLASS__ . '::' . __FUNCTION__ . ' reached, status: ' . $session->status . ' payment_status: ' . $session->payment_status . ', checkout_session_id: ' . $checkout_session_id);
+            log_message('debug', __CLASS__ . '::' . __FUNCTION__ . ' reached, status: ' . $session->status . ' payment_status: ' . $session->payment_status . ', checkout_session_id: ' . sanitize_for_logging($checkout_session_id));
 
             // Determine which invoice we’re dealing with
             $invoice_key = $session->client_reference_id;
@@ -188,7 +188,7 @@ class Stripe extends Base_Controller
             $paid     = 'error'; // tweak to reuse
             // Log the error so you can debug
             $response = __CLASS__ . '::' . __FUNCTION__ . ' exception: ' . $e->getMessage() . (empty($response) ? '' : ' - response: ' . $response);
-            log_message('error', strtr($response . ' user_msg: ' . $user_msg, ['<br>' => ' '])); // No br's
+            log_message('error', sanitize_for_logging(strtr($response . ' user_msg: ' . $user_msg, ['<br>' => ' ']))); // No br's
         } finally {
             $paid = is_bool($paid) ? ($paid ? 'success' : 'info') : $paid; // Tweak to reuse (flashdata alert_*)
             // Check stripe server ok
