@@ -10,3 +10,8 @@ MODIFY `client_birthdate` DATE NULL DEFAULT NULL;
 -- the application ENCRYPTION_KEY. Existing plaintext values remain readable
 -- (the application falls back to returning them as-is on decrypt failure) and
 -- are transparently re-encrypted the next time each record is saved.
+
+-- Add the password reset token expiry column used to enforce reset-token lifetime.
+ALTER TABLE `ip_users`
+ADD COLUMN `user_passwordreset_token_expiry` DATETIME NULL DEFAULT NULL
+AFTER `user_passwordreset_token`;
