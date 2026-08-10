@@ -29,13 +29,29 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomTemplateKernelBootTest extends TestCase
 {
-    private function boot_kernel_with(array $env): void
+    /**
+     * @param array<string, string> $env
+     */
+    private function runKernelProbe(array $env, string $constant): string
     {
+        $repoRoot = dirname(__DIR__, 3);
+        $envCode  = '';
+
         foreach ($env as $key => $value) {
-            $_ENV[$key] = $value;
+            $envCode .= sprintf('$_ENV[%s] = %s;', var_export($key, true), var_export($value, true));
         }
 
-        require_once dirname(__DIR__, 3) . '/bootstrap/kernel.php';
+        $code = $envCode
+            . 'require ' . var_export($repoRoot . '/bootstrap/kernel.php', true) . ';'
+            . 'echo defined(' . var_export($constant, true) . ') ? constant(' . var_export($constant, true) . ') : "__missing__";';
+
+        $output = [];
+        $status = 0;
+        exec(PHP_BINARY . ' -r ' . escapeshellarg($code), $output, $status);
+
+        self::assertSame(0, $status, 'Kernel probe subprocess must exit cleanly.');
+
+        return implode("\n", $output);
     }
 
     #[Test]
@@ -47,16 +63,12 @@ class CustomTemplateKernelBootTest extends TestCase
         $env = ['CUSTOM_INVOICE_TEMPLATES_PDF' => 'My Kernel Template'];
 
         /* Act */
-        $this->boot_kernel_with($env);
+        $value = $this->runKernelProbe($env, 'CUSTOM_INVOICE_TEMPLATES_PDF');
 
         /* Assert */
-        self::assertTrue(
-            defined('CUSTOM_INVOICE_TEMPLATES_PDF'),
-            'kernel.php must define the custom-template allowlist constants (via constants.php).'
-        );
         self::assertSame(
             'My Kernel Template',
-            constant('CUSTOM_INVOICE_TEMPLATES_PDF'),
+            $value,
             'The ipconfig value in $_ENV must reach the constant through the real kernel boot path.'
         );
     }
@@ -66,17 +78,17 @@ class CustomTemplateKernelBootTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_defines_all_four_allowlist_constants_after_boot(): void
     {
-        $this->boot_kernel_with([
+        $env = [
             'CUSTOM_INVOICE_TEMPLATES_PDF'    => 'Inv PDF',
             'CUSTOM_INVOICE_TEMPLATES_PUBLIC' => 'Inv Web',
             'CUSTOM_QUOTE_TEMPLATES_PDF'      => 'Quote PDF',
             'CUSTOM_QUOTE_TEMPLATES_PUBLIC'   => 'Quote Web',
-        ]);
+        ];
 
-        self::assertSame('Inv PDF', constant('CUSTOM_INVOICE_TEMPLATES_PDF'));
-        self::assertSame('Inv Web', constant('CUSTOM_INVOICE_TEMPLATES_PUBLIC'));
-        self::assertSame('Quote PDF', constant('CUSTOM_QUOTE_TEMPLATES_PDF'));
-        self::assertSame('Quote Web', constant('CUSTOM_QUOTE_TEMPLATES_PUBLIC'));
+        self::assertSame('Inv PDF', $this->runKernelProbe($env, 'CUSTOM_INVOICE_TEMPLATES_PDF'));
+        self::assertSame('Inv Web', $this->runKernelProbe($env, 'CUSTOM_INVOICE_TEMPLATES_PUBLIC'));
+        self::assertSame('Quote PDF', $this->runKernelProbe($env, 'CUSTOM_QUOTE_TEMPLATES_PDF'));
+        self::assertSame('Quote Web', $this->runKernelProbe($env, 'CUSTOM_QUOTE_TEMPLATES_PUBLIC'));
     }
 
     #[Test]
@@ -88,21 +100,11 @@ class CustomTemplateKernelBootTest extends TestCase
         $env = ['CUSTOM_INVOICE_TEMPLATES_PDF' => ''];
 
         /* Act */
-        $this->boot_kernel_with($env);
+        $value = $this->runKernelProbe($env, 'CUSTOM_INVOICE_TEMPLATES_PDF');
 
         /* Assert */
-        // The custom-template constants are defined from env(); if kernel.php did
-        // not provide env() before requiring constants.php, boot would fatal.
-        self::assertTrue(function_exists('env'), 'kernel.php must define the env() helper.');
-        self::assertTrue(
-            defined('CUSTOM_INVOICE_TEMPLATES_PDF'),
-            'With no custom templates configured the constant must still be defined (null), not missing.'
-        );
-        // Depending on boot context the value is null (no ipconfig.php) or ''
-        // (ipconfig.php present with the key empty); both mean "no custom
-        // templates" to Mdl_Templates. What matters is it is defined and empty.
         self::assertEmpty(
-            constant('CUSTOM_INVOICE_TEMPLATES_PDF'),
+            $value,
             'An unset/empty ipconfig key must yield an empty constant so Mdl_Templates treats it as "no custom templates".'
         );
     }

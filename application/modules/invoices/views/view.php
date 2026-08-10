@@ -319,7 +319,6 @@ if ($invoice->invoice_balance != 0) {
 <?php
 // eInvoice & user fields OK: Show download XML Option
 if ($einvoice->user) {
-    $einvoice_provider ??= null;
     ?>
                 <li>
                     <a href="#" id="btn_generate_xml"
@@ -330,10 +329,14 @@ if ($einvoice->user) {
                 </li>
 <?php if ( ! empty($einvoice_provider) && ! empty($einvoice_provider['id'])) : ?>
                 <li>
-                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/' . $einvoice_provider['id']); ?>">
-                         <i class="fa fa-refresh"></i>
-                         <?php _trans('check_status'); ?>
-                      </a>
+                    <form method="post"
+                          action="<?php echo site_url('integrations/status/' . (int) $invoice_id . '/' . (int) $einvoice_provider['id']); ?>">
+                        <?php _csrf_field(); ?>
+                        <button type="submit" class="btn btn-link">
+                            <i class="fa fa-refresh"></i>
+                            <?php _trans('check_status'); ?>
+                        </button>
+                    </form>
                 </li>
 <?php endif; ?>
                 <li>
@@ -351,6 +354,47 @@ if ($einvoice->user) {
                         <?php _trans('send_email'); ?>
                     </a>
                 </li>
+<?php
+// eInvoice & user fields OK: Show Send via provider
+if ($einvoice->user) {
+    ?>
+                <li class="divider"></li>
+<?php
+    if ( ! empty($enabled_merchant_clients)) {
+        foreach ($enabled_merchant_clients as $mc) {
+            $needs_peppol = in_array($mc['merchant_type'], ['letspeppol', 'superpdp'], true);
+            $has_id       = ! empty($invoice->client_peppol_id);
+            if ($needs_peppol && ! $has_id) {
+                $lst = 'class="disabled" data-toggle="tooltip" title="' . trans('peppol_id_missing') . '"';
+            } else {
+                $lst = 'class="active"';
+            }
+?>
+                <li <?php echo $lst; ?>>
+<?php if ($needs_peppol && ! $has_id) : ?>
+                    <a href="javascript:void(0);">
+                        <i class="fa fa-paper-plane fa-margin"></i>
+                        <?php _trans('send_via_integration'); ?> <?php _htmlsc($mc['label']); ?>
+                    </a>
+<?php else : ?>
+                    <form method="post"
+                          action="<?php echo site_url('integrations/send_invoice/' . (int) $invoice_id . '/' . (int) $mc['id']); ?>">
+                        <?php _csrf_field(); ?>
+                        <button type="submit" class="btn btn-link">
+                            <i class="fa fa-paper-plane fa-margin"></i>
+                            <?php _trans('send_via_integration'); ?> <?php _htmlsc($mc['label']); ?>
+                        </button>
+                    </form>
+<?php endif; ?>
+                </li>
+<?php
+        }
+    ?>
+                <li class="divider"></li>
+<?php
+    }
+} // fi: eInvoice & user fields OK (provider)
+?>
                 <li>
                     <a href="#" id="btn_create_recurring"
                        data-invoice-id="<?php echo $invoice_id; ?>">
@@ -459,7 +503,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
 <?php
 if ($invoice->invoice_sign == -1) {
     $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
-    $view_link             = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . htmlsc($parent_invoice_number));
+    $view_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . htmlsc($parent_invoice_number));
     ?>
                             <div class="col-xs-12">
                                 <div class="alert alert-warning small">
@@ -595,7 +639,7 @@ foreach ($payment_methods as $payment_method) {
 
 <?php
 $default_custom = false;
-$classes        = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field) {
     if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;
@@ -663,11 +707,16 @@ if ($invoice->invoice_status_id != 1) {
                                 </p>
                             <?php endif; ?>
 
-                            <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/1'); ?>"
-                               class="btn btn-default btn-sm">
-                                <i class="fa fa-refresh"></i>
-                                <?php _trans('check_status'); ?>
-                            </a>
+<?php if ( ! empty($einvoice_provider['id'])) : ?>
+                            <form method="post"
+                                  action="<?php echo site_url('integrations/status/' . (int) $invoice_id . '/' . (int) $einvoice_provider['id']); ?>">
+                                <?php _csrf_field(); ?>
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <i class="fa fa-refresh"></i>
+                                    <?php _trans('check_status'); ?>
+                                </button>
+                            </form>
+<?php endif; ?>
                         </div>
                     </div>
 <?php endif; ?>

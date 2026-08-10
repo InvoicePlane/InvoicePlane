@@ -16,6 +16,8 @@ parameters:
         - application/libraries
         - application/third_party/MX
         - vendor/pocketarc/codeigniter/system/core
+    scanFiles:
+        - application/helpers/security_helper.php
 
     # CI3 has no PSR-4 autoloading/classmap. This bootstrap defines the framework
     # path constants and loads every application helper so their functions are

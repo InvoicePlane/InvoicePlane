@@ -23,9 +23,7 @@ class Cron extends Base_Controller
     {
         // Check the provided cron key
         if ( ! hash_equals((string) get_setting('cron_key'), (string) $cron_key)) {
-            $this->load->helper('file_security');
-            log_message('error', '[Cron Recurring Invoices] Wrong cron key provided! '
-                . sanitize_for_logging((string) $cron_key));
+            log_message('error', '[Cron Recurring Invoices] Wrong cron key provided! ' . $cron_key);
             show_error(trans('wrong_cron_key_provided'), 500);
             exit('Wrong cron key!');
         }
@@ -39,7 +37,7 @@ class Cron extends Base_Controller
 
         // Gather a list of recurring invoices to generate
         $invoices_recurring = $this->mdl_invoices_recurring->active()->get()->result();
-        $recurInfo          = [];
+        $recurInfo = [];
         foreach ($invoices_recurring as $invoice_recurring) {
             $recurInfo = [
                 'invoice_id'           => $invoice_recurring->invoice_id,
@@ -163,9 +161,9 @@ class Cron extends Base_Controller
                     : $tpl->email_template_subject;
 
                 $pdf_template = $tpl->email_template_pdf_template;
-                $to           = $invoice->client_email;
-                $cc           = $tpl->email_template_cc;
-                $bcc          = $tpl->email_template_bcc;
+                $to = $invoice->client_email;
+                $cc = $tpl->email_template_cc;
+                $bcc = $tpl->email_template_bcc;
 
                 $email_invoice = email_invoice($target_id, $pdf_template, $from, $to, $subject, $body, $cc, $bcc, $attachment_files);
 

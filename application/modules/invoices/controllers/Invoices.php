@@ -60,6 +60,17 @@ class Invoices extends Admin_Controller
         $this->mdl_invoices->paginate(site_url('invoices/status/' . $status), $page);
         $invoices = $this->mdl_invoices->result();
 
+        $serviceIds = array_unique(array_filter(array_column($invoices, 'service_id')));
+
+        $this->load->model('services/mdl_services');
+
+        foreach ($invoices as $invoice) {
+            $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
+            $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
+        }
+
+        $services = $this->mdl_services->get()->result_array();
+
         $this->layout->set(
             [
                 'invoices'           => $invoices,
@@ -68,6 +79,7 @@ class Invoices extends Admin_Controller
                 'filter_placeholder' => trans('filter_invoices'),
                 'filter_method'      => 'filter_invoices',
                 'invoice_statuses'   => $this->mdl_invoices->statuses(),
+                'services'           => $services,
             ]
         );
 
@@ -104,7 +116,7 @@ class Invoices extends Admin_Controller
             return;
         }
 
-        $filePath     = $validation['path'];
+        $filePath = $validation['path'];
         $safeFilename = $validation['basename'];
 
         // Security: Sanitize filename for header
@@ -130,6 +142,7 @@ class Invoices extends Admin_Controller
                 'custom_fields/mdl_invoice_custom',
                 'units/mdl_units',
                 'upload/mdl_uploads',
+                'services/mdl_services',
             ]
         );
         $this->load->helper(['custom_values', 'dropzone', 'e-invoice']);
@@ -149,7 +162,7 @@ class Invoices extends Admin_Controller
             }
         }*/
 
-        $fields  = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
+        $fields = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
         if ( ! $invoice) {
@@ -162,7 +175,7 @@ class Invoices extends Admin_Controller
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
@@ -180,8 +193,13 @@ class Invoices extends Admin_Controller
             }
         }
 
+        $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
+        $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
+
+        $services = $this->mdl_services->get()->result_array();
+
         // Check whether there are payment custom fields
-        $payment_cf       = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
+        $payment_cf = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
         $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
         // Get Items
         $items = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
@@ -191,12 +209,19 @@ class Invoices extends Admin_Controller
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
         $change_user = $change_user->user_type > 1;
 
+        $this->load->model('integrations/Merchant_clients_model');
+        $this->load->model('integrations/Merchant_responses_model');
+        $enabled_merchant_clients = $this->Merchant_clients_model->get_enabled_clients();
+        $send_history             = $this->Merchant_responses_model->get_outbound_by_invoice((int) $invoice_id);
+
         $this->layout->set(
             [
                 'invoice'                  => $invoice,
                 'items'                    => $items,
                 'invoice_id'               => $invoice_id,
                 'einvoice'                 => $einvoice,
+                'enabled_merchant_clients' => $enabled_merchant_clients,
+                'send_history'             => $send_history,
                 'change_user'              => $change_user,
                 'tax_rates'                => $this->mdl_tax_rates->get()->result(),
                 'invoice_tax_rates'        => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
@@ -305,13 +330,13 @@ class Invoices extends Admin_Controller
         $is_valid_xml_id = is_string($xml_id) && preg_match('/^[A-Za-z0-9-]+$/', $xml_id) === 1;
         if ($is_valid_xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
             $embed_xml = $xml_setting['embedXML'];
-            $XMLname   = $xml_setting['XMLname'];
-            $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
+            $XMLname = $xml_setting['XMLname'];
+            $options = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
             $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
         }
 
         $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
-        $path     = generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
+        $path = generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
         $this->output->set_content_type('text/xml');
         $this->output->set_output(file_get_contents($path));
         unlink($path);

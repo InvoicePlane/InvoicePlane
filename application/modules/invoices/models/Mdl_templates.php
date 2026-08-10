@@ -62,10 +62,10 @@ class Mdl_Templates extends CI_Model
      * Get the list of allowed invoice templates.
      *
      * Security: The selector is built from the static built-in whitelist plus the names
-     * explicitly listed in the CUSTOM_INVOICE_TEMPLATES_PDF / CUSTOM_INVOICE_TEMPLATES_PUBLIC
-     * allowlist constants. No directory, neither the application's own nor
-     * CUSTOM_TEMPLATES_FOLDER, is ever scanned (prevents RCE). CUSTOM_TEMPLATES_FOLDER only
-     * supplies the file's location at render time; on its own it lists nothing.
+     * explicitly listed in the CUSTOM_*_TEMPLATES allowlist constants — no directory,
+     * neither the application's own nor CUSTOM_TEMPLATES_FOLDER, is EVER scanned (prevents RCE).
+     * CUSTOM_TEMPLATES_FOLDER only supplies the file's location at render time; on its own it
+     * lists nothing. See _merge_custom() for how the allowlisted names are validated and merged.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -88,10 +88,10 @@ class Mdl_Templates extends CI_Model
      * Get the list of allowed quote templates.
      *
      * Security: The selector is built from the static built-in whitelist plus the names
-     * explicitly listed in the CUSTOM_QUOTE_TEMPLATES_PDF / CUSTOM_QUOTE_TEMPLATES_PUBLIC
-     * allowlist constants. No directory, neither the application's own nor
-     * CUSTOM_TEMPLATES_FOLDER, is ever scanned (prevents RCE). CUSTOM_TEMPLATES_FOLDER only
-     * supplies the file's location at render time; on its own it lists nothing.
+     * explicitly listed in the CUSTOM_*_TEMPLATES allowlist constants — no directory,
+     * neither the application's own nor CUSTOM_TEMPLATES_FOLDER, is EVER scanned (prevents RCE).
+     * CUSTOM_TEMPLATES_FOLDER only supplies the file's location at render time; on its own it
+     * lists nothing. See _merge_custom() for how the allowlisted names are validated and merged.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -144,63 +144,27 @@ class Mdl_Templates extends CI_Model
         return $warnings;
     }
 
-    /**
-     * Find selected template settings that are not available in the current allowlists.
-     *
-     * This helps administrators upgrading from versions that discovered template files
-     * automatically. If a saved template name is not built in and not listed in
-     * ipconfig.php, it will not appear in the UI until it is added to the matching
-     * CUSTOM_*_TEMPLATES setting.
-     *
-     * @return array<string, array<int, string>>
-     */
     public function get_missing_allowlisted_template_settings(): array
     {
-        $checks = [
-            'CUSTOM_INVOICE_TEMPLATES_PDF' => [
-                'allowed'  => $this->get_invoice_templates('pdf'),
-                'settings' => [
-                    'pdf_invoice_template',
-                    'pdf_invoice_template_paid',
-                    'pdf_invoice_template_overdue',
-                ],
-            ],
-            'CUSTOM_INVOICE_TEMPLATES_PUBLIC' => [
-                'allowed'  => $this->get_invoice_templates('public'),
-                'settings' => [
-                    'public_invoice_template',
-                ],
-            ],
-            'CUSTOM_QUOTE_TEMPLATES_PDF' => [
-                'allowed'  => $this->get_quote_templates('pdf'),
-                'settings' => [
-                    'pdf_quote_template',
-                ],
-            ],
-            'CUSTOM_QUOTE_TEMPLATES_PUBLIC' => [
-                'allowed'  => $this->get_quote_templates('public'),
-                'settings' => [
-                    'public_quote_template',
-                ],
-            ],
+        $settings = [
+            'pdf_invoice_template'    => ['CUSTOM_INVOICE_TEMPLATES_PDF', self::ALLOWED_INVOICE_TEMPLATES['pdf']],
+            'public_invoice_template' => ['CUSTOM_INVOICE_TEMPLATES_PUBLIC', self::ALLOWED_INVOICE_TEMPLATES['public']],
+            'pdf_quote_template'      => ['CUSTOM_QUOTE_TEMPLATES_PDF', self::ALLOWED_QUOTE_TEMPLATES['pdf']],
+            'public_quote_template'   => ['CUSTOM_QUOTE_TEMPLATES_PUBLIC', self::ALLOWED_QUOTE_TEMPLATES['public']],
         ];
 
         $missing = [];
 
-        foreach ($checks as $ipconfig_key => $check) {
-            foreach ($check['settings'] as $setting_key) {
-                $template_name = get_setting($setting_key);
-
-                if ($template_name === '' || in_array($template_name, $check['allowed'], true)) {
-                    continue;
-                }
-
-                $missing[$ipconfig_key][] = $template_name;
+        foreach ($settings as $settingKey => [$allowlistKey, $builtIn]) {
+            $value = get_setting($settingKey);
+            if ( ! is_string($value) || $value === '' || in_array($value, $builtIn, true)) {
+                continue;
             }
-        }
 
-        foreach ($missing as $ipconfig_key => $template_names) {
-            $missing[$ipconfig_key] = array_values(array_unique($template_names));
+            $allowlisted = $this->_custom_template_names($allowlistKey);
+            if ( ! in_array($value, $allowlisted, true)) {
+                $missing[$allowlistKey][] = $value;
+            }
         }
 
         return $missing;
@@ -246,14 +210,34 @@ class Mdl_Templates extends CI_Model
 
         // Read the explicit allowlist from ipconfig.php (empty string / undefined = no custom templates)
         $raw = defined($const_name) ? constant($const_name) : '';
+        if (empty($raw) && function_exists('env')) {
+            $raw = env($const_name, '');
+        }
+
+        $custom_names = $this->_custom_template_names($const_name, $raw);
+        if ($custom_names === []) {
+            return $built_in;
+        }
+
+        return array_values(array_unique(array_merge($custom_names, $built_in)));
+    }
+
+    private function _custom_template_names(string $const_name, mixed $raw = null): array
+    {
+        if ($raw === null) {
+            $raw = defined($const_name) ? constant($const_name) : '';
+            if (empty($raw) && function_exists('env')) {
+                $raw = env($const_name, '');
+            }
+        }
 
         if (empty($raw)) {
-            return $built_in;
+            return [];
         }
 
         $custom_names = [];
 
-        foreach (explode(',', $raw) as $entry) {
+        foreach (explode(',', (string) $raw) as $entry) {
             $name = trim($entry);
 
             if ($name === '') {
@@ -271,6 +255,6 @@ class Mdl_Templates extends CI_Model
             }
         }
 
-        return array_values(array_unique(array_merge($custom_names, $built_in)));
+        return array_values(array_unique($custom_names));
     }
 }

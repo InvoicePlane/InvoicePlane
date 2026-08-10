@@ -61,3 +61,11 @@ CREATE TABLE `ip_user_custom` (
 ALTER TABLE `ip_custom_fields` DROP COLUMN `custom_field_column`;
 
 ALTER TABLE `ip_users` ADD COLUMN `user_all_clients` INT(1) NOT NULL DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS `ip_client_services` (
+  `client_id`  INT NOT NULL,
+  `service_id` INT NOT NULL,
+
+  PRIMARY KEY (`client_id`, `service_id`),
+  KEY `idx_client_services_service_id` (`service_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
