@@ -78,7 +78,13 @@ class Crypt
      */
     private function getEncryptionKey(): string
     {
-        $key = getenv('ENCRYPTION_KEY');
+        // env(), not getenv(): Dotenv (bootstrap/kernel.php) only populates
+        // $_ENV/$_SERVER, it never calls putenv(), so getenv() here always
+        // silently returned '' and every encode()/decode() ran with an empty
+        // key — self-consistent (both ends shared the same bug) so nothing
+        // crashed, but it meant encryption-at-rest for gateway credentials and
+        // invoice/quote passwords provided no real confidentiality.
+        $key = (string) env('ENCRYPTION_KEY', '');
         if (preg_match('/^base64:(.*)$/', $key, $matches)) {
             $key = base64_decode($matches[1]);
         }

@@ -110,7 +110,7 @@ class CryptorTest extends TestCase
         $plaintext  = 'tamper-sensitive plaintext';
         $ciphertext = Cryptor::Encrypt($plaintext, $this->key, Cryptor::FORMAT_RAW);
 
-        $tampered = $ciphertext;
+        $tampered     = $ciphertext;
         $tampered[20] = chr(ord($tampered[20]) ^ 1);
 
         /* Act */
@@ -138,9 +138,11 @@ class CryptorTest extends TestCase
     #[Test]
     public function it_decodes_base64_encryption_keys_in_the_crypt_wrapper(): void
     {
-        /* Arrange */
-        $rawKey = random_bytes(32);
-        putenv('ENCRYPTION_KEY=base64:' . base64_encode($rawKey));
+        /* Arrange: Crypt reads env('ENCRYPTION_KEY'), which is $_ENV-backed
+         * (see bootstrap/kernel.php), not getenv()/putenv(). */
+        require_once dirname(__DIR__, 3) . '/bootstrap/kernel.php';
+        $rawKey                 = random_bytes(32);
+        $_ENV['ENCRYPTION_KEY'] = 'base64:' . base64_encode($rawKey);
 
         $crypt     = new Crypt();
         $plaintext = 'wrapped encryption payload';
@@ -154,4 +156,3 @@ class CryptorTest extends TestCase
         self::assertSame($plaintext, $decrypted);
     }
 }
-

@@ -20,6 +20,9 @@ class Paypal extends Base_Controller
     {
         parent::__construct();
         $this->load->helper('file_security');
+        // paypal_capture_payment() needs this and previously never loaded it,
+        // so every capture attempt fataled on a null $this->mdl_invoices.
+        $this->load->model('invoices/mdl_invoices');
         $this->_create_client();
     }
 
@@ -39,8 +42,6 @@ class Paypal extends Base_Controller
         }
 
         // Check if the invoice exists and is billable
-        $this->load->model('invoices/mdl_invoices');
-
         $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_url_key)->get()->row();
 
         // Security: Verify the invoice exists and is guest-visible
