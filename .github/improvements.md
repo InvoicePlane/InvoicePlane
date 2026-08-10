@@ -882,7 +882,7 @@ through another vector, an attacker could use it at any time to take over the ac
 ### What Was Improved
 
 A `user_passwordreset_token_expiry DATETIME` column was added to `ip_users` (migration
-`044_1.7.3.sql`). Tokens now expire after a configurable duration (default: 15 minutes).
+`043_1.7.2.sql`). Tokens now expire after a configurable duration (default: 15 minutes).
 
 ```php
 // Token validation now checks expiry
