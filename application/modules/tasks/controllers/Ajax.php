@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
+    public $ajax_controller = true;
+
     /**
      * @param null|int $invoice_id
      */
@@ -39,7 +41,9 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('mdl_tasks');
 
-        $tasks = $this->mdl_tasks->where_in('task_id', $this->input->post('task_ids'))->get()->result();
+        $task_ids = $this->input->post('task_ids') ?? [];
+        // CI3's where_in() throws on an empty array rather than matching nothing.
+        $tasks = $task_ids === [] ? [] : $this->mdl_tasks->where_in('task_id', $task_ids)->get()->result();
         foreach ($tasks as $task) {
             $task->task_price = format_amount($task->task_price);
         }
