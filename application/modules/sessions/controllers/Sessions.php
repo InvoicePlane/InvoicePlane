@@ -161,13 +161,16 @@ class Sessions extends Base_Controller
             // Check for the reset token
             $user = $this->mdl_users->get_by_id($user_id);
 
+            // Unknown user_id and a wrong token must be indistinguishable, otherwise the
+            // differing messages let an attacker enumerate valid user_ids on this POST. Both
+            // return the same generic reset message used by the token-link flow.
             if (empty($user)) {
-                $this->session->set_flashdata('alert_error', trans('loginalert_user_not_found'));
+                $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
                 redirect($this->_get_safe_referer());
             }
 
             if (empty($user->user_passwordreset_token) || ! hash_equals((string) $user->user_passwordreset_token, (string) $this->input->post('token'))) {
-                $this->session->set_flashdata('alert_error', trans('loginalert_wrong_auth_code'));
+                $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
                 redirect($this->_get_safe_referer());
             }
 
