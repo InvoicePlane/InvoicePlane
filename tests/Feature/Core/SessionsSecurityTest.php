@@ -4,6 +4,7 @@ namespace Tests\Feature\Core;
 
 use DateTime;
 use DateTimeZone;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\AbstractTestCase;
 
@@ -362,6 +363,45 @@ class SessionsSecurityTest extends AbstractTestCase
             '4 attempts against a max of 5 must NOT trigger the rate limit.'
         );
     }
+
+    /**
+     * @return array<string, array{0: string, 1: bool}>
+     */
+    public static function expiryFormatProvider(): array
+    {
+        return [
+            // description => [stored expiry string, accepted?]
+            'canonical timestamp'                 => ['2020-01-01 12:00:00', true],
+            'canonical boundary timestamp'        => ['2099-12-31 23:59:59', true],
+            'garbage time-only string'            => ['25:99:99', false],
+            'out-of-range month and day'          => ['2020-13-40 00:00:00', false],
+            'non-date string'                     => ['not-a-date', false],
+            'non-canonical single-digit fields'   => ['2026-8-10 9:05:07', false],
+            'non-canonical double space'          => ['2099-01-01  12:00:00', false],
+            'zero date (right shape, unreal date)' => ['0000-00-00 00:00:00', false],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[DataProvider('expiryFormatProvider')]
+    public function it_accepts_only_canonical_password_reset_expiry_strings(string $expiry, bool $accepted): void
+    {
+        /* Arrange */
+
+        /* Act */
+        $result = $this->security->isCanonicalExpiry($expiry);
+
+        /* Assert */
+        self::assertSame(
+            $accepted,
+            $result,
+            sprintf(
+                'Expiry string "%s" must be %s by strict canonical parsing.',
+                $expiry,
+                $accepted ? 'accepted' : 'rejected'
+            )
+        );
+    }
 }
 
 class StubSessionsSecurity
@@ -402,6 +442,33 @@ class StubSessionsSecurity
         $now    = new DateTime('now', $utc);
 
         return $now > $expiry;
+    }
+
+    /**
+     * Strict expiry parsing, mirroring Sessions::_reject_expired_password_reset_token().
+     *
+     * A stored expiry is accepted only when it matches the exact, anchored canonical
+     * Y-m-d H:i:s shape and createFromFormat() parses it with no warnings/errors. This
+     * rejects out-of-range values (25:99:99), rolled-over dates (2020-13-40 00:00:00), and
+     * non-canonical spacing/single-digit fields (2026-8-10 9:05:07) that createFromFormat()
+     * would otherwise normalize silently.
+     */
+    public function isCanonicalExpiry(string $raw): bool
+    {
+        if ( ! preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $raw)) {
+            return false;
+        }
+
+        $utc          = new DateTimeZone('UTC');
+        $parsed       = DateTime::createFromFormat('!Y-m-d H:i:s', $raw, $utc);
+        $parse_errors = DateTime::getLastErrors();
+
+        if ($parsed === false) {
+            return false;
+        }
+
+        return ! ($parse_errors !== false
+            && ($parse_errors['warning_count'] > 0 || $parse_errors['error_count'] > 0));
     }
 
     public function clampExpiryMinutes(int $minutes): int
