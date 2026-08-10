@@ -641,11 +641,14 @@ class Sessions extends Base_Controller
                 redirect('sessions/passwordreset');
             }
         } catch (Exception $e) {
-            // Invalid datetime format in database, clear the token for safety
+            // Invalid or malformed expiry: clear the token for safety. Log the specifics
+            // server-side, but show the user the same generic "expired, request a new one"
+            // message as the normal expiry path so the response never reveals which internal
+            // check failed (malformed vs. expired vs. unknown token).
             $this->load->helper('file_security');
             log_message('error', 'Invalid password reset token expiry format for user ID: ' . sanitize_for_logging($user->user_id));
             $this->_clear_password_reset_token($user->user_id);
-            $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
+            $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
             redirect('sessions/passwordreset');
         }
     }
