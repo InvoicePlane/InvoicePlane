@@ -612,8 +612,23 @@ class Sessions extends Base_Controller
                 self::$utc_timezone = new DateTimeZone('UTC');
             }
 
-            // Use UTC timezone for consistent timestamp comparison
-            $expiry_time  = new DateTime($user->user_passwordreset_token_expiry, self::$utc_timezone);
+            // Use UTC timezone for consistent timestamp comparison. Parse strictly:
+            // new DateTime() accepts out-of-range values such as "25:99:99" and would let a
+            // malformed-but-"non-expired" token continue, so parse the exact format and reject
+            // any parser warning or error before the elapsed-time check.
+            $expiry_time = DateTime::createFromFormat(
+                '!Y-m-d H:i:s',
+                (string) $user->user_passwordreset_token_expiry,
+                self::$utc_timezone
+            );
+            $parse_errors = DateTime::getLastErrors();
+            if (
+                $expiry_time === false
+                || ($parse_errors !== false
+                    && ($parse_errors['warning_count'] > 0 || $parse_errors['error_count'] > 0))
+            ) {
+                throw new Exception('Invalid password reset token expiry');
+            }
             $current_time = new DateTime('now', self::$utc_timezone);
 
             if ($current_time > $expiry_time) {
