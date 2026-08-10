@@ -124,8 +124,10 @@ class Sessions extends Base_Controller
             $user = $user->row();
 
             if (empty($user)) {
-                // Redirect back to the login screen with an alert
-                $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
+                // Unknown token: show the same generic "expired, request a new one" message as
+                // the expiry paths so the response never reveals whether the token matched a
+                // user, was malformed, or had expired.
+                $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
                 redirect('sessions/passwordreset');
             }
 
