@@ -618,17 +618,17 @@ class Sessions extends Base_Controller
             }
 
             // Use UTC timezone for consistent timestamp comparison. Parse strictly:
-            // new DateTime() accepts out-of-range values such as "25:99:99" and would let a
-            // malformed-but-"non-expired" token continue, so parse the exact format and reject
-            // any parser warning or error before the elapsed-time check.
-            $expiry_time = DateTime::createFromFormat(
-                '!Y-m-d H:i:s',
-                (string) $user->user_passwordreset_token_expiry,
-                self::$utc_timezone
-            );
+            // new DateTime() accepts out-of-range values such as "25:99:99", and
+            // createFromFormat() silently normalizes non-canonical strings such as
+            // "2026-8-10 9:05:07" (single-digit fields) without a warning. The stored expiry is
+            // always written canonically as Y-m-d H:i:s, so require that exact anchored shape,
+            // then reject any parser warning or error before the elapsed-time check.
+            $raw_expiry   = (string) $user->user_passwordreset_token_expiry;
+            $expiry_time  = DateTime::createFromFormat('!Y-m-d H:i:s', $raw_expiry, self::$utc_timezone);
             $parse_errors = DateTime::getLastErrors();
             if (
-                $expiry_time === false
+                ! preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $raw_expiry)
+                || $expiry_time === false
                 || ($parse_errors !== false
                     && ($parse_errors['warning_count'] > 0 || $parse_errors['error_count'] > 0))
             ) {
