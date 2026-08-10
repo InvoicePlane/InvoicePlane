@@ -103,6 +103,11 @@ class Sessions extends Base_Controller
      */
     public function passwordreset($token = null)
     {
+        // Shared, XSS/open-redirect-safe referer + CSRF helpers (not autoloaded).
+        if ( ! function_exists('get_safe_referer')) {
+            $this->load->helper('security');
+        }
+
         // Check if a token was provided
         if ($token) {
             if (preg_match("/[^[:alnum:]\-_]/", $token)) {
@@ -113,7 +118,7 @@ class Sessions extends Base_Controller
             //prevent brute force attacks by counting times a token is used
             $login_log_check = $this->_login_log_check($token);
             if ( ! empty($login_log_check) && $login_log_check->log_count > 10) {
-                redirect($this->_get_safe_referer());
+                redirect(get_safe_referer('', 'sessions/passwordreset'));
             } else {
                 //the use of a token counts as a failure
                 $this->_login_log_addfailure($token);
@@ -148,12 +153,20 @@ class Sessions extends Base_Controller
 
         // Check if the form for a new password was used
         if ($this->input->post('btn_new_password')) {
+            // Validate the CSRF token before any state change. The new-password form emits
+            // _csrf_field(); this mirrors Admin_Controller::ensure_valid_post_request(), which
+            // Sessions (a Base_Controller, not an Admin_Controller) cannot call.
+            if ( ! verify_csrf_token()) {
+                $this->session->set_flashdata('alert_error', trans('invalid_request'));
+                redirect(get_safe_referer('', 'sessions/passwordreset'));
+            }
+
             $new_password = $this->input->post('new_password', true);
             $user_id      = $this->input->post('user_id', true);
 
             if (empty($user_id) || empty($new_password)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
-                redirect($this->_get_safe_referer());
+                redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
 
             $this->load->model('users/mdl_users');
@@ -166,12 +179,12 @@ class Sessions extends Base_Controller
             // return the same generic reset message used by the token-link flow.
             if (empty($user)) {
                 $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
-                redirect($this->_get_safe_referer());
+                redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
 
             if (empty($user->user_passwordreset_token) || ! hash_equals((string) $user->user_passwordreset_token, (string) $this->input->post('token'))) {
                 $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
-                redirect($this->_get_safe_referer());
+                redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
 
             // Enforce token expiry on the password-change POST as well, otherwise an expired
@@ -674,43 +687,5 @@ class Sessions extends Base_Controller
             'user_passwordreset_token'        => '',
             'user_passwordreset_token_expiry' => null,
         ]);
-    }
-
-    /**
-     * Validates that a referer URL is from the same domain
-     * to prevent open redirect vulnerabilities.
-     *
-     * @param string $referer
-     *
-     * @return string Safe redirect URL
-     */
-    private function _get_safe_referer($referer = '')
-    {
-        $default = 'sessions/passwordreset';
-
-        $referer = empty($referer) ? ($_SERVER['HTTP_REFERER'] ?? '') : $referer;
-
-        if (empty($referer)) {
-            return $default;
-        }
-
-        $base_url = base_url();
-
-        // If base_url is not configured, str_starts_with($referer, '') is always true
-        // and any external URL would pass. Reject to be safe.
-        if (empty($base_url)) {
-            return $default;
-        }
-
-        // Compare parsed hosts rather than string prefixes to resist
-        // bypass attempts such as https://example.com.evil.com/...
-        $referer_host = parse_url($referer, PHP_URL_HOST);
-        $base_host    = parse_url($base_url, PHP_URL_HOST);
-
-        if ( ! $referer_host || ! $base_host || $referer_host !== $base_host) {
-            return $default;
-        }
-
-        return $referer;
     }
 }
