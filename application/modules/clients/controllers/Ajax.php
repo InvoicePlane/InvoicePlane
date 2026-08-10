@@ -31,6 +31,8 @@ class Ajax extends Admin_Controller
 
         if (empty($query)) {
             $this->json_encode_ajax($response);
+
+            return;
         }
 
         // Search for chars "in the middle" of clients names

@@ -157,6 +157,7 @@ class Mdl_Invoices extends Response_Model
                 'rules' => 'required',
             ],
             'invoice_time_created' => [
+                'field' => 'invoice_time_created',
                 'rules' => 'required',
             ],
             'invoice_group_id' => [
@@ -171,7 +172,7 @@ class Mdl_Invoices extends Response_Model
             'user_id' => [
                 'field' => 'user_id',
                 'label' => trans('user'),
-                'rule'  => 'required',
+                'rules' => 'required',
             ],
             'payment_method' => [
                 'field' => 'payment_method',
@@ -202,6 +203,7 @@ class Mdl_Invoices extends Response_Model
                 'rules' => 'required',
             ],
             'invoice_time_created' => [
+                'field' => 'invoice_time_created',
                 'rules' => 'required',
             ],
             'invoice_password' => [
