@@ -196,7 +196,18 @@ final class ClassCoverageInventory
             }
 
             if ($token[0] === T_CLASS) {
+                // `new class(...) { ... }` (a test fake, typically) is not a
+                // declaration of the file's real class, and its body's own
+                // methods must not be flattened into the outer class's public
+                // method list — skip clean over the whole anonymous class.
+                if (self::isAnonymousClassDeclaration($tokens, $i)) {
+                    $i = self::skipAnonymousClassBody($tokens, $i);
+
+                    continue;
+                }
+
                 $class = self::nextDeclarationString($tokens, $i + 1);
+
                 continue;
             }
 
@@ -221,6 +232,57 @@ final class ClassCoverageInventory
         sort($publicMethods);
 
         return ['class' => $class, 'public_methods' => array_values(array_unique($publicMethods))];
+    }
+
+    /**
+     * @param array<int, mixed> $tokens
+     */
+    private static function isAnonymousClassDeclaration(array $tokens, int $classIndex): bool
+    {
+        for ($i = $classIndex - 1; $i >= 0; $i--) {
+            $token = $tokens[$i];
+            if (is_array($token) && $token[0] === T_WHITESPACE) {
+                continue;
+            }
+
+            return is_array($token) && $token[0] === T_NEW;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array<int, mixed> $tokens
+     *
+     * Returns the index of the anonymous class body's matching closing brace
+     * (or the last token index if the body never closes, defensively)
+     */
+    private static function skipAnonymousClassBody(array $tokens, int $classIndex): int
+    {
+        $count = count($tokens);
+        $i     = $classIndex;
+
+        while ($i < $count && $tokens[$i] !== '{') {
+            $i++;
+        }
+
+        if ($i >= $count) {
+            return $classIndex;
+        }
+
+        $depth = 0;
+        for (; $i < $count; $i++) {
+            if ($tokens[$i] === '{') {
+                $depth++;
+            } elseif ($tokens[$i] === '}') {
+                $depth--;
+                if ($depth === 0) {
+                    return $i;
+                }
+            }
+        }
+
+        return $count - 1;
     }
 
     /**

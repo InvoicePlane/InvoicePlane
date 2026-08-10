@@ -6,6 +6,9 @@ if ( ! defined('BASEPATH')) {
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 
 #[AllowDynamicProperties]
 class PaypalLib
@@ -30,9 +33,10 @@ class PaypalLib
 
         log_message('debug', 'Paypal library initialization started');
 
-        $this->client = new Client([
+        $this->client = new Client(array_filter([
             'base_uri' => $this->endpoint,
-        ]);
+            'handler'  => self::testHandlerStack(),
+        ]));
 
         log_message('debug', 'Paypal library client created');
 
@@ -188,5 +192,44 @@ class PaypalLib
 
             return $clientException->getResponse()->getBody();
         }
+    }
+
+    /**
+     * In the test environment only, replay a queue of canned HTTP responses
+     * instead of calling the real PayPal API. The queue is supplied by the
+     * test as a JSON-encoded array (via AbstractTestCase::withEnvironment())
+     * under PAYPAL_MOCK_RESPONSES, each entry shaped like
+     * ['status' => int, 'body' => string]. Responses are consumed in the
+     * order this library calls them (authorize() first, then whichever
+     * action the controller invokes).
+     */
+    private static function testHandlerStack(): ?HandlerStack
+    {
+        if (ENVIRONMENT !== 'testing') {
+            return null;
+        }
+
+        $fixture = getenv('PAYPAL_MOCK_RESPONSES');
+
+        if ($fixture === false || $fixture === '') {
+            return null;
+        }
+
+        $queue = json_decode($fixture, true);
+
+        if ( ! is_array($queue)) {
+            return null;
+        }
+
+        $mock = new MockHandler(array_map(
+            static fn (array $entry): Response => new Response(
+                $entry['status'] ?? 200,
+                [],
+                $entry['body'] ?? ''
+            ),
+            $queue
+        ));
+
+        return HandlerStack::create($mock);
     }
 }
