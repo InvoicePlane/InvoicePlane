@@ -86,7 +86,7 @@ PASSWORD_RESET_EMAIL_MAX_ATTEMPTS=3
 # Time window in hours for email-based rate limiting
 PASSWORD_RESET_EMAIL_WINDOW_HOURS=1
 
-# Password reset token expiration (since v1.7.3)
+# Password reset token expiration (since v1.7.2)
 # Time in minutes before a password reset token expires (default: 15 minutes)
 # This prevents indefinite token validity and reduces account takeover risk
 PASSWORD_RESET_TOKEN_EXPIRY_MINUTES=15

@@ -129,36 +129,8 @@ class Sessions extends Base_Controller
                 redirect('sessions/passwordreset');
             }
 
-            // Check if token has expired
-            if ( ! empty($user->user_passwordreset_token_expiry)) {
-                try {
-                    // Initialize UTC timezone if not already done
-                    if ( ! isset(self::$utc_timezone)) {
-                        self::$utc_timezone = new DateTimeZone('UTC');
-                    }
-
-                    // Use UTC timezone for consistent timestamp comparison
-                    $expiry_time  = new DateTime($user->user_passwordreset_token_expiry, self::$utc_timezone);
-                    $current_time = new DateTime('now', self::$utc_timezone);
-
-                    if ($current_time > $expiry_time) {
-                        // Token has expired, clear it from database
-                        $this->_clear_password_reset_token($user->user_id);
-
-                        $this->load->helper('file_security');
-                        log_message('info', 'Expired password reset token used for user ID: ' . sanitize_for_logging($user->user_id));
-                        $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
-                        redirect('sessions/passwordreset');
-                    }
-                } catch (Exception $e) {
-                    // Invalid datetime format in database, clear the token for safety
-                    $this->load->helper('file_security');
-                    log_message('error', 'Invalid password reset token expiry format for user ID: ' . sanitize_for_logging($user->user_id));
-                    $this->_clear_password_reset_token($user->user_id);
-                    $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
-                    redirect('sessions/passwordreset');
-                }
-            }
+            // Reject (and clear) the token if it has expired
+            $this->_reject_expired_password_reset_token($user);
 
             //if token is valid, delete the failure attempt from
             //the login_log table
@@ -196,6 +168,10 @@ class Sessions extends Base_Controller
                 $this->session->set_flashdata('alert_error', trans('loginalert_wrong_auth_code'));
                 redirect($this->_get_safe_referer());
             }
+
+            // Enforce token expiry on the password-change POST as well, otherwise an expired
+            // token that is still stored on the user row could be used to change the password.
+            $this->_reject_expired_password_reset_token($user);
 
             // Call the save_change_password() function from users model
             $this->mdl_users->save_change_password(
@@ -612,6 +588,51 @@ class Sessions extends Base_Controller
     private function _login_log_reset($username)
     {
         $this->db->delete('ip_login_log', ['login_name' => $username]);
+    }
+
+    /**
+     * Rejects an expired (or malformed) password reset token.
+     *
+     * Shared by the token-link (GET) and password-change (POST) flows so both enforce the
+     * same lifetime. When the token has expired or its stored expiry cannot be parsed, the
+     * token is cleared and the request is redirected back to the reset page. When the token
+     * is still valid this returns and execution continues.
+     *
+     * @param object $user The user row (must expose user_id and user_passwordreset_token_expiry)
+     */
+    private function _reject_expired_password_reset_token($user): void
+    {
+        if (empty($user->user_passwordreset_token_expiry)) {
+            return;
+        }
+
+        try {
+            // Initialize UTC timezone if not already done
+            if ( ! isset(self::$utc_timezone)) {
+                self::$utc_timezone = new DateTimeZone('UTC');
+            }
+
+            // Use UTC timezone for consistent timestamp comparison
+            $expiry_time  = new DateTime($user->user_passwordreset_token_expiry, self::$utc_timezone);
+            $current_time = new DateTime('now', self::$utc_timezone);
+
+            if ($current_time > $expiry_time) {
+                // Token has expired, clear it from database
+                $this->_clear_password_reset_token($user->user_id);
+
+                $this->load->helper('file_security');
+                log_message('info', 'Expired password reset token used for user ID: ' . sanitize_for_logging($user->user_id));
+                $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
+                redirect('sessions/passwordreset');
+            }
+        } catch (Exception $e) {
+            // Invalid datetime format in database, clear the token for safety
+            $this->load->helper('file_security');
+            log_message('error', 'Invalid password reset token expiry format for user ID: ' . sanitize_for_logging($user->user_id));
+            $this->_clear_password_reset_token($user->user_id);
+            $this->session->set_flashdata('alert_error', trans('wrong_passwordreset_token'));
+            redirect('sessions/passwordreset');
+        }
     }
 
     /**
