@@ -42,13 +42,3 @@ function stripe_minor_unit_multiplier(string $currency): int
 
     return in_array(strtoupper($currency), $zero_decimal_currencies, true) ? 1 : 100;
 }
-
-function stripe_amount_to_minor_units(int|float|string $amount, string $currency): int
-{
-    return amount_to_minor_units($amount, stripe_minor_unit_multiplier($currency));
-}
-
-function stripe_amount_from_minor_units(int|float|string $amount, string $currency): float
-{
-    return amount_from_minor_units($amount, stripe_minor_unit_multiplier($currency));
-}
