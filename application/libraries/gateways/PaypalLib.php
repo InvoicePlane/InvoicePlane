@@ -177,7 +177,7 @@ class PaypalLib
     {
         log_message('debug', 'Paypal library authorization started');
         try {
-            $response = $this->client->request('post', 'v1/oauth2/token', [
+            $response = $this->client->request('POST', 'v1/oauth2/token', [
                 'headers' => [
                     'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
@@ -205,7 +205,7 @@ class PaypalLib
      */
     private static function testHandlerStack(): ?HandlerStack
     {
-        if (ENVIRONMENT !== 'testing') {
+        if (ENVIRONMENT !== 'testing' && ! defined('CI_TESTING')) {
             return null;
         }
 
