@@ -121,7 +121,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
         });
 
         $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
+            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id) . '?' . _csrf_query(); ?>', '_blank');
         });
 
         $('#btn_generate_xml').click(function () {
