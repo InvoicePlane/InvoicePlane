@@ -166,7 +166,7 @@ foreach ($quotes as $quote) {
                                     <?php echo format_currency($quote->quote_total); ?>
                                 </td>
                                 <td style="text-align: center;">
-                                    <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
+                                    <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id) . '?' . _csrf_query(); ?>"
                                        target="_blank" title="<?php _trans('download_pdf'); ?>">
                                         <i class="fa fa-file-pdf-o"></i>
                                     </a>

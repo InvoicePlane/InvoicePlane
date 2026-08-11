@@ -63,7 +63,7 @@ $quote_idx                    = 1;
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
+                                <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id) . '?' . _csrf_query(); ?>"
                                    target="_blank">
                                     <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
                                 </a>
