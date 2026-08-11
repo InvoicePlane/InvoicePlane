@@ -16,6 +16,7 @@ class CustomFieldEntityModelsTest extends AbstractTestCase
     #[Test]
     public function it_loads_allowed_custom_field_tables_and_positions_for_the_form(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->get('/custom_fields/form');
 

@@ -56,8 +56,12 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_lists_a_custom_invoice_public_template_configured_in_ipconfig(): void
     {
+        /* Arrange */
+
+        /* Act */
         $model = $this->bootModelWith(['CUSTOM_INVOICE_TEMPLATES_PUBLIC' => 'My Web Template']);
 
+        /* Assert */
         self::assertContains(
             'My Web Template',
             $model->get_invoice_templates('public'),
@@ -89,8 +93,12 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_lists_a_custom_quote_public_template_configured_in_ipconfig(): void
     {
+        /* Arrange */
+
+        /* Act */
         $model = $this->bootModelWith(['CUSTOM_QUOTE_TEMPLATES_PUBLIC' => 'My Quote Web Template']);
 
+        /* Assert */
         self::assertContains(
             'My Quote Web Template',
             $model->get_quote_templates('public'),
@@ -119,10 +127,14 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_lists_multiple_comma_separated_custom_templates(): void
     {
+        /* Arrange */
+
+        /* Act */
         $model = $this->bootModelWith(['CUSTOM_INVOICE_TEMPLATES_PDF' => 'Corporate - Modern,Corporate - Classic']);
 
         $templates = $model->get_invoice_templates('pdf');
 
+        /* Assert */
         self::assertContains('Corporate - Modern', $templates);
         self::assertContains('Corporate - Classic', $templates);
     }
@@ -153,10 +165,14 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_rejects_a_path_traversal_custom_template_name(): void
     {
+        /* Arrange */
+
+        /* Act */
         $model = $this->bootModelWith(['CUSTOM_INVOICE_TEMPLATES_PDF' => '../../evil']);
 
         $templates = $model->get_invoice_templates('pdf');
 
+        /* Assert */
         self::assertNotContains('../../evil', $templates, 'A path-traversal name must never enter the allowlist.');
         self::assertSame(
             ['InvoicePlane', 'InvoicePlane - paid', 'InvoicePlane - overdue'],
@@ -189,10 +205,14 @@ class CustomTemplateAllowlistTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_keeps_the_valid_name_and_drops_the_invalid_one_from_a_mixed_list(): void
     {
+        /* Arrange */
+
+        /* Act */
         $model = $this->bootModelWith(['CUSTOM_INVOICE_TEMPLATES_PDF' => 'Good Template,../evil']);
 
         $templates = $model->get_invoice_templates('pdf');
 
+        /* Assert */
         self::assertContains('Good Template', $templates, 'The valid name must pass the allowlist.');
         self::assertNotContains('../evil', $templates, 'The invalid name must be dropped, not the whole list.');
     }

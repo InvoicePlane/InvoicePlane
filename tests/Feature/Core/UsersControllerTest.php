@@ -62,6 +62,7 @@ class UsersControllerTest extends AbstractTestCase
     #[Test]
     public function it_creates_a_user_with_a_hashed_password(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->post('/users/form', [
             'user_type'      => '2',
@@ -87,6 +88,7 @@ class UsersControllerTest extends AbstractTestCase
     #[Test]
     public function it_does_not_create_a_user_when_password_confirmation_does_not_match(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->post('/users/form', [
             'user_type'      => '2',

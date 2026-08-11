@@ -385,6 +385,7 @@ class SessionsSecurityTest extends AbstractTestCase
     #[Test]
     public function it_accepts_only_canonical_password_reset_expiry_strings(): void
     {
+        /* Arrange */
         foreach (self::expiryFormatProvider() as [$expiry, $accepted]) {
             /* Act */
             $result = $this->security->isCanonicalExpiry($expiry);

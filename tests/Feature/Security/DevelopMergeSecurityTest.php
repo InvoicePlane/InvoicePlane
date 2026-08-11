@@ -55,6 +55,8 @@ class DevelopMergeSecurityTest extends AbstractTestCase
     {
         /* Arrange */
         $sumexFile = APPPATH . 'libraries/Sumex.php';
+
+        /* Act */
         $content   = file_get_contents($sumexFile);
 
         /* Assert */

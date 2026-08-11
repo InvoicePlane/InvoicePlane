@@ -120,6 +120,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_saves_a_valid_permissive_search_preference(): void
     {
+        /* Arrange */
         /* Act */
         $this->request('GET', '/users/ajax/save_preference_permissive_search_users', ['permissive_search_users' => '1'], [], true);
 
@@ -130,6 +131,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_an_invalid_permissive_search_preference_value(): void
     {
+        /* Arrange */
         /* Act */
         $this->request('GET', '/users/ajax/save_preference_permissive_search_users', ['permissive_search_users' => '2'], [], true);
 

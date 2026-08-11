@@ -53,6 +53,7 @@ class StripeGatewayCallbackTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_for_checkout_session_on_an_unknown_invoice_key(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->post('/guest/gateways/stripe/create_checkout_session/does-not-exist');
 

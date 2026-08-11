@@ -41,6 +41,8 @@ class GuestGetControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_an_empty_response_for_show_files_with_no_key(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->get('/guest/get/show_files');
 
@@ -106,6 +108,8 @@ class GuestGetControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_400_for_get_file_with_no_filename(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->get('/guest/get/get_file');
 
@@ -116,6 +120,8 @@ class GuestGetControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_for_get_file_with_a_malformed_url_key_prefix(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->get('/guest/get/get_file/not-a-valid-key_file.pdf');
 

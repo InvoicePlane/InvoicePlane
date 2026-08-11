@@ -37,6 +37,7 @@ class PaypalGatewayCallbackTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_for_create_order_on_an_unknown_invoice_key(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->post('/guest/gateways/paypal/paypal_create_order/does-not-exist');
 
@@ -143,6 +144,7 @@ class PaypalGatewayCallbackTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_for_a_non_post_capture_payment_request(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->get('/guest/gateways/paypal/paypal_capture_payment/ORDER-1');
 

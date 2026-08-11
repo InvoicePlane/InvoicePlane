@@ -18,6 +18,7 @@ class SetupCliControllerTest extends AbstractTestCase
     #[Test]
     public function it_denies_http_access_to_the_cli_controller(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->get('/setup/cli/create_default_user');
 

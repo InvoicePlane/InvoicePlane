@@ -15,6 +15,7 @@ class PaymentInformationFormTest extends AbstractTestCase
     #[Test]
     public function it_redirects_for_an_unknown_invoice_key(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->get('/guest/payment_information/form/does-not-exist');
 

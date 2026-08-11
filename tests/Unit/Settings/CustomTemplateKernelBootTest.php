@@ -53,6 +53,9 @@ class CustomTemplateKernelBootTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_defines_all_four_allowlist_constants_after_boot(): void
     {
+        /* Arrange */
+
+        /* Act */
         $env = [
             'CUSTOM_INVOICE_TEMPLATES_PDF'    => 'Inv PDF',
             'CUSTOM_INVOICE_TEMPLATES_PUBLIC' => 'Inv Web',
@@ -60,6 +63,7 @@ class CustomTemplateKernelBootTest extends TestCase
             'CUSTOM_QUOTE_TEMPLATES_PUBLIC'   => 'Quote Web',
         ];
 
+        /* Assert */
         self::assertSame('Inv PDF', $this->runKernelProbe($env, 'CUSTOM_INVOICE_TEMPLATES_PDF'));
         self::assertSame('Inv Web', $this->runKernelProbe($env, 'CUSTOM_INVOICE_TEMPLATES_PUBLIC'));
         self::assertSame('Quote PDF', $this->runKernelProbe($env, 'CUSTOM_QUOTE_TEMPLATES_PDF'));

@@ -317,6 +317,8 @@ class InvoicesAjaxRequiredFieldsTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_save_an_invoice_tax_rate_without_invoice_id(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->ajax('POST', '/invoices/ajax/save_invoice_tax_rate', ['tax_rate_id' => '1', 'include_item_tax' => '0']);
 
@@ -454,6 +456,8 @@ class InvoicesAjaxRequiredFieldsTest extends AbstractTestCase
     #[Test]
     public function it_gets_a_recur_start_date(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->ajax('POST', '/invoices/ajax/get_recur_start_date', [
             'invoice_date'    => date('Y-m-d'),
@@ -468,6 +472,8 @@ class InvoicesAjaxRequiredFieldsTest extends AbstractTestCase
     #[Test]
     public function it_requires_an_ajax_request(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->post('/invoices/ajax/get_recur_start_date', []);
 
