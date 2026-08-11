@@ -21,15 +21,14 @@ class QuotesControllerTest extends AbstractTestCase
     public function it_lists_quotes_by_status(): void
     {
         /* Arrange */
-        $quoteId = $this->seedQuote(['quote_number' => 'QUO-LIST-001']);
+        $this->seedQuote(['quote_number' => 'QUO-LIST-001']);
 
         /* Act */
         $response = $this->get('/quotes/status/all');
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_quotes', ['quote_id' => $quoteId, 'quote_number' => 'QUO-LIST-001']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'QUO-LIST-001');
     }
 
     // -------------------------------------------------------------------------

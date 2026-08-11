@@ -32,8 +32,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_email_templates', ['email_template_title' => 'Listed Template']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed Template');
     }
 
     // -------------------------------------------------------------------------

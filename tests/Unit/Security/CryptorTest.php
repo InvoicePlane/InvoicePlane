@@ -14,6 +14,10 @@ class CryptorTest extends TestCase
 {
     private string $key;
 
+    private bool $hadEncryptionKey = false;
+
+    private mixed $previousEncryptionKey = null;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -21,7 +25,20 @@ class CryptorTest extends TestCase
         require_once dirname(__DIR__, 3) . '/application/libraries/Cryptor.php';
         require_once dirname(__DIR__, 3) . '/application/libraries/Crypt.php';
 
-        $this->key = random_bytes(32);
+        $this->key                   = random_bytes(32);
+        $this->hadEncryptionKey      = array_key_exists('ENCRYPTION_KEY', $_ENV);
+        $this->previousEncryptionKey = $_ENV['ENCRYPTION_KEY'] ?? null;
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->hadEncryptionKey) {
+            $_ENV['ENCRYPTION_KEY'] = $this->previousEncryptionKey;
+        } else {
+            unset($_ENV['ENCRYPTION_KEY']);
+        }
+
+        parent::tearDown();
     }
 
     #[Test]

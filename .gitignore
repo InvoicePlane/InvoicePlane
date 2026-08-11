@@ -2,9 +2,6 @@
 /application/config/development
 /application/sessions
 /ipconfig.php
-/consistency-inventory-*.md
-/phpunit-plan-*.md
-/.phpstan.cache/
 
 # Dependencies
 /node_modules
@@ -16,6 +13,8 @@
 audit-report.json
 updated-packages.txt
 pint_output.log
+/*-inventory-*.md
+/phpunit-plan-*.md
 /.phpunit.result.cache
 
 # Other files
@@ -44,4 +43,6 @@ yarn-error.log
 /stan.txt
 /todo.txt
 /yarnpack.txt
-.phpunit.cache
+/.phpunit.cache/
+/.phpstan.cache/
+/uploads/temp/

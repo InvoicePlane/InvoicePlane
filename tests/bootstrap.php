@@ -1,25 +1,15 @@
 <?php
 
-/**
- * PHPUnit Bootstrap File.
- *
- * Sets up the environment for running unit tests.
- */
-
-// Set error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-// Define base path
-define('BASEPATH', dirname(__DIR__) . '/application/');
-define('APPPATH', dirname(__DIR__) . '/application/');
-define('DOCROOT', dirname(__DIR__) . '/');
+define('CI_TESTING', true);
 
-// Load composer autoloader if available
-$composer_autoload = dirname(__DIR__) . '/vendor/autoload.php';
-if (file_exists($composer_autoload)) {
-    require_once $composer_autoload;
-}
+$basePath = dirname(__DIR__);
 
-// Set timezone to avoid warnings
-date_default_timezone_set('UTC');
+require_once $basePath . '/bootstrap/kernel.php';
+require_once $basePath . '/tests/Integration/bootstrap.php';
+
+$_SERVER['REQUEST_URI'] = '/';
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['PHP_SELF']    = '/index.php';

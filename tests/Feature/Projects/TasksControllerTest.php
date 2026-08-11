@@ -35,8 +35,7 @@ class TasksControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_tasks', ['task_name' => 'Listed Task']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed Task');
     }
 
     // -------------------------------------------------------------------------
@@ -88,7 +87,7 @@ class TasksControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'tasks');
         $this->assertDatabaseHas('ip_tasks', ['task_name' => 'Build API']);
     }
 
@@ -144,7 +143,7 @@ class TasksControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'tasks');
         $this->assertDatabaseHas('ip_tasks', ['task_id' => $id, 'task_name' => 'Renamed Task']);
         $this->assertDatabaseMissing('ip_tasks', ['task_id' => $id, 'task_name' => 'Original Task']);
     }
@@ -164,7 +163,7 @@ class TasksControllerTest extends AbstractTestCase
         $response = $this->post('/tasks/delete/' . $id, []);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'tasks');
         $this->assertDatabaseMissing('ip_tasks', ['task_id' => $id]);
     }
 

@@ -28,15 +28,14 @@ class PaymentsFeatureTest extends AbstractTestCase
         /* Arrange */
         $clientId  = $this->seedClient(['client_name' => 'Payment List Client']);
         $invoiceId = $this->seedInvoice($clientId);
-        $paymentId = $this->seedPayment($invoiceId, ['payment_amount' => '99.00']);
+        $this->seedPayment($invoiceId, ['payment_amount' => '99.00']);
 
         /* Act */
         $response = $this->get('/payments');
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_payments', ['payment_id' => $paymentId, 'payment_amount' => '99.00']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, '99.00');
     }
 
     // -------------------------------------------------------------------------

@@ -3,7 +3,6 @@
 namespace Tests\Scripts;
 
 use PHPUnit\Framework\Attributes\CoversNothing;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -260,16 +259,15 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     }
 
     #[Test]
-    #[DataProvider('categoryLabelProvider')]
-    public function it_returns_human_readable_label_for_known_category(string $category, string $expectedLabel): void
+    public function it_returns_human_readable_label_for_known_category(): void
     {
-        /* Arrange */
+        foreach (self::categoryLabelProvider() as $label => [$category, $expectedLabel]) {
+            /* Act */
+            $result = getCategoryLabel($category);
 
-        /* Act */
-        $result = getCategoryLabel($category);
-
-        /* Assert */
-        $this->assertSame($expectedLabel, $result);
+            /* Assert */
+            $this->assertSame($expectedLabel, $result, 'Failed data set: ' . $label);
+        }
     }
 
     #[Test]

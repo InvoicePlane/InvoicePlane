@@ -247,6 +247,14 @@ class Mdl_Templates extends CI_Model
         // Read the explicit allowlist from ipconfig.php (empty string / undefined = no custom templates)
         $raw = defined($const_name) ? constant($const_name) : '';
 
+        // Tests and long-lived workers may populate the environment after the
+        // bootstrap has defined an empty optional constant. Preserve the
+        // explicit constant as the primary source, but honor that environment
+        // value when the constant is unset or empty.
+        if (empty($raw) && function_exists('env')) {
+            $raw = env($const_name, '');
+        }
+
         if (empty($raw)) {
             return $built_in;
         }

@@ -37,8 +37,7 @@ class ProductsControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_products', ['product_name' => 'Listed Widget']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed Widget');
     }
 
     // -------------------------------------------------------------------------
@@ -86,7 +85,7 @@ class ProductsControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'products');
         $this->assertDatabaseHas('ip_products', ['product_name' => 'Acme Widget']);
     }
 
@@ -121,7 +120,7 @@ class ProductsControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'products');
         $this->assertDatabaseHas('ip_products', [
             'product_name' => 'Full Widget',
             'product_sku'  => 'SKU-FULL-001',
@@ -176,7 +175,7 @@ class ProductsControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'products');
         $this->assertDatabaseHas('ip_products', ['product_id' => $id, 'product_name' => 'Renamed Widget']);
         $this->assertDatabaseMissing('ip_products', ['product_id' => $id, 'product_name' => 'Original Widget']);
     }
@@ -196,7 +195,7 @@ class ProductsControllerTest extends AbstractTestCase
         $response = $this->post('/products/delete/' . $id, []);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'products');
         $this->assertDatabaseMissing('ip_products', ['product_name' => 'Deletable Widget']);
     }
 
