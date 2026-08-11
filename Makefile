@@ -16,7 +16,8 @@ COMPOSER          ?= composer
 PHPUNIT           ?= vendor/bin/phpunit
 PHPSTAN           ?= vendor/bin/phpstan
 PHPSTAN_MEMORY    ?= 1G
-PHPSTAN_TMPDIR    ?= .phpstan.cache/tmp
+PHPSTAN_TMPDIR    ?= /tmp/invoiceplane-phpstan-cache
+PHPUNIT_CACHE_DIR ?= /tmp/invoiceplane-phpunit-cache
 
 DOCKER_USER       ?= ivpldock
 CONTAINER_NAME    ?= workspace
@@ -32,14 +33,15 @@ DB_PASSWORD       ?= root
 FILTER            ?=
 SUITE             ?=
 
-DOCKER_EXEC = docker exec -t --user=$(DOCKER_USER) $$(docker ps -aqf "name=$(CONTAINER_NAME)")
-DOCKER_EXEC_INTERACTIVE = docker exec -it --user=$(DOCKER_USER) $$(docker ps -aqf "name=$(CONTAINER_NAME)")
-DOCKER_ROOT_EXEC = docker exec -t $$(docker ps -aqf "name=$(CONTAINER_NAME)")
-MARIADB_EXEC = docker exec -i $$(docker ps -aqf "name=$(MARIADB_CONTAINER)")
-MARIADB_EXEC_TTY = docker exec -t $$(docker ps -aqf "name=$(MARIADB_CONTAINER)")
+DOCKER_RESOLVE = $(CURDIR)/tests/Support/resolve-docker-container.sh
+DOCKER_EXEC = docker exec -t --user=$(DOCKER_USER) $$($(DOCKER_RESOLVE) "$(CONTAINER_NAME)")
+DOCKER_EXEC_INTERACTIVE = docker exec -it --user=$(DOCKER_USER) $$($(DOCKER_RESOLVE) "$(CONTAINER_NAME)")
+DOCKER_ROOT_EXEC = docker exec -t $$($(DOCKER_RESOLVE) "$(CONTAINER_NAME)")
+MARIADB_EXEC = docker exec -i $$($(DOCKER_RESOLVE) "$(MARIADB_CONTAINER)")
+MARIADB_EXEC_TTY = docker exec -t $$($(DOCKER_RESOLVE) "$(MARIADB_CONTAINER)")
 
 PHPUNIT_ENV_CLEAN = env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE -u DB_USERNAME -u DB_PASSWORD
-PHPUNIT_ARGS = $(if $(FILTER),--filter "$(FILTER)") $(if $(SUITE),--testsuite "$(SUITE)")
+PHPUNIT_ARGS = --cache-directory "$(PHPUNIT_CACHE_DIR)" $(if $(FILTER),--filter "$(FILTER)") $(if $(SUITE),--testsuite "$(SUITE)")
 
 .PHONY: help \
 	install lint-php phpstan test test-filter test-suite test-custom-templates \
@@ -82,7 +84,7 @@ lint-php:
 
 phpstan:
 	mkdir -p "$(PHPSTAN_TMPDIR)"
-	TMPDIR="$(CURDIR)/$(PHPSTAN_TMPDIR)" $(PHPSTAN) analyse --memory-limit=$(PHPSTAN_MEMORY)
+	TMPDIR="$(PHPSTAN_TMPDIR)" $(PHPSTAN) analyse --memory-limit=$(PHPSTAN_MEMORY)
 
 test:
 	$(PHPUNIT_ENV_CLEAN) $(PHPUNIT) $(PHPUNIT_ARGS)
@@ -105,12 +107,13 @@ db-prepare:
 
 docker-db-prepare:
 	$(MARIADB_EXEC_TTY) mariadb -u$(DB_USERNAME) -p$(DB_PASSWORD) \
-		-e "SET GLOBAL sql_mode=''; DROP DATABASE IF EXISTS \`$(DB_DATABASE)\`; CREATE DATABASE \`$(DB_DATABASE)\` CHARACTER SET utf8;"
+		-e "SET GLOBAL sql_mode=''; DROP DATABASE IF EXISTS \`$(DB_DATABASE)\`; CREATE DATABASE \`$(DB_DATABASE)\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 	@for file in application/modules/setup/sql/*.sql; do \
 		echo "Importing $$file"; \
 		$(MARIADB_EXEC) mariadb -u$(DB_USERNAME) -p$(DB_PASSWORD) --force $(DB_DATABASE) < "$$file"; \
 	done
 	$(MARIADB_EXEC) mariadb -u$(DB_USERNAME) -p$(DB_PASSWORD) $(DB_DATABASE) < tests/Support/schema_fixups.sql
+	$(MARIADB_EXEC) mariadb -u$(DB_USERNAME) -p$(DB_PASSWORD) $(DB_DATABASE) -N -e "SELECT CONCAT('ALTER TABLE ', CHAR(96), table_name, CHAR(96), ' CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;') FROM information_schema.tables WHERE table_schema='$(DB_DATABASE)' AND table_type='BASE TABLE';" | $(MARIADB_EXEC) mariadb -u$(DB_USERNAME) -p$(DB_PASSWORD) $(DB_DATABASE)
 	$(DOCKER_ROOT_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && \
 		cp ipconfig.php.example ipconfig.php && \
 		sed -i \
@@ -143,7 +146,7 @@ docker-test-custom-templates:
 	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && $(PHPUNIT_ENV_CLEAN) $(PHPUNIT) tests/Unit/Settings/CustomTemplateAllowlistTest.php tests/Unit/Settings/CustomTemplateKernelBootTest.php'
 
 docker-phpstan:
-	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && mkdir -p "$(PHPSTAN_TMPDIR)" && TMPDIR="$$PWD/$(PHPSTAN_TMPDIR)" $(PHPSTAN) analyse --memory-limit=$(PHPSTAN_MEMORY)'
+	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && mkdir -p "$(PHPSTAN_TMPDIR)" && TMPDIR="$(PHPSTAN_TMPDIR)" $(PHPSTAN) analyse --memory-limit=$(PHPSTAN_MEMORY)'
 
 docker-lint-php:
 	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && git ls-files "*.php" | xargs -r -n 1 $(PHP) -l'

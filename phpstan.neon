@@ -2,7 +2,7 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    tmpDir: null
+    tmpDir: /tmp/invoiceplane-phpstan-cache
     level: 0
     paths:
         - application/modules/

@@ -22,14 +22,23 @@ class RecurringControllerTest extends AbstractTestCase
     public function it_lists_recurring_invoices_for_authenticated_admin(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        $clientId = $this->seedClient(['client_name' => 'Visible recurring client']);
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'REC-VISIBLE-001']);
+        $this->databaseInsert('ip_invoices_recurring', [
+            'invoice_id'       => $invoiceId,
+            'recur_start_date' => date('Y-m-d'),
+            'recur_end_date'   => null,
+            'recur_frequency'  => '1M',
+            'recur_next_date'  => date('Y-m-d', strtotime('+1 month')),
+        ]);
 
         /* Act */
         $response = $this->get('/invoices/recurring');
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Visible recurring client');
+        $this->assertResponseBodyContains($response, 'REC-VISIBLE-001');
     }
 
     #[Test]
@@ -42,10 +51,8 @@ class RecurringControllerTest extends AbstractTestCase
         $response = $this->get('/invoices');
 
         /* Assert */
-        self::assertTrue(
-            $response->isRedirect(),
-            sprintf('Unauthenticated GET [/invoices] must redirect. Got [%d].', $response->statusCode())
-        );
+        $this->assertResponseRedirectTo($response, '/sessions/login');
+        $this->assertHtmlOmits($response, 'InvoicePlane');
     }
 
     #[Test]
@@ -58,8 +65,11 @@ class RecurringControllerTest extends AbstractTestCase
         $response = $this->post('/invoices/recurring/stop/' . $recurringId);
 
         /* Assert */
-        self::assertTrue($response->isRedirect());
-        $this->assertDatabaseHas('ip_invoices_recurring', ['invoice_recurring_id' => $recurringId, 'recur_end_date' => date('Y-m-d')]);
+        $this->assertResponseRedirectTo($response, '/invoices/recurring/index');
+        $this->assertDatabaseRow('ip_invoices_recurring', ['invoice_recurring_id' => $recurringId], [
+            'invoice_recurring_id' => (string) $recurringId,
+            'recur_end_date' => date('Y-m-d'),
+        ]);
     }
 
     #[Test]
@@ -85,7 +95,7 @@ class RecurringControllerTest extends AbstractTestCase
         $response = $this->post('/invoices/recurring/delete/' . $recurringId);
 
         /* Assert */
-        self::assertTrue($response->isRedirect());
+        $this->assertResponseRedirectTo($response, '/invoices/recurring/index');
         $this->assertDatabaseMissing('ip_invoices_recurring', ['invoice_recurring_id' => $recurringId]);
     }
 

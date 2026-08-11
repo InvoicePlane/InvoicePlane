@@ -36,6 +36,18 @@ class HttpResponse
         return $this->headers;
     }
 
+    public function header(string $name): string
+    {
+        foreach ($this->headers as $header) {
+            [$headerName, $value] = array_pad(explode(':', $header, 2), 2, '');
+            if (strcasecmp(trim($headerName), $name) === 0) {
+                return trim($value);
+            }
+        }
+
+        return '';
+    }
+
     public function stderr(): string
     {
         return $this->stderr;
