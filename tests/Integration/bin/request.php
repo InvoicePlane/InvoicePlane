@@ -83,6 +83,11 @@ if (getenv('STRIPE_MOCK_RESPONSES') !== false) {
     require_once dirname(__DIR__, 2) . '/Fakes/Payments/FakeStripeHttpClient.php';
 }
 
+if (getenv('PAYPAL_MOCK_RESPONSES') !== false) {
+    require_once dirname(__DIR__, 3) . '/vendor/autoload.php';
+    require_once dirname(__DIR__, 2) . '/Fakes/Payments/FakePaypalHttpClient.php';
+}
+
 // CI3 uses is_cli() to decide whether to parse $argv instead of REQUEST_URI.
 // In CLI mode (PHP_SAPI=cli) it would ignore REQUEST_URI and return an empty
 // route, defaulting to the dashboard controller.  Override is_cli() here so
