@@ -72,7 +72,7 @@ class Stripe extends Base_Controller
                 [
                     'price_data' => [
                         'currency'     => get_setting('gateway_stripe_currency'),
-                        'unit_amount'  => stripe_amount_to_minor_units($invoice->invoice_balance, get_setting('gateway_stripe_currency')),
+                        'unit_amount'  => amount_to_minor_units($invoice->invoice_balance, stripe_minor_unit_multiplier(get_setting('gateway_stripe_currency'))),
                         'product_data' => [
                             'name' => trans('invoice') . ' #' . $invoice->invoice_number,
                         ],
@@ -149,7 +149,7 @@ class Stripe extends Base_Controller
                     // Validate currency and amount before recording payment
                     $expected_currency = mb_strtoupper((string) get_setting('gateway_stripe_currency'));
                     $capture_currency  = mb_strtoupper((string) ($session->currency ?? ''));
-                    $capture_amount    = stripe_amount_from_minor_units($session->amount_total, $capture_currency);
+                    $capture_amount    = amount_from_minor_units($session->amount_total, stripe_minor_unit_multiplier($capture_currency));
 
                     if ($capture_currency !== $expected_currency) {
                         log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: currency mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . $expected_currency . ', received: ' . $capture_currency);
@@ -177,8 +177,8 @@ class Stripe extends Base_Controller
             // Admin (& error log) message
             $response = $paid ? '. livemode: ' . trans($session->livemode ? 'yes' : 'no')
                                 . ', currency: ' . $session->currency
-                                . ', amount: ' . stripe_amount_from_minor_units($session->amount_received, $session->currency)              // 0 in test. Set in live mode?
-                                . ', fee: ' . stripe_amount_from_minor_units($session->application_fee_amount, $session->currency)       // 0 in test. Set in live mode?
+                                . ', amount: ' . amount_from_minor_units($session->amount_received, stripe_minor_unit_multiplier($session->currency))              // 0 in test. Set in live mode?
+                                . ', fee: ' . amount_from_minor_units($session->application_fee_amount, stripe_minor_unit_multiplier($session->currency))       // 0 in test. Set in live mode?
                                 . ', session ID: ' . $session->id                                   // Unique identifier for the object.
                                 : ($session->cancel ? $session->cancellation_reason : $session->last_payment_error); // Cancelled
             // User (& error) message
