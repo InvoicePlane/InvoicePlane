@@ -81,4 +81,96 @@ class UserClientsServiceTest extends AbstractTestCase
             . 'that route does not exist (the controller method is user(), not field()).'
         );
     }
+
+    #[Test]
+    public function it_shows_the_user_client_assignment_page_for_a_real_user(): void
+    {
+        /* Arrange */
+        $userId = $this->seedNonAdminUser();
+
+        /* Act */
+        $response = $this->get('/user_clients/user/' . $userId);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
+    }
+
+    #[Test]
+    public function it_redirects_for_an_unknown_user_id(): void
+    {
+        /* Act */
+        $response = $this->get('/user_clients/user/999999');
+
+        /* Assert */
+        self::assertTrue($response->isRedirect());
+    }
+
+    #[Test]
+    public function it_assigns_a_client_to_a_user(): void
+    {
+        /* Arrange */
+        $userId   = $this->seedNonAdminUser();
+        $clientId = $this->seedClient();
+
+        /* Act */
+        $response = $this->post('/user_clients/create/' . $userId, ['user_id' => (string) $userId, 'client_id' => (string) $clientId]);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect());
+        $this->assertDatabaseHas('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+    }
+
+    #[Test]
+    public function it_fails_to_assign_a_client_without_client_id(): void
+    {
+        /* Arrange */
+        $userId = $this->seedNonAdminUser();
+
+        /* Act */
+        $this->post('/user_clients/create/' . $userId, ['user_id' => (string) $userId]);
+
+        /* Assert */
+        $this->assertDatabaseCount('ip_user_clients', 0);
+    }
+
+    #[Test]
+    public function it_deletes_a_user_client_assignment(): void
+    {
+        /* Arrange */
+        $userId       = $this->seedNonAdminUser();
+        $clientId     = $this->seedClient();
+        $userClientId = $this->databaseInsert('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+
+        /* Act */
+        $response = $this->post('/user_clients/delete/' . $userClientId);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect());
+        $this->assertDatabaseMissing('ip_user_clients', ['user_client_id' => $userClientId]);
+    }
+
+    #[Test]
+    public function it_does_not_delete_a_user_client_assignment_on_a_non_post_request(): void
+    {
+        /* Arrange */
+        $userId       = $this->seedNonAdminUser();
+        $clientId     = $this->seedClient();
+        $userClientId = $this->databaseInsert('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+
+        /* Act */
+        $this->get('/user_clients/delete/' . $userClientId);
+
+        /* Assert */
+        $this->assertDatabaseHas('ip_user_clients', ['user_client_id' => $userClientId]);
+    }
+
+    private function seedNonAdminUser(): int
+    {
+        return $this->databaseInsert('ip_users', [
+            'user_name'     => 'Assignable User', 'user_email' => 'assignable-' . bin2hex(random_bytes(4)) . '@test.local',
+            'user_password' => password_hash('x', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(10)),
+            'user_type'     => 2, 'user_active' => 1, 'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+    }
 }

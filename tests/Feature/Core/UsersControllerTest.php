@@ -109,7 +109,7 @@ class UsersControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $originalSalt = bin2hex(random_bytes(10));
-        $userId = $this->databaseInsert('ip_users', [
+        $userId       = $this->databaseInsert('ip_users', [
             'user_name'          => 'Editable User',
             'user_password'      => password_hash('existing-secret', PASSWORD_DEFAULT),
             'user_psalt'         => $originalSalt,
@@ -189,5 +189,68 @@ class UsersControllerTest extends AbstractTestCase
             $victim['user_password'],
             'A non-primary admin must not be able to mutate another user password hash.'
         );
+    }
+
+    #[Test]
+    public function it_deletes_a_user_client_assignment(): void
+    {
+        /* Arrange */
+        $userId = $this->databaseInsert('ip_users', [
+            'user_name'     => 'Delete Target', 'user_email' => 'delete-target@test.local',
+            'user_password' => password_hash('x', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(10)),
+            'user_type'     => 2, 'user_active' => 1, 'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+        $clientId     = $this->seedClient();
+        $userClientId = $this->databaseInsert('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+
+        /* Act */
+        $response = $this->post('/users/delete_user_client/' . $userId . '/' . $userClientId);
+
+        /* Assert */
+        self::assertTrue($response->isRedirect());
+        $this->assertDatabaseMissing('ip_user_clients', ['user_client_id' => $userClientId]);
+    }
+
+    #[Test]
+    public function it_does_not_delete_a_user_client_assignment_on_a_non_post_request(): void
+    {
+        /* Arrange */
+        $userId = $this->databaseInsert('ip_users', [
+            'user_name'     => 'Delete Target Get', 'user_email' => 'delete-target-get@test.local',
+            'user_password' => password_hash('x', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(10)),
+            'user_type'     => 2, 'user_active' => 1, 'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+        $clientId     = $this->seedClient();
+        $userClientId = $this->databaseInsert('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+
+        /* Act */
+        $this->get('/users/delete_user_client/' . $userId . '/' . $userClientId);
+
+        /* Assert */
+        $this->assertDatabaseHas('ip_user_clients', ['user_client_id' => $userClientId]);
+    }
+
+    #[Test]
+    public function it_renders_the_edit_form_for_a_user_with_assigned_clients(): void
+    {
+        /* Arrange: form.php's 'user_clients' layout data is consumed by a
+         * separate AJAX-loaded tab (users/ajax/load_user_client_table), not
+         * rendered inline — this just proves the initial page load itself
+         * doesn't crash while that data is being built (it did before the
+         * user_clients/mdl_user_clients load-path fixes above). */
+        $userId = $this->databaseInsert('ip_users', [
+            'user_name'     => 'Form Client Owner', 'user_email' => 'form-client-owner@test.local',
+            'user_password' => password_hash('x', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(10)),
+            'user_type'     => 2, 'user_active' => 1, 'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+        $clientId = $this->seedClient(['client_name' => 'Form Assigned Client Marker']);
+        $this->databaseInsert('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+
+        /* Act */
+        $response = $this->get('/users/form/' . $userId);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
     }
 }

@@ -116,4 +116,93 @@ class UsersAjaxControllerTest extends AbstractTestCase
         $payload = json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR);
         self::assertContains('&lt;script&gt;alert(1)&lt;/script&gt;', array_column($payload, 'text'));
     }
+
+    #[Test]
+    public function it_saves_a_valid_permissive_search_preference(): void
+    {
+        /* Act */
+        $this->request('GET', '/users/ajax/save_preference_permissive_search_users', ['permissive_search_users' => '1'], [], true);
+
+        /* Assert */
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'enable_permissive_search_users', 'setting_value' => '1']);
+    }
+
+    #[Test]
+    public function it_rejects_an_invalid_permissive_search_preference_value(): void
+    {
+        /* Act */
+        $this->request('GET', '/users/ajax/save_preference_permissive_search_users', ['permissive_search_users' => '2'], [], true);
+
+        /* Assert */
+        $this->assertDatabaseMissing('ip_settings', ['setting_key' => 'enable_permissive_search_users']);
+    }
+
+    #[Test]
+    public function it_assigns_a_client_to_an_existing_user(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient();
+        $userId   = $this->databaseInsert('ip_users', [
+            'user_name'     => 'Client Assign Target', 'user_email' => 'assign-' . bin2hex(random_bytes(4)) . '@test.local',
+            'user_password' => password_hash('x', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(10)),
+            'user_type'     => 1, 'user_active' => 1, 'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        /* Act */
+        $this->ajax('POST', '/users/ajax/save_user_client', ['user_id' => (string) $userId, 'client_id' => (string) $clientId]);
+
+        /* Assert */
+        $this->assertDatabaseHas('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+    }
+
+    #[Test]
+    public function it_does_not_assign_an_unknown_client(): void
+    {
+        /* Arrange */
+        $userId = $this->databaseInsert('ip_users', [
+            'user_name'     => 'No Client Target', 'user_email' => 'noclient-' . bin2hex(random_bytes(4)) . '@test.local',
+            'user_password' => password_hash('x', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(10)),
+            'user_type'     => 1, 'user_active' => 1, 'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        /* Act */
+        $this->ajax('POST', '/users/ajax/save_user_client', ['user_id' => (string) $userId, 'client_id' => '999999']);
+
+        /* Assert */
+        $this->assertDatabaseCount('ip_user_clients', 0);
+    }
+
+    #[Test]
+    public function it_loads_the_user_client_table_for_an_existing_user(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient(['client_name' => 'Loaded Client Marker']);
+        $userId   = $this->databaseInsert('ip_users', [
+            'user_name'     => 'Table Load Target', 'user_email' => 'tableload-' . bin2hex(random_bytes(4)) . '@test.local',
+            'user_password' => password_hash('x', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(10)),
+            'user_type'     => 1, 'user_active' => 1, 'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+        $this->databaseInsert('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/users/ajax/load_user_client_table', ['user_id' => (string) $userId]);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'Loaded Client Marker');
+    }
+
+    #[Test]
+    public function it_renders_the_add_user_client_modal(): void
+    {
+        /* Arrange */
+        $this->seedClient();
+
+        /* Act */
+        $response = $this->ajax('POST', '/users/ajax/modal_add_user_client', []);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
+    }
 }

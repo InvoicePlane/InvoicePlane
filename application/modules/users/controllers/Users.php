@@ -220,7 +220,7 @@ class Users extends Admin_Controller
             return;
         }
 
-        $this->load->model('mdl_user_clients');
+        $this->load->model('user_clients/mdl_user_clients');
 
         if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
             show_error(trans('access_denied'), 403);
