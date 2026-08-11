@@ -186,13 +186,13 @@ trait InteractsWithDatabase
     /** @return array<int, array<string, mixed>> */
     protected function databaseSnapshot(string $table, array $where = []): array
     {
-        $db = $this->db();
-        $sql = 'SELECT * FROM ' . $this->qi($table);
+        $db     = $this->db();
+        $sql    = 'SELECT * FROM ' . $this->qi($table);
         $params = [];
         if ($where !== []) {
             $parts = [];
             foreach ($where as $key => $value) {
-                $parts[] = $this->qi($key) . ' = :' . $key;
+                $parts[]      = $this->qi($key) . ' = :' . $key;
                 $params[$key] = $value;
             }
             $sql .= ' WHERE ' . implode(' AND ', $parts);

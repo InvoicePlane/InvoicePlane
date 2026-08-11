@@ -861,5 +861,4 @@ $lang = [
     // Types
     'true'  => 'True',
     'false' => 'False',
-
 ];

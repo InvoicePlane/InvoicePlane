@@ -289,16 +289,16 @@ class Clients extends Admin_Controller
 
         $this->layout->set(
             [
-                'client'              => $client,
-                'client_notes'        => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-                'invoices'            => $this->mdl_invoices->result(),
-                'quotes'              => $this->mdl_quotes->result(),
-                'payments'            => $this->mdl_payments->result(),
-                'custom_fields'       => $custom_fields,
-                'quote_statuses'      => $this->mdl_quotes->statuses(),
-                'invoice_statuses'    => $this->mdl_invoices->statuses(),
-                'activeTab'           => $activeTab,
-                'req_einvoicing'      => $req_einvoicing,
+                'client'           => $client,
+                'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
+                'invoices'         => $this->mdl_invoices->result(),
+                'quotes'           => $this->mdl_quotes->result(),
+                'payments'         => $this->mdl_payments->result(),
+                'custom_fields'    => $custom_fields,
+                'quote_statuses'   => $this->mdl_quotes->statuses(),
+                'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'activeTab'        => $activeTab,
+                'req_einvoicing'   => $req_einvoicing,
             ]
         );
 

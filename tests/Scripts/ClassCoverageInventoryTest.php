@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Scripts;
 
+use ClassCoverageInventory;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +19,7 @@ final class ClassCoverageInventoryTest extends TestCase
         $repoRoot = dirname(__DIR__, 2);
 
         /* Act */
-        $inventory = \ClassCoverageInventory::build($repoRoot);
+        $inventory = ClassCoverageInventory::build($repoRoot);
         $classes   = array_column($inventory, 'class');
 
         /* Assert */
@@ -36,7 +37,7 @@ final class ClassCoverageInventoryTest extends TestCase
         $target   = $repoRoot . '/tests/Support/class-coverage-inventory.md';
 
         /* Act */
-        $expected = \ClassCoverageInventory::toMarkdown(\ClassCoverageInventory::build($repoRoot));
+        $expected = ClassCoverageInventory::toMarkdown(ClassCoverageInventory::build($repoRoot));
 
         /* Assert */
         self::assertFileExists($target);

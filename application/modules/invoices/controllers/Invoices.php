@@ -193,18 +193,18 @@ class Invoices extends Admin_Controller
 
         $this->layout->set(
             [
-                'invoice'                  => $invoice,
-                'items'                    => $items,
-                'invoice_id'               => $invoice_id,
-                'einvoice'                 => $einvoice,
-                'change_user'              => $change_user,
-                'tax_rates'                => $this->mdl_tax_rates->get()->result(),
-                'invoice_tax_rates'        => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-                'units'                    => $this->mdl_units->get()->result(),
-                'payment_methods'          => $this->mdl_payment_methods->get()->result(),
-                'custom_fields'            => $custom_fields,
-                'custom_values'            => $custom_values,
-                'custom_js_vars'           => [
+                'invoice'           => $invoice,
+                'items'             => $items,
+                'invoice_id'        => $invoice_id,
+                'einvoice'          => $einvoice,
+                'change_user'       => $change_user,
+                'tax_rates'         => $this->mdl_tax_rates->get()->result(),
+                'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
+                'units'             => $this->mdl_units->get()->result(),
+                'payment_methods'   => $this->mdl_payment_methods->get()->result(),
+                'custom_fields'     => $custom_fields,
+                'custom_values'     => $custom_values,
+                'custom_js_vars'    => [
                     'currency_symbol'           => get_setting('currency_symbol'),
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
                     'decimal_point'             => get_setting('decimal_point'),

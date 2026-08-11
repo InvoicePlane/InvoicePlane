@@ -12,7 +12,6 @@
  * their function signatures are known to static analysis. Helpers only declare
  * functions at include time, so requiring them here has no side effects.
  */
-
 defined('BASEPATH') || define('BASEPATH', __DIR__);
 defined('APPPATH') || define('APPPATH', dirname(__DIR__, 2) . '/application/');
 defined('FCPATH') || define('FCPATH', dirname(__DIR__, 2) . '/');

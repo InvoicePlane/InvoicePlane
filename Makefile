@@ -20,8 +20,8 @@ PHPSTAN_TMPDIR    ?= /tmp/invoiceplane-phpstan-cache
 PHPUNIT_CACHE_DIR ?= /tmp/invoiceplane-phpunit-cache
 
 DOCKER_USER       ?= ivpldock
-CONTAINER_NAME    ?= workspace
-MARIADB_CONTAINER ?= mariadb
+CONTAINER_NAME    ?= ivpldock-workspace-1
+MARIADB_CONTAINER ?= ivpldock-mariadb-1
 DOCKER_PROJECT_DIR ?= /var/www/projects/exprmt
 
 DB_HOSTNAME       ?= mariadb
@@ -46,7 +46,7 @@ PHPUNIT_ARGS = --cache-directory "$(PHPUNIT_CACHE_DIR)" $(if $(FILTER),--filter 
 .PHONY: help \
 	install lint-php phpstan test test-filter test-suite test-custom-templates \
 	db-prepare docker-db-prepare docker-test docker-test-filter docker-test-suite \
-	docker-test-custom-templates docker-phpstan docker-lint-php docker-shell \
+	docker-test-custom-templates docker-phpstan docker-pint docker-lint-php docker-shell \
 	status clean
 
 help:
@@ -70,6 +70,7 @@ help:
 		'  make docker-test-suite SUITE=Feature Prepare DB and run one PHPUnit suite' \
 		'  make docker-test-custom-templates    Run custom-template tests in workspace' \
 		'  make docker-phpstan                  Run PHPStan in workspace' \
+		'  make docker-pint                    Run Pint in workspace' \
 		'  make docker-lint-php                 Syntax-check PHP files in workspace' \
 		'  make docker-shell                    Open a workspace shell' \
 		'' \
@@ -146,7 +147,10 @@ docker-test-custom-templates:
 	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && $(PHPUNIT_ENV_CLEAN) $(PHPUNIT) tests/Unit/Settings/CustomTemplateAllowlistTest.php tests/Unit/Settings/CustomTemplateKernelBootTest.php'
 
 docker-phpstan:
-	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && mkdir -p "$(PHPSTAN_TMPDIR)" && TMPDIR="$(PHPSTAN_TMPDIR)" $(PHPSTAN) analyse --memory-limit=$(PHPSTAN_MEMORY)'
+	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && mkdir -p .phpstan.cache/tmp && TMPDIR="$$PWD/.phpstan.cache/tmp" $(PHPSTAN) analyse --no-progress --memory-limit=$(PHPSTAN_MEMORY)'
+
+docker-pint:
+	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && vendor/bin/pint'
 
 docker-lint-php:
 	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && git ls-files "*.php" | xargs -r -n 1 $(PHP) -l'
