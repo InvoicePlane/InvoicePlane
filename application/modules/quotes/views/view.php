@@ -129,8 +129,22 @@ if ($quote->quote_status_id == 1) {
             }
         });
 
-        $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>', '_blank');
+        $('#btn_generate_pdf').click(function (e) {
+            e.preventDefault();
+            // Submit as a same-origin POST (with the CSRF token) so the server may
+            // mark the quote as sent when "mark_quotes_sent_pdf" is enabled. A bare
+            // GET would stream the PDF but no longer mutate quote state (CSRF fix).
+            var pdf_form = $('<form>', {
+                method: 'POST',
+                action: '<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>',
+                target: '_blank'
+            });
+            pdf_form.append($('<input>', {
+                type: 'hidden',
+                name: csrf_token_name,
+                value: csrf_token_value
+            }));
+            pdf_form.appendTo('body').submit().remove();
         });
 
         $(document).ready(function () {

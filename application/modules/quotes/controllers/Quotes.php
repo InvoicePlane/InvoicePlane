@@ -216,7 +216,12 @@ class Quotes extends Admin_Controller
     {
         $this->load->helper(['pdf', 'template']);
 
-        if (get_setting('mark_quotes_sent_pdf') == 1) {
+        // Security (CSRF): the "mark as sent when the PDF is generated" behaviour
+        // mutates business state (assigns a quote number, moves draft -> sent).
+        // A cross-site GET (<img>/<iframe> pointing at this route) must never be
+        // able to trigger that; only a same-origin POST carrying a valid CSRF
+        // token may. A plain GET can still stream the PDF, it just won't mutate.
+        if (get_setting('mark_quotes_sent_pdf') == 1 && $this->is_csrf_valid_post_request()) {
             $this->mdl_quotes->generate_quote_number_if_applicable($quote_id);
             $this->mdl_quotes->mark_sent($quote_id);
         }
@@ -227,6 +232,23 @@ class Quotes extends Admin_Controller
         }
 
         generate_quote_pdf($quote_id, $stream, $quote_template);
+    }
+
+    /**
+     * Non-redirecting CSRF guard for routes that must stay GET-accessible but
+     * may only perform a state mutation on a valid same-origin POST.
+     */
+    private function is_csrf_valid_post_request(): bool
+    {
+        if ($this->input->method(true) !== 'POST') {
+            return false;
+        }
+
+        if ( ! function_exists('verify_csrf_token')) {
+            $this->load->helper('security');
+        }
+
+        return verify_csrf_token();
     }
 
     /**

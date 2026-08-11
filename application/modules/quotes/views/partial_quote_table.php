@@ -63,10 +63,13 @@ $quote_idx                    = 1;
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
-                                   target="_blank">
-                                    <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
-                                </a>
+                                <form action="<?php echo site_url('quotes/generate_pdf/' . $quote->quote_id); ?>"
+                                      method="POST" target="_blank">
+                                    <?php _csrf_field(); ?>
+                                    <button type="submit" class="dropdown-button">
+                                        <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
+                                    </button>
+                                </form>
                             </li>
                             <li>
                                 <a href="<?php echo site_url('mailer/quote/' . $quote->quote_id); ?>">
