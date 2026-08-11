@@ -15,9 +15,7 @@
  */
 
 if ( ! class_exists('CI_Model')) {
-    class CI_Model
-    {
-    }
+    class CI_Model {}
 }
 
 if ( ! function_exists('log_message')) {

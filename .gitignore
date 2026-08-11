@@ -2,6 +2,9 @@
 /application/config/development
 /application/sessions
 /ipconfig.php
+/consistency-inventory-*.md
+/phpunit-plan-*.md
+/.phpstan.cache/
 
 # Dependencies
 /node_modules

@@ -22,7 +22,7 @@ class RecurringControllerTest extends AbstractTestCase
     public function it_lists_recurring_invoices_for_authenticated_admin(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient(['client_name' => 'Visible recurring client']);
+        $clientId  = $this->seedClient(['client_name' => 'Visible recurring client']);
         $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'REC-VISIBLE-001']);
         $this->databaseInsert('ip_invoices_recurring', [
             'invoice_id'       => $invoiceId,
@@ -68,7 +68,7 @@ class RecurringControllerTest extends AbstractTestCase
         $this->assertResponseRedirectTo($response, '/invoices/recurring/index');
         $this->assertDatabaseRow('ip_invoices_recurring', ['invoice_recurring_id' => $recurringId], [
             'invoice_recurring_id' => (string) $recurringId,
-            'recur_end_date' => date('Y-m-d'),
+            'recur_end_date'       => date('Y-m-d'),
         ]);
     }
 

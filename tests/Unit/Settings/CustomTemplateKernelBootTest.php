@@ -29,15 +29,6 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomTemplateKernelBootTest extends TestCase
 {
-    private function boot_kernel_with(array $env): void
-    {
-        foreach ($env as $key => $value) {
-            $_ENV[$key] = $value;
-        }
-
-        require_once dirname(__DIR__, 3) . '/bootstrap/kernel.php';
-    }
-
     #[Test]
     #[RunInSeparateProcess]
     #[PreserveGlobalState(false)]
@@ -105,5 +96,14 @@ class CustomTemplateKernelBootTest extends TestCase
             constant('CUSTOM_INVOICE_TEMPLATES_PDF'),
             'An unset/empty ipconfig key must yield an empty constant so Mdl_Templates treats it as "no custom templates".'
         );
+    }
+
+    private function boot_kernel_with(array $env): void
+    {
+        foreach ($env as $key => $value) {
+            $_ENV[$key] = $value;
+        }
+
+        require_once dirname(__DIR__, 3) . '/bootstrap/kernel.php';
     }
 }

@@ -27,14 +27,6 @@ class ParsePhpstanResultsTest extends AbstractTestCase
 {
     private static bool $scriptLoaded = false;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        if ( ! file_exists(dirname(__DIR__, 2) . '/.github/scripts/parse-phpstan-results.php')) {
-            $this->markTestSkipped('.github/scripts/parse-phpstan-results.php not found in this environment');
-        }
-    }
-
     /**
      * Bootstrap: load the script once per process so that all helper
      * functions are defined before any test method runs.
@@ -86,6 +78,14 @@ class ParsePhpstanResultsTest extends AbstractTestCase
         @unlink($tmpFile);
 
         self::$scriptLoaded = true;
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if ( ! file_exists(dirname(__DIR__, 2) . '/.github/scripts/parse-phpstan-results.php')) {
+            $this->markTestSkipped('.github/scripts/parse-phpstan-results.php not found in this environment');
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -392,7 +392,7 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[Test]
     public function it_strips_project_root_prefix_from_absolute_path(): void
     {
-           /* Arrange */
+        /* Arrange */
 
         /* Arrange – derive the project root the same way the script does:
            .github/scripts/parse-phpstan-results.php => dirname(__DIR__, 2) from the

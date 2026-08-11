@@ -32,29 +32,6 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomTemplateAllowlistTest extends TestCase
 {
-    /**
-     * Boot the real bootstrap constants with the given ipconfig values in $_ENV,
-     * then return a fresh Mdl_Templates. Mirrors the runtime order: env is
-     * populated (Dotenv) -> bootstrap defines the constants -> the model reads them.
-     *
-     * @param array<string, string> $ipconfig
-     */
-    private function bootModelWith(array $ipconfig): Mdl_Templates
-    {
-        // Stubs: CI_Model, log_message(), and an env() that reads $_ENV exactly
-        // like the real helper kernel.php defines before requiring constants.php.
-        require_once dirname(__DIR__, 2) . '/Support/template_model_stubs.php';
-
-        foreach ($ipconfig as $key => $value) {
-            $_ENV[$key] = $value;
-        }
-
-        require_once dirname(__DIR__, 3) . '/bootstrap/constants.php';
-        require_once dirname(__DIR__, 3) . '/application/modules/invoices/models/Mdl_templates.php';
-
-        return new Mdl_Templates();
-    }
-
     #[Test]
     #[RunInSeparateProcess]
     #[PreserveGlobalState(false)]
@@ -260,5 +237,28 @@ class CustomTemplateAllowlistTest extends TestCase
                 sprintf('bootstrap/constants.php must define %s from its ipconfig env key, or the fix is absent.', $constant)
             );
         }
+    }
+
+    /**
+     * Boot the real bootstrap constants with the given ipconfig values in $_ENV,
+     * then return a fresh Mdl_Templates. Mirrors the runtime order: env is
+     * populated (Dotenv) -> bootstrap defines the constants -> the model reads them.
+     *
+     * @param array<string, string> $ipconfig
+     */
+    private function bootModelWith(array $ipconfig): Mdl_Templates
+    {
+        // Stubs: CI_Model, log_message(), and an env() that reads $_ENV exactly
+        // like the real helper kernel.php defines before requiring constants.php.
+        require_once dirname(__DIR__, 2) . '/Support/template_model_stubs.php';
+
+        foreach ($ipconfig as $key => $value) {
+            $_ENV[$key] = $value;
+        }
+
+        require_once dirname(__DIR__, 3) . '/bootstrap/constants.php';
+        require_once dirname(__DIR__, 3) . '/application/modules/invoices/models/Mdl_templates.php';
+
+        return new Mdl_Templates();
     }
 }

@@ -16,7 +16,7 @@ if (file_put_contents($target, $markdown) === false) {
 }
 
 fwrite(STDOUT, sprintf(
-    "Wrote %s (%d classes)%s",
+    'Wrote %s (%d classes)%s',
     $target,
     count($inventory),
     PHP_EOL

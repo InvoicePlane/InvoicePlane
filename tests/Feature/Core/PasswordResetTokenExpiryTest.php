@@ -30,27 +30,6 @@ class PasswordResetTokenExpiryTest extends AbstractTestCase
         $this->actingAsGuest();
     }
 
-    /**
-     * Seed an active user holding a password-reset token with the given expiry.
-     *
-     * @param string|null $expiry UTC 'Y-m-d H:i:s', or null for a legacy token with no expiry
-     */
-    private function seedUserWithResetToken(?string $expiry): int
-    {
-        return $this->databaseInsert('ip_users', [
-            'user_name'                       => 'resettarget_' . bin2hex(random_bytes(3)),
-            'user_email'                      => 'reset+' . bin2hex(random_bytes(3)) . '@example.com',
-            'user_password'                   => password_hash('OriginalPass123!', PASSWORD_DEFAULT),
-            'user_psalt'                      => bin2hex(random_bytes(10)),
-            'user_type'                       => 1,
-            'user_active'                     => 1,
-            'user_passwordreset_token'        => self::TOKEN,
-            'user_passwordreset_token_expiry' => $expiry,
-            'user_date_created'               => date('Y-m-d H:i:s'),
-            'user_date_modified'              => date('Y-m-d H:i:s'),
-        ]);
-    }
-
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_rejects_a_password_change_when_the_reset_token_has_expired(): void
     {
@@ -174,5 +153,26 @@ class PasswordResetTokenExpiryTest extends AbstractTestCase
             'The reset link for an expired token must redirect, not render the new-password form.'
         );
         $this->assertResponseBodyNotContains($response, 'btn_new_password');
+    }
+
+    /**
+     * Seed an active user holding a password-reset token with the given expiry.
+     *
+     * @param string|null $expiry UTC 'Y-m-d H:i:s', or null for a legacy token with no expiry
+     */
+    private function seedUserWithResetToken(?string $expiry): int
+    {
+        return $this->databaseInsert('ip_users', [
+            'user_name'                       => 'resettarget_' . bin2hex(random_bytes(3)),
+            'user_email'                      => 'reset+' . bin2hex(random_bytes(3)) . '@example.com',
+            'user_password'                   => password_hash('OriginalPass123!', PASSWORD_DEFAULT),
+            'user_psalt'                      => bin2hex(random_bytes(10)),
+            'user_type'                       => 1,
+            'user_active'                     => 1,
+            'user_passwordreset_token'        => self::TOKEN,
+            'user_passwordreset_token_expiry' => $expiry,
+            'user_date_created'               => date('Y-m-d H:i:s'),
+            'user_date_modified'              => date('Y-m-d H:i:s'),
+        ]);
     }
 }

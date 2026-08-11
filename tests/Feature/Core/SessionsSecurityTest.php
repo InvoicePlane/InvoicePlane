@@ -34,6 +34,24 @@ class SessionsSecurityTest extends AbstractTestCase
         $this->security = new StubSessionsSecurity(baseUrl: 'https://invoiceplane.example.com/');
     }
 
+    /**
+     * @return array<string, array{0: string, 1: bool}>
+     */
+    public static function expiryFormatProvider(): array
+    {
+        return [
+            // description => [stored expiry string, accepted?]
+            'canonical timestamp'                  => ['2020-01-01 12:00:00', true],
+            'canonical boundary timestamp'         => ['2099-12-31 23:59:59', true],
+            'garbage time-only string'             => ['25:99:99', false],
+            'out-of-range month and day'           => ['2020-13-40 00:00:00', false],
+            'non-date string'                      => ['not-a-date', false],
+            'non-canonical single-digit fields'    => ['2026-8-10 9:05:07', false],
+            'non-canonical double space'           => ['2099-01-01  12:00:00', false],
+            'zero date (right shape, unreal date)' => ['0000-00-00 00:00:00', false],
+        ];
+    }
+
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_a_referer_from_the_same_base_url(): void
     {
@@ -362,24 +380,6 @@ class SessionsSecurityTest extends AbstractTestCase
             $isLimited,
             '4 attempts against a max of 5 must NOT trigger the rate limit.'
         );
-    }
-
-    /**
-     * @return array<string, array{0: string, 1: bool}>
-     */
-    public static function expiryFormatProvider(): array
-    {
-        return [
-            // description => [stored expiry string, accepted?]
-            'canonical timestamp'                 => ['2020-01-01 12:00:00', true],
-            'canonical boundary timestamp'        => ['2099-12-31 23:59:59', true],
-            'garbage time-only string'            => ['25:99:99', false],
-            'out-of-range month and day'          => ['2020-13-40 00:00:00', false],
-            'non-date string'                     => ['not-a-date', false],
-            'non-canonical single-digit fields'   => ['2026-8-10 9:05:07', false],
-            'non-canonical double space'          => ['2099-01-01  12:00:00', false],
-            'zero date (right shape, unreal date)' => ['0000-00-00 00:00:00', false],
-        ];
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
