@@ -41,8 +41,12 @@ class TaxRateDecimalPlacesProcessorTest extends TestCase
     #[Test]
     public function it_rejects_a_sql_injection_payload(): void
     {
+        /* Arrange */
+
+        /* Act */
         $this->expectException(InvalidArgumentException::class);
 
+        /* Assert */
         $this->processor->validateAndNormalize('4); DROP TABLE ip_tax_rates; --', 0, 10);
     }
 
@@ -62,8 +66,12 @@ class TaxRateDecimalPlacesProcessorTest extends TestCase
     #[Test]
     public function it_rejects_a_value_above_the_max_range(): void
     {
+        /* Arrange */
+
+        /* Act */
         $this->expectException(InvalidArgumentException::class);
 
+        /* Assert */
         $this->processor->validateAndNormalize(999, 0, 10);
     }
 
@@ -83,8 +91,12 @@ class TaxRateDecimalPlacesProcessorTest extends TestCase
     #[Test]
     public function it_rejects_a_float_masquerading_as_an_integer(): void
     {
+        /* Arrange */
+
+        /* Act */
         $this->expectException(InvalidArgumentException::class);
 
+        /* Assert */
         $this->processor->validateAndNormalize('2.5', 0, 10);
     }
 

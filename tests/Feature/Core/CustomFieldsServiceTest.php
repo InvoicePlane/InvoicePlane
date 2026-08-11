@@ -74,6 +74,7 @@ class CustomFieldsServiceTest extends AbstractTestCase
     #[Test]
     public function it_creates_a_custom_field_for_an_allowed_table(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->post('/custom_fields/form', [
             'custom_field_table'    => 'ip_client_custom',
@@ -96,6 +97,7 @@ class CustomFieldsServiceTest extends AbstractTestCase
     #[Test]
     public function it_rejects_custom_field_table_names_outside_the_allowlist(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->post('/custom_fields/form', [
             'custom_field_table'    => 'ip_client_custom; DROP TABLE ip_users; --',

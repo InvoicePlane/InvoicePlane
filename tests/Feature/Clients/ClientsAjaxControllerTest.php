@@ -118,6 +118,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_saves_a_valid_permissive_search_preference(): void
     {
+        /* Arrange */
         /* Act */
         $this->request('GET', '/clients/ajax/save_preference_permissive_search_clients', ['permissive_search_clients' => '1'], [], true);
 
@@ -128,6 +129,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_rejects_an_invalid_permissive_search_preference_value(): void
     {
+        /* Arrange */
         /* Act */
         $this->request('GET', '/clients/ajax/save_preference_permissive_search_clients', ['permissive_search_clients' => '2'], [], true);
 
@@ -160,6 +162,7 @@ class ClientsAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_save_a_client_note_without_client_id(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/clients/ajax/save_client_note', [
             'client_id'   => '',

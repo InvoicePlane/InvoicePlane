@@ -99,6 +99,7 @@ class UserClientsServiceTest extends AbstractTestCase
     #[Test]
     public function it_redirects_for_an_unknown_user_id(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->get('/user_clients/user/999999');
 

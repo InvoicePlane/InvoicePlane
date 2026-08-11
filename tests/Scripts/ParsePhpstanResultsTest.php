@@ -261,6 +261,7 @@ class ParsePhpstanResultsTest extends AbstractTestCase
     #[Test]
     public function it_returns_human_readable_label_for_known_category(): void
     {
+        /* Arrange */
         foreach (self::categoryLabelProvider() as $label => [$category, $expectedLabel]) {
             /* Act */
             $result = getCategoryLabel($category);

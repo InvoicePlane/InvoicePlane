@@ -39,6 +39,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_does_not_expose_php_errors_when_filtering_invoices_without_a_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_invoices', []);
 
@@ -101,6 +102,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_custom_fields_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_custom_fields', ['filter_query' => 'anything']);
 
@@ -112,6 +114,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_custom_values_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_custom_values', ['filter_query' => 'anything']);
 
@@ -123,6 +126,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_custom_values_field_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_custom_values_field', ['filter_query' => 'anything']);
 
@@ -151,6 +155,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_tasks_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_tasks', ['filter_query' => 'anything']);
 
@@ -162,6 +167,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_products_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_products', ['filter_query' => 'anything']);
 
@@ -173,6 +179,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_users_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_users', ['filter_query' => 'admin']);
 
@@ -184,6 +191,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_families_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_families', ['filter_query' => 'anything']);
 
@@ -195,6 +203,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_recurring_invoices_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_invoices_recuring', ['filter_query' => 'anything']);
 
@@ -206,6 +215,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_online_logs_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_online_logs', ['filter_query' => 'anything']);
 
@@ -217,6 +227,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_archives_by_query(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_archives', ['filter_query' => 'anything']);
 
@@ -244,6 +255,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_requires_an_ajax_request(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->post('/filter/ajax/filter_invoices', ['filter_query' => 'x']);
 

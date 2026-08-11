@@ -34,6 +34,7 @@ class EmailTemplatesAjaxGetContentTest extends AbstractTestCase
     #[Test]
     public function it_returns_null_for_an_unknown_template_id(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/email_templates/ajax/get_content', ['email_template_id' => '999999']);
 
@@ -45,6 +46,7 @@ class EmailTemplatesAjaxGetContentTest extends AbstractTestCase
     #[Test]
     public function it_requires_an_ajax_request(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->post('/email_templates/ajax/get_content', ['email_template_id' => '1']);
 

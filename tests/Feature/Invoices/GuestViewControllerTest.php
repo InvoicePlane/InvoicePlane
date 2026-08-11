@@ -20,6 +20,8 @@ class GuestViewControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_for_an_empty_invoice_key(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->get('/guest/view/invoice/');
 
@@ -30,6 +32,8 @@ class GuestViewControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_for_an_unknown_invoice_key(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->get('/guest/view/invoice/does-not-exist');
 
@@ -71,6 +75,8 @@ class GuestViewControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_for_an_empty_quote_key(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->get('/guest/view/quote/');
 
@@ -81,6 +87,8 @@ class GuestViewControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_for_an_unknown_quote_key(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->get('/guest/view/quote/does-not-exist');
 
@@ -234,6 +242,8 @@ class GuestViewControllerTest extends AbstractTestCase
     #[Test]
     public function it_silently_produces_no_invoice_pdf_for_an_unknown_key(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->get('/guest/view/generate_invoice_pdf/does-not-exist');
 
@@ -259,6 +269,8 @@ class GuestViewControllerTest extends AbstractTestCase
     #[Test]
     public function it_returns_404_for_quote_pdf_on_an_unknown_key(): void
     {
+        /* Arrange */
+
         /* Act */
         $response = $this->get('/guest/view/generate_quote_pdf/does-not-exist');
 

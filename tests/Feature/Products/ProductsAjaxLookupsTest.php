@@ -60,6 +60,7 @@ class ProductsAjaxLookupsTest extends AbstractTestCase
     #[Test]
     public function it_returns_an_empty_result_when_no_product_ids_are_selected(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('POST', '/products/ajax/process_product_selections', []);
 

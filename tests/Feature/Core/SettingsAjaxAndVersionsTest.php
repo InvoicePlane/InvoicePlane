@@ -16,6 +16,7 @@ class SettingsAjaxAndVersionsTest extends AbstractTestCase
     #[Test]
     public function it_generates_a_16_character_hex_cron_key(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->ajax('GET', '/settings/ajax/get_cron_key', []);
 
@@ -27,6 +28,7 @@ class SettingsAjaxAndVersionsTest extends AbstractTestCase
     #[Test]
     public function it_generates_a_different_cron_key_on_each_call(): void
     {
+        /* Arrange */
         /* Act */
         $first  = trim($this->ajax('GET', '/settings/ajax/get_cron_key', [])->body());
         $second = trim($this->ajax('GET', '/settings/ajax/get_cron_key', [])->body());
@@ -38,6 +40,7 @@ class SettingsAjaxAndVersionsTest extends AbstractTestCase
     #[Test]
     public function it_requires_an_ajax_request_for_get_cron_key(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->get('/settings/ajax/get_cron_key');
 
@@ -48,6 +51,7 @@ class SettingsAjaxAndVersionsTest extends AbstractTestCase
     #[Test]
     public function it_lists_applied_versions(): void
     {
+        /* Arrange */
         /* Act */
         $response = $this->get('/settings/versions');
 
