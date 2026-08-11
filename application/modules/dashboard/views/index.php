@@ -249,7 +249,7 @@ foreach ($invoices as $invoice) {
 <?php
     } else {
         ?>
-                                    <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
+                                    <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id) . '?' . _csrf_query(); ?>"
                                        target="_blank" title="<?php _trans('download_pdf'); ?>">
                                         <i class="fa fa-file-pdf-o"></i>
                                     </a>
