@@ -19,6 +19,7 @@ $method  = mb_strtoupper((string) ($request['method'] ?? 'GET'));
 $uri     = '/' . ltrim((string) ($request['uri'] ?? '/'), '/');
 $query   = is_array($request['query'] ?? null) ? $request['query'] : [];
 $post    = is_array($request['post'] ?? null) ? $request['post'] : [];
+$cookies = is_array($request['cookies'] ?? null) ? $request['cookies'] : [];
 $session = is_array($request['session'] ?? null) ? $request['session'] : [];
 $env     = is_array($request['env'] ?? null) ? $request['env'] : [];
 $isAjax  = ! empty($request['ajax']);
@@ -43,7 +44,7 @@ $requestUri  = '/index.php' . $uri . ($queryString !== '' ? '?' . $queryString :
 
 $_GET     = $query;
 $_POST    = $post;
-$_COOKIE  = [];
+$_COOKIE  = $cookies;
 $_FILES   = [];
 $_REQUEST = $method === 'POST' ? array_merge($query, $post) : $query;
 

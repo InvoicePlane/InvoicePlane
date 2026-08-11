@@ -216,9 +216,21 @@ class Quotes extends Admin_Controller
     {
         $this->load->helper(['pdf', 'template']);
 
+        // Security (CSRF): "mark as sent when generating the PDF" mutates quote
+        // state — it assigns a quote number and flips the status to sent. That must
+        // never fire on a forged cross-site GET such as
+        // <img src=".../quotes/generate_pdf/ID">, so it only runs when the request
+        // carries a valid same-origin CSRF token. The PDF itself is a safe read and
+        // always streams, regardless of the token.
         if (get_setting('mark_quotes_sent_pdf') == 1) {
-            $this->mdl_quotes->generate_quote_number_if_applicable($quote_id);
-            $this->mdl_quotes->mark_sent($quote_id);
+            if ( ! function_exists('verify_get_csrf_token')) {
+                $this->load->helper('security');
+            }
+
+            if (verify_get_csrf_token()) {
+                $this->mdl_quotes->generate_quote_number_if_applicable($quote_id);
+                $this->mdl_quotes->mark_sent($quote_id);
+            }
         }
 
         // Security: Validate PDF template to prevent LFI

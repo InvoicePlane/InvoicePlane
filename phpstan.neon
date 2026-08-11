@@ -34,6 +34,9 @@ parameters:
         # Sub-models and library methods are resolved dynamically by CI3's loader.
         - identifier: method.notFound
 
+        # Ignore undefined function errors for helpers and common CI functions
+        - '#Call to undefined function (trans|_trans|htmlsc|_htmlsc|_htmle|auto_link|check_select|lang|get_instance|redirect|site_url|get_setting|get_req_fields_einvoice|show_404|json_errors|print_field|date_to_mysql|date_from_mysql|format_client|format_currency|format_date|format_gender|format_avs|format_xml|is_valid_xml_config_id|get_country_list|get_country_name|get_available_languages|get_xml_template_files|get_xml_full_name|anchor|pager|_csrf_field|_csrf_query|verify_get_csrf_token|_auto_link|log_message)\(#'
+
         # Base controllers/models (Admin_Controller, MY_Model, Response_Model, …)
         # are registered by CI3's HMVC loader, not autoloaded.
         - identifier: class.extendsUnknownClass

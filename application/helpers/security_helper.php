@@ -239,3 +239,46 @@ function verify_csrf_token(): bool
 
     return false;
 }
+
+/**
+ * Verify a CSRF token supplied as a request (query-string) parameter.
+ *
+ * Security: gates state-changing side effects that ride along a route which must
+ * stay GET-accessible (for example the "generate PDF" link that also marks an
+ * invoice as sent). A forged cross-site request — an `<img src="…">` tag, a link
+ * prefetch — cannot read the victim's CSRF cookie, so it cannot echo a matching
+ * token in the query string and the side effect is skipped. Same-origin UI links
+ * embed the token via `_csrf_query()` and pass the check. The read part of the
+ * route (streaming the PDF) is left untouched.
+ *
+ * @return bool True if the query-string token matches the CSRF cookie, false otherwise
+ */
+function verify_get_csrf_token(): bool
+{
+    $CI = & get_instance();
+
+    // Check if CSRF protection is enabled
+    if ( ! config_item('csrf_protection')) {
+        return true;
+    }
+
+    // Token echoed back by the same-origin link
+    $token_name      = config_item('csrf_token_name');
+    $submitted_token = $CI->input->get($token_name);
+
+    // Token the browser holds in the CSRF cookie
+    $cookie_name    = config_item('csrf_cookie_name');
+    $expected_token = $CI->input->cookie($cookie_name);
+
+    // Enforce non-empty string tokens to prevent bypass when both are null
+    if ( ! is_string($submitted_token) || $submitted_token === '') {
+        return false;
+    }
+
+    if ( ! is_string($expected_token) || $expected_token === '') {
+        return false;
+    }
+
+    // Timing-safe comparison
+    return hash_equals($expected_token, $submitted_token);
+}
