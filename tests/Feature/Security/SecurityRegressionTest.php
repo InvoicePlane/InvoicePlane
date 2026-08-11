@@ -137,16 +137,16 @@ class SecurityRegressionTest extends AbstractTestCase
     #[Test]
     public function it_does_not_mark_an_invoice_sent_from_a_forged_generate_pdf_get(): void
     {
-        /* Arrange: generating a PDF is configured to mark drafts as sent. */
+        /* Arrange */
         $this->actingAsAdmin();
         $this->enablePdfSentMarking('mark_invoices_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
         $invoiceId = $this->seedInvoice($this->seedClient(), ['invoice_number' => '']);
 
-        /* Act: a cross-site request cannot supply the CSRF query token or cookie. */
+        /* Act */
         $response = $this->get('/invoices/generate_pdf/' . $invoiceId . '/0');
 
-        /* Assert: PDF generation remains available, but the state-changing side effect is blocked. */
+        /* Assert */
         self::assertLessThan(500, $response->statusCode());
         self::assertSame(1, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
     }
