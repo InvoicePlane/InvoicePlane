@@ -9,6 +9,8 @@ use ReflectionMethod;
 
 class PaypalLibTest extends TestCase
 {
+    private string $captureFile;
+
     protected function setUp(): void
     {
         if ( ! defined('BASEPATH')) {
@@ -19,16 +21,25 @@ class PaypalLibTest extends TestCase
             define('ENVIRONMENT', 'testing');
         }
 
+        require_once dirname(__DIR__, 2) . '/Fakes/Payments/FakePaypalHttpClient.php';
         require_once dirname(__DIR__, 3) . '/application/libraries/gateways/PaypalLib.php';
+        $captureFile = tempnam(sys_get_temp_dir(), 'paypal-request-');
+        self::assertNotFalse($captureFile);
+        $this->captureFile = $captureFile;
         putenv('PAYPAL_MOCK_RESPONSES=' . json_encode([
             ['status' => 200, 'body' => '{"access_token":"test-bearer-token"}'],
             ['status' => 201, 'body' => '{"id":"ORDER-123","status":"CREATED"}'],
         ]));
+        putenv('PAYPAL_MOCK_REQUEST_CAPTURE=' . $this->captureFile);
     }
 
     protected function tearDown(): void
     {
         putenv('PAYPAL_MOCK_RESPONSES');
+        putenv('PAYPAL_MOCK_REQUEST_CAPTURE');
+        if (is_file($this->captureFile)) {
+            unlink($this->captureFile);
+        }
     }
 
     #[Test]
@@ -53,6 +64,12 @@ class PaypalLibTest extends TestCase
 
         /* Assert */
         self::assertSame('{"id":"ORDER-123","status":"CREATED"}', $response);
+        $request = json_decode((string) file_get_contents($this->captureFile), true, 512, JSON_THROW_ON_ERROR);
+        $body    = json_decode($request['body'], true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('POST', $request['method']);
+        self::assertStringEndsWith('/v2/checkout/orders', $request['url']);
+        self::assertSame('42', (string) $body['purchase_units'][0]['invoice_id']);
+        self::assertSame('12.50', $body['purchase_units'][0]['amount']['value']);
     }
 
     #[Test]

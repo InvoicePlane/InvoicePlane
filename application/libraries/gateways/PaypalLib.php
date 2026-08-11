@@ -6,9 +6,7 @@ if ( ! defined('BASEPATH')) {
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
 
 #[AllowDynamicProperties]
 class PaypalLib
@@ -221,15 +219,10 @@ class PaypalLib
             return null;
         }
 
-        $mock = new MockHandler(array_map(
-            static fn (array $entry): Response => new Response(
-                $entry['status'] ?? 200,
-                [],
-                $entry['body'] ?? ''
-            ),
-            $queue
-        ));
+        if ( ! class_exists(\Tests\Fakes\Payments\FakePaypalHttpClient::class)) {
+            throw new \RuntimeException('PayPal test HTTP client is unavailable.');
+        }
 
-        return HandlerStack::create($mock);
+        return \Tests\Fakes\Payments\FakePaypalHttpClient::handlerStack($queue);
     }
 }
