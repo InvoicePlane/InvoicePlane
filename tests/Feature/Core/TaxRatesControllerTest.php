@@ -31,8 +31,7 @@ class TaxRatesControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_tax_rates', ['tax_rate_name' => 'Listed VAT']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed VAT');
     }
 
     // -------------------------------------------------------------------------
@@ -74,7 +73,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'tax_rates');
         $this->assertDatabaseHas('ip_tax_rates', ['tax_rate_name' => 'Standard VAT']);
     }
 
@@ -126,7 +125,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'tax_rates');
         $this->assertDatabaseHas('ip_tax_rates', ['tax_rate_name' => 'Renamed VAT', 'tax_rate_percent' => '15.00']);
         $this->assertDatabaseMissing('ip_tax_rates', ['tax_rate_name' => 'Original VAT']);
     }
@@ -149,7 +148,7 @@ class TaxRatesControllerTest extends AbstractTestCase
         $response = $this->post('/tax_rates/delete/' . $id, []);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'tax_rates');
         $this->assertDatabaseMissing('ip_tax_rates', ['tax_rate_name' => 'Deletable VAT']);
     }
 

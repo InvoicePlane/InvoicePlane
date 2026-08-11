@@ -28,8 +28,7 @@ class FamiliesControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_families', ['family_name' => 'Listed Family']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed Family');
     }
 
     // -------------------------------------------------------------------------
@@ -71,7 +70,7 @@ class FamiliesControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'families');
         $this->assertDatabaseHas('ip_families', ['family_name' => 'Electronics']);
     }
 
@@ -117,7 +116,7 @@ class FamiliesControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'families');
         $this->assertDatabaseHas('ip_families', ['family_name' => 'Renamed Family']);
         $this->assertDatabaseMissing('ip_families', ['family_name' => 'Original Family']);
     }
@@ -137,7 +136,7 @@ class FamiliesControllerTest extends AbstractTestCase
         $response = $this->post('/families/delete/' . $id, []);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'families');
         $this->assertDatabaseMissing('ip_families', ['family_name' => 'Deletable Family']);
     }
 

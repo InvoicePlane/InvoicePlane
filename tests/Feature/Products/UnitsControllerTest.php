@@ -31,8 +31,7 @@ class UnitsControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_units', ['unit_name' => 'Listed Unit']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed Unit');
     }
 
     // -------------------------------------------------------------------------
@@ -76,7 +75,7 @@ class UnitsControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'units');
         $this->assertDatabaseHas('ip_units', ['unit_name' => 'Kilogram']);
     }
 
@@ -130,7 +129,7 @@ class UnitsControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'units');
         $this->assertDatabaseHas('ip_units', ['unit_name' => 'Renamed Unit']);
         $this->assertDatabaseMissing('ip_units', ['unit_name' => 'Original Unit']);
     }
@@ -153,7 +152,7 @@ class UnitsControllerTest extends AbstractTestCase
         $response = $this->post('/units/delete/' . $id, []);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'units');
         $this->assertDatabaseMissing('ip_units', ['unit_name' => 'Deletable Unit']);
     }
 

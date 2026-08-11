@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\Payments;
+namespace Tests\Feature\Payments;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

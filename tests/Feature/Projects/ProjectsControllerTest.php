@@ -32,8 +32,7 @@ class ProjectsControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_projects', ['project_name' => 'Listed Project']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed Project');
     }
 
     // -------------------------------------------------------------------------
@@ -76,7 +75,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'projects');
         $this->assertDatabaseHas('ip_projects', ['project_name' => 'Build a Rocket']);
     }
 
@@ -130,7 +129,7 @@ class ProjectsControllerTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'projects');
         $this->assertDatabaseHas('ip_projects', ['project_name' => 'Renamed Project']);
         $this->assertDatabaseMissing('ip_projects', ['project_name' => 'Original Project']);
     }
@@ -176,7 +175,7 @@ class ProjectsControllerTest extends AbstractTestCase
         $response = $this->post('/projects/delete/' . $id, []);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'projects');
         $this->assertDatabaseMissing('ip_projects', ['project_name' => 'Deletable Project']);
     }
 

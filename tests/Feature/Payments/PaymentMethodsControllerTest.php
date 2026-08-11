@@ -30,8 +30,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_payment_methods', ['payment_method_name' => 'Listed Method']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed Method');
     }
 
     // -------------------------------------------------------------------------

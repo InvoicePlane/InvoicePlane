@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Core;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -58,44 +57,39 @@ class ControllersAuthGuardTest extends AbstractTestCase
     }
 
     #[Test]
-    #[DataProvider('adminRouteProvider')]
-    public function it_redirects_an_unauthenticated_visitor_away_from_admin_module(string $uri): void
+    public function it_redirects_an_unauthenticated_visitor_away_from_admin_module(): void
     {
-        /* Arrange */
+        foreach (self::adminRouteProvider() as [$uri]) {
+            /* Act */
+            $response = $this->get($uri);
 
-        /* Act */
-        $response = $this->get($uri);
+            /* Assert */
+            self::assertTrue(
+                $response->isRedirect(),
+                sprintf(
+                    'Unauthenticated GET [%s] must redirect to login. Got status [%d] with body (first 200 chars): %s',
+                    $uri,
+                    $response->statusCode(),
+                    mb_substr($response->body(), 0, 200)
+                )
+            );
 
-        /* Assert */
-        self::assertTrue(
-            $response->isRedirect(),
-            sprintf(
-                'Unauthenticated GET [%s] must redirect to login. Got status [%d] with body (first 200 chars): %s',
-                $uri,
-                $response->statusCode(),
-                mb_substr($response->body(), 0, 200)
-            )
-        );
-
-        self::assertFalse(
-            $response->contains('<form') && $response->contains('invoice'),
-            sprintf(
-                '[%s] must not render any admin form content to an unauthenticated visitor.',
-                $uri
-            )
-        );
+            self::assertFalse(
+                $response->contains('<form') && $response->contains('invoice'),
+                sprintf('[%s] exposed admin form content.', $uri)
+            );
+        }
     }
 
     #[Test]
-    #[DataProvider('adminRouteProvider')]
-    public function it_does_not_expose_php_errors_on_an_unauthenticated_request_to_admin_route(string $uri): void
+    public function it_does_not_expose_php_errors_on_an_unauthenticated_request_to_admin_route(): void
     {
-        /* Arrange */
+        foreach (self::adminRouteProvider() as [$uri]) {
+            /* Act */
+            $response = $this->get($uri);
 
-        /* Act */
-        $response = $this->get($uri);
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+            /* Assert */
+            $this->assertResponseHasNoPhpErrors($response);
+        }
     }
 }

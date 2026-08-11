@@ -23,30 +23,28 @@ class ClientsFeatureTest extends AbstractTestCase
     public function it_lists_active_clients(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient(['client_name' => 'Listed Corp', 'client_active' => 1]);
+        $this->seedClient(['client_name' => 'Listed Corp', 'client_active' => 1]);
 
         /* Act */
         $response = $this->get('/clients/status/active');
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_clients', ['client_id' => $clientId, 'client_name' => 'Listed Corp']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed Corp');
     }
 
     #[Test]
     public function it_lists_inactive_clients(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient(['client_name' => 'Dormant Inc', 'client_active' => 0]);
+        $this->seedClient(['client_name' => 'Dormant Inc', 'client_active' => 0]);
 
         /* Act */
         $response = $this->get('/clients/status/inactive');
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_clients', ['client_id' => $clientId, 'client_name' => 'Dormant Inc']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Dormant Inc');
     }
 
     // -------------------------------------------------------------------------
@@ -90,8 +88,9 @@ class ClientsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
-        $this->assertDatabaseHas('ip_clients', ['client_name' => 'Acme Corp']);
+        $client = $this->databaseFetchOne('ip_clients', ['client_name' => 'Acme Corp']);
+        self::assertNotNull($client);
+        $this->assertResponseRedirectsToRoute($response, 'clients/view/' . $client['client_id']);
     }
 
     #[Test]
@@ -127,7 +126,9 @@ class ClientsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful create must redirect.');
+        $client = $this->databaseFetchOne('ip_clients', ['client_name' => 'Full Details Ltd']);
+        self::assertNotNull($client);
+        $this->assertResponseRedirectsToRoute($response, 'clients/view/' . $client['client_id']);
         $this->assertDatabaseHas('ip_clients', [
             'client_name'  => 'Full Details Ltd',
             'client_email' => 'full@example.com',
@@ -177,7 +178,7 @@ class ClientsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Successful update must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'clients/view/' . $clientId);
         $this->assertDatabaseHas('ip_clients', ['client_id' => $clientId, 'client_name' => 'Renamed Corp']);
         $this->assertDatabaseMissing('ip_clients', ['client_id' => $clientId, 'client_name' => 'Original Name']);
     }
@@ -197,7 +198,7 @@ class ClientsFeatureTest extends AbstractTestCase
         $response = $this->post('/clients/delete/' . $clientId, []);
 
         /* Assert */
-        self::assertTrue($response->isRedirect(), 'Delete must redirect.');
+        $this->assertResponseRedirectsToRoute($response, 'clients');
         $this->assertDatabaseMissing('ip_clients', ['client_id' => $clientId]);
     }
 

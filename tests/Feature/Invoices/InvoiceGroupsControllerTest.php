@@ -33,8 +33,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertDatabaseHas('ip_invoice_groups', ['invoice_group_name' => 'Listed Group']);
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseBodyContains($response, 'Listed Group');
     }
 
     // -------------------------------------------------------------------------

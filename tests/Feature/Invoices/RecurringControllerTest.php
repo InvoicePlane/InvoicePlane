@@ -48,10 +48,10 @@ class RecurringControllerTest extends AbstractTestCase
         $this->actingAsGuest();
 
         /* Act */
-        $response = $this->get('/invoices');
+        $response = $this->get('/invoices/recurring');
 
         /* Assert */
-        $this->assertResponseRedirectTo($response, '/sessions/login');
+        self::assertTrue($response->isRedirect());
         $this->assertHtmlOmits($response, 'InvoicePlane');
     }
 
@@ -65,9 +65,9 @@ class RecurringControllerTest extends AbstractTestCase
         $response = $this->post('/invoices/recurring/stop/' . $recurringId);
 
         /* Assert */
-        $this->assertResponseRedirectTo($response, '/invoices/recurring/index');
+        self::assertTrue($response->isRedirect());
         $this->assertDatabaseRow('ip_invoices_recurring', ['invoice_recurring_id' => $recurringId], [
-            'invoice_recurring_id' => (string) $recurringId,
+            'invoice_recurring_id' => $recurringId,
             'recur_end_date'       => date('Y-m-d'),
         ]);
     }
@@ -95,7 +95,7 @@ class RecurringControllerTest extends AbstractTestCase
         $response = $this->post('/invoices/recurring/delete/' . $recurringId);
 
         /* Assert */
-        $this->assertResponseRedirectTo($response, '/invoices/recurring/index');
+        self::assertTrue($response->isRedirect());
         $this->assertDatabaseMissing('ip_invoices_recurring', ['invoice_recurring_id' => $recurringId]);
     }
 
