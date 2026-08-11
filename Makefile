@@ -99,8 +99,7 @@ test-suite:
 
 test-custom-templates:
 	$(PHPUNIT_ENV_CLEAN) $(PHPUNIT) \
-		tests/Unit/Settings/CustomTemplateAllowlistTest.php \
-		tests/Unit/Settings/CustomTemplateKernelBootTest.php
+		tests/Unit/Core/CoreTest.php --filter 'it_(lists_a_custom|keeps_built_in|returns_only_built_ins|rejects_a_(path_traversal|php_extension)_custom|keeps_the_valid_name|wires_all_four_allowlist|populates_the_invoice_pdf_allowlist|defines_all_four_allowlist|defines_the_env_helper)'
 
 db-prepare:
 	bash tests/Support/sandbox-mariadb.sh
@@ -142,7 +141,7 @@ docker-test-suite:
 	$(MAKE) docker-test SUITE="$(SUITE)"
 
 docker-test-custom-templates:
-	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && $(PHPUNIT_ENV_CLEAN) $(PHPUNIT) tests/Unit/Settings/CustomTemplateAllowlistTest.php tests/Unit/Settings/CustomTemplateKernelBootTest.php'
+	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && $(PHPUNIT_ENV_CLEAN) $(PHPUNIT) tests/Unit/Core/CoreTest.php --filter "it_(lists_a_custom|keeps_built_in|returns_only_built_ins|rejects_a_(path_traversal|php_extension)_custom|keeps_the_valid_name|wires_all_four_allowlist|populates_the_invoice_pdf_allowlist|defines_all_four_allowlist|defines_the_env_helper)"'
 
 docker-phpstan:
 	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && mkdir -p .phpstan.cache/tmp && TMPDIR="$$PWD/.phpstan.cache/tmp" $(PHPSTAN) analyse --no-progress --memory-limit=$(PHPSTAN_MEMORY)'
