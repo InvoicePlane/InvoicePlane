@@ -130,7 +130,7 @@ if ($quote->quote_status_id == 1) {
         });
 
         $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id); ?>', '_blank');
+            window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id) . '?' . _csrf_query(); ?>', '_blank');
         });
 
         $(document).ready(function () {
