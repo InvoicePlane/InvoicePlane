@@ -133,12 +133,19 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             );
         }
 
-        return new HttpResponse(
+        $response = new HttpResponse(
             base64_decode((string) ($result['output'] ?? ''), true) ?: '',
             (int) ($result['status'] ?? 200),
             $result['headers'] ?? [],
             (string) $stderr,
         );
+
+        // Application errors are a request health check. Individual tests must
+        // still assert their domain outcome, but should not have to remember to
+        // repeat this defensive check after every request.
+        $this->assertNoApplicationError($response);
+
+        return $response;
     }
 
     protected function get(string $uri, array $query = []): HttpResponse
@@ -179,6 +186,75 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             sprintf('Expected redirect status code, got [%d].', $response->statusCode())
         );
         self::assertSame($expectedUrl, $response->redirectUrl());
+    }
+
+    protected function assertResponseHeader(HttpResponse $response, string $name, string $expected): void
+    {
+        self::assertSame($expected, $response->header($name), "Unexpected {$name} response header.");
+    }
+
+    protected function assertResponseContentDisposition(HttpResponse $response, string $expected): void
+    {
+        $this->assertResponseHeader($response, 'Content-Disposition', $expected);
+    }
+
+    /** @return array<string, mixed> */
+    protected function decodeJsonResponse(HttpResponse $response): array
+    {
+        $decoded = json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR);
+        self::assertIsArray($decoded);
+
+        return $decoded;
+    }
+
+    /** @param array<int, string> $keys */
+    protected function assertJsonHasKeys(array $json, array $keys): void
+    {
+        foreach ($keys as $key) {
+            self::assertArrayHasKey($key, $json, "JSON response is missing required key [{$key}].");
+        }
+    }
+
+    protected function assertJsonValue(array $json, string|int $key, mixed $expected): void
+    {
+        self::assertArrayHasKey($key, $json);
+        self::assertSame($expected, $json[$key]);
+    }
+
+    /** @param array<int, mixed> $items */
+    protected function assertCollectionContains(array $items, mixed $expected): void
+    {
+        self::assertContains($expected, $items);
+    }
+
+    /** @param array<int, mixed> $items */
+    protected function assertCollectionExcludes(array $items, mixed $unexpected): void
+    {
+        self::assertNotContains($unexpected, $items);
+    }
+
+    protected function assertHtmlRouteContains(HttpResponse $response, string $heading, string $formAction): void
+    {
+        $this->assertResponseBodyContains($response, $heading);
+        self::assertStringContainsString('action="' . $formAction . '"', $response->body());
+    }
+
+    protected function assertHtmlContainsField(HttpResponse $response, string $fieldName): void
+    {
+        self::assertMatchesRegularExpression(
+            '/(?:name|id)=["\']' . preg_quote($fieldName, '/') . '["\']/',
+            $response->body()
+        );
+    }
+
+    protected function assertHtmlEscapes(HttpResponse $response, string $value): void
+    {
+        self::assertStringContainsString(html_escape($value), $response->body());
+    }
+
+    protected function assertHtmlOmits(HttpResponse $response, string $forbidden): void
+    {
+        self::assertStringNotContainsString($forbidden, $response->body());
     }
 
     protected function assertResponseBodyContains(HttpResponse $response, string $needle): void

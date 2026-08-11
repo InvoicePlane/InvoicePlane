@@ -175,6 +175,35 @@ trait InteractsWithDatabase
         );
     }
 
+    /** Assert the complete stored row, not merely that a matching row exists. */
+    protected function assertDatabaseRow(string $table, array $conditions, array $expected): void
+    {
+        $row = $this->databaseFetchOne($table, $conditions);
+        static::assertNotNull($row, "Expected row in [{$table}] not found.");
+        static::assertSame($expected, array_intersect_key($row, $expected));
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    protected function databaseSnapshot(string $table, array $where = []): array
+    {
+        $db = $this->db();
+        $sql = 'SELECT * FROM ' . $this->qi($table);
+        $params = [];
+        if ($where !== []) {
+            $parts = [];
+            foreach ($where as $key => $value) {
+                $parts[] = $this->qi($key) . ' = :' . $key;
+                $params[$key] = $value;
+            }
+            $sql .= ' WHERE ' . implode(' AND ', $parts);
+        }
+        $sql .= ' ORDER BY 1';
+        $statement = $db->prepare($sql);
+        $statement->execute($params);
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     protected function assertDatabaseMissing(string $table, array $conditions): void
     {
         static::assertNull(
