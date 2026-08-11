@@ -19,6 +19,8 @@ use Tests\AbstractTestCase;
 #[Group('security')]
 class SecurityRegressionTest extends AbstractTestCase
 {
+    private const CSRF_TOKEN = 'regression-csrf-token-0123456789';
+
     // -----------------------------------------------------------------------
     // 1. IDOR — guest PDF access
     // -----------------------------------------------------------------------
@@ -130,6 +132,82 @@ class SecurityRegressionTest extends AbstractTestCase
             $response->statusCode(),
             'A guest must not be able to retrieve another client\'s quote PDF — expected 404.'
         );
+    }
+
+    #[Test]
+    public function it_does_not_mark_an_invoice_sent_from_a_forged_generate_pdf_get(): void
+    {
+        /* Arrange: generating a PDF is configured to mark drafts as sent. */
+        $this->actingAsAdmin();
+        $this->enablePdfSentMarking('mark_invoices_sent_pdf');
+        $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
+        $invoiceId = $this->seedInvoice($this->seedClient(), ['invoice_number' => '']);
+
+        /* Act: a cross-site request cannot supply the CSRF query token or cookie. */
+        $response = $this->get('/invoices/generate_pdf/' . $invoiceId . '/0');
+
+        /* Assert: PDF generation remains available, but the state-changing side effect is blocked. */
+        self::assertLessThan(500, $response->statusCode());
+        self::assertSame(1, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
+    }
+
+    #[Test]
+    public function it_marks_an_invoice_sent_only_with_a_matching_generate_pdf_csrf_token(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $this->enablePdfSentMarking('mark_invoices_sent_pdf');
+        $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
+        $invoiceId = $this->seedInvoice($this->seedClient(), ['invoice_number' => '']);
+
+        /* Act: this models the same-origin link rendered with _csrf_query(). */
+        $response = $this->get(
+            '/invoices/generate_pdf/' . $invoiceId . '/0',
+            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['ip_csrf_cookie' => self::CSRF_TOKEN]
+        );
+
+        /* Assert */
+        self::assertLessThan(500, $response->statusCode());
+        self::assertSame(2, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
+    }
+
+    #[Test]
+    public function it_does_not_mark_a_quote_sent_from_a_forged_generate_pdf_get(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $this->enablePdfSentMarking('mark_quotes_sent_pdf');
+        $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
+        $quoteId = $this->seedSecurityQuote();
+
+        /* Act */
+        $response = $this->get('/quotes/generate_pdf/' . $quoteId . '/0');
+
+        /* Assert */
+        self::assertLessThan(500, $response->statusCode());
+        self::assertSame(1, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
+    }
+
+    #[Test]
+    public function it_marks_a_quote_sent_only_with_a_matching_generate_pdf_csrf_token(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $this->enablePdfSentMarking('mark_quotes_sent_pdf');
+        $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
+        $quoteId = $this->seedSecurityQuote();
+
+        /* Act */
+        $response = $this->get(
+            '/quotes/generate_pdf/' . $quoteId . '/0',
+            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['ip_csrf_cookie' => self::CSRF_TOKEN]
+        );
+
+        /* Assert */
+        self::assertLessThan(500, $response->statusCode());
+        self::assertSame(2, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
     }
 
     // -----------------------------------------------------------------------
@@ -410,5 +488,45 @@ class SecurityRegressionTest extends AbstractTestCase
             $response->statusCode(),
             'A template name outside the static whitelist must not crash the request — it must fall back to the safe default.'
         );
+    }
+
+    private function enablePdfSentMarking(string $settingKey): void
+    {
+        if ($this->databaseFetchOne('ip_settings', ['setting_key' => $settingKey]) === null) {
+            $this->databaseInsert('ip_settings', [
+                'setting_key'   => $settingKey,
+                'setting_value' => '1',
+            ]);
+
+            return;
+        }
+
+        $this->databaseUpdate('ip_settings', ['setting_value' => '1'], ['setting_key' => $settingKey]);
+    }
+
+    private function seedSecurityQuote(): int
+    {
+        $clientId = $this->seedClient(['client_name' => 'Generate PDF CSRF Client']);
+        $quoteId  = $this->databaseInsert('ip_quotes', [
+            'client_id'           => $clientId,
+            'user_id'             => 1,
+            'invoice_group_id'    => 1,
+            'quote_status_id'     => 1,
+            'quote_date_created'  => date('Y-m-d'),
+            'quote_date_modified' => date('Y-m-d'),
+            'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
+            'quote_number'        => '',
+            'quote_url_key'       => bin2hex(random_bytes(16)),
+        ]);
+
+        $this->databaseInsert('ip_quote_amounts', [
+            'quote_id'             => $quoteId,
+            'quote_item_subtotal'  => '0.00',
+            'quote_item_tax_total' => '0.00',
+            'quote_tax_total'      => '0.00',
+            'quote_total'          => '0.00',
+        ]);
+
+        return $quoteId;
     }
 }

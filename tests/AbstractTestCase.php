@@ -70,13 +70,14 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         $this->environmentData = array_merge($this->environmentData, $environment);
     }
 
-    protected function request(string $method, string $uri, array $query = [], array $post = [], bool $ajax = false): HttpResponse
+    protected function request(string $method, string $uri, array $query = [], array $post = [], bool $ajax = false, array $cookies = []): HttpResponse
     {
         $payload = [
             'method'  => mb_strtoupper($method),
             'uri'     => $this->normalizeUri($uri),
             'query'   => $query,
             'post'    => $post,
+            'cookies' => $cookies,
             'session' => $this->sessionData,
             'env'     => $this->environmentData,
             'ajax'    => $ajax,
@@ -141,14 +142,14 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         );
     }
 
-    protected function get(string $uri, array $query = []): HttpResponse
+    protected function get(string $uri, array $query = [], array $cookies = []): HttpResponse
     {
-        return $this->request('GET', $uri, $query, []);
+        return $this->request('GET', $uri, $query, [], false, $cookies);
     }
 
-    protected function post(string $uri, array $data = [], array $query = []): HttpResponse
+    protected function post(string $uri, array $data = [], array $query = [], array $cookies = []): HttpResponse
     {
-        return $this->request('POST', $uri, $query, $data);
+        return $this->request('POST', $uri, $query, $data, false, $cookies);
     }
 
     protected function ajax(string $method, string $uri, array $data = []): HttpResponse
