@@ -28,7 +28,7 @@ class Stripe extends Base_Controller
         $this->load->library('crypt');
         $this->load->model('invoices/mdl_invoices');
         $this->load->helper('file_security');
-        $this->load->helper('stripe');
+        $this->load->helper(['currency', 'stripe']);
 
         $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
     }

@@ -45,10 +45,10 @@ function stripe_minor_unit_multiplier(string $currency): int
 
 function stripe_amount_to_minor_units(int|float|string $amount, string $currency): int
 {
-    return (int) round((float) $amount * stripe_minor_unit_multiplier($currency));
+    return amount_to_minor_units($amount, stripe_minor_unit_multiplier($currency));
 }
 
 function stripe_amount_from_minor_units(int|float|string $amount, string $currency): float
 {
-    return (float) $amount / stripe_minor_unit_multiplier($currency);
+    return amount_from_minor_units($amount, stripe_minor_unit_multiplier($currency));
 }
