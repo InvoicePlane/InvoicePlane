@@ -57,7 +57,7 @@ class DevelopMergeSecurityTest extends AbstractTestCase
         $sumexFile = APPPATH . 'libraries/Sumex.php';
 
         /* Act */
-        $content   = file_get_contents($sumexFile);
+        $content = file_get_contents($sumexFile);
 
         /* Assert */
         self::assertStringContainsString(

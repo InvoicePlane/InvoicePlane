@@ -20,6 +20,9 @@ class StripeGatewayCallbackTest extends AbstractTestCase
     // in the request subprocess correctly recovers the plaintext fake API key.
     private const ENCRYPTION_KEY = '0123456789abcdef0123456789abcdef';
 
+    /** @var array<int, string> */
+    private array $captureFiles = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,6 +33,19 @@ class StripeGatewayCallbackTest extends AbstractTestCase
         require_once dirname(__DIR__, 3) . '/application/libraries/Cryptor.php';
         $ciphertext = Cryptor::Encrypt('sk_test_fake_key', self::ENCRYPTION_KEY);
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_apiKey', 'setting_value' => $ciphertext]);
+    }
+
+    protected function tearDown(): void
+    {
+        foreach ($this->captureFiles as $captureFile) {
+            if (is_file($captureFile)) {
+                unlink($captureFile);
+            }
+        }
+
+        $this->captureFiles = [];
+
+        parent::tearDown();
     }
 
     // -------------------------------------------------------------------------
@@ -111,6 +127,38 @@ class StripeGatewayCallbackTest extends AbstractTestCase
         $this->assertResponseStatusCode($response, 200);
         $json = json_decode($response->body(), true);
         self::assertSame('cs_test_123_secret_abc', $json['clientSecret'] ?? null);
+    }
+
+    #[Test]
+    public function it_sends_a_jpy_invoice_total_as_100_minor_units_to_stripe_checkout(): void
+    {
+        /* Arrange */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_currency', 'setting_value' => 'JPY']);
+        $invoiceId   = $this->seedPayableInvoice([], ['invoice_balance' => '100.00']);
+        $urlKey      = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $captureFile = tempnam(sys_get_temp_dir(), 'stripe-request-');
+        self::assertNotFalse($captureFile);
+        $this->captureFiles[] = $captureFile;
+
+        $this->withEnvironment([
+            'STRIPE_MOCK_RESPONSES' => json_encode([
+                ['status' => 200, 'body' => json_encode([
+                    'id'            => 'cs_jpy_100',
+                    'object'        => 'checkout.session',
+                    'client_secret' => 'cs_jpy_100_secret',
+                ])],
+            ]),
+            'STRIPE_MOCK_REQUEST_CAPTURE' => $captureFile,
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $request = json_decode((string) file_get_contents($captureFile), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('JPY', $request['params']['line_items'][0]['price_data']['currency']);
+        self::assertSame(100, $request['params']['line_items'][0]['price_data']['unit_amount']);
     }
 
     #[Test]

@@ -246,15 +246,10 @@ class Stripe extends Base_Controller
             return;
         }
 
-        \Stripe\ApiRequestor::setHttpClient(new class ($queue) implements \Stripe\HttpClient\ClientInterface {
-            public function __construct(private array $queue) {}
+        if ( ! class_exists(\Tests\Fakes\Payments\FakeStripeHttpClient::class)) {
+            throw new \RuntimeException('Stripe test HTTP client is unavailable.');
+        }
 
-            public function request($method, $absUrl, $headers, $params, $hasFile)
-            {
-                $entry = array_shift($this->queue) ?? ['status' => 200, 'body' => '{}'];
-
-                return [(string) ($entry['body'] ?? '{}'), (int) ($entry['status'] ?? 200), []];
-            }
-        });
+        \Stripe\ApiRequestor::setHttpClient(new \Tests\Fakes\Payments\FakeStripeHttpClient($queue));
     }
 }
