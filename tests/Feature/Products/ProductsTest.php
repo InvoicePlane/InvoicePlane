@@ -16,7 +16,7 @@ class ProductsTest extends AbstractTestCase
         parent::setUp();
     }
 
-    protected function __FamiliesController_setUp(): void
+    protected function setUpFamiliesController(): void
 
         {
 
@@ -39,7 +39,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /* Arrange */
 
@@ -74,7 +74,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /* Arrange */
 
@@ -99,7 +99,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /**
 
@@ -158,7 +158,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /* Arrange */
 
@@ -187,7 +187,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /**
 
@@ -250,7 +250,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /* Arrange */
 
@@ -287,7 +287,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /**
 
@@ -340,7 +340,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /**
 
@@ -403,7 +403,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /*
 
@@ -464,7 +464,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__FamiliesController_setUp();
+            $this->setUpFamiliesController();
 
             /* Arrange */
 
@@ -483,7 +483,7 @@ class ProductsTest extends AbstractTestCase
             self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
 
         }
-    protected function __ProductsAjaxController_setUp(): void
+    protected function setUpProductsAjaxController(): void
 
         {
 
@@ -499,7 +499,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsAjaxController_setUp();
+            $this->setUpProductsAjaxController();
 
             /* Arrange */
 
@@ -542,7 +542,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsAjaxController_setUp();
+            $this->setUpProductsAjaxController();
 
             /* Arrange */
 
@@ -567,7 +567,7 @@ class ProductsTest extends AbstractTestCase
             );
 
         }
-    protected function __ProductsAjaxLookups_setUp(): void
+    protected function setUpProductsAjaxLookups(): void
 
         {
 
@@ -582,11 +582,11 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsAjaxLookups_setUp();
+            $this->setUpProductsAjaxLookups();
 
             /* Arrange */
 
-            $this->__ProductsAjaxLookups_seedProduct(['product_name' => 'Modal Product Marker']);
+            $this->seedProduct(['product_name' => 'Modal Product Marker']);
 
 
 
@@ -609,13 +609,13 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsAjaxLookups_setUp();
+            $this->setUpProductsAjaxLookups();
 
             /* Arrange */
 
-            $this->__ProductsAjaxLookups_seedProduct(['product_name' => 'Filter Match Product']);
+            $this->seedProduct(['product_name' => 'Filter Match Product']);
 
-            $this->__ProductsAjaxLookups_seedProduct(['product_name' => 'Other Product']);
+            $this->seedProduct(['product_name' => 'Other Product']);
 
 
 
@@ -640,11 +640,11 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsAjaxLookups_setUp();
+            $this->setUpProductsAjaxLookups();
 
             /* Arrange */
 
-            $productId = $this->__ProductsAjaxLookups_seedProduct(['product_name' => 'Selected Product', 'product_price' => '42.00']);
+            $productId = $this->seedProduct(['product_name' => 'Selected Product', 'product_price' => '42.00']);
 
 
 
@@ -667,7 +667,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsAjaxLookups_setUp();
+            $this->setUpProductsAjaxLookups();
 
             /* Arrange */
 
@@ -684,7 +684,7 @@ class ProductsTest extends AbstractTestCase
             self::assertSame([], json_decode($response->body(), true));
 
         }
-    private function __ProductsAjaxLookups_seedProduct(array $overrides = []): int
+    private function seedProduct(array $overrides = []): int
 
         {
 
@@ -715,7 +715,7 @@ class ProductsTest extends AbstractTestCase
         }
     private int $familyId;
     private int $taxRateId;
-    protected function __ProductsController_setUp(): void
+    protected function setUpProductsController(): void
 
         {
 
@@ -748,11 +748,11 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /* Arrange */
 
-            $this->databaseInsert('ip_products', $this->__ProductsController_productRow(['product_name' => 'Listed Widget']));
+            $this->databaseInsert('ip_products', $this->productRow(['product_name' => 'Listed Widget']));
 
 
 
@@ -783,7 +783,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /* Arrange */
 
@@ -808,7 +808,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /**
 
@@ -871,7 +871,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /**
 
@@ -954,11 +954,11 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /* Arrange */
 
-            $id = $this->databaseInsert('ip_products', $this->__ProductsController_productRow(['product_name' => 'Editable Widget']));
+            $id = $this->databaseInsert('ip_products', $this->productRow(['product_name' => 'Editable Widget']));
 
 
 
@@ -983,7 +983,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /**
 
@@ -1007,7 +1007,7 @@ class ProductsTest extends AbstractTestCase
 
             /* Arrange */
 
-            $id = $this->databaseInsert('ip_products', $this->__ProductsController_productRow(['product_name' => 'Original Widget']));
+            $id = $this->databaseInsert('ip_products', $this->productRow(['product_name' => 'Original Widget']));
 
 
 
@@ -1058,11 +1058,11 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /* Arrange */
 
-            $id = $this->databaseInsert('ip_products', $this->__ProductsController_productRow(['product_name' => 'Deletable Widget']));
+            $id = $this->databaseInsert('ip_products', $this->productRow(['product_name' => 'Deletable Widget']));
 
             $this->assertDatabaseHas('ip_products', ['product_name' => 'Deletable Widget']);
 
@@ -1095,7 +1095,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /**
 
@@ -1160,7 +1160,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /**
 
@@ -1225,7 +1225,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /**
 
@@ -1249,7 +1249,7 @@ class ProductsTest extends AbstractTestCase
 
             /* Arrange */
 
-            $id = $this->databaseInsert('ip_products', $this->__ProductsController_productRow(['product_name' => 'Will Not Change']));
+            $id = $this->databaseInsert('ip_products', $this->productRow(['product_name' => 'Will Not Change']));
 
 
 
@@ -1300,7 +1300,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__ProductsController_setUp();
+            $this->setUpProductsController();
 
             /* Arrange */
 
@@ -1319,7 +1319,7 @@ class ProductsTest extends AbstractTestCase
             self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
 
         }
-    private function __ProductsController_productRow(array $overrides_from_productscontroller = []): array
+    private function productRow(array $overrides = []): array
 
         {
 
@@ -1339,10 +1339,10 @@ class ProductsTest extends AbstractTestCase
 
                 'tax_rate_id'         => $this->taxRateId,
 
-            ], $overrides_from_productscontroller);
+            ], $overrides);
 
         }
-    protected function __UnitsController_setUp(): void
+    protected function setUpUnitsController(): void
 
         {
 
@@ -1365,7 +1365,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /* Arrange */
 
@@ -1406,7 +1406,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /* Arrange */
 
@@ -1431,7 +1431,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /**
 
@@ -1494,7 +1494,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /* Arrange */
 
@@ -1529,7 +1529,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /**
 
@@ -1602,7 +1602,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /* Arrange */
 
@@ -1645,7 +1645,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /**
 
@@ -1702,7 +1702,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /**
 
@@ -1759,7 +1759,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /**
 
@@ -1832,7 +1832,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /*
 
@@ -1903,7 +1903,7 @@ class ProductsTest extends AbstractTestCase
 
         {
 
-            $this->__UnitsController_setUp();
+            $this->setUpUnitsController();
 
             /* Arrange */
 

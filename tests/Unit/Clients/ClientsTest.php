@@ -16,7 +16,7 @@ class ClientsTest extends TestCase
         parent::setUp();
     }
 
-    protected function __ClientTitleEnum_setUp(): void
+    protected function setUpClientTitleEnum(): void
 
         {
 
@@ -37,7 +37,7 @@ class ClientsTest extends TestCase
 
         {
 
-            $this->__ClientTitleEnum_setUp();
+            $this->setUpClientTitleEnum();
 
             /* Arrange */
 
@@ -64,7 +64,7 @@ class ClientsTest extends TestCase
 
         {
 
-            $this->__ClientTitleEnum_setUp();
+            $this->setUpClientTitleEnum();
 
             /* Arrange */
 
@@ -89,7 +89,7 @@ class ClientsTest extends TestCase
 
         {
 
-            $this->__ClientTitleEnum_setUp();
+            $this->setUpClientTitleEnum();
 
             /* Arrange */
 

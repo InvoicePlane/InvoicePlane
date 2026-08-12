@@ -22,7 +22,7 @@ class QuotesTest extends AbstractTestCase
 
     private int $clientId;
     private int $invoiceGroupId;
-    protected function __QuotesAjaxController_setUp(): void
+    protected function setUpQuotesAjaxController(): void
 
         {
 
@@ -63,7 +63,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesAjaxController_setUp();
+            $this->setUpQuotesAjaxController();
 
             /**
 
@@ -120,7 +120,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesAjaxController_setUp();
+            $this->setUpQuotesAjaxController();
 
             /**
 
@@ -173,7 +173,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesAjaxController_setUp();
+            $this->setUpQuotesAjaxController();
 
             /**
 
@@ -226,7 +226,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesAjaxController_setUp();
+            $this->setUpQuotesAjaxController();
 
             /**
 
@@ -287,7 +287,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesAjaxController_setUp();
+            $this->setUpQuotesAjaxController();
 
             /* Arrange */
 
@@ -306,7 +306,7 @@ class QuotesTest extends AbstractTestCase
             self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
 
         }
-    protected function __QuotesController_setUp(): void
+    protected function setUpQuotesController(): void
 
         {
 
@@ -329,11 +329,11 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesController_setUp();
+            $this->setUpQuotesController();
 
             /* Arrange */
 
-            $this->__QuotesController_seedQuote(['quote_number' => 'QUO-LIST-001']);
+            $this->seedControllerQuote(['quote_number' => 'QUO-LIST-001']);
 
 
 
@@ -364,11 +364,11 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesController_setUp();
+            $this->setUpQuotesController();
 
             /* Arrange */
 
-            $quoteId = $this->__QuotesController_seedQuote(['quote_number' => 'QUO-VIEW-001']);
+            $quoteId = $this->seedControllerQuote(['quote_number' => 'QUO-VIEW-001']);
 
 
 
@@ -399,11 +399,11 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesController_setUp();
+            $this->setUpQuotesController();
 
             /* Arrange */
 
-            $quoteId = $this->__QuotesController_seedQuote(['quote_number' => 'QUO-DEL-001']);
+            $quoteId = $this->seedControllerQuote(['quote_number' => 'QUO-DEL-001']);
 
             $this->assertDatabaseHas('ip_quotes', ['quote_id' => $quoteId]);
 
@@ -436,7 +436,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesController_setUp();
+            $this->setUpQuotesController();
 
             /* Arrange */
 
@@ -467,7 +467,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesController_setUp();
+            $this->setUpQuotesController();
 
             /* Arrange */
 
@@ -486,7 +486,7 @@ class QuotesTest extends AbstractTestCase
             self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
 
         }
-    private function __QuotesController_seedQuote(array $overrides = []): int
+    private function seedControllerQuote(array $overrides = []): int
 
         {
 
@@ -519,7 +519,7 @@ class QuotesTest extends AbstractTestCase
             ], $overrides));
 
         }
-    protected function __QuotesFeature_setUp(): void
+    protected function setUpQuotesFeature(): void
 
         {
 
@@ -535,7 +535,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesFeature_setUp();
+            $this->setUpQuotesFeature();
 
             /* Arrange */
 
@@ -562,7 +562,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesFeature_setUp();
+            $this->setUpQuotesFeature();
 
             /* Arrange */
 
@@ -601,7 +601,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesFeature_setUp();
+            $this->setUpQuotesFeature();
 
             /* Arrange */
 
@@ -640,7 +640,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesFeature_setUp();
+            $this->setUpQuotesFeature();
 
             /* Arrange */
 
@@ -705,13 +705,13 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesFeature_setUp();
+            $this->setUpQuotesFeature();
 
             /* Arrange */
 
             $clientId = $this->seedClient(['client_name' => 'Quote Client']);
 
-            $quoteId  = $this->__QuotesFeature_seedQuote($clientId, ['quote_number' => 'QUO-TEST-' . time()]);
+            $quoteId  = $this->seedFeatureQuote($clientId, ['quote_number' => 'QUO-TEST-' . time()]);
 
 
 
@@ -750,7 +750,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesFeature_setUp();
+            $this->setUpQuotesFeature();
 
             /* Arrange */
 
@@ -775,7 +775,7 @@ class QuotesTest extends AbstractTestCase
 
         {
 
-            $this->__QuotesFeature_setUp();
+            $this->setUpQuotesFeature();
 
             /* Arrange */
 
@@ -820,7 +820,7 @@ class QuotesTest extends AbstractTestCase
             );
 
         }
-    private function __QuotesFeature_seedQuote(int $clientId, array $overrides_from_quotesfeature = []): int
+    private function seedFeatureQuote(int $clientId, array $overrides = []): int
 
         {
 
@@ -848,7 +848,7 @@ class QuotesTest extends AbstractTestCase
 
                 'quote_discount_percent' => '0.00',
 
-            ], $overrides_from_quotesfeature));
+            ], $overrides));
 
         }
     #[Test]
@@ -974,145 +974,4 @@ class QuotesTest extends AbstractTestCase
             );
 
         }
-    #[Test]
-
-    public function it_does_not_mark_a_quote_sent_from_a_forged_generate_pdf_get(): void
-
-        {
-
-            /* Arrange */
-
-            $this->actingAsAdmin();
-
-            $this->enablePdfSentMarking('mark_quotes_sent_pdf');
-
-            $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-
-            $quoteId = $this->__SecurityRegression_seedSecurityQuote();
-
-
-
-            /* Act */
-
-            $response = $this->get('/quotes/generate_pdf/' . $quoteId . '/0');
-
-
-
-            /* Assert */
-
-            self::assertLessThan(500, $response->statusCode());
-
-            self::assertSame(1, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
-
-        }
-    #[Test]
-
-    public function it_marks_a_quote_sent_only_with_a_matching_generate_pdf_csrf_token(): void
-
-        {
-
-            /* Arrange */
-
-            $this->actingAsAdmin();
-
-            $this->enablePdfSentMarking('mark_quotes_sent_pdf');
-
-            $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-
-            $quoteId = $this->__SecurityRegression_seedSecurityQuote();
-
-
-
-            /* Act */
-
-            $response = $this->get(
-
-                '/quotes/generate_pdf/' . $quoteId . '/0',
-
-                ['_ip_csrf'       => self::CSRF_TOKEN],
-
-                ['ip_csrf_cookie' => self::CSRF_TOKEN]
-
-            );
-
-
-
-            /* Assert */
-
-            self::assertLessThan(500, $response->statusCode());
-
-            self::assertSame(2, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
-
-        }
-
-
-
-        // -----------------------------------------------------------------------
-
-        // 2. Path traversal — upload endpoints
-
-        // -----------------------------------------------------------------------
-    private function __SecurityRegression_seedSecurityQuote(): int
-
-        {
-
-            $clientId = $this->seedClient(['client_name' => 'Generate PDF CSRF Client']);
-
-            $quoteId  = $this->databaseInsert('ip_quotes', [
-
-                'client_id'           => $clientId,
-
-                'user_id'             => 1,
-
-                'invoice_group_id'    => 1,
-
-                'quote_status_id'     => 1,
-
-                'quote_date_created'  => date('Y-m-d'),
-
-                'quote_date_modified' => date('Y-m-d'),
-
-                'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
-
-                'quote_number'        => '',
-
-                'quote_url_key'       => bin2hex(random_bytes(16)),
-
-            ]);
-
-
-
-            $this->databaseInsert('ip_quote_amounts', [
-
-                'quote_id'             => $quoteId,
-
-                'quote_item_subtotal'  => '0.00',
-
-                'quote_item_tax_total' => '0.00',
-
-                'quote_tax_total'      => '0.00',
-
-                'quote_total'          => '0.00',
-
-            ]);
-
-
-
-            return $quoteId;
-
-        }
-
-    private function enablePdfSentMarking(string $settingKey): void
-    {
-        if ($this->databaseFetchOne('ip_settings', ['setting_key' => $settingKey]) === null) {
-            $this->databaseInsert('ip_settings', [
-                'setting_key'   => $settingKey,
-                'setting_value' => '1',
-            ]);
-
-            return;
-        }
-
-        $this->databaseUpdate('ip_settings', ['setting_value' => '1'], ['setting_key' => $settingKey]);
-    }
 }

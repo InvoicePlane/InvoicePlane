@@ -21,12 +21,12 @@ class PaymentsTest extends TestCase
     protected function tearDown(): void
     {
         if (isset($this->this)) {
-            $this->__PaypalLib_tearDown();
+            $this->tearDownPaypalLib();
         }
         parent::tearDown();
     }
 
-    protected function __CurrencyMinorUnits_setUp(): void
+    protected function setUpCurrencyMinorUnits(): void
 
         {
 
@@ -43,7 +43,7 @@ class PaymentsTest extends TestCase
 
         {
 
-            $this->__CurrencyMinorUnits_setUp();
+            $this->setUpCurrencyMinorUnits();
 
             /* Arrange */
 
@@ -68,7 +68,7 @@ class PaymentsTest extends TestCase
 
         {
 
-            $this->__CurrencyMinorUnits_setUp();
+            $this->setUpCurrencyMinorUnits();
 
             /* Arrange */
 
@@ -93,7 +93,7 @@ class PaymentsTest extends TestCase
 
         {
 
-            $this->__CurrencyMinorUnits_setUp();
+            $this->setUpCurrencyMinorUnits();
 
             /* Arrange */
 
@@ -118,7 +118,7 @@ class PaymentsTest extends TestCase
 
         {
 
-            $this->__CurrencyMinorUnits_setUp();
+            $this->setUpCurrencyMinorUnits();
 
             /* Arrange */
 
@@ -140,7 +140,7 @@ class PaymentsTest extends TestCase
 
         }
     private string $captureFile;
-    protected function __PaypalLib_setUp(): void
+    protected function setUpPaypalLib(): void
 
         {
 
@@ -181,7 +181,7 @@ class PaymentsTest extends TestCase
             putenv('PAYPAL_MOCK_REQUEST_CAPTURE=' . $this->captureFile);
 
         }
-    protected function __PaypalLib_tearDown(): void
+    protected function tearDownPaypalLib(): void
 
         {
 
@@ -202,7 +202,7 @@ class PaymentsTest extends TestCase
 
         {
 
-            $this->__PaypalLib_setUp();
+            $this->setUpPaypalLib();
 
             /* Arrange */
 
@@ -261,7 +261,7 @@ class PaymentsTest extends TestCase
 
         {
 
-            $this->__PaypalLib_setUp();
+            $this->setUpPaypalLib();
 
             /* Arrange */
 
