@@ -2,8 +2,8 @@
 
 namespace Tests\Fakes\Payments;
 
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
@@ -17,21 +17,6 @@ use Psr\Http\Message\RequestInterface;
  */
 final class FakePaypalHttpClient
 {
-    /** @param array<int, array{status?: int, body?: string}> $queue */
-    public static function handlerStack(array $queue): HandlerStack
-    {
-        $responses = array_map(
-            static fn (array $entry): Response => new Response(
-                $entry['status'] ?? 200,
-                [],
-                $entry['body'] ?? ''
-            ),
-            $queue
-        );
-
-        return \GuzzleHttp\HandlerStack::create(new self(new MockHandler($responses)));
-    }
-
     private function __construct(private MockHandler $mock) {}
 
     public function __invoke(RequestInterface $request, array $options): PromiseInterface
@@ -47,5 +32,20 @@ final class FakePaypalHttpClient
         }
 
         return ($this->mock)($request, $options);
+    }
+
+    /** @param array<int, array{status?: int, body?: string}> $queue */
+    public static function handlerStack(array $queue): HandlerStack
+    {
+        $responses = array_map(
+            static fn (array $entry): Response => new Response(
+                $entry['status'] ?? 200,
+                [],
+                $entry['body'] ?? ''
+            ),
+            $queue
+        );
+
+        return \GuzzleHttp\HandlerStack::create(new self(new MockHandler($responses)));
     }
 }

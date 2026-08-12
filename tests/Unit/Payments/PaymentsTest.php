@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace Tests\Unit\Payments;
 
 use InvalidArgumentException;
+use PaypalLib;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PaypalLib;
 use ReflectionMethod;
-use Tests\AbstractTestCase;
 
 class PaymentsTest extends TestCase
 {
+    private string $captureFile;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,278 +27,199 @@ class PaymentsTest extends TestCase
         parent::tearDown();
     }
 
-    protected function setUpCurrencyMinorUnits(): void
-
-        {
-
-
-
-
-
-            require_once dirname(__DIR__, 3) . '/application/helpers/currency_helper.php';
-
-        }
     #[Test]
-
     public function it_converts_standard_currency_amounts_to_minor_units(): void
+    {
+        $this->setUpCurrencyMinorUnits();
 
-        {
+        /* Arrange */
 
-            $this->setUpCurrencyMinorUnits();
+        $amount = '12.34';
 
-            /* Arrange */
+        /* Act */
 
-            $amount = '12.34';
+        $minorUnits = amount_to_minor_units($amount, 100);
 
+        /* Assert */
 
+        self::assertSame(1234, $minorUnits);
+    }
 
-            /* Act */
-
-            $minorUnits = amount_to_minor_units($amount, 100);
-
-
-
-            /* Assert */
-
-            self::assertSame(1234, $minorUnits);
-
-        }
     #[Test]
-
     public function it_converts_zero_decimal_currency_amounts_without_scaling(): void
+    {
+        $this->setUpCurrencyMinorUnits();
 
-        {
+        /* Arrange */
 
-            $this->setUpCurrencyMinorUnits();
+        $amount = '500';
 
-            /* Arrange */
+        /* Act */
 
-            $amount = '500';
+        $minorUnits = amount_to_minor_units($amount, 1);
 
+        /* Assert */
 
+        self::assertSame(500, $minorUnits);
+    }
 
-            /* Act */
-
-            $minorUnits = amount_to_minor_units($amount, 1);
-
-
-
-            /* Assert */
-
-            self::assertSame(500, $minorUnits);
-
-        }
     #[Test]
-
     public function it_converts_minor_units_back_to_major_units(): void
+    {
+        $this->setUpCurrencyMinorUnits();
 
-        {
+        /* Arrange */
 
-            $this->setUpCurrencyMinorUnits();
+        $minorUnits = 1234;
 
-            /* Arrange */
+        /* Act */
 
-            $minorUnits = 1234;
+        $amount = amount_from_minor_units($minorUnits, 100);
 
+        /* Assert */
 
+        self::assertSame(12.34, $amount);
+    }
 
-            /* Act */
-
-            $amount = amount_from_minor_units($minorUnits, 100);
-
-
-
-            /* Assert */
-
-            self::assertSame(12.34, $amount);
-
-        }
     #[Test]
-
     public function it_rejects_a_non_positive_minor_unit_multiplier(): void
+    {
+        $this->setUpCurrencyMinorUnits();
 
-        {
+        /* Arrange */
 
-            $this->setUpCurrencyMinorUnits();
+        $amount = '12.34';
 
-            /* Arrange */
+        /* Act */
 
-            $amount = '12.34';
+        $this->expectException(InvalidArgumentException::class);
 
+        amount_to_minor_units($amount, 0);
 
+        /* Assert */
 
-            /* Act */
+        self::fail('The invalid multiplier should have thrown an exception.');
+    }
 
-            $this->expectException(InvalidArgumentException::class);
-
-            amount_to_minor_units($amount, 0);
-
-
-
-            /* Assert */
-
-            self::fail('The invalid multiplier should have thrown an exception.');
-
-        }
-    private string $captureFile;
-    protected function setUpPaypalLib(): void
-
-        {
-
-            if ( ! defined('BASEPATH')) {
-
-                define('BASEPATH', dirname(__DIR__, 3) . '/system/');
-
-            }
-
-
-
-            if ( ! defined('ENVIRONMENT')) {
-
-                define('ENVIRONMENT', 'testing');
-
-            }
-
-
-
-            require_once dirname(__DIR__, 2) . '/Fakes/Payments/FakePaypalHttpClient.php';
-
-            require_once dirname(__DIR__, 3) . '/application/libraries/gateways/PaypalLib.php';
-
-            $captureFile = tempnam(sys_get_temp_dir(), 'paypal-request-');
-
-            self::assertNotFalse($captureFile);
-
-            $this->captureFile = $captureFile;
-
-            putenv('PAYPAL_MOCK_RESPONSES=' . json_encode([
-
-                ['status' => 200, 'body' => '{"access_token":"test-bearer-token"}'],
-
-                ['status' => 201, 'body' => '{"id":"ORDER-123","status":"CREATED"}'],
-
-            ]));
-
-            putenv('PAYPAL_MOCK_REQUEST_CAPTURE=' . $this->captureFile);
-
-        }
-    protected function tearDownPaypalLib(): void
-
-        {
-
-            putenv('PAYPAL_MOCK_RESPONSES');
-
-            putenv('PAYPAL_MOCK_REQUEST_CAPTURE');
-
-            if (is_file($this->captureFile)) {
-
-                unlink($this->captureFile);
-
-            }
-
-        }
     #[Test]
-
     public function it_creates_an_order_from_the_payment_information(): void
+    {
+        $this->setUpPaypalLib();
 
-        {
+        /* Arrange */
 
-            $this->setUpPaypalLib();
+        $paypal = new PaypalLib([
+            'demo' => true,
 
-            /* Arrange */
+            'client_id' => 'client-id',
 
-            $paypal = new PaypalLib([
+            'client_secret' => 'client-secret',
+        ]);
 
-                'demo'          => true,
+        $order = [
+            'invoice_id' => 42,
 
-                'client_id'     => 'client-id',
+            'currency_code' => 'EUR',
 
-                'client_secret' => 'client-secret',
+            'value' => '12.50',
 
-            ]);
+            'custom_id' => 'invoice-key',
+        ];
 
+        /* Act */
 
+        $response = $paypal->createOrder($order);
 
-            $order = [
+        /* Assert */
 
-                'invoice_id'    => 42,
+        self::assertSame('{"id":"ORDER-123","status":"CREATED"}', $response);
 
-                'currency_code' => 'EUR',
+        $request = json_decode((string) file_get_contents($this->captureFile), true, 512, JSON_THROW_ON_ERROR);
 
-                'value'         => '12.50',
+        $body = json_decode($request['body'], true, 512, JSON_THROW_ON_ERROR);
 
-                'custom_id'     => 'invoice-key',
+        self::assertSame('POST', $request['method']);
 
-            ];
+        self::assertStringEndsWith('/v2/checkout/orders', $request['url']);
 
+        self::assertSame('42', (string) $body['purchase_units'][0]['invoice_id']);
 
+        self::assertSame('12.50', $body['purchase_units'][0]['amount']['value']);
+    }
 
-            /* Act */
-
-            $response = $paypal->createOrder($order);
-
-
-
-            /* Assert */
-
-            self::assertSame('{"id":"ORDER-123","status":"CREATED"}', $response);
-
-            $request = json_decode((string) file_get_contents($this->captureFile), true, 512, JSON_THROW_ON_ERROR);
-
-            $body    = json_decode($request['body'], true, 512, JSON_THROW_ON_ERROR);
-
-            self::assertSame('POST', $request['method']);
-
-            self::assertStringEndsWith('/v2/checkout/orders', $request['url']);
-
-            self::assertSame('42', (string) $body['purchase_units'][0]['invoice_id']);
-
-            self::assertSame('12.50', $body['purchase_units'][0]['amount']['value']);
-
-        }
     #[Test]
-
     public function it_generates_paypal_request_ids_with_context_and_uuid_format(): void
+    {
+        $this->setUpPaypalLib();
 
-        {
+        /* Arrange */
 
-            $this->setUpPaypalLib();
+        $paypal = new PaypalLib([
+            'demo' => true,
 
-            /* Arrange */
+            'client_id' => 'client-id',
 
-            $paypal = new PaypalLib([
+            'client_secret' => 'client-secret',
+        ]);
 
-                'demo'          => true,
+        $method = new ReflectionMethod($paypal, 'generateRequestId');
 
-                'client_id'     => 'client-id',
+        $method->setAccessible(true);
 
-                'client_secret' => 'client-secret',
+        /* Act */
 
-            ]);
+        $requestId = $method->invoke($paypal, 'capture');
 
+        /* Assert */
 
+        self::assertMatchesRegularExpression(
+            '/\Aip-capture-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\z/',
+            $requestId
+        );
+    }
 
-            $method = new ReflectionMethod($paypal, 'generateRequestId');
+    protected function setUpCurrencyMinorUnits(): void
+    {
+        require_once dirname(__DIR__, 3) . '/application/helpers/currency_helper.php';
+    }
 
-            $method->setAccessible(true);
-
-
-
-            /* Act */
-
-            $requestId = $method->invoke($paypal, 'capture');
-
-
-
-            /* Assert */
-
-            self::assertMatchesRegularExpression(
-
-                '/\Aip-capture-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\z/',
-
-                $requestId
-
-            );
-
+    protected function setUpPaypalLib(): void
+    {
+        if ( ! defined('BASEPATH')) {
+            define('BASEPATH', dirname(__DIR__, 3) . '/system/');
         }
+
+        if ( ! defined('ENVIRONMENT')) {
+            define('ENVIRONMENT', 'testing');
+        }
+
+        require_once dirname(__DIR__, 2) . '/Fakes/Payments/FakePaypalHttpClient.php';
+
+        require_once dirname(__DIR__, 3) . '/application/libraries/gateways/PaypalLib.php';
+
+        $captureFile = tempnam(sys_get_temp_dir(), 'paypal-request-');
+
+        self::assertNotFalse($captureFile);
+
+        $this->captureFile = $captureFile;
+
+        putenv('PAYPAL_MOCK_RESPONSES=' . json_encode([
+            ['status' => 200, 'body' => '{"access_token":"test-bearer-token"}'],
+
+            ['status' => 201, 'body' => '{"id":"ORDER-123","status":"CREATED"}'],
+        ]));
+
+        putenv('PAYPAL_MOCK_REQUEST_CAPTURE=' . $this->captureFile);
+    }
+
+    protected function tearDownPaypalLib(): void
+    {
+        putenv('PAYPAL_MOCK_RESPONSES');
+
+        putenv('PAYPAL_MOCK_REQUEST_CAPTURE');
+
+        if (is_file($this->captureFile)) {
+            unlink($this->captureFile);
+        }
+    }
 }

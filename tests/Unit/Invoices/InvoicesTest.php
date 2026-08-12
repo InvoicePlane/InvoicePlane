@@ -8,7 +8,6 @@ use Error;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use QrCode;
-use Tests\AbstractTestCase;
 
 class InvoicesTest extends TestCase
 {
@@ -17,300 +16,217 @@ class InvoicesTest extends TestCase
         parent::setUp();
     }
 
-    protected function setUpInvoiceHelper(): void
-
-        {
-
-            require_once dirname(__DIR__, 3) . '/application/helpers/invoice_helper.php';
-
-        }
     #[Test]
-
     public function it_calculates_recursive_mod10_checksums(): void
+    {
+        $this->setUpInvoiceHelper();
 
-        {
+        /* Arrange */
 
-            $this->setUpInvoiceHelper();
+        $inputs = ['1234567890', '0000000000', '12345'];
 
-            /* Arrange */
+        /* Act */
 
-            $inputs = ['1234567890', '0000000000', '12345'];
+        $checksums = array_map('invoice_recMod10', $inputs);
 
+        /* Assert */
 
+        self::assertSame([3, 0, 7], $checksums);
+    }
 
-            /* Act */
-
-            $checksums = array_map('invoice_recMod10', $inputs);
-
-
-
-            /* Assert */
-
-            self::assertSame([3, 0, 7], $checksums);
-
-        }
     #[Test]
-
     public function it_builds_a_valid_isr_code_line(): void
+    {
+        $this->setUpInvoiceHelper();
 
-        {
+        /* Arrange */
 
-            $this->setUpInvoiceHelper();
+        $slipType = '11';
 
-            /* Arrange */
+        /* Act */
 
-            $slipType = '11';
+        $codeLine = invoice_genCodeline($slipType, '12.50', '123456', '12-345678-9');
 
+        /* Assert */
 
+        self::assertStringStartsWith('11', $codeLine);
 
-            /* Act */
+        self::assertStringEndsWith('>123456+ 123456789>', $codeLine);
 
-            $codeLine = invoice_genCodeline($slipType, '12.50', '123456', '12-345678-9');
+        self::assertMatchesRegularExpression('/\A\d{13}>123456\+ 123456789>\z/', $codeLine);
+    }
 
-
-
-            /* Assert */
-
-            self::assertStringStartsWith('11', $codeLine);
-
-            self::assertStringEndsWith('>123456+ 123456789>', $codeLine);
-
-            self::assertMatchesRegularExpression('/\A\d{13}>123456\+ 123456789>\z/', $codeLine);
-
-        }
     #[Test]
-
     public function it_rejects_an_invalid_subscriber_number(): void
+    {
+        $this->setUpInvoiceHelper();
 
-        {
+        /* Arrange */
 
-            $this->setUpInvoiceHelper();
+        $subscriberNumber = 'invalid';
 
-            /* Arrange */
+        /* Act */
 
-            $subscriberNumber = 'invalid';
+        try {
+            invoice_genCodeline('11', '12.50', '123456', $subscriberNumber);
 
-
-
-            /* Act */
-
-            try {
-
-                invoice_genCodeline('11', '12.50', '123456', $subscriberNumber);
-
-                $exception = null;
-
-            } catch (Error $error) {
-
-                $exception = $error;
-
-            }
-
-
-
-            /* Assert */
-
-            self::assertInstanceOf(Error::class, $exception);
-
-            self::assertSame('Invalid subscriber number', $exception->getMessage());
-
+            $exception = null;
+        } catch (Error $error) {
+            $exception = $error;
         }
-    #[Test]
 
+        /* Assert */
+
+        self::assertInstanceOf(Error::class, $exception);
+
+        self::assertSame('Invalid subscriber number', $exception->getMessage());
+    }
+
+    #[Test]
     public function it_rejects_an_amount_above_the_isr_limit(): void
+    {
+        $this->setUpInvoiceHelper();
 
-        {
+        /* Arrange */
 
-            $this->setUpInvoiceHelper();
+        $amount = '100000000.00';
 
-            /* Arrange */
+        /* Act */
 
-            $amount = '100000000.00';
+        try {
+            invoice_genCodeline('11', $amount, '123456', '12-345678-9');
 
-
-
-            /* Act */
-
-            try {
-
-                invoice_genCodeline('11', $amount, '123456', '12-345678-9');
-
-                $exception = null;
-
-            } catch (Error $error) {
-
-                $exception = $error;
-
-            }
-
-
-
-            /* Assert */
-
-            self::assertInstanceOf(Error::class, $exception);
-
-            self::assertSame('Invalid amount', $exception->getMessage());
-
+            $exception = null;
+        } catch (Error $error) {
+            $exception = $error;
         }
-    protected function setUpQrCode(): void
 
-        {
+        /* Assert */
 
-            $settings = [
+        self::assertInstanceOf(Error::class, $exception);
 
-                'qr_code_recipient'       => 'Configured Recipient',
+        self::assertSame('Invalid amount', $exception->getMessage());
+    }
 
-                'qr_code_iban'            => 'CH5604835012345678009',
-
-                'qr_code_bic'             => 'CRESCHZZ80A',
-
-                'currency_code'           => 'CHF',
-
-                'qr_code_remittance_text' => 'Invoice {invoice_number}',
-
-            ];
-
-
-
-            $GLOBALS['unitCiInstance'] = new class ($settings) {
-
-                public object $load;
-
-
-
-                public object $mdl_settings;
-
-
-
-                public function __construct(private array $settings)
-
-                {
-
-                    $this->load = new class () {
-
-                        public function helper(string $helper): void {}
-
-                    };
-
-                    $this->mdl_settings = new class ($settings) {
-
-                        public function __construct(private array $settings) {}
-
-
-
-                        public function setting(string $key): string
-
-                        {
-
-                            return (string) ($this->settings[$key] ?? '');
-
-                        }
-
-                    };
-
-                }
-
-            };
-
-
-
-            require_once dirname(__DIR__, 3) . '/application/libraries/QrCode.php';
-
-        }
     #[Test]
-
     public function it_prefers_configured_recipient_and_invoice_bank_details(): void
+    {
+        $this->setUpQrCode();
 
-        {
+        /* Arrange */
 
-            $this->setUpQrCode();
+        $invoice = (object) [
+            'user_company' => 'Invoice Company',
 
-            /* Arrange */
+            'user_name' => 'Invoice User',
 
-            $invoice = (object) [
+            'user_iban' => 'CH9300762011623852957',
 
-                'user_company'         => 'Invoice Company',
+            'user_bic' => 'POFICHBEXXX',
 
-                'user_name'            => 'Invoice User',
+            'user_remittance_text' => 'Invoice INV-42',
 
-                'user_iban'            => 'CH9300762011623852957',
+            'invoice_balance' => '12.50',
 
-                'user_bic'             => 'POFICHBEXXX',
+            'invoice_number' => 'INV-42',
+        ];
 
-                'user_remittance_text' => 'Invoice INV-42',
+        /* Act */
 
-                'invoice_balance'      => '12.50',
+        $qrCode = new QrCode(['invoice' => $invoice]);
 
-                'invoice_number'       => 'INV-42',
+        /* Assert */
 
-            ];
+        self::assertSame('Configured Recipient', $qrCode->recipient);
 
+        self::assertSame('CH9300762011623852957', $qrCode->iban);
 
+        self::assertSame('POFICHBEXXX', $qrCode->bic);
 
-            /* Act */
+        self::assertSame('CHF', $qrCode->currencyCode);
 
-            $qrCode = new QrCode(['invoice' => $invoice]);
+        self::assertSame('Invoice INV-42', $qrCode->remittance_text);
+    }
 
-
-
-            /* Assert */
-
-            self::assertSame('Configured Recipient', $qrCode->recipient);
-
-            self::assertSame('CH9300762011623852957', $qrCode->iban);
-
-            self::assertSame('POFICHBEXXX', $qrCode->bic);
-
-            self::assertSame('CHF', $qrCode->currencyCode);
-
-            self::assertSame('Invoice INV-42', $qrCode->remittance_text);
-
-        }
     #[Test]
-
     public function it_falls_back_to_invoice_identity_and_settings_for_missing_bank_details(): void
+    {
+        $this->setUpQrCode();
 
-        {
+        /* Arrange */
 
-            $this->setUpQrCode();
+        $invoice = (object) [
+            'user_company' => '',
 
-            /* Arrange */
+            'user_name' => 'Invoice User',
 
-            $invoice = (object) [
+            'user_iban' => '',
 
-                'user_company'         => '',
+            'user_bic' => '',
 
-                'user_name'            => 'Invoice User',
+            'user_remittance_text' => '',
 
-                'user_iban'            => '',
+            'invoice_balance' => '12.50',
 
-                'user_bic'             => '',
+            'invoice_number' => 'INV-42',
+        ];
 
-                'user_remittance_text' => '',
+        /* Act */
 
-                'invoice_balance'      => '12.50',
+        $qrCode = new QrCode(['invoice' => $invoice]);
 
-                'invoice_number'       => 'INV-42',
+        /* Assert */
 
-            ];
+        self::assertSame('Configured Recipient', $qrCode->recipient);
 
+        self::assertSame('CH5604835012345678009', $qrCode->iban);
 
+        self::assertSame('CRESCHZZ80A', $qrCode->bic);
 
-            /* Act */
+        self::assertSame('Invoice {invoice_number}', $qrCode->remittance_text);
+    }
 
-            $qrCode = new QrCode(['invoice' => $invoice]);
+    protected function setUpInvoiceHelper(): void
+    {
+        require_once dirname(__DIR__, 3) . '/application/helpers/invoice_helper.php';
+    }
 
+    protected function setUpQrCode(): void
+    {
+        $settings = [
+            'qr_code_recipient' => 'Configured Recipient',
 
+            'qr_code_iban' => 'CH5604835012345678009',
 
-            /* Assert */
+            'qr_code_bic' => 'CRESCHZZ80A',
 
-            self::assertSame('Configured Recipient', $qrCode->recipient);
+            'currency_code' => 'CHF',
 
-            self::assertSame('CH5604835012345678009', $qrCode->iban);
+            'qr_code_remittance_text' => 'Invoice {invoice_number}',
+        ];
 
-            self::assertSame('CRESCHZZ80A', $qrCode->bic);
+        $GLOBALS['unitCiInstance'] = new class ($settings) {
+            public object $load;
 
-            self::assertSame('Invoice {invoice_number}', $qrCode->remittance_text);
+            public object $mdl_settings;
 
-        }
+            public function __construct(private array $settings)
+            {
+                $this->load = new class () {
+                    public function helper(string $helper): void {}
+                };
+
+                $this->mdl_settings = new class ($settings) {
+                    public function __construct(private array $settings) {}
+
+                    public function setting(string $key): string
+                    {
+                        return (string) ($this->settings[$key] ?? '');
+                    }
+                };
+            }
+        };
+
+        require_once dirname(__DIR__, 3) . '/application/libraries/QrCode.php';
+    }
 }
