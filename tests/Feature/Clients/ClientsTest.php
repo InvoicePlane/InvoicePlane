@@ -16,7 +16,7 @@ class ClientsTest extends AbstractTestCase
         parent::setUp();
     }
 
-    protected function __ClientDeletionValidationFeature_setUp(): void
+    protected function setUpClientDeletionValidation(): void
 
         {
 
@@ -31,7 +31,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientDeletionValidationFeature_setUp();
+            $this->setUpClientDeletionValidation();
 
             /* Arrange */
 
@@ -78,7 +78,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientDeletionValidationFeature_setUp();
+            $this->setUpClientDeletionValidation();
 
             /* Arrange */
 
@@ -103,7 +103,7 @@ class ClientsTest extends AbstractTestCase
             );
 
         }
-    protected function __ClientsAjaxController_setUp(): void
+    protected function setUpClientsAjaxController(): void
 
         {
 
@@ -126,7 +126,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -157,7 +157,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -182,7 +182,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -209,7 +209,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -246,7 +246,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -279,7 +279,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -316,7 +316,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -337,7 +337,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -366,7 +366,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -401,7 +401,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -432,7 +432,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -475,7 +475,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -514,7 +514,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -561,7 +561,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -598,7 +598,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsAjaxController_setUp();
+            $this->setUpClientsAjaxController();
 
             /* Arrange */
 
@@ -619,7 +619,7 @@ class ClientsTest extends AbstractTestCase
             self::assertSame('', $response->body());
 
         }
-    protected function __ClientsFeature_setUp(): void
+    protected function setUpClientsFeature(): void
 
         {
 
@@ -642,7 +642,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /* Arrange */
 
@@ -669,7 +669,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /* Arrange */
 
@@ -704,11 +704,11 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /* Arrange */
 
-            /* (admin session set in __ClientsFeature_setUp) */
+            /* (admin session set in setUpClientsFeature) */
 
 
 
@@ -731,7 +731,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /**
 
@@ -753,7 +753,7 @@ class ClientsTest extends AbstractTestCase
 
             /* Arrange */
 
-            /* (admin session set in __ClientsFeature_setUp) */
+            /* (admin session set in setUpClientsFeature) */
 
 
 
@@ -786,7 +786,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /**
 
@@ -818,7 +818,7 @@ class ClientsTest extends AbstractTestCase
 
             /* Arrange */
 
-            /* (admin session set in __ClientsFeature_setUp) */
+            /* (admin session set in setUpClientsFeature) */
 
 
 
@@ -879,7 +879,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /* Arrange */
 
@@ -908,7 +908,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /**
 
@@ -971,7 +971,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /* Arrange */
 
@@ -1008,7 +1008,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /**
 
@@ -1030,7 +1030,7 @@ class ClientsTest extends AbstractTestCase
 
             /* Arrange */
 
-            /* (admin session set in __ClientsFeature_setUp) */
+            /* (admin session set in setUpClientsFeature) */
 
 
 
@@ -1065,7 +1065,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /**
 
@@ -1130,7 +1130,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /* Arrange */
 
@@ -1157,11 +1157,11 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /* Arrange */
 
-            /* (admin session set in __ClientsFeature_setUp) */
+            /* (admin session set in setUpClientsFeature) */
 
 
 
@@ -1182,7 +1182,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /*
 
@@ -1237,11 +1237,11 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /* Arrange */
 
-            /* (admin session set in __ClientsFeature_setUp) */
+            /* (admin session set in setUpClientsFeature) */
 
 
 
@@ -1270,7 +1270,7 @@ class ClientsTest extends AbstractTestCase
 
         {
 
-            $this->__ClientsFeature_setUp();
+            $this->setUpClientsFeature();
 
             /* Arrange */
 

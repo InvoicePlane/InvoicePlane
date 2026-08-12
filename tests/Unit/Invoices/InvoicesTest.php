@@ -17,7 +17,7 @@ class InvoicesTest extends TestCase
         parent::setUp();
     }
 
-    protected function __InvoiceHelper_setUp(): void
+    protected function setUpInvoiceHelper(): void
 
         {
 
@@ -30,7 +30,7 @@ class InvoicesTest extends TestCase
 
         {
 
-            $this->__InvoiceHelper_setUp();
+            $this->setUpInvoiceHelper();
 
             /* Arrange */
 
@@ -55,7 +55,7 @@ class InvoicesTest extends TestCase
 
         {
 
-            $this->__InvoiceHelper_setUp();
+            $this->setUpInvoiceHelper();
 
             /* Arrange */
 
@@ -84,7 +84,7 @@ class InvoicesTest extends TestCase
 
         {
 
-            $this->__InvoiceHelper_setUp();
+            $this->setUpInvoiceHelper();
 
             /* Arrange */
 
@@ -121,7 +121,7 @@ class InvoicesTest extends TestCase
 
         {
 
-            $this->__InvoiceHelper_setUp();
+            $this->setUpInvoiceHelper();
 
             /* Arrange */
 
@@ -152,7 +152,7 @@ class InvoicesTest extends TestCase
             self::assertSame('Invalid amount', $exception->getMessage());
 
         }
-    protected function __QrCode_setUp(): void
+    protected function setUpQrCode(): void
 
         {
 
@@ -223,7 +223,7 @@ class InvoicesTest extends TestCase
 
         {
 
-            $this->__QrCode_setUp();
+            $this->setUpQrCode();
 
             /* Arrange */
 
@@ -272,7 +272,7 @@ class InvoicesTest extends TestCase
 
         {
 
-            $this->__QrCode_setUp();
+            $this->setUpQrCode();
 
             /* Arrange */
 
