@@ -184,6 +184,15 @@ class Cryptor
         $iv  = substr($raw, 0, $this->iv_num_bytes);
         $raw = substr($raw, $this->iv_num_bytes);
 
+        // Validate IV length to catch database encoding corruption.
+        // If the encrypted data was corrupted during storage/retrieval (e.g., character
+        // set mismatch, BOM, whitespace), extra bytes would shift the IV split,
+        // causing iv_num_bytes to be wrong here. This detects the corruption early
+        // instead of letting openssl_decrypt silently truncate the IV and produce garbage.
+        if (strlen($iv) !== $this->iv_num_bytes) {
+            throw new \Exception('Cryptor::decryptString() - IV length mismatch: expected ' . $this->iv_num_bytes . ' bytes, got ' . strlen($iv) . ' bytes. Data may be corrupted.');
+        }
+
         // Hash the key
         $keyhash = openssl_digest($key, $this->hash_algo, true);
 
