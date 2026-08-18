@@ -32,7 +32,6 @@ function stripe_minor_unit_multiplier(string $currency): int
         'MGA',
         'PYG',
         'RWF',
-        'UGX',
         'VND',
         'VUV',
         'XAF',
