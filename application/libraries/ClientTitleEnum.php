@@ -26,9 +26,9 @@ class ClientTitleEnum
 
     public static function tryFrom($value)
     {
-        if (false !== $searchResult = array_search($value, self::VALUES, true)) {
+        if (false !== array_search($value, self::VALUES, true)) {
             $returnObject        = new StdClass();
-            $returnObject->value = $searchResult;
+            $returnObject->value = $value;
 
             return $returnObject;
         }
