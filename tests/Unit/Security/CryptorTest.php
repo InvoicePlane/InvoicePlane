@@ -267,4 +267,71 @@ class CryptorTest extends TestCase
         self::assertSame(16, strlen(substr($raw, 0, 16)));
         self::assertSame($plaintext, $cryptor->decryptString($ciphertext, $this->key));
     }
+
+    #[Test]
+    public function it_never_calls_mb_string_functions_on_binary_ciphertext(): void
+    {
+        /**
+         * Deterministic regression guard for #1680, complementing the
+         * probabilistic fuzz test above. That test proves current behavior is
+         * correct but relies on randomness to catch a regression; this test
+         * fails instantly and unconditionally if mb_strlen()/mb_substr() (or
+         * any other mb_* function) is ever reintroduced into Cryptor.php's
+         * source — e.g. by re-enabling Pint's mb_str_functions fixer, which
+         * is exactly what caused #1680 originally (see commit 98c60c77).
+         */
+        $source = file_get_contents(dirname(__DIR__, 3) . '/application/libraries/Cryptor.php');
+        self::assertIsString($source, 'Could not read Cryptor.php source');
+
+        // Tokenize and strip comments before scanning: the file legitimately contains the
+        // strings "mb_strlen()"/"mb_substr()" inside an explanatory comment (warning future
+        // maintainers away from them), which a naive string/regex search over raw source
+        // would misreport as a violation.
+        $codeOnly = '';
+        foreach (token_get_all($source) as $token) {
+            if (is_array($token) && in_array($token[0], [T_COMMENT, T_DOC_COMMENT], true)) {
+                continue;
+            }
+            $codeOnly .= is_array($token) ? $token[1] : $token;
+        }
+
+        self::assertDoesNotMatchRegularExpression(
+            '/\bmb_(strlen|substr|str_split)\s*\(/',
+            $codeOnly,
+            'Cryptor.php must never use mb_* string functions on binary ciphertext (see #1680) - '
+            . 'mb_* counts characters under the internal encoding, not bytes, and can silently '
+            . 'consume more bytes than requested when random data resembles multi-byte UTF-8.'
+        );
+    }
+
+    #[Test]
+    public function it_keeps_pint_mb_str_functions_fixer_disabled(): void
+    {
+        /**
+         * Guards the actual root cause of #1680: Laravel Pint's
+         * mb_str_functions fixer auto-rewrites str*() calls to mb_str*()
+         * repo-wide, with no awareness that Cryptor::decryptString() operates
+         * on raw binary data rather than text. That auto-fix is what silently
+         * reintroduced the bug after it had already been fixed once (see
+         * commit 98c60c77). If this setting is ever flipped back to true,
+         * the next `pint` run will corrupt Cryptor.php again before this
+         * test's sibling ever gets a chance to catch it - so guard the
+         * setting directly, not just its effect.
+         */
+        $pintConfigPath = dirname(__DIR__, 3) . '/pint.json';
+        $config         = json_decode(file_get_contents($pintConfigPath), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertArrayHasKey('rules', $config, 'pint.json is missing the "rules" section');
+        self::assertArrayHasKey(
+            'mb_str_functions',
+            $config['rules'],
+            'pint.json no longer configures mb_str_functions explicitly'
+        );
+        self::assertFalse(
+            $config['rules']['mb_str_functions'],
+            'pint.json must keep mb_str_functions disabled (see #1680) - enabling it lets Pint '
+            . 'silently rewrite Cryptor.php\'s byte-safe strlen()/substr() calls to mb_strlen()/'
+            . 'mb_substr(), corrupting IV extraction on binary ciphertext.'
+        );
+    }
 }
