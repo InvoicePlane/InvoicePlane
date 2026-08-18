@@ -191,41 +191,40 @@ class CryptorTest extends TestCase
     }
 
     #[Test]
-    public function it_fails_to_decrypt_when_stored_data_has_encoding_corruption(): void
+    public function it_never_misextracts_the_iv_across_many_random_round_trips(): void
     {
         /**
-         * Demonstrates the BUG that occurs when encrypted data is stored/retrieved
-         * from a database with character set issues. Extra bytes get prepended,
-         * causing decryption to produce garbage output. This happens when:
-         * 1. Data is corrupted during storage/retrieval
-         * 2. Character encoding changes the byte length
-         * 3. Extra bytes are prepended (UTF-8 BOM, CRLF conversion, MySQL charset issue)
+         * Regression guard for upstream issue #1680: "openssl_decrypt(): IV
+         * passed is 18 bytes long which is longer than the 16 expected by
+         * selected cipher".
          *
-         * When extra bytes precede the IV, the extracted IV contains wrong bytes,
-         * causing openssl_decrypt to produce garbage output that breaks SMTP auth.
+         * Root cause (verified empirically, not database corruption): the IV
+         * extraction in decryptString() must stay byte-wise (strlen()/substr()).
+         * If it is ever rewritten to mb_strlen()/mb_substr() — e.g. by an
+         * automated Pint `mb_str_functions` fixer run, which is exactly what
+         * happened upstream — those functions operate on *characters* under
+         * the internal encoding (UTF-8), not bytes. Random binary ciphertext
+         * occasionally contains byte sequences that happen to form valid
+         * multi-byte UTF-8 characters, so mb_substr($raw, 0, 16) can silently
+         * consume MORE than 16 bytes to satisfy "16 characters" — producing
+         * an oversized IV that openssl_decrypt() then truncates, decrypting
+         * to garbage and breaking SMTP authentication.
          *
-         * FIX: Validating IV length catches this issue early rather than letting
-         * silent corruption pass through. The fix ensures we reject corrupted
-         * ciphertext instead of returning wrong passwords to PHPMailer.
+         * A single round trip won't reliably catch a mb_* regression, since
+         * the failure is probabilistic (it only triggers when the random IV/
+         * ciphertext bytes happen to look like multi-byte UTF-8). Looping
+         * many iterations makes this test very likely to fail fast if mb_*
+         * ever creeps back into this method.
          */
-        $cryptor = new Cryptor(fmt: Cryptor::FORMAT_B64);
-        $plaintext = 'invoice_smtp_password';
+        $cryptor = new Cryptor(fmt: Cryptor::FORMAT_RAW);
 
-        $validCiphertext = $cryptor->encryptString($plaintext, $this->key);
-        $validRaw = base64_decode($validCiphertext);
+        for ($i = 0; $i < 500; $i++) {
+            $plaintext  = random_bytes(random_int(1, 64));
+            $ciphertext = $cryptor->encryptString($plaintext, $this->key);
+            $decrypted  = $cryptor->decryptString($ciphertext, $this->key);
 
-        // Simulate database corruption: character encoding adds 2 extra bytes
-        // This shifts the IV extraction, causing the first 16 bytes extracted
-        // to contain 2 corruption bytes + 14 real IV bytes (wrong IV)
-        $corruptedRaw = "\xef\xbb" . $validRaw;
-        $corruptedB64 = base64_encode($corruptedRaw);
-
-        $decrypted = $cryptor->decryptString($corruptedB64, $this->key);
-
-        // With corrupted IV bytes, decryption produces garbage (wrong password).
-        // This is the core symptom of the reported bug: password decrypts to garbage,
-        // SMTP auth fails with "Incorrect authentication data"
-        self::assertNotSame($plaintext, $decrypted, 'Corrupted IV should NOT decrypt to original plaintext');
+            self::assertSame($plaintext, $decrypted, "Round trip failed on iteration {$i}");
+        }
     }
 
     #[Test]
