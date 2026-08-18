@@ -1,0 +1,28 @@
+#!/bin/sh
+# Blocks commits whose message contains AI-tool session/authorship attribution
+# (Claude-Session URLs, Co-Authored-By: Claude, claude.ai session links,
+# @anthropic.com addresses, "Generated with Claude Code" footers).
+#
+# Why: these are session-specific or tool-generated lines that clutter commit
+# history and provide no value to anyone reading it later. This project
+# expects commit messages to describe the change, not the tooling that made it.
+#
+# Install (once per clone): git config core.hooksPath .githooks
+
+commit_msg_file="$1"
+
+pattern='claude-session:|claude\.ai/code/session|co-authored-by:[[:space:]]*claude|noreply@anthropic\.com|generated with \[?claude code|🤖'
+
+matches=$(grep -inE "$pattern" "$commit_msg_file")
+
+if [ -n "$matches" ]; then
+    echo "commit-msg hook: blocked - commit message contains AI-tool attribution:" >&2
+    echo "$matches" >&2
+    echo "" >&2
+    echo "Remove these lines (Claude-Session:, Co-Authored-By: Claude, claude.ai session" >&2
+    echo "links, @anthropic.com addresses, 'Generated with Claude Code' footers) and" >&2
+    echo "commit again." >&2
+    exit 1
+fi
+
+exit 0
