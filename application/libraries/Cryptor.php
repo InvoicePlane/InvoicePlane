@@ -173,13 +173,17 @@ class Cryptor
         }
 
         // and do an integrity check on the size.
-        if (mb_strlen($raw) < $this->iv_num_bytes) {
-            throw new \Exception('Cryptor::decryptString() - data length ' . mb_strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
+        if (strlen($raw) < $this->iv_num_bytes) {
+            throw new \Exception('Cryptor::decryptString() - data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
         }
 
-        // Extract the initialisation vector and encrypted data
-        $iv  = mb_substr($raw, 0, $this->iv_num_bytes);
-        $raw = mb_substr($raw, $this->iv_num_bytes);
+        // Extract the initialisation vector and encrypted data.
+        // Must use byte-safe strlen()/substr() here, not mb_strlen()/mb_substr(): $raw is raw
+        // binary ciphertext, and mb_* functions count multi-byte characters under the internal
+        // encoding, not bytes, so they can consume more than $iv_num_bytes bytes when random
+        // bytes happen to look like valid UTF-8 sequences (issue #1680).
+        $iv  = substr($raw, 0, $this->iv_num_bytes);
+        $raw = substr($raw, $this->iv_num_bytes);
 
         // Hash the key
         $keyhash = openssl_digest($key, $this->hash_algo, true);
