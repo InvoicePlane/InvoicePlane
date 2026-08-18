@@ -63,7 +63,8 @@ Without your reports this release would not have been possible:
 And thank you to the contributors whose code shipped in this release:
 [@drewangell](https://github.com/drewangell) (Stripe/PayPal, Advanced Credit Cards & Venmo),
 [@mpldr](https://github.com/mpldr) (Docker application container, configurable QR-code size),
-and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
+[@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix),
+and [@Kapmeister](https://github.com/Kapmeister) (Cryptor binary-safety fix, [#1680](https://github.com/InvoicePlane/InvoicePlane/issues/1680)).
 
 ### Security Vulnerability Summary
 
@@ -214,7 +215,7 @@ and [@PatrickGTR](https://github.com/PatrickGTR) (quote public-template fix).
 - [#1665](https://github.com/InvoicePlane/InvoicePlane/pull/1665) — `Upload::delete_file()` no longer reports a spurious "delete failed" error for a file that was already removed. `validate_file_in_directory()` resolves paths with `realpath()`, which returns `false` for a nonexistent path, so the already-deleted case is now handled before that check runs, and the file's metadata is still cleared correctly.
 - Session config bug: `sess_table_name` and `sess_cookie_name` incorrectly read from the `SESS_DRIVER` env var instead of their own `SESS_TABLE_NAME` / `SESS_COOKIE_NAME` variables, making it impossible to rename the session cookie or table without also changing the driver name.
 - `not_configured.php`: added the missing `<?php _csrf_field(); ?>` to a `<form method="post">` that violated the project's CSRF rule.
-- `Cryptor::decryptString()`: use byte-safe `strlen()` / `substr()` instead of `mb_strlen()` / `mb_substr()` when splitting binary ciphertext, fixing intermittent decryption failures under multibyte internal encodings.
+- [#1680](https://github.com/InvoicePlane/InvoicePlane/issues/1680) — **Cryptor binary-safety regression (SMTP auth failures):** `decryptString()` had silently regressed back to `mb_strlen()` / `mb_substr()` on raw binary ciphertext — this file's original byte-safe fix (noted above) was reverted by an automated Laravel Pint `mb_str_functions` rewrite during a routine `composer update && pint` pass. `mb_*` functions count characters under the internal encoding, not bytes, so they could consume more bytes than requested when random ciphertext happened to resemble multi-byte UTF-8, producing an oversized IV and triggering `openssl_decrypt(): IV passed is … bytes long …, truncating` — which broke SMTP authentication for affected users. Reverted to byte-safe `strlen()` / `substr()` and disabled `mb_str_functions` in `pint.json` so this can't be silently reintroduced by a future code-style pass. Thanks to [@Kapmeister](https://github.com/Kapmeister) for reporting the issue. (Note: the same Pint pass also changed an unrelated `substr()` call in `Mdl_templates.php`'s log-message truncation to `mb_substr()`; that one operates on a legitimate text string, not binary data, so it is not a security issue and was left as-is.)
 
 ### Removed
 
