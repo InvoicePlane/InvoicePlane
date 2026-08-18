@@ -172,26 +172,25 @@ class Cryptor
             $raw = pack('H*', $in);
         }
 
-        // and do an integrity check on the size.
-        // NOTE: $raw is binary ciphertext — use byte-wise strlen()/substr(),
-        // never mb_* (a multibyte charset would miscount bytes and corrupt the
-        // IV split). See CLAUDE.md security rule 7.
-        if (strlen($raw) < $this->iv_num_bytes) {
-            throw new \Exception('Cryptor::decryptString() - data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
+        // Use unpack() for binary-safe length check. If the retrieved data from the
+        // database has UTF-8 encoding artifacts or BOM markers, strlen() would miscount
+        // multibyte sequences as multiple bytes. unpack() provides byte-accurate counting.
+        // See: https://github.com/InvoicePlane/InvoicePlane/issues/1680
+        $raw_bytes = unpack('C*', $raw);
+        $raw_length = is_array($raw_bytes) ? count($raw_bytes) : 0;
+
+        if ($raw_length < $this->iv_num_bytes) {
+            throw new \Exception('Cryptor::decryptString() - data length ' . $raw_length . (' is less than iv length ' . $this->iv_num_bytes));
         }
 
-        // Extract the initialisation vector and encrypted data
-        $iv  = substr($raw, 0, $this->iv_num_bytes);
-        $raw = substr($raw, $this->iv_num_bytes);
-
-        // Validate IV length to catch database encoding corruption.
-        // If the encrypted data was corrupted during storage/retrieval (e.g., character
-        // set mismatch, BOM, whitespace), extra bytes would shift the IV split,
-        // causing iv_num_bytes to be wrong here. This detects the corruption early
-        // instead of letting openssl_decrypt silently truncate the IV and produce garbage.
-        if (strlen($iv) !== $this->iv_num_bytes) {
-            throw new \Exception('Cryptor::decryptString() - IV length mismatch: expected ' . $this->iv_num_bytes . ' bytes, got ' . strlen($iv) . ' bytes. Data may be corrupted.');
-        }
+        // Extract the initialisation vector and encrypted data using unpack() for
+        // binary safety. This handles cases where the stored ciphertext has encoding
+        // artifacts (UTF-8 BOM, charset conversion) that would corrupt byte-wise
+        // extraction with substr().
+        $iv_bytes = array_slice($raw_bytes, 0, $this->iv_num_bytes);
+        $iv = pack('C*', ...$iv_bytes);
+        $encrypted_bytes = array_slice($raw_bytes, $this->iv_num_bytes);
+        $raw = pack('C*', ...$encrypted_bytes);
 
         // Hash the key
         $keyhash = openssl_digest($key, $this->hash_algo, true);
