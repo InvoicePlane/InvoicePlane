@@ -172,25 +172,23 @@ class Cryptor
             $raw = pack('H*', $in);
         }
 
-        // Use unpack() for binary-safe length check. If the retrieved data from the
-        // database has UTF-8 encoding artifacts or BOM markers, strlen() would miscount
-        // multibyte sequences as multiple bytes. unpack() provides byte-accurate counting.
-        // See: https://github.com/InvoicePlane/InvoicePlane/issues/1680
-        $raw_bytes = unpack('C*', $raw);
-        $raw_length = is_array($raw_bytes) ? count($raw_bytes) : 0;
-
-        if ($raw_length < $this->iv_num_bytes) {
-            throw new \Exception('Cryptor::decryptString() - data length ' . $raw_length . (' is less than iv length ' . $this->iv_num_bytes));
+        // and do an integrity check on the size.
+        // NOTE: $raw is binary ciphertext — use byte-wise strlen()/substr(),
+        // never mb_* (mb_* operates on characters under the internal encoding;
+        // on random binary data it can misinterpret byte sequences as multibyte
+        // UTF-8 characters, causing mb_substr() to consume MORE bytes than
+        // requested. This is exactly what caused upstream issue #1680 — a Pint
+        // `mb_str_functions` auto-fix run silently rewrote this to mb_strlen()/
+        // mb_substr(), and openssl_decrypt() started rejecting IVs longer than
+        // 16 bytes). See CLAUDE.md security rule 7 and pint.json's
+        // mb_str_functions exclusion.
+        if (strlen($raw) < $this->iv_num_bytes) {
+            throw new \Exception('Cryptor::decryptString() - data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
         }
 
-        // Extract the initialisation vector and encrypted data using unpack() for
-        // binary safety. This handles cases where the stored ciphertext has encoding
-        // artifacts (UTF-8 BOM, charset conversion) that would corrupt byte-wise
-        // extraction with substr().
-        $iv_bytes = array_slice($raw_bytes, 0, $this->iv_num_bytes);
-        $iv = pack('C*', ...$iv_bytes);
-        $encrypted_bytes = array_slice($raw_bytes, $this->iv_num_bytes);
-        $raw = pack('C*', ...$encrypted_bytes);
+        // Extract the initialisation vector and encrypted data
+        $iv  = substr($raw, 0, $this->iv_num_bytes);
+        $raw = substr($raw, $this->iv_num_bytes);
 
         // Hash the key
         $keyhash = openssl_digest($key, $this->hash_algo, true);
