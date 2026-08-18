@@ -173,20 +173,15 @@ class Cryptor
         }
 
         // and do an integrity check on the size.
-        // NOTE: $raw is binary ciphertext — use byte-wise strlen()/substr(),
-        // never mb_* (mb_* operates on characters under the internal encoding;
-        // on random binary data it can misinterpret byte sequences as multibyte
-        // UTF-8 characters, causing mb_substr() to consume MORE bytes than
-        // requested. This is exactly what caused upstream issue #1680 — a Pint
-        // `mb_str_functions` auto-fix run silently rewrote this to mb_strlen()/
-        // mb_substr(), and openssl_decrypt() started rejecting IVs longer than
-        // 16 bytes). See CLAUDE.md security rule 7 and pint.json's
-        // mb_str_functions exclusion.
         if (strlen($raw) < $this->iv_num_bytes) {
             throw new \Exception('Cryptor::decryptString() - data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
         }
 
-        // Extract the initialisation vector and encrypted data
+        // Extract the initialisation vector and encrypted data.
+        // Must use byte-safe strlen()/substr() here, not mb_strlen()/mb_substr(): $raw is raw
+        // binary ciphertext, and mb_* functions count multi-byte characters under the internal
+        // encoding, not bytes, so they can consume more than $iv_num_bytes bytes when random
+        // bytes happen to look like valid UTF-8 sequences (issue #1680).
         $iv  = substr($raw, 0, $this->iv_num_bytes);
         $raw = substr($raw, $this->iv_num_bytes);
 
