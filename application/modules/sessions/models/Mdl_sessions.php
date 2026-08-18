@@ -92,4 +92,51 @@ class Mdl_Sessions extends CI_Model
 
         return false;
     }
+
+    /**
+     * Destroy all active sessions for a given user_id. This forces immediate
+     * session invalidation when a user's role or active status is changed,
+     * revoking any stale authenticated sessions.
+     *
+     * @param string|int $user_id
+     */
+    public function invalidate_user_sessions($user_id): void
+    {
+        $session_path = $this->session->sess_save_path;
+
+        if ( ! is_dir($session_path)) {
+            return;
+        }
+
+        try {
+            $files = scandir($session_path);
+            if ($files === false) {
+                return;
+            }
+
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+
+                $file_path = $session_path . DIRECTORY_SEPARATOR . $file;
+
+                if ( ! is_file($file_path)) {
+                    continue;
+                }
+
+                $session_data = @unserialize(file_get_contents($file_path));
+                if ($session_data === false || ! is_array($session_data)) {
+                    continue;
+                }
+
+                if (isset($session_data['user_id']) && (string) $session_data['user_id'] === (string) $user_id) {
+                    @unlink($file_path);
+                }
+            }
+        } catch (Exception $e) {
+            // Log but don't crash if session cleanup fails
+            log_message('error', 'Session invalidation failed for user ' . (int) $user_id);
+        }
+    }
 }
