@@ -90,7 +90,7 @@ class Settings extends Admin_Controller
 
                 if ($key === 'number_format') {
                     // Set thousands_separator and decimal_point according to number_format
-                    $batch_settings['decimal_point']       = $number_formats[$value]['decimal_point'];
+                    $batch_settings['decimal_point'] = $number_formats[$value]['decimal_point'];
                     $batch_settings['thousands_separator'] = $number_formats[$value]['thousands_separator'];
                 }
             }
@@ -250,7 +250,7 @@ class Settings extends Admin_Controller
 
         // Security: Validate the logo filename is safe and within uploads directory
         $uploads_dir = './uploads/';
-        $validation  = validate_file_access($logo_filename, $uploads_dir);
+        $validation = validate_file_access($logo_filename, $uploads_dir);
 
         if ( ! $validation['valid']) {
             // Special case: File not found is a legitimate scenario (manual deletion, disk cleanup)
@@ -350,7 +350,7 @@ class Settings extends Admin_Controller
         }
 
         $this->load->library('settings/TaxRateDecimalPlacesProcessor', [], 'tax_rate_decimal_places_processor');
-        $processor            = $this->tax_rate_decimal_places_processor;
+        $processor = $this->tax_rate_decimal_places_processor;
         $decimal_places_input = $settings['tax_rate_decimal_places'];
 
         try {
@@ -387,7 +387,7 @@ class Settings extends Admin_Controller
             );
 
             $ddl_result = $this->db->query($ddl_query);
-            $ddl_error  = $this->db->error();
+            $ddl_error = $this->db->error();
             if ($ddl_result === false || (isset($ddl_error['code']) && (int) $ddl_error['code'] !== 0)) {
                 $this->db->trans_rollback();
                 log_message(

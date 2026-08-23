@@ -8,30 +8,30 @@ $add_table_and_head_for_sums = 1; // Set to 0/false/null/'', return to original 
 // Note: watermarktext not applied if embed xml (Zugferd/Factur-x) pdf A (see mpdf_helper)
 
 // Init some vars (edit if you know what you're doing)
-$colspan            = $show_item_discounts ? 5 : 4;
-$text_class         = '';
-$text_class_date    = '';
+$colspan = $show_item_discounts ? 5 : 4;
+$text_class = '';
+$text_class_date = '';
 $text_class_balance = '';
-$watermark          = '';
-$stamp              = '';
-$show_qrcode        = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
+$watermark = '';
+$stamp = '';
+$show_qrcode = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
 $invoice_mode ??= 'default'; // from template - overdue / paid.php
 
 switch ($invoice_mode) {
     case 'overdue':
-        $text_class         = 'text-red';
-        $text_class_date    = ' class="' . $text_class . '"';
+        $text_class = 'text-red';
+        $text_class_date = ' class="' . $text_class . '"';
         $text_class_balance = ' class="' . $text_class . '"';
-        $watermark          = '<watermarktext content="' . trans('overdue') . '" alpha="0.2" />';
-        $stamp              = '<span class="stamp overdue">' . trans('overdue') . '</span>'; // * if watermark ok == no stamp (todo?)
+        $watermark = '<watermarktext content="' . trans('overdue') . '" alpha="0.2" />';
+        $stamp = '<span class="stamp overdue">' . trans('overdue') . '</span>'; // * if watermark ok == no stamp (todo?)
         break;
     case 'paid':
         $show_qrcode = false;
-        $text_class  = 'text-green';
+        $text_class = 'text-green';
         // $text_class_date    = ' class="' . $text_class . '"';
         $text_class_balance = ' class="' . $text_class . '"';
-        $watermark          = '<watermarktext content="' . trans('paid') . '" alpha="0.2" />';
-        $stamp              = '<span class="stamp paid">' . trans('paid') . '</span>'; // * if watermark ok == no stamp (todo?)
+        $watermark = '<watermarktext content="' . trans('paid') . '" alpha="0.2" />';
+        $stamp = '<span class="stamp paid">' . trans('paid') . '</span>'; // * if watermark ok == no stamp (todo?)
         break;
     default:
 }
@@ -95,6 +95,13 @@ if ($invoice->client_phone) {
     <div id="company">
         <div><b><?php _htmlsc($invoice->user_name); ?></b></div>
         <?php
+        if (isset($invoice->service_name) && $invoice->service_name) {
+            echo '<div>';
+            _htmlsc($invoice->service_name);
+            echo '</div>';
+        }
+?>
+<?php
 if ($invoice->user_vat_id) {
     echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '</div>';
 }

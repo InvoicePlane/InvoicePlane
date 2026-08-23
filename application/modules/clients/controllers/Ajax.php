@@ -26,7 +26,7 @@ class Ajax extends Admin_Controller
         $response = [];
 
         // Get the post input
-        $query                   = $this->input->get('query');
+        $query = $this->input->get('query');
         $permissiveSearchClients = $this->input->get('permissive_search_clients');
 
         if (empty($query)) {
@@ -109,7 +109,7 @@ class Ajax extends Admin_Controller
      */
     public function delete_client_note()
     {
-        $success        = 0;
+        $success = 0;
         $client_note_id = $this->input->post('client_note_id');
         $this->load->model('mdl_client_notes');
 

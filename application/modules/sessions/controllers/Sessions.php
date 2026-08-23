@@ -162,7 +162,7 @@ class Sessions extends Base_Controller
             }
 
             $new_password = $this->input->post('new_password', true);
-            $user_id      = $this->input->post('user_id', true);
+            $user_id = $this->input->post('user_id', true);
 
             if (empty($user_id) || empty($new_password)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
@@ -300,7 +300,7 @@ class Sessions extends Base_Controller
 
                 // Prepare some variables for the email
                 $email_resetlink = site_url('sessions/passwordreset/' . $token);
-                $email_message   = $this->load->view('emails/passwordreset', [
+                $email_message = $this->load->view('emails/passwordreset', [
                     'resetlink' => $email_resetlink,
                 ], true);
 

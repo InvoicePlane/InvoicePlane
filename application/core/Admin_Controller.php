@@ -84,7 +84,7 @@ class Admin_Controller extends User_Controller
 
         // Default to false (insecure) if flags are not set - this ensures we warn about missing config
         $setup_completed = env_bool('SETUP_COMPLETED', false);
-        $disable_setup   = env_bool('DISABLE_SETUP', false);
+        $disable_setup = env_bool('DISABLE_SETUP', false);
 
         // If either flag is not properly set, show a security warning
         if ( ! $setup_completed || ! $disable_setup) {

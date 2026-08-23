@@ -228,9 +228,9 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-\(\)';
 |
 */
 $config['enable_query_strings'] = false;
-$config['controller_trigger']   = 'c';
-$config['function_trigger']     = 'm';
-$config['directory_trigger']    = 'd';
+$config['controller_trigger'] = 'c';
+$config['function_trigger'] = 'm';
+$config['directory_trigger'] = 'd';
 
 /*
 |--------------------------------------------------------------------------
@@ -382,7 +382,7 @@ $config['cache_query_string'] = false;
 |
 */
 $config['encryption_cipher'] = env('ENCRYPTION_CIPHER');
-$config['encryption_key']    = env('ENCRYPTION_KEY');
+$config['encryption_key'] = env('ENCRYPTION_KEY');
 
 /*
 |--------------------------------------------------------------------------

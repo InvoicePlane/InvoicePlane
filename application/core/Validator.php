@@ -149,7 +149,7 @@ class Validator extends MY_Model
         $this->load->model('custom_values/mdl_custom_values');
 
         $db_array = $array;
-        $errors   = [];
+        $errors = [];
 
         if (empty($db_array)) {
             // Return true if no fields need to be validated
@@ -205,7 +205,7 @@ class Validator extends MY_Model
      */
     public function validate_type($type, $value, $key)
     {
-        $nicename        = $this->mdl_custom_fields->get_nicename($type);
+        $nicename = $this->mdl_custom_fields->get_nicename($type);
         $validation_rule = 'validate_' . $nicename;
 
         return $this->{$validation_rule}($value, $key);
@@ -227,7 +227,7 @@ class Validator extends MY_Model
                         break;
 
                     case 'MULTIPLE-CHOICE':
-                        $value                 = is_array($value) && $value[0] == '' ? null : $value; // reset if none in list
+                        $value = is_array($value) && $value[0] == '' ? null : $value; // reset if none in list
                         $this->_formdata[$key] = is_array($value) ? implode(',', $value) : $value;
                         break;
 

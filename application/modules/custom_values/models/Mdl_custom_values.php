@@ -63,7 +63,7 @@ class Mdl_Custom_Values extends MY_Model
             return;
         }
 
-        $db_array                        = $this->db_array();
+        $db_array = $this->db_array();
         $db_array['custom_values_field'] = $fid;
 
         parent::save(null, $db_array);
