@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1520d8c52f372c152518f13e15c39dc7",
+    "content-hash": "81e1d45280964587c0a6d11c6badf989",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -394,7 +394,7 @@
                     "homepage": "https://github.com/Nyholm"
                 },
                 {
-                    "name": "Márk Sági-Kazár",
+                    "name": "M\u00e1rk S\u00e1gi-Kaz\u00e1r",
                     "email": "mark.sagikazar@gmail.com",
                     "homepage": "https://github.com/sagikazarmark"
                 },
@@ -593,7 +593,7 @@
                     "homepage": "https://github.com/Nyholm"
                 },
                 {
-                    "name": "Márk Sági-Kazár",
+                    "name": "M\u00e1rk S\u00e1gi-Kaz\u00e1r",
                     "email": "mark.sagikazar@gmail.com",
                     "homepage": "https://github.com/sagikazarmark"
                 },
@@ -603,7 +603,7 @@
                     "homepage": "https://github.com/Tobion"
                 },
                 {
-                    "name": "Márk Sági-Kazár",
+                    "name": "M\u00e1rk S\u00e1gi-Kaz\u00e1r",
                     "email": "mark.sagikazar@gmail.com",
                     "homepage": "https://sagikazarmark.hu"
                 }
@@ -638,6 +638,69 @@
                 }
             ],
             "time": "2026-07-16T22:23:49+00:00"
+        },
+        {
+            "name": "josemmo/facturae-php",
+            "version": "v1.8.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/josemmo/Facturae-PHP.git",
+                "reference": "21283e460d2a24d58c06454596fcaecc63c8f123"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/josemmo/Facturae-PHP/zipball/21283e460d2a24d58c06454596fcaecc63c8f123",
+                "reference": "21283e460d2a24d58c06454596fcaecc63c8f123",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "*"
+            },
+            "suggest": {
+                "ext-curl": "For communicating with remote TSA Servers and SOAP Web Services",
+                "ext-fileinfo": "For getting MIME types when using FacturaeFile",
+                "ext-openssl": "For signing and timestamping both invoices and SOAP requests",
+                "lib-libxml": "For parsing SOAP XML responses for FACe and FACeB2B"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "josemmo\\Facturae\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "josemmo",
+                    "email": "josemmo@pm.me",
+                    "homepage": "https://github.com/josemmo"
+                }
+            ],
+            "description": "Librer\u00eda para la generaci\u00f3n, firma y env\u00edo de facturas electr\u00f3nicas",
+            "homepage": "https://github.com/josemmo/Facturae-PHP",
+            "keywords": [
+                "face",
+                "faceb2b",
+                "facturae",
+                "xades"
+            ],
+            "support": {
+                "issues": "https://github.com/josemmo/Facturae-PHP/issues",
+                "source": "https://github.com/josemmo/Facturae-PHP/tree/v1.8.4"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/josemmo",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-11-24T14:05:18+00:00"
         },
         {
             "name": "moneyphp/money",
@@ -708,7 +771,7 @@
                     "homepage": "http://verraes.net"
                 },
                 {
-                    "name": "Márk Sági-Kazár",
+                    "name": "M\u00e1rk S\u00e1gi-Kaz\u00e1r",
                     "email": "mark.sagikazar@gmail.com"
                 },
                 {
@@ -783,7 +846,7 @@
             ],
             "authors": [
                 {
-                    "name": "Matěj Humpál",
+                    "name": "Mat\u011bj Hump\u00e1l",
                     "role": "Developer, maintainer"
                 },
                 {
@@ -1463,6 +1526,38 @@
                 "source": "https://github.com/ralouphie/getallheaders/tree/develop"
             },
             "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
+            "name": "s2software/fatturapa",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/s2software/fatturapa.git",
+                "reference": "b1979e8d504fe9e851ecfa54fd4748c6847c855d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/s2software/fatturapa/zipball/b1979e8d504fe9e851ecfa54fd4748c6847c855d",
+                "reference": "b1979e8d504fe9e851ecfa54fd4748c6847c855d",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stefano Storti",
+                    "email": "s.storti@s2software.it",
+                    "homepage": "https://www.s2software.it/"
+                }
+            ],
+            "description": "Libreria PHP per la generazione della fattura elettronica italiana in XML (formato FatturaPA)",
+            "support": {
+                "source": "https://github.com/s2software/fatturapa/tree/v0.3.3"
+            },
+            "time": "2022-09-13T15:19:25+00:00"
         },
         {
             "name": "setasign/fpdf",
@@ -2442,7 +2537,7 @@
             ],
             "authors": [
                 {
-                    "name": "Ondřej Mirtes"
+                    "name": "Ond\u0159ej Mirtes"
                 },
                 {
                     "name": "Markus Staab"
