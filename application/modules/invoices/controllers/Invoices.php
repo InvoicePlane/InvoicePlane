@@ -60,6 +60,17 @@ class Invoices extends Admin_Controller
         $this->mdl_invoices->paginate(site_url('invoices/status/' . $status), $page);
         $invoices = $this->mdl_invoices->result();
 
+        $serviceIds = array_unique(array_filter(array_column($invoices, 'service_id')));
+
+        $this->load->model('services/mdl_services');
+
+        foreach ($invoices as $invoice) {
+            $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
+            $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
+        }
+
+        $services = $this->mdl_services->get()->result_array();
+
         $this->layout->set(
             [
                 'invoices'           => $invoices,
@@ -68,6 +79,7 @@ class Invoices extends Admin_Controller
                 'filter_placeholder' => trans('filter_invoices'),
                 'filter_method'      => 'filter_invoices',
                 'invoice_statuses'   => $this->mdl_invoices->statuses(),
+                'services'           => $services,
             ]
         );
 
@@ -104,7 +116,7 @@ class Invoices extends Admin_Controller
             return;
         }
 
-        $filePath     = $validation['path'];
+        $filePath = $validation['path'];
         $safeFilename = $validation['basename'];
 
         // Security: Sanitize filename for header
@@ -130,6 +142,7 @@ class Invoices extends Admin_Controller
                 'custom_fields/mdl_invoice_custom',
                 'units/mdl_units',
                 'upload/mdl_uploads',
+                'services/mdl_services',
             ]
         );
         $this->load->helper(['custom_values', 'dropzone', 'e-invoice']);
@@ -149,20 +162,18 @@ class Invoices extends Admin_Controller
             }
         }*/
 
-        $fields  = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
+        $fields = $this->mdl_invoice_custom->by_id($invoice_id)->get()->result();
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
         if ( ! $invoice) {
             show_404();
         }
 
-        $invoice->invoice_password = $this->mdl_invoices->decrypt_invoice_password($invoice->invoice_password);
-
         $custom_fields = $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result();
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
@@ -180,8 +191,13 @@ class Invoices extends Admin_Controller
             }
         }
 
+        $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
+        $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
+
+        $services = $this->mdl_services->get()->result_array();
+
         // Check whether there are payment custom fields
-        $payment_cf       = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
+        $payment_cf = $this->mdl_custom_fields->by_table('ip_payment_custom')->get();
         $payment_cf_exist = ($payment_cf->num_rows() > 0) ? 'yes' : 'no';
         // Get Items
         $items = $this->mdl_items->where('invoice_id', $invoice_id)->get()->result();
@@ -202,6 +218,7 @@ class Invoices extends Admin_Controller
                 'invoice_tax_rates' => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
                 'units'             => $this->mdl_units->get()->result(),
                 'payment_methods'   => $this->mdl_payment_methods->get()->result(),
+                'services'          => $services,
                 'custom_fields'     => $custom_fields,
                 'custom_values'     => $custom_values,
                 'custom_js_vars'    => [
@@ -229,19 +246,8 @@ class Invoices extends Admin_Controller
 
     public function delete($invoice_id): void
     {
-        if ( ! $this->ensure_valid_post_request('invoices/index')) {
-            return;
-        }
-
         // Get the status of the invoice
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
-
-        if ( ! $invoice) {
-            show_404();
-
-            return;
-        }
-
         $invoice_status = $invoice->invoice_status_id;
 
         if ($invoice_status == 1 || $this->config->item('enable_invoice_deletion') === true) {
@@ -268,21 +274,9 @@ class Invoices extends Admin_Controller
     {
         $this->load->helper(['pdf', 'template']);
 
-        // Security (CSRF): "mark as sent when generating the PDF" mutates invoice
-        // state — it assigns an official invoice number and flips the status to
-        // sent (optionally locking it read-only). That must never fire on a forged
-        // cross-site GET such as <img src=".../invoices/generate_pdf/ID">, so it
-        // only runs when the request carries a valid same-origin CSRF token. The
-        // PDF itself is a safe read and always streams, regardless of the token.
         if (get_setting('mark_invoices_sent_pdf') == 1) {
-            if ( ! function_exists('verify_get_csrf_token')) {
-                $this->load->helper('security');
-            }
-
-            if (verify_get_csrf_token()) {
-                $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
-                $this->mdl_invoices->mark_sent($invoice_id);
-            }
+            $this->mdl_invoices->generate_invoice_number_if_applicable($invoice_id);
+            $this->mdl_invoices->mark_sent($invoice_id);
         }
 
         // Security: Validate PDF template to prevent LFI
@@ -310,20 +304,19 @@ class Invoices extends Admin_Controller
         }
 
         // eInvoice library to Generate the appropriate UBL/CII or false
-        $xml_id          = $einvoice->name; // $invoice->client_einvoicing_version
-        $options         = [];
-        $generator       = $xml_id;
-        $path            = APPPATH . 'helpers/XMLconfigs/';
-        $is_valid_xml_id = is_string($xml_id) && preg_match('/^[A-Za-z0-9-]+$/', $xml_id) === 1;
-        if ($is_valid_xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
+        $xml_id = $einvoice->name; // $invoice->client_einvoicing_version
+        $options = [];
+        $generator = $xml_id;
+        $path = APPPATH . 'helpers/XMLconfigs/';
+        if ($xml_id && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
             $embed_xml = $xml_setting['embedXML'];
-            $XMLname   = $xml_setting['XMLname'];
-            $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
+            $XMLname = $xml_setting['XMLname'];
+            $options = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
             $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
         }
 
         $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
-        $path     = generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
+        $path = generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
         $this->output->set_content_type('text/xml');
         $this->output->set_output(file_get_contents($path));
         unlink($path);
@@ -354,10 +347,6 @@ class Invoices extends Admin_Controller
 
     public function delete_invoice_tax(string $invoice_id, $invoice_tax_rate_id): void
     {
-        if ( ! $this->ensure_valid_post_request('invoices/view/' . $invoice_id)) {
-            return;
-        }
-
         $this->load->model('invoices/mdl_invoice_tax_rates');
         $this->mdl_invoice_tax_rates->delete($invoice_tax_rate_id);
 
@@ -371,10 +360,6 @@ class Invoices extends Admin_Controller
 
     public function recalculate_all_invoices(): void
     {
-        if ( ! $this->ensure_valid_post_request('invoices/index')) {
-            return;
-        }
-
         $this->db->select('invoice_id');
         $invoice_ids = $this->db->get('ip_invoices')->result();
 

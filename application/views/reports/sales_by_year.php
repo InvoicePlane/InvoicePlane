@@ -21,12 +21,12 @@
 
 <?php
 $initial_year = 0;
-$final_year   = 0;
-$numYears     = 1;
-$numRows      = 1;
-$contRows     = 0;
-$contYears    = 0;
-$pattern      = '/^payment_*/i';
+$final_year = 0;
+$numYears = 1;
+$numRows = 1;
+$contRows = 0;
+$contYears = 0;
+$pattern = '/^payment_*/i';
 
 foreach ($results as $result) {
     if ($final_year == 0) {
@@ -44,7 +44,7 @@ foreach ($results as $result) {
     }
 
     if ($contYears == 0 && ($final_year - $initial_year) > 0) {
-        $numYears  = $final_year - $initial_year + 1;
+        $numYears = $final_year - $initial_year + 1;
         $contYears = 1;
     }
 
@@ -65,7 +65,7 @@ foreach ($results as $result) {
 <?php
         foreach ($result as $index => $value) {
             $quarter = mb_substr($index, 8, 2);
-            $year    = mb_substr($index, 11, 4);
+            $year = mb_substr($index, 11, 4);
 
             if (preg_match($pattern, $index)) {
                 ?>

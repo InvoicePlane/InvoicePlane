@@ -69,7 +69,7 @@ class Settings extends Admin_Controller
 
                 if (isset($settings[$key . '_field_is_password']) && $value !== '') {
                     // Encrypt passwords but don't save empty passwords
-                    $batch_settings[$key] = $this->crypt->encode(trim($value));
+                    $batch_settings[$key] = $this->crypt->encode(mb_trim($value));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
                     $batch_settings[$key] = standardize_amount($value);
@@ -90,7 +90,7 @@ class Settings extends Admin_Controller
 
                 if ($key === 'number_format') {
                     // Set thousands_separator and decimal_point according to number_format
-                    $batch_settings['decimal_point']       = $number_formats[$value]['decimal_point'];
+                    $batch_settings['decimal_point'] = $number_formats[$value]['decimal_point'];
                     $batch_settings['thousands_separator'] = $number_formats[$value]['thousands_separator'];
                 }
             }
@@ -173,11 +173,10 @@ class Settings extends Admin_Controller
         ]);
 
         // Collect the list of templates
-        $pdf_invoice_templates                 = $this->mdl_templates->get_invoice_templates('pdf');
-        $public_invoice_templates              = $this->mdl_templates->get_invoice_templates('public');
-        $pdf_quote_templates                   = $this->mdl_templates->get_quote_templates('pdf');
-        $public_quote_templates                = $this->mdl_templates->get_quote_templates('public');
-        $missing_allowlisted_template_settings = $this->mdl_templates->get_missing_allowlisted_template_settings();
+        $pdf_invoice_templates = $this->mdl_templates->get_invoice_templates('pdf');
+        $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
+        $pdf_quote_templates = $this->mdl_templates->get_quote_templates('pdf');
+        $public_quote_templates = $this->mdl_templates->get_quote_templates('public');
 
         // Get all themes
         $available_themes = $this->mdl_settings->get_themes();
@@ -185,27 +184,26 @@ class Settings extends Admin_Controller
         // Set data in the layout
         $this->layout->set(
             [
-                'invoice_groups'                        => $this->mdl_invoice_groups->get()->result(),
-                'tax_rates'                             => $this->mdl_tax_rates->get()->result(),
-                'payment_methods'                       => $this->mdl_payment_methods->get()->result(),
-                'public_invoice_templates'              => $public_invoice_templates,
-                'pdf_invoice_templates'                 => $pdf_invoice_templates,
-                'public_quote_templates'                => $public_quote_templates,
-                'pdf_quote_templates'                   => $pdf_quote_templates,
-                'missing_allowlisted_template_settings' => $missing_allowlisted_template_settings,
-                'languages'                             => get_available_languages(),
-                'countries'                             => get_country_list(trans('cldr')),
-                'date_formats'                          => date_formats(),
-                'current_date'                          => new DateTime(),
-                'available_themes'                      => $available_themes,
-                'email_templates_quote'                 => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
-                'email_templates_invoice'               => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'custom_fields'                         => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
-                'gateway_drivers'                       => $gateways,
-                'number_formats'                        => $number_formats,
-                'gateway_currency_codes'                => get_currencies(),
-                'first_days_of_weeks'                   => ['0' => lang('sunday'), '1' => lang('monday')],
-                'legacy_calculation'                    => config_item('legacy_calculation'),
+                'invoice_groups'           => $this->mdl_invoice_groups->get()->result(),
+                'tax_rates'                => $this->mdl_tax_rates->get()->result(),
+                'payment_methods'          => $this->mdl_payment_methods->get()->result(),
+                'public_invoice_templates' => $public_invoice_templates,
+                'pdf_invoice_templates'    => $pdf_invoice_templates,
+                'public_quote_templates'   => $public_quote_templates,
+                'pdf_quote_templates'      => $pdf_quote_templates,
+                'languages'                => get_available_languages(),
+                'countries'                => get_country_list(trans('cldr')),
+                'date_formats'             => date_formats(),
+                'current_date'             => new DateTime(),
+                'available_themes'         => $available_themes,
+                'email_templates_quote'    => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
+                'email_templates_invoice'  => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'custom_fields'            => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
+                'gateway_drivers'          => $gateways,
+                'number_formats'           => $number_formats,
+                'gateway_currency_codes'   => get_currencies(),
+                'first_days_of_weeks'      => ['0' => lang('sunday'), '1' => lang('monday')],
+                'legacy_calculation'       => config_item('legacy_calculation'),
             ]
         );
 
@@ -214,19 +212,63 @@ class Settings extends Admin_Controller
     }
 
     /**
+     * Remove a logo file securely.
+     *
+     * @param string $type The logo type (e.g., 'invoice' or 'login')
+     */
+    public function remove_logo(string $type)
+    {
+        $logoFilename = get_setting($type . '_logo');
+
+        // Security: Validate filename before attempting deletion
+        if (empty($logoFilename)) {
+            log_message('debug', sprintf('Logo removal: No %s logo configured', sanitize_for_logging($type)));
+            $this->session->set_flashdata('alert_error', trans('no_logo_to_remove'));
+            redirect('settings');
+        }
+
+        // Security: Comprehensive file validation using file_security_helper
+        $uploadsDir = './uploads/';
+        $validation = validate_file_access($logoFilename, $uploadsDir);
+
+        if ( ! $validation['valid']) {
+            // Note: validate_file_access always provides an error field, but we use defensive programming here
+            log_message('error', sprintf(
+                'Logo removal blocked: Invalid file path for %s (hash: %s, error: %s)',
+                sanitize_for_logging($type),
+                $validation['hash'],
+                sanitize_for_logging($validation['error'] ?? 'unknown')
+            ));
+            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
+            redirect('settings');
+        }
+
+        // Delete the validated file
+        if ( ! unlink($validation['path'])) {
+            log_message('error', sprintf('Failed to delete %s logo file (hash: %s)', sanitize_for_logging($type), $validation['hash']));
+            $this->session->set_flashdata('alert_error', trans('failed_to_delete_logo'));
+            redirect('settings');
+        }
+
+        // Clear the setting in database
+        $this->mdl_settings->save($type . '_logo', '');
+
+        log_message('info', sprintf('Successfully removed %s logo (hash: %s)', sanitize_for_logging($type), $validation['hash']));
+        $this->session->set_flashdata('alert_success', lang($type . '_logo_removed'));
+
+        redirect('settings');
+    }
+
+    /**
      * Remove a logo file with security validation.
      *
      * Security: Validates that the logo file path is safe and within the uploads directory
-     * to prevent arbitrary file deletion attacks. Requires POST request and valid CSRF token.
+     * to prevent arbitrary file deletion attacks.
      *
      * @param string $type Logo type ('invoice' or 'login')
      */
     public function remove_logo(string $type)
     {
-        if ( ! $this->ensure_valid_post_request('settings')) {
-            return;
-        }
-
         // Security: Validate type parameter against allowed values
         $allowed_types = ['invoice', 'login'];
         if ( ! in_array($type, $allowed_types, true)) {
@@ -250,7 +292,7 @@ class Settings extends Admin_Controller
 
         // Security: Validate the logo filename is safe and within uploads directory
         $uploads_dir = './uploads/';
-        $validation  = validate_file_access($logo_filename, $uploads_dir);
+        $validation = validate_file_access($logo_filename, $uploads_dir);
 
         if ( ! $validation['valid']) {
             // Special case: File not found is a legitimate scenario (manual deletion, disk cleanup)
@@ -276,11 +318,7 @@ class Settings extends Admin_Controller
                 sanitize_for_logging((string) $this->session->userdata('user_id'))
             ));
 
-            $this->session->set_flashdata('alert_error', trans(
-                ($validation['error'] ?? '') === 'path_outside_directory'
-                    ? 'invalid_file_path_outside_allowed_directory'
-                    : 'invalid_file_path'
-            ));
+            $this->session->set_flashdata('alert_error', trans('invalid_file_path'));
             redirect('settings');
         }
 
@@ -350,7 +388,7 @@ class Settings extends Admin_Controller
         }
 
         $this->load->library('settings/TaxRateDecimalPlacesProcessor', [], 'tax_rate_decimal_places_processor');
-        $processor            = $this->tax_rate_decimal_places_processor;
+        $processor = $this->tax_rate_decimal_places_processor;
         $decimal_places_input = $settings['tax_rate_decimal_places'];
 
         try {
@@ -387,7 +425,7 @@ class Settings extends Admin_Controller
             );
 
             $ddl_result = $this->db->query($ddl_query);
-            $ddl_error  = $this->db->error();
+            $ddl_error = $this->db->error();
             if ($ddl_result === false || (isset($ddl_error['code']) && (int) $ddl_error['code'] !== 0)) {
                 $this->db->trans_rollback();
                 log_message(

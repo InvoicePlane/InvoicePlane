@@ -60,7 +60,7 @@ class Mdl_Client_Custom extends Validator
                 return true;
             }
 
-            $client_custom_id      = null;
+            $client_custom_id = null;
             $db_array['client_id'] = $client_id;
 
             foreach ($form_data as $key => $value) {
@@ -99,7 +99,7 @@ class Mdl_Client_Custom extends Validator
                 foreach ($values as $value) {
                     $type = $value->custom_field_type;
                     if ($type != null) {
-                        $nicename  = Mdl_Custom_Fields::get_nicename($type);
+                        $nicename = Mdl_Custom_Fields::get_nicename($type);
                         $formatted = call_user_func('format_' . $nicename, $value->client_custom_fieldvalue);
                         $this->set_form_value('cf_' . $value->custom_field_id, $formatted);
                     }

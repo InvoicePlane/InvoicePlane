@@ -8,30 +8,30 @@ $add_table_and_head_for_sums = 1; // Set to 0/false/null/'', return to original 
 // Note: watermarktext not applied if embed xml (Zugferd/Factur-x) pdf A (see mpdf_helper)
 
 // Init some vars (edit if you know what you're doing)
-$colspan            = $show_item_discounts ? 5 : 4;
-$text_class         = '';
-$text_class_date    = '';
+$colspan = $show_item_discounts ? 5 : 4;
+$text_class = '';
+$text_class_date = '';
 $text_class_balance = '';
-$watermark          = '';
-$stamp              = '';
-$show_qrcode        = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
+$watermark = '';
+$stamp = '';
+$show_qrcode = $invoice->invoice_balance > 0 && $invoice->invoice_balance < 10e9 && get_setting('qr_code');
 $invoice_mode ??= 'default'; // from template - overdue / paid.php
 
 switch ($invoice_mode) {
     case 'overdue':
-        $text_class         = 'text-red';
-        $text_class_date    = ' class="' . $text_class . '"';
+        $text_class = 'text-red';
+        $text_class_date = ' class="' . $text_class . '"';
         $text_class_balance = ' class="' . $text_class . '"';
-        $watermark          = '<watermarktext content="' . trans('overdue') . '" alpha="0.2" />';
-        $stamp              = '<span class="stamp overdue">' . trans('overdue') . '</span>'; // * if watermark ok == no stamp (todo?)
+        $watermark = '<watermarktext content="' . trans('overdue') . '" alpha="0.2" />';
+        $stamp = '<span class="stamp overdue">' . trans('overdue') . '</span>'; // * if watermark ok == no stamp (todo?)
         break;
     case 'paid':
         $show_qrcode = false;
-        $text_class  = 'text-green';
+        $text_class = 'text-green';
         // $text_class_date    = ' class="' . $text_class . '"';
         $text_class_balance = ' class="' . $text_class . '"';
-        $watermark          = '<watermarktext content="' . trans('paid') . '" alpha="0.2" />';
-        $stamp              = '<span class="stamp paid">' . trans('paid') . '</span>'; // * if watermark ok == no stamp (todo?)
+        $watermark = '<watermarktext content="' . trans('paid') . '" alpha="0.2" />';
+        $stamp = '<span class="stamp paid">' . trans('paid') . '</span>'; // * if watermark ok == no stamp (todo?)
         break;
     default:
 }
@@ -55,10 +55,10 @@ switch ($invoice_mode) {
         <div>
             <b><?php _htmlsc(format_client($invoice)); ?></b>
         </div>
-        <?php
-        if ($invoice->client_vat_id) {
-            echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->client_vat_id) . '</div>';
-        }
+<?php
+if ($invoice->client_vat_id) {
+    echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->client_vat_id) . '</div>';
+}
 if ($invoice->client_tax_code) {
     echo '<div>' . trans('tax_code_short') . ': ' . htmlsc($invoice->client_tax_code) . '</div>';
 }
@@ -95,6 +95,13 @@ if ($invoice->client_phone) {
     <div id="company">
         <div><b><?php _htmlsc($invoice->user_name); ?></b></div>
         <?php
+        if (isset($invoice->service_name) && $invoice->service_name) {
+            echo '<div>';
+            _htmlsc($invoice->service_name);
+            echo '</div>';
+        }
+?>
+<?php
 if ($invoice->user_vat_id) {
     echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '</div>';
 }
@@ -158,15 +165,15 @@ if ($invoice->user_fax) {
                 <td<?php echo $text_class_balance ?>><?php _trans('amount_due'); ?>:</td>
                 <td<?php echo $text_class_balance ?>><?php echo format_currency($invoice->invoice_balance); ?></td>
             </tr>
-            <?php
-    if ($payment_method) {
-        ?>
-                <tr>
-                    <td><?php _trans('payment_method'); ?>:</td>
-                    <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
-                </tr>
-                <?php
-    }
+<?php
+if ($payment_method) {
+    ?>
+            <tr>
+                <td><?php _trans('payment_method'); ?>:</td>
+                <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
+            </tr>
+<?php
+}
 ?>
         </table>
     </div>
@@ -180,11 +187,11 @@ if ($invoice->user_fax) {
             <th class="item-desc"><?php _trans('description'); ?></th>
             <th class="item-amount text-right"><?php _trans('qty'); ?></th>
             <th class="item-price text-right"><?php _trans('price'); ?></th>
-            <?php
+<?php
 if ($show_item_discounts) {
     ?>
-                <th class="item-discount text-right"><?php _trans('discount'); ?></th>
-                <?php
+            <th class="item-discount text-right"><?php _trans('discount'); ?></th>
+<?php
 }
 ?>
             <th class="item-total text-right"><?php _trans('total'); ?></th>
@@ -192,9 +199,9 @@ if ($show_item_discounts) {
         </thead>
         <tbody>
 
-        <?php
-        foreach ($items as $item) {
-            ?>
+<?php
+foreach ($items as $item) {
+    ?>
             <tr>
                 <td><?php _htmlsc($item->item_name); ?></td>
                 <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
@@ -208,26 +215,26 @@ if ($show_item_discounts) {
                 <td class="text-right">
                     <?php echo format_currency(htmlsc($item->item_price)); ?>
                 </td>
-                <?php
-                if ($show_item_discounts) {
-                    ?>
+<?php
+        if ($show_item_discounts) {
+            ?>
                     <td class="text-right">
                         <?php echo format_currency(htmlsc($item->item_discount)); ?>
                     </td>
-                    <?php
-                }
-            ?>
+<?php
+        }
+    ?>
                 <td class="text-right">
                     <?php echo format_currency(htmlsc($item->item_total)); ?>
                 </td>
             </tr>
-            <?php
-        }
+<?php
+}
 ?>
 
         </tbody>
 
-        <?php
+<?php
 // Fix for mpdf: table head of items printed on 2nd page
 if ($add_table_and_head_for_sums) {
     $colspan .= '" style="width:543px'; // little hackish
@@ -243,13 +250,13 @@ if ($add_table_and_head_for_sums) {
             </th>
         </tr>
         </thead>
-        <?php
+<?php
 } // fi add_table_head_for_totals
 ?>
 
         <tbody class="invoice-sums">
 
-        <?php
+<?php
 if ( ! $legacy_calculation) {
     discount_global_print_in_pdf($invoice, $show_item_discounts); // in helpers/pdf_helper
 }
@@ -262,37 +269,37 @@ if ( ! $legacy_calculation) {
             <td class="text-right"><?php echo format_currency(htmlsc($invoice->invoice_item_subtotal)); ?></td>
         </tr>
 
-        <?php
+<?php
 if ($invoice->invoice_item_tax_total > 0) {
     ?>
-            <tr>
-                <td class="text-right" colspan="<?php echo $colspan ?>">
-                    <?php _trans('item_tax'); ?>
-                </td>
-                <td class="text-right">
-                    <?php echo format_currency($invoice->invoice_item_tax_total); ?>
-                </td>
-            </tr>
-            <?php
+        <tr>
+            <td class="text-right" colspan="<?php echo $colspan ?>">
+                <?php _trans('item_tax'); ?>
+            </td>
+            <td class="text-right">
+                <?php echo format_currency($invoice->invoice_item_tax_total); ?>
+            </td>
+        </tr>
+<?php
 }
 ?>
 
-        <?php
+<?php
 foreach ($invoice_tax_rates as $invoice_tax_rate) {
     ?>
-            <tr>
-                <td class="text-right" colspan="<?php echo $colspan ?>">
-                    <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%)'; ?>
-                </td>
-                <td class="text-right">
-                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
-                </td>
-            </tr>
-            <?php
+        <tr>
+            <td class="text-right" colspan="<?php echo $colspan ?>">
+                <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' (' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%)'; ?>
+            </td>
+            <td class="text-right">
+                <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
+            </td>
+        </tr>
+<?php
 }
 ?>
 
-        <?php
+<?php
 if ($legacy_calculation) {
     discount_global_print_in_pdf($invoice, $show_item_discounts); // in helpers/pdf_helper
 }
@@ -325,49 +332,49 @@ if ($legacy_calculation) {
         </tbody>
     </table>
 
-    <?php
-    if ($show_qrcode) {
-        ?>
-        <table class="invoice-qr-code-table">
-            <tr>
-                <td>
-                    <div>
-                        <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
-                        <?php _htmlsc($invoice->user_company ?: get_setting('qr_code_recipient')); ?>
-                    </div>
-                    <div>
-                        <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
-                        <?php _htmlsc($invoice->user_iban ?: get_setting('qr_code_iban')); ?>
-                    </div>
-                    <div>
-                        <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
-                        <?php _htmlsc($invoice->user_bic ?: get_setting('qr_code_bic')); ?>
-                    </div>
-                    <div>
-                        <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
-                        <?php _htmlsc(parse_template($invoice, $invoice->user_remittance_text ?: get_setting('qr_code_remittance_text'))); ?>
-                    </div>
-                </td>
-                <td class="text-right">
-                    <?php echo invoice_qrcode(htmlsc($invoice->invoice_id)); ?>
-                </td>
-            </tr>
-        </table>
-        <?php
-    }
+<?php
+if ($show_qrcode) {
+    ?>
+    <table class="invoice-qr-code-table">
+        <tr>
+            <td>
+                <div>
+                    <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
+                    <?php _htmlsc($invoice->user_company ?: get_setting('qr_code_recipient')); ?>
+                </div>
+                <div>
+                    <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
+                    <?php _htmlsc($invoice->user_iban ?: get_setting('qr_code_iban')); ?>
+                </div>
+                <div>
+                    <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
+                    <?php _htmlsc($invoice->user_bic ?: get_setting('qr_code_bic')); ?>
+                </div>
+                <div>
+                    <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
+                    <?php _htmlsc(parse_template($invoice, $invoice->user_remittance_text ?: get_setting('qr_code_remittance_text'))); ?>
+                </div>
+            </td>
+            <td class="text-right">
+                <?php echo invoice_qrcode(htmlsc($invoice->invoice_id)); ?>
+            </td>
+        </tr>
+    </table>
+<?php
+}
 ?>
 
 </main>
 
 <div class="invoice-terms">
-    <?php
+<?php
 if ($invoice->invoice_terms) {
     ?>
-        <div class="notes">
-            <b><?php _trans('terms'); ?></b><br/>
-            <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
-        </div>
-        <?php
+    <div class="notes">
+        <b><?php _trans('terms'); ?></b><br/>
+        <?php echo nl2br(htmlsc($invoice->invoice_terms)); ?>
+    </div>
+<?php
 }
 ?>
 </div>

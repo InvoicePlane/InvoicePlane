@@ -42,9 +42,9 @@ class Upload extends Admin_Controller
         }
 
         $originalFilename = $_FILES['file']['name'];
-        $fileName         = $this->sanitize_file_name($originalFilename);
-        $file_ext         = mb_strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $filePath         = $this->get_target_file_path($url_key, $fileName);
+        $fileName = $this->sanitize_file_name($originalFilename);
+        $file_ext = mb_strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $filePath = $this->get_target_file_path($url_key, $fileName);
 
         if (file_exists($filePath)) {
             respond_file_message(409, 'upload_error_duplicate_file', $fileName);
@@ -145,7 +145,7 @@ class Upload extends Admin_Controller
             respond_file_message(400, 'upload_error_invalid_filename', 'Invalid filename');
         }
 
-        $url_key       = mb_substr($filename, 0, $underscorePos);
+        $url_key = mb_substr($filename, 0, $underscorePos);
         $real_filename = mb_substr($filename, $underscorePos + 1);
 
         // Security: Validate the real filename component for security issues
@@ -172,9 +172,9 @@ class Upload extends Admin_Controller
         }
 
         $path_parts = pathinfo($fullPath);
-        $file_ext   = mb_strtolower($path_parts['extension'] ?? '');
-        $ctype      = $this->content_types[$file_ext] ?? $this->ctype_default;
-        $file_size  = filesize($fullPath);
+        $file_ext = mb_strtolower($path_parts['extension'] ?? '');
+        $ctype = $this->content_types[$file_ext] ?? $this->ctype_default;
+        $file_size = filesize($fullPath);
 
         // Security: Sanitize filename for header to prevent header injection
         $sanitizedFilename = sanitize_filename_for_header($real_filename);

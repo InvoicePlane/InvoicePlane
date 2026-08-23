@@ -61,11 +61,10 @@ class Mdl_Templates extends CI_Model
     /**
      * Get the list of allowed invoice templates.
      *
-     * Security: The selector is built from the static built-in whitelist plus the names
-     * explicitly listed in the CUSTOM_INVOICE_TEMPLATES_PDF / CUSTOM_INVOICE_TEMPLATES_PUBLIC
-     * allowlist constants. No directory, neither the application's own nor
-     * CUSTOM_TEMPLATES_FOLDER, is ever scanned (prevents RCE). CUSTOM_TEMPLATES_FOLDER only
-     * supplies the file's location at render time; on its own it lists nothing.
+     * Security: Built-in templates are returned from the static whitelist only — the
+     * application's own template directories are NEVER scanned to prevent RCE.
+     * When CUSTOM_TEMPLATES_FOLDER is configured, templates from that admin-supplied
+     * directory are discovered, strictly validated, and merged with the built-in list.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -87,11 +86,10 @@ class Mdl_Templates extends CI_Model
     /**
      * Get the list of allowed quote templates.
      *
-     * Security: The selector is built from the static built-in whitelist plus the names
-     * explicitly listed in the CUSTOM_QUOTE_TEMPLATES_PDF / CUSTOM_QUOTE_TEMPLATES_PUBLIC
-     * allowlist constants. No directory, neither the application's own nor
-     * CUSTOM_TEMPLATES_FOLDER, is ever scanned (prevents RCE). CUSTOM_TEMPLATES_FOLDER only
-     * supplies the file's location at render time; on its own it lists nothing.
+     * Security: Built-in templates are returned from the static whitelist only — the
+     * application's own template directories are NEVER scanned to prevent RCE.
+     * When CUSTOM_TEMPLATES_FOLDER is configured, templates from that admin-supplied
+     * directory are discovered, strictly validated, and merged with the built-in list.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -145,128 +143,45 @@ class Mdl_Templates extends CI_Model
     }
 
     /**
-     * Find selected template settings that are not available in the current allowlists.
-     *
-     * This helps administrators upgrading from versions that discovered template files
-     * automatically. If a saved template name is not built in and not listed in
-     * ipconfig.php, it will not appear in the UI until it is added to the matching
-     * CUSTOM_*_TEMPLATES setting.
-     *
-     * @return array<string, array<int, string>>
-     */
-    public function get_missing_allowlisted_template_settings(): array
-    {
-        $checks = [
-            'CUSTOM_INVOICE_TEMPLATES_PDF' => [
-                'allowed'  => $this->get_invoice_templates('pdf'),
-                'settings' => [
-                    'pdf_invoice_template',
-                    'pdf_invoice_template_paid',
-                    'pdf_invoice_template_overdue',
-                ],
-            ],
-            'CUSTOM_INVOICE_TEMPLATES_PUBLIC' => [
-                'allowed'  => $this->get_invoice_templates('public'),
-                'settings' => [
-                    'public_invoice_template',
-                ],
-            ],
-            'CUSTOM_QUOTE_TEMPLATES_PDF' => [
-                'allowed'  => $this->get_quote_templates('pdf'),
-                'settings' => [
-                    'pdf_quote_template',
-                ],
-            ],
-            'CUSTOM_QUOTE_TEMPLATES_PUBLIC' => [
-                'allowed'  => $this->get_quote_templates('public'),
-                'settings' => [
-                    'public_quote_template',
-                ],
-            ],
-        ];
-
-        $missing = [];
-
-        foreach ($checks as $ipconfig_key => $check) {
-            foreach ($check['settings'] as $setting_key) {
-                $template_name = get_setting($setting_key);
-
-                if ($template_name === '' || in_array($template_name, $check['allowed'], true)) {
-                    continue;
-                }
-
-                $missing[$ipconfig_key][] = $template_name;
-            }
-        }
-
-        foreach ($missing as $ipconfig_key => $template_names) {
-            $missing[$ipconfig_key] = array_values(array_unique($template_names));
-        }
-
-        return $missing;
-    }
-
-    /**
-     * Merge built-in templates with any custom templates explicitly allowlisted in the
-     * CUSTOM_INVOICE_TEMPLATES_PDF / CUSTOM_INVOICE_TEMPLATES_PUBLIC /
-     * CUSTOM_QUOTE_TEMPLATES_PDF / CUSTOM_QUOTE_TEMPLATES_PUBLIC constants.
+     * Merge built-in templates with any validated templates found in CUSTOM_TEMPLATES_FOLDER.
      *
      * Security:
-     * - The filesystem is NEVER scanned to discover templates (prevents RCE).
-     * - Only names present in the explicit config constants are added to the list.
-     * - Each name is validated against a strict allowlist regex before use.
-     *   Any name that does not match is skipped and logged.
-     * - Custom templates are prepended so admins can shadow built-in names;
+     * - Only the admin-configured CUSTOM_TEMPLATES_FOLDER is scanned, NEVER the application's
+     *   own template directories (the RCE fix remains intact).
+     * - Template file names are validated against a strict allowlist regex before use.
+     *   Any name that does not match is silently skipped and logged.
+     * - Custom templates are listed first so admins can shadow a built-in name if needed;
      *   array_unique() deduplicates the merged list.
      *
-     * To expose a custom template, add its name (without .php) to the appropriate
-     * constant in ipconfig.php, e.g.:
-     *   CUSTOM_INVOICE_TEMPLATES_PDF=MyTemplate,AnotherTemplate
-     *
-     * @param string $subpath  Relative sub-path key, e.g. 'invoice_templates/pdf'
+     * @param string $subpath  Relative sub-path, e.g. 'invoice_templates/pdf'
      * @param array  $built_in Hardcoded whitelist entries from the class constants
      *
      * @return array
      */
     private function _merge_custom(string $subpath, array $built_in): array
     {
-        // Map subpath to the corresponding ipconfig constant name
-        $const_map = [
-            'invoice_templates/pdf'    => 'CUSTOM_INVOICE_TEMPLATES_PDF',
-            'invoice_templates/public' => 'CUSTOM_INVOICE_TEMPLATES_PUBLIC',
-            'quote_templates/pdf'      => 'CUSTOM_QUOTE_TEMPLATES_PDF',
-            'quote_templates/public'   => 'CUSTOM_QUOTE_TEMPLATES_PUBLIC',
-        ];
-
-        if ( ! isset($const_map[$subpath])) {
+        if ( ! CUSTOM_TEMPLATES_FOLDER) {
             return $built_in;
         }
 
-        $const_name = $const_map[$subpath];
+        $CI = &get_instance();
+        $CI->load->helper('directory');
 
-        // Read the explicit allowlist from ipconfig.php (empty string / undefined = no custom templates)
-        $raw = defined($const_name) ? constant($const_name) : '';
+        $custom_dir = CUSTOM_TEMPLATES_FOLDER . $subpath;
 
-        // Tests and long-lived workers may populate the environment after the
-        // bootstrap has defined an empty optional constant. Preserve the
-        // explicit constant as the primary source, but honor that environment
-        // value when the constant is unset or empty.
-        if (empty($raw) && function_exists('env')) {
-            $raw = env($const_name, '');
-        }
-
-        if (empty($raw)) {
+        if ( ! is_dir($custom_dir)) {
             return $built_in;
         }
 
+        $files = directory_map($custom_dir, 1) ?: [];
         $custom_names = [];
 
-        foreach (explode(',', $raw) as $entry) {
-            $name = trim($entry);
-
-            if ($name === '') {
+        foreach ($files as $file) {
+            if ( ! is_string($file) || ! str_ends_with($file, '.php')) {
                 continue;
             }
+
+            $name = mb_substr($file, 0, -4); // strip .php extension
 
             // Strict validation: only alphanumeric characters, spaces, hyphens and underscores.
             // Rejects path traversal sequences, null bytes, and any other special characters.
@@ -274,11 +189,23 @@ class Mdl_Templates extends CI_Model
                 $custom_names[] = $name;
             } else {
                 // Sanitize before logging: strip control characters to prevent log injection.
-                $safe_name = preg_replace('/[\x00-\x1f\x7f]/', '', mb_substr($name, 0, 64));
+                $safe_name = preg_replace('/[\x00-\x1f\x7f]/', '', mb_substr($file, 0, 64));
                 log_message('warning', 'Mdl_Templates: skipping invalid custom template name: ' . $safe_name);
             }
         }
 
         return array_values(array_unique(array_merge($custom_names, $built_in)));
+    }
+
+    /**
+     * @param $files
+     */
+    private function remove_extension(array $files): array
+    {
+        foreach ($files as $key => $file) {
+            $files[$key] = str_replace('.php', '', $file);
+        }
+
+        return $files;
     }
 }

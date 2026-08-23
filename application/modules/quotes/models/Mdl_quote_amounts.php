@@ -64,11 +64,11 @@ class Mdl_Quote_Amounts extends CI_Model
         // Discounts calculation - since v1.6.3
         if (config_item('legacy_calculation')) {
             $quote_item_subtotal = $quote_amounts->quote_item_subtotal - $quote_amounts->quote_item_discount;
-            $quote_subtotal      = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
-            $quote_total         = $this->calculate_discount($quote_id, $quote_subtotal);
+            $quote_subtotal = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
+            $quote_total = $this->calculate_discount($quote_id, $quote_subtotal);
         } else {
             $quote_item_subtotal = $quote_amounts->quote_item_subtotal - $quote_amounts->quote_item_discount - $global_discount['item'];
-            $quote_total         = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
+            $quote_total = $quote_item_subtotal + $quote_amounts->quote_item_tax_total;
         }
 
         // Create the database array and insert or update
@@ -105,8 +105,8 @@ class Mdl_Quote_Amounts extends CI_Model
         $quote_data = $this->db->get('ip_quotes')->row();
         // not my job to cntrl & fix '0.00' is not 0.0 && discount amount allways 0.00 (legacy.on)
         // Prevent NULL in number format
-        $total            = (float) number_format((float) $quote_total, $this->decimal_places, '.', '');
-        $discount_amount  = (float) number_format((float) $quote_data->quote_discount_amount, $this->decimal_places, '.', '');
+        $total = (float) number_format((float) $quote_total, $this->decimal_places, '.', '');
+        $discount_amount = (float) number_format((float) $quote_data->quote_discount_amount, $this->decimal_places, '.', '');
         $discount_percent = (float) number_format((float) $quote_data->quote_discount_percent, $this->decimal_places, '.', '');
 
         $total -= $discount_amount;

@@ -68,15 +68,15 @@ class Cli extends MX_Controller
             return;
         }
 
-        $email          = getenv('DEFAULT_ADMIN_EMAIL') ?: 'admin@localhost';
-        $name           = getenv('DEFAULT_ADMIN_NAME') ?: 'admin';
+        $email = getenv('DEFAULT_ADMIN_EMAIL') ?: 'admin@localhost';
+        $name = getenv('DEFAULT_ADMIN_NAME') ?: 'admin';
         $plain_password = getenv('DEFAULT_ADMIN_PASSWORD') ?: bin2hex(random_bytes(12));
-        $generated      = ! getenv('DEFAULT_ADMIN_PASSWORD');
+        $generated = ! getenv('DEFAULT_ADMIN_PASSWORD');
 
         $this->load->library('crypt');
 
         $salt = $this->crypt->salt();
-        $now  = date('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
 
         $this->db->insert('ip_users', [
             'user_type'          => 1,
