@@ -217,11 +217,12 @@ class Merchant_responses_model extends CI_Model
     ): int {
         $status     = MerchantResponseStatus::fromExternal($event['status_code'] ?? $event['status'] ?? null);
         $rawPayload = IntegrationPayloadSanitizer::json($event);
+        $eventHash  = hash('sha256', $rawPayload);
 
         $existing = $this->db
             ->where('merchant_client_id', $merchantClientId)
             ->where('record_type', MerchantResponseType::InvoiceEvent->value)
-            ->where('raw_payload', $rawPayload)
+            ->where('event_hash', $eventHash)
             ->count_all_results(self::TABLE);
 
         if ($existing > 0) {
@@ -246,6 +247,7 @@ class Merchant_responses_model extends CI_Model
             'peppol_document_type'         => $peppolDocumentType?->value,
             'created_at'                   => date('Y-m-d H:i:s'),
             'raw_payload'                  => $rawPayload,
+            'event_hash'                   => $eventHash,
         ]);
 
         return (int) $this->db->insert_id();
