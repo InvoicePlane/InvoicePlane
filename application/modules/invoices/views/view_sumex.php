@@ -399,8 +399,8 @@ if ($invoice->invoice_status_id == 1) {
 <?php
 // Fix New invoice date in db
 $invoice->sumex_treatmentstart = $invoice->sumex_treatmentstart == '0000-00-00' ? date('y-m-d') : $invoice->sumex_treatmentstart;
-$invoice->sumex_treatmentend   = $invoice->sumex_treatmentend == '0000-00-00' ? date('y-m-d') : $invoice->sumex_treatmentend;
-$invoice->sumex_casedate       = $invoice->sumex_casedate == '0000-00-00' ? date('y-m-d') : $invoice->sumex_casedate;
+$invoice->sumex_treatmentend = $invoice->sumex_treatmentend == '0000-00-00' ? date('y-m-d') : $invoice->sumex_treatmentend;
+$invoice->sumex_casedate = $invoice->sumex_casedate == '0000-00-00' ? date('y-m-d') : $invoice->sumex_casedate;
 ?>
                         <h3><?php _trans('treatment'); ?></h3>
                         <br>
@@ -614,7 +614,7 @@ foreach ($payment_methods as $payment_method) {
                             </div>
 <?php
 $default_custom = false;
-$classes        = ['control-label', 'controls', '', 'col-xs-12'];
+$classes = ['control-label', 'controls', '', 'col-xs-12'];
 foreach ($custom_fields as $custom_field) {
     if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;

@@ -122,7 +122,7 @@ class Mdl_Quote_Items extends Response_Model
             return false;
         }
 
-        $row      = $query->row();
+        $row = $query->row();
         $quote_id = $row->quote_id;
 
         // Delete the item itself

@@ -24,7 +24,7 @@ class Ajax extends Admin_Controller
     public function modal_task_lookups($invoice_id = null)
     {
         $default_item_tax_rate = get_setting('default_item_tax_rate');
-        $data                  = [
+        $data = [
             'default_item_tax_rate' => $default_item_tax_rate !== '' ?: 0,
             'tasks'                 => [],
         ];

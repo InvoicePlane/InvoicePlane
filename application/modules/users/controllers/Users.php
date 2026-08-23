@@ -149,10 +149,10 @@ class Users extends Admin_Controller
         );
 
         $custom_fields['ip_user_custom'] = $this->mdl_custom_fields->by_table('ip_user_custom')->get()->result();
-        $custom_values                   = [];
+        $custom_values = [];
         foreach ($custom_fields['ip_user_custom'] as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }

@@ -85,7 +85,7 @@ class User_Clients extends Admin_Controller
             redirect('user_clients/user/' . $user_id);
         }
 
-        $user    = $this->mdl_users->get_by_id($user_id);
+        $user = $this->mdl_users->get_by_id($user_id);
         $clients = $this->mdl_clients->get_not_assigned_to_user($user_id);
 
         $this->layout->set(

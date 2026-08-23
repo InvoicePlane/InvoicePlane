@@ -120,7 +120,7 @@ function date_from_timestamp($timestamp): string
 function date_to_mysql($date)
 {
     $CI = &get_instance();
-    $d  = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
+    $d = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
 
     return $d ? $d->format('Y-m-d') : '';
 }
@@ -130,9 +130,9 @@ function date_to_mysql($date)
  */
 function is_date($date): bool
 {
-    $CI     = &get_instance();
+    $CI = &get_instance();
     $format = $CI->mdl_settings->setting('date_format');
-    $d      = DateTime::createFromFormat($format, $date);
+    $d = DateTime::createFromFormat($format, $date);
 
     return $d && $d->format($format) == $date;
 }

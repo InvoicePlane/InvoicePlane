@@ -49,8 +49,8 @@ trait XSS_Protection_Trait
             'body',                // Email body when sending invoices/quotes
         ];
 
-        $input           = $this->input->post();
-        $xss_detected    = false;
+        $input = $this->input->post();
+        $xss_detected = false;
         $xss_log_entries = [];
 
         // Load HTML sanitizer helper once before processing HTML fields
@@ -70,11 +70,11 @@ trait XSS_Protection_Trait
                 }
 
                 $original_value = $value;
-                $cleaned_value  = sanitize_email_template_html($value);
+                $cleaned_value = sanitize_email_template_html($value);
 
                 // Check if value was modified (potential XSS detected)
                 if ($original_value !== $cleaned_value) {
-                    $xss_detected      = true;
+                    $xss_detected = true;
                     $xss_log_entries[] = [
                         'field'           => $key,
                         'original_length' => mb_strlen($original_value),
@@ -187,11 +187,11 @@ trait XSS_Protection_Trait
                 );
             } else {
                 $original_value = $value;
-                $cleaned_value  = $this->security->xss_clean($value);
+                $cleaned_value  = strip_tags($this->security->xss_clean($value));
                 if ($original_value !== $cleaned_value) {
                     $xss_detected = true;
                     // Sanitize field path to prevent log injection
-                    $field_path        = $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key;
+                    $field_path = $path_prefix === '' ? (string) $key : $path_prefix . '.' . $key;
                     $xss_log_entries[] = [
                         'field'           => sanitize_for_logging($field_path),
                         'original_length' => mb_strlen((string) $original_value),

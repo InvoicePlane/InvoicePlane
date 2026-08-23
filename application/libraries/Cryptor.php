@@ -57,8 +57,8 @@ class Cryptor
     public function __construct(string $cipher_algo = 'aes-256-ctr', string $hash_algo = 'sha256', $fmt = self::FORMAT_B64)
     {
         $this->cipher_algo = $cipher_algo;
-        $this->hash_algo   = $hash_algo;
-        $this->format      = $fmt;
+        $this->hash_algo = $hash_algo;
+        $this->format = $fmt;
 
         if ( ! in_array($cipher_algo, openssl_get_cipher_methods(true))) {
             throw new \Exception('Cryptor:: - unknown cipher algo ' . $cipher_algo);
@@ -128,7 +128,7 @@ class Cryptor
         $keyhash = openssl_digest($key, $this->hash_algo, true);
 
         // and encrypt
-        $opts      = OPENSSL_RAW_DATA;
+        $opts = OPENSSL_RAW_DATA;
         $encrypted = openssl_encrypt($in, $this->cipher_algo, $keyhash, $opts, $iv);
 
         if ($encrypted === false) {
@@ -190,7 +190,7 @@ class Cryptor
 
         // and decrypt.
         $opts = OPENSSL_RAW_DATA;
-        $res  = openssl_decrypt($raw, $this->cipher_algo, $keyhash, $opts, $iv);
+        $res = openssl_decrypt($raw, $this->cipher_algo, $keyhash, $opts, $iv);
 
         if ($res === false) {
             throw new \Exception('Cryptor::decryptString - decryption failed: ' . openssl_error_string());

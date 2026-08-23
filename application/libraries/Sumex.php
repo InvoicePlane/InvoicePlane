@@ -176,7 +176,7 @@ class Sumex
         $CI->load->helper('invoice');
 
         $this->invoice = $params['invoice'];
-        $this->items   = $params['items'];
+        $this->items = $params['items'];
         if ( ! is_array(@$params['options'])) {
             $params['options'] = [];
         }
@@ -184,7 +184,7 @@ class Sumex
         $this->_options = array_merge($this->_options, $params['options']);
 
         $this->_storno = $this->_options['storno'];
-        $this->_copy   = $this->_options['copy'];
+        $this->_copy = $this->_options['copy'];
 
         $this->_patient['givenName']  = $this->sanitizeXmlText($this->invoice->client_name);
         $this->_patient['familyName'] = $this->sanitizeXmlText($this->invoice->client_surname);
@@ -214,7 +214,7 @@ class Sumex
 
         $this->_casedate   = $this->invoice->sumex_casedate;
         $this->_casenumber = $this->invoice->sumex_casenumber;
-        $this->_insuredid  = $this->invoice->client_insurednumber;
+        $this->_insuredid = $this->invoice->client_insurednumber;
 
         $treatments = [
             'disease',
@@ -233,13 +233,13 @@ class Sumex
             'observations' => $this->sanitizeXmlText($this->invoice->sumex_observations),
         ];
 
-        $esrTypes       = ['9', 'red'];
+        $esrTypes = ['9', 'red'];
         $this->_esrType = $esrTypes[$CI->mdl_settings->setting('sumex_sliptype')];
 
         $this->currencyCode = $CI->mdl_settings->setting('currency_code');
-        $this->_role        = self::ROLES[$CI->mdl_settings->setting('sumex_role')];
-        $this->_place       = self::PLACES[$CI->mdl_settings->setting('sumex_place')];
-        $this->_canton      = self::CANTONS[$CI->mdl_settings->setting('sumex_canton')];
+        $this->_role = self::ROLES[$CI->mdl_settings->setting('sumex_role')];
+        $this->_place = self::PLACES[$CI->mdl_settings->setting('sumex_place')];
+        $this->_canton = self::CANTONS[$CI->mdl_settings->setting('sumex_canton')];
     }
 
     public function pdf($invoice_template = null): bool|string
@@ -376,7 +376,7 @@ class Sumex
 
     public function xml(): string|false
     {
-        $this->doc               = new DOMDocument('1.0', 'UTF-8');
+        $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->doc->formatOutput = true;
 
         $this->root = $this->xmlRoot();
@@ -488,15 +488,15 @@ class Sumex
             $esr = $this->xmlInvoiceEsrRed();
         }
 
-        $prolog      = $this->xmlInvoiceProlog();
-        $remark      = $this->xmlInvoiceRemark();
-        $balance     = $this->xmlInvoiceBalance();
+        $prolog = $this->xmlInvoiceProlog();
+        $remark = $this->xmlInvoiceRemark();
+        $balance = $this->xmlInvoiceBalance();
         $tiersGarant = $this->xmlInvoiceTiersGarant();
         //$tiersPayant = $this->xmlInvoiceTiersPayant();
         //$mvg = $this->xmlInvoiceMvg();
-        $org       = $this->xmlInvoiceOrg();
+        $org = $this->xmlInvoiceOrg();
         $treatment = $this->xmlInvoiceTreatment();
-        $services  = $this->xmlServices();
+        $services = $this->xmlServices();
 
         $node->appendChild($prolog);
         if ($this->_treatment['observations'] != '') {
@@ -541,7 +541,7 @@ class Sumex
         }
 
         $slipType = '01'; // ISR in CHF
-        $amount   = $this->invoice->invoice_total;
+        $amount = $this->invoice->invoice_total;
 
         $formattedRN = '';
         $formattedRN .= mb_substr($referenceNumber, 0, 2);
@@ -609,7 +609,7 @@ class Sumex
 
     protected function xmlInvoiceRemark()
     {
-        $node            = $this->doc->createElement('invoice:remark');
+        $node = $this->doc->createElement('invoice:remark');
         $node->nodeValue = $this->_treatment['observations'];
 
         return $node;
@@ -645,9 +645,9 @@ class Sumex
         $node = $this->doc->createElement('invoice:tiers_garant');
         $node->setAttribute('payment_period', $this->_paymentperiod);
 
-        $biller    = $this->doc->createElement('invoice:biller');
-        $provider  = $this->doc->createElement('invoice:provider');
-        $patient   = $this->doc->createElement('invoice:patient');
+        $biller = $this->doc->createElement('invoice:biller');
+        $provider = $this->doc->createElement('invoice:provider');
+        $patient = $this->doc->createElement('invoice:patient');
         $guarantor = $this->doc->createElement('guarantor');
 
         // <invoice:biller>
@@ -696,8 +696,8 @@ class Sumex
     protected function xmlCompany()
     {
         // <invoice:company>
-        $bcompany                 = $this->doc->createElement('invoice:company');
-        $bcompany_name            = $this->doc->createElement('invoice:companyname');
+        $bcompany = $this->doc->createElement('invoice:company');
+        $bcompany_name = $this->doc->createElement('invoice:companyname');
         $bcompany_name->nodeValue = $this->_company['name'];
 
         $bcompany->appendChild($bcompany_name);
@@ -705,8 +705,8 @@ class Sumex
         $bcompany_postal = $this->generatePostal($this->_company['street'], $this->_company['zip'], $this->_company['city']);
         $bcompany->appendChild($bcompany_postal);
 
-        $bcompany_telecom                  = $this->doc->createElement('invoice:telecom');
-        $bcompany_telecom_phone            = $this->doc->createElement('invoice:phone');
+        $bcompany_telecom = $this->doc->createElement('invoice:telecom');
+        $bcompany_telecom_phone = $this->doc->createElement('invoice:phone');
         $bcompany_telecom_phone->nodeValue = $this->_company['phone'];
 
         $bcompany_telecom->appendChild($bcompany_telecom_phone);
@@ -720,13 +720,13 @@ class Sumex
     {
         $postal = $this->doc->createElement('invoice:postal');
 
-        $postal_street            = $this->doc->createElement('invoice:street');
+        $postal_street = $this->doc->createElement('invoice:street');
         $postal_street->nodeValue = $street;
 
-        $postal_zip            = $this->doc->createELement('invoice:zip');
+        $postal_zip = $this->doc->createELement('invoice:zip');
         $postal_zip->nodeValue = $zip;
 
-        $postal_city            = $this->doc->createElement('invoice:city');
+        $postal_city = $this->doc->createElement('invoice:city');
         $postal_city->nodeValue = $city;
 
         $postal->appendChild($postal_street);
@@ -740,10 +740,10 @@ class Sumex
     {
         $person = $this->doc->createElement('invoice:person');
 
-        $familyName            = $this->doc->createElement('invoice:familyname');
+        $familyName = $this->doc->createElement('invoice:familyname');
         $familyName->nodeValue = $this->_patient['familyName'];
 
-        $givenName            = $this->doc->createElement('invoice:givenname');
+        $givenName = $this->doc->createElement('invoice:givenname');
         $givenName->nodeValue = $this->_patient['givenName'];
 
         $postal = $this->generatePostal($street, $zip, $city);
@@ -762,8 +762,8 @@ class Sumex
 
     protected function generateTelecom($phoneNr)
     {
-        $telecom          = $this->doc->createElement('invoice:telecom');
-        $phone            = $this->doc->createElement('invoice:phone');
+        $telecom = $this->doc->createElement('invoice:telecom');
+        $phone = $this->doc->createElement('invoice:phone');
         $phone->nodeValue = $phoneNr;
 
         $telecom->appendChild($phone);
@@ -850,11 +850,11 @@ class Sumex
         $node = $this->doc->createElement('invoice:tiers_payant');
         $node->setAttribute('payment_period', $this->_paymentperiod);
 
-        $biller    = $this->doc->createElement('invoice:biller');
-        $provider  = $this->doc->createElement('invoice:provider');
+        $biller = $this->doc->createElement('invoice:biller');
+        $provider = $this->doc->createElement('invoice:provider');
         $insurance = $this->doc->createElement('invoice:insurance');
-        $patient   = $this->doc->createElement('invoice:patient');
-        $insured   = $this->doc->createElement('invoice:insured');
+        $patient = $this->doc->createElement('invoice:patient');
+        $insured = $this->doc->createElement('invoice:insured');
         $guarantor = $this->doc->createElement('invoice:guarantor');
 
         // <invoice:biller>
@@ -919,8 +919,8 @@ class Sumex
     protected function xmlInsurance()
     {
         // <invoice:company>
-        $bcompany                 = $this->doc->createElement('invoice:company');
-        $bcompany_name            = $this->doc->createElement('invoice:companyname');
+        $bcompany = $this->doc->createElement('invoice:company');
+        $bcompany_name = $this->doc->createElement('invoice:companyname');
         $bcompany_name->nodeValue = $this->_insurance['name'];
 
         $bcompany->appendChild($bcompany_name);

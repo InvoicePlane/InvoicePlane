@@ -27,13 +27,13 @@ function sanitize_pdf_footer_content(?string $footer): string
         return '';
     }
 
-    $footer     = str_ireplace(['<br>', '<br/>', '<br />'], "\n", $footer);
+    $footer = str_ireplace(['<br>', '<br/>', '<br />'], "\n", $footer);
     $normalized = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $footer);
 
     $allowedTags = ['b', 'strong', 'i', 'em', 'u', 'p', 'br', 'small', 'span', 'div'];
 
     $previousInternalErrors = libxml_use_internal_errors(true);
-    $dom                    = new DOMDocument('1.0', 'UTF-8');
+    $dom = new DOMDocument('1.0', 'UTF-8');
 
     $dom->loadHTML('<?xml encoding="utf-8"?><div id="ip-footer-wrapper">' . $normalized . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
@@ -114,11 +114,11 @@ function pdf_create(
     ]);
 
     // mPDF configuration
-    $mpdf->useAdobeCJK      = true;
+    $mpdf->useAdobeCJK = true;
     $mpdf->autoScriptToLang = true;
-    $mpdf->autoVietnamese   = true;
-    $mpdf->autoArabic       = true;
-    $mpdf->autoLangToFont   = true;
+    $mpdf->autoVietnamese = true;
+    $mpdf->autoArabic = true;
+    $mpdf->autoLangToFont = true;
 
     if (IP_DEBUG) {
         // Enable image error logging
@@ -130,8 +130,8 @@ function pdf_create(
         $CI->load->helper('e-invoice');
         // mpdf only creates PDF/A-1b files and cannot create the required PDF/A-3b files!
         $mpdf->pdf_version = '1.7';
-        $mpdf->PDFA        = true;
-        $mpdf->PDFAauto    = true;
+        $mpdf->PDFA = true;
+        $mpdf->PDFAauto = true;
         $mpdf->SetAssociatedFiles($associated_files);
         $mpdf->SetAdditionalXmpRdf(include_rdf($associated_files[0]['name']));
     }
@@ -147,7 +147,7 @@ function pdf_create(
     }
 
     $invoiceFooter = sanitize_pdf_footer_content($CI->mdl_settings->settings['pdf_invoice_footer'] ?? '');
-    $quoteFooter   = sanitize_pdf_footer_content($CI->mdl_settings->settings['pdf_quote_footer'] ?? '');
+    $quoteFooter = sanitize_pdf_footer_content($CI->mdl_settings->settings['pdf_quote_footer'] ?? '');
 
     //Set the default footer that shall always be available for mPDF
     $mpdf->DefHTMLFooterByName('defaultFooter', '');

@@ -27,7 +27,7 @@ class Ajax extends Admin_Controller
         $response = [];
 
         // Get the post input
-        $query                 = $this->input->get('query');
+        $query = $this->input->get('query');
         $permissiveSearchUsers = $this->input->get('permissive_search_users');
 
         if (empty($query)) {
@@ -106,7 +106,7 @@ class Ajax extends Admin_Controller
 
     public function save_user_client()
     {
-        $user_id   = $this->input->post('user_id');
+        $user_id = $this->input->post('user_id');
         $client_id = $this->input->post('client_id');
 
         $this->load->model('clients/mdl_clients');
@@ -164,12 +164,12 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         if ($session_user_clients = $this->session->userdata('user_clients')) {
-            $clients          = $this->mdl_clients->where_not_in('ip_clients.client_id', $session_user_clients)->get()->result();
+            $clients = $this->mdl_clients->where_not_in('ip_clients.client_id', $session_user_clients)->get()->result();
             $assigned_clients = [];
         } else {
             $this->load->model('user_clients/mdl_user_clients');
             $assigned_clients_query = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)->get()->result();
-            $assigned_clients       = [];
+            $assigned_clients = [];
 
             foreach ($assigned_clients_query as $assigned_client) {
                 $assigned_clients[] = (int) $assigned_client->client_id;
