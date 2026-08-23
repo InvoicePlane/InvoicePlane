@@ -54,6 +54,7 @@
                    value="<?php echo $quote->user_id; ?>">
             <input type="hidden" name="service_id" id="service_id"
                    value="<?php echo html_escape($quote->service_id); ?>">
+
             <div class="form-group has-feedback">
                 <label for="invoice_date_created">
                     <?php _trans('invoice_date'); ?>

@@ -35,7 +35,7 @@ class Ajax extends Admin_Controller
 
         $invoices = $this->mdl_invoices->get()->result();
 
-        $serviceIds = array_filter(array_column($invoices, 'service_id'));
+        $serviceIds   = array_filter(array_column($invoices, 'service_id'));
         $servicesById = ! empty($serviceIds) ? $this->mdl_services->get_names_by_ids($serviceIds) : [];
 
         foreach ($invoices as $invoice) {
@@ -67,7 +67,7 @@ class Ajax extends Admin_Controller
 
         $quotes = $this->mdl_quotes->get()->result();
 
-        $serviceIds = array_filter(array_column($quotes, 'service_id'));
+        $serviceIds   = array_filter(array_column($quotes, 'service_id'));
         $servicesById = ! empty($serviceIds) ? $this->mdl_services->get_names_by_ids($serviceIds) : [];
 
         foreach ($quotes as $quote) {

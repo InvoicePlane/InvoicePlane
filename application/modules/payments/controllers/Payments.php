@@ -34,7 +34,7 @@ class Payments extends Admin_Controller
         $this->mdl_payments->paginate(site_url('payments/index'), $page);
         $payments = $this->mdl_payments->result();
 
-        $invoiceIds = array_filter(array_column($payments, 'invoice_id'));
+        $invoiceIds        = array_filter(array_column($payments, 'invoice_id'));
         $servicesByInvoice = [];
 
         if ( ! empty($invoiceIds)) {
@@ -143,14 +143,14 @@ class Payments extends Admin_Controller
             }
         }
 
-        $serviceIds = array_filter(array_column($open_invoices, 'service_id'));
+        $serviceIds   = array_filter(array_column($open_invoices, 'service_id'));
         $servicesById = ! empty($serviceIds) ? $this->mdl_services->get_names_by_ids($serviceIds) : [];
 
-        $amounts = [];
+        $amounts                 = [];
         $invoice_payment_methods = [];
         foreach ($open_invoices as $open_invoice) {
-            $open_invoice->service_name = $servicesById[$open_invoice->service_id] ?? null;
-            $amounts['invoice' . $open_invoice->invoice_id] = format_amount($open_invoice->invoice_balance);
+            $open_invoice->service_name                                     = $servicesById[$open_invoice->service_id] ?? null;
+            $amounts['invoice' . $open_invoice->invoice_id]                 = format_amount($open_invoice->invoice_balance);
             $invoice_payment_methods['invoice' . $open_invoice->invoice_id] = $open_invoice->payment_method;
         }
 

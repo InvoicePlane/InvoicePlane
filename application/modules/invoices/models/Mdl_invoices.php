@@ -56,8 +56,36 @@ class Mdl_Invoices extends Response_Model
         $this->db->select("
             SQL_CALC_FOUND_ROWS
             ip_quotes.*,
-            ip_users.*,
-	    ip_clients.*,
+            ip_users.user_id,
+            ip_users.user_type,
+            ip_users.user_date_created,
+            ip_users.user_date_modified,
+            ip_users.user_name,
+            ip_users.user_company,
+            ip_users.user_address_1,
+            ip_users.user_address_2,
+            ip_users.user_city,
+            ip_users.user_state,
+            ip_users.user_zip,
+            ip_users.user_country,
+            ip_users.user_phone,
+            ip_users.user_fax,
+            ip_users.user_mobile,
+            ip_users.user_email,
+            ip_users.user_web,
+            ip_users.user_vat_id,
+            ip_users.user_tax_code,
+            ip_users.user_active,
+            ip_users.user_language,
+            ip_users.user_subscribernumber,
+            ip_users.user_iban,
+            ip_users.user_gln,
+            ip_users.user_rcc,
+            ip_users.user_bank,
+            ip_users.user_bic,
+            ip_users.user_remittance_text,
+            ip_users.user_invoicing_contact,
+            ip_clients.*,
             ip_services.*,
             ip_invoice_sumex.*,
             ip_invoice_amounts.invoice_amount_id,
@@ -394,6 +422,21 @@ class Mdl_Invoices extends Response_Model
 
         // Check if is SUMEX
         $this->load->model('invoice_groups/mdl_invoice_groups');
+
+        $this->load->model('services/mdl_services');
+        $cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
+
+        // Handle service_id - default to 0 if not provided or not found
+        $sid = 0;
+        if ( ! empty($db_array['service_id'])) {
+            $service_row = $this->mdl_services->where('ip_services.service_id', $db_array['service_id'])->get()->row();
+            if ($service_row) {
+                $sid = $service_row->service_id;
+            }
+        }
+
+        $db_array['client_id']  = $cid;
+        $db_array['service_id'] = $sid;
 
         $db_array['invoice_date_created'] = date_to_mysql($db_array['invoice_date_created']);
         $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);

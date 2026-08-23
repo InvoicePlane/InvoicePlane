@@ -54,11 +54,37 @@ class Users extends Admin_Controller
         }
 
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
-            // Build the db_array, then explicitly add the admin-authorized
-            // privilege field so it isn't silently mass-assigned from POST.
-            $db_array              = $this->mdl_users->db_array();
-            $db_array['user_type'] = (int) $this->input->post('user_type');
-            $id                    = $this->mdl_users->save($id, $db_array);
+            $db_array      = $this->mdl_users->db_array();
+            $requested_type = (int) $this->input->post('user_type');
+            $current_user_id = (string) $this->session->userdata('user_id');
+            $is_self_edit = $id && (string) $id === $current_user_id;
+
+            // Only allow user_type changes through explicit authorization:
+            // - New user creation: set the requested type
+            // - Admin editing another user: set the requested type and invalidate sessions
+            // - User editing themselves: do not allow type changes (prevents self-escalation)
+            $old_user = $id ? $this->mdl_users->get_by_id($id) : null;
+            $role_changed = false;
+
+            if ( ! $is_self_edit) {
+                if ( ! $old_user || (int) $old_user->user_type !== $requested_type) {
+                    $db_array['user_type'] = $requested_type;
+                    $role_changed = true;
+                }
+            }
+
+            // Also detect if user is being deactivated; invalidate their sessions
+            // so the change takes effect immediately.
+            $requested_active = isset($db_array['user_active']) ? (int) $db_array['user_active'] : ($old_user ? (int) $old_user->user_active : 1);
+            if ($old_user && (int) $old_user->user_active !== $requested_active && $requested_active === 0) {
+                $role_changed = true;
+            }
+
+            $id = $this->mdl_users->save($id, $db_array);
+
+            if ($old_user && $role_changed) {
+                $this->invalidate_user_sessions($id);
+            }
 
             $this->load->model('custom_fields/mdl_user_custom');
             $this->mdl_user_custom->save_custom($id, $this->input->post('custom'));
@@ -192,6 +218,18 @@ class Users extends Admin_Controller
 
         $this->layout->buffer('content', 'users/form_change_password');
         $this->layout->render();
+    }
+
+    /**
+     * Invalidate all sessions for a user when their role or active status changes,
+     * forcing immediate revocation of any stale privileged sessions.
+     *
+     * @param string|int $user_id
+     */
+    private function invalidate_user_sessions($user_id): void
+    {
+        $this->load->model('sessions/mdl_sessions');
+        $this->mdl_sessions->invalidate_user_sessions($user_id);
     }
 
     /**

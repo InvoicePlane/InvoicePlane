@@ -67,6 +67,7 @@ if ($quote->quote_status_id == 1) {
             $.post("<?php echo site_url('quotes/ajax/save'); ?>", {
                     legacy_calculation: <?php echo (int) $legacy_calculation; ?>,
                     quote_id: <?php echo $quote_id; ?>,
+                    service_id: $('#service_id').val(),
                     quote_number: $('#quote_number').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     quote_date_expires: $('#quote_date_expires').val(),
@@ -317,36 +318,34 @@ if ($quote->quote_status_id == 1) {
 ?>
                     </h3>
                     <br>
-		    <div class="client-address">
-                       <?php
-                          if (get_setting('enable_services') == 1) {
-                              ?>
-                            <label for="service_id">
-                              <?php
-                                         echo ' <span class="small">(' . trans('service_name') . ')</span>';
-                              ?>
-                            </label>
-		            <select name="service_id" id="service_id"
-                               class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
-                               <option value="0" selected><?php _trans('select_service'); ?></option>
-                               <?php
-                                 foreach ($services as $service) {
-                                     if ( ! empty($service['service_name'])) {
-                                         echo '<option value="' . html_escape($service['service_id']) . '" ';
-                                         if ((int) $service['service_id'] === (int) $quote->service_id) {
-                                             echo 'selected';
-                                         }
-                                         echo '>' . html_escape($service['service_name']) . '</option>';
-                                     }
-                                 }
-                              ?>
-                            </select><br>
-                       <?php
-                          } else {
-                              ?>
-		            <input type="hidden" name="service_id" id="service_id" value="0">
-                       <?php
-                          }
+                    <div class="client-address">
+<?php
+if (get_setting('enable_services') == 1) {
+    ?>
+                        <label for="service_id">
+                            <?php echo trans('service') . ' <span class="small">(' . trans('service_name') . ')</span>'; ?>
+                        </label>
+                        <select name="service_id" id="service_id"
+                                class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity">
+                            <option value="0" selected><?php _trans('select_service'); ?></option>
+<?php
+    foreach ($services as $service) {
+        if ( ! empty($service['service_name'])) {
+            echo '<option value="' . html_escape($service['service_id']) . '"';
+            if ((int) $service['service_id'] === (int) $quote->service_id) {
+                echo ' selected';
+            }
+            echo '>' . html_escape($service['service_name']) . '</option>';
+        }
+    }
+    ?>
+                        </select><br>
+<?php
+} else {
+    ?>
+                        <input type="hidden" name="service_id" id="service_id" value="0">
+<?php
+}
 $this->layout->load_view('clients/partial_client_address', ['client' => $quote]);
 ?>
                     </div>

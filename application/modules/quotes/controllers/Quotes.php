@@ -65,7 +65,7 @@ class Quotes extends Admin_Controller
         $this->load->model('services/mdl_services');
 
         foreach ($quotes as $quote) {
-            $servicesById = $this->mdl_services->get_names_by_ids([$quote->service_id]);
+            $servicesById        = $this->mdl_services->get_names_by_ids([$quote->service_id]);
             $quote->service_name = $servicesById[$quote->service_id] ?? null;
         }
 
@@ -153,10 +153,9 @@ class Quotes extends Admin_Controller
             }
         }
 
-        $servicesById = $this->mdl_services->get_names_by_ids([$quote->service_id]);
-        $quote->service_name = $servicesById[$quote->service_id] ?? null;
-
-        $services = $this->mdl_services->get()->result_array();
+        $servicesById         = $this->mdl_services->get_names_by_ids([$quote->service_id]);
+        $quote->service_name  = $servicesById[$quote->service_id] ?? null;
+        $services             = $this->mdl_services->get()->result_array();
 
         $items = $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
 

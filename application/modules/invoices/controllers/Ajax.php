@@ -118,10 +118,12 @@ class Ajax extends Admin_Controller
             // Read invoice number from input
             $invoice_number = $this->input->post('invoice_number');
 
-            // Validate invoice_number: only allow safe characters (alphanumeric, dash, underscore, slash, period, space).
+            // Validate invoice_number: block control characters and HTML-relevant characters,
+            // but allow any other punctuation, since invoice_group_identifier_format lets
+            // admins put arbitrary literal characters (e.g. '#', '(', ')') into generated numbers.
             // If invalid characters are present, return a clear validation error instead of silently modifying input.
             if ($invoice_number !== null && $invoice_number !== '') {
-                if ( ! preg_match('/^[a-zA-Z0-9\-_\/\.\s]+$/', $invoice_number)) {
+                if ( ! preg_match('/^[^\x00-\x1F\x7F<>"\']+$/', $invoice_number)) {
                     $response = [
                         'success'           => 0,
                         'validation_errors' => [
@@ -460,13 +462,17 @@ class Ajax extends Admin_Controller
             'invoice_groups/mdl_invoice_groups',
             'tax_rates/mdl_tax_rates',
             'clients/mdl_clients',
+            'services/mdl_services',
         ]);
+
+        $services = $this->mdl_services->get()->result_array();
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates'      => $this->mdl_tax_rates->get()->result(),
             'client'         => $this->mdl_clients->get_by_id($this->input->post('client_id')),
             'clients'        => $this->mdl_clients->get_latest(),
+            'services'       => $services,
         ];
 
         $this->layout->load_view('invoices/modal_create_invoice', $data);

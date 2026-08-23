@@ -27,7 +27,7 @@ class Ajax extends Admin_Controller
             'units/mdl_units',
         ]);
 
-        $quote_id = $this->security->xss_clean($this->input->post('quote_id', true));
+        $quote_id   = $this->security->xss_clean($this->input->post('quote_id', true));
         $service_id = $this->security->xss_clean($this->input->post('service_id', true));
 
         $this->mdl_quotes->set_id($quote_id);
@@ -124,7 +124,7 @@ class Ajax extends Admin_Controller
                 'notes'                  => $this->input->post('notes'),
                 'quote_discount_amount'  => standardize_amount($quote_discount_amount),
                 'quote_discount_percent' => standardize_amount($quote_discount_percent),
-                'service_id'             => $this->security->xss_clean($this->input->post('service_id')),
+                'service_id'             => $service_id,
             ];
 
             $this->mdl_quotes->save($quote_id, $db_array, $global_discount);
@@ -371,9 +371,9 @@ class Ajax extends Admin_Controller
         ]);
 
         // Get the client ID
-        $client_id = $this->security->xss_clean($this->input->post('client_id'));
+        $client_id  = $this->security->xss_clean($this->input->post('client_id'));
         $service_id = $this->security->xss_clean($this->input->post('service_id'));
-        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
+        $client     = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
         if ( ! empty($client)) {
             $quote_id = $this->input->post('quote_id');
@@ -495,6 +495,7 @@ class Ajax extends Admin_Controller
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_discount_amount', $quote->quote_discount_amount);
             $this->db->set('invoice_discount_percent', $quote->quote_discount_percent);
+            $this->db->set('service_id', $quote->service_id);
             $this->db->update('ip_invoices');
 
             // Save the invoice id to the quote

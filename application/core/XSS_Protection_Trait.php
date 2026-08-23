@@ -101,10 +101,12 @@ trait XSS_Protection_Trait
 
             $original_value = $value;
 
-            // Apply XSS cleaning and strip dangerous tags
-            // Note: We don't use html_escape here to avoid double-encoding at output
+            // Apply XSS cleaning
+            // Note: We don't use html_escape here to avoid double-encoding at output.
+            // No additional strip_tags() pass: xss_clean() already neutralizes dangerous
+            // markup/attributes, and strip_tags() deletes any bracketed text (e.g. "<5cm>")
+            // regardless of whether it's a real tag, corrupting legitimate input.
             $cleaned_value = $this->security->xss_clean($value);
-            $cleaned_value = strip_tags($cleaned_value);
 
             // Check if value was modified (XSS detected)
             if ($original_value !== $cleaned_value) {
@@ -185,7 +187,7 @@ trait XSS_Protection_Trait
                 );
             } else {
                 $original_value = $value;
-                $cleaned_value = strip_tags($this->security->xss_clean($value));
+                $cleaned_value  = strip_tags($this->security->xss_clean($value));
                 if ($original_value !== $cleaned_value) {
                     $xss_detected = true;
                     // Sanitize field path to prevent log injection

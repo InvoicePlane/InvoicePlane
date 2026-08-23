@@ -65,9 +65,37 @@ class Mdl_Quotes extends Response_Model
     {
         $this->db->select("
             SQL_CALC_FOUND_ROWS
-            ip_users.*,
-	    ip_clients.*,
-	    ip_services.*,
+            ip_users.user_id,
+            ip_users.user_type,
+            ip_users.user_date_created,
+            ip_users.user_date_modified,
+            ip_users.user_name,
+            ip_users.user_company,
+            ip_users.user_address_1,
+            ip_users.user_address_2,
+            ip_users.user_city,
+            ip_users.user_state,
+            ip_users.user_zip,
+            ip_users.user_country,
+            ip_users.user_phone,
+            ip_users.user_fax,
+            ip_users.user_mobile,
+            ip_users.user_email,
+            ip_users.user_web,
+            ip_users.user_vat_id,
+            ip_users.user_tax_code,
+            ip_users.user_active,
+            ip_users.user_language,
+            ip_users.user_subscribernumber,
+            ip_users.user_iban,
+            ip_users.user_gln,
+            ip_users.user_rcc,
+            ip_users.user_bank,
+            ip_users.user_bic,
+            ip_users.user_remittance_text,
+            ip_users.user_invoicing_contact,
+            ip_clients.*,
+            ip_services.*,
             ip_quote_amounts.quote_amount_id,
             IFnull(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
             IFnull(ip_quote_amounts.quote_item_tax_total, '0.00') AS quote_item_tax_total,
@@ -137,7 +165,7 @@ class Mdl_Quotes extends Response_Model
             'quote_number' => [
                 'field' => 'quote_number',
                 'label' => trans('quote') . ' #',
-                'rules' => 'regex_match[/^[a-zA-Z0-9\-_\/\.\s]*$/]|is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']',
+                'rules' => 'regex_match[/^[^\x00-\x1F\x7F<>"\']+$/]|is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']',
             ],
             'quote_date_created' => [
                 'field' => 'quote_date_created',
@@ -284,7 +312,7 @@ class Mdl_Quotes extends Response_Model
             }
         }
 
-        $db_array['client_id'] = $cid;
+        $db_array['client_id']  = $cid;
         $db_array['service_id'] = $sid;
 
         $db_array['quote_date_created'] = date_to_mysql($db_array['quote_date_created']);
