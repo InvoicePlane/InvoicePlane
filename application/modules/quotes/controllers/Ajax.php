@@ -23,10 +23,12 @@ class Ajax extends Admin_Controller
         $this->load->model([
             'quotes/mdl_quote_items',
             'quotes/mdl_quotes',
+            'services/mdl_services',
             'units/mdl_units',
         ]);
 
-        $quote_id = $this->security->xss_clean($this->input->post('quote_id', true));
+        $quote_id   = $this->security->xss_clean($this->input->post('quote_id', true));
+        $service_id = $this->security->xss_clean($this->input->post('service_id', true));
 
         $this->mdl_quotes->set_id($quote_id);
 
@@ -122,6 +124,7 @@ class Ajax extends Admin_Controller
                 'notes'                  => $this->input->post('notes'),
                 'quote_discount_amount'  => standardize_amount($quote_discount_amount),
                 'quote_discount_percent' => standardize_amount($quote_discount_percent),
+                'service_id'             => $service_id,
             ];
 
             $this->mdl_quotes->save($quote_id, $db_array, $global_discount);
@@ -243,7 +246,10 @@ class Ajax extends Admin_Controller
             'invoice_groups/mdl_invoice_groups',
             'tax_rates/mdl_tax_rates',
             'clients/mdl_clients',
+            'services/mdl_services',
         ]);
+
+        $services = $this->mdl_services->get()->result_array();
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
@@ -251,6 +257,8 @@ class Ajax extends Admin_Controller
             'quote_id'       => $this->security->xss_clean($this->input->post('quote_id')),
             'quote'          => $this->mdl_quotes->where('ip_quotes.quote_id', $this->input->post('quote_id'))->get()->row(),
             'client'         => $this->mdl_clients->get_by_id($this->input->post('client_id')),
+            'service_id'     => $this->security->xss_clean($this->input->post('service_id')),
+            'services'       => $services,
         ];
 
         $this->layout->load_view('quotes/modal_copy_quote', $data);
@@ -346,9 +354,10 @@ class Ajax extends Admin_Controller
         $this->load->model('clients/mdl_clients');
 
         $data = [
-            'client_id' => $this->security->xss_clean($this->input->post('client_id')),
-            'quote_id'  => $this->security->xss_clean($this->input->post('quote_id')),
-            'clients'   => $this->mdl_clients->get_latest(),
+            'client_id'  => $this->security->xss_clean($this->input->post('client_id')),
+            'service_id' => $this->security->xss_clean($this->input->post('service_id')),
+            'quote_id'   => $this->security->xss_clean($this->input->post('quote_id')),
+            'clients'    => $this->mdl_clients->get_latest(),
         ];
 
         $this->layout->load_view('layout/ajax/modal_change_user_client', $data);
@@ -362,14 +371,16 @@ class Ajax extends Admin_Controller
         ]);
 
         // Get the client ID
-        $client_id = $this->security->xss_clean($this->input->post('client_id'));
-        $client    = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
+        $client_id  = $this->security->xss_clean($this->input->post('client_id'));
+        $service_id = $this->security->xss_clean($this->input->post('service_id'));
+        $client     = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
         if ( ! empty($client)) {
             $quote_id = $this->input->post('quote_id');
 
             $db_array = [
-                'client_id' => $client_id,
+                'client_id'  => $client_id,
+                'service_id' => $service_id,
             ];
             $this->db->where('quote_id', $quote_id);
             $this->db->update('ip_quotes', $db_array);
@@ -396,13 +407,17 @@ class Ajax extends Admin_Controller
             'invoice_groups/mdl_invoice_groups',
             'tax_rates/mdl_tax_rates',
             'clients/mdl_clients',
+            'services/mdl_services',
         ]);
+
+        $services = $this->mdl_services->get()->result_array();
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates'      => $this->mdl_tax_rates->get()->result(),
             'client'         => $this->mdl_clients->get_by_id($this->input->post('client_id')),
             'clients'        => $this->mdl_clients->get_latest(),
+            'services'       => $services,
         ];
 
         $this->layout->load_view('quotes/modal_create_quote', $data);
@@ -437,10 +452,21 @@ class Ajax extends Admin_Controller
             'quotes/mdl_quotes',
         ]);
 
+        $quote = $this->mdl_quotes->get_by_id($quote_id);
+
+        if ( ! $quote) {
+            $response = [
+                'success'           => 0,
+                'validation_errors' => trans('quote_not_found'),
+            ];
+            exit(json_encode($response));
+        }
+
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'quote_id'       => $this->security->xss_clean($quote_id),
-            'quote'          => $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row(),
+            'service_id'     => $quote->service_id,
+            'quote'          => $quote,
         ];
 
         $this->load->view('quotes/modal_quote_to_invoice', $data);
@@ -469,6 +495,7 @@ class Ajax extends Admin_Controller
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_discount_amount', $quote->quote_discount_amount);
             $this->db->set('invoice_discount_percent', $quote->quote_discount_percent);
+            $this->db->set('service_id', $quote->service_id);
             $this->db->update('ip_invoices');
 
             // Save the invoice id to the quote
