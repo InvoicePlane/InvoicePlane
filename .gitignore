@@ -41,7 +41,6 @@ yarn-error.log
 /.phpunit.result.cache
 
 # Test runtime
-/storage/test.sqlite
 /application/cache/htmlpurifier/
 /stan.txt
 /todo.txt

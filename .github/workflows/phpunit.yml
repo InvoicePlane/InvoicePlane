@@ -7,10 +7,10 @@ name: PHPUnit
 #     (8.2, 8.3, 8.4) so upper-version regressions are still caught, without
 #     paying for a full matrix on every push.
 #
-# Database: the suite runs against MariaDB rather than SQLite, so it exercises
-# the same SQL (NOW(), IF(), DATEDIFF(), ...) the application uses in
-# production. The schema is imported from the setup migrations and the baseline
-# rows are seeded via tests/Support/seed-test-db.php.
+# Database: the suite runs against MariaDB, so it exercises the same SQL
+# (NOW(), IF(), DATEDIFF(), ...) the application uses in production. The
+# schema is imported from the setup migrations and the baseline rows are
+# seeded via tests/Support/seed-test-db.php.
 
 on:
   # Not every push to every branch — only the shared integration branch and
@@ -112,7 +112,7 @@ jobs:
       - name: Build MariaDB schema and seed baseline
         run: |
           export MYSQL_PWD="$DB_PASSWORD"
-          # Relax sql_mode so inserts behave like the SQLite fixture did.
+          # Relax sql_mode to match the application's expected insert behavior.
           mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" -e "SET GLOBAL sql_mode='';"
           # Import the schema from the ordered setup migrations (they are MySQL DDL).
           for f in $(ls application/modules/setup/sql/*.sql | sort); do

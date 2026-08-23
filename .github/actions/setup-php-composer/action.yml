@@ -8,7 +8,7 @@ inputs:
   php-extensions:
     description: 'PHP extensions to install (comma-separated)'
     required: false
-    default: 'mbstring, xml, ctype, json, fileinfo, curl, pdo, sqlite, mysql, bcmath'
+    default: 'mbstring, xml, ctype, json, fileinfo, curl, pdo, mysql, bcmath'
   composer-flags:
     description: 'Flags appended to the composer install command (e.g., --no-dev --optimize-autoloader). Used only when composer-args is empty.'
     required: false
@@ -55,7 +55,6 @@ runs:
             [ -n "$extension" ] || continue
             case "$extension" in
               json|ctype|fileinfo|pdo) continue ;;
-              sqlite|pdo_sqlite) package='sqlite3' ;;
               mysql|pdo_mysql) package='mysql' ;;
               pdo_pgsql) package='pgsql' ;;
               dom) package='xml' ;;
