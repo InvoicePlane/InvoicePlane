@@ -133,7 +133,7 @@ final class IntegrationSettingsForm
             return false;
         }
 
-        $ip = filter_var($parsed['host'], FILTER_VALIDATE_IP);
+        $ip = filter_var(trim($parsed['host'], '[]'), FILTER_VALIDATE_IP);
 
         return ! (
             $ip !== false

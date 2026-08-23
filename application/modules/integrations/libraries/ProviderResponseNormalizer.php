@@ -70,9 +70,17 @@ final class ProviderResponseNormalizer
         }
 
         $collection = self::findCollection($payload, $collectionKeys);
-        if ($collection !== null) {
-            $transportResponse['response'][$normalizedKey] = $collection;
+        if ($collection === null) {
+            return $transportResponse;
         }
+
+        if (array_is_list($payload)) {
+            $transportResponse['response'] = [$normalizedKey => $collection];
+
+            return $transportResponse;
+        }
+
+        $transportResponse['response'][$normalizedKey] = $collection;
 
         return $transportResponse;
     }

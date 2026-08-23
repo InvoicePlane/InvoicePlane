@@ -107,6 +107,10 @@ class Integration_sync_runs_model extends CI_Model
 
     public function prune(int $retentionDays): int
     {
+        if ($retentionDays < 1) {
+            throw new InvalidArgumentException('Retention days must be positive.');
+        }
+
         $this->db
             ->where('finished_at IS NOT NULL')
             ->where('finished_at <', date('Y-m-d H:i:s', time() - $retentionDays * 86400))

@@ -23,6 +23,10 @@ class GuzzleApiClient implements ApiClientInterface
 
     public function request(RequestMethod $method, string $url, array $options = []): array
     {
+        if (mb_strtolower((string) parse_url($url, PHP_URL_SCHEME)) !== 'https') {
+            throw new \RuntimeException('Provider requests must use HTTPS.');
+        }
+
         $headers = ['Accept' => 'application/json'];
 
         if ( ! empty($options['bearer'])) {
@@ -39,7 +43,7 @@ class GuzzleApiClient implements ApiClientInterface
         }
 
         $binary        = ! empty($options['binary']);
-        $guzzleOptions = ['headers' => $headers, 'stream' => $binary];
+        $guzzleOptions = ['headers' => $headers, 'stream' => true];
 
         if (isset($options['resolve']) && is_array($options['resolve']) && count($options['resolve']) === 3) {
             [$host, $port, $ip]                     = $options['resolve'];
@@ -60,9 +64,26 @@ class GuzzleApiClient implements ApiClientInterface
         try {
             $response = $this->guzzle->request($method->value, $url, $guzzleOptions);
             $httpCode = $response->getStatusCode();
-            $rawBody  = $binary
-                ? $this->readBinaryBody($response->getBody(), (int) ($options['max_response_bytes'] ?? 15 * 1024 * 1024))
-                : (string) $response->getBody();
+
+            $defaultMaxBytes = $binary ? 15 * 1024 * 1024 : 20 * 1024 * 1024;
+
+            try {
+                $rawBody = $this->readBinaryBody($response->getBody(), (int) ($options['max_response_bytes'] ?? $defaultMaxBytes));
+            } catch (\RuntimeException $e) {
+                return [
+                    'success'     => false,
+                    'external_id' => null,
+                    'status'      => 'error',
+                    'message'     => $binary
+                        ? 'Provider document exceeds the download size limit.'
+                        : 'Provider response exceeds the maximum allowed size.',
+                    'http_code'    => $httpCode,
+                    'request'      => ['url' => $url, 'method' => $method->value],
+                    'response'     => [],
+                    'body'         => '',
+                    'content_type' => '',
+                ];
+            }
 
             $decoded = $binary ? [] : (json_decode($rawBody, true) ?? []);
         } catch (ConnectException $e) {

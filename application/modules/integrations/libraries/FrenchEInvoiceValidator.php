@@ -38,14 +38,14 @@ final class FrenchEInvoiceValidator
             'buyer',
             $errors
         );
-        $this->validateSiren(
+        $this->validateElectronicAddress(
             $xpath,
             '//ram:SellerTradeParty/ram:URIUniversalCommunication/ram:URIID',
             'BT-34',
             'seller electronic address',
             $errors
         );
-        $this->validateSiren(
+        $this->validateElectronicAddress(
             $xpath,
             '//ram:BuyerTradeParty/ram:URIUniversalCommunication/ram:URIID',
             'BT-49',
@@ -94,6 +94,32 @@ final class FrenchEInvoiceValidator
 
         if ($node->getAttribute('schemeID') !== '0002') {
             $errors[] = 'France G1.63: ' . $businessTerm . ' must use ISO 6523 scheme 0002.';
+        }
+    }
+
+    /**
+     * @param string[] $errors
+     */
+    private function validateElectronicAddress(
+        DOMXPath $xpath,
+        string $query,
+        string $businessTerm,
+        string $label,
+        array &$errors
+    ): void {
+        $nodes = $xpath->query($query);
+        $node  = $nodes === false ? null : $nodes->item(0);
+
+        if ( ! $node instanceof DOMElement || trim($node->textContent) === '') {
+            $errors[] = 'France G1.63: ' . $label . ' (' . $businessTerm . ') is required.';
+
+            return;
+        }
+
+        if ($node->getAttribute('schemeID') === '') {
+            // Electronic addresses (Peppol EAS) are not SIREN-only — SIRET (0009) and other
+            // ISO 6523 schemes are valid here, unlike the legal-registration SIREN checks above.
+            $errors[] = 'France G1.63: ' . $label . ' (' . $businessTerm . ') must declare its ISO 6523 EAS scheme.';
         }
     }
 

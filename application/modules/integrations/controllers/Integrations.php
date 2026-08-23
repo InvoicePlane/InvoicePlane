@@ -100,6 +100,11 @@ class Integrations extends Admin_Controller
             $client   = new IntegrationClient($provider, $settings);
             $metadata = $provider->buildInvoicePayload($invoice, $items, $metadata);
             $response = $client->sendInvoice($documentPath, $metadata);
+
+            $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']);
+            if ($driver === null) {
+                throw new RuntimeException('Unrecognized integration provider: ' . $merchantClient['merchant_type']);
+            }
         } catch (Throwable $e) {
             log_message('error', 'E-invoice send failed: ' . sanitize_for_logging($e->getMessage()));
             $this->session->set_flashdata('alert_error', trans('einvoice_send_failed'));
@@ -107,8 +112,6 @@ class Integrations extends Admin_Controller
 
             return;
         }
-
-        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
 
         $this->Merchant_responses_model->create_outbound(
             $merchantClientId,
@@ -257,6 +260,11 @@ class Integrations extends Admin_Controller
             $status   = $client->getInvoiceStatus(
                 $lastResponse['merchant_response_reference']
             );
+
+            $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']);
+            if ($driver === null) {
+                throw new RuntimeException('Unrecognized integration provider: ' . $merchantClient['merchant_type']);
+            }
         } catch (Throwable $e) {
             log_message('error', 'E-invoice status request failed: ' . sanitize_for_logging($e->getMessage()));
             $this->session->set_flashdata('alert_error', 'Unable to retrieve status');
@@ -264,8 +272,6 @@ class Integrations extends Admin_Controller
 
             return;
         }
-
-        $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']) ?? MerchantResponseDriver::LetsPeppol;
 
         $this->Merchant_responses_model->save_status(
             (int) $invoiceId,

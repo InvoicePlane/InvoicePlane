@@ -94,7 +94,7 @@ class Mdl_Users extends Response_Model
             'user_einvoice_identifier' => [
                 'field' => 'user_einvoice_identifier',
                 'label' => trans('user_einvoice_identifier'),
-                'rules' => 'trim|regex_match[/^[0-9]{9}$/]',
+                'rules' => 'trim',
             ],
             'user_address_1' => [
                 'field' => 'user_address_1',
@@ -212,7 +212,7 @@ class Mdl_Users extends Response_Model
             'user_einvoice_identifier' => [
                 'field' => 'user_einvoice_identifier',
                 'label' => trans('user_einvoice_identifier'),
-                'rules' => 'trim|regex_match[/^[0-9]{9}$/]',
+                'rules' => 'trim',
             ],
             'user_address_1' => [
                 'field' => 'user_address_1',

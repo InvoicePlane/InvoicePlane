@@ -60,7 +60,7 @@ final class IntegrationPayloadSanitizer
 
         return mb_strlen($text, '8bit') <= $maximumBytes
             ? $text
-            : mb_substr($text, 0, $maximumBytes, '8bit') . '[TRUNCATED]';
+            : mb_strcut($text, 0, $maximumBytes) . '[TRUNCATED]';
     }
 
     private static function sanitizeArray(array $payload, int $depth): array
@@ -162,6 +162,6 @@ final class IntegrationPayloadSanitizer
             return $value;
         }
 
-        return mb_substr($value, 0, self::MAX_STRING_BYTES, '8bit') . '[TRUNCATED]';
+        return mb_strcut($value, 0, self::MAX_STRING_BYTES) . '[TRUNCATED]';
     }
 }

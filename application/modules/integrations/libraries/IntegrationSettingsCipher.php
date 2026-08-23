@@ -35,7 +35,7 @@ final class IntegrationSettingsCipher
             self::TAG_BYTES
         );
 
-        if ($encrypted === false || mb_strlen($tag, '8bit') !== self::TAG_BYTES) {
+        if ($encrypted === false || strlen($tag) !== self::TAG_BYTES) {
             throw new RuntimeException('Unable to encrypt provider settings.');
         }
 
@@ -52,15 +52,15 @@ final class IntegrationSettingsCipher
             return $this->decodeJson($stored);
         }
 
-        $encoded = mb_substr($stored, mb_strlen(self::PREFIX));
+        $encoded = substr($stored, strlen(self::PREFIX));
         $payload = base64_decode($encoded, true);
-        if ($payload === false || mb_strlen($payload, '8bit') <= self::NONCE_BYTES + self::TAG_BYTES) {
+        if ($payload === false || strlen($payload) <= self::NONCE_BYTES + self::TAG_BYTES) {
             throw new RuntimeException('Encrypted provider settings are malformed.');
         }
 
-        $nonce      = mb_substr($payload, 0, self::NONCE_BYTES, '8bit');
-        $tag        = mb_substr($payload, self::NONCE_BYTES, self::TAG_BYTES, '8bit');
-        $ciphertext = mb_substr($payload, self::NONCE_BYTES + self::TAG_BYTES, null, '8bit');
+        $nonce      = substr($payload, 0, self::NONCE_BYTES);
+        $tag        = substr($payload, self::NONCE_BYTES, self::TAG_BYTES);
+        $ciphertext = substr($payload, self::NONCE_BYTES + self::TAG_BYTES);
         $plaintext  = openssl_decrypt(
             $ciphertext,
             self::CIPHER,
@@ -114,7 +114,7 @@ final class IntegrationSettingsCipher
         }
 
         if (str_starts_with($configured, 'base64:')) {
-            $decoded = base64_decode(mb_substr($configured, 7), true);
+            $decoded = base64_decode(substr($configured, 7), true);
             if ($decoded === false || $decoded === '') {
                 throw new RuntimeException('ENCRYPTION_KEY contains invalid base64 data.');
             }

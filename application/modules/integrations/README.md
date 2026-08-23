@@ -19,9 +19,9 @@ The module provides:
 ## File Structure
 
 ```text
-einvoice/
+integrations/
 ├── controllers/
-│   ├── Einvoice.php
+│   ├── Integrations.php
 │   ├── Settings.php
 │   ├── Sync.php
 │   ├── Incoming.php
@@ -46,8 +46,7 @@ einvoice/
 │   ├── incoming.php
 │   └── provider_form.php
 │
-└── migrations/
-    └── einvoice.sql
+└── (migrations live in application/modules/setup/sql/, e.g. 044_1.8.0.sql)
 ```
 
 ---
@@ -300,7 +299,7 @@ all other providers are automatically disabled.
 Endpoint:
 
 ```text
-einvoice/sync/run/{merchant_client_id}
+integrations/sync/run/{merchant_client_id}
 ```
 
 Actions performed:
@@ -316,7 +315,7 @@ Actions performed:
 Endpoint:
 
 ```text
-einvoice/incoming/sync/{merchant_client_id}
+integrations/incoming/sync/{merchant_client_id}
 ```
 
 Actions performed:

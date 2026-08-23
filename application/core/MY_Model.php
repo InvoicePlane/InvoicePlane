@@ -196,15 +196,17 @@ class MY_Model extends CI_Model
             );
         }
 
+        if (in_array($this->db->dbdriver, ['sqlite', 'sqlite3'], true)) {
+            // SQLite does not support SQL_CALC_FOUND_ROWS/FOUND_ROWS(); count with a separate
+            // query before limit()/get() consumes the query builder, and keep the where/filter
+            // state (reset: false) so the same constraints apply to the page query below.
+            $this->total_rows = (int) $this->db->count_all_results($this->table, false);
+        }
+
         $this->db->limit($per_page, $this->offset);
         $this->query = $this->db->get($this->table);
 
-        if (in_array($this->db->dbdriver, ['sqlite', 'sqlite3'], true)) {
-            // SQLite does not support SQL_CALC_FOUND_ROWS/FOUND_ROWS(); count with a separate query.
-            $this->set_defaults();
-            $this->run_filters();
-            $this->total_rows = (int) $this->db->count_all_results($this->table);
-        } else {
+        if ( ! in_array($this->db->dbdriver, ['sqlite', 'sqlite3'], true)) {
             $this->total_rows = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
         }
         $this->total_pages     = ceil($this->total_rows / $per_page);
