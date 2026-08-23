@@ -23,12 +23,8 @@ class Setup extends MX_Controller
      */
     public function __construct()
     {
-        if (env_bool('DISABLE_SETUP', false)) {
-            show_error('The setup is disabled.', 403);
-        }
-
         if (env_bool('SETUP_COMPLETED', false)) {
-            show_error('The setup is locked because installation has already been completed.', 403);
+            show_error('The setup has already been completed. To re-run the setup, set SETUP_COMPLETED=false in ipconfig.php.', 403);
         }
 
         parent::__construct();
@@ -451,6 +447,7 @@ class Setup extends MX_Controller
     }
 
     /**
+     * /**
      * Get user-friendly error message for database configuration validation error.
      *
      * @param string $error_code The internal error code from validate_db_config_parameter()

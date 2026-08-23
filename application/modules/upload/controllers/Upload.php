@@ -206,7 +206,7 @@ class Upload extends Admin_Controller
         }
 
         // Clean filename (same in dropzone script)
-        $sanitizedFileName = preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', mb_trim($filename));
+        $sanitizedFileName = preg_replace("/[^\p{L}\p{N}\s\-_'’.]/u", '', trim($filename));
 
         // Security: Additional check to ensure no path traversal sequences remain
         $sanitizedFileName = str_replace('..', '', $sanitizedFileName);

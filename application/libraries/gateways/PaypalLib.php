@@ -6,6 +6,7 @@ if ( ! defined('BASEPATH')) {
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\HandlerStack;
 
 #[AllowDynamicProperties]
 class PaypalLib
@@ -30,9 +31,10 @@ class PaypalLib
 
         log_message('debug', 'Paypal library initialization started');
 
-        $this->client = new Client([
+        $this->client = new Client(array_filter([
             'base_uri' => $this->endpoint,
-        ]);
+            'handler'  => self::testHandlerStack(),
+        ]));
 
         log_message('debug', 'Paypal library client created');
 
@@ -173,7 +175,7 @@ class PaypalLib
     {
         log_message('debug', 'Paypal library authorization started');
         try {
-            $response = $this->client->request('post', 'v1/oauth2/token', [
+            $response = $this->client->request('POST', 'v1/oauth2/token', [
                 'headers' => [
                     'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
@@ -188,5 +190,39 @@ class PaypalLib
 
             return $clientException->getResponse()->getBody();
         }
+    }
+
+    /**
+     * In the test environment only, replay a queue of canned HTTP responses
+     * instead of calling the real PayPal API. The queue is supplied by the
+     * test as a JSON-encoded array (via AbstractTestCase::withEnvironment())
+     * under PAYPAL_MOCK_RESPONSES, each entry shaped like
+     * ['status' => int, 'body' => string]. Responses are consumed in the
+     * order this library calls them (authorize() first, then whichever
+     * action the controller invokes).
+     */
+    private static function testHandlerStack(): ?HandlerStack
+    {
+        if (ENVIRONMENT !== 'testing' && ! defined('CI_TESTING')) {
+            return null;
+        }
+
+        $fixture = getenv('PAYPAL_MOCK_RESPONSES');
+
+        if ($fixture === false || $fixture === '') {
+            return null;
+        }
+
+        $queue = json_decode($fixture, true);
+
+        if ( ! is_array($queue)) {
+            return null;
+        }
+
+        if ( ! class_exists(\Tests\Fakes\Payments\FakePaypalHttpClient::class)) {
+            throw new \RuntimeException('PayPal test HTTP client is unavailable.');
+        }
+
+        return \Tests\Fakes\Payments\FakePaypalHttpClient::handlerStack($queue);
     }
 }

@@ -69,7 +69,7 @@ class Settings extends Admin_Controller
 
                 if (isset($settings[$key . '_field_is_password']) && $value !== '') {
                     // Encrypt passwords but don't save empty passwords
-                    $batch_settings[$key] = $this->crypt->encode(mb_trim($value));
+                    $batch_settings[$key] = $this->crypt->encode(trim($value));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
                     $batch_settings[$key] = standardize_amount($value);
@@ -173,10 +173,10 @@ class Settings extends Admin_Controller
         ]);
 
         // Collect the list of templates
-        $pdf_invoice_templates    = $this->mdl_templates->get_invoice_templates('pdf');
-        $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
-        $pdf_quote_templates      = $this->mdl_templates->get_quote_templates('pdf');
-        $public_quote_templates   = $this->mdl_templates->get_quote_templates('public');
+        $pdf_invoice_templates                 = $this->mdl_templates->get_invoice_templates('pdf');
+        $public_invoice_templates              = $this->mdl_templates->get_invoice_templates('public');
+        $pdf_quote_templates                   = $this->mdl_templates->get_quote_templates('pdf');
+        $public_quote_templates                = $this->mdl_templates->get_quote_templates('public');
         $missing_allowlisted_template_settings = $this->mdl_templates->get_missing_allowlisted_template_settings();
 
         // Get all themes
@@ -185,27 +185,27 @@ class Settings extends Admin_Controller
         // Set data in the layout
         $this->layout->set(
             [
-                'invoice_groups'           => $this->mdl_invoice_groups->get()->result(),
-                'tax_rates'                => $this->mdl_tax_rates->get()->result(),
-                'payment_methods'          => $this->mdl_payment_methods->get()->result(),
-                'public_invoice_templates' => $public_invoice_templates,
-                'pdf_invoice_templates'    => $pdf_invoice_templates,
-                'public_quote_templates'   => $public_quote_templates,
-                'pdf_quote_templates'      => $pdf_quote_templates,
+                'invoice_groups'                        => $this->mdl_invoice_groups->get()->result(),
+                'tax_rates'                             => $this->mdl_tax_rates->get()->result(),
+                'payment_methods'                       => $this->mdl_payment_methods->get()->result(),
+                'public_invoice_templates'              => $public_invoice_templates,
+                'pdf_invoice_templates'                 => $pdf_invoice_templates,
+                'public_quote_templates'                => $public_quote_templates,
+                'pdf_quote_templates'                   => $pdf_quote_templates,
                 'missing_allowlisted_template_settings' => $missing_allowlisted_template_settings,
-                'languages'                => get_available_languages(),
-                'countries'                => get_country_list(trans('cldr')),
-                'date_formats'             => date_formats(),
-                'current_date'             => new DateTime(),
-                'available_themes'         => $available_themes,
-                'email_templates_quote'    => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
-                'email_templates_invoice'  => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'custom_fields'            => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
-                'gateway_drivers'          => $gateways,
-                'number_formats'           => $number_formats,
-                'gateway_currency_codes'   => get_currencies(),
-                'first_days_of_weeks'      => ['0' => lang('sunday'), '1' => lang('monday')],
-                'legacy_calculation'       => config_item('legacy_calculation'),
+                'languages'                             => get_available_languages(),
+                'countries'                             => get_country_list(trans('cldr')),
+                'date_formats'                          => date_formats(),
+                'current_date'                          => new DateTime(),
+                'available_themes'                      => $available_themes,
+                'email_templates_quote'                 => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
+                'email_templates_invoice'               => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'custom_fields'                         => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
+                'gateway_drivers'                       => $gateways,
+                'number_formats'                        => $number_formats,
+                'gateway_currency_codes'                => get_currencies(),
+                'first_days_of_weeks'                   => ['0' => lang('sunday'), '1' => lang('monday')],
+                'legacy_calculation'                    => config_item('legacy_calculation'),
             ]
         );
 

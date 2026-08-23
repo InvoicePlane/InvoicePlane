@@ -94,12 +94,13 @@ class Users extends Admin_Controller
                 $new_details = $this->mdl_users->get_by_id($id);
 
                 $session_data = [
-                    'user_type'     => $new_details->user_type,
-                    'user_id'       => $new_details->user_id,
-                    'user_name'     => $new_details->user_name,
-                    'user_email'    => $new_details->user_email,
-                    'user_company'  => $new_details->user_company,
-                    'user_language' => $new_details->user_language ?? 'system',
+                    'user_type'                => $new_details->user_type,
+                    'user_id'                  => $new_details->user_id,
+                    'user_name'                => $new_details->user_name,
+                    'user_email'               => $new_details->user_email,
+                    'user_company'             => $new_details->user_company,
+                    'user_einvoice_identifier' => $new_details->user_einvoice_identifier,
+                    'user_language'            => $new_details->user_language ?? 'system',
                 ];
 
                 $this->session->set_userdata($session_data);
@@ -257,7 +258,7 @@ class Users extends Admin_Controller
             return;
         }
 
-        $this->load->model('mdl_user_clients');
+        $this->load->model('user_clients/mdl_user_clients');
 
         if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
             show_error(trans('access_denied'), 403);

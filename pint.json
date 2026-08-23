@@ -1,9 +1,13 @@
 {
     "preset": "per",
     "exclude": [
+        "application/modules/clients/views",
         "application/views/**/pdf/",
         "resources",
         "storage"
+    ],
+    "notPath": [
+        "application/modules/clients/views/view.php"
     ],
     "rules": {
         "@PSR12": true,

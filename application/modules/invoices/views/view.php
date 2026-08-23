@@ -319,6 +319,7 @@ if ($invoice->invoice_balance != 0) {
 <?php
 // eInvoice & user fields OK: Show download XML Option
 if ($einvoice->user) {
+    $einvoice_provider ??= null;
     ?>
                 <li>
                     <a href="#" id="btn_generate_xml"
@@ -326,6 +327,20 @@ if ($einvoice->user) {
                         <i class="fa fa-file-code-o fa-margin"></i>
                         <?php _trans('download_xml'); ?>
                     </a>
+                </li>
+<?php if ( ! empty($einvoice_provider) && ! empty($einvoice_provider['id'])) : ?>
+                <li>
+                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/' . $einvoice_provider['id']); ?>">
+                         <i class="fa fa-refresh"></i>
+                         <?php _trans('check_status'); ?>
+                      </a>
+                </li>
+<?php endif; ?>
+                <li>
+                      <a href="<?php echo site_url('einvoice/history/' . $invoice_id); ?>">
+                         <i class="fa fa-history"></i>
+                         <?php _trans('view_history'); ?>
+                     </a>
                 </li>
 <?php
 }
@@ -336,7 +351,6 @@ if ($einvoice->user) {
                         <?php _trans('send_email'); ?>
                     </a>
                 </li>
-                <li class="divider"></li>
                 <li>
                     <a href="#" id="btn_create_recurring"
                        data-invoice-id="<?php echo $invoice_id; ?>">
@@ -491,7 +505,7 @@ if ($einvoice->name) {
                                     <label for="invoice_number"><?php _trans('invoice'); ?> #</label>
                                     <input type="text" id="invoice_number" class="form-control"
 <?php if ($invoice->invoice_number) : ?>
-                                           value="<?php echo htmlsc($invoice->invoice_number); ?>"
+                                           value="<?php _htmlsc($invoice->invoice_number); ?>"
 <?php else : ?>
                                            placeholder="<?php _trans('not_set'); ?>"
 <?php endif; ?>
@@ -563,7 +577,7 @@ foreach ($payment_methods as $payment_method) {
     ?>
                                         <option <?php check_select($invoice->payment_method, $payment_method->payment_method_id) ?>
                                             value="<?php echo $payment_method->payment_method_id; ?>">
-                                            <?php echo htmlsc($payment_method->payment_method_name); ?>
+                                            <?php _htmlsc($payment_method->payment_method_name); ?>
                                         </option>
 <?php
 } // End foreach
@@ -615,6 +629,49 @@ if ($invoice->invoice_status_id != 1) {
 
                         </div>
                     </div>
+
+<?php if ( ! empty($einvoice_status)) : ?>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <?php _trans('electronic_invoicing'); ?>
+                        </div>
+
+                        <div class="panel-body">
+                            <p>
+                                <strong><?php _trans('status'); ?>:</strong>
+                                <?php echo htmlsc($einvoice_status['status'] ?? trans('not_sent')); ?>
+                            </p>
+
+                            <?php if ( ! empty($einvoice_status['external_id'])) : ?>
+                                <p>
+                                    <strong>External ID:</strong>
+                                    <?php echo htmlsc($einvoice_status['external_id']); ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <?php if ( ! empty($einvoice_status['message'])) : ?>
+                                <p>
+                                    <strong><?php _trans('message'); ?>:</strong>
+                                    <?php echo htmlsc($einvoice_status['message']); ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <?php if ( ! empty($einvoice_status['updated_at'])) : ?>
+                                <p>
+                                    <strong><?php _trans('last_update'); ?>:</strong>
+                                    <?php echo htmlsc($einvoice_status['updated_at']); ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/1'); ?>"
+                               class="btn btn-default btn-sm">
+                                <i class="fa fa-refresh"></i>
+                                <?php _trans('check_status'); ?>
+                            </a>
+                        </div>
+                    </div>
+<?php endif; ?>
+
                 </div>
 
             </div>
@@ -682,6 +739,7 @@ if ($default_custom) {
         </div>
     </div>
 </div>
+
 
 <?php
 _dropzone_script($invoice->invoice_url_key, $invoice->client_id);
