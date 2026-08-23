@@ -95,6 +95,13 @@ if ($invoice->client_phone) {
     <div id="company">
         <div><b><?php _htmlsc($invoice->user_name); ?></b></div>
         <?php
+        if (isset($invoice->service_name) && $invoice->service_name) {
+            echo '<div>';
+            _htmlsc($invoice->service_name);
+            echo '</div>';
+        }
+?>
+<?php
 if ($invoice->user_vat_id) {
     echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '</div>';
 }
