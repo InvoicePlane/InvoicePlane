@@ -60,6 +60,12 @@
             "vendor/bin/pint"
         ]
     },
+    "autoload": {
+        "classmap": [
+            "application/modules/integrations/libraries/",
+            "application/modules/integrations/models/"
+        ]
+    },
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
