@@ -41,6 +41,14 @@ trait XSS_Protection_Trait
         $bypass_fields = [
             'user_password',      // User password fields need to allow special characters
             'user_passwordv',     // User password verification field
+            // invoices/controllers/Ajax.php::save() runs its own stricter allowlist regex
+            // on invoice_number and rejects the request outright (not silently modifies)
+            // when it contains control characters or <>"'. xss_clean() HTML-entity-encodes
+            // those same characters instead of stripping them, so by the time that check ran
+            // it never saw a rejectable character and let payloads like "<script>" through
+            // (still safe on output, which is _htmlsc()'d, but defeats the explicit-reject
+            // design). Bypassing here restores that: the regex is the sole gate for this field.
+            'invoice_number',
         ];
 
         // Fields that require special HTML sanitization (not bypass, but custom handling)

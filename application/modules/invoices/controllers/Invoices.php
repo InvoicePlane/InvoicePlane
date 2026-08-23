@@ -143,6 +143,8 @@ class Invoices extends Admin_Controller
                 'units/mdl_units',
                 'upload/mdl_uploads',
                 'services/mdl_services',
+                'integrations/Merchant_clients_model',
+                'integrations/Merchant_responses_model',
             ]
         );
         $this->load->helper(['custom_values', 'dropzone', 'e-invoice']);
@@ -209,6 +211,25 @@ class Invoices extends Admin_Controller
         $change_user = $this->db->from('ip_users')->where(['user_type' => 1, 'user_active' => 1])->select_sum('user_type')->get()->row();
         $change_user = $change_user->user_type > 1;
 
+        // eInvoice provider send/status: enabled providers to offer for sending,
+        // plus the last outbound response (if any) to show its current status.
+        $enabled_merchant_clients = $this->Merchant_clients_model->get_enabled_clients();
+
+        $last_response     = $this->Merchant_responses_model->get_last_response_by_invoice((int) $invoice_id);
+        $einvoice_provider = null;
+        $einvoice_status   = null;
+        if ( ! empty($last_response) && ! empty($last_response['merchant_client_id'])) {
+            $einvoice_provider = $this->Merchant_clients_model->get_by_id((int) $last_response['merchant_client_id']);
+            $einvoice_status   = [
+                'status'      => $last_response['status'] ?? null,
+                'external_id' => $last_response['merchant_response_reference'] ?? null,
+                'message'     => $last_response['merchant_response'] ?? null,
+                'updated_at'  => $last_response['created_at'] ?? null,
+            ];
+        }
+
+        $send_history = $this->Merchant_responses_model->get_outbound_by_invoice((int) $invoice_id);
+
         $this->layout->set(
             [
                 'invoice'           => $invoice,
@@ -228,9 +249,13 @@ class Invoices extends Admin_Controller
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
                     'decimal_point'             => get_setting('decimal_point'),
                 ],
-                'invoice_statuses'   => $this->mdl_invoices->statuses(),
-                'payment_cf_exist'   => $payment_cf_exist,
-                'legacy_calculation' => config_item('legacy_calculation'),
+                'invoice_statuses'         => $this->mdl_invoices->statuses(),
+                'payment_cf_exist'         => $payment_cf_exist,
+                'legacy_calculation'       => config_item('legacy_calculation'),
+                'enabled_merchant_clients' => $enabled_merchant_clients,
+                'einvoice_provider'        => $einvoice_provider,
+                'einvoice_status'          => $einvoice_status,
+                'send_history'             => $send_history,
             ]
         );
 
