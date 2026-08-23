@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Invoices extends Response_Model
 {
+    use Password_Encryption_Trait;
+
     public $table = 'ip_invoices';
 
     public $primary_key = 'ip_invoices.invoice_id';
@@ -102,6 +104,29 @@ class Mdl_Invoices extends Response_Model
             ip_invoices.*", false);
     }
 
+    public function save($id = null, $db_array = null)
+    {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('invoice_password', $db_array)) {
+            $db_array['invoice_password'] = $this->encrypt_password($db_array['invoice_password']);
+        }
+
+        return parent::save($id, $db_array);
+    }
+
+    public function encrypt_invoice_password($password): ?string
+    {
+        return $this->encrypt_password($password);
+    }
+
+    public function decrypt_invoice_password($password): string
+    {
+        return $this->decrypt_password($password);
+    }
+
     public function default_order_by()
     {
         $this->db->order_by('ip_invoices.invoice_date_created DESC, ip_invoices.invoice_number DESC, ip_invoices.invoice_id DESC');
@@ -138,6 +163,7 @@ class Mdl_Invoices extends Response_Model
                 'rules' => 'required',
             ],
             'invoice_time_created' => [
+                'field' => 'invoice_time_created',
                 'rules' => 'required',
             ],
             'invoice_group_id' => [
@@ -152,7 +178,7 @@ class Mdl_Invoices extends Response_Model
             'user_id' => [
                 'field' => 'user_id',
                 'label' => trans('user'),
-                'rule'  => 'required',
+                'rules' => 'required',
             ],
             'payment_method' => [
                 'field' => 'payment_method',
@@ -183,6 +209,7 @@ class Mdl_Invoices extends Response_Model
                 'rules' => 'required',
             ],
             'invoice_time_created' => [
+                'field' => 'invoice_time_created',
                 'rules' => 'required',
             ],
             'invoice_password' => [
@@ -199,9 +226,17 @@ class Mdl_Invoices extends Response_Model
      */
     public function create($db_array = null, $include_invoice_tax_rates = true)
     {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('invoice_password', $db_array)) {
+            $db_array['invoice_password'] = $this->encrypt_password($db_array['invoice_password']);
+        }
+
         $invoice_id = parent::save(null, $db_array);
 
-        $inv = $this->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
+        $inv           = $this->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
         $invoice_group = $inv->invoice_group_id;
 
         // Create an invoice amount record
@@ -250,7 +285,7 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
         // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
-        $invoice = $this->get_by_id($source_id); // This is the original invoice
+        $invoice         = $this->get_by_id($source_id); // This is the original invoice
         $global_discount = [
             'amount'         => $invoice->invoice_discount_amount,
             'percent'        => $invoice->invoice_discount_percent,
@@ -330,7 +365,7 @@ class Mdl_Invoices extends Response_Model
         $this->load->model('invoices/mdl_invoice_tax_rates');
 
         // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
-        $invoice = $this->get_by_id($source_id); // This is the original invoice
+        $invoice         = $this->get_by_id($source_id); // This is the original invoice
         $global_discount = [
             'amount'         => $invoice->invoice_discount_amount,
             'percent'        => $invoice->invoice_discount_percent,
@@ -405,21 +440,6 @@ class Mdl_Invoices extends Response_Model
         // Get the client id for the submitted invoice
         $this->load->model('clients/mdl_clients');
 
-        $this->load->model('services/mdl_services');
-        $cid = $this->mdl_clients->where('ip_clients.client_id', $db_array['client_id'])->get()->row()->client_id;
-
-        // Handle service_id - default to 0 if not provided or not found
-        $sid = 0;
-        if ( ! empty($db_array['service_id'])) {
-            $service_row = $this->mdl_services->where('ip_services.service_id', $db_array['service_id'])->get()->row();
-            if ($service_row) {
-                $sid = $service_row->service_id;
-            }
-        }
-
-        $db_array['client_id'] = $cid;
-        $db_array['service_id'] = $sid;
-
         // Check if is SUMEX
         $this->load->model('invoice_groups/mdl_invoice_groups');
 
@@ -439,8 +459,8 @@ class Mdl_Invoices extends Response_Model
         $db_array['service_id'] = $sid;
 
         $db_array['invoice_date_created'] = date_to_mysql($db_array['invoice_date_created']);
-        $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
-        $db_array['invoice_terms'] = get_setting('default_invoice_terms');
+        $db_array['invoice_date_due']     = $this->get_date_due($db_array['invoice_date_created']);
+        $db_array['invoice_terms']        = get_setting('default_invoice_terms');
 
         if ( ! isset($db_array['invoice_status_id'])) {
             $db_array['invoice_status_id'] = 1;
@@ -512,9 +532,10 @@ class Mdl_Invoices extends Response_Model
      */
     public function get_url_key()
     {
-        $this->load->helper('string');
+        $this->load->helper('ip_security');
 
-        return random_string('alnum', 32);
+        // 16 bytes -> 32 hexadecimal characters (matches the guest-view url_key format).
+        return generate_secure_token(16);
     }
 
     /**
@@ -736,6 +757,51 @@ class Mdl_Invoices extends Response_Model
             $this->db->set('invoice_date_due', $this->get_date_due($current_date));
             $this->db->update('ip_invoices');
         }
+    }
+
+    /**
+     * Check if the current user has access to this invoice.
+     *
+     * Security: Prevents IDOR (Insecure Direct Object Reference) vulnerabilities
+     * by verifying the user owns or has access to the requested invoice.
+     *
+     * @param int $invoice_id The invoice ID to check
+     *
+     * @return bool True if user has access, false otherwise
+     */
+    public function can_user_access($invoice_id)
+    {
+        $CI = & get_instance();
+
+        // Normalize to integer to prevent type juggling
+        $user_type  = (int) $CI->session->userdata('user_type');
+        $user_id    = (int) $CI->session->userdata('user_id');
+        $invoice_id = (int) $invoice_id;
+
+        // Admin users have access to all invoices
+        if ($user_type === 1) {
+            return true;
+        }
+
+        // Get the invoice
+        $invoice = $this->get_by_id($invoice_id);
+        if ( ! $invoice) {
+            return false;
+        }
+
+        // Guest users (type 2) - check if invoice belongs to their assigned clients
+        if ($user_type === 2) {
+            $CI->load->model('user_clients/mdl_user_clients');
+
+            $user_clients = $CI->mdl_user_clients->assigned_to($user_id)->get()->result();
+            // Ensure all client IDs are integers for strict comparison
+            $client_ids = array_map('intval', array_column($user_clients, 'client_id'));
+
+            return in_array((int) $invoice->client_id, $client_ids, true);
+        }
+
+        // Regular users - check if they created the invoice
+        return (int) $invoice->user_id === $user_id;
     }
 
     /**

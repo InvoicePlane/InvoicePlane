@@ -281,7 +281,7 @@ class Setup extends MX_Controller
         $this->load->helper('country');
 
         if ($this->mdl_users->run_validation()) {
-            $db_array = $this->mdl_users->db_array();
+            $db_array              = $this->mdl_users->db_array();
             $db_array['user_type'] = 1;
 
             $this->mdl_users->save(null, $db_array);
@@ -370,7 +370,7 @@ class Setup extends MX_Controller
     {
         $checks = [];
 
-        $php_required = '5.6';
+        $php_required  = '5.6';
         $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
         if ($php_installed < $php_required) {

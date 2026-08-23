@@ -57,8 +57,8 @@ class Cryptor
     public function __construct(string $cipher_algo = 'aes-256-ctr', string $hash_algo = 'sha256', $fmt = self::FORMAT_B64)
     {
         $this->cipher_algo = $cipher_algo;
-        $this->hash_algo = $hash_algo;
-        $this->format = $fmt;
+        $this->hash_algo   = $hash_algo;
+        $this->format      = $fmt;
 
         if ( ! in_array($cipher_algo, openssl_get_cipher_methods(true))) {
             throw new \Exception('Cryptor:: - unknown cipher algo ' . $cipher_algo);
@@ -128,7 +128,7 @@ class Cryptor
         $keyhash = openssl_digest($key, $this->hash_algo, true);
 
         // and encrypt
-        $opts = OPENSSL_RAW_DATA;
+        $opts      = OPENSSL_RAW_DATA;
         $encrypted = openssl_encrypt($in, $this->cipher_algo, $keyhash, $opts, $iv);
 
         if ($encrypted === false) {
@@ -173,20 +173,24 @@ class Cryptor
         }
 
         // and do an integrity check on the size.
-        if (mb_strlen($raw) < $this->iv_num_bytes) {
-            throw new \Exception('Cryptor::decryptString() - data length ' . mb_strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
+        if (strlen($raw) < $this->iv_num_bytes) {
+            throw new \Exception('Cryptor::decryptString() - data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
         }
 
-        // Extract the initialisation vector and encrypted data
-        $iv = mb_substr($raw, 0, $this->iv_num_bytes);
-        $raw = mb_substr($raw, $this->iv_num_bytes);
+        // Extract the initialisation vector and encrypted data.
+        // Must use byte-safe strlen()/substr() here, not mb_strlen()/mb_substr(): $raw is raw
+        // binary ciphertext, and mb_* functions count multi-byte characters under the internal
+        // encoding, not bytes, so they can consume more than $iv_num_bytes bytes when random
+        // bytes happen to look like valid UTF-8 sequences (issue #1680).
+        $iv  = substr($raw, 0, $this->iv_num_bytes);
+        $raw = substr($raw, $this->iv_num_bytes);
 
         // Hash the key
         $keyhash = openssl_digest($key, $this->hash_algo, true);
 
         // and decrypt.
         $opts = OPENSSL_RAW_DATA;
-        $res = openssl_decrypt($raw, $this->cipher_algo, $keyhash, $opts, $iv);
+        $res  = openssl_decrypt($raw, $this->cipher_algo, $keyhash, $opts, $iv);
 
         if ($res === false) {
             throw new \Exception('Cryptor::decryptString - decryption failed: ' . openssl_error_string());

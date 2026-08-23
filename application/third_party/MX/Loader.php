@@ -224,7 +224,7 @@ class MX_Loader extends CI_Loader
         } else {
             Modules::load_file($_library, $path);
 
-            $library = ucfirst($_library);
+            $library            = ucfirst($_library);
             CI::$APP->{$_alias} = new $library($params);
 
             $this->_ci_classes[$class] = $_alias;
@@ -279,7 +279,7 @@ class MX_Loader extends CI_Loader
 
             Modules::load_file($_model, $path);
 
-            $model = ucfirst($_model);
+            $model              = ucfirst($_model);
             CI::$APP->{$_alias} = new $model();
 
             $this->_ci_models[] = $_alias;
@@ -305,7 +305,7 @@ class MX_Loader extends CI_Loader
             return $this->modules($module);
         }
 
-        $_alias = mb_strtolower(basename($module));
+        $_alias             = mb_strtolower(basename($module));
         CI::$APP->{$_alias} = Modules::load([$module => $params]);
 
         return $this;
@@ -426,7 +426,7 @@ class MX_Loader extends CI_Loader
 
         if ($path != false) {
             $this->_ci_view_paths = [$path => true] + $this->_ci_view_paths;
-            $view = $_view;
+            $view                 = $_view;
         }
 
         // Patch from https://bitbucket.org/wiredesignz/codeigniter-modular-extensions-hmvc/pull-requests/24/

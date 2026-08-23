@@ -400,7 +400,7 @@
                             </label>
                             <?php if (get_setting('login_logo')) {
                                 $login_logo_file = get_setting('login_logo');
-                                $extension = mb_strtolower(pathinfo($login_logo_file, PATHINFO_EXTENSION));
+                                $extension       = mb_strtolower(pathinfo($login_logo_file, PATHINFO_EXTENSION));
                                 if ($extension === 'svg') {
                                     // Security: SVG files are blocked
                                     ?>

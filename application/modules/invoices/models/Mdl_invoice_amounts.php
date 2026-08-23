@@ -67,11 +67,11 @@ class Mdl_Invoice_Amounts extends CI_Model
         // Discounts calculation - since v1.6.3
         if (config_item('legacy_calculation')) {
             $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount;
-            $invoice_subtotal = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
-            $invoice_total = $this->calculate_discount($invoice_id, $invoice_subtotal);
+            $invoice_subtotal      = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+            $invoice_total         = $this->calculate_discount($invoice_id, $invoice_subtotal);
         } else {
             $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount - $global_discount['item'];
-            $invoice_total = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+            $invoice_total         = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
         }
 
         // Get the amount already paid
@@ -108,14 +108,14 @@ class Mdl_Invoice_Amounts extends CI_Model
 
         // Get invoice status
         $this->load->model('invoices/mdl_invoices');
-        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        $invoice           = $this->mdl_invoices->get_by_id($invoice_id);
         $invoice_is_credit = ($invoice->creditinvoice_parent_id > 0);
 
         // Set to paid if balance is zero
         // Check if the invoice total is not zero or negative
         if ($invoice->invoice_balance == 0 && ($invoice->invoice_total != 0 || $invoice_is_credit)) {
             $this->db->where('invoice_id', $invoice_id);
-            $payment = $this->db->get('ip_payments')->row();
+            $payment           = $this->db->get('ip_payments')->row();
             $payment_method_id = ($payment->payment_method_id ? $payment->payment_method_id : 0);
             $this->db->where('invoice_id', $invoice_id);
             $this->db->set('invoice_status_id', 4);
@@ -144,8 +144,8 @@ class Mdl_Invoice_Amounts extends CI_Model
         $this->db->where('invoice_id', $invoice_id);
         $invoice_data = $this->db->get('ip_invoices')->row();
         // Prevent NULL in number_format
-        $total = (float) number_format((float) $invoice_total, $this->decimal_places, '.', '');
-        $discount_amount = (float) number_format((float) $invoice_data->invoice_discount_amount, $this->decimal_places, '.', '');
+        $total            = (float) number_format((float) $invoice_total, $this->decimal_places, '.', '');
+        $discount_amount  = (float) number_format((float) $invoice_data->invoice_discount_amount, $this->decimal_places, '.', '');
         $discount_percent = (float) number_format((float) $invoice_data->invoice_discount_percent, $this->decimal_places, '.', '');
 
         $total -= $discount_amount;

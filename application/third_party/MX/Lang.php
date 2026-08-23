@@ -53,13 +53,13 @@ class MX_Lang extends CI_Lang
         }
 
         $deft_lang = CI::$APP->config->item('language');
-        $idiom = ($lang == '') ? $deft_lang : $lang;
+        $idiom     = ($lang == '') ? $deft_lang : $lang;
 
         if (in_array($langfile . '_lang' . EXT, $this->is_loaded, true)) {
             return $this->language;
         }
 
-        $_module || $_module = CI::$APP->router->fetch_module();
+        $_module || $_module    = CI::$APP->router->fetch_module();
         list($path, $_langfile) = Modules::find($langfile . '_lang', $_module, 'language/' . $idiom . '/');
 
         if ($path === false) {
@@ -71,7 +71,7 @@ class MX_Lang extends CI_Lang
                 return $lang;
             }
 
-            $this->language = array_merge($this->language, $lang);
+            $this->language    = array_merge($this->language, $lang);
             $this->is_loaded[] = $langfile . '_lang' . EXT;
             unset($lang);
         }

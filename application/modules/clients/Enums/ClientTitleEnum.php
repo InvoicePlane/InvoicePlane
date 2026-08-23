@@ -24,7 +24,7 @@ class ClientTitleEnum
         $searchResult = array_search($value, $values, true);
 
         if ($searchResult !== false) {
-            $returnObject = new StdClass();
+            $returnObject        = new StdClass();
             $returnObject->value = $value;
 
             return $returnObject;
@@ -38,7 +38,7 @@ class ClientTitleEnum
         $returnArray = [];
 
         foreach ($values as $value) {
-            $valueObject = new StdClass();
+            $valueObject        = new StdClass();
             $valueObject->value = $value;
 
             $returnArray[] = $valueObject;

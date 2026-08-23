@@ -121,7 +121,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
         });
 
         $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
+            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id) . '?' . _csrf_query(); ?>', '_blank');
         });
 
         $('#btn_generate_xml').click(function () {
@@ -341,7 +341,7 @@ if ($einvoice->user) {
                 </li>
 <?php endif; ?>
                 <li>
-                      <a href="<?php echo site_url('einvoice/history/' . $invoice_id); ?>">
+                      <a href="<?php echo site_url('integrations/history/' . $invoice_id); ?>">
                          <i class="fa fa-history"></i>
                          <?php _trans('view_history'); ?>
                      </a>
@@ -370,7 +370,7 @@ if ($einvoice->user) {
             } else {
                 $lst = 'class="active"';
             }
-?>
+            ?>
                 <li <?php echo $lst; ?>>
 <?php if ($needs_peppol && ! $has_id) : ?>
                     <a href="javascript:void(0);">
@@ -390,7 +390,7 @@ if ($einvoice->user) {
                 </li>
 <?php
         }
-    ?>
+        ?>
                 <li class="divider"></li>
 <?php
     }
@@ -504,7 +504,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
 <?php
 if ($invoice->invoice_sign == -1) {
     $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
-    $view_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . htmlsc($parent_invoice_number));
+    $view_link             = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, trans('credit_invoice_for_invoice') . ' ' . htmlsc($parent_invoice_number));
     ?>
                             <div class="col-xs-12">
                                 <div class="alert alert-warning small">
@@ -640,7 +640,7 @@ foreach ($payment_methods as $payment_method) {
 
 <?php
 $default_custom = false;
-$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+$classes        = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field) {
     if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;

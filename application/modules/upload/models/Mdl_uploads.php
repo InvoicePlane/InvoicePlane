@@ -120,7 +120,7 @@ class Mdl_Uploads extends Response_Model
     {
         $this->load->model('invoices/mdl_invoices');
         $invoice = $this->mdl_invoices->get_by_id($id);
-        $query = $this->db->query('SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?', [$invoice->invoice_url_key]);
+        $query   = $this->db->query('SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?', [$invoice->invoice_url_key]);
 
         $names = [];
 

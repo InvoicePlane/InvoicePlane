@@ -163,7 +163,7 @@ foreach ($payment_methods as $payment_method) {
 <?php
 if (get_setting('invoice_logo')) {
     $invoice_logo_file = get_setting('invoice_logo');
-    $extension = mb_strtolower(pathinfo($invoice_logo_file, PATHINFO_EXTENSION));
+    $extension         = mb_strtolower(pathinfo($invoice_logo_file, PATHINFO_EXTENSION));
     if ($extension === 'svg') {
         // Security: SVG files are blocked
         ?>

@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Quotes extends Response_Model
 {
+    use Password_Encryption_Trait;
+
     public $table = 'ip_quotes';
 
     public $primary_key = 'ip_quotes.quote_id';
@@ -105,6 +107,29 @@ class Mdl_Quotes extends Response_Model
             ip_quotes.*", false);
     }
 
+    public function save($id = null, $db_array = null)
+    {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('quote_password', $db_array)) {
+            $db_array['quote_password'] = $this->encrypt_password($db_array['quote_password']);
+        }
+
+        return parent::save($id, $db_array);
+    }
+
+    public function encrypt_quote_password($password): ?string
+    {
+        return $this->encrypt_password($password);
+    }
+
+    public function decrypt_quote_password($password): string
+    {
+        return $this->decrypt_password($password);
+    }
+
     public function default_order_by()
     {
         $this->db->order_by('ip_quotes.quote_date_created DESC, ip_quotes.quote_number DESC, ip_quotes.quote_id DESC');
@@ -189,6 +214,14 @@ class Mdl_Quotes extends Response_Model
      */
     public function create($db_array = null)
     {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('quote_password', $db_array)) {
+            $db_array['quote_password'] = $this->encrypt_password($db_array['quote_password']);
+        }
+
         $quote_id = parent::save(null, $db_array);
 
         // Create an quote amount record
@@ -224,7 +257,7 @@ class Mdl_Quotes extends Response_Model
         $this->load->model('quotes/mdl_quote_items');
 
         // Discounts calculation - since v1.6.3 Need if taxes applied after discounts
-        $quote = $this->get_by_id($source_id); // This is the original quote
+        $quote           = $this->get_by_id($source_id); // This is the original quote
         $global_discount = [
             'amount'         => $quote->quote_discount_amount,
             'percent'        => $quote->quote_discount_percent,
@@ -368,9 +401,10 @@ class Mdl_Quotes extends Response_Model
      */
     public function get_url_key()
     {
-        $this->load->helper('string');
+        $this->load->helper('ip_security');
 
-        return random_string('alnum', 32);
+        // 16 bytes -> 32 hexadecimal characters (matches the guest-view url_key format).
+        return generate_secure_token(16);
     }
 
     /**
@@ -583,6 +617,50 @@ class Mdl_Quotes extends Response_Model
             $this->db->set('quote_number', $quote_number);
             $this->db->update('ip_quotes');
         }
+    }
+
+    /**
+     * Check if the current user has access to this quote.
+     *
+     * Security: Prevents IDOR vulnerabilities for quote access.
+     *
+     * @param int $quote_id The quote ID to check
+     *
+     * @return bool True if user has access, false otherwise
+     */
+    public function can_user_access($quote_id)
+    {
+        $CI = & get_instance();
+
+        // Normalize to integer to prevent type juggling
+        $user_type = (int) $CI->session->userdata('user_type');
+        $user_id   = (int) $CI->session->userdata('user_id');
+        $quote_id  = (int) $quote_id;
+
+        // Admin users have access to all quotes
+        if ($user_type === 1) {
+            return true;
+        }
+
+        // Get the quote
+        $quote = $this->get_by_id($quote_id);
+        if ( ! $quote) {
+            return false;
+        }
+
+        // Guest users (type 2) - check if quote belongs to their assigned clients
+        if ($user_type === 2) {
+            $CI->load->model('user_clients/mdl_user_clients');
+
+            $user_clients = $CI->mdl_user_clients->assigned_to($user_id)->get()->result();
+            // Ensure all client IDs are integers for strict comparison
+            $client_ids = array_map('intval', array_column($user_clients, 'client_id'));
+
+            return in_array((int) $quote->client_id, $client_ids, true);
+        }
+
+        // Regular users - check if they created the quote
+        return (int) $quote->user_id === $user_id;
     }
 
     /**

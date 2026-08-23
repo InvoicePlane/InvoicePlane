@@ -35,7 +35,7 @@ class Ajax extends Admin_Controller
             $items = json_decode($this->input->post('items'));
 
             $invoice_discount_percent = (float) $this->input->post('invoice_discount_percent');
-            $invoice_discount_amount = (float) $this->input->post('invoice_discount_amount');
+            $invoice_discount_amount  = (float) $this->input->post('invoice_discount_amount');
 
             // Percent by default. Only one allowed. Prevent set 2 global discounts by geeky client - since v1.6.3
             if ($invoice_discount_percent && $invoice_discount_amount) {
@@ -70,12 +70,12 @@ class Ajax extends Admin_Controller
                 // Check if an item has either a quantity + price or name or description
                 if ( ! empty($item->item_name)) {
                     // Standardize item data
-                    $item->item_quantity = $item->item_quantity ? standardize_amount($item->item_quantity) : 0.0;
-                    $item->item_price = $item->item_price ? standardize_amount($item->item_price) : 0.0;
+                    $item->item_quantity        = $item->item_quantity ? standardize_amount($item->item_quantity) : 0.0;
+                    $item->item_price           = $item->item_price ? standardize_amount($item->item_price) : 0.0;
                     $item->item_discount_amount = $item->item_discount_amount ? standardize_amount($item->item_discount_amount) : null;
-                    $item->item_product_id = $item->item_product_id ? $item->item_product_id : null;
+                    $item->item_product_id      = $item->item_product_id ? $item->item_product_id : null;
                     $item->item_product_unit_id = $item->item_product_unit_id ? $item->item_product_unit_id : null;
-                    $item->item_product_unit = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
+                    $item->item_product_unit    = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
                     if (property_exists($item, 'item_date')) {
                         $item->item_date = $item->item_date ? date_to_mysql($item->item_date) : null;
                     }
@@ -139,7 +139,7 @@ class Ajax extends Admin_Controller
 
             if (empty($invoice_number) && $invoice_status_id != 1) {
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
-                $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
+                $invoice_number   = $this->mdl_invoices->get_invoice_number($invoice_group_id);
             }
 
             // Sometime global discount total value (round) need little adjust to be valid in ZugFerd2.3 standard
@@ -380,7 +380,7 @@ class Ajax extends Admin_Controller
 
         // Get the user ID
         $user_id = $this->security->xss_clean($this->input->post('user_id'));
-        $user = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
+        $user    = $this->mdl_users->where('ip_users.user_id', $user_id)->get()->row();
 
         if ( ! empty($user)) {
             $invoice_id = $this->security->xss_clean($this->input->post('invoice_id'));
@@ -429,7 +429,7 @@ class Ajax extends Admin_Controller
 
         // Get the client ID
         $client_id = $this->security->xss_clean($this->input->post('client_id'));
-        $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
+        $client    = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
         if ( ! empty($client)) {
             $invoice_id = $this->security->xss_clean($this->input->post('invoice_id'));
@@ -537,7 +537,7 @@ class Ajax extends Admin_Controller
 
     public function get_recur_start_date()
     {
-        $invoice_date = $this->input->post('invoice_date');
+        $invoice_date    = $this->input->post('invoice_date');
         $recur_frequency = $this->input->post('recur_frequency');
 
         echo increment_user_date($invoice_date, $recur_frequency);

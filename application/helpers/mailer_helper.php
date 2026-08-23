@@ -74,9 +74,9 @@ function email_invoice(
 
     $message = parse_template($db_invoice, $body);
     $subject = parse_template($db_invoice, $subject);
-    $cc = parse_template($db_invoice, $cc);
-    $bcc = parse_template($db_invoice, $bcc);
-    $from = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
+    $cc      = parse_template($db_invoice, $cc);
+    $bcc     = parse_template($db_invoice, $bcc);
+    $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
     $errors = [];
     if ( ! validate_email_address($to)) {
@@ -139,9 +139,9 @@ function email_quote(
 
     $message = parse_template($db_quote, $body);
     $subject = parse_template($db_quote, $subject);
-    $cc = parse_template($db_quote, $cc);
-    $bcc = parse_template($db_quote, $bcc);
-    $from = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
+    $cc      = parse_template($db_quote, $cc);
+    $bcc     = parse_template($db_quote, $bcc);
+    $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
     $errors = [];
     if ( ! validate_email_address($to)) {
@@ -187,12 +187,12 @@ function email_quote_status(string $quote_id, $status)
     $CI = & get_instance();
     $CI->load->helper('mailer/phpmailer');
 
-    $quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
-    $index = env('REMOVE_INDEXPHP', true) ? '' : 'index.php';
+    $quote    = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
+    $index    = env('REMOVE_INDEXPHP', true) ? '' : 'index.php';
     $base_url = base_url('/' . $index . '/quotes/view/' . $quote_id);
 
     $user_email = $quote->user_email;
-    $subject = sprintf(
+    $subject    = sprintf(
         trans('quote_status_email_subject'),
         $quote->client_name,
         mb_strtolower(lang($status)),
@@ -245,16 +245,9 @@ function check_mail_errors(array $errors = [], $redirect = ''): void
 
         $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
 
-        // Use provided redirect, or validate HTTP_REFERER against base_url
         if (empty($redirect)) {
-            $referer = $_SERVER['HTTP_REFERER'] ?? '';
-            $base_url = base_url();
-            // Only use referer if it's from same domain
-            if ( ! empty($referer) && str_starts_with($referer, $base_url)) {
-                $redirect = $referer;
-            } else {
-                $redirect = base_url(); // Safe default
-            }
+            $CI->load->helper('security');
+            $redirect = get_safe_referer('', base_url());
         }
 
         redirect($redirect);

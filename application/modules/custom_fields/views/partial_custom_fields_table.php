@@ -15,7 +15,7 @@
         <tbody>
 <?php
 foreach ($custom_fields as $custom_field) {
-    $alpha = str_replace('-', '_', mb_strtolower($custom_field->custom_field_type));
+    $alpha    = str_replace('-', '_', mb_strtolower($custom_field->custom_field_type));
     $position = $positions[$custom_field->custom_field_table][$custom_field->custom_field_location];
     ?>
             <tr>

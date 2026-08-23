@@ -1,6 +1,6 @@
 <?php
-$href = site_url('custom_fields/form/' . $field->custom_field_id);
-$link = anchor($href, '<i class="fa fa-edit fa-margin"></i> ' . htmlsc($field->custom_field_label), ' class="btn btn-default"');
+$href  = site_url('custom_fields/form/' . $field->custom_field_id);
+$link  = anchor($href, '<i class="fa fa-edit fa-margin"></i> ' . htmlsc($field->custom_field_label), ' class="btn btn-default"');
 $alpha = strtr(mb_strtolower($field->custom_field_type), ['-' => '_']);
 ?>
 <form method="post">

@@ -59,7 +59,7 @@ class Payment_Information extends Base_Controller
 
                 if (get_setting('gateway_' . $d . '_enabled') == 1) {
                     $invoice_payment_method = $invoice->payment_method;
-                    $driver_payment_method = get_setting('gateway_' . $d . '_payment_method');
+                    $driver_payment_method  = get_setting('gateway_' . $d . '_payment_method');
 
                     if ($invoice_payment_method == 0 || $driver_payment_method == 0 || $driver_payment_method == $invoice_payment_method) {
                         $available_drivers[] = $driver;

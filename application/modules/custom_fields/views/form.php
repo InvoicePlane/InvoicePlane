@@ -1,7 +1,7 @@
 <?php
-$disabled = $custom_field_usage ? ' disabled' : '';
+$disabled           = $custom_field_usage ? ' disabled' : '';
 $custom_field_table = $this->mdl_custom_fields->form_value('custom_field_table');
-$custom_field_type = $this->mdl_custom_fields->form_value('custom_field_type');
+$custom_field_type  = $this->mdl_custom_fields->form_value('custom_field_type');
 ?>
 <form method="post">
 

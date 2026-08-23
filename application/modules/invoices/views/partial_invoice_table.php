@@ -16,8 +16,8 @@
 
         <tbody>
 <?php
-$invoice_idx = 1;
-            $invoice_count = count($invoices);
+$invoice_idx                    = 1;
+            $invoice_count      = count($invoices);
             $invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
             foreach ($invoices as $invoice) {
                 // Disable read-only if not applicable
@@ -88,7 +88,7 @@ $invoice_idx = 1;
     }
                 ?>
                             <li>
-                                <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id); ?>"
+                                <a href="<?php echo site_url('invoices/generate_pdf/' . $invoice->invoice_id) . '?' . _csrf_query(); ?>"
                                    target="_blank">
                                     <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
                                 </a>

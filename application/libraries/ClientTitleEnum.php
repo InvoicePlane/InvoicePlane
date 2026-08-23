@@ -39,13 +39,13 @@ class ClientTitleEnum
      */
     public static function cases(): array
     {
-        $values = self::VALUES;
+        $values   = self::VALUES;
         $values[] = self::CUSTOM;
 
         $returnArray = [];
 
         foreach ($values as $value) {
-            $valueObject = new StdClass();
+            $valueObject        = new StdClass();
             $valueObject->value = $value;
 
             $returnArray[] = $valueObject;

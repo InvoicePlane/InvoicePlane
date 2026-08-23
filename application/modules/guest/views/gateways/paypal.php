@@ -6,7 +6,7 @@
         </div>
     </div>
 </div>
-<?php $adv_enabled = ! empty($advanced_credit_cards); ?>
+<?php $adv_enabled   = ! empty($advanced_credit_cards); ?>
 <?php $venmo_enabled = ! empty($venmo); ?>
 <?php if ($adv_enabled): ?>
 <!-- OR Divider -->

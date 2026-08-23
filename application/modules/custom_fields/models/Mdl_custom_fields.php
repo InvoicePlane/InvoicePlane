@@ -64,7 +64,7 @@ class Mdl_Custom_Fields extends MY_Model
             'custom_field_table' => [
                 'field' => 'custom_field_table',
                 'label' => trans('table'),
-                'rules' => 'required',
+                'rules' => 'required|in_list[' . implode(',', array_keys($this->custom_tables())) . ']',
             ],
             'custom_field_label' => [
                 'field' => 'custom_field_label',
@@ -176,6 +176,16 @@ class Mdl_Custom_Fields extends MY_Model
         // Get the default db array
         $db_array = parent::db_array();
 
+        // Defense in depth (CWE-89): never persist a custom_field_table outside the
+        // static allowlist, whatever entry point reaches this method. The form
+        // validation rule (in_list) is the first gate; this is the last one before
+        // the value is stored and later interpolated into a raw table identifier.
+        if ( ! isset($db_array['custom_field_table']) || ! $this->is_allowed_table($db_array['custom_field_table'])) {
+            $this->load->helper('file_security');
+            log_message('error', 'Rejected invalid custom_field_table: ' . sanitize_for_logging((string) ($db_array['custom_field_table'] ?? '')));
+            show_error('Invalid custom field configuration', 400);
+        }
+
         // Check if the user wants to add 'id' as custom field
         if (mb_strtolower($db_array['custom_field_label']) == 'id') {
             // Replace 'id' with 'field_id' to avoid problems with the primary key
@@ -211,6 +221,20 @@ class Mdl_Custom_Fields extends MY_Model
     }
 
     /**
+     * Whether $table is one of the static custom-field tables. The single source
+     * of truth for the allowlist that guards every raw use of custom_field_table
+     * as a table identifier (CWE-89).
+     *
+     * @param string $table
+     *
+     * @return bool
+     */
+    public function is_allowed_table($table)
+    {
+        return in_array($table, array_keys($this->custom_tables()), true);
+    }
+
+    /**
      * @param $id
      *
      * @return mixed
@@ -222,6 +246,15 @@ class Mdl_Custom_Fields extends MY_Model
         }
 
         $cf = $this->get_by_id($id);
+
+        if ($cf === null) {
+            return $get ? [] : $this->db;
+        }
+
+        if ( ! $this->is_allowed_table($cf->custom_field_table)) {
+            return $get ? [] : $this->db;
+        }
+
         $base = strtr($cf->custom_field_table, ['ip_' => '']) . '_field';
 
         $this->db->from($cf->custom_field_table)
@@ -239,6 +272,15 @@ class Mdl_Custom_Fields extends MY_Model
     {
         if ( ! $this->used($id)) {
             $custom_field = $this->get_by_id($id);
+
+            if ($custom_field === null) {
+                return false;
+            }
+
+            if ( ! $this->is_allowed_table($custom_field->custom_field_table)) {
+                return false;
+            }
+
             // Remove MULTIPLE|SINGLE CHOICE values
             if (preg_match('/CHOICE/', $custom_field->custom_field_type)) {
                 $this->load->model('custom_values/mdl_custom_values');
@@ -285,7 +327,7 @@ class Mdl_Custom_Fields extends MY_Model
     /**
      * @param int    $field_id
      * @param string $custom_field_model
-     * @param int    $model_id
+     * @param object $object
      *
      * @return string
      */
@@ -293,7 +335,7 @@ class Mdl_Custom_Fields extends MY_Model
     {
         $this->load->model('custom_fields/' . $custom_field_model);
 
-        $cf_table = str_replace('mdl_', '', $custom_field_model);
+        $cf_table      = str_replace('mdl_', '', $custom_field_model);
         $cf_model_name = str_replace('_custom', '', $cf_table);
 
         $value = $this->{$custom_field_model}
@@ -301,7 +343,7 @@ class Mdl_Custom_Fields extends MY_Model
             ->where($cf_model_name . '_id', $object->{$cf_model_name . '_id'})
             ->get()->result();
 
-        $value_key = $cf_table . '_fieldvalue';
+        $value_key            = $cf_table . '_fieldvalue';
         $value_key_serialized = $cf_table . '_fieldvalue_serialized';
 
         if ( ! isset($value[0]->{$value_key})) {
@@ -328,7 +370,7 @@ class Mdl_Custom_Fields extends MY_Model
             return [];
         }
 
-        $values = [];
+        $values       = [];
         $custom_field = str_replace('mdl_', '', $custom_field_model);
 
         foreach ($fields as $field) {
@@ -348,7 +390,7 @@ class Mdl_Custom_Fields extends MY_Model
                     $key_serialized = $field_id_fieldlabel . '_serialized';
 
                     $field->{$field_id_fieldlabel} = [];
-                    $field->{$key_serialized} = '';
+                    $field->{$key_serialized}      = '';
 
                     foreach ($custom_values as $custom_value) {
                         //Fix compatibility issue with php 5.6
@@ -363,7 +405,7 @@ class Mdl_Custom_Fields extends MY_Model
                 $custom_value = $this->mdl_custom_values->get_by_id($field->{$field_id_fieldlabel})->result();
 
                 if ( ! empty($custom_value)) {
-                    $custom_value = $custom_value[0];
+                    $custom_value                  = $custom_value[0];
                     $field->{$field_id_fieldlabel} = $custom_value->custom_values_value;
                 }
             }

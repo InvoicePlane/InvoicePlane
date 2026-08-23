@@ -146,7 +146,7 @@ class Mdl_Import extends Response_Model
 
                 // Create a couple of default values if file is clients.csv
                 if ($file == 'clients.csv') {
-                    $db_array['client_date_created'] = date('Y-m-d');
+                    $db_array['client_date_created']  = date('Y-m-d');
                     $db_array['client_date_modified'] = date('Y-m-d');
                 }
 
@@ -200,7 +200,7 @@ class Mdl_Import extends Response_Model
                         $this->db->where('user_email', $data[$key]);
                         $user = $this->db->get('ip_users');
                         if ($user->num_rows()) {
-                            $header = 'user_id';
+                            $header     = 'user_id';
                             $data[$key] = $user->row()->user_id;
                         } else {
                             // Email address not found
@@ -238,7 +238,7 @@ class Mdl_Import extends Response_Model
                 if ( ! $record_error) {
                     // No record errors exist - go ahead and create the invoice
                     $db_array['invoice_group_id'] = 0;
-                    $ids[] = $this->mdl_invoices->create($db_array);
+                    $ids[]                        = $this->mdl_invoices->create($db_array);
                 }
             }
 
@@ -284,7 +284,7 @@ class Mdl_Import extends Response_Model
                         $this->db->where('invoice_number', $data[$key]);
                         $user = $this->db->get('ip_invoices');
                         if ($user->num_rows()) {
-                            $header = 'invoice_id';
+                            $header     = 'invoice_id';
                             $data[$key] = $user->row()->invoice_id;
                         } else {
                             $record_error = true;
@@ -361,7 +361,7 @@ class Mdl_Import extends Response_Model
                         $this->db->where('invoice_number', $data[$key]);
                         $user = $this->db->get('ip_invoices');
                         if ($user->num_rows()) {
-                            $header = 'invoice_id';
+                            $header     = 'invoice_id';
                             $data[$key] = $user->row()->invoice_id;
                         } else {
                             $record_error = true;

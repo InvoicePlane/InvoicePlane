@@ -72,13 +72,13 @@ class Services extends Admin_Controller
     }
 
     /**
-     * @param int $client_id
+     * @param int      $client_id
      * @param int|null $id
      */
     public function form_client($client_id, $id = null)
     {
         $client_id = $this->service_service->normalizeId($client_id);
-        $id = $id === null ? null : $this->service_service->normalizeId($id);
+        $id        = $id === null ? null : $this->service_service->normalizeId($id);
 
         if ($id === 0) {
             show_404();

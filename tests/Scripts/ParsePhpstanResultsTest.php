@@ -26,19 +26,6 @@ class ParsePhpstanResultsTest extends AbstractTestCase
 {
     private static bool $scriptLoaded = false;
 
-    private static function scriptPath(): string
-    {
-        return dirname(__DIR__, 2) . '/.github/scripts/parse-phpstan-results.php';
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        if ( ! file_exists(self::scriptPath())) {
-            $this->markTestSkipped('.github/scripts/parse-phpstan-results.php not found in this environment');
-        }
-    }
-
     /**
      * Bootstrap: load the script once per process so that all helper
      * functions are defined before any test method runs.
@@ -89,6 +76,14 @@ class ParsePhpstanResultsTest extends AbstractTestCase
         self::assertSame('', $output);
 
         self::$scriptLoaded = true;
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if ( ! file_exists(self::scriptPath())) {
+            $this->markTestSkipped('.github/scripts/parse-phpstan-results.php not found in this environment');
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -447,5 +442,10 @@ class ParsePhpstanResultsTest extends AbstractTestCase
 
         /* Assert */
         $this->assertSame('application/helpers/security_helper.php', $result);
+    }
+
+    private static function scriptPath(): string
+    {
+        return dirname(__DIR__, 2) . '/.github/scripts/parse-phpstan-results.php';
     }
 }

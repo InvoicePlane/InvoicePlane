@@ -60,7 +60,7 @@ function phpmail_send(
     $CI->load->helper('file_security');
 
     // Create the basic mailer object
-    $mail = new \PHPMailer\PHPMailer\PHPMailer();
+    $mail          = new \PHPMailer\PHPMailer\PHPMailer();
     $mail->CharSet = 'UTF-8';
     $mail->isHTML();
 
@@ -127,7 +127,7 @@ function phpmail_send(
     }
 
     $mail->Subject = $subject;
-    $mail->Body = $message;
+    $mail->Body    = $message;
     $mail->AltBody = $mail->normalizeBreaks($mail->html2text($message));
 
     if (is_array($from)) {

@@ -40,13 +40,13 @@ class ACubeClient implements IntegrationClientInterface
     public static function defaultSettings(): array
     {
         return [
-            'email'                  => '',
-            'password'               => '',
-            'environment'            => 'production',
-            'token_url'              => 'https://common.api.acubeapi.com/login',
-            'api_base_url'           => '',
-            'invoices_endpoint'      => '/invoices',
-            'invoice_status_endpoint'=> '/invoices/{id}',
+            'email'                     => '',
+            'password'                  => '',
+            'environment'               => 'production',
+            'token_url'                 => 'https://common.api.acubeapi.com/login',
+            'api_base_url'              => '',
+            'invoices_endpoint'         => '/invoices',
+            'invoice_status_endpoint'   => '/invoices/{id}',
             'invoice_document_endpoint' => '/invoices/{id}',
         ];
     }

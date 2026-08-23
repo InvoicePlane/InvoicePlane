@@ -24,7 +24,7 @@ if ( ! defined('BASEPATH')) {
  */
 function get_setting($setting_key, $default = '', $escape = false)
 {
-    $CI = & get_instance();
+    $CI    = & get_instance();
     $value = $CI->mdl_settings->setting($setting_key, $default);
 
     return $escape ? htmlsc($value) : $value;

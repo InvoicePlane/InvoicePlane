@@ -45,17 +45,17 @@ class DokapiClient implements IntegrationClientInterface
     public static function defaultSettings(): array
     {
         return [
-            'client_id'                 => '',
-            'client_secret'             => '',
-            'access_token'              => '',
-            'api_base_url'              => 'https://peppol-api.dokapi-stg.io/v1',
-            'token_url'                 => 'https://dev-portal.dokapi.io/api/oauth2/token',
-            'outgoing_endpoint'         => '/outgoing-documents',
-            'outgoing_status_endpoint'  => '/outgoing-documents/{id}',
-            'incoming_endpoint'         => '/incoming-documents',
-            'incoming_document_endpoint'=> '/incoming-documents/{id}',
-            'document_field'            => 'file',
-            'metadata_field'            => 'metadata',
+            'client_id'                  => '',
+            'client_secret'              => '',
+            'access_token'               => '',
+            'api_base_url'               => 'https://peppol-api.dokapi-stg.io/v1',
+            'token_url'                  => 'https://dev-portal.dokapi.io/api/oauth2/token',
+            'outgoing_endpoint'          => '/outgoing-documents',
+            'outgoing_status_endpoint'   => '/outgoing-documents/{id}',
+            'incoming_endpoint'          => '/incoming-documents',
+            'incoming_document_endpoint' => '/incoming-documents/{id}',
+            'document_field'             => 'file',
+            'metadata_field'             => 'metadata',
         ];
     }
 
@@ -306,7 +306,7 @@ class DokapiClient implements IntegrationClientInterface
 
     private function documentMetadata(string $xml, array $metadata): array
     {
-        $dom = new DOMDocument();
+        $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         if ( ! @$dom->loadXML($xml, LIBXML_NONET | LIBXML_NOBLANKS)) {
             throw new RuntimeException('Dokapi document is not valid XML.');
@@ -317,7 +317,7 @@ class DokapiClient implements IntegrationClientInterface
         $xpath->registerNamespace('cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
 
         $endpointIds = $xpath->query('//cac:AccountingSupplierParty//cbc:EndpointID | //cac:AccountingCustomerParty//cbc:EndpointID');
-        $ids = [];
+        $ids         = [];
         foreach ($endpointIds ?: [] as $node) {
             $ids[] = [
                 'scheme' => $node->attributes?->getNamedItem('schemeID')?->nodeValue ?: 'iso6523-actorid-upis',
@@ -326,7 +326,7 @@ class DokapiClient implements IntegrationClientInterface
         }
 
         $customization = trim((string) ($xpath->evaluate('string(/*[local-name()="Invoice"]/*[local-name()="CustomizationID"])') ?: ''));
-        $profile        = trim((string) ($xpath->evaluate('string(/*[local-name()="Invoice"]/*[local-name()="ProfileID"])') ?: ''));
+        $profile       = trim((string) ($xpath->evaluate('string(/*[local-name()="Invoice"]/*[local-name()="ProfileID"])') ?: ''));
 
         $payload = [
             'sender'                 => $ids[0] ?? null,
@@ -338,11 +338,11 @@ class DokapiClient implements IntegrationClientInterface
                     ? 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##' . $customization . '::2.1'
                     : 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1',
             ],
-            'processIdentifier'       => [
+            'processIdentifier' => [
                 'scheme' => 'cenbii-procid-ubl',
                 'value'  => $profile !== '' ? $profile : 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
             ],
-            'externalReference'       => (string) ($metadata['invoice_id'] ?? ''),
+            'externalReference' => (string) ($metadata['invoice_id'] ?? ''),
         ];
 
         if ($payload['sender'] === null || $payload['receiver'] === null) {

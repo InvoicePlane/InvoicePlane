@@ -71,8 +71,8 @@ function format_multiplechoice($txt): string
     $CI = get_instance();
     $CI->load->model('custom_values/mdl_custom_values', 'cv');
 
-    $values = explode(',', $txt);
-    $values = $CI->cv->where_in('custom_values_id', $values)->get()->result();
+    $values      = explode(',', $txt);
+    $values      = $CI->cv->where_in('custom_values_id', $values)->get()->result();
     $values_text = [];
 
     foreach ($values as $value) {
@@ -182,7 +182,7 @@ function print_field($module, $custom_field, array $cv, $class_top = '', $class_
 <?php
             break;
         case 'MULTIPLE-CHOICE':
-            $choices = $cv[$custom_field->custom_field_id];
+            $choices    = $cv[$custom_field->custom_field_id];
             $selChoices = explode(',', $fieldValue);
             ?>
                 <select id="custom<?php echo $custom_field->custom_field_id; ?>"

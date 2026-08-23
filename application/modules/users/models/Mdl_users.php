@@ -317,7 +317,7 @@ class Mdl_Users extends Response_Model
 
             $user_psalt = $this->crypt->salt();
 
-            $db_array['user_psalt'] = $user_psalt;
+            $db_array['user_psalt']    = $user_psalt;
             $db_array['user_password'] = $this->crypt->generate_password($db_array['user_password'], $user_psalt);
         }
 
@@ -332,7 +332,7 @@ class Mdl_Users extends Response_Model
     {
         $this->load->library('crypt');
 
-        $user_psalt = $this->crypt->salt();
+        $user_psalt    = $this->crypt->salt();
         $user_password = $this->crypt->generate_password($password, $user_psalt);
 
         $db_array = [

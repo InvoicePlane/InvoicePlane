@@ -43,7 +43,7 @@ function invoice_logo_pdf(): string
     $CI = &get_instance();
 
     if ($CI->mdl_settings->setting('invoice_logo')) {
-        $logo_file = $CI->mdl_settings->setting('invoice_logo');
+        $logo_file    = $CI->mdl_settings->setting('invoice_logo');
         $absolutePath = dirname(dirname(__DIR__));
 
         // Security: Block SVG files to prevent XSS attacks
@@ -85,7 +85,7 @@ function invoice_genCodeline(string $slipType, $amount, $rnumb, $subNumb): strin
         throw new Error('Invalid amount');
     }
 
-    $amountLine = sprintf('%010d', $amount * 100);
+    $amountLine    = sprintf('%010d', $amount * 100);
     $checkSlAmount = invoice_recMod10($slipType . $amountLine);
 
     if ( ! preg_match("/\d{2}-\d{1,6}-\d{1}/", $subNumb)) {
@@ -94,7 +94,7 @@ function invoice_genCodeline(string $slipType, $amount, $rnumb, $subNumb): strin
 
     $subNumb = explode('-', $subNumb);
     $fullSub = $subNumb[0] . sprintf('%06d', $subNumb[1]) . $subNumb[2];
-    $rnumb = preg_replace('/\s+/', '', $rnumb);
+    $rnumb   = preg_replace('/\s+/', '', $rnumb);
 
     return $slipType . $amountLine . $checkSlAmount . '>' . $rnumb . '+ ' . $fullSub . '>';
 }
@@ -108,7 +108,7 @@ function invoice_genCodeline(string $slipType, $amount, $rnumb, $subNumb): strin
  */
 function invoice_recMod10($in): int
 {
-    $line = [0, 9, 4, 6, 8, 2, 7, 1, 3, 5];
+    $line  = [0, 9, 4, 6, 8, 2, 7, 1, 3, 5];
     $carry = 0;
     $chars = mb_str_split($in);
 
@@ -141,7 +141,7 @@ function invoice_qrcode($invoice_id, $width = 64): string
             $qrcode_data_uri = $CI->qrcode->generate();
 
             $numeric_width = (int) $width;
-            $width = '';
+            $width         = '';
             if ($numeric_width > 0) {
                 $width = ' width="' . (string) $numeric_width . '"';
             }

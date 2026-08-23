@@ -76,7 +76,7 @@ class Mdl_User_Clients extends MY_Model
 
         $nbUsers = count($users_id);
         for ($x = 0; $x < $nbUsers; $x++) {
-            $clients = $this->mdl_clients->get_not_assigned_to_user($users_id[$x]);
+            $clients   = $this->mdl_clients->get_not_assigned_to_user($users_id[$x]);
             $nbClients = count($clients);
             for ($i = 0; $i < $nbClients; $i++) {
                 $user_client = [
@@ -95,7 +95,7 @@ class Mdl_User_Clients extends MY_Model
         $users = $this->mdl_users->where('user_all_clients', 1)->get()->result();
 
         $new_users = [];
-        $nbUsers = count($users);
+        $nbUsers   = count($users);
 
         for ($i = 0; $i < $nbUsers; $i++) {
             $new_users[] = $users[$i]->user_id;

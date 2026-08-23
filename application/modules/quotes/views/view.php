@@ -77,8 +77,7 @@ if ($quote->quote_status_id == 1) {
                     quote_discount_amount: $('#quote_discount_amount').val(),
                     quote_discount_percent: $('#quote_discount_percent').val(),
                     notes: $('#notes').val(),
-		    custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
-		    service_id: $('#service_id').val(),
+                    custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                 },
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
@@ -491,7 +490,7 @@ if ($quote->quote_status_id != 1) {
                             </div>
 <?php
 $default_custom = false;
-$classes = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
+$classes        = ['control-label', 'controls', '', 'col-xs-12 col-md-6'];
 foreach ($custom_fields as $custom_field) {
     if ( ! $default_custom && ! $custom_field->custom_field_location) {
         $default_custom = true;

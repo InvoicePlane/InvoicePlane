@@ -1,7 +1,6 @@
 <form method="post">
 
-    <input type="hidden" name="<?php echo html_escape($this->config->item('csrf_token_name')); ?>"
-           value="<?php echo html_escape($this->security->get_csrf_hash()); ?>">
+    <?php _csrf_field(); ?>
 
     <div id="headerbar">
         <h1 class="headerbar-title"><?php _trans('service_form'); ?></h1>

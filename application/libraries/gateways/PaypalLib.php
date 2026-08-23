@@ -26,8 +26,8 @@ class PaypalLib
     public function __construct(array $params)
     {
         $params['demo'] && $this->endpoint = 'https://api-m.sandbox.paypal.com';
-        $this->client_id = $params['client_id'];
-        $this->client_secret = $params['client_secret'];
+        $this->client_id                   = $params['client_id'];
+        $this->client_secret               = $params['client_secret'];
 
         log_message('debug', 'Paypal library initialization started');
 

@@ -88,7 +88,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         // Arrange (a shared connection could otherwise hide uncommitted writes).
         $this->resetDatabaseConnection();
 
-        $command = sprintf('php %s', escapeshellarg(dirname(__DIR__) . '/tests/Integration/bin/request.php'));
+        $command     = sprintf('php %s', escapeshellarg(dirname(__DIR__) . '/tests/Integration/bin/request.php'));
         $environment = array_merge(getenv(), [
             'CI_TEST_REQUEST' => base64_encode((string) json_encode($payload, JSON_THROW_ON_ERROR)),
         ]);

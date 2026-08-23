@@ -96,7 +96,7 @@ if (get_setting('enable_services') == 1) {
             <input type="hidden" name="service_id" id="service_id" value="0">
 <?php
 }
-?>
+        ?>
 
             <div class="form-group has-feedback">
                 <label for="invoice_date_created"><?php _trans('invoice_date'); ?></label>

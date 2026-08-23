@@ -20,7 +20,7 @@ spl_autoload_register('Modules::autoload');
 
 function myEach($arr): array|false
 {
-    $key = key($arr);
+    $key    = key($arr);
     $result = ($key === null) ? false : [$key, current($arr), 'key' => $key, 'value' => current($arr)];
     next($arr);
 
@@ -78,7 +78,7 @@ class Modules
     public static function run($module)
     {
         $method = 'index';
-        $args = func_get_args();
+        $args   = func_get_args();
 
         if (($pos = mb_strrpos($module, '/')) != false) {
             $method = mb_substr($module, $pos + 1);
@@ -126,7 +126,7 @@ class Modules
             self::load_file(ucfirst($class), $path);
 
             // create and register the new controller
-            $controller = ucfirst($class);
+            $controller             = ucfirst($class);
             self::$registry[$alias] = new $controller($params);
         }
 
@@ -136,7 +136,7 @@ class Modules
     /** Load a module file **/
     public static function load_file($file, string $path, $type = 'other', $result = true)
     {
-        $file = str_replace(EXT, '', $file);
+        $file     = str_replace(EXT, '', $file);
         $location = $path . $file . EXT;
 
         if ($type === 'other') {
@@ -235,14 +235,14 @@ class Modules
     {
         $segments = explode('/', $file);
 
-        $file = array_pop($segments);
+        $file     = array_pop($segments);
         $file_ext = (pathinfo($file, PATHINFO_EXTENSION) !== '' && pathinfo($file, PATHINFO_EXTENSION) !== '0') ? $file : $file . EXT;
 
-        $path = mb_ltrim(implode('/', $segments) . '/', '/');
+        $path                       = ltrim(implode('/', $segments) . '/', '/');
         $module ? $modules[$module] = $path : $modules = [];
 
         if ($segments !== []) {
-            $modules[array_shift($segments)] = mb_ltrim(implode('/', $segments) . '/', '/');
+            $modules[array_shift($segments)] = ltrim(implode('/', $segments) . '/', '/');
         }
 
         foreach (self::$locations as $location => $offset) {

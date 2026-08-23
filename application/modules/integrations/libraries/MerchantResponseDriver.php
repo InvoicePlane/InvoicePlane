@@ -9,9 +9,9 @@ enum MerchantResponseDriver: string
     case Qonto      = 'qonto';
     case ACube      = 'acube';
     case Dokapi     = 'dokapi';
-    case B2BRouter   = 'b2brouter';
-    case Arratech    = 'arratech';
-    case Storecove   = 'storecove';
+    case B2BRouter  = 'b2brouter';
+    case Arratech   = 'arratech';
+    case Storecove  = 'storecove';
     case LetsPeppol = 'letspeppol';
 
     /* payment gateways (legacy ip_merchant_responses rows) */

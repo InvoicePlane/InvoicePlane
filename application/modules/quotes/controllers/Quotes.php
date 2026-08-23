@@ -135,7 +135,7 @@ class Quotes extends Admin_Controller
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
-                $values = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
+                $values                                        = $this->mdl_custom_values->get_by_fid($custom_field->custom_field_id)->result();
                 $custom_values[$custom_field->custom_field_id] = $values;
             }
         }
@@ -153,9 +153,9 @@ class Quotes extends Admin_Controller
             }
         }
 
-        $servicesById         = $this->mdl_services->get_names_by_ids([$quote->service_id]);
-        $quote->service_name  = $servicesById[$quote->service_id] ?? null;
-        $services             = $this->mdl_services->get()->result_array();
+        $servicesById        = $this->mdl_services->get_names_by_ids([$quote->service_id]);
+        $quote->service_name = $servicesById[$quote->service_id] ?? null;
+        $services            = $this->mdl_services->get()->result_array();
 
         $items = $this->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
 

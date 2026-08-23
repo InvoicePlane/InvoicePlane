@@ -153,7 +153,7 @@ function hash_for_logging(string $filename): string
  */
 function extract_safe_basename(string $filename): array
 {
-    $hash = hash('sha256', $filename);
+    $hash         = hash('sha256', $filename);
     $safeFilename = basename($filename);
 
     if (empty($safeFilename)) {
@@ -349,7 +349,7 @@ function validate_db_filename(string $filename, string $base_dir): ?array
 
     // Step 3: Construct full path
     $safe_filename = $basename_result['filename'];
-    $full_path = rtrim($base_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $safe_filename;
+    $full_path     = rtrim($base_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $safe_filename;
 
     // Step 4: If file exists, validate it's within the base directory
     // This prevents symlink attacks or other filesystem tricks

@@ -107,7 +107,7 @@ class Mdl_Invoices_Recurring extends Response_Model
         $db_array = parent::db_array();
 
         $db_array['recur_start_date'] = date_to_mysql($db_array['recur_start_date']);
-        $db_array['recur_next_date'] = $db_array['recur_start_date'];
+        $db_array['recur_next_date']  = $db_array['recur_start_date'];
 
         $db_array['recur_end_date'] = $db_array['recur_end_date'] ? date_to_mysql($db_array['recur_end_date']) : null;
 
