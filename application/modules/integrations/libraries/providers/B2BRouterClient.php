@@ -49,7 +49,7 @@ class B2BRouterClient implements IntegrationClientInterface
             'incoming_invoices_endpoint' => '/accounts/{account}/invoices',
             'incoming_document_endpoint' => '/invoices/{id}/as/original',
             'events_endpoint'            => '/accounts/{account}/invoices',
-            'transport_type_code'       => 'peppol',
+            'transport_type_code'        => 'peppol',
             'document_type_code'         => 'xml.facturae.3.2.2',
         ];
     }
@@ -151,13 +151,13 @@ class B2BRouterClient implements IntegrationClientInterface
         }
 
         $endpoint = str_replace('{account}', rawurlencode($this->setting('account_id')), $this->setting('import_endpoint'));
-        $response  = ProviderResponseNormalizer::entity(
+        $response = ProviderResponseNormalizer::entity(
             $this->request(RequestMethod::POST, $endpoint, [
                 'body'    => $document,
                 'headers' => ['Content-Type: application/xml'],
                 'query'   => [
-                    'send_after_import'          => 'true',
-                    'issued'                     => 'true',
+                    'send_after_import'               => 'true',
+                    'issued'                          => 'true',
                     'transport_type_code_for_contact' => $this->setting('transport_type_code'),
                     'document_type_code_for_contact'  => $this->setting('document_type_code'),
                 ],

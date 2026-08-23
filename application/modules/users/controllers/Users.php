@@ -54,22 +54,22 @@ class Users extends Admin_Controller
         }
 
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
-            $db_array      = $this->mdl_users->db_array();
-            $requested_type = (int) $this->input->post('user_type');
+            $db_array        = $this->mdl_users->db_array();
+            $requested_type  = (int) $this->input->post('user_type');
             $current_user_id = (string) $this->session->userdata('user_id');
-            $is_self_edit = $id && (string) $id === $current_user_id;
+            $is_self_edit    = $id && (string) $id === $current_user_id;
 
             // Only allow user_type changes through explicit authorization:
             // - New user creation: set the requested type
             // - Admin editing another user: set the requested type and invalidate sessions
             // - User editing themselves: do not allow type changes (prevents self-escalation)
-            $old_user = $id ? $this->mdl_users->get_by_id($id) : null;
+            $old_user     = $id ? $this->mdl_users->get_by_id($id) : null;
             $role_changed = false;
 
             if ( ! $is_self_edit) {
                 if ( ! $old_user || (int) $old_user->user_type !== $requested_type) {
                     $db_array['user_type'] = $requested_type;
-                    $role_changed = true;
+                    $role_changed          = true;
                 }
             }
 
@@ -221,18 +221,6 @@ class Users extends Admin_Controller
     }
 
     /**
-     * Invalidate all sessions for a user when their role or active status changes,
-     * forcing immediate revocation of any stale privileged sessions.
-     *
-     * @param string|int $user_id
-     */
-    private function invalidate_user_sessions($user_id): void
-    {
-        $this->load->model('sessions/mdl_sessions');
-        $this->mdl_sessions->invalidate_user_sessions($user_id);
-    }
-
-    /**
      * @param $id
      */
     public function delete($id)
@@ -272,5 +260,17 @@ class Users extends Admin_Controller
         $this->mdl_user_clients->delete($user_client_id);
 
         redirect('users/form/' . $user_id);
+    }
+
+    /**
+     * Invalidate all sessions for a user when their role or active status changes,
+     * forcing immediate revocation of any stale privileged sessions.
+     *
+     * @param string|int $user_id
+     */
+    private function invalidate_user_sessions($user_id): void
+    {
+        $this->load->model('sessions/mdl_sessions');
+        $this->mdl_sessions->invalidate_user_sessions($user_id);
     }
 }

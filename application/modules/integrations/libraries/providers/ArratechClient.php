@@ -149,7 +149,7 @@ class ArratechClient implements IntegrationClientInterface
             throw new RuntimeException('Unable to read the Arratech invoice XML document.');
         }
 
-        if (!empty($this->settings['wrap_sbd'])) {
+        if ( ! empty($this->settings['wrap_sbd'])) {
             $xml = $this->wrapStandardBusinessDocument($xml, $metadata);
         }
 
@@ -302,7 +302,7 @@ class ArratechClient implements IntegrationClientInterface
 
     private function wrapStandardBusinessDocument(string $xml, array $metadata): string
     {
-        $source = new DOMDocument();
+        $source                     = new DOMDocument();
         $source->preserveWhiteSpace = false;
         if ( ! @$source->loadXML($xml, LIBXML_NONET | LIBXML_NOBLANKS)) {
             throw new RuntimeException('Arratech document is not valid XML.');
@@ -315,7 +315,7 @@ class ArratechClient implements IntegrationClientInterface
         $xpath = new DOMXPath($source);
         $xpath->registerNamespace('cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
         $xpath->registerNamespace('cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
-        $endpoints = $xpath->query('//cac:AccountingSupplierParty//cbc:EndpointID | //cac:AccountingCustomerParty//cbc:EndpointID');
+        $endpoints   = $xpath->query('//cac:AccountingSupplierParty//cbc:EndpointID | //cac:AccountingCustomerParty//cbc:EndpointID');
         $identifiers = [];
         foreach ($endpoints ?: [] as $node) {
             $identifiers[] = [
@@ -329,13 +329,13 @@ class ArratechClient implements IntegrationClientInterface
         }
 
         $customization = trim((string) $xpath->evaluate('string(/*[local-name()="Invoice"]/*[local-name()="CustomizationID"])'));
-        $profile        = trim((string) $xpath->evaluate('string(/*[local-name()="Invoice"]/*[local-name()="ProfileID"])'));
-        $instance       = 'invoice-' . (string) ($metadata['invoice_id'] ?? bin2hex(random_bytes(8)));
-        $sbdNamespace   = 'http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader';
+        $profile       = trim((string) $xpath->evaluate('string(/*[local-name()="Invoice"]/*[local-name()="ProfileID"])'));
+        $instance      = 'invoice-' . (string) ($metadata['invoice_id'] ?? bin2hex(random_bytes(8)));
+        $sbdNamespace  = 'http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader';
 
-        $wrapped = new DOMDocument('1.0', 'UTF-8');
+        $wrapped               = new DOMDocument('1.0', 'UTF-8');
         $wrapped->formatOutput = false;
-        $root = $wrapped->createElementNS($sbdNamespace, 'StandardBusinessDocument');
+        $root                  = $wrapped->createElementNS($sbdNamespace, 'StandardBusinessDocument');
         $wrapped->appendChild($root);
         $sbdh = $wrapped->createElement('StandardBusinessDocumentHeader');
         $root->appendChild($sbdh);

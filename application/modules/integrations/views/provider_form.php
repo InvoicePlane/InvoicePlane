@@ -43,7 +43,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?php _trans('settings'); ?> (<?php _htmlsc($provider['merchant_type']);  ?>)
+                        <?php _trans('settings'); ?> (<?php _htmlsc($provider['merchant_type']); ?>)
                     </div>
 
                     <div class="panel-body">

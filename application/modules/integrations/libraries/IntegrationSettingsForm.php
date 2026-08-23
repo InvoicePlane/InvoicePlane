@@ -44,8 +44,8 @@ final class IntegrationSettingsForm
                 'placeholder' => is_string($definition['placeholder'] ?? null)
                     ? $definition['placeholder']
                     : self::defaultPlaceholder($defaults[$name] ?? null),
-                'default'     => $defaults[$name] ?? ($type === 'checkbox' ? false : ''),
-                'options'     => $options,
+                'default' => $defaults[$name] ?? ($type === 'checkbox' ? false : ''),
+                'options' => $options,
             ];
         }
 

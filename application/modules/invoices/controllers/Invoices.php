@@ -65,7 +65,7 @@ class Invoices extends Admin_Controller
         $this->load->model('services/mdl_services');
 
         foreach ($invoices as $invoice) {
-            $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
+            $servicesById          = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
             $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
         }
 
@@ -193,7 +193,7 @@ class Invoices extends Admin_Controller
             }
         }
 
-        $servicesById = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
+        $servicesById          = $this->mdl_services->get_names_by_ids([$invoice->service_id]);
         $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
 
         $services = $this->mdl_services->get()->result_array();

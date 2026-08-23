@@ -46,12 +46,12 @@ $quote_idx                    = 1;
                        title="<?php _trans('view_client'); ?>">
                         <?php
                         _htmlsc(format_client($quote));
-                        if (get_setting('enable_services') == 1 && $quote->service_name) {
-                            echo '&nbsp;(';
-                            _htmlsc($quote->service_name);
-                            echo ')';
-                        }
-                        ?>
+                if (get_setting('enable_services') == 1 && $quote->service_name) {
+                    echo '&nbsp;(';
+                    _htmlsc($quote->service_name);
+                    echo ')';
+                }
+                ?>
                     </a>
                 </td>
                 <td class="amount last">

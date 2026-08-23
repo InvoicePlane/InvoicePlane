@@ -330,14 +330,18 @@ if ($einvoice->user) {
                 </li>
 <?php if ( ! empty($einvoice_provider) && ! empty($einvoice_provider['id'])) : ?>
                 <li>
-                      <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/' . $einvoice_provider['id']); ?>">
-                         <i class="fa fa-refresh"></i>
-                         <?php _trans('check_status'); ?>
-                      </a>
+                    <form method="post"
+                          action="<?php echo site_url('integrations/status/' . (int) $invoice_id . '/' . (int) $einvoice_provider['id']); ?>">
+                        <?php _csrf_field(); ?>
+                        <button type="submit" class="btn btn-link">
+                            <i class="fa fa-refresh"></i>
+                            <?php _trans('check_status'); ?>
+                        </button>
+                    </form>
                 </li>
 <?php endif; ?>
                 <li>
-                      <a href="<?php echo site_url('einvoice/history/' . $invoice_id); ?>">
+                      <a href="<?php echo site_url('integrations/history/' . $invoice_id); ?>">
                          <i class="fa fa-history"></i>
                          <?php _trans('view_history'); ?>
                      </a>
@@ -366,7 +370,7 @@ if ($einvoice->user) {
             } else {
                 $lst = 'class="active"';
             }
-?>
+            ?>
                 <li <?php echo $lst; ?>>
 <?php if ($needs_peppol && ! $has_id) : ?>
                     <a href="javascript:void(0);">
@@ -386,7 +390,7 @@ if ($einvoice->user) {
                 </li>
 <?php
         }
-    ?>
+        ?>
                 <li class="divider"></li>
 <?php
     }
@@ -704,11 +708,14 @@ if ($invoice->invoice_status_id != 1) {
                                 </p>
                             <?php endif; ?>
 
-                            <a href="<?php echo site_url('einvoice/status/' . $invoice_id . '/1'); ?>"
-                               class="btn btn-default btn-sm">
-                                <i class="fa fa-refresh"></i>
-                                <?php _trans('check_status'); ?>
-                            </a>
+                            <form method="post"
+                                  action="<?php echo site_url('integrations/status/' . (int) $invoice_id . '/1'); ?>">
+                                <?php _csrf_field(); ?>
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <i class="fa fa-refresh"></i>
+                                    <?php _trans('check_status'); ?>
+                                </button>
+                            </form>
                         </div>
                     </div>
 <?php endif; ?>

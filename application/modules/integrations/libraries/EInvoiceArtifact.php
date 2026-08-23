@@ -14,8 +14,7 @@ final class EInvoiceArtifact
         private string $path,
         private EInvoiceProfile $profile,
         private array $validationErrors = []
-    ) {
-    }
+    ) {}
 
     public function path(): string
     {

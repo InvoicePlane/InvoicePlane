@@ -181,11 +181,11 @@ class CryptorTest extends TestCase
          * of IV + encrypted payload, decrypt should work perfectly. The current
          * code uses strlen()/substr() correctly on binary data.
          */
-        $cryptor = new Cryptor(fmt: Cryptor::FORMAT_B64);
+        $cryptor   = new Cryptor(fmt: Cryptor::FORMAT_B64);
         $plaintext = 'smtp_password_1234';
 
         $ciphertext = $cryptor->encryptString($plaintext, $this->key);
-        $decrypted = $cryptor->decryptString($ciphertext, $this->key);
+        $decrypted  = $cryptor->decryptString($ciphertext, $this->key);
 
         self::assertSame($plaintext, $decrypted);
     }
