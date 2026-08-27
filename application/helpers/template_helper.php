@@ -55,12 +55,22 @@ function render_template_view(string $template_subpath, array $data, bool $retur
 /**
  * Parse a template by predefined template tags.
  *
+ * $escape_values controls whether each substituted value is HTML-escaped
+ * before being inserted. Defaults to false to preserve this function's other
+ * callers: QrCode.php substitutes into plain SEPA/EPC remittance text (escaping
+ * would corrupt the QR payload), and the two template views that call this
+ * already wrap the whole result in _htmlsc() themselves, which would double-
+ * escape if this also escaped. Pass true only when $body is genuinely
+ * rendered as HTML and isn't already escaped by the caller — e.g. the HTML
+ * email body in email_invoice()/email_quote(), where these substituted
+ * values (client_name, custom field values, etc.) previously went in raw.
+ *
  * @param $object
  * @param $body
  *
  * @return mixed
  */
-function parse_template($object, $body)
+function parse_template($object, $body, bool $escape_values = false)
 {
     $allowed_properties = [
         'client_name',
@@ -195,6 +205,10 @@ function parse_template($object, $body)
                             ? $object->{$var}
                             : '';
                     }
+            }
+
+            if ($escape_values) {
+                $replace = htmlspecialchars((string) $replace, ENT_QUOTES, 'UTF-8');
             }
 
             $body = str_replace('{{{' . $var . '}}}', $replace, $body);
