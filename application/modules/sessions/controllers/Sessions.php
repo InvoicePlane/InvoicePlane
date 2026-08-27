@@ -58,39 +58,6 @@ class Sessions extends Base_Controller
         $this->load->view('session_login', $view_data);
     }
 
-    /**
-     * @param $email_address
-     * @param $password
-     */
-    public function authenticate($email_address, $password): bool
-    {
-        $this->load->model('mdl_sessions');
-
-        // IP-based rate limiting mirrors the password-reset throttle.
-        if ($this->_is_ip_rate_limited_login()) {
-            $this->load->helper('file_security');
-            log_message('warning', 'Login IP rate limit exceeded from: ' . sanitize_for_logging($this->input->ip_address()));
-
-            return false;
-        }
-
-        // Per-account lockout (email-keyed).
-        $login_log = $this->_login_log_check($email_address);
-        if (empty($login_log) || $login_log->log_count < 10) {
-            if ($this->mdl_sessions->auth($email_address, $password)) {
-                $this->_login_log_reset($email_address);
-                $this->_reset_ip_login_attempts();
-
-                return true;
-            }
-
-            $this->_login_log_addfailure($email_address);
-            $this->_record_ip_login_attempt();
-        }
-
-        return false;
-    }
-
     public function logout()
     {
         $this->session->sess_destroy();
@@ -356,6 +323,49 @@ class Sessions extends Base_Controller
         }
 
         return $this->load->view('session_passwordreset');
+    }
+
+    /**
+     * Not public: CI3 routes any public controller method directly via URL
+     * segments (e.g. /sessions/sessions/authenticate/<email>/<password>),
+     * which would let this bypass the login form, CSRF, and POST entirely
+     * with credentials landing in the URL, logs, and browser history.
+     *
+     * @param $email_address
+     * @param $password
+     */
+    private function authenticate($email_address, $password): bool
+    {
+        // Defense-in-depth: even called internally, only ever from a POST login.
+        if ($this->input->method() !== 'post') {
+            return false;
+        }
+
+        $this->load->model('mdl_sessions');
+
+        // IP-based rate limiting mirrors the password-reset throttle.
+        if ($this->_is_ip_rate_limited_login()) {
+            $this->load->helper('file_security');
+            log_message('warning', 'Login IP rate limit exceeded from: ' . sanitize_for_logging($this->input->ip_address()));
+
+            return false;
+        }
+
+        // Per-account lockout (email-keyed).
+        $login_log = $this->_login_log_check($email_address);
+        if (empty($login_log) || $login_log->log_count < 10) {
+            if ($this->mdl_sessions->auth($email_address, $password)) {
+                $this->_login_log_reset($email_address);
+                $this->_reset_ip_login_attempts();
+
+                return true;
+            }
+
+            $this->_login_log_addfailure($email_address);
+            $this->_record_ip_login_attempt();
+        }
+
+        return false;
     }
 
     /**
