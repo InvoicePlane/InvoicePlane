@@ -378,7 +378,7 @@ class Sessions extends Base_Controller
     {
         $max_attempts   = (int) env('LOGIN_IP_MAX_ATTEMPTS', 20);
         $window_minutes = (int) env('LOGIN_IP_WINDOW_MINUTES', 15);
-        $login_log      = $this->_login_log_check($this->_login_ip_log_key($this->input->ip_address()));
+        $login_log      = $this->_rate_limit_log_lookup($this->_login_ip_log_key($this->input->ip_address()));
 
         return ! empty($login_log) && $login_log->log_count >= $max_attempts
             && $this->_login_log_is_within_window($login_log, $window_minutes * 60);
@@ -408,6 +408,21 @@ class Sessions extends Base_Controller
     private function _login_ip_log_key(string $ip_address): string
     {
         return 'login_ip:' . hash('sha256', $ip_address);
+    }
+
+    /**
+     * Bare ip_login_log lookup, with none of _login_log_check()'s hardcoded
+     * 10-attempts/12-hour auto-reset. That policy belongs only to the per-account
+     * and per-token lockouts it was written for — the IP/email rate limiters each
+     * have their own configurable max-attempts/window and already reset the
+     * counter themselves (in _record_rate_limited_attempt()) once that window
+     * elapses. Checking those keys through _login_log_check() would let its
+     * hardcoded 12-hour rule silently override any configured window longer
+     * than 12 hours.
+     */
+    private function _rate_limit_log_lookup(string $key)
+    {
+        return $this->db->where('login_name', $key)->get('ip_login_log')->row();
     }
 
     /**
@@ -448,7 +463,7 @@ class Sessions extends Base_Controller
         $max_attempts   = (int) env('PASSWORD_RESET_IP_MAX_ATTEMPTS', 5);
         $window_minutes = (int) env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
         $ip_address     = $this->input->ip_address();
-        $login_log      = $this->_login_log_check($this->_password_reset_ip_log_key($ip_address));
+        $login_log      = $this->_rate_limit_log_lookup($this->_password_reset_ip_log_key($ip_address));
 
         if ( ! empty($login_log) && $login_log->log_count >= $max_attempts && $this->_login_log_is_within_window($login_log, $window_minutes * 60)) {
             $this->load->helper('file_security');
@@ -484,7 +499,7 @@ class Sessions extends Base_Controller
     {
         $max_attempts = (int) env('PASSWORD_RESET_EMAIL_MAX_ATTEMPTS', 3);
         $window_hours = (int) env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
-        $login_log    = $this->_login_log_check($this->_password_reset_email_log_key($email));
+        $login_log    = $this->_rate_limit_log_lookup($this->_password_reset_email_log_key($email));
 
         if ( ! empty($login_log) && $login_log->log_count >= $max_attempts && $this->_login_log_is_within_window($login_log, $window_hours * 3600)) {
             log_message('info', trans('log_email_rate_limit_check') . ': ' . (int) $login_log->log_count . ' attempts (hash: ' . hash('sha256', $email) . ')');
@@ -522,7 +537,7 @@ class Sessions extends Base_Controller
 
     private function _record_rate_limited_attempt(string $login_name, int $window_seconds): void
     {
-        $login_log = $this->_login_log_check($login_name);
+        $login_log = $this->_rate_limit_log_lookup($login_name);
 
         if ( ! empty($login_log) && ! $this->_login_log_is_within_window($login_log, $window_seconds)) {
             $this->_login_log_reset($login_name);
@@ -592,26 +607,22 @@ class Sessions extends Base_Controller
      * table the count is incremented by 1, otherwise
      * a record for the given user is created.
      *
+     * Atomic upsert: concurrent failures for the same key (e.g. a burst of
+     * brute-force attempts, which is exactly the scenario this counter exists
+     * to catch) would otherwise race on a read-then-write log_count + 1 and
+     * undercount. login_name is this table's primary key, so this increments
+     * in one step.
+     *
      * @param string $username
      */
     private function _login_log_addfailure($username)
     {
-        if (empty($login_log_check = $this->_login_log_check($username))) {
-            //create the log
-            $this->db->insert('ip_login_log', [
-                'login_name'           => $username,
-                'log_count'            => 1,
-                'log_create_timestamp' => date('c'),
-            ]);
-        } else {
-            //update the log
-            $this->db->set([
-                'log_count'            => $login_log_check->log_count + 1,
-                'log_create_timestamp' => date('c'),
-            ])
-                ->where('login_name', $username)
-                ->update('ip_login_log');
-        }
+        $this->db->query(
+            'INSERT INTO ip_login_log (login_name, log_count, log_create_timestamp)
+             VALUES (?, 1, ?)
+             ON DUPLICATE KEY UPDATE log_count = log_count + 1, log_create_timestamp = VALUES(log_create_timestamp)',
+            [$username, date('c')]
+        );
     }
 
     /**
