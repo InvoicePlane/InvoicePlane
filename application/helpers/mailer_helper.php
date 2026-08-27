@@ -72,7 +72,12 @@ function email_invoice(
         $_SERVER['CIIname'] = parse_template($db_invoice, $_SERVER['CIIname']);
     }
 
-    $message = parse_template($db_invoice, $body);
+    // $escape_values = true: the substituted fields (client_name, custom field
+    // values, etc.) are untrusted and this body is sent as HTML (phpmail_send()
+    // always calls isHTML()) — escape them so they can't inject markup into the
+    // admin-composed template. $body itself is untouched, only the {{{...}}}
+    // substitutions are escaped.
+    $message = parse_template($db_invoice, $body, true);
     $subject = parse_template($db_invoice, $subject);
     $cc      = parse_template($db_invoice, $cc);
     $bcc     = parse_template($db_invoice, $bcc);
@@ -137,7 +142,10 @@ function email_quote(
 
     $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
-    $message = parse_template($db_quote, $body);
+    // See the matching comment in email_invoice() above: this body is sent as
+    // HTML, so the substituted values (untrusted) are escaped; $body itself
+    // (the admin-composed template) is untouched.
+    $message = parse_template($db_quote, $body, true);
     $subject = parse_template($db_quote, $subject);
     $cc      = parse_template($db_quote, $cc);
     $bcc     = parse_template($db_quote, $bcc);
