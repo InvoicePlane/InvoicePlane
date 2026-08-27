@@ -86,6 +86,7 @@ class PaypalLib
     {
         log_message('debug', 'Paypal library order capturing started');
         try {
+            $order_id = $this->validateOrderId($order_id);
             $response = $this->client->request('POST', 'v2/checkout/orders/' . $order_id . '/capture', [
                 'headers' => $this->buildHeaders([
                     'request_id'   => $this->generateRequestId('capture'),
@@ -95,10 +96,10 @@ class PaypalLib
             log_message('debug', 'Paypal library order capturing completed');
 
             return ['status' => true, 'response' => $response];
-        } catch (ClientException $clientException) {
+        } catch (ClientException|InvalidArgumentException $exception) {
             log_message('debug', 'Paypal library order capturing failed');
 
-            return ['status' => false, 'error' => $clientException];
+            return ['status' => false, 'error' => $exception];
         }
     }
 
@@ -111,6 +112,7 @@ class PaypalLib
     {
         log_message('debug', 'Paypal library show order started');
         try {
+            $order_id = $this->validateOrderId($order_id);
             $response = $this->client->request('GET', 'v2/checkout/orders/' . $order_id, [
                 'headers' => $this->buildHeaders([
                     'content_type' => 'application/json',
@@ -120,10 +122,10 @@ class PaypalLib
             log_message('debug', 'Paypal library show order completed');
 
             return ['status' => true, 'response' => $response];
-        } catch (ClientException $clientException) {
+        } catch (ClientException|InvalidArgumentException $exception) {
             log_message('debug', 'Paypal library show order failed');
 
-            return ['status' => false, 'error' => $clientException];
+            return ['status' => false, 'error' => $exception];
         }
     }
 
@@ -188,5 +190,24 @@ class PaypalLib
 
             return $clientException->getResponse()->getBody();
         }
+    }
+
+    /**
+     * Validates a PayPal Order ID before it is interpolated into a request URL.
+     *
+     * PayPal Order IDs are alphanumeric (observed pattern: uppercase letters and
+     * digits). Rejecting anything else — in particular path segments like "/" or
+     * "." — prevents a crafted order_id from redirecting the request to a
+     * different PayPal API endpoint than v2/checkout/orders/{id}[/capture].
+     *
+     * @throws InvalidArgumentException on invalid format
+     */
+    private function validateOrderId(string $order_id): string
+    {
+        if ( ! preg_match('/^[A-Za-z0-9]+$/', $order_id)) {
+            throw new InvalidArgumentException('Invalid PayPal order ID format');
+        }
+
+        return $order_id;
     }
 }

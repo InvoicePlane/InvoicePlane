@@ -21,14 +21,27 @@ class Cron extends Base_Controller
      */
     public function recur($cron_key = null)
     {
+        $this->load->helper('file_security');
+
+        // Reject once the failed-attempt threshold is hit, before even checking the key,
+        // so this endpoint's only credential can't be brute-forced at unlimited speed.
+        if ($this->_is_cron_rate_limited()) {
+            log_message('warning', '[Cron Recurring Invoices] Rate limit exceeded from: '
+                . sanitize_for_logging($this->input->ip_address()));
+            show_error(trans('wrong_cron_key_provided'), 429);
+            exit('Too many attempts.');
+        }
+
         // Check the provided cron key
         if ( ! hash_equals((string) get_setting('cron_key'), (string) $cron_key)) {
-            $this->load->helper('file_security');
+            $this->_record_cron_rate_limit_attempt();
             log_message('error', '[Cron Recurring Invoices] Wrong cron key provided! '
                 . sanitize_for_logging((string) $cron_key));
             show_error(trans('wrong_cron_key_provided'), 500);
             exit('Wrong cron key!');
         }
+
+        $this->_reset_cron_rate_limit();
 
         $this->load->model([
             'invoices/mdl_invoices_recurring',
@@ -57,6 +70,21 @@ class Cron extends Base_Controller
 
             if (IP_DEBUG) {
                 log_message('debug', '[Cron Recurring Invoices] Recurring Info: ' . json_encode($recurInfo, JSON_PRETTY_PRINT));
+            }
+
+            // Atomically claim this recurring invoice before doing any work, so a
+            // concurrent cron run (or a replayed request) that read the same "due"
+            // row can't also process it and generate a duplicate invoice/email.
+            if ( ! $this->mdl_invoices_recurring->claim_for_processing(
+                $invoice_recurring->invoice_recurring_id,
+                $invoice_recurring->recur_next_date,
+                $invoice_recurring->recur_frequency
+            )) {
+                if (IP_DEBUG) {
+                    log_message('debug', '[Cron Recurring Invoices] Recurring Invoice with id '
+                        . $invoice_recurring->invoice_recurring_id . ' was already claimed by another run');
+                }
+                continue;
             }
 
             // This is the original invoice id
@@ -99,11 +127,8 @@ class Cron extends Base_Controller
                 log_message('debug', '[Cron Recurring Invoices] Recurring Invoice with sourceId ' . $source_id . ' was copied to id ' . $target_id);
             }
 
-            // Update the next recur date for the recurring invoice
-            $this->mdl_invoices_recurring->set_next_recur_date($invoice_recurring->invoice_recurring_id);
-            if (IP_DEBUG) {
-                log_message('debug', '[Cron Recurring Invoices] Next Recurring date was set');
-            }
+            // Note: recur_next_date was already advanced atomically by claim_for_processing()
+            // above, before this invoice was created.
 
             // Email the new invoice if applicable
             if (get_setting('automatic_email_on_recur') && mailer_configured()) {
@@ -182,5 +207,82 @@ class Cron extends Base_Controller
         if (IP_DEBUG) {
             log_message('debug', '[Cron Recurring Invoices] ' . count($invoices_recurring) . ' recurring invoices processed');
         }
+    }
+
+    /**
+     * Returns true when the current IP has exceeded the wrong-cron-key attempt
+     * threshold. Backed by the ip_login_log table (mirrors the session-login
+     * and password-reset IP rate limiters) since this endpoint is unauthenticated
+     * and has no session to key off.
+     */
+    private function _is_cron_rate_limited(): bool
+    {
+        $max_attempts   = (int) env('CRON_IP_MAX_ATTEMPTS', 10);
+        $window_minutes = (int) env('CRON_IP_WINDOW_MINUTES', 15);
+        $log            = $this->_cron_rate_limit_log();
+
+        if (empty($log) || $log->log_count < $max_attempts) {
+            return false;
+        }
+
+        return $this->_cron_rate_limit_log_is_within_window($log, $window_minutes * 60);
+    }
+
+    /**
+     * Records one wrong-cron-key attempt for the current IP, resetting the
+     * counter first if the previous window has already elapsed.
+     */
+    private function _record_cron_rate_limit_attempt(): void
+    {
+        $window_minutes = (int) env('CRON_IP_WINDOW_MINUTES', 15);
+        $key            = $this->_cron_rate_limit_key();
+        $log            = $this->_cron_rate_limit_log();
+
+        if ( ! empty($log) && ! $this->_cron_rate_limit_log_is_within_window($log, $window_minutes * 60)) {
+            $this->_reset_cron_rate_limit();
+            $log = null;
+        }
+
+        if (empty($log)) {
+            $this->db->insert('ip_login_log', [
+                'login_name'           => $key,
+                'log_count'            => 1,
+                'log_create_timestamp' => date('c'),
+            ]);
+        } else {
+            $this->db->set([
+                'log_count'            => $log->log_count + 1,
+                'log_create_timestamp' => date('c'),
+            ])->where('login_name', $key)->update('ip_login_log');
+        }
+    }
+
+    /**
+     * Clears the wrong-cron-key attempt counter for the current IP.
+     */
+    private function _reset_cron_rate_limit(): void
+    {
+        $this->db->delete('ip_login_log', ['login_name' => $this->_cron_rate_limit_key()]);
+    }
+
+    private function _cron_rate_limit_log()
+    {
+        return $this->db->where('login_name', $this->_cron_rate_limit_key())->get('ip_login_log')->row();
+    }
+
+    private function _cron_rate_limit_log_is_within_window(object $log, int $window_seconds): bool
+    {
+        try {
+            $timestamp = new DateTime($log->log_create_timestamp);
+        } catch (Exception) {
+            return false;
+        }
+
+        return $timestamp->getTimestamp() > (time() - $window_seconds);
+    }
+
+    private function _cron_rate_limit_key(): string
+    {
+        return 'cron_key:' . hash('sha256', $this->input->ip_address());
     }
 }
