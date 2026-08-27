@@ -177,9 +177,6 @@ function email_quote(
  */
 function email_quote_status(string $quote_id, $status)
 {
-    ini_set('display_errors', 'on');
-    error_reporting(E_ALL);
-
     if ( ! mailer_configured()) {
         return false;
     }
@@ -191,19 +188,25 @@ function email_quote_status(string $quote_id, $status)
     $index    = env('REMOVE_INDEXPHP', true) ? '' : 'index.php';
     $base_url = base_url('/' . $index . '/quotes/view/' . $quote_id);
 
+    // This email is sent as HTML (phpmailer_helper.php sets isHTML()); the client name is
+    // user-controlled (set by an admin, but reflected via a guest-triggered action here), so
+    // it must be escaped before landing in the subject/body just like the link.
+    $client_name = htmlspecialchars((string) $quote->client_name, ENT_QUOTES, 'UTF-8');
+    $safe_url    = htmlspecialchars($base_url, ENT_QUOTES, 'UTF-8');
+
     $user_email = $quote->user_email;
     $subject    = sprintf(
         trans('quote_status_email_subject'),
-        $quote->client_name,
+        $client_name,
         mb_strtolower(lang($status)),
         $quote->quote_number
     );
     $body = sprintf(
         nl2br(trans('quote_status_email_body')),
-        $quote->client_name,
+        $client_name,
         mb_strtolower(lang($status)),
         $quote->quote_number,
-        '<a href="' . $base_url . '">' . $base_url . '</a>'
+        '<a href="' . $safe_url . '">' . $safe_url . '</a>'
     );
 
     return phpmail_send($user_email, $user_email, $subject, $body);
