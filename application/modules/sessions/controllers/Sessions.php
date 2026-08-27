@@ -360,17 +360,18 @@ class Sessions extends Base_Controller
 
     /**
      * Returns true when the current IP has exceeded the login attempt threshold.
+     *
+     * Backed by the ip_login_log table (not the session) so the limit survives
+     * an attacker omitting or rotating their session cookie between requests.
      */
     private function _is_ip_rate_limited_login(): bool
     {
         $max_attempts   = (int) env('LOGIN_IP_MAX_ATTEMPTS', 20);
         $window_minutes = (int) env('LOGIN_IP_WINDOW_MINUTES', 15);
-        $session_key    = 'login_attempts_ip_' . md5($this->input->ip_address());
-        $attempts       = $this->session->userdata($session_key) ?: [];
-        $cutoff         = time() - ($window_minutes * 60);
-        $attempts       = array_values(array_filter($attempts, fn ($t) => $t > $cutoff));
+        $login_log      = $this->_login_log_check($this->_login_ip_log_key($this->input->ip_address()));
 
-        return count($attempts) >= $max_attempts;
+        return ! empty($login_log) && $login_log->log_count >= $max_attempts
+            && $this->_login_log_is_within_window($login_log, $window_minutes * 60);
     }
 
     /**
@@ -378,10 +379,12 @@ class Sessions extends Base_Controller
      */
     private function _record_ip_login_attempt(): void
     {
-        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
-        $attempts    = $this->session->userdata($session_key) ?: [];
-        $attempts[]  = time();
-        $this->session->set_userdata($session_key, $attempts);
+        $window_minutes = (int) env('LOGIN_IP_WINDOW_MINUTES', 15);
+
+        $this->_record_rate_limited_attempt(
+            $this->_login_ip_log_key($this->input->ip_address()),
+            $window_minutes * 60
+        );
     }
 
     /**
@@ -389,8 +392,12 @@ class Sessions extends Base_Controller
      */
     private function _reset_ip_login_attempts(): void
     {
-        $session_key = 'login_attempts_ip_' . md5($this->input->ip_address());
-        $this->session->unset_userdata($session_key);
+        $this->_login_log_reset($this->_login_ip_log_key($this->input->ip_address()));
+    }
+
+    private function _login_ip_log_key(string $ip_address): string
+    {
+        return 'login_ip:' . hash('sha256', $ip_address);
     }
 
     /**
@@ -450,7 +457,7 @@ class Sessions extends Base_Controller
     {
         $window_minutes = (int) env('PASSWORD_RESET_IP_WINDOW_MINUTES', 60);
 
-        $this->_record_password_reset_log_attempt(
+        $this->_record_rate_limited_attempt(
             $this->_password_reset_ip_log_key($this->input->ip_address()),
             $window_minutes * 60
         );
@@ -487,7 +494,7 @@ class Sessions extends Base_Controller
     {
         $window_hours = (int) env('PASSWORD_RESET_EMAIL_WINDOW_HOURS', 1);
 
-        $this->_record_password_reset_log_attempt(
+        $this->_record_rate_limited_attempt(
             $this->_password_reset_email_log_key($email),
             $window_hours * 3600
         );
@@ -503,7 +510,7 @@ class Sessions extends Base_Controller
         return 'password_reset_email:' . hash('sha256', mb_strtolower($email));
     }
 
-    private function _record_password_reset_log_attempt(string $login_name, int $window_seconds): void
+    private function _record_rate_limited_attempt(string $login_name, int $window_seconds): void
     {
         $login_log = $this->_login_log_check($login_name);
 
