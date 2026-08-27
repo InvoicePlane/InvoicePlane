@@ -72,21 +72,6 @@ class Cron extends Base_Controller
                 log_message('debug', '[Cron Recurring Invoices] Recurring Info: ' . json_encode($recurInfo, JSON_PRETTY_PRINT));
             }
 
-            // Atomically claim this recurring invoice before doing any work, so a
-            // concurrent cron run (or a replayed request) that read the same "due"
-            // row can't also process it and generate a duplicate invoice/email.
-            if ( ! $this->mdl_invoices_recurring->claim_for_processing(
-                $invoice_recurring->invoice_recurring_id,
-                $invoice_recurring->recur_next_date,
-                $invoice_recurring->recur_frequency
-            )) {
-                if (IP_DEBUG) {
-                    log_message('debug', '[Cron Recurring Invoices] Recurring Invoice with id '
-                        . $invoice_recurring->invoice_recurring_id . ' was already claimed by another run');
-                }
-                continue;
-            }
-
             // This is the original invoice id
             $source_id = $invoice_recurring->invoice_id;
 
@@ -115,20 +100,49 @@ class Cron extends Base_Controller
                 'invoice_discount_percent' => $invoice->invoice_discount_percent,
             ];
 
-            // This is the new invoice id
-            $target_id = $this->mdl_invoices->create($db_array, false);
+            // Claim the recurring invoice and create/copy it in one transaction.
+            // Claiming (the conditioned recur_next_date update) prevents a concurrent
+            // cron run from also processing this row; wrapping it with the invoice
+            // creation means that if creation/copy fails, the claim rolls back too,
+            // so this billing cycle is retried on the next run instead of the
+            // schedule silently advancing with no invoice ever generated.
+            $this->db->trans_start();
+
+            $claimed = $this->mdl_invoices_recurring->claim_for_processing(
+                $invoice_recurring->invoice_recurring_id,
+                $invoice_recurring->recur_next_date,
+                $invoice_recurring->recur_frequency
+            );
+
+            $target_id = null;
+            if ($claimed) {
+                // This is the new invoice id
+                $target_id = $this->mdl_invoices->create($db_array, false);
+
+                // Copy the original invoice to the new invoice
+                $this->mdl_invoices->copy_invoice($source_id, $target_id, false);
+            }
+
+            $this->db->trans_complete();
+
+            if ( ! $claimed) {
+                if (IP_DEBUG) {
+                    log_message('debug', '[Cron Recurring Invoices] Recurring Invoice with id '
+                        . $invoice_recurring->invoice_recurring_id . ' was already claimed by another run');
+                }
+                continue;
+            }
+
+            if ( ! $this->db->trans_status()) {
+                log_message('error', '[Cron Recurring Invoices] Failed to create/copy invoice for recurring id '
+                    . $invoice_recurring->invoice_recurring_id . '; schedule advance rolled back, will retry next run');
+                continue;
+            }
+
             if (IP_DEBUG) {
                 log_message('debug', '[Cron Recurring Invoices] Recurring Invoice with id ' . $target_id . ' was created');
-            }
-
-            // Copy the original invoice to the new invoice
-            $this->mdl_invoices->copy_invoice($source_id, $target_id, false);
-            if (IP_DEBUG) {
                 log_message('debug', '[Cron Recurring Invoices] Recurring Invoice with sourceId ' . $source_id . ' was copied to id ' . $target_id);
             }
-
-            // Note: recur_next_date was already advanced atomically by claim_for_processing()
-            // above, before this invoice was created.
 
             // Email the new invoice if applicable
             if (get_setting('automatic_email_on_recur') && mailer_configured()) {
@@ -240,21 +254,17 @@ class Cron extends Base_Controller
 
         if ( ! empty($log) && ! $this->_cron_rate_limit_log_is_within_window($log, $window_minutes * 60)) {
             $this->_reset_cron_rate_limit();
-            $log = null;
         }
 
-        if (empty($log)) {
-            $this->db->insert('ip_login_log', [
-                'login_name'           => $key,
-                'log_count'            => 1,
-                'log_create_timestamp' => date('c'),
-            ]);
-        } else {
-            $this->db->set([
-                'log_count'            => $log->log_count + 1,
-                'log_create_timestamp' => date('c'),
-            ])->where('login_name', $key)->update('ip_login_log');
-        }
+        // Atomic upsert: concurrent wrong-key attempts from the same IP would race
+        // on a read-then-write log_count + 1, undercounting attempts under load.
+        // login_name is this table's primary key, so this increments in one step.
+        $this->db->query(
+            'INSERT INTO ip_login_log (login_name, log_count, log_create_timestamp)
+             VALUES (?, 1, ?)
+             ON DUPLICATE KEY UPDATE log_count = log_count + 1, log_create_timestamp = VALUES(log_create_timestamp)',
+            [$key, date('c')]
+        );
     }
 
     /**
