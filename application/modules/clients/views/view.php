@@ -306,10 +306,10 @@ if (($client->client_einvoicing_active ?? 0) && ! $user_fields_nook) {
                             <table class="table no-margin">
                                 <tr>
                                     <th>e-<?php _htmlsc(trans('invoice') . ' ' . trans('version') . ' (' . trans('send')); ?>)</th>
-                                    <td><?php 
+                                    <td><?php
                                         // Handle missing einvoicing fields for pre-1.6.3 databases
                                         $einvoicing_version = $client->client_einvoicing_version ?? '';
-                                        echo (($client->client_einvoicing_active ?? 0) && $einvoicing_version) ? get_xml_full_name($einvoicing_version) : trans('none'); 
+                                        echo (($client->client_einvoicing_active ?? 0) && $einvoicing_version) ? get_xml_full_name($einvoicing_version) : trans('none');
                                     ?></td>
                                 </tr>
                             </table>
@@ -435,7 +435,11 @@ if ($client->client_surname != '') { // Client is not a company
                             <table class="table no-margin">
                                 <tr>
                                     <th><?php _trans('birthdate'); ?></th>
-                                    <td><?php echo format_date($client->client_birthdate); ?></td>
+                                    <td>
+                                        <?php echo (!empty($client->client_birthdate) && $client->client_birthdate !== '0000-00-00') 
+                                            ? htmlsc(format_date($client->client_birthdate)) 
+                                            : ''; ?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><?php _trans('gender'); ?></th>
@@ -446,7 +450,7 @@ if ($client->client_surname != '') { // Client is not a company
 ?>
                                 <tr>
                                     <th><?php _trans('sumex_ssn'); ?></th>
-                                    <td><?php echo format_avs($client->client_avs) ?></td>
+                                    <td><?php _htmlsc(format_avs($client->client_avs)); ?></td>
                                 </tr>
 
                                 <tr>

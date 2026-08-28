@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Invoices extends Response_Model
 {
+    use Password_Encryption_Trait;
+
     public $table = 'ip_invoices';
 
     public $primary_key = 'ip_invoices.invoice_id';
@@ -56,7 +58,35 @@ class Mdl_Invoices extends Response_Model
         $this->db->select("
             SQL_CALC_FOUND_ROWS
             ip_quotes.*,
-            ip_users.*,
+            ip_users.user_id,
+            ip_users.user_type,
+            ip_users.user_date_created,
+            ip_users.user_date_modified,
+            ip_users.user_name,
+            ip_users.user_company,
+            ip_users.user_address_1,
+            ip_users.user_address_2,
+            ip_users.user_city,
+            ip_users.user_state,
+            ip_users.user_zip,
+            ip_users.user_country,
+            ip_users.user_phone,
+            ip_users.user_fax,
+            ip_users.user_mobile,
+            ip_users.user_email,
+            ip_users.user_web,
+            ip_users.user_vat_id,
+            ip_users.user_tax_code,
+            ip_users.user_active,
+            ip_users.user_language,
+            ip_users.user_subscribernumber,
+            ip_users.user_iban,
+            ip_users.user_gln,
+            ip_users.user_rcc,
+            ip_users.user_bank,
+            ip_users.user_bic,
+            ip_users.user_remittance_text,
+            ip_users.user_invoicing_contact,
             ip_clients.*,
             ip_invoice_sumex.*,
             ip_invoice_amounts.invoice_amount_id,
@@ -71,6 +101,29 @@ class Mdl_Invoices extends Response_Model
             DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
             (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date IS NOT NULL) WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
             ip_invoices.*", false);
+    }
+
+    public function save($id = null, $db_array = null)
+    {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('invoice_password', $db_array)) {
+            $db_array['invoice_password'] = $this->encrypt_password($db_array['invoice_password']);
+        }
+
+        return parent::save($id, $db_array);
+    }
+
+    public function encrypt_invoice_password($password): ?string
+    {
+        return $this->encrypt_password($password);
+    }
+
+    public function decrypt_invoice_password($password): string
+    {
+        return $this->decrypt_password($password);
     }
 
     public function default_order_by()
@@ -165,6 +218,14 @@ class Mdl_Invoices extends Response_Model
      */
     public function create($db_array = null, $include_invoice_tax_rates = true)
     {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('invoice_password', $db_array)) {
+            $db_array['invoice_password'] = $this->encrypt_password($db_array['invoice_password']);
+        }
+
         $invoice_id = parent::save(null, $db_array);
 
         $inv           = $this->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
@@ -444,9 +505,10 @@ class Mdl_Invoices extends Response_Model
      */
     public function get_url_key()
     {
-        $this->load->helper('string');
+        $this->load->helper('ip_security');
 
-        return random_string('alnum', 32);
+        // 16 bytes -> 32 hexadecimal characters (matches the guest-view url_key format).
+        return generate_secure_token(16);
     }
 
     /**
@@ -668,5 +730,50 @@ class Mdl_Invoices extends Response_Model
             $this->db->set('invoice_date_due', $this->get_date_due($current_date));
             $this->db->update('ip_invoices');
         }
+    }
+
+    /**
+     * Check if the current user has access to this invoice.
+     *
+     * Security: Prevents IDOR (Insecure Direct Object Reference) vulnerabilities
+     * by verifying the user owns or has access to the requested invoice.
+     *
+     * @param int $invoice_id The invoice ID to check
+     *
+     * @return bool True if user has access, false otherwise
+     */
+    public function can_user_access($invoice_id)
+    {
+        $CI = & get_instance();
+
+        // Normalize to integer to prevent type juggling
+        $user_type  = (int) $CI->session->userdata('user_type');
+        $user_id    = (int) $CI->session->userdata('user_id');
+        $invoice_id = (int) $invoice_id;
+
+        // Admin users have access to all invoices
+        if ($user_type === 1) {
+            return true;
+        }
+
+        // Get the invoice
+        $invoice = $this->get_by_id($invoice_id);
+        if ( ! $invoice) {
+            return false;
+        }
+
+        // Guest users (type 2) - check if invoice belongs to their assigned clients
+        if ($user_type === 2) {
+            $CI->load->model('user_clients/mdl_user_clients');
+
+            $user_clients = $CI->mdl_user_clients->assigned_to($user_id)->get()->result();
+            // Ensure all client IDs are integers for strict comparison
+            $client_ids = array_map('intval', array_column($user_clients, 'client_id'));
+
+            return in_array((int) $invoice->client_id, $client_ids, true);
+        }
+
+        // Regular users - check if they created the invoice
+        return (int) $invoice->user_id === $user_id;
     }
 }

@@ -119,20 +119,63 @@ Engage with the InvoicePlane community by:
 
 ### Setting Up Your Development Environment
 
-1. **Clone the Repository & Set Up Docker**
+Follow the three-phase development workflow outlined in [INSTALLATION.md](docs/INSTALLATION.md):
+
+#### Phase 1: Prepare (Initial Setup)
+
+1. **Clone the Repository**
    ```sh
    git clone https://github.com/InvoicePlane/InvoicePlane.git
    cd InvoicePlane
-   cp .env.example .env
-   docker-compose up --build -d
    ```
 
-2. **Install Dependencies (if applicable)**
+2. **Install Dependencies**
    ```sh
-   composer install
-   yarn install
-   yarn grunt
+   composer install    # PHP dependencies
+   yarn install       # JavaScript dependencies
+   yarn build         # Build frontend assets
    ```
+
+3. **Configure Application** — only needed for `docker-compose.yml` below, and only if you want
+   to set it up yourself (see Phase 2):
+   ```sh
+   cp ipconfig.php.example ipconfig.php
+   ```
+   Edit `ipconfig.php` with your database and URL settings.
+
+#### Phase 2: StartMeUp (Launch Environment)
+
+Two Docker setups are available — see [resources/docker/README.md](../resources/docker/README.md)
+for the full comparison; pick whichever matches what you're doing:
+
+- **[`compose.yml`](../compose.yml)** — self-contained, one command, good for quickly spinning
+  up InvoicePlane to test something.
+- **[`docker-compose.yml`](../docker-compose.yml)** — separated `php`/`nginx`/`db`/`phpmyadmin`
+  services that bind-mount your working tree, so PHP/frontend edits are reflected immediately
+  without a rebuild. **This is what you want for active development.**
+
+```sh
+docker compose -f docker-compose.yml up -d --build
+```
+
+`ipconfig.php` is generated automatically on first run if you skipped step 3 above.
+
+Add `127.0.0.1 ivpl.local` to your `/etc/hosts` file first — the bundled nginx config expects
+that hostname (see [resources/docker/README.md](../resources/docker/README.md) for why).
+
+Access:
+- **InvoicePlane**: http://ivpl.local
+- **phpMyAdmin**: http://localhost:8081
+
+#### Phase 3: Workflow (Daily Development)
+
+1. **Make changes** to PHP or frontend files
+2. **Rebuild assets** if needed: `yarn build` or `grunt watch`
+3. **Test changes** at http://ivpl.local
+4. **Run linters**: `composer check`
+5. **Commit and push** your changes
+
+For detailed workflow instructions, see [INSTALLATION.md - Development Workflow](docs/INSTALLATION.md#development-workflow).
 
 ### Coding Standards
 

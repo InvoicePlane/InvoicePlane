@@ -45,8 +45,6 @@ class Invoice_Groups extends Admin_Controller
             redirect('invoice_groups');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
-
         if ($this->mdl_invoice_groups->run_validation()) {
             $this->mdl_invoice_groups->save($id);
             redirect('invoice_groups');
@@ -70,6 +68,10 @@ class Invoice_Groups extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('invoice_groups/index')) {
+            return;
+        }
+
         $this->mdl_invoice_groups->delete($id);
         redirect('invoice_groups');
     }

@@ -44,6 +44,6 @@ class Ajax extends Admin_Controller
             $task->task_price = format_amount($task->task_price);
         }
 
-        echo json_encode($tasks);
+        $this->json_encode_ajax($tasks);
     }
 }

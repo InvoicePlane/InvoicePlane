@@ -1,0 +1,120 @@
+name: Yarn Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_type:
+        description: 'Update scope'
+        required: true
+        type: choice
+        options:
+          - security-updates
+          - patch-minor
+          - all-latest
+        default: 'security-updates'
+  schedule:
+    - cron: '0 10 * * 1'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Requires a PAT secret named PAT_TOKEN with repo and workflow scopes to open pull requests.
+# https://github.com/settings/tokens
+
+jobs:
+  update:
+    name: Update Yarn dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Install current dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Security audit
+        run: yarn audit --json > audit-report.json || true
+
+      - name: Update (security only)
+        if: >
+          github.event.inputs.update_type == 'security-updates' ||
+          github.event_name == 'schedule'
+        run: |
+          if [ -f audit-report.json ]; then
+            PKGS=$(grep -o '"module_name":"[^"]*"' audit-report.json | cut -d'"' -f4 | sort -u || true)
+            for pkg in $PKGS; do
+              yarn upgrade "$pkg" --latest || true
+            done
+          fi
+
+      - name: Update (patch & minor)
+        if: github.event.inputs.update_type == 'patch-minor'
+        run: yarn upgrade
+
+      - name: Update (all latest)
+        if: github.event.inputs.update_type == 'all-latest'
+        run: yarn upgrade --latest
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet yarn.lock; then
+            echo "detected=false" >> $GITHUB_OUTPUT
+          else
+            echo "detected=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build changed summary
+        if: steps.changes.outputs.detected == 'true'
+        id: summary
+        run: |
+          node .github/scripts/generate-package-update-report.cjs
+          echo "PACKAGES<<EOF" >> $GITHUB_OUTPUT
+          cat updated-packages.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create pull request
+        if: steps.changes.outputs.detected == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          commit-message: "chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'security-updates' }})"
+          branch: automated/yarn-update-${{ github.run_number }}
+          delete-branch: false
+          title: "chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'security-updates' }})"
+          body: |
+            ## Yarn dependency update
+
+            **Update scope:** ${{ github.event.inputs.update_type || 'security-updates' }}
+            **Triggered by:** ${{ github.event_name }}
+
+            ### Changed packages
+
+            ```
+            ${{ steps.summary.outputs.PACKAGES }}
+            ```
+
+            ### Review checklist
+
+            - [ ] Review changelogs for changed packages
+            - [ ] Verify assets build correctly (`yarn build`)
+            - [ ] Check for breaking changes in JavaScript or CSS
+            - [ ] Test UI changes in a development environment
+          labels: |
+            dependencies
+            yarn
+            automated-pr
+
+      - name: No changes
+        if: steps.changes.outputs.detected == 'false'
+        run: echo "Yarn dependencies are already up to date."

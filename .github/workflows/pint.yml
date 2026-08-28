@@ -1,0 +1,54 @@
+name: Pint
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Files to format'
+        required: true
+        default: 'dirty'
+        type: choice
+        options:
+          - dirty
+          - full
+
+permissions:
+  contents: write
+
+jobs:
+  pint:
+    name: Code Style (Laravel Pint)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
+          composer-flags: '--prefer-dist --no-interaction --no-progress'
+
+      - name: Run Pint
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "full" ]; then
+            vendor/bin/pint
+          else
+            vendor/bin/pint --dirty
+          fi
+
+      - name: Commit formatted files
+        run: |
+          if git diff --quiet; then
+            echo "No files changed."
+          else
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            git add -A
+            git commit -m "style: apply Pint fixes"
+            git push
+          fi

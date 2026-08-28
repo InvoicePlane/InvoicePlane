@@ -96,6 +96,21 @@ function _csrf_field(): void
 }
 
 /**
+ * Return the CSRF token as a URL-encoded "name=value" query fragment.
+ *
+ * Used to append the token to a same-origin, state-changing GET link (for
+ * example the "generate PDF" link that also marks an invoice as sent) so the
+ * server can confirm — via verify_get_csrf_token() — that the request was
+ * initiated by the application rather than forged cross-site.
+ */
+function _csrf_query(): string
+{
+    $CI = & get_instance();
+
+    return rawurlencode($CI->config->item('csrf_token_name')) . '=' . rawurlencode($CI->security->get_csrf_hash());
+}
+
+/**
  * Returns the correct URL for a asset within the theme directory
  * Also appends the current version to the asset to prevent browser caching issues.
  *

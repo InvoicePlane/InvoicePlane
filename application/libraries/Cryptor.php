@@ -177,7 +177,11 @@ class Cryptor
             throw new \Exception('Cryptor::decryptString() - data length ' . strlen($raw) . (' is less than iv length ' . $this->iv_num_bytes));
         }
 
-        // Extract the initialisation vector and encrypted data
+        // Extract the initialisation vector and encrypted data.
+        // Must use byte-safe strlen()/substr() here, not mb_strlen()/mb_substr(): $raw is raw
+        // binary ciphertext, and mb_* functions count multi-byte characters under the internal
+        // encoding, not bytes, so they can consume more than $iv_num_bytes bytes when random
+        // bytes happen to look like valid UTF-8 sequences (issue #1680).
         $iv  = substr($raw, 0, $this->iv_num_bytes);
         $raw = substr($raw, $this->iv_num_bytes);
 

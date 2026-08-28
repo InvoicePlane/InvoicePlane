@@ -93,27 +93,27 @@
                         <optgroup label="<?php _trans('invoices'); ?>">
 <?php
 foreach ($invoice_templates as $template) {
-?>
+    ?>
                             <option class="hidden-invoice" value="<?php echo $template; ?>"
                                 <?php check_select($selected_pdf_template, $template); ?>>
                                 <?php echo $template; ?>
                             </option>
 <?php
 }
-?>
+    ?>
                         </optgroup>
 
                         <optgroup label="<?php _trans('quotes'); ?>">
 <?php
 foreach ($quote_templates as $template) {
-?>
+    ?>
                             <option class="hidden-quote" value="<?php echo $template; ?>"
                                 <?php check_select($selected_pdf_template, $template); ?>>
                                 <?php echo $template; ?>
                             </option>
 <?php
 }
-?>
+    ?>
                         </optgroup>
                     </select>
                 </div>
@@ -165,7 +165,12 @@ foreach ($quote_templates as $template) {
                                 id="email_template_body"
                                 rows="8"
                                 class="email-template-body form-control taggable"
-                            ><?php echo $this->mdl_email_templates->form_value('email_template_body', true); ?></textarea>
+                            ><?php
+                                // Escape output to prevent stored XSS when displaying database content in forms.
+                                // This protects against malicious content that may have been stored before
+                                // HTML Purifier sanitization was implemented.
+                                echo html_escape($this->mdl_email_templates->form_value('email_template_body'));
+    ?></textarea>
 
                             <br>
 
@@ -177,7 +182,7 @@ foreach ($quote_templates as $template) {
                                     </span>
                                 </div>
                                 <div class="panel-body">
-                                    <iframe id="email-template-preview"></iframe>
+                                    <iframe id="email-template-preview" sandbox="allow-same-origin"></iframe>
                                 </div>
                             </div>
 
@@ -200,7 +205,7 @@ foreach ($quote_templates as $template) {
 
 <script>
     $(function () {
-        var email_template_type = "<?php echo $this->mdl_email_templates->form_value('email_template_type'); ?>";
+        var email_template_type = <?php echo json_encode($this->mdl_email_templates->form_value('email_template_type'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         var $email_template_type_options = $("[name=email_template_type]");
 
         $email_template_type_options.click(function () {

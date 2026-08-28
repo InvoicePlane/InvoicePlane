@@ -45,8 +45,6 @@ class Email_Templates extends Admin_Controller
             redirect('email_templates');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
-
         if ($this->input->post('is_update') == 0 && $this->input->post('email_template_title') != '') {
             $check = $this->db->get_where('ip_email_templates', ['email_template_title' => $this->input->post('email_template_title')])->result();
             if ( ! empty($check)) {
@@ -92,6 +90,10 @@ class Email_Templates extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('email_templates')) {
+            return;
+        }
+
         $this->mdl_email_templates->delete($id);
         redirect('email_templates');
     }

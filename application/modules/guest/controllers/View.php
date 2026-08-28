@@ -17,6 +17,15 @@ if ( ! defined('BASEPATH')) {
 class View extends Base_Controller
 {
     /**
+     * Constructor - load file security helper for validation.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('file_security');
+    }
+
+    /**
      * @param $invoice_url_key
      */
     public function invoice($invoice_url_key = '')
@@ -43,6 +52,7 @@ class View extends Base_Controller
             ]
         );
         $this->load->helper('template');
+        $this->load->helper('file_security');
 
         $invoice = $invoice->row();
 
@@ -65,25 +75,32 @@ class View extends Base_Controller
         // Attachments
         $attachments = $this->get_attachments($invoice_url_key);
 
-        $is_overdue = ($invoice->invoice_balance > 0 && strtotime($invoice->invoice_date_due) < time());
+        // Security: Validate strtotime() result before comparison to avoid type juggling
+        $invoice_due_timestamp = strtotime($invoice->invoice_date_due);
+        $is_overdue            = ($invoice->invoice_balance > 0
+            && $invoice_due_timestamp !== false
+            && $invoice_due_timestamp < time());
 
         $data = [
-            'invoice'             => $invoice,
-            'items'               => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_tax_rates'   => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
-            'invoice_url_key'     => $invoice_url_key,
-            'flash_message'       => $this->session->flashdata('flash_message'),
-            'payment_method'      => $payment_method,
-            'is_overdue'          => $is_overdue,
-            'attachments'         => $attachments,
-            'custom_fields'       => $custom_fields,
-            'legacy_calculation'  => config_item('legacy_calculation'),
+            'invoice'            => $invoice,
+            'items'              => $this->mdl_items->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_tax_rates'  => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice->invoice_id)->get()->result(),
+            'invoice_url_key'    => $invoice_url_key,
+            'flash_message'      => $this->session->flashdata('flash_message'),
+            'payment_method'     => $payment_method,
+            'is_overdue'         => $is_overdue,
+            'attachments'        => $attachments,
+            'custom_fields'      => $custom_fields,
+            'legacy_calculation' => config_item('legacy_calculation'),
         ];
 
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
+        // Security: Validate and get template path with defense-in-depth
+        $requested_template = get_setting('public_invoice_template');
+        $template_info      = get_validated_template_path($requested_template, 'invoice', 'public', 'InvoicePlane_Web');
 
-        $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
+        render_template_view($template_info['path'], $data);
     }
 
     /**
@@ -99,8 +116,11 @@ class View extends Base_Controller
         if ($invoice->num_rows() == 1) {
             $invoice = $invoice->row();
 
-            if ( ! $invoice_template) {
-                $this->load->helper('template');
+            // Security: Validate PDF template to prevent LFI
+            $this->load->helper('template');
+            if ($invoice_template) {
+                $invoice_template = validate_pdf_template($invoice_template, 'invoice');
+            } else {
                 $invoice_template = select_pdf_invoice_template($invoice);
             }
 
@@ -127,13 +147,14 @@ class View extends Base_Controller
                 show_404();
             }
 
-            if ( ! $invoice_template) {
-                $invoice_template = get_setting('pdf_invoice_template');
+            $this->load->helper(['pdf', 'template']);
+
+            // Security: Validate PDF template to prevent LFI
+            if ($invoice_template) {
+                $invoice_template = validate_pdf_template($invoice_template, 'invoice');
             }
 
-            $this->load->helper('pdf');
-
-            generate_invoice_sumex($invoice->invoice_id);
+            generate_invoice_sumex($invoice->invoice_id, $stream, $invoice_template, true);
         }
     }
 
@@ -157,6 +178,7 @@ class View extends Base_Controller
         $this->load->model('quotes/mdl_quote_items');
         $this->load->model('quotes/mdl_quote_tax_rates');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->helper('template');
 
         $quote = $quote->row();
 
@@ -174,7 +196,9 @@ class View extends Base_Controller
         // Attachments
         $attachments = $this->get_attachments($quote_url_key);
 
-        $is_expired = (strtotime($quote->quote_date_expires) < time());
+        // Security: Validate strtotime() result before comparison to avoid type juggling
+        $quote_expires_timestamp = strtotime($quote->quote_date_expires);
+        $is_expired              = ($quote_expires_timestamp !== false && $quote_expires_timestamp < time());
 
         $data = [
             'quote'              => $quote,
@@ -189,7 +213,12 @@ class View extends Base_Controller
         ];
         $data['show_item_discounts'] = $this->has_discounts($data['items']);
 
-        $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
+        // Security: Validate and get template path with defense-in-depth
+        $this->load->helper('template');
+        $requested_template = get_setting('public_quote_template');
+        $template_info      = get_validated_template_path($requested_template, 'quote', 'public', 'InvoicePlane_Web');
+
+        render_template_view($template_info['path'], $data);
     }
 
     /**
@@ -206,9 +235,9 @@ class View extends Base_Controller
             show_404();
         }
 
-        if ( ! $quote_template) {
-            $quote_template = get_setting('pdf_quote_template');
-        }
+        // Security: Validate PDF template to prevent LFI
+        $this->load->helper('template');
+        $quote_template = validate_pdf_template($quote_template, 'quote', 'pdf_quote_template');
 
         $this->load->helper('pdf');
 
@@ -220,11 +249,22 @@ class View extends Base_Controller
      */
     public function approve_quote(string $quote_url_key)
     {
+        // Require POST so CodeIgniter's CSRF token validation is enforced
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $this->load->model('quotes/mdl_quotes');
+        $quote = $this->validate_guest_quote_access($quote_url_key);
+
         $this->load->helper('mailer');
 
         $this->mdl_quotes->approve_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, 'approved');
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote->quote_id, 'approved');
+        }
 
         redirect('guest/view/quote/' . $quote_url_key);
     }
@@ -234,13 +274,71 @@ class View extends Base_Controller
      */
     public function reject_quote(string $quote_url_key)
     {
+        // Require POST so CodeIgniter's CSRF token validation is enforced
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
         $this->load->model('quotes/mdl_quotes');
+        $quote = $this->validate_guest_quote_access($quote_url_key);
+
         $this->load->helper('mailer');
 
         $this->mdl_quotes->reject_quote_by_key($quote_url_key);
-        email_quote_status($this->mdl_quotes->where('ip_quotes.quote_url_key', $quote_url_key)->get()->row()->quote_id, 'rejected');
+
+        // Only send email if the update actually changed the quote status
+        if ($this->db->affected_rows() > 0) {
+            email_quote_status($quote->quote_id, 'rejected');
+        }
 
         redirect('guest/view/quote/' . $quote_url_key);
+    }
+
+    /**
+     * Validate guest user has access to a quote by URL key
+     * Returns the quote object if valid, or shows error/404.
+     *
+     * @param string $quote_url_key The quote URL key
+     *
+     * @return object The quote object
+     */
+    private function validate_guest_quote_access(string $quote_url_key): object
+    {
+        // Require POST request to prevent CSRF attacks
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        // Require authentication as a guest user
+        if ( ! $this->session->userdata('user_id') || (int) $this->session->userdata('user_type') !== 2) {
+            show_error(trans('guest_account_denied'), 403);
+        }
+
+        $this->load->model('quotes/mdl_quotes');
+        $this->load->model('user_clients/mdl_user_clients');
+
+        // Get guest user's assigned clients
+        $user_clients_result = $this->mdl_user_clients->assigned_to($this->session->userdata('user_id'))->get()->result();
+        $user_clients        = [];
+        foreach ($user_clients_result as $user_client) {
+            $user_clients[$user_client->client_id] = $user_client->client_id;
+        }
+
+        if (empty($user_clients)) {
+            show_error(trans('guest_account_denied'), 403);
+        }
+
+        // Verify quote belongs to one of the guest user's assigned clients and is open (status 2-3)
+        $quote = $this->mdl_quotes->is_open()
+            ->where('ip_quotes.quote_url_key', $quote_url_key)
+            ->where_in('ip_quotes.client_id', $user_clients)
+            ->get()->row();
+
+        if ($quote === null) {
+            show_404();
+        }
+
+        return $quote;
     }
 
     /**
@@ -251,16 +349,48 @@ class View extends Base_Controller
     private function get_attachments(string $url_key): array
     {
         // Security: Use query binding to prevent SQL injection
-        $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?", [$url_key]);
+        $query = $this->db->query('SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?', [$url_key]);
 
         $names = [];
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
+                // Security: Validate filename from database before using in file path
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
+                    // Skip invalid filenames
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in guest attachments for url_key=%s',
+                        sanitize_for_logging($url_key)
+                    ));
+                    continue;
+                }
+
+                // Check file exists before getting size
+                if ( ! file_exists($validated['path'])) {
+                    log_message('warning', sprintf(
+                        'File not found for guest attachment (hash: %s)',
+                        $validated['hash']
+                    ));
+                    continue;
+                }
+
+                // Get file size with error handling
+                $file_size = @filesize($validated['path']);
+                if ($file_size === false) {
+                    $error = error_get_last();
+                    log_message('warning', sprintf(
+                        'Failed to get file size for guest attachment (hash: %s, error: %s)',
+                        $validated['hash'],
+                        $error['message'] ?? 'unknown'
+                    ));
+                    continue;
+                }
+
                 $names[] = [
-                    'name'     => $row->file_name_original,
-                    'fullname' => $row->file_name_new,
-                    'size'     => filesize(UPLOADS_CFILES_FOLDER . $row->file_name_new),
+                    'name'     => html_escape($row->file_name_original),
+                    'fullname' => $validated['basename'],
+                    'size'     => $file_size,
                 ];
             }
         }
@@ -274,14 +404,17 @@ class View extends Base_Controller
      * have a discount.
      *
      * @param array $items
-     * @return boolean
+     *
+     * @return bool
      */
-    private function has_discounts(array $items) : bool {
+    private function has_discounts(array $items): bool
+    {
         foreach ($items as $item) {
             if ($item->item_discount > 0) {
                 return true;
             }
         }
+
         return false;
     }
 }

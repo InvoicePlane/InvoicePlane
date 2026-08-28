@@ -30,22 +30,23 @@ class Ajax extends Admin_Controller
         $permissiveSearchClients = $this->input->get('permissive_search_clients');
 
         if (empty($query)) {
-            echo json_encode($response);
-            exit;
+            $this->json_encode_ajax($response);
         }
 
         // Search for chars "in the middle" of clients names
         $moreClientsQuery = $permissiveSearchClients ? '%' : '';
 
         // Search for clients
-        $escapedQuery = $this->db->escape_str($query);
-        $escapedQuery = str_replace('%', '', $escapedQuery);
+        // Strip LIKE wildcards from user input, then pass the pattern as a bound
+        // value so CodeIgniter escapes it — never concatenate input into the SQL.
+        $searchTerm    = str_replace(['%', '_'], '', (string) $query);
+        $searchPattern = $moreClientsQuery . $searchTerm . '%';
 
         $clients = $this->mdl_clients
             ->where('client_active', 1)
-            ->having("client_name LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
-            ->or_having("client_surname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
-            ->or_having("client_fullname LIKE '" . $moreClientsQuery . $escapedQuery . "%'")
+            ->having('client_name LIKE', $searchPattern)
+            ->or_having('client_surname LIKE', $searchPattern)
+            ->or_having('client_fullname LIKE', $searchPattern)
             ->order_by('client_name')
             ->get()
             ->result();
@@ -58,7 +59,7 @@ class Ajax extends Admin_Controller
         }
 
         // Return the results
-        echo json_encode($response);
+        $this->json_encode_ajax($response);
     }
 
     /**
@@ -86,7 +87,7 @@ class Ajax extends Admin_Controller
         }
 
         // Return the results
-        echo json_encode($response);
+        $this->json_encode_ajax($response);
     }
 
     public function save_preference_permissive_search_clients()
@@ -148,7 +149,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        echo json_encode($response);
+        $this->json_encode_ajax($response);
     }
 
     public function load_client_notes()

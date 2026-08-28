@@ -107,7 +107,7 @@ switch (ENVIRONMENT) {
  * This variable must contain the name of your "system" directory.
  * Set the path if it is not in the same directory as this file.
  */
-$system_path = 'vendor/codeigniter/framework/system';
+$system_path = 'vendor/pocketarc/codeigniter/system';
 
 /*
  *---------------------------------------------------------------
@@ -299,16 +299,34 @@ define('UPLOADS_CFILES_FOLDER', UPLOADS_FOLDER . 'customer_files' . DIRECTORY_SE
 define('UPLOADS_TEMP_FOLDER', UPLOADS_FOLDER . 'temp' . DIRECTORY_SEPARATOR);
 define('UPLOADS_TEMP_MPDF_FOLDER', UPLOADS_TEMP_FOLDER . 'mpdf' . DIRECTORY_SEPARATOR);
 
+define('STORAGE_TEMP_FOLDER', FCPATH . 'storage' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR);
+
 define('VIEWPATH', $view_folder . DIRECTORY_SEPARATOR);
 define('THEME_FOLDER', FCPATH . 'assets' . DIRECTORY_SEPARATOR);
+
+$_custom_tpl = env('CUSTOM_TEMPLATES_FOLDER');
+define('CUSTOM_TEMPLATES_FOLDER', $_custom_tpl ? rtrim($_custom_tpl, '/\\') . DIRECTORY_SEPARATOR : null);
+unset($_custom_tpl);
+
+// Explicit allowlists of custom template names, consumed by Mdl_Templates
+define('CUSTOM_INVOICE_TEMPLATES_PDF', env('CUSTOM_INVOICE_TEMPLATES_PDF'));
+define('CUSTOM_INVOICE_TEMPLATES_PUBLIC', env('CUSTOM_INVOICE_TEMPLATES_PUBLIC'));
+define('CUSTOM_QUOTE_TEMPLATES_PDF', env('CUSTOM_QUOTE_TEMPLATES_PDF'));
+define('CUSTOM_QUOTE_TEMPLATES_PUBLIC', env('CUSTOM_QUOTE_TEMPLATES_PUBLIC'));
+
+// Ensure storage temp directory exists
+if ( ! is_dir(STORAGE_TEMP_FOLDER)) {
+    @mkdir(STORAGE_TEMP_FOLDER, 0755, true);
+}
 
 // Automatic temp pdf & xml files cleanup
 $files = array_merge(
     glob(UPLOADS_TEMP_FOLDER . '*.pdf'),
-    glob(UPLOADS_TEMP_FOLDER . '*.xml')
+    glob(UPLOADS_TEMP_FOLDER . '*.xml'),
+    glob(STORAGE_TEMP_FOLDER . '*.xml')
 );
 
-array_map('unlink', $files);
+array_map('unlink', array_filter($files, 'is_file'));
 
 /*
  * --------------------------------------------------------------------

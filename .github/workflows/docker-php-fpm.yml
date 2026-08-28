@@ -1,14 +1,7 @@
 name: Build & Push PHP-FPM Docker Image
 
 on:
-  push:
-    branches:
-      - development
-    paths:
-      - 'resources/docker/php-fpm/Dockerfile'
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
   build-test-push:

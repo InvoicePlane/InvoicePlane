@@ -6,12 +6,24 @@
 # Dependencies
 /node_modules
 /vendor
+/.yarn
+/.yarnrc.yml
+/yarn.lock
+/.pnp.cjs
+/.pnp.loader.mjs
+
+# Workflow artifacts
+audit-report.json
+updated-packages.txt
+pint_output.log
+/.phpunit.result.cache
 
 # Other files
 .htaccess
 .idea
 .todo
 .sass-cache
+/application/cache/htmlpurifier/
 adminer.php
 /nbproject
 /patches
@@ -21,3 +33,9 @@ adminer.php
 npm-debug.log
 yarn-error.log
 .temp
+/deps-before.txt
+/outdated.txt
+/phpunit.txt
+/stan.txt
+/todo.txt
+/yarnpack.txt

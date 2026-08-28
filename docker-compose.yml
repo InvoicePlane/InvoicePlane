@@ -16,7 +16,7 @@ volumes:
     driver: "local"
 
 services:
-  # --- PHP 8.1
+  # --- PHP 8.2
   php:
     container_name: "invoiceplane-php"
     build:
@@ -35,6 +35,15 @@ services:
     networks:
       invoiceplane:
         ipv4_address: 172.25.0.11
+    environment:
+      # Used by dev-entrypoint.sh only to generate ipconfig.php on first run —
+      # if ipconfig.php already exists, these are ignored and it's left alone.
+      IP_URL: http://ivpl.local
+      DB_HOSTNAME: db
+      DB_USERNAME: ipdevdb
+      DB_PASSWORD: ipdevdb
+      DB_DATABASE: invoiceplane_db
+      ENCRYPTION_KEY: dev-key-change-me-in-production-00
     volumes:
       - .:/var/www/projects/invoiceplane:delegated
       - ./resources/docker/php-fpm/php-dev.ini:/usr/local/etc/php/php.ini

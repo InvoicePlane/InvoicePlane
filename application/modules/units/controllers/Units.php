@@ -45,11 +45,9 @@ class Units extends Admin_Controller
             redirect('units');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
-
         if (
             $this->input->post('is_update') == 0
-            && $this->input->post('unit_name')      != ''
+            && $this->input->post('unit_name') != ''
             && $this->input->post('unit_name_plrl') != ''
         ) {
             $check = $this->db->get_where('ip_units', ['unit_name' => $this->input->post('unit_name')])->result();
@@ -82,6 +80,10 @@ class Units extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('units/index')) {
+            return;
+        }
+
         $this->mdl_units->delete($id);
         redirect('units');
     }

@@ -31,7 +31,11 @@ class Mdl_Clients extends Response_Model
 
     public function default_order_by(): void
     {
-        $this->db->order_by('ip_clients.client_name');
+        if (get_setting('sort_clients_by_surname') == '1') {
+            $this->db->order_by('ip_clients.client_surname');
+        } else {
+            $this->db->order_by('ip_clients.client_name');
+        }
     }
 
     public function validation_rules()
@@ -88,6 +92,8 @@ class Mdl_Clients extends Response_Model
             ],
             'client_email' => [
                 'field' => 'client_email',
+                'label' => trans('email_address'),
+                'rules' => 'trim|valid_email',
             ],
             'client_web' => [
                 'field' => 'client_web',
@@ -181,9 +187,10 @@ class Mdl_Clients extends Response_Model
     }
 
     /**
-     * Validates the e-invoicing version to prevent path traversal attacks
+     * Validates the e-invoicing version to prevent path traversal attacks.
      *
      * @param string $version The e-invoicing version to validate
+     *
      * @return bool
      */
     public function validate_einvoicing_version($version)
@@ -195,10 +202,11 @@ class Mdl_Clients extends Response_Model
 
         // Load helper to access validation function
         $this->load->helper('e-invoice');
-        
+
         // Validate using the helper function
-        if (!is_valid_xml_config_id($version)) {
+        if ( ! is_valid_xml_config_id($version)) {
             $this->form_validation->set_message('validate_einvoicing_version', trans('einvoicing_version_invalid'));
+
             return false;
         }
 
@@ -309,5 +317,44 @@ class Mdl_Clients extends Response_Model
         $this->filter_where('client_active', 1);
 
         return $this;
+    }
+
+    /**
+     * Check if the current user has access to this client.
+     *
+     * Security: Prevents IDOR (Insecure Direct Object Reference) vulnerabilities
+     * by verifying the user can access the requested client.
+     *
+     * @param int $client_id The client ID to check
+     *
+     * @return bool True if user has access, false otherwise
+     */
+    public function can_user_access($client_id)
+    {
+        $CI = & get_instance();
+
+        // Normalize to integer to prevent type juggling
+        $user_type  = (int) $CI->session->userdata('user_type');
+        $user_id    = (int) $CI->session->userdata('user_id');
+        $client_id  = (int) $client_id;
+
+        // Admin users (type 1) have access to all clients
+        if ($user_type === 1) {
+            return true;
+        }
+
+        // Guest users (type 2) - check if client is in their assigned clients
+        if ($user_type === 2) {
+            $CI->load->model('user_clients/mdl_user_clients');
+
+            $user_clients = $CI->mdl_user_clients->assigned_to($user_id)->get()->result();
+            // Ensure all client IDs are integers for strict comparison
+            $client_ids = array_map('intval', array_column($user_clients, 'client_id'));
+
+            return in_array($client_id, $client_ids, true);
+        }
+
+        // Regular users (type 3) - do not have client access
+        return false;
     }
 }

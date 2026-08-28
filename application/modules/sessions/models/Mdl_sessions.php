@@ -34,18 +34,18 @@ class Mdl_Sessions extends CI_Model
             $this->load->library('crypt');
 
             /*
-             * Password hashing changed after 1.2.0
-             * Check to see if user has logged in since the password change
+             * Legacy pre-1.2.0 path: users without user_psalt still have md5 hashes.
+             * If validated, their password is upgraded to the modern salted hash.
              */
             if ( ! $user->user_psalt) {
                 /*
                  * The user has not logged in, so we're going to attempt to
                  * update their record with the updated hash
                  */
-                if (md5($password) == $user->user_password) {
+                if (hash_equals($user->user_password, md5($password))) {
                     /**
-                     * The md5 login validated - let's update this user
-                     * to the new hash.
+                     * Legacy md5 login validated - upgrade this user to the
+                     * modern salted hash.
                      */
                     $salt = $this->crypt->salt();
                     $hash = $this->crypt->generate_password($password, $salt);
@@ -66,7 +66,13 @@ class Mdl_Sessions extends CI_Model
                 }
             }
 
+            // Modern path: verify against the salted password hash.
             if ($this->crypt->check_password($user->user_password, $password)) {
+                // Verify the account is active before granting authentication.
+                if ((int) $user->user_active !== 1) {
+                    return false;
+                }
+
                 $session_data = [
                     'user_type'     => $user->user_type,
                     'user_id'       => $user->user_id,
@@ -76,6 +82,8 @@ class Mdl_Sessions extends CI_Model
                     'user_language' => $user->user_language ?? 'system',
                 ];
 
+                // Regenerate session ID on login to prevent session fixation attacks.
+                $this->session->sess_regenerate(true);
                 $this->session->set_userdata($session_data);
 
                 return true;
@@ -83,5 +91,61 @@ class Mdl_Sessions extends CI_Model
         }
 
         return false;
+    }
+
+    /**
+     * Destroy all active sessions for a given user_id. This forces immediate
+     * session invalidation when a user's role or active status is changed,
+     * revoking any stale authenticated sessions.
+     *
+     * This implementation supports only the files session driver (the default
+     * for CodeIgniter 3 and InvoicePlane). Other drivers (database, Redis,
+     * memcached) would require direct backend access and are not invalidated.
+     * The primary per-request re-validation in User_Controller provides the
+     * main defense; this method is an optimization for the files driver.
+     *
+     * @param string|int $user_id
+     */
+    public function invalidate_user_sessions($user_id): void
+    {
+        if ( ! function_exists('sanitize_for_logging')) {
+            $this->load->helper('file_security');
+        }
+
+        $session_path = $this->session->sess_save_path;
+
+        if ( ! is_dir($session_path)) {
+            return;
+        }
+
+        try {
+            $files = scandir($session_path);
+            if ($files === false) {
+                return;
+            }
+
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+
+                $file_path = $session_path . DIRECTORY_SEPARATOR . $file;
+
+                if ( ! is_file($file_path)) {
+                    continue;
+                }
+
+                $session_data = @unserialize(file_get_contents($file_path), ['allowed_classes' => false]);
+                if ($session_data === false || ! is_array($session_data)) {
+                    continue;
+                }
+
+                if (isset($session_data['user_id']) && (string) $session_data['user_id'] === (string) $user_id) {
+                    @unlink($file_path);
+                }
+            }
+        } catch (Exception $e) {
+            log_message('error', 'Session invalidation failed for user ' . sanitize_for_logging((int) $user_id));
+        }
     }
 }

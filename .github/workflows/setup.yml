@@ -1,0 +1,70 @@
+name: Setup & Install
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_composer_install:
+        description: 'Run composer install'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      run_yarn_install:
+        description: 'Run yarn install'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    name: Setup InvoicePlane
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP with Composer
+        if: inputs.run_composer_install == 'true'
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
+          composer-flags: '--prefer-dist --no-interaction --no-progress'
+
+      - name: Set up Node.js
+        if: inputs.run_yarn_install == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Install JS dependencies
+        if: inputs.run_yarn_install == 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Verify ipconfig.php example
+        run: |
+          if [ -f ipconfig.php.example ]; then
+            echo "ipconfig.php.example present"
+          else
+            echo "::error::ipconfig.php.example is missing"
+            exit 1
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Setup Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          [ "${{ inputs.run_composer_install }}" == "true" ] && echo "| Composer install | done |" >> $GITHUB_STEP_SUMMARY || true
+          [ "${{ inputs.run_yarn_install }}" == "true" ] && echo "| Yarn install | done |" >> $GITHUB_STEP_SUMMARY || true

@@ -134,7 +134,14 @@ class Mdl_Import extends Response_Model
                 $db_array = [];
                 // Loop through each of the values in the row
                 foreach ($headers as $header) {
-                    $db_array[$header] = ($data[array_keys($fileheaders, $header)[0]] != null) ? $data[array_keys($fileheaders, $header)[0]] : '';
+                    $value = ($data[array_keys($fileheaders, $header)[0]] != null) ? $data[array_keys($fileheaders, $header)[0]] : '';
+
+                    // Sanitize CSV client data to prevent injection attacks
+                    if ($file == 'clients.csv') {
+                        $value = strip_tags($this->security->xss_clean($value));
+                    }
+
+                    $db_array[$header] = $value;
                 }
 
                 // Create a couple of default values if file is clients.csv
@@ -292,7 +299,7 @@ class Mdl_Import extends Response_Model
                                 $data[$key] = $tax_rate->row()->tax_rate_id;
                             } else {
                                 $this->db->insert('ip_tax_rates', [
-                                    'tax_rate_name'    => $data[$key],
+                                    'tax_rate_name'    => strip_tags($this->security->xss_clean($data[$key])),
                                     'tax_rate_percent' => $data[$key],
                                 ]);
                                 $data[$key] = $this->db->insert_id();
@@ -368,7 +375,7 @@ class Mdl_Import extends Response_Model
                             if ($payment_method->num_rows()) {
                                 $data[$key] = $payment_method->row()->payment_method_id;
                             } else {
-                                $this->db->insert('ip_payment_methods', ['payment_method_name' => $data[$key]]);
+                                $this->db->insert('ip_payment_methods', ['payment_method_name' => strip_tags($this->security->xss_clean($data[$key]))]);
                                 $data[$key] = $this->db->insert_id();
                             }
                         } else {
@@ -421,8 +428,22 @@ class Mdl_Import extends Response_Model
 
         // Loop through details and delete each of the imported records
         foreach ($import_details as $import_detail) {
-            $this->db->query('DELETE FROM ' . $import_detail->import_table_name
-            . ' WHERE ' . $this->primary_keys[$import_detail->import_table_name] . ' = ' . $import_detail->import_record_id);
+            // Security (CWE-89): import_table_name is a stored value used here as a
+            // raw table identifier. Only the four known import tables are ever
+            // written, but revalidate against the allowlist before interpolating,
+            // take the primary key column from that trusted map, and bind the
+            // record id as an integer instead of concatenating it.
+            if ( ! array_key_exists($import_detail->import_table_name, $this->primary_keys)) {
+                $this->load->helper('file_security');
+                log_message('error', 'Skipping import detail with invalid table: ' . sanitize_for_logging((string) $import_detail->import_table_name));
+                continue;
+            }
+
+            $this->db->query(
+                'DELETE FROM ' . $import_detail->import_table_name
+                . ' WHERE ' . $this->primary_keys[$import_detail->import_table_name] . ' = ?',
+                [(int) $import_detail->import_record_id]
+            );
         }
 
         // Delete the master import record

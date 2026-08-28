@@ -1,0 +1,51 @@
+name: PHPStan
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  phpstan:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.4'
+          composer-flags: '--prefer-dist --no-interaction --no-progress'
+
+      - name: Run PHPStan
+        id: phpstan
+        run: vendor/bin/phpstan analyse --memory-limit=1G --error-format=json > phpstan.json
+        continue-on-error: true
+
+      - name: Format results
+        id: format
+        run: php .github/scripts/parse-phpstan-results.php phpstan.json > phpstan-report.md
+
+      - name: Print report
+        if: always()
+        run: cat phpstan-report.md
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phpstan-results
+          path: |
+            phpstan.json
+            phpstan-report.md
+
+      - name: Fail if errors found
+        if: steps.phpstan.outcome == 'failure'
+        run: |
+          echo "PHPStan found errors. See phpstan-report.md above."
+          exit 1

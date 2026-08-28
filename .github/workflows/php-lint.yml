@@ -1,0 +1,51 @@
+name: PHP Lint
+
+on:
+  push:
+    paths:
+      - '**.php'
+  pull_request:
+    paths:
+      - '**.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: PHP Syntax Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP and Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
+          skip-composer-install: 'true'
+
+      - name: Run php -l on all PHP files
+        run: |
+          ERRORS=0
+          CHECKED=0
+
+          while IFS= read -r -d '' file; do
+            CHECKED=$((CHECKED + 1))
+            if ! php -l "$file" > /dev/null 2>&1; then
+              php -l "$file"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done < <(find . \
+            -name "*.php" \
+            -not -path "./vendor/*" \
+            -not -path "./.git/*" \
+            -print0)
+
+          echo "Checked ${CHECKED} file(s). Found ${ERRORS} syntax error(s)."
+
+          if [ "$ERRORS" -gt 0 ]; then
+            exit 1
+          fi

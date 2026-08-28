@@ -53,6 +53,15 @@ class Mdl_Uploads extends Response_Model
         'odp'  => 'application/vnd.oasis.opendocument.presentation',
     ];
 
+    /**
+     * Constructor - load file security helper for validation.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('file_security');
+    }
+
     public function default_order_by()
     {
         $this->db->order_by('ip_uploads.upload_id ASC');
@@ -75,14 +84,25 @@ class Mdl_Uploads extends Response_Model
     {
         $this->load->model('quotes/mdl_quotes');
         $quote = $this->mdl_quotes->get_by_id($id);
-        $query = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?", [$quote->quote_url_key]);
+        $query = $this->db->query('SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?', [$quote->quote_url_key]);
 
         $names = [];
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
+                // Security: Validate filename from database before using in file path
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
+                    // Skip invalid filenames - log for investigation
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in quote uploads for url_key=%s',
+                        sanitize_for_logging($quote->quote_url_key)
+                    ));
+                    continue;
+                }
+
                 $names[] = [
-                    'path'     => UPLOADS_CFILES_FOLDER . $row->file_name_new,
+                    'path'     => $validated['path'],
                     'filename' => $row->file_name_original,
                 ];
             }
@@ -100,14 +120,25 @@ class Mdl_Uploads extends Response_Model
     {
         $this->load->model('invoices/mdl_invoices');
         $invoice = $this->mdl_invoices->get_by_id($id);
-        $query   = $this->db->query("SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?", [$invoice->invoice_url_key]);
+        $query   = $this->db->query('SELECT file_name_new,file_name_original FROM ip_uploads WHERE url_key = ?', [$invoice->invoice_url_key]);
 
         $names = [];
 
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
+                // Security: Validate filename from database before using in file path
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
+                    // Skip invalid filenames - log for investigation
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in invoice uploads for url_key=%s',
+                        sanitize_for_logging($invoice->invoice_url_key)
+                    ));
+                    continue;
+                }
+
                 $names[] = [
-                    'path'     => UPLOADS_CFILES_FOLDER . $row->file_name_new,
+                    'path'     => $validated['path'],
                     'filename' => $row->file_name_original,
                 ];
             }
@@ -126,7 +157,18 @@ class Mdl_Uploads extends Response_Model
         $result = [];
         if ($url_key && $rows = $this->where('url_key', $url_key)->get()->result()) {
             foreach ($rows as $row) {
-                $size = @filesize(UPLOADS_CFILES_FOLDER . $row->file_name_new);
+                // Security: Validate filename from database before using in file path
+                $validated = validate_db_filename($row->file_name_new, UPLOADS_CFILES_FOLDER);
+                if ($validated === null) {
+                    // Skip invalid filenames - likely corrupted database entry
+                    log_message('warning', sprintf(
+                        'Skipping invalid filename in uploads for url_key=%s',
+                        sanitize_for_logging($url_key)
+                    ));
+                    continue;
+                }
+
+                $size = @filesize($validated['path']);
                 if ($size === false) {
                     // Probably Deleted, remove it
                     $this->delete_file($url_key, $row->file_name_original);

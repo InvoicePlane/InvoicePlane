@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Quotes extends Response_Model
 {
+    use Password_Encryption_Trait;
+
     public $table = 'ip_quotes';
 
     public $primary_key = 'ip_quotes.quote_id';
@@ -65,7 +67,35 @@ class Mdl_Quotes extends Response_Model
     {
         $this->db->select("
             SQL_CALC_FOUND_ROWS
-            ip_users.*,
+            ip_users.user_id,
+            ip_users.user_type,
+            ip_users.user_date_created,
+            ip_users.user_date_modified,
+            ip_users.user_name,
+            ip_users.user_company,
+            ip_users.user_address_1,
+            ip_users.user_address_2,
+            ip_users.user_city,
+            ip_users.user_state,
+            ip_users.user_zip,
+            ip_users.user_country,
+            ip_users.user_phone,
+            ip_users.user_fax,
+            ip_users.user_mobile,
+            ip_users.user_email,
+            ip_users.user_web,
+            ip_users.user_vat_id,
+            ip_users.user_tax_code,
+            ip_users.user_active,
+            ip_users.user_language,
+            ip_users.user_subscribernumber,
+            ip_users.user_iban,
+            ip_users.user_gln,
+            ip_users.user_rcc,
+            ip_users.user_bank,
+            ip_users.user_bic,
+            ip_users.user_remittance_text,
+            ip_users.user_invoicing_contact,
             ip_clients.*,
             ip_quote_amounts.quote_amount_id,
             IFnull(ip_quote_amounts.quote_item_subtotal, '0.00') AS quote_item_subtotal,
@@ -74,6 +104,29 @@ class Mdl_Quotes extends Response_Model
             IFnull(ip_quote_amounts.quote_total, '0.00') AS quote_total,
             ip_invoices.invoice_number,
             ip_quotes.*", false);
+    }
+
+    public function save($id = null, $db_array = null)
+    {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('quote_password', $db_array)) {
+            $db_array['quote_password'] = $this->encrypt_password($db_array['quote_password']);
+        }
+
+        return parent::save($id, $db_array);
+    }
+
+    public function encrypt_quote_password($password): ?string
+    {
+        return $this->encrypt_password($password);
+    }
+
+    public function decrypt_quote_password($password): string
+    {
+        return $this->decrypt_password($password);
     }
 
     public function default_order_by()
@@ -131,7 +184,7 @@ class Mdl_Quotes extends Response_Model
             'quote_number' => [
                 'field' => 'quote_number',
                 'label' => trans('quote') . ' #',
-                'rules' => 'is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']',
+                'rules' => 'regex_match[/^[^\x00-\x1F\x7F<>"\']+$/]|is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']',
             ],
             'quote_date_created' => [
                 'field' => 'quote_date_created',
@@ -155,6 +208,14 @@ class Mdl_Quotes extends Response_Model
      */
     public function create($db_array = null)
     {
+        if ($db_array === null) {
+            $db_array = $this->db_array();
+        }
+
+        if (array_key_exists('quote_password', $db_array)) {
+            $db_array['quote_password'] = $this->encrypt_password($db_array['quote_password']);
+        }
+
         $quote_id = parent::save(null, $db_array);
 
         // Create an quote amount record
@@ -314,9 +375,10 @@ class Mdl_Quotes extends Response_Model
      */
     public function get_url_key()
     {
-        $this->load->helper('string');
+        $this->load->helper('ip_security');
 
-        return random_string('alnum', 32);
+        // 16 bytes -> 32 hexadecimal characters (matches the guest-view url_key format).
+        return generate_secure_token(16);
     }
 
     /**
@@ -529,5 +591,49 @@ class Mdl_Quotes extends Response_Model
             $this->db->set('quote_number', $quote_number);
             $this->db->update('ip_quotes');
         }
+    }
+
+    /**
+     * Check if the current user has access to this quote.
+     *
+     * Security: Prevents IDOR vulnerabilities for quote access.
+     *
+     * @param int $quote_id The quote ID to check
+     *
+     * @return bool True if user has access, false otherwise
+     */
+    public function can_user_access($quote_id)
+    {
+        $CI = & get_instance();
+
+        // Normalize to integer to prevent type juggling
+        $user_type = (int) $CI->session->userdata('user_type');
+        $user_id   = (int) $CI->session->userdata('user_id');
+        $quote_id  = (int) $quote_id;
+
+        // Admin users have access to all quotes
+        if ($user_type === 1) {
+            return true;
+        }
+
+        // Get the quote
+        $quote = $this->get_by_id($quote_id);
+        if ( ! $quote) {
+            return false;
+        }
+
+        // Guest users (type 2) - check if quote belongs to their assigned clients
+        if ($user_type === 2) {
+            $CI->load->model('user_clients/mdl_user_clients');
+
+            $user_clients = $CI->mdl_user_clients->assigned_to($user_id)->get()->result();
+            // Ensure all client IDs are integers for strict comparison
+            $client_ids = array_map('intval', array_column($user_clients, 'client_id'));
+
+            return in_array((int) $quote->client_id, $client_ids, true);
+        }
+
+        // Regular users - check if they created the quote
+        return (int) $quote->user_id === $user_id;
     }
 }

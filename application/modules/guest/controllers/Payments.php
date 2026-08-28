@@ -31,7 +31,13 @@ class Payments extends Guest_Controller
      */
     public function index($page = 0)
     {
-        $this->mdl_payments->where('(ip_payments.invoice_id IN (SELECT invoice_id FROM ip_invoices WHERE client_id IN (' . implode(',', $this->user_clients) . ')))');
+        if ( ! empty($this->user_clients)) {
+            $this->mdl_payments
+                ->where_in('ip_invoices.client_id', $this->user_clients);
+        } else {
+            $this->mdl_payments->where('1=0');
+        }
+
         $this->mdl_payments->paginate(site_url('guest/payments/index'), $page);
 
         $payments = $this->mdl_payments->result();

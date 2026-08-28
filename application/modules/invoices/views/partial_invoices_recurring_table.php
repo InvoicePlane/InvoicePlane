@@ -17,7 +17,7 @@
                 <tbody>
 <?php
 foreach ($recurring_invoices as $invoice) {
-?>
+    ?>
                     <tr>
                         <td>
                             <span class="label label-<?php echo $invoice->recur_status != 'active' ? 'default' : 'success'; ?>">
@@ -26,7 +26,7 @@ foreach ($recurring_invoices as $invoice) {
                         </td>
                         <td>
                             <a href="<?php echo site_url('invoices/view/' . $invoice->invoice_id); ?>">
-                                <?php echo $invoice->invoice_number; ?>
+                                <?php echo htmlsc($invoice->invoice_number); ?>
                             </a>
                         </td>
                         <td><?php echo anchor('clients/view/' . $invoice->client_id, htmlsc(format_client($invoice))); ?></td>
@@ -41,9 +41,13 @@ foreach ($recurring_invoices as $invoice) {
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?php echo site_url('invoices/recurring/stop/' . $invoice->invoice_recurring_id); ?>">
-                                            <i class="fa fa-ban fa-margin"></i> <?php _trans('stop'); ?>
-                                        </a>
+                                        <form action="<?php echo site_url('invoices/recurring/stop/' . $invoice->invoice_recurring_id); ?>"
+                                              method="POST">
+                                            <?php _csrf_field(); ?>
+                                            <button type="submit" class="dropdown-button">
+                                                <i class="fa fa-ban fa-margin"></i> <?php _trans('stop'); ?>
+                                            </button>
+                                        </form>
                                     </li>
                                     <li>
                                         <form action="<?php echo site_url('invoices/recurring/delete/' . $invoice->invoice_recurring_id); ?>"
@@ -61,7 +65,7 @@ foreach ($recurring_invoices as $invoice) {
                     </tr>
 <?php
 }
-?>
+                    ?>
                 </tbody>
 
             </table>

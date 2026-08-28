@@ -63,9 +63,9 @@ class Mdl_Invoices_Recurring extends Response_Model
 
     public function default_order_by()
     {
-      $this->db->order_by( 'recur_status ASC, recur_next_date ASC' );
+        $this->db->order_by('recur_status ASC, recur_next_date ASC');
     }
-    
+
     public function default_join()
     {
         $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_invoices_recurring.invoice_id');
@@ -155,5 +155,27 @@ class Mdl_Invoices_Recurring extends Response_Model
 
         $this->db->where('invoice_recurring_id', $invoice_recurring_id);
         $this->db->update('ip_invoices_recurring', $db_array);
+    }
+
+    /**
+     * Atomically claims a due recurring invoice for processing by advancing its
+     * recur_next_date, conditioned on the date still matching $current_next_date.
+     *
+     * Concurrent cron runs (or a cron key replayed in parallel) that read the same
+     * "due" row before either advances the date will only have one of them win this
+     * update, preventing the same recurring invoice from being generated twice.
+     *
+     * @return bool true if this call claimed the invoice, false if another process
+     *              already advanced it
+     */
+    public function claim_for_processing($invoice_recurring_id, $current_next_date, $recur_frequency): bool
+    {
+        $recur_next_date = increment_date($current_next_date, $recur_frequency);
+
+        $this->db->where('invoice_recurring_id', $invoice_recurring_id);
+        $this->db->where('recur_next_date', $current_next_date);
+        $this->db->update('ip_invoices_recurring', ['recur_next_date' => $recur_next_date]);
+
+        return $this->db->affected_rows() > 0;
     }
 }

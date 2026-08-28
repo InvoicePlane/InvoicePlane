@@ -153,22 +153,22 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="<?php echo site_url('users/form/' .
-                        $this->session->userdata('user_id')); ?>"
+                    <a href="<?php echo site_url('users/form/'
+                        . $this->session->userdata('user_id')); ?>"
                        class="tip icon" data-placement="bottom"
                        title="<?php
                         _htmlsc($this->session->userdata('user_name'));
-                        if ($this->session->userdata('user_company')) {
-                            echo ' (' . htmlsc($this->session->userdata('user_company')) . ')';
-                        }
-                        ?>">
+                if ($this->session->userdata('user_company')) {
+                    echo ' (' . htmlsc($this->session->userdata('user_company')) . ')';
+                }
+                ?>">
                         <i class="fa fa-user"></i>
                         <span class="visible-xs">&nbsp;<?php
-                            _htmlsc($this->session->userdata('user_name'));
-                        if ($this->session->userdata('user_company')) {
-                            echo ' (' . htmlsc($this->session->userdata('user_company')) . ')';
-                        }
-                        ?></span>
+                    _htmlsc($this->session->userdata('user_name'));
+                if ($this->session->userdata('user_company')) {
+                    echo ' (' . htmlsc($this->session->userdata('user_company')) . ')';
+                }
+                ?></span>
                     </a>
                 </li>
                 <li>

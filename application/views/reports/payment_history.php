@@ -6,7 +6,7 @@
 </head>
 <body>
 
-    <h3 class="report_title"><?php _trans('payment_history'); ?><br><small><?php echo $from_date . ' - ' . $to_date ?></small></h3>
+    <h3 class="report_title"><?php _trans('payment_history'); ?><br><small><?php echo htmlsc($from_date) . ' - ' . htmlsc($to_date); ?></small></h3>
 
     <table>
         <tr>
@@ -20,21 +20,21 @@
 <?php
 $sum = 0;
 foreach ($results as $result) {
-?>
+    ?>
         <tr>
             <td><?php echo date_from_mysql($result->payment_date, true); ?></td>
-            <td><?php echo $result->invoice_number; ?></td>
-            <td><?php echo format_client($result); ?></td>
+            <td><?php echo htmlsc($result->invoice_number); ?></td>
+            <td><?php _htmlsc(format_client($result)); ?></td>
             <td><?php _htmlsc($result->payment_method_name); ?></td>
             <td><?php echo nl2br(htmlsc($result->payment_note)); ?></td>
             <td class="amount"><?php echo format_currency($result->payment_amount); ?></td>
         </tr>
 <?php
-    $sum += $result->payment_amount;
+        $sum += $result->payment_amount;
 }
 
 if ( ! empty($results)) {
-?>
+    ?>
         <tr>
             <td colspan=5><?php _trans('total'); ?></td>
             <td class="amount"><?php echo format_currency($sum); ?></td>

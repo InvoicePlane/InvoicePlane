@@ -11,7 +11,7 @@
         // Creates the invoice
         $('#invoice_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
-            // will create the new client if necessar
+            // will create the new client if necessary
             $.post("<?php echo site_url('invoices/ajax/create'); ?>", {
                     client_id: $('#create_invoice_client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
@@ -50,9 +50,9 @@
         <div class="modal-body">
 
             <input class="hidden" id="payment_method_id"
-                   value="<?php echo get_setting('invoice_default_payment_method'); ?>">
+                   value="<?php echo html_escape(get_setting('invoice_default_payment_method')); ?>">
             <input class="hidden" id="input_permissive_search_clients"
-                   value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
+                   value="<?php echo html_escape(get_setting('enable_permissive_search_clients')); ?>">
 
             <div class="form-group has-feedback">
                 <label for="create_invoice_client_id"><?php _trans('client'); ?></label>
@@ -85,7 +85,7 @@
             <div class="form-group">
                 <label for="invoice_password"><?php _trans('invoice_password'); ?></label>
                 <input type="text" name="invoice_password" id="invoice_password" class="form-control"
-                       value="<?php echo get_setting('invoice_pre_password') == '' ? '' : get_setting('invoice_pre_password'); ?>"
+                       value="<?php echo get_setting('invoice_pre_password') === '' ? '' : html_escape(get_setting('invoice_pre_password')); ?>"
                        style="margin: 0 auto;" autocomplete="off">
             </div>
 
@@ -96,13 +96,13 @@
 <?php
 foreach ($invoice_groups as $invoice_group) {
     $is_selected = (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) ? ' selected="selected"' : '';
-?>
+    ?>
                     <option value="<?php echo $invoice_group->invoice_group_id; ?>"<?php echo $is_selected; ?>>
                         <?php _htmlsc($invoice_group->invoice_group_name); ?>
                     </option>
 <?php
 }
-?>
+        ?>
                 </select>
             </div>
 

@@ -60,7 +60,7 @@
 // e-invoice alert when client or user empty required field
 // Use null coalescing to handle cases where database hasn't been migrated yet
 if (($invoice->client_einvoicing_version ?? '') != '' && ($invoice->client_einvoicing_active ?? 0) == 0) {
-?>
+    ?>
                 <div class="alert alert-warning">
                     <table style="margin-left: auto; margin-right: auto;">
                         <tr>
@@ -71,12 +71,12 @@ if (($invoice->client_einvoicing_version ?? '') != '' && ($invoice->client_einvo
                 </div>
 <?php
 }
-?>
+            ?>
 
                 <div class="form-group">
                     <label for="to_email"><?php _trans('to_email'); ?></label>
                     <input type="email" multiple name="to_email" id="to_email" class="form-control" required
-                           value="<?php echo $invoice->client_email; ?>">
+                           value="<?php echo htmlsc($invoice->client_email); ?>">
                 </div>
 
                 <hr>
@@ -87,14 +87,14 @@ if (($invoice->client_einvoicing_version ?? '') != '' && ($invoice->client_einvo
                         <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($email_templates as $email_template) {
-?>
+    ?>
                         <option value="<?php echo $email_template->email_template_id; ?>"
                             <?php check_select($selected_email_template, $email_template->email_template_id); ?>>
                             <?php _htmlsc($email_template->email_template_title); ?>
                         </option>
 <?php
 }
-?>
+            ?>
                     </select>
                 </div>
 
@@ -107,7 +107,7 @@ foreach ($email_templates as $email_template) {
                 <div class="form-group">
                     <label for="from_email"><?php _trans('from_email'); ?></label>
                     <input type="text" name="from_email" id="from_email" class="form-control" required
-                           value="<?php echo $invoice->user_email; ?>">
+                           value="<?php echo html_escape($default_from_email ?? $invoice->user_email); ?>">
                 </div>
 
                 <div class="form-group">
@@ -123,7 +123,7 @@ foreach ($email_templates as $email_template) {
                 <div class="form-group">
                     <label for="subject"><?php _trans('subject'); ?></label>
                     <input type="text" name="subject" id="subject" class="form-control"
-                           value="<?php _trans('invoice'); ?> #<?php echo $invoice->invoice_number; ?>">
+                           value="<?php _trans('invoice'); ?> #<?php echo htmlsc($invoice->invoice_number); ?>">
                 </div>
 
                 <div class="form-group">
@@ -132,14 +132,14 @@ foreach ($email_templates as $email_template) {
                         <option value=""><?php _trans('none'); ?></option>
 <?php
 foreach ($pdf_templates as $pdf_template) {
-?>
+    ?>
                         <option value="<?php echo $pdf_template; ?>"
                             <?php check_select($selected_pdf_template, $pdf_template); ?>>
                             <?php echo $pdf_template; ?>
                         </option>
 <?php
 }
-?>
+            ?>
                     </select>
                 </div>
 
@@ -198,7 +198,7 @@ foreach ($pdf_templates as $pdf_template) {
                                     </div>
                                 </div>
                                 <div class="panel-body">
-                                    <iframe id="email-template-preview"></iframe>
+                                    <iframe id="email-template-preview" sandbox="allow-same-origin"></iframe>
                                 </div>
                             </div>
 
@@ -240,4 +240,4 @@ foreach ($pdf_templates as $pdf_template) {
 </form>
 
 <?php
-_dropzone_script($invoice->invoice_url_key, $invoice->client_id);
+            _dropzone_script($invoice->invoice_url_key, $invoice->client_id);

@@ -25,7 +25,7 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
 
 <?php
 if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('task_status') == 4) {
-?>
+    ?>
         <div class="alert alert-warning small"><?php echo trans('info_task_readonly') ?></div>
 <?php
 }
@@ -37,12 +37,12 @@ if ($this->mdl_tasks->form_value('task_id') && $this->mdl_tasks->form_value('tas
                     <div class="panel-heading">
 <?php
 if ($this->mdl_tasks->form_value('task_id')) {
-?>
+    ?>
                             #<?php echo $this->mdl_tasks->form_value('task_id'); ?>&nbsp;
                             <?php echo $this->mdl_tasks->form_value('task_name', true); ?>
 <?php
 } else {
-?>
+    ?>
                             <?php _trans('new_task'); ?>
 <?php
 }
@@ -79,10 +79,10 @@ if ($this->mdl_tasks->form_value('task_id')) {
                                 <option value="0"><?php _trans('none'); ?></option>
 <?php
 foreach ($tax_rates as $tax_rate) {
-?>
+    ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                     <?php check_select($this->mdl_tasks->form_value('tax_rate_id'), $tax_rate->tax_rate_id); ?>>
-                                    <?php echo $tax_rate->tax_rate_name . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?>
+                                    <?php echo htmlsc($tax_rate->tax_rate_name) . ' (' . format_amount($tax_rate->tax_rate_percent) . '%)'; ?>
                                 </option>
 <?php
 }
@@ -110,7 +110,7 @@ foreach ($task_statuses as $key => $status) {
     if ($this->mdl_tasks->form_value('task_status') != 4 && $key == 4) {
         continue;
     }
-?>
+    ?>
                                 <option value="<?php echo $key; ?>" <?php check_select($key, $this->mdl_tasks->form_value('task_status')); ?>>
                                     <?php echo $status['label']; ?>
                                 </option>
@@ -137,7 +137,7 @@ foreach ($task_statuses as $key => $status) {
                                 <option value=""><?php _trans('select_project'); ?></option>
 <?php
 foreach ($projects as $project) {
-?>
+    ?>
                                 <option value="<?php echo $project->project_id; ?>"
                                     <?php check_select($this->mdl_tasks->form_value('project_id'), $project->project_id); ?>>
                                     <?php echo htmlspecialchars($project->project_name, ENT_COMPAT); ?>

@@ -20,7 +20,7 @@
 <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                     <?php check_select(get_setting('default_invoice_tax_rate'), $tax_rate->tax_rate_id); ?>>
-                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
+                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                                 </option>
 <?php } ?>
                             </select>
@@ -36,7 +36,7 @@
 <?php foreach ($tax_rates as $tax_rate) { ?>
                                 <option value="<?php echo $tax_rate->tax_rate_id; ?>"
                                     <?php check_select(get_setting('default_item_tax_rate'), $tax_rate->tax_rate_id); ?>>
-                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . $tax_rate->tax_rate_name; ?>
+                                    <?php echo $tax_rate->tax_rate_percent . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                                 </option>
 <?php } ?>
                             </select>
@@ -48,13 +48,13 @@
 // LEGACY_CALCULATION false : Taxes Global N, Item Y : Use simple calculation : Apply global discount before item tax
 // For e-invoices : 🗸 EN16931, ? PEPPOL3BIS, ? UBL, ? CII ••• (WIP : todo: checks, modify, create models).
 if ( ! $legacy_calculation) {
-?>
+    ?>
                     <input name="settings[default_include_item_tax]" id="settings[default_include_item_tax]" type="hidden" value="">
 <?php
 }
 // LEGACY_CALCULATION true : Taxes Global Y, Item Y : Use legacy calculation for Discounts & Taxes : By default in ipconfig.
 else {
-?>
+    ?>
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
                             <label for="settings[default_include_item_tax]">
@@ -74,7 +74,7 @@ else {
                     </div>
 <?php
 } // Fi LEGACY_CALCULATION (Show or not Global Taxes) - since v1.6.3
-?>
+                ?>
                 </div>
 
             </div>

@@ -151,7 +151,7 @@ if ( ! $items) {
 
 <?php
 if ($invoice->is_read_only != 1) {
-?>
+    ?>
         var fixHelper = function (e, tr) {
             var $originals = tr.children();
             var $helper = tr.clone();
@@ -202,12 +202,12 @@ echo $legacy_calculation ? $modal_add_invoice_tax : ''; // Legacy calculation ha
 <div id="headerbar">
     <h1 class="headerbar-title">
         <span data-toggle="tooltip" data-placement="bottom" title="<?php _trans('invoicing'); ?>: <?php _htmlsc(PHP_EOL . format_user($invoice->user_id)); ?>">
-            <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . $invoice->invoice_number : trans('id') . ': ' . $invoice->invoice_id); ?>
+            <?php echo trans('invoice') . ' ' . ($invoice->invoice_number ? '#' . htmlsc($invoice->invoice_number) : trans('id') . ': ' . $invoice->invoice_id); ?>
         </span>
 <?php
 // Nb Admins > 1 only
 if ($change_user) {
-?>
+    ?>
         <a data-toggle="tooltip" data-placement="bottom"
            title="<?php echo $edit_user_title; ?>"
            href="<?php echo site_url('users/form/' . $invoice->user_id); ?>">
@@ -215,14 +215,14 @@ if ($change_user) {
                 <span class="hidden-xs"><?php _htmlsc($invoice->user_name); ?></span>
         </a>
 <?php
-    if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
-?>
+        if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
+            ?>
 
         <span id="invoice_change_user" class="fa fa-fw fa-edit text-<?php echo $its_mine ? 'muted' : 'danger'; ?> cursor-pointer"
               data-toggle="tooltip" data-placement="bottom"
               title="<?php _trans('change_user'); ?>"></span>
 <?php
-    } // End if draft
+        } // End if draft
 } // End if change_user
 ?>
     </h1>
@@ -237,7 +237,7 @@ if ($change_user) {
             <ul class="dropdown-menu">
 <?php
 if ($legacy_calculation && $invoice->is_read_only != 1) { // Legacy calculation have global taxes - since v1.6.3
-?>
+    ?>
                 <li>
                     <a href="#add-invoice-tax" data-toggle="modal">
                         <i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
@@ -253,7 +253,7 @@ if ($legacy_calculation && $invoice->is_read_only != 1) { // Legacy calculation 
                 </li>
 <?php
 if ($invoice->invoice_balance != 0) {
-?>
+    ?>
                 <li>
                     <a href="#" class="invoice-add-payment"
                        data-invoice-id="<?php echo $invoice_id; ?>"
@@ -304,7 +304,7 @@ if ($invoice->invoice_balance != 0) {
                 </li>
 <?php
 if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) {
-?>
+    ?>
                 <li>
                     <a href="#delete-invoice" data-toggle="modal">
                         <i class="fa fa-trash-o fa-margin"></i>
@@ -319,7 +319,7 @@ if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_del
 
 <?php
 if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
-?>
+    ?>
         <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
             <i class="fa fa-check"></i> <?php _trans('save'); ?>
         </a>
@@ -331,12 +331,12 @@ if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
     <div class="headerbar-item invoice-labels pull-right">
 <?php
 if ($invoice->invoice_is_recurring) {
-?>
+    ?>
         <span class="label label-info"><?php _trans('recurring'); ?></span>
 <?php
 }
 if ($invoice->is_read_only == 1) {
-?>
+    ?>
         <span class="label label-danger">
             <i class="fa fa-read-only"></i> <?php _trans('read_only'); ?>
         </span>
@@ -357,10 +357,10 @@ if ($invoice->is_read_only == 1) {
                 <div class="col-xs-12 col-md-8">
                     <div class="col-md-6">
                         <h2>
-                            <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php echo format_client($invoice) ?></a>
+                            <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"><?php _htmlsc(format_client($invoice)); ?></a>
 <?php
 if ($invoice->invoice_status_id == 1) {
-?>
+    ?>
                                 <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
                                       data-toggle="tooltip" data-placement="bottom"
                                       title="<?php echo htmlentities(trans('change_client'), ENT_COMPAT); ?>"></span>
@@ -369,12 +369,12 @@ if ($invoice->invoice_status_id == 1) {
 ?>
                         </h2><br>
                         <span>
-                            <?php echo ($invoice->client_address_1) ? $invoice->client_address_1 . '<br>' : ''; ?>
-                            <?php echo ($invoice->client_address_2) ? $invoice->client_address_2 . '<br>' : ''; ?>
-                            <?php echo ($invoice->client_city) ? $invoice->client_city : ''; ?>
-                            <?php echo ($invoice->client_state) ? $invoice->client_state : ''; ?>
-                            <?php echo ($invoice->client_zip) ? $invoice->client_zip : ''; ?>
-                            <?php echo ($invoice->client_country) ? '<br>' . $invoice->client_country : ''; ?>
+                            <?php echo ($invoice->client_address_1) ? htmlsc($invoice->client_address_1) . '<br>' : ''; ?>
+                            <?php echo ($invoice->client_address_2) ? htmlsc($invoice->client_address_2) . '<br>' : ''; ?>
+                            <?php echo ($invoice->client_city) ? htmlsc($invoice->client_city) : ''; ?>
+                            <?php echo ($invoice->client_state) ? htmlsc($invoice->client_state) : ''; ?>
+                            <?php echo ($invoice->client_zip) ? htmlsc($invoice->client_zip) : ''; ?>
+                            <?php echo ($invoice->client_country) ? '<br>' . htmlsc($invoice->client_country) : ''; ?>
                         </span>
 <?php if ($invoice->client_phone || $invoice->client_email) : ?>
                             <hr>
@@ -399,8 +399,8 @@ if ($invoice->invoice_status_id == 1) {
 <?php
 // Fix New invoice date in db
 $invoice->sumex_treatmentstart = $invoice->sumex_treatmentstart == '0000-00-00' ? date('y-m-d') : $invoice->sumex_treatmentstart;
-$invoice->sumex_treatmentend   = $invoice->sumex_treatmentend   == '0000-00-00' ? date('y-m-d') : $invoice->sumex_treatmentend;
-$invoice->sumex_casedate       = $invoice->sumex_casedate       == '0000-00-00' ? date('y-m-d') : $invoice->sumex_casedate;
+$invoice->sumex_treatmentend   = $invoice->sumex_treatmentend == '0000-00-00' ? date('y-m-d') : $invoice->sumex_treatmentend;
+$invoice->sumex_casedate       = $invoice->sumex_casedate == '0000-00-00' ? date('y-m-d') : $invoice->sumex_casedate;
 ?>
                         <h3><?php _trans('treatment'); ?></h3>
                         <br>
@@ -445,7 +445,7 @@ $reasons = [
 ];
 foreach ($reasons as $key => $reason) {
     $selected = ($invoice->sumex_reason == $key ? ' selected' : '');
-?>
+    ?>
                                                 <option value="<?php echo $key; ?>"<?php echo $selected; ?>>
                                                     <?php _trans('reason_' . $reason); ?>
                                                 </option>
@@ -503,7 +503,7 @@ foreach ($reasons as $key => $reason) {
 <?php
 if ($invoice->invoice_sign == -1) {
     $credit_link = anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $invoice->creditinvoice_parent_id);
-?>
+    ?>
                             <div class="col-xs-12">
                                 <span class="label label-warning">
                                     <i class="fa fa-credit-invoice"></i>&nbsp;
@@ -518,10 +518,10 @@ if ($invoice->invoice_sign == -1) {
 
                                 <div class="invoice-properties">
                                     <label><?php _trans('status');
-                                    if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
-                                        echo ' <span class="small">(' . trans('can_be_changed') . ')</span>';
-                                    }
-                                    ?>
+if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
+    echo ' <span class="small">(' . trans('can_be_changed') . ')</span>';
+}
+?>
                                     </label>
                                     <select name="invoice_status_id" id="invoice_status_id"
                                             class="form-control simple-select"
@@ -529,7 +529,7 @@ if ($invoice->invoice_sign == -1) {
                                     >
 <?php
 foreach ($invoice_statuses as $key => $status) {
-?>
+    ?>
                                         <option value="<?php echo $key; ?>"
                                                 <?php echo $key == $invoice->invoice_status_id ? 'selected="selected"' : ''; ?>
                                         >
@@ -546,7 +546,7 @@ foreach ($invoice_statuses as $key => $status) {
                                     <input type="text" id="invoice_number"
                                            class="form-control"
                                         <?php if ($invoice->invoice_number) : ?>
-                                            value="<?php echo $invoice->invoice_number; ?>"
+                                            value="<?php echo htmlsc($invoice->invoice_number); ?>"
                                         <?php else : ?>
                                             placeholder="<?php _trans('not_set'); ?>"
                                         <?php endif; ?>
@@ -594,10 +594,10 @@ foreach ($invoice_statuses as $key => $status) {
                                         <option value="0"><?php _trans('select_payment_method'); ?></option>
 <?php
 foreach ($payment_methods as $payment_method) {
-?>
+    ?>
                                         <option <?php check_select($invoice->payment_method, $payment_method->payment_method_id) ?>
                                             value="<?php echo $payment_method->payment_method_id; ?>">
-                                            <?php echo $payment_method->payment_method_name; ?>
+                                            <?php echo htmlsc($payment_method->payment_method_name); ?>
                                         </option>
 <?php
 } // End foreach
@@ -628,7 +628,7 @@ foreach ($custom_fields as $custom_field) {
 
 <?php
 if ($invoice->invoice_status_id != 1) {
-?>
+    ?>
                             <div class="col-xs-12">
                                 <div class="form-group">
                                     <label for="invoice-guest-url"><?php _trans('guest_url'); ?></label>
@@ -666,7 +666,7 @@ if ($invoice->invoice_status_id != 1) {
                         <div class="panel-body">
                             <textarea id="invoice_sumex_observations" name="invoice_sumex_observations" class="form-control" rows="3"
                                       <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>
-                            ><?php echo $invoice->sumex_observations; ?></textarea>
+                            ><?php echo htmlsc($invoice->sumex_observations); ?></textarea>
                         </div>
                     </div>
 
@@ -699,7 +699,7 @@ if ($invoice->invoice_status_id != 1) {
 
 <?php
 if ($default_custom) {
-?>
+    ?>
             <div class="row">
                 <div class="col-xs-12">
 
@@ -710,13 +710,13 @@ if ($default_custom) {
                         <div class="panel-body">
                             <div class="row">
 <?php
-    $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
+        $classes = ['control-label', 'controls', '', 'form-group col-xs-12 col-sm-6'];
     foreach ($custom_fields as $custom_field) {
         if ( ! $custom_field->custom_field_location) { // == 0
             print_field($this->mdl_invoices, $custom_field, $custom_values, $classes[0], $classes[1], $classes[2], $classes[3]);
         }
     }
-?>
+    ?>
                             </div>
                         </div>
                     </div>

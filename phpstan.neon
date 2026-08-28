@@ -1,0 +1,32 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    tmpDir: null
+    level: 0
+    paths:
+        - application/modules/
+
+    excludePaths:
+        analyse:
+
+    ignoreErrors:
+        # Ignore dynamic property false positives (CodeIgniter3 pattern)
+        - '#\bproperty\.notFound\b#'
+
+        # Ignore undefined function errors for helpers and common CI functions
+        - '#Call to undefined function (trans|_trans|htmlsc|_htmlsc|_htmle|auto_link|check_select|lang|get_instance|redirect|site_url|get_setting|get_req_fields_einvoice|show_404|json_errors|print_field|date_to_mysql|date_from_mysql|format_client|format_currency|format_date|format_gender|format_avs|format_xml|is_valid_xml_config_id|get_country_list|get_country_name|get_available_languages|get_xml_template_files|get_xml_full_name|anchor|pager|_csrf_field|_csrf_query|verify_get_csrf_token|_auto_link|log_message)\(#'
+
+        # Ignore all "Class X extends unknown class Y" errors for known base classes (CodeIgniter3 pattern)
+        - '#Class \\w+ extends unknown class (Admin_Controller|Response_Model|Validator|MY_Model|Base_Controller|Guest_Controller|CI_Model|MX_Controller|CI_Controller)\.#'
+
+        # Ignore all "Call to an undefined method" errors (for dynamic CodeIgniter models)
+        - '#Call to an undefined method [A-Za-z0-9_\\\\:]+::[A-Za-z0-9_]+\\(\\)\.#'
+
+        # Ignore "Class referenced with incorrect case" (CodeIgniter is case-insensitive)
+        - '#Class [A-Za-z0-9_\\\\]+ referenced with incorrect case: [A-Za-z0-9_\\\\]+\.#'
+
+        # Ignore "calls parent::method() but X does not extend any class" (common in CI3)
+        - '#[A-Za-z0-9_\\\\]+::[A-Za-z0-9_]+\\(\\) calls parent::[A-Za-z0-9_]+\\(\\) but [A-Za-z0-9_\\\\]+ does not extend any class\.#'
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false

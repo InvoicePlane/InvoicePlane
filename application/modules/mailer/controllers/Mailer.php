@@ -61,13 +61,19 @@ class Mailer extends Admin_Controller
         $email_template    = '{}';
 
         if ($email_template_id) {
-            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
+            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         }
 
         // Get all custom fields
         $custom_fields = [];
         foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
+        }
+
+        // Determine default sender email: use smtp_mail_from setting if configured, otherwise fall back to user email
+        $default_from_email = get_setting('smtp_mail_from');
+        if (empty($default_from_email)) {
+            $default_from_email = $invoice->user_email;
         }
 
         $this->layout->set(
@@ -79,6 +85,7 @@ class Mailer extends Admin_Controller
                 'custom_fields'           => $custom_fields,
                 'pdf_templates'           => $this->mdl_templates->get_invoice_templates(),
                 'invoice'                 => $invoice,
+                'default_from_email'      => $default_from_email,
             ]
         );
         $this->layout->buffer('content', 'mailer/invoice');
@@ -110,13 +117,21 @@ class Mailer extends Admin_Controller
         $email_template    = '{}';
 
         if ($email_template_id) {
-            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id));
+            $email_template = json_encode($this->mdl_email_templates->get_by_id($email_template_id), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         }
 
         // Get all custom fields
         $custom_fields = [];
         foreach (array_keys($this->mdl_custom_fields->custom_tables()) as $table) {
             $custom_fields[$table] = $this->mdl_custom_fields->by_table($table)->get()->result();
+        }
+
+        $quote = $this->mdl_quotes->get_by_id($quote_id);
+
+        // Determine default sender email: use smtp_mail_from setting if configured, otherwise fall back to user email
+        $default_from_email = get_setting('smtp_mail_from');
+        if (empty($default_from_email)) {
+            $default_from_email = $quote->user_email;
         }
 
         $this->layout->set(
@@ -127,7 +142,8 @@ class Mailer extends Admin_Controller
                 'email_template'          => $email_template,
                 'custom_fields'           => $custom_fields,
                 'pdf_templates'           => $this->mdl_templates->get_quote_templates(),
-                'quote'                   => $this->mdl_quotes->get_by_id($quote_id),
+                'quote'                   => $quote,
+                'default_from_email'      => $default_from_email,
             ]
         );
         $this->layout->buffer('content', 'mailer/quote');
@@ -156,11 +172,16 @@ class Mailer extends Admin_Controller
         $subject      = $this->input->post('subject');
         $body         = $this->input->post('body');
 
-        if (mb_strlen($body) != mb_strlen(strip_tags($body))) {
-            $body = htmlspecialchars_decode($body, ENT_COMPAT);
-        } else {
-            $body = htmlspecialchars_decode(nl2br($body), ENT_COMPAT);
+        // Load helper for email body processing
+        $this->load->helper('html_sanitizer');
+
+        // The body is already sanitized by HTML Purifier in filter_input().
+        // We only need to add line breaks if the content is plain text (no HTML tags).
+        if (is_plain_text($body)) {
+            // Plain text - convert line breaks to <br> tags
+            $body = nl2br($body);
         }
+        // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
         $cc  = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
@@ -199,12 +220,18 @@ class Mailer extends Admin_Controller
 
         $pdf_template = $this->input->post('pdf_template');
         $subject      = $this->input->post('subject');
+        $body         = $this->input->post('body');
 
-        if (mb_strlen($this->input->post('body')) != mb_strlen(strip_tags($this->input->post('body')))) {
-            $body = htmlspecialchars_decode($this->input->post('body'), ENT_COMPAT);
-        } else {
-            $body = htmlspecialchars_decode(nl2br($this->input->post('body')), ENT_COMPAT);
+        // Load helper for email body processing
+        $this->load->helper('html_sanitizer');
+
+        // The body is already sanitized by HTML Purifier in filter_input().
+        // We only need to add line breaks if the content is plain text (no HTML tags).
+        if (is_plain_text($body)) {
+            // Plain text - convert line breaks to <br> tags
+            $body = nl2br($body);
         }
+        // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
         $cc  = $this->input->post('cc');
         $bcc = $this->input->post('bcc');

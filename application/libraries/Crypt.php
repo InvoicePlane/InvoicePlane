@@ -18,27 +18,37 @@ class Crypt
 {
     public function salt(): string
     {
-        return substr(sha1(mt_rand()), 0, 22);
+        // Load project-specific crypto helper for cryptographically secure token generation
+        $CI = &get_instance();
+        $CI->load->helper('ip_security');
+
+        return generate_secure_salt();
     }
 
     /**
-     * @param string $password
+     * Hashes a password using bcrypt ($2y$).
+     * The $salt parameter is retained for API compatibility but is ignored;
+     * PHP's password_hash() generates a cryptographically secure salt
+     * internally and embeds it in the returned hash.
      *
+     * @param string $password
      */
-    public function generate_password($password, string $salt): string
+    public function generate_password($password, string $salt = ''): string
     {
-        return crypt($password, '$2a$10$' . $salt);
+        return password_hash($password, PASSWORD_BCRYPT);
     }
 
     /**
+     * Verifies a password against a stored hash.
+     * password_verify() handles both legacy $2a$ and current $2y$ hashes
+     * transparently, so no migration of existing rows is required.
+     *
      * @param string $hash
      * @param string $password
      */
     public function check_password($hash, $password): bool
     {
-        $new_hash = crypt($password, $hash);
-
-        return $hash == $new_hash;
+        return password_verify($password, $hash);
     }
 
     /**
@@ -46,12 +56,7 @@ class Crypt
      */
     public function encode($data): string
     {
-        $key = getenv('ENCRYPTION_KEY');
-        if (preg_match('/^base64:(.*)$/', $key, $matches)) {
-            $key = base64_decode($matches[1]);
-        }
-
-        return Cryptor::Encrypt($data, $key);
+        return Cryptor::Encrypt($data, $this->getEncryptionKey());
     }
 
     /**
@@ -63,11 +68,21 @@ class Crypt
             return '';
         }
 
+        return Cryptor::Decrypt($data, $this->getEncryptionKey());
+    }
+
+    /**
+     * Get the encryption key, decoding if it's base64-encoded.
+     *
+     * @return string The encryption key
+     */
+    private function getEncryptionKey(): string
+    {
         $key = getenv('ENCRYPTION_KEY');
         if (preg_match('/^base64:(.*)$/', $key, $matches)) {
             $key = base64_decode($matches[1]);
         }
 
-        return Cryptor::Decrypt($data, $key);
+        return $key;
     }
 }

@@ -7,7 +7,7 @@
 
     <title>
         <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
-        - <?php _trans('invoice'); ?> <?php echo $invoice->invoice_number; ?>
+        - <?php _trans('invoice'); ?> <?php echo htmlsc($invoice->invoice_number); ?>
     </title>
 
     <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
@@ -21,12 +21,12 @@
 
             <div class="webpreview-header">
 
-                <h2><?php _trans('invoice'); ?>&nbsp;<?php echo $invoice->invoice_number; ?></h2>
+                <h2><?php _trans('invoice'); ?>&nbsp;<?php echo htmlsc($invoice->invoice_number); ?></h2>
 
                 <div class="btn-group">
 <?php
 if (isset($_SESSION['user_id'], $_SESSION['user_type'])) {
-?>
+    ?>
                     <a href="<?php echo site_url($_SESSION['user_type'] > 1 ? 'guest' : ''); ?>"
                        class="btn btn-default" title="<?php _trans('dashboard'); ?>">
                         <i class="fa fa-dashboard"></i> <?php _trans('dashboard'); ?>
@@ -40,7 +40,7 @@ if (isset($_SESSION['user_id'], $_SESSION['user_type'])) {
                     </a>
 <?php
 if (get_setting('enable_online_payments') == 1 && $invoice->invoice_balance > 0) {
-?>
+    ?>
                     <a href="<?php echo site_url('guest/payment_information/form/' . $invoice_url_key); ?>"
                        class="btn btn-success">
                         <i class="fa fa-credit-card"></i> <?php _trans('pay_now'); ?>
@@ -71,35 +71,35 @@ if ($logo) {
                         <h4><?php _htmlsc($invoice->user_name); ?></h4>
                         <p><?php
                             if ($invoice->user_vat_id) {
-                                echo trans('vat_id_short') . ': ' . $invoice->user_vat_id . '<br>';
+                                echo trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '<br>';
                             }
-                            if ($invoice->user_tax_code) {
-                                echo trans('tax_code_short') . ': ' . $invoice->user_tax_code . '<br>';
-                            }
-                            if ($invoice->user_address_1) {
-                                echo htmlsc($invoice->user_address_1) . '<br>';
-                            }
-                            if ($invoice->user_address_2) {
-                                echo htmlsc($invoice->user_address_2) . '<br>';
-                            }
-                            if ($invoice->user_city) {
-                                echo htmlsc($invoice->user_city) . ' ';
-                            }
-                            if ($invoice->user_state) {
-                                echo htmlsc($invoice->user_state) . ' ';
-                            }
-                            if ($invoice->user_zip) {
-                                echo htmlsc($invoice->user_zip) . '<br>';
-                            }
-                            if ($invoice->user_phone) {
-                                _trans('phone_abbr');
-                                echo ': ' . htmlsc($invoice->user_phone) . '<br>';
-                            }
-                            if ($invoice->user_fax) {
-                                _trans('fax_abbr');
-                                echo ': ' . htmlsc($invoice->user_fax);
-                            }
-                        ?></p>
+if ($invoice->user_tax_code) {
+    echo trans('tax_code_short') . ': ' . htmlsc($invoice->user_tax_code) . '<br>';
+}
+if ($invoice->user_address_1) {
+    echo htmlsc($invoice->user_address_1) . '<br>';
+}
+if ($invoice->user_address_2) {
+    echo htmlsc($invoice->user_address_2) . '<br>';
+}
+if ($invoice->user_city) {
+    echo htmlsc($invoice->user_city) . ' ';
+}
+if ($invoice->user_state) {
+    echo htmlsc($invoice->user_state) . ' ';
+}
+if ($invoice->user_zip) {
+    echo htmlsc($invoice->user_zip) . '<br>';
+}
+if ($invoice->user_phone) {
+    _trans('phone_abbr');
+    echo ': ' . htmlsc($invoice->user_phone) . '<br>';
+}
+if ($invoice->user_fax) {
+    _trans('fax_abbr');
+    echo ': ' . htmlsc($invoice->user_fax);
+}
+?></p>
 
                     </div>
                     <div class="col-lg-2"></div>
@@ -107,33 +107,33 @@ if ($logo) {
 
                         <h4><?php _htmlsc(format_client($invoice)); ?></h4>
                         <p><?php
-                            if ($invoice->client_vat_id) {
-                                _trans('vat_id_short');
-                                echo ': ' . $invoice->client_vat_id . '<br>';
-                            }
-                            if ($invoice->client_tax_code) {
-                                _trans('tax_code_short');
-                                echo ': ' . $invoice->client_tax_code . '<br>';
-                            }
-                            if ($invoice->client_address_1) {
-                                echo htmlsc($invoice->client_address_1) . '<br>';
-                            }
-                            if ($invoice->client_address_2) {
-                                echo htmlsc($invoice->client_address_2) . '<br>';
-                            }
-                            if ($invoice->client_city) {
-                                echo htmlsc($invoice->client_city) . ' ';
-                            }
-                            if ($invoice->client_state) {
-                                echo htmlsc($invoice->client_state) . ' ';
-                            }
-                            if ($invoice->client_zip) {
-                                echo htmlsc($invoice->client_zip) . '<br>';
-                            }
-                            if ($invoice->client_phone) {
-                                echo trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '<br>';
-                            }
-                        ?></p>
+    if ($invoice->client_vat_id) {
+        _trans('vat_id_short');
+        echo ': ' . htmlsc($invoice->client_vat_id) . '<br>';
+    }
+if ($invoice->client_tax_code) {
+    _trans('tax_code_short');
+    echo ': ' . htmlsc($invoice->client_tax_code) . '<br>';
+}
+if ($invoice->client_address_1) {
+    echo htmlsc($invoice->client_address_1) . '<br>';
+}
+if ($invoice->client_address_2) {
+    echo htmlsc($invoice->client_address_2) . '<br>';
+}
+if ($invoice->client_city) {
+    echo htmlsc($invoice->client_city) . ' ';
+}
+if ($invoice->client_state) {
+    echo htmlsc($invoice->client_state) . ' ';
+}
+if ($invoice->client_zip) {
+    echo htmlsc($invoice->client_zip) . '<br>';
+}
+if ($invoice->client_phone) {
+    echo trans('phone_abbr') . ': ' . htmlsc($invoice->client_phone) . '<br>';
+}
+?></p>
 
                         <br>
 
@@ -155,7 +155,7 @@ if ($logo) {
                                 </tr>
 <?php
 if ($payment_method) {
-?>
+    ?>
                                 <tr>
                                     <td><?php _trans('payment_method'); ?></td>
                                     <td><?php _htmlsc($payment_method->payment_method_name); ?></td>
@@ -186,14 +186,14 @@ if ($payment_method) {
                                         <th class="amount"><?php _trans('discount'); ?></th>
                                         <?php
                                     }
-                                    ?>
+?>
                                     <th class="amount"><?php _trans('total'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
 <?php
 foreach ($items as $item) {
-?>
+    ?>
                                 <tr>
                                     <td><?php _htmlsc($item->item_name); ?></td>
                                     <td><?php echo nl2br(htmlsc($item->item_description)); ?></td>
@@ -206,13 +206,13 @@ foreach ($items as $item) {
                                     </td>
                                     <td class="amount"><?php echo format_currency($item->item_price); ?></td>
                                     <?php
-                                    if ($show_item_discounts) {
-                                    ?>
+                                        if ($show_item_discounts) {
+                                            ?>
                                     <td class="amount"><?php echo format_currency($item->item_discount); ?></td>
                                     <?php
-                                    }
-                                    ?>
-                                    <td class="amount"><?php echo format_currency($item->item_subtotal-$item->item_discount); ?></td>
+                                        }
+    ?>
+                                    <td class="amount"><?php echo format_currency($item->item_subtotal - $item->item_discount); ?></td>
                                 </tr>
 <?php
 } // End foreach
@@ -222,17 +222,17 @@ foreach ($items as $item) {
 $colspan = $show_item_discounts ? 4 : 3;
 if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
     if ( ! $legacy_calculation) {
-?>
+        ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount"><?php _trans('discount'); ?></td>
                                     <td class="amount"><?php
-                                        if ($invoice->invoice_discount_percent > 0) {
-                                            echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
-                                        } else {
-                                            echo format_currency($invoice->invoice_discount_amount);
-                                        }
-                                    ?></td>
+                                                if ($invoice->invoice_discount_percent > 0) {
+                                                    echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
+                                                } else {
+                                                    echo format_currency($invoice->invoice_discount_amount);
+                                                }
+        ?></td>
                                 </tr>
 <?php
     }
@@ -247,7 +247,7 @@ if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amoun
 
 <?php
 if ($invoice->invoice_item_tax_total > 0) {
-?>
+    ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount"><?php _trans('item_tax'); ?></td>
@@ -259,7 +259,7 @@ if ($invoice->invoice_item_tax_total > 0) {
 
 <?php
 foreach ($invoice_tax_rates as $invoice_tax_rate) {
-?>
+    ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="<?php echo $colspan; ?>"></td>
                                     <td class="amount">
@@ -274,17 +274,17 @@ foreach ($invoice_tax_rates as $invoice_tax_rate) {
 <?php
 if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amount > 0) {
     if ($legacy_calculation) {
-?>
+        ?>
                                 <tr>
                                     <td class="no-bottom-border" colspan="4"></td>
                                     <td class="amount"><?php _trans('discount'); ?></td>
                                     <td class="amount"><?php
-                                        if ($invoice->invoice_discount_percent > 0) {
-                                            echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
-                                        } else {
-                                            echo format_currency($invoice->invoice_discount_amount);
-                                        }
-                                    ?></td>
+                                                if ($invoice->invoice_discount_percent > 0) {
+                                                    echo format_amount($invoice->invoice_discount_percent) . '&nbsp;%';
+                                                } else {
+                                                    echo format_currency($invoice->invoice_discount_amount);
+                                                }
+        ?></td>
                                 </tr>
 <?php
     }
@@ -325,26 +325,26 @@ if ($invoice?->invoice_discount_percent > 0 || $invoice?->invoice_discount_amoun
 
 <?php
 if (get_setting('qr_code') && $invoice->invoice_balance > 0) {
-?>
+    ?>
                 <table class="invoice-qr-code-table">
                     <tbody>
                         <tr>
                             <td>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_recipient'); ?>:</strong>
-                                    <?php echo $invoice->user_company ?: get_setting('qr_code_recipient'); ?>
+                                    <?php _htmlsc($invoice->user_company ?: get_setting('qr_code_recipient')); ?>
                                 </div>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_iban'); ?>:</strong>
-                                    <?php echo $invoice->user_iban ?: get_setting('qr_code_iban'); ?>
+                                    <?php _htmlsc($invoice->user_iban ?: get_setting('qr_code_iban')); ?>
                                 </div>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_bic'); ?>:</strong>
-                                    <?php echo $invoice->user_bic ?: get_setting('qr_code_bic'); ?>
+                                    <?php _htmlsc($invoice->user_bic ?: get_setting('qr_code_bic')); ?>
                                 </div>
                                 <div>
                                     <strong><?php _trans('qr_code_settings_remittance_text'); ?>:</strong>
-                                    <?php echo parse_template($invoice, $invoice->user_remittance_text ?: get_setting('qr_code_remittance_text')); ?>
+                                    <?php _htmlsc(parse_template($invoice, $invoice->user_remittance_text ?: get_setting('qr_code_remittance_text'))); ?>
                                 </div>
                             </td>
                             <td class="amount">
@@ -363,7 +363,7 @@ if (get_setting('qr_code') && $invoice->invoice_balance > 0) {
 
 <?php
 if ($invoice->invoice_terms) {
-?>
+    ?>
                     <div class="col-xs-12 col-md-6">
                         <h4><?php _trans('terms'); ?></h4>
                         <p><?php echo nl2br(htmlsc($invoice->invoice_terms)); ?></p>
@@ -374,14 +374,14 @@ if ($invoice->invoice_terms) {
 
 <?php
 if (count($attachments) > 0) {
-?>
+    ?>
                     <div class="col-xs-12 col-md-6">
                         <h4><?php _trans('attachments'); ?></h4>
                         <div class="table-responsive">
                             <table class="table table-condensed">
 <?php
-    foreach ($attachments as $attachment) {
-?>
+        foreach ($attachments as $attachment) {
+            ?>
                                 <tr class="attachments">
                                     <td><?php echo $attachment['name']; ?></td>
                                     <td>
@@ -392,8 +392,8 @@ if (count($attachments) > 0) {
                                     </td>
                                 </tr>
 <?php
-    }
-?>
+        }
+    ?>
                             </table>
                         </div>
                     </div>

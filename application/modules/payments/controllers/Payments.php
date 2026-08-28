@@ -53,8 +53,6 @@ class Payments extends Admin_Controller
             redirect('payments');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
-
         $this->load->model('custom_fields/mdl_payment_custom');
 
         if ($this->mdl_payments->run_validation()) {
@@ -178,6 +176,10 @@ class Payments extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('payments')) {
+            return;
+        }
+
         $this->mdl_payments->delete($id);
         redirect('payments');
     }

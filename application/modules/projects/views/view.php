@@ -9,11 +9,14 @@
             <a href="<?php echo site_url('projects/form/' . $project->project_id); ?>" class="btn btn-default">
                 <i class="fa fa-edit"></i> <?php _trans('edit'); ?>
             </a>
-            <a class="btn btn-danger"
-               href="<?php echo site_url('projects/delete/' . $project->project_id); ?>"
-               onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
-                <i class="fa fa-trash-o"></i> <?php _trans('delete'); ?>
-            </a>
+            <form action="<?php echo site_url('projects/delete/' . $project->project_id); ?>"
+                  method="post" style="display:inline-block;">
+                <?php _csrf_field(); ?>
+                <button type="submit" class="btn btn-sm btn-danger"
+                        onclick="return confirm('<?php _trans('delete_record_warning'); ?>');">
+                    <i class="fa fa-trash-o"></i> <?php _trans('delete'); ?>
+                </button>
+            </form>
         </div>
     </div>
 </div>
@@ -24,7 +27,7 @@
         <div class="col-xs-12 col-md-4">
 <?php
 if ( ! empty($project->client_name)) {
-?>
+    ?>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <strong><?php _htmlsc(format_client($project)); ?></strong>
@@ -37,11 +40,11 @@ if ( ! empty($project->client_name)) {
             </div>
 <?php
 } else {
-?>
+    ?>
             <div class="alert alert-info"><?php _trans('alert_no_client_assigned'); ?></div>
 <?php
 }
-?>
+    ?>
         </div>
         <div class="col-xs-12 col-md-8">
 
@@ -66,7 +69,7 @@ if ( ! empty($project->client_name)) {
                             <tbody>
 <?php
 foreach ($tasks as $task) {
-?>
+    ?>
                                 <tr>
                                     <td><?php echo anchor('tasks/form/' . $task->task_id, htmlsc($task->task_name)) ?></td>
                                     <td>
@@ -83,20 +86,20 @@ foreach ($tasks as $task) {
                                 </tr>
 <?php
 }
-?>
+    ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
 <?php
 if (empty($tasks)) {
-?>
+    ?>
                 <div class="panel-body">
                     <div class="alert alert-info no-margin"><?php echo trans('alert_no_tasks_found') ?></div>
                 </div>
 <?php
 }
-?>
+    ?>
             </div>
         </div>
     </div>

@@ -60,8 +60,8 @@
                 </optgroup>
 <?php
 $sumex = get_setting('sumex') == '1';
-if ($sumex) {
-?>
+    if ($sumex) {
+        ?>
                 <optgroup label="<?php _trans('sumex_information'); ?>">
                     <option value="{{{client_avs}}}">
                         <?php _trans('sumex_ssn'); ?>
@@ -74,19 +74,19 @@ if ($sumex) {
                     </option>
                 </optgroup>
 <?php
-}
-if ($custom_fields['ip_client_custom']) {
-?>
+    }
+    if ($custom_fields['ip_client_custom']) {
+        ?>
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_client_custom'] as $custom) { ?>
                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
-                            <?php echo $custom->custom_field_label . ' (ID ' . $custom->custom_field_id . ')'; ?>
+                            <?php echo htmlsc($custom->custom_field_label) . ' (ID ' . $custom->custom_field_id . ')'; ?>
                         </option>
                     <?php } ?>
                 </optgroup>
 <?php
-}
-?>
+    }
+    ?>
             </select>
         </div>
 
@@ -157,7 +157,7 @@ if ($custom_fields['ip_client_custom']) {
                 </optgroup>
 <?php
 if ($sumex) {
-?>
+    ?>
                 <optgroup label="<?php _trans('sumex_information'); ?>">
                     <option value="{{{user_subscribernumber}}}">
                         <?php _trans('user_subscriber_number'); ?>
@@ -171,18 +171,18 @@ if ($sumex) {
                 </optgroup>
 <?php
 }
-if ($custom_fields['ip_user_custom']) {
-?>
+    if ($custom_fields['ip_user_custom']) {
+        ?>
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_user_custom'] as $custom) { ?>
                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
-                            <?php echo $custom->custom_field_label . ' (ID ' . $custom->custom_field_id . ')'; ?>
+                            <?php echo htmlsc($custom->custom_field_label) . ' (ID ' . $custom->custom_field_id . ')'; ?>
                         </option>
                     <?php } ?>
                 </optgroup>
 <?php
-}
-?>
+    }
+    ?>
             </select>
         </div>
 
@@ -224,23 +224,23 @@ if ($custom_fields['ip_user_custom']) {
                 </optgroup>
 <?php
 if ($custom_fields['ip_quote_custom']) {
-?>
+    ?>
 
                 <optgroup label="<?php _trans('custom_fields'); ?>">
                     <?php foreach ($custom_fields['ip_quote_custom'] as $custom) { ?>
                         <option value="{{{<?php echo 'ip_cf_' . $custom->custom_field_id; ?>}}}">
-                            <?php echo $custom->custom_field_label . ' (ID ' . $custom->custom_field_id . ')'; ?>
+                            <?php echo htmlsc($custom->custom_field_label) . ' (ID ' . $custom->custom_field_id . ')'; ?>
                         </option>
                     <?php } ?>
                 </optgroup>
 <?php
 }
-?>
+    ?>
             </select>
         </div>
 <?php
 if ($sumex) {
-?>
+    ?>
         <div class="form-group">
             <label for="tags_sumex"><?php _trans('invoice_sumex'); ?></label>
             <select id="tags_sumex" class="tag-select form-control">
@@ -269,6 +269,6 @@ if ($sumex) {
         </div>
 <?php
 }
-?>
+    ?>
     </div>
 </div>

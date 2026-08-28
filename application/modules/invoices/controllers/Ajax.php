@@ -107,14 +107,31 @@ class Ajax extends Admin_Controller
                         ],
                     ];
 
-                    exit(json_encode($response));
+                    $this->json_encode_ajax($response);
                 }
             }
 
             $invoice_status_id = $this->input->post('invoice_status_id');
 
-            // Generate new invoice number if needed
+            // Read invoice number from input
             $invoice_number = $this->input->post('invoice_number');
+
+            // Validate invoice_number: block control characters and HTML-relevant characters,
+            // but allow any other punctuation, since invoice_group_identifier_format lets
+            // admins put arbitrary literal characters (e.g. '#', '(', ')') into generated numbers.
+            // If invalid characters are present, return a clear validation error instead of silently modifying input.
+            if ($invoice_number !== null && $invoice_number !== '') {
+                if ( ! preg_match('/^[^\x00-\x1F\x7F<>"\']+$/', $invoice_number)) {
+                    $response = [
+                        'success'           => 0,
+                        'validation_errors' => [
+                            'invoice_number' => trans('invoice_number') . ' ' . trans('contains_invalid_characters'),
+                        ],
+                    ];
+
+                    $this->json_encode_ajax($response);
+                }
+            }
 
             if (empty($invoice_number) && $invoice_status_id != 1) {
                 $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
@@ -151,13 +168,13 @@ class Ajax extends Admin_Controller
             if ($sumexInvoice >= 1) {
                 $sumex_array = [
                     'sumex_invoice'        => $invoice_id,
-                    'sumex_reason'         => $this->input->post('invoice_sumex_reason'),
-                    'sumex_diagnosis'      => $this->input->post('invoice_sumex_diagnosis'),
+                    'sumex_reason'         => $this->security->xss_clean($this->input->post('invoice_sumex_reason')),
+                    'sumex_diagnosis'      => $this->security->xss_clean($this->input->post('invoice_sumex_diagnosis')),
                     'sumex_treatmentstart' => date_to_mysql($this->input->post('invoice_sumex_treatmentstart')),
                     'sumex_treatmentend'   => date_to_mysql($this->input->post('invoice_sumex_treatmentend')),
                     'sumex_casedate'       => date_to_mysql($this->input->post('invoice_sumex_casedate')),
-                    'sumex_casenumber'     => $this->input->post('invoice_sumex_casenumber'),
-                    'sumex_observations'   => $this->input->post('invoice_sumex_observations'),
+                    'sumex_casenumber'     => $this->security->xss_clean($this->input->post('invoice_sumex_casenumber')),
+                    'sumex_observations'   => $this->security->xss_clean($this->input->post('invoice_sumex_observations')),
                 ];
 
                 $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
@@ -210,11 +227,11 @@ class Ajax extends Admin_Controller
                     'validation_errors' => $result,
                 ];
 
-                exit(json_encode($response));
+                $this->json_encode_ajax($response);
             }
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function save_invoice_tax_rate()
@@ -235,7 +252,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     /**
@@ -265,7 +282,7 @@ class Ajax extends Admin_Controller
         }
 
         // Return the response
-        exit(json_encode(['success' => $success]));
+        $this->json_encode_ajax(['success' => $success]);
     }
 
     public function get_item()
@@ -274,7 +291,7 @@ class Ajax extends Admin_Controller
 
         $item = $this->mdl_items->get_by_id($this->security->xss_clean($this->input->post('item_id', true)));
 
-        echo json_encode($item);
+        $this->json_encode_ajax($item);
     }
 
     public function modal_copy_invoice()
@@ -331,7 +348,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function modal_change_user()
@@ -380,7 +397,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function modal_change_client()
@@ -429,7 +446,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function modal_create_invoice()
@@ -470,7 +487,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function create_recurring()
@@ -491,7 +508,7 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 
     public function modal_create_recurring()
@@ -580,6 +597,6 @@ class Ajax extends Admin_Controller
             ];
         }
 
-        exit(json_encode($response));
+        $this->json_encode_ajax($response);
     }
 }

@@ -31,23 +31,24 @@ class Ajax extends Admin_Controller
         $permissiveSearchUsers = $this->input->get('permissive_search_users');
 
         if (empty($query)) {
-            echo json_encode($response);
-            exit;
+            $this->json_encode_ajax($response);
         }
 
         // Search for chars "in the middle" of users names
         $moreUsersQuery = $permissiveSearchUsers ? '%' : '';
 
         // Search for users $type
-        $escapedQuery = $this->db->escape_str($query);
-        $escapedQuery = str_replace('%', '', $escapedQuery);
+        // Strip LIKE wildcards from user input, then pass the pattern as a bound
+        // value so CodeIgniter escapes it — never concatenate input into the SQL.
+        $searchTerm    = str_replace(['%', '_'], '', (string) $query);
+        $searchPattern = $moreUsersQuery . $searchTerm . '%';
         // Not searched: user_address_1 user_address_2 user_city user_state user_zip user_country user_invoicing_contact
         $users = $this->mdl_users
             ->where('user_active', 1)
             ->where('user_type', $type)
-            ->having("user_name LIKE '" . $moreUsersQuery . $escapedQuery . "%'")
-            ->or_having("user_company LIKE '" . $moreUsersQuery . $escapedQuery . "%'")
-            ->or_having("user_invoicing_contact LIKE '" . $moreUsersQuery . $escapedQuery . "%'")
+            ->having('user_name LIKE', $searchPattern)
+            ->or_having('user_company LIKE', $searchPattern)
+            ->or_having('user_invoicing_contact LIKE', $searchPattern)
             ->order_by('user_name')
             ->get()
             ->result();
@@ -60,7 +61,7 @@ class Ajax extends Admin_Controller
         }
 
         // Return the results
-        echo json_encode($response);
+        $this->json_encode_ajax($response);
     }
 
     /**
@@ -88,7 +89,7 @@ class Ajax extends Admin_Controller
         }
 
         // Return the results
-        echo json_encode($response);
+        $this->json_encode_ajax($response);
     }
 
     public function save_preference_permissive_search_users()

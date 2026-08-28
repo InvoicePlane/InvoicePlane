@@ -16,13 +16,13 @@
                 <tbody>
 <?php
 foreach ($payment_logs as $log) {
-?>
+    ?>
                     <tr>
                         <td><?php echo $log->merchant_response_id; ?></td>
                         <td>
                             <a href="<?php echo site_url('invoices/view/' . $log->invoice_id); ?>"
                                title="<?php _trans('invoice'); ?>">
-                                <?php echo $log->invoice_number ? $log->invoice_number : $log->invoice_id; ?>
+                                <?php echo $log->invoice_number ? htmlsc($log->invoice_number) : $log->invoice_id; ?>
                             </a>
                         </td>
                         <td>
@@ -37,7 +37,7 @@ foreach ($payment_logs as $log) {
                     </tr>
 <?php
 } // End foreach
-?>
+                    ?>
                 </tbody>
 
             </table>

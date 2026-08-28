@@ -25,7 +25,7 @@ class Mdl_Setup extends CI_Model
     {
         $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/000_1.0.0.sql');
 
-        $this->execute_contents($file_contents);
+        $this->execute_contents($file_contents, '000_1.0.0.sql');
 
         $this->save_version('000_1.0.0.sql');
 
@@ -90,7 +90,7 @@ class Mdl_Setup extends CI_Model
             }
 
             $file_contents = file_get_contents(APPPATH . 'modules/setup/sql/' . $sql_file);
-            $this->execute_contents($file_contents);
+            $this->execute_contents($file_contents, $sql_file);
             $this->save_version($sql_file);
 
             $upgrade_method = 'upgrade_' . str_replace('.', '_', mb_substr($sql_file, 0, -4));
@@ -220,8 +220,23 @@ class Mdl_Setup extends CI_Model
                 UNIQUE (user_id, user_custom_fieldid)
             );');
 
+        // Security (CWE-89): $value['table'] is a stored custom_field_table value
+        // that is interpolated below as a raw table identifier. A pre-1.5.0 install
+        // could have had an arbitrary value stored through the (then-unguarded)
+        // custom-field workflow, so restrict it to the known custom tables.
+        $allowed_custom_tables = [];
+        foreach ($tables as $allowed_table) {
+            $allowed_custom_tables[] = 'ip_' . $allowed_table . '_custom';
+        }
+
         // Migrate Data
         foreach ($drop_columns as $value) {
+            if ( ! in_array($value['table'], $allowed_custom_tables, true)) {
+                $this->load->helper('file_security');
+                log_message('error', 'Skipping custom field with invalid table during 1.5.0 upgrade: ' . sanitize_for_logging((string) $value['table']));
+                continue;
+            }
+
             $res = $this->db->query('SELECT * FROM ' . $value['table']);
 
             preg_match('/^ip_(.*?)_custom$/i', $value['table'], $matches);
@@ -365,21 +380,61 @@ class Mdl_Setup extends CI_Model
         }
     }
 
+    public function upgrade_043_1_7_2()
+    {
+        if ( ! $this->session->userdata('is_upgrade')) {
+            return;
+        }
+
+        $this->load->model('settings/mdl_settings');
+        $this->mdl_settings->load_settings();
+        $this->load->model('invoices/mdl_templates');
+
+        $missing_allowlisted_template_settings = $this->mdl_templates->get_missing_allowlisted_template_settings();
+
+        if (empty($missing_allowlisted_template_settings)) {
+            return;
+        }
+
+        $template_list = '<ul>';
+        foreach ($missing_allowlisted_template_settings as $ipconfig_key => $template_names) {
+            $template_list .= '<li><code>' . html_escape($ipconfig_key) . '</code>: '
+                . html_escape(implode(', ', $template_names)) . '</li>';
+        }
+        $template_list .= '</ul>';
+
+        $setup_notice = [
+            'type'    => 'alert-warning',
+            'content' => '<strong>' . trans('custom_templates_upgrade_required') . '</strong><br>'
+                . trans('custom_templates_upgrade_required_message') . '<br>'
+                . trans('custom_templates_upgrade_required_ipconfig')
+                . $template_list
+                . trans('custom_templates_upgrade_required_docs'),
+        ];
+
+        $this->session->set_userdata('setup_notice', $setup_notice);
+    }
+
     /**
      * @param string $contents
      */
-    private function execute_contents(string|bool $contents)
+    private function execute_contents(string|bool $contents, string $source = '')
     {
-        $commands = explode(';', $contents);
+        if ( ! is_string($contents)) {
+            $this->errors[] = 'Setup aborted: could not read migration SQL'
+                . ($source !== '' ? " '" . $source . "'" : '')
+                . ' (file_get_contents() returned ' . gettype($contents) . ' instead of a string).';
+
+            return;
+        }
+
+        $this->load->helper('sql');
+        $commands = split_sql_statements($contents);
 
         foreach ($commands as $command) {
-            if ( ! mb_trim($command)) {
-                continue;
-            }
-
             $this->db->db_debug = IP_DEBUG;
 
-            $this->db->query(mb_trim($command) . ';');
+            $this->db->query($command . ';');
 
             $error = $this->db->error();
             if ($error['code'] !== 0) {
@@ -404,7 +459,7 @@ class Mdl_Setup extends CI_Model
 
     private function install_default_settings()
     {
-        $this->load->helper('string');
+        $this->load->helper('ip_security');
 
         $default_settings = [
             'default_language'             => $this->session->userdata('ip_lang'),
@@ -418,7 +473,7 @@ class Mdl_Setup extends CI_Model
             'default_quote_group'          => 4,
             'thousands_separator'          => ',',
             'decimal_point'                => '.',
-            'cron_key'                     => random_string('alnum', 16),
+            'cron_key'                     => generate_secure_token(8),
             'tax_rate_decimal_places'      => 2,
             'pdf_invoice_template'         => 'InvoicePlane',
             'pdf_invoice_template_paid'    => 'InvoicePlane - paid',

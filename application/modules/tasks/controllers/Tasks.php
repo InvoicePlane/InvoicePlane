@@ -53,8 +53,6 @@ class Tasks extends Admin_Controller
             redirect('tasks');
         }
 
-        $this->filter_input();  // <<<--- filters _POST array for nastiness
-
         if ($this->mdl_tasks->run_validation()) {
             $this->mdl_tasks->save($id);
             redirect('tasks');
@@ -86,6 +84,10 @@ class Tasks extends Admin_Controller
      */
     public function delete($id)
     {
+        if ( ! $this->ensure_valid_post_request('tasks/index')) {
+            return;
+        }
+
         $this->mdl_tasks->delete($id);
         redirect('tasks');
     }

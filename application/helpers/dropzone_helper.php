@@ -20,7 +20,7 @@ if ( ! defined('BASEPATH')) {
  * */
 function _dropzone_html($read_only = true): void
 {
-?>
+    ?>
 <div class="panel panel-default no-margin">
 
     <div class="panel-heading"><?php _trans('attachments'); ?></div>
@@ -31,14 +31,14 @@ function _dropzone_html($read_only = true): void
             <i class="fa fa-plus"></i> <?php _trans('add_files'); ?>
         </button>
 <?php
-    if ( ! $read_only) {
-?>
+        if ( ! $read_only) {
+            ?>
         <button type="button" class="btn btn-sm btn-danger removeAllFiles-button pull-right hidden">
             <i class="fa fa-trash-o"></i> <?php _trans('delete_attachments'); ?>
         </button>
 <?php
-    }
-?>
+        }
+    ?>
         <!-- dropzone -->
         <div class="row">
             <div id="actions" class="col-xs-12">
@@ -79,15 +79,15 @@ function _dropzone_html($read_only = true): void
                                     <span><?php _trans('download'); ?></span>
                                 </button>
 <?php
-    if ( ! $read_only) {
-?>
+        if ( ! $read_only) {
+            ?>
                                 <button data-dz-remove class="btn btn-sm btn-danger delete">
                                     <i class="fa fa-trash-o"></i>
                                     <span><?php _trans('delete'); ?></span>
                                 </button>
 <?php
-    }
-?>
+        }
+    ?>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-8">
@@ -133,7 +133,7 @@ function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acce
     }
 
     $guest = $acceptedExts === false ? 'true' : 'false';
-?>
+    ?>
 <script>
 const
 site_url        = '<?php echo $site_url; ?>',
@@ -191,7 +191,7 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
 
     // Clean filename (same of sanitize_file_name in Upload.php)
     function sanitizeName(filename) {
-        return filename.trim().replace(/[^\p{L}\p{N}\s\-_'’.]/gu, '');
+        return filename.trim().replace(/[^\p{L}\p{N}\s\-_'’.]/gu, '').replaceAll('..', '');
     }
 
     const is_guest = <?php echo $guest; ?>;
@@ -231,9 +231,14 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
     });
     // Uploading process complete
     myDropzone.on('complete', function (file) {
-        // Check if logged out (303) redirected to sessions/login. .
-        if(file.xhr && file.xhr.responseURL.match(/sessions\/login/) !== null) {
-            this.emit('error', file, `<?php _trans('upload_dz_disconnected'); ?>`);
+        if(file.xhr) {
+            // Check if logged out (303) redirected to sessions/login. .
+            if(file.xhr.responseURL.match(/sessions\/login/) !== null) {
+                this.emit('error', file, `<?php _trans('upload_dz_disconnected'); ?>`);
+            }
+            // Update csrf_token_value by response header from the completed request
+            const csrf_value = file.xhr.getResponseHeader('X-' + csrf_token_name); // header names are case-insensitive
+            csrf_token_value = csrf_value ? csrf_value : csrf_token_value;
         }
     });
 
@@ -259,12 +264,12 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
     });
 
 <?php
-    if ($acceptedExts !== false) {
-?>
+        if ($acceptedExts !== false) {
+            ?>
     // File accepted, start upload
     myDropzone.on('sending', function (file, xhr, formData) {
         // Get new crsf_token for multiple upload on same page
-        formData.append('<?php echo config_item('csrf_token_name'); ?>', Cookies.get('<?php echo config_item('csrf_cookie_name'); ?>'));
+        formData.append(csrf_token_name, csrf_token_value);
         // Show the total progress bar
         document.querySelector('#total-progress').style.opacity = '1';
     });
@@ -323,8 +328,8 @@ acceptedExts    = '.<?php echo implode(',.', $content_types); ?>'; // allowed .e
     }
 
 <?php
-    } // End if $acceptedExts === false
-?>
+        } // End if $acceptedExts === false
+    ?>
 
     function displayExistingFile(val) {
         var name = sanitizeName(val.name);

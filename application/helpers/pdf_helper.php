@@ -35,11 +35,11 @@ function discount_global_print_in_pdf($obj, $show_item_discounts, string $is = '
     }
 
     if ($discount) {
-?>
+        ?>
             <tr>
                 <td class="text-right" colspan="<?php echo $show_item_discounts ? '5' : '4'; ?>"><?php
-                    echo mb_rtrim(trans('discount'), ' '); // Rem not space char (in French ip_lang & maybe other)
-                ?></td>
+                            echo mb_rtrim(trans('discount'), ' '); // Rem not space char (in French ip_lang & maybe other)
+        ?></td>
                 <td class="text-right"><?php echo $discount; ?></td>
             </tr>
 <?php
@@ -70,15 +70,28 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper(['country', 'client']);
 
-    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
-    $invoice = $CI->mdl_invoices->get_payments($invoice);
+    $invoice                   = $CI->mdl_invoices->get_by_id($invoice_id);
+    $invoice                   = $CI->mdl_invoices->get_payments($invoice);
+    $invoice->invoice_password = $CI->mdl_invoices->decrypt_invoice_password($invoice->invoice_password);
 
     // Override system language with client language
     set_language($invoice->client_language);
 
+    // Always load template helper and validate the template name, regardless of source
+    $CI->load->helper('template');
+
     if ( ! $invoice_template) {
-        $CI->load->helper('template');
+        // Fallback to template from settings when none is provided
         $invoice_template = select_pdf_invoice_template($invoice);
+    } else {
+        // Security: Validate template name from parameter to prevent LFI
+        $validated = validate_template_name($invoice_template, 'invoice', 'pdf');
+        if ($validated === false) {
+            log_message('error', 'Invalid PDF invoice template parameter: ' . sanitize_for_logging($invoice_template) . ', using default');
+            $invoice_template = 'InvoicePlane'; // Safe default
+        } else {
+            $invoice_template = $validated;
+        }
     }
 
     $payment_method = $CI->mdl_payment_methods->where('payment_method_id', $invoice->payment_method)->get()->row();
@@ -126,14 +139,14 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         // Same name of config & library(+Xml) by default
         $generator = $xml_id;
         $path      = APPPATH . 'helpers/XMLconfigs/';
-        
+
         // Security: Validate XML config ID to prevent path traversal
         if ($xml_id && is_valid_xml_config_id($xml_id) && file_exists($path . $xml_id . '.php') && include $path . $xml_id . '.php') {
             $embed_xml = $xml_setting['embedXML'];
             $XMLname   = $xml_setting['XMLname'];
             $options   = (empty($xml_setting['options']) ? $options : $xml_setting['options']); // Optional
             $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
-        } elseif ($xml_id && !is_valid_xml_config_id($xml_id)) {
+        } elseif ($xml_id && ! is_valid_xml_config_id($xml_id)) {
             log_message('error', trans('log_invalid_xml_config_id_pdf_helper') . ': ' . $xml_id);
         }
 
@@ -160,7 +173,7 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
         'legacy_calculation'  => config_item('legacy_calculation'),
     ];
 
-    $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
+    $html = render_template_view('invoice_templates/pdf/' . $invoice_template, $data, true);
 
     // Create PDF with or without an embedded XML
     $CI->load->helper('mpdf');
@@ -206,7 +219,20 @@ function generate_invoice_sumex($invoice_id, $stream = true, $invoice_template =
     $CI = & get_instance();
 
     $CI->load->model('invoices/mdl_items');
-    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+    $invoice                   = $CI->mdl_invoices->get_by_id($invoice_id);
+    $invoice->invoice_password = $CI->mdl_invoices->decrypt_invoice_password($invoice->invoice_password);
+
+    if ($invoice_template) {
+        $CI->load->helper('template');
+        $validated = validate_template_name($invoice_template, 'invoice', 'pdf');
+        if ($validated === false) {
+            log_message('error', 'Invalid PDF invoice template parameter: ' . sanitize_for_logging($invoice_template) . ', using default');
+            $invoice_template = null; // Let Sumex::pdf() select the default via select_pdf_invoice_template()
+        } else {
+            $invoice_template = $validated;
+        }
+    }
+
     $CI->load->library('Sumex', [
         'invoice' => $invoice,
         'items'   => $CI->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
@@ -282,15 +308,28 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         ]
     );
 
-    $quote = $CI->mdl_quotes->get_by_id($quote_id);
+    $quote                 = $CI->mdl_quotes->get_by_id($quote_id);
+    $quote->quote_password = $CI->mdl_quotes->decrypt_quote_password($quote->quote_password);
 
     // Override language with system language
     set_language($quote->client_language);
 
+    // Always load template helper and validate the template name, regardless of source
+    $CI->load->helper('template');
+
     if ( ! $quote_template) {
+        // Fallback to template from settings when none is provided
         $quote_template = $CI->mdl_settings->setting('pdf_quote_template');
     }
 
+    // Security: Validate template name (from settings or parameter)
+    $validated = validate_template_name($quote_template, 'quote', 'pdf');
+    if ($validated === false) {
+        log_message('error', 'Invalid PDF quote template: ' . sanitize_for_logging($quote_template) . ', using default');
+        $quote_template = 'InvoicePlane'; // Safe default
+    } else {
+        $quote_template = $validated;
+    }
     // Determine if discounts should be displayed
     $items = $CI->mdl_quote_items->where('quote_id', $quote_id)->get()->result();
 
@@ -326,7 +365,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         'legacy_calculation'  => config_item('legacy_calculation'),
     ];
 
-    $html = $CI->load->view('quote_templates/pdf/' . $quote_template, $data, true);
+    $html = render_template_view('quote_templates/pdf/' . $quote_template, $data, true);
 
     $CI->load->helper('mpdf');
 

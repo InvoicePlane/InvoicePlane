@@ -1,0 +1,131 @@
+name: Composer Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_type:
+        description: 'Update scope'
+        required: true
+        type: choice
+        options:
+          - security-patch
+          - patch-minor
+          - all-dependencies
+        default: 'security-patch'
+  schedule:
+    - cron: '0 9 * * 1'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Requires a PAT secret named PAT_TOKEN with repo and workflow scopes to open pull requests.
+# https://github.com/settings/tokens
+
+jobs:
+  update:
+    name: Update Composer dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
+
+      - name: Security audit (before update)
+        run: composer audit --format=json > audit-report.json || true
+
+      - name: Update (security & patch)
+        if: >
+          github.event.inputs.update_type == 'security-patch' ||
+          github.event_name == 'schedule'
+        run: composer update --with-dependencies --prefer-stable --no-interaction
+
+      - name: Update (patch & minor)
+        if: github.event.inputs.update_type == 'patch-minor'
+        run: composer update --prefer-stable --no-interaction
+
+      - name: Update (all)
+        if: github.event.inputs.update_type == 'all-dependencies'
+        run: composer bump && composer update
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet composer.lock; then
+            echo "detected=false" >> $GITHUB_OUTPUT
+          else
+            echo "detected=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build change summary
+        if: steps.changes.outputs.detected == 'true'
+        id: summary
+        run: |
+          git show HEAD:composer.lock > /tmp/composer.lock.old 2>/dev/null || echo '{"packages":[],"packages-dev":[]}' > /tmp/composer.lock.old
+          php -r '
+          $old = json_decode(file_get_contents("/tmp/composer.lock.old"), true);
+          $new = json_decode(file_get_contents("composer.lock"), true);
+          $oldPkgs = [];
+          foreach (array_merge($old["packages"] ?? [], $old["packages-dev"] ?? []) as $p) {
+              $oldPkgs[$p["name"]] = $p["version"];
+          }
+          $lines = [];
+          foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $p) {
+              $n = $p["name"]; $v = $p["version"];
+              if (!isset($oldPkgs[$n])) { $lines[] = "$n: (new) -> $v"; }
+              elseif ($oldPkgs[$n] !== $v) { $lines[] = "$n: {$oldPkgs[$n]} -> $v"; }
+          }
+          foreach ($oldPkgs as $n => $v) {
+              $found = false;
+              foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $p) {
+                  if ($p["name"] === $n) { $found = true; break; }
+              }
+              if (!$found) { $lines[] = "$n: $v -> (removed)"; }
+          }
+          echo empty($lines) ? "No version changes.\n" : implode("\n", $lines) . "\n";
+          ' > updated-packages.txt
+          echo "PACKAGES<<EOF" >> $GITHUB_OUTPUT
+          cat updated-packages.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create pull request
+        if: steps.changes.outputs.detected == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          commit-message: "chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
+          branch: automated/composer-update-${{ github.run_number }}
+          delete-branch: false
+          title: "chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
+          body: |
+            ## Composer dependency update
+
+            **Update scope:** ${{ github.event.inputs.update_type || 'security-patch' }}
+            **Triggered by:** ${{ github.event_name }}
+
+            ### Changed packages
+
+            ```
+            ${{ steps.summary.outputs.PACKAGES }}
+            ```
+
+            ### Review checklist
+
+            - [ ] Review changelogs for changed packages
+            - [ ] Run PHPUnit
+            - [ ] Test manually in a development environment
+          labels: |
+            dependencies
+            composer
+            automated-pr
+
+      - name: No changes
+        if: steps.changes.outputs.detected == 'false'
+        run: echo "Composer dependencies are already up to date."
