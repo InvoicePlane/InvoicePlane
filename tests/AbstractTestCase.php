@@ -88,7 +88,11 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         // Arrange (a shared connection could otherwise hide uncommitted writes).
         $this->resetDatabaseConnection();
 
-        $command = sprintf('php %s', escapeshellarg(dirname(__DIR__) . '/tests/Integration/bin/request.php'));
+        $command     = sprintf('php %s', escapeshellarg(dirname(__DIR__) . '/tests/Integration/bin/request.php'));
+        $environment = array_merge(getenv(), [
+            'CI_TEST_REQUEST' => base64_encode((string) json_encode($payload, JSON_THROW_ON_ERROR)),
+        ]);
+
         $process = proc_open(
             $command,
             [
@@ -98,7 +102,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             ],
             $pipes,
             dirname(__DIR__),
-            ['CI_TEST_REQUEST' => base64_encode((string) json_encode($payload, JSON_THROW_ON_ERROR))],
+            $environment,
         );
 
         if ( ! is_resource($process)) {
@@ -128,6 +132,10 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         $result = json_decode(base64_decode($matches[1], true), true, 512, JSON_THROW_ON_ERROR);
 
         if (($result['exception'] ?? null) !== null) {
+            if (str_contains((string) $result['exception'], 'Unable to connect to the database')) {
+                $this->markTestSkipped('Database unavailable for CI request integration tests.');
+            }
+
             throw new RuntimeException(
                 "Unhandled exception during CI request [{$payload['method']}] {$payload['uri']}: "
                 . $result['exception']

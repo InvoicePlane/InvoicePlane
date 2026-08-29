@@ -10,125 +10,150 @@
  *
  * Usage: php parse-phpstan-results.php phpstan.json
  */
-if ($argc < 2) {
-    echo "Usage: php parse-phpstan-results.php <phpstan.json>\n";
-    exit(1);
+if (PHP_SAPI === 'cli' && realpath($argv[0] ?? '') === __FILE__) {
+    exit(parsePhpstanResultsCli($argv));
 }
 
-$jsonFile = $argv[1];
+/**
+ * @param list<string> $argv
+ */
+function parsePhpstanResultsCli(array $argv): int
+{
+    if (count($argv) < 2) {
+        echo "Usage: php parse-phpstan-results.php <phpstan.json>\n";
 
-if ( ! file_exists($jsonFile)) {
-    echo "Error: File '{$jsonFile}' not found.\n";
-    exit(1);
-}
-
-$content = file_get_contents($jsonFile);
-$data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
-
-if (json_last_error() !== JSON_ERROR_NONE) {
-    echo "Error: Invalid JSON in '{$jsonFile}': " . json_last_error_msg() . "\n";
-    exit(1);
-}
-
-// Extract errors from PHPStan JSON format
-$files = $data['files'] ?? [];
-$totalErrors = $data['totals']['file_errors'] ?? 0;
-
-if ($totalErrors === 0) {
-    echo "## PHPStan Analysis: No Errors Found\n\n";
-    echo "All files passed static analysis.\n";
-    exit(0);
-}
-
-// Group errors by class/file
-$errorsByFile = [];
-$errorsByCategory = [
-    'type_errors'        => [],
-    'method_errors'      => [],
-    'property_errors'    => [],
-    'return_type_errors' => [],
-    'other_errors'       => [],
-];
-
-foreach ($files as $filePath => $fileData) {
-    $messages = $fileData['messages'] ?? [];
-
-    foreach ($messages as $message) {
-        $errorText = $message['message'] ?? '';
-        $line = $message['line'] ?? 0;
-
-        // Categorize errors
-        $category = categorizeError($errorText);
-
-        $errorsByFile[$filePath][] = [
-            'line'     => $line,
-            'message'  => $errorText,
-            'category' => $category,
-        ];
-
-        $errorsByCategory[$category][] = [
-            'file'    => $filePath,
-            'line'    => $line,
-            'message' => $errorText,
-        ];
-    }
-}
-
-// Generate markdown report
-echo "## PHPStan Analysis Report\n\n";
-echo "**Total errors:** {$totalErrors}\n\n";
-
-// Summary by category
-echo "### Error Summary by Category\n\n";
-foreach ($errorsByCategory as $category => $errors) {
-    $count = count($errors);
-    if ($count > 0) {
-        $label = getCategoryLabel($category);
-        echo "- **{$label}**: {$count} error(s)\n";
-    }
-}
-echo "\n---\n\n";
-
-// Detailed errors grouped by file
-echo "### Detailed Errors by File\n\n";
-
-$fileCount = 0;
-foreach ($errorsByFile as $filePath => $errors) {
-    $fileCount++;
-    $shortPath = getShortPath($filePath);
-    $errorCount = count($errors);
-
-    echo "#### {$fileCount}. `{$shortPath}` ({$errorCount} error(s))\n\n";
-
-    foreach ($errors as $error) {
-        $line = $error['line'];
-        $message = trimMessage($error['message']);
-        $category = getCategoryLabel($error['category']);
-
-        echo "- **Line {$line}** [{$category}]: {$message}\n";
+        return 1;
     }
 
-    echo "\n";
-}
+    $jsonFile = $argv[1];
 
-echo "---\n\n";
+    if ( ! file_exists($jsonFile)) {
+        echo "Error: File '{$jsonFile}' not found.\n";
 
-// Generate actionable checklist
-echo "### Actionable Checklist\n\n";
-echo "Use this checklist to track fixes:\n\n";
-
-foreach ($errorsByFile as $filePath => $errors) {
-    $shortPath = getShortPath($filePath);
-
-    foreach ($errors as $error) {
-        $line = $error['line'];
-        $message = trimMessage($error['message'], 80);
-
-        echo "- [ ] Fix error in `{$shortPath}:{$line}` - {$message}\n";
+        return 1;
     }
+
+    $content = file_get_contents($jsonFile);
+    if ($content === false) {
+        echo "Error: Unable to read '{$jsonFile}'.\n";
+
+        return 1;
+    }
+
+    $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+
+    echo renderPhpstanReport(is_array($data) ? $data : []);
+
+    return 0;
 }
 
-echo "\n---\n";
+/**
+ * @param array<string, mixed> $data
+ */
+function renderPhpstanReport(array $data): string
+{
+    // Extract errors from PHPStan JSON format
+    $files = $data['files'] ?? [];
+    $totalErrors = $data['totals']['file_errors'] ?? 0;
+
+    if ($totalErrors === 0) {
+        return "## PHPStan Analysis: No Errors Found\n\n"
+            . "All files passed static analysis.\n";
+    }
+
+    // Group errors by class/file
+    $errorsByFile = [];
+    $errorsByCategory = [
+        'type_errors'        => [],
+        'method_errors'      => [],
+        'property_errors'    => [],
+        'return_type_errors' => [],
+        'other_errors'       => [],
+    ];
+
+    foreach ($files as $filePath => $fileData) {
+        $messages = is_array($fileData) ? ($fileData['messages'] ?? []) : [];
+
+        foreach ($messages as $message) {
+            if (! is_array($message)) {
+                continue;
+            }
+
+            $errorText = (string) ($message['message'] ?? '');
+            $line = (int) ($message['line'] ?? 0);
+
+            // Categorize errors
+            $category = categorizeError($errorText);
+
+            $errorsByFile[(string) $filePath][] = [
+                'line'     => $line,
+                'message'  => $errorText,
+                'category' => $category,
+            ];
+
+            $errorsByCategory[$category][] = [
+                'file'    => (string) $filePath,
+                'line'    => $line,
+                'message' => $errorText,
+            ];
+        }
+    }
+
+    $report = "## PHPStan Analysis Report\n\n";
+    $report .= "**Total errors:** {$totalErrors}\n\n";
+
+    // Summary by category
+    $report .= "### Error Summary by Category\n\n";
+    foreach ($errorsByCategory as $category => $errors) {
+        $count = count($errors);
+        if ($count > 0) {
+            $label = getCategoryLabel($category);
+            $report .= "- **{$label}**: {$count} error(s)\n";
+        }
+    }
+    $report .= "\n---\n\n";
+
+    // Detailed errors grouped by file
+    $report .= "### Detailed Errors by File\n\n";
+
+    $fileCount = 0;
+    foreach ($errorsByFile as $filePath => $errors) {
+        $fileCount++;
+        $shortPath = getShortPath($filePath);
+        $errorCount = count($errors);
+
+        $report .= "#### {$fileCount}. `{$shortPath}` ({$errorCount} error(s))\n\n";
+
+        foreach ($errors as $error) {
+            $line = $error['line'];
+            $message = trimMessage($error['message']);
+            $category = getCategoryLabel($error['category']);
+
+            $report .= "- **Line {$line}** [{$category}]: {$message}\n";
+        }
+
+        $report .= "\n";
+    }
+
+    $report .= "---\n\n";
+
+    // Generate actionable checklist
+    $report .= "### Actionable Checklist\n\n";
+    $report .= "Use this checklist to track fixes:\n\n";
+
+    foreach ($errorsByFile as $filePath => $errors) {
+        $shortPath = getShortPath($filePath);
+
+        foreach ($errors as $error) {
+            $line = $error['line'];
+            $message = trimMessage($error['message'], 80);
+
+            $report .= "- [ ] Fix error in `{$shortPath}:{$line}` - {$message}\n";
+        }
+    }
+
+    return $report . "\n---\n";
+}
 
 /**
  * Categorize error based on message content.

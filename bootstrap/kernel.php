@@ -135,7 +135,6 @@ if (defined('CI_TEST_SUBPROCESS')) {
             E_USER_WARNING      => 'WARNING',
             E_USER_NOTICE       => 'NOTICE',
             E_USER_DEPRECATED   => 'DEPRECATED',
-            E_STRICT            => 'STRICT',
             E_RECOVERABLE_ERROR => 'ERROR',
         ];
         $level   = $levels[$severity] ?? 'ERROR';

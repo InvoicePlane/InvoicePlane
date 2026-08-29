@@ -64,7 +64,7 @@
                         <?php endif; ?>
                     </select>
                 </div>
-            </div>
+	    </div>
 
 <?php
 if (get_setting('enable_services') == 1) {

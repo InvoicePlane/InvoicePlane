@@ -708,14 +708,16 @@ if ($invoice->invoice_status_id != 1) {
                                 </p>
                             <?php endif; ?>
 
+<?php if ( ! empty($einvoice_provider['id'])) : ?>
                             <form method="post"
-                                  action="<?php echo site_url('integrations/status/' . (int) $invoice_id . '/1'); ?>">
+                                  action="<?php echo site_url('integrations/status/' . (int) $invoice_id . '/' . (int) $einvoice_provider['id']); ?>">
                                 <?php _csrf_field(); ?>
                                 <button type="submit" class="btn btn-default btn-sm">
                                     <i class="fa fa-refresh"></i>
                                     <?php _trans('check_status'); ?>
                                 </button>
                             </form>
+<?php endif; ?>
                         </div>
                     </div>
 <?php endif; ?>
@@ -788,6 +790,49 @@ if ($default_custom) {
     </div>
 </div>
 
+<?php if ( ! empty($send_history)) : ?>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><?php _trans('send_history'); ?></div>
+            <table class="table table-condensed no-margin">
+                <thead>
+                <tr>
+                    <th><?php _trans('date'); ?></th>
+                    <th><?php _trans('provider'); ?></th>
+                    <th><?php _trans('status'); ?></th>
+                    <th><?php _trans('peppol_participant_id'); ?></th>
+                    <th><?php _trans('external_id'); ?></th>
+                    <th><?php _trans('http_code'); ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($send_history as $row) : ?>
+                    <tr>
+                        <td><?php _htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
+                        <td><?php _htmlsc($row['merchant_response_driver']); ?></td>
+                        <td>
+                            <?php
+                            $s = $row['status'] ?? '';
+                    $badge     = match(true) {
+                        in_array($s, ['sent', 'accepted', 'delivered'], true) => 'success',
+                        in_array($s, ['error', 'rejected', 'failed'], true)   => 'danger',
+                        default                                               => 'warning',
+                    };
+                    ?>
+                            <span class="label label-<?php echo $badge; ?>"><?php _htmlsc($s); ?></span>
+                        </td>
+                        <td><?php _htmlsc($row['peppol_participant_id'] ?? ''); ?></td>
+                        <td><?php _htmlsc($row['merchant_response_reference']); ?></td>
+                        <td><?php _htmlsc($row['http_code']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <?php
 _dropzone_script($invoice->invoice_url_key, $invoice->client_id);
