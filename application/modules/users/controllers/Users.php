@@ -53,7 +53,9 @@ class Users extends Admin_Controller
             redirect('users');
         }
 
-        if ($id && (string) $id === '1' && (string) $this->session->userdata('user_id') !== '1') {
+        $id = $id ? (int) $id : null;
+
+        if ($id === 1 && (int) $this->session->userdata('user_id') !== 1) {
             show_error(trans('access_denied'), 403);
 
             return;
