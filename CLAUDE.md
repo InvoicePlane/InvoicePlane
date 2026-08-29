@@ -82,42 +82,55 @@ Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `
 
 ### Bootstrapping `vendor/` in the Claude Code web sandbox
 
-Regular local dev and CI are unaffected — this note is only for the Claude-Code-on-web
-sandbox, where the container starts with no `vendor/` and a plain `composer install` fails
-with `Could not authenticate against github.com`. In that environment, `git` reaches GitHub
-through an authenticating proxy but Composer's HTTP **dist** downloads do not, so install
-from source with a token-free Composer home:
+**IMPORTANT: This only applies to Claude Code on the web (remote sandbox). Local development and CI are unaffected.**
 
+The web sandbox container starts with no `vendor/` and `composer install` fails due to proxy policies blocking `api.github.com` and `codeload.github.com`. Git reaches GitHub through the proxy, but Composer's HTTP **dist** downloads do not. Always use `--prefer-source` (git clones) for all composer operations in the sandbox.
+
+**Standard approach (fails in sandbox):**
 ```bash
-CH=$(mktemp -d); printf '{}\n' > "$CH/auth.json"; printf '{"config":{}}\n' > "$CH/config.json"
-COMPOSER_HOME="$CH" composer install --prefer-source --ignore-platform-req=ext-bcmath
+# ❌ DO NOT do this in the web sandbox — it will time out:
+composer install --prefer-source --ignore-platform-req=ext-bcmath
 ```
 
-Everything clones except the dist-only `phpstan/phpstan` phar (a transitive dev dep via
-rector); there is no per-package skip flag for `install`, and that one failure aborts the
-run **before** the autoloader is generated, so `vendor/autoload.php` never gets written.
-
-To get a clean, working autoloader anyway, install runtime-only (`--no-dev` drops the
-`phpstan` dev chain entirely), then add PHPUnit separately for the test run:
+**Working approach: install runtime deps FIRST, then add dev deps to a throwaway project:**
 
 ```bash
-# 1. runtime deps + a real vendor/autoload.php (no phpstan, so it completes)
+# Setup: create a token-free Composer home (required for --prefer-source to work)
+CH=$(mktemp -d)
+printf '{}\n' > "$CH/auth.json"
+printf '{"config":{}}\n' > "$CH/config.json"
+export COMPOSER_HOME="$CH"
+
+# STEP 1: Install runtime dependencies (no dev) — phpstan blocks, so --no-dev avoids it
 COMPOSER_HOME="$CH" composer install --prefer-source --no-dev --ignore-platform-req=ext-bcmath
+# This completes successfully, creating vendor/autoload.php
 
-# 2. PHPUnit in a throwaway project (same token-free trick)
-cd /tmp/punit && COMPOSER_HOME="$CH" composer require --prefer-source --dev \
-  "phpunit/phpunit:^10.5" --ignore-platform-req=ext-bcmath
+# STEP 2: Install PHPUnit in a throwaway project (not in the main repo)
+mkdir -p /tmp/punit
+cd /tmp/punit
+COMPOSER_HOME="$CH" composer require --prefer-source --dev phpunit/phpunit:^10.5 --ignore-platform-req=ext-bcmath
+# Now /tmp/punit/vendor/bin/phpunit exists and can be used
 
-# 3. re-add the Tests\ PSR-4 mapping the --no-dev install left out, then run
-cd <repo> && COMPOSER_HOME="$CH" composer dump-autoload --dev
+# STEP 3: Re-add Tests\ PSR-4 autoload mapping (step 1's --no-dev removed it)
+cd <repo-root>
+COMPOSER_HOME="$CH" composer dump-autoload --dev
+
+# STEP 4: Run tests using the throwaway project's phpunit
 php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
 ```
 
-Two gotchas: `--no-dev` omits the `Tests\` autoload-dev mapping, so `dump-autoload --dev`
-(step 3) is required or every test dies with `Class "Tests\AbstractTestCase" not found`;
-and plain `dump-autoload` inherits the last install's `--no-dev` state, so pass `--dev`
-explicitly. Do **not** put a real-format GitHub token in `auth.json` — the proxy won't
-rewrite it and every dist download then fails.
+**Why this works:**
+- `phpstan` (dist-only phar, blocked by proxy) is a transitive dev dep that breaks the full install
+- `--no-dev` skips the phpstan chain, allowing runtime install to complete
+- PHPUnit installs faster in isolation (throwaway project)
+- `dump-autoload --dev` re-adds the Tests\ PSR-4 mapping that step 1 dropped
+- The throwaway project's phpunit binary can run tests against the main repo
+
+**Critical gotchas:**
+1. `--no-dev` omits the `Tests\` PSR-4 mapping, so step 3 (`dump-autoload --dev`) is **mandatory**
+2. Do **not** put a real GitHub token in `auth.json` — the proxy won't rewrite it
+3. Do **not** export `DB_*` environment variables before running phpunit — see the MariaDB section below for why
+4. Each session requires this full setup; there is no persistent vendor cache
 
 ### MariaDB test database in the sandbox (Feature/Integration tests)
 
