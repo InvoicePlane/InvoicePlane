@@ -78,7 +78,7 @@ affected — this change only affects the in-browser preview.
 **Action required:** None. Existing templates continue to send as HTML. If you need to
 visually check HTML formatting, send a test email instead of relying on the preview panel.
 
-#### 3. Custom templates are added via an explicit allowlist (no filesystem scan)
+#### 3. Custom templates can be listed via an explicit allowlist (no filesystem scan)
 
 **Who is affected:** Installations that add their own invoice or quote templates.
 
@@ -89,7 +89,7 @@ the same dynamic scan that caused the RCE vulnerability (see #4 below).
 **After:** The filesystem is **never** scanned. The selector is built from the built-in
 templates plus **only** the custom template names you explicitly allowlist. Built-in templates
 always appear in the selector. Adding a custom template is a **two-step** operation — both steps
-are required:
+are required, and setting `CUSTOM_TEMPLATES_FOLDER` alone lists nothing:
 
 1. **Place the `.php` file** under `CUSTOM_TEMPLATES_FOLDER`, in the sub-path that matches the
    template's type and scope:
@@ -99,8 +99,8 @@ are required:
    <CUSTOM_TEMPLATES_FOLDER>/quote_templates/pdf/MyTemplate.php
    <CUSTOM_TEMPLATES_FOLDER>/quote_templates/public/MyTemplate.php
    ```
-   `CUSTOM_TEMPLATES_FOLDER` only tells InvoicePlane where the file lives on disk at render
-   time. On its own it adds **nothing** to the selector.
+   `CUSTOM_TEMPLATES_FOLDER` only tells InvoicePlane **where the file lives** at render time.
+   It does not add the template to the selector.
 
 2. **Add the template name** (without `.php`) to the matching allowlist variable in
    `ipconfig.php`. Only names listed in these variables appear in the selector:

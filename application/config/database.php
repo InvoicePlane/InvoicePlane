@@ -23,7 +23,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 |   ['dbdriver'] The database driver. e.g.: mysqli.
 |           Currently supported:
 |                cubrid, ibase, mssql, mysql, mysqli, oci8,
-|                odbc, pdo, postgre, sqlite, sqlite3, sqlsrv
+|                odbc, pdo, postgre, sqlsrv
 |   ['dbprefix'] You can add an optional prefix, which will be added
 |                to the table name when using the  Query Builder class
 |   ['pconnect'] TRUE/FALSE - Whether to use a persistent connection
@@ -81,7 +81,7 @@ $db['default'] = [
     'username'     => env('DB_USERNAME'),
     'password'     => env('DB_PASSWORD'),
     'database'     => env('DB_DATABASE'),
-    'dbdriver'     => 'mysqli',
+    'dbdriver'     => env('DB_DRIVER') ?: 'mysqli',
     'dbprefix'     => '',
     'pconnect'     => false,
     'db_debug'     => (ENVIRONMENT !== 'production'),

@@ -37,7 +37,7 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.2'
-          composer-flags: '--prefer-dist --no-interaction --no-progress'
+          composer-flags: '--prefer-dist --no-interaction --no-progress --ignore-platform-reqs'
 
       - name: Set up Node.js
         if: inputs.run_yarn_install == 'true'

@@ -118,6 +118,11 @@ class Mdl_Clients extends Response_Model
             'client_einvoicing_active' => [
                 'field' => 'client_einvoicing_active',
             ],
+            'client_peppol_id' => [
+                'field' => 'client_peppol_id',
+                'label' => trans('peppol_participant_id'),
+                'rules' => 'trim|max_length[100]',
+            ],
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',
@@ -334,9 +339,9 @@ class Mdl_Clients extends Response_Model
         $CI = & get_instance();
 
         // Normalize to integer to prevent type juggling
-        $user_type  = (int) $CI->session->userdata('user_type');
-        $user_id    = (int) $CI->session->userdata('user_id');
-        $client_id  = (int) $client_id;
+        $user_type = (int) $CI->session->userdata('user_type');
+        $user_id   = (int) $CI->session->userdata('user_id');
+        $client_id = (int) $client_id;
 
         // Admin users (type 1) have access to all clients
         if ($user_type === 1) {
@@ -356,5 +361,25 @@ class Mdl_Clients extends Response_Model
 
         // Regular users (type 3) - do not have client access
         return false;
+    }
+
+    public function get_all_services()
+    {
+        $this->load->model('services/mdl_services');
+
+        return $this->mdl_services->get()->result_array();
+    }
+
+    /**
+     * Legacy alias for get_all_services().
+     *
+     * Kept for backwards compatibility. This method returns all services
+     * and does not filter by client.
+     *
+     * @return array
+     */
+    public function service_by_client()
+    {
+        return $this->get_all_services();
     }
 }

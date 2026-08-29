@@ -72,7 +72,12 @@ function email_invoice(
         $_SERVER['CIIname'] = parse_template($db_invoice, $_SERVER['CIIname']);
     }
 
-    $message = parse_template($db_invoice, $body);
+    // $escape_values = true: the substituted fields (client_name, custom field
+    // values, etc.) are untrusted and this body is sent as HTML (phpmail_send()
+    // always calls isHTML()) — escape them so they can't inject markup into the
+    // admin-composed template. $body itself is untouched, only the {{{...}}}
+    // substitutions are escaped.
+    $message = parse_template($db_invoice, $body, true);
     $subject = parse_template($db_invoice, $subject);
     $cc      = parse_template($db_invoice, $cc);
     $bcc     = parse_template($db_invoice, $bcc);
@@ -137,7 +142,10 @@ function email_quote(
 
     $db_quote = $CI->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
-    $message = parse_template($db_quote, $body);
+    // See the matching comment in email_invoice() above: this body is sent as
+    // HTML, so the substituted values (untrusted) are escaped; $body itself
+    // (the admin-composed template) is untouched.
+    $message = parse_template($db_quote, $body, true);
     $subject = parse_template($db_quote, $subject);
     $cc      = parse_template($db_quote, $cc);
     $bcc     = parse_template($db_quote, $bcc);
@@ -177,9 +185,6 @@ function email_quote(
  */
 function email_quote_status(string $quote_id, $status)
 {
-    ini_set('display_errors', 'on');
-    error_reporting(E_ALL);
-
     if ( ! mailer_configured()) {
         return false;
     }
@@ -191,19 +196,25 @@ function email_quote_status(string $quote_id, $status)
     $index    = env('REMOVE_INDEXPHP', true) ? '' : 'index.php';
     $base_url = base_url('/' . $index . '/quotes/view/' . $quote_id);
 
+    // This email is sent as HTML (phpmailer_helper.php sets isHTML()); the client name is
+    // user-controlled (set by an admin, but reflected via a guest-triggered action here), so
+    // it must be escaped before landing in the subject/body just like the link.
+    $client_name = htmlspecialchars((string) $quote->client_name, ENT_QUOTES, 'UTF-8');
+    $safe_url    = htmlspecialchars($base_url, ENT_QUOTES, 'UTF-8');
+
     $user_email = $quote->user_email;
     $subject    = sprintf(
         trans('quote_status_email_subject'),
-        $quote->client_name,
+        $client_name,
         mb_strtolower(lang($status)),
         $quote->quote_number
     );
     $body = sprintf(
         nl2br(trans('quote_status_email_body')),
-        $quote->client_name,
+        $client_name,
         mb_strtolower(lang($status)),
         $quote->quote_number,
-        '<a href="' . $base_url . '">' . $base_url . '</a>'
+        '<a href="' . $safe_url . '">' . $safe_url . '</a>'
     );
 
     return phpmail_send($user_email, $user_email, $subject, $body);

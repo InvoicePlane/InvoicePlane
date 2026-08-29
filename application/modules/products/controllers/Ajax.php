@@ -62,7 +62,9 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('mdl_products');
 
-        $products = $this->mdl_products->where_in('product_id', $this->input->post('product_ids'))->get()->result();
+        $product_ids = $this->input->post('product_ids') ?? [];
+        // CI3's where_in() throws on an empty array rather than matching nothing.
+        $products = $product_ids === [] ? [] : $this->mdl_products->where_in('product_id', $product_ids)->get()->result();
 
         foreach ($products as $product) {
             $product->product_price = format_amount($product->product_price);

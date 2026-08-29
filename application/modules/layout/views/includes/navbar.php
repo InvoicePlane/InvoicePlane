@@ -22,6 +22,8 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('clients/form', trans('add_client')); ?></li>
                         <li><?php echo anchor('clients/index', trans('view_clients')); ?></li>
+                        <li><?php echo anchor('services/form', trans('add_service')); ?></li>
+                        <li><?php echo anchor('services/index', trans('view_services')); ?></li>
                     </ul>
                 </li>
 
@@ -154,10 +156,10 @@
                 </li>
                 <li>
                     <a href="<?php echo site_url('users/form/'
-                        . $this->session->userdata('user_id')); ?>"
+                                        . $this->session->userdata('user_id')); ?>"
                        class="tip icon" data-placement="bottom"
                        title="<?php
-                        _htmlsc($this->session->userdata('user_name'));
+                                        _htmlsc($this->session->userdata('user_name'));
                 if ($this->session->userdata('user_company')) {
                     echo ' (' . htmlsc($this->session->userdata('user_company')) . ')';
                 }

@@ -21,6 +21,7 @@ class Ajax extends Admin_Controller
     public function filter_invoices()
     {
         $this->load->model('invoices/mdl_invoices');
+        $this->load->model('services/mdl_services');
 
         $query    = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
@@ -32,8 +33,17 @@ class Ajax extends Admin_Controller
             }
         }
 
+        $invoices = $this->mdl_invoices->get()->result();
+
+        $serviceIds   = array_filter(array_column($invoices, 'service_id'));
+        $servicesById = ! empty($serviceIds) ? $this->mdl_services->get_names_by_ids($serviceIds) : [];
+
+        foreach ($invoices as $invoice) {
+            $invoice->service_name = $servicesById[$invoice->service_id] ?? null;
+        }
+
         $data = [
-            'invoices'         => $this->mdl_invoices->get()->result(),
+            'invoices'         => $invoices,
             'invoice_statuses' => $this->mdl_invoices->statuses(),
         ];
 
@@ -43,6 +53,7 @@ class Ajax extends Admin_Controller
     public function filter_quotes()
     {
         $this->load->model('quotes/mdl_quotes');
+        $this->load->model('services/mdl_services');
 
         $query    = $this->input->post('filter_query');
         $keywords = explode(' ', $query);
@@ -54,8 +65,17 @@ class Ajax extends Admin_Controller
             }
         }
 
+        $quotes = $this->mdl_quotes->get()->result();
+
+        $serviceIds   = array_filter(array_column($quotes, 'service_id'));
+        $servicesById = ! empty($serviceIds) ? $this->mdl_services->get_names_by_ids($serviceIds) : [];
+
+        foreach ($quotes as $quote) {
+            $quote->service_name = $servicesById[$quote->service_id] ?? null;
+        }
+
         $data = [
-            'quotes'         => $this->mdl_quotes->get()->result(),
+            'quotes'         => $quotes,
             'quote_statuses' => $this->mdl_quotes->statuses(),
         ];
 
@@ -71,7 +91,7 @@ class Ajax extends Admin_Controller
 
         foreach ($keywords as $keyword) {
             if ($keyword) {
-                $keyword = mb_trim(mb_strtolower($keyword));
+                $keyword = trim(mb_strtolower($keyword));
                 $this->mdl_clients->like("CONCAT_WS('^',LOWER(client_title),LOWER(client_name),LOWER(client_surname),LOWER(client_email),client_phone,client_active)", $keyword);
             }
         }

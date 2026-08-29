@@ -61,12 +61,11 @@ class Mdl_Templates extends CI_Model
     /**
      * Get the list of allowed invoice templates.
      *
-     * Security: Built-in templates are returned from the static whitelist only — the
-     * application's own template directories are NEVER scanned to prevent RCE.
-     * The returned list is the built-in whitelist plus any custom template names explicitly
-     * enumerated in the CUSTOM_INVOICE_TEMPLATES_PDF / CUSTOM_INVOICE_TEMPLATES_PUBLIC
-     * allowlist constants (see _merge_custom()). CUSTOM_TEMPLATES_FOLDER is NOT scanned to
-     * build this list; it only provides the file's location on disk at render time.
+     * Security: The selector is built from the static built-in whitelist plus the names
+     * explicitly listed in the CUSTOM_INVOICE_TEMPLATES_PDF / CUSTOM_INVOICE_TEMPLATES_PUBLIC
+     * allowlist constants. No directory, neither the application's own nor
+     * CUSTOM_TEMPLATES_FOLDER, is ever scanned (prevents RCE). CUSTOM_TEMPLATES_FOLDER only
+     * supplies the file's location at render time; on its own it lists nothing.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -88,12 +87,11 @@ class Mdl_Templates extends CI_Model
     /**
      * Get the list of allowed quote templates.
      *
-     * Security: Built-in templates are returned from the static whitelist only — the
-     * application's own template directories are NEVER scanned to prevent RCE.
-     * The returned list is the built-in whitelist plus any custom template names explicitly
-     * enumerated in the CUSTOM_QUOTE_TEMPLATES_PDF / CUSTOM_QUOTE_TEMPLATES_PUBLIC
-     * allowlist constants (see _merge_custom()). CUSTOM_TEMPLATES_FOLDER is NOT scanned to
-     * build this list; it only provides the file's location on disk at render time.
+     * Security: The selector is built from the static built-in whitelist plus the names
+     * explicitly listed in the CUSTOM_QUOTE_TEMPLATES_PDF / CUSTOM_QUOTE_TEMPLATES_PUBLIC
+     * allowlist constants. No directory, neither the application's own nor
+     * CUSTOM_TEMPLATES_FOLDER, is ever scanned (prevents RCE). CUSTOM_TEMPLATES_FOLDER only
+     * supplies the file's location at render time; on its own it lists nothing.
      *
      * @param string $type Template type ('pdf' or 'public')
      *
@@ -248,6 +246,14 @@ class Mdl_Templates extends CI_Model
 
         // Read the explicit allowlist from ipconfig.php (empty string / undefined = no custom templates)
         $raw = defined($const_name) ? constant($const_name) : '';
+
+        // Tests and long-lived workers may populate the environment after the
+        // bootstrap has defined an empty optional constant. Preserve the
+        // explicit constant as the primary source, but honor that environment
+        // value when the constant is unset or empty.
+        if (empty($raw) && function_exists('env')) {
+            $raw = env($const_name, '');
+        }
 
         if (empty($raw)) {
             return $built_in;

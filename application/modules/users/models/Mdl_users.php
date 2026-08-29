@@ -91,6 +91,11 @@ class Mdl_Users extends Response_Model
             'user_company' => [
                 'field' => 'user_company',
             ],
+            'user_einvoice_identifier' => [
+                'field' => 'user_einvoice_identifier',
+                'label' => trans('user_einvoice_identifier'),
+                'rules' => 'trim',
+            ],
             'user_address_1' => [
                 'field' => 'user_address_1',
             ],
@@ -203,6 +208,11 @@ class Mdl_Users extends Response_Model
             ],
             'user_company' => [
                 'field' => 'user_company',
+            ],
+            'user_einvoice_identifier' => [
+                'field' => 'user_einvoice_identifier',
+                'label' => trans('user_einvoice_identifier'),
+                'rules' => 'trim',
             ],
             'user_address_1' => [
                 'field' => 'user_address_1',
@@ -344,7 +354,7 @@ class Mdl_Users extends Response_Model
         $id = parent::save($id, $db_array);
 
         if ($user_clients = $this->session->userdata('user_clients')) {
-            $this->load->model('users/mdl_user_clients');
+            $this->load->model('user_clients/mdl_user_clients');
 
             foreach ($user_clients as $user_client) {
                 $this->mdl_user_clients->save(null, ['user_id' => $id, 'client_id' => $user_client]);

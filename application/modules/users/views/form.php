@@ -73,6 +73,12 @@ $einvoicingOpt = $einvoicing ? $einvoicingTip . trans('optional') . ')"' : '';
                                        value="<?php echo $this->mdl_users->form_value('user_company', true); ?>">
                             </div>
 
+                            <div class="form-group"<?php echo $itsCompany ? $einvoicingB2B : $einvoicingOpt; ?>>
+				<label for="user_einvoice_identifier"><?= trans('user_einvoice_identifier') ?> (<?= (_trans($itsCompany ? 'required_field' : 'optional')) ?>)</label><?php echo $qr_code_info; ?>
+                                <input type="text" name="user_einvoice_identifier" id="user_einvoice_identifier" class="form-control"
+                                       value="<?php echo $this->mdl_users->form_value('user_einvoice_identifier', true); ?>">
+                            </div>
+
                             <div class="form-group">
                                 <label for="user_email"><?php _trans('email_address'); ?></label>
                                 <input type="text" name="user_email" id="user_email" class="form-control"
@@ -389,6 +395,27 @@ if ($default_custom) {
 } // End if custom_fields
 ?>
                    </div> <!-- end administrator_fields -->
+
+                    <div id="guest_fields">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php _trans('clients'); ?>
+                                <button type="button" class="btn btn-sm btn-primary pull-right" id="add-user-client-modal">
+                                    <i class="fa fa-plus"></i> <?php _trans('add_client'); ?>
+                                </button>
+                            </div>
+                            <div class="panel-body">
+                                <div id="div_user_client_table">
+<?php
+if ($id) {
+    // Load the user_client table when editing an existing guest user
+    $this->layout->load_view('users/partial_user_client_table');
+}
+?>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- end guest_fields -->
 
                 </div><!-- userinfo -->
 

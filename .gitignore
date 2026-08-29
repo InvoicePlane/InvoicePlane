@@ -16,6 +16,8 @@
 audit-report.json
 updated-packages.txt
 pint_output.log
+/*-inventory-*.md
+/phpunit-plan-*.md
 /.phpunit.result.cache
 
 # Other files
@@ -36,6 +38,13 @@ yarn-error.log
 /deps-before.txt
 /outdated.txt
 /phpunit.txt
+/.phpunit.result.cache
+
+# Test runtime
+/application/cache/htmlpurifier/
 /stan.txt
 /todo.txt
 /yarnpack.txt
+/.phpunit.cache/
+/.phpstan.cache/
+/uploads/temp/

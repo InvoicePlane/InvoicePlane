@@ -43,13 +43,22 @@ RUN composer check-platform-reqs --no-dev --working-dir=/tmp/composer-check \
 COPY --from=asset-build   /app/assets /var/www/html/assets
 
 COPY application /var/www/html/application
+COPY bootstrap /var/www/html/bootstrap
+COPY public /var/www/html/public
 COPY storage /var/www/html/storage
 COPY uploads /var/www/html/uploads
-COPY favicon.ico index.php robots.txt /var/www/html/
-COPY htaccess /var/www/html/.htaccess
+COPY favicon.ico robots.txt /var/www/html/public/
+COPY htaccess /var/www/html/public/.htaccess
 
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' \
-	/etc/apache2/apache2.conf
+# Serve from the public/ web root: only public/index.php is reachable over HTTP;
+# application/, bootstrap/, vendor/, storage/ and uploads/ stay above the root.
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri 's!DocumentRoot /var/www/html!DocumentRoot ${APACHE_DOCUMENT_ROOT}!g' \
+		/etc/apache2/sites-available/*.conf \
+	&& sed -ri 's!<Directory /var/www/>!<Directory ${APACHE_DOCUMENT_ROOT}>!g' \
+		/etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
+	&& sed -i '/<Directory ${APACHE_DOCUMENT_ROOT}>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' \
+		/etc/apache2/apache2.conf
 
 RUN chown -R www-data:www-data /var/www/html \
 	&& find /var/www/html -type d -exec chmod 755 {} \; \

@@ -117,7 +117,7 @@ class Mdl_Invoice_Groups extends Response_Model
                         $replace = date('d');
                         break;
                     case 'id':
-                        $replace = mb_str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
+                        $replace = str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
                         break;
                     default:
                         $replace = '';

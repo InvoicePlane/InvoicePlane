@@ -30,6 +30,8 @@ class Stripe extends Base_Controller
         $this->load->helper('file_security');
         $this->load->helper(['currency', 'stripe']);
 
+        $this->useTestHttpClientIfConfigured();
+
         $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
     }
 
@@ -39,7 +41,7 @@ class Stripe extends Base_Controller
      *
      * @param string $invoice_url_key the url key that is used to retrive the invoice
      *
-     * @return json the client secret in a json format
+     * @return void
      */
     public function create_checkout_session($invoice_url_key)
     {
@@ -95,6 +97,12 @@ class Stripe extends Base_Controller
      */
     public function callback(string $checkout_session_id)
     {
+        $invoice  = null;
+        $paid     = 'error';
+        $response = '';
+        $session  = null;
+        $user_msg = '';
+
         try {
             // Retrieve the Checkout Session from Stripe
             $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
@@ -194,20 +202,60 @@ class Stripe extends Base_Controller
             $paid = is_bool($paid) ? ($paid ? 'success' : 'info') : $paid; // Tweak to reuse (flashdata alert_*)
             // Check stripe server ok
             $ok = $session->status !== null; // Stripe is accessible?
-            // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts)
-            $this->db->insert('ip_merchant_responses', [
-                'invoice_id'                   => $invoice->invoice_id,
-                'merchant_response_successful' => (int) $ok, // response server API (no)ok
-                'merchant_response_date'       => date('Y-m-d'),
-                'merchant_response_driver'     => __CLASS__,
-                'merchant_response'            => ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
-                'merchant_response_reference'  => $ok ? 'intent_id: ' . $session->payment_intent : 'none',
-            ]);
+            // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts).
+            // $invoice is null when the lookup above never found one (invalid/inaccessible
+            // client_reference_id) — ip_merchant_responses.invoice_id is NOT NULL and there's
+            // no real invoice to attach a row to, so skip it; the failure is already logged above.
+            if ( ! empty($invoice)) {
+                $this->db->insert('ip_merchant_responses', [
+                    'invoice_id'                   => $invoice->invoice_id,
+                    'merchant_response_successful' => (int) $ok, // response server API (no)ok
+                    'merchant_response_date'       => date('Y-m-d'),
+                    'merchant_response_driver'     => __CLASS__,
+                    'merchant_response'            => ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
+                    'merchant_response_reference'  => $ok ? 'intent_id: ' . $session->payment_intent : 'none',
+                ]);
+            }
 
             // Notify user
             $this->session->set_flashdata('alert_' . $paid, $user_msg);
             // Attempt to redirect them to the invoice. invoice_url_key? No, return to invoices view
-            redirect('guest/view/invoice' . (empty($invoice->invoice_url_key) ? 's' : '/' . $invoice->invoice_url_key));
+            redirect('guest/view/invoice' . (empty($invoice?->invoice_url_key) ? 's' : '/' . $invoice?->invoice_url_key));
         }
+    }
+
+    /**
+     * In the test environment only, replay a queue of canned HTTP responses
+     * instead of calling the real Stripe API. \Stripe\ApiRequestor::setHttpClient()
+     * is process-global by design (the SDK has no per-client HTTP override), which
+     * is safe here because the test harness runs each request in its own PHP
+     * subprocess. The queue is supplied by the test as a JSON-encoded array (via
+     * AbstractTestCase::withEnvironment()) under STRIPE_MOCK_RESPONSES, each entry
+     * shaped like ['status' => int, 'body' => string]. Responses are consumed in
+     * the order this controller calls the Stripe SDK.
+     */
+    private function useTestHttpClientIfConfigured(): void
+    {
+        if (ENVIRONMENT !== 'testing') {
+            return;
+        }
+
+        $fixture = getenv('STRIPE_MOCK_RESPONSES');
+
+        if ($fixture === false || $fixture === '') {
+            return;
+        }
+
+        $queue = json_decode($fixture, true);
+
+        if ( ! is_array($queue)) {
+            return;
+        }
+
+        if ( ! class_exists(\Tests\Fakes\Payments\FakeStripeHttpClient::class)) {
+            throw new \RuntimeException('Stripe test HTTP client is unavailable.');
+        }
+
+        \Stripe\ApiRequestor::setHttpClient(new \Tests\Fakes\Payments\FakeStripeHttpClient($queue));
     }
 }

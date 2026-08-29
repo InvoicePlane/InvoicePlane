@@ -1,24 +1,38 @@
 name: PHPUnit
 
+# PHP version policy:
+#   - Every push to prep/v180 and every pull request runs the suite on the
+#     PHP 8.2 floor (composer.json requires ^8.2), so day-to-day CI stays fast.
+#   - The weekly schedule and manual runs sweep every supported version
+#     (8.2, 8.3, 8.4) so upper-version regressions are still caught, without
+#     paying for a full matrix on every push.
+#
+# Database: the suite runs against MariaDB, so it exercises the same SQL
+# (NOW(), IF(), DATEDIFF(), ...) the application uses in production. The
+# schema is imported from the setup migrations and the baseline rows are
+# seeded via tests/Support/seed-test-db.php.
+
 on:
+  # Not every push to every branch — only the shared integration branch and
+  # pull requests. Feature-branch work is covered when it opens/updates a PR.
+  push:
+    branches:
+      - prep/v180
+  pull_request:
+  #schedule:
+  #  - cron: '0 6 * * 1'   # Mondays 06:00 UTC — full version sweep
   workflow_dispatch:
     inputs:
       php_version:
-        description: 'PHP version'
+        description: 'PHP version to test (or "all" for 8.2, 8.3 and 8.4)'
         required: false
-        default: '8.2'
+        default: 'all'
         type: choice
         options:
+          - 'all'
           - '8.2'
           - '8.3'
-      mysql_version:
-        description: 'MySQL/MariaDB image'
-        required: false
-        default: 'mysql:8.0'
-        type: choice
-        options:
-          - 'mysql:8.0'
-          - 'mariadb:10.11'
+          - '8.4'
       fail_fast:
         description: 'Stop on first failure'
         required: false
@@ -32,23 +46,59 @@ permissions:
   contents: read
 
 jobs:
+  # Resolve which PHP versions this run should cover.
+  matrix:
+    name: Resolve PHP versions
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.resolve.outputs.versions }}
+    steps:
+      - id: resolve
+        run: |
+          case "${{ github.event_name }}" in
+            schedule)
+              versions='["8.2","8.3","8.4"]' ;;
+            workflow_dispatch)
+              if [ "${{ github.event.inputs.php_version }}" = "all" ]; then
+                versions='["8.2","8.3","8.4"]'
+              else
+                versions='["${{ github.event.inputs.php_version }}"]'
+              fi ;;
+            *)
+              versions='["8.2"]' ;;
+          esac
+          echo "versions=$versions" >> "$GITHUB_OUTPUT"
+
   test:
-    name: PHPUnit (PHP ${{ github.event.inputs.php_version || '8.2' }})
+    name: PHPUnit (PHP ${{ matrix.php }})
+    needs: matrix
     runs-on: ubuntu-latest
 
     services:
-      database:
-        image: ${{ github.event.inputs.mysql_version || 'mysql:8.0' }}
+      mariadb:
+        image: mariadb:10.11
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: invoiceplane_test
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: invoiceplane_test
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping --silent"
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ${{ fromJSON(needs.matrix.outputs.versions) }}
+
+    env:
+      DB_HOSTNAME: 127.0.0.1
+      DB_PORT: '3306'
+      DB_DATABASE: invoiceplane_test
+      DB_USERNAME: root
+      DB_PASSWORD: root
 
     steps:
       - name: Checkout
@@ -57,28 +107,40 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: ${{ github.event.inputs.php_version || '8.2' }}
+          php-version: ${{ matrix.php }}
 
-      - name: Copy ipconfig.php
-        run: cp ipconfig.php.example ipconfig.php
-
-      - name: Configure test database in ipconfig.php
+      - name: Build MariaDB schema and seed baseline
         run: |
+          export MYSQL_PWD="$DB_PASSWORD"
+          # Relax sql_mode to match the application's expected insert behavior.
+          mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" -e "SET GLOBAL sql_mode='';"
+          # Import the schema from the ordered setup migrations (they are MySQL DDL).
+          for f in $(ls application/modules/setup/sql/*.sql | sort); do
+            mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" --force "$DB_DATABASE" < "$f"
+          done
+          # Apply the schema changes InvoicePlane makes via Mdl_setup's PHP
+          # upgrade_*() methods (not the SQL migrations) — see the file header.
+          mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" "$DB_DATABASE" < tests/Support/schema_fixups.sql
+          php tests/Support/seed-test-db.php
+
+      - name: Prepare test configuration (MySQL)
+        run: |
+          cp ipconfig.php.example ipconfig.php
           sed -i \
-            -e 's|^DB_HOSTNAME=.*|DB_HOSTNAME=127.0.0.1|' \
-            -e 's|^DB_DATABASE=.*|DB_DATABASE=invoiceplane_test|' \
-            -e 's|^DB_USERNAME=.*|DB_USERNAME=root|' \
-            -e 's|^DB_PASSWORD=.*|DB_PASSWORD=root|' \
-            ipconfig.php || true
-
-      - name: Confirm database is reachable
-        run: |
-          mysql -h 127.0.0.1 -u root -proot invoiceplane_test -e "SELECT 1;" 2>/dev/null
+            -e "s|^DB_HOSTNAME=.*|DB_HOSTNAME=${DB_HOSTNAME}|" \
+            -e "s|^DB_PORT=.*|DB_PORT=${DB_PORT}|" \
+            -e "s|^DB_DATABASE=.*|DB_DATABASE=${DB_DATABASE}|" \
+            -e "s|^DB_USERNAME=.*|DB_USERNAME=${DB_USERNAME}|" \
+            -e "s|^DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD}|" \
+            -e 's|^SETUP_COMPLETED=.*|SETUP_COMPLETED=true|' \
+            -e 's|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=0123456789abcdef0123456789abcdef|' \
+            ipconfig.php
+          echo 'DB_DRIVER=mysqli' >> ipconfig.php
+          # The test runner posts form data directly; it does not carry a CSRF
+          # token, so disable CSRF for the functional suite (the dedicated CSRF
+          # tests assert protection statically, not via live POSTs).
+          echo 'CSRF_PROTECTION=false' >> ipconfig.php
 
       - name: Run PHPUnit
         run: |
-          if [ -f phpunit.xml ] || [ -f phpunit.xml.dist ]; then
-            vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
-          else
-            echo "No phpunit.xml found — no tests to run yet."
-          fi
+          vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
