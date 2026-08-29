@@ -66,15 +66,6 @@ class Upload extends Admin_Controller
         respond_file_message(200, 'upload_file_uploaded_successfully', $fileName);
     }
 
-    public function create_dir($path, $chmod = '0755'): bool
-    {
-        if ( ! is_dir($path) && ! is_link($path)) {
-            return mkdir($path, $chmod);
-        }
-
-        return true;
-    }
-
     public function show_files($url_key = null): void
     {
         header('Content-Type: application/json; charset=utf-8');
@@ -186,6 +177,22 @@ class Upload extends Admin_Controller
         header('Content-Type: ' . $ctype);
         header('Content-Length: ' . $file_size);
         readfile($fullPath);
+    }
+
+    /**
+     * Not public: CI3 routes any public controller method directly via URL
+     * segments (e.g. /upload/upload/create_dir/<path>/<chmod>), which would
+     * let this be called with an attacker-controlled path and permission
+     * bits — an arbitrary mkdir() with no validation, CSRF, or confirmation.
+     * Only ever meant to be called internally from move_uploaded_file().
+     */
+    private function create_dir($path, $chmod = '0755'): bool
+    {
+        if ( ! is_dir($path) && ! is_link($path)) {
+            return mkdir($path, $chmod);
+        }
+
+        return true;
     }
 
     private function sanitize_file_name(string $filename): string
