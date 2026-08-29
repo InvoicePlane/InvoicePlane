@@ -21,6 +21,8 @@ final class FakePaypalHttpClient
 
     public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
+        error_log('DEBUG FakePaypalHttpClient: request to ' . $request->getUri() . ' method=' . $request->getMethod());
+
         $captureFile = getenv('PAYPAL_MOCK_REQUEST_CAPTURE');
         if (is_string($captureFile) && $captureFile !== '') {
             file_put_contents($captureFile, (string) json_encode([
@@ -31,7 +33,12 @@ final class FakePaypalHttpClient
             ], JSON_THROW_ON_ERROR));
         }
 
-        return ($this->mock)($request, $options);
+        try {
+            return ($this->mock)($request, $options);
+        } catch (\Throwable $e) {
+            error_log('DEBUG FakePaypalHttpClient: MockHandler threw ' . get_class($e) . ' - ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     /** @param array<int, array{status?: int, body?: string}> $queue */

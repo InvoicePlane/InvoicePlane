@@ -30,6 +30,7 @@ class PaypalLib
         $this->client_secret               = $params['client_secret'];
 
         log_message('debug', 'Paypal library initialization started');
+        error_log('DEBUG: testHandlerStack=' . (self::testHandlerStack() ? 'present' : 'null') . ', PAYPAL_MOCK_RESPONSES=' . (getenv('PAYPAL_MOCK_RESPONSES') ?: 'not set'));
 
         $this->client = new Client(array_filter([
             'base_uri' => $this->endpoint,
@@ -87,18 +88,33 @@ class PaypalLib
     public function captureOrder(string $order_id): array
     {
         log_message('debug', 'Paypal library order capturing started');
+        error_log('DEBUG captureOrder: starting with order_id=' . $order_id);
         try {
+            error_log('DEBUG captureOrder: validating order_id');
             $order_id = $this->validateOrderId($order_id);
-            $response = $this->client->request('POST', 'v2/checkout/orders/' . $order_id . '/capture', [
-                'headers' => $this->buildHeaders([
-                    'request_id'   => $this->generateRequestId('capture'),
-                    'content_type' => 'application/json',
-                ]),
+            error_log('DEBUG captureOrder: validated order_id=' . $order_id);
+
+            error_log('DEBUG captureOrder: building headers');
+            $headers = $this->buildHeaders([
+                'request_id'   => $this->generateRequestId('capture'),
+                'content_type' => 'application/json',
             ]);
+            error_log('DEBUG captureOrder: headers built, making request');
+
+            $response = $this->client->request('POST', 'v2/checkout/orders/' . $order_id . '/capture', [
+                'headers' => $headers,
+            ]);
+            error_log('DEBUG captureOrder: request completed, response status=' . $response->getStatusCode());
             log_message('debug', 'Paypal library order capturing completed');
 
             return ['status' => true, 'response' => $response];
-        } catch (ClientException|InvalidArgumentException $exception) {
+        } catch (ClientException $exception) {
+            error_log('DEBUG captureOrder: caught ClientException - ' . $exception->getMessage());
+            log_message('debug', 'Paypal library order capturing failed');
+
+            return ['status' => false, 'error' => $exception];
+        } catch (InvalidArgumentException $exception) {
+            error_log('DEBUG captureOrder: caught InvalidArgumentException - ' . $exception->getMessage());
             log_message('debug', 'Paypal library order capturing failed');
 
             return ['status' => false, 'error' => $exception];
@@ -206,25 +222,33 @@ class PaypalLib
     private static function testHandlerStack(): ?HandlerStack
     {
         if (ENVIRONMENT !== 'testing' && ! defined('CI_TESTING')) {
+            error_log('DEBUG: testHandlerStack returning null: ENVIRONMENT=' . ENVIRONMENT . ', CI_TESTING=' . (defined('CI_TESTING') ? 'defined' : 'not defined'));
             return null;
         }
 
         $fixture = getenv('PAYPAL_MOCK_RESPONSES');
 
         if ($fixture === false || $fixture === '') {
+            error_log('DEBUG: testHandlerStack returning null: PAYPAL_MOCK_RESPONSES not set');
             return null;
         }
+
+        error_log('DEBUG: testHandlerStack got fixture length=' . mb_strlen($fixture));
 
         $queue = json_decode($fixture, true);
 
         if ( ! is_array($queue)) {
+            error_log('DEBUG: testHandlerStack returning null: fixture is not valid JSON array');
             return null;
         }
+
+        error_log('DEBUG: testHandlerStack got queue with ' . count($queue) . ' items');
 
         if ( ! class_exists(\Tests\Fakes\Payments\FakePaypalHttpClient::class)) {
             throw new \RuntimeException('PayPal test HTTP client is unavailable.');
         }
 
+        error_log('DEBUG: testHandlerStack returning handler stack');
         return \Tests\Fakes\Payments\FakePaypalHttpClient::handlerStack($queue);
     }
 
@@ -240,7 +264,7 @@ class PaypalLib
      */
     private function validateOrderId(string $order_id): string
     {
-        if ( ! preg_match('/^[A-Za-z0-9]+$/', $order_id)) {
+        if ( ! preg_match('/^[A-Za-z0-9\-_]+$/', $order_id)) {
             throw new InvalidArgumentException('Invalid PayPal order ID format');
         }
 

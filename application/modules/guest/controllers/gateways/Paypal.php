@@ -125,6 +125,10 @@ class Paypal extends Base_Controller
         }
 
         $paypal_response = $this->lib_paypal->captureOrder($order_id);
+        error_log('DEBUG: paypal_response[status]=' . ($paypal_response['status'] ? '1' : '0'));
+        if (!$paypal_response['status']) {
+            error_log('DEBUG: captureOrder failed with exception: ' . get_class($paypal_response['error']) . ' - ' . $paypal_response['error']->getMessage());
+        }
 
         //handle the payment
         if ($paypal_response['status']) {
@@ -222,6 +226,7 @@ class Paypal extends Base_Controller
                             $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed'));
                             $this->session->keep_flashdata('alert_error');
                         } else {
+                            error_log('DEBUG: Reached save point. invoice_id=' . $invoice_id . ', amount=' . $amount . ', method_id=' . get_setting('gateway_paypal_payment_method'));
                             // If the payment status is pending, set a note accordingly.
                             $payment_note = ($capture_status === 'PENDING') ? trans('online_payment_pending') : '';
 
