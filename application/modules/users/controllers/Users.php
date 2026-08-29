@@ -54,8 +54,11 @@ class Users extends Admin_Controller
         }
 
         $id = $id ? (int) $id : null;
+        $current_user_id = (int) $this->session->userdata('user_id');
+        $is_self_edit = $id && $id === $current_user_id;
+        $is_primary_admin = $current_user_id === 1;
 
-        if ($id === 1 && (int) $this->session->userdata('user_id') !== 1) {
+        if ($id && !$is_self_edit && !$is_primary_admin) {
             show_error(trans('access_denied'), 403);
 
             return;
@@ -64,8 +67,7 @@ class Users extends Admin_Controller
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
             $db_array      = $this->mdl_users->db_array();
             $requested_type = (int) $this->input->post('user_type');
-            $current_user_id = (string) $this->session->userdata('user_id');
-            $is_self_edit = $id && (string) $id === $current_user_id;
+            $current_user_id_str = (string) $current_user_id;
 
             // Only allow user_type changes through explicit authorization:
             // - New user creation: set the requested type
