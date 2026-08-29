@@ -83,13 +83,15 @@ class Base_Controller extends MX_Controller
         // This allows clients to update their token for subsequent requests
         // and prevents csrf_regenerate=true from breaking sequential AJAX calls (#1601).
         $output = $response;
-        if ($this->config->item('csrf_regenerate')) {
+        if ($this->config->item('csrf_protection') && $this->config->item('csrf_regenerate')) {
             $csrfTokenName = $this->config->item('csrf_token_name');
+            // Call csrf_verify to ensure CSRF hash is generated (handles regeneration)
+            $this->security->csrf_verify();
             $csrfHash = $this->security->get_csrf_hash();
 
-            if (is_array($output)) {
+            if (is_array($output) && $csrfHash) {
                 $output[$csrfTokenName] = $csrfHash;
-            } elseif (is_object($output)) {
+            } elseif (is_object($output) && $csrfHash) {
                 $output->{$csrfTokenName} = $csrfHash;
             }
         }
