@@ -511,7 +511,8 @@ $config['csrf_protection']   = env_bool('CSRF_PROTECTION', 'true');
 $config['csrf_token_name']   = '_ip_csrf';
 $config['csrf_cookie_name']  = 'ip_csrf_cookie';
 $config['csrf_expire']       = env('SESS_EXPIRATION', 3600);
-$config['csrf_regenerate']   = env_bool('CSRF_REGENERATE', 'false');
+// Enable csrf_regenerate for Feature tests to test AJAX token handling (#1601)
+$config['csrf_regenerate']   = env_bool('CSRF_REGENERATE', false) || (getenv('CI_TEST_REQUEST') !== false);
 $config['csrf_exclude_uris'] = [];
 
 /*
