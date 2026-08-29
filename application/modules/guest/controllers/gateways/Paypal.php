@@ -13,6 +13,8 @@ if ( ! defined('BASEPATH')) {
  * @link        https://invoiceplane.com
  */
 
+use GuzzleHttp\Exception\ClientException;
+
 #[AllowDynamicProperties]
 class Paypal extends Base_Controller
 {
@@ -263,8 +265,7 @@ class Paypal extends Base_Controller
 
                 // If we can't get invoice_id from captures, try to get it from order details
                 if ( ! $invoice_id) {
-                    $order_details = json_decode($this->lib_paypal->showOrderDetails($order_id));
-                    $invoice_id    = $order_details->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
+                    $invoice_id = $this->_paypal_order_invoice_id($order_id);
                 }
 
                 // Get processor response code if available.
@@ -288,20 +289,38 @@ class Paypal extends Base_Controller
                 $this->session->keep_flashdata('alert_error');
             }
         } else {
-            $response_error = json_decode($paypal_response['error']->getResponse()->getBody());
+            // captureOrder() failed. Its 'error' is either a ClientException (PayPal
+            // rejected the request) or an InvalidArgumentException (order_id failed
+            // local format validation and never reached PayPal) — only the former
+            // has a getResponse() to read a body from.
+            $error = $paypal_response['error'];
 
-            //get the order details to have the invoice id from paypal
-            $order_details = json_decode($this->lib_paypal->showOrderDetails($order_id));
+            if ($error instanceof ClientException) {
+                $response_error = json_decode($error->getResponse()->getBody());
+                $error_summary  = 'name: ' . ($response_error->name ?? 'unknown_error')
+                    . '; details: ' . ($response_error->details[0]->description ?? $error->getMessage());
+            } else {
+                $error_summary = 'name: invalid_order_id; details: ' . $error->getMessage();
+            }
+
+            //get the order details to have the invoice id from paypal, if possible
+            $invoice_id = $this->_paypal_order_invoice_id($order_id);
 
             //record the failed transaction in the logs
-            $this->db->insert('ip_merchant_responses', [
-                'invoice_id'                   => $order_details->purchase_units[0]->payments->captures[0]->invoice_id,
-                'merchant_response_successful' => false,
-                'merchant_response_date'       => date('Y-m-d'),
-                'merchant_response_driver'     => 'paypal',
-                'merchant_response'            => 'name: ' . $response_error->name . '; details: ' . $response_error->details[0]->description,
-                'merchant_response_reference'  => 'Resource ID:' . $order_id,
-            ]);
+            if ($invoice_id !== null) {
+                $this->db->insert('ip_merchant_responses', [
+                    'invoice_id'                   => $invoice_id,
+                    'merchant_response_successful' => false,
+                    'merchant_response_date'       => date('Y-m-d'),
+                    'merchant_response_driver'     => 'paypal',
+                    'merchant_response'            => $error_summary,
+                    'merchant_response_reference'  => 'Resource ID:' . $order_id,
+                ]);
+            } else {
+                log_message('error', __CLASS__ . '::' . __FUNCTION__
+                    . ' - Could not resolve invoice_id for a failed PayPal capture; skipping merchant response log. '
+                    . $error_summary);
+            }
 
             //set error message to be flashed
             $this->session->set_flashdata(
@@ -322,5 +341,24 @@ class Paypal extends Base_Controller
             'client_secret' => $this->crypt->decode(get_setting('gateway_paypal_clientSecret')),
             'demo'          => get_setting('gateway_paypal_testMode') == 1,
         ], 'lib_paypal');
+    }
+
+    /**
+     * Best-effort lookup of the invoice_id from PayPal's order details, used as a
+     * fallback when a capture response doesn't carry it. Returns null on any
+     * failure (network error, invalid order_id, malformed response) instead of
+     * throwing, since this only ever runs while already handling another failure.
+     */
+    private function _paypal_order_invoice_id(string $order_id): ?string
+    {
+        $response = $this->lib_paypal->showOrderDetails($order_id);
+
+        if ( ! $response['status']) {
+            return null;
+        }
+
+        $order_details = json_decode($response['response']->getBody());
+
+        return $order_details->purchase_units[0]->payments->captures[0]->invoice_id ?? null;
     }
 }

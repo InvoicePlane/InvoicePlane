@@ -84,11 +84,12 @@ $einvoicingOpt = $req_einvoicing ? $einvoicingTip . trans('optional') . ')"' : '
                             </div>
                         </div>
                         <div class="form-group"<?php echo $itsCompany ? $einvoicingB2B : $einvoicingOpt; ?>>
-                            <label for="client_einvoice_identifier"><?php _trans('client_einvoice_identifier'); ?> (<?php _trans($itsCompany ? 'required_field' : 'optional'); ?>)</label>
+                            <label for="client_peppol_id"><?php _trans('peppol_participant_id'); ?> (<?php _trans($itsCompany ? 'required_field' : 'optional'); ?>)</label>
 
                             <div class="controls">
-                                <input id="client_einvoice_identifier" name="client_einvoice_identifier" type="text" class="form-control"
-                                       value="<?php echo $this->mdl_clients->form_value('client_einvoice_identifier', true); ?>">
+                                <input id="client_peppol_id" name="client_peppol_id" type="text" class="form-control"
+                                       title="<?php _trans('peppol_participant_id_help'); ?>"
+                                       value="<?php echo $this->mdl_clients->form_value('client_peppol_id', true); ?>">
                             </div>
                         </div>
                         <div class="form-group no-margin">

@@ -33,7 +33,7 @@ final class IncomingInvoiceDocumentService
             throw new RuntimeException('Provider returned an empty incoming invoice document.');
         }
 
-        $size = mb_strlen($content, '8bit');
+        $size = strlen($content);
         if ($size > self::MAX_DOCUMENT_BYTES) {
             throw new RuntimeException('Incoming invoice document exceeds the 15 MB limit.');
         }

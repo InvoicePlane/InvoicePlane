@@ -48,7 +48,7 @@ class Base_Controller extends MX_Controller
         if ( ! env_bool('SETUP_COMPLETED')) {
             redirect('/welcome');
         } else {
-            $this->load->library(['encryption', 'form_validation', 'session', 'ClientTitleEnum']);
+            $this->load->library(['encryption', 'form_validation', 'session', 'security', 'ClientTitleEnum']);
             $this->load->database();
 
             $this->load->helper(['trans', 'number', 'pager', 'invoice', 'date', 'form', 'echo', 'user', 'client', 'country']);
@@ -79,6 +79,23 @@ class Base_Controller extends MX_Controller
     // centralize Ajax controllers response - since 1.7.2
     protected function json_encode_ajax(array|object $response): void
     {
-        echo json_encode($response);
+        // Include CSRF token in AJAX responses when regeneration is enabled.
+        // This allows clients to update their token for subsequent requests
+        // and prevents csrf_regenerate=true from breaking sequential AJAX calls (#1601).
+        $output = $response;
+        if ($this->config->item('csrf_protection') && $this->config->item('csrf_regenerate')) {
+            $csrfTokenName = $this->config->item('csrf_token_name');
+            // Call csrf_verify to ensure CSRF hash is generated (handles regeneration)
+            $this->security->csrf_verify();
+            $csrfHash = $this->security->get_csrf_hash();
+
+            if (is_array($output) && $csrfHash) {
+                $output[$csrfTokenName] = $csrfHash;
+            } elseif (is_object($output) && $csrfHash) {
+                $output->{$csrfTokenName} = $csrfHash;
+            }
+        }
+
+        echo json_encode($output);
     }
 }

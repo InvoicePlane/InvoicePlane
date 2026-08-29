@@ -429,7 +429,7 @@ class QontoClient implements IntegrationClientInterface
             }
 
             $timestamp = is_string($event['timestamp'] ?? null) ? $event['timestamp'] : '';
-            if ($latest === [] || $timestamp === '' || $timestamp >= $latestTimestamp) {
+            if ($latest === [] || ($timestamp !== '' && $timestamp >= $latestTimestamp)) {
                 $latest          = $event;
                 $latestTimestamp = $timestamp;
             }

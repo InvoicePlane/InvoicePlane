@@ -393,7 +393,6 @@ jobs:
             -x "node_modules/*" \
             -x "tests/*" \
             -x ".env*" \
-            -x "*.sqlite" \
             -x "storage/logs/*" \
             -x "storage/framework/cache/*" \
             -x "storage/framework/sessions/*" \

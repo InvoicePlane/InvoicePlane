@@ -154,14 +154,6 @@ class MY_Model extends CI_Model
 
         $this->run_filters();
 
-        // SQLite does not support MySQL's SQL_CALC_FOUND_ROWS hint; strip it silently.
-        if (in_array($this->db->dbdriver, ['sqlite', 'sqlite3'], true)) {
-            $this->db->qb_select = array_map(
-                static fn (string $s) => preg_replace('/\bSQL_CALC_FOUND_ROWS\s+/i', '', $s),
-                $this->db->qb_select
-            );
-        }
-
         $this->query = $this->db->get($this->table);
 
         $this->filter = [];
@@ -189,24 +181,10 @@ class MY_Model extends CI_Model
         $this->set_defaults();
         $this->run_filters();
 
-        if (in_array($this->db->dbdriver, ['sqlite', 'sqlite3'], true)) {
-            $this->db->qb_select = array_map(
-                static fn (string $s) => preg_replace('/\bSQL_CALC_FOUND_ROWS\s+/i', '', $s),
-                $this->db->qb_select
-            );
-        }
-
         $this->db->limit($per_page, $this->offset);
         $this->query = $this->db->get($this->table);
 
-        if (in_array($this->db->dbdriver, ['sqlite', 'sqlite3'], true)) {
-            // SQLite does not support SQL_CALC_FOUND_ROWS/FOUND_ROWS(); count with a separate query.
-            $this->set_defaults();
-            $this->run_filters();
-            $this->total_rows = (int) $this->db->count_all_results($this->table);
-        } else {
-            $this->total_rows = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
-        }
+        $this->total_rows      = $this->db->query('SELECT FOUND_ROWS() AS num_rows')->row()->num_rows;
         $this->total_pages     = ceil($this->total_rows / $per_page);
         $this->previous_offset = $this->offset - $per_page;
         $this->next_offset     = $this->offset + $per_page;

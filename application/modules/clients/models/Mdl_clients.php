@@ -118,6 +118,11 @@ class Mdl_Clients extends Response_Model
             'client_einvoicing_active' => [
                 'field' => 'client_einvoicing_active',
             ],
+            'client_peppol_id' => [
+                'field' => 'client_peppol_id',
+                'label' => trans('peppol_participant_id'),
+                'rules' => 'trim|max_length[100]',
+            ],
             // SUMEX
             'client_birthdate' => [
                 'field' => 'client_birthdate',

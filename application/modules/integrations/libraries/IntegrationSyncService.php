@@ -92,8 +92,10 @@ final class IntegrationSyncService
             if ( ! $client instanceof IntegrationClient) {
                 throw new RuntimeException('Integration client factory returned an invalid client.');
             }
-            $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type'])
-                ?? MerchantResponseDriver::LetsPeppol;
+            $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']);
+            if ($driver === null) {
+                throw new RuntimeException('Unrecognized integration provider: ' . $merchantClient['merchant_type']);
+            }
             $successfulPhases = 0;
 
             if ($scope !== 'events') {

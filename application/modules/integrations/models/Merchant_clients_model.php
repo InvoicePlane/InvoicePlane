@@ -50,7 +50,7 @@ class Merchant_clients_model extends CI_Model
         $stored   = $client['settings_json'] ?? null;
         $settings = $cipher->decrypt($stored, $providerCode);
 
-        if ( ! $cipher->isEncrypted($stored) && isset($client['id'])) {
+        if (is_string($stored) && $stored !== '' && ! $cipher->isEncrypted($stored) && isset($client['id'])) {
             $migrated = $this->db
                 ->where('id', (int) $client['id'])
                 ->update('ip_merchant_clients', [

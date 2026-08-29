@@ -18,13 +18,13 @@ enum PeppolDocumentType: string
     case BillingCreditNote = 'urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2::CreditNote##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1';
 
     /* BIS Order Only 3.0 */
-    case Order         = 'urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:2017:poacc:ordering:01:1.0::2.1';
-    case OrderResponse = 'urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##urn:fdc:peppol.eu:2017:poacc:ordering:01:1.0::2.1';
+    case Order         = 'urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:trns:order:3::2.1';
+    case OrderResponse = 'urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##urn:fdc:peppol.eu:poacc:trns:order_response:3::2.1';
 
     /* BIS Catalogue 3.0 */
-    case Catalogue         = 'urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2::Catalogue##urn:fdc:peppol.eu:2017:poacc:catalogue:01:1.0::2.1';
-    case CatalogueResponse = 'urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:2017:poacc:catalogue:01:1.0::2.1';
+    case Catalogue         = 'urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2::Catalogue##urn:fdc:peppol.eu:poacc:trns:catalogue:3::2.1';
+    case CatalogueResponse = 'urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:catalogue_response:3::2.1';
 
     /* Message Level Response (MLR) — transport acknowledgement */
-    case MessageLevelResponse = 'urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:2017:poacc:mlr:01:1.0::2.1';
+    case MessageLevelResponse = 'urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:mlr:3::2.1';
 }

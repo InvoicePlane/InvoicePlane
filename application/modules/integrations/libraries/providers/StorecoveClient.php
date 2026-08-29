@@ -148,6 +148,9 @@ class StorecoveClient implements IntegrationClientInterface
     public function receiveInvoices(array $filters = []): array
     {
         $transport = $this->request(RequestMethod::GET, $this->setting('webhook_endpoint'));
+        if ( ! is_array($transport['response'] ?? null)) {
+            $transport['response'] = [];
+        }
         if (($transport['http_code'] ?? 0) === 204 || empty($transport['response'])) {
             $transport['response']['invoices'] = [];
 
@@ -193,7 +196,10 @@ class StorecoveClient implements IntegrationClientInterface
     public function getInvoiceEvents(array $filters = []): array
     {
         $transport = $this->request(RequestMethod::GET, $this->setting('webhook_endpoint'));
-        $event     = $transport['response'] ?? [];
+        if ( ! is_array($transport['response'] ?? null)) {
+            $transport['response'] = [];
+        }
+        $event = $transport['response'];
         if ( ! is_array($event) || ($event['event_type'] ?? '') !== 'document_submission') {
             $transport['response']['events'] = [];
 
