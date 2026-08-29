@@ -79,6 +79,13 @@ class Base_Controller extends MX_Controller
     // centralize Ajax controllers response - since 1.7.2
     protected function json_encode_ajax(array|object $response): void
     {
+        // Include CSRF token in AJAX responses when regeneration is enabled.
+        // This allows clients to update their token for subsequent requests
+        // and prevents csrf_regenerate=true from breaking sequential AJAX calls (#1601).
+        if (is_array($response) && $this->config->item('csrf_regenerate')) {
+            $response[$this->config->item('csrf_token_name')] = $this->security->get_csrf_hash();
+        }
+
         echo json_encode($response);
     }
 }
