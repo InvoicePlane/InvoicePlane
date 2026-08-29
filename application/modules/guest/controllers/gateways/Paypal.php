@@ -125,10 +125,6 @@ class Paypal extends Base_Controller
         }
 
         $paypal_response = $this->lib_paypal->captureOrder($order_id);
-        error_log('DEBUG: paypal_response[status]=' . ($paypal_response['status'] ? '1' : '0'));
-        if (!$paypal_response['status']) {
-            error_log('DEBUG: captureOrder failed with exception: ' . get_class($paypal_response['error']) . ' - ' . $paypal_response['error']->getMessage());
-        }
 
         //handle the payment
         if ($paypal_response['status']) {
