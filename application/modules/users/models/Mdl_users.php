@@ -21,7 +21,7 @@ class Mdl_Users extends Response_Model
      * validation rules. Controllers that legitimately need to set these
      * must build and pass their own $db_array to save().
      */
-    private const PROTECTED_FIELDS = ['user_type', 'user_active', 'user_psalt', 'user_email'];
+    private const PROTECTED_FIELDS = ['user_type', 'user_active', 'user_psalt'];
 
     public $table = 'ip_users';
 
