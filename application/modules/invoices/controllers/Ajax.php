@@ -156,6 +156,7 @@ class Ajax extends Admin_Controller
                 'invoice_password'         => $this->security->xss_clean($this->input->post('invoice_password')),
                 'invoice_terms'            => $this->security->xss_clean($this->input->post('invoice_terms')),
                 'payment_method'           => $this->security->xss_clean($this->input->post('payment_method')),
+                'service_id'               => (int) $this->input->post('service_id'),
                 'invoice_discount_amount'  => standardize_amount($invoice_discount_amount),
                 'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
             ];
