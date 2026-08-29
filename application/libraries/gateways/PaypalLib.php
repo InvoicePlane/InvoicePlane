@@ -25,7 +25,7 @@ class PaypalLib
 
     protected PaypalRequestExecutor $executor;
 
-    public function __construct(array $params)
+    public function __construct(array $params, ?Client $client = null)
     {
         $params['demo'] && $this->endpoint = 'https://api-m.sandbox.paypal.com';
         $this->client_id                   = $params['client_id'];
@@ -33,7 +33,7 @@ class PaypalLib
 
         log_message('debug', 'Paypal library initialization started');
 
-        $this->client = new Client(array_filter([
+        $this->client = $client ?? new Client(array_filter([
             'base_uri' => $this->endpoint,
             'handler'  => self::testHandlerStack(),
         ]));
