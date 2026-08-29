@@ -12,6 +12,14 @@ record *why* and *how*.
 
 ---
 
+## [1.7.3] - 2026-08-29
+
+### Security fixes
+
+- **Horizontal privilege escalation via email takeover:** PR #1638 fixed password-change authorization (IDOR), but left the email field unprotected. A secondary administrator (`user_type=1`, `user_id != 1`) could edit the primary administrator's email address through the user form, then use password recovery to take over the account. `Users::form()` now validates that only the primary administrator can edit `user_id=1`, and `user_email` is added to `PROTECTED_FIELDS` (defense-in-depth). Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
+
+---
+
 ## [1.7.2] - 2026-07-17
 
 InvoicePlane 1.7.2 is a **security-focused release**. It resolves every vulnerability
