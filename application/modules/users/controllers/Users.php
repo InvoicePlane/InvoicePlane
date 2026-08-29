@@ -55,14 +55,17 @@ class Users extends Admin_Controller
 
         $id = $id ? (int) $id : null;
         $current_user_id = (int) $this->session->userdata('user_id');
-        $is_self_edit = $id && $id === $current_user_id;
-        $is_primary_admin = $current_user_id === 1;
 
-        if ($id && !$is_self_edit && !$is_primary_admin) {
+        $this->load->file(dirname(__DIR__) . '/services/UserAuthorizationService.php');
+        $auth = new UserAuthorizationService();
+
+        if ($id && ! $auth->can_edit_user($current_user_id, $id)) {
             show_error(trans('access_denied'), 403);
 
             return;
         }
+
+        $is_self_edit = $id && $id === $current_user_id;
 
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
             $db_array      = $this->mdl_users->db_array();
