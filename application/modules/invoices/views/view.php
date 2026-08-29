@@ -100,6 +100,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                     invoice_terms: $('#invoice_terms').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                     payment_method: $('#payment_method').val(),
+                    service_id: $('#service_id').val(),
                 },
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
@@ -480,6 +481,23 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
 } // End if
 ?>
                     </h2>
+<?php if (get_setting('enable_services', 0) == 1) : ?>
+                    <div class="form-group">
+                        <label for="service_id"><?php _trans('service'); ?></label>
+                        <select name="service_id" id="service_id" class="form-control input-sm simple-select"
+                                data-minimum-results-for-search="Infinity">
+                            <option value="0"><?php _trans('select_service'); ?></option>
+<?php foreach ($services as $service) : ?>
+<?php if ( ! empty($service['service_name'])) : ?>
+                            <option value="<?php echo html_escape($service['service_id']); ?>"
+                                <?php echo (int) $service['service_id'] === (int) $invoice->service_id ? 'selected' : ''; ?>>
+                                <?php echo html_escape($service['service_name']); ?>
+                            </option>
+<?php endif; ?>
+<?php endforeach; ?>
+                        </select>
+                    </div>
+<?php endif; ?>
                     <br>
                     <div class="client-address">
                         <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
