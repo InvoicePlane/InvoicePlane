@@ -240,7 +240,7 @@ class PaypalLib
      */
     private function validateOrderId(string $order_id): string
     {
-        if ( ! preg_match('/^[A-Za-z0-9]+$/', $order_id)) {
+        if ( ! preg_match('/^[A-Za-z0-9\-_]+$/', $order_id)) {
             throw new InvalidArgumentException('Invalid PayPal order ID format');
         }
 
