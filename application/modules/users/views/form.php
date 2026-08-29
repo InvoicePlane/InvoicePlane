@@ -396,6 +396,27 @@ if ($default_custom) {
 ?>
                    </div> <!-- end administrator_fields -->
 
+                    <div id="guest_fields">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <?php _trans('clients'); ?>
+                                <button type="button" class="btn btn-sm btn-primary pull-right" id="add-user-client-modal">
+                                    <i class="fa fa-plus"></i> <?php _trans('add_client'); ?>
+                                </button>
+                            </div>
+                            <div class="panel-body">
+                                <div id="div_user_client_table">
+<?php
+if ($id) {
+    // Load the user_client table when editing an existing guest user
+    $this->layout->load_view('users/partial_user_client_table');
+}
+?>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- end guest_fields -->
+
                 </div><!-- userinfo -->
 
             </div><!-- col -->
