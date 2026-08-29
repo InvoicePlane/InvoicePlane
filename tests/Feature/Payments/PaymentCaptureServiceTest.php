@@ -445,6 +445,93 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $this->assertNotNull($payment);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function it_rejects_payment_with_zero_amount(): void
+    {
+        $invoice = $this->seedPayableInvoice(invoice_balance: 100.00);
+
+        $paypal_response = [
+            ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
+            ['status' => 200, 'body' => json_encode([
+                'id' => 'ORDER-ZERO',
+                'purchase_units' => [[
+                    'payments' => [
+                        'captures' => [[
+                            'id' => 'CAP-ZERO',
+                            'status' => 'COMPLETED',
+                            'invoice_id' => $invoice->invoice_id,
+                            'amount' => ['value' => '0.00', 'currency_code' => 'USD'],
+                        ]],
+                    ],
+                ]],
+            ])],
+        ];
+
+        $this->withEnvironment('PAYPAL_MOCK_RESPONSES', json_encode($paypal_response))
+            ->post('guest/gateways/paypal/paypal_capture_payment/ORDER-ZERO');
+
+        $payment = $this->db->where('payment_external_id', 'CAP-ZERO')->get('ip_payments')->row();
+        $this->assertNull($payment);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function it_handles_invoice_with_negative_balance(): void
+    {
+        $invoice = $this->seedPayableInvoice(invoice_balance: -50.00);
+
+        $paypal_response = [
+            ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
+            ['status' => 200, 'body' => json_encode([
+                'id' => 'ORDER-NEG',
+                'purchase_units' => [[
+                    'payments' => [
+                        'captures' => [[
+                            'id' => 'CAP-NEG',
+                            'status' => 'COMPLETED',
+                            'invoice_id' => $invoice->invoice_id,
+                            'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                        ]],
+                    ],
+                ]],
+            ])],
+        ];
+
+        $this->withEnvironment('PAYPAL_MOCK_RESPONSES', json_encode($paypal_response))
+            ->post('guest/gateways/paypal/paypal_capture_payment/ORDER-NEG');
+
+        $payment = $this->db->where('payment_external_id', 'CAP-NEG')->get('ip_payments')->row();
+        $this->assertNull($payment);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function it_rejects_non_completed_or_pending_status(): void
+    {
+        $invoice = $this->seedPayableInvoice(invoice_balance: 100.00);
+
+        $paypal_response = [
+            ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
+            ['status' => 200, 'body' => json_encode([
+                'id' => 'ORDER-VOIDED',
+                'purchase_units' => [[
+                    'payments' => [
+                        'captures' => [[
+                            'id' => 'CAP-VOID',
+                            'status' => 'VOIDED',
+                            'invoice_id' => $invoice->invoice_id,
+                            'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                        ]],
+                    ],
+                ]],
+            ])],
+        ];
+
+        $this->withEnvironment('PAYPAL_MOCK_RESPONSES', json_encode($paypal_response))
+            ->post('guest/gateways/paypal/paypal_capture_payment/ORDER-VOIDED');
+
+        $payment = $this->db->where('payment_external_id', 'CAP-VOID')->get('ip_payments')->row();
+        $this->assertNull($payment);
+    }
+
     private function seedPayableInvoice(float $invoice_balance = 100.00)
     {
         $client_id = $this->db->insert('ip_clients', [
