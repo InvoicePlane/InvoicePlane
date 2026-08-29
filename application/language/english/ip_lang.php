@@ -788,6 +788,7 @@ $lang = [
     'alert_task_delete'        => 'Caution! You want to delete a task that was used to generate an invoice.',
     'info_task_readonly'       => 'This task cannot be altered anymore because it is already invoiced.',
     'enable_projects'          => 'Enable the Projects module',
+    'enable_services'          => 'Enable the Services module',
 
     // Sumex
     'sumex_settings'                           => 'Sumex Settings',

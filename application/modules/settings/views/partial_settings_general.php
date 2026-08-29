@@ -120,6 +120,25 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label for="settings[enable_services]">
+                                <?php _trans('enable_services'); ?>
+                            </label>
+                            <select name="settings[enable_services]" id="settings[enable_services]"
+                                class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0" <?php check_select(get_setting('enable_services', 0), '0'); ?>>
+                                    <?php _trans('no'); ?>
+                                </option>
+                                <option value="1" <?php check_select(get_setting('enable_services', 0), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
