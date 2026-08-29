@@ -96,6 +96,33 @@ There is no `quickstart.yml`. InvoicePlane does not have `php artisan` commands.
 - Pattern: Arrange / Act / Assert.
 - Run: `vendor/bin/phpunit` (requires `phpunit.xml` to be present).
 
+### PHPUnit installation in Claude Code web sandbox
+
+Due to proxy policies blocking `api.github.com` and `codeload.github.com`, standard Composer installation fails in the sandbox. **Use this proven approach:**
+
+```bash
+# Setup token-free Composer home
+CH=$(mktemp -d)
+printf '{}\n' > "$CH/auth.json"
+printf '{"config":{}}\n' > "$CH/config.json"
+
+# Step 1: Install runtime deps (no dev) to avoid phpstan blocking
+COMPOSER_HOME="$CH" composer install --prefer-source --no-dev --ignore-platform-req=ext-bcmath
+
+# Step 2: Install PHPUnit in throwaway project (faster, isolated)
+mkdir -p /tmp/punit && cd /tmp/punit
+COMPOSER_HOME="$CH" composer require --prefer-source --dev phpunit/phpunit:^10.5 --ignore-platform-req=ext-bcmath
+
+# Step 3: Restore Tests\ PSR-4 mapping (removed by --no-dev)
+cd <repo-root>
+COMPOSER_HOME="$CH" composer dump-autoload --dev
+
+# Step 4: Run tests using throwaway project's phpunit
+php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
+```
+
+This is the **only reliable method** in the web sandbox. See `CLAUDE.md` for detailed rationale.
+
 ## Common pitfalls
 
 - **Do not call `php artisan`** — this command does not exist in InvoicePlane.
