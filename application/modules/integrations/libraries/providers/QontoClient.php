@@ -98,58 +98,6 @@ class QontoClient implements IntegrationClientInterface
         ];
     }
 
-    public static function settingsSchema(): array
-    {
-        return [
-            'access_token' => [
-                'type'      => 'password',
-                'label'     => 'access_token',
-                'required'  => true,
-                'sensitive' => true,
-            ],
-            'staging_token' => [
-                'type'      => 'password',
-                'label'     => 'staging_token',
-                'sensitive' => true,
-            ],
-            'api_base_url' => [
-                'type'     => 'url',
-                'label'    => 'api_base_url',
-                'required' => true,
-            ],
-            'upload_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'upload_endpoint',
-                'required' => true,
-            ],
-            'invoice_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_endpoint',
-                'required' => true,
-            ],
-            'send_invoice_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'send_invoice_endpoint',
-                'required' => true,
-            ],
-            'invoice_status_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_status_endpoint',
-                'required' => true,
-            ],
-            'incoming_invoices_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'incoming_invoices_endpoint',
-                'required' => true,
-            ],
-            'invoice_events_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_events_endpoint',
-                'required' => true,
-            ],
-        ];
-    }
-
     public function authenticate(array $settings): bool
     {
         $this->settings = $settings;
