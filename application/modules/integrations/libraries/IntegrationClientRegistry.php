@@ -8,6 +8,7 @@ class IntegrationClientRegistry
 
     public function __construct()
     {
+        get_instance()->load->helper('file_security');
         $this->loadProviders();
     }
 
