@@ -229,13 +229,19 @@ class Merchant_responses_model extends CI_Model
             return 0;
         }
 
+        $message = $event['message']
+            ?? $event['reason_message']
+            ?? $event['reason']
+            ?? $event['event_type']
+            ?? $event['status_text']
+            ?? $event['status_code']
+            ?? $status->value;
+
         $this->db->insert(self::TABLE, [
             'invoice_id'               => null,
             'merchant_response_date'   => date('Y-m-d'),
             'merchant_response_driver' => $driver->value,
-            'merchant_response'        => IntegrationPayloadSanitizer::text(
-                $event['message'] ?? $event['reason_message'] ?? $event['reason'] ?? $event['event_type'] ?? null
-            ),
+            'merchant_response'        => IntegrationPayloadSanitizer::text($message),
             'merchant_response_reference'  => $event['invoice_id'] ?? $event['external_id'] ?? $event['id'] ?? null,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
@@ -275,6 +281,8 @@ class Merchant_responses_model extends CI_Model
     public function get_events(): array
     {
         return $this->db
+            ->select(self::TABLE . '.*, ip_merchant_clients.label AS merchant_client_label')
+            ->join('ip_merchant_clients', 'ip_merchant_clients.id = ' . self::TABLE . '.merchant_client_id', 'left')
             ->where('record_type', MerchantResponseType::InvoiceEvent->value)
             ->order_by('created_at', 'DESC')
             ->get(self::TABLE)
