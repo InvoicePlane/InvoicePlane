@@ -265,18 +265,29 @@ class Facturxv10Xml extends BaseXml
         }
 
         // French PDP routing identifiers:
-        // - BT-34 seller electronic address: user_siren, schemeID 0002 (SIREN)
-        // - BT-49 buyer electronic address: client_tax_code, schemeID 0002 (SIREN)
+        // - BT-34 seller electronic address: user_einvoice_identifier, schemeID 0225
+        // - BT-49 buyer electronic address: client_peppol_id, schemeID 0225
         $electronicAddress = '';
+        $electronicScheme  = 'EM';
         if ($who == 'user') {
-            $electronicAddress = $this->cleanedSiren($this->invoice->user_siren ?? '');
+            $electronicAddress = trim((string) ($this->invoice->user_einvoice_identifier ?? ''));
+            if ($electronicAddress === '') {
+                $electronicAddress = trim((string) ($this->invoice->user_email ?? ''));
+            } else {
+                $electronicScheme = '0225';
+            }
         } elseif ($who == 'client') {
-            $electronicAddress = $this->cleanedSiren($this->invoice->client_tax_code ?? '');
+            $electronicAddress = trim((string) ($this->invoice->client_peppol_id ?? ''));
+            if ($electronicAddress === '') {
+                $electronicAddress = trim((string) ($this->invoice->client_email ?? ''));
+            } else {
+                $electronicScheme = '0225';
+            }
         }
 
         $uriNode = $this->doc->createElement('ram:URIUniversalCommunication');
         $idNode  = $this->doc->createElement('ram:URIID', $electronicAddress);
-        $idNode->setAttribute('schemeID', '0002');
+        $idNode->setAttribute('schemeID', $electronicScheme);
         $uriNode->appendChild($idNode);
         $node->appendChild($uriNode);
 
