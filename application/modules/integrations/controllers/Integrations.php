@@ -107,8 +107,12 @@ class Integrations extends Admin_Controller
                 throw new RuntimeException('Unrecognized integration provider: ' . $merchantClient['merchant_type']);
             }
         } catch (Throwable $e) {
-            log_message('error', 'E-invoice send failed: ' . sanitize_for_logging($e->getMessage()));
-            $this->session->set_flashdata('alert_error', trans('einvoice_send_failed'));
+            $message = $e->getMessage();
+            log_message('error', 'E-invoice send failed: ' . sanitize_for_logging($message));
+            $this->session->set_flashdata(
+                'alert_error',
+                trans('einvoice_send_failed') . ': ' . html_escape($message)
+            );
             redirect('invoices/view/' . (int) $invoiceId);
 
             return;
@@ -127,9 +131,10 @@ class Integrations extends Admin_Controller
                 trans('einvoice_send_success')
             );
         } else {
+            $message = (string) ($response['message'] ?? trans('einvoice_send_failed'));
             $this->session->set_flashdata(
                 'alert_error',
-                trans('einvoice_send_failed')
+                trans('einvoice_send_failed') . ': ' . html_escape($message)
             );
         }
 

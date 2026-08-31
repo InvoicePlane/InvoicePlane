@@ -42,7 +42,9 @@ final class EInvoiceArtifact
     public function assertValid(): void
     {
         if ( ! $this->isValid()) {
-            throw new RuntimeException('The generated e-invoice failed validation.');
+            throw new RuntimeException(
+                'The generated e-invoice failed validation: ' . implode('; ', $this->validationErrors)
+            );
         }
     }
 
