@@ -294,12 +294,7 @@ class Facturxv10Xml extends BaseXml
         $electronicAddress = '';
         $electronicScheme  = 'EM';
         if ($who == 'user') {
-            $electronicAddress = trim((string) ($this->invoice->user_einvoice_identifier ?? ''));
-            if ($electronicAddress === '') {
-                $electronicAddress = trim((string) ($this->invoice->user_email ?? ''));
-            } else {
-                $electronicScheme = '0225';
-            }
+            $electronicAddress = trim((string) ($this->invoice->user_email ?? ''));
         } elseif ($who == 'client') {
             $electronicAddress = trim((string) ($this->invoice->client_peppol_id ?? ''));
             if ($electronicAddress === '') {
