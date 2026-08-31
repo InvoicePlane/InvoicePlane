@@ -33,13 +33,17 @@ function generate_xml_invoice_file($invoice, $items, string $xml_lib, string $fi
 
     $CI = &get_instance();
 
+    // A request can generate more than one XML document (validation, then PDF
+    // embedding). Use a fresh loader alias so CodeIgniter does not reuse the
+    // previous generator instance and its previous filename.
+    $libraryAlias = 'ublciixml_' . substr(md5($filename), 0, 12);
     $CI->load->library('XMLtemplates/' . $xml_lib . 'Xml', [
         'invoice'  => $invoice,
         'items'    => $items,
         'filename' => $filename,
         'options'  => $options,
-    ], 'ublciixml');
-    $CI->ublciixml->xml();
+    ], $libraryAlias);
+    $CI->{$libraryAlias}->xml();
 
     return UPLOADS_TEMP_FOLDER . $filename . '.xml';
 }
