@@ -247,7 +247,21 @@ class Integrations extends Admin_Controller
             return;
         }
 
-        if (empty($lastResponse['merchant_response_reference'])) {
+        $reference = (string) ($lastResponse['merchant_response_reference'] ?? '');
+        $isLocalReference = str_starts_with($reference, 'invoice-');
+        if ((int) ($lastResponse['merchant_response_successful'] ?? 0) !== 1) {
+            $message = (string) ($lastResponse['merchant_response'] ?? trans('einvoice_send_failed'));
+            $this->session->set_flashdata(
+                'alert_error',
+                trans('einvoice_send_failed') . ': ' . html_escape($message)
+            );
+
+            redirect('invoices/view/' . (int) $invoiceId);
+
+            return;
+        }
+
+        if ($reference === '' || $isLocalReference) {
             $this->session->set_flashdata(
                 'alert_error',
                 trans('einvoice_no_external_reference')
@@ -264,7 +278,7 @@ class Integrations extends Admin_Controller
             $provider = $registry->getClient($merchantClient['merchant_type']);
             $client   = new IntegrationClient($provider, $settings);
             $status   = $client->getInvoiceStatus(
-                $lastResponse['merchant_response_reference']
+                $reference
             );
 
             $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']);
