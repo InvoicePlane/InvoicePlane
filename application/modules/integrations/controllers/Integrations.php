@@ -90,7 +90,7 @@ class Integrations extends Admin_Controller
                 $invoice,
                 $items,
                 $profile,
-                FCPATH . 'uploads/integrations/outgoing/'
+                UPLOADS_FOLDER . 'integrations/outgoing/'
             );
             $documentPath = $artifact->path();
             $metadata     = array_merge(['invoice_id' => $invoiceId], $artifact->metadata());
