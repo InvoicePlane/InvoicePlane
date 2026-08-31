@@ -45,13 +45,17 @@ class Merchant_responses_model extends CI_Model
             $providerResponse['status_code'] ?? $providerResponse['status'] ?? null,
             MerchantResponseStatus::Sent
         );
+        $reference = $providerResponse['external_id'] ?? null;
+        if ($reference === null || $reference === '') {
+            $reference = 'invoice-' . $invoiceId . '-' . date('YmdHis');
+        }
 
         $this->db->insert(self::TABLE, [
             'invoice_id'                   => $invoiceId,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
             'merchant_response'            => IntegrationPayloadSanitizer::text($providerResponse['message'] ?? null),
-            'merchant_response_reference'  => $providerResponse['external_id'] ?? null,
+            'merchant_response_reference'  => $reference,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
             'direction'                    => MerchantResponseDirection::Out->value,
