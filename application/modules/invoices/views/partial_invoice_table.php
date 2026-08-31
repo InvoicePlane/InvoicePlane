@@ -58,7 +58,14 @@ $invoice_idx                    = 1;
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>"
                        title="<?php _trans('view_client'); ?>">
-                        <?php _htmlsc(format_client($invoice)); ?>
+                        <?php
+                        _htmlsc(format_client($invoice));
+                if (get_setting('enable_services') == 1 && $invoice->service_name) {
+                    echo '&nbsp;(';
+                    _htmlsc($invoice->service_name);
+                    echo ')';
+                }
+                ?>
                     </a>
                 </td>
 
