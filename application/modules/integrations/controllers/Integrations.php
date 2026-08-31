@@ -7,6 +7,7 @@ class Integrations extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('file_security');
 
         $this->load->model('integrations/Merchant_clients_model');
         $this->load->model('integrations/Merchant_responses_model');
