@@ -86,6 +86,7 @@ class Mdl_Quotes extends Response_Model
             ip_users.user_web,
             ip_users.user_vat_id,
             ip_users.user_tax_code,
+            ip_users.user_einvoice_identifier,
             ip_users.user_active,
             ip_users.user_language,
             ip_users.user_subscribernumber,
