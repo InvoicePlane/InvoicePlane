@@ -225,6 +225,30 @@ class Facturxv10Xml extends BaseXml
 
         $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->{$prop[1]}))); // *_name
 
+        // TradePartyType requires SpecifiedLegalOrganization before the
+        // contact, address, electronic address, and tax registration nodes.
+        // Keep this order aligned with the Factur-X EN 16931 XSD sequence.
+        if ( ! empty($this->options['FrenchSiren'])) {
+            $siren = $who === 'user'
+                ? ($this->invoice->user_einvoice_identifier ?? '')
+                : ($this->invoice->client_peppol_id ?? '');
+            $siren = $this->cleanedSiren($siren);
+
+            if ($siren !== '') {
+                $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
+                $idNode  = $this->doc->createElement('ram:ID', $siren);
+                $idNode->setAttribute('schemeID', '0002');
+                $sloNode->appendChild($idNode);
+                $node->appendChild($sloNode);
+            }
+        } elseif ( ! empty($this->options[$prop[9]])) { // *_eas_code
+            $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
+            $idNode  = $this->doc->createElement('ram:ID', $this->invoice->{$prop[8]}); // *_tax_code
+            $idNode->setAttribute('schemeID', $this->options[$prop[9]]); // *_eas_code
+            $sloNode->appendChild($idNode);
+            $node->appendChild($sloNode);
+        }
+
         // XRechnung-CII-validation
         if ( ! empty($this->options['CII'])) {
             // Make array of user|client* properties
@@ -298,28 +322,6 @@ class Facturxv10Xml extends BaseXml
             $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $vatId));
         }
 
-        // French XP Z12-012 identifiers use SIREN for both legal entities.
-        // BT-30 and BT-47 require the ISO 6523 scheme 0002.
-        if ( ! empty($this->options['FrenchSiren'])) {
-            $siren = $who === 'user'
-                ? ($this->invoice->user_einvoice_identifier ?? '')
-                : ($this->invoice->client_peppol_id ?? '');
-            $siren = $this->cleanedSiren($siren);
-
-            if ($siren !== '') {
-                $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
-                $idNode  = $this->doc->createElement('ram:ID', $siren);
-                $idNode->setAttribute('schemeID', '0002');
-                $sloNode->appendChild($idNode);
-                $node->appendChild($sloNode);
-            }
-        } elseif ( ! empty($this->options[$prop[9]])) { // *_eas_code
-            $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
-            $idNode  = $this->doc->createElement('ram:ID', $this->invoice->{$prop[8]}); // *_tax_code
-            $idNode->setAttribute('schemeID', $this->options[$prop[9]]); // *_eas_code
-            $sloNode->appendChild($idNode);
-            $node->appendChild($sloNode);
-        }
     }
 
     /**
