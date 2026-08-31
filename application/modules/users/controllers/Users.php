@@ -66,7 +66,6 @@ class Users extends Admin_Controller
         }
 
         $is_self_edit = $id && $id === $current_user_id;
-
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
             $db_array      = $this->mdl_users->db_array();
             $requested_type = (int) $this->input->post('user_type');
