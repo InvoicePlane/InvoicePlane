@@ -217,29 +217,13 @@ class Facturxv10Xml extends BaseXml
         // Make array of user|client* properties
         $prop = explode(' ', $who . '_' . implode(' ' . $who . '_', explode(' ', 'id name zip address_1 address_2 city country vat_id tax_code eas_code')));
         // French PDP compatibility: use SIREN for the seller identifier (BT-30).
-        // The seller SIREN is stored in user_siren.
+        // The seller SIREN is stored in user_einvoice_identifier.
         if (empty($this->minimum) && $who == 'user') {
-            $sellerSiren = $this->cleanedSiren($this->invoice->user_siren ?? '');
+            $sellerSiren = $this->cleanedSiren($this->invoice->user_einvoice_identifier ?? '');
             $node->appendChild($this->doc->createElement('ram:ID', $sellerSiren));
         }
 
         $node->appendChild($this->doc->createElement('ram:Name', htmlsc($this->invoice->{$prop[1]}))); // *_name
-
-        // French XP Z12-012 identifiers use SIREN for both legal entities.
-        if ( ! empty($this->options['FrenchSiren'])) {
-            $siren   = $who === 'user' ? $this->invoice->user_siren ?? '' : $this->invoice->client_tax_code ?? '';
-            $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
-            $idNode  = $this->doc->createElement('ram:ID', $this->cleanedSiren($siren));
-            $idNode->setAttribute('schemeID', '0002');
-            $sloNode->appendChild($idNode);
-            $node->appendChild($sloNode);
-        } elseif ( ! empty($this->options[$prop[9]])) { // *_eas_code
-            $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
-            $idNode  = $this->doc->createElement('ram:ID', $this->invoice->{$prop[8]}); // *_tax_code
-            $idNode->setAttribute('schemeID', $this->options[$prop[9]]); // *_eas_code
-            $sloNode->appendChild($idNode);
-            $node->appendChild($sloNode);
-        }
 
         // XRechnung-CII-validation
         if ( ! empty($this->options['CII'])) {
@@ -296,11 +280,34 @@ class Facturxv10Xml extends BaseXml
         $uriNode->appendChild($idNode);
         $node->appendChild($uriNode);
 
-        // SpecifiedTaxRegistration
-        // Note for MINIMUM profile : ram:SpecifiedTaxRegistration is only expected for seller (user)
-        if ((empty($this->minimum) || $who == 'user') && ! $this->notax) {
-            $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $this->invoice->{$prop[7]}));
-            // *_vat_id zugferd 2
+        // SpecifiedTaxRegistration. VAT identifiers remain relevant for B2B
+        // invoices even when the invoice is tax-exempt or has a zero VAT rate.
+        $vatId = trim((string) ($this->invoice->{$prop[7]} ?? ''));
+        if ((empty($this->minimum) || $who == 'user') && $vatId !== '') {
+            $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $vatId));
+        }
+
+        // French XP Z12-012 identifiers use SIREN for both legal entities.
+        // BT-30 and BT-47 require the ISO 6523 scheme 0002.
+        if ( ! empty($this->options['FrenchSiren'])) {
+            $siren = $who === 'user'
+                ? ($this->invoice->user_einvoice_identifier ?? '')
+                : ($this->invoice->client_peppol_id ?? '');
+            $siren = $this->cleanedSiren($siren);
+
+            if ($siren !== '') {
+                $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
+                $idNode  = $this->doc->createElement('ram:ID', $siren);
+                $idNode->setAttribute('schemeID', '0002');
+                $sloNode->appendChild($idNode);
+                $node->appendChild($sloNode);
+            }
+        } elseif ( ! empty($this->options[$prop[9]])) { // *_eas_code
+            $sloNode = $this->doc->createElement('ram:SpecifiedLegalOrganization');
+            $idNode  = $this->doc->createElement('ram:ID', $this->invoice->{$prop[8]}); // *_tax_code
+            $idNode->setAttribute('schemeID', $this->options[$prop[9]]); // *_eas_code
+            $sloNode->appendChild($idNode);
+            $node->appendChild($sloNode);
         }
     }
 
