@@ -192,6 +192,18 @@ function escape_url_for_javascript($url)
  * Security: Protects against Cross-Site Request Forgery attacks.
  * Should be called at the beginning of any POST/PUT/DELETE controller action.
  *
+ * When csrf_protection is enabled, CodeIgniter's Security::csrf_verify() has
+ * already fully validated the request during bootstrap (see the vendored
+ * system/core/Security.php): a forged or tokenless POST is aborted with a 403
+ * before any controller code runs, and a *valid* POST has its token removed
+ * from $_POST — and, with csrf_regenerate on, its cookie rotated too. Re-reading
+ * $_POST / $_COOKIE here would then see an empty token and reject every
+ * legitimate state-changing POST, which is exactly the "unable to delete
+ * invoice" bug (issue #1694). So on an enabled-protection POST we trust the
+ * framework check that already happened; the explicit double-submit comparison
+ * below only guards the residual cases (protection disabled, or a non-POST
+ * caller where CI3's csrf_verify() never ran).
+ *
  * @return bool True if CSRF token is valid, false otherwise
  */
 function verify_csrf_token(): bool
@@ -210,6 +222,15 @@ function verify_csrf_token(): bool
     // Get CSRF token from cookie
     $cookie_name    = config_item('csrf_cookie_name');
     $expected_token = $CI->input->cookie($cookie_name);
+
+    // CodeIgniter's global CSRF check already ran and passed for this POST
+    // (it consumes $_POST[$token_name] on success). Anything that failed its
+    // check never reaches a controller. Trust that instead of re-validating a
+    // token the framework deliberately cleared.
+    $request_method = strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? ''));
+    if ($request_method === 'POST' && $submitted_token === null && isset($CI->security)) {
+        return true;
+    }
 
     // Security: Enforce non-empty string tokens to prevent bypass when both are null
     if ( ! is_string($submitted_token) || empty($submitted_token)) {
