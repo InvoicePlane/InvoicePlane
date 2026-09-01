@@ -32,8 +32,12 @@ DB_PASSWORD       ?= root
 FILTER            ?=
 SUITE             ?=
 
-DOCKER_EXEC = docker exec --user=$(DOCKER_USER) $(CONTAINER_NAME)
-DOCKER_EXEC_INTERACTIVE = docker exec -it --user=$(DOCKER_USER) $(CONTAINER_NAME)
+# -e XDEBUG_MODE=off: the workspace image ships Xdebug in "develop,debug" mode,
+# whose step-debug "Could not connect to debugging client" notices are written to
+# stdout mid-test and get surfaced by PHPUnit as spurious errors. CI runs without
+# Xdebug, so turn it off here to match.
+DOCKER_EXEC = docker exec -e XDEBUG_MODE=off --user=$(DOCKER_USER) $(CONTAINER_NAME)
+DOCKER_EXEC_INTERACTIVE = docker exec -e XDEBUG_MODE=off -it --user=$(DOCKER_USER) $(CONTAINER_NAME)
 DOCKER_ROOT_EXEC = docker exec $(CONTAINER_NAME)
 MARIADB_EXEC = docker exec -i $$(docker ps -aqf "name=$(MARIADB_CONTAINER)")
 MARIADB_EXEC_TTY = docker exec -t $$(docker ps -aqf "name=$(MARIADB_CONTAINER)")

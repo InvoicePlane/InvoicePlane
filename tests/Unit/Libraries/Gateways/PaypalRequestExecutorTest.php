@@ -5,6 +5,7 @@ namespace Tests\Unit\Libraries\Gateways;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use InvalidArgumentException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PaypalRequestExecutor;

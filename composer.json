@@ -63,7 +63,10 @@
     "autoload": {
         "classmap": [
             "application/modules/integrations/libraries/",
-            "application/modules/integrations/models/"
+            "application/modules/integrations/models/",
+            "application/libraries/gateways/",
+            "application/libraries/services/",
+            "application/modules/users/services/"
         ]
     },
     "autoload-dev": {

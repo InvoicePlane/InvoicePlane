@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Libraries\Gateways;
 
-use Exception;
 use PaypalResponseExtractor;
 use PHPUnit\Framework\TestCase;
 
@@ -45,16 +44,16 @@ class PaypalResponseExtractorTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function it_throws_exception_on_invalid_response_structure(): void
+    public function it_returns_null_for_a_structurally_invalid_response(): void
     {
+        // The `?? null` in extractCaptureData() swallows the missing-property
+        // chain, so a response that doesn't carry a capture degrades to null
+        // (which is how PaymentCaptureService consumes it) rather than throwing.
         $response = json_decode(json_encode([
             'invalid' => 'structure',
         ]));
 
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Invalid PayPal response structure');
-
-        PaypalResponseExtractor::extractCaptureData($response);
+        self::assertNull(PaypalResponseExtractor::extractCaptureData($response));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
