@@ -23,6 +23,19 @@ class Mdl_Users extends Response_Model
      */
     private const PROTECTED_FIELDS = ['user_type', 'user_active', 'user_psalt'];
 
+    /**
+     * The bootstrap root account. Only this account may edit its own record;
+     * a peer administrator must not be able to alter any of its attributes
+     * (password, email, role type, active flag, or otherwise).
+     */
+    public const PRIMARY_ADMINISTRATOR_ID = 1;
+
+    /**
+     * Identity- and privilege-bearing fields the primary administrator's record
+     * must never receive from a non-root session, regardless of code path.
+     */
+    private const PRIMARY_ADMIN_LOCKED_FIELDS = ['user_type', 'user_active', 'user_psalt', 'user_email', 'user_password'];
+
     public $table = 'ip_users';
 
     public $primary_key = 'ip_users.user_id';
@@ -40,6 +53,19 @@ class Mdl_Users extends Response_Model
             '1' => trans('administrator'),
             '2' => trans('guest_read_only'),
         ];
+    }
+
+    /**
+     * Whether the given user id identifies the primary administrator (user_id = 1).
+     *
+     * Accepts int or string ids from routes and sessions; canonicalizes through
+     * (int) so that "1", "01" and "1abc" all resolve to the root account.
+     *
+     * @param int|string|null $user_id
+     */
+    public static function is_primary_administrator($user_id): bool
+    {
+        return $user_id !== null && $user_id !== '' && (int) $user_id === self::PRIMARY_ADMINISTRATOR_ID;
     }
 
     public function default_select(): void
@@ -341,6 +367,20 @@ class Mdl_Users extends Response_Model
      */
     public function save($id = null, $db_array = null)
     {
+        // Defense-in-depth for CWE-639 / CWE-269: the primary administrator's
+        // identity and privilege attributes must never be mutated by a non-root
+        // session, no matter which code path reaches save(). Users::form()
+        // already rejects such requests with a 403; this backstop covers any
+        // other caller that hands us a privilege-bearing $db_array for user_id 1.
+        if (is_array($db_array)
+            && self::is_primary_administrator($id)
+            && ! self::is_primary_administrator($this->session->userdata('user_id'))
+        ) {
+            foreach (self::PRIMARY_ADMIN_LOCKED_FIELDS as $field) {
+                unset($db_array[$field]);
+            }
+        }
+
         $id = parent::save($id, $db_array);
 
         if ($user_clients = $this->session->userdata('user_clients')) {
