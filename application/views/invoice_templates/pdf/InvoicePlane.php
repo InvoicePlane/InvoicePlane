@@ -60,7 +60,10 @@ if ($invoice->client_vat_id) {
     echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->client_vat_id) . '</div>';
 }
 if ($invoice->client_tax_code) {
-    echo '<div>' . trans('tax_code_short') . ': ' . htmlsc($invoice->client_tax_code) . '</div>';
+    echo '<div>' . trans('tax_code') . ': ' . htmlsc($invoice->client_tax_code) . '</div>';
+}
+if ($invoice->client_peppol_id) {
+    echo '<div>' . trans('peppol_participant_id') . ': ' . htmlsc($invoice->client_peppol_id) . '</div>';
 }
 if ($invoice->client_address_1) {
     echo '<div>' . htmlsc($invoice->client_address_1) . '</div>';
@@ -106,7 +109,10 @@ if ($invoice->user_vat_id) {
     echo '<div>' . trans('vat_id_short') . ': ' . htmlsc($invoice->user_vat_id) . '</div>';
 }
 if ($invoice->user_tax_code) {
-    echo '<div>' . trans('tax_code_short') . ': ' . htmlsc($invoice->user_tax_code) . '</div>';
+    echo '<div>' . trans('tax_code') . ': ' . htmlsc($invoice->user_tax_code) . '</div>';
+}
+if ($invoice->user_einvoice_identifier) {
+    echo '<div>' . trans('peppol_participant_id') . ': ' . htmlsc($invoice->user_einvoice_identifier) . '</div>';
 }
 if ($invoice->user_address_1) {
     echo '<div>' . htmlsc($invoice->user_address_1) . '</div>';
