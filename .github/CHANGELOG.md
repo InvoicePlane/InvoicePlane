@@ -18,6 +18,10 @@ record *why* and *how*.
 
 - **Horizontal privilege escalation via email takeover:** PR #1638 fixed password-change authorization (IDOR), but left the email field unprotected. A secondary administrator (`user_type=1`, `user_id != 1`) could edit the primary administrator's email address through the user form, then use password recovery to take over the account. `Users::form()` now validates that only the primary administrator can edit `user_id=1`, and `user_email` is added to `PROTECTED_FIELDS` (defense-in-depth). Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
 
+### Duplicate reports (already remediated — no code change)
+
+- **Path traversal / LFI in invoice & quote template resolution (`pdf_template` / `guest_template`):** a report against `Mdl_templates.php` and the `generate_pdf` controllers was reviewed and confirmed **already fixed**. The `directory_map()` filesystem scan the report targets no longer exists — template lists come from the static `ALLOWED_INVOICE_TEMPLATES` / `ALLOWED_QUOTE_TEMPLATES` allowlists — and every request-supplied template name passes `validate_template_name()` (path-traversal rejection via `validate_safe_filename()`, strict static-allowlist membership, and an `^[a-zA-Z0-9_\- ]+$` character allowlist) at each sink: `validate_pdf_template()` in `Invoices`/`Quotes` (admin + guest) and again in `generate_invoice_pdf()` / `generate_quote_pdf()` "regardless of source", with `get_validated_template_path()` guarding the guest public view. A `../../../uploads/...` payload is rejected and falls back to the built-in `InvoicePlane` template. Original fixes: **LFI in PDF template handling** ([#1433](https://github.com/InvoicePlane/InvoicePlane/issues/1433), 1.7.0) and **RCE via template filesystem scan** ([GHSA-v735-2x3r-gwpp](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-v735-2x3r-gwpp), 1.7.2). Thanks to [@FelipeSilvany](https://github.com/FelipeSilvany) for the responsible disclosure.
+
 ---
 
 ## [1.7.2] - 2026-07-17
