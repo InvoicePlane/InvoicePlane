@@ -31,8 +31,13 @@ class Issue1694InvoiceTaxRateDeleteCsrfTest extends AbstractTestCase
      */
     private function seedInvoiceTaxRate(): array
     {
-        $invoiceId       = $this->seedInvoice($this->seedClient());
-        $invoiceTaxRateId = (int) $this->seedModel('InvoiceTaxRate', ['invoice_id' => $invoiceId])->invoice_tax_rate_id;
+        $invoiceId        = $this->seedInvoice($this->seedClient());
+        $invoiceTaxRateId = $this->databaseInsert('ip_invoice_tax_rates', [
+            'invoice_id'              => $invoiceId,
+            'tax_rate_id'             => 1,
+            'include_item_tax'        => 0,
+            'invoice_tax_rate_amount' => '0.00',
+        ]);
 
         return [$invoiceId, $invoiceTaxRateId];
     }

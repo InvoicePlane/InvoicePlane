@@ -9,8 +9,6 @@ use Tests\AbstractTestCase;
 
 class PaymentCaptureServiceTest extends AbstractTestCase
 {
-    use \Tests\InteractsWithDatabase;
-
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_processes_successful_completed_payment(): void
     {

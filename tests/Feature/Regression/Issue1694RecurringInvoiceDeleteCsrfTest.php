@@ -27,7 +27,12 @@ class Issue1694RecurringInvoiceDeleteCsrfTest extends AbstractTestCase
     {
         $invoiceId = $this->seedInvoice($this->seedClient());
 
-        return (int) $this->seedModel('RecurringInvoice', ['invoice_id' => $invoiceId])->invoice_recurring_id;
+        return $this->databaseInsert('ip_invoices_recurring', [
+            'invoice_id'       => $invoiceId,
+            'recur_start_date' => date('Y-m-d'),
+            'recur_next_date'  => date('Y-m-d'),
+            'recur_frequency'  => '3',
+        ]);
     }
 
     #[Test]
