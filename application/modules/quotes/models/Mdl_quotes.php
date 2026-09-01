@@ -253,7 +253,7 @@ class Mdl_Quotes extends Response_Model
      * @param int $source_id
      * @param int $target_id
      */
-    public function copy_quote($source_id, $target_id)
+    public function copy_quote($source_id, $target_id, $service_id = null)
     {
         $this->load->model('quotes/mdl_quote_items');
 
@@ -264,7 +264,7 @@ class Mdl_Quotes extends Response_Model
             'percent'        => $quote->quote_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for quote_item_subtotal calculation in Mdl_quote_amounts)
             'items_subtotal' => $this->mdl_quote_items->get_items_subtotal($source_id),
-            'service'        => $quote->service_id,
+            'service'        => $service_id ?? $quote->service_id,
         ];
         unset($quote); // Free memory
 

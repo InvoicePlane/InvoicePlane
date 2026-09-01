@@ -15,6 +15,7 @@
                     legacy_calculation: legacy_calculation, // Automatic. From meta (see script)
                     quote_id: <?php echo $quote_id; ?>,
                     client_id: $('#client_id').val(),
+                    service_id: $('#copy_quote_service_id').val(),
                     user_id: $('#user_id').val(),
                     quote_date_created: $('#quote_date_created_modal').val(),
                     invoice_group_id: $('#invoice_group_id').val(),
@@ -78,6 +79,25 @@
                     </span>
                 </div>
             </div>
+
+<?php if (get_setting('enable_services') == 1) : ?>
+            <div class="form-group has-feedback">
+                <label for="copy_quote_service_id"><?php _trans('service'); ?></label>
+                <select name="service_id" id="copy_quote_service_id" class="form-control simple-select" style="width: 100%;">
+                    <option value="0"><?php _trans('select_service'); ?></option>
+<?php foreach ($services as $service) : ?>
+<?php if ( ! empty($service['service_name'])) : ?>
+                    <option value="<?php echo html_escape($service['service_id']); ?>"
+                        <?php echo (int) $service['service_id'] === (int) $service_id ? 'selected' : ''; ?>>
+                        <?php echo html_escape($service['service_name']); ?>
+                    </option>
+<?php endif; ?>
+<?php endforeach; ?>
+                </select>
+            </div>
+<?php else : ?>
+            <input type="hidden" name="service_id" id="copy_quote_service_id" value="0">
+<?php endif; ?>
 
             <div class="form-group">
                 <label for="invoice_group_id"><?php _trans('invoice_group'); ?></label>
