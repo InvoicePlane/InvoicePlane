@@ -250,16 +250,21 @@ class Ajax extends Admin_Controller
         ]);
 
         $services = $this->mdl_services->get()->result_array();
+        $quote    = $this->mdl_quotes->where('ip_quotes.quote_id', $this->input->post('quote_id'))->get()->row();
 
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates'      => $this->mdl_tax_rates->get()->result(),
             'quote_id'       => $this->security->xss_clean($this->input->post('quote_id')),
-            'quote'          => $this->mdl_quotes->where('ip_quotes.quote_id', $this->input->post('quote_id'))->get()->row(),
+            'quote'          => $quote,
             'client'         => $this->mdl_clients->get_by_id($this->input->post('client_id')),
             'service_id'     => $this->security->xss_clean($this->input->post('service_id')),
             'services'       => $services,
         ];
+
+        if ($data['service_id'] === null || $data['service_id'] === '') {
+            $data['service_id'] = $quote->service_id;
+        }
 
         $this->layout->load_view('quotes/modal_copy_quote', $data);
     }
@@ -282,7 +287,7 @@ class Ajax extends Admin_Controller
             $target_id = $this->mdl_quotes->save();
             $source_id = $this->input->post('quote_id');
 
-            $this->mdl_quotes->copy_quote($source_id, $target_id);
+            $this->mdl_quotes->copy_quote($source_id, $target_id, $this->security->xss_clean($this->input->post('service_id')));
 
             $response = [
                 'success'  => 1,

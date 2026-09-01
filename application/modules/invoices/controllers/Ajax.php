@@ -310,6 +310,7 @@ class Ajax extends Admin_Controller
             'invoice_groups/mdl_invoice_groups',
             'tax_rates/mdl_tax_rates',
             'clients/mdl_clients',
+            'services/mdl_services',
         ]);
 
         $data = [
@@ -318,7 +319,13 @@ class Ajax extends Admin_Controller
             'invoice_id'     => $this->security->xss_clean($this->input->post('invoice_id')),
             'invoice'        => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->security->xss_clean($this->input->post('invoice_id')))->get()->row(),
             'client'         => $this->mdl_clients->get_by_id($this->input->post('client_id')),
+            'service_id'     => $this->security->xss_clean($this->input->post('service_id')),
+            'services'       => $this->mdl_services->get()->result_array(),
         ];
+
+        if ($data['service_id'] === null || $data['service_id'] === '') {
+            $data['service_id'] = $data['invoice']->service_id;
+        }
 
         $this->layout->load_view('invoices/modal_copy_invoice', $data);
     }
@@ -341,7 +348,7 @@ class Ajax extends Admin_Controller
             $target_id = $this->mdl_invoices->save();
             $source_id = $this->security->xss_clean($this->input->post('invoice_id'));
 
-            $this->mdl_invoices->copy_invoice($source_id, $target_id);
+            $this->mdl_invoices->copy_invoice($source_id, $target_id, false, $this->security->xss_clean($this->input->post('service_id')));
 
             $response = [
                 'success'    => 1,
