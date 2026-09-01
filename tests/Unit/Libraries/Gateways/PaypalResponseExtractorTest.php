@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Libraries\Gateways;
 
+use Exception;
 use PaypalResponseExtractor;
 use PHPUnit\Framework\TestCase;
 
@@ -14,10 +15,10 @@ class PaypalResponseExtractorTest extends TestCase
             'purchase_units' => [[
                 'payments' => [
                     'captures' => [[
-                        'id' => 'CAP-123',
-                        'status' => 'COMPLETED',
+                        'id'         => 'CAP-123',
+                        'status'     => 'COMPLETED',
                         'invoice_id' => '42',
-                        'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                        'amount'     => ['value' => '100.00', 'currency_code' => 'USD'],
                     ]],
                 ],
             ]],
@@ -50,7 +51,7 @@ class PaypalResponseExtractorTest extends TestCase
             'invalid' => 'structure',
         ]));
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invalid PayPal response structure');
 
         PaypalResponseExtractor::extractCaptureData($response);

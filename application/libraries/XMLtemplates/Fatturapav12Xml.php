@@ -53,15 +53,15 @@ class Fatturapav12Xml
             require_once FCPATH . 'vendor/s2software/fatturapa/fatturapa.php';
         }
 
-        $CI = & get_instance();
-        $this->invoice = $params['invoice'];
-        $this->items = $params['items'];
-        $this->filename = $params['filename'];
-        $this->options = $params['options'] ?? [];
-        $this->currencyCode = $CI->mdl_settings->setting('currency_code');
-        $this->legacy_calculation = config_item('legacy_calculation');
+        $CI                                     = & get_instance();
+        $this->invoice                          = $params['invoice'];
+        $this->items                            = $params['items'];
+        $this->filename                         = $params['filename'];
+        $this->options                          = $params['options'] ?? [];
+        $this->currencyCode                     = $CI->mdl_settings->setting('currency_code');
+        $this->legacy_calculation               = config_item('legacy_calculation');
         $this->itemsSubtotalGroupedByTaxPercent = $this->itemsSubtotalGroupedByTaxPercent();
-        $this->notax = $this->itemsSubtotalGroupedByTaxPercent === [];
+        $this->notax                            = $this->itemsSubtotalGroupedByTaxPercent === [];
     }
 
     public function xml(): void
@@ -70,22 +70,22 @@ class Fatturapav12Xml
 
         // Imposta trasmittente (opzionale, altrimenti vengono presi i dati dal mittente)
         // Set sender (optional, otherwise data are taken from the sender)
-/*
-        $fatturapa->set_trasmittente([
-            'paese'  => "IT",
-            'codice' => "CODFSC12A34H567U", // https://forum.italia.it/t/dati-trasmittente-p-iva-o-cf/6883/14
-        ]);
-*/
+        /*
+                $fatturapa->set_trasmittente([
+                    'paese'  => "IT",
+                    'codice' => "CODFSC12A34H567U", // https://forum.italia.it/t/dati-trasmittente-p-iva-o-cf/6883/14
+                ]);
+        */
         // Imposta mittente (fornitore) / Sender (supplier Seller) tax
         $mittente = [
             // Dati azienda emittente fattura
-            'ragsoc'     => $this->invoice->user_company, // "La Mia Ditta Srl",
-            'indirizzo'  => $this->invoice->user_address_1 . ($this->invoice->user_address_2 ? PHP_EOL . $this->invoice->user_address_2 : ''), // "Via Italia 12",
-            'cap'        => $this->invoice->user_zip, // "00100",
-            'comune'     => $this->invoice->user_city, // "Roma",
-            'prov'       => $this->province($this->invoice->user_state),
-            'paese'      => $this->invoice->user_country, // "IT",
-            'piva'       => $this->nationalVatId($this->invoice->user_vat_id, $this->invoice->user_country),
+            'ragsoc'    => $this->invoice->user_company, // "La Mia Ditta Srl",
+            'indirizzo' => $this->invoice->user_address_1 . ($this->invoice->user_address_2 ? PHP_EOL . $this->invoice->user_address_2 : ''), // "Via Italia 12",
+            'cap'       => $this->invoice->user_zip, // "00100",
+            'comune'    => $this->invoice->user_city, // "Roma",
+            'prov'      => $this->province($this->invoice->user_state),
+            'paese'     => $this->invoice->user_country, // "IT",
+            'piva'      => $this->nationalVatId($this->invoice->user_vat_id, $this->invoice->user_country),
             // Regime fiscale - https://git.io/fhmMd (default: RF01 = ordinario)
             'regimefisc' => $this->options['regimefisc'] ?? 'RF01', // Todo: from Options (XMLconfigs)
         ];
@@ -98,13 +98,13 @@ class Fatturapav12Xml
         // Imposta destinatario (cliente) / Recipient (customer) tax
         $destinatario = [
             // Dati cliente destinatario fattura
-            'ragsoc'     => $this->invoice->client_company, // "Il Mio Cliente Spa",
-            'indirizzo'  => $this->invoice->client_address_1 . ($this->invoice->client_address_2 ? PHP_EOL . $this->invoice->client_address_2 : ''), // "Via Roma 24",
-            'cap'        => $this->invoice->client_zip, // "20121",
-            'comune'     => $this->invoice->client_city, // "Milano",
-            'prov'       => $this->province($this->invoice->client_state),
-            'paese'      => $this->invoice->client_country, // "IT",
-            'piva'       => $this->nationalVatId($this->invoice->client_vat_id, $this->invoice->client_country),
+            'ragsoc'    => $this->invoice->client_company, // "Il Mio Cliente Spa",
+            'indirizzo' => $this->invoice->client_address_1 . ($this->invoice->client_address_2 ? PHP_EOL . $this->invoice->client_address_2 : ''), // "Via Roma 24",
+            'cap'       => $this->invoice->client_zip, // "20121",
+            'comune'    => $this->invoice->client_city, // "Milano",
+            'prov'      => $this->province($this->invoice->client_state),
+            'paese'     => $this->invoice->client_country, // "IT",
+            'piva'      => $this->nationalVatId($this->invoice->client_vat_id, $this->invoice->client_country),
         ];
         $recipientId = trim((string) ($this->invoice->client_einvoice_identifier ?? ''));
         if (filter_var($recipientId, FILTER_VALIDATE_EMAIL)) {
@@ -125,29 +125,29 @@ class Fatturapav12Xml
             // Tipo documento / Document type - https://git.io/fhmMb (default = TD01 = fattura : Imposta TD04 se è una nota di credito)
             'tipodoc' => $tipoDocumento, // "TD01",
             // Valuta / Value (default = EUR)
-            'valuta'  => $this->currencyCode, // "EUR",
+            'valuta' => $this->currencyCode, // "EUR",
             // Data e numero fattura / Invoice date & number
-            'data'    => $this->invoice->invoice_date_created, // "2019-01-07",
-            'numero'  => $this->invoice->invoice_number, // "2019/01",
+            'data'   => $this->invoice->invoice_date_created, // "2019-01-07",
+            'numero' => $this->invoice->invoice_number, // "2019/01",
         ]);
 
         // Composizione righe dettaglio / Composition lines detail
         foreach ($this->items as $n => $item) {
             $riga = [
                 // Numero progressivo riga dettaglio / Progressive line number
-                'num'         => ++$n,
+                'num' => ++$n,
                 // Descrizione prodotto/servizio / Product/service description
                 'descrizione' => $item->item_name . ($item->item_description ? PHP_EOL . $item->item_description : ''), // "Realizzazione sito internet $n",
                 // Prezzo unitario del prodotto/servizio / Unit price
-                'prezzo'      => FatturaPA::dec(floatval(($item->item_subtotal - $item->item_discount) / $item->item_quantity)),
+                'prezzo' => FatturaPA::dec((float) (($item->item_subtotal - $item->item_discount) / $item->item_quantity)),
                 // Quantità / Qty
-                'qta'         => FatturaPA::dec(floatval($item->item_quantity)), // 1
+                'qta' => FatturaPA::dec((float) ($item->item_quantity)), // 1
                 // Prezzo totale (prezzo x qta) / Total price
-                'importo'     => FatturaPA::dec(floatval($item->item_subtotal - $item->item_discount)),
+                'importo' => FatturaPA::dec((float) ($item->item_subtotal - $item->item_discount)),
                 // % aliquota IVA / % VAT rate
-                'perciva'     => FatturaPA::dec(floatval($item->item_tax_rate_percent)), // 22
+                'perciva' => FatturaPA::dec((float) ($item->item_tax_rate_percent)), // 22
                 // (Natura IVA non indicata - https://goo.gl/93RW7v)
-                'natura'      => $item->item_tax_rate_percent ? 'I' : 'N2.2',
+                'natura' => $item->item_tax_rate_percent ? 'I' : 'N2.2',
             ];
             $fatturapa->add_riga($riga);
         }
@@ -166,21 +166,22 @@ class Fatturapav12Xml
         // todo: Improve by invoice->payments array? (Stripe/Paypal guest payment url?)
         // Imposta dati pagamento (opzionale) / Set payment data (optional)
         if ($this->invoice->invoice_balance != 0 && $this->invoice->user_iban) {
-            $fatturapa->set_pagamento([
+            $fatturapa->set_pagamento(
+                [
                     // Condizioni pagamento / Terms of payment - https://git.io/fhmD8 (default: TP02 = completo)
-                    'condizioni' => "TP02"
+                    'condizioni' => 'TP02',
                 ],
                 [ // Modalità (possibile più di una) https://git.io/fhmDu
                     [
-                        'modalita' => "MP05", // bonifico / Bank transfer
+                        'modalita' => 'MP05', // bonifico / Bank transfer
                         'totale'   => FatturaPA::dec($this->invoice->invoice_balance), // totale iva inclusa
                         'scadenza' => $this->invoice->invoice_date_due, // Due date
                         'iban'     => $this->noSpace($this->invoice->user_iban), // 'IT88A0123456789012345678901'
                     ],
                     //~ [
-                        //~ 'modalita' => "MP08", // carta di pagamento / payment card
-                        //~ 'totale'   => FatturaPA::dec($this->invoice->invoice_balance),
-                        //~ 'scadenza' => $this->invoice->invoice_date_due, // Due date
+                    //~ 'modalita' => "MP08", // carta di pagamento / payment card
+                    //~ 'totale'   => FatturaPA::dec($this->invoice->invoice_balance),
+                    //~ 'scadenza' => $this->invoice->invoice_date_due, // Due date
                     //~ ],
                 ]
             );
@@ -202,13 +203,13 @@ class Fatturapav12Xml
             $fatturapa->set_node('FatturaElettronicaHeader/CedentePrestatore/Contatti/Fax', $this->invoice->user_fax);
         }
 
-/*
-        Aggiunta libera di altri nodi nell'XML FatturaPA
-        È possibile impostare/aggiungere ulteriori nodi nell'XML, rispettando le specifiche del formato FatturaPA.
+        /*
+                Aggiunta libera di altri nodi nell'XML FatturaPA
+                È possibile impostare/aggiungere ulteriori nodi nell'XML, rispettando le specifiche del formato FatturaPA.
 
-        Free addition of further nodes in the InvoicePA XML
-        It is possible to set up/add additional nodes in the XML, respecting the specifications of the InvoicePA format.
-*/
+                Free addition of further nodes in the InvoicePA XML
+                It is possible to set up/add additional nodes in the XML, respecting the specifications of the InvoicePA format.
+        */
         // Aggiunta libera a un elenco (più nodi con lo stesso nome) / Free addition to a list (several nodes with the same name)
         // $fatturapa->add_node('FatturaElettronicaBody/DatiGenerali/DatiDDT', ['NumeroDDT' => '1', 'DataDDT' => '2019-01-07']);
         // $fatturapa->add_node('FatturaElettronicaBody/DatiGenerali/DatiDDT', ['NumeroDDT' => '2', 'DataDDT' => '2019-01-10']);
@@ -222,37 +223,17 @@ class Fatturapav12Xml
             fwrite($file, $xml);
             fclose($file);
         } else {
-            $doc = new DOMDocument();
+            $doc               = new DOMDocument();
             $doc->formatOutput = false; // One line
             $doc->loadXML($xml);        // Get
             $doc->save(UPLOADS_TEMP_FOLDER . $this->filename . '.xml');
         }
-
     }
 
     // Eliminare gli spazi
     public function noSpace($str): string
     {
         return strtr($str, [' ' => '']);
-    }
-
-    private function nationalVatId($vatId, $countryCode): string
-    {
-        $vatId       = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', (string) $vatId));
-        $countryCode = strtoupper((string) $countryCode);
-
-        if ($countryCode !== '' && str_starts_with($vatId, $countryCode)) {
-            return substr($vatId, strlen($countryCode));
-        }
-
-        return $vatId;
-    }
-
-    private function province($state): ?string
-    {
-        $state = strtoupper(trim((string) $state));
-
-        return preg_match('/^[A-Z]{2}$/', $state) === 1 ? $state : null;
     }
 
     /**
@@ -276,4 +257,22 @@ class Fatturapav12Xml
         return $result;
     }
 
+    private function nationalVatId($vatId, $countryCode): string
+    {
+        $vatId       = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', (string) $vatId));
+        $countryCode = strtoupper((string) $countryCode);
+
+        if ($countryCode !== '' && str_starts_with($vatId, $countryCode)) {
+            return substr($vatId, strlen($countryCode));
+        }
+
+        return $vatId;
+    }
+
+    private function province($state): ?string
+    {
+        $state = strtoupper(trim((string) $state));
+
+        return preg_match('/^[A-Z]{2}$/', $state) === 1 ? $state : null;
+    }
 }

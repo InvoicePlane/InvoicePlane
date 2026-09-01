@@ -9,26 +9,31 @@ use GuzzleHttp\Exception\ClientException;
 class PaymentCaptureService
 {
     private $CI;
+
     private $paypal_lib;
+
     private $invoices_model;
+
     private $payments_model;
+
     private $db;
 
     public function __construct()
     {
-        $this->CI = get_instance();
+        $this->CI         = get_instance();
         $this->paypal_lib = $this->CI->lib_paypal;
         $this->CI->load->model('invoices/mdl_invoices');
         $this->CI->load->model('payments/mdl_payments');
         $this->invoices_model = $this->CI->mdl_invoices;
         $this->payments_model = $this->CI->mdl_payments;
-        $this->db = $this->CI->db;
+        $this->db             = $this->CI->db;
     }
 
     /**
      * Process PayPal payment capture with comprehensive validation.
      *
      * @throws Exception on critical errors
+     *
      * @return void Sets session flashdata with outcome
      */
     public function capturePayment(string $order_id): void
@@ -40,7 +45,7 @@ class PaymentCaptureService
             return;
         }
 
-        $paypal_object = json_decode($response['response']->getBody());
+        $paypal_object  = json_decode($response['response']->getBody());
         $capture_status = PaypalResponseExtractor::extractCaptureStatus($paypal_object);
 
         if ($capture_status !== 'COMPLETED' && $capture_status !== 'PENDING') {
@@ -56,7 +61,7 @@ class PaymentCaptureService
         }
 
         $invoice_id = $capture_data->invoice_id ?? null;
-        $amount = $capture_data->amount->value ?? null;
+        $amount     = $capture_data->amount->value ?? null;
         $capture_id = $capture_data->id ?? null;
 
         if (empty($invoice_id) || empty($amount) || empty($capture_id)) {
@@ -166,7 +171,7 @@ class PaymentCaptureService
     private function validatePaymentAmountAndCurrency(object $invoice, object $capture_data, string $amount): bool
     {
         $expected_currency = mb_strtoupper((string) get_setting('gateway_paypal_currency'));
-        $capture_currency = mb_strtoupper((string) ($capture_data->amount->currency_code ?? ''));
+        $capture_currency  = mb_strtoupper((string) ($capture_data->amount->currency_code ?? ''));
 
         if ($capture_currency !== $expected_currency) {
             log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: currency mismatch for invoice ' . sanitize_for_logging($invoice->invoice_id) . '. Expected: ' . $expected_currency . ', received: ' . $capture_currency);
@@ -195,11 +200,11 @@ class PaymentCaptureService
         $payment_note = ($capture_status === 'PENDING') ? trans('online_payment_pending') : '';
 
         $this->payments_model->save(null, [
-            'invoice_id' => $invoice_id,
-            'payment_date' => date('Y-m-d'),
-            'payment_amount' => $amount,
-            'payment_method_id' => get_setting('gateway_paypal_payment_method'),
-            'payment_note' => $payment_note,
+            'invoice_id'          => $invoice_id,
+            'payment_date'        => date('Y-m-d'),
+            'payment_amount'      => $amount,
+            'payment_method_id'   => get_setting('gateway_paypal_payment_method'),
+            'payment_note'        => $payment_note,
             'payment_external_id' => $capture_id,
         ]);
     }
@@ -210,12 +215,12 @@ class PaymentCaptureService
     private function recordSuccessfulMerchantResponse(string $invoice_id, string $capture_status, string $resource_id): void
     {
         $this->db->insert('ip_merchant_responses', [
-            'invoice_id' => $invoice_id,
+            'invoice_id'                   => $invoice_id,
             'merchant_response_successful' => true,
-            'merchant_response_date' => date('Y-m-d'),
-            'merchant_response_driver' => 'paypal',
-            'merchant_response' => $capture_status,
-            'merchant_response_reference' => 'Resource ID:' . $resource_id,
+            'merchant_response_date'       => date('Y-m-d'),
+            'merchant_response_driver'     => 'paypal',
+            'merchant_response'            => $capture_status,
+            'merchant_response_reference'  => 'Resource ID:' . $resource_id,
         ]);
     }
 
@@ -235,12 +240,12 @@ class PaymentCaptureService
 
         if ($invoice_id) {
             $this->db->insert('ip_merchant_responses', [
-                'invoice_id' => $invoice_id,
+                'invoice_id'                   => $invoice_id,
                 'merchant_response_successful' => false,
-                'merchant_response_date' => date('Y-m-d'),
-                'merchant_response_driver' => 'paypal',
-                'merchant_response' => ($capture_status ?? 'UNKNOWN') . ': ' . $processor_response_code,
-                'merchant_response_reference' => 'Resource ID:' . $paypal_object->id,
+                'merchant_response_date'       => date('Y-m-d'),
+                'merchant_response_driver'     => 'paypal',
+                'merchant_response'            => ($capture_status ?? 'UNKNOWN') . ': ' . $processor_response_code,
+                'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
             ]);
         }
 
@@ -272,7 +277,7 @@ class PaymentCaptureService
     {
         if ($error instanceof ClientException) {
             $response_error = json_decode($error->getResponse()->getBody());
-            $error_summary = 'name: ' . ($response_error->name ?? 'unknown_error')
+            $error_summary  = 'name: ' . ($response_error->name ?? 'unknown_error')
                 . '; details: ' . ($response_error->details[0]->description ?? $error->getMessage());
         } else {
             $error_summary = 'name: invalid_order_id; details: ' . $error->getMessage();
@@ -282,12 +287,12 @@ class PaymentCaptureService
 
         if ($invoice_id) {
             $this->db->insert('ip_merchant_responses', [
-                'invoice_id' => $invoice_id,
+                'invoice_id'                   => $invoice_id,
                 'merchant_response_successful' => false,
-                'merchant_response_date' => date('Y-m-d'),
-                'merchant_response_driver' => 'paypal',
-                'merchant_response' => $error_summary,
-                'merchant_response_reference' => 'Resource ID:' . $order_id,
+                'merchant_response_date'       => date('Y-m-d'),
+                'merchant_response_driver'     => 'paypal',
+                'merchant_response'            => $error_summary,
+                'merchant_response_reference'  => 'Resource ID:' . $order_id,
             ]);
         } else {
             log_message('error', __CLASS__ . '::' . __FUNCTION__

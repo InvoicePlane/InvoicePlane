@@ -24,7 +24,7 @@ class SettingsRemoveLogoRegressionTest extends AbstractTestCase
     {
         /* Arrange - Seed an invoice logo setting */
         $this->databaseInsertOrIgnore('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => 'test_logo.png',
         ]);
 
@@ -44,7 +44,7 @@ class SettingsRemoveLogoRegressionTest extends AbstractTestCase
     {
         /* Arrange - Seed a login logo setting */
         $this->databaseInsertOrIgnore('ip_settings', [
-            'setting_key' => 'login_logo',
+            'setting_key'   => 'login_logo',
             'setting_value' => 'login_logo.png',
         ]);
 

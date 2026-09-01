@@ -316,7 +316,6 @@ class Facturxv10Xml extends BaseXml
         if ((empty($this->minimum) || $who == 'user') && $vatId !== '') {
             $node->appendChild($this->xmlSpecifiedTaxRegistration('VA', $vatId));
         }
-
     }
 
     /**

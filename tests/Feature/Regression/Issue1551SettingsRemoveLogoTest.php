@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * TDD Test Suite for #1551: Settings controller remove_logo() causes "cannot redecorate" error
+ * TDD Test Suite for #1551: Settings controller remove_logo() causes "cannot redecorate" error.
  *
  * Issue: In v1.7.2, accessing System Settings page fails with a "cannot redecorate" error.
  * This was caused by duplicate remove_logo() method definitions in Settings controller.
@@ -55,7 +55,7 @@ class Issue1551SettingsRemoveLogoTest extends AbstractTestCase
     {
         /* Arrange - Set an invoice logo */
         $this->databaseInsertOrIgnore('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => 'invoice-logo.png',
         ]);
 
@@ -75,7 +75,7 @@ class Issue1551SettingsRemoveLogoTest extends AbstractTestCase
     {
         /* Arrange - Set a login logo */
         $this->databaseInsertOrIgnore('ip_settings', [
-            'setting_key' => 'login_logo',
+            'setting_key'   => 'login_logo',
             'setting_value' => 'login-logo.png',
         ]);
 

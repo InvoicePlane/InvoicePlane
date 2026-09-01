@@ -26,15 +26,6 @@ class Issue1694CustomFieldsDeleteCsrfTest extends AbstractTestCase
         $this->enableCsrfProtection();
     }
 
-    private function seedCustomField(): int
-    {
-        return $this->databaseInsert('ip_custom_fields', [
-            'custom_field_table' => 'ip_client_custom',
-            'custom_field_label' => 'Issue 1694 Field ' . bin2hex(random_bytes(4)),
-            'custom_field_type'  => 'TEXT',
-        ]);
-    }
-
     #[Test]
     public function it_deletes_a_custom_field_with_a_valid_csrf_token(): void
     {
@@ -64,5 +55,14 @@ class Issue1694CustomFieldsDeleteCsrfTest extends AbstractTestCase
         /* Assert */
         self::assertGreaterThanOrEqual(400, $response->statusCode());
         $this->assertDatabaseHas('ip_custom_fields', ['custom_field_id' => $fieldId]);
+    }
+
+    private function seedCustomField(): int
+    {
+        return $this->databaseInsert('ip_custom_fields', [
+            'custom_field_table' => 'ip_client_custom',
+            'custom_field_label' => 'Issue 1694 Field ' . bin2hex(random_bytes(4)),
+            'custom_field_type'  => 'TEXT',
+        ]);
     }
 }

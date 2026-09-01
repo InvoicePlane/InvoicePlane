@@ -10,6 +10,7 @@ class PaypalResponseExtractor
      * Extract and validate capture data from PayPal response.
      *
      * @throws Exception on invalid response structure
+     *
      * @return object|null Capture data object or null if not found
      */
     public static function extractCaptureData(object $paypal_object): ?object
@@ -62,11 +63,11 @@ class PaypalResponseExtractor
      */
     public static function extractAmountAndCurrency(object $capture_data): array
     {
-        $amount = $capture_data->amount->value ?? null;
+        $amount   = $capture_data->amount->value ?? null;
         $currency = mb_strtoupper($capture_data->amount->currency_code ?? '');
 
         return [
-            'amount' => $amount,
+            'amount'   => $amount,
             'currency' => $currency,
         ];
     }

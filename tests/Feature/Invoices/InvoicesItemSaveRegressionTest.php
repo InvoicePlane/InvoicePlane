@@ -30,23 +30,23 @@ class InvoicesItemSaveRegressionTest extends AbstractTestCase
     {
         /* Arrange - Note: CSRF regeneration is disabled by default for safety;
            this test verifies basic invoice save functionality works. */
-        $clientId = $this->seedClient();
+        $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
 
         /* Act - Save invoice with one item */
         $savePayload = [
-            'invoice_id' => (string) $invoiceId,
-            'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due' => date('Y-m-d', strtotime('+30 days')),
-            'invoice_time_created' => date('H:i:s'),
-            'invoice_status_id' => '1',
+            'invoice_id'               => (string) $invoiceId,
+            'invoice_date_created'     => date('Y-m-d'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+            'invoice_time_created'     => date('H:i:s'),
+            'invoice_status_id'        => '1',
             'invoice_discount_percent' => '0',
-            'invoice_discount_amount' => '0',
-            'items' => json_encode([]),  // Test with empty items first
+            'invoice_discount_amount'  => '0',
+            'items'                    => json_encode([]),  // Test with empty items first
         ];
 
         $saveResponse = $this->ajax('POST', '/invoices/ajax/save', $savePayload);
-        $saveData = json_decode($saveResponse->body(), true);
+        $saveData     = json_decode($saveResponse->body(), true);
 
         /* Assert */
         $this->assertResponseStatusCode($saveResponse, 200);
@@ -61,35 +61,35 @@ class InvoicesItemSaveRegressionTest extends AbstractTestCase
         $clientId = $this->seedClient();
 
         $createPayload = [
-            'client_id' => (string) $clientId,
+            'client_id'            => (string) $clientId,
             'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due' => date('Y-m-d', strtotime('+30 days')),
+            'invoice_date_due'     => date('Y-m-d', strtotime('+30 days')),
             'invoice_time_created' => date('H:i:s'),
-            'invoice_group_id' => '1',
-            'user_id' => '1',
+            'invoice_group_id'     => '1',
+            'user_id'              => '1',
         ];
 
         /* Act - Create an invoice (first AJAX call) */
         $createResponse = $this->ajax('POST', '/invoices/ajax/create', $createPayload);
-        $invoiceData = json_decode($createResponse->body(), true);
-        $invoiceId = (int) $invoiceData['invoice_id'];
+        $invoiceData    = json_decode($createResponse->body(), true);
+        $invoiceId      = (int) $invoiceData['invoice_id'];
 
         /* Assert create succeeded */
         self::assertSame(1, $invoiceData['success'] ?? null, 'Create failed: ' . $createResponse->body());
 
         /* Act - Save invoice (second AJAX call - would fail if CSRF regeneration broke the token) */
         $savePayload = [
-            'invoice_id' => (string) $invoiceId,
-            'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due' => date('Y-m-d', strtotime('+30 days')),
-            'invoice_time_created' => date('H:i:s'),
-            'invoice_status_id' => '1',
+            'invoice_id'               => (string) $invoiceId,
+            'invoice_date_created'     => date('Y-m-d'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+            'invoice_time_created'     => date('H:i:s'),
+            'invoice_status_id'        => '1',
             'invoice_discount_percent' => '0',
-            'invoice_discount_amount' => '0',
-            'items' => json_encode([]),
+            'invoice_discount_amount'  => '0',
+            'items'                    => json_encode([]),
         ];
         $saveResponse = $this->ajax('POST', '/invoices/ajax/save', $savePayload);
-        $saveData = json_decode($saveResponse->body(), true);
+        $saveData     = json_decode($saveResponse->body(), true);
 
         /* Assert - This would fail with "CSRF validation failed" if the token became stale */
         self::assertSame(1, $saveData['success'] ?? null, 'Second AJAX call (save) failed: ' . $saveResponse->body());
@@ -98,9 +98,9 @@ class InvoicesItemSaveRegressionTest extends AbstractTestCase
     private function seedProduct($overrides = []): int
     {
         $product = array_merge([
-            'product_name' => 'Test Product',
+            'product_name'  => 'Test Product',
             'product_price' => 100.00,
-            'tax_rate_id' => null,
+            'tax_rate_id'   => null,
         ], $overrides);
 
         return $this->databaseInsert('ip_products', $product);

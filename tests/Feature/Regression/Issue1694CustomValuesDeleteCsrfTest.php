@@ -25,14 +25,6 @@ class Issue1694CustomValuesDeleteCsrfTest extends AbstractTestCase
         $this->enableCsrfProtection();
     }
 
-    private function seedCustomValue(): int
-    {
-        return $this->databaseInsert('ip_custom_values', [
-            'custom_values_field' => 999999,
-            'custom_values_value' => 'Issue 1694 Value',
-        ]);
-    }
-
     #[Test]
     public function it_deletes_a_custom_value_with_a_valid_csrf_token(): void
     {
@@ -62,5 +54,13 @@ class Issue1694CustomValuesDeleteCsrfTest extends AbstractTestCase
         /* Assert */
         self::assertGreaterThanOrEqual(400, $response->statusCode());
         $this->assertDatabaseHas('ip_custom_values', ['custom_values_id' => $valueId]);
+    }
+
+    private function seedCustomValue(): int
+    {
+        return $this->databaseInsert('ip_custom_values', [
+            'custom_values_field' => 999999,
+            'custom_values_value' => 'Issue 1694 Value',
+        ]);
     }
 }

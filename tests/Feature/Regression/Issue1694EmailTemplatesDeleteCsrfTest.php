@@ -22,15 +22,6 @@ class Issue1694EmailTemplatesDeleteCsrfTest extends AbstractTestCase
         $this->enableCsrfProtection();
     }
 
-    private function seedEmailTemplate(): int
-    {
-        return $this->databaseInsert('ip_email_templates', [
-            'email_template_title' => 'Issue 1694 Template ' . bin2hex(random_bytes(3)),
-            'email_template_type'  => 'invoice',
-            'email_template_body'  => 'Body',
-        ]);
-    }
-
     #[Test]
     public function it_deletes_an_email_template_with_a_valid_csrf_token(): void
     {
@@ -60,5 +51,14 @@ class Issue1694EmailTemplatesDeleteCsrfTest extends AbstractTestCase
         /* Assert */
         self::assertGreaterThanOrEqual(400, $response->statusCode());
         $this->assertDatabaseHas('ip_email_templates', ['email_template_id' => $templateId]);
+    }
+
+    private function seedEmailTemplate(): int
+    {
+        return $this->databaseInsert('ip_email_templates', [
+            'email_template_title' => 'Issue 1694 Template ' . bin2hex(random_bytes(3)),
+            'email_template_type'  => 'invoice',
+            'email_template_body'  => 'Body',
+        ]);
     }
 }

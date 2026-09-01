@@ -242,10 +242,10 @@ class Merchant_responses_model extends CI_Model
             ?? $status->value;
 
         $this->db->insert(self::TABLE, [
-            'invoice_id'               => null,
-            'merchant_response_date'   => date('Y-m-d'),
-            'merchant_response_driver' => $driver->value,
-            'merchant_response'        => IntegrationPayloadSanitizer::text($message),
+            'invoice_id'                   => null,
+            'merchant_response_date'       => date('Y-m-d'),
+            'merchant_response_driver'     => $driver->value,
+            'merchant_response'            => IntegrationPayloadSanitizer::text($message),
             'merchant_response_reference'  => $event['invoice_id'] ?? $event['external_id'] ?? $event['id'] ?? null,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,

@@ -21,9 +21,8 @@ use josemmo\Facturae\Facturae;
 use josemmo\Facturae\FacturaeParty;
 
 /**
- * Class Facturaev32Xml
+ * Class Facturaev32Xml.
  */
-
 class Facturaev32Xml extends stdClass
 {
     public $invoice;
@@ -122,15 +121,15 @@ class Facturaev32Xml extends stdClass
         // All that remains is to sign the invoice ...
         // Il ne reste plus qu'à signer la facture ...
         // Todo?
-/*
-        $fac->sign(
-          'ruta/hacia/banco-de-certificados.p12',
-          null,
-          'passphrase'
-        );
-*/
+        /*
+                $fac->sign(
+                  'ruta/hacia/banco-de-certificados.p12',
+                  null,
+                  'passphrase'
+                );
+        */
         if (IP_DEBUG) {
-            $doc = new DOMDocument();
+            $doc               = new DOMDocument();
             $doc->formatOutput = true;     // Human readable
             $doc->loadXML($fac->export()); // Get
             $doc->save(UPLOADS_TEMP_FOLDER . $this->filename . '.xml');
@@ -141,6 +140,6 @@ class Facturaev32Xml extends stdClass
 
     public function formattedFloat($amount, $nb_decimals = 2): string
     {
-        return number_format(floatval($amount), $nb_decimals, '.', '');
+        return number_format((float) $amount, $nb_decimals, '.', '');
     }
 }

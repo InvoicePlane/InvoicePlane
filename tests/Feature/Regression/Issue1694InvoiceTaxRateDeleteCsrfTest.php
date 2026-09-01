@@ -26,22 +26,6 @@ class Issue1694InvoiceTaxRateDeleteCsrfTest extends AbstractTestCase
         $this->enableCsrfProtection();
     }
 
-    /**
-     * @return array{0: int, 1: int} [invoiceId, invoiceTaxRateId]
-     */
-    private function seedInvoiceTaxRate(): array
-    {
-        $invoiceId        = $this->seedInvoice($this->seedClient());
-        $invoiceTaxRateId = $this->databaseInsert('ip_invoice_tax_rates', [
-            'invoice_id'              => $invoiceId,
-            'tax_rate_id'             => 1,
-            'include_item_tax'        => 0,
-            'invoice_tax_rate_amount' => '0.00',
-        ]);
-
-        return [$invoiceId, $invoiceTaxRateId];
-    }
-
     #[Test]
     public function it_deletes_an_invoice_tax_rate_with_a_valid_csrf_token(): void
     {
@@ -75,5 +59,21 @@ class Issue1694InvoiceTaxRateDeleteCsrfTest extends AbstractTestCase
         /* Assert */
         self::assertGreaterThanOrEqual(400, $response->statusCode());
         $this->assertDatabaseHas('ip_invoice_tax_rates', ['invoice_tax_rate_id' => $invoiceTaxRateId]);
+    }
+
+    /**
+     * @return array{0: int, 1: int} [invoiceId, invoiceTaxRateId]
+     */
+    private function seedInvoiceTaxRate(): array
+    {
+        $invoiceId        = $this->seedInvoice($this->seedClient());
+        $invoiceTaxRateId = $this->databaseInsert('ip_invoice_tax_rates', [
+            'invoice_id'              => $invoiceId,
+            'tax_rate_id'             => 1,
+            'include_item_tax'        => 0,
+            'invoice_tax_rate_amount' => '0.00',
+        ]);
+
+        return [$invoiceId, $invoiceTaxRateId];
     }
 }

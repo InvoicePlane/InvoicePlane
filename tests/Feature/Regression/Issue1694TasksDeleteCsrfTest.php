@@ -22,13 +22,6 @@ class Issue1694TasksDeleteCsrfTest extends AbstractTestCase
         $this->enableCsrfProtection();
     }
 
-    private function seedTask(): int
-    {
-        $projectId = (int) $this->seedModel('Project', ['client_id' => $this->seedClient()])->project_id;
-
-        return (int) $this->seedModel('Task', ['project_id' => $projectId])->task_id;
-    }
-
     #[Test]
     public function it_deletes_a_task_with_a_valid_csrf_token(): void
     {
@@ -58,5 +51,12 @@ class Issue1694TasksDeleteCsrfTest extends AbstractTestCase
         /* Assert */
         self::assertGreaterThanOrEqual(400, $response->statusCode());
         $this->assertDatabaseHas('ip_tasks', ['task_id' => $taskId]);
+    }
+
+    private function seedTask(): int
+    {
+        $projectId = (int) $this->seedModel('Project', ['client_id' => $this->seedClient()])->project_id;
+
+        return (int) $this->seedModel('Task', ['project_id' => $projectId])->task_id;
     }
 }

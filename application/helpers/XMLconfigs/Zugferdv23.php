@@ -1,4 +1,5 @@
 <?php
+
 defined('BASEPATH') || exit('No direct script access allowed');
 $xml_setting = [
     'full-name'   => 'ZUGFeRD v2.3 - EN 16931',

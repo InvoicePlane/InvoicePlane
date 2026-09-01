@@ -1,4 +1,5 @@
 <?php
+
 defined('BASEPATH') || exit('No direct script access allowed');
 /*
  * CIUS-RO UBL Invoice 1.0.9 : https://ecosio.com/en/peppol-and-xml-document-validator/
@@ -17,14 +18,14 @@ $xml_setting = [
     'XMLname'     => '', // Must be empty when not embedded in PDF
     'generator'   => 'Ublv24', // Use the libraries/XMLtemplates/Ublv24Xml.php
     // Options in Ublv24 generator
-    'options'     => [
+    'options' => [
         // RO-CIUS-ID [old](https://i0.1616.ro/media/2/2621/33243/20445047/2/anexaro-cius-converted.pdf)
-        'CustomizationID'     => 'urn:cen.eu:en16931:2017#compliant#urn:efactura.mfinante.ro:CIUS-RO:1.0.1',
-        'BuyerReference'      => true,
+        'CustomizationID' => 'urn:cen.eu:en16931:2017#compliant#urn:efactura.mfinante.ro:CIUS-RO:1.0.1',
+        'BuyerReference'  => true,
         // /ubl:Invoice[1]/cac:AccountingCustomerParty[1]/cac:Party[1]/cbc:EndpointID[1] schemeID="`client_eas_code`"
-        'client_eas_code'     => '9947', // *EAS code for EndpointID > schemeID : Adjust with what you need
+        'client_eas_code' => '9947', // *EAS code for EndpointID > schemeID : Adjust with what you need
         // /ubl:Invoice[1]/cac:AccountingSupplierParty[1]/cac:Party[1]/cbc:EndpointID[1] schemeID="`user_eas_code`"
-        'user_eas_code'       => '9947', // *EAS code for EndpointID > schemeID : Adjust with what you need
+        'user_eas_code' => '9947', // *EAS code for EndpointID > schemeID : Adjust with what you need
         // Adjust with what you need (vat_id or tax_code) : Note same for user & client
         'EndpointID'          => 'vat_id',
         'PartyIdentification' => false, // or '' or 0 or null

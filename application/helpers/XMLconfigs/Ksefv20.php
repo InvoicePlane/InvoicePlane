@@ -1,4 +1,5 @@
 <?php
+
 defined('BASEPATH') || exit('No direct script access allowed');
 /*
  * KSeF 2.0 — FA(3) logical structure

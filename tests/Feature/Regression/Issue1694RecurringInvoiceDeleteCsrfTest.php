@@ -23,18 +23,6 @@ class Issue1694RecurringInvoiceDeleteCsrfTest extends AbstractTestCase
         $this->enableCsrfProtection();
     }
 
-    private function seedRecurringInvoice(): int
-    {
-        $invoiceId = $this->seedInvoice($this->seedClient());
-
-        return $this->databaseInsert('ip_invoices_recurring', [
-            'invoice_id'       => $invoiceId,
-            'recur_start_date' => date('Y-m-d'),
-            'recur_next_date'  => date('Y-m-d'),
-            'recur_frequency'  => '3',
-        ]);
-    }
-
     #[Test]
     public function it_deletes_a_recurring_invoice_with_a_valid_csrf_token(): void
     {
@@ -64,5 +52,17 @@ class Issue1694RecurringInvoiceDeleteCsrfTest extends AbstractTestCase
         /* Assert */
         self::assertGreaterThanOrEqual(400, $response->statusCode());
         $this->assertDatabaseHas('ip_invoices_recurring', ['invoice_recurring_id' => $recurringId]);
+    }
+
+    private function seedRecurringInvoice(): int
+    {
+        $invoiceId = $this->seedInvoice($this->seedClient());
+
+        return $this->databaseInsert('ip_invoices_recurring', [
+            'invoice_id'       => $invoiceId,
+            'recur_start_date' => date('Y-m-d'),
+            'recur_next_date'  => date('Y-m-d'),
+            'recur_frequency'  => '3',
+        ]);
     }
 }

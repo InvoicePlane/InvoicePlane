@@ -247,7 +247,7 @@ class Integrations extends Admin_Controller
             return;
         }
 
-        $reference = (string) ($lastResponse['merchant_response_reference'] ?? '');
+        $reference        = (string) ($lastResponse['merchant_response_reference'] ?? '');
         $isLocalReference = str_starts_with($reference, 'invoice-');
         if ((int) ($lastResponse['merchant_response_successful'] ?? 0) !== 1) {
             $message = (string) ($lastResponse['merchant_response'] ?? trans('einvoice_send_failed'));

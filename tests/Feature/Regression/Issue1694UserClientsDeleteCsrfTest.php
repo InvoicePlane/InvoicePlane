@@ -25,17 +25,6 @@ class Issue1694UserClientsDeleteCsrfTest extends AbstractTestCase
         $this->enableCsrfProtection();
     }
 
-    private function seedUserClient(): int
-    {
-        $userId   = (int) $this->seedModel('User')->user_id;
-        $clientId = $this->seedClient();
-
-        return (int) $this->seedModel('UserClient', [
-            'user_id'   => $userId,
-            'client_id' => $clientId,
-        ])->user_client_id;
-    }
-
     #[Test]
     public function it_deletes_a_user_client_link_with_a_valid_csrf_token(): void
     {
@@ -65,5 +54,16 @@ class Issue1694UserClientsDeleteCsrfTest extends AbstractTestCase
         /* Assert */
         self::assertGreaterThanOrEqual(400, $response->statusCode());
         $this->assertDatabaseHas('ip_user_clients', ['user_client_id' => $userClientId]);
+    }
+
+    private function seedUserClient(): int
+    {
+        $userId   = (int) $this->seedModel('User')->user_id;
+        $clientId = $this->seedClient();
+
+        return (int) $this->seedModel('UserClient', [
+            'user_id'   => $userId,
+            'client_id' => $clientId,
+        ])->user_client_id;
     }
 }

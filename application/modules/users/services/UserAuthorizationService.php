@@ -5,7 +5,7 @@ if ( ! defined('BASEPATH')) {
 }
 
 /**
- * UserAuthorizationService
+ * UserAuthorizationService.
  *
  * Handles authorization logic for user management operations.
  * Pure business logic — no CI3 dependencies, no session access, no database.
@@ -28,7 +28,7 @@ class UserAuthorizationService
     public function can_edit_user(int $acting_user_id, int $target_user_id): bool
     {
         $is_primary_admin = $acting_user_id === 1;
-        $is_self_edit = $acting_user_id === $target_user_id;
+        $is_self_edit     = $acting_user_id === $target_user_id;
 
         // Primary admin can edit anyone; anyone can edit themselves
         return $is_primary_admin || $is_self_edit;

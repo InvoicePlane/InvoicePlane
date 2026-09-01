@@ -2,9 +2,6 @@
 
 namespace Tests\Feature\Payments;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
 use Tests\AbstractTestCase;
 
 class PaymentCaptureServiceTest extends AbstractTestCase
@@ -17,14 +14,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-1',
+                'id'             => 'ORDER-1',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-123',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-123',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '100.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -48,14 +45,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-2',
+                'id'             => 'ORDER-2',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-456',
-                            'status' => 'PENDING',
+                            'id'         => 'CAP-456',
+                            'status'     => 'PENDING',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '50.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '50.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -79,14 +76,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response1 = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-3',
+                'id'             => 'ORDER-3',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-DUP',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-DUP',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '75.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '75.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -103,14 +100,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response2 = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-3-RETRY',
+                'id'             => 'ORDER-3-RETRY',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-DUP',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-DUP',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '75.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '75.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -132,14 +129,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-4',
+                'id'             => 'ORDER-4',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-CURR',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-CURR',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '100.00', 'currency_code' => 'EUR'],
+                            'amount'     => ['value' => '100.00', 'currency_code' => 'EUR'],
                         ]],
                     ],
                 ]],
@@ -161,14 +158,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-5',
+                'id'             => 'ORDER-5',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-AMOUNT',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-AMOUNT',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '50.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '50.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -190,14 +187,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-6',
+                'id'             => 'ORDER-6',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-TOL',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-TOL',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '100.00005', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '100.00005', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -219,14 +216,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-7',
+                'id'             => 'ORDER-7',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-PAID',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-PAID',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '100.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -246,14 +243,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-8',
+                'id'             => 'ORDER-8',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-NOTFOUND',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-NOTFOUND',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => 99999,
-                            'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '100.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -275,14 +272,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-9',
+                'id'             => 'ORDER-9',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-DECLINED',
-                            'status' => 'DECLINED',
-                            'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                            'id'                 => 'CAP-DECLINED',
+                            'status'             => 'DECLINED',
+                            'invoice_id'         => $invoice->invoice_id,
+                            'amount'             => ['value' => '100.00', 'currency_code' => 'USD'],
                             'processor_response' => ['response_code' => '1111'],
                         ]],
                     ],
@@ -329,7 +326,7 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-11',
+                'id'             => 'ORDER-11',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
@@ -358,14 +355,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-12',
+                'id'             => 'ORDER-12',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => $long_capture_id,
-                            'status' => 'COMPLETED',
+                            'id'         => $long_capture_id,
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '100.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -387,14 +384,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-RESP',
+                'id'             => 'ORDER-RESP',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-RESP',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-RESP',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '100.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -422,14 +419,14 @@ class PaymentCaptureServiceTest extends AbstractTestCase
         $paypal_response = [
             ['status' => 200, 'body' => json_encode(['access_token' => 'token123'])],
             ['status' => 200, 'body' => json_encode([
-                'id' => 'ORDER-WITH-HYPHENS',
+                'id'             => 'ORDER-WITH-HYPHENS',
                 'purchase_units' => [[
                     'payments' => [
                         'captures' => [[
-                            'id' => 'CAP-HYPHEN',
-                            'status' => 'COMPLETED',
+                            'id'         => 'CAP-HYPHEN',
+                            'status'     => 'COMPLETED',
                             'invoice_id' => $invoice->invoice_id,
-                            'amount' => ['value' => '100.00', 'currency_code' => 'USD'],
+                            'amount'     => ['value' => '100.00', 'currency_code' => 'USD'],
                         ]],
                     ],
                 ]],
@@ -446,19 +443,19 @@ class PaymentCaptureServiceTest extends AbstractTestCase
     private function seedPayableInvoice(float $invoice_balance = 100.00)
     {
         $client_id = $this->db->insert('ip_clients', [
-            'client_name' => 'Test Client',
+            'client_name'   => 'Test Client',
             'client_active' => 1,
         ]) ? $this->db->insert_id() : null;
 
         $invoice_id = $this->db->insert('ip_invoices', [
-            'client_id' => $client_id,
-            'invoice_number' => 'INV-' . uniqid(),
-            'invoice_date' => date('Y-m-d'),
-            'invoice_due_date' => date('Y-m-d', strtotime('+30 days')),
-            'invoice_balance' => $invoice_balance,
+            'client_id'         => $client_id,
+            'invoice_number'    => 'INV-' . uniqid(),
+            'invoice_date'      => date('Y-m-d'),
+            'invoice_due_date'  => date('Y-m-d', strtotime('+30 days')),
+            'invoice_balance'   => $invoice_balance,
             'invoice_status_id' => 1,
-            'invoice_url_key' => hash('sha256', uniqid()),
-            'invoice_active' => 1,
+            'invoice_url_key'   => hash('sha256', uniqid()),
+            'invoice_active'    => 1,
         ]) ? $this->db->insert_id() : null;
 
         return $this->db->where('invoice_id', $invoice_id)->get('ip_invoices')->row();

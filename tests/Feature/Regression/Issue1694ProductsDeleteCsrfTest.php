@@ -24,19 +24,6 @@ class Issue1694ProductsDeleteCsrfTest extends AbstractTestCase
         $this->enableCsrfProtection();
     }
 
-    private function seedProduct(): int
-    {
-        return $this->databaseInsert('ip_products', [
-            'family_id'           => 0,
-            'product_sku'         => 'sku-' . random_int(1000, 9999),
-            'product_name'        => 'Issue 1694 Product',
-            'product_description' => '',
-            'product_price'       => 0,
-            'purchase_price'      => 0,
-            'tax_rate_id'         => 0,
-        ]);
-    }
-
     #[Test]
     public function it_deletes_a_product_with_a_valid_csrf_token(): void
     {
@@ -66,5 +53,18 @@ class Issue1694ProductsDeleteCsrfTest extends AbstractTestCase
         /* Assert */
         self::assertGreaterThanOrEqual(400, $response->statusCode());
         $this->assertDatabaseHas('ip_products', ['product_id' => $productId]);
+    }
+
+    private function seedProduct(): int
+    {
+        return $this->databaseInsert('ip_products', [
+            'family_id'           => 0,
+            'product_sku'         => 'sku-' . random_int(1000, 9999),
+            'product_name'        => 'Issue 1694 Product',
+            'product_description' => '',
+            'product_price'       => 0,
+            'purchase_price'      => 0,
+            'tax_rate_id'         => 0,
+        ]);
     }
 }

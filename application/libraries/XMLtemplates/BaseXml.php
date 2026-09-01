@@ -17,7 +17,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  */
 
 /**
- * Class BaseXml
+ * Class BaseXml.
  */
 class BaseXml extends stdClass
 {
@@ -40,7 +40,7 @@ class BaseXml extends stdClass
 
     public $options = [];
 
-     // CustomizationID, Endpoint, ...
+    // CustomizationID, Endpoint, ...
     public $item_decimals = 2;
 
     public $decimal_places = 2;
@@ -67,9 +67,9 @@ class BaseXml extends stdClass
 
     public function xml()
     {
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc                     = new DOMDocument('1.0', 'UTF-8');
         $this->doc->preserveWhiteSpace = false;
-        $this->doc->formatOutput = IP_DEBUG;
+        $this->doc->formatOutput       = IP_DEBUG;
     }
 
     /*
@@ -85,7 +85,7 @@ class BaseXml extends stdClass
     {
         $item_discount = 0.0;
         $item_subtotal = 0.0;
-        $discount = 0.0;
+        $discount      = 0.0;
         foreach ($this->items as $item) {
             $item_discount += $item->item_discount;
             $item_subtotal += $item->item_subtotal;
@@ -111,7 +111,7 @@ class BaseXml extends stdClass
                 continue;
             }
 
-            if (! isset($result[$item->item_tax_rate_percent])) {
+            if ( ! isset($result[$item->item_tax_rate_percent])) {
                 $result[$item->item_tax_rate_percent] = [0, 0];
             }
 
@@ -135,6 +135,7 @@ class BaseXml extends stdClass
     {
         if ($date) {
             $date = DateTime::createFromFormat('Y-m-d', $date);
+
             return $date->format($format);
         }
 

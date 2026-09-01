@@ -142,7 +142,7 @@ function invoice_qrcode($invoice_id, $width = 64): string
             // the cached QrCode instance would reuse the first invoice's data for all subsequent invoices.
             // Direct instantiation ensures each invoice gets its own QrCode instance with correct data.
             require_once APPPATH . 'libraries/QrCode.php';
-            $qrcode = new QrCode(['invoice' => $invoice]);
+            $qrcode          = new QrCode(['invoice' => $invoice]);
             $qrcode_data_uri = $qrcode->generate();
 
             $numeric_width = (int) $width;

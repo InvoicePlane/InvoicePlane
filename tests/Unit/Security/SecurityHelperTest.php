@@ -82,7 +82,7 @@ class SecurityHelperTest extends TestCase
     #[Test]
     public function it_trusts_the_framework_check_on_a_post_whose_token_was_already_consumed(): void
     {
-        /**
+        /*
          * Regression for #1694: CodeIgniter's Security::csrf_verify() validates
          * every POST during bootstrap and then unsets $_POST[csrf_token_name].
          * verify_csrf_token() must not re-reject that already-verified request.
@@ -90,7 +90,7 @@ class SecurityHelperTest extends TestCase
 
         /* Arrange */
         $this->setRequest([], [], [], withSecurity: true);
-        $originalMethod             = $_SERVER['REQUEST_METHOD'] ?? null;
+        $originalMethod            = $_SERVER['REQUEST_METHOD'] ?? null;
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         try {

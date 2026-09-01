@@ -53,7 +53,7 @@ class Users extends Admin_Controller
             redirect('users');
         }
 
-        $id = $id ? (int) $id : null;
+        $id              = $id ? (int) $id : null;
         $current_user_id = (int) $this->session->userdata('user_id');
 
         $this->load->file(dirname(__DIR__) . '/services/UserAuthorizationService.php');
@@ -67,8 +67,8 @@ class Users extends Admin_Controller
 
         $is_self_edit = $id && $id === $current_user_id;
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
-            $db_array      = $this->mdl_users->db_array();
-            $requested_type = (int) $this->input->post('user_type');
+            $db_array            = $this->mdl_users->db_array();
+            $requested_type      = (int) $this->input->post('user_type');
             $current_user_id_str = (string) $current_user_id;
 
             // Only allow user_type changes through explicit authorization:

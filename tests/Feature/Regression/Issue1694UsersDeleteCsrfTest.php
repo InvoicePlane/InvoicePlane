@@ -25,14 +25,6 @@ class Issue1694UsersDeleteCsrfTest extends AbstractTestCase
         $this->enableCsrfProtection();
     }
 
-    private function seedSecondaryUser(): int
-    {
-        $userId = (int) $this->seedModel('User')->user_id;
-        self::assertGreaterThan(1, $userId, 'Seeded user must not be the primary admin (id 1).');
-
-        return $userId;
-    }
-
     #[Test]
     public function it_deletes_a_user_with_a_valid_csrf_token(): void
     {
@@ -62,5 +54,13 @@ class Issue1694UsersDeleteCsrfTest extends AbstractTestCase
         /* Assert */
         self::assertGreaterThanOrEqual(400, $response->statusCode());
         $this->assertDatabaseHas('ip_users', ['user_id' => $userId]);
+    }
+
+    private function seedSecondaryUser(): int
+    {
+        $userId = (int) $this->seedModel('User')->user_id;
+        self::assertGreaterThan(1, $userId, 'Seeded user must not be the primary admin (id 1).');
+
+        return $userId;
     }
 }

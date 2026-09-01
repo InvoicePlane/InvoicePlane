@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Libraries\Gateways;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
@@ -12,12 +13,13 @@ use PHPUnit\Framework\TestCase;
 class PaypalRequestExecutorTest extends TestCase
 {
     private PaypalRequestExecutor $executor;
+
     private \PHPUnit\Framework\MockObject\MockObject $client_mock;
 
     protected function setUp(): void
     {
         $this->client_mock = $this->createMock(Client::class);
-        $this->executor = new PaypalRequestExecutor($this->client_mock);
+        $this->executor    = new PaypalRequestExecutor($this->client_mock);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -36,8 +38,8 @@ class PaypalRequestExecutorTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_handles_client_exception_and_returns_error(): void
     {
-        $request = new Request('POST', 'https://api-m.paypal.com/v1/oauth2/token');
-        $response = new Response(401, [], '{"error":"unauthorized"}');
+        $request   = new Request('POST', 'https://api-m.paypal.com/v1/oauth2/token');
+        $response  = new Response(401, [], '{"error":"unauthorized"}');
         $exception = new ClientException('Unauthorized', $request, $response);
 
         $callback = fn () => throw $exception;
@@ -64,11 +66,11 @@ class PaypalRequestExecutorTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_catches_throwable_exceptions(): void
     {
-        $exception = new \Exception('Unknown error');
+        $exception = new Exception('Unknown error');
 
         $callback = fn () => throw $exception;
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->executor->execute($callback, 'test action');
     }
 

@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * TDD Test Suite for #1497: SMTP sender regression
+ * TDD Test Suite for #1497: SMTP sender regression.
  *
  * Issue: When sending emails, the system uses the logged-in user's email
  * instead of the configured SMTP from address (settings.smtp_mail_from).
@@ -27,7 +27,7 @@ class Issue1497SmtpSenderTest extends AbstractTestCase
 
         // Configure email method so mailer is available
         $this->databaseInsertOrIgnore('ip_settings', [
-            'setting_key' => 'email_send_method',
+            'setting_key'   => 'email_send_method',
             'setting_value' => 'phpmail',
         ]);
     }
@@ -37,11 +37,11 @@ class Issue1497SmtpSenderTest extends AbstractTestCase
     {
         /* Arrange - Set smtp_mail_from in settings */
         $this->databaseInsertOrIgnore('ip_settings', [
-            'setting_key' => 'smtp_mail_from',
+            'setting_key'   => 'smtp_mail_from',
             'setting_value' => 'noreply@company.com',
         ]);
 
-        $clientId = $this->seedClient();
+        $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
 
         /* Act - Access the mailer form for this invoice */
@@ -69,7 +69,7 @@ class Issue1497SmtpSenderTest extends AbstractTestCase
         /* Arrange - Ensure smtp_mail_from is NOT set */
         $this->databaseDelete('ip_settings', ['setting_key' => 'smtp_mail_from']);
 
-        $clientId = $this->seedClient();
+        $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
 
         /* Act - Access the mailer form for this invoice */

@@ -2,46 +2,51 @@
 
 namespace Tests\Unit\Libraries\Services;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
 use PaymentCaptureService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use stdClass;
 
 class PaymentCaptureServiceTest extends TestCase
 {
     private PaymentCaptureService $service;
+
     private \PHPUnit\Framework\MockObject\MockObject $CI;
+
     private \PHPUnit\Framework\MockObject\MockObject $paypal_lib;
+
     private \PHPUnit\Framework\MockObject\MockObject $invoices_model;
+
     private \PHPUnit\Framework\MockObject\MockObject $payments_model;
+
     private \PHPUnit\Framework\MockObject\MockObject $db;
+
     private \PHPUnit\Framework\MockObject\MockObject $session;
 
     protected function setUp(): void
     {
         // Mock CodeIgniter instance and dependencies
-        $this->CI = $this->createMock(\stdClass::class);
-        $this->paypal_lib = $this->createMock(\stdClass::class);
-        $this->invoices_model = $this->createMock(\stdClass::class);
-        $this->payments_model = $this->createMock(\stdClass::class);
-        $this->db = $this->createMock(\stdClass::class);
-        $this->session = $this->createMock(\stdClass::class);
+        $this->CI             = $this->createMock(stdClass::class);
+        $this->paypal_lib     = $this->createMock(stdClass::class);
+        $this->invoices_model = $this->createMock(stdClass::class);
+        $this->payments_model = $this->createMock(stdClass::class);
+        $this->db             = $this->createMock(stdClass::class);
+        $this->session        = $this->createMock(stdClass::class);
 
         // Set up CI instance with mocks
-        $this->CI->lib_paypal = $this->paypal_lib;
+        $this->CI->lib_paypal   = $this->paypal_lib;
         $this->CI->mdl_invoices = $this->invoices_model;
         $this->CI->mdl_payments = $this->payments_model;
-        $this->CI->db = $this->db;
-        $this->CI->session = $this->session;
+        $this->CI->db           = $this->db;
+        $this->CI->session      = $this->session;
 
         // Mock load method
-        $this->CI->load = $this->createMock(\stdClass::class);
+        $this->CI->load = $this->createMock(stdClass::class);
 
         // Mock the get_instance function by using reflection
-        $reflection = new \ReflectionClass('PaymentCaptureService');
-        $method = $reflection->getMethod('__construct');
+        $reflection = new ReflectionClass('PaymentCaptureService');
+        $method     = $reflection->getMethod('__construct');
 
         // We need a different approach - let's create the service with proper mocking
         // For now, we'll skip complex CI integration tests and focus on unit logic

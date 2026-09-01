@@ -1,4 +1,5 @@
 <?php
+
 defined('BASEPATH') || exit('No direct script access allowed');
 /*
  * This File is just for learn, experiment and test purpose. Because you need an external (API) service to send
@@ -31,26 +32,26 @@ $xml_setting = [
         // XRechnung-CII-validation
         'BusinessProcessSpecifiedDocumentContextParameterID' => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
         'GuidelineSpecifiedDocumentContextParameterID'       => 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
-        'CII'             => true,
+        'CII'                                                => true,
         // [BR-CL-11]-Any registration identifier identification scheme identifier MUST be coded using one of the ISO 6523 ICD list
         // * EAS code for (seller|buyer)TradeParty > schemeID (Electronic Address Scheme) : https://github.com/ConnectingEurope/eInvoicing-EN16931/blob/master/codelist/iso6523/ICD-list.pdf
         // /rsm:CrossIndustryInvoice[1]/rsm:SupplyChainTradeTransaction[1]/ram:ApplicableHeaderTradeAgreement[1]/ram:BuyerTradeParty[1]/ram:SpecifiedLegalOrganization[1]/ram:ID[1] schemeID="`client_eas_code`"
         'client_eas_code' => '0204', // EAS code for client_tax_code schemeID
         // /rsm:CrossIndustryInvoice[1]/rsm:SupplyChainTradeTransaction[1]/ram:ApplicableHeaderTradeAgreement[1]/ram:SellerTradeParty[1]/ram:SpecifiedLegalOrganization[1]/ram:ID[1] schemeID="`user_eas_code`"
-        'user_eas_code'   => '0204', // EAS code for user_tax_code schemeID
+        'user_eas_code' => '0204', // EAS code for user_tax_code schemeID
         // XRechnung-CII-validation (just set to `true` if you need client & user EM (email) id & scheme)
         'URIUniversalCommunication' => [
             // client_email & EM by default if not provided or empty/false
             'client' => [
                 // From db: client_[email|vat_id|tax_code] (Idea: from client custom fields text. Q: Is reported in invoice object? R: NO!)
-                'URIID'    => 'client_vat_id', // Related to schemeID (client_email by default if not provided or empty/false)
+                'URIID' => 'client_vat_id', // Related to schemeID (client_email by default if not provided or empty/false)
                 // [BR-CL-25]-Endpoint identifier scheme identifier MUST belong to the CEF EAS code list
                 'schemeID' => '9930', // 0204 for client_tax_code (EM by default if not provided or empty/false)
             ],
             // user_email & EM by default if not provided or empty/false
             'user' => [
                 // From db: user_[email|vat_id|tax_code] (Idea: from user custom fields text. Q: Is reported in invoice object?)
-                'URIID'    => 'user_vat_id', // Related to schemeID (user_email by default if not provided or empty/false)
+                'URIID' => 'user_vat_id', // Related to schemeID (user_email by default if not provided or empty/false)
                 // [BR-CL-25]-Endpoint identifier scheme identifier MUST belong to the CEF EAS code list
                 'schemeID' => '9930', // 0204 for user_tax_code (EM by default if not provided or empty/false)
             ],

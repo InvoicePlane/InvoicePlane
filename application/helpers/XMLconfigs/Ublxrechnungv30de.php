@@ -1,4 +1,5 @@
 <?php
+
 defined('BASEPATH') || exit('No direct script access allowed');
 /*
  * Xrechnung UBL Invoice 3.0.X & Extention: https://ecosio.com/en/peppol-and-xml-document-validator/
@@ -17,15 +18,15 @@ $xml_setting = [
     'XMLname'     => '', // Must be empty when not embedded in PDF
     'generator'   => 'Ublv24', // Use the libraries/XMLtemplates/Ublv24Xml.php
     // Options in Ublv24 generator
-    'options'     => [
+    'options' => [
         // https://github.com/itplr-kosit/xrechnung-schematron/blob/1e7ae3ba0ff806c7e0098a442b8c940d15429d14/src/validation/schematron/ubl/XRechnung-UBL-validation.sch#L226
-        'CustomizationID'     => 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
-//      'ProfileID'           => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0', // Default IN Ublv24 generator
-        'BuyerReference'      => true,
+        'CustomizationID' => 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0',
+        //      'ProfileID'           => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0', // Default IN Ublv24 generator
+        'BuyerReference' => true,
         // /ubl:Invoice[1]/cac:AccountingCustomerParty[1]/cac:Party[1]/cbc:EndpointID[1] schemeID="`client_eas_code`"
-        'client_eas_code'     => '0204', // *EAS code for EndpointID > schemeID : Adjust with what you need (9930 for vat_id)
+        'client_eas_code' => '0204', // *EAS code for EndpointID > schemeID : Adjust with what you need (9930 for vat_id)
         // /ubl:Invoice[1]/cac:AccountingSupplierParty[1]/cac:Party[1]/cbc:EndpointID[1] schemeID="`user_eas_code`"
-        'user_eas_code'       => '0204', // *EAS code for EndpointID > schemeID : Adjust with what you need (9930 for vat_id)
+        'user_eas_code' => '0204', // *EAS code for EndpointID > schemeID : Adjust with what you need (9930 for vat_id)
         // Adjust with what you need (vat_id or tax_code) : Note same for user & client
         'EndpointID'          => 'tax_code',
         'PartyIdentification' => false, // or '' or 0 or null

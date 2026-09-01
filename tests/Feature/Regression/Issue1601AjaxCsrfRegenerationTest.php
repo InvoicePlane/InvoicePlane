@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
 /**
- * TDD Test Suite for #1601: Sequential AJAX calls fail with csrf_regenerate=true
+ * TDD Test Suite for #1601: Sequential AJAX calls fail with csrf_regenerate=true.
  *
  * Issue: When csrf_regenerate is enabled, the first AJAX POST invalidates the CSRF token.
  * If the response doesn't include the new token, subsequent AJAX calls fail with
@@ -29,7 +29,7 @@ class Issue1601AjaxCsrfRegenerationTest extends AbstractTestCase
         $this->actingAsAdmin();
         // Ensure invoice due date setting exists
         $this->databaseInsertOrIgnore('ip_settings', [
-            'setting_key' => 'invoices_due_after',
+            'setting_key'   => 'invoices_due_after',
             'setting_value' => '30',
         ]);
     }
@@ -42,16 +42,16 @@ class Issue1601AjaxCsrfRegenerationTest extends AbstractTestCase
 
         /* Act - First AJAX call: Create invoice */
         $createPayload = [
-            'client_id' => (string) $clientId,
+            'client_id'            => (string) $clientId,
             'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due' => date('Y-m-d', strtotime('+30 days')),
+            'invoice_date_due'     => date('Y-m-d', strtotime('+30 days')),
             'invoice_time_created' => date('H:i:s'),
-            'invoice_group_id' => '1',
-            'user_id' => '1',
+            'invoice_group_id'     => '1',
+            'user_id'              => '1',
         ];
 
         $createResponse = $this->ajax('POST', '/invoices/ajax/create', $createPayload);
-        $createData = json_decode($createResponse->body(), true);
+        $createData     = json_decode($createResponse->body(), true);
 
         /* Assert - First call succeeds */
         self::assertSame(1, $createData['success'] ?? null, 'Create failed: ' . $createResponse->body());
@@ -61,26 +61,26 @@ class Issue1601AjaxCsrfRegenerationTest extends AbstractTestCase
         /* Act - Second AJAX call: Save invoice immediately after create
            (This would fail if CSRF regeneration broke the token chain) */
         $savePayload = [
-            'invoice_id' => (string) $invoiceId,
-            'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due' => date('Y-m-d', strtotime('+30 days')),
-            'invoice_time_created' => date('H:i:s'),
-            'invoice_status_id' => '1',
+            'invoice_id'               => (string) $invoiceId,
+            'invoice_date_created'     => date('Y-m-d'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+            'invoice_time_created'     => date('H:i:s'),
+            'invoice_status_id'        => '1',
             'invoice_discount_percent' => '0',
-            'invoice_discount_amount' => '0',
-            'items' => json_encode([]),
+            'invoice_discount_amount'  => '0',
+            'items'                    => json_encode([]),
         ];
 
         $saveResponse = $this->ajax('POST', '/invoices/ajax/save', $savePayload);
-        $saveData = json_decode($saveResponse->body(), true);
+        $saveData     = json_decode($saveResponse->body(), true);
 
         /* Assert - Second call succeeds (proves sequential AJAX works) */
         self::assertSame(
             1,
             $saveData['success'] ?? null,
-            'Sequential AJAX call (save after create) failed. ' .
-            'This bug occurs when csrf_regenerate=true and tokens are not refreshed in responses. ' .
-            'Response: ' . $saveResponse->body()
+            'Sequential AJAX call (save after create) failed. '
+            . 'This bug occurs when csrf_regenerate=true and tokens are not refreshed in responses. '
+            . 'Response: ' . $saveResponse->body()
         );
     }
 
@@ -92,16 +92,16 @@ class Issue1601AjaxCsrfRegenerationTest extends AbstractTestCase
 
         /* Act - Make AJAX call and check response structure */
         $createPayload = [
-            'client_id' => (string) $clientId,
+            'client_id'            => (string) $clientId,
             'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due' => date('Y-m-d', strtotime('+30 days')),
+            'invoice_date_due'     => date('Y-m-d', strtotime('+30 days')),
             'invoice_time_created' => date('H:i:s'),
-            'invoice_group_id' => '1',
-            'user_id' => '1',
+            'invoice_group_id'     => '1',
+            'user_id'              => '1',
         ];
 
         $createResponse = $this->ajax('POST', '/invoices/ajax/create', $createPayload);
-        $createData = json_decode($createResponse->body(), true);
+        $createData     = json_decode($createResponse->body(), true);
 
         /* Assert - Response is well-formed */
         self::assertIsArray($createData, 'AJAX response must be JSON array');
@@ -125,43 +125,43 @@ class Issue1601AjaxCsrfRegenerationTest extends AbstractTestCase
     public function multiple_sequential_ajax_calls_work(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient();
+        $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
 
         /* Act - Call 1: Save invoice with discount update */
         $firstPayload = [
-            'invoice_id' => (string) $invoiceId,
-            'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due' => date('Y-m-d', strtotime('+30 days')),
-            'invoice_time_created' => date('H:i:s'),
-            'invoice_status_id' => '1',
+            'invoice_id'               => (string) $invoiceId,
+            'invoice_date_created'     => date('Y-m-d'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+            'invoice_time_created'     => date('H:i:s'),
+            'invoice_status_id'        => '1',
             'invoice_discount_percent' => '10',
-            'items' => json_encode([]),
+            'items'                    => json_encode([]),
         ];
         $firstResponse = $this->ajax('POST', '/invoices/ajax/save', $firstPayload);
-        $firstData = json_decode($firstResponse->body(), true);
+        $firstData     = json_decode($firstResponse->body(), true);
 
         self::assertSame(1, $firstData['success'] ?? null, 'First save failed: ' . $firstResponse->body());
 
         /* Act - Call 2: Save invoice again with different discount */
         $secondPayload = [
-            'invoice_id' => (string) $invoiceId,
-            'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due' => date('Y-m-d', strtotime('+30 days')),
-            'invoice_time_created' => date('H:i:s'),
-            'invoice_status_id' => '1',
+            'invoice_id'               => (string) $invoiceId,
+            'invoice_date_created'     => date('Y-m-d'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+            'invoice_time_created'     => date('H:i:s'),
+            'invoice_status_id'        => '1',
             'invoice_discount_percent' => '15',
-            'items' => json_encode([]),
+            'items'                    => json_encode([]),
         ];
         $secondResponse = $this->ajax('POST', '/invoices/ajax/save', $secondPayload);
-        $secondData = json_decode($secondResponse->body(), true);
+        $secondData     = json_decode($secondResponse->body(), true);
 
         /* Assert - Multiple sequential calls work (regression test for #1601) */
         self::assertSame(
             1,
             $secondData['success'] ?? null,
-            'Multiple sequential AJAX calls failed. This indicates CSRF token regeneration is broken. ' .
-            'Response: ' . $secondResponse->body()
+            'Multiple sequential AJAX calls failed. This indicates CSRF token regeneration is broken. '
+            . 'Response: ' . $secondResponse->body()
         );
     }
 }
