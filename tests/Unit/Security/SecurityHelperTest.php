@@ -80,6 +80,35 @@ class SecurityHelperTest extends TestCase
     }
 
     #[Test]
+    public function it_trusts_the_framework_check_on_a_post_whose_token_was_already_consumed(): void
+    {
+        /**
+         * Regression for #1694: CodeIgniter's Security::csrf_verify() validates
+         * every POST during bootstrap and then unsets $_POST[csrf_token_name].
+         * verify_csrf_token() must not re-reject that already-verified request.
+         */
+
+        /* Arrange */
+        $this->setRequest([], [], [], withSecurity: true);
+        $originalMethod             = $_SERVER['REQUEST_METHOD'] ?? null;
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        try {
+            /* Act */
+            $valid = verify_csrf_token();
+        } finally {
+            if ($originalMethod === null) {
+                unset($_SERVER['REQUEST_METHOD']);
+            } else {
+                $_SERVER['REQUEST_METHOD'] = $originalMethod;
+            }
+        }
+
+        /* Assert */
+        self::assertTrue($valid);
+    }
+
+    #[Test]
     public function it_escapes_urls_for_html_output(): void
     {
         /* Arrange */
@@ -92,7 +121,7 @@ class SecurityHelperTest extends TestCase
         self::assertStringContainsString('&quot;', $escaped);
     }
 
-    private function setRequest(array $get, array $post, array $cookies): void
+    private function setRequest(array $get, array $post, array $cookies, bool $withSecurity = false): void
     {
         $GLOBALS['unitCiConfig'] = [
             'csrf_protection'  => true,
@@ -100,13 +129,24 @@ class SecurityHelperTest extends TestCase
             'csrf_cookie_name' => 'ip_csrf_cookie',
         ];
         $GLOBALS['unitBaseUrl']    = 'https://invoiceplane.example/';
-        $GLOBALS['unitCiInstance'] = new class ($get, $post, $cookies) {
+        $GLOBALS['unitCiInstance'] = new class ($get, $post, $cookies, $withSecurity) {
             public object $input;
 
             public object $load;
 
-            public function __construct(array $get, array $post, array $cookies)
+            public ?object $security = null;
+
+            public function __construct(array $get, array $post, array $cookies, bool $withSecurity)
             {
+                if ($withSecurity) {
+                    $this->security = new class () {
+                        public function get_csrf_hash(): string
+                        {
+                            return 'regenerated-hash';
+                        }
+                    };
+                }
+
                 $this->input = new class ($get, $post, $cookies) {
                     public function __construct(
                         private array $get,
