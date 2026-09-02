@@ -18,6 +18,10 @@ record *why* and *how*.
 
 - **Horizontal privilege escalation via email takeover:** PR #1638 fixed password-change authorization (IDOR), but left the email field unprotected. A secondary administrator (`user_type=1`, `user_id != 1`) could edit the primary administrator's email address through the user form, then use password recovery to take over the account. `Users::form()` now validates that only the primary administrator can edit `user_id=1`, and `user_email` is added to `PROTECTED_FIELDS` (defense-in-depth). Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
 
+### Documentation / configuration
+
+- **Empty `SESS_SAVE_PATH` breaks session startup and stalls the installer — clarified in `ipconfig.php` and the docs:** the `env()` helper treats a set-but-empty variable as a real value, so an `SESS_SAVE_PATH=` line (as previously shipped in `ipconfig.php.example`) makes InvoicePlane force PHP's `session.save_path` to an empty string, overriding any value from `php.ini` / `php-fpm.d` / the vhost. No session can then be written: login fails and manual installs get stuck on `.../setup/language` (setup progress is stored in the session), often with no log output. The `files` session driver logs `mkdir(): Invalid path` and `Configured save path '' is not a directory`. `ipconfig.php.example` now ships the line commented out (so the `sys_get_temp_dir()` fallback applies) with guidance to set an explicit absolute path outside the web root, and a warning against `/tmp` on systemd distros where `PrivateTmp=true` and `systemd-tmpfiles` wipe it. **Existing installs:** edit `ipconfig.php` and either set `SESS_SAVE_PATH` to a real writable directory or remove the empty line. `README.md` and `.github/docs/CONTAINER_DEPLOYMENT.md` updated to match.
+
 ---
 
 ## [1.7.2] - 2026-07-17
