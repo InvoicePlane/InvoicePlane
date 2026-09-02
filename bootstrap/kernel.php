@@ -89,6 +89,11 @@ if ( ! function_exists('env_bool')) {
 
 defined('IP_DEBUG') || define('IP_DEBUG', env_bool('ENABLE_DEBUG', false));
 
+// resolve_session_save_path(): treats an empty/whitespace-only SESS_SAVE_PATH the
+// same as an unset one, so application/config/config.php never hands CodeIgniter a
+// set-but-empty sess_save_path (which would clobber php.ini's session.save_path).
+require_once __DIR__ . '/session_path.php';
+
 require_once __DIR__ . '/constants.php';
 
 // THEME_FOLDER points to the compiled/source asset tree under resources/assets/.
