@@ -26,7 +26,7 @@ ENABLE_X_CONTENT_TYPE_OPTIONS=true
 # Leave SESS_SAVE_PATH empty to use PHP's default session save path (sys_get_temp_dir()).
 # To store sessions elsewhere, e.g. outside the document root, set an absolute path:
 #   SESS_SAVE_PATH=/srv/invoiceplane/sessions
-SESS_SAVE_PATH=
+# SESS_SAVE_PATH=
 # Override the session cookie name
 SESS_COOKIE_NAME=ip_session
 # Override the session database table name (only used when SESS_DRIVER=database)
