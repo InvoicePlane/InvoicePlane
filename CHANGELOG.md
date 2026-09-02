@@ -211,6 +211,18 @@ site.
   the `SESS_DRIVER` environment variable instead of their own dedicated `SESS_TABLE_NAME` and
   `SESS_COOKIE_NAME` variables. This made it impossible to rename the session cookie or table
   without also changing the driver name.
+- **Empty `SESS_SAVE_PATH` broke login and the installer.** A bare `SESS_SAVE_PATH=` line in
+  `ipconfig.php` (as shipped in `ipconfig.php.example`) is parsed by phpdotenv as a *defined*
+  empty string, so `env('SESS_SAVE_PATH', …)` never applied its default. CodeIgniter's
+  `Session_files_driver` then ran `ini_set('session.save_path', '')`, overwriting the value
+  from `php.ini` / `php-fpm.d` / the vhost; session start did `mkdir('')` and failed, so
+  login silently failed and the manual installer stayed stuck on `setup/language`. Documenting
+  the key in `ipconfig.php.example` (see *Added*) only clarified intent; it did not stop an
+  empty value from reaching the session driver. A new `resolve_session_save_path()` helper
+  (`bootstrap/session_path.php`, wired into `application/config/config.php`) now collapses an
+  empty, whitespace-only or unset value to `sys_get_temp_dir()` — exactly matching an unset
+  one; an explicit path is returned unchanged. Regression coverage:
+  `tests/Unit/Settings/SessionSavePathResolverTest.php`.
 - **`not_configured.php`:** `<form method="post">` was present without a CSRF field or a
   submit button (the form cannot be submitted, but the missing CSRF field violated the
   project's security rules). `<?php _csrf_field(); ?>` has been added.
@@ -222,8 +234,8 @@ site.
   commands, and common pitfalls.
 - **`SESS_SAVE_PATH`, `SESS_TABLE_NAME`, `SESS_COOKIE_NAME`, `SESS_REGENERATE_DESTROY`**
   documented in `ipconfig.php.example` with comments. `SESS_SAVE_PATH` can be set to an
-  absolute path outside the document root for additional security; it defaults to PHP's
-  system temp directory, unchanged from previous releases.
+  absolute path outside the document root for additional security; leaving it empty now
+  reliably falls back to PHP's system temp directory (enforced in code — see *Fixed*).
 - **Template allowlist format clarified:** Quote the whole value in `ipconfig.php` when
   template names contain spaces or hyphens:
   ```

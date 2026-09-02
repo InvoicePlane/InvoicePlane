@@ -80,6 +80,53 @@ vendor/bin/phpstan analyse    # static analysis
 
 Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `TestCase`.
 
+### Running tests locally — ALWAYS inside the ivpldock Docker stack
+
+**Never run `phpunit` / `php` / `composer` on the host.** The DB-backed Feature and
+Integration tests connect to the host `mariadb`, which only resolves **inside the ivpldock
+Docker network**. On the host that hostname does not resolve, so `InteractsWithDatabase::db()`
+hits a connection failure and every DB-backed test silently `markTestSkipped`s — a run that
+looks green ("0 failures") but actually skipped ~600 tests and proved nothing. Run everything
+in the containers that exist for exactly this purpose (`docker ps` → `ivpldock-workspace-1`,
+`ivpldock-mariadb-1`, …).
+
+The `Makefile` wraps this. **This checkout is mounted at
+`/var/www/projects/invoiceplane/ivplv1` inside the workspace container, but the Makefile
+still defaults `DOCKER_PROJECT_DIR` to `/var/www/projects/exprmt`** — always pass the
+override or `docker-db-prepare`'s `ipconfig.php`-write + `seed-test-db.php` step fails
+(`cd: .../exprmt: No such file or directory`), leaving the schema imported but **unseeded**.
+An unseeded DB is the cause of cascades of `Expected row in [ip_*] not found` /
+`Table 'invoiceplane_test.ip_settings' doesn't exist` failures — not a code regression.
+
+```bash
+# Full suite: (re)builds invoiceplane_test from the setup SQL migrations, applies
+# schema_fixups.sql, writes ipconfig.php (DB_HOSTNAME=mariadb), seeds the baseline,
+# then runs phpunit as the ivpldock user with DB_* unset.
+make docker-test DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
+
+make docker-test-suite  SUITE=Unit    DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
+make docker-test-filter FILTER=Session DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
+make docker-phpstan     DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
+make docker-lint-php    DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
+
+# Ad-hoc: run a targeted slice against an already-prepared DB
+docker exec -e XDEBUG_MODE=off --user=ivpldock ivpldock-workspace-1 bash -lc \
+  'cd /var/www/projects/invoiceplane/ivplv1 && \
+   env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE -u DB_USERNAME -u DB_PASSWORD \
+   vendor/bin/phpunit tests/Feature/Core/SessionsFeatureTest.php'
+```
+
+`docker-db-prepare` imports `application/modules/setup/sql/*.sql` one file per `mysql`
+connection. In the shared ivpldock mariadb this intermittently hits transient InnoDB
+deadlocks (`ERROR 1213 … try restarting transaction`) on the `ALTER TABLE` DDL. The recipe
+now retries each file on that error (`tests/Support/docker-import-sql.sh`) and then runs a
+hard schema-completeness check — a build that still can't apply a migration **fails loudly**
+instead of silently shipping a half-built schema. If you ever see a cascade of
+`Unknown column 'ip_users.user_bank'` / `Table '…ip_settings' doesn't exist` across hundreds
+of tests, the schema build was incomplete: just re-run `make docker-db-prepare
+DOCKER_PROJECT_DIR=…`. (The old recipe used `mysql --force`, which swallowed the deadlock and
+left the columns missing.)
+
 ### Bootstrapping `vendor/` in the Claude Code web sandbox
 
 **IMPORTANT: This only applies to Claude Code on the web (remote sandbox). Local development and CI are unaffected.**
