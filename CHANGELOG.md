@@ -221,7 +221,8 @@ site.
   empty value from reaching the session driver. A new `resolve_session_save_path()` helper
   (`bootstrap/session_path.php`, wired into `application/config/config.php`) now collapses an
   empty, whitespace-only or unset value to `sys_get_temp_dir()` — exactly matching an unset
-  one; an explicit path is returned unchanged.
+  one; an explicit path is returned unchanged. Regression coverage:
+  `tests/Unit/Settings/SessionSavePathResolverTest.php`.
 - **`not_configured.php`:** `<form method="post">` was present without a CSRF field or a
   submit button (the form cannot be submitted, but the missing CSRF field violated the
   project's security rules). `<?php _csrf_field(); ?>` has been added.
