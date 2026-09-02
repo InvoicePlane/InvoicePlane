@@ -84,14 +84,22 @@ class Integrations extends Admin_Controller
                 throw new RuntimeException('The selected provider does not support this e-invoice profile.');
             }
 
-            $service  = new EInvoiceDocumentService();
-            $artifact = $service->generate(
+            $artifact = IntegrationTransport::artifact(
                 $invoiceId,
-                $invoice,
-                $items,
                 $profile,
                 UPLOADS_FOLDER . 'integrations/outgoing/'
             );
+
+            if ($artifact === null) {
+                $artifact = (new EInvoiceDocumentService())->generate(
+                    $invoiceId,
+                    $invoice,
+                    $items,
+                    $profile,
+                    UPLOADS_FOLDER . 'integrations/outgoing/'
+                );
+            }
+
             $documentPath = $artifact->path();
             $metadata     = array_merge(['invoice_id' => $invoiceId], $artifact->metadata());
 

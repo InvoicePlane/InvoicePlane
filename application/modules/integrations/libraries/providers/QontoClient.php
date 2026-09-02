@@ -12,7 +12,7 @@ class QontoClient implements IntegrationClientInterface
 
     public function __construct(?ApiClientInterface $http = null, ?RemoteUrlGuard $urlGuard = null)
     {
-        $this->http     = $http ?? new CurlApiClient();
+        $this->http     = $http ?? IntegrationTransport::httpClient() ?? new CurlApiClient();
         $this->urlGuard = $urlGuard ?? new RemoteUrlGuard();
     }
 

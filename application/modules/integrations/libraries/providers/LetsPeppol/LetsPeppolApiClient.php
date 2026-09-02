@@ -12,7 +12,7 @@ class LetsPeppolApiClient
 
     public function __construct(?ApiClientInterface $http = null)
     {
-        $this->http = $http ?? new GuzzleApiClient();
+        $this->http = $http ?? IntegrationTransport::httpClient() ?? new GuzzleApiClient();
     }
 
     public function configure(array $settings): void

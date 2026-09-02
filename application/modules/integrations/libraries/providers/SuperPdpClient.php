@@ -12,7 +12,7 @@ class SuperPdpClient implements IntegrationClientInterface
 
     public function __construct(?ApiClientInterface $http = null)
     {
-        $this->http = $http ?? new CurlApiClient();
+        $this->http = $http ?? IntegrationTransport::httpClient() ?? new CurlApiClient();
     }
 
     public static function clientCode(): string
