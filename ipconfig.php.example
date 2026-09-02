@@ -23,10 +23,27 @@ X_FRAME_OPTIONS=SAMEORIGIN
 ENABLE_X_CONTENT_TYPE_OPTIONS=true
 
 # Session settings
-# Leave SESS_SAVE_PATH empty to use PHP's default session save path (sys_get_temp_dir()).
-# To store sessions elsewhere, e.g. outside the document root, set an absolute path:
-#   SESS_SAVE_PATH=/srv/invoiceplane/sessions
-# SESS_SAVE_PATH=
+#
+# SESS_SAVE_PATH is the directory PHP writes session files to (default 'files' driver).
+#
+# Do NOT set this to an empty value. An empty SESS_SAVE_PATH is passed straight through
+# to PHP as an empty session.save_path, which OVERRIDES whatever php.ini / php-fpm.d /
+# your Apache vhost configured. The result is that no session can be written: login
+# fails and the installer gets stuck on .../setup/language (setup progress is kept in
+# the session). If you don't need a custom path, leave the line below commented out and
+# InvoicePlane falls back to PHP's sys_get_temp_dir().
+#
+# Recommended for a real deployment: a dedicated writable directory outside the web root,
+# owned by the web-server user, e.g.
+#   mkdir -p /var/lib/invoiceplane/sessions
+#   chown <web-user>:<web-group> /var/lib/invoiceplane/sessions && chmod 700 /var/lib/invoiceplane/sessions
+#   SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
+#
+# Avoid /tmp on systemd distros (RHEL / AlmaLinux / Rocky / Debian): httpd and php-fpm
+# run with PrivateTmp=true and systemd-tmpfiles periodically wipes it, so sessions
+# disappear mid-use.
+#
+# SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
 # Override the session cookie name
 SESS_COOKIE_NAME=ip_session
 # Override the session database table name (only used when SESS_DRIVER=database)
