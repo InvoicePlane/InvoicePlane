@@ -12,6 +12,23 @@ record *why* and *how*.
 
 ---
 
+## [Unreleased]
+
+### Bug fixes
+
+- **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just
+  packaging.** 1.7.3 shipped `ipconfig.php.example` with the line commented out, but any
+  install that still had `SESS_SAVE_PATH=` in its `ipconfig.php` (an upgrade, or a copy made
+  before 1.7.3) stayed broken: `env()` returns a set-but-empty value as `""`, so
+  `application/config/config.php` set `$config['sess_save_path'] = ""`, CodeIgniter's
+  `Session_files_driver` ran `ini_set('session.save_path', '')` — overriding `php.ini` /
+  `php-fpm.d` / the vhost — and session startup failed (`mkdir('')`), so login broke and the
+  manual installer stalled on `.../setup/language`. `config.php` now collapses an empty or
+  whitespace-only `SESS_SAVE_PATH` to `sys_get_temp_dir()`, exactly matching an unset one; an
+  explicit path is unchanged.
+
+---
+
 ## [1.7.3] - 2026-08-29
 
 ### Security fixes
