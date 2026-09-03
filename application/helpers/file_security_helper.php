@@ -596,10 +596,16 @@ function validate_db_config_parameter(string $value, string $type): array
             break;
 
         case 'password':
-            // Password can contain most printable characters, but no control characters
-            // Empty passwords are explicitly allowed (some databases support passwordless auth)
+            // Password can contain any printable character except control characters
+            // and a literal single quote. write_database_config() stores the password
+            // wrapped in single quotes (DB_PASSWORD='...'); phpdotenv performs NO
+            // escape-sequence processing inside single-quoted values, so # $ ; : @ ! \ "
+            // and everything else are safely taken literally. The only character that
+            // cannot be represented this way is a single quote itself, since it would
+            // terminate the value early - so it's rejected here rather than escaped.
+            // Empty passwords are explicitly allowed (some databases support passwordless auth).
             if ($value === '') {
-                // Empty password is valid - return early to skip control character check
+                // Empty password is valid - return early to skip further checks
                 break;
             }
 
@@ -610,6 +616,19 @@ function validate_db_config_parameter(string $value, string $type): array
                 return [
                     'valid'     => false,
                     'error'     => 'invalid_password_format',
+                    'sanitized' => '',
+                ];
+            }
+
+            // Reject a literal single quote: it cannot be represented inside the
+            // single-quoted DB_PASSWORD='...' value without escaping, which we
+            // deliberately avoid (see class-level note above).
+            if (str_contains($value, "'")) {
+                log_message('error', 'Single quote character detected in password parameter');
+
+                return [
+                    'valid'     => false,
+                    'error'     => 'password_contains_quote',
                     'sanitized' => '',
                 ];
             }
@@ -658,25 +677,3 @@ function validate_db_config_parameter(string $value, string $type): array
     ];
 }
 
-/**
- * Sanitize database configuration value for safe writing to config file.
- *
- * This function escapes single quotes to prevent breaking out of quoted strings
- * in the configuration file format (ipconfig.php).
- *
- * Note: This is a defense-in-depth measure. The configuration file uses a simple
- * key=value format that is parsed by phpdotenv, not eval(). The primary defense
- * is the strict input validation in validate_db_config_parameter() which rejects
- * newlines and control characters. This escaping provides an additional layer
- * in case validation is bypassed.
- *
- * @param string $value The value to sanitize
- *
- * @return string The sanitized value
- */
-function sanitize_db_config_value(string $value): string
-{
-    // Escape single quotes using backslash for PHP string context
-    // This prevents breaking out of the DB_HOSTNAME='value' format
-    return str_replace("'", "\\'", $value);
-}
