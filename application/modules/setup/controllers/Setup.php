@@ -469,6 +469,7 @@ class Setup extends MX_Controller
             'invalid_hostname_format' => 'Invalid hostname format. Please use a valid hostname or IP address.',
             'invalid_username_format' => 'Invalid username format. Only alphanumeric characters, dots, hyphens, underscores, and @ are allowed.',
             'invalid_password_format' => 'Invalid password format. Please check your password.',
+            'password_contains_quote' => 'This password contains a single quote ( \' ), which is not supported. Please remove it and try again.',
             'invalid_database_format' => 'Invalid database name format. Only alphanumeric characters, underscores, and hyphens are allowed.',
             'invalid_port'            => 'Invalid port number. Please enter a number between 1 and 65535.',
         ];
@@ -548,9 +549,21 @@ class Setup extends MX_Controller
     /**
      * Write database configuration to ipconfig.php file.
      *
+     * Wraps all database credentials in single quotes with no escaping.
+     * phpdotenv performs zero escape-sequence processing inside single-quoted
+     * values - every character (\, ", $, ;, #, @, ...) is taken literally
+     * until the closing quote. The only character that cannot be stored this
+     * way is a literal single quote, which validate_db_config_parameter()
+     * rejects before this method ever runs.
+     *
+     * (Double-quoted phpdotenv values are NOT equivalent: they run a real
+     * escape-sequence parser, and an unescaped backslash followed by a
+     * character outside "\$fnrtv is a hard parse error for the whole file -
+     * single quotes avoid that failure mode entirely.)
+     *
      * @param string $hostname Database hostname
      * @param string $username Database username
-     * @param string $password Database password
+     * @param string $password Database password (may contain special characters, not a single quote)
      * @param string $database Database name
      * @param int    $port     Database port (default: 3306)
      */
@@ -560,22 +573,22 @@ class Setup extends MX_Controller
 
         $config = preg_replace_callback(
             '/^DB_HOSTNAME=.*$/m',
-            static fn () => 'DB_HOSTNAME="' . addcslashes($hostname, '\\"$') . '"',
+            static fn () => "DB_HOSTNAME='" . $hostname . "'",
             $config
         );
         $config = preg_replace_callback(
             '/^DB_USERNAME=.*$/m',
-            static fn () => 'DB_USERNAME="' . addcslashes($username, '\\"$') . '"',
+            static fn () => "DB_USERNAME='" . $username . "'",
             $config
         );
         $config = preg_replace_callback(
             '/^DB_PASSWORD=.*$/m',
-            static fn () => 'DB_PASSWORD="' . addcslashes($password, '\\"$') . '"',
+            static fn () => "DB_PASSWORD='" . $password . "'",
             $config
         );
         $config = preg_replace_callback(
             '/^DB_DATABASE=.*$/m',
-            static fn () => 'DB_DATABASE="' . addcslashes($database, '\\"$') . '"',
+            static fn () => "DB_DATABASE='" . $database . "'",
             $config
         );
         $config = preg_replace_callback(
