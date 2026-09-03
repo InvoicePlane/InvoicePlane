@@ -58,11 +58,36 @@ DISABLE_SETUP=false
 # Please notice the additional instructions in the htaccess file!
 REMOVE_INDEXPHP=false
 
-# These database settings are set during the initial setup
-DB_HOSTNAME=
-DB_USERNAME=
-DB_PASSWORD=
-DB_DATABASE=
+# These database settings are set during the initial setup. If editing this
+# file by hand, quote every value - an unquoted value ends at the first
+# space or '#', which silently truncates a password containing either.
+#
+# Single quotes (recommended) - the value is stored exactly as written,
+# character for character, with no escaping of any kind:
+#   DB_PASSWORD='y0ur#s3cr3t$pass;word'          -> y0ur#s3cr3t$pass;word
+#   DB_PASSWORD='Contains\Backslash"AndQuote'    -> Contains\Backslash"AndQuote
+#   DB_PASSWORD='Trailing space kept as-is '     -> "Trailing space kept as-is "
+# The one thing single quotes cannot hold is a literal single quote ( ' ) -
+# it ends the value early, so it isn't a valid character in this field.
+#
+# Double quotes are also supported, but backslash (\) and double quote (")
+# must each be escaped as \\ and \", or the file fails to load entirely -
+# not just this setting, every setting in the file:
+#   DB_PASSWORD="y0ur#s3cr3t\$pass;word"         -> y0ur#s3cr3t$pass;word
+#   DB_PASSWORD="Contains\\Backslash\"AndQuote"  -> Contains\Backslash"AndQuote
+#   DB_PASSWORD="BadExample\NotEscaped"          -> FAILS TO LOAD (\N is not
+#                                                    a recognised escape)
+# Inside double quotes only, a dollar sign followed immediately by
+# {SOME_NAME} is treated as a reference to another setting and substituted -
+# escape it as \$ if a double-quoted password happens to contain that exact
+# pattern. Single-quoted values never do this substitution, whatever they
+# contain.
+#
+# Whichever style you use, a value can never span more than one line.
+DB_HOSTNAME=''
+DB_USERNAME=''
+DB_PASSWORD=''
+DB_DATABASE=''
 DB_PORT=
 
 # If you want to be logged out after closing your browser window, set this setting to 0 (ZERO).
