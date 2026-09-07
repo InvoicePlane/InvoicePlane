@@ -237,16 +237,18 @@ CREATE TABLE `ip_payment_methods` (
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_payments` (
-  `payment_id`        INT(11)        NOT NULL AUTO_INCREMENT,
-  `invoice_id`        INT(11)        NOT NULL,
-  `payment_method_id` INT(11)        NOT NULL DEFAULT '0',
-  `payment_date`      DATE           NOT NULL,
-  `payment_amount`    DECIMAL(10, 2) NOT NULL,
-  `payment_note`      LONGTEXT       NOT NULL,
+  `payment_id`           INT(11)        NOT NULL AUTO_INCREMENT,
+  `invoice_id`           INT(11)        NOT NULL,
+  `payment_method_id`    INT(11)        NOT NULL DEFAULT '0',
+  `payment_date`         DATE           NOT NULL,
+  `payment_amount`       DECIMAL(10, 2) NOT NULL,
+  `payment_note`         LONGTEXT       NOT NULL,
+  `payment_external_id`  VARCHAR(255)            DEFAULT NULL,
   PRIMARY KEY (`payment_id`),
   KEY `invoice_id` (`invoice_id`),
   KEY `payment_method_id` (`payment_method_id`),
-  KEY `payment_amount` (`payment_amount`)
+  KEY `payment_amount` (`payment_amount`),
+  KEY `idx_payment_external_id` (`payment_external_id`)
 )
   ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
