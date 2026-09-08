@@ -160,8 +160,11 @@ class Stripe extends Base_Controller
                         $paid     = false;
                         $user_msg = trans('online_payment_payment_failed');
                     } else {
-                        // Save the payment (visible in guest user)
-                        $this->mdl_payments->save(null, [
+                        // Record the payment atomically: the balance guard and
+                        // the insert are one conditional UPDATE, so a concurrent
+                        // callback with a different payment_intent cannot also
+                        // pass a stale balance and double-credit the invoice.
+                        $recorded = $this->mdl_payments->record_external_payment([
                             'invoice_id'          => $invoice->invoice_id,
                             'payment_date'        => date('Y-m-d'),
                             'payment_amount'      => $capture_amount,
@@ -169,6 +172,11 @@ class Stripe extends Base_Controller
                             'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
                             'payment_external_id' => $payment_intent,
                         ]);
+
+                        if ( ! $recorded) {
+                            $paid     = false;
+                            $user_msg = trans('online_payment_already_processed');
+                        }
                     }
                 }
             }
