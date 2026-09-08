@@ -439,15 +439,7 @@ $config['sess_driver']             = env('SESS_DRIVER', 'files');
 $config['sess_table_name']         = env('SESS_TABLE_NAME', 'ip_sessions');
 $config['sess_cookie_name']        = env('SESS_COOKIE_NAME', 'ip_session');
 $config['sess_expiration']         = env('SESS_EXPIRATION', 864000);
-$config['sess_save_path']          = env('SESS_SAVE_PATH', sys_get_temp_dir());
-// env() returns a set-but-empty ipconfig value ('SESS_SAVE_PATH=') as "" instead
-// of applying the default. Treat empty / whitespace-only the same as unset, or
-// CI's Session_files_driver forces session.save_path to '' (clobbering php.ini /
-// php-fpm.d / the vhost) and session startup fails: login breaks and the manual
-// installer stalls on setup/language.
-if ( ! is_string($config['sess_save_path']) || trim($config['sess_save_path']) === '') {
-    $config['sess_save_path'] = sys_get_temp_dir();
-}
+$config['sess_save_path']          = resolve_session_save_path(env('SESS_SAVE_PATH'), sys_get_temp_dir());
 $config['sess_match_ip']           = env_bool('SESS_MATCH_IP', true);
 $config['sess_time_to_update']     = 300;
 $config['sess_regenerate_destroy'] = env_bool('SESS_REGENERATE_DESTROY', true);
@@ -515,11 +507,12 @@ $config['global_xss_filtering'] = false;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection']   = env_bool('CSRF_PROTECTION', 'true');
-$config['csrf_token_name']   = '_ip_csrf';
-$config['csrf_cookie_name']  = 'ip_csrf_cookie';
-$config['csrf_expire']       = env('SESS_EXPIRATION', 3600);
-$config['csrf_regenerate']   = env_bool('CSRF_REGENERATE', 'false');
+$config['csrf_protection']  = env_bool('CSRF_PROTECTION', 'true');
+$config['csrf_token_name']  = '_ip_csrf';
+$config['csrf_cookie_name'] = 'ip_csrf_cookie';
+$config['csrf_expire']      = env('SESS_EXPIRATION', 3600);
+// Enable csrf_regenerate for Feature tests to test AJAX token handling (#1601)
+$config['csrf_regenerate']   = env_bool('CSRF_REGENERATE', false) || (getenv('CI_TEST_REQUEST') !== false);
 $config['csrf_exclude_uris'] = [];
 
 /*
