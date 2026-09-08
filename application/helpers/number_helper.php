@@ -20,8 +20,12 @@ if ( ! defined('BASEPATH')) {
  */
 function format_currency($amount): string
 {
+    // Security: currency_symbol is admin-controlled free text, and this function's
+    // output is echoed unescaped by the public guest invoice/quote templates.
+    // Neutralise HTML here so this single choke-point covers guest, admin and PDF
+    // output (CWE-79).
     $CI                        = & get_instance();
-    $currency_symbol           = $CI->mdl_settings->setting('currency_symbol');
+    $currency_symbol           = htmlsc($CI->mdl_settings->setting('currency_symbol'));
     $currency_symbol_placement = $CI->mdl_settings->setting('currency_symbol_placement');
     $thousands_separator       = $CI->mdl_settings->setting('thousands_separator');
     $decimal_point             = $CI->mdl_settings->setting('decimal_point');
