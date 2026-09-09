@@ -197,9 +197,14 @@ class Stripe extends Base_Controller
                                 . ', fee: ' . amount_from_minor_units($session->application_fee_amount, stripe_minor_unit_multiplier($session->currency))       // 0 in test. Set in live mode?
                                 . ', session ID: ' . $session->id                                   // Unique identifier for the object.
                                 : ($session->cancel ? $session->cancellation_reason : $session->last_payment_error); // Cancelled
-            // User (& error) message
-            $user_msg = $paid ? sprintf(trans('online_payment_successful'), '#' . htmlsc($invoice->invoice_number))
-                              : trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
+            // User (& error) message. Keep the status-specific message already set
+            // above (already processed, duplicate, invoice already paid,
+            // currency/amount mismatch) — only fill in a generic one here.
+            if ($paid) {
+                $user_msg = sprintf(trans('online_payment_successful'), '#' . htmlsc($invoice->invoice_number));
+            } elseif ($user_msg === '') {
+                $user_msg = trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
+            }
         } catch (Error|Exception|ErrorException $e) {
             $user_msg = trans('online_payment_error') . (empty($user_msg) ? '' : '<br>' . $user_msg);
             $paid     = 'error'; // tweak to reuse
