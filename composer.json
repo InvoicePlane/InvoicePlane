@@ -20,6 +20,7 @@
         "endroid/qr-code": "^4.8.5",
         "ezyang/htmlpurifier": "^4.19",
         "guzzlehttp/guzzle": "^7.15.2",
+        "horstoeko/invoicesuite": "^0.0.31",
         "josemmo/facturae-php": "^1.8",
         "moneyphp/money": "^4.9",
         "mpdf/mpdf": "^8.3.1",
