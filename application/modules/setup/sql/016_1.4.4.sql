@@ -11,6 +11,16 @@ WHERE setting_key = 'pdf_invoice_template_paid' AND
       setting_value = 'default-paid';
 
 UPDATE ip_settings
+SET setting_value = 'InvoicePlane - unpaid'
+WHERE setting_key = 'pdf_invoice_template_unpaid' AND
+      setting_value = 'default-unpaid';
+      
+UPDATE ip_settings
+SET setting_value = 'InvoicePlane - partial'
+WHERE setting_key = 'pdf_invoice_template_partial' AND
+      setting_value = 'default-partial';
+
+UPDATE ip_settings
 SET setting_value = 'InvoicePlane - overdue'
 WHERE setting_key = 'pdf_invoice_template_overdue' AND
       setting_value = 'default-overdue';
