@@ -82,7 +82,9 @@ module.exports = function(grunt) {
           "node_modules/bootstrap-datepicker/js/bootstrap-datepicker.js",
           "node_modules/select2/dist/js/select2.full.js",
           "node_modules/dropzone/dist/dropzone.js",
-          "node_modules/clipboard/dist/clipboard.js"
+          "node_modules/clipboard/dist/clipboard.js",
+          "node_modules/datatables.net/js/jquery.dataTables.js",
+          "node_modules/datatables.net-bs/js/dataTables.bootstrap.js"
         ],
         dest: "assets/core/js/dependencies.js"
       },
@@ -122,6 +124,12 @@ module.exports = function(grunt) {
         flatten: true,
         src: ["node_modules/font-awesome/fonts/*"],
         dest: "assets/core/fonts"
+      },
+      datatablescss: {
+        expand: true,
+        flatten: true,
+        src: ["node_modules/datatables.net-bs/css/dataTables.bootstrap.css"],
+        dest: "assets/core/css/"
       },
       devjs: {
         files: [
@@ -164,6 +172,7 @@ module.exports = function(grunt) {
     "copy:datepickerlocale",
     "copy:select2locale",
     "copy:fontawesome",
+    "copy:datatablescss",
     "copy:devjs"
   ]);
 
@@ -177,6 +186,7 @@ module.exports = function(grunt) {
     "copy:datepickerlocale",
     "copy:select2locale",
     "copy:fontawesome",
+    "copy:datatablescss",
     "copy:devjs",
     "watch"
   ]);
@@ -192,6 +202,7 @@ module.exports = function(grunt) {
     "clean:build",
     "copy:datepickerlocale",
     "copy:select2locale",
-    "copy:fontawesome"
+    "copy:fontawesome",
+    "copy:datatablescss"
   ]);
 };

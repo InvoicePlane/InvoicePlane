@@ -18,7 +18,7 @@
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div class="table-responsive">
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped" id="unit-table">
 
             <thead>
             <tr>
@@ -67,3 +67,13 @@
     </div>
 
 </div>
+<script>
+    $(document).ready(function() {
+        $("#unit-table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "order": []
+        });
+    });
+</script>
