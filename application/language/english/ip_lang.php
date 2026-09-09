@@ -861,4 +861,39 @@ $lang = [
     // Types
     'true'  => 'True',
     'false' => 'False',
+
+    // Payment reminders.
+    // These two are the default email subject when a reminder template leaves the
+    // subject blank; they are not email_template_type values.
+    'invoice_reminder'                  => 'Payment reminder',
+    'invoice_overdue'                   => 'Overdue notice',
+    'payment_reminders'                 => 'Payment Reminders',
+    'payment_reminders_hint'            => 'Reminders are sent by the same cron job that generates recurring invoices, so no extra scheduling is needed.',
+    'invoice_reminders_enabled'         => 'Send automatic payment reminders',
+    'invoice_reminders_enabled_hint'    => 'When you first switch this on, every invoice that is already overdue receives one catch-up reminder on the next cron run.',
+    'reminder_days_before_due'          => 'Days before due date',
+    'reminder_days_after_due'           => 'Days after due date',
+    'reminder_days_hint'                => 'Comma-separated list of days, for example 7,3,1. Leave empty to send none.',
+    'reminder_repeat_every_days'        => 'Then repeat every (days)',
+    'reminder_repeat_every_days_hint'   => 'Keep sending overdue reminders this many days apart after the last one above. Set to 0 to stop.',
+    'reminder_max_total'                => 'Maximum reminders per invoice',
+    'reminder_max_total_hint'           => 'Set to 0 for no limit.',
+    'reminder_template_before_due'      => 'Before-due reminder template',
+    'reminder_template_before_due_hint' => 'An invoice email template. No before-due reminders are sent until one is selected.',
+    'reminder_template_overdue'         => 'Overdue reminder template',
+    'reminder_template_overdue_hint'    => 'Overdue reminders reuse the Overdue email template set under Invoice Templates above, so a manual send and an automatic chase always look the same.',
+    'disable_payment_reminders'         => 'No payment reminders',
+    'reminders_disabled_for_client'     => 'Reminders are disabled for this client.',
+    'reminder_history'                  => 'Reminder History',
+    'reminder_type'                     => 'Reminder',
+    'reminder_type_before_due'          => 'Before due',
+    'reminder_type_overdue'             => 'Overdue',
+    'reminder_sent'                     => 'Sent',
+    'reminder_failed'                   => 'Failed',
+    'reminder_skipped'                  => 'Skipped',
+    'reminder_pending'                  => 'Pending',
+    'recipient'                         => 'Recipient',
+    'invoice_days_overdue'              => 'Days overdue',
+    'invoice_days_until_due'            => 'Days until due',
+
 ];
