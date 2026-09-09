@@ -14,6 +14,33 @@ record *why* and *how*.
 
 ## [Unreleased]
 
+### Features
+
+- **Automatic payment reminder emails.** Invoices generated from a recurring schedule were
+  emailed once and never chased again: nothing went out as the due date approached, and
+  nothing when an invoice went past due. The cron endpoint
+  (`invoices/cron/recur/<cron_key>`) now also sends reminders, so existing crontab entries
+  pick the feature up with no change. Configure it under **Settings > Invoices > Payment
+  reminders**: a comma-separated list of days before the due date (e.g. `7,3,1`), a list of
+  days after (e.g. `1,7,14`), an optional repeat-every-N-days tail, and a cap on total
+  reminders per invoice. Bodies come from ordinary invoice email templates: before-due
+  reminders use the template chosen in the new *Before-due reminder template* setting, and
+  overdue reminders reuse the existing *Overdue Email Template* setting, so no new template
+  types are introduced. Two new tags, `{{{invoice_days_overdue}}}` and
+  `{{{invoice_days_until_due}}}`, are available in any template. Reminders can be suppressed globally, per client, or per
+  invoice, and every one that is sent, skipped or failed is recorded in the new
+  `ip_invoice_reminders` table and listed on the invoice.
+
+  Only invoices that are *sent* or *viewed* with a balance still owing are eligible, so
+  partially paid invoices are chased for the remainder and drafts and settled invoices are
+  left alone. Duplicate sends are prevented by the database rather than by application
+  logic: each reminder slot is claimed with an `INSERT IGNORE` against a unique index on
+  `(invoice_id, reminder_type, reminder_offset)`, so two overlapping cron runs cannot both
+  mail the same reminder. If cron has not run for several days only the most recent missed
+  reminder is sent and the ones it overtook are recorded as skipped, so an outage produces
+  one catch-up email per invoice rather than a burst of stale ones. The feature ships
+  disabled with no offsets configured, so upgrading changes nothing until it is switched on.
+
 ### Bug fixes
 
 - **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just
