@@ -482,6 +482,14 @@ class Mdl_Setup extends CI_Model
             'public_invoice_template'      => 'InvoicePlane_Web',
             'public_quote_template'        => 'InvoicePlane_Web',
             'disable_sidebar'              => 1,
+            // Payment reminders ship switched off with no offsets configured, so an
+            // upgrade never starts mailing clients on its own. Enabling it is an
+            // explicit choice in Settings > Invoices.
+            'invoice_reminders_enabled'    => 0,
+            'invoice_reminder_days_before' => '',
+            'invoice_reminder_days_after'  => '',
+            'invoice_reminder_repeat_days' => 0,
+            'invoice_reminder_max_total'   => 10,
         ];
 
         foreach ($default_settings as $setting_key => $setting_value) {
