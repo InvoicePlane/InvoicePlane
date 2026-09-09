@@ -145,15 +145,16 @@ class Ajax extends Admin_Controller
             }
 
             $db_array = [
-                'invoice_number'           => $invoice_number,
-                'invoice_status_id'        => $invoice_status_id,
-                'invoice_date_created'     => date_to_mysql($this->input->post('invoice_date_created')),
-                'invoice_date_due'         => date_to_mysql($this->input->post('invoice_date_due')),
-                'invoice_password'         => $this->security->xss_clean($this->input->post('invoice_password')),
-                'invoice_terms'            => $this->security->xss_clean($this->input->post('invoice_terms')),
-                'payment_method'           => $this->security->xss_clean($this->input->post('payment_method')),
-                'invoice_discount_amount'  => standardize_amount($invoice_discount_amount),
-                'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
+                'invoice_number'            => $invoice_number,
+                'invoice_status_id'         => $invoice_status_id,
+                'invoice_date_created'      => date_to_mysql($this->input->post('invoice_date_created')),
+                'invoice_date_due'          => date_to_mysql($this->input->post('invoice_date_due')),
+                'invoice_password'          => $this->security->xss_clean($this->input->post('invoice_password')),
+                'invoice_disable_reminders' => (int) (bool) $this->input->post('invoice_disable_reminders'),
+                'invoice_terms'             => $this->security->xss_clean($this->input->post('invoice_terms')),
+                'payment_method'            => $this->security->xss_clean($this->input->post('payment_method')),
+                'invoice_discount_amount'   => standardize_amount($invoice_discount_amount),
+                'invoice_discount_percent'  => standardize_amount($invoice_discount_percent),
             ];
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
