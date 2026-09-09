@@ -464,6 +464,7 @@ $lang = [
     'pdf_template_overdue'                          => 'Overdue PDF Template',
     'pdf_template_paid'                             => 'Paid PDF Template',
     'pdf_watermark'                                 => 'Enable PDF Watermarks',
+    'pdf_page_numbers'                              => 'Show page numbers in PDF footer',
     'period'                                        => 'Period',
     'personal_information'                          => 'Personal Information',
     'phone'                                         => 'Phone',
