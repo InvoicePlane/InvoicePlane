@@ -1,5 +1,17 @@
 ---
-version: "3"
+# Explicit project name. Without one, Compose derives it from the directory, which
+# this repo's two compose files then SHARE -- and because both declare a volume
+# called `invoiceplane-db`, they resolve to the same `<dir>_invoiceplane-db`.
+# Whichever stack starts first initialises the database, and the other one is left
+# with credentials that were never created: MariaDB only seeds MARIADB_USER /
+# MARIADB_DATABASE on an empty data directory, so the second stack fails with
+# "Access denied for user 'ipdevdb'" even though the network is fine. Naming this
+# project separates its volumes and network from compose.yml's for good.
+#
+# compose.yml  -> self-contained production-style image, port 4895
+# this file    -> development stack, bind-mounts the working tree, port 80
+#                 docker compose -f docker-compose.yml up -d
+name: invoiceplane-dev
 
 networks:
   invoiceplane:
@@ -16,12 +28,13 @@ volumes:
     driver: "local"
 
 services:
-  # --- PHP 8.2
+  # --- PHP (8.4 by default; 8.2, 8.3 and 8.5 are also supported)
   php:
     container_name: "invoiceplane-php"
     build:
       context: ./resources/docker/php-fpm
       args:
+        - PHP_VERSION=8.4
         - PUID=1000
         - PGID=1000
         - TZ=UTC
@@ -68,6 +81,25 @@ services:
       - nginx_logs:/var/log/nginx
       - ./resources/docker/nginx/invoiceplane.conf:/etc/nginx/conf.d/invoiceplane.conf:ro
 
+  # --- Mailpit (SMTP catcher)
+  # Belt and braces with EMAIL_OVERRIDE_TO in ipconfig.php: that redirects every
+  # message to one address, and this makes sure the message cannot leave the
+  # machine at all. Mailpit accepts SMTP on 1025 and never relays onward; read
+  # what was "sent" at http://localhost:8025. Point the app at it with
+  # Settings > Email: method SMTP, server "mailpit", port 1025, no auth.
+  mailpit:
+    container_name: "invoiceplane-mailpit"
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    ports:
+      - "8025:8025"
+    networks:
+      invoiceplane:
+        ipv4_address: 172.25.0.14
+
   # --- MariaDB 10.9
   db:
     container_name: "invoiceplane-db"
@@ -78,8 +110,6 @@ services:
       - MARIADB_USER=ipdevdb
       - MARIADB_PASSWORD=ipdevdb
       - MARIADB_DATABASE=invoiceplane_db
-    ports:
-      - "3306:3306"
     networks:
       invoiceplane:
         ipv4_address: 172.25.0.13
