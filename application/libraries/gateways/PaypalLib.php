@@ -175,7 +175,11 @@ class PaypalLib
     {
         log_message('debug', 'Paypal library authorization started');
         try {
-            $response = $this->client->request('post', 'v1/oauth2/token', [
+            // Must be uppercase. HTTP method tokens are case-sensitive (RFC 9110), and
+            // guzzlehttp/psr7 3 (Guzzle 8) sends the method verbatim -- psr7 2 used to
+            // uppercase it silently. A lowercase 'post' here made PayPal reject the token
+            // request, which failed every PayPal payment.
+            $response = $this->client->request('POST', 'v1/oauth2/token', [
                 'headers' => [
                     'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
