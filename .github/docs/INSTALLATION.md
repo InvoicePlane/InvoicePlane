@@ -110,7 +110,7 @@ The **StartMeUp** phase launches your development environment. Two Docker setups
 
 #### Using Docker (Recommended)
 
-`docker-compose.yml` provides separated `php`/`nginx`/`db`/`phpmyadmin` services that bind-mount
+`docker-compose.yml` provides separated `php`/`nginx`/`db`/`phpmyadmin`/`mailpit` services that bind-mount
 your working tree, so PHP/frontend edits are reflected immediately without a rebuild — this is
 the one to use for active development. (`compose.yml` is the other option: a single
 self-contained image, good for quickly spinning up InvoicePlane to test something, but not for
@@ -140,6 +140,7 @@ docker compose -f docker-compose.yml down
 - **phpMyAdmin**: <http://localhost:8081>
   - Username: `ipdevdb`
   - Password: `ipdevdb`
+- **Mailpit** (outgoing mail is caught here, never delivered): <http://localhost:8025>
 
 #### Without Docker (Alternative)
 
@@ -290,10 +291,11 @@ section covers `docker-compose.yml`, the one for active development.
 
 ### Docker Services Included
 
-- **PHP-FPM**: PHP 8.2
+- **PHP-FPM**: PHP 8.4 by default (set `PHP_VERSION` in `docker-compose.yml` to use 8.2 – 8.5), with Composer
 - **Nginx**: Web server on port 80 (`http://ivpl.local`)
-- **MariaDB**: Database server on port 3306
+- **MariaDB**: `db:3306` inside the stack; not published on the host (use phpMyAdmin)
 - **phpMyAdmin**: Database management on port 8081
+- **Mailpit**: Mail catcher; web UI on port 8025, SMTP for the app at `mailpit:1025`
 
 ### Useful Docker Commands
 
