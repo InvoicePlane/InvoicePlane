@@ -67,6 +67,17 @@ record *why* and *how*.
   development against a copy of production data, where one stray send reaches real
   clients.
 
+- **PHP 8.2 – 8.5, with current PHP dependencies.** `composer.json` now declares
+  `php >= 8.2` and pins the resolver to 8.2 (`config.platform.php`), so a release built on a
+  newer PHP can no longer pull in a dependency that fatals on 8.2 or 8.3. CI lints and runs
+  the test suite on 8.2, 8.3, 8.4 and 8.5, and the lint also fails on compile-time
+  deprecations. Upgraded: phpmailer 6 → 7, guzzle 7 → 8 (psr7 3), stripe-php 14 → 21,
+  endroid/qr-code 4 → 6 with smhg/sepa-qr-data 1 → 3, phpdotenv 5.7, and the dev tools
+  (phpunit 11, php_codesniffer 4, var-dumper 7). `paragonie/random_compat` is removed.
+  The Stripe client now pins API version `2024-04-10`, the version the embedded checkout
+  was built against; stripe-php 21 would otherwise default to a newer API in which
+  `ui_mode: embedded` is not available.
+
 ### Bug fixes
 
 - **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just

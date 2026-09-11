@@ -218,7 +218,7 @@ The **Workflow** phase covers your day-to-day development activities.
     ```bash
     # Ubuntu/Debian
     sudo apt-get update
-    sudo apt-get install nginx mariadb-server php8.1-fpm php8.1-mysql php8.1-mbstring php8.1-xml php8.1-curl
+    sudo apt-get install nginx mariadb-server php8.2-fpm php8.2-mysql php8.2-mbstring php8.2-xml php8.2-curl
     ```
   - Configure Nginx to serve InvoicePlane (see Docker nginx config for reference)
   - Follow the [Development Workflow](#development-workflow) steps
