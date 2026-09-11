@@ -1,6 +1,18 @@
 name: PHPUnit
 
 on:
+  push:
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
+      - 'composer.lock'
+  pull_request:
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
+      - 'composer.lock'
   workflow_dispatch:
     inputs:
       php_version:
@@ -11,6 +23,8 @@ on:
         options:
           - '8.2'
           - '8.3'
+          - '8.4'
+          - '8.5'
       mysql_version:
         description: 'MySQL/MariaDB image'
         required: false
@@ -33,8 +47,15 @@ permissions:
 
 jobs:
   test:
-    name: PHPUnit (PHP ${{ github.event.inputs.php_version || '8.2' }})
+    name: PHPUnit (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
+
+    # Pushes and pull requests run every supported PHP version; a manual dispatch runs
+    # only the version picked in the form.
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', github.event.inputs.php_version)) || fromJSON('["8.2","8.3","8.4","8.5"]') }}
 
     services:
       database:
@@ -57,7 +78,7 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: ${{ github.event.inputs.php_version || '8.2' }}
+          php-version: ${{ matrix.php }}
 
       - name: Copy ipconfig.php
         run: cp ipconfig.php.example ipconfig.php
