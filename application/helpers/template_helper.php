@@ -72,6 +72,15 @@ function render_template_view(string $template_subpath, array $data, bool $retur
  */
 function parse_template($object, $body, bool $escape_values = false)
 {
+    // Optional template fields -- a template with no Cc, Bcc or from-name -- arrive here
+    // as null. Passing null to preg_match_all() below is deprecated since PHP 8.1 and
+    // becomes a TypeError in PHP 9, and it fired on every invoice and quote email. With
+    // nothing to substitute, return the value unchanged: callers test these with a plain
+    // truthiness check, so null and '' keep behaving exactly as before.
+    if ($body === null || $body === '') {
+        return $body;
+    }
+
     $allowed_properties = [
         'client_name',
         'client_surname',
