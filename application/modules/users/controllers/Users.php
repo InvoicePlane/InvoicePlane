@@ -53,23 +53,24 @@ class Users extends Admin_Controller
             redirect('users');
         }
 
-        $id              = $id ? (int) $id : null;
-        $current_user_id = (int) $this->session->userdata('user_id');
+        $id               = $id ? (int) $id : null;
+        $current_user_id  = (int) $this->session->userdata('user_id');
+        $is_self_edit     = $id && $id === $current_user_id;
+        $is_primary_admin = Mdl_Users::is_primary_administrator($current_user_id);
 
-        $this->load->file(dirname(__DIR__) . '/services/UserAuthorizationService.php');
-        $auth = new UserAuthorizationService();
-
-        if ($id && ! $auth->can_edit_user($current_user_id, $id)) {
+        // Object-level authorization: only the primary administrator may edit
+        // another user's record. A peer administrator is limited to its own
+        // account, so it cannot rewrite user_id 1's role, email or password
+        // through this form (CWE-639 / CWE-269).
+        if ($id && ! $is_self_edit && ! $is_primary_admin) {
             show_error(trans('access_denied'), 403);
 
             return;
         }
 
-        $is_self_edit = $id && $id === $current_user_id;
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
-            $db_array            = $this->mdl_users->db_array();
-            $requested_type      = (int) $this->input->post('user_type');
-            $current_user_id_str = (string) $current_user_id;
+            $db_array       = $this->mdl_users->db_array();
+            $requested_type = (int) $this->input->post('user_type');
 
             // Only allow user_type changes through explicit authorization:
             // - New user creation: set the requested type
@@ -213,7 +214,7 @@ class Users extends Admin_Controller
     {
         $acting_user_id = (string) $this->session->userdata('user_id');
 
-        if ((string) $user_id !== $acting_user_id && $acting_user_id !== '1') {
+        if ((string) $user_id !== $acting_user_id && ! Mdl_Users::is_primary_administrator($acting_user_id)) {
             show_error(trans('access_denied'), 403);
 
             return;
@@ -241,7 +242,7 @@ class Users extends Admin_Controller
             return;
         }
 
-        if ($id != 1) {
+        if ( ! Mdl_Users::is_primary_administrator($id)) {
             $this->mdl_users->delete($id);
         }
 

@@ -222,11 +222,14 @@ class Paypal extends Base_Controller
                             $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed'));
                             $this->session->keep_flashdata('alert_error');
                         } else {
-                            error_log('DEBUG: Reached save point. invoice_id=' . $invoice_id . ', amount=' . $amount . ', method_id=' . get_setting('gateway_paypal_payment_method'));
                             // If the payment status is pending, set a note accordingly.
                             $payment_note = ($capture_status === 'PENDING') ? trans('online_payment_pending') : '';
 
-                            $this->mdl_payments->save(null, [
+                            // Record the payment atomically: the balance guard
+                            // and the insert are one conditional UPDATE, so a
+                            // concurrent capture with a different capture_id
+                            // cannot also pass a stale balance and double-credit.
+                            $recorded = $this->mdl_payments->record_external_payment([
                                 'invoice_id'          => $invoice_id,
                                 'payment_date'        => date('Y-m-d'),
                                 'payment_amount'      => $amount,
@@ -235,8 +238,13 @@ class Paypal extends Base_Controller
                                 'payment_external_id' => $capture_id,
                             ]);
 
-                            $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), htmlsc($invoice->invoice_number)));
+                            if ($recorded) {
+                                $this->session->set_flashdata('alert_success', sprintf(trans('online_payment_payment_successful'), htmlsc($invoice->invoice_number)));
+                            } else {
+                                $this->session->set_flashdata('alert_info', trans('online_payment_already_processed'));
+                            }
                             $this->session->keep_flashdata('alert_success');
+                            $this->session->keep_flashdata('alert_info');
                         }
                     }
                 }
