@@ -75,7 +75,10 @@ Found in an internal review; no advisories filed.
   types are introduced. Two new tags, `{{{invoice_days_overdue}}}` and
   `{{{invoice_days_until_due}}}`, are available in any template. Reminders can be suppressed globally, per client, or per
   invoice, and every one that is sent, skipped or failed is recorded in the new
-  `ip_invoice_reminders` table and listed on the invoice.
+  `ip_invoice_reminders` table and listed on the invoice. A reminder that fails to send is
+  not retried on later runs, because a mailer can report failure for a message the server
+  already accepted and a retry could send it twice. It stays marked as failed in the
+  invoice's reminder history so it can be followed up by hand.
 
   Only invoices that are *sent* or *viewed* with a balance still owing are eligible, so
   partially paid invoices are chased for the remainder and drafts and settled invoices are
