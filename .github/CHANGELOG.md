@@ -83,6 +83,19 @@ record *why* and *how*.
   built on, and the default for CI jobs that run a single PHP version. 8.2 remains the
   minimum, and the setup wizard now checks for it (it still checked for 5.6).
 
+- **Development Docker stack (`docker-compose.yml`).** The `php` image defaults to PHP 8.4
+  (the `PHP_VERSION` build argument selects 8.2 – 8.5) and ships Composer, so
+  `docker compose -f docker-compose.yml exec php composer install` works on a fresh clone. A
+  new `mailpit` service catches outgoing mail and never relays it (UI at
+  `http://localhost:8025`, SMTP for the app at `mailpit:1025`). The stack now has an explicit
+  project name, `invoiceplane-dev`: it used to share a directory-derived name with
+  `compose.yml`, so both stacks resolved the same `invoiceplane-db` volume and whichever
+  started second failed with "Access denied for user 'ipdevdb'". MariaDB is no longer
+  published on the host's port 3306; use phpMyAdmin on 8081. **Existing dev databases:** a
+  stack started before this change stored its data in a `<directory>_invoiceplane-db`
+  volume, which the renamed project does not reuse; dump it first, or copy the volume, if
+  you need that data.
+
 ### Bug fixes
 
 - **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just

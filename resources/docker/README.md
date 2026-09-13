@@ -34,12 +34,16 @@ echo "127.0.0.1 ivpl.local" | sudo tee -a /etc/hosts
 docker compose -f docker-compose.yml up -d --build
 ```
 
-Four separate services — `php` ([php-fpm](php-fpm/Dockerfile), **PHP 8.2**), `nginx`
-([nginx](nginx/Dockerfile)), `db` ([mariadb](mariadb/Dockerfile)), and `phpmyadmin`
-([phpmyadmin](phpmyadmin/Dockerfile)) — that bind-mount the working tree into the containers
-rather than building the app into the image. Because of that, PHP dependencies and frontend
-assets must already be installed on the host (`composer install`, `yarn install && yarn build`)
-before starting it — the containers don't do that for you.
+Five separate services — `php` ([php-fpm](php-fpm/Dockerfile), **PHP 8.4** by default; set
+`PHP_VERSION` under the service's build args to use 8.2–8.5), `nginx`
+([nginx](nginx/Dockerfile)), `db` ([mariadb](mariadb/Dockerfile)), `phpmyadmin`
+([phpmyadmin](phpmyadmin/Dockerfile)), and `mailpit`, which catches outgoing mail for
+inspection at `http://localhost:8025` (point SMTP at host `mailpit`, port `1025`) — that
+bind-mount the working tree into the containers rather than building the app into the image.
+Because of that, PHP dependencies and frontend assets must be installed before the app works —
+the containers don't do that on their own. Composer ships in the `php` image
+(`docker compose -f docker-compose.yml exec php composer install`); frontend assets are built on
+the host (`yarn install && yarn build`).
 
 Unlike `compose.yml`, `ipconfig.php` doesn't need to exist beforehand: [`php-fpm`'s
 `dev-entrypoint.sh`](php-fpm/dev-entrypoint.sh) generates one from the environment variables
