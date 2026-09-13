@@ -137,8 +137,21 @@ function invoice_qrcode($invoice_id, $width = 64): string
         $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
 
         if ((float) $invoice->invoice_balance) {
-            $CI->load->library('QrCode', ['invoice' => $invoice]);
-            $qrcode_data_uri = $CI->qrcode->generate();
+            // The QR is a convenience on the page; the invoice is the point. Payment data
+            // that fails SEPA validation -- a negative credit-note balance, a BIC that is
+            // not 8 or 11 characters, a user with no company or name -- throws, and
+            // without this that exception aborted the whole PDF, taking down every invoice
+            // email and payment reminder that attaches it. Omit the QR and log instead.
+            try {
+                $CI->load->library('QrCode', ['invoice' => $invoice]);
+                $qrcode_data_uri = $CI->qrcode->generate();
+            } catch (Throwable $e) {
+                $CI->load->helper('file_security');
+                log_message('error', '[QR Code] Omitted from invoice ' . (int) $invoice_id . ': '
+                    . sanitize_for_logging($e->getMessage()));
+
+                return '';
+            }
 
             $numeric_width = (int) $width;
             $width         = '';

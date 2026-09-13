@@ -4,11 +4,11 @@ inputs:
   php-version:
     description: 'PHP version to use'
     required: false
-    default: '8.2'
+    default: '8.4'
   php-extensions:
     description: 'PHP extensions to install (comma-separated)'
     required: false
-    default: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath'
+    default: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath, gd, curl'
   composer-flags:
     description: 'Flags appended to the composer install command (e.g., --no-dev --optimize-autoloader). Used only when composer-args is empty.'
     required: false

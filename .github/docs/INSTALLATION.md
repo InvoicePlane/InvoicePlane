@@ -25,7 +25,7 @@ Follow the instructions below to install InvoicePlane on your preferred platform
 ## Prerequisites
 
 - **Web Server:** Apache or Nginx
-- **PHP:** Version **8.2 or higher** (PHP 8.3 and 8.4 supported)
+- **PHP:** **8.4** is the default and recommended version. 8.2, 8.3, 8.4 and 8.5 are all supported.
 - **Database:** MariaDB
 - **For Development:** Docker (recommended), Composer, Yarn/npm
 
@@ -144,7 +144,7 @@ docker compose -f docker-compose.yml down
 #### Without Docker (Alternative)
 
 If you're not using Docker, ensure you have:
-- PHP 8.2+ installed and configured
+- PHP 8.4 installed and configured (8.2 – 8.5 are supported)
 - MariaDB running locally
 - Nginx or Apache configured to serve the project directory
 
@@ -210,15 +210,16 @@ The **Workflow** phase covers your day-to-day development activities.
   - Install [Laravel Herd](https://herd.laravel.com/).
   - Place InvoicePlane files in the Herd sites directory.
   - Follow the standard installation steps.
-- **Manual Setup**: Install PHP 8.1+ via Homebrew and follow Linux instructions
+- **Manual Setup**: Install PHP 8.4 via Homebrew (`brew install php@8.4`) and follow Linux instructions
 
 ### Linux
 - **Nginx + MariaDB + PHP Setup** (LEMP Stack):
   - Install required packages:
     ```bash
-    # Ubuntu/Debian
+    # Ubuntu (24.04 ships PHP 8.3; PHP 8.4 comes from the ondrej/php PPA)
+    sudo add-apt-repository -y ppa:ondrej/php
     sudo apt-get update
-    sudo apt-get install nginx mariadb-server php8.1-fpm php8.1-mysql php8.1-mbstring php8.1-xml php8.1-curl
+    sudo apt-get install nginx mariadb-server php8.4-fpm php8.4-mysql php8.4-mbstring php8.4-xml php8.4-curl php8.4-gd php8.4-bcmath
     ```
   - Configure Nginx to serve InvoicePlane (see Docker nginx config for reference)
   - Follow the [Development Workflow](#development-workflow) steps

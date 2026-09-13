@@ -11,8 +11,8 @@ docker compose up -d --build
 
 Builds a single image from [`resources/docker/Containerfile`](Containerfile): a multi-stage
 build that runs `composer install` and `yarn build` for you, then serves the app with Apache on
-**PHP 8.2** (matching the PHP version used across this repo's CI — lint, Pint, PHPUnit, and the
-release build). Configuration is entirely through environment variables — no `ipconfig.php`
+**PHP 8.4**, the default PHP version (8.2 through 8.5 are supported, and CI lints and tests all
+four). Configuration is entirely through environment variables — no `ipconfig.php`
 needed; the [entrypoint](entrypoint.sh) generates it, disables the web setup wizard
 (`DISABLE_SETUP=true`), and runs pending migrations automatically on every start. See
 [CONTAINER_DEPLOYMENT.md](../../.github/docs/CONTAINER_DEPLOYMENT.md) for the full list of

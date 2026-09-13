@@ -17,6 +17,7 @@ audit-report.json
 updated-packages.txt
 pint_output.log
 /.phpunit.result.cache
+/.phpunit.cache/
 
 # Other files
 .htaccess
