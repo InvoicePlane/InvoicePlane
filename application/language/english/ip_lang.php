@@ -896,4 +896,8 @@ $lang = [
     'invoice_days_overdue'              => 'Days overdue',
     'invoice_days_until_due'            => 'Days until due',
 
+    // Email template preview
+    'refresh_preview'  => 'Refresh preview',
+    'expand_preview'   => 'Expand preview to full screen',
+    'collapse_preview' => 'Exit full screen (Esc)',
 ];
