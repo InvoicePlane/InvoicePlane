@@ -84,13 +84,16 @@ class Sessions extends Base_Controller
                 redirect('/');
             }
 
-            //prevent brute force attacks by counting times a token is used
-            $login_log_check = $this->_login_log_check($token);
+            // Prevent brute force attacks by counting times a token is used. The counter is
+            // keyed by the token's digest, not the token: ip_login_log would otherwise hold
+            // reset tokens in the clear, defeating the digest stored in ip_users.
+            $login_log_key   = 'password_reset:' . hash_password_reset_token($token);
+            $login_log_check = $this->_login_log_check($login_log_key);
             if ( ! empty($login_log_check) && $login_log_check->log_count > 10) {
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             } else {
                 //the use of a token counts as a failure
-                $this->_login_log_addfailure($token);
+                $this->_login_log_addfailure($login_log_key);
             }
 
             $this->db->where('user_passwordreset_token', hash_password_reset_token($token));
@@ -110,7 +113,7 @@ class Sessions extends Base_Controller
 
             //if token is valid, delete the failure attempt from
             //the login_log table
-            $this->_login_log_reset($token);
+            $this->_login_log_reset($login_log_key);
 
             $formdata = [
                 'token'   => $token,
