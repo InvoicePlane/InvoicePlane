@@ -78,6 +78,11 @@ record *why* and *how*.
   was built against; stripe-php 21 would otherwise default to a newer API in which
   `ui_mode: embedded` is not available.
 
+  **PHP 8.4 is the default.** It is the recommended version for new installs, the version the
+  production container image (`resources/docker/Containerfile`) and release packages are
+  built on, and the default for CI jobs that run a single PHP version. 8.2 remains the
+  minimum, and the setup wizard now checks for it (it still checked for 5.6).
+
 ### Bug fixes
 
 - **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just

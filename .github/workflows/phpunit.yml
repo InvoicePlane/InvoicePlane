@@ -18,7 +18,7 @@ on:
       php_version:
         description: 'PHP version'
         required: false
-        default: '8.2'
+        default: '8.4'
         type: choice
         options:
           - '8.2'

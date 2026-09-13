@@ -374,10 +374,11 @@ class Setup extends MX_Controller
     {
         $checks = [];
 
-        $php_required  = '5.6';
+        $php_required  = '8.2';
         $php_installed = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 
-        if ($php_installed < $php_required) {
+        // version_compare(), not <: numeric strings compare as numbers, so '8.10' < '8.2'.
+        if (version_compare($php_installed, $php_required, '<')) {
             $this->errors += 1;
 
             $checks[] = [

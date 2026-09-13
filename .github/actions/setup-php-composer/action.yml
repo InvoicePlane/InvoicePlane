@@ -4,7 +4,7 @@ inputs:
   php-version:
     description: 'PHP version to use'
     required: false
-    default: '8.2'
+    default: '8.4'
   php-extensions:
     description: 'PHP extensions to install (comma-separated)'
     required: false
