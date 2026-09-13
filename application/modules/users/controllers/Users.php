@@ -225,6 +225,15 @@ class Users extends Admin_Controller
 
         if ($this->mdl_users->run_validation('validation_rules_change_password')) {
             $this->mdl_users->save_change_password($user_id, $this->input->post('user_password'));
+
+            // Every session created with the old password ends on its next request (User_Controller).
+            // Keep the acting user's own session when they changed their own password.
+            if ((string) $user_id === $acting_user_id) {
+                $this->load->helper('ip_security');
+                $new_hash = (string) $this->mdl_users->get_by_id($user_id)->user_password;
+                $this->session->set_userdata('user_credential', session_credential_fingerprint($new_hash));
+            }
+
             redirect('users/form/' . $user_id);
         }
 
