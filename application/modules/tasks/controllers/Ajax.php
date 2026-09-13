@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
+    public $ajax_controller = true;
+
     /**
      * @param null|int $invoice_id
      */
