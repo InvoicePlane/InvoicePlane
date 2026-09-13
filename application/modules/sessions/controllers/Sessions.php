@@ -74,6 +74,8 @@ class Sessions extends Base_Controller
         if ( ! function_exists('get_safe_referer')) {
             $this->load->helper('security');
         }
+        // hash_password_reset_token(): tokens are stored as digests
+        $this->load->helper('ip_security');
 
         // Check if a token was provided
         if ($token) {
@@ -91,7 +93,7 @@ class Sessions extends Base_Controller
                 $this->_login_log_addfailure($token);
             }
 
-            $this->db->where('user_passwordreset_token', $token);
+            $this->db->where('user_passwordreset_token', hash_password_reset_token($token));
             $user = $this->db->get('ip_users');
             $user = $user->row();
 
@@ -128,12 +130,18 @@ class Sessions extends Base_Controller
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
 
-            $new_password = $this->input->post('new_password', true);
+            $new_password = (string) $this->input->post('new_password');
             $user_id      = $this->input->post('user_id', true);
 
-            if (empty($user_id) || empty($new_password)) {
+            if (empty($user_id) || $new_password === '') {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
+            }
+
+            // Same minimum as Mdl_users::validation_rules() / validation_rules_change_password()
+            if (mb_strlen($new_password) < 8) {
+                $this->session->set_flashdata('alert_error', strtr(trans('form_validation_min_length'), ['{field}' => trans('password'), '{param}' => 8]));
+                redirect(get_safe_referer('', 'sessions/passwordreset/' . rawurlencode((string) $this->input->post('token'))));
             }
 
             $this->load->model('users/mdl_users');
@@ -149,7 +157,7 @@ class Sessions extends Base_Controller
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
 
-            if (empty($user->user_passwordreset_token) || ! hash_equals((string) $user->user_passwordreset_token, (string) $this->input->post('token'))) {
+            if (empty($user->user_passwordreset_token) || ! hash_equals((string) $user->user_passwordreset_token, hash_password_reset_token((string) $this->input->post('token')))) {
                 $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
@@ -255,7 +263,7 @@ class Sessions extends Base_Controller
 
                 // Save the token and expiry to the database
                 $db_array = [
-                    'user_passwordreset_token'        => $token,
+                    'user_passwordreset_token'        => hash_password_reset_token($token),
                     'user_passwordreset_token_expiry' => $expiry_timestamp,
                 ];
 
