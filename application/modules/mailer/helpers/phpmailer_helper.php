@@ -138,6 +138,41 @@ function phpmail_send(
         $mail->setFrom($from);
     }
 
+    // Development safety net. With EMAIL_OVERRIDE_TO set in ipconfig.php, every
+    // message goes to that one address instead of its real recipients -- no client
+    // ever receives mail from a development copy of the database. This is enforced
+    // here because phpmail_send() is the choke point outbound mail passes through:
+    // invoices, quotes, quote-status notices, payment receipts, reminders and
+    // password resets alike. The one sender that bypasses it, the password-reset
+    // fallback in Sessions::passwordreset() used when no mailer is configured,
+    // applies the override itself. Leave it empty in production.
+    $email_override = trim((string) env('EMAIL_OVERRIDE_TO', ''));
+
+    if ($email_override !== '') {
+        $intended = array_filter([
+            'To: ' . $to,
+            $cc ? 'Cc: ' . $cc : '',
+            $bcc ? 'Bcc: ' . $bcc : '',
+        ]);
+
+        // Header values are built from database content (client addresses), so CR/LF
+        // is stripped before it reaches a header to prevent header injection.
+        $intended_header = str_replace(["\r", "\n"], ' ', implode('; ', $intended));
+
+        $mail->Subject = '[DEV] ' . $subject;
+        $mail->addCustomHeader('X-InvoicePlane-Intended-Recipients', $intended_header);
+        $mail->Body = '<div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;'
+            . 'padding:12px;margin-bottom:16px;font-family:sans-serif;font-size:13px;">'
+            . '<strong>Development copy.</strong> This message was redirected to you. '
+            . 'It would have been sent to &mdash; ' . html_escape($intended_header)
+            . '</div>' . $message;
+        $mail->AltBody = $mail->normalizeBreaks($mail->html2text($mail->Body));
+
+        $to  = $email_override;
+        $cc  = null;
+        $bcc = null;
+    }
+
     // Allow multiple recipients delimited by comma or semicolon
     $to = (str_contains($to, ',')) ? explode(',', $to) : explode(';', $to);
 
@@ -165,7 +200,9 @@ function phpmail_send(
         }
     }
 
-    if (get_setting('bcc_mails_to_admin') == 1) {
+    // Skipped under an override: silently BCC'ing the admin would put a second,
+    // unredirected address back on a message the override exists to contain.
+    if ($email_override === '' && get_setting('bcc_mails_to_admin') == 1) {
         // Get email address of admin account and push it to the array
         $CI->load->model('users/mdl_users');
         $CI->db->where('user_id', 1);

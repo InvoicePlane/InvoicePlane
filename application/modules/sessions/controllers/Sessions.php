@@ -290,10 +290,15 @@ class Sessions extends Base_Controller
                     $config['mailtype'] = 'html';
                     $this->email->initialize($config);
 
+                    // This path bypasses phpmail_send(), so it applies EMAIL_OVERRIDE_TO
+                    // itself; otherwise a development copy with no mailer configured
+                    // could still mail a real user.
+                    $email_override = trim((string) env('EMAIL_OVERRIDE_TO', ''));
+
                     // Set the email params
                     $this->email->from($email_from);
-                    $this->email->to($email);
-                    $this->email->subject(trans('password_reset'));
+                    $this->email->to($email_override !== '' ? $email_override : $email);
+                    $this->email->subject(($email_override !== '' ? '[DEV] ' : '') . trans('password_reset'));
                     $this->email->message($email_message);
 
                     // Send the reset email

@@ -55,6 +55,18 @@ record *why* and *how*.
   **Take a database backup before upgrading:** `ALTER TABLE ... ENGINE` rebuilds each table
   and holds a write lock while it runs.
 
+- **`EMAIL_OVERRIDE_TO` — development mail safety net.** New optional `ipconfig.php`
+  setting. When it holds an address, every outbound email is delivered there instead of
+  to its real recipients: invoices, quotes, quote-status notices, payment receipts,
+  overdue reminders and password resets alike. `phpmail_send()` enforces it for
+  everything it sends, and the password-reset fallback that uses CodeIgniter's own
+  mailer when no mailer is configured applies it too. The intended To/Cc/Bcc appear in a
+  banner at the top of the message and in an `X-InvoicePlane-Intended-Recipients` header,
+  the subject is prefixed `[DEV]`, and `bcc_mails_to_admin` is skipped so no second, unredirected
+  copy escapes. Empty by default, and it must stay empty in production. Intended for
+  development against a copy of production data, where one stray send reaches real
+  clients.
+
 ### Bug fixes
 
 - **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just
