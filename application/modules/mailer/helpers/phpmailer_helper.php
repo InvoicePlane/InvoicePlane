@@ -38,6 +38,34 @@ function phpmailer_debug_output(string $str, int $level = 0): void
 }
 
 /**
+ * The intended-recipients line for a message redirected by EMAIL_OVERRIDE_TO, safe to use
+ * as a header value: addresses come from the database, so CR/LF is stripped to prevent
+ * header injection.
+ */
+function email_override_intended_recipients(string $to, ?string $cc = null, ?string $bcc = null): string
+{
+    $intended = array_filter([
+        'To: ' . $to,
+        $cc ? 'Cc: ' . $cc : '',
+        $bcc ? 'Bcc: ' . $bcc : '',
+    ]);
+
+    return str_replace(["\r", "\n"], ' ', implode('; ', $intended));
+}
+
+/**
+ * The banner put above the body of a message redirected by EMAIL_OVERRIDE_TO.
+ */
+function email_override_banner(string $intended_recipients): string
+{
+    return '<div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;'
+        . 'padding:12px;margin-bottom:16px;font-family:sans-serif;font-size:13px;">'
+        . '<strong>Development copy.</strong> This message was redirected to you. '
+        . 'It would have been sent to &mdash; ' . html_escape($intended_recipients)
+        . '</div>';
+}
+
+/**
  * @param $from
  * @param $to
  * @param $subject
@@ -149,23 +177,11 @@ function phpmail_send(
     $email_override = trim((string) env('EMAIL_OVERRIDE_TO', ''));
 
     if ($email_override !== '') {
-        $intended = array_filter([
-            'To: ' . $to,
-            $cc ? 'Cc: ' . $cc : '',
-            $bcc ? 'Bcc: ' . $bcc : '',
-        ]);
-
-        // Header values are built from database content (client addresses), so CR/LF
-        // is stripped before it reaches a header to prevent header injection.
-        $intended_header = str_replace(["\r", "\n"], ' ', implode('; ', $intended));
+        $intended_header = email_override_intended_recipients((string) $to, $cc ?: null, $bcc ?: null);
 
         $mail->Subject = '[DEV] ' . $subject;
         $mail->addCustomHeader('X-InvoicePlane-Intended-Recipients', $intended_header);
-        $mail->Body = '<div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;'
-            . 'padding:12px;margin-bottom:16px;font-family:sans-serif;font-size:13px;">'
-            . '<strong>Development copy.</strong> This message was redirected to you. '
-            . 'It would have been sent to &mdash; ' . html_escape($intended_header)
-            . '</div>' . $message;
+        $mail->Body    = email_override_banner($intended_header) . $message;
         $mail->AltBody = $mail->normalizeBreaks($mail->html2text($mail->Body));
 
         $to  = $email_override;
