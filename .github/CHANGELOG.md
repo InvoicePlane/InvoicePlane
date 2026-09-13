@@ -14,6 +14,51 @@ record *why* and *how*.
 
 ## [Unreleased]
 
+### Security fixes
+
+Found in an internal review; no advisories filed.
+
+- **nginx served private files.** The bundled `resources/docker/nginx/invoiceplane.conf` served
+  the whole project directory, and nginx ignores the `.htaccess` files that protect private
+  paths on Apache. Archived invoice PDFs in `uploads/archive` (named after date and invoice
+  number) could be downloaded without logging in. So could customer attachments, import files,
+  `vendor/` scripts (including PHPMailer's `get_oauth_token.php` and mPDF's `data/out.php`),
+  `application/` and the composer files. The config now refuses these paths and runs only
+  `index.php` as PHP. The Apache `htaccess` also blocks `vendor/`, `application/`,
+  `resources/`, dotfiles and project files. **If you run nginx with your own config, add the
+  same deny rules** (see the installation guide).
+- **Security headers on every page.** `X-Frame-Options`, `Content-Security-Policy: frame-ancestors`,
+  `X-Content-Type-Options` and `Referrer-Policy` were sent only on admin pages. The login page,
+  client portal and public invoice/quote/payment pages could be framed (clickjacking of quote
+  approval, for example). Public invoice URLs, which contain the invoice's access key, were
+  also sent to third-party payment scripts in the `Referer` header. `index.php` now sends
+  these headers for every response.
+- **Changing or resetting a password now ends the user's other sessions.** Sessions last up to
+  10 days and survived a password change. The routine meant to delete a user's sessions could
+  not read PHP's session file format, so it never deleted any. Sessions are now tied to the
+  password they were created with and checked on every request. The user who changes their
+  own password stays logged in, and the file-based cleanup routine works.
+- **Password reset tokens are stored as SHA-256 digests**, so reading the users table no longer
+  yields a working reset link. Links requested before upgrading stop working; request a new one.
+- **8-character minimum password length on every path.** Changing a password or resetting it
+  now enforces the same minimum as creating a user. The reset form also no longer runs the new
+  password through the XSS filter, which could silently alter it.
+- **Internal `Layout` controller was reachable by URL** (`/layout/load_view/…`,
+  `/layout/render/…`) without logging in, rendering views and PHP error output. It now returns
+  404 when routed.
+- **Output escaping:**
+  - the client country (which is not restricted to known codes and can come from CSV import)
+    on client, invoice, quote, client-portal and payment pages
+  - the user name link on the client view
+  - the email column of the user list
+  - values echoed back by the setup wizard's database form
+  - the pagination links
+- **The cron endpoints reject an empty cron key.** Previously an empty `cron_key` setting matched
+  a request with no key. This covers both `invoices/cron/recur` and `invoices/cron/reminders`,
+  which share the same key check.
+- **Errors are hidden if `CI_ENV` is missing** from `ipconfig.php`. `index.php` used to fall back
+  to `development`, which shows PHP errors, stack traces and SQL to visitors.
+
 ### Features
 
 - **Automatic payment reminder emails.** Invoices generated from a recurring schedule were
