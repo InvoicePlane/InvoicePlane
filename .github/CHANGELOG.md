@@ -32,7 +32,8 @@ Found in an internal review; no advisories filed.
   client portal and public invoice/quote/payment pages could be framed (clickjacking of quote
   approval, for example). Public invoice URLs, which contain the invoice's access key, were
   also sent to third-party payment scripts in the `Referer` header. `index.php` now sends
-  these headers for every response.
+  these headers for every response. `X_FRAME_OPTIONS` accepts `SAMEORIGIN` or `DENY`; any
+  other value falls back to `SAMEORIGIN`.
 - **Changing or resetting a password now ends the user's other sessions.** Sessions last up to
   10 days and survived a password change. The routine meant to delete a user's sessions could
   not read PHP's session file format, so it never deleted any. Sessions are now tied to the
