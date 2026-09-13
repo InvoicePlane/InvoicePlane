@@ -32,7 +32,8 @@ Found in an internal review; no advisories filed.
   client portal and public invoice/quote/payment pages could be framed (clickjacking of quote
   approval, for example). Public invoice URLs, which contain the invoice's access key, were
   also sent to third-party payment scripts in the `Referer` header. `index.php` now sends
-  these headers for every response.
+  these headers for every response. `X_FRAME_OPTIONS` accepts `SAMEORIGIN` or `DENY`; any
+  other value falls back to `SAMEORIGIN`.
 - **Changing or resetting a password now ends the user's other sessions.** Sessions last up to
   10 days and survived a password change. The routine meant to delete a user's sessions could
   not read PHP's session file format, so it never deleted any. Sessions are now tied to the
@@ -96,8 +97,9 @@ Found in an internal review; no advisories filed.
   New installs are created as InnoDB, and upgrading installs are converted by migration
   `046_1.7.3.sql`. The conversion reads the live table list rather than assuming a fixed
   one (`ip_sessions` and `ip_login_log` were created with no `ENGINE` clause and inherit the
-  server default), touches only tables that are actually MyISAM, and is safe to re-run.
-  **Take a database backup before upgrading:** `ALTER TABLE ... ENGINE` rebuilds each table
+  server default), touches only tables that are actually MyISAM, and is safe to re-run. If a
+  table fails to convert, the migration is not recorded as applied, so **Try again** in the
+  setup wizard retries it. **Take a database backup before upgrading:** `ALTER TABLE ... ENGINE` rebuilds each table
   and holds a write lock while it runs.
 
 - **`EMAIL_OVERRIDE_TO` — development mail safety net.** New optional `ipconfig.php`

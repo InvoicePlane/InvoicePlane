@@ -101,16 +101,18 @@ if ( ! function_exists('reminder_overdue_offsets')) {
         if ($repeat_days > 0) {
             // The tail continues from the last configured offset, or from the due date
             // itself when no fixed offsets are configured at all.
-            $cursor    = $after === [] ? 0 : max($after);
-            $generated = 0;
-            while ($generated < REMINDER_MAX_GENERATED_OFFSETS) {
-                $cursor += $repeat_days;
-                if ($cursor > $days_overdue) {
-                    break;
-                }
+            $start = $after === [] ? 0 : max($after);
 
-                $reached[] = $cursor;
-                $generated++;
+            if ($days_overdue > $start) {
+                // Work back from the most recent repeat that has been reached. Counting
+                // forward from $start instead would stop at the cap, and once those
+                // offsets were all logged an old invoice would never be chased again.
+                $latest = $start + intdiv($days_overdue - $start, $repeat_days) * $repeat_days;
+                $first  = max($start + $repeat_days, $latest - (REMINDER_MAX_GENERATED_OFFSETS - 1) * $repeat_days);
+
+                for ($offset = $first; $offset <= $latest; $offset += $repeat_days) {
+                    $reached[] = $offset;
+                }
             }
         }
 

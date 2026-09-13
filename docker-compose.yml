@@ -95,7 +95,8 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
     ports:
-      - "8025:8025"
+      # Loopback only: the UI has no authentication and shows every caught message.
+      - "127.0.0.1:8025:8025"
     networks:
       invoiceplane:
         ipv4_address: 172.25.0.14
