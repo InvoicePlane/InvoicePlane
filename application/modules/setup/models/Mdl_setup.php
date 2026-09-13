@@ -415,6 +415,81 @@ class Mdl_Setup extends CI_Model
         $this->session->set_userdata('setup_notice', $setup_notice);
     }
 
+    public function upgrade_046_1_7_3()
+    {
+        $this->convert_tables_to_innodb();
+    }
+
+    /**
+     * Convert every remaining MyISAM table in this schema to InnoDB.
+     *
+     * MyISAM has no transactions, no crash recovery and locks whole tables on write.
+     * The application already assumes otherwise: Cron::recur() wraps recurring invoice
+     * creation in trans_start()/trans_complete(), which silently does nothing under
+     * MyISAM, so a failed invoice copy could advance the recurring schedule without
+     * ever generating the invoice. Converting makes that rollback real.
+     *
+     * The table list is read from information_schema instead of being hardcoded:
+     * ip_sessions and ip_login_log were created without an ENGINE clause and inherit
+     * the server default, installs may have been converted by hand already, and an
+     * install upgrading from an old version may not have every table yet. Only tables
+     * that exist and are actually MyISAM are touched, so re-running is a no-op.
+     *
+     * Note for large installs: ALTER TABLE ... ENGINE rebuilds the table and holds a
+     * write lock for its duration. Take a backup first.
+     */
+    private function convert_tables_to_innodb(): void
+    {
+        $this->db->db_debug = IP_DEBUG;
+
+        $tables = $this->db->query(
+            "SELECT TABLE_NAME AS table_name
+               FROM information_schema.TABLES
+              WHERE TABLE_SCHEMA = DATABASE()
+                AND ENGINE = 'MyISAM'"
+        );
+
+        $error = $this->db->error();
+        if ($error['code'] !== 0) {
+            // Typically a permissions problem reading information_schema. Not fatal:
+            // the upgrade should not be blocked by an optional storage-engine change.
+            $this->errors[] = 'Could not read table engines, skipped InnoDB conversion: ' . $error['message'];
+
+            return;
+        }
+
+        if ( ! $tables) {
+            return;
+        }
+
+        $converted = 0;
+        foreach ($tables->result() as $table) {
+            $table_name = (string) $table->table_name;
+
+            // The name comes from information_schema rather than user input, but it is
+            // interpolated into DDL that cannot be parameterised, so it is checked
+            // against the expected shape before being used as an identifier.
+            if (preg_match('/^ip_[a-z0-9_]+$/i', $table_name) !== 1) {
+                continue;
+            }
+
+            $this->db->db_debug = IP_DEBUG;
+            $this->db->query('ALTER TABLE `' . $table_name . '` ENGINE=InnoDB');
+
+            $error = $this->db->error();
+            if ($error['code'] !== 0) {
+                $this->errors[] = 'Could not convert ' . $table_name . ' to InnoDB: ' . $error['message'];
+                continue;
+            }
+
+            $converted++;
+        }
+
+        if ($converted > 0) {
+            log_message('info', '[Setup] Converted ' . $converted . ' table(s) from MyISAM to InnoDB');
+        }
+    }
+
     /**
      * @param string $contents
      */

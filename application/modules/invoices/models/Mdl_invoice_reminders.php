@@ -141,9 +141,10 @@ class Mdl_Invoice_Reminders extends MY_Model
      *
      * INSERT IGNORE leans on the idx_reminder_slot unique key: if a concurrent cron run
      * already holds this slot the insert is a no-op, affected_rows() is 0 and the caller
-     * skips the send. These tables are MyISAM, so there is no transaction to fall back
-     * on and the unique index is the only real guard — this mirrors the atomic upsert
-     * the cron rate limiter already uses in Cron.php.
+     * skips the send. The unique index is the guard rather than a transaction: the email
+     * leaves the building outside the database, so a transaction could not stop two
+     * separate cron requests from each sending it. This mirrors the atomic upsert the
+     * cron rate limiter already uses in Cron.php.
      */
     public function claim(int $invoice_id, string $type, int $offset, string $status = 'pending'): bool
     {

@@ -41,6 +41,20 @@ record *why* and *how*.
   one catch-up email per invoice rather than a burst of stale ones. The feature ships
   disabled with no offsets configured, so upgrading changes nothing until it is switched on.
 
+### Changes
+
+- **All database tables are now InnoDB.** The schema had been MyISAM since 1.0.0, which has
+  no transactions, no crash recovery and locks whole tables on write. The application
+  already assumed otherwise — `Cron::recur()` wraps recurring invoice creation in
+  `trans_start()`/`trans_complete()`, which under MyISAM silently did nothing, so a failed
+  invoice copy could advance the recurring schedule without ever generating the invoice.
+  New installs are created as InnoDB, and upgrading installs are converted by migration
+  `046_1.7.3.sql`. The conversion reads the live table list rather than assuming a fixed
+  one (`ip_sessions` and `ip_login_log` were created with no `ENGINE` clause and inherit the
+  server default), touches only tables that are actually MyISAM, and is safe to re-run.
+  **Take a database backup before upgrading:** `ALTER TABLE ... ENGINE` rebuilds each table
+  and holds a write lock while it runs.
+
 ### Bug fixes
 
 - **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just
