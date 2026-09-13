@@ -20,6 +20,14 @@ if ( ! defined('BASEPATH')) {
  * sends the same reminder twice and never aborts the whole run over one bad record.
  * The scheduling decisions themselves live in invoice_reminder_helper.php as pure
  * functions; this class is the part that touches the database and the mailer.
+ *
+ * Failed reminders are not retried, by design. A mailer can report failure after the
+ * SMTP server has already accepted the message (a timeout waiting for the final reply),
+ * so retrying risks exactly the duplicate this class exists to prevent. Most other
+ * failures (an invalid address, a broken template) would fail again on every run and
+ * log the same error nightly. A failed slot therefore keeps its row, stays out of
+ * later runs, and shows as failed in the invoice's reminder history, where an admin
+ * can see it and send the invoice by hand.
  */
 #[AllowDynamicProperties]
 class Invoice_reminders
@@ -278,6 +286,10 @@ class Invoice_reminders
         return true;
     }
 
+    /**
+     * Record a failed send. The row is kept on purpose so the slot is never retried; see
+     * the class docblock for why.
+     */
     private function fail(int $invoice_id, string $type, int $offset, string $reason): void
     {
         $this->CI->mdl_invoice_reminders->mark_result($invoice_id, $type, $offset, 'failed');
