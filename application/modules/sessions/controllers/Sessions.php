@@ -299,14 +299,26 @@ class Sessions extends Base_Controller
                     $this->email->initialize($config);
 
                     // This path bypasses phpmail_send(), so it applies EMAIL_OVERRIDE_TO
-                    // itself; otherwise a development copy with no mailer configured
-                    // could still mail a real user.
+                    // itself, the same way: otherwise a development copy with no mailer
+                    // configured could still mail a real user.
                     $email_override = trim((string) env('EMAIL_OVERRIDE_TO', ''));
+                    $email_to       = $email;
+                    $email_subject  = trans('password_reset');
+
+                    if ($email_override !== '') {
+                        $this->load->helper('mailer/phpmailer');
+                        $intended = email_override_intended_recipients($email);
+
+                        $email_to      = $email_override;
+                        $email_subject = '[DEV] ' . $email_subject;
+                        $email_message = email_override_banner($intended) . $email_message;
+                        $this->email->set_header('X-InvoicePlane-Intended-Recipients', $intended);
+                    }
 
                     // Set the email params
                     $this->email->from($email_from);
-                    $this->email->to($email_override !== '' ? $email_override : $email);
-                    $this->email->subject(($email_override !== '' ? '[DEV] ' : '') . trans('password_reset'));
+                    $this->email->to($email_to);
+                    $this->email->subject($email_subject);
                     $this->email->message($email_message);
 
                     // Send the reset email
