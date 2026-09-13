@@ -96,8 +96,9 @@ Found in an internal review; no advisories filed.
   New installs are created as InnoDB, and upgrading installs are converted by migration
   `046_1.7.3.sql`. The conversion reads the live table list rather than assuming a fixed
   one (`ip_sessions` and `ip_login_log` were created with no `ENGINE` clause and inherit the
-  server default), touches only tables that are actually MyISAM, and is safe to re-run.
-  **Take a database backup before upgrading:** `ALTER TABLE ... ENGINE` rebuilds each table
+  server default), touches only tables that are actually MyISAM, and is safe to re-run. If a
+  table fails to convert, the migration is not recorded as applied, so **Try again** in the
+  setup wizard retries it. **Take a database backup before upgrading:** `ALTER TABLE ... ENGINE` rebuilds each table
   and holds a write lock while it runs.
 
 - **`EMAIL_OVERRIDE_TO` — development mail safety net.** New optional `ipconfig.php`

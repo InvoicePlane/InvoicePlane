@@ -99,7 +99,12 @@ class Mdl_Setup extends CI_Model
                 continue;
             }
 
-            $this->{$upgrade_method}();
+            // A hook that returns false did not finish its data change. Forget the version
+            // so "Try again" repeats the hook instead of skipping a migration that is
+            // already recorded as applied.
+            if ($this->{$upgrade_method}() === false) {
+                $this->db->where('version_file', $sql_file)->delete('ip_versions');
+            }
         }
 
         if ($this->errors) {
@@ -415,9 +420,9 @@ class Mdl_Setup extends CI_Model
         $this->session->set_userdata('setup_notice', $setup_notice);
     }
 
-    public function upgrade_046_1_7_3()
+    public function upgrade_046_1_7_3(): bool
     {
-        $this->convert_tables_to_innodb();
+        return $this->convert_tables_to_innodb();
     }
 
     /**
@@ -437,8 +442,10 @@ class Mdl_Setup extends CI_Model
      *
      * Note for large installs: ALTER TABLE ... ENGINE rebuilds the table and holds a
      * write lock for its duration. Take a backup first.
+     *
+     * @return bool false when a table failed to convert, so the migration is retried
      */
-    private function convert_tables_to_innodb(): void
+    private function convert_tables_to_innodb(): bool
     {
         $this->db->db_debug = IP_DEBUG;
 
@@ -453,16 +460,18 @@ class Mdl_Setup extends CI_Model
         if ($error['code'] !== 0) {
             // Typically a permissions problem reading information_schema. Not fatal:
             // the upgrade should not be blocked by an optional storage-engine change.
+            // Retrying would fail the same way every time, so the migration stays recorded.
             $this->errors[] = 'Could not read table engines, skipped InnoDB conversion: ' . $error['message'];
 
-            return;
+            return true;
         }
 
         if ( ! $tables) {
-            return;
+            return true;
         }
 
         $converted = 0;
+        $failed    = 0;
         foreach ($tables->result() as $table) {
             $table_name = (string) $table->table_name;
 
@@ -479,6 +488,7 @@ class Mdl_Setup extends CI_Model
             $error = $this->db->error();
             if ($error['code'] !== 0) {
                 $this->errors[] = 'Could not convert ' . $table_name . ' to InnoDB: ' . $error['message'];
+                $failed++;
                 continue;
             }
 
@@ -488,6 +498,8 @@ class Mdl_Setup extends CI_Model
         if ($converted > 0) {
             log_message('info', '[Setup] Converted ' . $converted . ' table(s) from MyISAM to InnoDB');
         }
+
+        return $failed === 0;
     }
 
     /**
