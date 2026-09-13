@@ -68,7 +68,8 @@ class Cron extends Base_Controller
         }
 
         // Check the provided cron key
-        if ( ! hash_equals((string) get_setting('cron_key'), (string) $cron_key)) {
+        $configured_key = (string) get_setting('cron_key');
+        if ($configured_key === '' || ! hash_equals($configured_key, (string) $cron_key)) {
             $this->_record_cron_rate_limit_attempt();
             log_message('error', '[Cron] Wrong cron key provided! '
                 . sanitize_for_logging((string) $cron_key));

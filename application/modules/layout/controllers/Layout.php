@@ -19,6 +19,16 @@ class Layout extends MX_Controller
     public $view_data = [];
 
     /**
+     * CodeIgniter calls _remap() only when a URL routes to this controller; other controllers use
+     * buffer()/set()/render() directly. Without this, /layout/load_view/... and /layout/render/...
+     * rendered views for anyone, logged in or not.
+     */
+    public function _remap($method, $params = []): void
+    {
+        show_404();
+    }
+
+    /**
      * @return $this
      */
     public function buffer(...$args): static
