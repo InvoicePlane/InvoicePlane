@@ -143,13 +143,18 @@ function parse_template($object, $body, bool $escape_values = false)
                     break;
                 case 'invoice_days_overdue':
                 case 'invoice_days_until_due':
-                    // Computed in PHP rather than read from the model's
-                    // DATEDIFF(NOW(), ...) column so the number in the email agrees
-                    // with the reminder scheduler, which also works in PHP's timezone.
-                    // MySQL's timezone is frequently different, and a day's drift here
-                    // would contradict the reminder that triggered the email.
-                    $due     = new DateTimeImmutable($object->invoice_date_due);
-                    $days    = (int) (new DateTimeImmutable('today'))->diff($due)->format('%r%a');
+                    // Prefer the model's DATEDIFF(NOW(), invoice_date_due) column: the
+                    // reminder scheduler counts days with MySQL's DATEDIFF(CURDATE(), ...)
+                    // too, so the number in the email matches the reminder that triggered
+                    // it even when PHP and MySQL run in different timezones. Objects
+                    // loaded without that column fall back to PHP's clock.
+                    if (isset($object->days_overdue) && is_numeric($object->days_overdue)) {
+                        $days = -(int) $object->days_overdue;
+                    } else {
+                        $due  = new DateTimeImmutable($object->invoice_date_due);
+                        $days = (int) (new DateTimeImmutable('today'))->diff($due)->format('%r%a');
+                    }
+
                     $replace = (string) max(0, $var === 'invoice_days_overdue' ? -$days : $days);
                     break;
                 case 'invoice_date_created':
