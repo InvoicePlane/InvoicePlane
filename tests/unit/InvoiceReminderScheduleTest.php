@@ -152,6 +152,34 @@ class InvoiceReminderScheduleTest extends TestCase
     }
 
     #[Test]
+    public function it_keeps_sending_repeat_reminders_for_a_very_old_invoice(): void
+    {
+        // The capped window must end at the newest repeat offset. If it started from the
+        // last configured offset instead, the next run would regenerate the same
+        // already-logged window and the invoice would never be chased again.
+        $first = reminder_schedule_for_invoice(5000, [], [1], 1, []);
+        $this->assertSame(['type' => 'overdue', 'offset' => 5000], $first['send']);
+
+        $logged = array_map(
+            static fn (array $slot): string => reminder_slot_key($slot['type'], $slot['offset']),
+            [...$first['skip'], $first['send']]
+        );
+
+        $next = reminder_schedule_for_invoice(5001, [], [1], 1, $logged);
+        $this->assertSame(['type' => 'overdue', 'offset' => 5001], $next['send']);
+    }
+
+    #[Test]
+    public function it_keeps_repeat_offsets_aligned_to_the_interval_for_a_very_old_invoice(): void
+    {
+        // Repeats run every 7 days from the last configured offset (14): day 5000 has
+        // most recently reached 14 + 712 * 7 = 4998.
+        $plan = reminder_schedule_for_invoice(5000, [], self::AFTER, 7, []);
+
+        $this->assertSame(['type' => 'overdue', 'offset' => 4998], $plan['send']);
+    }
+
+    #[Test]
     public function it_sends_each_offset_exactly_once_over_the_life_of_an_invoice(): void
     {
         // Walk a daily cron from 10 days before due to 30 days overdue and assert
