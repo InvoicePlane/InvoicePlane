@@ -49,6 +49,30 @@ function env_bool($env_key, $default = 'false'): bool
 
 // Enable debug mode if set
 define('IP_DEBUG', env_bool('ENABLE_DEBUG'));
+
+/*
+ *---------------------------------------------------------------
+ * SECURITY HEADERS
+ *---------------------------------------------------------------
+ *
+ * Sent for every web response. They used to be set only by Admin_Controller, leaving the login
+ * page, the client portal and the public invoice/quote/payment pages frameable (clickjacking,
+ * e.g. of quote approval) and letting browsers send public invoice URLs -- which contain the
+ * invoice's secret access key -- to third-party payment scripts in the Referer header.
+ */
+if (PHP_SAPI !== 'cli' && ! headers_sent()) {
+    $ip_frame_options = mb_strtoupper(str_replace(["\r", "\n"], '', (string) env('X_FRAME_OPTIONS', 'SAMEORIGIN')));
+    header('X-Frame-Options: ' . $ip_frame_options);
+    $ip_frame_ancestors = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"][$ip_frame_options] ?? null;
+    if ($ip_frame_ancestors !== null) {
+        header("Content-Security-Policy: frame-ancestors {$ip_frame_ancestors}; object-src 'none'; base-uri 'self'");
+    }
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
+        header('X-Content-Type-Options: nosniff');
+    }
+    unset($ip_frame_options, $ip_frame_ancestors);
+}
 // Settings Invoices Sumex panel - Since v1.6.3
 define('SUMEX_SETTINGS', env_bool('SUMEX_SETTINGS'));
 // Where post sumex xml to get pdf - Since v1.5.0 - See https://github.com/InvoicePlane/InvoicePlane/pull/453
@@ -71,7 +95,9 @@ define('SUMEX_URL', env('SUMEX_URL'));
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-define('ENVIRONMENT', $_SERVER['CI_ENV'] ?? 'development');
+// Fail closed: an ipconfig.php without CI_ENV (installs older than the setting) must not start
+// showing PHP errors, stack traces and SQL to visitors. Development opts in with CI_ENV=development.
+define('ENVIRONMENT', $_SERVER['CI_ENV'] ?? 'production');
 
 /*
  *---------------------------------------------------------------
