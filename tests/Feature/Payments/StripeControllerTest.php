@@ -50,14 +50,13 @@ class StripeControllerTest extends AbstractTestCase
         /* Act */
         $response = $this->get('/payments');
 
-        /* Assert */
+        /* Assert: Response renders successfully with no errors */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<html');
-        /* Empty state or placeholder is rendered when no payments exist */
-        self::assertTrue(
-            $response->contains('No') || $response->contains('no') || $response->bodyLength() < 5000,
-            'Empty payments list should render without error'
-        );
+        $this->assertResponseHasNoPhpErrors($response);
+        /* Verify page renders without data (no payment rows present) */
+        $paymentCount = $this->databaseCount('ip_payments');
+        self::assertSame(0, $paymentCount, 'No payments should exist in database for this test');
     }
 
     #[Test]

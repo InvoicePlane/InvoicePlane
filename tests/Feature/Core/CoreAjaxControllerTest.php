@@ -101,8 +101,9 @@ class CoreAjaxControllerTest extends AbstractTestCase
     public function it_displays_client_with_total_balance(): void
     {
         /* Arrange */
-        $clientId  = $this->seedClient(['client_name' => 'Balance Client', 'client_active' => 1]);
-        $invoiceId = $this->seedInvoice($clientId, [], ['invoice_balance' => '150.00']);
+        $expectedBalance = '150.00';
+        $clientId        = $this->seedClient(['client_name' => 'Balance Client', 'client_active' => 1]);
+        $invoiceId       = $this->seedInvoice($clientId, [], ['invoice_balance' => $expectedBalance]);
 
         /* Act */
         $response = $this->get('/clients/status/active');
@@ -111,7 +112,7 @@ class CoreAjaxControllerTest extends AbstractTestCase
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, 'Balance Client');
         /* The endpoint loads with_total_balance(), verify balance appears */
-        $this->assertResponseBodyContains($response, '150');
+        $this->assertResponseBodyContains($response, $expectedBalance);
     }
 
     #[Test]
