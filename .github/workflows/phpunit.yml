@@ -109,6 +109,16 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
 
+      # The e-invoicing generation tests validate the produced Factur-X / UBL
+      # against EN 16931 Schematron, which EInvoiceSchematronValidator runs
+      # through Saxon (a JAR). Without a JDK those tests skip themselves; a JDK
+      # here lets them run for real.
+      - name: Set up JDK (Saxon / Schematron)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Build MariaDB schema and seed baseline
         run: |
           export MYSQL_PWD="$DB_PASSWORD"
@@ -141,16 +151,16 @@ jobs:
           # tests assert protection statically, not via live POSTs).
           echo 'CSRF_PROTECTION=false' >> ipconfig.php
 
+      - name: Config-parity guard (release gate)
+        run: php .claude/skills/config-parity-guard/audit.php
+
       - name: Run PHPUnit
+        # DB_* MUST be unset here. They are set at job level for the schema-build
+        # steps above, but if they survive into this step PHP's Dotenv sees them
+        # as "already set" and never copies the ipconfig.php values into $_ENV;
+        # env() then returns null, the parent connects as ''@'localhost', and
+        # every DB-backed test markTestSkipped()s — a green build hiding ~180
+        # tests that never ran. Unset them so ipconfig.php is the source of truth.
         run: |
-          # The job-level DB_* env is only for the schema-build steps above. Unset
-          # it here: the phpunit parent resolves DB config through env() -> $_ENV,
-          # but CI's variables_order has no 'E', so exported DB_* never reach $_ENV
-          # and phpdotenv's createImmutable then skips copying the ipconfig.php
-          # values in (the keys look "already set"). Net effect: env('DB_*') is
-          # null, InteractsWithDatabase::db() connects as ''@'localhost' -> Access
-          # denied -> every DB-backed test markTestSkipped()s (the "masked" run
-          # with hundreds of skips). The request subprocess reads ipconfig.php in a
-          # clean env regardless; unsetting here lets the parent do the same.
           env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE -u DB_USERNAME -u DB_PASSWORD \
             vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}

@@ -563,7 +563,14 @@ trait InteractsWithDatabase
             );
             self::$testDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            static::markTestSkipped('Database unavailable for integration tests: ' . $e->getMessage());
+            // Fail loud, never skip. A suite that needs MariaDB and can't reach
+            // it is a broken environment, not a passing run. Skipping here let
+            // ~180 DB-backed tests vanish silently on CI (masked-skip profile).
+            static::fail(
+                'MariaDB is unreachable for the integration suite: ' . $e->getMessage()
+                . "\nCheck ipconfig.php DB_* and that DB_* is NOT exported into the phpunit env"
+                . ' (Dotenv skips already-set keys, so env() then returns null).'
+            );
         }
 
         return self::$testDb;

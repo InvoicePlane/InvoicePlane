@@ -19,7 +19,6 @@ pint_output.log
 /*-inventory-*.md
 /phpunit-plan-*.md
 /.phpunit.result.cache
-/.phpunit.cache/
 
 # Other files
 .htaccess
@@ -50,7 +49,10 @@ yarn-error.log
 /.phpstan.cache/
 /uploads/temp/
 
-# Playwright E2E tests
+# Playwright (frontend E2E)
 /test-results/
 /playwright-report/
-/tests/e2e/.auth/
+/playwright/.cache/
+/blob-report/
+/tests/E2E/.auth/
+/tests/E2E/error-report.md

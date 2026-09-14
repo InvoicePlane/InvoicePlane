@@ -149,6 +149,46 @@ class Settings extends Admin_Controller
         redirect('integrations/settings');
     }
 
+    public function test_connection($id)
+    {
+        if ($this->input->method() !== 'post') {
+            show_error('Method not allowed', 405);
+
+            return;
+        }
+
+        $provider = $this->Merchant_clients_model->get_by_id((int) $id);
+
+        if ( ! $provider) {
+            show_error(trans('merchant_client_not_found'));
+
+            return;
+        }
+
+        $result = ['reachable' => false, 'http_code' => 0, 'message' => ''];
+
+        try {
+            $settings = $this->Merchant_clients_model->get_settings($provider);
+            $client   = (new IntegrationClientRegistry())->getClient($provider['merchant_type']);
+            $probe    = $client->ping($settings);
+
+            $result['reachable'] = (bool) ($probe['reachable'] ?? false);
+            $result['http_code'] = (int) ($probe['http_code'] ?? 0);
+            $result['message']   = (string) ($probe['message'] ?? '');
+        } catch (Throwable $e) {
+            log_message(
+                'error',
+                'Integration test connection failed for ' . sanitize_for_logging((string) $provider['merchant_type'])
+                . ': ' . sanitize_for_logging($e->getMessage())
+            );
+            $result['message'] = trans('einvoice_test_connection_failed');
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
     private function sync_provider_registry(): void
     {
         $this->load->library('integrations/IntegrationClientRegistry');

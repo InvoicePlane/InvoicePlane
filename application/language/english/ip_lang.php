@@ -600,7 +600,7 @@ $lang = [
     'setup_db_database_info'                        => 'The name of the database you created for InvoicePlane.',
     'setup_db_hostname_info'                        => 'The hostname for your database.',
     'setup_db_port_info'                            => 'The port your hostname is listening on. Default is 3306.',
-    'setup_db_password_info'                        => 'Password associated with the database. It is stored exactly as entered, with one exception: a single quote ( \' ) is not supported and must not be included.',
+    'setup_db_password_info'                        => 'Password associated with the database. It is stored exactly as entered. It cannot contain line breaks, null bytes, or other control characters, and a single quote ( \' ) is not supported.',
     'setup_db_username_info'                        => 'Username associated with the database.',
     'setup_install_tables'                          => 'Install Tables',
     'setup_other_contact'                           => 'Other Contact',
@@ -931,4 +931,8 @@ $lang = [
     'disable_pre_check'                  => 'Disable Peppol directory pre-check',
     'leave_blank_to_keep'                => 'Leave blank to keep the stored value',
     'einvoice_provider_settings_invalid' => 'Please check the provider settings.',
+    'einvoice_test_connection'           => 'Test connection',
+    'einvoice_test_connection_running'   => 'Testing the connection…',
+    'einvoice_test_connection_ok'        => 'Connection successful.',
+    'einvoice_test_connection_failed'    => 'Connection failed.',
 ];

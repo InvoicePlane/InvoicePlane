@@ -60,7 +60,13 @@ jobs:
           cache: 'yarn'
 
       - name: Install PHP dependencies
-        run: composer install --no-interaction --prefer-dist
+        # --ignore-platform-reqs: matches .github/actions/setup-php-composer's
+        # default composer-flags. laravel/pint (require-dev only, a code-style
+        # tool never invoked at runtime) is currently locked to a version
+        # requiring PHP ^8.3, while this job runs the app's actual runtime
+        # target of PHP 8.2 - the same mismatch already tolerated in the
+        # PHPUnit workflow via that reusable action.
+        run: composer install --no-interaction --prefer-dist --ignore-platform-reqs
 
       - name: Install JS dependencies and build assets
         run: |

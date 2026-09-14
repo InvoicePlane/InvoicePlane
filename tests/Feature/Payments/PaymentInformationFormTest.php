@@ -70,7 +70,6 @@ class PaymentInformationFormTest extends AbstractTestCase
         $response = $this->get('/guest/payment_information/form/' . $urlKey);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 

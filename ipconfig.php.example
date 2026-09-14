@@ -23,10 +23,27 @@ X_FRAME_OPTIONS=SAMEORIGIN
 ENABLE_X_CONTENT_TYPE_OPTIONS=true
 
 # Session settings
-# Leave SESS_SAVE_PATH empty to use PHP's default session save path (sys_get_temp_dir()).
-# To store sessions elsewhere, e.g. outside the document root, set an absolute path:
-#   SESS_SAVE_PATH=/srv/invoiceplane/sessions
-SESS_SAVE_PATH=
+#
+# SESS_SAVE_PATH is the directory PHP writes session files to (default 'files' driver).
+#
+# Do NOT set this to an empty value. An empty SESS_SAVE_PATH is passed straight through
+# to PHP as an empty session.save_path, which OVERRIDES whatever php.ini / php-fpm.d /
+# your Apache vhost configured. The result is that no session can be written: login
+# fails and the installer gets stuck on .../setup/language (setup progress is kept in
+# the session). If you don't need a custom path, leave the line below commented out and
+# InvoicePlane falls back to PHP's sys_get_temp_dir().
+#
+# Recommended for a real deployment: a dedicated writable directory outside the web root,
+# owned by the web-server user, e.g.
+#   mkdir -p /var/lib/invoiceplane/sessions
+#   chown <web-user>:<web-group> /var/lib/invoiceplane/sessions && chmod 700 /var/lib/invoiceplane/sessions
+#   SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
+#
+# Avoid /tmp on systemd distros (RHEL / AlmaLinux / Rocky / Debian): httpd and php-fpm
+# run with PrivateTmp=true and systemd-tmpfiles periodically wipes it, so sessions
+# disappear mid-use.
+#
+# SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
 # Override the session cookie name
 SESS_COOKIE_NAME=ip_session
 # Override the session database table name (only used when SESS_DRIVER=database)
@@ -42,8 +59,9 @@ DISABLE_SETUP=false
 REMOVE_INDEXPHP=false
 
 # These database settings are set during the initial setup. If editing this
-# file by hand, quote every value - an unquoted value ends at the first
-# space or '#', which silently truncates a password containing either.
+# file by hand, quote DB_HOSTNAME, DB_USERNAME, DB_PASSWORD and DB_DATABASE -
+# an unquoted value ends at the first space or '#', which silently truncates
+# a password containing either. DB_PORT is numeric and stays unquoted.
 #
 # Single quotes (recommended) - the value is stored exactly as written,
 # character for character, with no escaping of any kind:
@@ -153,45 +171,6 @@ CUSTOM_INVOICE_TEMPLATES_PDF=
 CUSTOM_INVOICE_TEMPLATES_PUBLIC=
 CUSTOM_QUOTE_TEMPLATES_PDF=
 CUSTOM_QUOTE_TEMPLATES_PUBLIC=
-
-# Invoice Reminder Settings
-# Configure automatic payment reminders sent to clients before and after invoice due dates.
-#
-# Enable or disable the entire reminder system (requires cron to be configured)
-INVOICE_REMINDERS_ENABLED=true
-#
-# Days before due date to send reminders. Format: comma-separated list of integers.
-# Examples: "3,7,14" sends reminders 3, 7, and 14 days before due date.
-# Leave empty to disable pre-due reminders.
-INVOICE_REMINDER_DAYS_BEFORE=
-#
-# Days after due date to send overdue reminders. Format: comma-separated list of integers.
-# Examples: "1,3,7" sends overdue reminders 1, 3, and 7 days after due date.
-# Leave empty to disable post-due reminders.
-INVOICE_REMINDER_DAYS_AFTER=
-#
-# Repeat reminders every N days once a reminder is triggered.
-# 0 = send each reminder only once (default)
-# N = repeat reminders every N days until payment is received
-INVOICE_REMINDER_REPEAT_DAYS=0
-#
-# Maximum total reminders to send per invoice (0 = unlimited)
-INVOICE_REMINDER_MAX_TOTAL=10
-#
-# Email template ID to use for payment reminders (must match a saved template)
-EMAIL_INVOICE_TEMPLATE_REMINDER=
-
-# Recurring Invoice Settings
-# Controls behavior when recurring invoices are automatically generated.
-#
-# Automatically email clients when a new recurring invoice is generated
-AUTOMATIC_EMAIL_ON_RECUR=false
-
-# Cron Rate Limiting (prevents brute-force attacks on the unauthenticated /cron endpoint)
-# Maximum wrong-cron-key attempts allowed within the time window
-CRON_IP_MAX_ATTEMPTS=10
-# Time window in minutes for wrong-key attempt rate limiting
-CRON_IP_WINDOW_MINUTES=15
 
 ##
 ## DO NOT CHANGE ANY CONFIGURATION VALUES BELOW THIS LINE!

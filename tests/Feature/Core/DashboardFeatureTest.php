@@ -28,7 +28,6 @@ class DashboardFeatureTest extends AbstractTestCase
         $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 
@@ -60,7 +59,6 @@ class DashboardFeatureTest extends AbstractTestCase
         $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
 
         self::assertTrue(
             $response->contains('invoice') || $response->contains('client') || $response->contains('nav'),

@@ -144,7 +144,14 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
         if (($result['exception'] ?? null) !== null) {
             if (str_contains((string) $result['exception'], 'Unable to connect to the database')) {
-                $this->markTestSkipped('Database unavailable for CI request integration tests.');
+                // Fail loud, never skip — a request subprocess that can't reach
+                // MariaDB means the environment is broken, not that this test
+                // is N/A. Skipping here masked ~180 Feature tests on CI.
+                self::fail(
+                    'CI request subprocess could not connect to MariaDB. '
+                    . 'ipconfig.php DB_* are the source of truth here — make sure DB_* '
+                    . 'is not exported into the phpunit env (see the phpunit workflow).'
+                );
             }
 
             throw new RuntimeException(

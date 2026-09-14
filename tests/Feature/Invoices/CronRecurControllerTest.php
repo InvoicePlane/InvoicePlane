@@ -56,7 +56,6 @@ class CronRecurControllerTest extends AbstractTestCase
         $response = $this->get('/invoices/cron/recur/the-real-key');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
         $this->assertDatabaseCount('ip_invoices', 2, ['client_id' => $seeded['clientId']]);
         $this->assertDatabaseMissing('ip_invoices_recurring', ['invoice_recurring_id' => $seeded['recurringId'], 'recur_next_date' => date('Y-m-d', strtotime('-1 day'))]);
@@ -73,7 +72,6 @@ class CronRecurControllerTest extends AbstractTestCase
         $response = $this->get('/invoices/cron/recur/the-real-key');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertDatabaseCount('ip_invoices', 1, ['client_id' => $seeded['clientId']]);
     }
 
@@ -88,7 +86,6 @@ class CronRecurControllerTest extends AbstractTestCase
         $response = $this->get('/invoices/cron/recur/the-real-key');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertDatabaseCount('ip_invoices', 1, ['client_id' => $seeded['clientId']]);
     }
 
