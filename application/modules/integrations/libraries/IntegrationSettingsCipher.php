@@ -101,14 +101,20 @@ final class IntegrationSettingsCipher
 
     private function key(): string
     {
+        // Load encryption key with consistent precedence:
+        // 1. Injected via constructor (for testing)
+        // 2. env('ENCRYPTION_KEY') — Dotenv-populated $_ENV (production)
+        // 3. Direct $_ENV access (fallback)
+        //
+        // NEVER use getenv() — Dotenv::createImmutable() doesn't call putenv(),
+        // so getenv() always returns NULL. Using it as a fallback would silently
+        // encrypt with empty key if $_ENV isn't set (see security review #1702).
         $configured = $this->configuredKey;
-        if ($configured === null && function_exists('env')) {
-            $configured = env('ENCRYPTION_KEY');
+        if ($configured === null) {
+            // env() reads $_ENV; safe to use with Dotenv
+            $configured = env('ENCRYPTION_KEY') ?: ($_ENV['ENCRYPTION_KEY'] ?? null);
         }
-        if ($configured === null || $configured === '') {
-            $environmentKey = $_ENV['ENCRYPTION_KEY'] ?? getenv('ENCRYPTION_KEY');
-            $configured     = is_string($environmentKey) ? $environmentKey : null;
-        }
+
         if ( ! is_string($configured) || $configured === '') {
             throw new RuntimeException('ENCRYPTION_KEY is required to protect provider settings.');
         }
