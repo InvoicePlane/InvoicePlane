@@ -220,7 +220,12 @@ The **Workflow** phase covers your day-to-day development activities.
     sudo apt-get update
     sudo apt-get install nginx mariadb-server php8.1-fpm php8.1-mysql php8.1-mbstring php8.1-xml php8.1-curl
     ```
-  - Configure Nginx to serve InvoicePlane (see Docker nginx config for reference)
+  - Configure Nginx to serve InvoicePlane, starting from
+    [`resources/docker/nginx/invoiceplane.conf`](../../resources/docker/nginx/invoiceplane.conf).
+    **Keep its deny rules.** nginx ignores the `.htaccess` files that protect private paths on
+    Apache, so without them archived invoice PDFs (`uploads/archive`), customer attachments,
+    import files, `vendor/` and `application/` are downloadable without logging in. Only
+    `index.php` should be executed as PHP.
   - Follow the [Development Workflow](#development-workflow) steps
 - **Docker**: Recommended for consistent environment (see [Docker Installation](#docker-installation))
 
