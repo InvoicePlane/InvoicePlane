@@ -56,3 +56,4 @@ yarn-error.log
 /blob-report/
 /tests/E2E/.auth/
 /tests/E2E/error-report.md
+package-lock.json
