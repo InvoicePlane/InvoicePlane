@@ -16,9 +16,9 @@ record *why* and *how*.
 
 ### Security fixes
 
-Found in an internal review; no advisories filed.
+**nginx and Apache served private files** (GHSA-qq8q-gf24-576m) — Reported by [@nirtem](https://github.com/nirtem); Fixed by [@DylanUnderwood](https://github.com/DylanUnderwood).
 
-- **nginx served private files.** The bundled `resources/docker/nginx/invoiceplane.conf` served
+- **nginx and Apache served private files.** The bundled `resources/docker/nginx/invoiceplane.conf` served
   the whole project directory, and nginx ignores the `.htaccess` files that protect private
   paths on Apache. Archived invoice PDFs in `uploads/archive` (named after date and invoice
   number) could be downloaded without logging in. So could customer attachments, import files,
