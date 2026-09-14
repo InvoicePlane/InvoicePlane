@@ -13,10 +13,16 @@
     },
     "homepage": "https://www.invoiceplane.com",
     "scripts": {
-        "build": "grunt build"
+        "build": "grunt build",
+        "test:e2e": "playwright test",
+        "test:e2e:debug": "playwright test --debug",
+        "test:e2e:ui": "playwright test --ui",
+        "test:e2e:headed": "playwright test --headed",
+        "test:e2e:report": "playwright show-report"
     },
     "devDependencies": {
         "@lodder/grunt-postcss": "^3.1.1",
+        "@playwright/test": "^1.48.0",
         "autoprefixer": "^10.6",
         "bootstrap-datepicker": "1.10",
         "bootstrap-sass": "3.4",
