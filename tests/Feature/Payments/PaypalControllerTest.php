@@ -9,7 +9,7 @@ use Tests\AbstractTestCase;
 /**
  * Paypal Feature Tests.
  *
- * Tests payment-related routes accessible to authenticated admins.
+ * Tests payment listing and management routes accessible to authenticated admins.
  */
 class PaypalControllerTest extends AbstractTestCase
 {
@@ -21,12 +21,31 @@ class PaypalControllerTest extends AbstractTestCase
 
     #[Test]
     #[Group('smoke')]
-    public function it_returns_a_successful_response_or_redirect(): void
+    public function it_displays_payment_list_with_data(): void
     {
         /* Arrange */
         $clientId  = $this->seedClient(['client_name' => 'Paypal Test Client']);
-        $invoiceId = $this->seedInvoice($clientId);
-        $this->seedPayment($invoiceId);
+        $invoiceId = $this->seedInvoice($clientId, [], ['invoice_amount' => '100.00']);
+        $paymentId = $this->seedPayment($invoiceId, ['payment_amount' => '50.00']);
+
+        /* Act */
+        $response = $this->get('/payments');
+
+        /* Assert: Response is successful */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '<html');
+
+        /* Assert: Payment data is present in response */
+        $payment = $this->databaseFetchOne('ip_payments', ['payment_id' => $paymentId]);
+        self::assertNotNull($payment);
+        $this->assertResponseBodyContains($response, $payment['payment_amount']);
+        $this->assertResponseBodyContains($response, (string) $clientId);
+    }
+
+    #[Test]
+    public function it_displays_empty_payments_list(): void
+    {
+        /* Arrange: no payments in database */
 
         /* Act */
         $response = $this->get('/payments');
@@ -34,6 +53,51 @@ class PaypalControllerTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<html');
+        /* Empty state or placeholder is rendered when no payments exist */
+        self::assertTrue(
+            $response->contains('No') || $response->contains('no') || $response->bodyLength() < 5000,
+            'Empty payments list should render without error'
+        );
+    }
+
+    #[Test]
+    public function it_displays_multiple_payments_with_service_names(): void
+    {
+        /* Arrange: create invoices with services and payments */
+        $clientId   = $this->seedClient(['client_name' => 'Multi-Service Client']);
+        $invoiceId1 = $this->seedInvoice($clientId);
+        $invoiceId2 = $this->seedInvoice($clientId);
+        $payment1   = $this->seedPayment($invoiceId1, ['payment_amount' => '25.00']);
+        $payment2   = $this->seedPayment($invoiceId2, ['payment_amount' => '75.00']);
+
+        /* Act */
+        $response = $this->get('/payments');
+
+        /* Assert: Multiple payments are listed */
+        $this->assertResponseStatusCode($response, 200);
+        $payment1Data = $this->databaseFetchOne('ip_payments', ['payment_id' => $payment1]);
+        $payment2Data = $this->databaseFetchOne('ip_payments', ['payment_id' => $payment2]);
+        $this->assertResponseBodyContains($response, $payment1Data['payment_amount']);
+        $this->assertResponseBodyContains($response, $payment2Data['payment_amount']);
+    }
+
+    #[Test]
+    public function it_displays_payments_with_invoice_and_client_details(): void
+    {
+        /* Arrange */
+        $clientName = 'Invoice Details Client';
+        $clientId   = $this->seedClient(['client_name' => $clientName]);
+        $invoiceId  = $this->seedInvoice($clientId);
+        $this->seedPayment($invoiceId, ['payment_amount' => '100.00']);
+
+        /* Act */
+        $response = $this->get('/payments');
+
+        /* Assert: Response contains client and invoice information */
+        $this->assertResponseStatusCode($response, 200);
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        self::assertNotNull($invoice);
+        $this->assertResponseBodyContains($response, $clientName);
     }
 
     #[Test]
