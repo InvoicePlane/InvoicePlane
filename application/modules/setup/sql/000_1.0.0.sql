@@ -4,7 +4,7 @@ CREATE TABLE `ip_client_custom` (
   PRIMARY KEY (`client_custom_id`),
   KEY `client_id` (`client_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_client_notes` (
@@ -15,7 +15,7 @@ CREATE TABLE `ip_client_notes` (
   PRIMARY KEY (`client_note_id`),
   KEY `client_id` (`client_id`, `client_note_date`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_clients` (
@@ -38,7 +38,7 @@ CREATE TABLE `ip_clients` (
   PRIMARY KEY (`client_id`),
   KEY `client_active` (`client_active`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_custom_fields` (
@@ -49,7 +49,7 @@ CREATE TABLE `ip_custom_fields` (
   PRIMARY KEY (`custom_field_id`),
   KEY `custom_field_table` (`custom_field_table`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_email_templates` (
@@ -58,7 +58,7 @@ CREATE TABLE `ip_email_templates` (
   `email_template_body`  LONGTEXT     NOT NULL,
   PRIMARY KEY (`email_template_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_import_details` (
@@ -70,7 +70,7 @@ CREATE TABLE `ip_import_details` (
   PRIMARY KEY (`import_detail_id`),
   KEY `import_id` (`import_id`, `import_record_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_imports` (
@@ -78,7 +78,7 @@ CREATE TABLE `ip_imports` (
   `import_date` DATETIME NOT NULL,
   PRIMARY KEY (`import_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_invoice_amounts` (
@@ -94,7 +94,7 @@ CREATE TABLE `ip_invoice_amounts` (
   KEY `invoice_id` (`invoice_id`),
   KEY `invoice_paid` (`invoice_paid`, `invoice_balance`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_invoice_custom` (
@@ -103,7 +103,7 @@ CREATE TABLE `ip_invoice_custom` (
   PRIMARY KEY (`invoice_custom_id`),
   KEY `invoice_id` (`invoice_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_invoice_groups` (
@@ -118,7 +118,7 @@ CREATE TABLE `ip_invoice_groups` (
   KEY `invoice_group_next_id` (`invoice_group_next_id`),
   KEY `invoice_group_left_pad` (`invoice_group_left_pad`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   AUTO_INCREMENT = 3
   DEFAULT CHARSET = utf8;
 
@@ -131,7 +131,7 @@ CREATE TABLE `ip_invoice_item_amounts` (
   PRIMARY KEY (`item_amount_id`),
   KEY `item_id` (`item_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_invoice_items` (
@@ -147,7 +147,7 @@ CREATE TABLE `ip_invoice_items` (
   PRIMARY KEY (`item_id`),
   KEY `invoice_id` (`invoice_id`, `item_tax_rate_id`, `item_date_added`, `item_order`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_invoice_tax_rates` (
@@ -159,7 +159,7 @@ CREATE TABLE `ip_invoice_tax_rates` (
   PRIMARY KEY (`invoice_tax_rate_id`),
   KEY `invoice_id` (`invoice_id`, `tax_rate_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_invoices` (
@@ -179,7 +179,7 @@ CREATE TABLE `ip_invoices` (
   KEY `user_id` (`user_id`, `client_id`, `invoice_group_id`, `invoice_date_created`, `invoice_date_due`, `invoice_number`),
   KEY `invoice_status_id` (`invoice_status_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_invoices_recurring` (
@@ -192,7 +192,7 @@ CREATE TABLE `ip_invoices_recurring` (
   PRIMARY KEY (`invoice_recurring_id`),
   KEY `invoice_id` (`invoice_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_item_lookups` (
@@ -202,7 +202,7 @@ CREATE TABLE `ip_item_lookups` (
   `item_price`       DECIMAL(10, 2) NOT NULL,
   PRIMARY KEY (`item_lookup_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_merchant_responses` (
@@ -216,7 +216,7 @@ CREATE TABLE `ip_merchant_responses` (
   KEY `merchant_response_date` (`merchant_response_date`),
   KEY `invoice_id` (`invoice_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_payment_custom` (
@@ -225,7 +225,7 @@ CREATE TABLE `ip_payment_custom` (
   PRIMARY KEY (`payment_custom_id`),
   KEY `payment_id` (`payment_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_payment_methods` (
@@ -233,7 +233,7 @@ CREATE TABLE `ip_payment_methods` (
   `payment_method_name` VARCHAR(35) NOT NULL,
   PRIMARY KEY (`payment_method_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_payments` (
@@ -248,7 +248,7 @@ CREATE TABLE `ip_payments` (
   KEY `payment_method_id` (`payment_method_id`),
   KEY `payment_amount` (`payment_amount`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_quote_amounts` (
@@ -261,7 +261,7 @@ CREATE TABLE `ip_quote_amounts` (
   PRIMARY KEY (`quote_amount_id`),
   KEY `quote_id` (`quote_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_quote_custom` (
@@ -270,7 +270,7 @@ CREATE TABLE `ip_quote_custom` (
   PRIMARY KEY (`quote_custom_id`),
   KEY `quote_id` (`quote_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_quote_item_amounts` (
@@ -282,7 +282,7 @@ CREATE TABLE `ip_quote_item_amounts` (
   PRIMARY KEY (`item_amount_id`),
   KEY `item_id` (`item_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_quote_items` (
@@ -299,7 +299,7 @@ CREATE TABLE `ip_quote_items` (
   KEY `quote_id` (`quote_id`, `item_date_added`, `item_order`),
   KEY `item_tax_rate_id` (`item_tax_rate_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_quote_tax_rates` (
@@ -312,7 +312,7 @@ CREATE TABLE `ip_quote_tax_rates` (
   KEY `quote_id` (`quote_id`),
   KEY `tax_rate_id` (`tax_rate_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_quotes` (
@@ -332,7 +332,7 @@ CREATE TABLE `ip_quotes` (
   KEY `invoice_id` (`invoice_id`),
   KEY `quote_status_id` (`quote_status_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_settings` (
@@ -342,7 +342,7 @@ CREATE TABLE `ip_settings` (
   PRIMARY KEY (`setting_id`),
   KEY `setting_key` (`setting_key`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   AUTO_INCREMENT = 19
   DEFAULT CHARSET = utf8;
 
@@ -352,7 +352,7 @@ CREATE TABLE `ip_tax_rates` (
   `tax_rate_percent` DECIMAL(5, 2) NOT NULL,
   PRIMARY KEY (`tax_rate_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_user_clients` (
@@ -362,7 +362,7 @@ CREATE TABLE `ip_user_clients` (
   PRIMARY KEY (`user_client_id`),
   KEY `user_id` (`user_id`, `client_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_user_custom` (
@@ -371,7 +371,7 @@ CREATE TABLE `ip_user_custom` (
   PRIMARY KEY (`user_custom_id`),
   KEY `user_id` (`user_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_users` (
@@ -396,7 +396,7 @@ CREATE TABLE `ip_users` (
   `user_psalt`         CHAR(22)     NOT NULL,
   PRIMARY KEY (`user_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ip_versions` (
@@ -407,5 +407,5 @@ CREATE TABLE `ip_versions` (
   PRIMARY KEY (`version_id`),
   KEY `version_date_applied` (`version_date_applied`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;

@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `ip_families` (
   `family_name` VARCHAR(50)      DEFAULT NULL,
   PRIMARY KEY (`family_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 # Module "products"
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `ip_products` (
   `tax_rate_id`         INT(11)      NOT NULL,
   PRIMARY KEY (`product_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 # Move lookup items to products

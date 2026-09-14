@@ -34,12 +34,6 @@ function mailer_configured(): bool
  * @param        $to
  * @param        $subject
  * @param string $body
- * @param bool   $attach_pdf       Render and attach the invoice PDF. Defaults to true so
- *                                 existing callers are unaffected; pass the
- *                                 email_pdf_attachment setting to skip the render entirely
- *                                 when the attachment would be dropped anyway. phpmail_send()
- *                                 re-checks that setting, so passing true never forces an
- *                                 attachment the admin has turned off.
  *
  * @return bool
  */
@@ -52,8 +46,7 @@ function email_invoice(
     $body,
     $cc = null,
     $bcc = null,
-    $attachments = null,
-    bool $attach_pdf = true
+    $attachments = null
 ) {
     $CI = & get_instance();
 
@@ -66,17 +59,10 @@ function email_invoice(
 
     $db_invoice = $CI->mdl_invoices->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
-    // Generating the PDF is the expensive part of sending (a full mPDF render plus a
-    // file written into the archive folder), and phpmail_send() discards it when
-    // email_pdf_attachment is off. Callers that already know it will be discarded pass
-    // $attach_pdf = false so the render is skipped rather than thrown away.
-    $invoice = null;
-    if ($attach_pdf) {
-        if ($db_invoice->sumex_id == null) {
-            $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
-        } else {
-            $invoice = generate_invoice_sumex($invoice_id, false, $invoice_template, true);
-        }
+    if ($db_invoice->sumex_id == null) {
+        $invoice = generate_invoice_pdf($invoice_id, false, $invoice_template);
+    } else {
+        $invoice = generate_invoice_sumex($invoice_id, false, $invoice_template, true);
     }
 
     // Need Specific eInvoice filename?

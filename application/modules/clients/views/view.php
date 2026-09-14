@@ -374,7 +374,7 @@ if (($client->client_einvoicing_active ?? 0) && $user_fields_nook) {
                                     <tr class="text-<?php echo $tx; ?>">
                                         <td class="te te-1">
                                             <i class="fa fa-fw fa-user"></i>
-                                            <span><?php echo anchor('/users/form/' . $uid, htmlsc($user->user_name)); ?></span>
+                                            <span><?php echo anchor('/users/form/' . $uid, $user->user_name); ?></span>
                                         </td>
                                         <td><i class="<?php echo $class_checks[$ok ? 0 : 2]; ?>"></i><?php _trans($ok ? 'yes' : 'no'); ?></td>
                                         <td>

@@ -74,8 +74,6 @@ class Sessions extends Base_Controller
         if ( ! function_exists('get_safe_referer')) {
             $this->load->helper('security');
         }
-        // hash_password_reset_token(): tokens are stored as digests
-        $this->load->helper('ip_security');
 
         // Check if a token was provided
         if ($token) {
@@ -84,19 +82,16 @@ class Sessions extends Base_Controller
                 redirect('/');
             }
 
-            // Prevent brute force attacks by counting times a token is used. The counter is
-            // keyed by the token's digest, not the token: ip_login_log would otherwise hold
-            // reset tokens in the clear, defeating the digest stored in ip_users.
-            $login_log_key   = 'password_reset:' . hash_password_reset_token($token);
-            $login_log_check = $this->_login_log_check($login_log_key);
+            //prevent brute force attacks by counting times a token is used
+            $login_log_check = $this->_login_log_check($token);
             if ( ! empty($login_log_check) && $login_log_check->log_count > 10) {
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             } else {
                 //the use of a token counts as a failure
-                $this->_login_log_addfailure($login_log_key);
+                $this->_login_log_addfailure($token);
             }
 
-            $this->db->where('user_passwordreset_token', hash_password_reset_token($token));
+            $this->db->where('user_passwordreset_token', $token);
             $user = $this->db->get('ip_users');
             $user = $user->row();
 
@@ -113,7 +108,7 @@ class Sessions extends Base_Controller
 
             //if token is valid, delete the failure attempt from
             //the login_log table
-            $this->_login_log_reset($login_log_key);
+            $this->_login_log_reset($token);
 
             $formdata = [
                 'token'   => $token,
@@ -133,18 +128,12 @@ class Sessions extends Base_Controller
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
 
-            $new_password = (string) $this->input->post('new_password');
+            $new_password = $this->input->post('new_password', true);
             $user_id      = $this->input->post('user_id', true);
 
-            if (empty($user_id) || $new_password === '') {
+            if (empty($user_id) || empty($new_password)) {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
-            }
-
-            // Same minimum as Mdl_users::validation_rules() / validation_rules_change_password()
-            if (mb_strlen($new_password) < 8) {
-                $this->session->set_flashdata('alert_error', strtr(trans('form_validation_min_length'), ['{field}' => trans('password'), '{param}' => 8]));
-                redirect(get_safe_referer('', 'sessions/passwordreset/' . rawurlencode((string) $this->input->post('token'))));
             }
 
             $this->load->model('users/mdl_users');
@@ -160,7 +149,7 @@ class Sessions extends Base_Controller
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
 
-            if (empty($user->user_passwordreset_token) || ! hash_equals((string) $user->user_passwordreset_token, hash_password_reset_token((string) $this->input->post('token')))) {
+            if (empty($user->user_passwordreset_token) || ! hash_equals((string) $user->user_passwordreset_token, (string) $this->input->post('token'))) {
                 $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
@@ -266,7 +255,7 @@ class Sessions extends Base_Controller
 
                 // Save the token and expiry to the database
                 $db_array = [
-                    'user_passwordreset_token'        => hash_password_reset_token($token),
+                    'user_passwordreset_token'        => $token,
                     'user_passwordreset_token_expiry' => $expiry_timestamp,
                 ];
 
@@ -301,27 +290,10 @@ class Sessions extends Base_Controller
                     $config['mailtype'] = 'html';
                     $this->email->initialize($config);
 
-                    // This path bypasses phpmail_send(), so it applies EMAIL_OVERRIDE_TO
-                    // itself, the same way: otherwise a development copy with no mailer
-                    // configured could still mail a real user.
-                    $email_override = trim((string) env('EMAIL_OVERRIDE_TO', ''));
-                    $email_to       = $email;
-                    $email_subject  = trans('password_reset');
-
-                    if ($email_override !== '') {
-                        $this->load->helper('mailer/phpmailer');
-                        $intended = email_override_intended_recipients($email);
-
-                        $email_to      = $email_override;
-                        $email_subject = '[DEV] ' . $email_subject;
-                        $email_message = email_override_banner($intended) . $email_message;
-                        $this->email->set_header('X-InvoicePlane-Intended-Recipients', $intended);
-                    }
-
                     // Set the email params
                     $this->email->from($email_from);
-                    $this->email->to($email_to);
-                    $this->email->subject($email_subject);
+                    $this->email->to($email);
+                    $this->email->subject(trans('password_reset'));
                     $this->email->message($email_message);
 
                     // Send the reset email

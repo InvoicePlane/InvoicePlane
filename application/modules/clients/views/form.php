@@ -57,18 +57,6 @@ $einvoicingOpt = $req_einvoicing ? $einvoicingTip . trans('optional') . ')"' : '
                                 <?php _trans('active_client'); ?>
                                 <input id="client_active" name="client_active" type="checkbox" value="1"<?php echo $active; ?>>
                             </label>
-                            &nbsp;
-                            <label for="client_disable_reminders" class="control-label">
-                                <?php _trans('disable_payment_reminders'); ?>
-<?php
-// An unchecked checkbox posts nothing, so the hidden field supplies the 0 that
-// clears the flag; without it the opt-out could be set but never unset.
-?>
-                                <input type="hidden" name="client_disable_reminders" value="0">
-                                <input id="client_disable_reminders" name="client_disable_reminders"
-                                       type="checkbox" value="1"
-                                    <?php check_select($this->mdl_clients->form_value('client_disable_reminders'), 1, '==', true); ?>>
-                            </label>
                         </div>
                     </div>
                     <div class="panel-body">

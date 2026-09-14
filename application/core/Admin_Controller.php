@@ -38,8 +38,7 @@ class Admin_Controller extends User_Controller
             ->set_header('Pragma: no-cache')
             ->set_header('Expires: Sat, 26 Jul 1997 05:00:00 GMT')
             ->set_header('Referrer-Policy: strict-origin-when-cross-origin')
-            // X-Frame-Options is sent by index.php for every response, validated there.
-            // Setting it here from the raw setting would overwrite that on admin pages.
+            ->set_header('X-Frame-Options: ' . env('X_FRAME_OPTIONS', 'SAMEORIGIN'))
             // X- csrf token header on all response for XHR (server-side AJAX helper, cookie replacement)
             ->set_header('X-' . config_item('csrf_token_name') . ': ' . $this->security->get_csrf_hash());
 

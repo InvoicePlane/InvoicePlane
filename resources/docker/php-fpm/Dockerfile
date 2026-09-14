@@ -1,8 +1,4 @@
-# PHP version for the development container. InvoicePlane supports 8.2 through 8.5 and CI
-# tests all four; this image builds with every extension below on each of them. Override
-# with `PHP_VERSION` in docker-compose.yml (or --build-arg) to develop against another.
-ARG PHP_VERSION=8.4
-FROM php:${PHP_VERSION}-fpm
+FROM php:8.2-fpm
 
 # Set environment variables
 ARG TZ=UTC
@@ -47,14 +43,6 @@ RUN install-php-extensions \
     xml \
     xsl \
     zip
-
-# Composer. This is a development image and the working tree is bind-mounted, so
-# dependencies are managed from inside the container rather than baked into the
-# image -- `docker compose exec php composer install` after a fresh clone, and
-# again whenever composer.json changes. Same multi-stage copy pattern as
-# install-php-extensions above, so no installer script has to be fetched at build
-# time.
-COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 # Set the timezone
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

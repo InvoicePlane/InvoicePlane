@@ -88,6 +88,99 @@ function encodeHtml(str) {
 
 // Sanitize HTML for email template preview
 // Allows only safe formatting tags and strips scripts, event handlers, and dangerous attributes
+function sanitize_email_template_html(html) {
+    // Create a detached container to parse and sanitize HTML in an isolated context.
+    // Using DOMParser prevents immediate script execution during parsing.
+    var parser = new DOMParser();
+    // `html` is sanitized by the tag/attribute allowlist and cleanNode() below;
+    // no innerHTML assignment is made on the result — nodes are imported via importNode().
+    var doc = parser.parseFromString(html || '', 'text/html'); // lgtm[js/xss-through-dom]
+    var temp = doc.body;
+    
+    // List of allowed tags (only safe formatting tags)
+    var allowedTags = ['b', 'strong', 'em', 'i', 'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
+                       'code', 'pre', 'hr', 'span', 'div', 'a', 'ul', 'ol', 'li', 
+                       'table', 'tr', 'td', 'th', 'thead', 'tbody'];
+    
+    // List of allowed attributes (only safe, non-executable attributes)
+    // Note: 'style' attribute removed to prevent CSS-based attacks
+    var allowedAttrs = ['class', 'href', 'title', 'alt', 'target'];
+    
+    // Recursively clean all elements
+    function cleanNode(node) {
+        var tagName = node.tagName ? node.tagName.toLowerCase() : null;
+        
+        // Remove script, object, embed, and iframe tags that could execute code
+        if (tagName && (tagName === 'script' || tagName === 'object' || 
+            tagName === 'embed' || tagName === 'iframe' || tagName === 'style')) {
+            node.remove();
+            return;
+        }
+        
+        // Remove disallowed tags (keep their content)
+        if (tagName && allowedTags.indexOf(tagName) === -1) {
+            var parent = node.parentNode;
+            while (node.firstChild) {
+                parent.insertBefore(node.firstChild, node);
+            }
+            node.remove();
+            return;
+        }
+        
+        // Remove dangerous attributes from allowed tags
+        if (node.attributes) {
+            var attrsToRemove = [];
+            for (var i = 0; i < node.attributes.length; i++) {
+                var attr = node.attributes[i];
+                var attrNameLower = attr.name.toLowerCase();
+                var attrValue = attr.value.toLowerCase().trim();
+                
+                // Remove event handlers (onclick, onload, etc.)
+                if (attrNameLower.indexOf('on') === 0) {
+                    attrsToRemove.push(attr.name);
+                }
+                // Remove attributes not in the allowlist
+                else if (allowedAttrs.indexOf(attrNameLower) === -1) {
+                    attrsToRemove.push(attr.name);
+                }
+                // Check for dangerous protocols in href attributes
+                else if (attrNameLower === 'href' && 
+                        (attrValue.indexOf('javascript:') === 0 || 
+                         attrValue.indexOf('data:') === 0 || 
+                         attrValue.indexOf('vbscript:') === 0)) {
+                    attrsToRemove.push(attr.name);
+                }
+            }
+            attrsToRemove.forEach(function(attrName) {
+                node.removeAttribute(attrName);
+            });
+        }
+        
+        // Recursively clean child nodes
+        var children = Array.from(node.childNodes);
+        children.forEach(function(child) {
+            if (child.nodeType === 1) { // Element node
+                cleanNode(child);
+            }
+        });
+    }
+    
+    
+    // Clean all child nodes in the detached container
+    Array.from(temp.childNodes).forEach(function(child) {
+        if (child.nodeType === 1) {
+            cleanNode(child);
+        }
+    });
+    
+    // Return the sanitized body element (callers use importNode to avoid innerHTML).
+    return temp;
+}
+
+/**
+ * Safely decode HTML entities without DOM-based XSS risks
+ * Uses a map of common entities and regex replacement
+ */
 function decodeHtmlEntities(text) {
     // Unicode constants for validation (using JavaScript camelCase convention)
     var maxUnicodeCodepoint = 0x10FFFF;
@@ -153,40 +246,23 @@ function decodeHtmlEntities(text) {
 }
 
 function update_email_template_preview() {
+    var rawHtml = $('.email-template-body').val();
     var iframe = $('#email-template-preview')[0];
-
-    if (!iframe) {
-        return;
+    
+    // Initialize iframe with a proper HTML document if needed
+    if (iframe && iframe.contentDocument) {
+        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        
+        // If the iframe doesn't have a proper document structure, create one
+        if (!iframeDoc.body) {
+            iframeDoc.open();
+            iframeDoc.write('<!DOCTYPE html><html><head><meta charset="utf-8"></head><body></body></html>');
+            iframeDoc.close();
+        }
+        
+        // Render as plain text to avoid interpreting untrusted DOM text as HTML.
+        iframeDoc.body.textContent = rawHtml || '';
     }
-
-    var rawHtml = $('.email-template-body').val() || '';
-
-    // Only decode entities when the body looks double-encoded (it contains
-    // &lt;tag&gt; but no real tags). Decoding unconditionally would turn
-    // deliberately escaped text the author wants shown literally into markup.
-    var htmlToRender = rawHtml;
-    var containsEncodedHtmlTags = /&lt;\s*\/?[a-zA-Z][\w:.-]*[^>]*&gt;/.test(rawHtml);
-    var containsRawHtmlTags = /<\s*\/?[a-zA-Z][\w:.-]*[^>]*>/.test(rawHtml);
-
-    if (containsEncodedHtmlTags && !containsRawHtmlTags) {
-        htmlToRender = decodeHtmlEntities(rawHtml);
-    }
-
-    // The body is rendered verbatim, because a preview that alters the markup is
-    // not a preview. Real email templates are full HTML documents that carry all
-    // their styling in inline style="" attributes plus presentational attributes
-    // (bgcolor, align, valign, cellpadding...), since that is the only CSS mail
-    // clients reliably honour. Filtering those through an allowlist stripped every
-    // one of them and rendered the email as unstyled text.
-    //
-    // Safety comes from isolation rather than filtering: the iframe is declared
-    // sandbox="" (see the email template form), the most restrictive value
-    // available. Scripts cannot execute, forms cannot submit, nothing can navigate
-    // the top-level page, and the document lives in an opaque origin with no access
-    // to this one -- so even a hostile template can do no more than draw pixels
-    // inside its own frame. srcdoc keeps it that way; assigning through
-    // contentDocument would require allow-same-origin and weaken the sandbox.
-    iframe.setAttribute('srcdoc', htmlToRender);
 }
 
 // Insert HTML tags into textarea
@@ -427,61 +503,18 @@ $(function () {
     });
 
     // Email Template Preview handling
-    if ($('.email-template-body').length) {
-        update_email_template_preview();
+    var email_template_body_id = $('.email-template-body').attr('id');
 
-        // Bind on the element, not on its id string. This previously passed the bare
-        // id ("email_template_body") to $() with no leading '#', which matches nothing,
-        // so the preview never updated as you typed -- only on reload.
-        //
-        // Debounced because each update reassigns srcdoc, which reloads the frame:
-        // doing that on every keystroke would flicker and re-fetch remote images.
-        var email_preview_timer = null;
-        $('.email-template-body').on('input propertychange', function () {
-            clearTimeout(email_preview_timer);
-            email_preview_timer = setTimeout(update_email_template_preview, 300);
-        });
+    if ($('#email_template_preview').empty()) {
+        update_email_template_preview();
     }
+
+    $(email_template_body_id).bind('input propertychange', function () {
+        update_email_template_preview();
+    });
 
     $('#email-template-preview-reload').click(function () {
         update_email_template_preview();
-    });
-
-    // Full-screen preview toggle. Only a class is switched -- the iframe is never
-    // re-parented, because that would reload its document and blank the preview.
-    function set_email_template_preview_expanded(expanded) {
-        var $panel = $('#email-template-preview-panel');
-
-        if (!$panel.length) {
-            return;
-        }
-
-        var $toggle = $('#email-template-preview-expand');
-
-        $panel.toggleClass('is-expanded', expanded);
-        $('body').toggleClass('email-template-preview-expanded', expanded);
-
-        $toggle.find('i')
-            .toggleClass('fa-expand', !expanded)
-            .toggleClass('fa-compress', expanded);
-
-        $toggle.attr(
-            'title',
-            expanded ? $toggle.data('label-collapse') : $toggle.data('label-expand')
-        );
-    }
-
-    $('#email-template-preview-expand').click(function () {
-        set_email_template_preview_expanded(
-            !$('#email-template-preview-panel').hasClass('is-expanded')
-        );
-    });
-
-    $(document).on('keydown.emailTemplatePreview', function (e) {
-        if ((e.key === 'Escape' || e.keyCode === 27) &&
-            $('#email-template-preview-panel').hasClass('is-expanded')) {
-            set_email_template_preview_expanded(false);
-        }
     });
 
     // Spinner loader helper (global scope access)

@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        node: ['20', '22', '24']
+        node: ['14', '16', '18']
     name: Node ${{ matrix.node }} build testing
     steps:
       - uses: actions/checkout@v4

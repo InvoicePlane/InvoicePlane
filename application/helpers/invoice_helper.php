@@ -137,21 +137,13 @@ function invoice_qrcode($invoice_id, $width = 64): string
         $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
 
         if ((float) $invoice->invoice_balance) {
-            // The QR is a convenience on the page; the invoice is the point. Payment data
-            // that fails SEPA validation -- a negative credit-note balance, a BIC that is
-            // not 8 or 11 characters, a user with no company or name -- throws, and
-            // without this that exception aborted the whole PDF, taking down every invoice
-            // email and payment reminder that attaches it. Omit the QR and log instead.
-            try {
-                $CI->load->library('QrCode', ['invoice' => $invoice]);
-                $qrcode_data_uri = $CI->qrcode->generate();
-            } catch (Throwable $e) {
-                $CI->load->helper('file_security');
-                log_message('error', '[QR Code] Omitted from invoice ' . (int) $invoice_id . ': '
-                    . sanitize_for_logging($e->getMessage()));
-
-                return '';
-            }
+            // #1450: Use direct instantiation instead of CI->load->library() which caches the object.
+            // When generating multiple invoices in one request (cron, bulk operations),
+            // the cached QrCode instance would reuse the first invoice's data for all subsequent invoices.
+            // Direct instantiation ensures each invoice gets its own QrCode instance with correct data.
+            require_once APPPATH . 'libraries/QrCode.php';
+            $qrcode          = new QrCode(['invoice' => $invoice]);
+            $qrcode_data_uri = $qrcode->generate();
 
             $numeric_width = (int) $width;
             $width         = '';

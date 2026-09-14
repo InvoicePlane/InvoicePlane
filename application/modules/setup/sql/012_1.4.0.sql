@@ -33,7 +33,7 @@ CREATE TABLE `ip_projects` (
   `project_name` VARCHAR(150) NOT NULL,
   PRIMARY KEY (`project_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 # For module "tasks"
@@ -47,7 +47,7 @@ CREATE TABLE `ip_tasks` (
   `task_status`      TINYINT(1)   NOT NULL,
   PRIMARY KEY (`task_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 # For module "upload" IP-211
@@ -60,7 +60,7 @@ CREATE TABLE `ip_uploads` (
   `uploaded_date`      DATE     NOT NULL,
   PRIMARY KEY (`upload_id`)
 )
-  ENGINE = InnoDB
+  ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 
 # Attach pdf on emails setting
