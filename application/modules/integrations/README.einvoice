@@ -80,8 +80,8 @@ The main components are:
 Before enabling a provider:
 
 1. install the locked Composer dependencies with `composer install`;
-2. run the InvoicePlane setup/upgrade wizard so migrations `044_1.8.0.sql`
-   through `047_1.8.3.sql` are applied in order;
+2. run the InvoicePlane setup/upgrade wizard so migration `045_1.8.0.sql`
+   is applied;
 3. verify that `ENCRYPTION_KEY` is populated in `ipconfig.php` and keep a
    recoverable backup of that key;
 4. make sure `uploads/archive` and `uploads/integrations/outgoing` are writable
@@ -742,16 +742,13 @@ Incoming Factur-X reception additionally requires Poppler's `pdfdetach`
 command. It is used only to extract `factur-x.xml`; reception fails closed when
 the command is unavailable, times out, or the attachment cannot be read.
 
-Database setup/upgrade must apply these migrations in order:
+Database setup/upgrade applies this migration:
 
 | Migration | Purpose |
 |---|---|
-| `044_1.8.0.sql` | Creates the provider registry, extends `ip_merchant_responses`, and adds the client Peppol identifier |
-| `045_1.8.1.sql` | Adds incoming-document archive metadata and validation results |
-| `046_1.8.2.sql` | Defines encrypted settings and minimized audit-payload storage contracts |
-| `047_1.8.3.sql` | Creates the `ip_integration_sync_runs` operational ledger |
+| `045_1.8.0.sql` | Creates the provider registry (`ip_merchant_clients`), extends `ip_merchant_responses` for e-invoice/Peppol rows plus incoming-document archive metadata and the `event_hash` dedup key, adds the client and user Peppol identifiers, and creates the `ip_integration_sync_runs` operational ledger |
 
-Do not run these files selectively or with an application-framework CLI. Use
+Do not run this file selectively or with an application-framework CLI. Use
 InvoicePlane's CodeIgniter setup/upgrade workflow.
 
 After deployment, perform these read-only/runtime checks from the InvoicePlane

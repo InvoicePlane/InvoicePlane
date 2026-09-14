@@ -143,4 +143,14 @@ jobs:
 
       - name: Run PHPUnit
         run: |
-          vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
+          # The job-level DB_* env is only for the schema-build steps above. Unset
+          # it here: the phpunit parent resolves DB config through env() -> $_ENV,
+          # but CI's variables_order has no 'E', so exported DB_* never reach $_ENV
+          # and phpdotenv's createImmutable then skips copying the ipconfig.php
+          # values in (the keys look "already set"). Net effect: env('DB_*') is
+          # null, InteractsWithDatabase::db() connects as ''@'localhost' -> Access
+          # denied -> every DB-backed test markTestSkipped()s (the "masked" run
+          # with hundreds of skips). The request subprocess reads ipconfig.php in a
+          # clean env regardless; unsetting here lets the parent do the same.
+          env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE -u DB_USERNAME -u DB_PASSWORD \
+            vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
