@@ -181,8 +181,9 @@ class Paypal extends Base_Controller
                     ->row();
 
                 if ($existing_payment) {
-                    // Duplicate payment attempt detected
-                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. PayPal capture ID: ' . sanitize_for_logging($capture_id) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
+                    // Duplicate payment attempt detected (replay/webhook re-delivery).
+                    // The same PayPal capture has already been recorded, preventing double-charge.
+                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment blocked (already recorded). PayPal capture_id: ' . sanitize_for_logging($capture_id) . ' → payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
 
                     $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
 
