@@ -14,32 +14,34 @@
         "sort-packages": true,
         "allow-plugins": {
             "php-http/discovery": true
+        },
+        "platform": {
+            "php": "8.2.0"
         }
     },
     "require": {
-        "endroid/qr-code": "^4.8.5",
+        "php": ">=8.2",
+        "endroid/qr-code": "^6.0",
         "ezyang/htmlpurifier": "^4.19",
-        "guzzlehttp/guzzle": "^7.15.2",
-        "josemmo/facturae-php": "^1.8",
+        "guzzlehttp/guzzle": "^8.2",
         "moneyphp/money": "^4.9",
         "mpdf/mpdf": "^8.3.1",
-        "paragonie/random_compat": "^2.0.21",
-        "phpmailer/phpmailer": "^6.12",
-        "pocketarc/codeigniter": "3.4",
-        "s2software/fatturapa": "dev-master",
+        "phpmailer/phpmailer": "^7.1",
+        "pocketarc/codeigniter": "^3.4.4",
         "setasign/fpdf": "^1.9",
         "setasign/fpdi": "^2.6.8",
-        "smhg/sepa-qr-data": "^1.2",
-        "stripe/stripe-php": "^14.10",
-        "vlucas/phpdotenv": "^5.6.4"
+        "smhg/sepa-qr-data": "^3.0",
+        "stripe/stripe-php": "^21.3",
+        "symfony/polyfill-mbstring": "^1.31",
+        "vlucas/phpdotenv": "^5.7"
     },
     "require-dev": {
         "filp/whoops": "^2.18.4",
         "laravel/pint": "^1.30.0",
-        "phpunit/phpunit": "^10.5",
-        "rector/rector": "^2.5.8",
-        "squizlabs/php_codesniffer": "^3.13.5",
-        "symfony/var-dumper": "^6.4.43"
+        "phpunit/phpunit": "^11.5",
+        "rector/rector": "^2.6.6",
+        "squizlabs/php_codesniffer": "^4.0",
+        "symfony/var-dumper": "^7.4"
     },
     "scripts": {
         "check": [
@@ -58,6 +60,10 @@
         "pint": [
             "Composer\\Config::disableProcessTimeout",
             "vendor/bin/pint"
+        ],
+        "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "vendor/bin/phpunit"
         ]
     },
     "autoload": {

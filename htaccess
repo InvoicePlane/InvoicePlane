@@ -2,6 +2,12 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  ### Never serve application code, dependencies or private files directly (archived invoice
+  ### PDFs and attachments under uploads/ are additionally protected by their own .htaccess)
+  RewriteRule ^(application|vendor|storage|resources|node_modules|tests|\.github)(/|$) - [R=404,L]
+  RewriteRule (^|/)\.(?!well-known/) - [R=404,L]
+  RewriteRule ^(composer\.(json|lock)|package\.json|yarn\.lock|Gruntfile\.js|ipconfig\.php(\.example)?|htaccess|phpunit\.xml|pint\.json|phpstan\.neon|rector\.php|[^/]+\.md)$ - [R=404,L]
   
   ### uncomment to force HTTPS
   # RewriteCond %{HTTPS} off

@@ -72,6 +72,15 @@ function render_template_view(string $template_subpath, array $data, bool $retur
  */
 function parse_template($object, $body, bool $escape_values = false)
 {
+    // Optional template fields -- a template with no Cc, Bcc or from-name -- arrive here
+    // as null. Passing null to preg_match_all() below is deprecated since PHP 8.1 and
+    // becomes a TypeError in PHP 9, and it fired on every invoice and quote email. With
+    // nothing to substitute, return the value unchanged: callers test these with a plain
+    // truthiness check, so null and '' keep behaving exactly as before.
+    if ($body === null || $body === '') {
+        return $body;
+    }
+
     $allowed_properties = [
         'client_name',
         'client_surname',
@@ -131,6 +140,22 @@ function parse_template($object, $body, bool $escape_values = false)
                     break;
                 case 'invoice_date_due':
                     $replace = date_from_mysql($object->invoice_date_due, true);
+                    break;
+                case 'invoice_days_overdue':
+                case 'invoice_days_until_due':
+                    // Prefer the model's DATEDIFF(NOW(), invoice_date_due) column: the
+                    // reminder scheduler counts days with MySQL's DATEDIFF(CURDATE(), ...)
+                    // too, so the number in the email matches the reminder that triggered
+                    // it even when PHP and MySQL run in different timezones. Objects
+                    // loaded without that column fall back to PHP's clock.
+                    if (isset($object->days_overdue) && is_numeric($object->days_overdue)) {
+                        $days = -(int) $object->days_overdue;
+                    } else {
+                        $due  = new DateTimeImmutable($object->invoice_date_due);
+                        $days = (int) (new DateTimeImmutable('today'))->diff($due)->format('%r%a');
+                    }
+
+                    $replace = (string) max(0, $var === 'invoice_days_overdue' ? -$days : $days);
                     break;
                 case 'invoice_date_created':
                     $replace = date_from_mysql($object->invoice_date_created, true);

@@ -18,6 +18,19 @@ use Stripe\StripeClient;
 #[AllowDynamicProperties]
 class Stripe extends Base_Controller
 {
+    /**
+     * The Stripe API version this integration is written and tested against.
+     *
+     * Pinned explicitly because stripe-php otherwise sends whatever API version the
+     * installed SDK release happens to default to, so a routine library upgrade would
+     * silently migrate the payment contract. stripe-php 21 defaults to 2026-08-26.dahlia,
+     * whose Checkout Session no longer lists ui_mode 'embedded' (replaced by
+     * 'embedded_page'). Moving to a newer API version is a deliberate change: update this,
+     * adjust create_checkout_session() and the Stripe.js mount in
+     * guest/views/gateways/stripe.php to match, then test against a Stripe test-mode key.
+     */
+    private const STRIPE_API_VERSION = '2024-04-10';
+
     protected StripeClient $stripe;
 
     protected $Mdl_settings;
@@ -30,9 +43,10 @@ class Stripe extends Base_Controller
         $this->load->helper('file_security');
         $this->load->helper(['currency', 'stripe']);
 
-        $this->useTestHttpClientIfConfigured();
-
-        $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
+        $this->stripe = new StripeClient([
+            'api_key'        => $this->crypt->decode(get_setting('gateway_stripe_apiKey')),
+            'stripe_version' => self::STRIPE_API_VERSION,
+        ]);
     }
 
     /**
@@ -168,8 +182,11 @@ class Stripe extends Base_Controller
                         $paid     = false;
                         $user_msg = trans('online_payment_payment_failed');
                     } else {
-                        // Save the payment (visible in guest user)
-                        $this->mdl_payments->save(null, [
+                        // Record the payment atomically: the balance guard and
+                        // the insert are one conditional UPDATE, so a concurrent
+                        // callback with a different payment_intent cannot also
+                        // pass a stale balance and double-credit the invoice.
+                        $recorded = $this->mdl_payments->record_external_payment([
                             'invoice_id'          => $invoice->invoice_id,
                             'payment_date'        => date('Y-m-d'),
                             'payment_amount'      => $capture_amount,
@@ -177,6 +194,11 @@ class Stripe extends Base_Controller
                             'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
                             'payment_external_id' => $payment_intent,
                         ]);
+
+                        if ( ! $recorded) {
+                            $paid     = false;
+                            $user_msg = trans('online_payment_already_processed');
+                        }
                     }
                 }
             }

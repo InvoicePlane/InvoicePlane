@@ -13,26 +13,39 @@ name: PHPUnit
 # seeded via tests/Support/seed-test-db.php.
 
 on:
-  # Not every push to every branch — only the shared integration branch and
-  # pull requests. Feature-branch work is covered when it opens/updates a PR.
   push:
-    branches:
-      - prep/v180
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
+      - 'composer.lock'
   pull_request:
-  #schedule:
-  #  - cron: '0 6 * * 1'   # Mondays 06:00 UTC — full version sweep
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
+      - 'composer.lock'
   workflow_dispatch:
     inputs:
       php_version:
         description: 'PHP version to test (or "all" for 8.2, 8.3 and 8.4)'
         required: false
-        default: 'all'
+        default: '8.4'
         type: choice
         options:
           - 'all'
           - '8.2'
           - '8.3'
           - '8.4'
+          - '8.5'
+      mysql_version:
+        description: 'MySQL/MariaDB image'
+        required: false
+        default: 'mysql:8.0'
+        type: choice
+        options:
+          - 'mysql:8.0'
+          - 'mariadb:10.11'
       fail_fast:
         description: 'Stop on first failure'
         required: false
@@ -71,8 +84,14 @@ jobs:
 
   test:
     name: PHPUnit (PHP ${{ matrix.php }})
-    needs: matrix
     runs-on: ubuntu-latest
+
+    # Pushes and pull requests run every supported PHP version; a manual dispatch runs
+    # only the version picked in the form.
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', github.event.inputs.php_version)) || fromJSON('["8.2","8.3","8.4","8.5"]') }}
 
     services:
       mariadb:

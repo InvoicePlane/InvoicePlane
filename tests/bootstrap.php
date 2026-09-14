@@ -1,23 +1,16 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
+/*
+ * InvoicePlane test bootstrap.
+ *
+ * InvoicePlane is CodeIgniter 3, which has no test-friendly container, so the unit
+ * suite does not boot the framework. It covers plain function libraries that are
+ * written to be free of CodeIgniter state. Those files guard on BASEPATH to block
+ * direct web access, so the constant is defined here to let them be required.
+ */
 
-define('CI_TESTING', true);
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$basePath = dirname(__DIR__);
-
-require_once $basePath . '/bootstrap/kernel.php';
-require_once $basePath . '/tests/Integration/bootstrap.php';
-
-// Isolated unit tests load application libraries without the CodeIgniter
-// request lifecycle. Keep application logging calls harmless in that context.
-if ( ! function_exists('log_message')) {
-    function log_message(string $level, string $message): void {}
+if ( ! defined('BASEPATH')) {
+    define('BASEPATH', __DIR__ . '/../vendor/pocketarc/codeigniter/system/');
 }
-
-require_once $basePath . '/tests/Support/UnitCodeIgniter.php';
-
-$_SERVER['REQUEST_URI'] = '/';
-$_SERVER['SCRIPT_NAME'] = '/index.php';
-$_SERVER['PHP_SELF']    = '/index.php';

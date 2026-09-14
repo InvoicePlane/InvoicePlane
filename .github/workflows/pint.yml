@@ -30,8 +30,8 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.3'
-          composer-flags: '--prefer-dist --no-interaction --no-progress --ignore-platform-reqs'
+          php-version: '8.4'
+          composer-flags: '--prefer-dist --no-interaction --no-progress'
 
       - name: Run Pint
         run: |

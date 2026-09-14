@@ -73,13 +73,18 @@ class Mdl_Sessions extends CI_Model
                     return false;
                 }
 
+                if ( ! function_exists('session_credential_fingerprint')) {
+                    $this->load->helper('ip_security');
+                }
+
                 $session_data = [
-                    'user_type'     => $user->user_type,
-                    'user_id'       => $user->user_id,
-                    'user_name'     => $user->user_name,
-                    'user_email'    => $user->user_email,
-                    'user_company'  => $user->user_company,
-                    'user_language' => $user->user_language ?? 'system',
+                    'user_credential' => session_credential_fingerprint((string) $user->user_password),
+                    'user_type'       => $user->user_type,
+                    'user_id'         => $user->user_id,
+                    'user_name'       => $user->user_name,
+                    'user_email'      => $user->user_email,
+                    'user_company'    => $user->user_company,
+                    'user_language'   => $user->user_language ?? 'system',
                 ];
 
                 // Regenerate session ID on login to prevent session fixation attacks.
@@ -135,12 +140,11 @@ class Mdl_Sessions extends CI_Model
                     continue;
                 }
 
-                $session_data = @unserialize(file_get_contents($file_path), ['allowed_classes' => false]);
-                if ($session_data === false || ! is_array($session_data)) {
-                    continue;
-                }
-
-                if (isset($session_data['user_id']) && (string) $session_data['user_id'] === (string) $user_id) {
+                // Session files are written with session.serialize_handler=php ("key|serialized;"),
+                // which unserialize() cannot parse, so read the user_id entry directly.
+                $raw = (string) @file_get_contents($file_path);
+                if (preg_match('/(?:^|[;}])user_id\|(?:s:\d+:"(\d+)"|i:(\d+));/', $raw, $m)
+                    && ($m[1] !== '' ? $m[1] : ($m[2] ?? '')) === (string) (int) $user_id) {
                     @unlink($file_path);
                 }
             }

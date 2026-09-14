@@ -19,6 +19,7 @@ pint_output.log
 /*-inventory-*.md
 /phpunit-plan-*.md
 /.phpunit.result.cache
+/.phpunit.cache/
 
 # Other files
 .htaccess

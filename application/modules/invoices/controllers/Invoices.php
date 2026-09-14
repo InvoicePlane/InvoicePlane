@@ -142,9 +142,7 @@ class Invoices extends Admin_Controller
                 'custom_fields/mdl_invoice_custom',
                 'units/mdl_units',
                 'upload/mdl_uploads',
-                'services/mdl_services',
-                'integrations/Merchant_clients_model',
-                'integrations/Merchant_responses_model',
+                'invoices/mdl_invoice_reminders',
             ]
         );
         $this->load->helper(['custom_values', 'dropzone', 'e-invoice']);
@@ -244,6 +242,7 @@ class Invoices extends Admin_Controller
                 'services'          => $services,
                 'custom_fields'     => $custom_fields,
                 'custom_values'     => $custom_values,
+                'invoice_reminders' => $this->mdl_invoice_reminders->by_invoice((int) $invoice_id)->get()->result(),
                 'custom_js_vars'    => [
                     'currency_symbol'           => get_setting('currency_symbol'),
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
