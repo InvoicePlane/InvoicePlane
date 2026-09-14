@@ -26,11 +26,12 @@ ENABLE_X_CONTENT_TYPE_OPTIONS=true
 #
 # SESS_SAVE_PATH is the directory PHP writes session files to (default 'files' driver).
 #
-# Leaving it empty (the line below) is safe: resolve_session_save_path() collapses an
-# empty, whitespace-only or unset value to PHP's sys_get_temp_dir(), so CodeIgniter is
-# never handed an empty session.save_path that would override php.ini / php-fpm.d /
-# your Apache vhost and break session startup (login fails, the installer gets stuck on
-# .../setup/language because setup progress is kept in the session).
+# Do NOT set this to an empty value. An empty SESS_SAVE_PATH is passed straight through
+# to PHP as an empty session.save_path, which OVERRIDES whatever php.ini / php-fpm.d /
+# your Apache vhost configured. The result is that no session can be written: login
+# fails and the installer gets stuck on .../setup/language (setup progress is kept in
+# the session). If you don't need a custom path, leave the line below commented out and
+# InvoicePlane falls back to PHP's sys_get_temp_dir().
 #
 # Recommended for a real deployment: a dedicated writable directory outside the web root,
 # owned by the web-server user, e.g.
@@ -42,7 +43,7 @@ ENABLE_X_CONTENT_TYPE_OPTIONS=true
 # run with PrivateTmp=true and systemd-tmpfiles periodically wipes it, so sessions
 # disappear mid-use.
 #
-SESS_SAVE_PATH=
+# SESS_SAVE_PATH=/var/lib/invoiceplane/sessions
 # Override the session cookie name
 SESS_COOKIE_NAME=ip_session
 # Override the session database table name (only used when SESS_DRIVER=database)
@@ -58,9 +59,8 @@ DISABLE_SETUP=false
 REMOVE_INDEXPHP=false
 
 # These database settings are set during the initial setup. If editing this
-# file by hand, quote DB_HOSTNAME, DB_USERNAME, DB_PASSWORD and DB_DATABASE -
-# an unquoted value ends at the first space or '#', which silently truncates
-# a password containing either. DB_PORT is numeric and stays unquoted.
+# file by hand, quote every value - an unquoted value ends at the first
+# space or '#', which silently truncates a password containing either.
 #
 # Single quotes (recommended) - the value is stored exactly as written,
 # character for character, with no escaping of any kind:
