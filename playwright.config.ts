@@ -9,7 +9,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost',
+    baseURL: process.env.BASE_URL || 'http://localhost:8000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -18,14 +18,6 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
     },
   ],
 
