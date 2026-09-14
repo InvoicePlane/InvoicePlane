@@ -420,7 +420,7 @@ class Mdl_Setup extends CI_Model
         $this->session->set_userdata('setup_notice', $setup_notice);
     }
 
-    public function upgrade_046_1_7_3(): bool
+    public function upgrade_046_innodb_conversion(): bool
     {
         return $this->convert_tables_to_innodb();
     }
@@ -441,12 +441,22 @@ class Mdl_Setup extends CI_Model
      * that exist and are actually MyISAM are touched, so re-running is a no-op.
      *
      * Note for large installs: ALTER TABLE ... ENGINE rebuilds the table and holds a
-     * write lock for its duration. Take a backup first.
+     * write lock for its duration. Take a backup first. This method increases PHP's
+     * max_execution_time to prevent timeout on large table conversions, and retries
+     * conversion if a lock wait timeout is encountered.
      *
      * @return bool false when a table failed to convert, so the migration is retried
      */
     private function convert_tables_to_innodb(): bool
     {
+        // Increase timeout for large table conversions (3600s = 1 hour max per table).
+        // ALTER TABLE can take a very long time on large tables; default PHP timeout
+        // (30s) would kill the upgrade. Store the original to restore after conversion.
+        $original_timeout = ini_get('max_execution_time');
+        if ($original_timeout !== false && (int) $original_timeout > 0) {
+            set_time_limit(3600);
+        }
+
         $this->db->db_debug = IP_DEBUG;
 
         $tables = $this->db->query(
@@ -483,16 +493,38 @@ class Mdl_Setup extends CI_Model
             }
 
             $this->db->db_debug = IP_DEBUG;
-            $this->db->query('ALTER TABLE `' . $table_name . '` ENGINE=InnoDB');
 
-            $error = $this->db->error();
-            if ($error['code'] !== 0) {
-                $this->errors[] = 'Could not convert ' . $table_name . ' to InnoDB: ' . $error['message'];
-                $failed++;
-                continue;
+            // Retry once on lock wait timeout (error 1205), which is common on live
+            // databases when a long-running query holds a lock the ALTER needs.
+            $attempt = 0;
+            $max_attempts = 2;
+            while ($attempt < $max_attempts) {
+                $attempt++;
+                $this->db->query('ALTER TABLE `' . $table_name . '` ENGINE=InnoDB');
+                $error = $this->db->error();
+
+                if ($error['code'] === 0) {
+                    // Success
+                    break;
+                }
+
+                // MySQL error 1205 = "Lock wait timeout exceeded"
+                if ($error['code'] === 1205 && $attempt < $max_attempts) {
+                    // Brief wait before retry, so the lock holder has time to finish
+                    sleep(2);
+                    continue;
+                }
+
+                // Other error or final attempt failed
+                if ($attempt === $max_attempts) {
+                    $this->errors[] = 'Could not convert ' . $table_name . ' to InnoDB: ' . $error['message'];
+                    $failed++;
+                }
             }
 
-            $converted++;
+            if ($error['code'] === 0) {
+                $converted++;
+            }
         }
 
         if ($converted > 0) {
