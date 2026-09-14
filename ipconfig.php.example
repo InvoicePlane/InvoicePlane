@@ -154,6 +154,45 @@ CUSTOM_INVOICE_TEMPLATES_PUBLIC=
 CUSTOM_QUOTE_TEMPLATES_PDF=
 CUSTOM_QUOTE_TEMPLATES_PUBLIC=
 
+# Invoice Reminder Settings
+# Configure automatic payment reminders sent to clients before and after invoice due dates.
+#
+# Enable or disable the entire reminder system (requires cron to be configured)
+INVOICE_REMINDERS_ENABLED=true
+#
+# Days before due date to send reminders. Format: comma-separated list of integers.
+# Examples: "3,7,14" sends reminders 3, 7, and 14 days before due date.
+# Leave empty to disable pre-due reminders.
+INVOICE_REMINDER_DAYS_BEFORE=
+#
+# Days after due date to send overdue reminders. Format: comma-separated list of integers.
+# Examples: "1,3,7" sends overdue reminders 1, 3, and 7 days after due date.
+# Leave empty to disable post-due reminders.
+INVOICE_REMINDER_DAYS_AFTER=
+#
+# Repeat reminders every N days once a reminder is triggered.
+# 0 = send each reminder only once (default)
+# N = repeat reminders every N days until payment is received
+INVOICE_REMINDER_REPEAT_DAYS=0
+#
+# Maximum total reminders to send per invoice (0 = unlimited)
+INVOICE_REMINDER_MAX_TOTAL=10
+#
+# Email template ID to use for payment reminders (must match a saved template)
+EMAIL_INVOICE_TEMPLATE_REMINDER=
+
+# Recurring Invoice Settings
+# Controls behavior when recurring invoices are automatically generated.
+#
+# Automatically email clients when a new recurring invoice is generated
+AUTOMATIC_EMAIL_ON_RECUR=false
+
+# Cron Rate Limiting (prevents brute-force attacks on the unauthenticated /cron endpoint)
+# Maximum wrong-cron-key attempts allowed within the time window
+CRON_IP_MAX_ATTEMPTS=10
+# Time window in minutes for wrong-key attempt rate limiting
+CRON_IP_WINDOW_MINUTES=15
+
 ##
 ## DO NOT CHANGE ANY CONFIGURATION VALUES BELOW THIS LINE!
 ## =======================================================
