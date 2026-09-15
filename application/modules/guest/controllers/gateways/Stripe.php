@@ -18,19 +18,6 @@ use Stripe\StripeClient;
 #[AllowDynamicProperties]
 class Stripe extends Base_Controller
 {
-    /**
-     * The Stripe API version this integration is written and tested against.
-     *
-     * Pinned explicitly because stripe-php otherwise sends whatever API version the
-     * installed SDK release happens to default to, so a routine library upgrade would
-     * silently migrate the payment contract. stripe-php 21 defaults to 2026-08-26.dahlia,
-     * whose Checkout Session no longer lists ui_mode 'embedded' (replaced by
-     * 'embedded_page'). Moving to a newer API version is a deliberate change: update this,
-     * adjust create_checkout_session() and the Stripe.js mount in
-     * guest/views/gateways/stripe.php to match, then test against a Stripe test-mode key.
-     */
-    private const STRIPE_API_VERSION = '2024-04-10';
-
     protected StripeClient $stripe;
 
     protected $Mdl_settings;
@@ -43,10 +30,9 @@ class Stripe extends Base_Controller
         $this->load->helper('file_security');
         $this->load->helper(['currency', 'stripe']);
 
-        $this->stripe = new StripeClient([
-            'api_key'        => $this->crypt->decode(get_setting('gateway_stripe_apiKey')),
-            'stripe_version' => self::STRIPE_API_VERSION,
-        ]);
+        $this->useTestHttpClientIfConfigured();
+
+        $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
     }
 
     /**
@@ -125,7 +111,7 @@ class Stripe extends Base_Controller
             log_message('debug', __CLASS__ . '::' . __FUNCTION__ . ' reached, status: ' . $session->status . ' payment_status: ' . $session->payment_status . ', checkout_session_id: ' . sanitize_for_logging($checkout_session_id));
 
             // Determine which invoice we’re dealing with
-            $invoice_key = $session->client_reference_id;
+            $invoice_key = StripeResponseExtractor::extractInvoiceKey($session);
 
             // Retrieve the invoice
             $invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_url_key', $invoice_key)->get()->row();
@@ -138,15 +124,15 @@ class Stripe extends Base_Controller
 
             // Check the session payment_status is 'paid'
             // See: https://github.com/stripe/stripe-php/blob/044f9dd190967b8fb7e55fd0ea25f11c625c00a4/lib/Checkout/Session.php#L101
-            $paid = $session->payment_status === $session::PAYMENT_STATUS_PAID; // +2 status: *_NO_PAYMENT_REQUIRED *_UNPAID
+            $paid = StripeResponseExtractor::isPaid($session); // +2 status: *_NO_PAYMENT_REQUIRED *_UNPAID
 
             // Is paid? (intent flow 'succeeded')
             if ($paid) {
                 $this->load->model('payments/mdl_payments');
 
                 // Validate and sanitize the payment_intent ID
-                $payment_intent = (string) $session->payment_intent;
-                if (empty($payment_intent) || mb_strlen($payment_intent) > 255) {
+                $payment_intent = StripeResponseExtractor::extractPaymentIntentId($session);
+                if ($payment_intent === null || mb_strlen($payment_intent) > 255) {
                     log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Invalid payment_intent ID format');
                     throw new Exception('Invalid payment intent ID');
                 }
@@ -170,8 +156,8 @@ class Stripe extends Base_Controller
                 } else {
                     // Validate currency and amount before recording payment
                     $expected_currency = mb_strtoupper((string) get_setting('gateway_stripe_currency'));
-                    $capture_currency  = mb_strtoupper((string) ($session->currency ?? ''));
-                    $capture_amount    = amount_from_minor_units($session->amount_total, stripe_minor_unit_multiplier($capture_currency));
+                    $capture_currency  = StripeResponseExtractor::extractCurrency($session);
+                    $capture_amount    = amount_from_minor_units(StripeResponseExtractor::extractAmountTotalMinor($session), stripe_minor_unit_multiplier($capture_currency));
 
                     if ($capture_currency !== $expected_currency) {
                         log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: currency mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . $expected_currency . ', received: ' . $capture_currency);
@@ -182,11 +168,8 @@ class Stripe extends Base_Controller
                         $paid     = false;
                         $user_msg = trans('online_payment_payment_failed');
                     } else {
-                        // Record the payment atomically: the balance guard and
-                        // the insert are one conditional UPDATE, so a concurrent
-                        // callback with a different payment_intent cannot also
-                        // pass a stale balance and double-credit the invoice.
-                        $recorded = $this->mdl_payments->record_external_payment([
+                        // Save the payment (visible in guest user)
+                        $this->mdl_payments->save(null, [
                             'invoice_id'          => $invoice->invoice_id,
                             'payment_date'        => date('Y-m-d'),
                             'payment_amount'      => $capture_amount,
@@ -194,11 +177,6 @@ class Stripe extends Base_Controller
                             'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
                             'payment_external_id' => $payment_intent,
                         ]);
-
-                        if ( ! $recorded) {
-                            $paid     = false;
-                            $user_msg = trans('online_payment_already_processed');
-                        }
                     }
                 }
             }
@@ -211,14 +189,9 @@ class Stripe extends Base_Controller
                                 . ', fee: ' . amount_from_minor_units($session->application_fee_amount, stripe_minor_unit_multiplier($session->currency))       // 0 in test. Set in live mode?
                                 . ', session ID: ' . $session->id                                   // Unique identifier for the object.
                                 : ($session->cancel ? $session->cancellation_reason : $session->last_payment_error); // Cancelled
-            // User (& error) message. Keep the status-specific message already set
-            // above (already processed, duplicate, invoice already paid,
-            // currency/amount mismatch) — only fill in a generic one here.
-            if ($paid) {
-                $user_msg = sprintf(trans('online_payment_successful'), '#' . htmlsc($invoice->invoice_number));
-            } elseif ($user_msg === '') {
-                $user_msg = trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
-            }
+            // User (& error) message
+            $user_msg = $paid ? sprintf(trans('online_payment_successful'), '#' . htmlsc($invoice->invoice_number))
+                              : trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
         } catch (Error|Exception|ErrorException $e) {
             $user_msg = trans('online_payment_error') . (empty($user_msg) ? '' : '<br>' . $user_msg);
             $paid     = 'error'; // tweak to reuse
@@ -227,8 +200,8 @@ class Stripe extends Base_Controller
             log_message('error', sanitize_for_logging(strtr($response . ' user_msg: ' . $user_msg, ['<br>' => ' ']))); // No br's
         } finally {
             $paid = is_bool($paid) ? ($paid ? 'success' : 'info') : $paid; // Tweak to reuse (flashdata alert_*)
-            // Check stripe server ok
-            $ok = $session->status !== null; // Stripe is accessible?
+            // Check stripe server ok — this session was retrieved, so it answered.
+            $ok = $session !== null && ($session->status ?? null) !== null;
             // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts).
             // $invoice is null when the lookup above never found one (invalid/inaccessible
             // client_reference_id) — ip_merchant_responses.invoice_id is NOT NULL and there's

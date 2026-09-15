@@ -95,7 +95,6 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                     invoice_date_due: $('#invoice_date_due').val(),
                     invoice_status_id: $('#invoice_status_id').val(),
                     invoice_password: $('#invoice_password').val(),
-                    invoice_disable_reminders: $('#invoice_disable_reminders').is(':checked') ? 1 : 0,
                     items: JSON.stringify(items),
                     invoice_discount_amount: $('#invoice_discount_amount').val(),
                     invoice_discount_percent: $('#invoice_discount_percent').val(),
@@ -656,22 +655,6 @@ foreach ($payment_methods as $payment_method) {
                                            value="<?php _htmlsc($invoice->invoice_password); ?>"
                                            <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>>
                                 </div>
-
-<?php
-// Deliberately still editable on a read-only invoice: silencing reminders is
-// metadata about chasing payment, not invoice content, and a locked invoice is
-// exactly the one you may need to stop chasing.
-?>
-                                <div class="invoice-properties">
-                                    <label for="invoice_disable_reminders">
-                                        <input type="checkbox" id="invoice_disable_reminders" value="1"
-                                            <?php check_select($invoice->invoice_disable_reminders, 1, '==', true); ?>>
-                                        <?php _trans('disable_payment_reminders'); ?>
-                                    </label>
-<?php if ($invoice->client_disable_reminders) { ?>
-                                    <p class="help-block"><?php _trans('reminders_disabled_for_client'); ?></p>
-<?php } ?>
-                                </div>
                             </div>
 
 <?php
@@ -826,7 +809,49 @@ if ($default_custom) {
     </div>
 </div>
 
-<?php $this->layout->load_view('invoices/partial_invoice_reminders'); ?>
+<?php if ( ! empty($send_history)) : ?>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><?php _trans('send_history'); ?></div>
+            <table class="table table-condensed no-margin">
+                <thead>
+                <tr>
+                    <th><?php _trans('date'); ?></th>
+                    <th><?php _trans('provider'); ?></th>
+                    <th><?php _trans('status'); ?></th>
+                    <th><?php _trans('peppol_participant_id'); ?></th>
+                    <th><?php _trans('external_id'); ?></th>
+                    <th><?php _trans('http_code'); ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($send_history as $row) : ?>
+                    <tr>
+                        <td><?php _htmlsc($row['created_at'] ?? $row['merchant_response_date']); ?></td>
+                        <td><?php _htmlsc($row['merchant_response_driver']); ?></td>
+                        <td>
+                            <?php
+                            $s = $row['status'] ?? '';
+                    $badge     = match(true) {
+                        in_array($s, ['sent', 'accepted', 'delivered'], true) => 'success',
+                        in_array($s, ['error', 'rejected', 'failed'], true)   => 'danger',
+                        default                                               => 'warning',
+                    };
+                    ?>
+                            <span class="label label-<?php echo $badge; ?>"><?php _htmlsc($s); ?></span>
+                        </td>
+                        <td><?php _htmlsc($row['peppol_participant_id'] ?? ''); ?></td>
+                        <td><?php _htmlsc($row['merchant_response_reference']); ?></td>
+                        <td><?php _htmlsc($row['http_code']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <?php
 _dropzone_script($invoice->invoice_url_key, $invoice->client_id);

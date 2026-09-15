@@ -106,16 +106,27 @@ class Cron extends Base_Controller
             $this->load->library('invoices/Invoice_reminders', [], 'invoice_reminders');
             $result = $this->invoice_reminders->run();
 
-            // 'debug', not 'info': config.php sets log_threshold to 2 (error+debug) when
-            // IP_DEBUG is on and 1 (error only) otherwise, so an 'info' line is never
-            // written at either setting and this summary would be invisible.
-            log_message('debug', sprintf(
-                '[Cron Invoice Reminders] %d candidates, %d sent, %d failed, %d skipped',
-                $result['candidates'],
-                $result['sent'],
-                $result['failed'],
-                $result['skipped']
-            ));
+            // Log at 'error' level so admins see this summary in production, even with
+            // IP_DEBUG=false. If any reminders failed, this is a production issue that
+            // needs visibility. The summary line is always informational (not an error
+            // itself), but the 'error' level ensures it reaches logs in all environments.
+            if ($result['failed'] > 0) {
+                log_message('error', sprintf(
+                    '[Cron Invoice Reminders] %d candidates, %d sent, %d FAILED, %d skipped',
+                    $result['candidates'],
+                    $result['sent'],
+                    $result['failed'],
+                    $result['skipped']
+                ));
+            } else {
+                log_message('error', sprintf(
+                    '[Cron Invoice Reminders] %d candidates, %d sent, %d failed, %d skipped',
+                    $result['candidates'],
+                    $result['sent'],
+                    $result['failed'],
+                    $result['skipped']
+                ));
+            }
         } catch (Throwable $e) {
             log_message('error', '[Cron Invoice Reminders] Aborted: ' . sanitize_for_logging($e->getMessage()));
         }

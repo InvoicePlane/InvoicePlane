@@ -13,6 +13,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
  */
 class B2BRouterClient implements IntegrationClientInterface
 {
+    use ProviderPing;
+
     private array $settings = [];
 
     private ApiClientInterface $http;

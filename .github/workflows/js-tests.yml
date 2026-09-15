@@ -1,0 +1,33 @@
+name: JS Tests
+
+# The front-end has one small piece of behaviour worth pinning: the
+# "Test connection" button on the e-invoice provider settings form
+# (assets/core/js/integration-settings.js). It runs on the built-in Node
+# test runner with no dependencies — see tests/js/.
+
+on:
+  push:
+    branches:
+      - prep/v180
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  node-test:
+    name: node --test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # >= 21 for glob support in `node --test` (see package.json test:js).
+          node-version: '22'
+
+      - name: Run the JS test suite
+        run: npm run test:js

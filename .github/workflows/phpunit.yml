@@ -13,39 +13,26 @@ name: PHPUnit
 # seeded via tests/Support/seed-test-db.php.
 
 on:
+  # Not every push to every branch — only the shared integration branch and
+  # pull requests. Feature-branch work is covered when it opens/updates a PR.
   push:
-    paths:
-      - '**.php'
-      - 'phpunit.xml'
-      - 'composer.json'
-      - 'composer.lock'
+    branches:
+      - prep/v180
   pull_request:
-    paths:
-      - '**.php'
-      - 'phpunit.xml'
-      - 'composer.json'
-      - 'composer.lock'
+  #schedule:
+  #  - cron: '0 6 * * 1'   # Mondays 06:00 UTC — full version sweep
   workflow_dispatch:
     inputs:
       php_version:
         description: 'PHP version to test (or "all" for 8.2, 8.3 and 8.4)'
         required: false
-        default: '8.4'
+        default: 'all'
         type: choice
         options:
           - 'all'
           - '8.2'
           - '8.3'
           - '8.4'
-          - '8.5'
-      mysql_version:
-        description: 'MySQL/MariaDB image'
-        required: false
-        default: 'mysql:8.0'
-        type: choice
-        options:
-          - 'mysql:8.0'
-          - 'mariadb:10.11'
       fail_fast:
         description: 'Stop on first failure'
         required: false
@@ -84,14 +71,8 @@ jobs:
 
   test:
     name: PHPUnit (PHP ${{ matrix.php }})
+    needs: matrix
     runs-on: ubuntu-latest
-
-    # Pushes and pull requests run every supported PHP version; a manual dispatch runs
-    # only the version picked in the form.
-    strategy:
-      fail-fast: false
-      matrix:
-        php: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', github.event.inputs.php_version)) || fromJSON('["8.2","8.3","8.4","8.5"]') }}
 
     services:
       mariadb:
@@ -128,6 +109,16 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
 
+      # The e-invoicing generation tests validate the produced Factur-X / UBL
+      # against EN 16931 Schematron, which EInvoiceSchematronValidator runs
+      # through Saxon (a JAR). Without a JDK those tests skip themselves; a JDK
+      # here lets them run for real.
+      - name: Set up JDK (Saxon / Schematron)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Build MariaDB schema and seed baseline
         run: |
           export MYSQL_PWD="$DB_PASSWORD"
@@ -160,6 +151,16 @@ jobs:
           # tests assert protection statically, not via live POSTs).
           echo 'CSRF_PROTECTION=false' >> ipconfig.php
 
+      - name: Config-parity guard (release gate)
+        run: php .claude/skills/config-parity-guard/audit.php
+
       - name: Run PHPUnit
+        # DB_* MUST be unset here. They are set at job level for the schema-build
+        # steps above, but if they survive into this step PHP's Dotenv sees them
+        # as "already set" and never copies the ipconfig.php values into $_ENV;
+        # env() then returns null, the parent connects as ''@'localhost', and
+        # every DB-backed test markTestSkipped()s — a green build hiding ~180
+        # tests that never ran. Unset them so ipconfig.php is the source of truth.
         run: |
-          vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}
+          env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE -u DB_USERNAME -u DB_PASSWORD \
+            vendor/bin/phpunit ${{ github.event.inputs.fail_fast == 'true' && '--stop-on-failure' || '' }}

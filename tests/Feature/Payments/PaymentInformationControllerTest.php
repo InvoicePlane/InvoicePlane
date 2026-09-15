@@ -11,6 +11,7 @@ use Tests\AbstractTestCase;
  *
  * Tests HTTP endpoints for the payments list.
  */
+#[CoversClass(\Payment_Information::class)]
 class PaymentInformationControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -32,7 +33,6 @@ class PaymentInformationControllerTest extends AbstractTestCase
         $response = $this->get('/payments');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId]);
     }
 

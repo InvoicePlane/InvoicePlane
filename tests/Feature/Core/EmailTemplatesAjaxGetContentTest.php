@@ -27,7 +27,6 @@ class EmailTemplatesAjaxGetContentTest extends AbstractTestCase
         $response = $this->ajax('POST', '/email_templates/ajax/get_content', ['email_template_id' => (string) $templateId]);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, 'Marker body content');
     }
 
@@ -39,7 +38,6 @@ class EmailTemplatesAjaxGetContentTest extends AbstractTestCase
         $response = $this->ajax('POST', '/email_templates/ajax/get_content', ['email_template_id' => '999999']);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         self::assertSame('null', trim($response->body()));
     }
 

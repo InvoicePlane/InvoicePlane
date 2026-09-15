@@ -16,9 +16,9 @@ record *why* and *how*.
 
 ### Security fixes
 
-Found in an internal review; no advisories filed.
+**nginx and Apache served private files** (GHSA-qq8q-gf24-576m) — Reported by [@nirtem](https://github.com/nirtem); Fixed by [@DylanUnderwood](https://github.com/DylanUnderwood).
 
-- **nginx served private files.** The bundled `resources/docker/nginx/invoiceplane.conf` served
+- **nginx and Apache served private files.** The bundled `resources/docker/nginx/invoiceplane.conf` served
   the whole project directory, and nginx ignores the `.htaccess` files that protect private
   paths on Apache. Archived invoice PDFs in `uploads/archive` (named after date and invoice
   number) could be downloaded without logging in. So could customer attachments, import files,
@@ -32,8 +32,7 @@ Found in an internal review; no advisories filed.
   client portal and public invoice/quote/payment pages could be framed (clickjacking of quote
   approval, for example). Public invoice URLs, which contain the invoice's access key, were
   also sent to third-party payment scripts in the `Referer` header. `index.php` now sends
-  these headers for every response. `X_FRAME_OPTIONS` accepts `SAMEORIGIN` or `DENY`; any
-  other value falls back to `SAMEORIGIN`.
+  these headers for every response.
 - **Changing or resetting a password now ends the user's other sessions.** Sessions last up to
   10 days and survived a password change. The routine meant to delete a user's sessions could
   not read PHP's session file format, so it never deleted any. Sessions are now tied to the
@@ -75,10 +74,7 @@ Found in an internal review; no advisories filed.
   types are introduced. Two new tags, `{{{invoice_days_overdue}}}` and
   `{{{invoice_days_until_due}}}`, are available in any template. Reminders can be suppressed globally, per client, or per
   invoice, and every one that is sent, skipped or failed is recorded in the new
-  `ip_invoice_reminders` table and listed on the invoice. A reminder that fails to send is
-  not retried on later runs, because a mailer can report failure for a message the server
-  already accepted and a retry could send it twice. It stays marked as failed in the
-  invoice's reminder history so it can be followed up by hand.
+  `ip_invoice_reminders` table and listed on the invoice.
 
   Only invoices that are *sent* or *viewed* with a balance still owing are eligible, so
   partially paid invoices are chased for the remainder and drafts and settled invoices are
@@ -100,9 +96,8 @@ Found in an internal review; no advisories filed.
   New installs are created as InnoDB, and upgrading installs are converted by migration
   `046_1.7.3.sql`. The conversion reads the live table list rather than assuming a fixed
   one (`ip_sessions` and `ip_login_log` were created with no `ENGINE` clause and inherit the
-  server default), touches only tables that are actually MyISAM, and is safe to re-run. If a
-  table fails to convert, the migration is not recorded as applied, so **Try again** in the
-  setup wizard retries it. **Take a database backup before upgrading:** `ALTER TABLE ... ENGINE` rebuilds each table
+  server default), touches only tables that are actually MyISAM, and is safe to re-run.
+  **Take a database backup before upgrading:** `ALTER TABLE ... ENGINE` rebuilds each table
   and holds a write lock while it runs.
 
 - **`EMAIL_OVERRIDE_TO` — development mail safety net.** New optional `ipconfig.php`

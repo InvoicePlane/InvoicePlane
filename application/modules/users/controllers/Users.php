@@ -53,7 +53,7 @@ class Users extends Admin_Controller
             redirect('users');
         }
 
-        $id              = $id ? (int) $id : null;
+        $id = $id ? (int) $id : null;
         $current_user_id = (int) $this->session->userdata('user_id');
         $is_self_edit = $id && $id === $current_user_id;
         $is_primary_admin = Mdl_Users::is_primary_administrator($current_user_id);
@@ -68,7 +68,6 @@ class Users extends Admin_Controller
             return;
         }
 
-        $is_self_edit = $id && $id === $current_user_id;
         if ($this->mdl_users->run_validation(($id) ? 'validation_rules_existing' : 'validation_rules')) {
             $db_array      = $this->mdl_users->db_array();
             $requested_type = (int) $this->input->post('user_type');
@@ -77,13 +76,13 @@ class Users extends Admin_Controller
             // - New user creation: set the requested type
             // - Admin editing another user: set the requested type and invalidate sessions
             // - User editing themselves: do not allow type changes (prevents self-escalation)
-            $old_user     = $id ? $this->mdl_users->get_by_id($id) : null;
+            $old_user = $id ? $this->mdl_users->get_by_id($id) : null;
             $role_changed = false;
 
             if ( ! $is_self_edit) {
                 if ( ! $old_user || (int) $old_user->user_type !== $requested_type) {
                     $db_array['user_type'] = $requested_type;
-                    $role_changed          = true;
+                    $role_changed = true;
                 }
             }
 
@@ -108,13 +107,12 @@ class Users extends Admin_Controller
                 $new_details = $this->mdl_users->get_by_id($id);
 
                 $session_data = [
-                    'user_type'                => $new_details->user_type,
-                    'user_id'                  => $new_details->user_id,
-                    'user_name'                => $new_details->user_name,
-                    'user_email'               => $new_details->user_email,
-                    'user_company'             => $new_details->user_company,
-                    'user_einvoice_identifier' => $new_details->user_einvoice_identifier,
-                    'user_language'            => $new_details->user_language ?? 'system',
+                    'user_type'     => $new_details->user_type,
+                    'user_id'       => $new_details->user_id,
+                    'user_name'     => $new_details->user_name,
+                    'user_email'    => $new_details->user_email,
+                    'user_company'  => $new_details->user_company,
+                    'user_language' => $new_details->user_language ?? 'system',
                 ];
 
                 $this->session->set_userdata($session_data);
@@ -244,6 +242,18 @@ class Users extends Admin_Controller
     }
 
     /**
+     * Invalidate all sessions for a user when their role or active status changes,
+     * forcing immediate revocation of any stale privileged sessions.
+     *
+     * @param string|int $user_id
+     */
+    private function invalidate_user_sessions($user_id): void
+    {
+        $this->load->model('sessions/mdl_sessions');
+        $this->mdl_sessions->invalidate_user_sessions($user_id);
+    }
+
+    /**
      * @param $id
      */
     public function delete($id)
@@ -269,7 +279,7 @@ class Users extends Admin_Controller
             return;
         }
 
-        $this->load->model('user_clients/mdl_user_clients');
+        $this->load->model('mdl_user_clients');
 
         if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
             show_error(trans('access_denied'), 403);
@@ -283,17 +293,5 @@ class Users extends Admin_Controller
         $this->mdl_user_clients->delete($user_client_id);
 
         redirect('users/form/' . $user_id);
-    }
-
-    /**
-     * Invalidate all sessions for a user when their role or active status changes,
-     * forcing immediate revocation of any stale privileged sessions.
-     *
-     * @param string|int $user_id
-     */
-    private function invalidate_user_sessions($user_id): void
-    {
-        $this->load->model('sessions/mdl_sessions');
-        $this->mdl_sessions->invalidate_user_sessions($user_id);
     }
 }

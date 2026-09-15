@@ -4,6 +4,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class SuperPdpClient implements IntegrationClientInterface
 {
+    use ProviderPing;
+
     private ?string $accessToken = null;
 
     private array $settings = [];

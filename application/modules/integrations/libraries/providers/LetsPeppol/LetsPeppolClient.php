@@ -4,6 +4,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class LetsPeppolClient implements IntegrationClientInterface
 {
+    use ProviderPing;
+
     private LetsPeppolApiClient $apiClient;
 
     private LetsPeppolInvoiceEndpoint $invoices;

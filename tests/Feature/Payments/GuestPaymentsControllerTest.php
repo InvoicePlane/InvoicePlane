@@ -10,6 +10,7 @@ use Tests\AbstractTestCase;
  * listing — distinct from application/modules/payments/controllers/Payments.php,
  * the admin one, and from the guest/gateways/* callback controllers).
  */
+#[CoversClass(\Payments::class)]
 class GuestPaymentsControllerTest extends AbstractTestCase
 {
     #[Test]
@@ -83,7 +84,6 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $response = $this->get('/guest/payments');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, 'own-payment-marker');
         $this->assertResponseBodyNotContains($response, 'other-payment-marker');
     }

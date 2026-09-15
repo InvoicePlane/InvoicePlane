@@ -1,0 +1,118 @@
+name: E2E Tests
+
+# Playwright end-to-end suite (tests/E2E/) — browser coverage mirroring the
+# PHPUnit Feature tests, organised by module. Serves the app with PHP's
+# built-in server against a MariaDB that every test truncates and reseeds,
+# logs in once, and drives Chromium. Schema/seed/ipconfig steps mirror
+# phpunit.yml.
+
+on:
+  push:
+    branches:
+      - prep/v180
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Playwright (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: invoiceplane_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      DB_HOSTNAME: 127.0.0.1
+      DB_PORT: '3306'
+      DB_DATABASE: invoiceplane_test
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      E2E_BASE_URL: http://localhost:8000
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
+
+      - name: Build MariaDB schema and seed baseline
+        run: |
+          export MYSQL_PWD="$DB_PASSWORD"
+          mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" -e "SET GLOBAL sql_mode='';"
+          for f in $(ls application/modules/setup/sql/*.sql | sort); do
+            mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" --force "$DB_DATABASE" < "$f"
+          done
+          mysql -h "$DB_HOSTNAME" -P "$DB_PORT" -u "$DB_USERNAME" "$DB_DATABASE" < tests/Support/schema_fixups.sql
+          php tests/Support/seed-test-db.php
+
+      - name: Prepare configuration
+        run: |
+          cp ipconfig.php.example ipconfig.php
+          sed -i \
+            -e "s|^DB_HOSTNAME=.*|DB_HOSTNAME=${DB_HOSTNAME}|" \
+            -e "s|^DB_PORT=.*|DB_PORT=${DB_PORT}|" \
+            -e "s|^DB_DATABASE=.*|DB_DATABASE=${DB_DATABASE}|" \
+            -e "s|^DB_USERNAME=.*|DB_USERNAME=${DB_USERNAME}|" \
+            -e "s|^DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD}|" \
+            -e "s|^IP_URL=.*|IP_URL=${E2E_BASE_URL}|" \
+            -e 's|^SETUP_COMPLETED=.*|SETUP_COMPLETED=true|' \
+            -e 's|^REMOVE_INDEXPHP=.*|REMOVE_INDEXPHP=true|' \
+            -e 's|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=0123456789abcdef0123456789abcdef|' \
+            -e 's|^#\s*CSRF_PROTECTION=.*|CSRF_PROTECTION=false|' \
+            ipconfig.php
+          # The E2E suite drives the app through its rendered forms (which carry
+          # _csrf_field()) but also posts directly to a few AJAX/destroy routes;
+          # CSRF stays off here, matching the local ipconfig, and the CSRF
+          # regression cases remain covered by the PHPUnit Feature suite.
+
+      - name: Start the application server
+        run: |
+          php -d variables_order=EGPCS -S localhost:8000 -t . tests/E2E/router.php > server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null "${E2E_BASE_URL}/sessions/login" && break
+            sleep 1
+          done
+          curl -sf -o /dev/null "${E2E_BASE_URL}/sessions/login"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Node dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npm run e2e
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            tests/E2E/error-report.md
+            server.log
+          retention-days: 14

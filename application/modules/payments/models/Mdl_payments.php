@@ -148,22 +148,34 @@ class Mdl_Payments extends Response_Model
             ? (string) $db_array['payment_external_id']
             : null;
 
-        // Atomic gate: claim the outstanding balance in one statement.
+        // One transaction for the whole sequence: the conditional balance claim,
+        // the payment insert and the calculate() recalculation either all land
+        // or none do. The UPDATE also holds a row lock on ip_invoice_amounts
+        // until commit, so a concurrent caller's identical claim blocks here
+        // instead of racing a stale balance.
+        $this->db->trans_begin();
+
+        // Atomic gate: claim the outstanding balance in one statement. The
+        // "balance + epsilon >= amount" test (matching the controller's own
+        // tolerance) also refuses an oversized payment, so a single capture
+        // cannot drive the balance negative.
         $this->db->set('invoice_paid', sprintf('invoice_paid + %F', $amount), false);
         $this->db->set('invoice_balance', sprintf('invoice_balance - %F', $amount), false);
         $this->db->where('invoice_id', $invoice_id);
-        $this->db->where('invoice_balance >', 0);
+        $this->db->where(sprintf('invoice_balance + 0.0001 >= %F', $amount), null, false);
         $this->db->update('ip_invoice_amounts');
 
         if ($this->db->affected_rows() < 1) {
-            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Refused gateway payment for invoice ' . sanitize_for_logging($invoice_id) . ': balance no longer outstanding (concurrent callback or already paid).');
+            $this->db->trans_rollback();
+            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Refused gateway payment for invoice ' . sanitize_for_logging($invoice_id) . ': balance no longer covers this amount (concurrent callback, already paid, or oversized).');
 
             return false;
         }
 
         // Claim held. Insert the payment; INSERT IGNORE so an external id that
         // raced past a wider balance is dropped by idx_payment_external_id
-        // rather than raising a duplicate-key error.
+        // rather than raising a duplicate-key error. INSERT IGNORE does not mark
+        // the transaction failed on the ignored row, so roll back explicitly.
         $this->db->set([
             'invoice_id'          => $invoice_id,
             'payment_date'        => date_to_mysql($db_array['payment_date']),
@@ -174,15 +186,16 @@ class Mdl_Payments extends Response_Model
         ]);
         $insert_sql = preg_replace('/^INSERT INTO/i', 'INSERT IGNORE INTO', $this->db->get_compiled_insert('ip_payments'), 1);
         $this->db->query($insert_sql);
-        $recorded = $this->db->affected_rows() > 0;
 
-        if ( ! $recorded) {
-            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate external payment id for invoice ' . sanitize_for_logging($invoice_id) . '; gate claim rolled back by recalculation.');
+        if ($this->db->affected_rows() < 1) {
+            $this->db->trans_rollback();
+            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate external payment id for invoice ' . sanitize_for_logging($invoice_id) . '; balance claim rolled back.');
+
+            return false;
         }
 
-        // calculate() recomputes invoice_paid = SUM(payment_amount) and the
-        // balance from the real rows, correcting the gate arithmetic whether
-        // the insert landed or was ignored.
+        // Reconcile invoice_paid = SUM(payment_amount) and the balance from the
+        // real rows, and mark the invoice paid when it is fully covered.
         $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
         $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
 
@@ -196,7 +209,16 @@ class Mdl_Payments extends Response_Model
             $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
         }
 
-        return $recorded;
+        if ($this->db->trans_status() === false) {
+            $this->db->trans_rollback();
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Transaction failed recording gateway payment for invoice ' . sanitize_for_logging($invoice_id) . '; rolled back.');
+
+            return false;
+        }
+
+        $this->db->trans_commit();
+
+        return true;
     }
 
     /**

@@ -56,8 +56,8 @@ class BaseXml extends stdClass
         $this->filename           = $params['filename'];
         $this->options            = $params['options'];
         $this->currencyCode       = get_setting('currency_code');
-        $this->item_decimals      = get_setting('default_item_decimals');
-        $this->decimal_places     = get_setting('tax_rate_decimal_places');
+        $this->item_decimals      = (int) (get_setting('default_item_decimals') ?: 2);
+        $this->decimal_places     = (int) (get_setting('tax_rate_decimal_places') ?: 2);
         $this->legacy_calculation = config_item('legacy_calculation');
 
         $this->set_invoice_discount_amount_total();

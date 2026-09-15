@@ -88,8 +88,19 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         // Arrange (a shared connection could otherwise hide uncommitted writes).
         $this->resetDatabaseConnection();
 
-        $command     = sprintf('php %s', escapeshellarg(dirname(__DIR__) . '/tests/Integration/bin/request.php'));
-        $environment = array_merge(getenv(), [
+        $command = sprintf('php %s', escapeshellarg(dirname(__DIR__) . '/tests/Integration/bin/request.php'));
+
+        // The request subprocess must take its DB config from ipconfig.php, not
+        // from inherited DB_* env vars: with them set, phpdotenv's createImmutable
+        // skips copying ipconfig's values into $_ENV, env() returns null, and the
+        // child connects as ''@'localhost'. Drop DB_* from the child's env so
+        // ipconfig.php is the single source of truth (see the matching guard in
+        // tests/bootstrap.php for the phpunit parent).
+        $inheritedEnv = getenv();
+        foreach (['DB_HOSTNAME', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD', 'DB_DRIVER'] as $dbEnvKey) {
+            unset($inheritedEnv[$dbEnvKey]);
+        }
+        $environment = array_merge($inheritedEnv, [
             'CI_TEST_REQUEST' => base64_encode((string) json_encode($payload, JSON_THROW_ON_ERROR)),
         ]);
 
@@ -133,7 +144,14 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
         if (($result['exception'] ?? null) !== null) {
             if (str_contains((string) $result['exception'], 'Unable to connect to the database')) {
-                $this->markTestSkipped('Database unavailable for CI request integration tests.');
+                // Fail loud, never skip — a request subprocess that can't reach
+                // MariaDB means the environment is broken, not that this test
+                // is N/A. Skipping here masked ~180 Feature tests on CI.
+                self::fail(
+                    'CI request subprocess could not connect to MariaDB. '
+                    . 'ipconfig.php DB_* are the source of truth here — make sure DB_* '
+                    . 'is not exported into the phpunit env (see the phpunit workflow).'
+                );
             }
 
             throw new RuntimeException(

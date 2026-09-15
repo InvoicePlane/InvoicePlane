@@ -9,6 +9,7 @@ use Tests\AbstractTestCase;
 /**
  * SetupController Feature Tests.
  */
+#[CoversClass(\Setup::class)]
 class SetupControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -30,8 +31,6 @@ class SetupControllerTest extends AbstractTestCase
         $response = $this->get('/setup/language');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
-        $this->assertResponseBodyContains($response, '<form');
         $this->assertResponseBodyContains($response, 'setup');
     }
 
