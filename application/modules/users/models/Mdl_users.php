@@ -304,7 +304,7 @@ class Mdl_Users extends Response_Model
             'user_password' => [
                 'field' => 'user_password',
                 'label' => trans('password'),
-                'rules' => 'required',
+                'rules' => 'required|min_length[8]',
             ],
             'user_passwordv' => [
                 'field' => 'user_passwordv',
