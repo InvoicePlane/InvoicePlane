@@ -13,7 +13,6 @@
  * and `/index.php/sessions/login` resolve regardless of the REMOVE_INDEXPHP
  * setting.
  */
-
 $root = dirname(__DIR__, 2);
 $uri  = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 

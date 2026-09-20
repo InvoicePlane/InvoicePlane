@@ -34,15 +34,15 @@ class SpecialCharacterDatabasePasswordTest extends AbstractTestCase
     public static function specialPasswordProvider(): array
     {
         return [
-            'hash symbol'          => ['#Ex4mpl3Pass'],
-            'dollar sign'          => ['Pass$word123'],
-            'semicolon'            => ['Pass;word123'],
-            'hash and dollar'      => ['#Ex4mpl3$Pass!'],
-            'multiple symbols'     => ['P@ssw0rd!#$%'],
-            'backslash'            => ['Pass\\word\\123'],
-            'double quote'         => ['Pass"word"123'],
-            'mixed special'        => ['#P@ss$w0rd!'],
-            'the reported issue'   => ['ThisPa$$wo"rd;IsWh@ck'],
+            'hash symbol'        => ['#Ex4mpl3Pass'],
+            'dollar sign'        => ['Pass$word123'],
+            'semicolon'          => ['Pass;word123'],
+            'hash and dollar'    => ['#Ex4mpl3$Pass!'],
+            'multiple symbols'   => ['P@ssw0rd!#$%'],
+            'backslash'          => ['Pass\\word\\123'],
+            'double quote'       => ['Pass"word"123'],
+            'mixed special'      => ['#P@ss$w0rd!'],
+            'the reported issue' => ['ThisPa$$wo"rd;IsWh@ck'],
         ];
     }
 
@@ -67,7 +67,7 @@ class SpecialCharacterDatabasePasswordTest extends AbstractTestCase
         $usernameValidation = validate_db_config_parameter($validationData['username'], 'username');
         $passwordValidation = validate_db_config_parameter($validationData['password'], 'password');
         $databaseValidation = validate_db_config_parameter($validationData['database'], 'database');
-        $portValidation = validate_db_config_parameter($validationData['port'], 'port');
+        $portValidation     = validate_db_config_parameter($validationData['port'], 'port');
 
         /* Assert */
         self::assertTrue($hostnameValidation['valid'], 'Hostname validation should pass');

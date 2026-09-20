@@ -59,9 +59,8 @@ DISABLE_SETUP=false
 REMOVE_INDEXPHP=false
 
 # These database settings are set during the initial setup. If editing this
-# file by hand, quote DB_HOSTNAME, DB_USERNAME, DB_PASSWORD and DB_DATABASE -
-# an unquoted value ends at the first space or '#', which silently truncates
-# a password containing either. DB_PORT is numeric and stays unquoted.
+# file by hand, quote every value - an unquoted value ends at the first
+# space or '#', which silently truncates a password containing either.
 #
 # Single quotes (recommended) - the value is stored exactly as written,
 # character for character, with no escaping of any kind:

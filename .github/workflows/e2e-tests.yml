@@ -46,7 +46,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
@@ -93,7 +93,7 @@ jobs:
           curl -sf -o /dev/null "${E2E_BASE_URL}/sessions/login"
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
@@ -107,7 +107,7 @@ jobs:
         run: npm run e2e
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: playwright-report

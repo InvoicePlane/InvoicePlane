@@ -10,6 +10,22 @@
          beStrictAboutTestsThatDoNotTestAnything="true"
          failOnRisky="true"
          failOnWarning="true">
+    <!--
+      Fast default: the "slow" and "flaky" groups are skipped by a bare
+      "phpunit" run (and by "make docker-test"). Nothing is permanently masked:
+      CI runs them in a dedicated second pass and "make docker-test-slow" runs
+      them locally. Passing them on the CLI as a group filter overrides this
+      exclusion. Tag with #[Group('slow')] (heavy, spawns many request
+      subprocesses, long running) or #[Group('flaky')] (order or timing
+      dependent) at the method or class level.
+    -->
+    <groups>
+        <exclude>
+            <group>slow</group>
+            <group>flaky</group>
+        </exclude>
+    </groups>
+
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>

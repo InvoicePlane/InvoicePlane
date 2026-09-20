@@ -151,6 +151,11 @@ trait InteractsWithDatabase
         $whereParts = [];
         $params     = [];
         foreach ($where as $key => $value) {
+            if ($value === null) {
+                $whereParts[] = $this->qi($key) . ' IS NULL';
+
+                continue;
+            }
             $whereParts[] = $this->qi($key) . ' = :' . $key;
             $params[$key] = $value;
         }
@@ -165,6 +170,52 @@ trait InteractsWithDatabase
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row ?: null;
+    }
+
+    /**
+     * Run a multi-statement SQL script against the test database one top-level
+     * statement at a time — exactly the way Mdl_setup::execute_contents() runs a
+     * migration file in production (same split_sql_statements() splitter, same
+     * one-statement-per-query execution). Lets a test drive a real setup/sql
+     * migration file and assert on its effect.
+     *
+     * @return string[] the statements that were executed, in order
+     */
+    protected function databaseRunScript(string $sql): array
+    {
+        require_once dirname(__DIR__, 2) . '/application/helpers/sql_helper.php';
+
+        $db         = $this->db();
+        $statements = split_sql_statements($sql);
+        foreach ($statements as $statement) {
+            $db->exec($statement);
+        }
+
+        return $statements;
+    }
+
+    /**
+     * @param array<string|int, mixed> $bindings
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function databaseSelect(string $sql, array $bindings = []): array
+    {
+        $stmt = $this->db()->prepare($sql);
+        $stmt->execute($bindings);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    protected function databaseTableExists(string $table): bool
+    {
+        $stmt = $this->db()->prepare(
+            'SELECT COUNT(*) FROM information_schema.TABLES '
+            . 'WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :t'
+        );
+        $stmt->execute([':t' => $table]);
+
+        return (int) $stmt->fetchColumn() > 0;
     }
 
     protected function assertDatabaseHas(string $table, array $conditions): void

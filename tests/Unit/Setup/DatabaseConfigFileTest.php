@@ -53,79 +53,6 @@ class DatabaseConfigFileTest extends TestCase
         }
     }
 
-    private function createMinimalConfigFile(string $path): void
-    {
-        $content = <<<'PHP'
-# <?php exit('No direct script access allowed'); ?>
-# InvoicePlane Configuration File
-
-IP_URL=http://localhost
-
-DB_HOSTNAME=''
-DB_USERNAME=''
-DB_PASSWORD=''
-DB_DATABASE=''
-DB_PORT=
-PHP;
-        file_put_contents($path, $content);
-    }
-
-    /**
-     * Simulates write_database_config()'s single-quote wrapping.
-     */
-    private function writeConfig(string $hostname, string $username, string $password, string $database, int $port): void
-    {
-        $config = file_get_contents($this->tempConfigFile);
-
-        $config = preg_replace_callback(
-            '/^DB_HOSTNAME=.*$/m',
-            static fn () => "DB_HOSTNAME='" . $hostname . "'",
-            $config
-        );
-        $config = preg_replace_callback(
-            '/^DB_USERNAME=.*$/m',
-            static fn () => "DB_USERNAME='" . $username . "'",
-            $config
-        );
-        $config = preg_replace_callback(
-            '/^DB_PASSWORD=.*$/m',
-            static fn () => "DB_PASSWORD='" . $password . "'",
-            $config
-        );
-        $config = preg_replace_callback(
-            '/^DB_DATABASE=.*$/m',
-            static fn () => "DB_DATABASE='" . $database . "'",
-            $config
-        );
-        $config = preg_replace_callback(
-            '/^DB_PORT=.*$/m',
-            static fn () => 'DB_PORT=' . $port,
-            $config
-        );
-
-        file_put_contents($this->tempConfigFile, $config);
-    }
-
-    /**
-     * Reads DB_* values back using the real vlucas/phpdotenv parser. Uses
-     * the array-backed loader rather than bootstrap/kernel.php's
-     * createImmutable(): that variant writes into the process's global
-     * $_ENV/getenv() state, which this test suite's own DB connection
-     * already populated from the real ipconfig.php - mutating it here would
-     * risk cross-contaminating that, not just this isolated temp file.
-     * createArrayBacked() parses with the same underlying library and
-     * grammar but returns a plain array with no global side effects.
-     */
-    private function readSingleQuotedValue(string $key): ?string
-    {
-        $values = Dotenv::createArrayBacked(
-            dirname($this->tempConfigFile),
-            basename($this->tempConfigFile)
-        )->load();
-
-        return $values[$key] ?? null;
-    }
-
     /**
      * Provider for database credentials with special characters.
      *
@@ -203,5 +130,78 @@ PHP;
 
         /* Assert */
         self::assertSame($password, $this->readSingleQuotedValue('DB_PASSWORD'));
+    }
+
+    private function createMinimalConfigFile(string $path): void
+    {
+        $content = <<<'PHP'
+# <?php exit('No direct script access allowed'); ?>
+# InvoicePlane Configuration File
+
+IP_URL=http://localhost
+
+DB_HOSTNAME=''
+DB_USERNAME=''
+DB_PASSWORD=''
+DB_DATABASE=''
+DB_PORT=
+PHP;
+        file_put_contents($path, $content);
+    }
+
+    /**
+     * Simulates write_database_config()'s single-quote wrapping.
+     */
+    private function writeConfig(string $hostname, string $username, string $password, string $database, int $port): void
+    {
+        $config = file_get_contents($this->tempConfigFile);
+
+        $config = preg_replace_callback(
+            '/^DB_HOSTNAME=.*$/m',
+            static fn () => "DB_HOSTNAME='" . $hostname . "'",
+            $config
+        );
+        $config = preg_replace_callback(
+            '/^DB_USERNAME=.*$/m',
+            static fn () => "DB_USERNAME='" . $username . "'",
+            $config
+        );
+        $config = preg_replace_callback(
+            '/^DB_PASSWORD=.*$/m',
+            static fn () => "DB_PASSWORD='" . $password . "'",
+            $config
+        );
+        $config = preg_replace_callback(
+            '/^DB_DATABASE=.*$/m',
+            static fn () => "DB_DATABASE='" . $database . "'",
+            $config
+        );
+        $config = preg_replace_callback(
+            '/^DB_PORT=.*$/m',
+            static fn () => 'DB_PORT=' . $port,
+            $config
+        );
+
+        file_put_contents($this->tempConfigFile, $config);
+    }
+
+    /**
+     * Reads DB_* values back using the real vlucas/phpdotenv parser. Uses
+     * the array-backed loader rather than bootstrap/kernel.php's
+     * createImmutable(): that variant writes into the process's global
+     * $_ENV/getenv() state, which this test suite's own DB connection
+     * already populated from the real ipconfig.php - mutating it here would
+     * risk cross-contaminating that, not just this isolated temp file.
+     * createArrayBacked() parses with the same underlying library and
+     * grammar but returns a plain array with no global side effects.
+     */
+    private function readSingleQuotedValue(string $key): ?string
+    {
+        $values = Dotenv::createArrayBacked(
+            dirname($this->tempConfigFile),
+            basename($this->tempConfigFile)
+        )->load();
+
+        return $values[$key] ?? null;
     }
 }

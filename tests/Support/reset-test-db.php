@@ -46,8 +46,8 @@ ip_seed_baseline($pdo);
 // or invoices (Mdl_Quotes::get_date_due() etc. build a DateInterval straight
 // from these — a missing value throws "Unknown or bad format").
 $e2eSettings = [
-    'quotes_expire_after' => '15',
-    'invoices_due_after'  => '30',
+    'quotes_expire_after'   => '15',
+    'invoices_due_after'    => '30',
     'default_invoice_group' => '1',
     'default_quote_group'   => '1',
     // So a freshly created draft quote/invoice gets a visible number rather
