@@ -428,6 +428,42 @@ class UsersControllerTest extends AbstractTestCase
         );
     }
 
+    #[Test]
+    public function it_prevents_a_non_primary_admin_from_deleting_another_admin(): void
+    {
+        /* Arrange */
+        $attackerId = $this->databaseInsert('ip_users', [
+            'user_name'          => 'Attacker Admin',
+            'user_password'      => password_hash('attacker-secret', PASSWORD_DEFAULT),
+            'user_psalt'         => bin2hex(random_bytes(10)),
+            'user_email'         => 'attacker-admin@test.local',
+            'user_type'          => 1,
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        $victimId = $this->databaseInsert('ip_users', [
+            'user_name'          => 'Victim Admin',
+            'user_password'      => password_hash('victim-secret', PASSWORD_DEFAULT),
+            'user_psalt'         => bin2hex(random_bytes(10)),
+            'user_email'         => 'victim-admin@test.local',
+            'user_type'          => 1,
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        $this->actingAsAdmin($attackerId);
+
+        /* Act */
+        $response = $this->post('/users/delete/' . $victimId, []);
+
+        /* Assert */
+        self::assertSame(403, $response->statusCode(), 'Only the primary admin (user_id 1) may delete another admin.');
+        $this->assertDatabaseHas('ip_users', ['user_id' => $victimId, 'user_name' => 'Victim Admin']);
+    }
+
     // -------------------------------------------------------------------------
     // Guest access — always last
     // -------------------------------------------------------------------------
