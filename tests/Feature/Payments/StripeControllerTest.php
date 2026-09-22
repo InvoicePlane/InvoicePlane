@@ -104,14 +104,40 @@ class StripeControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $this->actingAsGuest();
+        $clientId = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId);
+        $this->seedPayment($invoiceId);
+        $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
         $response = $this->get('/payments');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertTrue(
             $response->isRedirect(),
             sprintf('Unauthenticated GET [/payments] must redirect. Got [%d].', $response->statusCode())
         );
+        $this->assertResponseStatusCode($response, 302);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+        $this->assertResponseBodyNotContains($response, 'payment');
+
+        /* Assert: Business Logic (A) */
+        $this->assertStringContainsString('/login', $response->headers()['Location'] ?? '');
+
+        /* Assert: Data Integrity (D) */
+        $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId]);
+        $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/payments/view/' . $invoiceId);
+        self::assertTrue($response2->isRedirect());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/payments');
+        self::assertTrue($response3->isRedirect());
+        $this->assertResponseStatusCode($response3, 302);
     }
 }

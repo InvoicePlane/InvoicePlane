@@ -3,11 +3,10 @@
 namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-<<<<<<< HEAD
-=======
 /**
  * Mailer controller — application/modules/mailer/controllers/Mailer.php.
  *
@@ -15,7 +14,6 @@ use Tests\AbstractTestCase;
  * Issue1497SmtpSenderTest (the from-address defaulting regression).
  */
 #[Group('mailer')]
->>>>>>> origin/enforce-test-coverage-metadata
 #[CoversClass(\Mailer::class)]
 class MailerControllerTest extends AbstractTestCase
 {
@@ -66,7 +64,6 @@ class MailerControllerTest extends AbstractTestCase
     }
 
     #[Test]
-<<<<<<< HEAD
     public function it_shows_not_configured_message_when_mailer_is_not_configured(): void
     {
         /* Arrange: mailer is not configured by default in test setup */
@@ -168,17 +165,7 @@ class MailerControllerTest extends AbstractTestCase
         );
     }
 
-    private function seedQuote(int $clientId): int
-    {
-        return $this->databaseInsertGetId('ip_quotes', [
-            'client_id'         => $clientId,
-            'quote_number'      => 'Q-' . bin2hex(random_bytes(4)),
-            'quote_date_created' => date('Y-m-d'),
-            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-            'quote_amount'       => 1000,
-            'quote_status_id'    => 1,
-        ]);
-=======
+    #[Test]
     public function it_falls_back_to_the_current_user_email_when_smtp_mail_from_is_empty(): void
     {
         /* Arrange */
@@ -210,6 +197,17 @@ class MailerControllerTest extends AbstractTestCase
         /* Assert */
         self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
         $this->assertResponseBodyNotContains($response, 'INV-MAIL-SECRET');
->>>>>>> origin/enforce-test-coverage-metadata
+    }
+
+    private function seedQuote(int $clientId): int
+    {
+        return $this->databaseInsertGetId('ip_quotes', [
+            'client_id'         => $clientId,
+            'quote_number'      => 'Q-' . bin2hex(random_bytes(4)),
+            'quote_date_created' => date('Y-m-d'),
+            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
+            'quote_amount'       => 1000,
+            'quote_status_id'    => 1,
+        ]);
     }
 }

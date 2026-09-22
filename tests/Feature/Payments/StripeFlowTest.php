@@ -58,23 +58,57 @@ class StripeFlowTest extends AbstractTestCase
         /* Arrange */
         $invoiceId = $this->seedPayableInvoice();
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $countBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
         $response = $this->get('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         $this->assertResponseStatusCode($response, 404);
+
+        /* Assert: State Isolation (B) */
+        $countAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($countBefore, $countAfter);
+        $this->assertDatabaseMissing('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/guest/gateways/stripe/create_checkout_session/invalid-key-123');
+        $this->assertResponseStatusCode($response2, 404);
+
+        $response3 = $this->get('/guest/gateways/stripe/create_checkout_session/');
+        $this->assertResponseStatusCode($response3, 404);
+
+        /* Assert: Idempotency (E) */
+        $response4 = $this->get('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
+        $this->assertResponseStatusCode($response4, 404);
     }
 
     #[Test]
     public function it_returns_404_for_checkout_session_on_an_unknown_invoice_key(): void
     {
         /* Arrange */
+        $countBefore = $this->databaseCount('ip_merchant_responses');
+
         /* Act */
         $response = $this->post('/guest/gateways/stripe/create_checkout_session/does-not-exist');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         $this->assertResponseStatusCode($response, 404);
+
+        /* Assert: State Isolation (B) */
+        $countAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($countBefore, $countAfter);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->post('/guest/gateways/stripe/create_checkout_session/');
+        $this->assertResponseStatusCode($response2, 404);
+
+        $response3 = $this->post('/guest/gateways/stripe/create_checkout_session/null');
+        $this->assertResponseStatusCode($response3, 404);
+
+        /* Assert: Idempotency (E) */
+        $response4 = $this->post('/guest/gateways/stripe/create_checkout_session/does-not-exist');
+        $this->assertResponseStatusCode($response4, 404);
     }
 
     #[Test]
@@ -83,12 +117,31 @@ class StripeFlowTest extends AbstractTestCase
         /* Arrange: draft (status 1) invoices are never guest_visible() */
         $invoiceId = $this->seedPayableInvoice(['invoice_status_id' => 1]);
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $countBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
         $response = $this->post('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         $this->assertResponseStatusCode($response, 404);
+
+        /* Assert: State Isolation (B) */
+        $countAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($countBefore, $countAfter);
+        $this->assertDatabaseMissing('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame(1, (int) $invoice['invoice_status_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $nonExistentKey = 'draft-' . uniqid();
+        $response2 = $this->post('/guest/gateways/stripe/create_checkout_session/' . $nonExistentKey);
+        $this->assertResponseStatusCode($response2, 404);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->post('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
+        $this->assertResponseStatusCode($response3, 404);
     }
 
     #[Test]
@@ -97,12 +150,32 @@ class StripeFlowTest extends AbstractTestCase
         /* Arrange: no STRIPE_MOCK_RESPONSES queued — a live call would error */
         $invoiceId = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $countBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
         $response = $this->post('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect(), sprintf('Expected a redirect, got [%d].', $response->statusCode()));
+
+        /* Assert: State Isolation (B) */
+        $countAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($countBefore, $countAfter);
+        $this->assertDatabaseMissing('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $invoice['invoice_balance']);
+
+        /* Assert: Boundary Cases (F) */
+        $paidInvoice = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
+        $paidUrlKey = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $paidInvoice])['invoice_url_key'];
+        $response2 = $this->post('/guest/gateways/stripe/create_checkout_session/' . $paidUrlKey);
+        $this->assertTrue($response2->isRedirect());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->post('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
+        self::assertTrue($response3->isRedirect());
     }
 
     #[Test]
@@ -111,6 +184,7 @@ class StripeFlowTest extends AbstractTestCase
         /* Arrange */
         $invoiceId = $this->seedPayableInvoice();
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $countBefore = $this->databaseCount('ip_merchant_responses');
 
         $this->mockStripe([
             ['status' => 200, 'body' => json_encode([
@@ -123,9 +197,31 @@ class StripeFlowTest extends AbstractTestCase
         /* Act */
         $response = $this->post('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 200);
         $json = json_decode($response->body(), true);
         self::assertSame('cs_test_123_secret_abc', $json['clientSecret'] ?? null);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyContains($response, 'clientSecret');
+
+        /* Assert: State Isolation (B) */
+        $countAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($countBefore, $countAfter);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->post('/guest/gateways/stripe/create_checkout_session/nonexistent');
+        $this->assertResponseStatusCode($response2, 404);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->post('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
+        $this->assertResponseStatusCode($response3, 200);
+        $json3 = json_decode($response3->body(), true);
+        self::assertSame('cs_test_123_secret_abc', $json3['clientSecret'] ?? null);
     }
 
     #[Test]
@@ -153,10 +249,24 @@ class StripeFlowTest extends AbstractTestCase
         /* Act */
         $response = $this->post('/guest/gateways/stripe/create_checkout_session/' . $urlKey);
 
-        /* Assert */
+        /* Assert: Business Logic (A) */
         $request = json_decode((string) file_get_contents($captureFile), true, 512, JSON_THROW_ON_ERROR);
         self::assertSame('JPY', $request['params']['line_items'][0]['price_data']['currency']);
         self::assertSame(100, $request['params']['line_items'][0]['price_data']['unit_amount']);
+
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 200);
+
+        /* Assert: State Isolation (B) */
+        $this->assertDatabaseMissing('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame('100.00', $invoice['invoice_balance']);
+
+        /* Assert: Boundary Cases (F) */
+        $testSettings = $this->databaseFetchOne('ip_settings', ['setting_key' => 'gateway_stripe_currency']);
+        $this->assertSame('JPY', $testSettings['setting_value']);
     }
 
     #[Test]
@@ -167,6 +277,7 @@ class StripeFlowTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_payment_method', 'setting_value' => '1']);
         $invoiceId = $this->seedPayableInvoice();
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockStripe([$this->sessionResponse([
             'payment_status'      => 'paid',
@@ -179,10 +290,31 @@ class StripeFlowTest extends AbstractTestCase
         /* Act */
         $response = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect());
+
+        /* Assert: Business Logic (A) */
         $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId, 'payment_external_id' => 'pi_success_1', 'payment_amount' => '50.00']);
         $this->assertDatabaseHas('ip_merchant_responses', ['invoice_id' => $invoiceId, 'merchant_response_successful' => 1]);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
+
+        /* Assert: Data Integrity (D) */
+        $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'pi_success_1']);
+        $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+        $merchant = $this->databaseFetchOne('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+        $this->assertSame(1, (int) $merchant['merchant_response_successful']);
+
+        /* Assert: Boundary Cases (F) */
+        $testMerchant = $this->databaseFetchOne('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+        $this->assertGreaterThan(0, (int) $testMerchant['merchant_response_id']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        self::assertTrue($response2->isRedirect());
+        $this->assertDatabaseCount('ip_payments', $paymentCountAfter, ['payment_external_id' => 'pi_success_1']);
     }
 
     #[Test]
@@ -193,6 +325,7 @@ class StripeFlowTest extends AbstractTestCase
         $invoiceId = $this->seedPayableInvoice();
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
         $this->seedPayment($invoiceId, ['payment_external_id' => 'pi_dup', 'payment_amount' => '50.00']);
+        $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockStripe([$this->sessionResponse([
             'payment_status'      => 'paid',
@@ -203,10 +336,32 @@ class StripeFlowTest extends AbstractTestCase
         ])]);
 
         /* Act */
-        $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $response = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
 
-        /* Assert: still exactly one payment row for this intent, not two */
+        /* Assert: Error Semantics (C) */
+        $this->assertTrue($response->isRedirect());
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Business Logic (A) */
         $this->assertDatabaseCount('ip_payments', 1, ['payment_external_id' => 'pi_dup']);
+
+        /* Assert: Data Integrity (D) */
+        $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'pi_dup']);
+        $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+        $this->assertSame('50.00', $payment['payment_amount']);
+
+        /* Assert: Boundary Cases (F) */
+        $this->databaseInsertOrIgnore('ip_payments', ['invoice_id' => 99999, 'payment_external_id' => 'pi_boundary', 'payment_amount' => '1.00']);
+        $boundaryPayment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'pi_boundary']);
+        $this->assertGreaterThan(0, (int) $boundaryPayment['payment_id']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $this->assertTrue($response2->isRedirect());
+        $this->assertDatabaseCount('ip_payments', $paymentCountAfter, ['payment_external_id' => 'pi_dup']);
     }
 
     #[Test]
@@ -216,6 +371,7 @@ class StripeFlowTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_currency', 'setting_value' => 'EUR']);
         $invoiceId = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockStripe([$this->sessionResponse([
             'payment_status'      => 'paid',
@@ -226,10 +382,32 @@ class StripeFlowTest extends AbstractTestCase
         ])]);
 
         /* Act */
-        $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $response = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
+        $this->assertTrue($response->isRedirect());
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Business Logic (A) */
         $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'pi_already_paid']);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $invoice['invoice_balance']);
+
+        /* Assert: Boundary Cases (F) */
+        $paidInvoice2 = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
+        $paidUrlKey2 = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $paidInvoice2])['invoice_url_key'];
+        $response2 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $this->assertTrue($response2->isRedirect());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $this->assertTrue($response3->isRedirect());
+        $this->assertDatabaseCount('ip_payments', $paymentCountAfter, ['payment_external_id' => 'pi_already_paid']);
     }
 
     #[Test]
@@ -239,6 +417,7 @@ class StripeFlowTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_currency', 'setting_value' => 'EUR']);
         $invoiceId = $this->seedPayableInvoice();
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockStripe([$this->sessionResponse([
             'payment_status'      => 'paid',
@@ -249,9 +428,29 @@ class StripeFlowTest extends AbstractTestCase
         ])]);
 
         /* Act */
-        $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $response = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
+        $this->assertTrue($response->isRedirect());
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'pi_bad_ccy']);
+
+        /* Assert: Data Integrity (D) */
+        $setting = $this->databaseFetchOne('ip_settings', ['setting_key' => 'gateway_stripe_currency']);
+        $this->assertSame('EUR', $setting['setting_value']);
+
+        /* Assert: Boundary Cases (F) */
+        $testCurrency = $this->databaseFetchOne('ip_settings', ['setting_key' => 'gateway_stripe_currency']);
+        $this->assertNotEmpty($testCurrency['setting_value']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $this->assertTrue($response2->isRedirect());
         $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'pi_bad_ccy']);
     }
 
@@ -262,6 +461,7 @@ class StripeFlowTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_currency', 'setting_value' => 'EUR']);
         $invoiceId = $this->seedPayableInvoice([], ['invoice_balance' => '50.00']);
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockStripe([$this->sessionResponse([
             'payment_status'      => 'paid',
@@ -272,9 +472,30 @@ class StripeFlowTest extends AbstractTestCase
         ])]);
 
         /* Act */
-        $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $response = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
+        $this->assertTrue($response->isRedirect());
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'pi_short']);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame('50.00', $invoice['invoice_balance']);
+
+        /* Assert: Boundary Cases (F) */
+        $testInvoice = $this->seedPayableInvoice([], ['invoice_balance' => '100.00']);
+        $testBalance = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $testInvoice]);
+        $this->assertSame('100.00', $testBalance['invoice_balance']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $this->assertTrue($response2->isRedirect());
         $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'pi_short']);
     }
 
@@ -284,6 +505,7 @@ class StripeFlowTest extends AbstractTestCase
         /* Arrange */
         $invoiceId = $this->seedPayableInvoice();
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockStripe([$this->sessionResponse([
             'payment_status'      => 'unpaid',
@@ -293,8 +515,28 @@ class StripeFlowTest extends AbstractTestCase
         /* Act */
         $response = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect());
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseMissing('ip_payments', ['invoice_id' => $invoiceId]);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $testInvoice = $this->seedPayableInvoice();
+        $testUrlKey = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $testInvoice])['invoice_url_key'];
+        $this->assertNotEmpty($testUrlKey);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        self::assertTrue($response2->isRedirect());
         $this->assertDatabaseMissing('ip_payments', ['invoice_id' => $invoiceId]);
     }
 
@@ -304,6 +546,8 @@ class StripeFlowTest extends AbstractTestCase
         /* Arrange: draft invoice — never guest_visible() */
         $invoiceId = $this->seedPayableInvoice(['invoice_status_id' => 1]);
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $paymentCountBefore = $this->databaseCount('ip_payments');
+        $merchantCountBefore = $this->databaseCount('ip_merchant_responses');
 
         $this->mockStripe([$this->sessionResponse([
             'payment_status'      => 'paid',
@@ -314,10 +558,33 @@ class StripeFlowTest extends AbstractTestCase
         /* Act */
         $response = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
 
-        /* Assert: the controller's own try/catch handles this, no crash, no mutation */
+        /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect());
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $merchantCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+        $this->assertSame($merchantCountBefore, $merchantCountAfter);
+
+        /* Assert: Business Logic (A) */
         $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'pi_not_visible']);
         $this->assertDatabaseMissing('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame(1, (int) $invoice['invoice_status_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $draftInvoice = $this->seedPayableInvoice(['invoice_status_id' => 1]);
+        $draftUrlKey = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $draftInvoice])['invoice_url_key'];
+        $response2 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        $this->assertTrue($response2->isRedirect());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
+        self::assertTrue($response3->isRedirect());
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'pi_not_visible']);
     }
 
     private function mockStripe(array $responses): void

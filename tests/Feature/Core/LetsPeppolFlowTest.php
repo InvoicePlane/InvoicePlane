@@ -367,7 +367,7 @@ class LetsPeppolFlowTest extends AbstractTestCase
     // =========================================================================
 
     #[Test]
-    public function it_returns_an_error_when_send_invoice_references_an_unknown_merchant_client(): void
+    public function it_rejects_send_invoice_when_merchant_client_does_not_exist(): void
     {
         /* Arrange */
         $clientId                    = $this->seedClient();
@@ -385,7 +385,7 @@ class LetsPeppolFlowTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_returns_an_error_when_send_invoice_uses_a_disabled_merchant_client(): void
+    public function it_rejects_send_invoice_when_merchant_client_is_disabled(): void
     {
         /* Arrange */
         $clientId         = $this->seedClient();
@@ -401,7 +401,7 @@ class LetsPeppolFlowTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_returns_an_error_when_send_invoice_references_an_unknown_invoice(): void
+    public function it_rejects_send_invoice_when_invoice_does_not_exist(): void
     {
         /* Arrange */
         $merchantClientId     = $this->seedLetsPeppolClient();

@@ -65,8 +65,7 @@
             "application/modules/integrations/libraries/",
             "application/modules/integrations/models/",
             "application/libraries/gateways/",
-            "application/libraries/services/",
-            "application/modules/users/services/"
+            "application/libraries/services/"
         ]
     },
     "autoload-dev": {

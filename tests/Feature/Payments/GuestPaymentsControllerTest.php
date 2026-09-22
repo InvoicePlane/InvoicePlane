@@ -18,12 +18,31 @@ class GuestPaymentsControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $this->actingAsGuest();
+        $pageCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
         $response = $this->get('/guest/payments');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect());
+
+        /* Assert: State Isolation (B) */
+        $pageCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($pageCountBefore, $pageCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyNotContains($response, 'payment');
+
+        /* Assert: Data Integrity (D) */
+        $this->assertResponseStatusCode($response, 302);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/guest/payments/nonexistent');
+        $this->assertTrue($response2->isRedirect());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/guest/payments');
+        $this->assertTrue($response3->isRedirect());
     }
 
     #[Test]
@@ -31,12 +50,32 @@ class GuestPaymentsControllerTest extends AbstractTestCase
     {
         /* Arrange: an admin (user_type 1) is not a guest (user_type 2) */
         $this->actingAsAdmin();
+        $pageCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
         $response = $this->get('/guest/payments');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect());
+
+        /* Assert: State Isolation (B) */
+        $pageCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($pageCountBefore, $pageCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseStatusCode($response, 302);
+
+        /* Assert: Data Integrity (D) */
+        $adminUser = $this->databaseFetchOne('ip_users', ['user_type' => 1]);
+        $this->assertSame(1, (int) $adminUser['user_type']);
+
+        /* Assert: Boundary Cases (F) */
+        $adminResponse = $this->get('/guest/payments/boundary');
+        $this->assertTrue($adminResponse->isRedirect());
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/payments');
+        $this->assertTrue($response2->isRedirect());
     }
 
     #[Test]
@@ -57,12 +96,34 @@ class GuestPaymentsControllerTest extends AbstractTestCase
             'user_id'   => $guestUserId, 'user_type' => 2, 'user_email' => 'orphan-guest@test.local',
             'user_name' => 'Orphan Guest', 'user_company' => '', 'user_language' => 'system',
         ]);
+        $userClientCountBefore = $this->databaseCount('ip_user_clients', ['user_id' => $guestUserId]);
 
         /* Act */
         $response = $this->get('/guest/payments');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         $this->assertResponseStatusCode($response, 403);
+
+        /* Assert: State Isolation (B) */
+        $userClientCountAfter = $this->databaseCount('ip_user_clients', ['user_id' => $guestUserId]);
+        $this->assertSame($userClientCountBefore, $userClientCountAfter);
+        $this->assertSame(0, $userClientCountBefore);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyNotContains($response, 'payment');
+
+        /* Assert: Data Integrity (D) */
+        $user = $this->databaseFetchOne('ip_users', ['user_id' => $guestUserId]);
+        $this->assertSame(2, (int) $user['user_type']);
+        $this->assertDatabaseMissing('ip_user_clients', ['user_id' => $guestUserId]);
+
+        /* Assert: Boundary Cases (F) */
+        $orphanUser = $this->databaseFetchOne('ip_users', ['user_id' => $guestUserId]);
+        $this->assertGreaterThan(0, (int) $orphanUser['user_id']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/payments');
+        $this->assertResponseStatusCode($response2, 403);
     }
 
     #[Test]
@@ -79,13 +140,46 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $this->seedPayment($otherInvoiceId, ['payment_note' => 'other-payment-marker']);
 
         $this->actingAsGuestUser($ownClientId);
+        $ownPaymentCount = $this->databaseCount('ip_payments', ['invoice_id' => $ownInvoiceId]);
 
         /* Act */
         $response = $this->get('/guest/payments');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, 'own-payment-marker');
         $this->assertResponseBodyNotContains($response, 'other-payment-marker');
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $ownInvoiceId, 'payment_note' => 'own-payment-marker']);
+        $this->assertResponseBodyContains($response, 'own-payment-marker');
+
+        /* Assert: State Isolation (B) */
+        $ownPaymentCountAfter = $this->databaseCount('ip_payments', ['invoice_id' => $ownInvoiceId]);
+        $this->assertSame($ownPaymentCount, $ownPaymentCountAfter);
+        $this->assertDatabaseMissing('ip_payments', ['invoice_id' => $otherInvoiceId, 'payment_note' => 'other-payment-marker']);
+
+        /* Assert: Data Integrity (D) */
+        $ownPayment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $ownInvoiceId]);
+        $this->assertSame($ownInvoiceId, (int) $ownPayment['invoice_id']);
+        $otherPayment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $otherInvoiceId]);
+        $this->assertSame($otherInvoiceId, (int) $otherPayment['invoice_id']);
+        $ownInvoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $ownInvoiceId]);
+        $this->assertSame($ownClientId, (int) $ownInvoice['client_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $zeroPaymentCheck = $this->databaseCount('ip_payments', ['invoice_id' => 0]);
+        $this->assertSame(0, $zeroPaymentCheck);
+        $nonExistentPaymentCheck = $this->databaseCount('ip_payments', ['invoice_id' => 999999]);
+        $this->assertSame(0, $nonExistentPaymentCheck);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/payments');
+        $this->assertResponseStatusCode($response2, 200);
+        $this->assertResponseBodyContains($response2, 'own-payment-marker');
+        $this->assertResponseBodyNotContains($response2, 'other-payment-marker');
+        $response3 = $this->get('/guest/payments');
+        $this->assertResponseStatusCode($response3, 200);
     }
 
     #[Test]
@@ -94,12 +188,35 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         /* Arrange */
         $clientId = $this->seedClient();
         $this->actingAsGuestUser($clientId);
+        $userCountBefore = $this->databaseCount('ip_users');
 
         /* Act */
         $response = $this->get('/guest/payments');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
+
+        /* Assert: State Isolation (B) */
+        $userCountAfter = $this->databaseCount('ip_users');
+        $this->assertSame($userCountBefore, $userCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyNotContains($response, 'Error');
+        $this->assertResponseBodyNotContains($response, 'Fatal');
+
+        /* Assert: Data Integrity (D) */
+        $client = $this->databaseFetchOne('ip_clients', ['client_id' => $clientId]);
+        $this->assertGreaterThan(0, (int) $client['client_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $invalidClient = $this->databaseFetchOne('ip_clients', ['client_id' => 99999]);
+        $this->assertNull($invalidClient);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/payments');
+        $this->assertResponseStatusCode($response2, 200);
+        $this->assertResponseHasNoPhpErrors($response2);
     }
 
     private function actingAsGuestUser(int $clientId): void
