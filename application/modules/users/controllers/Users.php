@@ -53,16 +53,16 @@ class Users extends Admin_Controller
             redirect('users');
         }
 
-        $id               = $id ? (int) $id : null;
-        $current_user_id  = (int) $this->session->userdata('user_id');
-        $is_self_edit     = $id && $id === $current_user_id;
+        $id = $id ? (int) $id : null;
+        $current_user_id = (int) $this->session->userdata('user_id');
+        $is_self_edit = $id && $id === $current_user_id;
         $is_primary_admin = Mdl_Users::is_primary_administrator($current_user_id);
 
         // Object-level authorization: only the primary administrator may edit
         // another user's record. A peer administrator is limited to its own
         // account, so it cannot rewrite user_id 1's role, email or password
         // through this form (CWE-639 / CWE-269).
-        if ($id && ! $is_self_edit && ! $is_primary_admin) {
+        if ($id && !$is_self_edit && !$is_primary_admin) {
             show_error(trans('access_denied'), 403);
 
             return;
@@ -242,6 +242,17 @@ class Users extends Admin_Controller
             return;
         }
 
+        $current_user_id = (int) $this->session->userdata('user_id');
+
+        // Object-level authorization: only the primary administrator may delete
+        // another user's account. A peer administrator is limited to its own
+        // account, so it cannot delete other admin accounts through this endpoint
+        // (CWE-862 / CWE-269).
+        if ( ! Mdl_Users::is_primary_administrator($current_user_id)) {
+            show_error(trans('access_denied'), 403);
+
+            return;
+        }
         if ( ! Mdl_Users::is_primary_administrator($id)) {
             $this->mdl_users->delete($id);
         }

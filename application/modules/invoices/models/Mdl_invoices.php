@@ -648,8 +648,10 @@ class Mdl_Invoices extends Response_Model
 
     public function is_paid()
     {
+        $this->db->group_start();
         $this->filter_where('invoice_status_id', 4);
         $this->filter_or_where('invoice_balance', '0.00');
+        $this->db->group_end();
 
         return $this;
     }

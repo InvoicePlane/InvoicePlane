@@ -25,7 +25,7 @@ runs any pending database migrations automatically on startup.
 | `DB_PORT` | `3306` | Database port |
 | `CI_ENV` | `production` | Set to `development` to show all PHP errors |
 | `ENABLE_DEBUG` | `false` | Enable advanced debug logging |
-| `SESS_SAVE_PATH` | PHP's `sys_get_temp_dir()` | Directory for session files. Set to an absolute path outside the document root for extra security. |
+| `SESS_SAVE_PATH` | PHP's `sys_get_temp_dir()` | Directory for session files. Set to an absolute path outside the document root for extra security. Do **not** pass an empty string — it overrides PHP's `session.save_path` and breaks login / the setup wizard; unset it instead to get the default. |
 | `SESS_COOKIE_NAME` | `ip_session` | Session cookie name |
 | `SESS_TABLE_NAME` | `ip_sessions` | Session database table name (only used when `SESS_DRIVER=database`) |
 | `SESS_EXPIRATION` | `864000` | Session lifetime in seconds (0 = expire on browser close) |
