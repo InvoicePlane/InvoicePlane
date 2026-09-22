@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Custom_Fields;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -15,7 +16,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * Absorbs CustomFieldsServiceTest and Issue1694CustomFieldsDeleteCsrfTest.
  */
 #[Group('custom_fields')]
-#[CoversClass(\Custom_Fields::class)]
+#[CoversClass(Custom_Fields::class)]
 class CustomFieldsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

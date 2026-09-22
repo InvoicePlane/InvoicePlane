@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Payments;
 
+use Payment_Information;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -11,7 +12,7 @@ use Tests\AbstractTestCase;
  *
  * Tests HTTP endpoints for the payments list.
  */
-#[CoversClass(\Payment_Information::class)]
+#[CoversClass(Payment_Information::class)]
 class PaymentInformationControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -63,7 +64,7 @@ class PaymentInformationControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $this->actingAsGuest();
-        $clientId = $this->seedClient();
+        $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
         $this->seedPayment($invoiceId);
         $paymentCountBefore = $this->databaseCount('ip_payments');

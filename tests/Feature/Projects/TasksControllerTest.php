@@ -4,6 +4,7 @@ namespace Tests\Feature\Projects;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tasks;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
 
@@ -18,7 +19,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * in ProjectsControllerTest::it_orphans_rather_than_deletes_the_tasks_of_a_deleted_project.
  */
 #[Group('tasks')]
-#[CoversClass(\Tasks::class)]
+#[CoversClass(Tasks::class)]
 class TasksControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

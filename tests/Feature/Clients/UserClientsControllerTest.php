@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
+use User_Clients;
 
 /**
  * User_Clients controller — application/modules/user_clients/controllers/User_clients.php.
@@ -20,7 +21,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * UserClientsServiceTest and Issue1694UserClientsDeleteCsrfTest.
  */
 #[Group('user_clients')]
-#[CoversClass(\User_Clients::class)]
+#[CoversClass(User_Clients::class)]
 class UserClientsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

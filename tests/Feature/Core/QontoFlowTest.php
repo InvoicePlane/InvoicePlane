@@ -474,37 +474,6 @@ class QontoFlowTest extends AbstractTestCase
         ]);
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
-
-    /**
-     * The full settings/save POST body the edit form submits for a Qonto
-     * provider. IntegrationSettingsForm::collect() requires every field marked
-     * required in QontoClient::settingsSchema() except the sensitive
-     * access_token (reused from the stored blob when blank), so every save
-     * carries the whole set.
-     *
-     * @param array<string, string> $overrides
-     *
-     * @return array<string, string>
-     */
-    private function qontoSettingsPayload(array $overrides = []): array
-    {
-        return array_merge([
-            'label'                      => 'Qonto',
-            'enabled'                    => '0',
-            'auth_type'                  => 'bearer',
-            'api_base_url'               => 'https://thirdparty.qonto.com',
-            'import_endpoint'            => '/v2/client_invoices/bulk',
-            'client_invoices_endpoint'   => '/v2/client_invoices',
-            'send_invoice_endpoint'      => '/v2/client_invoices/{id}/send_by_einvoice',
-            'invoice_status_endpoint'    => '/v2/client_invoices/{id}',
-            'incoming_invoices_endpoint' => '/v2/supplier_invoices',
-            'attachment_endpoint'        => '/v2/attachments/{id}',
-        ], $overrides);
-    }
-
     /**
      * Insert a Qonto merchant client with an explicit id so lookups by id work
      * in the HTTP subprocess regardless of the DB's auto-increment behaviour.
@@ -568,5 +537,36 @@ class QontoFlowTest extends AbstractTestCase
             'http_code'                    => 200,
             'created_at'                   => date('Y-m-d H:i:s'),
         ], $overrides));
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * The full settings/save POST body the edit form submits for a Qonto
+     * provider. IntegrationSettingsForm::collect() requires every field marked
+     * required in QontoClient::settingsSchema() except the sensitive
+     * access_token (reused from the stored blob when blank), so every save
+     * carries the whole set.
+     *
+     * @param array<string, string> $overrides
+     *
+     * @return array<string, string>
+     */
+    private function qontoSettingsPayload(array $overrides = []): array
+    {
+        return array_merge([
+            'label'                      => 'Qonto',
+            'enabled'                    => '0',
+            'auth_type'                  => 'bearer',
+            'api_base_url'               => 'https://thirdparty.qonto.com',
+            'import_endpoint'            => '/v2/client_invoices/bulk',
+            'client_invoices_endpoint'   => '/v2/client_invoices',
+            'send_invoice_endpoint'      => '/v2/client_invoices/{id}/send_by_einvoice',
+            'invoice_status_endpoint'    => '/v2/client_invoices/{id}',
+            'incoming_invoices_endpoint' => '/v2/supplier_invoices',
+            'attachment_endpoint'        => '/v2/attachments/{id}',
+        ], $overrides);
     }
 }

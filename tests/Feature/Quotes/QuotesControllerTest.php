@@ -4,6 +4,7 @@ namespace Tests\Feature\Quotes;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Quotes;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
 
@@ -15,7 +16,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * non-AJAX half of QuotesTest and Issue1694QuotesDeleteCsrfTest.
  */
 #[Group('quotes')]
-#[CoversClass(\Quotes::class)]
+#[CoversClass(Quotes::class)]
 class QuotesControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

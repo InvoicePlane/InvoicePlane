@@ -1,21 +1,23 @@
 <?php
+
 /**
- * Automated Test Refactoring Tool
+ * Automated Test Refactoring Tool.
  *
  * Analyzes hollow tests and generates refactoring suggestions with code templates.
  * Can automatically apply common fixes to improve test honesty scores.
  */
-
 class TestRefactoringTool
 {
     private $testFile;
+
     private $content;
+
     private $suggestions = [];
 
     public function __construct($filePath)
     {
         $this->testFile = $filePath;
-        $this->content = file_get_contents($filePath);
+        $this->content  = file_get_contents($filePath);
     }
 
     public function analyze()
@@ -38,26 +40,60 @@ class TestRefactoringTool
         return $this->suggestions;
     }
 
+    public function printReport()
+    {
+        echo '## Test Refactoring Suggestions for: ' . basename($this->testFile) . "\n\n";
+
+        if (empty($this->suggestions)) {
+            echo "✓ No obvious refactoring needed (tests appear to have adequate assertions)\n";
+
+            return;
+        }
+
+        foreach ($this->suggestions as $testName => $sugg) {
+            echo '### `' . $testName . "`\n";
+            echo '**Issue**: ' . $sugg['issue'] . "\n\n";
+
+            echo "**Suggestions**:\n";
+            foreach ($sugg['suggestions'] as $s) {
+                echo '- ' . $s . "\n";
+            }
+
+            if (isset($sugg['template'])) {
+                echo "\n**Template**:\n";
+                echo "```php\n" . $sugg['template'] . "\n```\n";
+            } elseif (isset($sugg['templates'])) {
+                echo "\n**Templates**:\n";
+                foreach ($sugg['templates'] as $label => $template) {
+                    echo "\n**" . $label . "**\n";
+                    echo "```php\n" . $template . "\n```\n";
+                }
+            }
+
+            echo "\n---\n\n";
+        }
+    }
+
     private function extractTestBody($startPos)
     {
         $braceCount = 0;
-        $inString = false;
+        $inString   = false;
         $stringChar = '';
-        $testBody = '';
+        $testBody   = '';
 
         for ($pos = strpos($this->content, '{', $startPos); $pos < strlen($this->content); $pos++) {
             $char = $this->content[$pos];
 
             if ($char === '"' || $char === "'") {
-                if (!$inString) {
-                    $inString = true;
+                if ( ! $inString) {
+                    $inString   = true;
                     $stringChar = $char;
                 } elseif ($char === $stringChar && ($pos === 0 || $this->content[$pos - 1] !== '\\')) {
                     $inString = false;
                 }
             }
 
-            if (!$inString) {
+            if ( ! $inString) {
                 if ($char === '{') {
                     $braceCount++;
                 } elseif ($char === '}') {
@@ -97,12 +133,12 @@ class TestRefactoringTool
 
     private function suggestNoAssertions($testName, $testBody)
     {
-        $isUnit = strpos($this->testFile, '/Unit/') !== false;
+        $isUnit = str_contains($this->testFile, '/Unit/');
 
         if ($isUnit) {
             return [
-                'issue' => 'No assertions - unit test with no verification',
-                'type' => 'unit-no-assertions',
+                'issue'       => 'No assertions - unit test with no verification',
+                'type'        => 'unit-no-assertions',
                 'suggestions' => [
                     'Add assertion for return value: assertSame($expected, $result);',
                     'Add assertion for side effects: assertDatabaseHas(...)',
@@ -114,29 +150,29 @@ $result = /* ...call the code... */;
 $this->assertSame($expectedValue, $result);
 $this->assertDatabaseHas(\'table_name\', [\'column\' => $value]);',
             ];
-        } else {
-            return [
-                'issue' => 'No assertions - feature test missing state verification',
-                'type' => 'feature-no-assertions',
-                'suggestions' => [
-                    'Add assertion for response status: assertResponseStatusCode($response, 200);',
-                    'Add assertion for database state: assertDatabaseHas(...);',
-                    'Add assertion for no side effects: assertDatabaseMissing(...);',
-                    'Add assertion for data integrity: assertDatabaseRow(...);',
-                ],
-                'template' => '$response = $this->post(\'/endpoint\');
+        }
+
+        return [
+            'issue'       => 'No assertions - feature test missing state verification',
+            'type'        => 'feature-no-assertions',
+            'suggestions' => [
+                'Add assertion for response status: assertResponseStatusCode($response, 200);',
+                'Add assertion for database state: assertDatabaseHas(...);',
+                'Add assertion for no side effects: assertDatabaseMissing(...);',
+                'Add assertion for data integrity: assertDatabaseRow(...);',
+            ],
+            'template' => '$response = $this->post(\'/endpoint\');
 $this->assertResponseStatusCode($response, 200);
 $this->assertDatabaseHas(\'ip_table\', [\'id\' => $id, \'status\' => 1]);
 $this->assertDatabaseMissing(\'ip_logs\', [\'error\' => 1]);',
-            ];
-        }
+        ];
     }
 
     private function suggestStatusOnly($testName, $testBody)
     {
         return [
-            'issue' => 'Only checking HTTP status code - missing state/side-effect verification',
-            'type' => 'status-only',
+            'issue'       => 'Only checking HTTP status code - missing state/side-effect verification',
+            'type'        => 'status-only',
             'suggestions' => [
                 'Add state isolation check: assertDatabaseMissing() for rejection tests',
                 'Add state change check: assertDatabaseHas() for success tests',
@@ -167,8 +203,8 @@ $this->assertSame($countBefore + 1, $countAfter);',
     private function suggestBodyOnly($testName, $testBody)
     {
         return [
-            'issue' => 'Only checking response body - missing status code and state verification',
-            'type' => 'body-only',
+            'issue'       => 'Only checking response body - missing status code and state verification',
+            'type'        => 'body-only',
             'suggestions' => [
                 'Add HTTP status assertion: assertResponseStatusCode($response, 200);',
                 'Add database state check: assertDatabaseHas() or assertDatabaseMissing()',
@@ -189,8 +225,8 @@ $this->assertDatabaseHas(\'ip_table\', [\'id\' => $id]);',
     private function suggestRedirectOnly($testName, $testBody)
     {
         return [
-            'issue' => 'Only checking redirect - missing guard verification and boundary cases',
-            'type' => 'redirect-only',
+            'issue'       => 'Only checking redirect - missing guard verification and boundary cases',
+            'type'        => 'redirect-only',
             'suggestions' => [
                 'Add assertion for correct redirect target',
                 'Add boundary tests: nonexistent ID, invalid input, null values',
@@ -207,48 +243,15 @@ $this->assertStringContains($response->headers(\'Location\'), \'/login\');
 $this->assertDatabaseMissing(\'ip_payments\', [...]);',
         ];
     }
-
-    public function printReport()
-    {
-        echo "## Test Refactoring Suggestions for: " . basename($this->testFile) . "\n\n";
-
-        if (empty($this->suggestions)) {
-            echo "✓ No obvious refactoring needed (tests appear to have adequate assertions)\n";
-            return;
-        }
-
-        foreach ($this->suggestions as $testName => $sugg) {
-            echo "### `" . $testName . "`\n";
-            echo "**Issue**: " . $sugg['issue'] . "\n\n";
-
-            echo "**Suggestions**:\n";
-            foreach ($sugg['suggestions'] as $s) {
-                echo "- " . $s . "\n";
-            }
-
-            if (isset($sugg['template'])) {
-                echo "\n**Template**:\n";
-                echo "```php\n" . $sugg['template'] . "\n```\n";
-            } elseif (isset($sugg['templates'])) {
-                echo "\n**Templates**:\n";
-                foreach ($sugg['templates'] as $label => $template) {
-                    echo "\n**" . $label . "**\n";
-                    echo "```php\n" . $template . "\n```\n";
-                }
-            }
-
-            echo "\n---\n\n";
-        }
-    }
 }
 
 // Main execution
 if (php_sapi_name() === 'cli') {
     if (isset($argv[1])) {
-        $tool = new TestRefactoringTool($argv[1]);
+        $tool        = new TestRefactoringTool($argv[1]);
         $suggestions = $tool->analyze();
 
-        if (!empty($suggestions)) {
+        if ( ! empty($suggestions)) {
             $tool->printReport();
         }
     } else {

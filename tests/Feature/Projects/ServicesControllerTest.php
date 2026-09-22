@@ -4,6 +4,7 @@ namespace Tests\Feature\Projects;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Services;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
 
@@ -26,7 +27,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * coverage, not a restoration.
  */
 #[Group('services')]
-#[CoversClass(\Services::class)]
+#[CoversClass(Services::class)]
 class ServicesControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

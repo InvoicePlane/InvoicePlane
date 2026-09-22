@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Payments;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(\Ajax::class)]
+#[CoversClass(Ajax::class)]
 
 class PaymentsAjaxControllerTest extends AbstractTestCase
 {
@@ -19,8 +20,8 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     public function it_adds_a_payment_with_all_required_fields(): void
     {
         /* Arrange */
-        $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId, [], ['invoice_balance' => '100.00']);
+        $clientId           = $this->seedClient();
+        $invoiceId          = $this->seedInvoice($clientId, [], ['invoice_balance' => '100.00']);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
@@ -44,7 +45,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
 
         /* Assert: Idempotency (E) */
         $response2 = $this->ajax('POST', '/payments/ajax/add', $this->validPayload($invoiceId));
-        $json2 = json_decode($response2->body(), true);
+        $json2     = json_decode($response2->body(), true);
         $this->assertSame(1, $json2['success'] ?? null);
     }
 
@@ -77,7 +78,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
         $payload2 = $this->validPayload($invoiceId);
         unset($payload2['invoice_id']);
         $response2 = $this->ajax('POST', '/payments/ajax/add', $payload2);
-        $json2 = json_decode($response2->body(), true);
+        $json2     = json_decode($response2->body(), true);
         $this->assertSame(0, $json2['success'] ?? null);
 
         /* Assert: Idempotency (E) */
@@ -161,7 +162,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
         $invoiceId                 = $this->seedInvoice($clientId, [], ['invoice_balance' => '10.00']);
         $payload                   = $this->validPayload($invoiceId);
         $payload['payment_amount'] = '999.00';
-        $paymentCountBefore = $this->databaseCount('ip_payments');
+        $paymentCountBefore        = $this->databaseCount('ip_payments');
 
         /* Act */
         $response = $this->ajax('POST', '/payments/ajax/add', $payload);
@@ -183,10 +184,10 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
         $this->assertSame('10.00', $invoice['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
-        $payload2 = $this->validPayload($invoiceId);
+        $payload2                   = $this->validPayload($invoiceId);
         $payload2['payment_amount'] = '0.00';
-        $response2 = $this->ajax('POST', '/payments/ajax/add', $payload2);
-        $json2 = json_decode($response2->body(), true);
+        $response2                  = $this->ajax('POST', '/payments/ajax/add', $payload2);
+        $json2                      = json_decode($response2->body(), true);
         $this->assertSame(0, $json2['success'] ?? null);
 
         /* Assert: Idempotency (E) */
@@ -198,8 +199,8 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     public function it_renders_the_add_payment_modal(): void
     {
         /* Arrange */
-        $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId, [], ['invoice_balance' => '100.00']);
+        $clientId           = $this->seedClient();
+        $invoiceId          = $this->seedInvoice($clientId, [], ['invoice_balance' => '100.00']);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
@@ -235,8 +236,8 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     public function it_requires_an_ajax_request(): void
     {
         /* Arrange */
-        $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId, [], ['invoice_balance' => '100.00']);
+        $clientId           = $this->seedClient();
+        $invoiceId          = $this->seedInvoice($clientId, [], ['invoice_balance' => '100.00']);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */

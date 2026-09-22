@@ -26,8 +26,8 @@ class PaymentsFeatureTest extends AbstractTestCase
     public function it_lists_payments(): void
     {
         /* Arrange */
-        $clientId  = $this->seedClient(['client_name' => 'Payment List Client']);
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId           = $this->seedClient(['client_name' => 'Payment List Client']);
+        $invoiceId          = $this->seedInvoice($clientId);
         $paymentCountBefore = $this->databaseCount('ip_payments');
         $this->seedPayment($invoiceId, ['payment_amount' => '99.00']);
 
@@ -111,9 +111,9 @@ class PaymentsFeatureTest extends AbstractTestCase
     public function it_renders_the_edit_payment_form_showing_existing_amount(): void
     {
         /* Arrange */
-        $clientId  = $this->seedClient(['client_name' => 'Payment Edit Client']);
-        $invoiceId = $this->seedInvoice($clientId);
-        $paymentId = $this->seedPayment($invoiceId, ['payment_amount' => '175.50']);
+        $clientId           = $this->seedClient(['client_name' => 'Payment Edit Client']);
+        $invoiceId          = $this->seedInvoice($clientId);
+        $paymentId          = $this->seedPayment($invoiceId, ['payment_amount' => '175.50']);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
@@ -294,8 +294,8 @@ class PaymentsFeatureTest extends AbstractTestCase
          */
 
         /* Arrange */
-        $clientId  = $this->seedClient(['client_name' => 'Payment Fail Client']);
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId           = $this->seedClient(['client_name' => 'Payment Fail Client']);
+        $invoiceId          = $this->seedInvoice($clientId);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
@@ -350,8 +350,8 @@ class PaymentsFeatureTest extends AbstractTestCase
          */
 
         /* Arrange */
-        $clientId  = $this->seedClient(['client_name' => 'Payment No Date Client']);
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId           = $this->seedClient(['client_name' => 'Payment No Date Client']);
+        $invoiceId          = $this->seedInvoice($clientId);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */

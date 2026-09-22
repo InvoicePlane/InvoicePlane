@@ -5,13 +5,14 @@ namespace Tests\Feature\Core;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
+use Upload;
 
 /**
  * UploadController Feature Tests.
  *
  * Tests the import/upload page for authenticated admins.
  */
-#[CoversClass(\Upload::class)]
+#[CoversClass(Upload::class)]
 class UploadControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

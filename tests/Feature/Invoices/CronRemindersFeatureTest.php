@@ -3,6 +3,7 @@
 namespace Tests\Feature\Invoices;
 
 use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
 use Tests\AbstractTestCase;
 
 /**
@@ -28,7 +29,7 @@ class CronRemindersFeatureTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'email_invoice_template', 'setting_value' => '1']);
 
-        $seeded = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
+        $seeded      = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
         $clientEmail = $this->database()->table('ip_clients')->where('client_id', $seeded['clientId'])->value('client_email');
 
         /* Act */
@@ -104,7 +105,7 @@ class CronRemindersFeatureTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
 
         $seeded = $this->seedSimpleInvoice([
-            'invoice_date_due' => date('Y-m-d', strtotime('+7 days')),
+            'invoice_date_due'          => date('Y-m-d', strtotime('+7 days')),
             'invoice_disable_reminders' => 1,
         ]);
 
@@ -129,14 +130,14 @@ class CronRemindersFeatureTest extends AbstractTestCase
 
         $seeded = $this->seedSimpleInvoice([
             'invoice_date_due' => date('Y-m-d', strtotime('+7 days')),
-            'invoice_amount' => 100,
+            'invoice_amount'   => 100,
         ]);
 
         /* Record a payment that covers the entire invoice */
         $this->database()->table('ip_payments')->insert([
-            'invoice_id'       => $seeded['invoiceId'],
-            'payment_date'     => date('Y-m-d'),
-            'payment_amount'   => 100,
+            'invoice_id'        => $seeded['invoiceId'],
+            'payment_date'      => date('Y-m-d'),
+            'payment_amount'    => 100,
             'payment_method_id' => 1,
         ]);
 
@@ -163,10 +164,10 @@ class CronRemindersFeatureTest extends AbstractTestCase
 
         /* Pre-populate the reminder log showing this reminder was already sent */
         $this->database()->table('ip_invoice_reminders')->insert([
-            'invoice_id'       => $seeded['invoiceId'],
-            'reminder_type'    => 'before_due',
-            'reminder_offset'  => 7,
-            'reminder_status'  => 'sent',
+            'invoice_id'         => $seeded['invoiceId'],
+            'reminder_type'      => 'before_due',
+            'reminder_offset'    => 7,
+            'reminder_status'    => 'sent',
             'reminder_date_sent' => date('Y-m-d H:i:s'),
         ]);
 
@@ -220,7 +221,7 @@ class CronRemindersFeatureTest extends AbstractTestCase
         try {
             $this->get('/invoices/cron/reminders/wrong-key');
             self::fail('Expected RuntimeException for wrong cron key');
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             /* Assert: Request is rejected */
             self::assertStringContainsString('Wrong cron key provided', $e->getMessage());
         }
@@ -270,31 +271,31 @@ class CronRemindersFeatureTest extends AbstractTestCase
     }
 
     /**
-     * Helper: Create a simple invoice for testing reminder scenarios
+     * Helper: Create a simple invoice for testing reminder scenarios.
      */
     protected function seedSimpleInvoice(array $overrides = []): array
     {
         $clientId = $this->database()->table('ip_clients')->insertGetId([
-            'client_name' => 'Test Client',
-            'client_email' => 'test@example.com',
+            'client_name'   => 'Test Client',
+            'client_email'  => 'test@example.com',
             'client_active' => 1,
         ]);
 
         $invoiceId = $this->database()->table('ip_invoices')->insertGetId(array_merge([
-            'client_id'             => $clientId,
-            'invoice_number'        => '001',
-            'invoice_status_id'     => 1,
-            'invoice_amount'        => 1000,
-            'invoice_date_created'  => date('Y-m-d'),
-            'invoice_date_due'      => date('Y-m-d', strtotime('+30 days')),
-            'invoice_group_id'      => 1,
-            'invoice_url_key'       => bin2hex(random_bytes(16)),
+            'client_id'                 => $clientId,
+            'invoice_number'            => '001',
+            'invoice_status_id'         => 1,
+            'invoice_amount'            => 1000,
+            'invoice_date_created'      => date('Y-m-d'),
+            'invoice_date_due'          => date('Y-m-d', strtotime('+30 days')),
+            'invoice_group_id'          => 1,
+            'invoice_url_key'           => bin2hex(random_bytes(16)),
             'invoice_disable_reminders' => 0,
         ], $overrides));
 
         return [
-            'clientId'   => $clientId,
-            'invoiceId'  => $invoiceId,
+            'clientId'  => $clientId,
+            'invoiceId' => $invoiceId,
         ];
     }
 }

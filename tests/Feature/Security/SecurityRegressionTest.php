@@ -50,7 +50,7 @@ class SecurityRegressionTest extends AbstractTestCase
         ]);
 
         $otherInvoiceId = $this->seedInvoice($otherClientId);
-        $ownInvoiceId = $this->seedInvoice($ownClientId);
+        $ownInvoiceId   = $this->seedInvoice($ownClientId);
 
         $this->actingAs([
             'user_id'       => $guestUserId,
@@ -204,8 +204,8 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->actingAsAdmin();
         $this->enablePdfSentMarking('mark_invoices_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-        $clientId = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => '']);
+        $clientId     = $this->seedClient();
+        $invoiceId    = $this->seedInvoice($clientId, ['invoice_number' => '']);
         $statusBefore = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id'];
 
         /* Act */
@@ -224,7 +224,7 @@ class SecurityRegressionTest extends AbstractTestCase
 
         /* Assert: Boundary Cases (F) */
         $invoiceId2 = $this->seedInvoice($clientId);
-        $response2 = $this->get('/invoices/generate_pdf/' . $invoiceId2 . '/0');
+        $response2  = $this->get('/invoices/generate_pdf/' . $invoiceId2 . '/0');
         self::assertLessThan(500, $response2->statusCode());
         self::assertSame(1, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId2])['invoice_status_id']);
 
@@ -241,14 +241,14 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->actingAsAdmin();
         $this->enablePdfSentMarking('mark_invoices_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-        $clientId = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => '']);
+        $clientId     = $this->seedClient();
+        $invoiceId    = $this->seedInvoice($clientId, ['invoice_number' => '']);
         $statusBefore = (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id'];
 
         /* Act: this models the same-origin link rendered with _csrf_query(). */
         $response = $this->get(
             '/invoices/generate_pdf/' . $invoiceId . '/0',
-            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['_ip_csrf' => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
 
@@ -259,7 +259,7 @@ class SecurityRegressionTest extends AbstractTestCase
         self::assertSame(2, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
 
         /* Assert: State Isolation (B) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $invoice     = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
         $statusAfter = (int) $invoice['invoice_status_id'];
         $this->assertGreaterThan($statusBefore, $statusAfter);
 
@@ -268,9 +268,9 @@ class SecurityRegressionTest extends AbstractTestCase
 
         /* Assert: Boundary Cases (F) */
         $invoiceId2 = $this->seedInvoice($clientId);
-        $response2 = $this->get(
+        $response2  = $this->get(
             '/invoices/generate_pdf/' . $invoiceId2 . '/0',
-            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['_ip_csrf' => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
         self::assertLessThan(500, $response2->statusCode());
@@ -279,7 +279,7 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Assert: Idempotency (E) */
         $response3 = $this->get(
             '/invoices/generate_pdf/' . $invoiceId . '/0',
-            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['_ip_csrf' => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
         self::assertLessThan(500, $response3->statusCode());
@@ -293,7 +293,7 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->actingAsAdmin();
         $this->enablePdfSentMarking('mark_quotes_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-        $quoteId = $this->seedSecurityQuote();
+        $quoteId      = $this->seedSecurityQuote();
         $statusBefore = (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id'];
 
         /* Act */
@@ -311,7 +311,7 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->assertGreaterThan(0, (int) $quote['client_id']);
 
         /* Assert: Boundary Cases (F) */
-        $quoteId2 = $this->seedSecurityQuote();
+        $quoteId2  = $this->seedSecurityQuote();
         $response2 = $this->get('/quotes/generate_pdf/' . $quoteId2 . '/0');
         self::assertLessThan(500, $response2->statusCode());
         self::assertSame(1, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId2])['quote_status_id']);
@@ -329,13 +329,13 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->actingAsAdmin();
         $this->enablePdfSentMarking('mark_quotes_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-        $quoteId = $this->seedSecurityQuote();
+        $quoteId      = $this->seedSecurityQuote();
         $statusBefore = (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id'];
 
         /* Act */
         $response = $this->get(
             '/quotes/generate_pdf/' . $quoteId . '/0',
-            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['_ip_csrf' => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
 
@@ -346,7 +346,7 @@ class SecurityRegressionTest extends AbstractTestCase
         self::assertSame(2, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
 
         /* Assert: State Isolation (B) */
-        $quote = $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId]);
+        $quote       = $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId]);
         $statusAfter = (int) $quote['quote_status_id'];
         $this->assertGreaterThan($statusBefore, $statusAfter);
 
@@ -354,10 +354,10 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->assertGreaterThan(0, (int) $quote['client_id']);
 
         /* Assert: Boundary Cases (F) */
-        $quoteId2 = $this->seedSecurityQuote();
+        $quoteId2  = $this->seedSecurityQuote();
         $response2 = $this->get(
             '/quotes/generate_pdf/' . $quoteId2 . '/0',
-            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['_ip_csrf' => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
         self::assertLessThan(500, $response2->statusCode());
@@ -366,7 +366,7 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Assert: Idempotency (E) */
         $response3 = $this->get(
             '/quotes/generate_pdf/' . $quoteId . '/0',
-            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['_ip_csrf' => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
         self::assertLessThan(500, $response3->statusCode());
@@ -653,20 +653,6 @@ class SecurityRegressionTest extends AbstractTestCase
         );
     }
 
-    private function enablePdfSentMarking(string $settingKey): void
-    {
-        if ($this->databaseFetchOne('ip_settings', ['setting_key' => $settingKey]) === null) {
-            $this->databaseInsert('ip_settings', [
-                'setting_key'   => $settingKey,
-                'setting_value' => '1',
-            ]);
-
-            return;
-        }
-
-        $this->databaseUpdate('ip_settings', ['setting_value' => '1'], ['setting_key' => $settingKey]);
-    }
-
     protected function seedSecurityQuote(): int
     {
         $clientId = $this->seedClient(['client_name' => 'Generate PDF CSRF Client']);
@@ -691,5 +677,19 @@ class SecurityRegressionTest extends AbstractTestCase
         ]);
 
         return $quoteId;
+    }
+
+    private function enablePdfSentMarking(string $settingKey): void
+    {
+        if ($this->databaseFetchOne('ip_settings', ['setting_key' => $settingKey]) === null) {
+            $this->databaseInsert('ip_settings', [
+                'setting_key'   => $settingKey,
+                'setting_value' => '1',
+            ]);
+
+            return;
+        }
+
+        $this->databaseUpdate('ip_settings', ['setting_value' => '1'], ['setting_key' => $settingKey]);
     }
 }

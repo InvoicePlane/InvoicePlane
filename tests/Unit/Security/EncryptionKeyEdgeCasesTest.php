@@ -4,7 +4,6 @@ namespace Tests\Unit\Security;
 
 use Crypt;
 use Cryptor;
-use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -44,7 +43,7 @@ class EncryptionKeyEdgeCasesTest extends TestCase
     #[Test]
     public function it_encrypts_plaintext_with_utf8_special_characters(): void
     {
-        /**
+        /*
          * EDGE CASE: UTF-8 special characters, emoji, multi-byte characters
          * should not cause encoding issues during encryption/decryption.
          */
@@ -68,7 +67,7 @@ class EncryptionKeyEdgeCasesTest extends TestCase
          * EDGE CASE: If someone puts UTF-8 characters in the encryption key
          * (via ipconfig.php base64 encoding), it should still work.
          */
-        $utf8Key = 'base64:' . base64_encode('key-with-émojis-🔐-中文');
+        $utf8Key                = 'base64:' . base64_encode('key-with-émojis-🔐-中文');
         $_ENV['ENCRYPTION_KEY'] = $utf8Key;
 
         $crypt     = new Crypt();
@@ -118,13 +117,13 @@ class EncryptionKeyEdgeCasesTest extends TestCase
     #[Test]
     public function it_handles_very_long_smtp_passwords(): void
     {
-        /**
+        /*
          * EDGE CASE: Some SMTP providers allow very long passwords (certificate keys, tokens).
          * Encryption should handle arbitrarily large plaintexts.
          */
         $_ENV['ENCRYPTION_KEY'] = 'base64:' . base64_encode($this->key);
 
-        $crypt           = new Crypt();
+        $crypt            = new Crypt();
         $veryLongPassword = str_repeat('x', 65536); // 64KB password
 
         $ciphertext = $crypt->encode($veryLongPassword);
@@ -136,7 +135,7 @@ class EncryptionKeyEdgeCasesTest extends TestCase
     #[Test]
     public function it_handles_passwords_containing_base64_prefix(): void
     {
-        /**
+        /*
          * EDGE CASE: A password might literally contain "base64:" string,
          * which shouldn't be interpreted as a key format prefix.
          *
@@ -201,9 +200,9 @@ class EncryptionKeyEdgeCasesTest extends TestCase
          * EDGE CASE: base64_decode should handle both padded and unpadded variants.
          * PHP's base64_decode accepts both, but let's verify it works.
          */
-        $rawKey     = random_bytes(32);
-        $base64     = base64_encode($rawKey);
-        $unpadded   = rtrim($base64, '=');
+        $rawKey   = random_bytes(32);
+        $base64   = base64_encode($rawKey);
+        $unpadded = rtrim($base64, '=');
 
         // Test with padding
         $_ENV['ENCRYPTION_KEY'] = 'base64:' . $base64;
@@ -222,7 +221,7 @@ class EncryptionKeyEdgeCasesTest extends TestCase
     #[Test]
     public function it_rejects_plaintext_with_only_whitespace(): void
     {
-        /**
+        /*
          * EDGE CASE: Whitespace-only plaintexts should still encrypt normally.
          * They're not "empty" in the sense of empty string, so they should work.
          */
@@ -240,7 +239,7 @@ class EncryptionKeyEdgeCasesTest extends TestCase
     #[Test]
     public function it_handles_repeated_encryptions_of_same_value(): void
     {
-        /**
+        /*
          * EDGE CASE: The same value encrypted multiple times should produce
          * different ciphertexts (fresh IV each time) but all decrypt to same value.
          */
@@ -268,7 +267,7 @@ class EncryptionKeyEdgeCasesTest extends TestCase
     #[Test]
     public function it_handles_smtp_password_with_credential_separators(): void
     {
-        /**
+        /*
          * EDGE CASE: SMTP passwords might contain special characters like
          * colons, @, semicolons that are used for URL/credential parsing.
          */

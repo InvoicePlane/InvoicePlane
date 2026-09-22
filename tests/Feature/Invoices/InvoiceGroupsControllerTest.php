@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Invoices;
 
+use Invoice_Groups;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -16,7 +17,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * against that. Absorbs Issue1694InvoiceGroupsDeleteCsrfTest.
  */
 #[Group('invoice_groups')]
-#[CoversClass(\Invoice_Groups::class)]
+#[CoversClass(Invoice_Groups::class)]
 class InvoiceGroupsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

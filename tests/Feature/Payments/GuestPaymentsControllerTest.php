@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Payments;
 
+use Payments;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -10,7 +11,7 @@ use Tests\AbstractTestCase;
  * listing — distinct from application/modules/payments/controllers/Payments.php,
  * the admin one, and from the guest/gateways/* callback controllers).
  */
-#[CoversClass(\Payments::class)]
+#[CoversClass(Payments::class)]
 class GuestPaymentsControllerTest extends AbstractTestCase
 {
     #[Test]

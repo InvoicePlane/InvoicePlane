@@ -44,7 +44,7 @@ class EncryptionKeyLoadingTest extends TestCase
     #[Test]
     public function it_loads_encryption_key_from_env_not_getenv(): void
     {
-        /**
+        /*
          * BUG VALIDATION: The original code used getenv('ENCRYPTION_KEY'),
          * which returns NULL when Dotenv populates only $_ENV (via safe_load),
          * never calling putenv(). This test proves that:
@@ -79,7 +79,7 @@ class EncryptionKeyLoadingTest extends TestCase
     #[Test]
     public function it_detects_missing_encryption_key(): void
     {
-        /**
+        /*
          * REGRESSION GUARD: If ENCRYPTION_KEY is missing from ipconfig.php,
          * env() returns empty string (the default), and encryption uses an empty
          * key. This test ensures we catch that scenario.
@@ -106,7 +106,7 @@ class EncryptionKeyLoadingTest extends TestCase
     #[Test]
     public function it_handles_base64_prefixed_keys(): void
     {
-        /**
+        /*
          * CONFIGURATION PATTERN: Keys can be prefixed with "base64:"
          * to indicate they are base64-encoded (common Laravel pattern).
          * The getEncryptionKey() method must decode these.
@@ -125,7 +125,7 @@ class EncryptionKeyLoadingTest extends TestCase
     #[Test]
     public function it_rejects_plaintext_key_if_validation_adds_one(): void
     {
-        /**
+        /*
          * FUTURE-PROOFING: If validation is added to reject unencoded keys,
          * this test documents the expected behavior.
          *
@@ -146,7 +146,7 @@ class EncryptionKeyLoadingTest extends TestCase
     #[Test]
     public function it_consistently_encrypts_smtp_credentials(): void
     {
-        /**
+        /*
          * REAL-WORLD SCENARIO: SMTP password encryption must be consistent.
          * If the key loading is wrong, decryption fails and SMTP auth breaks.
          *
@@ -176,7 +176,7 @@ class EncryptionKeyLoadingTest extends TestCase
     #[Test]
     public function it_never_silently_encrypts_with_wrong_key(): void
     {
-        /**
+        /*
          * SECURITY CONCERN: Encryption with one key but decryption with another
          * is indistinguishable from data corruption at the application level.
          *
@@ -218,7 +218,7 @@ class EncryptionKeyLoadingTest extends TestCase
     #[Test]
     public function it_provides_recovery_path_for_wrong_key_scenario(): void
     {
-        /**
+        /*
          * RECOVERY DOCUMENTATION: When a user's SMTP credentials fail after
          * upgrade, the recovery is to re-enter the password. This test documents
          * why that works:

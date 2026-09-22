@@ -476,45 +476,6 @@ class LetsPeppolFlowTest extends AbstractTestCase
         ]);
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
-
-    /**
-     * The full settings/save POST body the edit form submits for a LetsPeppol
-     * provider. IntegrationSettingsForm::collect() requires every field marked
-     * required in LetsPeppolClient::settingsSchema() except the sensitive
-     * client_secret (reused from the stored blob when blank), so every save
-     * carries the whole set.
-     *
-     * @param array<string, string> $overrides
-     *
-     * @return array<string, string>
-     */
-    private function letsPeppolSettingsPayload(array $overrides = []): array
-    {
-        return array_merge([
-            'label'                        => 'LetsPeppol',
-            'enabled'                      => '0',
-            'auth_type'                    => 'oauth2',
-            'client_id'                    => 'prod-client-id',
-            'token_url'                    => 'https://api.letspeppol.eu/oauth2/token',
-            'api_base_url'                 => 'https://api.letspeppol.eu',
-            'invoice_endpoint'             => '/v1/invoices',
-            'invoice_status_endpoint'      => '/v1/invoices/{id}',
-            'incoming_invoices_endpoint'   => '/v1/incoming-invoices',
-            'invoice_events_endpoint'      => '/v1/invoice-events',
-            'credit_note_endpoint'         => '/v1/credit-notes',
-            'credit_note_status_endpoint'  => '/v1/credit-notes/{id}',
-            'participants_endpoint'        => '/v1/participants',
-            'participant_lookup_endpoint'  => '/v1/participants/{id}',
-            'transmissions_endpoint'       => '/v1/transmissions',
-            'transmission_status_endpoint' => '/v1/transmissions/{id}',
-            'documents_endpoint'           => '/v1/documents',
-            'document_endpoint'            => '/v1/documents/{id}',
-        ], $overrides);
-    }
-
     /**
      * Insert a LetsPeppol merchant client with an explicit id.
      *
@@ -586,5 +547,44 @@ class LetsPeppolFlowTest extends AbstractTestCase
             'http_code'                    => 201,
             'created_at'                   => date('Y-m-d H:i:s'),
         ], $overrides));
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * The full settings/save POST body the edit form submits for a LetsPeppol
+     * provider. IntegrationSettingsForm::collect() requires every field marked
+     * required in LetsPeppolClient::settingsSchema() except the sensitive
+     * client_secret (reused from the stored blob when blank), so every save
+     * carries the whole set.
+     *
+     * @param array<string, string> $overrides
+     *
+     * @return array<string, string>
+     */
+    private function letsPeppolSettingsPayload(array $overrides = []): array
+    {
+        return array_merge([
+            'label'                        => 'LetsPeppol',
+            'enabled'                      => '0',
+            'auth_type'                    => 'oauth2',
+            'client_id'                    => 'prod-client-id',
+            'token_url'                    => 'https://api.letspeppol.eu/oauth2/token',
+            'api_base_url'                 => 'https://api.letspeppol.eu',
+            'invoice_endpoint'             => '/v1/invoices',
+            'invoice_status_endpoint'      => '/v1/invoices/{id}',
+            'incoming_invoices_endpoint'   => '/v1/incoming-invoices',
+            'invoice_events_endpoint'      => '/v1/invoice-events',
+            'credit_note_endpoint'         => '/v1/credit-notes',
+            'credit_note_status_endpoint'  => '/v1/credit-notes/{id}',
+            'participants_endpoint'        => '/v1/participants',
+            'participant_lookup_endpoint'  => '/v1/participants/{id}',
+            'transmissions_endpoint'       => '/v1/transmissions',
+            'transmission_status_endpoint' => '/v1/transmissions/{id}',
+            'documents_endpoint'           => '/v1/documents',
+            'document_endpoint'            => '/v1/documents/{id}',
+        ], $overrides);
     }
 }

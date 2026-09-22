@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Payments;
 
+use Payment_Methods;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -14,7 +15,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * Absorbs Issue1694PaymentMethodsDeleteCsrfTest.
  */
 #[Group('payment_methods')]
-#[CoversClass(\Payment_Methods::class)]
+#[CoversClass(Payment_Methods::class)]
 class PaymentMethodsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;
@@ -155,8 +156,8 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     public function it_renders_the_edit_form_for_the_requested_payment_method_only(): void
     {
         /* Arrange */
-        $target = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Editable Method']);
-        $other = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Other Method']);
+        $target            = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Editable Method']);
+        $other             = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Other Method']);
         $methodCountBefore = $this->databaseCount('ip_payment_methods');
 
         /* Act */
@@ -188,7 +189,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     public function it_updates_a_payment_method(): void
     {
         /* Arrange */
-        $id = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Original Method']);
+        $id                = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Original Method']);
         $methodCountBefore = $this->databaseCount('ip_payment_methods');
 
         /* Act */
@@ -231,7 +232,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     public function it_fails_to_update_without_payment_method_name(): void
     {
         /* Arrange */
-        $id = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Keep This Method']);
+        $id                = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Keep This Method']);
         $methodCountBefore = $this->databaseCount('ip_payment_methods');
 
         /* Act */
@@ -273,8 +274,8 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     public function it_deletes_a_payment_method(): void
     {
         /* Arrange */
-        $id   = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Deletable Method']);
-        $keep = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Kept Method']);
+        $id                = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Deletable Method']);
+        $keep              = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Kept Method']);
         $methodCountBefore = $this->databaseCount('ip_payment_methods');
 
         /* Act */
@@ -309,7 +310,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $this->enableCsrfProtection();
-        $id = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'CSRF Method']);
+        $id                = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'CSRF Method']);
         $methodCountBefore = $this->databaseCount('ip_payment_methods');
 
         /* Act */
@@ -338,7 +339,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $this->enableCsrfProtection();
-        $id = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'CSRF Method Kept']);
+        $id                = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'CSRF Method Kept']);
         $methodCountBefore = $this->databaseCount('ip_payment_methods');
 
         /* Act */
@@ -372,7 +373,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     public function it_rejects_a_duplicate_payment_method_name_on_create(): void
     {
         /* Arrange */
-        $id1 = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Duplicate Method']);
+        $id1               = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Duplicate Method']);
         $methodCountBefore = $this->databaseCount('ip_payment_methods');
 
         /* Act */
@@ -422,7 +423,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
     public function it_redirects_a_guest_to_login_and_leaks_no_payment_method(): void
     {
         /* Arrange */
-        $methodId = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Secret Method']);
+        $methodId          = $this->databaseInsert('ip_payment_methods', ['payment_method_name' => 'Secret Method']);
         $methodCountBefore = $this->databaseCount('ip_payment_methods');
         $this->actingAsGuest();
 
