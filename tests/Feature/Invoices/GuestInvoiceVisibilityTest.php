@@ -164,6 +164,7 @@ class GuestInvoiceVisibilityTest extends AbstractTestCase
     protected function seedClient(array $overrides = []): int
     {
         return $this->databaseInsert('ip_clients', array_merge([
+            'user_id'              => 1,
             'client_name'          => 'Test Client ' . bin2hex(random_bytes(3)),
             'client_active'        => 1,
             'client_date_created'  => date('Y-m-d H:i:s'),
