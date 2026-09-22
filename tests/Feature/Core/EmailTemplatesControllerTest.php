@@ -226,7 +226,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedTemplate(array $overrides = []): int
+    protected function seedTemplate(array $overrides = []): int
     {
         return $this->databaseInsert('ip_email_templates', array_merge([
             'email_template_title' => 'Seeded Template',

@@ -172,7 +172,7 @@ class IntegrationsControllerTest extends AbstractTestCase
     /**
      * @param array<string, mixed> $overrides
      */
-    private function seedProvider(array $overrides = []): int
+    protected function seedProvider(array $overrides = []): int
     {
         return $this->databaseInsert('ip_merchant_clients', $overrides + [
             'merchant_type' => 'superpdp',

@@ -281,7 +281,7 @@ class ServicesControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'Secret Service Name');
     }
 
-    private function seedService(string $name): int
+    protected function seedService(string $name): int
     {
         return $this->databaseInsert('ip_services', ['service_name' => $name]);
     }

@@ -161,7 +161,7 @@ class PasswordResetTokenExpiryTest extends AbstractTestCase
      *
      * @param string|null $expiry UTC 'Y-m-d H:i:s', or null for a legacy token with no expiry
      */
-    private function seedUserWithResetToken(?string $expiry): int
+    protected function seedUserWithResetToken(?string $expiry): int
     {
         return $this->databaseInsert('ip_users', [
             'user_name'                       => 'resettarget_' . bin2hex(random_bytes(3)),

@@ -302,7 +302,7 @@ class GuestViewControllerTest extends AbstractTestCase
     // quote()
     // -------------------------------------------------------------------------
 
-    private function seedQuote(int $clientId, array $overrides = []): int
+    protected function seedQuote(int $clientId, array $overrides = []): int
     {
         return $this->databaseInsert('ip_quotes', array_merge([
             'user_id'             => 1,

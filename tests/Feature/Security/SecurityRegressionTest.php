@@ -667,7 +667,7 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->databaseUpdate('ip_settings', ['setting_value' => '1'], ['setting_key' => $settingKey]);
     }
 
-    private function seedSecurityQuote(): int
+    protected function seedSecurityQuote(): int
     {
         $clientId = $this->seedClient(['client_name' => 'Generate PDF CSRF Client']);
         $quoteId  = $this->databaseInsert('ip_quotes', [

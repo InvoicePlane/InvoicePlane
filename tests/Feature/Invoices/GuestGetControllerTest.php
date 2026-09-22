@@ -210,7 +210,7 @@ class GuestGetControllerTest extends AbstractTestCase
         self::assertSame('attachment-bytes', $response->body());
     }
 
-    private function seedVisibleInvoiceUrlKey(int $statusId = 2): string
+    protected function seedVisibleInvoiceUrlKey(int $statusId = 2): string
     {
         $clientId = $this->seedClient();
         $urlKey   = bin2hex(random_bytes(16)); // 32 hex chars

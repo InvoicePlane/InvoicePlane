@@ -237,7 +237,7 @@ class CustomValuesControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'Secret Segment');
     }
 
-    private function seedChoiceField(): int
+    protected function seedChoiceField(): int
     {
         return $this->databaseInsert('ip_custom_fields', [
             'custom_field_table' => 'ip_client_custom',
@@ -246,7 +246,7 @@ class CustomValuesControllerTest extends AbstractTestCase
         ]);
     }
 
-    private function seedValue(int $fieldId, string $value): int
+    protected function seedValue(int $fieldId, string $value): int
     {
         return $this->databaseInsert('ip_custom_values', [
             'custom_values_field' => $fieldId,

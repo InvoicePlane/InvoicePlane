@@ -168,7 +168,7 @@ class IntegrationTestConnectionTest extends AbstractTestCase
         return $payload;
     }
 
-    private function seedQonto(array $overrides = []): int
+    protected function seedQonto(array $overrides = []): int
     {
         $id = array_key_exists('id', $overrides) ? $overrides['id'] : random_int(10000, 59999);
 
@@ -195,7 +195,7 @@ class IntegrationTestConnectionTest extends AbstractTestCase
         return $id;
     }
 
-    private function seedSuperPdp(array $overrides = []): int
+    protected function seedSuperPdp(array $overrides = []): int
     {
         $id = array_key_exists('id', $overrides) ? $overrides['id'] : random_int(10000, 59999);
 

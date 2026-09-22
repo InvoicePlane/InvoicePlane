@@ -156,7 +156,7 @@ class QuotesControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'QUO-SECRET-0001');
     }
 
-    private function seedQuote(array $overrides = []): int
+    protected function seedQuote(array $overrides = []): int
     {
         $clientId = $overrides['client_id'] ?? $this->seedClient();
         unset($overrides['client_id']);

@@ -217,14 +217,14 @@ class UserClientsControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'Secret Assigned Client');
     }
 
-    private function seedSecondaryUser(): int
+    protected function seedSecondaryUser(): int
     {
         // Delegate to the shared seedModel() row-builder instead of
         // duplicating its ip_users defaults here; only the type differs.
         return (int) $this->seedModel('User', ['user_type' => 2])->user_id;
     }
 
-    private function seedAssignment(int $userId, int $clientId): int
+    protected function seedAssignment(int $userId, int $clientId): int
     {
         return $this->databaseInsert('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
     }

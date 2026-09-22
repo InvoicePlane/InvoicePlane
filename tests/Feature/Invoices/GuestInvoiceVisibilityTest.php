@@ -159,7 +159,7 @@ class GuestInvoiceVisibilityTest extends AbstractTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
-    private function seedClient(array $overrides = []): int
+    protected function seedClient(array $overrides = []): int
     {
         return $this->databaseInsert('ip_clients', array_merge([
             'user_id'             => 1,
@@ -170,7 +170,7 @@ class GuestInvoiceVisibilityTest extends AbstractTestCase
         ], $overrides));
     }
 
-    private function seedInvoice(int $clientId, array $overrides = []): int
+    protected function seedInvoice(int $clientId, array $overrides = [], array $amountOverrides = []): int
     {
         return $this->databaseInsert('ip_invoices', array_merge([
             'user_id'               => 1,

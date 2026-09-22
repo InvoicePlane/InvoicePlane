@@ -263,7 +263,7 @@ class ProductsControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedProduct(array $overrides = []): int
+    protected function seedProduct(array $overrides = []): int
     {
         return $this->databaseInsert('ip_products', array_merge([
             'family_id'           => 0,

@@ -484,7 +484,7 @@ class UsersControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedUser(array $overrides = []): int
+    protected function seedUser(array $overrides = []): int
     {
         return $this->databaseInsert('ip_users', array_merge([
             'user_type'          => 2,

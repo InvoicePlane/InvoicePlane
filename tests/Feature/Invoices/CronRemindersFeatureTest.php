@@ -272,7 +272,7 @@ class CronRemindersFeatureTest extends AbstractTestCase
     /**
      * Helper: Create a simple invoice for testing reminder scenarios
      */
-    private function seedSimpleInvoice(array $overrides = []): array
+    protected function seedSimpleInvoice(array $overrides = []): array
     {
         $clientId = $this->database()->table('ip_clients')->insertGetId([
             'client_name' => 'Test Client',
