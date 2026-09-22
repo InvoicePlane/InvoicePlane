@@ -17,18 +17,18 @@ if ( ! defined('BASEPATH')) {
 class Mdl_Users extends Response_Model
 {
     /**
-     * Fields that must never be written from raw POST data regardless of
-     * validation rules. Controllers that legitimately need to set these
-     * must build and pass their own $db_array to save().
-     */
-    private const PROTECTED_FIELDS = ['user_type', 'user_active', 'user_psalt'];
-
-    /**
      * The bootstrap root account. Only this account may edit its own record;
      * a peer administrator must not be able to alter any of its attributes
      * (password, email, role type, active flag, or otherwise).
      */
     public const PRIMARY_ADMINISTRATOR_ID = 1;
+
+    /**
+     * Fields that must never be written from raw POST data regardless of
+     * validation rules. Controllers that legitimately need to set these
+     * must build and pass their own $db_array to save().
+     */
+    private const PROTECTED_FIELDS = ['user_type', 'user_active', 'user_psalt'];
 
     /**
      * Identity- and privilege-bearing fields the primary administrator's record
@@ -45,17 +45,6 @@ class Mdl_Users extends Response_Model
     public $date_modified_field = 'user_date_modified';
 
     /**
-     * @return array
-     */
-    public function user_types()
-    {
-        return [
-            '1' => trans('administrator'),
-            '2' => trans('guest_read_only'),
-        ];
-    }
-
-    /**
      * Whether the given user id identifies the primary administrator (user_id = 1).
      *
      * Accepts int or string ids from routes and sessions; canonicalizes through
@@ -66,6 +55,17 @@ class Mdl_Users extends Response_Model
     public static function is_primary_administrator($user_id): bool
     {
         return $user_id !== null && $user_id !== '' && (int) $user_id === self::PRIMARY_ADMINISTRATOR_ID;
+    }
+
+    /**
+     * @return array
+     */
+    public function user_types()
+    {
+        return [
+            '1' => trans('administrator'),
+            '2' => trans('guest_read_only'),
+        ];
     }
 
     public function default_select(): void

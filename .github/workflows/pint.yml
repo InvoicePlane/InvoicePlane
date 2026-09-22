@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -30,8 +30,8 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.4'
-          composer-flags: '--prefer-dist --no-interaction --no-progress'
+          php-version: '8.2'
+          composer-flags: '--prefer-dist --no-interaction --no-progress --ignore-platform-reqs'
 
       - name: Run Pint
         run: |

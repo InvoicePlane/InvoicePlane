@@ -60,25 +60,25 @@ jobs:
       # Sources: InvoicePlane (at the tag) + themes + e-invoices + build-scripts
       # ----------------------------------------------------------------
       - name: Checkout InvoicePlane (tag)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           fetch-tags: true
 
       - name: Checkout build-scripts (for workflow.sh)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: InvoicePlane/build-scripts
           path: _build-scripts
 
       - name: Checkout themes
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: InvoicePlane/InvoicePlane-Themes
           path: _themes
 
       - name: Checkout e-invoices
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: InvoicePlane/InvoicePlane-e-invoices
           path: _e-invoices
@@ -267,7 +267,7 @@ jobs:
           tools: composer
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: '.node-version'
           cache: 'yarn'
@@ -303,7 +303,7 @@ jobs:
       # Publish: artifact + draft GitHub release
       # ----------------------------------------------------------------
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ip-${{ steps.version.outputs.version }}
           path: |

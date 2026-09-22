@@ -46,7 +46,7 @@ integrations/
 │   ├── incoming.php
 │   └── provider_form.php
 │
-└── (migrations live in application/modules/setup/sql/, e.g. 044_1.8.0.sql)
+└── (migrations live in application/modules/setup/sql/, e.g. 045_1.8.0.sql)
 ```
 
 ---

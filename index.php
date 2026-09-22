@@ -61,15 +61,12 @@ define('IP_DEBUG', env_bool('ENABLE_DEBUG'));
  * invoice's secret access key -- to third-party payment scripts in the Referer header.
  */
 if (PHP_SAPI !== 'cli' && ! headers_sent()) {
-    // Only SAMEORIGIN and DENY are honoured by current browsers. Anything else falls back to
-    // SAMEORIGIN, so a typo cannot silently drop framing protection or the CSP below.
-    $ip_frame_ancestors = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"];
-    $ip_frame_options   = mb_strtoupper(trim((string) env('X_FRAME_OPTIONS', 'SAMEORIGIN')));
-    if ( ! isset($ip_frame_ancestors[$ip_frame_options])) {
-        $ip_frame_options = 'SAMEORIGIN';
-    }
+    $ip_frame_options = mb_strtoupper(str_replace(["\r", "\n"], '', (string) env('X_FRAME_OPTIONS', 'SAMEORIGIN')));
     header('X-Frame-Options: ' . $ip_frame_options);
-    header("Content-Security-Policy: frame-ancestors {$ip_frame_ancestors[$ip_frame_options]}; object-src 'none'; base-uri 'self'");
+    $ip_frame_ancestors = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"][$ip_frame_options] ?? null;
+    if ($ip_frame_ancestors !== null) {
+        header("Content-Security-Policy: frame-ancestors {$ip_frame_ancestors}; object-src 'none'; base-uri 'self'");
+    }
     header('Referrer-Policy: strict-origin-when-cross-origin');
     if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
         header('X-Content-Type-Options: nosniff');

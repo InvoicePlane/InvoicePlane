@@ -51,17 +51,6 @@ SESS_TABLE_NAME=ip_sessions
 # Destroy the old session ID after regeneration — prevents session fixation attacks.
 SESS_REGENERATE_DESTROY=true
 
-# Development mail safety net. LEAVE THIS EMPTY IN PRODUCTION.
-#
-# When set to an address, every outbound email -- invoices, quotes, payment
-# receipts, overdue reminders and password resets alike -- is delivered to that
-# address instead of its real recipients. The intended To/Cc/Bcc are shown in a
-# banner at the top of the message and in an X-InvoicePlane-Intended-Recipients
-# header, and bcc_mails_to_admin is ignored so no second, unredirected copy
-# escapes. Intended for working against a copy of production data, where a stray
-# send would reach real clients.
-EMAIL_OVERRIDE_TO=
-
 # Set this setting to 'true' if you want to disable the setup for security purposes
 DISABLE_SETUP=false
 

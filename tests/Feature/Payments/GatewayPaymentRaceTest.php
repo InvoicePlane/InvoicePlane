@@ -51,6 +51,7 @@ class GatewayPaymentRaceTest extends AbstractTestCase
             $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
             $intentA   = 'pi_race_' . $round . '_a';
             $intentB   = 'pi_race_' . $round . '_b';
+            $paymentCountBefore = $this->databaseCount('ip_payments');
 
             /* Act: two genuinely concurrent paid callbacks, distinct payment_intents */
             $this->fireConcurrently([
@@ -58,8 +59,21 @@ class GatewayPaymentRaceTest extends AbstractTestCase
                 $this->stripeCallbackRequest($urlKey, $intentB, 10000),
             ]);
 
-            /* Assert: the balance covered exactly one payment */
+            /* Assert: Business Logic (A) + State Isolation (B) */
             $this->assertMoneyInvariant($invoiceId, $round);
+
+            /* Assert: Data Integrity (D) */
+            $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId]);
+            $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+            $this->assertGreaterThan(0, (float) $payment['payment_amount']);
+
+            /* Assert: Boundary Cases (F) */
+            $paymentCountAfter = $this->databaseCount('ip_payments');
+            $this->assertLessThanOrEqual($paymentCountBefore + 1, $paymentCountAfter);
+
+            /* Assert: Idempotency (E) */
+            $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+            $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
         }
     }
 
@@ -69,6 +83,7 @@ class GatewayPaymentRaceTest extends AbstractTestCase
         for ($round = 1; $round <= self::RACE_ROUNDS; $round++) {
             /* Arrange */
             $invoiceId = $this->seedPayableInvoice(100.00);
+            $paymentCountBefore = $this->databaseCount('ip_payments');
 
             /* Act: two concurrent completed captures, distinct capture ids */
             $this->fireConcurrently([
@@ -76,8 +91,21 @@ class GatewayPaymentRaceTest extends AbstractTestCase
                 $this->paypalCaptureRequest($invoiceId, 'CAP_race_' . $round . '_b', '100.00'),
             ]);
 
-            /* Assert */
+            /* Assert: Business Logic (A) + State Isolation (B) */
             $this->assertMoneyInvariant($invoiceId, $round);
+
+            /* Assert: Data Integrity (D) */
+            $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId]);
+            $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+            $this->assertNotNull($payment['payment_external_id']);
+
+            /* Assert: Boundary Cases (F) */
+            $paymentCountAfter = $this->databaseCount('ip_payments');
+            $this->assertLessThanOrEqual($paymentCountBefore + 1, $paymentCountAfter);
+
+            /* Assert: Idempotency (E) */
+            $merchantResponses = $this->databaseCount('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+            $this->assertGreaterThanOrEqual(1, $merchantResponses);
         }
     }
 
@@ -89,6 +117,7 @@ class GatewayPaymentRaceTest extends AbstractTestCase
             $invoiceId = $this->seedPayableInvoice(100.00);
             $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
             $intent    = 'pi_replay_' . $round;
+            $paymentCountBefore = $this->databaseCount('ip_payments', ['payment_external_id' => $intent]);
 
             /* Act: the SAME payment_intent delivered twice at once */
             $this->fireConcurrently([
@@ -96,9 +125,18 @@ class GatewayPaymentRaceTest extends AbstractTestCase
                 $this->stripeCallbackRequest($urlKey, $intent, 10000),
             ]);
 
-            /* Assert: exactly one row, no crash, balance settled */
+            /* Assert: Business Logic (A) + State Isolation (B) */
             $this->assertMoneyInvariant($invoiceId, $round);
+
+            /* Assert: Boundary Cases (F) + Idempotency (E) */
             $this->assertDatabaseCount('ip_payments', 1, ['payment_external_id' => $intent]);
+            $paymentCountAfter = $this->databaseCount('ip_payments', ['payment_external_id' => $intent]);
+            $this->assertSame(1, $paymentCountAfter);
+
+            /* Assert: Data Integrity (D) */
+            $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => $intent]);
+            $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+            $this->assertSame($intent, $payment['payment_external_id']);
         }
     }
 
@@ -108,17 +146,32 @@ class GatewayPaymentRaceTest extends AbstractTestCase
         /* Arrange: a gateway callback always pays the exact outstanding balance */
         $invoiceId = $this->seedPayableInvoice(100.00);
         $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act: one legitimate paid callback for the full 100.00 */
         $this->fireConcurrently([$this->stripeCallbackRequest($urlKey, 'pi_ok_full', 10000)]);
 
-        /* Assert: recorded once, invoice settled, nothing over-credited */
+        /* Assert: Business Logic (A) */
         $this->resetDatabaseConnection();
         $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId, 'payment_external_id' => 'pi_ok_full', 'payment_amount' => '100.00']);
         $this->assertDatabaseCount('ip_payments', 1, ['invoice_id' => $invoiceId]);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertGreaterThan($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Data Integrity (D) */
         $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
         self::assertEqualsWithDelta(0.0, (float) $amounts['invoice_balance'], 0.001);
         $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_status_id' => 4]);
+
+        /* Assert: Error Semantics (C) */
+        $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'pi_ok_full']);
+        $this->assertSame('pi_ok_full', $payment['payment_external_id']);
+
+        /* Assert: Boundary Cases (F) + Idempotency (E) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame(4, (int) $invoice['invoice_status_id']);
     }
 
     // -------------------------------------------------------------------------

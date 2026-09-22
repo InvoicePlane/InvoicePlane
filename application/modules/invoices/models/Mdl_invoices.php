@@ -280,7 +280,7 @@ class Mdl_Invoices extends Response_Model
      * @param int  $target_id
      * @param bool $copy_recurring_items_only
      */
-    public function copy_invoice($source_id, $target_id, $copy_recurring_items_only = false, $service_id = null): void
+    public function copy_invoice($source_id, $target_id, $copy_recurring_items_only = false): void
     {
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoice_tax_rates');
@@ -292,7 +292,7 @@ class Mdl_Invoices extends Response_Model
             'percent'        => $invoice->invoice_discount_percent,
             'item'           => 0.0, // Updated by ref (Need for invoice_item_subtotal calculation in Mdl_invoice_amounts)
             'items_subtotal' => $this->mdl_items->get_items_subtotal($source_id),
-            'service'        => $service_id ?? $invoice->service_id,
+            'service'        => $invoice->service_id,
         ];
         unset($invoice); // Free memory
 
@@ -648,8 +648,10 @@ class Mdl_Invoices extends Response_Model
 
     public function is_paid()
     {
+        $this->db->group_start();
         $this->filter_where('invoice_status_id', 4);
         $this->filter_or_where('invoice_balance', '0.00');
+        $this->db->group_end();
 
         return $this;
     }

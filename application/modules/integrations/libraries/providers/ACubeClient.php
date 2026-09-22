@@ -11,6 +11,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
  */
 class ACubeClient implements IntegrationClientInterface
 {
+    use ProviderPing;
+
     private ?string $accessToken = null;
 
     private array $settings = [];

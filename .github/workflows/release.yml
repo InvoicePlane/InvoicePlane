@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Fetch full history for proper tag management
           fetch-tags: true  # Fetch tags for versioning
@@ -106,7 +106,7 @@ jobs:
 
       # Step 4: Set up Node.js for frontend build
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '20'
           cache: 'yarn'
@@ -438,7 +438,7 @@ jobs:
 
       # Step 8: Upload release artifact
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ip-${{ env.NEW_VERSION }}
           path: |
