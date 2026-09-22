@@ -111,6 +111,13 @@ elsewhere, e.g. outside the document root for additional security:
 SESS_SAVE_PATH=/var/lib/invoiceplane/storage/framework/sessions
 ```
 
+> **Do not leave `SESS_SAVE_PATH` set to an empty value.** An empty `SESS_SAVE_PATH=`
+> line is passed to PHP as an empty `session.save_path`, overriding any value from
+> `php.ini` / `php-fpm.d` / your vhost. Sessions then cannot be written — login fails and
+> the installer stays stuck on `.../setup/language`. Either give it a real absolute path
+> or remove/comment the line entirely so the `sys_get_temp_dir()` fallback applies. On
+> systemd distros avoid `/tmp` (services run with `PrivateTmp=true` and it gets wiped).
+
 If you mount a volume in Docker, include the configured path in your persistent volumes
 (see [Container (Docker) Deployment Instructions](.github/docs/CONTAINER_DEPLOYMENT.md)).
 
