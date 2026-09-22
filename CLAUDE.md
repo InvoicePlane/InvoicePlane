@@ -127,57 +127,71 @@ of tests, the schema build was incomplete: just re-run `make docker-db-prepare
 DOCKER_PROJECT_DIR=…`. (The old recipe used `mysql --force`, which swallowed the deadlock and
 left the columns missing.)
 
-### Bootstrapping `vendor/` in the Claude Code web sandbox
+### Bootstrapping `vendor/` in resource-constrained environments
 
-**IMPORTANT: This only applies to Claude Code on the web (remote sandbox). Local development and CI are unaffected.**
+**Applies to:** Claude Code web sandbox, remote sessions with proxy restrictions, or any environment where `composer install` times out on dev dependencies.
 
-The web sandbox container starts with no `vendor/` and `composer install` fails due to proxy policies blocking `api.github.com` and `codeload.github.com`. Git reaches GitHub through the proxy, but Composer's HTTP **dist** downloads do not. Always use `--prefer-source` (git clones) for all composer operations in the sandbox.
+The environment may have `vendor/` missing or `composer install` fails due to proxy policies blocking `api.github.com` and `codeload.github.com`. Git reaches GitHub through the proxy, but Composer's HTTP **dist** downloads do not. Always use `--prefer-source` (git clones) for all composer operations.
 
-**Standard approach (fails in sandbox):**
+**The Problem:**
 ```bash
-# ❌ DO NOT do this in the web sandbox — it will time out:
+# ❌ This will time out:
 composer install --prefer-source --ignore-platform-req=ext-bcmath
+# Reason: phpstan is a dist-only phar behind blocked hosts, and it's a transitive dev dep
 ```
 
-**Working approach: install runtime deps FIRST, then add dev deps to a throwaway project:**
+**The Working Solution:**
 
 ```bash
-# Setup: create a token-free Composer home (required for --prefer-source to work)
+#!/bin/bash
+set -e
+
 CH=$(mktemp -d)
 printf '{}\n' > "$CH/auth.json"
 printf '{"config":{}}\n' > "$CH/config.json"
 export COMPOSER_HOME="$CH"
 
-# STEP 1: Install runtime dependencies (no dev) — phpstan blocks, so --no-dev avoids it
+# STEP 1: Install runtime dependencies ONLY (no dev)
+# phpstan blocks, so --no-dev avoids it. This completes successfully.
 COMPOSER_HOME="$CH" composer install --prefer-source --no-dev --ignore-platform-req=ext-bcmath
-# This completes successfully, creating vendor/autoload.php
 
-# STEP 2: Install PHPUnit in a throwaway project (not in the main repo)
+# STEP 2: Install PHPUnit in a THROWAWAY project (not in main repo)
+# Installing in isolation is much faster than trying to add to main composer.json
 mkdir -p /tmp/punit
 cd /tmp/punit
-COMPOSER_HOME="$CH" composer require --prefer-source --dev phpunit/phpunit:^10.5 --ignore-platform-req=ext-bcmath
-# Now /tmp/punit/vendor/bin/phpunit exists and can be used
+timeout 300 COMPOSER_HOME="$CH" composer require --prefer-source --dev phpunit/phpunit:^10.5 --ignore-platform-req=ext-bcmath || {
+  echo "Timeout on composer. Trying alternative..."
+  # If composer times out, use the phar directly:
+  # curl -sSL -o /tmp/phpunit.phar https://github.com/phpunit/phpunit/releases/download/10.5.17/phpunit-10.5.17.phar
+  # But: if composer succeeded partially, use what we got
+}
 
 # STEP 3: Re-add Tests\ PSR-4 autoload mapping (step 1's --no-dev removed it)
 cd <repo-root>
 COMPOSER_HOME="$CH" composer dump-autoload --dev
 
-# STEP 4: Run tests using the throwaway project's phpunit
+# STEP 4: Download PHPStan phar (Composer can't install it, but releases download fine via HTTPS)
+curl -sSL -o /tmp/phpstan.phar https://github.com/phpstan/phpstan/releases/download/1.12.34/phpstan.phar
+chmod +x /tmp/phpstan.phar
+
+# STEP 5: Run tools
 php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
+php /tmp/phpstan.phar analyse --memory-limit=1G     # config: phpstan.neon (level 0)
 ```
 
 **Why this works:**
-- `phpstan` (dist-only phar, blocked by proxy) is a transitive dev dep that breaks the full install
-- `--no-dev` skips the phpstan chain, allowing runtime install to complete
+- `--no-dev` skips the phpstan dep chain, allowing runtime install to complete
 - PHPUnit installs faster in isolation (throwaway project)
 - `dump-autoload --dev` re-adds the Tests\ PSR-4 mapping that step 1 dropped
+- PHPStan phar downloads fine via HTTPS (plain releases, not dist zips)
 - The throwaway project's phpunit binary can run tests against the main repo
 
 **Critical gotchas:**
-1. `--no-dev` omits the `Tests\` PSR-4 mapping, so step 3 (`dump-autoload --dev`) is **mandatory**
+1. `--no-dev` omits the `Tests\` PSR-4 mapping, so `composer dump-autoload --dev` is **mandatory**
 2. Do **not** put a real GitHub token in `auth.json` — the proxy won't rewrite it
 3. Do **not** export `DB_*` environment variables before running phpunit — see the MariaDB section below for why
 4. Each session requires this full setup; there is no persistent vendor cache
+5. If composer times out on throwaway phpunit, fall back to downloading the phar directly
 
 ### MariaDB test database in the sandbox (Feature/Integration tests)
 
