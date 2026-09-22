@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Integrations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -26,7 +27,7 @@ use Tests\AbstractTestCase;
  * restored it until now.
  */
 #[Group('integrations')]
-#[CoversClass(\Integrations::class)]
+#[CoversClass(Integrations::class)]
 class IntegrationsControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

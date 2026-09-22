@@ -47,10 +47,10 @@ class GatewayPaymentRaceTest extends AbstractTestCase
     {
         for ($round = 1; $round <= self::RACE_ROUNDS; $round++) {
             /* Arrange: a fresh, fully-payable 100.00 invoice each round */
-            $invoiceId = $this->seedPayableInvoice(100.00);
-            $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
-            $intentA   = 'pi_race_' . $round . '_a';
-            $intentB   = 'pi_race_' . $round . '_b';
+            $invoiceId          = $this->seedPayableInvoice(100.00);
+            $urlKey             = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+            $intentA            = 'pi_race_' . $round . '_a';
+            $intentB            = 'pi_race_' . $round . '_b';
             $paymentCountBefore = $this->databaseCount('ip_payments');
 
             /* Act: two genuinely concurrent paid callbacks, distinct payment_intents */
@@ -82,7 +82,7 @@ class GatewayPaymentRaceTest extends AbstractTestCase
     {
         for ($round = 1; $round <= self::RACE_ROUNDS; $round++) {
             /* Arrange */
-            $invoiceId = $this->seedPayableInvoice(100.00);
+            $invoiceId          = $this->seedPayableInvoice(100.00);
             $paymentCountBefore = $this->databaseCount('ip_payments');
 
             /* Act: two concurrent completed captures, distinct capture ids */
@@ -114,9 +114,9 @@ class GatewayPaymentRaceTest extends AbstractTestCase
     {
         for ($round = 1; $round <= self::RACE_ROUNDS; $round++) {
             /* Arrange */
-            $invoiceId = $this->seedPayableInvoice(100.00);
-            $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
-            $intent    = 'pi_replay_' . $round;
+            $invoiceId          = $this->seedPayableInvoice(100.00);
+            $urlKey             = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+            $intent             = 'pi_replay_' . $round;
             $paymentCountBefore = $this->databaseCount('ip_payments', ['payment_external_id' => $intent]);
 
             /* Act: the SAME payment_intent delivered twice at once */
@@ -144,8 +144,8 @@ class GatewayPaymentRaceTest extends AbstractTestCase
     public function it_still_records_a_single_full_balance_payment(): void
     {
         /* Arrange: a gateway callback always pays the exact outstanding balance */
-        $invoiceId = $this->seedPayableInvoice(100.00);
-        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $invoiceId          = $this->seedPayableInvoice(100.00);
+        $urlKey             = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act: one legitimate paid callback for the full 100.00 */
@@ -172,6 +172,46 @@ class GatewayPaymentRaceTest extends AbstractTestCase
         /* Assert: Boundary Cases (F) + Idempotency (E) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
         $this->assertSame(4, (int) $invoice['invoice_status_id']);
+    }
+
+    /**
+     * A guest-visible invoice with one line item worth $balance, so that
+     * Mdl_invoice_amounts::calculate() (run by the payment save) recomputes
+     * invoice_total / invoice_balance to real figures instead of zero.
+     */
+    protected function seedPayableInvoice(float $balance): int
+    {
+        $money     = number_format($balance, 2, '.', '');
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice(
+            $clientId,
+            ['invoice_status_id' => 2],
+            [
+                'invoice_total'         => $money,
+                'invoice_balance'       => $money,
+                'invoice_item_subtotal' => $money,
+            ],
+        );
+
+        $itemId = $this->databaseInsert('ip_invoice_items', [
+            'invoice_id'       => $invoiceId,
+            'item_tax_rate_id' => 0,
+            'item_date_added'  => date('Y-m-d'),
+            'item_name'        => 'Race test item',
+            'item_quantity'    => '1.00',
+            'item_price'       => $money,
+            'item_order'       => 1,
+        ]);
+
+        $this->databaseInsert('ip_invoice_item_amounts', [
+            'item_id'        => $itemId,
+            'item_subtotal'  => $money,
+            'item_tax_total' => '0.00',
+            'item_discount'  => '0.00',
+            'item_total'     => $money,
+        ]);
+
+        return $invoiceId;
     }
 
     // -------------------------------------------------------------------------
@@ -298,45 +338,5 @@ class GatewayPaymentRaceTest extends AbstractTestCase
             'uri'    => '/guest/gateways/paypal/paypal_capture_payment/ORDER-' . $captureId,
             'env'    => ['PAYPAL_MOCK_RESPONSES' => json_encode([$auth, $capture])],
         ];
-    }
-
-    /**
-     * A guest-visible invoice with one line item worth $balance, so that
-     * Mdl_invoice_amounts::calculate() (run by the payment save) recomputes
-     * invoice_total / invoice_balance to real figures instead of zero.
-     */
-    protected function seedPayableInvoice(float $balance): int
-    {
-        $money     = number_format($balance, 2, '.', '');
-        $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice(
-            $clientId,
-            ['invoice_status_id' => 2],
-            [
-                'invoice_total'         => $money,
-                'invoice_balance'       => $money,
-                'invoice_item_subtotal' => $money,
-            ],
-        );
-
-        $itemId = $this->databaseInsert('ip_invoice_items', [
-            'invoice_id'       => $invoiceId,
-            'item_tax_rate_id' => 0,
-            'item_date_added'  => date('Y-m-d'),
-            'item_name'        => 'Race test item',
-            'item_quantity'    => '1.00',
-            'item_price'       => $money,
-            'item_order'       => 1,
-        ]);
-
-        $this->databaseInsert('ip_invoice_item_amounts', [
-            'item_id'        => $itemId,
-            'item_subtotal'  => $money,
-            'item_tax_total' => '0.00',
-            'item_discount'  => '0.00',
-            'item_total'     => $money,
-        ]);
-
-        return $invoiceId;
     }
 }

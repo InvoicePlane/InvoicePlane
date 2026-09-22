@@ -4,6 +4,7 @@ namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Reports;
 use Tests\AbstractTestCase;
 use Tests\Integration\Support\HttpResponse;
 
@@ -16,7 +17,7 @@ use Tests\Integration\Support\HttpResponse;
  * rows, and that generating a report never writes to the tables it reads.
  */
 #[Group('reports')]
-#[CoversClass(\Reports::class)]
+#[CoversClass(Reports::class)]
 class ReportsControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

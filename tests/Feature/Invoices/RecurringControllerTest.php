@@ -4,6 +4,7 @@ namespace Tests\Feature\Invoices;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Recurring;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
 
@@ -19,7 +20,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * Issue1694RecurringInvoiceDeleteCsrfTest.
  */
 #[Group('invoices')]
-#[CoversClass(\Recurring::class)]
+#[CoversClass(Recurring::class)]
 class RecurringControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

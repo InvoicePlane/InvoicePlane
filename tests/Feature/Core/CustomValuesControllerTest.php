@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Custom_Values;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -19,7 +20,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * Absorbs Issue1694CustomValuesDeleteCsrfTest.
  */
 #[Group('custom_values')]
-#[CoversClass(\Custom_Values::class)]
+#[CoversClass(Custom_Values::class)]
 class CustomValuesControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

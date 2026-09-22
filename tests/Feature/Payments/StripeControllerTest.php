@@ -104,7 +104,7 @@ class StripeControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $this->actingAsGuest();
-        $clientId = $this->seedClient();
+        $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
         $this->seedPayment($invoiceId);
         $paymentCountBefore = $this->databaseCount('ip_payments');

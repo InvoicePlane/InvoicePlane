@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -12,7 +13,7 @@ use Tests\AbstractTestCase;
  * send_invoice()/send_quote() cancel-button early exit, which runs before
  * the guard and must work even when mail is unconfigured.
  */
-#[CoversClass(\Ajax::class)]
+#[CoversClass(Ajax::class)]
 class MailerAjaxControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

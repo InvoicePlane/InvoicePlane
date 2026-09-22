@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Invoices;
 
+use Invoices;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
-use Tests\Concerns\InteractsWithDatabase;
 
 /**
  * Guest invoice listing visibility — application/modules/guest/controllers/Invoices.php.
@@ -16,11 +16,13 @@ use Tests\Concerns\InteractsWithDatabase;
  * guest's client restrictions (CWE-639 / CWE-862).
  */
 #[Group('guest')]
-#[CoversClass(\Invoices::class)]
+#[CoversClass(Invoices::class)]
 class GuestInvoiceVisibilityTest extends AbstractTestCase
 {
     private int $clientA;
+
     private int $clientB;
+
     private int $guestAccountId;
 
     protected function setUp(): void
@@ -162,10 +164,10 @@ class GuestInvoiceVisibilityTest extends AbstractTestCase
     protected function seedClient(array $overrides = []): int
     {
         return $this->databaseInsert('ip_clients', array_merge([
-            'user_id'             => 1,
-            'client_name'         => 'Test Client ' . bin2hex(random_bytes(3)),
-            'client_active'       => 1,
-            'client_date_created' => date('Y-m-d H:i:s'),
+            'user_id'              => 1,
+            'client_name'          => 'Test Client ' . bin2hex(random_bytes(3)),
+            'client_active'        => 1,
+            'client_date_created'  => date('Y-m-d H:i:s'),
             'client_date_modified' => date('Y-m-d H:i:s'),
         ], $overrides));
     }

@@ -4,6 +4,7 @@ namespace Tests\Feature\Projects;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Projects;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
 
@@ -15,7 +16,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * TaskDeletionValidationFeatureTest's orphan-on-delete assertion.
  */
 #[Group('projects')]
-#[CoversClass(\Projects::class)]
+#[CoversClass(Projects::class)]
 class ProjectsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

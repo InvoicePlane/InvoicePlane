@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Layout;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -11,7 +12,7 @@ use Tests\AbstractTestCase;
  *
  * Tests that the dashboard renders a full HTML page for authenticated admins.
  */
-#[CoversClass(\Layout::class)]
+#[CoversClass(Layout::class)]
 class LayoutControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

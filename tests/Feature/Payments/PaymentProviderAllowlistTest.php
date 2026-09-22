@@ -82,7 +82,7 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     public function it_returns_404_for_an_unknown_payment_provider_segment(): void
     {
         /* Arrange */
-        $unknownProvider = 'malicious_method';
+        $unknownProvider             = 'malicious_method';
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
@@ -119,7 +119,7 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     public function it_returns_404_for_an_internal_controller_method_name_as_provider(): void
     {
         /* Arrange */
-        $internalMethod = 'index';
+        $internalMethod              = 'index';
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
@@ -156,7 +156,7 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     public function it_returns_404_for_a_path_traversal_attempt_as_provider(): void
     {
         /* Arrange */
-        $traversal = '__construct';
+        $traversal                   = '__construct';
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */

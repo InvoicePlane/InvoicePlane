@@ -476,38 +476,6 @@ class SuperPdpFlowTest extends AbstractTestCase
         ]);
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
-
-    /**
-     * The full settings/save POST body the edit form submits for a SuperPDP
-     * provider. IntegrationSettingsForm::collect() requires every field marked
-     * required in SuperPdpClient::settingsSchema() except the sensitive
-     * client_secret (reused from the stored blob when blank), so every save
-     * carries the whole set.
-     *
-     * @param array<string, string> $overrides
-     *
-     * @return array<string, string>
-     */
-    private function superPdpSettingsPayload(array $overrides = []): array
-    {
-        return array_merge([
-            'label'                      => 'SuperPDP',
-            'enabled'                    => '0',
-            'auth_type'                  => 'oauth2',
-            'client_id'                  => 'sp-client-id',
-            'token_url'                  => 'https://api.superpdp.tech/oauth2/token',
-            'api_base_url'               => 'https://api.superpdp.tech',
-            'invoice_endpoint'           => '/v1.beta/invoices',
-            'invoice_status_endpoint'    => '/v1.beta/invoices/{id}',
-            'incoming_invoices_endpoint' => '/v1.beta/invoices',
-            'incoming_document_endpoint' => '/v1.beta/invoices/{id}/document',
-            'invoice_events_endpoint'    => '/v1.beta/invoice_events',
-        ], $overrides);
-    }
-
     /**
      * Insert a SuperPDP merchant client with an explicit id so lookups by id
      * work in the HTTP subprocess regardless of the DB's auto-increment
@@ -573,5 +541,37 @@ class SuperPdpFlowTest extends AbstractTestCase
             'http_code'                    => 201,
             'created_at'                   => date('Y-m-d H:i:s'),
         ], $overrides));
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * The full settings/save POST body the edit form submits for a SuperPDP
+     * provider. IntegrationSettingsForm::collect() requires every field marked
+     * required in SuperPdpClient::settingsSchema() except the sensitive
+     * client_secret (reused from the stored blob when blank), so every save
+     * carries the whole set.
+     *
+     * @param array<string, string> $overrides
+     *
+     * @return array<string, string>
+     */
+    private function superPdpSettingsPayload(array $overrides = []): array
+    {
+        return array_merge([
+            'label'                      => 'SuperPDP',
+            'enabled'                    => '0',
+            'auth_type'                  => 'oauth2',
+            'client_id'                  => 'sp-client-id',
+            'token_url'                  => 'https://api.superpdp.tech/oauth2/token',
+            'api_base_url'               => 'https://api.superpdp.tech',
+            'invoice_endpoint'           => '/v1.beta/invoices',
+            'invoice_status_endpoint'    => '/v1.beta/invoices/{id}',
+            'incoming_invoices_endpoint' => '/v1.beta/invoices',
+            'incoming_document_endpoint' => '/v1.beta/invoices/{id}/document',
+            'invoice_events_endpoint'    => '/v1.beta/invoice_events',
+        ], $overrides);
     }
 }
