@@ -34,6 +34,11 @@ trait InteractsWithDatabase
         self::$testDb = null;
     }
 
+    protected function database(): PDO
+    {
+        return $this->db();
+    }
+
     protected function databaseInsert(string $table, array $row): int
     {
         $db = $this->db();
@@ -56,6 +61,11 @@ trait InteractsWithDatabase
         }
 
         return (int) $db->lastInsertId();
+    }
+
+    protected function databaseInsertGetId(string $table, array $row): int
+    {
+        return $this->databaseInsert($table, $row);
     }
 
     protected function databaseInsertOrIgnore(string $table, array $row): void
@@ -242,7 +252,7 @@ trait InteractsWithDatabase
         );
     }
 
-    protected function assertDatabaseCount(string $table, int $expected, array $conditions = []): void
+    protected function databaseCount(string $table, array $conditions = []): int
     {
         $db     = $this->db();
         $params = [];
@@ -259,9 +269,13 @@ trait InteractsWithDatabase
 
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
-        $count = (int) $stmt->fetchColumn();
 
-        static::assertSame($expected, $count);
+        return (int) $stmt->fetchColumn();
+    }
+
+    protected function assertDatabaseCount(string $table, int $expected, array $conditions = []): void
+    {
+        static::assertSame($expected, $this->databaseCount($table, $conditions));
     }
 
     protected function seedClient(array $overrides = []): int
