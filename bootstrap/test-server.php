@@ -1,19 +1,15 @@
 <?php
 
 /**
- * Front-controller router for PHP's built-in web server, used by
- * playwright.config.js's `webServer` to serve InvoicePlane during E2E runs:
+ * Unified test server for E2E testing.
  *
- *   php -S 127.0.0.1:8000 -t . tests/E2E/router.php
+ * Front-controller for PHP's built-in web server, used by Playwright:
+ *   php -S 127.0.0.1:8000 -t . bootstrap/test-server.php
  *
- * `php -S` serves files that exist on disk itself and only falls through to
- * this router for everything else. Real asset requests (assets/, uploads/,
- * favicon, ...) are returned as-is; every other path is dispatched through
- * public/index.php with a normalised REQUEST_URI so that both `/sessions/login`
- * and `/index.php/sessions/login` resolve regardless of the REMOVE_INDEXPHP
- * setting.
+ * Serves static files directly; routes all other requests through public/index.php
+ * with normalized REQUEST_URI so clean URLs work in tests.
  */
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__);
 $uri  = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 
 // Let the built-in server return static files that actually exist on disk,
