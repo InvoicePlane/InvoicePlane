@@ -276,11 +276,11 @@ class CronRemindersFeatureTest extends AbstractTestCase
     protected function seedSimpleInvoice(array $overrides = []): array
     {
         $clientId = $this->databaseInsertGetId('ip_clients', [
-            'user_id'           => 1,
-            'client_name'       => 'Test Client',
-            'client_email'      => 'test@example.com',
-            'client_active'     => 1,
-            'client_date_created' => date('Y-m-d H:i:s'),
+            'user_id'              => 1,
+            'client_name'          => 'Test Client',
+            'client_email'         => 'test@example.com',
+            'client_active'        => 1,
+            'client_date_created'  => date('Y-m-d H:i:s'),
             'client_date_modified' => date('Y-m-d H:i:s'),
         ]);
 
