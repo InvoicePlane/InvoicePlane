@@ -3,7 +3,9 @@
 define('CI_TESTING', true);
 define('CI_INTEGRATION_TESTING', true);
 
-require_once dirname(__DIR__) . '/bootstrap/kernel.php';
+$basePath = dirname(__DIR__);
+
+require_once $basePath . '/bootstrap/kernel.php';
 
 // Isolated unit tests load application libraries without the CodeIgniter
 // request lifecycle. Keep application logging calls harmless in that context.
