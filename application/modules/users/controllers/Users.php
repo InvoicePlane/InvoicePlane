@@ -250,6 +250,18 @@ class Users extends Admin_Controller
             return;
         }
 
+        $current_user_id = (int) $this->session->userdata('user_id');
+
+        // Object-level authorization: only the primary administrator may delete
+        // another user's account. A peer administrator is limited to its own
+        // account, so it cannot delete other admin accounts through this endpoint
+        // (CWE-862 / CWE-269).
+        if ( ! Mdl_Users::is_primary_administrator($current_user_id)) {
+            show_error(trans('access_denied'), 403);
+
+            return;
+        }
+
         if ( ! Mdl_Users::is_primary_administrator($id)) {
             $this->mdl_users->delete($id);
         }
