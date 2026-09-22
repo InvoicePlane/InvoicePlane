@@ -203,11 +203,14 @@ class MailerControllerTest extends AbstractTestCase
     protected function seedQuote(int $clientId): int
     {
         return $this->databaseInsertGetId('ip_quotes', [
+            'user_id'            => 1,
             'client_id'          => $clientId,
+            'invoice_group_id'   => 1,
             'quote_number'       => 'Q-' . bin2hex(random_bytes(4)),
+            'quote_url_key'      => bin2hex(random_bytes(16)),
             'quote_date_created' => date('Y-m-d'),
+            'quote_date_modified' => date('Y-m-d H:i:s'),
             'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-            'quote_amount'       => 1000,
             'quote_status_id'    => 1,
         ]);
     }

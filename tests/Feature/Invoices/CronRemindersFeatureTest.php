@@ -275,18 +275,22 @@ class CronRemindersFeatureTest extends AbstractTestCase
      */
     protected function seedSimpleInvoice(array $overrides = []): array
     {
-        $clientId = $this->database()->table('ip_clients')->insertGetId([
-            'client_name'   => 'Test Client',
-            'client_email'  => 'test@example.com',
-            'client_active' => 1,
+        $clientId = $this->databaseInsertGetId('ip_clients', [
+            'user_id'           => 1,
+            'client_name'       => 'Test Client',
+            'client_email'      => 'test@example.com',
+            'client_active'     => 1,
+            'client_date_created' => date('Y-m-d H:i:s'),
+            'client_date_modified' => date('Y-m-d H:i:s'),
         ]);
 
-        $invoiceId = $this->database()->table('ip_invoices')->insertGetId(array_merge([
+        $invoiceId = $this->databaseInsertGetId('ip_invoices', array_merge([
+            'user_id'                   => 1,
             'client_id'                 => $clientId,
             'invoice_number'            => '001',
             'invoice_status_id'         => 1,
-            'invoice_amount'            => 1000,
             'invoice_date_created'      => date('Y-m-d'),
+            'invoice_date_modified'     => date('Y-m-d H:i:s'),
             'invoice_date_due'          => date('Y-m-d', strtotime('+30 days')),
             'invoice_group_id'          => 1,
             'invoice_url_key'           => bin2hex(random_bytes(16)),
