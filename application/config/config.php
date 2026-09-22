@@ -435,11 +435,11 @@ $config['encryption_key']    = env('ENCRYPTION_KEY');
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver']             = env('SESS_DRIVER', 'files');
-$config['sess_table_name']         = env('SESS_TABLE_NAME', 'ip_sessions');
-$config['sess_cookie_name']        = env('SESS_COOKIE_NAME', 'ip_session');
-$config['sess_expiration']         = env('SESS_EXPIRATION', 864000);
-$config['sess_save_path']          = env('SESS_SAVE_PATH', sys_get_temp_dir());
+$config['sess_driver']      = env('SESS_DRIVER', 'files');
+$config['sess_table_name']  = env('SESS_TABLE_NAME', 'ip_sessions');
+$config['sess_cookie_name'] = env('SESS_COOKIE_NAME', 'ip_session');
+$config['sess_expiration']  = env('SESS_EXPIRATION', 864000);
+$config['sess_save_path']   = env('SESS_SAVE_PATH', sys_get_temp_dir());
 // env() returns a set-but-empty ipconfig value ('SESS_SAVE_PATH=') as "" instead
 // of applying the default. Treat empty / whitespace-only the same as unset, or
 // CI's Session_files_driver forces session.save_path to '' (clobbering php.ini /
