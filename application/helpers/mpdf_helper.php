@@ -207,7 +207,8 @@ function pdf_create(
             return $invoice_array[0];
         }
 
-        $archived_file = UPLOADS_ARCHIVE_FOLDER . date('Y-m-d') . '_' . $filename . '.pdf';
+        $random_token  = bin2hex(random_bytes(16));
+        $archived_file = UPLOADS_ARCHIVE_FOLDER . $random_token . '.pdf';
         $mpdf->Output($archived_file, 'F');
 
         if ($stream) {
