@@ -252,7 +252,7 @@ class CsrfMutationParityTest extends AbstractTestCase
         self::assertSame($before, $after, 'The password hash must be untouched.');
     }
 
-    private function seedSecondaryUser(): int
+    protected function seedSecondaryUser(): int
     {
         // Delegate to the shared seedModel() row-builder instead of
         // duplicating its ip_users defaults here; only the type differs.

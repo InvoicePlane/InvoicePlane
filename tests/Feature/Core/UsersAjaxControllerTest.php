@@ -128,7 +128,7 @@ class UsersAjaxControllerTest extends AbstractTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
-    private function seedClient(array $overrides = []): int
+    protected function seedClient(array $overrides = []): int
     {
         return $this->databaseInsert('ip_clients', array_merge([
             'user_id'             => 1,

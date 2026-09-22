@@ -300,7 +300,7 @@ class TasksControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedTask(array $overrides = []): int
+    protected function seedTask(array $overrides = []): int
     {
         return $this->databaseInsert('ip_tasks', array_merge([
             'task_name'        => 'Seeded Task',

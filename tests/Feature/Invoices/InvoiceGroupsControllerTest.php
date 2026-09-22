@@ -337,7 +337,7 @@ class InvoiceGroupsControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,string> $overrides */
-    private function seedGroup(array $overrides = []): int
+    protected function seedGroup(array $overrides = []): int
     {
         return $this->databaseInsert('ip_invoice_groups', array_merge([
             'invoice_group_name'              => 'Seeded Group',

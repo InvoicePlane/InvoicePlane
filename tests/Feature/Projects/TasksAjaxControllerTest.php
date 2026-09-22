@@ -61,7 +61,7 @@ class TasksAjaxControllerTest extends AbstractTestCase
         self::assertSame('', $response->body());
     }
 
-    private function seedProjectAndTask(array $overrides = []): array
+    protected function seedProjectAndTask(array $overrides = []): array
     {
         $clientId  = $this->seedClient();
         $projectId = $this->databaseInsert('ip_projects', ['client_id' => $clientId, 'project_name' => 'Task Lookup Project']);

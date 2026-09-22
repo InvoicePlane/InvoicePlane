@@ -579,7 +579,7 @@ class PaypalFlowTest extends AbstractTestCase
         return ['status' => 200, 'body' => json_encode(['access_token' => 'fake-bearer-token'])];
     }
 
-    private function seedPayableInvoice(array $overrides = [], array $amountOverrides = []): int
+    protected function seedPayableInvoice(array $overrides = [], array $amountOverrides = []): int
     {
         $clientId = $this->seedClient();
 

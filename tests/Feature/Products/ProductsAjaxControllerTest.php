@@ -95,7 +95,7 @@ class ProductsAjaxControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'Not Selected Product');
     }
 
-    private function seedProduct(array $overrides = []): int
+    protected function seedProduct(array $overrides = []): int
     {
         return $this->databaseInsert('ip_products', array_merge([
             'family_id'           => 0,

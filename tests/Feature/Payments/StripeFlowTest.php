@@ -592,7 +592,7 @@ class StripeFlowTest extends AbstractTestCase
         $this->withEnvironment(['STRIPE_MOCK_RESPONSES' => json_encode($responses)]);
     }
 
-    private function seedPayableInvoice(array $overrides = [], array $amountOverrides = []): int
+    protected function seedPayableInvoice(array $overrides = [], array $amountOverrides = []): int
     {
         $clientId = $this->seedClient();
 

@@ -293,7 +293,7 @@ class CustomFieldsControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedField(array $overrides = []): int
+    protected function seedField(array $overrides = []): int
     {
         return $this->databaseInsert('ip_custom_fields', array_merge([
             'custom_field_table' => 'ip_client_custom',

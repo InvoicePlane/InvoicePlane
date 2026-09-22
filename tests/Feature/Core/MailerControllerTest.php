@@ -199,7 +199,7 @@ class MailerControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'INV-MAIL-SECRET');
     }
 
-    private function seedQuote(int $clientId): int
+    protected function seedQuote(int $clientId): int
     {
         return $this->databaseInsertGetId('ip_quotes', [
             'client_id'         => $clientId,

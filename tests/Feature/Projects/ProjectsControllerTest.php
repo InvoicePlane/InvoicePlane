@@ -239,7 +239,7 @@ class ProjectsControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedProject(array $overrides = []): int
+    protected function seedProject(array $overrides = []): int
     {
         return $this->databaseInsert('ip_projects', array_merge([
             'project_name' => 'Seeded Project',
@@ -248,7 +248,7 @@ class ProjectsControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedTask(array $overrides = []): int
+    protected function seedTask(array $overrides = []): int
     {
         return $this->databaseInsert('ip_tasks', array_merge([
             'task_name'        => 'Seeded Task',

@@ -206,7 +206,7 @@ class RecurringControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'INV-REC-SECRET');
     }
 
-    private function seedRecurring(?int $invoiceId = null, array $overrides = []): int
+    protected function seedRecurring(?int $invoiceId = null, array $overrides = []): int
     {
         $invoiceId ??= $this->seedInvoice($this->seedClient());
 

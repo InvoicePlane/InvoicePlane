@@ -511,7 +511,7 @@ class QontoFlowTest extends AbstractTestCase
      *
      * @param array<string, mixed> $overrides
      */
-    private function seedQontoClient(array $overrides = []): int
+    protected function seedQontoClient(array $overrides = []): int
     {
         $id = array_key_exists('id', $overrides) ? $overrides['id'] : random_int(10000, 59999);
 
@@ -538,7 +538,7 @@ class QontoFlowTest extends AbstractTestCase
         return $id;
     }
 
-    private function seedOtherProvider(int $id, array $overrides = []): void
+    protected function seedOtherProvider(int $id, array $overrides = []): void
     {
         $this->databaseInsert('ip_merchant_clients', array_merge([
             'id'            => $id,
@@ -552,7 +552,7 @@ class QontoFlowTest extends AbstractTestCase
         ], $overrides));
     }
 
-    private function seedOutboundResponse(int $invoiceId, int $merchantClientId, array $overrides = []): int
+    protected function seedOutboundResponse(int $invoiceId, int $merchantClientId, array $overrides = []): int
     {
         return $this->databaseInsert('ip_merchant_responses', array_merge([
             'invoice_id'                   => $invoiceId,

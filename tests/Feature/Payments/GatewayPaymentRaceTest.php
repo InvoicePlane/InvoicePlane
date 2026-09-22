@@ -305,7 +305,7 @@ class GatewayPaymentRaceTest extends AbstractTestCase
      * Mdl_invoice_amounts::calculate() (run by the payment save) recomputes
      * invoice_total / invoice_balance to real figures instead of zero.
      */
-    private function seedPayableInvoice(float $balance): int
+    protected function seedPayableInvoice(float $balance): int
     {
         $money     = number_format($balance, 2, '.', '');
         $clientId  = $this->seedClient();
