@@ -109,6 +109,20 @@ class Ajax extends Admin_Controller
         $user_id   = $this->input->post('user_id');
         $client_id = $this->input->post('client_id');
 
+        // Object-level authorization: only the primary administrator may assign
+        // clients to other users. A peer administrator is limited to their own
+        // account (CWE-862 / CWE-269).
+        if ( ! empty($user_id)) {
+            $current_user_id = (int) $this->session->userdata('user_id');
+            $target_user_id  = (int) $user_id;
+
+            if ($target_user_id !== $current_user_id && ! Mdl_Users::is_primary_administrator($current_user_id)) {
+                show_error(trans('access_denied'), 403);
+
+                return;
+            }
+        }
+
         $this->load->model('clients/mdl_clients');
         $this->load->model('users/mdl_user_clients');
 
