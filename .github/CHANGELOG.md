@@ -14,6 +14,14 @@ record *why* and *how*.
 
 ## [Unreleased]
 
+### Security fixes
+
+- **Object-level authorization missing in `Users::delete()` — peer admins could delete other admins (CWE-639 / CWE-269):** The `Users::delete()` endpoint validated that the *target* user was not the primary administrator, but did not check whether the *acting* user had permission to delete another user's account. A secondary administrator (`user_type=1`, `user_id != 1`) could delete other administrator accounts. The fix adds an `is_primary_administrator()` authorization guard consistent with `form()` and `change_password()`, allowing only the primary admin to delete other users. Sessions are invalidated on delete for immediate privilege revocation. [#1713](https://github.com/InvoicePlane/InvoicePlane/pull/1713)
+
+- **Object-level authorization missing in `Users/Ajax::save_user_client()` — peer admins could assign clients to any user (CWE-862 / CWE-269):** The AJAX endpoint that assigns clients to users lacked authorization checks, allowing any authenticated user to modify another user's client assignments without permission. A secondary administrator could reassign another user's clients, disrupting data isolation. The fix adds the same authorization pattern as the main Users controller: only the primary admin may assign clients to other users; regular users may only modify their own client list. [#1714](https://github.com/InvoicePlane/InvoicePlane/pull/1714)
+
+- **SQL operator precedence vulnerability in guest invoice listing — ungrouped OR filters escape client scoping (CWE-639 / CWE-862):** The `Mdl_invoices::is_paid()` method uses an ungrouped `filter_or_where()` condition that, when combined with the guest controller's client-scoping `where_in()`, allows the OR to bind more tightly than the AND, leaking invoices from other clients. The SQL evaluates as `WHERE status=4 OR (balance='0.00' AND client_id IN (...))` instead of the intended `WHERE (status=4 OR balance='0.00') AND client_id IN (...)`. Guest users can enumerate invoices from other clients by exploiting the zero-balance or paid-status conditions. The fix wraps both conditions in `group_start()/group_end()` to enforce correct precedence. **CVSS 5.3** (Medium — Unauthorized Information Disclosure). [#1715](https://github.com/InvoicePlane/InvoicePlane/pull/1715)
+
 ### Bug fixes
 
 - **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just
