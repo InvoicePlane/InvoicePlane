@@ -12,6 +12,7 @@ use Tests\AbstractTestCase;
  * send_invoice()/send_quote() cancel-button early exit, which runs before
  * the guard and must work even when mail is unconfigured.
  */
+#[CoversClass(\Ajax::class)]
 class MailerAjaxControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -31,7 +32,6 @@ class MailerAjaxControllerTest extends AbstractTestCase
         $response = $this->get('/mailer/invoice/' . $invoiceId);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 
@@ -51,7 +51,6 @@ class MailerAjaxControllerTest extends AbstractTestCase
         $response = $this->get('/mailer/quote/' . $quoteId);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 

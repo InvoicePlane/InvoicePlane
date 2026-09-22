@@ -136,8 +136,67 @@ CREATE INDEX IF NOT EXISTS `idx_event_dedup`              ON `ip_merchant_respon
 
 
 -- ---------------------------------------------------------
--- All response logging now goes through ip_merchant_responses.
+-- All response logging now goes through ip_merchant_responses. Fold any rows
+-- from the superseded table across before it is dropped so no provider audit
+-- trail is lost. ip_einvoice_responses only ever existed on a development
+-- install that ran the old standalone `einvoice` module's own migration — a
+-- released database never had it. The guarded CREATE keeps this consolidated
+-- migration re-runnable: on a database that never had the table it makes an
+-- empty one, the fold copies nothing, and the DROP removes it again.
+-- request_json / response_json / status / timestamps are carried across in
+-- raw_payload; no rows are discarded.
 -- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ip_einvoice_responses` (
+  `id`                 INT AUTO_INCREMENT PRIMARY KEY,
+  `merchant_client_id` INT NOT NULL,
+  `direction`          ENUM('out','in') NOT NULL DEFAULT 'out',
+  `record_type`        VARCHAR(50) NOT NULL DEFAULT 'outbound_status',
+  `invoice_id`         INT NULL,
+  `external_id`        VARCHAR(255) NULL,
+  `status`             VARCHAR(50) DEFAULT 'draft',
+  `message`            TEXT NULL,
+  `http_code`          INT NULL,
+  `request_json`       LONGTEXT NULL,
+  `response_json`      LONGTEXT NULL,
+  `created_at`         DATETIME NULL,
+  `updated_at`         DATETIME NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `ip_merchant_responses`
+  (`invoice_id`, `merchant_client_id`, `direction`, `record_type`, `status`,
+   `http_code`, `merchant_response_date`, `merchant_response_driver`,
+   `merchant_response`, `merchant_response_reference`,
+   `merchant_response_successful`, `created_at`, `raw_payload`)
+SELECT
+  `e`.`invoice_id`,
+  `e`.`merchant_client_id`,
+  `e`.`direction`,
+  `e`.`record_type`,
+  `e`.`status`,
+  `e`.`http_code`,
+  DATE(COALESCE(`e`.`created_at`, UTC_TIMESTAMP())),
+  LEFT(COALESCE(`mc`.`merchant_type`, 'einvoice'), 35),
+  LEFT(COALESCE(`e`.`message`, ''), 255),
+  COALESCE(`e`.`external_id`, ''),
+  CASE LOWER(`e`.`status`)
+    WHEN 'error'    THEN 0
+    WHEN 'failed'   THEN 0
+    WHEN 'rejected' THEN 0
+    WHEN 'sent'     THEN 1
+    WHEN 'accepted' THEN 1
+    WHEN 'received' THEN 1
+    ELSE NULL
+  END,
+  `e`.`created_at`,
+  CONCAT(
+    '{"folded_from":"ip_einvoice_responses","request":', COALESCE(`e`.`request_json`, 'null'),
+    ',"response":', COALESCE(`e`.`response_json`, 'null'),
+    ',"updated_at":', IF(`e`.`updated_at` IS NULL, 'null', CONCAT('"', `e`.`updated_at`, '"')),
+    '}'
+  )
+FROM `ip_einvoice_responses` `e`
+LEFT JOIN `ip_merchant_clients` `mc` ON `mc`.`id` = `e`.`merchant_client_id`;
+
 DROP TABLE IF EXISTS `ip_einvoice_responses`;
 
 

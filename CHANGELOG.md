@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Log injection via password-reset token/email | Low | 3.7 | CWE-117 | — | Internal audit | #1567 |
 | Open redirect via raw `$_SERVER['HTTP_REFERER']` | Medium | 6.1 | CWE-601 | — | Internal audit | #1567 |
 | Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | #1567 |
+| Stored XSS via `currency_symbol` on public invoice/quote pages | Medium | 4.3 | CWE-79 | — | [@crypto-nidh](https://github.com/crypto-nidh) | — |
 
 ---
 
@@ -202,6 +203,57 @@ site.
 
 **Affected Versions:** All InvoicePlane versions prior to this fix  
 **Recommended Action:** Upgrade
+
+---
+
+**MEDIUM: Fixed Stored XSS via `currency_symbol` on the public invoice/quote pages — CWE-79**
+
+The `currency_symbol` application setting was stored verbatim and rendered **unescaped** by
+`format_currency()` on the unauthenticated guest invoice and quote pages
+(`/guest/view/invoice/{url_key}`, `/guest/view/quote/{url_key}`). Every other
+user-controlled value in the shared `InvoicePlane_Web` public template is escaped with
+`htmlsc()` / `_htmlsc()`; `format_currency()` was the omission. An administrator
+(`user_type = 1`) — the only role able to change the setting — could inject arbitrary
+JavaScript that then executed in the browser of any client or third party holding a valid
+invoice/quote `url_key`.
+
+**Vulnerability Details:**
+- **CWE-79:** Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')
+- **CVSSv3:** 4.3 (Medium) — `CVSS:3.1/AV:N/AC:L/PR:H/UI:R/S:U/C:L/I:L/A:L`
+- **Attack Vector:** Admin sets `settings[currency_symbol]` to a `<script>` payload; a guest
+  opens a shared invoice/quote link and the balance/total cells emit the raw markup
+- **Impact:** Script runs on the application origin in the guest's session — guest session
+  token / CSRF token theft, quote approve/reject actions, phishing
+- **PDF path:** the same value flows into generated PDFs but mPDF strips `<script>` blocks
+  and rasterises the HTML, so PDF output is not script-executing (hardened anyway by this fix)
+
+**Root Cause:**
+1. `application/modules/settings/controllers/Settings.php` saves `currency_symbol` with no
+   sanitisation (`global_xss_filtering` is off)
+2. `application/helpers/number_helper.php` — `format_currency()` concatenated the raw
+   `$currency_symbol` into its returned HTML string
+3. `application/views/invoice_templates/public/InvoicePlane_Web.php` (shared with quotes)
+   echoes `format_currency()` output directly, unescaped
+
+**Fix Implementation:**
+- **Escape the symbol at the single choke-point** — `format_currency()` now wraps
+  `currency_symbol` in `htmlsc()` before building any of the three
+  `currency_symbol_placement` variants. One change covers the guest pages, the admin UI and
+  the PDF templates.
+
+**Files Changed:**
+- `application/helpers/number_helper.php` — `format_currency()` escapes `currency_symbol` with `htmlsc()`
+
+**Impact:**
+- **Before:** a `<script>` payload in `currency_symbol` executed on every public invoice/quote view
+- **After:** the symbol is HTML-neutralised; benign symbols (`€`, `Fr.`, `kr`, …) are unaffected
+
+**Regression coverage:** `tests/Unit/Security/CurrencySymbolXssTest.php`
+
+**Reported by:** [crypto-nidh](https://github.com/crypto-nidh) — thank you for the responsible disclosure.
+
+**Affected Versions:** All InvoicePlane versions prior to this fix  
+**Recommended Action:** Upgrade to 1.7.3
 
 ---
 

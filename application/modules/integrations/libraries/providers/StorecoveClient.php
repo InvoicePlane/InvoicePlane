@@ -13,6 +13,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
  */
 class StorecoveClient implements IntegrationClientInterface
 {
+    use ProviderPing;
+
     private array $settings = [];
 
     private ApiClientInterface $http;

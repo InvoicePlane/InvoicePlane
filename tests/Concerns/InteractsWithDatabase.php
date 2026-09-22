@@ -151,6 +151,11 @@ trait InteractsWithDatabase
         $whereParts = [];
         $params     = [];
         foreach ($where as $key => $value) {
+            if ($value === null) {
+                $whereParts[] = $this->qi($key) . ' IS NULL';
+
+                continue;
+            }
             $whereParts[] = $this->qi($key) . ' = :' . $key;
             $params[$key] = $value;
         }
@@ -165,6 +170,52 @@ trait InteractsWithDatabase
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row ?: null;
+    }
+
+    /**
+     * Run a multi-statement SQL script against the test database one top-level
+     * statement at a time — exactly the way Mdl_setup::execute_contents() runs a
+     * migration file in production (same split_sql_statements() splitter, same
+     * one-statement-per-query execution). Lets a test drive a real setup/sql
+     * migration file and assert on its effect.
+     *
+     * @return string[] the statements that were executed, in order
+     */
+    protected function databaseRunScript(string $sql): array
+    {
+        require_once dirname(__DIR__, 2) . '/application/helpers/sql_helper.php';
+
+        $db         = $this->db();
+        $statements = split_sql_statements($sql);
+        foreach ($statements as $statement) {
+            $db->exec($statement);
+        }
+
+        return $statements;
+    }
+
+    /**
+     * @param array<string|int, mixed> $bindings
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function databaseSelect(string $sql, array $bindings = []): array
+    {
+        $stmt = $this->db()->prepare($sql);
+        $stmt->execute($bindings);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    protected function databaseTableExists(string $table): bool
+    {
+        $stmt = $this->db()->prepare(
+            'SELECT COUNT(*) FROM information_schema.TABLES '
+            . 'WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :t'
+        );
+        $stmt->execute([':t' => $table]);
+
+        return (int) $stmt->fetchColumn() > 0;
     }
 
     protected function assertDatabaseHas(string $table, array $conditions): void
@@ -563,7 +614,14 @@ trait InteractsWithDatabase
             );
             self::$testDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            static::markTestSkipped('Database unavailable for integration tests: ' . $e->getMessage());
+            // Fail loud, never skip. A suite that needs MariaDB and can't reach
+            // it is a broken environment, not a passing run. Skipping here let
+            // ~180 DB-backed tests vanish silently on CI (masked-skip profile).
+            static::fail(
+                'MariaDB is unreachable for the integration suite: ' . $e->getMessage()
+                . "\nCheck ipconfig.php DB_* and that DB_* is NOT exported into the phpunit env"
+                . ' (Dotenv skips already-set keys, so env() then returns null).'
+            );
         }
 
         return self::$testDb;

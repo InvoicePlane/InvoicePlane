@@ -55,7 +55,8 @@ class Integrations extends Admin_Controller
         $merchantClient = $this->Merchant_clients_model->get_by_id($merchantClientId);
 
         if ( ! $merchantClient || (int) $merchantClient['enabled'] !== 1) {
-            show_error(trans('merchant_client_not_found'));
+            http_response_code(404);
+            echo html_escape(trans('merchant_client_not_found'));
 
             return;
         }
@@ -67,7 +68,8 @@ class Integrations extends Admin_Controller
         $invoice = $this->mdl_invoices->get_by_id($invoiceId);
 
         if ( ! $invoice) {
-            show_error(trans('invoice_not_found'));
+            http_response_code(404);
+            echo html_escape(trans('invoice_not_found'));
 
             return;
         }

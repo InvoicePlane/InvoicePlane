@@ -29,14 +29,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.2'
+          php-version: '8.4'
 
       - name: Security audit (before update)
         run: composer audit --format=json > audit-report.json || true

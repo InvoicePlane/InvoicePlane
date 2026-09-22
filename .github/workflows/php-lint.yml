@@ -14,38 +14,55 @@ permissions:
 
 jobs:
   lint:
-    name: PHP Syntax Check
+    name: PHP Syntax Check (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
+
+    # Every supported PHP version. A file can parse on one and not another -- syntax
+    # added in a newer release breaks the 8.2 minimum, and removed syntax breaks the
+    # newest -- so checking a single version can pass code that is broken for users.
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4', '8.5']
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up PHP and Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.2'
+          php-version: ${{ matrix.php }}
           skip-composer-install: 'true'
 
       - name: Run php -l on all PHP files
         run: |
           ERRORS=0
+          DEPRECATIONS=0
           CHECKED=0
 
           while IFS= read -r -d '' file; do
             CHECKED=$((CHECKED + 1))
-            if ! php -l "$file" > /dev/null 2>&1; then
-              php -l "$file"
+            # php -l exits 0 for a file that parses but raises a compile-time deprecation
+            # (for example an implicitly nullable parameter), printing "Deprecated:" and
+            # carrying on. Checking only the exit code let those through, so the output
+            # is inspected as well. Application code has none on any supported version.
+            if ! OUTPUT=$(php -d error_reporting=-1 -d display_errors=1 -l "$file" 2>&1); then
+              echo "$OUTPUT"
               ERRORS=$((ERRORS + 1))
+            elif printf '%s' "$OUTPUT" | grep -q "Deprecated:"; then
+              printf '%s\n' "$OUTPUT" | grep "Deprecated:"
+              DEPRECATIONS=$((DEPRECATIONS + 1))
             fi
           done < <(find . \
             -name "*.php" \
             -not -path "./vendor/*" \
+            -not -path "./node_modules/*" \
             -not -path "./.git/*" \
             -print0)
 
-          echo "Checked ${CHECKED} file(s). Found ${ERRORS} syntax error(s)."
+          echo "PHP ${{ matrix.php }}: checked ${CHECKED} file(s). Found ${ERRORS} syntax error(s), ${DEPRECATIONS} file(s) with deprecations."
 
-          if [ "$ERRORS" -gt 0 ]; then
+          if [ "$ERRORS" -gt 0 ] || [ "$DEPRECATIONS" -gt 0 ]; then
             exit 1
           fi

@@ -35,7 +35,7 @@ class Cli extends MX_Controller
 
         $this->load->library('session');
 
-        $lang = getenv('DEFAULT_LANGUAGE') ?: 'english';
+        $lang = env('DEFAULT_LANGUAGE') ?: 'english';
         $lang = mb_strtolower($lang);
 
         if ( ! is_dir(APPPATH . 'language/' . $lang)) {
@@ -68,10 +68,10 @@ class Cli extends MX_Controller
             return;
         }
 
-        $email          = getenv('DEFAULT_ADMIN_EMAIL') ?: 'admin@localhost';
-        $name           = getenv('DEFAULT_ADMIN_NAME') ?: 'admin';
-        $plain_password = getenv('DEFAULT_ADMIN_PASSWORD') ?: bin2hex(random_bytes(12));
-        $generated      = ! getenv('DEFAULT_ADMIN_PASSWORD');
+        $email          = env('DEFAULT_ADMIN_EMAIL') ?: 'admin@localhost';
+        $name           = env('DEFAULT_ADMIN_NAME') ?: 'admin';
+        $plain_password = env('DEFAULT_ADMIN_PASSWORD') ?: bin2hex(random_bytes(12));
+        $generated      = ! env('DEFAULT_ADMIN_PASSWORD');
 
         $this->load->library('crypt');
 

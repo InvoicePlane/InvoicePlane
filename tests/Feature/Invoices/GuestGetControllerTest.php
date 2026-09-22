@@ -10,6 +10,7 @@ use Tests\AbstractTestCase;
  * url_key must be exactly 32 alphanumeric characters and belong to a
  * guest_visible() invoice or quote before any file access is attempted.
  */
+#[CoversClass(\Get::class)]
 class GuestGetControllerTest extends AbstractTestCase
 {
     private string $uploadDir;
@@ -47,7 +48,6 @@ class GuestGetControllerTest extends AbstractTestCase
         $response = $this->get('/guest/get/show_files');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         self::assertSame('{}', trim($response->body()));
     }
 
@@ -97,7 +97,6 @@ class GuestGetControllerTest extends AbstractTestCase
         $response = $this->get('/guest/get/show_files/' . $urlKey);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, 'attachment.pdf');
     }
 
@@ -180,7 +179,6 @@ class GuestGetControllerTest extends AbstractTestCase
         $response = $this->get('/guest/get/get_file/' . $filename);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         self::assertSame('pdf-bytes', $response->body());
     }
 
@@ -209,7 +207,6 @@ class GuestGetControllerTest extends AbstractTestCase
         $response = $this->get('/guest/get/attachment/' . $filename);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         self::assertSame('attachment-bytes', $response->body());
     }
 

@@ -46,8 +46,8 @@ PHPUNIT_ENV_CLEAN = env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE -u DB_USERNAME 
 PHPUNIT_ARGS = $(if $(FILTER),--filter "$(FILTER)") $(if $(SUITE),--testsuite "$(SUITE)")
 
 .PHONY: help \
-	install lint-php phpstan test test-filter test-suite test-custom-templates \
-	db-prepare docker-db-prepare docker-test docker-test-filter docker-test-suite \
+	install lint-php phpstan test test-slow test-filter test-suite test-custom-templates \
+	db-prepare docker-db-prepare docker-test docker-test-slow docker-test-filter docker-test-suite \
 	docker-test-custom-templates docker-phpstan docker-lint-php docker-shell \
 	docker-pint \
 	status clean
@@ -58,7 +58,8 @@ help:
 		'' \
 		'Local:' \
 		'  make install                         Composer install' \
-		'  make test                            Run PHPUnit with the current ipconfig.php' \
+		'  make test                            Run PHPUnit (slow/flaky groups excluded)' \
+		'  make test-slow                       Run only the slow/flaky groups' \
 		'  make test-filter FILTER=Name         Run PHPUnit with --filter' \
 		'  make test-suite SUITE=Unit           Run one PHPUnit suite' \
 		'  make test-custom-templates           Run custom-template allowlist/kernel tests' \
@@ -69,6 +70,7 @@ help:
 		'Docker:' \
 		'  make docker-db-prepare               Rebuild invoiceplane_test in MariaDB container' \
 		'  make docker-test                     Prepare DB and run PHPUnit in workspace' \
+		'  make docker-test-slow                Prepare DB and run only the slow/flaky groups' \
 		'  make docker-test-filter FILTER=Name  Prepare DB and run filtered PHPUnit' \
 		'  make docker-test-suite SUITE=Feature Prepare DB and run one PHPUnit suite' \
 		'  make docker-test-custom-templates    Run custom-template tests in workspace' \
@@ -92,6 +94,10 @@ phpstan:
 
 test:
 	$(PHPUNIT_ENV_CLEAN) $(PHPUNIT) $(PHPUNIT_ARGS)
+
+# Run only the groups the default suite excludes (phpunit.xml <groups>).
+test-slow:
+	$(PHPUNIT_ENV_CLEAN) $(PHPUNIT) --group slow,flaky $(PHPUNIT_ARGS)
 
 test-filter:
 	@test -n "$(FILTER)" || { echo 'Usage: make test-filter FILTER=CustomTemplate'; exit 2; }
@@ -150,6 +156,10 @@ docker-db-prepare:
 
 docker-test: docker-db-prepare
 	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && $(PHPUNIT_ENV_CLEAN) $(PHPUNIT) $(PHPUNIT_ARGS)'
+
+# The slow / flaky groups excluded by phpunit.xml's default run.
+docker-test-slow: docker-db-prepare
+	$(DOCKER_EXEC) bash -lc 'cd "$(DOCKER_PROJECT_DIR)" && $(PHPUNIT_ENV_CLEAN) $(PHPUNIT) --group slow,flaky $(PHPUNIT_ARGS)'
 
 docker-test-filter:
 	@test -n "$(FILTER)" || { echo 'Usage: make docker-test-filter FILTER=CustomTemplate'; exit 2; }

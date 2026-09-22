@@ -7,7 +7,7 @@ This file provides context and instructions for AI coding agents (GitHub Copilot
 InvoicePlane is a **self-hosted, open-source invoicing application** built with **PHP and CodeIgniter 3**. It is not a Laravel application. There is no Artisan CLI, no Eloquent ORM, and no `artisan migrate`.
 
 - **Framework:** CodeIgniter 3
-- **PHP:** 8.2+
+- **PHP:** 8.4 by default; 8.2 – 8.5 supported
 - **Database:** MySQL / MariaDB
 - **Build tools:** Yarn (frontend), Composer (backend)
 - **PDF generation:** mPDF
