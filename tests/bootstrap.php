@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
 define('CI_TESTING', true);
+define('CI_INTEGRATION_TESTING', true);
 
 $basePath = dirname(__DIR__);
 
@@ -28,7 +29,6 @@ foreach (['DB_HOSTNAME', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD',
 unset($dbEnvKey, $dbEnvValue);
 
 require_once $basePath . '/bootstrap/kernel.php';
-require_once $basePath . '/tests/Integration/bootstrap.php';
 
 // Isolated unit tests load application libraries without the CodeIgniter
 // request lifecycle. Keep application logging calls harmless in that context.
