@@ -102,8 +102,23 @@
                     </div>
                 </div>
 
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-default js-test-connection"
+                                data-url="<?php echo site_url('integrations/settings/test_connection/' . $provider['id']); ?>"
+                                data-msg-running="<?php _htmlsc(trans('einvoice_test_connection_running')); ?>"
+                                data-msg-ok="<?php _htmlsc(trans('einvoice_test_connection_ok')); ?>"
+                                data-msg-failed="<?php _htmlsc(trans('einvoice_test_connection_failed')); ?>">
+                            <i class="fa fa-plug"></i> <?php _trans('einvoice_test_connection'); ?>
+                        </button>
+                        <span class="js-test-connection-result" role="status"></span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
     </div>
 </form>
+
+<script src="<?php _core_asset('js/integration-settings.js'); ?>" defer></script>

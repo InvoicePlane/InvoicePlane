@@ -44,6 +44,32 @@ switch (ENVIRONMENT) {
         }
 }
 
+/*
+|--------------------------------------------------------------------------
+| SECURITY HEADERS
+|--------------------------------------------------------------------------
+|
+| Sent for every web response. They used to be set only by Admin_Controller,
+| leaving the login page, the client portal and the public invoice/quote/
+| payment pages frameable (clickjacking, e.g. of quote approval) and letting
+| browsers send public invoice URLs -- which contain the invoice's secret
+| access key -- to third-party payment scripts in the Referer header.
+*/
+if (PHP_SAPI !== 'cli' && ! headers_sent()) {
+    $ip_frame_ancestors = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"];
+    $ip_frame_options   = mb_strtoupper(trim((string) env('X_FRAME_OPTIONS', 'SAMEORIGIN')));
+    if ( ! isset($ip_frame_ancestors[$ip_frame_options])) {
+        $ip_frame_options = 'SAMEORIGIN';
+    }
+    header('X-Frame-Options: ' . $ip_frame_options);
+    header("Content-Security-Policy: frame-ancestors {$ip_frame_ancestors[$ip_frame_options]}; object-src 'none'; base-uri 'self'");
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
+        header('X-Content-Type-Options: nosniff');
+    }
+    unset($ip_frame_options, $ip_frame_ancestors);
+}
+
 defined('FCPATH') || define('FCPATH', $base . '/public/');
 defined('APPPATH') || define('APPPATH', $base . '/application/');
 defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter/system/');

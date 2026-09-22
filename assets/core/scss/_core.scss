@@ -1009,6 +1009,46 @@ legend, .install-step h2 {
 #email-template-preview {
   width: 100%;
   border: 0;
+  // Without an explicit height an iframe falls back to the browser default of
+  // roughly 150px, which cut off all but the first couple of lines of the email.
+  height: 320px;
+  background-color: #fff;
+}
+
+// Full-screen preview. Implemented by toggling a class on the existing panel
+// rather than moving the iframe into a modal: re-parenting an iframe reloads its
+// document, which would blank the preview every time it was opened.
+#email-template-preview-panel.is-expanded {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040; // above the fixed navbar (1030), below Bootstrap modals (1050)
+  margin: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+
+  .panel-heading {
+    flex: 0 0 auto;
+    border-radius: 0;
+  }
+
+  .panel-body {
+    flex: 1 1 auto;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  #email-template-preview {
+    height: 100%;
+  }
+}
+
+// Stop the page behind the overlay from scrolling while it is open.
+body.email-template-preview-expanded {
+  overflow: hidden;
 }
 
 .webpreview-header {

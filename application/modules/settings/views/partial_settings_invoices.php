@@ -378,6 +378,134 @@ foreach ($email_templates_invoice as $email_template) {
             </div>
         </div>
 
+        <div class="panel panel-default" id="panel-invoice-reminder-settings">
+            <div class="panel-heading">
+                <?php _trans('payment_reminders'); ?>
+            </div>
+            <div class="panel-body">
+                <div class="help-block">
+                    <?php _trans('payment_reminders_hint'); ?>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+
+                        <div class="form-group">
+                            <label for="settings[invoice_reminders_enabled]">
+                                <?php _trans('invoice_reminders_enabled'); ?>
+                            </label>
+                            <select name="settings[invoice_reminders_enabled]" id="settings[invoice_reminders_enabled]"
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value="0"><?php _trans('no'); ?></option>
+                                <option value="1" <?php check_select(get_setting('invoice_reminders_enabled'), '1'); ?>>
+                                    <?php _trans('yes'); ?>
+                                </option>
+                            </select>
+                            <p class="help-block"><?php _trans('invoice_reminders_enabled_hint'); ?></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="settings[invoice_reminder_days_before]">
+                                <?php _trans('reminder_days_before_due'); ?>
+                            </label>
+                            <input type="text" name="settings[invoice_reminder_days_before]"
+                                   id="settings[invoice_reminder_days_before]" class="form-control"
+                                   placeholder="7,3,1"
+                                   value="<?php echo get_setting('invoice_reminder_days_before', '', true); ?>">
+                            <p class="help-block"><?php _trans('reminder_days_hint'); ?></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="settings[invoice_reminder_days_after]">
+                                <?php _trans('reminder_days_after_due'); ?>
+                            </label>
+                            <input type="text" name="settings[invoice_reminder_days_after]"
+                                   id="settings[invoice_reminder_days_after]" class="form-control"
+                                   placeholder="1,7,14"
+                                   value="<?php echo get_setting('invoice_reminder_days_after', '', true); ?>">
+                            <p class="help-block"><?php _trans('reminder_days_hint'); ?></p>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+
+                        <div class="form-group">
+                            <label for="settings[invoice_reminder_repeat_days]">
+                                <?php _trans('reminder_repeat_every_days'); ?>
+                            </label>
+                            <input type="number" min="0" max="365" step="1"
+                                   name="settings[invoice_reminder_repeat_days]"
+                                   id="settings[invoice_reminder_repeat_days]" class="form-control"
+                                   value="<?php echo html_escape(get_setting('invoice_reminder_repeat_days', 0)); ?>">
+                            <p class="help-block"><?php _trans('reminder_repeat_every_days_hint'); ?></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="settings[invoice_reminder_max_total]">
+                                <?php _trans('reminder_max_total'); ?>
+                            </label>
+                            <input type="number" min="0" max="100" step="1"
+                                   name="settings[invoice_reminder_max_total]"
+                                   id="settings[invoice_reminder_max_total]" class="form-control"
+                                   value="<?php echo html_escape(get_setting('invoice_reminder_max_total', 10)); ?>">
+                            <p class="help-block"><?php _trans('reminder_max_total_hint'); ?></p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+
+                        <div class="form-group">
+                            <label for="settings[email_invoice_template_reminder]">
+                                <?php _trans('reminder_template_before_due'); ?>
+                            </label>
+                            <select name="settings[email_invoice_template_reminder]"
+                                    id="settings[email_invoice_template_reminder]"
+                                    class="form-control simple-select" data-minimum-results-for-search="Infinity">
+                                <option value=""><?php _trans('none'); ?></option>
+<?php
+foreach ($email_templates_invoice as $email_template) {
+    ?>
+                                <option value="<?php echo $email_template->email_template_id; ?>"
+                                    <?php check_select(get_setting('email_invoice_template_reminder'), $email_template->email_template_id); ?>>
+                                    <?php echo htmlsc($email_template->email_template_title); ?>
+                                </option>
+<?php
+}
+                ?>
+                            </select>
+                            <p class="help-block"><?php _trans('reminder_template_before_due_hint'); ?></p>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+
+                        <div class="form-group">
+                            <label><?php _trans('reminder_template_overdue'); ?></label>
+                            <p class="form-control-static">
+                                <strong><?php
+                                    $reminder_overdue_template_id = get_setting('email_invoice_template_overdue');
+                $reminder_overdue_template_title                  = '';
+                foreach ($email_templates_invoice as $email_template) {
+                    if ($email_template->email_template_id == $reminder_overdue_template_id) {
+                        $reminder_overdue_template_title = $email_template->email_template_title;
+                        break;
+                    }
+                }
+                echo $reminder_overdue_template_title !== '' ? htmlsc($reminder_overdue_template_title) : trans('none');
+                ?></strong>
+                            </p>
+                            <p class="help-block"><?php _trans('reminder_template_overdue_hint'); ?></p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         <div class="panel panel-default" id="panel-qr-code-settings">
             <div class="panel-heading">
                 <?php _trans('qr_code_settings'); ?>
@@ -385,7 +513,7 @@ foreach ($email_templates_invoice as $email_template) {
             <div class="panel-body">
 
 <?php
-                $qr_code = get_setting('qr_code');
+                                $qr_code = get_setting('qr_code');
                 ?>
                 <div class="form-group">
                     <div class="checkbox">

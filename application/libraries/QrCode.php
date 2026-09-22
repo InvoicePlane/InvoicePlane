@@ -5,8 +5,8 @@ if ( ! defined('BASEPATH')) {
 }
 
 use Endroid\QrCode\Builder\Builder;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelMedium;
-use SepaQr\Data;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use SepaQr\SepaQrData;
 
 #[AllowDynamicProperties]
 class QrCode
@@ -52,23 +52,29 @@ class QrCode
         );
     }
 
-    public function paymentData()
+    public function paymentData(): SepaQrData
     {
-        return Data::create()
-            ->setName($this->recipient)
-            ->setIban($this->iban)
-            ->setBic($this->bic)
-            ->setCurrency($this->currencyCode)
-            ->setRemittanceText($this->remittance_text)
-            ->setAmount($this->invoice->invoice_balance);
+        // sepa-qr-data 3 types every setter strictly. The recipient falls back through
+        // user_company and user_name, both nullable columns, and passing null to a
+        // userland string parameter is a TypeError rather than the deprecation v1
+        // produced -- so values are cast explicitly. An empty name or IBAN still fails
+        // validation below, which is correct: a payment QR without them is invalid.
+        return (new SepaQrData())
+            ->setName((string) $this->recipient)
+            ->setIban((string) $this->iban)
+            ->setBic((string) $this->bic)
+            ->setCurrency((string) $this->currencyCode)
+            ->setRemittanceText((string) $this->remittance_text)
+            ->setAmount((float) $this->invoice->invoice_balance);
     }
 
     public function generate(): string
     {
-        return Builder::create()
-            ->data($this->paymentData())
-            ->errorCorrectionLevel(new ErrorCorrectionLevelMedium()) // required by EPC standard
-            ->build()
-            ->getDataUri();
+        return (new Builder(
+            data: (string) $this->paymentData(),
+            // Required by the EPC standard. Stated explicitly: endroid/qr-code 6 lowered
+            // the default to Low, so omitting it would silently change the QR.
+            errorCorrectionLevel: ErrorCorrectionLevel::Medium,
+        ))->build()->getDataUri();
     }
 }

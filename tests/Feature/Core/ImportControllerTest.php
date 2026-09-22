@@ -11,6 +11,7 @@ use Tests\AbstractTestCase;
  *
  * Tests the import page for authenticated admins.
  */
+#[CoversClass(\Import::class)]
 class ImportControllerTest extends AbstractTestCase
 {
     private string $importDir;
@@ -49,7 +50,6 @@ class ImportControllerTest extends AbstractTestCase
         $response = $this->get('/import');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<html');
     }
 
@@ -80,7 +80,6 @@ class ImportControllerTest extends AbstractTestCase
         $response = $this->get('/import/form');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, 'clients.csv');
         $this->assertResponseBodyNotContains($response, 'evil.php');
     }

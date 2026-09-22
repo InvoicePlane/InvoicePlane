@@ -5,7 +5,7 @@ InvoicePlane is a self-hosted, open-source invoicing application written in **PH
 ## Project overview
 
 - **Framework:** CodeIgniter 3
-- **PHP version:** 8.2+
+- **PHP version:** 8.4 by default; 8.2 – 8.5 supported
 - **Database:** MySQL / MariaDB (accessed via CI's Active Record / Query Builder)
 - **Frontend:** Bootstrap + jQuery, built assets managed by Yarn; PDF rendering via mPDF
 - **Module layout:** `application/modules/<module>/` (controllers, models, views, helpers per module)

@@ -50,6 +50,7 @@ class SecurityRegressionTest extends AbstractTestCase
         ]);
 
         $otherInvoiceId = $this->seedInvoice($otherClientId);
+        $ownInvoiceId = $this->seedInvoice($ownClientId);
 
         $this->actingAs([
             'user_id'       => $guestUserId,
@@ -63,12 +64,33 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Act */
         $response = $this->get("/guest/invoices/generate_pdf/{$otherInvoiceId}");
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertSame(
             404,
             $response->statusCode(),
             'A guest must not be able to retrieve another client\'s invoice PDF — expected 404.'
         );
+
+        /* Assert: State Isolation (B) */
+        $this->assertResponseBodyNotContains($response, 'pdf');
+        $userClientCount = $this->databaseCount('ip_user_clients', ['user_id' => $guestUserId]);
+        $this->assertSame(1, $userClientCount);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $otherInvoiceId]);
+        $this->assertSame($otherClientId, (int) $invoice['client_id']);
+
+        /* Assert: Business Logic (A) */
+        $ownResponse = $this->get("/guest/invoices/generate_pdf/{$ownInvoiceId}");
+        $this->assertResponseStatusCode($ownResponse, 200);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/guest/invoices/generate_pdf/999999999');
+        self::assertSame(404, $response2->statusCode());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get("/guest/invoices/generate_pdf/{$otherInvoiceId}");
+        self::assertSame(404, $response3->statusCode());
     }
 
     #[Test]
@@ -114,6 +136,26 @@ class SecurityRegressionTest extends AbstractTestCase
             'quote_total'          => '0.00',
         ]);
 
+        $ownQuoteId = $this->databaseInsert('ip_quotes', [
+            'client_id'           => $ownClientId,
+            'user_id'             => 1,
+            'invoice_group_id'    => 1,
+            'quote_status_id'     => 1,
+            'quote_date_created'  => date('Y-m-d'),
+            'quote_date_modified' => date('Y-m-d'),
+            'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
+            'quote_number'        => 'QUO-OWN-' . random_int(1000, 9999),
+            'quote_url_key'       => bin2hex(random_bytes(16)),
+        ]);
+
+        $this->databaseInsert('ip_quote_amounts', [
+            'quote_id'             => $ownQuoteId,
+            'quote_item_subtotal'  => '0.00',
+            'quote_item_tax_total' => '0.00',
+            'quote_tax_total'      => '0.00',
+            'quote_total'          => '0.00',
+        ]);
+
         $this->actingAs([
             'user_id'       => $guestUserId,
             'user_type'     => 2,
@@ -126,12 +168,33 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Act */
         $response = $this->get("/guest/quotes/generate_pdf/{$otherQuoteId}");
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertSame(
             404,
             $response->statusCode(),
             'A guest must not be able to retrieve another client\'s quote PDF — expected 404.'
         );
+
+        /* Assert: State Isolation (B) */
+        $this->assertResponseBodyNotContains($response, 'pdf');
+        $userClientCount = $this->databaseCount('ip_user_clients', ['user_id' => $guestUserId]);
+        $this->assertSame(1, $userClientCount);
+
+        /* Assert: Data Integrity (D) */
+        $quote = $this->databaseFetchOne('ip_quotes', ['quote_id' => $otherQuoteId]);
+        $this->assertSame($otherClientId, (int) $quote['client_id']);
+
+        /* Assert: Business Logic (A) */
+        $ownResponse = $this->get("/guest/quotes/generate_pdf/{$ownQuoteId}");
+        $this->assertResponseStatusCode($ownResponse, 200);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/guest/quotes/generate_pdf/999999999');
+        self::assertSame(404, $response2->statusCode());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get("/guest/quotes/generate_pdf/{$otherQuoteId}");
+        self::assertSame(404, $response3->statusCode());
     }
 
     #[Test]
@@ -141,13 +204,33 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->actingAsAdmin();
         $this->enablePdfSentMarking('mark_invoices_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-        $invoiceId = $this->seedInvoice($this->seedClient(), ['invoice_number' => '']);
+        $clientId = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => '']);
+        $statusBefore = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id'];
 
         /* Act */
         $response = $this->get('/invoices/generate_pdf/' . $invoiceId . '/0');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertLessThan(500, $response->statusCode());
+
+        /* Assert: Business Logic (A) + Data Integrity (D) */
+        self::assertSame(1, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
+        self::assertSame($statusBefore, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
+
+        /* Assert: State Isolation (B) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame($clientId, (int) $invoice['client_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $invoiceId2 = $this->seedInvoice($clientId);
+        $response2 = $this->get('/invoices/generate_pdf/' . $invoiceId2 . '/0');
+        self::assertLessThan(500, $response2->statusCode());
+        self::assertSame(1, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId2])['invoice_status_id']);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/invoices/generate_pdf/' . $invoiceId . '/0');
+        self::assertLessThan(500, $response3->statusCode());
         self::assertSame(1, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
     }
 
@@ -158,7 +241,9 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->actingAsAdmin();
         $this->enablePdfSentMarking('mark_invoices_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-        $invoiceId = $this->seedInvoice($this->seedClient(), ['invoice_number' => '']);
+        $clientId = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => '']);
+        $statusBefore = (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id'];
 
         /* Act: this models the same-origin link rendered with _csrf_query(). */
         $response = $this->get(
@@ -167,8 +252,37 @@ class SecurityRegressionTest extends AbstractTestCase
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertLessThan(500, $response->statusCode());
+
+        /* Assert: Business Logic (A) */
+        self::assertSame(2, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
+
+        /* Assert: State Isolation (B) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $statusAfter = (int) $invoice['invoice_status_id'];
+        $this->assertGreaterThan($statusBefore, $statusAfter);
+
+        /* Assert: Data Integrity (D) */
+        $this->assertSame($clientId, (int) $invoice['client_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $invoiceId2 = $this->seedInvoice($clientId);
+        $response2 = $this->get(
+            '/invoices/generate_pdf/' . $invoiceId2 . '/0',
+            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['ip_csrf_cookie' => self::CSRF_TOKEN]
+        );
+        self::assertLessThan(500, $response2->statusCode());
+        self::assertSame(2, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId2])['invoice_status_id']);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get(
+            '/invoices/generate_pdf/' . $invoiceId . '/0',
+            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['ip_csrf_cookie' => self::CSRF_TOKEN]
+        );
+        self::assertLessThan(500, $response3->statusCode());
         self::assertSame(2, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
     }
 
@@ -180,12 +294,31 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->enablePdfSentMarking('mark_quotes_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
         $quoteId = $this->seedSecurityQuote();
+        $statusBefore = (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id'];
 
         /* Act */
         $response = $this->get('/quotes/generate_pdf/' . $quoteId . '/0');
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertLessThan(500, $response->statusCode());
+
+        /* Assert: Business Logic (A) + Data Integrity (D) */
+        self::assertSame(1, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
+        self::assertSame($statusBefore, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
+
+        /* Assert: State Isolation (B) */
+        $quote = $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId]);
+        $this->assertGreaterThan(0, (int) $quote['client_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $quoteId2 = $this->seedSecurityQuote();
+        $response2 = $this->get('/quotes/generate_pdf/' . $quoteId2 . '/0');
+        self::assertLessThan(500, $response2->statusCode());
+        self::assertSame(1, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId2])['quote_status_id']);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/quotes/generate_pdf/' . $quoteId . '/0');
+        self::assertLessThan(500, $response3->statusCode());
         self::assertSame(1, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
     }
 
@@ -197,6 +330,7 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->enablePdfSentMarking('mark_quotes_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
         $quoteId = $this->seedSecurityQuote();
+        $statusBefore = (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id'];
 
         /* Act */
         $response = $this->get(
@@ -205,8 +339,37 @@ class SecurityRegressionTest extends AbstractTestCase
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertLessThan(500, $response->statusCode());
+
+        /* Assert: Business Logic (A) */
+        self::assertSame(2, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
+
+        /* Assert: State Isolation (B) */
+        $quote = $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId]);
+        $statusAfter = (int) $quote['quote_status_id'];
+        $this->assertGreaterThan($statusBefore, $statusAfter);
+
+        /* Assert: Data Integrity (D) */
+        $this->assertGreaterThan(0, (int) $quote['client_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $quoteId2 = $this->seedSecurityQuote();
+        $response2 = $this->get(
+            '/quotes/generate_pdf/' . $quoteId2 . '/0',
+            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['ip_csrf_cookie' => self::CSRF_TOKEN]
+        );
+        self::assertLessThan(500, $response2->statusCode());
+        self::assertSame(2, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId2])['quote_status_id']);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get(
+            '/quotes/generate_pdf/' . $quoteId . '/0',
+            ['_ip_csrf'       => self::CSRF_TOKEN],
+            ['ip_csrf_cookie' => self::CSRF_TOKEN]
+        );
+        self::assertLessThan(500, $response3->statusCode());
         self::assertSame(2, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
     }
 

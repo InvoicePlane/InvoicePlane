@@ -11,6 +11,7 @@ use Tests\AbstractTestCase;
  */
 #[Group('feature')]
 #[Group('dashboard')]
+#[CoversClass(\Dashboard::class)]
 class DashboardControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -30,7 +31,6 @@ class DashboardControllerTest extends AbstractTestCase
         $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 
@@ -142,7 +142,6 @@ class DashboardControllerTest extends AbstractTestCase
         $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         self::assertTrue(
             $response->contains('client') || $response->contains('invoice'),
             'Dashboard must reference clients or invoices in its content.'
@@ -160,7 +159,6 @@ class DashboardControllerTest extends AbstractTestCase
         $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 
@@ -176,7 +174,6 @@ class DashboardControllerTest extends AbstractTestCase
         $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 }

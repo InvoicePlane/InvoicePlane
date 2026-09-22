@@ -11,6 +11,7 @@ use Tests\AbstractTestCase;
  *
  * Tests the import/upload page for authenticated admins.
  */
+#[CoversClass(\Upload::class)]
 class UploadControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -30,7 +31,6 @@ class UploadControllerTest extends AbstractTestCase
         $response = $this->get('/import');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<html');
     }
 

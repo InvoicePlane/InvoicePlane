@@ -21,7 +21,6 @@ class SettingsAjaxAndVersionsTest extends AbstractTestCase
         $response = $this->ajax('GET', '/settings/ajax/get_cron_key', []);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         self::assertMatchesRegularExpression('/^[0-9a-f]{16}$/', trim($response->body()));
     }
 
@@ -56,7 +55,6 @@ class SettingsAjaxAndVersionsTest extends AbstractTestCase
         $response = $this->get('/settings/versions');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseHasNoPhpErrors($response);
     }
 

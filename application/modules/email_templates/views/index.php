@@ -30,7 +30,11 @@
         <?php foreach ($email_templates as $email_template) { ?>
             <tr>
                 <td><?php _htmlsc($email_template->email_template_title); ?></td>
-                <td><?php echo lang($email_template->email_template_type); ?></td>
+<?php
+// trans() falls back to the key itself; lang() returns FALSE and logs an error
+// when a type has no language key.
+            ?>
+                <td><?php _htmlsc(trans($email_template->email_template_type)); ?></td>
                 <td>
                     <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i

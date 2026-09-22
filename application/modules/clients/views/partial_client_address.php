@@ -10,5 +10,5 @@
     <?php echo $client->client_zip ? htmlsc($client->client_zip) : ''; ?>
 </span>
 <span class="client-adress-country-line">
-    <?php echo $client->client_country ? '<br>' . get_country_name(trans('cldr'), $client->client_country) : ''; ?>
+    <?php echo $client->client_country ? '<br>' . htmlsc(get_country_name(trans('cldr'), $client->client_country)) : ''; ?>
 </span>

@@ -26,6 +26,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * coverage, not a restoration.
  */
 #[Group('services')]
+#[CoversClass(\Services::class)]
 class ServicesControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

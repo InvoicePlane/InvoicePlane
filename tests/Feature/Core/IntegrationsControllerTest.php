@@ -26,6 +26,7 @@ use Tests\AbstractTestCase;
  * restored it until now.
  */
 #[Group('integrations')]
+#[CoversClass(\Integrations::class)]
 class IntegrationsControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

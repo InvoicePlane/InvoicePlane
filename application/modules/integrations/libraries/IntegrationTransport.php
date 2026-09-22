@@ -59,10 +59,18 @@ final class IntegrationTransport
      * A stub artifact pointing at a minimal PDF, so send_invoice can skip the
      * real EInvoiceDocumentService build. The profile lookup and the
      * provider-support check upstream of this still run for real.
+     *
+     * Returns null — i.e. the real generator runs — when the test also sets
+     * INTEGRATION_REAL_ARTIFACT, so a generation test can exercise the actual
+     * Factur-X / UBL build while still faking only the outbound HTTP call.
      */
     public static function artifact(int $invoiceId, EInvoiceProfile $profile, string $directory): ?EInvoiceArtifact
     {
         if ( ! self::isTestMode()) {
+            return null;
+        }
+
+        if (getenv('INTEGRATION_REAL_ARTIFACT')) {
             return null;
         }
 

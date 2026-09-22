@@ -13,6 +13,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
  */
 class DokapiClient implements IntegrationClientInterface
 {
+    use ProviderPing;
+
     private ?string $accessToken = null;
 
     private array $settings = [];

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `ip_units` (
   `unit_name_plrl` VARCHAR(50)      DEFAULT NULL,
   PRIMARY KEY (`unit_id`)
 )
-  ENGINE = MyISAM
+  ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
 ALTER TABLE ip_products
@@ -26,7 +26,7 @@ CREATE TABLE `ip_custom_values` (
   `custom_values_value` TEXT    NOT NULL,
   PRIMARY KEY (`custom_values_id`)
 )
-  ENGINE = MyISAM
+  ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
 ALTER TABLE `ip_custom_fields`
@@ -45,7 +45,7 @@ CREATE TABLE `ip_invoice_sumex` (
   `sumex_casedate`       DATE         NOT NULL,
   `sumex_casenumber`     VARCHAR(35) DEFAULT NULL
 )
-  ENGINE = MyISAM
+  ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
 ALTER TABLE `ip_invoice_sumex`

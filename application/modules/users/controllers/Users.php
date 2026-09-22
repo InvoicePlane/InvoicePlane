@@ -53,16 +53,16 @@ class Users extends Admin_Controller
             redirect('users');
         }
 
-        $id = $id ? (int) $id : null;
-        $current_user_id = (int) $this->session->userdata('user_id');
-        $is_self_edit = $id && $id === $current_user_id;
+        $id               = $id ? (int) $id : null;
+        $current_user_id  = (int) $this->session->userdata('user_id');
+        $is_self_edit     = $id && $id === $current_user_id;
         $is_primary_admin = Mdl_Users::is_primary_administrator($current_user_id);
 
         // Object-level authorization: only the primary administrator may edit
         // another user's record. A peer administrator is limited to its own
         // account, so it cannot rewrite user_id 1's role, email or password
         // through this form (CWE-639 / CWE-269).
-        if ($id && !$is_self_edit && !$is_primary_admin) {
+        if ($id && ! $is_self_edit && ! $is_primary_admin) {
             show_error(trans('access_denied'), 403);
 
             return;
@@ -107,13 +107,12 @@ class Users extends Admin_Controller
                 $new_details = $this->mdl_users->get_by_id($id);
 
                 $session_data = [
-                    'user_type'                => $new_details->user_type,
-                    'user_id'                  => $new_details->user_id,
-                    'user_name'                => $new_details->user_name,
-                    'user_email'               => $new_details->user_email,
-                    'user_company'             => $new_details->user_company,
-                    'user_einvoice_identifier' => $new_details->user_einvoice_identifier,
-                    'user_language'            => $new_details->user_language ?? 'system',
+                    'user_type'     => $new_details->user_type,
+                    'user_id'       => $new_details->user_id,
+                    'user_name'     => $new_details->user_name,
+                    'user_email'    => $new_details->user_email,
+                    'user_company'  => $new_details->user_company,
+                    'user_language' => $new_details->user_language ?? 'system',
                 ];
 
                 $this->session->set_userdata($session_data);
@@ -226,6 +225,15 @@ class Users extends Admin_Controller
 
         if ($this->mdl_users->run_validation('validation_rules_change_password')) {
             $this->mdl_users->save_change_password($user_id, $this->input->post('user_password'));
+
+            // Every session created with the old password ends on its next request (User_Controller).
+            // Keep the acting user's own session when they changed their own password.
+            if ((string) $user_id === $acting_user_id) {
+                $this->load->helper('ip_security');
+                $new_hash = (string) $this->mdl_users->get_by_id($user_id)->user_password;
+                $this->session->set_userdata('user_credential', session_credential_fingerprint($new_hash));
+            }
+
             redirect('users/form/' . $user_id);
         }
 
@@ -253,6 +261,7 @@ class Users extends Admin_Controller
 
             return;
         }
+
         if ( ! Mdl_Users::is_primary_administrator($id)) {
             $this->mdl_users->delete($id);
         }

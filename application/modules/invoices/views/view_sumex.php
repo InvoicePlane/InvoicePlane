@@ -83,6 +83,7 @@ if ( ! $items) {
                     invoice_date_due: $('#invoice_date_due').val(),
                     invoice_status_id: $('#invoice_status_id').val(),
                     invoice_password: $('#invoice_password').val(),
+                    invoice_disable_reminders: $('#invoice_disable_reminders').is(':checked') ? 1 : 0,
                     invoice_sumex_reason: $("#invoice_sumex_reason").val(),
                     invoice_sumex_treatmentstart: $("#invoice_sumex_treatmentstart").val(),
                     invoice_sumex_treatmentend: $("#invoice_sumex_treatmentend").val(),
@@ -612,6 +613,21 @@ foreach ($payment_methods as $payment_method) {
                                            value="<?php _htmlsc($invoice->invoice_password); ?>"
                                            <?php echo $invoice->is_read_only ? 'disabled="disabled"' : ''; ?>>
                                 </div>
+
+<?php
+// Deliberately still editable on a read-only invoice: silencing reminders is
+// metadata about chasing payment, not invoice content.
+?>
+                                <div class="invoice-properties">
+                                    <label for="invoice_disable_reminders">
+                                        <input type="checkbox" id="invoice_disable_reminders" value="1"
+                                            <?php check_select($invoice->invoice_disable_reminders, 1, '==', true); ?>>
+                                        <?php _trans('disable_payment_reminders'); ?>
+                                    </label>
+<?php if ($invoice->client_disable_reminders) { ?>
+                                    <p class="help-block"><?php _trans('reminders_disabled_for_client'); ?></p>
+<?php } ?>
+                                </div>
                             </div>
 <?php
 $default_custom = false;
@@ -731,6 +747,8 @@ if ($default_custom) {
         </div>
     </div>
 </div>
+
+<?php $this->layout->load_view('invoices/partial_invoice_reminders'); ?>
 
 <?php
 _dropzone_script($invoice->invoice_url_key, $invoice->client_id);

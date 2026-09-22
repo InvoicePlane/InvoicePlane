@@ -166,6 +166,7 @@ that hostname (see [resources/docker/README.md](../resources/docker/README.md) f
 Access:
 - **InvoicePlane**: http://ivpl.local
 - **phpMyAdmin**: http://localhost:8081
+- **Mailpit** (caught outgoing mail): http://localhost:8025
 
 #### Phase 3: Workflow (Daily Development)
 

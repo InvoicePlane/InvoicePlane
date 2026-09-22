@@ -99,7 +99,12 @@ class Mdl_Setup extends CI_Model
                 continue;
             }
 
-            $this->{$upgrade_method}();
+            // A hook that returns false did not finish its data change. Forget the version
+            // so "Try again" repeats the hook instead of skipping a migration that is
+            // already recorded as applied.
+            if ($this->{$upgrade_method}() === false) {
+                $this->db->where('version_file', $sql_file)->delete('ip_versions');
+            }
         }
 
         if ($this->errors) {
@@ -415,6 +420,120 @@ class Mdl_Setup extends CI_Model
         $this->session->set_userdata('setup_notice', $setup_notice);
     }
 
+    public function upgrade_046_innodb_conversion(): bool
+    {
+        return $this->convert_tables_to_innodb();
+    }
+
+    /**
+     * Convert every remaining MyISAM table in this schema to InnoDB.
+     *
+     * MyISAM has no transactions, no crash recovery and locks whole tables on write.
+     * The application already assumes otherwise: Cron::recur() wraps recurring invoice
+     * creation in trans_start()/trans_complete(), which silently does nothing under
+     * MyISAM, so a failed invoice copy could advance the recurring schedule without
+     * ever generating the invoice. Converting makes that rollback real.
+     *
+     * The table list is read from information_schema instead of being hardcoded:
+     * ip_sessions and ip_login_log were created without an ENGINE clause and inherit
+     * the server default, installs may have been converted by hand already, and an
+     * install upgrading from an old version may not have every table yet. Only tables
+     * that exist and are actually MyISAM are touched, so re-running is a no-op.
+     *
+     * Note for large installs: ALTER TABLE ... ENGINE rebuilds the table and holds a
+     * write lock for its duration. Take a backup first. This method increases PHP's
+     * max_execution_time to prevent timeout on large table conversions, and retries
+     * conversion if a lock wait timeout is encountered.
+     *
+     * @return bool false when a table failed to convert, so the migration is retried
+     */
+    private function convert_tables_to_innodb(): bool
+    {
+        // Increase timeout for large table conversions (3600s = 1 hour max per table).
+        // ALTER TABLE can take a very long time on large tables; default PHP timeout
+        // (30s) would kill the upgrade. Store the original to restore after conversion.
+        $original_timeout = ini_get('max_execution_time');
+        if ($original_timeout !== false && (int) $original_timeout > 0) {
+            set_time_limit(3600);
+        }
+
+        $this->db->db_debug = IP_DEBUG;
+
+        $tables = $this->db->query(
+            "SELECT TABLE_NAME AS table_name
+               FROM information_schema.TABLES
+              WHERE TABLE_SCHEMA = DATABASE()
+                AND ENGINE = 'MyISAM'"
+        );
+
+        $error = $this->db->error();
+        if ($error['code'] !== 0) {
+            // Typically a permissions problem reading information_schema. Not fatal:
+            // the upgrade should not be blocked by an optional storage-engine change.
+            // Retrying would fail the same way every time, so the migration stays recorded.
+            $this->errors[] = 'Could not read table engines, skipped InnoDB conversion: ' . $error['message'];
+
+            return true;
+        }
+
+        if ( ! $tables) {
+            return true;
+        }
+
+        $converted = 0;
+        $failed    = 0;
+        foreach ($tables->result() as $table) {
+            $table_name = (string) $table->table_name;
+
+            // The name comes from information_schema rather than user input, but it is
+            // interpolated into DDL that cannot be parameterised, so it is checked
+            // against the expected shape before being used as an identifier.
+            if (preg_match('/^ip_[a-z0-9_]+$/i', $table_name) !== 1) {
+                continue;
+            }
+
+            $this->db->db_debug = IP_DEBUG;
+
+            // Retry once on lock wait timeout (error 1205), which is common on live
+            // databases when a long-running query holds a lock the ALTER needs.
+            $attempt = 0;
+            $max_attempts = 2;
+            while ($attempt < $max_attempts) {
+                $attempt++;
+                $this->db->query('ALTER TABLE `' . $table_name . '` ENGINE=InnoDB');
+                $error = $this->db->error();
+
+                if ($error['code'] === 0) {
+                    // Success
+                    break;
+                }
+
+                // MySQL error 1205 = "Lock wait timeout exceeded"
+                if ($error['code'] === 1205 && $attempt < $max_attempts) {
+                    // Brief wait before retry, so the lock holder has time to finish
+                    sleep(2);
+                    continue;
+                }
+
+                // Other error or final attempt failed
+                if ($attempt === $max_attempts) {
+                    $this->errors[] = 'Could not convert ' . $table_name . ' to InnoDB: ' . $error['message'];
+                    $failed++;
+                }
+            }
+
+            if ($error['code'] === 0) {
+                $converted++;
+            }
+        }
+
+        if ($converted > 0) {
+            log_message('info', '[Setup] Converted ' . $converted . ' table(s) from MyISAM to InnoDB');
+        }
+
+        return $failed === 0;
+    }
+
     /**
      * @param string $contents
      */
@@ -482,6 +601,14 @@ class Mdl_Setup extends CI_Model
             'public_invoice_template'      => 'InvoicePlane_Web',
             'public_quote_template'        => 'InvoicePlane_Web',
             'disable_sidebar'              => 1,
+            // Payment reminders ship switched off with no offsets configured, so an
+            // upgrade never starts mailing clients on its own. Enabling it is an
+            // explicit choice in Settings > Invoices.
+            'invoice_reminders_enabled'    => 0,
+            'invoice_reminder_days_before' => '',
+            'invoice_reminder_days_after'  => '',
+            'invoice_reminder_repeat_days' => 0,
+            'invoice_reminder_max_total'   => 10,
         ];
 
         foreach ($default_settings as $setting_key => $setting_value) {

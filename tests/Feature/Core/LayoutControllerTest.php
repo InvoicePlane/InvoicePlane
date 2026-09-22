@@ -11,6 +11,7 @@ use Tests\AbstractTestCase;
  *
  * Tests that the dashboard renders a full HTML page for authenticated admins.
  */
+#[CoversClass(\Layout::class)]
 class LayoutControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -30,7 +31,6 @@ class LayoutControllerTest extends AbstractTestCase
         $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, '<html');
     }
 

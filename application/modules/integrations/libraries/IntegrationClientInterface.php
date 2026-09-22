@@ -29,4 +29,19 @@ interface IntegrationClientInterface
     public function buildInvoicePayload($invoice, array $items, array $metadata = []): array;
 
     public function fetchToken(array $settings): string;
+
+    /**
+     * Probe the provider's API for reachability without sending anything.
+     *
+     * Implementations authenticate with $settings and make one cheap read call.
+     * "reachable" means the endpoint answered at all (any HTTP status) — a
+     * transport failure (DNS, refused connection, TLS, timeout) or an auth
+     * failure is reachable = false. The http_code / message carry the detail so
+     * callers can tell "up but unhealthy" (5xx) from "up and well" (2xx).
+     *
+     * @param array<string, mixed> $settings
+     *
+     * @return array{reachable: bool, http_code: int, message: string}
+     */
+    public function ping(array $settings): array;
 }

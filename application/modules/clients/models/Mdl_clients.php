@@ -57,6 +57,11 @@ class Mdl_Clients extends Response_Model
             'client_active' => [
                 'field' => 'client_active',
             ],
+            'client_disable_reminders' => [
+                'field' => 'client_disable_reminders',
+                'label' => trans('disable_payment_reminders'),
+                'rules' => 'in_list[0,1]',
+            ],
             'client_language' => [
                 'field' => 'client_language',
                 'label' => trans('language'),

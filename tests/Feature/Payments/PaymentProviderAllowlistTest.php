@@ -50,17 +50,32 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     {
         /* Arrange */
         /* (invoice seeded in setUp) */
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
         $response = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey);
 
-        /* Assert */
-        // No payment_provider segment — should render the form or redirect to guest, not crash.
+        /* Assert: Error Semantics (C) */
         self::assertNotSame(
             500,
             $response->statusCode(),
             'Accessing the payment form without a provider must not crash.'
         );
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyNotContains($response, 'Fatal Error');
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
+        $this->assertSame($this->invoiceUrlKey, $invoice['invoice_url_key']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey);
+        self::assertNotSame(500, $response2->statusCode());
     }
 
     #[Test]
@@ -68,16 +83,36 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     {
         /* Arrange */
         $unknownProvider = 'malicious_method';
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
         $response = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/' . $unknownProvider);
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertSame(
             404,
             $response->statusCode(),
             "An unknown payment provider [{$unknownProvider}] must return 404, not dispatch to an arbitrary method."
         );
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyNotContains($response, 'malicious');
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
+        $this->assertSame('100.00', $invoice['invoice_balance']);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/injection_test');
+        self::assertSame(404, $response2->statusCode());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/' . $unknownProvider);
+        self::assertSame(404, $response3->statusCode());
     }
 
     #[Test]
@@ -85,16 +120,36 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     {
         /* Arrange */
         $internalMethod = 'index';
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
         $response = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/' . $internalMethod);
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertSame(
             404,
             $response->statusCode(),
             "Internal method name [{$internalMethod}] passed as provider must return 404."
         );
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyNotContains($response, 'index');
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
+        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/delete');
+        self::assertSame(404, $response2->statusCode());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/' . $internalMethod);
+        self::assertSame(404, $response3->statusCode());
     }
 
     #[Test]
@@ -102,15 +157,35 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     {
         /* Arrange */
         $traversal = '__construct';
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
         $response = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/' . $traversal);
 
-        /* Assert */
+        /* Assert: Error Semantics (C) */
         self::assertSame(
             404,
             $response->statusCode(),
             'A __construct provider segment must return 404, not be invoked.'
         );
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyNotContains($response, 'construct');
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
+        $this->assertSame('100.00', $invoice['invoice_balance']);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/_destruct');
+        self::assertSame(404, $response2->statusCode());
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/' . $traversal);
+        self::assertSame(404, $response3->statusCode());
     }
 }

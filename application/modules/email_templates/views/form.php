@@ -174,15 +174,30 @@ foreach ($quote_templates as $template) {
 
                             <br>
 
-                            <div class="panel panel-default">
+                            <div class="panel panel-default" id="email-template-preview-panel">
                                 <div class="panel-heading">
                                     <?php _trans('preview'); ?>
-                                    <span id="email-template-preview-reload" class="pull-right cursor-pointer">
+<?php /* pull-right floats in reverse DOM order, so reload stays rightmost. */ ?>
+                                    <span id="email-template-preview-reload" class="pull-right cursor-pointer"
+                                          title="<?php echo htmlsc(trans('refresh_preview')); ?>">
                                         <i class="fa fa-refresh"></i>
+                                    </span>
+                                    <span id="email-template-preview-expand" class="pull-right cursor-pointer"
+                                          title="<?php echo htmlsc(trans('expand_preview')); ?>"
+                                          data-label-expand="<?php echo htmlsc(trans('expand_preview')); ?>"
+                                          data-label-collapse="<?php echo htmlsc(trans('collapse_preview')); ?>">
+                                        <i class="fa fa-expand"></i>
                                     </span>
                                 </div>
                                 <div class="panel-body">
-                                    <iframe id="email-template-preview" sandbox="allow-same-origin"></iframe>
+<?php
+// sandbox="" is the most restrictive setting there is: no scripts, no forms, no
+// popups, no top-level navigation, and an opaque origin with no access to this
+// page. That isolation is what lets the preview render the email verbatim -- see
+// update_email_template_preview() in assets/core/js/scripts.js. Do not add
+// allow-scripts here, and do not re-add allow-same-origin.
+    ?>
+                                    <iframe id="email-template-preview" sandbox=""></iframe>
                                 </div>
                             </div>
 
@@ -227,33 +242,22 @@ foreach ($quote_templates as $template) {
         }
     });
 
-    $(document).ready(function() {
-        // find the type of template that has been loaded and enable/disable
-        // the invoice and quote selects as required
-        var inputValue = $('input[type="radio"]:checked').attr("value");
+    $(document).ready(function () {
+        // Anything that is not a quote template uses the invoice tag list, so an
+        // unknown or empty type still gets a usable tag picker.
+        var applyTagVisibility = function (type) {
+            var isQuote = (type === 'quote');
 
-        if (inputValue === 'quote') {
-            $('#tags_invoice').prop('disabled', 'disabled');
-            $('#tags_quote').prop('disabled', false);
-        } else {
-            // inputValue === 'invoice'
-            $('#tags_invoice').prop('disabled', false);
-            $('#tags_quote').prop('disabled', 'disabled');
-        }
+            $('#tags_invoice').prop('disabled', isQuote);
+            $('#tags_quote').prop('disabled', !isQuote);
+        };
 
-        // if the radio input for 'type of template' gets clicked, check the
-        // new value and enable/disable the invoice and quote selects as required.
-        $('input[type="radio"]').click(function() {
-            var inputValue = $(this).attr("value");
+        // Scoped to the type radios: binding to every radio on the page meant any
+        // unrelated radio group would also toggle the tag selects.
+        applyTagVisibility($('input[name=email_template_type]:checked').val());
 
-            if (inputValue === 'quote') {
-                $('#tags_invoice').prop('disabled', 'disabled');
-                $('#tags_quote').prop('disabled', false);
-            } else {
-                // inputValue === 'invoice'
-                $('#tags_invoice').prop('disabled', false);
-                $('#tags_quote').prop('disabled', 'disabled');
-            }
+        $('input[name=email_template_type]').on('click', function () {
+            applyTagVisibility($(this).val());
         });
     });
 </script>

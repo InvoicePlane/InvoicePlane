@@ -14,6 +14,12 @@
             <option value="{{{invoice_date_created}}}">
                 <?php _trans('invoice_date'); ?>
             </option>
+            <option value="{{{invoice_days_until_due}}}">
+                <?php _trans('invoice_days_until_due'); ?>
+            </option>
+            <option value="{{{invoice_days_overdue}}}">
+                <?php _trans('invoice_days_overdue'); ?>
+            </option>
         </optgroup>
         <optgroup label="<?php _trans('invoice_amounts'); ?>">
             <option value="{{{invoice_item_subtotal}}}">
