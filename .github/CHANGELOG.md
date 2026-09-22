@@ -14,6 +14,10 @@ record *why* and *how*.
 
 ## [Unreleased]
 
+### Security fixes
+
+- **Unauthenticated disclosure of sensitive financial data via static-file exposure (CWE-538, CWE-284, CWE-22, CWE-668):** nginx deployments using the project's bundled configuration did not deny direct access to the `/uploads/` subdirectories. The at-rest protection of `uploads/customer_files/`, `uploads/archive/`, `uploads/import/`, and `uploads/temp/` relied on `.htaccess` files containing `Deny from all`, which nginx does not honor. An unauthenticated attacker could directly download raw import CSV files (client names, addresses, payment amounts), archived invoice PDFs (enumerable by date + invoice number), and temporary files, bypassing all application-level access control. **Fix:** explicit `location ^~ /uploads/<subdir>/` deny blocks added to `resources/docker/nginx/invoiceplane.conf`; import CSV files are now deleted immediately after processing (not persisted to disk); archived PDF filenames are randomized (32-hex-character token instead of `YYYY-MM-DD_<name>` pattern) to prevent enumeration. **Recommendation:** existing nginx deployments should upgrade this configuration block and consider moving `uploads/` outside the web root (served only through authenticated PHP endpoints). Thanks to [d3do-23](https://github.com/d3do-23) for responsible disclosure.
+
 ### Bug fixes
 
 - **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just
