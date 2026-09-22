@@ -8,7 +8,7 @@ parameters:
         - application/modules/
 
     excludePaths:
-        analyse:
+        analyse: []
 
     ignoreErrors:
         # Ignore dynamic property false positives (CodeIgniter3 pattern)
