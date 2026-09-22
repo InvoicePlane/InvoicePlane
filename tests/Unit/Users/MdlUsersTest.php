@@ -32,7 +32,7 @@ class MdlUsersTest extends TestCase
             $root . '/application/core/MY_Model.php',
             $root . '/application/core/Form_Validation_Model.php',
             $root . '/application/core/Response_Model.php',
-            $root . '/application/modules/users/models/Mdl_users.php',
+            $root . '/application/modules/users/models/Mdl_Users.php',
         ];
 
         foreach ($files as $file) {
