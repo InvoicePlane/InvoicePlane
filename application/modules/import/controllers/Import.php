@@ -99,6 +99,8 @@ class Import extends Admin_Controller
                             break;
                     }
                 }
+
+                $this->mdl_import->cleanup_import_files();
             }
 
             redirect('import');
