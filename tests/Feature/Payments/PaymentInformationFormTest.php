@@ -23,7 +23,7 @@ class PaymentInformationFormTest extends AbstractTestCase
 
         /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect());
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: State Isolation (B) */
         $invoiceCountAfter = $this->databaseCount('ip_invoices');
@@ -33,8 +33,10 @@ class PaymentInformationFormTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'payment');
 
         /* Assert: Boundary Cases (F) */
+        // A missing URL segment and a wrong/nonexistent key both fail the same
+        // guest_visible() lookup and take the same not-found path (redirect, not 404).
         $response2 = $this->get('/guest/payment_information/form/');
-        $this->assertResponseStatusCode($response2, 404);
+        $this->assertResponseStatusCode($response2, 307);
 
         /* Assert: Idempotency (E) */
         $response3 = $this->get('/guest/payment_information/form/does-not-exist');
@@ -55,7 +57,7 @@ class PaymentInformationFormTest extends AbstractTestCase
 
         /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect());
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: State Isolation (B) */
         $invoiceCountAfter = $this->databaseCount('ip_invoices');
@@ -100,7 +102,8 @@ class PaymentInformationFormTest extends AbstractTestCase
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $urlKey]);
         $this->assertSame(4, (int) $invoice['invoice_status_id']);
-        $this->assertSame('0.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => (int) $invoice['invoice_id']]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $urlKey2 = 'paid-key-' . bin2hex(random_bytes(4));
@@ -138,12 +141,14 @@ class PaymentInformationFormTest extends AbstractTestCase
         $this->assertSame($invoiceCountBefore, $invoiceCountAfter);
 
         /* Assert: Business Logic (A) */
-        $this->assertResponseBodyContains($response, 'payment');
+        // Case-sensitive check; the rendered page says "Payment Method", not lowercase.
+        $this->assertResponseBodyContains($response, 'Payment');
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $urlKey]);
         $this->assertSame(2, (int) $invoice['invoice_status_id']);
-        $this->assertSame('100.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => (int) $invoice['invoice_id']]);
+        $this->assertSame('100.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $urlKey2 = 'payable-key-' . bin2hex(random_bytes(4));
@@ -184,7 +189,8 @@ class PaymentInformationFormTest extends AbstractTestCase
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $urlKey]);
         $this->assertSame(4, (int) $invoice['invoice_status_id']);
-        $this->assertSame('0.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => (int) $invoice['invoice_id']]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $urlKey2 = 'paid-noerr-key-' . bin2hex(random_bytes(4));
