@@ -254,7 +254,7 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Act: this models the same-origin link rendered with _csrf_query(). */
         $response = $this->get(
             '/invoices/generate_pdf/' . $invoiceId . '/0',
-            ['_ip_csrf' => self::CSRF_TOKEN],
+            ['_ip_csrf'       => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
 
@@ -276,7 +276,7 @@ class SecurityRegressionTest extends AbstractTestCase
         $invoiceId2 = $this->seedInvoice($clientId);
         $response2  = $this->get(
             '/invoices/generate_pdf/' . $invoiceId2 . '/0',
-            ['_ip_csrf' => self::CSRF_TOKEN],
+            ['_ip_csrf'       => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
         self::assertLessThan(500, $response2->statusCode());
@@ -285,7 +285,7 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Assert: Idempotency (E) */
         $response3 = $this->get(
             '/invoices/generate_pdf/' . $invoiceId . '/0',
-            ['_ip_csrf' => self::CSRF_TOKEN],
+            ['_ip_csrf'       => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
         self::assertLessThan(500, $response3->statusCode());
@@ -341,7 +341,7 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Act */
         $response = $this->get(
             '/quotes/generate_pdf/' . $quoteId . '/0',
-            ['_ip_csrf' => self::CSRF_TOKEN],
+            ['_ip_csrf'       => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
 
@@ -363,7 +363,7 @@ class SecurityRegressionTest extends AbstractTestCase
         $quoteId2  = $this->seedSecurityQuote();
         $response2 = $this->get(
             '/quotes/generate_pdf/' . $quoteId2 . '/0',
-            ['_ip_csrf' => self::CSRF_TOKEN],
+            ['_ip_csrf'       => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
         self::assertLessThan(500, $response2->statusCode());
@@ -372,7 +372,7 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Assert: Idempotency (E) */
         $response3 = $this->get(
             '/quotes/generate_pdf/' . $quoteId . '/0',
-            ['_ip_csrf' => self::CSRF_TOKEN],
+            ['_ip_csrf'       => self::CSRF_TOKEN],
             ['ip_csrf_cookie' => self::CSRF_TOKEN]
         );
         self::assertLessThan(500, $response3->statusCode());
