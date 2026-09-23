@@ -85,7 +85,7 @@ jobs:
 
       - name: Start the application server
         run: |
-          php -d variables_order=EGPCS -S localhost:8000 -t . tests/E2E/router.php > server.log 2>&1 &
+          php -d variables_order=EGPCS -S localhost:8000 -t . bootstrap/test-server.php > server.log 2>&1 &
           for i in $(seq 1 30); do
             curl -sf -o /dev/null "${E2E_BASE_URL}/sessions/login" && break
             sleep 1
