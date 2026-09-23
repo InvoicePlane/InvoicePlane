@@ -257,7 +257,16 @@ class Mdl_Payments extends Response_Model
         $this->db->select('invoice_id');
         $this->db->where('payment_id', $id);
 
-        $invoice_id = $this->db->get('ip_payments')->row()->invoice_id;
+        $payment = $this->db->get('ip_payments')->row();
+
+        if ($payment === null) {
+            // Nothing to delete: keep this idempotent rather than cascading a
+            // NULL invoice_id into calculate() below, which would violate the
+            // NOT NULL constraint on ip_invoice_amounts.invoice_id.
+            return;
+        }
+
+        $invoice_id = $payment->invoice_id;
 
         // Delete the payment
         parent::delete($id);
