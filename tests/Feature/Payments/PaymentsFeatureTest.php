@@ -43,15 +43,17 @@ class PaymentsFeatureTest extends AbstractTestCase
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
-        $this->assertGreaterThan($paymentCountBefore, $paymentCountAfter);
+        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
 
         /* Assert: Data Integrity (D) */
         $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId, 'payment_amount' => '99.00']);
         $this->assertSame($invoiceId, (int) $payment['invoice_id']);
 
         /* Assert: Boundary Cases (F) */
+        // No $0.00 payment was created in this test — this listing must not spuriously
+        // introduce one.
         $zeroPaymentCheck = $this->databaseCount('ip_payments', ['payment_amount' => '0.00']);
-        $this->assertGreaterThanOrEqual(0, $zeroPaymentCheck);
+        $this->assertSame(0, $zeroPaymentCheck);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->get('/payments');
@@ -212,7 +214,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         $deletedPayment = $this->databaseFetchOne('ip_payments', ['payment_id' => $paymentId]);
         $this->assertNull($deletedPayment);
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+        $this->assertNotNull($invoice, 'Deleting a payment must not cascade-delete its parent invoice.');
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->post('/payments/delete/999999', []);

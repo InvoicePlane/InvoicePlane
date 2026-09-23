@@ -247,9 +247,8 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->actingAsAdmin();
         $this->enablePdfSentMarking('mark_invoices_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-        $clientId     = $this->seedClient();
-        $invoiceId    = $this->seedInvoice($clientId, ['invoice_number' => '']);
-        $statusBefore = (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id'];
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => '']);
 
         /* Act: this models the same-origin link rendered with _csrf_query(). */
         $response = $this->get(
@@ -264,12 +263,8 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Assert: Business Logic (A) */
         self::assertSame(2, (int) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id']);
 
-        /* Assert: State Isolation (B) */
-        $invoice     = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $statusAfter = (int) $invoice['invoice_status_id'];
-        $this->assertGreaterThan($statusBefore, $statusAfter);
-
         /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
         $this->assertSame($clientId, (int) $invoice['client_id']);
 
         /* Assert: Boundary Cases (F) */
@@ -335,8 +330,7 @@ class SecurityRegressionTest extends AbstractTestCase
         $this->actingAsAdmin();
         $this->enablePdfSentMarking('mark_quotes_sent_pdf');
         $this->withEnvironment(['CSRF_PROTECTION' => 'true']);
-        $quoteId      = $this->seedSecurityQuote();
-        $statusBefore = (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id'];
+        $quoteId = $this->seedSecurityQuote();
 
         /* Act */
         $response = $this->get(
@@ -351,12 +345,8 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Assert: Business Logic (A) */
         self::assertSame(2, (int) $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId])['quote_status_id']);
 
-        /* Assert: State Isolation (B) */
-        $quote       = $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId]);
-        $statusAfter = (int) $quote['quote_status_id'];
-        $this->assertGreaterThan($statusBefore, $statusAfter);
-
         /* Assert: Data Integrity (D) */
+        $quote = $this->databaseFetchOne('ip_quotes', ['quote_id' => $quoteId]);
         $this->assertGreaterThan(0, (int) $quote['client_id']);
 
         /* Assert: Boundary Cases (F) */

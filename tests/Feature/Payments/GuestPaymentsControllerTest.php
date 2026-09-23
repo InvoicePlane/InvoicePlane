@@ -122,10 +122,6 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $this->assertSame(2, (int) $user['user_type']);
         $this->assertDatabaseMissing('ip_user_clients', ['user_id' => $guestUserId]);
 
-        /* Assert: Boundary Cases (F) */
-        $orphanUser = $this->databaseFetchOne('ip_users', ['user_id' => $guestUserId]);
-        $this->assertGreaterThan(0, (int) $orphanUser['user_id']);
-
         /* Assert: Idempotency (E) */
         $response2 = $this->get('/guest/payments');
         $this->assertResponseStatusCode($response2, 403);
@@ -216,7 +212,7 @@ class GuestPaymentsControllerTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $client = $this->databaseFetchOne('ip_clients', ['client_id' => $clientId]);
-        $this->assertGreaterThan(0, (int) $client['client_id']);
+        $this->assertNotNull($client);
 
         /* Assert: Boundary Cases (F) */
         $invalidClient = $this->databaseFetchOne('ip_clients', ['client_id' => 99999]);

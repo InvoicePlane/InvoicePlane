@@ -53,7 +53,6 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         /* Assert: Data Integrity (D) */
         $bankTransfer = $this->databaseFetchOne('ip_payment_methods', ['payment_method_name' => 'Bank Transfer']);
         $this->assertIsArray($bankTransfer);
-        $this->assertGreaterThan(0, (int) $bankTransfer['payment_method_id']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->get('/payment_methods');
@@ -85,13 +84,11 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $this->assertDatabaseHas('ip_payment_methods', ['payment_method_name' => 'Cheque']);
 
         /* Assert: State Isolation (B) */
-        $methodCountAfter = $this->databaseCount('ip_payment_methods');
-        $this->assertGreaterThan($methodCountBefore, $methodCountAfter);
-        $this->assertDatabaseCount('ip_payment_methods', 1);
+        $this->assertDatabaseCount('ip_payment_methods', $methodCountBefore + 1);
 
         /* Assert: Data Integrity (D) */
         $method = $this->databaseFetchOne('ip_payment_methods', ['payment_method_name' => 'Cheque']);
-        $this->assertGreaterThan(0, (int) $method['payment_method_id']);
+        $this->assertNotNull($method);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/payment_methods/form', [
@@ -452,7 +449,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $method = $this->databaseFetchOne('ip_payment_methods', ['payment_method_id' => $methodId]);
-        $this->assertGreaterThan(0, (int) $method['payment_method_id']);
+        $this->assertSame('Secret Method', $method['payment_method_name']);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/payment_methods/form/999');

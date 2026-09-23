@@ -73,7 +73,7 @@ class GatewayPaymentRaceTest extends AbstractTestCase
 
             /* Assert: Idempotency (E) */
             $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-            $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+            $this->assertNotNull($invoice);
         }
     }
 
@@ -144,9 +144,8 @@ class GatewayPaymentRaceTest extends AbstractTestCase
     public function it_still_records_a_single_full_balance_payment(): void
     {
         /* Arrange: a gateway callback always pays the exact outstanding balance */
-        $invoiceId          = $this->seedPayableInvoice(100.00);
-        $urlKey             = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
-        $paymentCountBefore = $this->databaseCount('ip_payments');
+        $invoiceId = $this->seedPayableInvoice(100.00);
+        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
 
         /* Act: one legitimate paid callback for the full 100.00 */
         $this->fireConcurrently([$this->stripeCallbackRequest($urlKey, 'pi_ok_full', 10000)]);
@@ -155,10 +154,6 @@ class GatewayPaymentRaceTest extends AbstractTestCase
         $this->resetDatabaseConnection();
         $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId, 'payment_external_id' => 'pi_ok_full', 'payment_amount' => '100.00']);
         $this->assertDatabaseCount('ip_payments', 1, ['invoice_id' => $invoiceId]);
-
-        /* Assert: State Isolation (B) */
-        $paymentCountAfter = $this->databaseCount('ip_payments');
-        $this->assertGreaterThan($paymentCountBefore, $paymentCountAfter);
 
         /* Assert: Data Integrity (D) */
         $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
