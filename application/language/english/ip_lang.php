@@ -856,6 +856,7 @@ $lang = [
     'custom'    => 'custom',
 
     // Integrations module (e-invoicing providers)
+    'merchant_client_not_found'      => 'Merchant client not found or is disabled.',
     'einvoice'                       => 'e-Invoicing',
     'einvoice_events'                => 'e-Invoice Events',
     'einvoice_history'               => 'e-Invoice History',

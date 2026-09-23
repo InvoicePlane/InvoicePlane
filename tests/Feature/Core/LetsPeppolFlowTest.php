@@ -378,9 +378,8 @@ class LetsPeppolFlowTest extends AbstractTestCase
         $response = $this->post('/integrations/send_invoice/' . $invoiceId . '/' . $nonexistentMerchantClientId);
 
         /* Assert */
-        // show_error() with 500 status code in the proc_open subprocess doesn't throw
-        // in the parent process; it's captured as an error response.
-        $this->assertResponseStatusCode($response, 500);
+        // Integrations::send_invoice() returns a plain 404 for this guard, not show_error().
+        $this->assertResponseStatusCode($response, 404);
         $this->assertResponseBodyContains($response, 'not found or is disabled');
     }
 
@@ -396,7 +395,7 @@ class LetsPeppolFlowTest extends AbstractTestCase
         $response = $this->post('/integrations/send_invoice/' . $invoiceId . '/' . $merchantClientId);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 500);
+        $this->assertResponseStatusCode($response, 404);
         $this->assertResponseBodyContains($response, 'not found or is disabled');
     }
 
@@ -411,8 +410,8 @@ class LetsPeppolFlowTest extends AbstractTestCase
         $response = $this->post('/integrations/send_invoice/' . $nonexistentInvoiceId . '/' . $merchantClientId);
 
         /* Assert */
-        $this->assertResponseStatusCode($response, 500);
-        $this->assertResponseBodyContains($response, 'invoice_not_found');
+        $this->assertResponseStatusCode($response, 404);
+        $this->assertResponseBodyContains($response, 'Invoice Not Found');
     }
 
     // =========================================================================
