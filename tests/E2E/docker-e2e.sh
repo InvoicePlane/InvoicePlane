@@ -35,7 +35,7 @@ if ! curl -sf -o /dev/null "${BASE}/sessions/login" 2>/dev/null; then
     -e IP_URL="$BASE" \
     -e COOKIE_SECURE=false \
     "$CONTAINER" sh -lc \
-    "cd ${APP_DIR} && php -d variables_order=EGPCS -S 0.0.0.0:${PORT} -t . tests/E2E/router.php > /tmp/e2e-srv.log 2>&1"
+    "cd ${APP_DIR} && php -d variables_order=EGPCS -S 0.0.0.0:${PORT} -t . bootstrap/test-server.php > /tmp/e2e-srv.log 2>&1"
   for _ in $(seq 1 30); do
     curl -sf -o /dev/null "${BASE}/sessions/login" 2>/dev/null && break
     sleep 1
