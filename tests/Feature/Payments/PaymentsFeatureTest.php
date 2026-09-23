@@ -253,7 +253,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert: Error Semantics (C) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 200);
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
@@ -276,7 +276,7 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_date'   => date('Y-m-d'),
             'btn_submit'     => '1',
         ]);
-        $this->assertResponseStatusCode($response2, 302);
+        $this->assertResponseStatusCode($response2, 200);
         $this->assertDatabaseCount('ip_payments', 0);
     }
 
@@ -307,7 +307,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert: Error Semantics (C) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 200);
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
@@ -332,7 +332,7 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_date'   => date('Y-m-d'),
             'btn_submit'     => '1',
         ]);
-        $this->assertResponseStatusCode($response2, 302);
+        $this->assertResponseStatusCode($response2, 200);
         $this->assertDatabaseCount('ip_payments', 0);
     }
 
@@ -363,7 +363,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert: Error Semantics (C) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 200);
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
@@ -388,7 +388,7 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_date'   => '',
             'btn_submit'     => '1',
         ]);
-        $this->assertResponseStatusCode($response2, 302);
+        $this->assertResponseStatusCode($response2, 200);
         $this->assertDatabaseCount('ip_payments', 0);
     }
 
@@ -473,10 +473,13 @@ class PaymentsFeatureTest extends AbstractTestCase
         $this->assertSame($paymentCountBefore, $paymentCountAfter);
 
         /* Assert: Business Logic (A) */
-        $this->assertResponseStatusCode($response, 302);
+        // This app's redirect() issues 307 (Temporary Redirect), not the classic CI3
+        // default of 302 — see the "Debugging a Feature-test request subprocess"
+        // section in CLAUDE.md, which traced this exact behavior.
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: Data Integrity (D) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/payments/form/999999');
@@ -485,6 +488,6 @@ class PaymentsFeatureTest extends AbstractTestCase
         /* Assert: Idempotency (E) */
         $response3 = $this->get('/payments');
         $this->assertTrue($response3->isRedirect());
-        $this->assertResponseStatusCode($response3, 302);
+        $this->assertResponseStatusCode($response3, 307);
     }
 }
