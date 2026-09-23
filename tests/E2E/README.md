@@ -61,7 +61,7 @@ yarn e2e                # or: yarn e2e:ui
 With nothing configured, `playwright.config.js` starts the app itself with:
 
 ```
-DB_HOSTNAME=${DB_HOSTNAME:-127.0.0.1} php -d variables_order=EGPCS -S localhost:8000 -t . tests/E2E/router.php
+DB_HOSTNAME=${DB_HOSTNAME:-127.0.0.1} php -d variables_order=EGPCS -S localhost:8000 -t . bootstrap/test-server.php
 ```
 
 - `-d variables_order=EGPCS` — this machine's `php.ini` omits `E`, so without it
