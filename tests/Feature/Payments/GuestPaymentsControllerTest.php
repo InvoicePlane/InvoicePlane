@@ -38,8 +38,10 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $this->assertResponseStatusCode($response, 307);
 
         /* Assert: Boundary Cases (F) */
+        // 'nonexistent' doesn't map to a real method on this controller — CI3 404s it
+        // before ever instantiating the controller (and so before the auth guard runs).
         $response2 = $this->get('/guest/payments/nonexistent');
-        $this->assertTrue($response2->isRedirect());
+        $this->assertResponseStatusCode($response2, 404);
 
         /* Assert: Idempotency (E) */
         $response3 = $this->get('/guest/payments');
@@ -71,8 +73,10 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $this->assertSame(1, (int) $adminUser['user_type']);
 
         /* Assert: Boundary Cases (F) */
+        // 'boundary' doesn't map to a real method — CI3 404s it before instantiating
+        // the controller, same as the equivalent check in the sibling test above.
         $adminResponse = $this->get('/guest/payments/boundary');
-        $this->assertTrue($adminResponse->isRedirect());
+        $this->assertResponseStatusCode($adminResponse, 404);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->get('/guest/payments');
@@ -158,7 +162,11 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         /* Assert: State Isolation (B) */
         $ownPaymentCountAfter = $this->databaseCount('ip_payments', ['invoice_id' => $ownInvoiceId]);
         $this->assertSame($ownPaymentCount, $ownPaymentCountAfter);
-        $this->assertDatabaseMissing('ip_payments', ['invoice_id' => $otherInvoiceId, 'payment_note' => 'other-payment-marker']);
+        // The other client's payment legitimately exists in the DB (seeded above) — it's
+        // scoped out of the *response*, not the database. That's already asserted at
+        // line 156 (assertResponseBodyNotContains); asserting it's missing from the DB
+        // outright was checking the wrong thing.
+        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $otherInvoiceId, 'payment_note' => 'other-payment-marker']);
 
         /* Assert: Data Integrity (D) */
         $ownPayment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $ownInvoiceId]);
