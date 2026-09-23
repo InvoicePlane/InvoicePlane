@@ -164,8 +164,8 @@ class StripeFlowTest extends AbstractTestCase
         $this->assertDatabaseMissing('ip_merchant_responses', ['invoice_id' => $invoiceId]);
 
         /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('0.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $paidInvoice = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
@@ -395,8 +395,8 @@ class StripeFlowTest extends AbstractTestCase
         $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'pi_already_paid']);
 
         /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('0.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $paidInvoice2 = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
@@ -485,12 +485,12 @@ class StripeFlowTest extends AbstractTestCase
         $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'pi_short']);
 
         /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('50.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('50.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $testInvoice = $this->seedPayableInvoice([], ['invoice_balance' => '100.00']);
-        $testBalance = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $testInvoice]);
+        $testBalance = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $testInvoice]);
         $this->assertSame('100.00', $testBalance['invoice_balance']);
 
         /* Assert: Idempotency (E) */
