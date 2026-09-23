@@ -43,7 +43,7 @@ class Stripe extends Base_Controller
      *
      * @return void
      */
-    public function create_checkout_session($invoice_url_key)
+    public function create_checkout_session($invoice_url_key = null)
     {
         // Require POST request to prevent CSRF attacks
         if ($this->input->method() !== 'post') {
@@ -54,7 +54,7 @@ class Stripe extends Base_Controller
 
         // Security: Verify the invoice exists and is guest-visible
         if ( ! $invoice) {
-            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted checkout session creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted checkout session creation for non-public or non-existent invoice with key: ' . sanitize_for_logging((string) $invoice_url_key));
             show_404();
         }
 
