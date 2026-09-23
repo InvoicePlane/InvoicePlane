@@ -185,15 +185,16 @@ bash tests/Support/sandbox-bootstrap.sh        # provision phpunit/phpstan (safe
 php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
 ```
 
-Expected result once the DB parent connection actually works (see next gotcha):
-**562 tests, ~17 skipped, 1298 assertions**, with **3 pre-existing failures** in
-`Tests\Feature\Integrations\LetsPeppolFlowTest` (see "Pre-existing failures" below).
-The ~17 skips are the genuine guards (snapshot / "requires running server" / manual
-code-review). A run that reports **562 / 0 failures / ~200 skipped / 891 assertions**
-is **not** green — it is the *masked* profile where the DB-backed integration tests
-never ran (183 of them silently skipped). CI on prep/v180 currently shows exactly this
-masked profile (verified: run 30726779008, `Skipped: 200`, MariaDB log full of
-`Access denied for user ''@'…'`), so those integration tests provide **zero coverage in CI**.
+Expected result once the DB parent connection actually works (see next gotcha) — **last
+verified 2026-09-23 against ivpldock: 863 tests, 2729 assertions, 0 failures, 0 skipped,
+`OK`.** (Older versions of this doc cited 562 tests/1298 assertions/~17 skipped/3
+pre-existing failures — the suite has grown substantially since and those specific counts
+are stale; the mechanism below, "exported `DB_*` masks DB-backed tests as skips," is still
+the important thing to know, not any particular number.) Any run that reports **0 failures
+but a suspiciously large skip count** (last observed shape: ~562/0/~200 skipped/891
+assertions) is **not** green — it is the *masked* profile where the DB-backed integration
+tests never ran. Re-verify the actual skip count is small (genuine guards only — snapshot /
+"requires running server" / manual code-review) before trusting a "0 failures" result.
 
 Gotchas learned the hard way:
 - `mysqld_safe` can be reaped in the sandbox; re-running the script restarts it. If a run
@@ -213,13 +214,14 @@ Gotchas learned the hard way:
   tooling, unset them just for phpunit: `env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE
   -u DB_USERNAME -u DB_PASSWORD php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php`.
 
-Pre-existing failures (on a clean prep/v180, unrelated to any merge): the 3
-`LetsPeppolFlowTest::it_returns_an_error_when_send_invoice_*` tests assume
-`show_error()` becomes a catchable `RuntimeException`. That only holds in-process — under
-the real `proc_open` request subprocess, `show_error()` renders a **500 error page** (body
-`merchant_client_not_found`) and the child returns `exception: null`, so `expectException`
-fails. These surface only once the parent DB connection works (otherwise they skip). They
-are broken *test* assumptions, not app bugs — the controller behaves correctly.
+~~Pre-existing failures: 3 `LetsPeppolFlowTest::it_returns_an_error_when_send_invoice_*`
+tests failing on a `RuntimeException`/`show_error()` mismatch~~ — **fixed, do not expect
+these anymore.** That test file moved to `tests/Feature/Core/LetsPeppolFlowTest.php` and its
+error-path tests were rewritten (`c45f534a` era: the shared `Integrations::send_invoice()`
+controller now returns a plain 404 instead of calling `show_error()`, and the test assertions
+were updated to match with `assertResponseStatusCode(404)`). Verified 2026-09-23 on a clean
+`ivpldock` run: **863 tests, 2729 assertions, 0 failures, 0 skipped, `OK`.** If you see
+failures here again, something regressed — it is not an expected baseline anymore.
 - Session identity in the harness (`actingAsAdmin()`) must be **string-typed** (`user_type
   => '1'`), because `User_Controller` guards with `!== (string)$required_val` and a real
   DB-backed login stores strings. Int-typed session data silently redirects every admin
