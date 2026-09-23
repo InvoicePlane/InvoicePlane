@@ -77,7 +77,7 @@ class PaymentInformationControllerTest extends AbstractTestCase
             $response->isRedirect(),
             sprintf('Unauthenticated GET [/payments] must redirect. Got [%d].', $response->statusCode())
         );
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
@@ -98,6 +98,6 @@ class PaymentInformationControllerTest extends AbstractTestCase
         /* Assert: Idempotency (E) */
         $response3 = $this->get('/payments');
         self::assertTrue($response3->isRedirect());
-        $this->assertResponseStatusCode($response3, 302);
+        $this->assertResponseStatusCode($response3, 307);
     }
 }

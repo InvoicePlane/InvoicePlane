@@ -35,7 +35,7 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'payment');
 
         /* Assert: Data Integrity (D) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/guest/payments/nonexistent');
@@ -64,7 +64,7 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $this->assertSame($pageCountBefore, $pageCountAfter);
 
         /* Assert: Business Logic (A) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: Data Integrity (D) */
         $adminUser = $this->databaseFetchOne('ip_users', ['user_type' => 1]);

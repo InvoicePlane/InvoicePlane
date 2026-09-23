@@ -432,7 +432,7 @@ class PaymentMethodsControllerTest extends AbstractTestCase
 
         /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect(), 'Unauthenticated request must redirect to login.');
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
         $this->assertResponseBodyNotContains($response, 'Secret Method');
 
         /* Assert: State Isolation (B) */

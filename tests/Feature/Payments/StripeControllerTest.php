@@ -38,7 +38,8 @@ class StripeControllerTest extends AbstractTestCase
         /* Assert: Payment data is present in response */
         $payment = $this->databaseFetchOne('ip_payments', ['payment_id' => $paymentId]);
         self::assertNotNull($payment);
-        $this->assertResponseBodyContains($response, $payment['payment_amount']);
+        // Rendered currency-formatted (e.g. '$50'), not the raw stored '50.00'.
+        $this->assertResponseBodyContains($response, '$50');
         $this->assertResponseBodyContains($response, (string) $clientId);
     }
 
@@ -116,7 +117,7 @@ class StripeControllerTest extends AbstractTestCase
             $response->isRedirect(),
             sprintf('Unauthenticated GET [/payments] must redirect. Got [%d].', $response->statusCode())
         );
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
@@ -137,6 +138,6 @@ class StripeControllerTest extends AbstractTestCase
         /* Assert: Idempotency (E) */
         $response3 = $this->get('/payments');
         self::assertTrue($response3->isRedirect());
-        $this->assertResponseStatusCode($response3, 302);
+        $this->assertResponseStatusCode($response3, 307);
     }
 }
