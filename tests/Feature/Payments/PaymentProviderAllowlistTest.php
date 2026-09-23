@@ -104,7 +104,8 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
-        $this->assertSame('100.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => (int) $invoice['invoice_id']]);
+        $this->assertSame('100.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/injection_test');
@@ -178,7 +179,8 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
-        $this->assertSame('100.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => (int) $invoice['invoice_id']]);
+        $this->assertSame('100.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/_destruct');
