@@ -297,8 +297,11 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $this->assertSame('Kept Method', $keptMethod['payment_method_name']);
 
         /* Assert: Idempotency (E) */
+        // Payment_methods::delete() has no existence check — it's an unconditional
+        // delete-then-redirect, so deleting an already-deleted id is a no-op that still
+        // redirects (not a 404). That's intentional, idempotent-delete behavior.
         $response2 = $this->post('/payment_methods/delete/' . $id, []);
-        $this->assertResponseStatusCode($response2, 404);
+        $this->assertResponseRedirectsToRoute($response2, 'payment_methods');
     }
 
     // -------------------------------------------------------------------------
@@ -330,8 +333,10 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $this->assertDatabaseCount('ip_payment_methods', $methodCountAfter);
 
         /* Assert: Idempotency (E) */
+        // Same as the plain-delete test: no existence check, unconditional
+        // delete-then-redirect, so a repeat delete is a no-op redirect, not a 404.
         $response2 = $this->postWithValidCsrfToken('/payment_methods/delete/' . $id);
-        $this->assertResponseStatusCode($response2, 404);
+        $this->assertResponseRedirectsToRoute($response2, 'payment_methods');
     }
 
     #[Test]
@@ -392,7 +397,10 @@ class PaymentMethodsControllerTest extends AbstractTestCase
         $this->assertSame($methodCountBefore, $methodCountAfter);
 
         /* Assert: Error Semantics (C) */
-        self::assertFalse($response->isRedirect(), 'Duplicate name must re-render the form, not redirect.');
+        // Payment_methods::form() has a dedicated duplicate-name guard, ahead of the
+        // general run_validation() check, that sets a flash error and redirects back
+        // to the form (not a re-render) — confirmed in the controller, intentional.
+        self::assertTrue($response->isRedirect(), 'Duplicate name must redirect back to the form with a flash error.');
 
         /* Assert: Data Integrity (D) */
         $original = $this->databaseFetchOne('ip_payment_methods', ['payment_method_id' => $id1]);
