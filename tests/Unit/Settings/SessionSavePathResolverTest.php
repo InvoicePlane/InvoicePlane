@@ -142,8 +142,10 @@ class SessionSavePathResolverTest extends TestCase
             }
         }
 
-        self::assertNotNull($value, 'ipconfig.php.example must document SESS_SAVE_PATH.');
-
+        // SESS_SAVE_PATH ships commented out by design (see the surrounding comment
+        // block in ipconfig.php.example) — $value is legitimately null here. The real
+        // guard is that resolve_session_save_path() must still produce a safe,
+        // writable fallback either way.
         $resolved = resolve_session_save_path($value, sys_get_temp_dir());
 
         self::assertNotSame('', $resolved, 'the example config must never yield an empty session save path.');

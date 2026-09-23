@@ -260,9 +260,9 @@ class StripeFlowTest extends AbstractTestCase
         /* Assert: State Isolation (B) */
         $this->assertDatabaseMissing('ip_merchant_responses', ['invoice_id' => $invoiceId]);
 
-        /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('100.00', $invoice['invoice_balance']);
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('100.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $testSettings = $this->databaseFetchOne('ip_settings', ['setting_key' => 'gateway_stripe_currency']);

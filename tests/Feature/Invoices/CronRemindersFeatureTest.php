@@ -30,7 +30,7 @@ class CronRemindersFeatureTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'email_invoice_template', 'setting_value' => '1']);
 
         $seeded      = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
-        $clientEmail = $this->database()->table('ip_clients')->where('client_id', $seeded['clientId'])->value('client_email');
+        $clientEmail = $this->databaseFetchOne('ip_clients', ['client_id' => $seeded['clientId']])['client_email'] ?? null;
 
         /* Act */
         $response = $this->get('/invoices/cron/reminders/test-cron-key');
@@ -81,9 +81,7 @@ class CronRemindersFeatureTest extends AbstractTestCase
         $seeded = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
 
         /* Mark the client as opted-out from reminders */
-        $this->database()->table('ip_clients')
-            ->where('client_id', $seeded['clientId'])
-            ->update(['client_disable_reminders' => 1]);
+        $this->databaseUpdate('ip_clients', ['client_disable_reminders' => 1], ['client_id' => $seeded['clientId']]);
 
         /* Act */
         $response = $this->get('/invoices/cron/reminders/test-cron-key');
@@ -130,11 +128,10 @@ class CronRemindersFeatureTest extends AbstractTestCase
 
         $seeded = $this->seedSimpleInvoice([
             'invoice_date_due' => date('Y-m-d', strtotime('+7 days')),
-            'invoice_amount'   => 100,
         ]);
 
         /* Record a payment that covers the entire invoice */
-        $this->database()->table('ip_payments')->insert([
+        $this->databaseInsert('ip_payments', [
             'invoice_id'        => $seeded['invoiceId'],
             'payment_date'      => date('Y-m-d'),
             'payment_amount'    => 100,
@@ -163,7 +160,7 @@ class CronRemindersFeatureTest extends AbstractTestCase
         $seeded = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
 
         /* Pre-populate the reminder log showing this reminder was already sent */
-        $this->database()->table('ip_invoice_reminders')->insert([
+        $this->databaseInsert('ip_invoice_reminders', [
             'invoice_id'         => $seeded['invoiceId'],
             'reminder_type'      => 'before_due',
             'reminder_offset'    => 7,
@@ -178,11 +175,11 @@ class CronRemindersFeatureTest extends AbstractTestCase
         $this->assertResponseStatusCode($response, 200);
 
         /* Behavior: Only ONE reminder for this invoice (no duplicate) */
-        $count = $this->database()->table('ip_invoice_reminders')
-            ->where('invoice_id', $seeded['invoiceId'])
-            ->where('reminder_type', 'before_due')
-            ->where('reminder_offset', 7)
-            ->count();
+        $count = $this->databaseCount('ip_invoice_reminders', [
+            'invoice_id'      => $seeded['invoiceId'],
+            'reminder_type'   => 'before_due',
+            'reminder_offset' => 7,
+        ]);
 
         $this->assertSame(1, $count, 'Should only have one reminder for this offset, not a duplicate');
     }
@@ -204,10 +201,10 @@ class CronRemindersFeatureTest extends AbstractTestCase
         $this->assertResponseStatusCode($response, 200);
 
         /* Behavior: Only 2 reminders were sent (the max) */
-        $reminderCount = $this->database()->table('ip_invoice_reminders')
-            ->where('invoice_id', $seeded['invoiceId'])
-            ->where('reminder_status', 'sent')
-            ->count();
+        $reminderCount = $this->databaseCount('ip_invoice_reminders', [
+            'invoice_id'      => $seeded['invoiceId'],
+            'reminder_status' => 'sent',
+        ]);
 
         $this->assertLessThanOrEqual(2, $reminderCount, 'Should not exceed max_total reminders');
     }
@@ -276,7 +273,6 @@ class CronRemindersFeatureTest extends AbstractTestCase
     protected function seedSimpleInvoice(array $overrides = []): array
     {
         $clientId = $this->databaseInsertGetId('ip_clients', [
-            'user_id'              => 1,
             'client_name'          => 'Test Client',
             'client_email'         => 'test@example.com',
             'client_active'        => 1,
