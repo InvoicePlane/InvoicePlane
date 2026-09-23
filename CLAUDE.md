@@ -140,58 +140,29 @@ composer install --prefer-source --ignore-platform-req=ext-bcmath
 # Reason: phpstan is a dist-only phar behind blocked hosts, and it's a transitive dev dep
 ```
 
-**The Working Solution:**
+**The Working Solution — one script, not a manual copy-paste:**
 
 ```bash
-#!/bin/bash
-set -e
-
-CH=$(mktemp -d)
-printf '{}\n' > "$CH/auth.json"
-printf '{"config":{}}\n' > "$CH/config.json"
-export COMPOSER_HOME="$CH"
-
-# STEP 1: Install runtime dependencies ONLY (no dev)
-# phpstan blocks, so --no-dev avoids it. This completes successfully.
-COMPOSER_HOME="$CH" composer install --prefer-source --no-dev --ignore-platform-req=ext-bcmath
-
-# STEP 2: Install PHPUnit in a THROWAWAY project (not in main repo)
-# Installing in isolation is much faster than trying to add to main composer.json
-mkdir -p /tmp/punit
-cd /tmp/punit
-timeout 300 COMPOSER_HOME="$CH" composer require --prefer-source --dev phpunit/phpunit:^10.5 --ignore-platform-req=ext-bcmath || {
-  echo "Timeout on composer. Trying alternative..."
-  # If composer times out, use the phar directly:
-  # curl -sSL -o /tmp/phpunit.phar https://github.com/phpunit/phpunit/releases/download/10.5.17/phpunit-10.5.17.phar
-  # But: if composer succeeded partially, use what we got
-}
-
-# STEP 3: Re-add Tests\ PSR-4 autoload mapping (step 1's --no-dev removed it)
-cd <repo-root>
-COMPOSER_HOME="$CH" composer dump-autoload --dev
-
-# STEP 4: Download PHPStan phar (Composer can't install it, but releases download fine via HTTPS)
-curl -sSL -o /tmp/phpstan.phar https://github.com/phpstan/phpstan/releases/download/1.12.34/phpstan.phar
-chmod +x /tmp/phpstan.phar
-
-# STEP 5: Run tools
-php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
-php /tmp/phpstan.phar analyse --memory-limit=1G     # config: phpstan.neon (level 0)
+bash tests/Support/sandbox-bootstrap.sh
 ```
 
-**Why this works:**
-- `--no-dev` skips the phpstan dep chain, allowing runtime install to complete
-- PHPUnit installs faster in isolation (throwaway project)
-- `dump-autoload --dev` re-adds the Tests\ PSR-4 mapping that step 1 dropped
-- PHPStan phar downloads fine via HTTPS (plain releases, not dist zips)
-- The throwaway project's phpunit binary can run tests against the main repo
+This is idempotent (safe to re-run if it fails partway — it resumes) and does exactly
+the same 4 steps documented for years in this file by hand: `--no-dev` runtime install →
+throwaway PHPUnit install → `dump-autoload --dev` to restore the `Tests\` mapping →
+plain-HTTPS PHPStan phar download. The one thing it changes from the old manual version:
+**all state lives under `$REPO/.sandbox-tools/` (gitignored), never `/tmp`.** `/tmp` in
+this environment is not guaranteed to survive the session, and mixing throwaway installer
+state into a shared temp directory has caused collisions before — a repo-local, gitignored
+directory is both safer and easier to inspect/clean (`rm -rf .sandbox-tools/`).
 
-**Critical gotchas:**
-1. `--no-dev` omits the `Tests\` PSR-4 mapping, so `composer dump-autoload --dev` is **mandatory**
-2. Do **not** put a real GitHub token in `auth.json` — the proxy won't rewrite it
-3. Do **not** export `DB_*` environment variables before running phpunit — see the MariaDB section below for why
-4. Each session requires this full setup; there is no persistent vendor cache
-5. If composer times out on throwaway phpunit, fall back to downloading the phar directly
+It prints the exact `phpunit` / `phpstan` invocations to run afterward. Read the script's
+header comment for what each step does and why; don't re-derive this by hand again.
+
+**Critical gotchas (still apply — the script doesn't paper over these):**
+1. Do **not** put a real GitHub token in `COMPOSER_HOME/auth.json` — the proxy won't rewrite it (the script writes an empty one).
+2. Do **not** export `DB_*` environment variables before running phpunit — see the MariaDB section below for why.
+3. Each session requires this full setup; there is no persistent vendor cache across sessions (only within one session, via the idempotency checks).
+4. If the throwaway PHPUnit install times out, just re-run the script — it skips completed steps and retries only what's missing.
 
 ### MariaDB test database in the sandbox (Feature/Integration tests)
 
@@ -208,9 +179,10 @@ baseline, and writes `ipconfig.php` — matching `.github/workflows/phpunit.yml`
 
 ```bash
 bash tests/Support/sandbox-mariadb.sh          # provision (safe to re-run)
+bash tests/Support/sandbox-bootstrap.sh        # provision phpunit/phpstan (safe to re-run)
 # Do NOT export DB_* here — see the gotcha below. The script writes ipconfig.php,
 # and the parent phpunit process reads its DB config from there via env().
-php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
+php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
 ```
 
 Expected result once the DB parent connection actually works (see next gotcha):
@@ -239,7 +211,7 @@ Gotchas learned the hard way:
   it → `null` and 891 assertions / 200 skips. Same mechanism hits CI, where `DB_*` is a
   job-level `env:` (so CI skips the 183 too). If you must have `DB_*` exported for other
   tooling, unset them just for phpunit: `env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE
-  -u DB_USERNAME -u DB_PASSWORD php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php`.
+  -u DB_USERNAME -u DB_PASSWORD php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php`.
 
 Pre-existing failures (on a clean prep/v180, unrelated to any merge): the 3
 `LetsPeppolFlowTest::it_returns_an_error_when_send_invoice_*` tests assume
@@ -293,11 +265,12 @@ proxy — that's how the PHPStan phar is fetched below. Only the composer api/co
 ### Static analysis (PHPStan) in the sandbox
 
 Composer cannot install `phpstan/phpstan` here (dist-only phar behind the blocked hosts above),
-but the release phar downloads fine via the HTTPS proxy:
+but the release phar downloads fine via the HTTPS proxy. `tests/Support/sandbox-bootstrap.sh`
+(see above) fetches it to `.sandbox-tools/phpstan.phar` as part of the same idempotent setup:
 
 ```bash
-curl -sSL -o /tmp/phpstan.phar https://github.com/phpstan/phpstan/releases/download/1.12.34/phpstan.phar
-php /tmp/phpstan.phar analyse --memory-limit=1G     # config: phpstan.neon (level 0)
+bash tests/Support/sandbox-bootstrap.sh             # no-op if phpstan.phar already present
+php .sandbox-tools/phpstan.phar analyse --memory-limit=1G     # config: phpstan.neon (level 0)
 ```
 
 CI3 has **no PSR-4 autoloading or classmap**, so PHPStan needs help resolving symbols. The
