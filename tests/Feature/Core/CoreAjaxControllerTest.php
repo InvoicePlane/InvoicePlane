@@ -111,8 +111,9 @@ class CoreAjaxControllerTest extends AbstractTestCase
         /* Assert: Client is displayed with balance info loaded */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, 'Balance Client');
-        /* The endpoint loads with_total_balance(), verify balance appears */
-        $this->assertResponseBodyContains($response, $expectedBalance);
+        /* The endpoint loads with_total_balance(); it renders currency-formatted
+         * ('$150'), not the raw stored value ('150.00'). */
+        $this->assertResponseBodyContains($response, '$150');
     }
 
     #[Test]
