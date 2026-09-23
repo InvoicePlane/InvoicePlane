@@ -178,7 +178,8 @@ class IntegrationSettingsCipherTest extends TestCase
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage('ENCRYPTION_KEY is required');
 
-        new IntegrationSettingsCipher('');
+        // The key is validated lazily, on first use, not at construction.
+        (new IntegrationSettingsCipher(''))->encrypt([], 'test_provider');
     }
 
     #[Test]
@@ -192,7 +193,8 @@ class IntegrationSettingsCipherTest extends TestCase
         self::expectException(RuntimeException::class);
         self::expectExceptionMessage('invalid base64');
 
-        $cipher = new IntegrationSettingsCipher('base64:not-valid-base64!!!');
+        // The key is validated lazily, on first use, not at construction.
+        (new IntegrationSettingsCipher('base64:not-valid-base64!!!'))->encrypt([], 'test_provider');
     }
 
     #[Test]

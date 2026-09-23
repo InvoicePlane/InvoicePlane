@@ -170,7 +170,10 @@ class PasswordResetTokenExpiryTest extends AbstractTestCase
             'user_psalt'                      => bin2hex(random_bytes(10)),
             'user_type'                       => 1,
             'user_active'                     => 1,
-            'user_passwordreset_token'        => self::TOKEN,
+            // Sessions::passwordreset() compares against hash_password_reset_token($token)
+            // (sha256), never the raw token — the row must store the hash, not self::TOKEN
+            // itself. Inlined rather than requiring ip_security_helper.php in this process.
+            'user_passwordreset_token'        => hash('sha256', self::TOKEN),
             'user_passwordreset_token_expiry' => $expiry,
             'user_date_created'               => date('Y-m-d H:i:s'),
             'user_date_modified'              => date('Y-m-d H:i:s'),
