@@ -49,8 +49,11 @@ class SecurityRegressionTest extends AbstractTestCase
             'client_id' => $ownClientId,
         ]);
 
-        $otherInvoiceId = $this->seedInvoice($otherClientId);
-        $ownInvoiceId   = $this->seedInvoice($ownClientId);
+        // guest_visible() only shows invoice_status_id IN (2,3,4) — draft (the
+        // seedInvoice() default) is never guest-visible regardless of client, so both
+        // must be 'sent' (2) for this to actually test client-scoped IDOR, not status.
+        $otherInvoiceId = $this->seedInvoice($otherClientId, ['invoice_status_id' => 2]);
+        $ownInvoiceId   = $this->seedInvoice($ownClientId, ['invoice_status_id' => 2]);
 
         $this->actingAs([
             'user_id'       => $guestUserId,
@@ -116,11 +119,14 @@ class SecurityRegressionTest extends AbstractTestCase
             'client_id' => $ownClientId,
         ]);
 
+        // guest_visible() only shows quote_status_id IN (2,3,4,5) — draft (1) is never
+        // guest-visible regardless of client, so this must be 'sent' (2) or later for
+        // this to actually test client-scoped IDOR, not status.
         $otherQuoteId = $this->databaseInsert('ip_quotes', [
             'client_id'           => $otherClientId,
             'user_id'             => 1,
             'invoice_group_id'    => 1,
-            'quote_status_id'     => 1,
+            'quote_status_id'     => 2,
             'quote_date_created'  => date('Y-m-d'),
             'quote_date_modified' => date('Y-m-d'),
             'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
@@ -140,7 +146,7 @@ class SecurityRegressionTest extends AbstractTestCase
             'client_id'           => $ownClientId,
             'user_id'             => 1,
             'invoice_group_id'    => 1,
-            'quote_status_id'     => 1,
+            'quote_status_id'     => 2,
             'quote_date_created'  => date('Y-m-d'),
             'quote_date_modified' => date('Y-m-d'),
             'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
