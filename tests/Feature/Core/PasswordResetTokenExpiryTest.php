@@ -164,12 +164,12 @@ class PasswordResetTokenExpiryTest extends AbstractTestCase
     protected function seedUserWithResetToken(?string $expiry): int
     {
         return $this->databaseInsert('ip_users', [
-            'user_name'                       => 'resettarget_' . bin2hex(random_bytes(3)),
-            'user_email'                      => 'reset+' . bin2hex(random_bytes(3)) . '@example.com',
-            'user_password'                   => password_hash('OriginalPass123!', PASSWORD_DEFAULT),
-            'user_psalt'                      => bin2hex(random_bytes(10)),
-            'user_type'                       => 1,
-            'user_active'                     => 1,
+            'user_name'     => 'resettarget_' . bin2hex(random_bytes(3)),
+            'user_email'    => 'reset+' . bin2hex(random_bytes(3)) . '@example.com',
+            'user_password' => password_hash('OriginalPass123!', PASSWORD_DEFAULT),
+            'user_psalt'    => bin2hex(random_bytes(10)),
+            'user_type'     => 1,
+            'user_active'   => 1,
             // Sessions::passwordreset() compares against hash_password_reset_token($token)
             // (sha256), never the raw token — the row must store the hash, not self::TOKEN
             // itself. Inlined rather than requiring ip_security_helper.php in this process.
