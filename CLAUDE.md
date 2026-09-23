@@ -185,16 +185,26 @@ bash tests/Support/sandbox-bootstrap.sh        # provision phpunit/phpstan (safe
 php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
 ```
 
-Expected result once the DB parent connection actually works (see next gotcha) — **last
-verified 2026-09-23 against ivpldock: 863 tests, 2729 assertions, 0 failures, 0 skipped,
-`OK`.** (Older versions of this doc cited 562 tests/1298 assertions/~17 skipped/3
-pre-existing failures — the suite has grown substantially since and those specific counts
-are stale; the mechanism below, "exported `DB_*` masks DB-backed tests as skips," is still
-the important thing to know, not any particular number.) Any run that reports **0 failures
-but a suspiciously large skip count** (last observed shape: ~562/0/~200 skipped/891
-assertions) is **not** green — it is the *masked* profile where the DB-backed integration
-tests never ran. Re-verify the actual skip count is small (genuine guards only — snapshot /
-"requires running server" / manual code-review) before trusting a "0 failures" result.
+**Current known state, verified 2026-09-23 against ivpldock (confirmed identically in CI,
+runs 35827324398/35822902549/... — this is not new, it's been red on `prep/v180` since at
+least 2026-09-22): 1131 tests, 3054 assertions, 100 errors, 27 failures, 1 warning. This is
+NOT green — do not trust an older "0 failures" claim in this file's history, it was
+verified against the wrong checkout.** Root causes identified so far (see
+`~/projects/invoiceplane/_notes/` for the full incident writeup): the vast majority trace
+to two test-support methods (`databaseCount()`, `databaseInsertGetId()`) that were deleted
+from `tests/Concerns/InteractsWithDatabase.php` in a refactor but never removed from ~15
+call sites that came in from a different lineage, plus a root `index.php` that was
+deliberately removed (commit `82bf7ef1`) but silently reintroduced by a later merge
+(`dfeb8118`). A smaller residual set (LetsPeppol/Qonto/SuperPdp error-path assertions,
+password-reset token expiry, Stripe JPY handling, a couple of view-rendering assertions)
+are separate, narrower issues — check git history/notes for current status before assuming
+any of this is fixed.
+
+Any run that reports **0 failures but a suspiciously large skip count** (observed shape:
+~562/0/~200 skipped/891 assertions) is **not** green either — it is the *masked* profile
+where the DB-backed integration tests never ran. Re-verify the actual skip count is small
+(genuine guards only — snapshot / "requires running server" / manual code-review) before
+trusting a "0 failures" result.
 
 Gotchas learned the hard way:
 - `mysqld_safe` can be reaped in the sandbox; re-running the script restarts it. If a run
@@ -214,14 +224,18 @@ Gotchas learned the hard way:
   tooling, unset them just for phpunit: `env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE
   -u DB_USERNAME -u DB_PASSWORD php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php`.
 
-~~Pre-existing failures: 3 `LetsPeppolFlowTest::it_returns_an_error_when_send_invoice_*`
-tests failing on a `RuntimeException`/`show_error()` mismatch~~ — **fixed, do not expect
-these anymore.** That test file moved to `tests/Feature/Core/LetsPeppolFlowTest.php` and its
-error-path tests were rewritten (`c45f534a` era: the shared `Integrations::send_invoice()`
-controller now returns a plain 404 instead of calling `show_error()`, and the test assertions
-were updated to match with `assertResponseStatusCode(404)`). Verified 2026-09-23 on a clean
-`ivpldock` run: **863 tests, 2729 assertions, 0 failures, 0 skipped, `OK`.** If you see
-failures here again, something regressed — it is not an expected baseline anymore.
+**Correction (2026-09-23): the note that used to be here claiming this was "fixed" was
+wrong** — it was verified against a different checkout (`ivplv1`, upstream
+`InvoicePlane/InvoicePlane`, not this repo) by mistake. On `prep/v180` itself, this is
+currently **worse than the original 3-test note ever said**: `LetsPeppolFlowTest`'s 3
+error-path tests now *expect* 404 (someone updated the test assertions to the `c45f534a`-era
+behavior) but the controller on this branch still calls `show_error()` and returns 500 — the
+matching controller fix (`7fe13ea4`, "return 404 for invalid merchant/invoice requests") was
+never actually merged into `prep/v180`. And `QontoFlowTest`/`SuperPdpFlowTest` have the
+*original* 3-tests-each `RuntimeException`/`show_error()` mismatch this note used to describe
+(9 tests total across the 3 files). Don't "fix" this by just changing assertions again without
+checking whether the controller fix needs merging too — check current status before assuming
+either side is right.
 - Session identity in the harness (`actingAsAdmin()`) must be **string-typed** (`user_type
   => '1'`), because `User_Controller` guards with `!== (string)$required_val` and a real
   DB-backed login stores strings. Int-typed session data silently redirects every admin
