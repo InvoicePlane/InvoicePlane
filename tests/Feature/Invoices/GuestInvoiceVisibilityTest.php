@@ -34,11 +34,11 @@ class GuestInvoiceVisibilityTest extends AbstractTestCase
         $this->clientB = $this->seedClient(['client_name' => 'Victim Client B']);
 
         // Create a guest account bound to Client A only
-        $this->guestAccountId = $this->databaseInsert('ip_user_accounts', [
+        $this->guestAccountId = $this->databaseInsert('ip_users', [
             'user_name'          => 'guest_test_user',
             'user_password'      => password_hash('guestpass', PASSWORD_DEFAULT),
             'user_email'         => 'guest-test@test.local',
-            'user_type'          => 3, // guest
+            'user_type'          => 2, // guest
             'user_active'        => 1,
             'user_date_created'  => date('Y-m-d H:i:s'),
             'user_date_modified' => date('Y-m-d H:i:s'),
@@ -63,18 +63,16 @@ class GuestInvoiceVisibilityTest extends AbstractTestCase
         $this->seedInvoice($this->clientA, [
             'invoice_number'    => 'INV-GUEST-A',
             'invoice_status_id' => 4,
-            'invoice_balance'   => '0.00',
-        ]);
+        ], ['invoice_balance' => '0.00']);
 
         // Victim's invoice: paid (status 4) with zero balance
         // This matches BOTH is_paid() conditions: status_id=4 OR balance=0.00
         $this->seedInvoice($this->clientB, [
             'invoice_number'    => 'INV-VICTIM-B',
             'invoice_status_id' => 4,
-            'invoice_balance'   => '0.00',
-        ]);
+        ], ['invoice_balance' => '0.00']);
 
-        $this->actingAsGuest($this->guestAccountId);
+        $this->loginAsGuestAccount();
 
         /* Act */
         $response = $this->get('/guest/invoices/status/paid');
@@ -97,18 +95,16 @@ class GuestInvoiceVisibilityTest extends AbstractTestCase
         $this->seedInvoice($this->clientA, [
             'invoice_number'    => 'INV-GUEST-ZERO-BAL',
             'invoice_status_id' => 2,
-            'invoice_balance'   => '0.00',
-        ]);
+        ], ['invoice_balance' => '0.00']);
 
         // Victim's invoice: zero balance but not paid
         // This should NOT appear because it's not the guest's client
         $this->seedInvoice($this->clientB, [
             'invoice_number'    => 'INV-VICTIM-ZERO-BAL',
             'invoice_status_id' => 2,
-            'invoice_balance'   => '0.00',
-        ]);
+        ], ['invoice_balance' => '0.00']);
 
-        $this->actingAsGuest($this->guestAccountId);
+        $this->loginAsGuestAccount();
 
         /* Act */
         $response = $this->get('/guest/invoices/status/paid');
@@ -133,17 +129,17 @@ class GuestInvoiceVisibilityTest extends AbstractTestCase
         $this->seedInvoice($this->clientA, [
             'invoice_number'    => 'INV-GUEST-OVERDUE',
             'invoice_status_id' => 2,
-            'invoice_due_date'  => $yesterday,
+            'invoice_date_due'  => $yesterday,
         ]);
 
         // Victim's invoice: overdue
         $this->seedInvoice($this->clientB, [
             'invoice_number'    => 'INV-VICTIM-OVERDUE',
             'invoice_status_id' => 2,
-            'invoice_due_date'  => $yesterday,
+            'invoice_date_due'  => $yesterday,
         ]);
 
-        $this->actingAsGuest($this->guestAccountId);
+        $this->loginAsGuestAccount();
 
         /* Act */
         $response = $this->get('/guest/invoices/status/overdue');
@@ -161,29 +157,21 @@ class GuestInvoiceVisibilityTest extends AbstractTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
-    protected function seedClient(array $overrides = []): int
+    /**
+     * Log in as the guest account seeded in setUp(), bound to clientA only.
+     * actingAsGuest() (no args) is a fully unauthenticated session — this test
+     * needs a real logged-in guest so Guest_Controller can resolve user_clients
+     * from ip_user_clients via the session's user_id.
+     */
+    private function loginAsGuestAccount(): void
     {
-        return $this->databaseInsert('ip_clients', array_merge([
-            'client_name'          => 'Test Client ' . bin2hex(random_bytes(3)),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ], $overrides));
-    }
-
-    protected function seedInvoice(int $clientId, array $overrides = [], array $amountOverrides = []): int
-    {
-        return $this->databaseInsert('ip_invoices', array_merge([
-            'user_id'               => 1,
-            'client_id'             => $clientId,
-            'invoice_group_id'      => 1,
-            'invoice_status_id'     => 2,
-            'invoice_number'        => 'INV-' . bin2hex(random_bytes(4)),
-            'invoice_url_key'       => bin2hex(random_bytes(16)),
-            'invoice_date_created'  => date('Y-m-d'),
-            'invoice_date_modified' => date('Y-m-d H:i:s'),
-            'invoice_due_date'      => date('Y-m-d', strtotime('+30 days')),
-            'invoice_balance'       => '0.00',
-        ], $overrides));
+        $this->actingAs([
+            'user_id'       => $this->guestAccountId,
+            'user_type'     => 2,
+            'user_email'    => 'guest-test@test.local',
+            'user_name'     => 'guest_test_user',
+            'user_company'  => '',
+            'user_language' => 'system',
+        ]);
     }
 }
