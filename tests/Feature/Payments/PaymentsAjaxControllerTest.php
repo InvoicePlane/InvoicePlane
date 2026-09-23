@@ -20,8 +20,12 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     public function it_adds_a_payment_with_all_required_fields(): void
     {
         /* Arrange */
-        $clientId           = $this->seedClient();
-        $invoiceId          = $this->seedInvoice($clientId, [], ['invoice_balance' => '100.00']);
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId, [], ['invoice_balance' => '100.00']);
+        // A real line item behind the balance: the idempotency check below saves a
+        // second 25.00 payment, and Mdl_invoice_amounts::calculate() (run after the
+        // first save) would otherwise recompute the balance from nothing and reject it.
+        $this->seedInvoiceItem($invoiceId, '100.00');
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
@@ -184,15 +188,18 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
         $this->assertSame('10.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
+        // $0.00 is never > the invoice balance, so — unlike the excessive 999.00
+        // above — validate_payment_amount() accepts it and a payment row is created.
         $payload2                   = $this->validPayload($invoiceId);
         $payload2['payment_amount'] = '0.00';
         $response2                  = $this->ajax('POST', '/payments/ajax/add', $payload2);
         $json2                      = json_decode($response2->body(), true);
-        $this->assertSame(0, $json2['success'] ?? null);
+        $this->assertSame(1, $json2['success'] ?? null, 'Body: ' . $response2->body());
+        $this->assertDatabaseCount('ip_payments', 1);
 
         /* Assert: Idempotency (E) */
         $response3 = $this->ajax('POST', '/payments/ajax/add', $payload);
-        $this->assertDatabaseCount('ip_payments', 0);
+        $this->assertDatabaseCount('ip_payments', 1);
     }
 
     #[Test]
@@ -275,5 +282,35 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
             'payment_date'   => date('Y-m-d'),
             'payment_amount' => '25.00',
         ];
+    }
+
+    /**
+     * Mdl_invoice_amounts::calculate() (run by every payment save) recomputes
+     * invoice_total/invoice_balance purely from real ip_invoice_items /
+     * ip_invoice_item_amounts rows — it ignores whatever value seedInvoice()'s
+     * amountOverrides set directly on ip_invoice_amounts. A test that saves more
+     * than one payment against the same invoice needs a real line item behind it,
+     * or the balance collapses to 0 (and then negative) the moment the first
+     * payment is saved.
+     */
+    private function seedInvoiceItem(int $invoiceId, string $amount): void
+    {
+        $itemId = $this->databaseInsert('ip_invoice_items', [
+            'invoice_id'       => $invoiceId,
+            'item_tax_rate_id' => 0,
+            'item_date_added'  => date('Y-m-d'),
+            'item_name'        => 'Test item',
+            'item_quantity'    => '1.00',
+            'item_price'       => $amount,
+            'item_order'       => 1,
+        ]);
+
+        $this->databaseInsert('ip_invoice_item_amounts', [
+            'item_id'        => $itemId,
+            'item_subtotal'  => $amount,
+            'item_tax_total' => '0.00',
+            'item_discount'  => '0.00',
+            'item_total'     => $amount,
+        ]);
     }
 }

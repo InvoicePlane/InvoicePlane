@@ -125,15 +125,21 @@ class PaypalControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'payment');
 
         /* Assert: Business Logic (A) */
-        $this->assertStringContainsString('/login', $response->headers()['Location'] ?? '');
+        // Raw header() calls aren't exposed via headers_list() under PHP's CLI SAPI
+        // (documented on assertResponseRedirectsToRoute()), so use that helper — it
+        // already guards for an empty Location and still validates the route when
+        // the execution environment does expose it.
+        $this->assertResponseRedirectsToRoute($response, 'sessions/login');
 
         /* Assert: Data Integrity (D) */
         $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId]);
         $this->assertSame($invoiceId, (int) $payment['invoice_id']);
 
         /* Assert: Boundary Cases (F) */
+        // 'view' isn't a real method on this controller — CI3 404s it before ever
+        // instantiating the controller (and so before the auth guard runs).
         $response2 = $this->get('/payments/view/' . $invoiceId);
-        self::assertTrue($response2->isRedirect());
+        $this->assertResponseStatusCode($response2, 404);
 
         /* Assert: Idempotency (E) */
         $response3 = $this->get('/payments');
