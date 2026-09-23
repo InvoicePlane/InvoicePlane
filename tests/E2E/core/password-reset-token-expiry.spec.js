@@ -9,6 +9,7 @@
 import { test, expect } from '../test.js';
 import { uniq } from '../support/fixtures.js';
 import { dbInsert, dbQuery } from '../support/db.js';
+import { createHash } from 'crypto';
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
@@ -26,7 +27,10 @@ function seedUserWithResetToken(expiry) {
     user_psalt: 'e2e',
     user_type: 1,
     user_active: 1,
-    user_passwordreset_token: TOKEN,
+    // Sessions::passwordreset() compares hash_password_reset_token($token) (sha256, see
+    // ip_security_helper.php) against this column — the emailed link carries the raw
+    // token, but only its digest is ever stored, so the row must hold the hash too.
+    user_passwordreset_token: createHash('sha256').update(TOKEN).digest('hex'),
     user_passwordreset_token_expiry: expiry,
     user_date_created: now,
     user_date_modified: now,
