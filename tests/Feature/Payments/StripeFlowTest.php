@@ -211,7 +211,7 @@ class StripeFlowTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+        $this->assertNotNull($invoice);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->post('/guest/gateways/stripe/create_checkout_session/nonexistent');
@@ -308,8 +308,7 @@ class StripeFlowTest extends AbstractTestCase
         $this->assertSame(1, (int) $merchant['merchant_response_successful']);
 
         /* Assert: Boundary Cases (F) */
-        $testMerchant = $this->databaseFetchOne('ip_merchant_responses', ['invoice_id' => $invoiceId]);
-        $this->assertGreaterThan(0, (int) $testMerchant['merchant_response_id']);
+        $this->assertDatabaseCount('ip_merchant_responses', 1, ['invoice_id' => $invoiceId]);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
@@ -356,7 +355,7 @@ class StripeFlowTest extends AbstractTestCase
         /* Assert: Boundary Cases (F) */
         $this->databaseInsertOrIgnore('ip_payments', ['invoice_id' => 99999, 'payment_external_id' => 'pi_boundary', 'payment_amount' => '1.00']);
         $boundaryPayment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'pi_boundary']);
-        $this->assertGreaterThan(0, (int) $boundaryPayment['payment_id']);
+        $this->assertNotSame($invoiceId, (int) $boundaryPayment['invoice_id']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->get('/guest/gateways/stripe/callback/cs_test_callback');
@@ -527,7 +526,7 @@ class StripeFlowTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+        $this->assertNotNull($invoice);
 
         /* Assert: Boundary Cases (F) */
         $testInvoice = $this->seedPayableInvoice();

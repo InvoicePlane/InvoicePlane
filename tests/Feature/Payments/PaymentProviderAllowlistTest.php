@@ -142,7 +142,7 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
-        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+        $this->assertNotNull($invoice);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/delete');

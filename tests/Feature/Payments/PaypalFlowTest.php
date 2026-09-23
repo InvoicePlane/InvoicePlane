@@ -158,7 +158,7 @@ class PaypalFlowTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+        $this->assertNotNull($invoice);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
@@ -292,7 +292,7 @@ class PaypalFlowTest extends AbstractTestCase
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
-        $this->assertGreaterThan($paymentCountBefore, $paymentCountAfter);
+        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
 
         /* Assert: Data Integrity (D) */
         $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'CAP-1']);
@@ -325,7 +325,7 @@ class PaypalFlowTest extends AbstractTestCase
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
-        $this->assertGreaterThan($paymentCountBefore, $paymentCountAfter);
+        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
 
         /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect() || $response->statusCode() === 200);

@@ -38,19 +38,22 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
-        $this->assertGreaterThan($paymentCountBefore, $paymentCountAfter);
+        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
 
         /* Assert: Error Semantics (C) */
         $this->assertResponseStatusCode($response, 200);
 
         /* Assert: Data Integrity (D) */
         $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId, 'payment_amount' => '25.00']);
-        $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+        $this->assertNotNull($payment);
 
         /* Assert: Idempotency (E) */
+        // "Idempotency" here means the endpoint keeps succeeding on repeat submission,
+        // not that it dedupes — a second manual payment is a legitimately distinct row.
         $response2 = $this->ajax('POST', '/payments/ajax/add', $this->validPayload($invoiceId));
         $json2     = json_decode($response2->body(), true);
         $this->assertSame(1, $json2['success'] ?? null, 'Body: ' . $response2->body());
+        $this->assertSame($paymentCountBefore + 2, $this->databaseCount('ip_payments'));
     }
 
     #[Test]
@@ -263,7 +266,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+        $this->assertNotNull($invoice);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->post('/payments/ajax/modal_add_payment', ['invoice_id' => (string) $invoiceId]);
