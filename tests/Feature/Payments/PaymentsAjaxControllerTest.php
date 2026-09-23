@@ -46,7 +46,7 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
         /* Assert: Idempotency (E) */
         $response2 = $this->ajax('POST', '/payments/ajax/add', $this->validPayload($invoiceId));
         $json2     = json_decode($response2->body(), true);
-        $this->assertSame(1, $json2['success'] ?? null);
+        $this->assertSame(1, $json2['success'] ?? null, 'Body: ' . $response2->body());
     }
 
     #[Test]
@@ -145,9 +145,9 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
         /* Assert: Error Semantics (C) */
         $this->assertResponseStatusCode($response, 200);
 
-        /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('100.00', $invoice['invoice_balance']);
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('100.00', $amounts['invoice_balance']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->ajax('POST', '/payments/ajax/add', $payload);
@@ -179,9 +179,9 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
         /* Assert: Error Semantics (C) */
         $this->assertResponseStatusCode($response, 200);
 
-        /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('10.00', $invoice['invoice_balance']);
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('10.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $payload2                   = $this->validPayload($invoiceId);

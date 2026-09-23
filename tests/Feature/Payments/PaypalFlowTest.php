@@ -122,9 +122,9 @@ class PaypalFlowTest extends AbstractTestCase
         $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
         $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
 
-        /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('0.00', $invoice['invoice_balance']);
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
@@ -402,9 +402,9 @@ class PaypalFlowTest extends AbstractTestCase
         /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
 
-        /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('0.00', $invoice['invoice_balance']);
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER-4');
@@ -472,9 +472,9 @@ class PaypalFlowTest extends AbstractTestCase
         /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
 
-        /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('50.00', $invoice['invoice_balance']);
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('50.00', $amounts['invoice_balance']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER-6');
