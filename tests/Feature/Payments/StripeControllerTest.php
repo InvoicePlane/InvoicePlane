@@ -66,18 +66,17 @@ class StripeControllerTest extends AbstractTestCase
         $clientId   = $this->seedClient(['client_name' => 'Multi-Service Client']);
         $invoiceId1 = $this->seedInvoice($clientId);
         $invoiceId2 = $this->seedInvoice($clientId);
-        $payment1   = $this->seedPayment($invoiceId1, ['payment_amount' => '25.00']);
-        $payment2   = $this->seedPayment($invoiceId2, ['payment_amount' => '75.00']);
+        $this->seedPayment($invoiceId1, ['payment_amount' => '25.00']);
+        $this->seedPayment($invoiceId2, ['payment_amount' => '75.00']);
 
         /* Act */
         $response = $this->get('/payments');
 
         /* Assert: Multiple payments are listed */
         $this->assertResponseStatusCode($response, 200);
-        $payment1Data = $this->databaseFetchOne('ip_payments', ['payment_id' => $payment1]);
-        $payment2Data = $this->databaseFetchOne('ip_payments', ['payment_id' => $payment2]);
-        $this->assertResponseBodyContains($response, $payment1Data['payment_amount']);
-        $this->assertResponseBodyContains($response, $payment2Data['payment_amount']);
+        // The list renders currency-formatted (e.g. '$25'), not the raw stored '25.00'.
+        $this->assertResponseBodyContains($response, '$25');
+        $this->assertResponseBodyContains($response, '$75');
     }
 
     #[Test]
