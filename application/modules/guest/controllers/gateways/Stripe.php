@@ -4,6 +4,8 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'modules/guest/libraries/PaymentCallbackLock.php';
+
 /*
  * InvoicePlane
  *
@@ -137,46 +139,72 @@ class Stripe extends Base_Controller
                     throw new Exception('Invalid payment intent ID');
                 }
 
-                // Check if this payment_intent has already been processed (deduplication check)
-                $existing_payment = $this->db
-                    ->where('payment_external_id', $payment_intent)
-                    ->get('ip_payments')
-                    ->row();
+                // Serialize concurrent callbacks for this invoice (CWE-362/367 TOCTOU):
+                // without this, two callbacks racing on the same invoice can both pass
+                // the balance check below before either commits its payment. The loser
+                // waits here, then re-reads the now up-to-date balance once it gets the
+                // lock, so it correctly falls into the "already paid" branch instead of
+                // also recording a payment.
+                $payment_lock = new PaymentCallbackLock($this->db);
 
-                if ($existing_payment) {
-                    // Duplicate payment attempt detected
-                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. Payment intent: ' . sanitize_for_logging($payment_intent) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
-                    $paid     = false; // Mark as not paid to show info message instead of success
-                    $user_msg = trans('online_payment_already_processed');
-                } elseif ($invoice->invoice_balance <= 0) {
-                    // Invoice is already fully paid
-                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
-                    $paid     = false; // Mark as not paid to show info message instead of success
-                    $user_msg = trans('invoice_already_paid');
+                if ( ! $payment_lock->acquire($invoice->invoice_id)) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Unable to acquire payment lock for invoice: ' . sanitize_for_logging($invoice->invoice_id));
+                    $paid     = false;
+                    $user_msg = trans('online_payment_payment_failed');
                 } else {
-                    // Validate currency and amount before recording payment
-                    $expected_currency = mb_strtoupper((string) get_setting('gateway_stripe_currency'));
-                    $capture_currency  = StripeResponseExtractor::extractCurrency($session);
-                    $capture_amount    = amount_from_minor_units(StripeResponseExtractor::extractAmountTotalMinor($session), stripe_minor_unit_multiplier($capture_currency));
+                    try {
+                        // The balance read into $invoice before the lock was acquired may
+                        // already be stale; re-read it now that concurrent callbacks for
+                        // this invoice are serialized.
+                        $fresh_invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice->invoice_id)->get()->row();
+                        if ($fresh_invoice) {
+                            $invoice = $fresh_invoice;
+                        }
 
-                    if ($capture_currency !== $expected_currency) {
-                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: currency mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . $expected_currency . ', received: ' . $capture_currency);
-                        $paid     = false;
-                        $user_msg = trans('online_payment_payment_failed');
-                    } elseif ((float) $capture_amount + 0.0001 < (float) $invoice->invoice_balance) {
-                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($capture_amount));
-                        $paid     = false;
-                        $user_msg = trans('online_payment_payment_failed');
-                    } else {
-                        // Save the payment (visible in guest user)
-                        $this->mdl_payments->save(null, [
-                            'invoice_id'          => $invoice->invoice_id,
-                            'payment_date'        => date('Y-m-d'),
-                            'payment_amount'      => $capture_amount,
-                            'payment_method_id'   => get_setting('gateway_stripe_payment_method'),
-                            'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
-                            'payment_external_id' => $payment_intent,
-                        ]);
+                        // Check if this payment_intent has already been processed (deduplication check)
+                        $existing_payment = $this->db
+                            ->where('payment_external_id', $payment_intent)
+                            ->get('ip_payments')
+                            ->row();
+
+                        if ($existing_payment) {
+                            // Duplicate payment attempt detected
+                            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. Payment intent: ' . sanitize_for_logging($payment_intent) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
+                            $paid     = false; // Mark as not paid to show info message instead of success
+                            $user_msg = trans('online_payment_already_processed');
+                        } elseif ($invoice->invoice_balance <= 0) {
+                            // Invoice is already fully paid
+                            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
+                            $paid     = false; // Mark as not paid to show info message instead of success
+                            $user_msg = trans('invoice_already_paid');
+                        } else {
+                            // Validate currency and amount before recording payment
+                            $expected_currency = mb_strtoupper((string) get_setting('gateway_stripe_currency'));
+                            $capture_currency  = StripeResponseExtractor::extractCurrency($session);
+                            $capture_amount    = amount_from_minor_units(StripeResponseExtractor::extractAmountTotalMinor($session), stripe_minor_unit_multiplier($capture_currency));
+
+                            if ($capture_currency !== $expected_currency) {
+                                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: currency mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . $expected_currency . ', received: ' . $capture_currency);
+                                $paid     = false;
+                                $user_msg = trans('online_payment_payment_failed');
+                            } elseif ((float) $capture_amount + 0.0001 < (float) $invoice->invoice_balance) {
+                                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($capture_amount));
+                                $paid     = false;
+                                $user_msg = trans('online_payment_payment_failed');
+                            } else {
+                                // Save the payment (visible in guest user)
+                                $this->mdl_payments->save(null, [
+                                    'invoice_id'          => $invoice->invoice_id,
+                                    'payment_date'        => date('Y-m-d'),
+                                    'payment_amount'      => $capture_amount,
+                                    'payment_method_id'   => get_setting('gateway_stripe_payment_method'),
+                                    'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
+                                    'payment_external_id' => $payment_intent,
+                                ]);
+                            }
+                        }
+                    } finally {
+                        $payment_lock->release();
                     }
                 }
             }
