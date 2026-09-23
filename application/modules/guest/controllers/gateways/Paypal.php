@@ -36,7 +36,7 @@ class Paypal extends Base_Controller
      *
      * @return json the PayPal object to be loaded in the JS SDK script
      */
-    public function paypal_create_order($invoice_url_key)
+    public function paypal_create_order($invoice_url_key = null)
     {
         // Require POST request to prevent CSRF attacks
         if ($this->input->method() !== 'post') {
@@ -48,7 +48,7 @@ class Paypal extends Base_Controller
 
         // Security: Verify the invoice exists and is guest-visible
         if ( ! $invoice) {
-            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted order creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted order creation for non-public or non-existent invoice with key: ' . sanitize_for_logging((string) $invoice_url_key));
             show_404();
         }
 
@@ -117,7 +117,7 @@ class Paypal extends Base_Controller
      *
      * @return void
      */
-    public function paypal_capture_payment(string $order_id)
+    public function paypal_capture_payment(?string $order_id = null)
     {
         // Require POST request to prevent CSRF attacks
         if ($this->input->method() !== 'post') {
