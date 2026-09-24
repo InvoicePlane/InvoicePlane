@@ -6,7 +6,8 @@
 
 import { test, expect } from '../test.js';
 import { createFamily, uniq } from '../support/fixtures.js';
-import { expectBlockedByRequired, expectErrorFlash } from '../support/forms.js';
+import { dbQuery } from '../support/db.js';
+import { expectBlockedByRequired, expectSavedFlash, expectErrorFlash } from '../support/forms.js';
 
 test.describe('Families — list', () => {
   test('it lists every family', async ({ page }) => {
@@ -120,10 +121,19 @@ test.describe('Families — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
     await page.goto('/families');
     await expect(page.getByRole('link', { name: doomed.name })).toHaveCount(0);
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
+
+    /* Assert: Database confirms hard delete */
+    expect(dbQuery(`SELECT family_id FROM ip_families WHERE family_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other family unaffected */
+    expect(dbQuery(`SELECT family_id FROM ip_families WHERE family_id = ${kept.id}`)).toHaveLength(1);
   });
 
 

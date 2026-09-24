@@ -6,7 +6,8 @@
 
 import { test, expect } from '../test.js';
 import { createProduct, uniq } from '../support/fixtures.js';
-import { expectBlockedByRequired } from '../support/forms.js';
+import { expectBlockedByRequired, expectSavedFlash } from '../support/forms.js';
+import { dbQuery } from '../support/db.js';
 
 test.describe('Products — list', () => {
   test('it lists every product', async ({ page }) => {
@@ -125,10 +126,19 @@ test.describe('Products — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
     await page.goto('/products');
     await expect(page.getByRole('link', { name: doomed.name })).toHaveCount(0);
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
+
+    /* Assert: Database confirms hard delete */
+    expect(dbQuery(`SELECT product_id FROM ip_products WHERE product_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other product unaffected */
+    expect(dbQuery(`SELECT product_id FROM ip_products WHERE product_id = ${kept.id}`)).toHaveLength(1);
   });
 
 
