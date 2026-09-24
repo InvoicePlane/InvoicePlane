@@ -4,7 +4,7 @@
  * Mirrors tests/Feature/Core/IntegrationsControllerTest.php.
  */
 
-import { test, expect } from '../test.js';
+import { test, expect } from '../../test.js';
 import { createInvoice, uniq } from '../support/fixtures.js';
 import { dbInsert } from '../support/db.js';
 

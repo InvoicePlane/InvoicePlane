@@ -5,7 +5,7 @@
  * any call to a provider, so no gateway stub is needed.
  */
 
-import { test, expect } from '../test.js';
+import { test, expect } from '../../test.js';
 import { createInvoice, uniq } from '../support/fixtures.js';
 import { dbInsert, dbQuery } from '../support/db.js';
 

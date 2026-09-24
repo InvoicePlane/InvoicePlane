@@ -152,10 +152,11 @@ test.describe('Clients — delete', () => {
   // server booted with CSRF_PROTECTION=true. This E2E server runs with it off
   // (ipconfig.php), so they stay skipped here and remain covered by
   // tests/Feature/Clients/ClientsControllerTest.php.
-  test('it still deletes a client when csrf protection is on and the token is valid', async ({ page }) => {
+  test.skip('it still deletes a client when csrf protection is on and the token is valid', async ({ page }) => {
+  });
 
-  test('it does not delete a client when the csrf token is missing', async ({ page }) => {
-});
+  test.skip('it does not delete a client when the csrf token is missing', async ({ page }) => {
+  });
 
 test.describe('Clients — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });

@@ -4,7 +4,7 @@
  * Mirrors tests/Feature/Core/LoginSecurityTest.php.
  */
 
-import { test, expect } from '../test.js';
+import { test, expect } from '../../test.js';
 import { createSecondaryUser } from '../support/fixtures.js';
 import { dbExec, dbQuery } from '../support/db.js';
 import { loginAs } from '../support/auth.js';

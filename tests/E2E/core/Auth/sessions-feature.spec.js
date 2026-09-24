@@ -4,7 +4,7 @@
  * password-reset entry points, driven for real through the browser.
  */
 
-import { test, expect } from '../test.js';
+import { test, expect } from '../../test.js';
 import { LOGIN_PATH } from '../config.js';
 
 test.describe('Sessions — login page', () => {

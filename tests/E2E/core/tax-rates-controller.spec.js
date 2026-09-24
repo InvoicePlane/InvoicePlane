@@ -139,9 +139,9 @@ test.describe('Tax rates — delete', () => {
     expect(dbQuery(`SELECT tax_rate_id FROM ip_tax_rates WHERE tax_rate_id = ${kept.id}`)).toHaveLength(1);
   });
 
-  test('it still deletes a tax rate when csrf protection is on and the token is valid', async () => {
+  test.skip('it still deletes a tax rate when csrf protection is on and the token is valid', async () => {
 
-  test('it does not delete a tax rate when the csrf token is missing', async () => {
+  test.skip('it does not delete a tax rate when the csrf token is missing', async () => {
 });
 
 test.describe('Tax rates — guest access', () => {
