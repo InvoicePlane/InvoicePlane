@@ -56,6 +56,9 @@ jobs:
           tools: composer:latest
           coverage: none
 
+      - name: Install dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist
+
       - name: Build MariaDB schema and seed baseline
         run: |
           export MYSQL_PWD="$DB_PASSWORD"
