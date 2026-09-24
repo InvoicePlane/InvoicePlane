@@ -51,11 +51,24 @@ test.describe('Stripe — checkout session guards', () => {
   });
 });
 
+test.describe('Stripe — frontend checkout submission', () => {
+  test('it submits to stripe checkout endpoint for a payable invoice', async ({ page }) => {
+    /* Arrange */
+    const invoice = await createPayableGuestInvoice(page);
+
+    /* Act: submit the checkout form (no redirect following, so we can inspect the response target) */
+    const response = await page.request.post(SESSION(invoice.key), { maxRedirects: 0 });
+
+    /* Assert: server accepted the request and either created a session or redirected */
+    expect([200, 302, 303, 307]).toContain(response.status());
+    /* Response validation (session ID, URL, amount, currency) stays in StripeFlowTest.php */
+  });
+});
+
 test.describe('Stripe — gateway response handling (needs a stubbed gateway)', () => {
   const NEEDS_STUB = 'needs a server-side Stripe stub — covered by tests/Feature/Payments/StripeFlowTest.php';
 
   for (const title of [
-    'it creates a checkout session for a payable invoice',
     'it sends a jpy invoice total as 100 minor units to stripe checkout',
     'it records a paid callback and creates a payment',
     'it does not duplicate a payment for an already processed payment intent',
