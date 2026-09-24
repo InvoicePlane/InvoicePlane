@@ -113,7 +113,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --no-progress --no-interaction --prefer-dist
+        run: composer install --no-progress --no-interaction --prefer-dist --no-dev
 
       # The e-invoicing generation tests validate the produced Factur-X / UBL
       # against EN 16931 Schematron, which EInvoiceSchematronValidator runs
