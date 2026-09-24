@@ -36,8 +36,10 @@ test.describe('Dashboard — authenticated admin', () => {
     /* Arrange + Act */
     await page.goto('/dashboard');
 
-    /* Assert */
-    await expect(page.locator('a[href*="/clients"]').first()).toBeVisible();
+    /* Assert: scoped to the always-visible Quick Actions panel — the
+     * unscoped selector also matches the navbar's "Add Client" dropdown
+     * item, which is hidden until its toggle is clicked. */
+    await expect(page.locator('#panel-quick-actions a[href*="/clients"]').first()).toBeVisible();
   });
 
   test('it renders without exposing php errors', async ({ page }) => {
