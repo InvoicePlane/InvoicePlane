@@ -7,13 +7,14 @@
 import { test, expect } from '../test.js';
 
 test.describe('Stripe gateway — smoke', () => {
-  test('it returns a successful response or redirect', async ({ page }) => {
+  test('it loads the payments page successfully', async ({ page }) => {
     /* Arrange + Act */
     const response = await page.goto('/payments');
+    const body = await response.text();
 
     /* Assert */
     expect(response.status()).toBe(200);
-    expect(await response.text()).toContain('<html');
+    expect(body).toContain('Payment');
   });
 });
 

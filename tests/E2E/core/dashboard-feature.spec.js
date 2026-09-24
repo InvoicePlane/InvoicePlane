@@ -17,8 +17,8 @@ test.describe('Dashboard feature — authenticated admin', () => {
     const body = await (await page.goto('/dashboard')).text();
 
     /* Assert */
-    expect(body).toContain('<html');
-    expect(body).toContain('</html>');
+    expect(body).toContain('<title>');
+    expect(body).toContain('Dashboard');
   });
 
   test('it includes navigation elements on the dashboard', async ({ page }) => {
@@ -26,21 +26,24 @@ test.describe('Dashboard feature — authenticated admin', () => {
     await page.goto('/dashboard');
 
     /* Assert */
-    await expect(page.locator('#headerbar, .navbar, nav')).toBeVisible();
+    await expect(page.locator('.navbar')).toBeVisible();
   });
 
-  test('it does not expose php errors on the dashboard', async ({ page }) => {
+  test('it renders without exposing php errors', async ({ page }) => {
     /* Arrange + Act */
-    const body = await (await page.goto('/dashboard')).text();
+    const response = await page.goto('/dashboard');
+    const body = await response.text();
 
     /* Assert */
+    expect(response.status()).toBe(200);
+    expect(body).toContain('Dashboard');
     expect(body).not.toMatch(/Fatal error|Uncaught|A PHP Error was encountered|<b>(Warning|Notice)<\/b>/i);
   });
 
   test('it produces a deterministic dashboard response on two consecutive requests', async ({ page }) => {
     /* Arrange + Act */
-    const a = (await page.request.get('/dashboard')).status();
-    const b = (await page.request.get('/dashboard')).status();
+    const a = await (await page.request.get('/dashboard')).text();
+    const b = await (await page.request.get('/dashboard')).text();
 
     /* Assert */
     expect(a).toBe(b);
