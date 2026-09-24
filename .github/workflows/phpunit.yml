@@ -13,15 +13,12 @@ name: PHPUnit
 # seeded via tests/Support/seed-test-db.php.
 
 on:
-  # Only push to prep/v180 (the integration branch). PRs to prep/v180 will
-  # trigger on push after merge, so we don't duplicate by also running on
-  # pull_request events. Other branches are tested only via their PRs.
+  # Not every push to every branch — only the shared integration branch and
+  # pull requests. Feature-branch work is covered when it opens/updates a PR.
   push:
     branches:
       - prep/v180
   pull_request:
-    branches-ignore:
-      - prep/v180
   #schedule:
   #  - cron: '0 6 * * 1'   # Mondays 06:00 UTC — full version sweep
   workflow_dispatch:
