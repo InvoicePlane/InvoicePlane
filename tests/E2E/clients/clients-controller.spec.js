@@ -9,8 +9,9 @@
 
 import { test, expect } from '../test.js';
 import { createClient, uniq } from '../support/fixtures.js';
-import { expectBlockedByRequired, expectErrorFlash } from '../support/forms.js';
+import { expectBlockedByRequired, expectErrorFlash, expectSavedFlash } from '../support/forms.js';
 import { postForm, readCsrfToken } from '../support/http.js';
+import { dbQuery } from '../support/db.js';
 
 test.describe('Clients — list', () => {
   test('it lists every active client', async ({ page }) => {
@@ -132,10 +133,19 @@ test.describe('Clients — delete', () => {
       row.locator('button.dropdown-button').click(),
     ]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
     await page.goto('/clients/status/all');
     await expect(page.getByRole('link', { name: doomed.name })).toHaveCount(0);
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
+
+    /* Assert: Database confirms hard delete */
+    expect(dbQuery(`SELECT client_id FROM ip_clients WHERE client_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other client unaffected */
+    expect(dbQuery(`SELECT client_id FROM ip_clients WHERE client_id = ${kept.id}`)).toHaveLength(1);
   });
 
   // The two CSRF-regression cases (issue #1694) can only be exercised against a

@@ -12,6 +12,7 @@ import { test, expect } from '../test.js';
 import { createInvoice } from '../support/fixtures.js';
 import { dbExec, dbInsert, dbQuery } from '../support/db.js';
 import { postForm } from '../support/http.js';
+import { expectSavedFlash } from '../support/forms.js';
 
 function setStatus(invoiceId, statusId) {
   dbExec(`UPDATE ip_invoices SET invoice_status_id = ${statusId} WHERE invoice_id = ${invoiceId}`);
@@ -65,8 +66,18 @@ test.describe('Invoices — delete', () => {
     /* Act */
     await deleteViaRow(page, doomed.id);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/invoices/status/all');
+    await expect(page.locator(`form[action*="invoices/delete/${doomed.id}"]`)).toHaveCount(0);
+    await expect(page.locator(`form[action*="invoices/delete/${kept.id}"]`)).toHaveCount(1);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT invoice_id FROM ip_invoices WHERE invoice_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other invoice unaffected */
     expect(dbQuery(`SELECT invoice_id FROM ip_invoices WHERE invoice_id = ${kept.id}`)).toHaveLength(1);
   });
 
