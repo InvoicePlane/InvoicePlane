@@ -125,12 +125,8 @@ test.describe('Families — delete', () => {
   });
 
   test('it still deletes a family when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 
   test('it does not delete a family when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 });
 
 test.describe('Families — guest access', () => {

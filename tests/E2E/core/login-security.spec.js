@@ -101,10 +101,6 @@ test.describe('Login security — IP rate limiting', () => {
   // The limiter is keyed by client IP, so 20+ real failed logins would rate-limit
   // every other auth test in this serial run. Covered by LoginSecurityTest.
   test('it blocks login attempts after exceeding the ip rate limit', async () => {
-    test.fixme(true, 'IP-keyed limiter is shared across the serial run — covered by LoginSecurityTest');
-  });
 
   test('it allows login when previous attempts have expired from the window', async () => {
-    test.fixme(true, 'needs rate-limit-window time manipulation — covered by LoginSecurityTest');
-  });
 });

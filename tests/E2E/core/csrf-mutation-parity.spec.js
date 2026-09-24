@@ -11,25 +11,5 @@
  * project against a CSRF-on server would let these run here too.
  */
 
-import { test } from '../test.js';
-
-const NEEDS_CSRF_ON = 'needs a CSRF_PROTECTION=true server — covered by CsrfMutationParityTest';
-
-for (const title of [
-  'it deletes an import batch with a valid csrf token',
-  'it does not delete an import batch without a csrf token',
-  'it unassigns a client from a user with a valid csrf token',
-  'it does not unassign a client from a user without a csrf token',
-  'it deletes a payment with a valid csrf token',
-  'it does not delete a payment without a csrf token',
-  'it recalculates invoice amounts with a valid csrf token',
-  'it does not recalculate invoice amounts without a csrf token',
-  'it recalculates quote amounts with a valid csrf token',
-  'it does not recalculate quote amounts without a csrf token',
-  'it changes a password via reset with a valid csrf token',
-  'it does not change a password via reset without a csrf token',
-]) {
-  test(title, () => {
-    test.fixme(true, NEEDS_CSRF_ON);
-  });
-}
+/* All CSRF mutation parity tests require CSRF_PROTECTION=true server.
+   Fully covered by tests/Feature/Core/CsrfMutationParityTest.php. */

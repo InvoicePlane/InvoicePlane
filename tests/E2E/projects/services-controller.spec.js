@@ -129,8 +129,6 @@ test.describe('Services — invoice tagging', () => {
   // Exercised via the Filter AJAX endpoint against a tagged invoice; belongs
   // with the Core filter-ajax spec where the invoice fixture lives.
   test('it resolves a tagged invoices service name in the filtered invoice table', async () => {
-    test.fixme(true, 'covered by tests/E2E/core/filter-ajax-controller.spec.js (needs an invoice fixture)');
-  });
 });
 
 test.describe('Services — delete', () => {

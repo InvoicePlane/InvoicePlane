@@ -8,7 +8,6 @@
  * (order creation, capture recording, malformed-JSON handling) need the
  * outbound HTTP call stubbed — the PHPUnit suite does this with a fake gateway;
  * Playwright can't intercept a server-side PHP → PayPal request, so those stay
- * `test.fixme` and remain covered by PaypalFlowTest's fakes.
  */
 
 import { test, expect } from '../test.js';
@@ -74,23 +73,4 @@ test.describe('PayPal — frontend order creation submission', () => {
   });
 });
 
-test.describe('PayPal — gateway response handling (needs a stubbed gateway)', () => {
-  const NEEDS_STUB = 'needs a server-side PayPal stub — covered by tests/Feature/Payments/PaypalFlowTest.php';
-
-  for (const title of [
-    'it returns 500 when paypal returns malformed json for create order',
-    'it returns 500 when paypal response is missing the order id',
-    'it records a completed capture and creates a payment',
-    'it records a pending capture as a payment with a pending note',
-    'it does not duplicate a payment for an already processed capture id',
-    'it does not record a payment when the invoice is already fully paid',
-    'it rejects a capture whose currency does not match the gateway setting',
-    'it rejects a capture whose amount is short of the invoice balance',
-    'it records a declined capture as an unsuccessful merchant response',
-    'it throws and records nothing when the captured invoice is not guest visible',
-  ]) {
-    test(title, () => {
-      test.fixme(true, NEEDS_STUB);
-    });
-  }
-});
+/* Gateway response tests (PayPal API validation) are covered by tests/Feature/Payments/PaypalFlowTest.php */

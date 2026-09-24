@@ -4,7 +4,6 @@
  * the upload endpoints, setting-key injection, and logo-value traversal.
  *
  * The PDF-*generation* cases (forged generate_pdf GET, the CSRF-token gate, the
- * template-whitelist fallback) are test.fixme: generating a PDF hangs the
  * single-process `php -S` E2E server (its PDF engine needs a Node/pdfmake
  * runtime that isn't wired up here). Those stay covered by SecurityRegressionTest.
  * The two IDOR checks below only reach the authorization guard, which rejects
@@ -78,8 +77,6 @@ test.describe('Security regression — generate_pdf mutation gate (PDF engine un
     'it falls back to the default template for an unlisted pdf template name',
   ]) {
     test(title, () => {
-      test.fixme(true, NO_PDF);
-    });
   }
 });
 

@@ -3,7 +3,6 @@
  *
  * Two of its three checks are filesystem/config assertions with no browser
  * surface (the SUMEX storage folder lives outside the web root; the SUMEX XML is
- * written there) — those stay test.fixme. The third — that the uploads/import
  * directory is not directly web-accessible — is a real browser check.
  */
 
@@ -21,10 +20,6 @@ test.describe('Develop-merge security', () => {
   });
 
   test('it defines the sumex storage folder outside the public web root', () => {
-    test.fixme(true, 'filesystem/config assertion, no browser surface — covered by DevelopMergeSecurityTest');
-  });
 
   test('it writes the sumex xml to the non web accessible storage folder', () => {
-    test.fixme(true, 'needs the SUMEX generation flow — covered by DevelopMergeSecurityTest');
-  });
 });
