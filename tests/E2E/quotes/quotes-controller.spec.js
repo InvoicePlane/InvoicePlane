@@ -7,6 +7,7 @@ import { test, expect } from '../test.js';
 import { createClient, createQuote, createTaxRate, uniq } from '../support/fixtures.js';
 import { dbInsert, dbQuery } from '../support/db.js';
 import { postForm } from '../support/http.js';
+import { expectSavedFlash } from '../support/forms.js';
 
 test.describe('Quotes — list', () => {
   test('it lists every quote', async ({ page }) => {
@@ -57,8 +58,18 @@ test.describe('Quotes — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/quotes/status/all');
+    await expect(page.locator(`form[action*="quotes/delete/${doomed.id}"]`)).toHaveCount(0);
+    await expect(page.locator(`form[action*="quotes/delete/${kept.id}"]`)).toHaveCount(1);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT quote_id FROM ip_quotes WHERE quote_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other quote unaffected */
     expect(dbQuery(`SELECT quote_id FROM ip_quotes WHERE quote_id = ${kept.id}`)).toHaveLength(1);
   });
 

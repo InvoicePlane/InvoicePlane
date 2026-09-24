@@ -8,7 +8,7 @@
 import { test, expect } from '../test.js';
 import { createTask, uniq } from '../support/fixtures.js';
 import { dbQuery } from '../support/db.js';
-import { expectBlockedByRequired } from '../support/forms.js';
+import { expectBlockedByRequired, expectSavedFlash } from '../support/forms.js';
 
 const FINISH = '2026-12-31';
 
@@ -154,8 +154,18 @@ test.describe('Tasks — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/tasks');
+    await expect(page.getByRole('link', { name: doomed.name })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT task_id FROM ip_tasks WHERE task_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other task unaffected */
     expect(dbQuery(`SELECT task_id FROM ip_tasks WHERE task_id = ${kept.id}`)).toHaveLength(1);
   });
 
