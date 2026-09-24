@@ -204,8 +204,10 @@ test.describe('Users — delete', () => {
   });
 
   test.skip('it still deletes a user when csrf protection is on and the token is valid', async () => {
+  });
 
   test.skip('it does not delete a user when the csrf token is missing', async () => {
+  });
 });
 
 test.describe('Users — change password authorization', () => {

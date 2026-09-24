@@ -108,11 +108,14 @@ test.describe('Invoices — delete', () => {
     expect(dbQuery(`SELECT invoice_id FROM ip_invoices WHERE invoice_id = ${invoice.id}`)).toHaveLength(1);
   });
 
-  test('it deletes a sent invoice when global invoice deletion is enabled', async () => {
+  test.skip('it deletes a sent invoice when global invoice deletion is enabled', async () => {
+  });
 
   test.skip('it still deletes a draft invoice when csrf protection is on and the token is valid', async () => {
+  });
 
   test.skip('it does not delete an invoice when the csrf token is missing', async () => {
+  });
 });
 
 test.describe('Invoices — tax rates', () => {

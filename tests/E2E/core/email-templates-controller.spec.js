@@ -131,8 +131,10 @@ test.describe('Email templates — delete', () => {
   });
 
   test.skip('it still deletes an email template when csrf protection is on and the token is valid', async () => {
+  });
 
   test.skip('it does not delete an email template when the csrf token is missing', async () => {
+  });
 });
 
 test.describe('Email templates — guest access', () => {
