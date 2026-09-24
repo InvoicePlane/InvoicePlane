@@ -20,7 +20,7 @@ use Stripe\StripeClient;
 #[AllowDynamicProperties]
 class Stripe extends Base_Controller
 {
-    protected StripeClient $stripe;
+    protected ?StripeClient $stripe = null;
 
     protected $Mdl_settings;
 
@@ -33,8 +33,21 @@ class Stripe extends Base_Controller
         $this->load->helper(['currency', 'stripe']);
 
         $this->useTestHttpClientIfConfigured();
+    }
 
-        $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
+    /**
+     * Built lazily, after guard clauses have already run — the Stripe SDK
+     * validates the API key format in its constructor, so building this
+     * eagerly meant every request to this controller (including a plain
+     * method/invoice guard check) 500'd whenever Stripe isn't configured.
+     */
+    private function stripeClient(): StripeClient
+    {
+        if ($this->stripe === null) {
+            $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
+        }
+
+        return $this->stripe;
     }
 
     /**
@@ -67,7 +80,7 @@ class Stripe extends Base_Controller
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
         }
 
-        $checkout_session = $this->stripe->checkout->sessions->create([
+        $checkout_session = $this->stripeClient()->checkout->sessions->create([
             'mode'                => 'payment',
             'ui_mode'             => 'embedded',
             'return_url'          => site_url('guest/gateways/stripe/callback/{CHECKOUT_SESSION_ID}'),
@@ -107,7 +120,7 @@ class Stripe extends Base_Controller
 
         try {
             // Retrieve the Checkout Session from Stripe
-            $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
+            $session = $this->stripeClient()->checkout->sessions->retrieve($checkout_session_id);
 
             // Debug logging
             log_message('debug', __CLASS__ . '::' . __FUNCTION__ . ' reached, status: ' . $session->status . ' payment_status: ' . $session->payment_status . ', checkout_session_id: ' . sanitize_for_logging($checkout_session_id));
