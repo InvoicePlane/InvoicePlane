@@ -7,7 +7,9 @@
 
 import { test, expect } from '../test.js';
 import { createTaxRate, uniq } from '../support/fixtures.js';
-import { dbQuery } from '../support/db.js';
+import { dbInsert, dbQuery } from '../support/db.js';
+import { postForm, readCsrfToken } from '../support/http.js';
+import { csrfOnPage } from '../support/csrf.js';
 import { expectBlockedByRequired } from '../support/forms.js';
 
 test.describe('Tax rates — list', () => {
@@ -130,11 +132,31 @@ test.describe('Tax rates — delete', () => {
   });
 
   test('it still deletes a tax rate when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange: seeded directly — createTaxRate() posts without a csrf token,
+       which the CSRF-on server would itself reject */
+    const page = await csrfOnPage();
+    const doomedId = dbInsert('ip_tax_rates', { tax_rate_name: uniq('CsrfVAT'), tax_rate_percent: '10.00' });
+    const token = await readCsrfToken(page, '/tax_rates');
+
+    /* Act */
+    const response = await postForm(page, `/tax_rates/delete/${doomedId}`, { _ip_csrf: token });
+
+    /* Assert */
+    expect([301, 302, 303]).toContain(response.status());
+    expect(dbQuery(`SELECT tax_rate_id FROM ip_tax_rates WHERE tax_rate_id = ${doomedId}`)).toEqual([]);
   });
 
   test('it does not delete a tax rate when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange */
+    const page = await csrfOnPage();
+    const keptId = dbInsert('ip_tax_rates', { tax_rate_name: uniq('CsrfKeptVAT'), tax_rate_percent: '10.00' });
+
+    /* Act */
+    const response = await postForm(page, `/tax_rates/delete/${keptId}`, {});
+
+    /* Assert */
+    expect(response.status()).toBe(403);
+    expect(dbQuery(`SELECT tax_rate_id FROM ip_tax_rates WHERE tax_rate_id = ${keptId}`)).toHaveLength(1);
   });
 });
 

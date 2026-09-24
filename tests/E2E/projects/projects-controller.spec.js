@@ -6,8 +6,10 @@
 
 import { test, expect } from '../test.js';
 import { createProject, createTask, uniq } from '../support/fixtures.js';
-import { dbQuery } from '../support/db.js';
+import { dbInsert, dbQuery } from '../support/db.js';
 import { expectBlockedByRequired } from '../support/forms.js';
+import { postForm, readCsrfToken } from '../support/http.js';
+import { csrfOnPage } from '../support/csrf.js';
 
 test.describe('Projects — list', () => {
   test('it lists every project', async ({ page }) => {
@@ -136,11 +138,31 @@ test.describe('Projects — delete', () => {
   });
 
   test('it still deletes a project when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange: seeded directly — createProject() posts without a csrf token,
+       which the CSRF-on server would itself reject */
+    const page = await csrfOnPage();
+    const doomedId = dbInsert('ip_projects', { project_name: uniq('CsrfProject') });
+    const token = await readCsrfToken(page, '/projects');
+
+    /* Act */
+    const response = await postForm(page, `/projects/delete/${doomedId}`, { _ip_csrf: token });
+
+    /* Assert */
+    expect([301, 302, 303]).toContain(response.status());
+    expect(dbQuery(`SELECT project_id FROM ip_projects WHERE project_id = ${doomedId}`)).toEqual([]);
   });
 
   test('it does not delete a project when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange */
+    const page = await csrfOnPage();
+    const keptId = dbInsert('ip_projects', { project_name: uniq('CsrfKeptProject') });
+
+    /* Act */
+    const response = await postForm(page, `/projects/delete/${keptId}`, {});
+
+    /* Assert */
+    expect(response.status()).toBe(403);
+    expect(dbQuery(`SELECT project_id FROM ip_projects WHERE project_id = ${keptId}`)).toHaveLength(1);
   });
 });
 
