@@ -7,7 +7,9 @@
 
 import { test, expect } from '../test.js';
 import { createInvoiceGroup, uniq } from '../support/fixtures.js';
-import { dbQuery } from '../support/db.js';
+import { dbInsert, dbQuery } from '../support/db.js';
+import { postForm, readCsrfToken } from '../support/http.js';
+import { csrfOnPage } from '../support/csrf.js';
 import { expectBlockedByRequired } from '../support/forms.js';
 
 const REQUIRED = {
@@ -125,11 +127,41 @@ test.describe('Invoice groups — delete', () => {
   });
 
   test('it still deletes an invoice group when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange: seeded directly — createInvoiceGroup() posts without a csrf
+       token, which the CSRF-on server would itself reject */
+    const page = await csrfOnPage();
+    const doomedId = dbInsert('ip_invoice_groups', {
+      invoice_group_name: uniq('CsrfGroup'),
+      invoice_group_identifier_format: '{{{id}}}',
+      invoice_group_next_id: '1',
+      invoice_group_left_pad: '0',
+    });
+    const token = await readCsrfToken(page, '/invoice_groups');
+
+    /* Act */
+    const response = await postForm(page, `/invoice_groups/delete/${doomedId}`, { _ip_csrf: token });
+
+    /* Assert */
+    expect([301, 302, 303]).toContain(response.status());
+    expect(dbQuery(`SELECT invoice_group_id FROM ip_invoice_groups WHERE invoice_group_id = ${doomedId}`)).toEqual([]);
   });
 
   test('it does not delete an invoice group when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange */
+    const page = await csrfOnPage();
+    const keptId = dbInsert('ip_invoice_groups', {
+      invoice_group_name: uniq('CsrfKeptGroup'),
+      invoice_group_identifier_format: '{{{id}}}',
+      invoice_group_next_id: '1',
+      invoice_group_left_pad: '0',
+    });
+
+    /* Act */
+    const response = await postForm(page, `/invoice_groups/delete/${keptId}`, {});
+
+    /* Assert */
+    expect(response.status()).toBe(403);
+    expect(dbQuery(`SELECT invoice_group_id FROM ip_invoice_groups WHERE invoice_group_id = ${keptId}`)).toHaveLength(1);
   });
 });
 

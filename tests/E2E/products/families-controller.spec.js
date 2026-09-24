@@ -7,6 +7,9 @@
 import { test, expect } from '../test.js';
 import { createFamily, uniq } from '../support/fixtures.js';
 import { expectBlockedByRequired, expectErrorFlash } from '../support/forms.js';
+import { dbInsert, dbQuery } from '../support/db.js';
+import { postForm, readCsrfToken } from '../support/http.js';
+import { csrfOnPage } from '../support/csrf.js';
 
 test.describe('Families — list', () => {
   test('it lists every family', async ({ page }) => {
@@ -125,11 +128,31 @@ test.describe('Families — delete', () => {
   });
 
   test('it still deletes a family when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange: seeded directly — createFamily() posts without a csrf token,
+       which the CSRF-on server would itself reject */
+    const page = await csrfOnPage();
+    const doomedId = dbInsert('ip_families', { family_name: uniq('CsrfFamily') });
+    const token = await readCsrfToken(page, '/families');
+
+    /* Act */
+    const response = await postForm(page, `/families/delete/${doomedId}`, { _ip_csrf: token });
+
+    /* Assert */
+    expect([301, 302, 303]).toContain(response.status());
+    expect(dbQuery(`SELECT family_id FROM ip_families WHERE family_id = ${doomedId}`)).toEqual([]);
   });
 
   test('it does not delete a family when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange */
+    const page = await csrfOnPage();
+    const keptId = dbInsert('ip_families', { family_name: uniq('CsrfKeptFamily') });
+
+    /* Act */
+    const response = await postForm(page, `/families/delete/${keptId}`, {});
+
+    /* Assert */
+    expect(response.status()).toBe(403);
+    expect(dbQuery(`SELECT family_id FROM ip_families WHERE family_id = ${keptId}`)).toHaveLength(1);
   });
 });
 

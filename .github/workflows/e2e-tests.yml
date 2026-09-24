@@ -43,6 +43,7 @@ jobs:
       DB_USERNAME: root
       DB_PASSWORD: root
       E2E_BASE_URL: http://localhost:8000
+      E2E_CSRF_BASE_URL: http://localhost:8001
 
     steps:
       - name: Checkout
@@ -78,10 +79,11 @@ jobs:
             -e 's|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=0123456789abcdef0123456789abcdef|' \
             -e 's|^#\s*CSRF_PROTECTION=.*|CSRF_PROTECTION=false|' \
             ipconfig.php
-          # The E2E suite drives the app through its rendered forms (which carry
-          # _csrf_field()) but also posts directly to a few AJAX/destroy routes;
-          # CSRF stays off here, matching the local ipconfig, and the CSRF
-          # regression cases remain covered by the PHPUnit Feature suite.
+          # The main server runs with CSRF off (matching the local ipconfig) so
+          # the suite can drive rendered forms and post directly to a few
+          # AJAX/destroy routes without carrying a token everywhere. The
+          # #1694 CSRF-regression parity pairs need CSRF_PROTECTION=true
+          # instead; see "Start the CSRF-on application server" below.
 
       - name: Start the application server
         run: |
@@ -91,6 +93,23 @@ jobs:
             sleep 1
           done
           curl -sf -o /dev/null "${E2E_BASE_URL}/sessions/login"
+
+      - name: Start the CSRF-on application server
+        run: |
+          # bootstrap/kernel.php loads ipconfig.php once per process
+          # (CI_KERNEL_BOOTED), so CSRF_PROTECTION can't be toggled per
+          # request on the main server above — this is a second instance of
+          # the same app on a different port. CSRF_PROTECTION=true here is an
+          # inherited OS env var; variables_order=EGPCS copies it into $_ENV
+          # before Dotenv's safeLoad() runs, which then skips it (already
+          # set), overriding ipconfig.php's CSRF_PROTECTION=false for this
+          # process only. See tests/E2E/support/csrf.js.
+          CSRF_PROTECTION=true php -d variables_order=EGPCS -S localhost:8001 -t . bootstrap/test-server.php > server-csrf.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null "${E2E_CSRF_BASE_URL}/sessions/login" && break
+            sleep 1
+          done
+          curl -sf -o /dev/null "${E2E_CSRF_BASE_URL}/sessions/login"
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -115,4 +134,5 @@ jobs:
             playwright-report/
             tests/E2E/error-report.md
             server.log
+            server-csrf.log
           retention-days: 14

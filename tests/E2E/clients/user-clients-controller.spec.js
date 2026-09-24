@@ -7,8 +7,10 @@
  */
 
 import { test, expect } from '../test.js';
-import { createClient, createSecondaryUser, uniq } from '../support/fixtures.js';
-import { postForm } from '../support/http.js';
+import { createClient, createSecondaryUser, seedUser, uniq } from '../support/fixtures.js';
+import { dbInsert, dbQuery } from '../support/db.js';
+import { postForm, readCsrfToken } from '../support/http.js';
+import { csrfOnPage } from '../support/csrf.js';
 import { E2E_BASE_URL, LOGIN_PATH } from '../config.js';
 
 /** Assign `clientId` to `userId` through the real assign-client form. */
@@ -111,14 +113,37 @@ test.describe('User clients — unassign', () => {
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
   });
 
-  // CSRF-regression pair (#1694): needs a CSRF_PROTECTION=true server. Covered by
-  // tests/Feature/Clients/UserClientsControllerTest.php; see tests/E2E/README.md.
   test('it still unassigns when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange: user seeded directly — createSecondaryUser() posts without a
+       csrf token, which the CSRF-on server would itself reject. createClient()
+       goes through the real browser form, so it carries a token already. */
+    const page = await csrfOnPage();
+    const user = seedUser({ user_name: uniq('CsrfUser') });
+    const client = await createClient(page, { client_name: uniq('CsrfAssigned') });
+    const doomedId = dbInsert('ip_user_clients', { user_id: user.id, client_id: client.id });
+    const token = await readCsrfToken(page, `/user_clients/user/${user.id}`);
+
+    /* Act */
+    const response = await postForm(page, `/user_clients/delete/${doomedId}`, { _ip_csrf: token });
+
+    /* Assert */
+    expect([301, 302, 303]).toContain(response.status());
+    expect(dbQuery(`SELECT user_client_id FROM ip_user_clients WHERE user_client_id = ${doomedId}`)).toEqual([]);
   });
 
   test('it does not unassign when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange */
+    const page = await csrfOnPage();
+    const user = seedUser({ user_name: uniq('CsrfKeptUser') });
+    const client = await createClient(page, { client_name: uniq('CsrfKeptAssigned') });
+    const keptId = dbInsert('ip_user_clients', { user_id: user.id, client_id: client.id });
+
+    /* Act */
+    const response = await postForm(page, `/user_clients/delete/${keptId}`, {});
+
+    /* Assert */
+    expect(response.status()).toBe(403);
+    expect(dbQuery(`SELECT user_client_id FROM ip_user_clients WHERE user_client_id = ${keptId}`)).toHaveLength(1);
   });
 });
 

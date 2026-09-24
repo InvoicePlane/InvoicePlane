@@ -13,7 +13,8 @@ import { test, expect } from '../test.js';
 import { createSecondaryUser, seedUser, uniq } from '../support/fixtures.js';
 import { dbQuery } from '../support/db.js';
 import { loginAs } from '../support/auth.js';
-import { postForm } from '../support/http.js';
+import { postForm, readCsrfToken } from '../support/http.js';
+import { csrfOnPage } from '../support/csrf.js';
 
 const createBody = (over = {}) => ({
   user_type: '2',
@@ -191,11 +192,30 @@ test.describe('Users — delete', () => {
   });
 
   test('it still deletes a user when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange */
+    const page = await csrfOnPage();
+    const doomed = seedUser({ user_name: uniq('CsrfUser') });
+    const token = await readCsrfToken(page, '/users');
+
+    /* Act */
+    const response = await postForm(page, `/users/delete/${doomed.id}`, { _ip_csrf: token });
+
+    /* Assert */
+    expect([301, 302, 303]).toContain(response.status());
+    expect(exists(doomed.id)).toBe(false);
   });
 
   test('it does not delete a user when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Arrange */
+    const page = await csrfOnPage();
+    const kept = seedUser({ user_name: uniq('CsrfKeptUser') });
+
+    /* Act */
+    const response = await postForm(page, `/users/delete/${kept.id}`, {});
+
+    /* Assert */
+    expect(response.status()).toBe(403);
+    expect(exists(kept.id)).toBe(true);
   });
 });
 

@@ -87,12 +87,22 @@ When `E2E_BASE_URL` (or `CI`) is set the config does not start its own server.
 
 ## CSRF
 
-The E2E server runs with `CSRF_PROTECTION=false` (local `ipconfig.php` and the
+The main E2E server runs with `CSRF_PROTECTION=false` (local `ipconfig.php` and the
 CI workflow both set it). The form-driven tests still submit the real
 `_csrf_field()` hidden input; the few direct `postForm()` calls rely on it being
-off. The `#1694` CSRF-regression cases are therefore `test.skip`ped here and stay
-covered by the PHPUnit Feature suite. Wiring a second Playwright project against a
-`CSRF_PROTECTION=true` server would let them run here too.
+off.
+
+The `#1694` CSRF-regression parity pairs ("it still X when csrf protection is on
+and the token is valid" / "it does not X when the csrf token is missing") run
+against a **second** InvoicePlane instance, booted with `CSRF_PROTECTION=true` on
+a different port (`E2E_CSRF_BASE_URL`, default `http://localhost:8001`) —
+`bootstrap/kernel.php` only loads `ipconfig.php` once per process
+(`CI_KERNEL_BOOTED`), so this can't be a per-request toggle on the main server.
+`playwright.config.js`'s `webServer` array starts both locally;
+`tests/E2E/docker-e2e.sh` and the CI workflow each start both explicitly. Use
+`tests/E2E/support/csrf.js`'s `csrfOnPage()` to get an admin-authenticated page
+against it, then the same `readCsrfToken()` / `postForm()` helpers from
+`tests/E2E/support/http.js` already used everywhere else.
 
 ## Progress
 
