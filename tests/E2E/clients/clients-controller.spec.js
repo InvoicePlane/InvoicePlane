@@ -147,16 +147,6 @@ test.describe('Clients — delete', () => {
     /* Assert: Other client unaffected */
     expect(dbQuery(`SELECT client_id FROM ip_clients WHERE client_id = ${kept.id}`)).toHaveLength(1);
   });
-
-  // The two CSRF-regression cases (issue #1694) can only be exercised against a
-  // server booted with CSRF_PROTECTION=true. This E2E server runs with it off
-  // (ipconfig.php), so they stay skipped here and remain covered by
-  // tests/Feature/Clients/ClientsControllerTest.php.
-  test.skip('it still deletes a client when csrf protection is on and the token is valid', async ({ page }) => {
-  });
-
-  test.skip('it does not delete a client when the csrf token is missing', async ({ page }) => {
-  });
 });
 
 test.describe('Clients — guest access', () => {

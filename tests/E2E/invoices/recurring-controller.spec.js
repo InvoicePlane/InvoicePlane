@@ -132,12 +132,6 @@ test.describe('Recurring — delete', () => {
     expect(response.status()).toBe(404);
     expect(dbQuery(`SELECT invoice_recurring_id FROM ip_invoices_recurring WHERE invoice_recurring_id = ${id}`)).toHaveLength(1);
   });
-
-  test.skip('it still deletes a recurring schedule when csrf protection is on and the token is valid', async () => {
-  });
-
-  test.skip('it does not delete a recurring schedule when the csrf token is missing', async () => {
-  });
 });
 
 test.describe('Recurring — guest access', () => {

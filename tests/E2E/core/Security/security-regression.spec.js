@@ -65,21 +65,6 @@ test.describe('Security regression — guest PDF IDOR', () => {
   });
 });
 
-test.describe('Security regression — generate_pdf mutation gate (PDF engine unavailable in E2E)', () => {
-  const NO_PDF = 'generate_pdf hangs the single-process E2E server — covered by SecurityRegressionTest';
-
-  for (const title of [
-    'it does not mark an invoice sent from a forged generate_pdf get',
-    'it marks an invoice sent only with a matching generate_pdf csrf token',
-    'it does not mark a quote sent from a forged generate_pdf get',
-    'it marks a quote sent only with a matching generate_pdf csrf token',
-    'it falls back to the default template for a path traversal pdf template name',
-    'it falls back to the default template for an unlisted pdf template name',
-  ]) {
-    test.skip(title, () => {});
-  }
-});
-
 test.describe('Security regression — upload endpoint traversal', () => {
   const TRAVERSAL = ['..%2F..%2F..%2Fetc%2Fpasswd', 'key_..%2F..%2F..%2F..%2Fetc%2Fpasswd', 'key_....%2F%2Fetc%2Fpasswd'];
 

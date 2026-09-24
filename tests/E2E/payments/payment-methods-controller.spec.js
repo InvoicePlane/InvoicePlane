@@ -128,12 +128,6 @@ test.describe('Payment methods — delete', () => {
     /* Assert: Other method unaffected */
     expect(dbQuery(`SELECT payment_method_id FROM ip_payment_methods WHERE payment_method_id = ${kept.id}`)).toHaveLength(1);
   });
-
-  test.skip('it still deletes a payment method when csrf protection is on and the token is valid', async () => {
-  });
-
-  test.skip('it does not delete a payment method when the csrf token is missing', async () => {
-  });
 });
 
 test.describe('Payment methods — guest access', () => {

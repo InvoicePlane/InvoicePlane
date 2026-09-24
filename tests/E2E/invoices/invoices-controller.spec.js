@@ -107,15 +107,6 @@ test.describe('Invoices — delete', () => {
     expect([301, 302, 303]).toContain(response.status());
     expect(dbQuery(`SELECT invoice_id FROM ip_invoices WHERE invoice_id = ${invoice.id}`)).toHaveLength(1);
   });
-
-  test.skip('it deletes a sent invoice when global invoice deletion is enabled', async () => {
-  });
-
-  test.skip('it still deletes a draft invoice when csrf protection is on and the token is valid', async () => {
-  });
-
-  test.skip('it does not delete an invoice when the csrf token is missing', async () => {
-  });
 });
 
 test.describe('Invoices — tax rates', () => {
@@ -136,9 +127,6 @@ test.describe('Invoices — tax rates', () => {
     expect([301, 302, 303]).toContain(response.status());
     expect(dbQuery(`SELECT invoice_tax_rate_id FROM ip_invoice_tax_rates WHERE invoice_tax_rate_id = ${removeId}`)).toEqual([]);
     expect(dbQuery(`SELECT invoice_tax_rate_id FROM ip_invoice_tax_rates WHERE invoice_tax_rate_id = ${keepId}`)).toHaveLength(1);
-  });
-
-  test.skip('it does not remove an invoice tax rate when the csrf token is missing', async () => {
   });
 });
 

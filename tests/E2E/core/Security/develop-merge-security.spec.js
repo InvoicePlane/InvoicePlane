@@ -18,10 +18,4 @@ test.describe('Develop-merge security', () => {
     expect(dirListing.status()).not.toBe(200);
     expect([403, 404]).toContain(knownFile.status());
   });
-
-  test.skip('it defines the sumex storage folder outside the public web root', () => {
-  });
-
-  test.skip('it writes the sumex xml to the non web accessible storage folder', () => {
-  });
 });

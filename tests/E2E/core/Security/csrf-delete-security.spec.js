@@ -35,22 +35,4 @@ test.describe('CSRF delete security', () => {
       expect(getDeleteAnchors, `${url} must not expose a GET delete link`).toBe(0);
     }
   });
-
-  test.skip('it includes csrf tokens in post forms', async ({ page }) => {
-    /* Arrange */
-    await createClient(page, { client_name: uniq('CsrfFieldCheck') });
-
-    /* Act + Assert: every method=post form carries the _ip_csrf hidden input */
-    for (const url of INDEX_PAGES) {
-      await page.goto(url);
-      const postForms = page.locator('form[method="post" i]');
-      const count = await postForms.count();
-      for (let i = 0; i < count; i++) {
-        await expect(
-          postForms.nth(i).locator('input[name="_ip_csrf"]'),
-          `${url} form #${i} must include _ip_csrf`,
-        ).toHaveCount(1);
-      }
-    }
-  });
 });

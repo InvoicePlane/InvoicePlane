@@ -129,12 +129,6 @@ test.describe('Email templates — delete', () => {
     /* Assert: Other template unaffected */
     expect(dbQuery(`SELECT email_template_id FROM ip_email_templates WHERE email_template_id = ${kept.id}`)).toHaveLength(1);
   });
-
-  test.skip('it still deletes an email template when csrf protection is on and the token is valid', async () => {
-  });
-
-  test.skip('it does not delete an email template when the csrf token is missing', async () => {
-  });
 });
 
 test.describe('Email templates — guest access', () => {
