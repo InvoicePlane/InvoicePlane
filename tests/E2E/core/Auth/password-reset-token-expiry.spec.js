@@ -7,8 +7,8 @@
  */
 
 import { test, expect } from '../../test.js';
-import { uniq } from '../support/fixtures.js';
-import { dbInsert, dbQuery } from '../support/db.js';
+import { uniq } from '../../support/fixtures.js';
+import { dbInsert, dbQuery } from '../../support/db.js';
 import { createHash } from 'crypto';
 
 test.use({ storageState: { cookies: [], origins: [] } });

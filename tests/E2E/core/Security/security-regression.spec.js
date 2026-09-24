@@ -11,9 +11,9 @@
  */
 
 import { test, expect } from '../../test.js';
-import { createClient, createInvoice, createQuote, createSecondaryUser, uniq } from '../support/fixtures.js';
-import { dbExec, dbInsert, dbQuery } from '../support/db.js';
-import { loginAs } from '../support/auth.js';
+import { createClient, createInvoice, createQuote, createSecondaryUser, uniq } from '../../support/fixtures.js';
+import { dbExec, dbInsert, dbQuery } from '../../support/db.js';
+import { loginAs } from '../../support/auth.js';
 
 async function guestVisibleInvoice(page, clientId) {
   const invoice = await createInvoice(page, { client_id: clientId });

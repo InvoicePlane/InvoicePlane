@@ -5,7 +5,7 @@
  */
 
 import { test, expect } from '../../test.js';
-import { createClient, createProduct, createTaxRate, uniq } from '../support/fixtures.js';
+import { createClient, createProduct, createTaxRate, uniq } from '../../support/fixtures.js';
 
 const INDEX_PAGES = ['/clients/status/all', '/products', '/tax_rates', '/invoice_groups', '/payment_methods'];
 

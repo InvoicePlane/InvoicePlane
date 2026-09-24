@@ -5,8 +5,8 @@
  */
 
 import { test, expect } from '../../test.js';
-import { createInvoice, uniq } from '../support/fixtures.js';
-import { dbInsert } from '../support/db.js';
+import { createInvoice, uniq } from '../../support/fixtures.js';
+import { dbInsert } from '../../support/db.js';
 
 /** A configured e-invoice provider (ip_merchant_clients row). */
 function seedProvider(overrides = {}) {

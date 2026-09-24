@@ -6,8 +6,8 @@
  */
 
 import { test, expect } from '../../test.js';
-import { createInvoice, uniq } from '../support/fixtures.js';
-import { dbInsert, dbQuery } from '../support/db.js';
+import { createInvoice, uniq } from '../../support/fixtures.js';
+import { dbInsert, dbQuery } from '../../support/db.js';
 
 function seedProvider(merchantType) {
   return dbInsert('ip_merchant_clients', {

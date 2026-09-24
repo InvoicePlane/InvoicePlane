@@ -10,8 +10,8 @@
  */
 
 import { test, expect } from '../../test.js';
-import { uniq } from '../support/fixtures.js';
-import { dbInsert } from '../support/db.js';
+import { uniq } from '../../support/fixtures.js';
+import { dbInsert } from '../../support/db.js';
 
 function seedProvider(overrides = {}) {
   return dbInsert('ip_merchant_clients', {
