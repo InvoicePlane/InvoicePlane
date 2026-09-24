@@ -124,6 +124,8 @@ test.describe('Units — update', () => {
   });
 });
 
+  // CSRF token tests (valid token, missing token) are covered by Feature tests
+  // and cannot run in E2E because CSRF_PROTECTION=false in the test server.
 test.describe('Units — delete', () => {
   test('it deletes a unit', async ({ page }) => {
     /* Arrange */
@@ -143,10 +145,6 @@ test.describe('Units — delete', () => {
     await expect(page.locator('#content')).toContainText(kept.name);
   });
 
-  test('it still deletes a unit when csrf protection is on and the token is valid', async () => {
-
-  test('it does not delete a unit when the csrf token is missing', async () => {
-});
 
 test.describe('Units — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
