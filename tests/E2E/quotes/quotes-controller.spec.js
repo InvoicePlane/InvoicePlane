@@ -72,7 +72,7 @@ test.describe('Quotes — delete', () => {
     /* Assert: Other quote unaffected */
     expect(dbQuery(`SELECT quote_id FROM ip_quotes WHERE quote_id = ${kept.id}`)).toHaveLength(1);
   });
-
+});
 
 test.describe('Quotes — tax rates', () => {
   test('it removes a tax rate from a quote', async ({ page }) => {

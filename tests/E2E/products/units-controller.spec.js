@@ -154,6 +154,7 @@ test.describe('Units — delete', () => {
     /* Assert: Other unit unaffected */
     expect(dbQuery(`SELECT unit_id FROM ip_units WHERE unit_id = ${kept.id}`)).toHaveLength(1);
   });
+});
 
 test.describe('Units — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
