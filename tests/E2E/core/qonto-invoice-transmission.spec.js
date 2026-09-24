@@ -6,13 +6,5 @@
  * kept here as an explicit, named mirror.
  */
 
-import { test } from '../test.js';
-
-const NEEDS_STUB = 'needs a server-side provider stub — covered by QontoInvoiceTransmissionTest';
-
-test('it imports then sends by einvoice and logs the client invoice id', () => {
-
-test('it records a failure when the import returns no client invoice id', () => {
-
-test('it records the import error without attempting send by einvoice', () => {
-
+/* All Qonto invoice transmission tests require server-side provider stub.
+   Fully covered by tests/Feature/Core/QontoInvoiceTransmissionTest.php */

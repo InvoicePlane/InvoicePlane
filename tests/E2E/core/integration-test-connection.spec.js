@@ -6,6 +6,8 @@
  * The tests that assert on the *result* of the probe (reachable / unreachable)
  * need the outbound provider HTTP call stubbed — the PHPUnit suite fakes the
  * gateway; Playwright can't intercept a server-side call, so those stay
+ * documented as comments below.
+ */
 
 import { test, expect } from '../test.js';
 import { uniq } from '../support/fixtures.js';
