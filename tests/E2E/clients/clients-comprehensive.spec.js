@@ -14,7 +14,7 @@
 import { test, expect } from '../test.js';
 import { uniq, createClient } from '../support/fixtures.js';
 import { dbQuery } from '../support/db.js';
-import { expectErrorFlash, expectSavedFlash } from '../support/forms.js';
+import { expectBlockedByRequired, expectErrorFlash, expectSavedFlash } from '../support/forms.js';
 
 test.describe('Clients — comprehensive workflow', () => {
   test('it creates, edits, validates, and filters clients through a complete workflow', async ({ page }) => {
@@ -52,9 +52,8 @@ test.describe('Clients — comprehensive workflow', () => {
 
     await expect(page.locator('#content')).toContainText(clientName);
     await expect(page.locator('#content')).toContainText(clientSurname);
-    await expect(page.locator('#client_name')).toHaveValue(clientName);
-    await expect(page.locator('#client_email')).toHaveValue(clientEmail);
-    await expect(page.locator('#client_phone')).toHaveValue(clientPhone);
+    await expect(page.locator('#content')).toContainText(clientEmail);
+    await expect(page.locator('#content')).toContainText(clientPhone);
 
     /* Assert: Data persisted in database */
     const [created] = dbQuery(
@@ -82,14 +81,10 @@ test.describe('Clients — comprehensive workflow', () => {
     await page.fill('#client_name', '');
     await page.fill('#client_email', newEmail);
 
-    /* Act: Submit form expecting validation error */
-    await Promise.all([
-      page.waitForLoadState('load'),
-      page.click('#btn-submit'),
-    ]);
-
-    /* Assert: Form validation error is shown */
-    await expectErrorFlash(page);
+    /* Act + Assert: the browser blocks the submit on the empty required field
+     * client_name — it never reaches the server, so there is no flash to wait
+     * for here (see clients-controller.spec.js's equivalent case). */
+    await expectBlockedByRequired(page, '#client_name');
 
     /* Assert: Data was NOT persisted (name still original) */
     const [afterFailedUpdate] = dbQuery(
@@ -116,8 +111,8 @@ test.describe('Clients — comprehensive workflow', () => {
     /* Assert: Redirect to view page with updated data */
     await expect(page.locator('#content')).toContainText(updatedName);
     await expect(page.locator('#content')).not.toContainText(clientName); // Old name gone
-    await expect(page.locator('#client_email')).toHaveValue(newEmail);
-    await expect(page.locator('#client_phone')).toHaveValue(clientPhone); // Phone unchanged
+    await expect(page.locator('#content')).toContainText(newEmail);
+    await expect(page.locator('#content')).toContainText(clientPhone); // Phone unchanged
 
     /* Assert: Database shows only the updated values */
     const [afterSuccessfulUpdate] = dbQuery(
@@ -143,12 +138,10 @@ test.describe('Clients — comprehensive workflow', () => {
 
     /* ========== PHASE 5: Verify edit form loads correct client ========== */
 
-    /* Act: Click edit link for the updated client */
-    const editLink = page
-      .locator('tr', { has: page.locator(`a:has-text("${updatedName}")`) })
-      .locator('a[href*="/clients/form/"]')
-      .first();
-    await editLink.click();
+    /* Act: Open the row's action dropdown, then click its edit link */
+    const row = page.locator('tr', { has: page.locator(`a:has-text("${updatedName}")`) });
+    await row.locator('.dropdown-toggle').click();
+    await row.locator('a[href*="/clients/form/"]').first().click();
 
     /* Assert: The edit form loaded the correct client (not the other one) */
     await expect(page.locator('#client_name')).toHaveValue(updatedName);
