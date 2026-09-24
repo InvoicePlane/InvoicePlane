@@ -134,8 +134,10 @@ test.describe('Recurring — delete', () => {
   });
 
   test.skip('it still deletes a recurring schedule when csrf protection is on and the token is valid', async () => {
+  });
 
   test.skip('it does not delete a recurring schedule when the csrf token is missing', async () => {
+  });
 });
 
 test.describe('Recurring — guest access', () => {

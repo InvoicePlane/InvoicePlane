@@ -135,8 +135,10 @@ test.describe('Invoice groups — delete', () => {
   });
 
   test.skip('it still deletes an invoice group when csrf protection is on and the token is valid', async () => {
+  });
 
   test.skip('it does not delete an invoice group when the csrf token is missing', async () => {
+  });
 });
 
 test.describe('Invoice groups — guest access', () => {

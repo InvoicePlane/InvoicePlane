@@ -141,7 +141,6 @@ test.describe('Products — delete', () => {
     expect(dbQuery(`SELECT product_id FROM ip_products WHERE product_id = ${kept.id}`)).toHaveLength(1);
   });
 
-
 test.describe('Products — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 

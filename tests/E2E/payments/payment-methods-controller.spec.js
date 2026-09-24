@@ -130,8 +130,10 @@ test.describe('Payment methods — delete', () => {
   });
 
   test.skip('it still deletes a payment method when csrf protection is on and the token is valid', async () => {
+  });
 
   test.skip('it does not delete a payment method when the csrf token is missing', async () => {
+  });
 });
 
 test.describe('Payment methods — guest access', () => {
