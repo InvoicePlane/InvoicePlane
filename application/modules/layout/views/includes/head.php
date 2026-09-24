@@ -10,8 +10,9 @@
 
 <link rel="icon" href="<?php _core_asset('img/favicon.png'); ?>" type="image/png">
 
-<link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>" type="text/css">
-<link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>" type="text/css">
+<link rel="stylesheet" href="<?php _core_asset('css/dataTables.bootstrap.css'); ?>">
+<link rel="stylesheet" href="<?php _theme_asset('css/style.css'); ?>">
+<link rel="stylesheet" href="<?php _core_asset('css/custom.css'); ?>">
 
 <?php if (get_setting('monospace_amounts') == 1) { ?>
     <link rel="stylesheet" href="<?php _theme_asset('css/monospace.css'); ?>" type="text/css">
