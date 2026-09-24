@@ -7,7 +7,7 @@
 import { test, expect } from '../test.js';
 import { createProject, createTask, uniq } from '../support/fixtures.js';
 import { dbQuery } from '../support/db.js';
-import { expectBlockedByRequired } from '../support/forms.js';
+import { expectBlockedByRequired, expectSavedFlash } from '../support/forms.js';
 
 test.describe('Projects — list', () => {
   test('it lists every project', async ({ page }) => {
@@ -102,10 +102,19 @@ test.describe('Projects — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
     await page.goto('/projects');
     await expect(page.getByRole('link', { name: doomed.name })).toHaveCount(0);
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
+
+    /* Assert: Database confirms hard delete */
+    expect(dbQuery(`SELECT project_id FROM ip_projects WHERE project_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other project unaffected */
+    expect(dbQuery(`SELECT project_id FROM ip_projects WHERE project_id = ${kept.id}`)).toHaveLength(1);
   });
 
   test('it orphans rather than deletes the tasks of a deleted project', async ({ page }) => {
