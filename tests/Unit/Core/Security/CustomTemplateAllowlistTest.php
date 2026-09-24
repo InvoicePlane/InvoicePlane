@@ -270,7 +270,7 @@ class CustomTemplateAllowlistTest extends TestCase
     {
         // Stubs: CI_Model, log_message(), and an env() that reads $_ENV exactly
         // like the real helper kernel.php defines before requiring constants.php.
-        require_once dirname(__DIR__, 2) . '/Support/template_model_stubs.php';
+        require_once ROOT_PATH . '/tests/Support/template_model_stubs.php';
 
         foreach ($ipconfig as $key => $value) {
             $_ENV[$key] = $value;
