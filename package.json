@@ -19,7 +19,8 @@
         "e2e:ui": "playwright test --ui",
         "e2e:headed": "playwright test --headed",
         "e2e:docker": "sh tests/E2E/docker-e2e.sh",
-        "e2e:install": "playwright install --with-deps chromium"
+        "e2e:install": "playwright install --with-deps chromium",
+        "lint:e2e": "eslint tests/E2E/**/*.spec.js"
     },
     "devDependencies": {
         "@lodder/grunt-postcss": "^3.1.1",
