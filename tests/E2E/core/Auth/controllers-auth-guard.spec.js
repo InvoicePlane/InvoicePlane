@@ -4,7 +4,7 @@
  * leaks on the way.
  */
 
-import { test, expect } from '../test.js';
+import { test, expect } from '../../test.js';
 
 test.use({ storageState: { cookies: [], origins: [] } });
 

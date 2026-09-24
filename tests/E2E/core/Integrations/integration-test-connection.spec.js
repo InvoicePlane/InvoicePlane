@@ -9,7 +9,7 @@
  * documented as comments below.
  */
 
-import { test, expect } from '../test.js';
+import { test, expect } from '../../test.js';
 import { uniq } from '../support/fixtures.js';
 import { dbInsert } from '../support/db.js';
 

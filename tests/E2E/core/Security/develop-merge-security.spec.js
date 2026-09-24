@@ -6,7 +6,7 @@
  * directory is not directly web-accessible — is a real browser check.
  */
 
-import { test, expect } from '../test.js';
+import { test, expect } from '../../test.js';
 
 test.describe('Develop-merge security', () => {
   test('it denies direct web access to the uploads import directory', async ({ page }) => {

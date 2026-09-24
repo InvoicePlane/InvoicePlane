@@ -10,7 +10,7 @@
  * before any PDF work.
  */
 
-import { test, expect } from '../test.js';
+import { test, expect } from '../../test.js';
 import { createClient, createInvoice, createQuote, createSecondaryUser, uniq } from '../support/fixtures.js';
 import { dbExec, dbInsert, dbQuery } from '../support/db.js';
 import { loginAs } from '../support/auth.js';

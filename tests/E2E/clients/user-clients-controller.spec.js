@@ -113,10 +113,11 @@ test.describe('User clients — unassign', () => {
 
   // CSRF-regression pair (#1694): needs a CSRF_PROTECTION=true server. Covered by
   // tests/Feature/Clients/UserClientsControllerTest.php; see tests/E2E/README.md.
-  test('it still unassigns when csrf protection is on and the token is valid', async () => {
+  test.skip('it still unassigns when csrf protection is on and the token is valid', async () => {
+  });
 
-  test('it does not unassign when the csrf token is missing', async () => {
-});
+  test.skip('it does not unassign when the csrf token is missing', async () => {
+  });
 
 test.describe('User clients — access control', () => {
   test('it blocks a non-admin from unassigning a client', async ({ page, browser }) => {

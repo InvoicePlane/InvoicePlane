@@ -6,7 +6,7 @@
  * runs for real. The two cases that need SETUP_COMPLETED=false are
  */
 
-import { test, expect } from '../test.js';
+import { test, expect } from '../../test.js';
 
 const SETUP_ROUTES = ['/setup', '/setup/language', '/setup/prerequisites', '/setup/database', '/setup/upgrade_tables'];
 
