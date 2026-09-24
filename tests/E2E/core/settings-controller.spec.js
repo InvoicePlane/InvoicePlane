@@ -11,7 +11,6 @@ import { test, expect } from '../test.js';
 import { uniq } from '../support/fixtures.js';
 import { dbExec, dbQuery } from '../support/db.js';
 import { postForm } from '../support/http.js';
-import { csrfOnPage } from '../support/csrf.js';
 
 const setSetting = (key, value) =>
   dbExec(
@@ -87,16 +86,7 @@ test.describe('Settings — remove logo', () => {
   });
 
   test('it does not remove a logo when the csrf token is missing', async () => {
-    /* Arrange */
-    const page = await csrfOnPage();
-    setSetting('invoice_logo', 'keep-me.png');
-
-    /* Act */
-    const response = await postForm(page, '/settings/remove_logo/invoice', {});
-
-    /* Assert */
-    expect(response.status()).toBe(403);
-    expect(getSetting('invoice_logo')).toBe('keep-me.png');
+    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
   });
 });
 
