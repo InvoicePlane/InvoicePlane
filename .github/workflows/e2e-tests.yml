@@ -103,6 +103,9 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Lint E2E test files
+        run: npm run lint:e2e || true
+
       - name: Run E2E tests
         run: npm run e2e
 
