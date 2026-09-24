@@ -1,12 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
-import { E2E_BASE_URL, E2E_CSRF_BASE_URL } from './tests/E2E/config.js';
+import { E2E_BASE_URL } from './tests/E2E/config.js';
 
 // Start our own PHP built-in server only for local runs that did not point
 // E2E_BASE_URL at an already-running instance. CI starts the server itself
 // (see .github/workflows/e2e-tests.yml) and sets E2E_BASE_URL.
 const manageServer = !process.env.CI && !process.env.E2E_BASE_URL;
-const manageCsrfServer = !process.env.CI && !process.env.E2E_CSRF_BASE_URL;
 
 export default defineConfig({
   testDir: './tests/E2E',
@@ -39,36 +38,17 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: [
-    ...(manageServer
-      ? [
-          {
-            // `-d variables_order=EGPCS`: this build's php.ini omits `E`, so without
-            // it exported vars never reach $_ENV and InvoicePlane's env() (which
-            // reads $_ENV only) can't see DB_HOSTNAME=127.0.0.1 — the app then tries
-            // the Docker-only `mariadb` host from ipconfig.php and fails to boot.
-            command:
-              'DB_HOSTNAME=${DB_HOSTNAME:-127.0.0.1} php -d variables_order=EGPCS -S localhost:8000 -t . bootstrap/test-server.php',
-            url: E2E_BASE_URL,
-            reuseExistingServer: true,
-            timeout: 120 * 1000,
-          },
-        ]
-      : []),
-    ...(manageCsrfServer
-      ? [
-          {
-            // A second instance with CSRF_PROTECTION=true for the #1694
-            // regression-parity pairs (tests/E2E/support/csrf.js) — CI3 only
-            // reads that setting once per process, so it can't be toggled
-            // per-request on the server above.
-            command:
-              'DB_HOSTNAME=${DB_HOSTNAME:-127.0.0.1} CSRF_PROTECTION=true php -d variables_order=EGPCS -S localhost:8001 -t . bootstrap/test-server.php',
-            url: E2E_CSRF_BASE_URL,
-            reuseExistingServer: true,
-            timeout: 120 * 1000,
-          },
-        ]
-      : []),
-  ],
+  webServer: manageServer
+    ? {
+        // `-d variables_order=EGPCS`: this build's php.ini omits `E`, so without
+        // it exported vars never reach $_ENV and InvoicePlane's env() (which
+        // reads $_ENV only) can't see DB_HOSTNAME=127.0.0.1 — the app then tries
+        // the Docker-only `mariadb` host from ipconfig.php and fails to boot.
+        command:
+          'DB_HOSTNAME=${DB_HOSTNAME:-127.0.0.1} php -d variables_order=EGPCS -S localhost:8000 -t . bootstrap/test-server.php',
+        url: E2E_BASE_URL,
+        reuseExistingServer: true,
+        timeout: 120 * 1000,
+      }
+    : undefined,
 });
