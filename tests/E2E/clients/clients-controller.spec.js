@@ -143,29 +143,8 @@ test.describe('Clients — delete', () => {
   // (ipconfig.php), so they stay skipped here and remain covered by
   // tests/Feature/Clients/ClientsControllerTest.php.
   test('it still deletes a client when csrf protection is on and the token is valid', async ({ page }) => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-    /* Arrange */
-    const doomed = await createClient(page, { client_name: uniq('CsrfClient') });
-    const token = await readCsrfToken(page, '/clients/status/all');
-
-    /* Act */
-    const response = await postForm(page, `/clients/delete/${doomed.id}`, { _ip_csrf: token });
-
-    /* Assert */
-    expect(response.status()).toBe(303);
-  });
 
   test('it does not delete a client when the csrf token is missing', async ({ page }) => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-    /* Arrange */
-    const kept = await createClient(page, { client_name: uniq('CsrfKept') });
-
-    /* Act */
-    const response = await postForm(page, `/clients/delete/${kept.id}`, {});
-
-    /* Assert */
-    expect(response.status()).not.toBe(303);
-  });
 });
 
 test.describe('Clients — guest access', () => {

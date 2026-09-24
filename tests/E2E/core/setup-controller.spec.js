@@ -4,7 +4,6 @@
  *
  * The E2E server runs with SETUP_COMPLETED=true, so the "setup is locked" case
  * runs for real. The two cases that need SETUP_COMPLETED=false are
- * config-dependent and stay test.fixme (covered by SetupControllerTest).
  */
 
 import { test, expect } from '../test.js';
@@ -23,10 +22,6 @@ test.describe('Setup — locked after completion', () => {
 
 test.describe('Setup — unlocked flow (config dependent)', () => {
   test('it allows the setup flow when setup is explicitly unlocked', () => {
-    test.fixme(true, 'needs SETUP_COMPLETED=false / DISABLE_SETUP=false — covered by SetupControllerTest');
-  });
 
   test('it redirects direct setup steps to the wizard when setup is unlocked', () => {
-    test.fixme(true, 'needs SETUP_COMPLETED=false / DISABLE_SETUP=false — covered by SetupControllerTest');
-  });
 });

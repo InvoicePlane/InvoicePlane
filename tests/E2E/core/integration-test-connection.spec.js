@@ -6,8 +6,6 @@
  * The tests that assert on the *result* of the probe (reachable / unreachable)
  * need the outbound provider HTTP call stubbed — the PHPUnit suite fakes the
  * gateway; Playwright can't intercept a server-side call, so those stay
- * test.fixme. The method/JSON-shape/unknown-id/guard cases run for real.
- */
 
 import { test, expect } from '../test.js';
 import { uniq } from '../support/fixtures.js';
@@ -104,10 +102,4 @@ test.describe('Integration test connection — probe endpoint submission', () =>
   });
 });
 
-test.describe('Integration test connection — probe result (needs a stubbed provider)', () => {
-  const NEEDS_STUB = 'needs a server-side provider stub — covered by IntegrationTestConnectionTest';
-
-  test('it reports the provider as unreachable when authentication fails', () => {
-    test.fixme(true, NEEDS_STUB);
-  });
-});
+/* Provider probe result tests (actual reachability check) are covered by tests/Feature/Core/IntegrationTestConnectionTest.php */

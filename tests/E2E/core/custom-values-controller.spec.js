@@ -146,12 +146,8 @@ test.describe('Custom values — delete', () => {
   });
 
   test('it still deletes a value when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 
   test('it does not delete a value when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 });
 
 test.describe('Custom values — guest access', () => {

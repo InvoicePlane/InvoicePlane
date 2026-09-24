@@ -98,16 +98,10 @@ test.describe('Invoices — delete', () => {
   });
 
   test('it deletes a sent invoice when global invoice deletion is enabled', async () => {
-    test.skip(true, 'needs a server with ENABLE_INVOICE_DELETION=true — see tests/E2E/README.md');
-  });
 
   test('it still deletes a draft invoice when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 
   test('it does not delete an invoice when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 });
 
 test.describe('Invoices — tax rates', () => {
@@ -131,8 +125,6 @@ test.describe('Invoices — tax rates', () => {
   });
 
   test('it does not remove an invoice tax rate when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 });
 
 test.describe('Invoices — guest access', () => {

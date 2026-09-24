@@ -61,12 +61,8 @@ test.describe('Quotes — delete', () => {
   });
 
   test('it still deletes a quote when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 
   test('it does not delete a quote when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 });
 
 test.describe('Quotes — tax rates', () => {

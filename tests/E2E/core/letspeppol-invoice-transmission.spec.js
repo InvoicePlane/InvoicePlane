@@ -11,14 +11,8 @@ import { test } from '../test.js';
 const NEEDS_STUB = 'needs a server-side provider stub — covered by LetsPeppolInvoiceTransmissionTest';
 
 test('it authenticates then transmits and logs the external reference', () => {
-  test.fixme(true, NEEDS_STUB);
-});
 
 test('it records a failure when the provider rejects the document', () => {
-  test.fixme(true, NEEDS_STUB);
-});
 
 test('it records a failure when oauth authentication fails', () => {
-  test.fixme(true, NEEDS_STUB);
-});
 
