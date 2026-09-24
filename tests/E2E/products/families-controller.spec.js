@@ -136,7 +136,6 @@ test.describe('Families — delete', () => {
     expect(dbQuery(`SELECT family_id FROM ip_families WHERE family_id = ${kept.id}`)).toHaveLength(1);
   });
 
-
 test.describe('Families — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 

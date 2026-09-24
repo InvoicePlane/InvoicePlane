@@ -146,7 +146,6 @@ test.describe('Projects — delete', () => {
     expect(Number(taskRow.project_id ?? 0)).toBe(0);
   });
 
-
 test.describe('Projects — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 
