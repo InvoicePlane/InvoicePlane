@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integrations;
+namespace Tests\Feature\Core\Integrations;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -8,19 +8,13 @@ use RuntimeException;
 use Tests\AbstractTestCase;
 
 /**
- * Feature tests for the SuperPDP integration flow.
+ * Feature tests for the LetsPeppol integration flow.
  *
- * These tests exercise the CI3 HTTP layer (provider registry, settings list,
- * edit/save form, SSRF guards, invoice response history, send_invoice error
- * gates) without hitting the real SuperPDP API. All live HTTP is stopped either
- * by testing error-branch conditions (disabled client, missing invoice) that
- * never reach the API, or by asserting on pre-seeded database state that the
- * history view reads back.
- *
- * The actual SuperPDP transmission (OAuth2 token + raw application/pdf upload)
- * is covered end-to-end, with the outbound HTTP call faked, in
- * tests/Feature/Core/SuperPdpInvoiceTransmissionTest.php; the request shapes are
- * covered in tests/Unit/Core/SuperPdpClientTest.php.
+ * These tests exercise the CI3 HTTP layer (settings, history, send_invoice
+ * error gates) without hitting the real LetsPeppol API. All live HTTP is
+ * stopped either by testing error-branch conditions (disabled client, missing
+ * invoice) that never reach the API, or by asserting on pre-seeded database
+ * state that the history view reads back.
  *
  * Notes on the test harness:
  *   - Seed helpers assign an explicit `id` and return it, so a later lookup by
@@ -30,9 +24,13 @@ use Tests\AbstractTestCase;
  *     code) instead of the specific URL.
  *   - CI3 show_error() surfaces as a RuntimeException in this harness (via
  *     MY_Exceptions). The send_invoice error-gate tests use expectException().
+ *
+ * Deleted from prep/v180 in c4802ab9 alongside the reverted e-invoicing
+ * provider merge; restored and re-fitted to the current MariaDB harness and
+ * the since-split Settings/Events/Incoming controllers.
  */
 #[Group('integration')]
-class SuperPdpFlowTest extends AbstractTestCase
+class LetsPeppolFlowTest extends AbstractTestCase
 {
     protected function setUp(): void
     {
@@ -46,7 +44,7 @@ class SuperPdpFlowTest extends AbstractTestCase
 
     #[Test]
     #[Group('smoke')]
-    public function it_includes_superpdp_in_the_provider_registry(): void
+    public function it_includes_letspeppol_in_the_provider_registry(): void
     {
         /* Arrange */
 
@@ -55,8 +53,8 @@ class SuperPdpFlowTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertResponseBodyContains($response, 'superpdp');
-        $this->assertResponseBodyContains($response, 'SuperPdpClient');
+        $this->assertResponseBodyContains($response, 'letspeppol');
+        $this->assertResponseBodyContains($response, 'LetsPeppol');
     }
 
     // =========================================================================
@@ -65,10 +63,10 @@ class SuperPdpFlowTest extends AbstractTestCase
 
     #[Test]
     #[Group('smoke')]
-    public function it_shows_a_superpdp_integration_on_the_settings_page(): void
+    public function it_shows_a_letspeppol_integration_on_the_settings_page(): void
     {
         /* Arrange */
-        $this->seedSuperPdpClient(['label' => 'My SuperPDP Account']);
+        $this->seedLetsPeppolClient(['label' => 'My LetsPeppol Account']);
 
         /* Act */
         $response = $this->get('/integrations/settings');
@@ -76,7 +74,7 @@ class SuperPdpFlowTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertNoApplicationError($response);
-        $this->assertResponseBodyContains($response, 'My SuperPDP Account');
+        $this->assertResponseBodyContains($response, 'My LetsPeppol Account');
     }
 
     // =========================================================================
@@ -84,10 +82,10 @@ class SuperPdpFlowTest extends AbstractTestCase
     // =========================================================================
 
     #[Test]
-    public function it_renders_the_superpdp_settings_edit_form(): void
+    public function it_renders_the_letspeppol_settings_edit_form(): void
     {
         /* Arrange */
-        $id = $this->seedSuperPdpClient();
+        $id = $this->seedLetsPeppolClient();
 
         /* Act */
         $response = $this->get('/integrations/settings/edit/' . $id);
@@ -101,10 +99,10 @@ class SuperPdpFlowTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_redirects_a_guest_away_from_the_superpdp_edit_form(): void
+    public function it_redirects_a_guest_away_from_the_letspeppol_edit_form(): void
     {
         /* Arrange */
-        $id = $this->seedSuperPdpClient();
+        $id = $this->seedLetsPeppolClient();
         $this->actingAsGuest();
 
         /* Act */
@@ -122,10 +120,10 @@ class SuperPdpFlowTest extends AbstractTestCase
     // =========================================================================
 
     #[Test]
-    public function it_persists_superpdp_credentials_to_the_database(): void
+    public function it_persists_letspeppol_credentials_to_the_database(): void
     {
         /* Arrange */
-        $id = $this->seedSuperPdpClient(['enabled' => 0]);
+        $id = $this->seedLetsPeppolClient(['enabled' => 0]);
 
         /* Act */
         // Release the cached PDO handle so the follow-up read reconnects and
@@ -135,10 +133,9 @@ class SuperPdpFlowTest extends AbstractTestCase
         // IntegrationSettingsForm::collect() hard-requires every non-sensitive
         // field on save (client_secret is the only one it will reuse from the
         // stored blob when left blank), so the save form re-posts the full set.
-        $response = $this->post('/integrations/settings/save/' . $id, $this->superPdpSettingsPayload([
-            'label'     => 'Production SuperPDP',
-            'enabled'   => '1',
-            'client_id' => 'prod-client-id',
+        $response = $this->post('/integrations/settings/save/' . $id, $this->letsPeppolSettingsPayload([
+            'label'   => 'Production LetsPeppol',
+            'enabled' => '1',
         ]));
 
         /* Assert */
@@ -146,9 +143,8 @@ class SuperPdpFlowTest extends AbstractTestCase
         self::assertTrue($response->isRedirect(), 'Successful save must redirect.');
 
         $row = $this->databaseFetchOne('ip_merchant_clients', ['id' => $id]);
-        self::assertSame('Production SuperPDP', $row['label'], 'The new label must be persisted.');
+        self::assertSame('Production LetsPeppol', $row['label'], 'The new label must be persisted.');
         self::assertSame(1, (int) $row['enabled'], 'The provider must be enabled after the save.');
-
         // settings_json is written through IntegrationSettingsCipher (encrypted at
         // rest), so assert the round-trip via the edit form, which decrypts it.
         $editResponse = $this->get('/integrations/settings/edit/' . $id);
@@ -156,26 +152,26 @@ class SuperPdpFlowTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_disables_all_other_providers_when_superpdp_is_enabled(): void
+    public function it_disables_all_other_providers_when_letspeppol_is_enabled(): void
     {
         /* Arrange */
-        $otherId    = random_int(60000, 69999);
-        $superPdpId = random_int(70000, 79999);
+        $otherId      = random_int(60000, 69999);
+        $letsPeppolId = random_int(70000, 79999);
 
         $this->seedOtherProvider($otherId);
-        $this->seedSuperPdpClient(['id' => $superPdpId, 'enabled' => 0]);
+        $this->seedLetsPeppolClient(['id' => $letsPeppolId, 'enabled' => 0]);
 
         /* Act */
         $this->resetDatabaseConnection();
-        $response = $this->post('/integrations/settings/save/' . $superPdpId, $this->superPdpSettingsPayload([
-            'label'   => 'Test SuperPDP',
+        $response = $this->post('/integrations/settings/save/' . $letsPeppolId, $this->letsPeppolSettingsPayload([
+            'label'   => 'Test LetsPeppol',
             'enabled' => '1',
         ]));
 
         /* Assert */
         $this->assertNoApplicationError($response);
-        self::assertSame(1, (int) $this->databaseFetchOne('ip_merchant_clients', ['id' => $superPdpId])['enabled'], 'SuperPDP must be the enabled provider.');
-        self::assertSame(0, (int) $this->databaseFetchOne('ip_merchant_clients', ['id' => $otherId])['enabled'], 'Enabling SuperPDP must disable every other provider.');
+        self::assertSame(1, (int) $this->databaseFetchOne('ip_merchant_clients', ['id' => $letsPeppolId])['enabled'], 'LetsPeppol must be the enabled provider.');
+        self::assertSame(0, (int) $this->databaseFetchOne('ip_merchant_clients', ['id' => $otherId])['enabled'], 'Enabling LetsPeppol must disable every other provider.');
     }
 
     // =========================================================================
@@ -186,13 +182,13 @@ class SuperPdpFlowTest extends AbstractTestCase
     public function it_rejects_a_private_ip_as_api_base_url_and_stays_on_the_edit_form(): void
     {
         /* Arrange */
-        $id = $this->seedSuperPdpClient();
+        $id = $this->seedLetsPeppolClient();
 
         /* Act */
         $response = $this->post('/integrations/settings/save/' . $id, [
             'label'        => 'Attacker',
             'enabled'      => '0',
-            'token_url'    => 'https://api.superpdp.tech/oauth2/token',
+            'token_url'    => 'https://api.letspeppol.eu/oauth2/token',
             'api_base_url' => 'http://192.168.1.1/steal-credentials',
         ]);
 
@@ -211,14 +207,14 @@ class SuperPdpFlowTest extends AbstractTestCase
     public function it_rejects_a_non_https_token_url_and_stays_on_the_edit_form(): void
     {
         /* Arrange */
-        $id = $this->seedSuperPdpClient();
+        $id = $this->seedLetsPeppolClient();
 
         /* Act */
         $response = $this->post('/integrations/settings/save/' . $id, [
             'label'        => 'Downgrade',
             'enabled'      => '0',
-            'token_url'    => 'http://api.superpdp.tech/oauth2/token',
-            'api_base_url' => 'https://api.superpdp.tech',
+            'token_url'    => 'http://api.letspeppol.eu/oauth2/token',
+            'api_base_url' => 'https://api.letspeppol.eu',
         ]);
 
         /* Assert */
@@ -227,21 +223,21 @@ class SuperPdpFlowTest extends AbstractTestCase
 
         $row      = $this->databaseFetchOne('ip_merchant_clients', ['id' => $id]);
         $settings = json_decode($row['settings_json'] ?? '{}', true);
-        self::assertNotSame('http://api.superpdp.tech/oauth2/token', $settings['token_url'] ?? null);
+        self::assertNotSame('http://api.letspeppol.eu/oauth2/token', $settings['token_url'] ?? null);
     }
 
     #[Test]
     public function it_rejects_an_absolute_url_in_an_endpoint_path_field(): void
     {
         /* Arrange */
-        $id = $this->seedSuperPdpClient();
+        $id = $this->seedLetsPeppolClient();
 
         /* Act */
         $response = $this->post('/integrations/settings/save/' . $id, [
             'label'            => 'Path Attack',
             'enabled'          => '0',
-            'token_url'        => 'https://api.superpdp.tech/oauth2/token',
-            'api_base_url'     => 'https://api.superpdp.tech',
+            'token_url'        => 'https://api.letspeppol.eu/oauth2/token',
+            'api_base_url'     => 'https://api.letspeppol.eu',
             'invoice_endpoint' => 'https://evil.example.com/exfiltrate',
         ]);
 
@@ -260,15 +256,15 @@ class SuperPdpFlowTest extends AbstractTestCase
 
     #[Test]
     #[Group('smoke')]
-    public function it_shows_a_sent_superpdp_invoice_in_the_history_page(): void
+    public function it_shows_a_sent_letspeppol_invoice_in_the_history_page(): void
     {
         /* Arrange */
-        $clientId         = $this->seedClient(['client_name' => 'SuperPDP Customer BV']);
+        $clientId         = $this->seedClient(['client_name' => 'Peppol Customer BV']);
         $invoiceId        = $this->seedInvoice($clientId);
-        $merchantClientId = $this->seedSuperPdpClient();
+        $merchantClientId = $this->seedLetsPeppolClient();
 
         $this->seedOutboundResponse($invoiceId, $merchantClientId, [
-            'merchant_response_reference' => 'sp-ext-abc123',
+            'merchant_response_reference' => 'lp-inv-abc123',
             'status'                      => 'sent',
         ]);
 
@@ -278,7 +274,7 @@ class SuperPdpFlowTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertNoApplicationError($response);
-        $this->assertResponseBodyContains($response, 'sp-ext-abc123');
+        $this->assertResponseBodyContains($response, 'lp-inv-abc123');
     }
 
     #[Test]
@@ -294,24 +290,24 @@ class SuperPdpFlowTest extends AbstractTestCase
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertNoApplicationError($response);
-        $this->assertResponseBodyNotContains($response, 'sp-ext-');
+        $this->assertResponseBodyNotContains($response, 'lp-inv-');
     }
 
     #[Test]
-    public function it_shows_multiple_superpdp_responses_for_a_single_invoice(): void
+    public function it_shows_multiple_peppol_responses_for_a_single_invoice(): void
     {
         /* Arrange */
         $clientId         = $this->seedClient();
         $invoiceId        = $this->seedInvoice($clientId);
-        $merchantClientId = $this->seedSuperPdpClient();
+        $merchantClientId = $this->seedLetsPeppolClient();
 
         $this->seedOutboundResponse($invoiceId, $merchantClientId, [
-            'merchant_response_reference' => 'sp-ref-first',
+            'merchant_response_reference' => 'lp-ref-first',
             'status'                      => 'sent',
             'created_at'                  => date('Y-m-d H:i:s', strtotime('-10 minutes')),
         ]);
         $this->seedOutboundResponse($invoiceId, $merchantClientId, [
-            'merchant_response_reference' => 'sp-ref-status-update',
+            'merchant_response_reference' => 'lp-ref-status-update',
             'status'                      => 'accepted',
             'created_at'                  => date('Y-m-d H:i:s'),
         ]);
@@ -321,8 +317,8 @@ class SuperPdpFlowTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertResponseBodyContains($response, 'sp-ref-first');
-        $this->assertResponseBodyContains($response, 'sp-ref-status-update');
+        $this->assertResponseBodyContains($response, 'lp-ref-first');
+        $this->assertResponseBodyContains($response, 'lp-ref-status-update');
     }
 
     #[Test]
@@ -331,10 +327,10 @@ class SuperPdpFlowTest extends AbstractTestCase
         /* Arrange */
         $clientId         = $this->seedClient();
         $invoiceId        = $this->seedInvoice($clientId);
-        $merchantClientId = $this->seedSuperPdpClient();
+        $merchantClientId = $this->seedLetsPeppolClient();
 
         $this->seedOutboundResponse($invoiceId, $merchantClientId, [
-            'merchant_response'            => 'Document rejected by the platform',
+            'merchant_response'            => 'Recipient not reachable on Peppol network',
             'merchant_response_successful' => 0,
             'status'                       => 'rejected',
             'http_code'                    => 422,
@@ -349,7 +345,7 @@ class SuperPdpFlowTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_redirects_a_guest_away_from_the_superpdp_history_page(): void
+    public function it_redirects_a_guest_away_from_the_letspeppol_history_page(): void
     {
         /* Arrange */
         $clientId  = $this->seedClient();
@@ -371,7 +367,7 @@ class SuperPdpFlowTest extends AbstractTestCase
     // =========================================================================
 
     #[Test]
-    public function it_returns_an_error_when_send_invoice_references_an_unknown_merchant_client(): void
+    public function it_rejects_send_invoice_when_merchant_client_does_not_exist(): void
     {
         /* Arrange */
         $clientId                    = $this->seedClient();
@@ -379,21 +375,21 @@ class SuperPdpFlowTest extends AbstractTestCase
         $nonexistentMerchantClientId = 99999;
 
         /* Act */
-        // Integrations::send_invoice() returns a plain 404 for this guard, not show_error().
         $response = $this->post('/integrations/send_invoice/' . $invoiceId . '/' . $nonexistentMerchantClientId);
 
         /* Assert */
+        // Integrations::send_invoice() returns a plain 404 for this guard, not show_error().
         $this->assertResponseStatusCode($response, 404);
         $this->assertResponseBodyContains($response, 'not found or is disabled');
     }
 
     #[Test]
-    public function it_returns_an_error_when_send_invoice_uses_a_disabled_merchant_client(): void
+    public function it_rejects_send_invoice_when_merchant_client_is_disabled(): void
     {
         /* Arrange */
         $clientId         = $this->seedClient();
         $invoiceId        = $this->seedInvoice($clientId);
-        $merchantClientId = $this->seedSuperPdpClient(['enabled' => 0]);
+        $merchantClientId = $this->seedLetsPeppolClient(['enabled' => 0]);
 
         /* Act */
         $response = $this->post('/integrations/send_invoice/' . $invoiceId . '/' . $merchantClientId);
@@ -404,10 +400,10 @@ class SuperPdpFlowTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_returns_an_error_when_send_invoice_references_an_unknown_invoice(): void
+    public function it_rejects_send_invoice_when_invoice_does_not_exist(): void
     {
         /* Arrange */
-        $merchantClientId     = $this->seedSuperPdpClient();
+        $merchantClientId     = $this->seedLetsPeppolClient();
         $nonexistentInvoiceId = 99999;
 
         /* Act */
@@ -423,24 +419,24 @@ class SuperPdpFlowTest extends AbstractTestCase
     // =========================================================================
 
     #[Test]
-    public function it_records_the_superpdp_external_id_in_the_merchant_response_table(): void
+    public function it_records_the_peppol_external_id_in_the_merchant_response_table(): void
     {
         /* Arrange */
         $clientId         = $this->seedClient();
         $invoiceId        = $this->seedInvoice($clientId);
-        $merchantClientId = $this->seedSuperPdpClient();
+        $merchantClientId = $this->seedLetsPeppolClient();
 
         /* Act */
         $this->seedOutboundResponse($invoiceId, $merchantClientId, [
-            'merchant_response_reference' => 'sp-ext-789',
+            'merchant_response_reference' => 'peppol-ext-789',
         ]);
 
         /* Assert */
         $this->assertDatabaseHas('ip_merchant_responses', [
             'invoice_id'                  => $invoiceId,
             'merchant_client_id'          => $merchantClientId,
-            'merchant_response_driver'    => 'superpdp',
-            'merchant_response_reference' => 'sp-ext-789',
+            'merchant_response_driver'    => 'letspeppol',
+            'merchant_response_reference' => 'peppol-ext-789',
             'direction'                   => 'out',
         ]);
     }
@@ -451,15 +447,15 @@ class SuperPdpFlowTest extends AbstractTestCase
         /* Arrange */
         $clientId         = $this->seedClient();
         $invoiceId        = $this->seedInvoice($clientId);
-        $merchantClientId = $this->seedSuperPdpClient();
+        $merchantClientId = $this->seedLetsPeppolClient();
 
         /* Act */
         $this->databaseInsert('ip_merchant_responses', [
             'invoice_id'                   => $invoiceId,
             'merchant_client_id'           => $merchantClientId,
             'merchant_response_date'       => date('Y-m-d'),
-            'merchant_response_driver'     => 'superpdp',
-            'merchant_response'            => 'Document rejected by the platform',
+            'merchant_response_driver'     => 'letspeppol',
+            'merchant_response'            => 'Peppol participant not reachable',
             'merchant_response_reference'  => '',
             'merchant_response_successful' => 0,
             'direction'                    => 'out',
@@ -472,7 +468,7 @@ class SuperPdpFlowTest extends AbstractTestCase
         /* Assert */
         $this->assertDatabaseHas('ip_merchant_responses', [
             'invoice_id'                   => $invoiceId,
-            'merchant_response_driver'     => 'superpdp',
+            'merchant_response_driver'     => 'letspeppol',
             'merchant_response_successful' => 0,
             'status'                       => 'error',
             'http_code'                    => 422,
@@ -480,32 +476,38 @@ class SuperPdpFlowTest extends AbstractTestCase
     }
 
     /**
-     * Insert a SuperPDP merchant client with an explicit id so lookups by id
-     * work in the HTTP subprocess regardless of the DB's auto-increment
-     * behaviour.
+     * Insert a LetsPeppol merchant client with an explicit id.
      *
-     * @param array<string, mixed> $overrides
+     * SQLite's INT AUTO_INCREMENT PRIMARY KEY does not auto-fill the id column
+     * (unlike MySQL). We generate the id explicitly so that lookups by id work
+     * in the HTTP subprocess.
      */
-    protected function seedSuperPdpClient(array $overrides = []): int
+    protected function seedLetsPeppolClient(array $overrides = []): int
     {
         $id = array_key_exists('id', $overrides) ? $overrides['id'] : random_int(10000, 59999);
 
         $this->databaseInsert('ip_merchant_clients', array_merge([
             'id'            => $id,
-            'merchant_type' => 'superpdp',
-            'label'         => 'Test SuperPDP',
+            'merchant_type' => 'letspeppol',
+            'label'         => 'Test LetsPeppol',
             'enabled'       => 1,
             'auth_type'     => 'oauth2',
             'settings_json' => json_encode([
-                'client_id'                  => 'sp-client-id',
-                'client_secret'              => 'sp-client-secret',
-                'token_url'                  => 'https://api.superpdp.tech/oauth2/token',
-                'api_base_url'               => 'https://api.superpdp.tech',
-                'invoice_endpoint'           => '/v1.beta/invoices',
-                'invoice_status_endpoint'    => '/v1.beta/invoices/{id}',
-                'incoming_invoices_endpoint' => '/v1.beta/invoices',
-                'incoming_document_endpoint' => '/v1.beta/invoices/{id}/document',
-                'invoice_events_endpoint'    => '/v1.beta/invoice_events',
+                'client_id'                    => 'cid-test',
+                'client_secret'                => 'csecret-test',
+                'token_url'                    => 'https://api.letspeppol.eu/oauth2/token',
+                'api_base_url'                 => 'https://api.letspeppol.eu',
+                'invoice_endpoint'             => '/v1/invoices',
+                'invoice_status_endpoint'      => '/v1/invoices/{id}',
+                'incoming_invoices_endpoint'   => '/v1/incoming-invoices',
+                'invoice_events_endpoint'      => '/v1/invoice-events',
+                'credit_note_endpoint'         => '/v1/credit-notes',
+                'participants_endpoint'        => '/v1/participants',
+                'participant_lookup_endpoint'  => '/v1/participants/{id}',
+                'transmissions_endpoint'       => '/v1/transmissions',
+                'transmission_status_endpoint' => '/v1/transmissions/{id}',
+                'documents_endpoint'           => '/v1/documents',
+                'document_endpoint'            => '/v1/documents/{id}',
             ]),
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
@@ -518,10 +520,10 @@ class SuperPdpFlowTest extends AbstractTestCase
     {
         $this->databaseInsert('ip_merchant_clients', array_merge([
             'id'            => $id,
-            'merchant_type' => 'qonto',
+            'merchant_type' => 'superpdp',
             'label'         => 'Old Provider',
             'enabled'       => 1,
-            'auth_type'     => 'bearer',
+            'auth_type'     => 'oauth2',
             'settings_json' => '{}',
             'created_at'    => date('Y-m-d H:i:s'),
             'updated_at'    => date('Y-m-d H:i:s'),
@@ -534,9 +536,9 @@ class SuperPdpFlowTest extends AbstractTestCase
             'invoice_id'                   => $invoiceId,
             'merchant_client_id'           => $merchantClientId,
             'merchant_response_date'       => date('Y-m-d'),
-            'merchant_response_driver'     => 'superpdp',
-            'merchant_response'            => 'Invoice uploaded to SuperPDP',
-            'merchant_response_reference'  => 'sp-ext-' . random_int(1000, 9999),
+            'merchant_response_driver'     => 'letspeppol',
+            'merchant_response'            => 'Invoice queued for Peppol delivery',
+            'merchant_response_reference'  => 'lp-ext-' . random_int(1000, 9999),
             'merchant_response_successful' => 1,
             'direction'                    => 'out',
             'record_type'                  => 'outbound_status',
@@ -551,9 +553,9 @@ class SuperPdpFlowTest extends AbstractTestCase
     // -------------------------------------------------------------------------
 
     /**
-     * The full settings/save POST body the edit form submits for a SuperPDP
+     * The full settings/save POST body the edit form submits for a LetsPeppol
      * provider. IntegrationSettingsForm::collect() requires every field marked
-     * required in SuperPdpClient::settingsSchema() except the sensitive
+     * required in LetsPeppolClient::settingsSchema() except the sensitive
      * client_secret (reused from the stored blob when blank), so every save
      * carries the whole set.
      *
@@ -561,20 +563,27 @@ class SuperPdpFlowTest extends AbstractTestCase
      *
      * @return array<string, string>
      */
-    private function superPdpSettingsPayload(array $overrides = []): array
+    private function letsPeppolSettingsPayload(array $overrides = []): array
     {
         return array_merge([
-            'label'                      => 'SuperPDP',
-            'enabled'                    => '0',
-            'auth_type'                  => 'oauth2',
-            'client_id'                  => 'sp-client-id',
-            'token_url'                  => 'https://api.superpdp.tech/oauth2/token',
-            'api_base_url'               => 'https://api.superpdp.tech',
-            'invoice_endpoint'           => '/v1.beta/invoices',
-            'invoice_status_endpoint'    => '/v1.beta/invoices/{id}',
-            'incoming_invoices_endpoint' => '/v1.beta/invoices',
-            'incoming_document_endpoint' => '/v1.beta/invoices/{id}/document',
-            'invoice_events_endpoint'    => '/v1.beta/invoice_events',
+            'label'                        => 'LetsPeppol',
+            'enabled'                      => '0',
+            'auth_type'                    => 'oauth2',
+            'client_id'                    => 'prod-client-id',
+            'token_url'                    => 'https://api.letspeppol.eu/oauth2/token',
+            'api_base_url'                 => 'https://api.letspeppol.eu',
+            'invoice_endpoint'             => '/v1/invoices',
+            'invoice_status_endpoint'      => '/v1/invoices/{id}',
+            'incoming_invoices_endpoint'   => '/v1/incoming-invoices',
+            'invoice_events_endpoint'      => '/v1/invoice-events',
+            'credit_note_endpoint'         => '/v1/credit-notes',
+            'credit_note_status_endpoint'  => '/v1/credit-notes/{id}',
+            'participants_endpoint'        => '/v1/participants',
+            'participant_lookup_endpoint'  => '/v1/participants/{id}',
+            'transmissions_endpoint'       => '/v1/transmissions',
+            'transmission_status_endpoint' => '/v1/transmissions/{id}',
+            'documents_endpoint'           => '/v1/documents',
+            'document_endpoint'            => '/v1/documents/{id}',
         ], $overrides);
     }
 }
