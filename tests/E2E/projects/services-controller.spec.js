@@ -129,10 +129,11 @@ test.describe('Services — invoice tagging', () => {
   // Exercised via the Filter AJAX endpoint against a tagged invoice; belongs
   // with the Core filter-ajax spec where the invoice fixture lives.
   test('it resolves a tagged invoices service name in the filtered invoice table', async () => {
+  });
 });
 
-  // CSRF token tests (valid token, missing token) are covered by Feature tests
-  // and cannot run in E2E because CSRF_PROTECTION=false in the test server.
+// CSRF token tests (valid token, missing token) are covered by Feature tests
+// and cannot run in E2E because CSRF_PROTECTION=false in the test server.
 test.describe('Services — delete', () => {
   test('it deletes a service and its client links', async ({ page }) => {
     /* Arrange */

@@ -140,6 +140,7 @@ test.describe('Invoices — tax rates', () => {
 
   test.skip('it does not remove an invoice tax rate when the csrf token is missing', async () => {
   });
+});
 
 test.describe('Invoices — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });

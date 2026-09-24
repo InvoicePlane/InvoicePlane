@@ -157,6 +157,7 @@ test.describe('Clients — delete', () => {
 
   test.skip('it does not delete a client when the csrf token is missing', async ({ page }) => {
   });
+});
 
 test.describe('Clients — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });

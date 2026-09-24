@@ -168,7 +168,7 @@ test.describe('Tasks — delete', () => {
     /* Assert: Other task unaffected */
     expect(dbQuery(`SELECT task_id FROM ip_tasks WHERE task_id = ${kept.id}`)).toHaveLength(1);
   });
-
+});
 
 test.describe('Tasks — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });

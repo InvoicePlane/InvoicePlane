@@ -145,6 +145,7 @@ test.describe('Projects — delete', () => {
     expect(taskRow, 'the task itself survives the project deletion').toBeTruthy();
     expect(Number(taskRow.project_id ?? 0)).toBe(0);
   });
+});
 
 test.describe('Projects — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });

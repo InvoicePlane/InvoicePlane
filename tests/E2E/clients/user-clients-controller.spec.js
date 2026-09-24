@@ -118,6 +118,7 @@ test.describe('User clients — unassign', () => {
 
   test.skip('it does not unassign when the csrf token is missing', async () => {
   });
+});
 
 test.describe('User clients — access control', () => {
   test('it blocks a non-admin from unassigning a client', async ({ page, browser }) => {
