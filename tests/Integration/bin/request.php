@@ -1,5 +1,7 @@
 <?php
 
+define('ROOT_PATH', dirname(__DIR__, 3));
+
 $encodedRequest = getenv('CI_TEST_REQUEST') ?: '';
 $decodedRequest = base64_decode($encodedRequest, true);
 
