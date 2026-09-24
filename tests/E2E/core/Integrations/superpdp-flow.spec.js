@@ -3,7 +3,7 @@
  * Mirrors tests/Feature/Core/SuperPdpFlowTest.php via the shared einvoiceFlowSuite.
  */
 
-import { einvoiceFlowSuite } from '../support/einvoice-flow.js';
+import { einvoiceFlowSuite } from '../../support/einvoice-flow.js';
 
 einvoiceFlowSuite({
   provider: 'superpdp',

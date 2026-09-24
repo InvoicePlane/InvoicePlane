@@ -5,9 +5,9 @@
  */
 
 import { test, expect } from '../../test.js';
-import { createSecondaryUser } from '../support/fixtures.js';
-import { dbExec, dbQuery } from '../support/db.js';
-import { loginAs } from '../support/auth.js';
+import { createSecondaryUser } from '../../support/fixtures.js';
+import { dbExec, dbQuery } from '../../support/db.js';
+import { loginAs } from '../../support/auth.js';
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
