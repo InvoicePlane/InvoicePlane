@@ -18,7 +18,7 @@ class SqlHelperTest extends TestCase
 {
     protected function setUp(): void
     {
-        require_once dirname(__DIR__, 3) . '/application/helpers/sql_helper.php';
+        require_once ROOT_PATH . '/application/helpers/sql_helper.php';
     }
 
     #[Test]
@@ -85,7 +85,7 @@ class SqlHelperTest extends TestCase
     public function it_preserves_every_statement_of_the_real_consolidated_1_8_0_migration(): void
     {
         /* Arrange */
-        $file = dirname(__DIR__, 3) . '/application/modules/setup/sql/045_1.8.0.sql';
+        $file = ROOT_PATH . '/application/modules/setup/sql/045_1.8.0.sql';
         $sql  = (string) file_get_contents($file);
         $this->assertNotSame('', $sql);
 

@@ -25,7 +25,7 @@ class MdlUsersTest extends TestCase
             return;
         }
 
-        $root = dirname(__DIR__, 3);
+        $root = ROOT_PATH;
 
         $files = [
             $root . '/vendor/pocketarc/codeigniter/system/core/Model.php',

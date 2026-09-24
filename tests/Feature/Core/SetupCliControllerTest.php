@@ -66,7 +66,7 @@ class SetupCliControllerTest extends AbstractTestCase
 
     private function runCli(string $route, array $env = []): array
     {
-        $repoRoot = dirname(__DIR__, 3);
+        $repoRoot = ROOT_PATH;
         $command  = sprintf('%s %s %s', escapeshellarg(PHP_BINARY), escapeshellarg($repoRoot . '/public/index.php'), escapeshellarg($route));
 
         $process = proc_open(

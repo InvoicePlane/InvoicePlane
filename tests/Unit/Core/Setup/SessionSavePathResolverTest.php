@@ -30,7 +30,7 @@ class SessionSavePathResolverTest extends TestCase
 {
     protected function setUp(): void
     {
-        require_once dirname(__DIR__, 3) . '/bootstrap/session_path.php';
+        require_once ROOT_PATH . '/bootstrap/session_path.php';
     }
 
     #[Test]
@@ -95,7 +95,7 @@ class SessionSavePathResolverTest extends TestCase
     public function it_routes_the_sess_save_path_config_through_the_resolver(): void
     {
         $source = (string) file_get_contents(
-            dirname(__DIR__, 3) . '/application/config/config.php'
+            ROOT_PATH . '/application/config/config.php'
         );
 
         self::assertMatchesRegularExpression(
@@ -114,7 +114,7 @@ class SessionSavePathResolverTest extends TestCase
     public function it_loads_the_resolver_from_the_single_kernel_boot_path(): void
     {
         $source = (string) file_get_contents(
-            dirname(__DIR__, 3) . '/bootstrap/kernel.php'
+            ROOT_PATH . '/bootstrap/kernel.php'
         );
 
         self::assertStringContainsString(
@@ -130,7 +130,7 @@ class SessionSavePathResolverTest extends TestCase
     public function it_keeps_the_shipped_example_config_from_resolving_to_a_broken_session_path(): void
     {
         $example = (string) file_get_contents(
-            dirname(__DIR__, 3) . '/ipconfig.php.example'
+            ROOT_PATH . '/ipconfig.php.example'
         );
 
         // Read SESS_SAVE_PATH exactly as phpdotenv would: the last active
@@ -159,7 +159,7 @@ class SessionSavePathResolverTest extends TestCase
     #[PreserveGlobalState(false)]
     public function it_resolves_a_real_directory_when_config_php_boots_with_an_empty_sess_save_path(): void
     {
-        $repoRoot = dirname(__DIR__, 3);
+        $repoRoot = ROOT_PATH;
 
         $code = '$_ENV["SESS_SAVE_PATH"] = "";'
             . 'require ' . var_export($repoRoot . '/bootstrap/kernel.php', true) . ';'

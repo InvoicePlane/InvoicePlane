@@ -11,8 +11,8 @@ class MarkupSanitizerTest extends TestCase
 {
     protected function setUp(): void
     {
-        require_once dirname(__DIR__, 3) . '/application/helpers/html_sanitizer_helper.php';
-        require_once dirname(__DIR__, 3) . '/application/helpers/mpdf_helper.php';
+        require_once ROOT_PATH . '/application/helpers/html_sanitizer_helper.php';
+        require_once ROOT_PATH . '/application/helpers/mpdf_helper.php';
     }
 
     #[Test]

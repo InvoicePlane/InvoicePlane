@@ -50,7 +50,7 @@ class IntegrationsViewLanguageTest extends TestCase
     private function englishLang(): array
     {
         $lang = [];
-        require dirname(__DIR__, 3) . '/application/language/english/ip_lang.php';
+        require ROOT_PATH . '/application/language/english/ip_lang.php';
 
         return $lang;
     }
@@ -58,7 +58,7 @@ class IntegrationsViewLanguageTest extends TestCase
     /** @return list<string> */
     private function viewFiles(): array
     {
-        $base = dirname(__DIR__, 3) . '/application';
+        $base = ROOT_PATH . '/application';
 
         return [
             ...glob($base . '/modules/integrations/views/*.php'),

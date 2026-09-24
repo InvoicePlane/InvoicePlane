@@ -21,8 +21,8 @@ class CurrencySymbolXssTest extends TestCase
 
     protected function setUp(): void
     {
-        require_once dirname(__DIR__, 3) . '/application/helpers/echo_helper.php';
-        require_once dirname(__DIR__, 3) . '/application/helpers/number_helper.php';
+        require_once ROOT_PATH . '/application/helpers/echo_helper.php';
+        require_once ROOT_PATH . '/application/helpers/number_helper.php';
     }
 
     protected function tearDown(): void

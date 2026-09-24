@@ -123,7 +123,7 @@ final class QontoEInvoiceGenerationTest extends AbstractInvoiceTransmissionTestC
         $candidates = array_filter([
             $path !== '' ? $path . '/integrations/outgoing/invoice_' . $invoiceId . '.pdf' : null,
             getcwd() . '/uploads/integrations/outgoing/invoice_' . $invoiceId . '.pdf',
-            dirname(__DIR__, 3) . '/uploads/integrations/outgoing/invoice_' . $invoiceId . '.pdf',
+            ROOT_PATH . '/uploads/integrations/outgoing/invoice_' . $invoiceId . '.pdf',
         ]);
         foreach ($candidates as $candidate) {
             if (is_file($candidate)) {

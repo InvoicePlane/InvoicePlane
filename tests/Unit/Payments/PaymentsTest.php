@@ -180,13 +180,13 @@ class PaymentsTest extends TestCase
 
     protected function setUpCurrencyMinorUnits(): void
     {
-        require_once dirname(__DIR__, 3) . '/application/helpers/currency_helper.php';
+        require_once ROOT_PATH . '/application/helpers/currency_helper.php';
     }
 
     protected function setUpPaypalLib(): void
     {
         if ( ! defined('BASEPATH')) {
-            define('BASEPATH', dirname(__DIR__, 3) . '/system/');
+            define('BASEPATH', ROOT_PATH . '/system/');
         }
 
         if ( ! defined('ENVIRONMENT')) {
@@ -195,7 +195,7 @@ class PaymentsTest extends TestCase
 
         require_once dirname(__DIR__, 2) . '/Fakes/Payments/FakePaypalHttpClient.php';
 
-        require_once dirname(__DIR__, 3) . '/application/libraries/gateways/PaypalLib.php';
+        require_once ROOT_PATH . '/application/libraries/gateways/PaypalLib.php';
 
         $captureFile = tempnam(sys_get_temp_dir(), 'paypal-request-');
 

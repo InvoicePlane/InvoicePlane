@@ -22,8 +22,8 @@ class CryptorTest extends TestCase
     {
         parent::setUp();
 
-        require_once dirname(__DIR__, 3) . '/application/libraries/Cryptor.php';
-        require_once dirname(__DIR__, 3) . '/application/libraries/Crypt.php';
+        require_once ROOT_PATH . '/application/libraries/Cryptor.php';
+        require_once ROOT_PATH . '/application/libraries/Crypt.php';
 
         $this->key                   = random_bytes(32);
         $this->hadEncryptionKey      = array_key_exists('ENCRYPTION_KEY', $_ENV);
@@ -157,7 +157,7 @@ class CryptorTest extends TestCase
     {
         /* Arrange: Crypt reads env('ENCRYPTION_KEY'), which is $_ENV-backed
          * (see bootstrap/kernel.php), not getenv()/putenv(). */
-        require_once dirname(__DIR__, 3) . '/bootstrap/kernel.php';
+        require_once ROOT_PATH . '/bootstrap/kernel.php';
         $rawKey                 = random_bytes(32);
         $_ENV['ENCRYPTION_KEY'] = 'base64:' . base64_encode($rawKey);
 
@@ -280,7 +280,7 @@ class CryptorTest extends TestCase
          * source — e.g. by re-enabling Pint's mb_str_functions fixer, which
          * is exactly what caused #1680 originally (see commit 98c60c77).
          */
-        $source = file_get_contents(dirname(__DIR__, 3) . '/application/libraries/Cryptor.php');
+        $source = file_get_contents(ROOT_PATH . '/application/libraries/Cryptor.php');
         self::assertIsString($source, 'Could not read Cryptor.php source');
 
         // Tokenize and strip comments before scanning: the file legitimately contains the
@@ -318,7 +318,7 @@ class CryptorTest extends TestCase
          * test's sibling ever gets a chance to catch it - so guard the
          * setting directly, not just its effect.
          */
-        $pintConfigPath = dirname(__DIR__, 3) . '/pint.json';
+        $pintConfigPath = ROOT_PATH . '/pint.json';
         $config         = json_decode(file_get_contents($pintConfigPath), true, flags: JSON_THROW_ON_ERROR);
 
         self::assertArrayHasKey('rules', $config, 'pint.json is missing the "rules" section');

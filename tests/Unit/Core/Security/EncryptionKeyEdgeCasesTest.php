@@ -21,8 +21,8 @@ class EncryptionKeyEdgeCasesTest extends TestCase
     {
         parent::setUp();
 
-        require_once dirname(__DIR__, 3) . '/application/libraries/Cryptor.php';
-        require_once dirname(__DIR__, 3) . '/application/libraries/Crypt.php';
+        require_once ROOT_PATH . '/application/libraries/Cryptor.php';
+        require_once ROOT_PATH . '/application/libraries/Crypt.php';
 
         $this->key                   = random_bytes(32);
         $this->hadEncryptionKey      = array_key_exists('ENCRYPTION_KEY', $_ENV);

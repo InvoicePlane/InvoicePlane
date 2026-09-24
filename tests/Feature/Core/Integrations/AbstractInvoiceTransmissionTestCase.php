@@ -253,7 +253,7 @@ abstract class AbstractInvoiceTransmissionTestCase extends AbstractTestCase
      */
     private function purgeGeneratedArtifacts(): void
     {
-        $dir = dirname(__DIR__, 3) . '/uploads/integrations/outgoing';
+        $dir = ROOT_PATH . '/uploads/integrations/outgoing';
         foreach (glob($dir . '/invoice_*') ?: [] as $file) {
             @unlink($file);
         }

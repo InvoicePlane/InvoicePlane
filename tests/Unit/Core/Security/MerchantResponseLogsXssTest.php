@@ -24,10 +24,10 @@ class MerchantResponseLogsXssTest extends TestCase
 
     protected function setUp(): void
     {
-        require_once dirname(__DIR__, 3) . '/application/helpers/echo_helper.php';
-        require_once dirname(__DIR__, 3) . '/application/helpers/trans_helper.php';
-        require_once dirname(__DIR__, 3) . '/application/helpers/date_helper.php';
-        require_once dirname(__DIR__, 3) . '/vendor/pocketarc/codeigniter/system/helpers/url_helper.php';
+        require_once ROOT_PATH . '/application/helpers/echo_helper.php';
+        require_once ROOT_PATH . '/application/helpers/trans_helper.php';
+        require_once ROOT_PATH . '/application/helpers/date_helper.php';
+        require_once ROOT_PATH . '/vendor/pocketarc/codeigniter/system/helpers/url_helper.php';
 
         $this->fakeCi();
     }
@@ -118,7 +118,7 @@ class MerchantResponseLogsXssTest extends TestCase
     private function renderTable(array $payment_logs): string
     {
         ob_start();
-        include dirname(__DIR__, 3) . '/application/modules/payments/views/partial_online_logs_table.php';
+        include ROOT_PATH . '/application/modules/payments/views/partial_online_logs_table.php';
 
         return (string) ob_get_clean();
     }

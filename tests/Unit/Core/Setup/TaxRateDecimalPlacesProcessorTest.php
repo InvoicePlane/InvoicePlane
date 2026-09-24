@@ -21,7 +21,7 @@ class TaxRateDecimalPlacesProcessorTest extends TestCase
 
     protected function setUp(): void
     {
-        require_once dirname(__DIR__, 3) . '/application/modules/settings/libraries/TaxRateDecimalPlacesProcessor.php';
+        require_once ROOT_PATH . '/application/modules/settings/libraries/TaxRateDecimalPlacesProcessor.php';
         $this->processor = new TaxRateDecimalPlacesProcessor();
     }
 
