@@ -49,9 +49,12 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Setup PHP with Composer
-        uses: ./.github/actions/setup-php-composer
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          extensions: mbstring,xml,ctype,json,fileinfo,curl,pdo,mysql,bcmath
+          tools: composer:latest
+          coverage: none
 
       - name: Build MariaDB schema and seed baseline
         run: |

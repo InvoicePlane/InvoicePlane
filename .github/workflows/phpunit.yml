@@ -105,9 +105,12 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Setup PHP with Composer
-        uses: ./.github/actions/setup-php-composer
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: mbstring,xml,ctype,json,fileinfo,curl,pdo,mysql,bcmath
+          tools: composer:latest
+          coverage: none
 
       # The e-invoicing generation tests validate the produced Factur-X / UBL
       # against EN 16931 Schematron, which EInvoiceSchematronValidator runs
