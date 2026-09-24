@@ -133,12 +133,6 @@ test.describe('Invoice groups — delete', () => {
     /* Assert: Other group unaffected */
     expect(dbQuery(`SELECT invoice_group_id FROM ip_invoice_groups WHERE invoice_group_id = ${kept.id}`)).toHaveLength(1);
   });
-
-  test.skip('it still deletes an invoice group when csrf protection is on and the token is valid', async () => {
-  });
-
-  test.skip('it does not delete an invoice group when the csrf token is missing', async () => {
-  });
 });
 
 test.describe('Invoice groups — guest access', () => {

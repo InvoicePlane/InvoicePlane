@@ -2,8 +2,9 @@
  * Browser coverage for application/modules/setup/controllers/Setup.php.
  * Mirrors tests/Feature/Core/SetupControllerTest.php.
  *
- * The E2E server runs with SETUP_COMPLETED=true, so the "setup is locked" case
- * runs for real. The two cases that need SETUP_COMPLETED=false are
+ * The E2E server runs with SETUP_COMPLETED=true, so only the "setup is
+ * locked" case runs here. The SETUP_COMPLETED=false paths are covered by
+ * tests/Feature/Core/SetupControllerTest.php.
  */
 
 import { test, expect } from '../../test.js';
@@ -17,13 +18,5 @@ test.describe('Setup — locked after completion', () => {
       const response = await page.request.get(route, { maxRedirects: 0 });
       expect(response.status(), `${route} must be locked`).not.toBe(200);
     }
-  });
-});
-
-test.describe('Setup — unlocked flow (config dependent)', () => {
-  test.skip('it allows the setup flow when setup is explicitly unlocked', () => {
-  });
-
-  test.skip('it redirects direct setup steps to the wizard when setup is unlocked', () => {
   });
 });

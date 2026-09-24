@@ -110,14 +110,6 @@ test.describe('User clients — unassign', () => {
     await expect(page.getByRole('link', { name: doomed.name })).toHaveCount(0);
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
   });
-
-  // CSRF-regression pair (#1694): needs a CSRF_PROTECTION=true server. Covered by
-  // tests/Feature/Clients/UserClientsControllerTest.php; see tests/E2E/README.md.
-  test.skip('it still unassigns when csrf protection is on and the token is valid', async () => {
-  });
-
-  test.skip('it does not unassign when the csrf token is missing', async () => {
-  });
 });
 
 test.describe('User clients — access control', () => {

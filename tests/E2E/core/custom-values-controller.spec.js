@@ -144,12 +144,6 @@ test.describe('Custom values — delete', () => {
     expect(response.status()).toBe(404);
     expect(valueExists(id)).toBe(true);
   });
-
-  test.skip('it still deletes a value when csrf protection is on and the token is valid', async () => {
-  });
-
-  test.skip('it does not delete a value when the csrf token is missing', async () => {
-  });
 });
 
 test.describe('Custom values — guest access', () => {
