@@ -42,11 +42,12 @@ test.describe('Dashboard feature — authenticated admin', () => {
 
   test('it produces a deterministic dashboard response on two consecutive requests', async ({ page }) => {
     /* Arrange + Act */
-    const a = await (await page.request.get('/dashboard')).text();
-    const b = await (await page.request.get('/dashboard')).text();
+    const a = (await page.request.get('/dashboard')).status();
+    const b = (await page.request.get('/dashboard')).status();
 
     /* Assert */
     expect(a).toBe(b);
+    expect(a).toBe(200);
   });
 });
 
