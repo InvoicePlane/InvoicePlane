@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Core;
+namespace Tests\Feature\Auth;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
