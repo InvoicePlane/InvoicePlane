@@ -60,11 +60,24 @@ test.describe('PayPal — capture payment guards', () => {
   });
 });
 
+test.describe('PayPal — frontend order creation submission', () => {
+  test('it submits to paypal create order endpoint for a payable invoice', async ({ page }) => {
+    /* Arrange */
+    const invoice = await createPayableGuestInvoice(page);
+
+    /* Act: submit the create order form (no redirect following) */
+    const response = await page.request.post(CREATE(invoice.key), { maxRedirects: 0 });
+
+    /* Assert: server accepted the request and either created an order or redirected */
+    expect([200, 302, 303, 307]).toContain(response.status());
+    /* Response validation (order ID, approval URL, etc.) stays in PaypalFlowTest.php */
+  });
+});
+
 test.describe('PayPal — gateway response handling (needs a stubbed gateway)', () => {
   const NEEDS_STUB = 'needs a server-side PayPal stub — covered by tests/Feature/Payments/PaypalFlowTest.php';
 
   for (const title of [
-    'it creates a paypal order for a payable invoice',
     'it returns 500 when paypal returns malformed json for create order',
     'it returns 500 when paypal response is missing the order id',
     'it records a completed capture and creates a payment',

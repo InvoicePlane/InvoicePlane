@@ -73,15 +73,23 @@ test.describe('Integration test connection — guest access', () => {
   });
 });
 
-test.describe('Integration test connection — probe result (needs a stubbed provider)', () => {
-  const NEEDS_STUB = 'needs a server-side provider stub — covered by IntegrationTestConnectionTest';
+test.describe('Integration test connection — probe endpoint submission', () => {
+  test('it accepts a test connection POST and returns a JSON response', async ({ page }) => {
+    /* Arrange */
+    const id = seedProvider();
 
-  test('it reports a reachable provider as a successful connection', () => {
-    test.fixme(true, NEEDS_STUB);
-  });
+    /* Act */
+    const response = await page.request.post(TEST(id));
+    const text = await response.text();
 
-  test('it reports the provider as unreachable when authentication fails', () => {
-    test.fixme(true, NEEDS_STUB);
+    /* Assert: server accepted the request and responded with valid JSON structure */
+    expect(response.status()).toBe(200);
+    expect(text).not.toContain('<html');
+    const payload = JSON.parse(text);
+    expect(payload).toHaveProperty('reachable');
+    expect(payload).toHaveProperty('http_code');
+    expect(payload).toHaveProperty('message');
+    /* Actual provider probe result (reachable vs unreachable) stays in IntegrationTestConnectionTest.php */
   });
 
   test('it shows a test connection control on the provider edit form', async ({ page }) => {
@@ -93,5 +101,13 @@ test.describe('Integration test connection — probe result (needs a stubbed pro
 
     /* Assert */
     expect(body.toLowerCase()).toMatch(/test.connection/);
+  });
+});
+
+test.describe('Integration test connection — probe result (needs a stubbed provider)', () => {
+  const NEEDS_STUB = 'needs a server-side provider stub — covered by IntegrationTestConnectionTest';
+
+  test('it reports the provider as unreachable when authentication fails', () => {
+    test.fixme(true, NEEDS_STUB);
   });
 });
