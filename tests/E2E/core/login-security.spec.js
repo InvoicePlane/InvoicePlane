@@ -97,10 +97,5 @@ test.describe('Login security — account status', () => {
   });
 });
 
-test.describe('Login security — IP rate limiting', () => {
-  // The limiter is keyed by client IP, so 20+ real failed logins would rate-limit
-  // every other auth test in this serial run. Covered by LoginSecurityTest.
-  test('it blocks login attempts after exceeding the ip rate limit', async () => {
-
-  test('it allows login when previous attempts have expired from the window', async () => {
-});
+/* IP rate limiting tests require shared state manipulation across serial run.
+   Fully covered by tests/Feature/Core/LoginSecurityTest.php */

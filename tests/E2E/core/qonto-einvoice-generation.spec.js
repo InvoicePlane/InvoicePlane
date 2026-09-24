@@ -6,13 +6,5 @@
  * kept here as an explicit, named mirror.
  */
 
-import { test } from '../test.js';
-
-const NEEDS_STUB = 'needs a server-side provider stub — covered by QontoEInvoiceGenerationTest';
-
-test('it generates a facturx hybrid pdf and transmits it to qonto', () => {
-
-test('it does not transmit when the seller has no siren', () => {
-
-test('it does not transmit when the invoice currency is missing', () => {
-
+/* All Qonto eInvoice transmission tests require server-side provider stub.
+   Fully covered by tests/Feature/Core/QontoEInvoiceGenerationTest.php */

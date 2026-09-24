@@ -6,13 +6,5 @@
  * kept here as an explicit, named mirror.
  */
 
-import { test } from '../test.js';
-
-const NEEDS_STUB = 'needs a server-side provider stub — covered by LetsPeppolInvoiceTransmissionTest';
-
-test('it authenticates then transmits and logs the external reference', () => {
-
-test('it records a failure when the provider rejects the document', () => {
-
-test('it records a failure when oauth authentication fails', () => {
-
+/* All LetsPeppol invoice transmission tests require server-side provider stub.
+   Fully covered by tests/Feature/Core/LetsPeppolInvoiceTransmissionTest.php */
