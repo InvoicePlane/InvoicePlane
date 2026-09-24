@@ -11,6 +11,8 @@ on:
     branches:
       - prep/v180
   pull_request:
+    branches-ignore:
+      - prep/v180
   workflow_dispatch:
 
 permissions:
