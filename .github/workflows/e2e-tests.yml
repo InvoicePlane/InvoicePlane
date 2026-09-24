@@ -106,6 +106,13 @@ jobs:
       - name: Install Node dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Build frontend assets
+        # assets/**/css/style.css and assets/core/js/*.min.js are grunt build
+        # output (gitignored, not committed) — without this, every page 404s
+        # on its CSS/JS and the app runs entirely unstyled/without jQuery,
+        # masking real visibility/behavior bugs in the E2E suite.
+        run: npm run build
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
