@@ -105,6 +105,8 @@ test.describe('Families — update', () => {
   });
 });
 
+  // CSRF token tests (valid token, missing token) are covered by Feature tests
+  // and cannot run in E2E because CSRF_PROTECTION=false in the test server.
 test.describe('Families — delete', () => {
   test('it deletes a family', async ({ page }) => {
     /* Arrange */
@@ -124,10 +126,6 @@ test.describe('Families — delete', () => {
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
   });
 
-  test('it still deletes a family when csrf protection is on and the token is valid', async () => {
-
-  test('it does not delete a family when the csrf token is missing', async () => {
-});
 
 test.describe('Families — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });

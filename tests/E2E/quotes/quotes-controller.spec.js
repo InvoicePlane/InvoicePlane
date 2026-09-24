@@ -41,6 +41,8 @@ test.describe('Quotes — view', () => {
   });
 });
 
+  // CSRF token tests (valid token, missing token) are covered by Feature tests
+  // and cannot run in E2E because CSRF_PROTECTION=false in the test server.
 test.describe('Quotes — delete', () => {
   test('it deletes a quote', async ({ page }) => {
     /* Arrange */
@@ -60,10 +62,6 @@ test.describe('Quotes — delete', () => {
     expect(dbQuery(`SELECT quote_id FROM ip_quotes WHERE quote_id = ${kept.id}`)).toHaveLength(1);
   });
 
-  test('it still deletes a quote when csrf protection is on and the token is valid', async () => {
-
-  test('it does not delete a quote when the csrf token is missing', async () => {
-});
 
 test.describe('Quotes — tax rates', () => {
   test('it removes a tax rate from a quote', async ({ page }) => {
