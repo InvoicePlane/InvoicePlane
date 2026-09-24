@@ -8,7 +8,7 @@
 import { test, expect } from '../test.js';
 import { createTaxRate, uniq } from '../support/fixtures.js';
 import { dbQuery } from '../support/db.js';
-import { expectBlockedByRequired } from '../support/forms.js';
+import { expectBlockedByRequired, expectSavedFlash } from '../support/forms.js';
 
 test.describe('Tax rates — list', () => {
   test('it lists every tax rate', async ({ page }) => {
@@ -124,8 +124,18 @@ test.describe('Tax rates — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/tax_rates');
+    await expect(page.locator('#content')).not.toContainText(doomed.name);
+    await expect(page.locator('#content')).toContainText(kept.name);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT tax_rate_id FROM ip_tax_rates WHERE tax_rate_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other tax rate unaffected */
     expect(dbQuery(`SELECT tax_rate_id FROM ip_tax_rates WHERE tax_rate_id = ${kept.id}`)).toHaveLength(1);
   });
 

@@ -8,7 +8,7 @@
 import { test, expect } from '../test.js';
 import { createInvoiceGroup, uniq } from '../support/fixtures.js';
 import { dbQuery } from '../support/db.js';
-import { expectBlockedByRequired } from '../support/forms.js';
+import { expectBlockedByRequired, expectSavedFlash } from '../support/forms.js';
 
 const REQUIRED = {
   '#invoice_group_name': () => uniq('Grp'),
@@ -119,8 +119,18 @@ test.describe('Invoice groups — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/invoice_groups');
+    await expect(page.locator('#content')).not.toContainText(doomed.name);
+    await expect(page.locator('#content')).toContainText(kept.name);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT invoice_group_id FROM ip_invoice_groups WHERE invoice_group_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other group unaffected */
     expect(dbQuery(`SELECT invoice_group_id FROM ip_invoice_groups WHERE invoice_group_id = ${kept.id}`)).toHaveLength(1);
   });
 
