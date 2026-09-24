@@ -142,6 +142,6 @@ class CsrfDeleteSecurityTest extends TestCase
 
     private function moduleDir(): string
     {
-        return dirname(__DIR__, 3) . '/application/modules';
+        return ROOT_PATH . '/application/modules';
     }
 }

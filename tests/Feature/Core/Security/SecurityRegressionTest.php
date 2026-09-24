@@ -454,7 +454,7 @@ class SecurityRegressionTest extends AbstractTestCase
 
         // Verify the targeted file was not deleted (the actual path-traversal guarantee).
         self::assertFileExists(
-            dirname(__DIR__, 3) . '/bootstrap/kernel.php',
+            ROOT_PATH . '/bootstrap/kernel.php',
             'bootstrap/kernel.php must survive a path-traversal delete attempt.'
         );
     }

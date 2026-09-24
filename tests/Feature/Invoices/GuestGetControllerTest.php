@@ -19,7 +19,7 @@ class GuestGetControllerTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->uploadDir = dirname(__DIR__, 3) . '/uploads/customer_files';
+        $this->uploadDir = ROOT_PATH . '/uploads/customer_files';
         if ( ! is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0777, true);
         }

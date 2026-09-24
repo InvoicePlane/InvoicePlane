@@ -51,7 +51,7 @@ class PaymentExternalIdDedupMigrationTest extends AbstractTestCase
     public function it_dedupes_existing_references_and_makes_the_index_unique_without_dropping_rows(): void
     {
         /* Arrange */
-        require_once dirname(__DIR__, 3) . '/application/helpers/sql_helper.php';
+        require_once ROOT_PATH . '/application/helpers/sql_helper.php';
 
         $statements = split_sql_statements($this->migrationFile());
 
@@ -137,7 +137,7 @@ class PaymentExternalIdDedupMigrationTest extends AbstractTestCase
     private function migrationFile(): string
     {
         return (string) file_get_contents(
-            dirname(__DIR__, 3) . '/application/modules/setup/sql/' . self::MIGRATION
+            ROOT_PATH . '/application/modules/setup/sql/' . self::MIGRATION
         );
     }
 }

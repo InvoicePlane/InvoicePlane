@@ -33,7 +33,7 @@ class GatewayPaymentRaceTest extends AbstractTestCase
     {
         parent::setUp();
 
-        require_once dirname(__DIR__, 3) . '/application/libraries/Cryptor.php';
+        require_once ROOT_PATH . '/application/libraries/Cryptor.php';
 
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_currency', 'setting_value' => 'EUR']);
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_payment_method', 'setting_value' => '1']);

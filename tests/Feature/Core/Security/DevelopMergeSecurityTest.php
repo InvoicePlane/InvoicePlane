@@ -33,7 +33,7 @@ class DevelopMergeSecurityTest extends AbstractTestCase
     public function it_defines_the_sumex_storage_folder_outside_the_public_web_root(): void
     {
         /* Arrange */
-        require_once dirname(__DIR__, 3) . '/bootstrap/kernel.php';
+        require_once ROOT_PATH . '/bootstrap/kernel.php';
 
         /* Act */
         $storageTempFolder = STORAGE_TEMP_FOLDER;

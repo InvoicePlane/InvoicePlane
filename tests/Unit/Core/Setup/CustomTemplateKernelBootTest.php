@@ -93,7 +93,7 @@ class CustomTemplateKernelBootTest extends TestCase
      */
     private function runKernelProbe(array $env, string $constant): string
     {
-        $repoRoot = dirname(__DIR__, 3);
+        $repoRoot = ROOT_PATH;
         $envCode  = '';
 
         foreach ($env as $key => $value) {

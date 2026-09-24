@@ -21,8 +21,8 @@ class IntegrationSettingsCipherTest extends TestCase
     {
         parent::setUp();
 
-        require_once dirname(__DIR__, 3) . '/application/modules/integrations/libraries/IntegrationSettingsCipher.php';
-        require_once dirname(__DIR__, 3) . '/bootstrap/kernel.php';
+        require_once ROOT_PATH . '/application/modules/integrations/libraries/IntegrationSettingsCipher.php';
+        require_once ROOT_PATH . '/bootstrap/kernel.php';
 
         $this->key                   = random_bytes(32);
         $this->hadEncryptionKey      = array_key_exists('ENCRYPTION_KEY', $_ENV);

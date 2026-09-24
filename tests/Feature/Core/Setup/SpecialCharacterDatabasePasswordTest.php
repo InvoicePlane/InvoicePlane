@@ -25,7 +25,7 @@ class SpecialCharacterDatabasePasswordTest extends AbstractTestCase
     {
         parent::setUp();
 
-        require_once dirname(__DIR__, 3) . '/application/helpers/file_security_helper.php';
+        require_once ROOT_PATH . '/application/helpers/file_security_helper.php';
     }
 
     /**

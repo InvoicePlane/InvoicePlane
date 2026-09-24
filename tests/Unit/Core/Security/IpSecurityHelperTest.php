@@ -12,7 +12,7 @@ class IpSecurityHelperTest extends TestCase
 {
     protected function setUp(): void
     {
-        require_once dirname(__DIR__, 3) . '/application/helpers/ip_security_helper.php';
+        require_once ROOT_PATH . '/application/helpers/ip_security_helper.php';
     }
 
     #[Test]

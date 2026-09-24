@@ -223,7 +223,7 @@ class CustomTemplateAllowlistTest extends TestCase
     public function it_wires_all_four_allowlist_constants_from_ipconfig_through_the_single_bootstrap(): void
     {
         /* Arrange */
-        $repoRoot = dirname(__DIR__, 3);
+        $repoRoot = ROOT_PATH;
 
         // The legacy root index.php was removed; public/index.php -> bootstrap/constants.php
         // is now the only boot path, so this is the one file that must wire the constants.
@@ -276,8 +276,8 @@ class CustomTemplateAllowlistTest extends TestCase
             $_ENV[$key] = $value;
         }
 
-        require_once dirname(__DIR__, 3) . '/bootstrap/constants.php';
-        require_once dirname(__DIR__, 3) . '/application/modules/invoices/models/Mdl_templates.php';
+        require_once ROOT_PATH . '/bootstrap/constants.php';
+        require_once ROOT_PATH . '/application/modules/invoices/models/Mdl_templates.php';
 
         return new Mdl_Templates();
     }

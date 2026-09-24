@@ -209,10 +209,10 @@ class EInvoiceResponsesFoldMigrationTest extends AbstractTestCase
     /** @return string[] the migration's ip_einvoice_responses fold + drop statements */
     private function foldStatements(): array
     {
-        require_once dirname(__DIR__, 3) . '/application/helpers/sql_helper.php';
+        require_once ROOT_PATH . '/application/helpers/sql_helper.php';
 
         $sql = (string) file_get_contents(
-            dirname(__DIR__, 3) . '/application/modules/setup/sql/' . self::MIGRATION
+            ROOT_PATH . '/application/modules/setup/sql/' . self::MIGRATION
         );
 
         return array_values(array_filter(

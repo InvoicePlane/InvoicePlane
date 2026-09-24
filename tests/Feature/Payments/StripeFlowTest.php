@@ -30,7 +30,7 @@ class StripeFlowTest extends AbstractTestCase
         // StripeClient's constructor validates api_key eagerly, before any guard
         // clause runs, so every test — even the 404 ones — needs a syntactically
         // valid (encrypted-at-rest, like the real setting) fake key.
-        require_once dirname(__DIR__, 3) . '/application/libraries/Cryptor.php';
+        require_once ROOT_PATH . '/application/libraries/Cryptor.php';
         $ciphertext = Cryptor::Encrypt('sk_test_fake_key', self::ENCRYPTION_KEY);
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_apiKey', 'setting_value' => $ciphertext]);
     }

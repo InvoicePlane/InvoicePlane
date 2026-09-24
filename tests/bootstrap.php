@@ -4,6 +4,7 @@ define('CI_TESTING', true);
 define('CI_INTEGRATION_TESTING', true);
 
 $basePath = dirname(__DIR__);
+define('ROOT_PATH', $basePath);
 
 require_once $basePath . '/bootstrap/kernel.php';
 

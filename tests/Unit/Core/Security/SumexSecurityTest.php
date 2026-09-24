@@ -13,7 +13,7 @@ class SumexSecurityTest extends TestCase
     public function it_restricts_sumex_remote_requests_to_https(): void
     {
         /* Arrange */
-        $source = (string) file_get_contents(dirname(__DIR__, 3) . '/application/libraries/Sumex.php');
+        $source = (string) file_get_contents(ROOT_PATH . '/application/libraries/Sumex.php');
 
         /* Act */
         $hasHttpsGuard      = str_contains($source, 'mb_strtolower((string) $scheme) !== \'https\'');
