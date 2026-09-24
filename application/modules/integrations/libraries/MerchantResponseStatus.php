@@ -45,16 +45,16 @@ enum FrenchInvoiceLifecycleStatus: int
     public function merchantStatus(): MerchantResponseStatus
     {
         return match ($this) {
-            self::Deposited, self::PlatformIssued                               => MerchantResponseStatus::Sent,
-            self::PlatformReceived, self::TakenInCharge                         => MerchantResponseStatus::Received,
-            self::Available                                                     => MerchantResponseStatus::Delivered,
+            self::Deposited, self::PlatformIssued => MerchantResponseStatus::Sent,
+            self::PlatformReceived, self::TakenInCharge => MerchantResponseStatus::Received,
+            self::Available => MerchantResponseStatus::Delivered,
             self::Approved, self::RegulatoryDeposited, self::ReportingDeposited => MerchantResponseStatus::Accepted,
-            self::PartiallyApproved                                             => MerchantResponseStatus::PartiallyAccepted,
-            self::Disputed                                                      => MerchantResponseStatus::Disputed,
-            self::Suspended                                                     => MerchantResponseStatus::Suspended,
-            self::Completed                                                     => MerchantResponseStatus::Completed,
-            self::Refused                                                       => MerchantResponseStatus::Refused,
-            self::PaymentTransmitted, self::Collected                           => MerchantResponseStatus::Paid,
+            self::PartiallyApproved => MerchantResponseStatus::PartiallyAccepted,
+            self::Disputed          => MerchantResponseStatus::Disputed,
+            self::Suspended         => MerchantResponseStatus::Suspended,
+            self::Completed         => MerchantResponseStatus::Completed,
+            self::Refused           => MerchantResponseStatus::Refused,
+            self::PaymentTransmitted, self::Collected => MerchantResponseStatus::Paid,
             self::Rejected, self::RegulatoryRejected, self::ReportingRejected,
             self::MandatoryStatusReject => MerchantResponseStatus::Rejected,
         };
@@ -96,12 +96,12 @@ enum MerchantResponseStatus: string
 
         return match ($normalized) {
             'processing', 'in_progress' => self::Pending,
-            'submitted', 'deposited'    => self::Sent,
-            'available'                 => self::Delivered,
-            'approved'                  => self::Accepted,
-            'partially_approved'        => self::PartiallyAccepted,
-            'collected'                 => self::Paid,
-            default                     => self::tryFrom($normalized) ?? $default,
+            'submitted', 'deposited' => self::Sent,
+            'available'          => self::Delivered,
+            'approved'           => self::Accepted,
+            'partially_approved' => self::PartiallyAccepted,
+            'collected'          => self::Paid,
+            default              => self::tryFrom($normalized) ?? $default,
         };
     }
 
@@ -109,9 +109,9 @@ enum MerchantResponseStatus: string
     {
         return match ($this) {
             self::Accepted, self::PartiallyAccepted, self::Completed, self::Delivered,
-            self::Paid, self::Received, self::Sent     => true,
+            self::Paid, self::Received, self::Sent => true,
             self::Refused, self::Rejected, self::Error => false,
-            default                                    => null,
+            default => null,
         };
     }
 }
