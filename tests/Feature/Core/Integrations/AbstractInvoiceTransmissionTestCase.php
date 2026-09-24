@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integrations;
+namespace Tests\Feature\Core\Integrations;
 
 use Tests\AbstractTestCase;
 use Tests\Integration\Support\HttpResponse;

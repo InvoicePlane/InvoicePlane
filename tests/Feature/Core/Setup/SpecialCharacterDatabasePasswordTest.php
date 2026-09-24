@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Setup;
+namespace Tests\Feature\Core\Setup;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;

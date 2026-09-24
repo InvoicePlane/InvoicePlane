@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Setup;
+namespace Tests\Feature\Core\Setup;
 
 use PDOException;
 use PHPUnit\Framework\Attributes\Group;
