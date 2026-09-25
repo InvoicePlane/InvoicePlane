@@ -36,21 +36,6 @@ class Stripe extends Base_Controller
     }
 
     /**
-     * Built lazily, after guard clauses have already run — the Stripe SDK
-     * validates the API key format in its constructor, so building this
-     * eagerly meant every request to this controller (including a plain
-     * method/invoice guard check) 500'd whenever Stripe isn't configured.
-     */
-    private function stripeClient(): StripeClient
-    {
-        if ($this->stripe === null) {
-            $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
-        }
-
-        return $this->stripe;
-    }
-
-    /**
      * Creates a checkout session on Stripe
      * that is then retrieved to execute the payment.
      *
@@ -268,6 +253,21 @@ class Stripe extends Base_Controller
             // Attempt to redirect them to the invoice. invoice_url_key? No, return to invoices view
             redirect('guest/view/invoice' . (empty($invoice?->invoice_url_key) ? 's' : '/' . $invoice?->invoice_url_key));
         }
+    }
+
+    /**
+     * Built lazily, after guard clauses have already run — the Stripe SDK
+     * validates the API key format in its constructor, so building this
+     * eagerly meant every request to this controller (including a plain
+     * method/invoice guard check) 500'd whenever Stripe isn't configured.
+     */
+    private function stripeClient(): StripeClient
+    {
+        if ($this->stripe === null) {
+            $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
+        }
+
+        return $this->stripe;
     }
 
     /**

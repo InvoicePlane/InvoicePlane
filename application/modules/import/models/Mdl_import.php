@@ -461,10 +461,10 @@ class Mdl_Import extends Response_Model
     public function cleanup_import_files()
     {
         $files_to_delete = [
-            UPLOADS_IMPORT_FOLDER . 'clients.csv',
-            UPLOADS_IMPORT_FOLDER . 'invoices.csv',
-            UPLOADS_IMPORT_FOLDER . 'invoice_items.csv',
-            UPLOADS_IMPORT_FOLDER . 'payments.csv',
+            './uploads/import/clients.csv',
+            './uploads/import/invoices.csv',
+            './uploads/import/invoice_items.csv',
+            './uploads/import/payments.csv',
         ];
 
         foreach ($files_to_delete as $file) {
