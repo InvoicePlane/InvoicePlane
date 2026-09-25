@@ -656,9 +656,9 @@ class Mdl_Invoices extends Response_Model
         // outside of it once run_filters() finally applies them — turning this
         // AND-scoped group into a bare "... AND x=4 OR y=0.00" that matches any
         // row anywhere, not just within by_client()'s client_id restriction
-        // (CWE-639/862). filter_group_start()/filter_group_end() defer the
-        // grouping into the same queue so it wraps the two conditions as
-        // intended.
+        // (GHSA-w5r4-8w63-c5h2, CWE-639/862). filter_group_start()/
+        // filter_group_end() defer the grouping into the same queue so it
+        // wraps the two conditions as intended.
         $this->filter_group_start();
         $this->filter_where('invoice_status_id', 4);
         $this->filter_or_where('invoice_balance', '0.00');
