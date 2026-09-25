@@ -335,12 +335,12 @@ class Clients extends Admin_Controller
      */
     public function delete($client_id): void
     {
-        if ( ! $this->ensure_valid_post_request('clients/index')) {
+        if ( ! $this->ensure_valid_post_request('clients/status/active')) {
             return;
         }
 
         $this->mdl_clients->delete($client_id);
-        redirect('clients');
+        redirect('clients/status/active');
     }
 
     private function get_client_title_choices(): array

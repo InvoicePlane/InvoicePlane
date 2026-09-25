@@ -9,8 +9,9 @@
 
 import { test, expect } from '../test.js';
 import { createClient, uniq } from '../support/fixtures.js';
-import { expectBlockedByRequired, expectErrorFlash } from '../support/forms.js';
+import { expectBlockedByRequired, expectErrorFlash, expectSavedFlash } from '../support/forms.js';
 import { postForm, readCsrfToken } from '../support/http.js';
+import { dbQuery } from '../support/db.js';
 
 test.describe('Clients — list', () => {
   test('it lists every active client', async ({ page }) => {
@@ -132,39 +133,19 @@ test.describe('Clients — delete', () => {
       row.locator('button.dropdown-button').click(),
     ]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
     await page.goto('/clients/status/all');
     await expect(page.getByRole('link', { name: doomed.name })).toHaveCount(0);
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
-  });
 
-  // The two CSRF-regression cases (issue #1694) can only be exercised against a
-  // server booted with CSRF_PROTECTION=true. This E2E server runs with it off
-  // (ipconfig.php), so they stay skipped here and remain covered by
-  // tests/Feature/Clients/ClientsControllerTest.php.
-  test('it still deletes a client when csrf protection is on and the token is valid', async ({ page }) => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-    /* Arrange */
-    const doomed = await createClient(page, { client_name: uniq('CsrfClient') });
-    const token = await readCsrfToken(page, '/clients/status/all');
+    /* Assert: Database confirms hard delete */
+    expect(dbQuery(`SELECT client_id FROM ip_clients WHERE client_id = ${doomed.id}`)).toEqual([]);
 
-    /* Act */
-    const response = await postForm(page, `/clients/delete/${doomed.id}`, { _ip_csrf: token });
-
-    /* Assert */
-    expect(response.status()).toBe(303);
-  });
-
-  test('it does not delete a client when the csrf token is missing', async ({ page }) => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-    /* Arrange */
-    const kept = await createClient(page, { client_name: uniq('CsrfKept') });
-
-    /* Act */
-    const response = await postForm(page, `/clients/delete/${kept.id}`, {});
-
-    /* Assert */
-    expect(response.status()).not.toBe(303);
+    /* Assert: Other client unaffected */
+    expect(dbQuery(`SELECT client_id FROM ip_clients WHERE client_id = ${kept.id}`)).toHaveLength(1);
   });
 });
 

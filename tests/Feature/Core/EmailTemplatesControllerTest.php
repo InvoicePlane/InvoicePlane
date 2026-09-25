@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Email_Templates;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -15,7 +16,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * lookups) lives in EmailTemplatesAjaxControllerTest.
  */
 #[Group('email_templates')]
-#[CoversClass(\Email_Templates::class)]
+#[CoversClass(Email_Templates::class)]
 class EmailTemplatesControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;
@@ -226,7 +227,7 @@ class EmailTemplatesControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedTemplate(array $overrides = []): int
+    protected function seedTemplate(array $overrides = []): int
     {
         return $this->databaseInsert('ip_email_templates', array_merge([
             'email_template_title' => 'Seeded Template',

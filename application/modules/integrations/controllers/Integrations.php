@@ -313,12 +313,12 @@ class Integrations extends Admin_Controller
         if ( ! empty($status['success'])) {
             $this->session->set_flashdata(
                 'alert_success',
-                'PDP status: ' . ($status['status'] ?? 'unknown')
+                'PDP status: ' . html_escape((string) ($status['status'] ?? 'unknown'))
             );
         } else {
             $this->session->set_flashdata(
                 'alert_error',
-                $status['message'] ?? 'Unable to retrieve status'
+                html_escape((string) ($status['message'] ?? 'Unable to retrieve status'))
             );
         }
 

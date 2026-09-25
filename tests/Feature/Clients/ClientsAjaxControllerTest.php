@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Clients;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -16,7 +17,7 @@ use Tests\AbstractTestCase;
  * ClientsControllerTest without ever creating this file.
  */
 #[Group('clients')]
-#[CoversClass(\Ajax::class)]
+#[CoversClass(Ajax::class)]
 class ClientsAjaxControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

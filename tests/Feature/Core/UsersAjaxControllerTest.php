@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -11,7 +12,7 @@ use Tests\AbstractTestCase;
  * Primarily tests authorization on endpoints that modify user-related data.
  */
 #[Group('users')]
-#[CoversClass(\Ajax::class)]
+#[CoversClass(Ajax::class)]
 class UsersAjaxControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -128,13 +129,12 @@ class UsersAjaxControllerTest extends AbstractTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
-    private function seedClient(array $overrides = []): int
+    protected function seedClient(array $overrides = []): int
     {
         return $this->databaseInsert('ip_clients', array_merge([
-            'user_id'             => 1,
-            'client_name'         => 'Seed Client ' . bin2hex(random_bytes(3)),
-            'client_active'       => 1,
-            'client_date_created' => date('Y-m-d H:i:s'),
+            'client_name'          => 'Seed Client ' . bin2hex(random_bytes(3)),
+            'client_active'        => 1,
+            'client_date_created'  => date('Y-m-d H:i:s'),
             'client_date_modified' => date('Y-m-d H:i:s'),
         ], $overrides));
     }

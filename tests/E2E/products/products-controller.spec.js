@@ -6,7 +6,8 @@
 
 import { test, expect } from '../test.js';
 import { createProduct, uniq } from '../support/fixtures.js';
-import { expectBlockedByRequired } from '../support/forms.js';
+import { expectBlockedByRequired, expectSavedFlash } from '../support/forms.js';
+import { dbQuery } from '../support/db.js';
 
 test.describe('Products — list', () => {
   test('it lists every product', async ({ page }) => {
@@ -109,6 +110,10 @@ test.describe('Products — update', () => {
 });
 
 test.describe('Products — delete', () => {
+  // CSRF token tests (valid token, missing token) are covered by the Feature test suite
+  // (ProductsControllerTest.php) and cannot run in E2E because CSRF_PROTECTION=false
+  // in the test server — the browser-level CSRF checks don't execute.
+
   test('it deletes a product', async ({ page }) => {
     /* Arrange */
     const doomed = await createProduct(page, { product_name: uniq('DeletableWidget') });
@@ -121,18 +126,19 @@ test.describe('Products — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
     await page.goto('/products');
     await expect(page.getByRole('link', { name: doomed.name })).toHaveCount(0);
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
-  });
 
-  test('it still deletes a product when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
+    /* Assert: Database confirms hard delete */
+    expect(dbQuery(`SELECT product_id FROM ip_products WHERE product_id = ${doomed.id}`)).toEqual([]);
 
-  test('it does not delete a product when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Assert: Other product unaffected */
+    expect(dbQuery(`SELECT product_id FROM ip_products WHERE product_id = ${kept.id}`)).toHaveLength(1);
   });
 });
 

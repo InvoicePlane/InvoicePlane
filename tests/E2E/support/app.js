@@ -3,7 +3,7 @@
  *
  * This CI3 build runs with REMOVE_INDEXPHP=false, so every link the app
  * generates is prefixed with `/index.php` and redirects land on
- * `/index.php/clients/view/3` rather than `/clients/view/3`. tests/E2E/router.php
+ * `/index.php/clients/view/3` rather than `/clients/view/3`. bootstrap/test-server.php
  * accepts both schemes, so `page.goto('/clients/form')` still works, but URL
  * assertions have to tolerate the optional prefix — hence `pathMatches()`.
  */

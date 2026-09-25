@@ -9,20 +9,24 @@
 import { test, expect } from '../test.js';
 
 test.describe('Payments area — smoke', () => {
-  test('it returns a successful response or redirect', async ({ page }) => {
+  test('it loads the payments page successfully', async ({ page }) => {
     /* Arrange + Act */
     const response = await page.goto('/payments');
+    const body = await response.text();
 
     /* Assert */
     expect(response.status()).toBe(200);
-    expect(await response.text()).toContain('<html');
+    expect(body).toContain('Payment');
   });
 
-  test('it does not expose php errors on the payments list', async ({ page }) => {
+  test('it renders without exposing php errors', async ({ page }) => {
     /* Arrange + Act */
-    const body = await (await page.goto('/payments')).text();
+    const response = await page.goto('/payments');
+    const body = await response.text();
 
     /* Assert */
+    expect(response.status()).toBe(200);
+    expect(body).toContain('Payment');
     expect(body).not.toMatch(/Fatal error|Uncaught|A PHP Error was encountered|<b>(Warning|Notice)<\/b>/i);
   });
 });

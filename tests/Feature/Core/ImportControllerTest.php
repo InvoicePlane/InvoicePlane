@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Import;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -11,7 +12,7 @@ use Tests\AbstractTestCase;
  *
  * Tests the import page for authenticated admins.
  */
-#[CoversClass(\Import::class)]
+#[CoversClass(Import::class)]
 class ImportControllerTest extends AbstractTestCase
 {
     private string $importDir;
@@ -21,7 +22,7 @@ class ImportControllerTest extends AbstractTestCase
         parent::setUp();
         $this->actingAsAdmin();
 
-        $this->importDir = dirname(__DIR__, 3) . '/uploads/import';
+        $this->importDir = ROOT_PATH . '/uploads/import';
         if ( ! is_dir($this->importDir)) {
             mkdir($this->importDir, 0777, true);
         }

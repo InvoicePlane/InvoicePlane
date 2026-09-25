@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Invoices;
 
+use Get;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -10,7 +11,7 @@ use Tests\AbstractTestCase;
  * url_key must be exactly 32 alphanumeric characters and belong to a
  * guest_visible() invoice or quote before any file access is attempted.
  */
-#[CoversClass(\Get::class)]
+#[CoversClass(Get::class)]
 class GuestGetControllerTest extends AbstractTestCase
 {
     private string $uploadDir;
@@ -18,7 +19,7 @@ class GuestGetControllerTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->uploadDir = dirname(__DIR__, 3) . '/uploads/customer_files';
+        $this->uploadDir = ROOT_PATH . '/uploads/customer_files';
         if ( ! is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0777, true);
         }
@@ -210,7 +211,7 @@ class GuestGetControllerTest extends AbstractTestCase
         self::assertSame('attachment-bytes', $response->body());
     }
 
-    private function seedVisibleInvoiceUrlKey(int $statusId = 2): string
+    protected function seedVisibleInvoiceUrlKey(int $statusId = 2): string
     {
         $clientId = $this->seedClient();
         $urlKey   = bin2hex(random_bytes(16)); // 32 hex chars

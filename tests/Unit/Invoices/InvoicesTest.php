@@ -188,7 +188,7 @@ class InvoicesTest extends TestCase
 
     protected function setUpInvoiceHelper(): void
     {
-        require_once dirname(__DIR__, 3) . '/application/helpers/invoice_helper.php';
+        require_once ROOT_PATH . '/application/helpers/invoice_helper.php';
     }
 
     protected function setUpQrCode(): void
@@ -227,6 +227,6 @@ class InvoicesTest extends TestCase
             }
         };
 
-        require_once dirname(__DIR__, 3) . '/application/libraries/QrCode.php';
+        require_once ROOT_PATH . '/application/libraries/QrCode.php';
     }
 }

@@ -4,6 +4,7 @@ namespace Tests\Feature\Products;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Products;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
 
@@ -15,7 +16,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * UnitsControllerTest / FamiliesControllerTest.
  */
 #[Group('products')]
-#[CoversClass(\Products::class)]
+#[CoversClass(Products::class)]
 class ProductsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;
@@ -263,7 +264,7 @@ class ProductsControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedProduct(array $overrides = []): int
+    protected function seedProduct(array $overrides = []): int
     {
         return $this->databaseInsert('ip_products', array_merge([
             'family_id'           => 0,

@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
+use Units;
 
 /**
  * Units controller — application/modules/units/controllers/Units.php.
@@ -14,7 +15,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * Absorbs Issue1694UnitsDeleteCsrfTest.
  */
 #[Group('units')]
-#[CoversClass(\Units::class)]
+#[CoversClass(Units::class)]
 class UnitsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

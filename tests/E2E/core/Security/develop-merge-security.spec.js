@@ -1,0 +1,21 @@
+/**
+ * Browser coverage aligned with tests/Feature/Security/DevelopMergeSecurityTest.php.
+ *
+ * Two of its three checks are filesystem/config assertions with no browser
+ * surface (the SUMEX storage folder lives outside the web root; the SUMEX XML is
+ * directory is not directly web-accessible — is a real browser check.
+ */
+
+import { test, expect } from '../../test.js';
+
+test.describe('Develop-merge security', () => {
+  test('it denies direct web access to the uploads import directory', async ({ page }) => {
+    /* Arrange + Act */
+    const dirListing = await page.request.get('/uploads/import/', { maxRedirects: 0 });
+    const knownFile = await page.request.get('/uploads/import/clients.csv', { maxRedirects: 0 });
+
+    /* Assert: no directory listing, no direct file serving */
+    expect(dirListing.status()).not.toBe(200);
+    expect([403, 404]).toContain(knownFile.status());
+  });
+});

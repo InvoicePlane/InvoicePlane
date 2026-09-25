@@ -269,18 +269,6 @@ export function einvoiceFlowSuite({ provider, driver, nonHttpsField, endpointFie
     });
   });
 
-  test.describe(`${provider} — provider response recording (needs a stubbed provider)`, () => {
-    const NEEDS_STUB = `needs a server-side ${provider} stub — covered by the matching PHPUnit *FlowTest`;
-
-    test(`it records the ${provider} external id in the merchant response table`, () => {
-      test.fixme(true, NEEDS_STUB);
-    });
-
-    test('it records a failed send attempt in the merchant response table', () => {
-      test.fixme(true, NEEDS_STUB);
-    });
-  });
-
   test.describe(`${provider} — guest access`, () => {
     test.use({ storageState: { cookies: [], origins: [] } });
 
