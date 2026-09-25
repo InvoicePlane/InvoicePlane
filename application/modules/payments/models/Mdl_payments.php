@@ -148,15 +148,19 @@ class Mdl_Payments extends Response_Model
             ? (string) $db_array['payment_external_id']
             : null;
 
-        // Atomic gate: claim the outstanding balance in one statement.
+        // Atomic gate: claim the outstanding balance in one statement. Gating on
+        // "balance covers this amount" (not just "balance > 0") also refuses an
+        // oversized capture -- e.g. one created against a larger balance that a
+        // payment recorded through another channel has since reduced -- rather
+        // than applying it and driving invoice_balance negative.
         $this->db->set('invoice_paid', sprintf('invoice_paid + %F', $amount), false);
         $this->db->set('invoice_balance', sprintf('invoice_balance - %F', $amount), false);
         $this->db->where('invoice_id', $invoice_id);
-        $this->db->where('invoice_balance >', 0);
+        $this->db->where(sprintf('invoice_balance + 0.0001 >= %F', $amount), null, false);
         $this->db->update('ip_invoice_amounts');
 
         if ($this->db->affected_rows() < 1) {
-            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Refused gateway payment for invoice ' . sanitize_for_logging($invoice_id) . ': balance no longer outstanding (concurrent callback or already paid).');
+            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Refused gateway payment for invoice ' . sanitize_for_logging($invoice_id) . ': balance no longer covers this amount (concurrent callback, already paid, or oversized).');
 
             return false;
         }
