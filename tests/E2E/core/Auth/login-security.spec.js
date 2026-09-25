@@ -77,9 +77,13 @@ test.describe('Login security — account status', () => {
   });
 
   test('it allows login for an active user with the correct password', async ({ page, browser }) => {
-    /* Arrange */
+    /* Arrange: user_type 1 (admin), matching LoginSecurityTest.php — this is
+     * about the auth layer succeeding, not the guest-portal authorization
+     * layer, so the created user must actually reach a working landing page
+     * (a user_type 2 "guest" with no assigned client hits Guest_Controller's
+     * own 403 guard instead, which would mask a real regression here). */
     const { context: admin, page: adminPage } = await loginAs(browser, 'admin@test.local', 'password');
-    const user = await createSecondaryUser(adminPage);
+    const user = await createSecondaryUser(adminPage, { user_type: '1' });
 
     /* Act */
     await page.goto('/sessions/login');
@@ -90,8 +94,10 @@ test.describe('Login security — account status', () => {
       page.click('form button[type="submit"]'),
     ]);
 
-    /* Assert: reached an authenticated area, and no failure was logged */
-    await expect(page).not.toHaveURL(/\/sessions\/login/);
+    /* Assert: reached the dashboard with no error, and no failure was logged */
+    await expect(page).toHaveURL(/\/dashboard/);
+    const body = await page.content();
+    expect(body).not.toMatch(/Fatal error|Uncaught|A PHP Error was encountered|guest_account_denied/i);
     expect(dbQuery(`SELECT log_count FROM ip_login_log WHERE login_name = '${user.email}'`)).toEqual([]);
     await admin.close();
   });
