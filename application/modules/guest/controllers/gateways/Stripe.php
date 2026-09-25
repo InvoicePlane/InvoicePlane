@@ -189,6 +189,15 @@ class Stripe extends Base_Controller
                                 log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($capture_amount));
                                 $paid     = false;
                                 $user_msg = trans('online_payment_payment_failed');
+                            } elseif ((float) $capture_amount - 0.0001 > (float) $invoice->invoice_balance) {
+                                // The checkout session was created against a balance that has
+                                // since shrunk (e.g. a payment recorded through another channel
+                                // landed first). Recording the full stale capture would drive
+                                // invoice_balance negative; refuse it for manual reconciliation
+                                // instead of silently over-crediting the invoice.
+                                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount exceeds current balance for invoice ' . sanitize_for_logging($invoice_key) . '. Balance: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($capture_amount));
+                                $paid     = false;
+                                $user_msg = trans('online_payment_payment_failed');
                             } else {
                                 // Save the payment (visible in guest user)
                                 $this->mdl_payments->save(null, [

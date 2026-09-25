@@ -238,6 +238,15 @@ class Paypal extends Base_Controller
                                     log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount mismatch for invoice ' . sanitize_for_logging($invoice_id) . '. Expected: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($amount));
                                     $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed'));
                                     $this->session->keep_flashdata('alert_error');
+                                } elseif ((float) $amount - 0.0001 > (float) $invoice->invoice_balance) {
+                                    // The order was created against a balance that has since
+                                    // shrunk (e.g. a payment recorded through another channel
+                                    // landed first). Recording the full stale capture would
+                                    // drive invoice_balance negative; refuse it for manual
+                                    // reconciliation instead of silently over-crediting.
+                                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount exceeds current balance for invoice ' . sanitize_for_logging($invoice_id) . '. Balance: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($amount));
+                                    $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed'));
+                                    $this->session->keep_flashdata('alert_error');
                                 } else {
                                     // If the payment status is pending, set a note accordingly.
                                     $payment_note = ($capture_status === 'PENDING') ? trans('online_payment_pending') : '';
