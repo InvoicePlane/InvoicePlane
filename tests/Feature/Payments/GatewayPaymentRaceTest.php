@@ -169,6 +169,44 @@ class GatewayPaymentRaceTest extends AbstractTestCase
         $this->assertSame(4, (int) $invoice['invoice_status_id']);
     }
 
+    #[Test]
+    public function it_rejects_a_capture_that_no_longer_fits_a_reduced_balance(): void
+    {
+        /* Arrange: a 100.00 invoice, then a 40.00 payment recorded through a
+         * different channel (e.g. the admin UI) lands first, leaving 60.00
+         * outstanding -- while a gateway checkout session opened against the
+         * *original* 100.00 balance is still in flight. */
+        $invoiceId = $this->seedPayableInvoice(100.00);
+        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+
+        $this->databaseInsert('ip_payments', [
+            'invoice_id'          => $invoiceId,
+            'payment_date'        => date('Y-m-d'),
+            'payment_amount'      => '40.00',
+            'payment_method_id'   => 1,
+            'payment_external_id' => null,
+        ]);
+        $this->databaseUpdate('ip_invoice_amounts', [
+            'invoice_paid'    => '40.00',
+            'invoice_balance' => '60.00',
+        ], ['invoice_id' => $invoiceId]);
+
+        /* Act: the stale capture claims the full original 100.00 against the
+         * now-60.00 balance. */
+        $this->fireConcurrently([$this->stripeCallbackRequest($urlKey, 'pi_stale_full', 10000)]);
+
+        /* Assert: the oversized capture must not be recorded, and the balance
+         * must never go negative -- a gate that only checks "balance > 0"
+         * (rather than "balance covers this amount") would apply it anyway. */
+        $this->resetDatabaseConnection();
+        $this->assertDatabaseMissing('ip_payments', ['invoice_id' => $invoiceId, 'payment_external_id' => 'pi_stale_full']);
+        $this->assertDatabaseCount('ip_payments', 1, ['invoice_id' => $invoiceId]);
+
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        self::assertEqualsWithDelta(60.00, (float) $amounts['invoice_balance'], 0.001, 'The stale oversized capture must not have touched the balance.');
+        self::assertEqualsWithDelta(40.00, (float) $amounts['invoice_paid'], 0.001);
+    }
+
     /**
      * A guest-visible invoice with one line item worth $balance, so that
      * Mdl_invoice_amounts::calculate() (run by the payment save) recomputes
