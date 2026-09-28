@@ -27,6 +27,7 @@ class Guest_Controller extends User_Controller
     public function __construct()
     {
         parent::__construct('user_type', 2);
+        $this->setSecurityHeaders();
 
         $this->load->model('user_clients/mdl_user_clients');
 
@@ -45,6 +46,18 @@ class Guest_Controller extends User_Controller
         // This applies to all guest controllers
         if ($this->input->method() === 'post' && ! empty($_POST)) {
             $this->filter_input();
+        }
+    }
+
+    protected function setSecurityHeaders(): void
+    {
+        $this->output
+            ->set_header('X-Frame-Options: ' . env('X_FRAME_OPTIONS', 'SAMEORIGIN'))
+            ->set_header("Content-Security-Policy: frame-ancestors 'self'; object-src 'none'; base-uri 'self'")
+            ->set_header('Referrer-Policy: strict-origin-when-cross-origin');
+
+        if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
+            $this->output->set_header('X-Content-Type-Options: nosniff');
         }
     }
 }
