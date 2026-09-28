@@ -66,6 +66,20 @@ class User_Clients extends Admin_Controller
             redirect('user_clients/field/' . $user_id);
         }
 
+        // Authorization: only primary admin or the user themselves can manage their clients
+        $current_user_id = (int) $this->session->userdata('user_id');
+        $target_user_id  = (int) $user_id;
+        if ($target_user_id !== $current_user_id && ! $this->mdl_users->is_primary_administrator($current_user_id)) {
+            show_error(trans('access_denied'), 403);
+            return;
+        }
+
+        // Defense-in-depth: POSTed user_id must match the URL user_id
+        if ($this->input->post('user_id') && (int) $this->input->post('user_id') !== $target_user_id) {
+            show_error(trans('access_denied'), 403);
+            return;
+        }
+
         if ($this->mdl_user_clients->run_validation()) {
             if ($this->input->post('user_all_clients')) {
                 $users_id = [$user_id];
@@ -108,14 +122,18 @@ class User_Clients extends Admin_Controller
             return;
         }
 
-        if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
-            show_error(trans('access_denied'), 403);
-        }
-
         $ref = $this->mdl_user_clients->get_by_id($user_client_id);
 
         if ( ! $ref) {
             show_404();
+        }
+
+        // Authorization: only primary admin or the user themselves can manage their clients
+        $current_user_id = (int) $this->session->userdata('user_id');
+        $target_user_id  = (int) $ref->user_id;
+        if ($target_user_id !== $current_user_id && ! $this->mdl_users->is_primary_administrator($current_user_id)) {
+            show_error(trans('access_denied'), 403);
+            return;
         }
 
         $this->mdl_user_clients->delete($user_client_id);

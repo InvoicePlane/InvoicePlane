@@ -284,13 +284,17 @@ class Users extends Admin_Controller
 
         $this->load->model('mdl_user_clients');
 
-        if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
-            show_error(trans('access_denied'), 403);
-        }
-
         $user_client = $this->mdl_user_clients->get_by_id($user_client_id);
         if ( ! $user_client) {
             show_404();
+        }
+
+        // Authorization: only primary admin or the user themselves can manage their clients
+        $current_user_id = (int) $this->session->userdata('user_id');
+        $target_user_id  = (int) $user_client->user_id;
+        if ($target_user_id !== $current_user_id && ! $this->mdl_users->is_primary_administrator($current_user_id)) {
+            show_error(trans('access_denied'), 403);
+            return;
         }
 
         $this->mdl_user_clients->delete($user_client_id);
