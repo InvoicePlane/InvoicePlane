@@ -215,6 +215,11 @@ function verify_csrf_token(): bool
         return true;
     }
 
+    // Ensure security library is loaded so isset($CI->security) check works reliably
+    if ( ! isset($CI->security)) {
+        $CI->load->library('security');
+    }
+
     // Get CSRF token from POST data
     $token_name      = config_item('csrf_token_name');
     $submitted_token = $CI->input->post($token_name);
