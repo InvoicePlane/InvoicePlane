@@ -123,11 +123,8 @@ class Mdl_User_Clients extends MY_Model
         $user_client_id = (int) $user_client_id;
 
         // Only admin users (type 1) can manage user-client mappings
-        if ($user_type === 1) {
-            return true;
-        }
+        return (bool) ($user_type === 1);
 
         // Non-admin users cannot manage authorization mappings
-        return false;
     }
 }
