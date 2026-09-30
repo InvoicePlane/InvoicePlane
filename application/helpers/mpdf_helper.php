@@ -161,7 +161,8 @@ function pdf_create(
     // Set the footer if voucher is invoice and if set in settings
     if ($isInvoice && $invoiceFooter !== '') {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $invoiceFooter . '</div><div><p align="center">' . str_replace('_', ' ', $filename) . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
+        $escaped_filename = htmlspecialchars(str_replace('_', ' ', $filename), ENT_QUOTES, 'UTF-8');
+        $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $invoiceFooter . '</div><div><p align="center">' . $escaped_filename . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
         $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $invoiceFooter . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $invoiceFooter . '</div>');
         $mpdf->DefHTMLFooterByName('html_footer', '<div id="footer">' . $invoiceFooter . '</div>');
@@ -170,7 +171,8 @@ function pdf_create(
     // Set the footer if voucher is quote and if set in settings
     if ( ! $isInvoice && $quoteFooter !== '') {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $quoteFooter . '</div><div><p align="center">' . str_replace('_', ' ', $filename) . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
+        $escaped_filename = htmlspecialchars(str_replace('_', ' ', $filename), ENT_QUOTES, 'UTF-8');
+        $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $quoteFooter . '</div><div><p align="center">' . $escaped_filename . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
         $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $quoteFooter . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $quoteFooter . '</div>');
         $mpdf->DefHTMLFooterByName('html_footer', '<div id="footer">' . $quoteFooter . '</div>');
