@@ -3,7 +3,7 @@
 <script>
     var stripe;
     $.getScript("https://js.stripe.com/v3/").done(() => {
-        stripe = Stripe('<?php echo $stripe_api_key; ?>');
+        stripe = Stripe(<?php echo json_encode($stripe_api_key, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>);
 
         loadStripe().then(() => {
             $("#fullpage-loader").fadeOut(200);
