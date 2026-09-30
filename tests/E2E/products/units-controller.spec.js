@@ -6,7 +6,8 @@
 
 import { test, expect } from '../test.js';
 import { createUnit, uniq } from '../support/fixtures.js';
-import { expectBlockedByRequired, expectErrorFlash } from '../support/forms.js';
+import { dbQuery } from '../support/db.js';
+import { expectBlockedByRequired, expectSavedFlash, expectErrorFlash } from '../support/forms.js';
 
 test.describe('Units — list', () => {
   test('it lists every unit', async ({ page }) => {
@@ -124,6 +125,8 @@ test.describe('Units — update', () => {
   });
 });
 
+  // CSRF token tests (valid token, missing token) are covered by Feature tests
+  // and cannot run in E2E because CSRF_PROTECTION=false in the test server.
 test.describe('Units — delete', () => {
   test('it deletes a unit', async ({ page }) => {
     /* Arrange */
@@ -137,18 +140,19 @@ test.describe('Units — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
     await page.goto('/units');
     await expect(page.locator('#content')).not.toContainText(doomed.name);
     await expect(page.locator('#content')).toContainText(kept.name);
-  });
 
-  test('it still deletes a unit when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
+    /* Assert: Database confirms hard delete */
+    expect(dbQuery(`SELECT unit_id FROM ip_units WHERE unit_id = ${doomed.id}`)).toEqual([]);
 
-  test('it does not delete a unit when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Assert: Other unit unaffected */
+    expect(dbQuery(`SELECT unit_id FROM ip_units WHERE unit_id = ${kept.id}`)).toHaveLength(1);
   });
 });
 

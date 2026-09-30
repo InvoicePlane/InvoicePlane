@@ -206,7 +206,9 @@ class CsrfMutationParityTest extends AbstractTestCase
         $token = 'parity-reset-token-' . bin2hex(random_bytes(6));
         $id    = $this->seedSecondaryUser();
         $this->databaseUpdate('ip_users', [
-            'user_passwordreset_token'        => $token,
+            // Sessions::passwordreset() compares against hash_password_reset_token($token)
+            // (sha256), never the raw token — store the hash, submit the raw token below.
+            'user_passwordreset_token'        => hash('sha256', $token),
             'user_passwordreset_token_expiry' => date('Y-m-d H:i:s', strtotime('+1 hour')),
         ], ['user_id' => $id]);
         $before = $this->databaseFetchOne('ip_users', ['user_id' => $id])['user_password'];
@@ -233,7 +235,9 @@ class CsrfMutationParityTest extends AbstractTestCase
         $token = 'parity-reset-token-' . bin2hex(random_bytes(6));
         $id    = $this->seedSecondaryUser();
         $this->databaseUpdate('ip_users', [
-            'user_passwordreset_token'        => $token,
+            // Sessions::passwordreset() compares against hash_password_reset_token($token)
+            // (sha256), never the raw token — store the hash, submit the raw token below.
+            'user_passwordreset_token'        => hash('sha256', $token),
             'user_passwordreset_token_expiry' => date('Y-m-d H:i:s', strtotime('+1 hour')),
         ], ['user_id' => $id]);
         $before = $this->databaseFetchOne('ip_users', ['user_id' => $id])['user_password'];
@@ -252,7 +256,7 @@ class CsrfMutationParityTest extends AbstractTestCase
         self::assertSame($before, $after, 'The password hash must be untouched.');
     }
 
-    private function seedSecondaryUser(): int
+    protected function seedSecondaryUser(): int
     {
         // Delegate to the shared seedModel() row-builder instead of
         // duplicating its ip_users defaults here; only the type differs.

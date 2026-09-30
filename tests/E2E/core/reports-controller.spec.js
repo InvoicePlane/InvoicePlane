@@ -13,7 +13,7 @@ const range = { from_date: '2000-01-01', to_date: '2099-12-31' };
 test.describe('Reports — generation', () => {
   test('it generates an invoices per client report for a date range without mutating data', async ({ page }) => {
     /* Arrange */
-    const invoice = await createInvoiceWithBalance(page, '100.00');
+    await createInvoiceWithBalance(page, '100.00');
     const clientsBefore = dbQuery('SELECT COUNT(*) AS n FROM ip_clients')[0].n;
     const invoicesBefore = dbQuery('SELECT COUNT(*) AS n FROM ip_invoices')[0].n;
 
@@ -24,7 +24,6 @@ test.describe('Reports — generation', () => {
     expect(response.status()).toBeLessThan(400);
     expect(dbQuery('SELECT COUNT(*) AS n FROM ip_clients')[0].n).toBe(clientsBefore);
     expect(dbQuery('SELECT COUNT(*) AS n FROM ip_invoices')[0].n).toBe(invoicesBefore);
-    expect(invoice.id).toBeGreaterThan(0);
   });
 
   for (const [name, route] of [

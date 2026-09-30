@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Products;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -16,7 +17,7 @@ use Tests\AbstractTestCase;
  * creating this file.
  */
 #[Group('products')]
-#[CoversClass(\Ajax::class)]
+#[CoversClass(Ajax::class)]
 class ProductsAjaxControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -95,7 +96,7 @@ class ProductsAjaxControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'Not Selected Product');
     }
 
-    private function seedProduct(array $overrides = []): int
+    protected function seedProduct(array $overrides = []): int
     {
         return $this->databaseInsert('ip_products', array_merge([
             'family_id'           => 0,

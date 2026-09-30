@@ -109,6 +109,10 @@ class Ajax extends Admin_Controller
         $user_id   = $this->input->post('user_id');
         $client_id = $this->input->post('client_id');
 
+        $this->load->model('users/mdl_users');
+        $this->load->model('clients/mdl_clients');
+        $this->load->model('user_clients/mdl_user_clients');
+
         // Object-level authorization: only the primary administrator may assign
         // clients to other users. A peer administrator is limited to their own
         // account (CWE-862 / CWE-269).
@@ -122,9 +126,6 @@ class Ajax extends Admin_Controller
                 return;
             }
         }
-
-        $this->load->model('clients/mdl_clients');
-        $this->load->model('user_clients/mdl_user_clients');
 
         $client = $this->mdl_clients->get_by_id($client_id);
         if ($client) {

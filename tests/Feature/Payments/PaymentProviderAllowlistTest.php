@@ -82,7 +82,7 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     public function it_returns_404_for_an_unknown_payment_provider_segment(): void
     {
         /* Arrange */
-        $unknownProvider = 'malicious_method';
+        $unknownProvider             = 'malicious_method';
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
@@ -104,7 +104,8 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
-        $this->assertSame('100.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => (int) $invoice['invoice_id']]);
+        $this->assertSame('100.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/injection_test');
@@ -119,7 +120,7 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     public function it_returns_404_for_an_internal_controller_method_name_as_provider(): void
     {
         /* Arrange */
-        $internalMethod = 'index';
+        $internalMethod              = 'index';
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
@@ -141,7 +142,7 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
-        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+        $this->assertNotNull($invoice);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/delete');
@@ -156,7 +157,7 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
     public function it_returns_404_for_a_path_traversal_attempt_as_provider(): void
     {
         /* Arrange */
-        $traversal = '__construct';
+        $traversal                   = '__construct';
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
@@ -178,7 +179,8 @@ class PaymentProviderAllowlistTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_url_key' => $this->invoiceUrlKey]);
-        $this->assertSame('100.00', $invoice['invoice_balance']);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => (int) $invoice['invoice_id']]);
+        $this->assertSame('100.00', $amounts['invoice_balance']);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/guest/payment_information/form/' . $this->invoiceUrlKey . '/_destruct');

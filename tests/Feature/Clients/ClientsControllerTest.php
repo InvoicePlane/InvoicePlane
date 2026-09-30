@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Clients;
 
+use Clients;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -15,7 +16,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * preferences) live in ClientsAjaxControllerTest.
  */
 #[Group('clients')]
-#[CoversClass(\Clients::class)]
+#[CoversClass(Clients::class)]
 class ClientsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

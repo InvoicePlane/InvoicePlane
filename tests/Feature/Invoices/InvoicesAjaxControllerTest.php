@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Invoices;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -12,7 +13,7 @@ use Tests\AbstractTestCase;
  * happy paths and IDOR-adjacent edge cases.
  */
 #[\PHPUnit\Framework\Attributes\Group('invoices')]
-#[CoversClass(\Ajax::class)]
+#[CoversClass(Ajax::class)]
 class InvoicesAjaxControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

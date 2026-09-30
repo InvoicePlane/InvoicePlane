@@ -41,6 +41,11 @@ class HttpResponse
         return $this->stderr;
     }
 
+    public function isSuccessful(): bool
+    {
+        return $this->statusCode >= 200 && $this->statusCode < 300;
+    }
+
     public function isRedirect(): bool
     {
         return $this->statusCode >= 300 && $this->statusCode < 400;

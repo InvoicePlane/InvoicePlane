@@ -1,5 +1,7 @@
 <?php
 
+define('ROOT_PATH', dirname(__DIR__, 3));
+
 $encodedRequest = getenv('CI_TEST_REQUEST') ?: '';
 $decodedRequest = base64_decode($encodedRequest, true);
 
@@ -62,8 +64,8 @@ $_SERVER['HTTPS']              = 'off';
 $_SERVER['REMOTE_ADDR']        = '127.0.0.1';
 $_SERVER['HTTP_USER_AGENT']    = 'PHPUnit CI3 Integration Runner';
 $_SERVER['HTTP_ACCEPT']        = 'text/html,application/xhtml+xml';
-$_SERVER['DOCUMENT_ROOT']      = dirname(__DIR__, 3) . '/public';
-$_SERVER['SCRIPT_FILENAME']    = dirname(__DIR__, 3) . '/public/index.php';
+$_SERVER['DOCUMENT_ROOT']      = ROOT_PATH . '/public';
+$_SERVER['SCRIPT_FILENAME']    = ROOT_PATH . '/public/index.php';
 $_SERVER['CI_ENV']             = 'testing';
 $_SERVER['REQUEST_TIME']       = time();
 $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
@@ -79,12 +81,12 @@ foreach ($env as $key => $value) {
 }
 
 if (getenv('STRIPE_MOCK_RESPONSES') !== false) {
-    require_once dirname(__DIR__, 3) . '/vendor/autoload.php';
+    require_once ROOT_PATH . '/vendor/autoload.php';
     require_once dirname(__DIR__, 2) . '/Fakes/Payments/FakeStripeHttpClient.php';
 }
 
 if (getenv('PAYPAL_MOCK_RESPONSES') !== false) {
-    require_once dirname(__DIR__, 3) . '/vendor/autoload.php';
+    require_once ROOT_PATH . '/vendor/autoload.php';
     require_once dirname(__DIR__, 2) . '/Fakes/Payments/FakePaypalHttpClient.php';
 }
 
@@ -127,7 +129,7 @@ register_shutdown_function(static function () use (&$exception): void {
 });
 
 try {
-    require dirname(__DIR__, 3) . '/public/index.php';
+    require ROOT_PATH . '/public/index.php';
 } catch (Throwable $throwable) {
     // MY_Exceptions turns show_error()/show_404() into a RuntimeException carrying
     // the HTTP status code (in the testing environment). A 4xx is a normal

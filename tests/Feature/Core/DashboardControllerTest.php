@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Dashboard;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -11,7 +12,7 @@ use Tests\AbstractTestCase;
  */
 #[Group('feature')]
 #[Group('dashboard')]
-#[CoversClass(\Dashboard::class)]
+#[CoversClass(Dashboard::class)]
 class DashboardControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

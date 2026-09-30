@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Core;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
-#[CoversClass(\Ajax::class)]
+#[CoversClass(Ajax::class)]
 
 class EmailTemplatesAjaxControllerTest extends AbstractTestCase
 {

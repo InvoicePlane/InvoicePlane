@@ -457,4 +457,20 @@ class Mdl_Import extends Response_Model
         $this->load->helper('orphan');
         delete_orphans();
     }
+
+    public function cleanup_import_files()
+    {
+        $files_to_delete = [
+            './uploads/import/clients.csv',
+            './uploads/import/invoices.csv',
+            './uploads/import/invoice_items.csv',
+            './uploads/import/payments.csv',
+        ];
+
+        foreach ($files_to_delete as $file) {
+            if (file_exists($file) && is_file($file)) {
+                unlink($file);
+            }
+        }
+    }
 }

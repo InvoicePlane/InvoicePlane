@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Custom_Values;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -19,7 +20,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * Absorbs Issue1694CustomValuesDeleteCsrfTest.
  */
 #[Group('custom_values')]
-#[CoversClass(\Custom_Values::class)]
+#[CoversClass(Custom_Values::class)]
 class CustomValuesControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;
@@ -237,7 +238,7 @@ class CustomValuesControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'Secret Segment');
     }
 
-    private function seedChoiceField(): int
+    protected function seedChoiceField(): int
     {
         return $this->databaseInsert('ip_custom_fields', [
             'custom_field_table' => 'ip_client_custom',
@@ -246,7 +247,7 @@ class CustomValuesControllerTest extends AbstractTestCase
         ]);
     }
 
-    private function seedValue(int $fieldId, string $value): int
+    protected function seedValue(int $fieldId, string $value): int
     {
         return $this->databaseInsert('ip_custom_values', [
             'custom_values_field' => $fieldId,

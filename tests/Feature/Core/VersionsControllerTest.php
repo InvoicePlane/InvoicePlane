@@ -4,13 +4,14 @@ namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
+use Versions;
 
 /**
  * VersionsController Feature Tests.
  *
  * Tests the settings page (which includes version info).
  */
-#[CoversClass(\Versions::class)]
+#[CoversClass(Versions::class)]
 class VersionsControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

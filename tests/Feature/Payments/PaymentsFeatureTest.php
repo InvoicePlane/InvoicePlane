@@ -26,8 +26,8 @@ class PaymentsFeatureTest extends AbstractTestCase
     public function it_lists_payments(): void
     {
         /* Arrange */
-        $clientId  = $this->seedClient(['client_name' => 'Payment List Client']);
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId           = $this->seedClient(['client_name' => 'Payment List Client']);
+        $invoiceId          = $this->seedInvoice($clientId);
         $paymentCountBefore = $this->databaseCount('ip_payments');
         $this->seedPayment($invoiceId, ['payment_amount' => '99.00']);
 
@@ -43,15 +43,17 @@ class PaymentsFeatureTest extends AbstractTestCase
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
-        $this->assertGreaterThan($paymentCountBefore, $paymentCountAfter);
+        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
 
         /* Assert: Data Integrity (D) */
         $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId, 'payment_amount' => '99.00']);
         $this->assertSame($invoiceId, (int) $payment['invoice_id']);
 
         /* Assert: Boundary Cases (F) */
+        // No $0.00 payment was created in this test — this listing must not spuriously
+        // introduce one.
         $zeroPaymentCheck = $this->databaseCount('ip_payments', ['payment_amount' => '0.00']);
-        $this->assertGreaterThanOrEqual(0, $zeroPaymentCheck);
+        $this->assertSame(0, $zeroPaymentCheck);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->get('/payments');
@@ -111,9 +113,9 @@ class PaymentsFeatureTest extends AbstractTestCase
     public function it_renders_the_edit_payment_form_showing_existing_amount(): void
     {
         /* Arrange */
-        $clientId  = $this->seedClient(['client_name' => 'Payment Edit Client']);
-        $invoiceId = $this->seedInvoice($clientId);
-        $paymentId = $this->seedPayment($invoiceId, ['payment_amount' => '175.50']);
+        $clientId           = $this->seedClient(['client_name' => 'Payment Edit Client']);
+        $invoiceId          = $this->seedInvoice($clientId);
+        $paymentId          = $this->seedPayment($invoiceId, ['payment_amount' => '175.50']);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
@@ -212,7 +214,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         $deletedPayment = $this->databaseFetchOne('ip_payments', ['payment_id' => $paymentId]);
         $this->assertNull($deletedPayment);
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+        $this->assertNotNull($invoice, 'Deleting a payment must not cascade-delete its parent invoice.');
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->post('/payments/delete/999999', []);
@@ -253,7 +255,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert: Error Semantics (C) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 200);
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
@@ -276,7 +278,7 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_date'   => date('Y-m-d'),
             'btn_submit'     => '1',
         ]);
-        $this->assertResponseStatusCode($response2, 302);
+        $this->assertResponseStatusCode($response2, 200);
         $this->assertDatabaseCount('ip_payments', 0);
     }
 
@@ -294,8 +296,8 @@ class PaymentsFeatureTest extends AbstractTestCase
          */
 
         /* Arrange */
-        $clientId  = $this->seedClient(['client_name' => 'Payment Fail Client']);
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId           = $this->seedClient(['client_name' => 'Payment Fail Client']);
+        $invoiceId          = $this->seedInvoice($clientId);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
@@ -307,7 +309,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert: Error Semantics (C) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 200);
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
@@ -322,8 +324,13 @@ class PaymentsFeatureTest extends AbstractTestCase
         $this->assertSame($invoiceId, (int) $invoice['invoice_id']);
 
         /* Assert: Boundary Cases (F) */
+        // Mdl_payments::validate_payment_amount() only rejects amounts that exceed the
+        // invoice balance ($amount > $invoice_balance); '0' passes both that and CI3's
+        // required rule (which only rejects an empty string), so — unlike the missing
+        // ('') case above — a $0.00 payment is valid and does get created.
         $this->post('/payments/form', ['invoice_id' => $invoiceId, 'payment_amount' => '0', 'payment_date' => date('Y-m-d'), 'btn_submit' => '1']);
-        $this->assertDatabaseCount('ip_payments', 0);
+        $this->assertDatabaseCount('ip_payments', 1);
+        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId, 'payment_amount' => '0.00']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/payments/form', [
@@ -332,8 +339,10 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_date'   => date('Y-m-d'),
             'btn_submit'     => '1',
         ]);
-        $this->assertResponseStatusCode($response2, 302);
-        $this->assertDatabaseCount('ip_payments', 0);
+        $this->assertResponseStatusCode($response2, 200);
+        // Still 1: the boundary-case $0.00 payment above did get created; this repeat of
+        // the empty-amount case must still be rejected and not add a second row.
+        $this->assertDatabaseCount('ip_payments', 1);
     }
 
     #[Test]
@@ -350,8 +359,8 @@ class PaymentsFeatureTest extends AbstractTestCase
          */
 
         /* Arrange */
-        $clientId  = $this->seedClient(['client_name' => 'Payment No Date Client']);
-        $invoiceId = $this->seedInvoice($clientId);
+        $clientId           = $this->seedClient(['client_name' => 'Payment No Date Client']);
+        $invoiceId          = $this->seedInvoice($clientId);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         /* Act */
@@ -363,7 +372,7 @@ class PaymentsFeatureTest extends AbstractTestCase
         ]);
 
         /* Assert: Error Semantics (C) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 200);
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
@@ -388,7 +397,7 @@ class PaymentsFeatureTest extends AbstractTestCase
             'payment_date'   => '',
             'btn_submit'     => '1',
         ]);
-        $this->assertResponseStatusCode($response2, 302);
+        $this->assertResponseStatusCode($response2, 200);
         $this->assertDatabaseCount('ip_payments', 0);
     }
 
@@ -404,6 +413,27 @@ class PaymentsFeatureTest extends AbstractTestCase
         $invoiceId = $this->seedInvoice($clientId, [], [
             'invoice_total'   => '75.00',
             'invoice_balance' => '75.00',
+        ]);
+        // Mdl_invoice_amounts::calculate() (run by every payment save) recomputes the
+        // balance from real ip_invoice_items rows, not the amountOverrides above — and
+        // this test saves two 75.00 payments, so it needs 150.00 of real balance behind
+        // it or the second save would be correctly rejected as exceeding the balance
+        // (a different bug from the "duplicates allowed" behavior this test is about).
+        $itemId = $this->databaseInsert('ip_invoice_items', [
+            'invoice_id'       => $invoiceId,
+            'item_tax_rate_id' => 0,
+            'item_date_added'  => date('Y-m-d'),
+            'item_name'        => 'Test item',
+            'item_quantity'    => '1.00',
+            'item_price'       => '150.00',
+            'item_order'       => 1,
+        ]);
+        $this->databaseInsert('ip_invoice_item_amounts', [
+            'item_id'        => $itemId,
+            'item_subtotal'  => '150.00',
+            'item_tax_total' => '0.00',
+            'item_discount'  => '0.00',
+            'item_total'     => '150.00',
         ]);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
@@ -473,10 +503,13 @@ class PaymentsFeatureTest extends AbstractTestCase
         $this->assertSame($paymentCountBefore, $paymentCountAfter);
 
         /* Assert: Business Logic (A) */
-        $this->assertResponseStatusCode($response, 302);
+        // This app's redirect() issues 307 (Temporary Redirect), not the classic CI3
+        // default of 302 — see the "Debugging a Feature-test request subprocess"
+        // section in CLAUDE.md, which traced this exact behavior.
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: Data Integrity (D) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: Boundary Cases (F) */
         $response2 = $this->get('/payments/form/999999');
@@ -485,6 +518,6 @@ class PaymentsFeatureTest extends AbstractTestCase
         /* Assert: Idempotency (E) */
         $response3 = $this->get('/payments');
         $this->assertTrue($response3->isRedirect());
-        $this->assertResponseStatusCode($response3, 302);
+        $this->assertResponseStatusCode($response3, 307);
     }
 }

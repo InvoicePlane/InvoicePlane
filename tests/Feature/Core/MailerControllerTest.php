@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Mailer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -14,7 +15,7 @@ use Tests\AbstractTestCase;
  * Issue1497SmtpSenderTest (the from-address defaulting regression).
  */
 #[Group('mailer')]
-#[CoversClass(\Mailer::class)]
+#[CoversClass(Mailer::class)]
 class MailerControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -67,7 +68,7 @@ class MailerControllerTest extends AbstractTestCase
     public function it_shows_not_configured_message_when_mailer_is_not_configured(): void
     {
         /* Arrange: mailer is not configured by default in test setup */
-        $clientId = $this->seedClient();
+        $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
 
         /* Act */
@@ -89,7 +90,7 @@ class MailerControllerTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'smtp_port', 'setting_value' => '587']);
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'smtp_username', 'setting_value' => 'user']);
 
-        $clientId = $this->seedClient(['client_email' => 'client@example.com']);
+        $clientId  = $this->seedClient(['client_email' => 'client@example.com']);
         $invoiceId = $this->seedInvoice($clientId);
 
         /* Act */
@@ -129,7 +130,7 @@ class MailerControllerTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'smtp_username', 'setting_value' => 'user']);
 
         $clientId = $this->seedClient(['client_email' => 'quote@example.com']);
-        $quoteId = $this->seedQuote($clientId);
+        $quoteId  = $this->seedQuote($clientId);
 
         /* Act */
         $response = $this->get("/mailer/quote/{$quoteId}");
@@ -151,7 +152,7 @@ class MailerControllerTest extends AbstractTestCase
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'smtp_port', 'setting_value' => '587']);
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'smtp_username', 'setting_value' => 'user']);
 
-        $clientId = $this->seedClient(['client_name' => 'Important Client', 'client_email' => 'important@example.com']);
+        $clientId  = $this->seedClient(['client_name' => 'Important Client', 'client_email' => 'important@example.com']);
         $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'INV-2025-001']);
 
         /* Act */
@@ -199,15 +200,18 @@ class MailerControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'INV-MAIL-SECRET');
     }
 
-    private function seedQuote(int $clientId): int
+    protected function seedQuote(int $clientId): int
     {
         return $this->databaseInsertGetId('ip_quotes', [
-            'client_id'         => $clientId,
-            'quote_number'      => 'Q-' . bin2hex(random_bytes(4)),
-            'quote_date_created' => date('Y-m-d'),
-            'quote_date_expires' => date('Y-m-d', strtotime('+30 days')),
-            'quote_amount'       => 1000,
-            'quote_status_id'    => 1,
+            'user_id'             => 1,
+            'client_id'           => $clientId,
+            'invoice_group_id'    => 1,
+            'quote_number'        => 'Q-' . bin2hex(random_bytes(4)),
+            'quote_url_key'       => bin2hex(random_bytes(16)),
+            'quote_date_created'  => date('Y-m-d'),
+            'quote_date_modified' => date('Y-m-d H:i:s'),
+            'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
+            'quote_status_id'     => 1,
         ]);
     }
 }

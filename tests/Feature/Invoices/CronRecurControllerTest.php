@@ -89,7 +89,7 @@ class CronRecurControllerTest extends AbstractTestCase
         $this->assertDatabaseCount('ip_invoices', 1, ['client_id' => $seeded['clientId']]);
     }
 
-    private function seedRecurringInvoice(array $overrides = []): array
+    protected function seedRecurringInvoice(array $overrides = []): array
     {
         $clientId    = $this->seedClient();
         $invoiceId   = $this->seedInvoice($clientId, ['invoice_number' => 'CRON-SRC-' . bin2hex(random_bytes(4))]);

@@ -41,9 +41,9 @@ class CoreAjaxControllerTest extends AbstractTestCase
     public function it_filters_active_clients_correctly(): void
     {
         /* Arrange */
-        $activeClient1   = $this->seedClient(['client_name' => 'Active One', 'client_active' => 1]);
-        $activeClient2   = $this->seedClient(['client_name' => 'Active Two', 'client_active' => 1]);
-        $inactiveClient  = $this->seedClient(['client_name' => 'Inactive Client', 'client_active' => 0]);
+        $activeClient1  = $this->seedClient(['client_name' => 'Active One', 'client_active' => 1]);
+        $activeClient2  = $this->seedClient(['client_name' => 'Active Two', 'client_active' => 1]);
+        $inactiveClient = $this->seedClient(['client_name' => 'Inactive Client', 'client_active' => 0]);
 
         /* Act */
         $response = $this->get('/clients/status/active');
@@ -55,7 +55,7 @@ class CoreAjaxControllerTest extends AbstractTestCase
         /* Inactive client should NOT be displayed in active list */
         $body = $response->body();
         self::assertFalse(
-            strpos($body, 'Inactive Client') !== false,
+            str_contains($body, 'Inactive Client'),
             'Inactive client must not appear in active clients list'
         );
     }
@@ -78,7 +78,7 @@ class CoreAjaxControllerTest extends AbstractTestCase
         /* Active client should NOT appear */
         $body = $response->body();
         self::assertFalse(
-            strpos($body, 'Active Client') !== false,
+            str_contains($body, 'Active Client'),
             'Active client must not appear in inactive clients list'
         );
     }
@@ -111,8 +111,9 @@ class CoreAjaxControllerTest extends AbstractTestCase
         /* Assert: Client is displayed with balance info loaded */
         $this->assertResponseStatusCode($response, 200);
         $this->assertResponseBodyContains($response, 'Balance Client');
-        /* The endpoint loads with_total_balance(), verify balance appears */
-        $this->assertResponseBodyContains($response, $expectedBalance);
+        /* The endpoint loads with_total_balance(); it renders currency-formatted
+         * ('$150'), not the raw stored value ('150.00'). */
+        $this->assertResponseBodyContains($response, '$150');
     }
 
     #[Test]

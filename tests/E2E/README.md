@@ -61,7 +61,7 @@ yarn e2e                # or: yarn e2e:ui
 With nothing configured, `playwright.config.js` starts the app itself with:
 
 ```
-DB_HOSTNAME=${DB_HOSTNAME:-127.0.0.1} php -d variables_order=EGPCS -S localhost:8000 -t . tests/E2E/router.php
+DB_HOSTNAME=${DB_HOSTNAME:-127.0.0.1} php -d variables_order=EGPCS -S localhost:8000 -t . bootstrap/test-server.php
 ```
 
 - `-d variables_order=EGPCS` — this machine's `php.ini` omits `E`, so without it
@@ -148,7 +148,28 @@ UI path (quote/invoice tax-rate rows, client-service links, orphaned tasks).
 
 ## CI
 
+## Local debugging tips
+
+**If tests pass locally but fail in CI**, clear Playwright's cached output:
+```bash
+rm -rf .playwright/ tests/.playwright/
+npm run e2e
+```
+
+Stale cache can mask syntax errors in test files. CI always runs on a fresh
+checkout, so cached output isn't visible there.
+
+**Lint E2E test files before committing:**
+```bash
+npm run lint:e2e
+```
+
+This catches unclosed `test()` blocks and other syntax errors that the CI
+pipeline will also report.
+
+## CI
+
 `.github/workflows/e2e-tests.yml` — MariaDB service, schema + seed, `php -S`,
-`npx playwright install --with-deps chromium`, `npm run e2e`. Runs on
-`prep/v180` pushes and PRs; the HTML report + `error-report.md` are uploaded as
-an artifact.
+`npx playwright install --with-deps chromium`, ESLint linting, `npm run e2e`.
+Runs on `prep/v180` pushes and PRs; the HTML report + `error-report.md` are
+uploaded as an artifact.
