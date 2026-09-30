@@ -200,9 +200,16 @@ function escape_url_for_javascript($url)
  * $_POST / $_COOKIE here would then see an empty token and reject every
  * legitimate state-changing POST, which is exactly the "unable to delete
  * invoice" bug (issue #1694). So on an enabled-protection POST we trust the
- * framework check that already happened; the explicit double-submit comparison
- * below only guards the residual cases (protection disabled, or a non-POST
- * caller where CI3's csrf_verify() never ran).
+ * framework check that already happened.
+ *
+ * That guarantee does NOT hold for a URI matching csrf_exclude_uris: CI3's
+ * csrf_verify() returns immediately for those (see the same vendored file)
+ * without ever touching $_POST[$token_name], so a null submitted token there
+ * means "never checked", not "checked and consumed". _is_uri_csrf_excluded()
+ * mirrors the framework's own exclusion match so we only take the trust
+ * shortcut when the framework actually ran it; excluded URIs fall through to
+ * the explicit double-submit comparison below, same as when protection is
+ * disabled entirely or a non-POST caller reaches this function.
  *
  * @return bool True if CSRF token is valid, false otherwise
  */
@@ -213,11 +220,6 @@ function verify_csrf_token(): bool
     // Check if CSRF protection is enabled
     if ( ! config_item('csrf_protection')) {
         return true;
-    }
-
-    // Ensure security library is loaded so isset($CI->security) check works reliably
-    if ( ! isset($CI->security)) {
-        $CI->load->library('security');
     }
 
     // Get CSRF token from POST data
@@ -231,9 +233,10 @@ function verify_csrf_token(): bool
     // CodeIgniter's global CSRF check already ran and passed for this POST
     // (it consumes $_POST[$token_name] on success). Anything that failed its
     // check never reaches a controller. Trust that instead of re-validating a
-    // token the framework deliberately cleared.
+    // token the framework deliberately cleared — but only when this URI isn't
+    // CSRF-excluded, since an excluded URI never went through that check.
     $request_method = strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? ''));
-    if ($request_method === 'POST' && $submitted_token === null && isset($CI->security)) {
+    if ($request_method === 'POST' && $submitted_token === null && ! _is_uri_csrf_excluded($CI)) {
         return true;
     }
 
@@ -262,6 +265,37 @@ function verify_csrf_token(): bool
         $safe_ip = 'invalid-ip';
     }
     log_message('error', 'CSRF token mismatch from IP: ' . $safe_ip);
+
+    return false;
+}
+
+/**
+ * Whether the current request URI matches one of the csrf_exclude_uris
+ * patterns, i.e. whether CI3's own Security::csrf_verify() skipped this
+ * request entirely instead of validating (and consuming) its token.
+ *
+ * Mirrors the matching in the vendored system/core/Security.php exactly so
+ * this stays in sync with what the framework itself actually skips.
+ *
+ * @param object $CI
+ *
+ * @return bool
+ */
+function _is_uri_csrf_excluded($CI): bool
+{
+    $exclude_uris = config_item('csrf_exclude_uris');
+
+    if (empty($exclude_uris)) {
+        return false;
+    }
+
+    $uri_string = $CI->uri->uri_string();
+
+    foreach ($exclude_uris as $excluded) {
+        if (preg_match('#^' . $excluded . '$#i' . (defined('UTF8_ENABLED') && UTF8_ENABLED ? 'u' : ''), $uri_string)) {
+            return true;
+        }
+    }
 
     return false;
 }
