@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Unauthenticated session file + upload access via missing nginx deny rules | High | 7.5 | CWE-639 | [[GHSA-qq8q-gf24-576m](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-qq8q-gf24-576m)] | [@nirtem](https://github.com/nirtem) | — |
 | Guest invoice IDOR via ungrouped OR in is_paid() | Moderate | 5.3 | CWE-639 | [[GHSA-w5r4-8w63-c5h2](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-w5r4-8w63-c5h2)] | [@d3do-23](https://github.com/d3do-23) | — |
 | Secondary admin can delete other admin accounts | Moderate | 6.5 | CWE-862 | [[GHSA-6r23-8rf2-78h3](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-6r23-8rf2-78h3)] | [@capivara-research](https://github.com/capivara-research) | — |
-| Admin IDOR on save_user_client reassigns any user's clients | High | 7.1 | CWE-639 | [[GHSA-h4xh-4jwc-485r](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-h4xh-4jwc-485r)] | [@0raN9ewww](https://github.com/0raN9ewww) | — |
+| Admin IDOR on save_user_client reassigns any user's clients | High | 7.1 | CWE-639 | [[GHSA-h4xh-4jwc-485r](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-h4xh-4jwc-485r)], [[GHSA-5rqm-w9p8-gp7w](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-5rqm-w9p8-gp7w)] | [@0raN9ewww](https://github.com/0raN9ewww), [@fr1d4yy](https://github.com/fr1d4yy) | #1738 |
 | Log injection via password-reset token/email | Low | 3.7 | CWE-117 | — | Internal audit | #1567 |
 | Open redirect via raw `$_SERVER['HTTP_REFERER']` | Medium | 6.1 | CWE-601 | — | Internal audit | #1567 |
 | Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | #1567 |
