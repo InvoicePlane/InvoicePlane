@@ -54,15 +54,15 @@
     window.PayPalConfig = {
         advEnabled: <?php echo $adv_enabled ? 'true' : 'false'; ?>,
         venmoEnabled: <?php echo $venmo_enabled ? 'true' : 'false'; ?>,
-        clientId: '<?php echo $paypal_client_id; ?>',
-        currency: '<?php echo $currency; ?>',
-        invoiceUrlKey: '<?php echo $invoice_url_key; ?>',
-        createOrderUrl: '<?php echo site_url('guest/gateways/paypal/paypal_create_order/' . $invoice_url_key); ?>',
-        capturePaymentUrl: '<?php echo site_url('guest/gateways/paypal/paypal_capture_payment/'); ?>',
-        successUrl: '<?php echo site_url('guest/view/invoice/' . $invoice_url_key); ?>',
-        errorUrl: '<?php echo site_url('guest/payment_information/form/' . $invoice_url_key . '/paypal'); ?>',
-        csrfTokenName: '<?php echo $this->security->get_csrf_token_name(); ?>',
-        csrfTokenValue: '<?php echo $this->security->get_csrf_hash(); ?>'
+        clientId: <?php echo json_encode($paypal_client_id, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>,
+        currency: <?php echo json_encode($currency, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>,
+        invoiceUrlKey: <?php echo json_encode($invoice_url_key, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>,
+        createOrderUrl: <?php echo json_encode(site_url('guest/gateways/paypal/paypal_create_order/' . $invoice_url_key), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>,
+        capturePaymentUrl: <?php echo json_encode(site_url('guest/gateways/paypal/paypal_capture_payment/'), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>,
+        successUrl: <?php echo json_encode(site_url('guest/view/invoice/' . $invoice_url_key), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>,
+        errorUrl: <?php echo json_encode(site_url('guest/payment_information/form/' . $invoice_url_key . '/paypal'), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>,
+        csrfTokenName: <?php echo json_encode($this->security->get_csrf_token_name(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>,
+        csrfTokenValue: <?php echo json_encode($this->security->get_csrf_hash(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>
     };
 </script>
 <script src="<?php _core_asset('js/paypal.js'); ?>"></script>
