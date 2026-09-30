@@ -70,7 +70,7 @@ class User_Clients extends Admin_Controller
         // be accounts the acting user may manage.
         $posted_user_id = $this->input->post('user_id');
         if ( ! $this->mdl_user_clients->can_manage_user_clients($user_id)
-            || ($posted_user_id !== null && ! $this->mdl_user_clients->can_manage_user_clients($posted_user_id))
+            || ($posted_user_id !== null && $posted_user_id !== '' && ! $this->mdl_user_clients->can_manage_user_clients($posted_user_id))
         ) {
             show_error(trans('access_denied'), 403);
 
