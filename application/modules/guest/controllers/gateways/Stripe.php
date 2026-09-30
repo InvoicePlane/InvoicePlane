@@ -95,6 +95,21 @@ class Stripe extends Base_Controller
      */
     public function callback(string $checkout_session_id)
     {
+        // A Checkout Session id is "cs_" + alphanumerics. Reject anything else before it costs a Stripe API call.
+        if ( ! preg_match('/^cs_[A-Za-z0-9_]{8,250}$/', $checkout_session_id)) {
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected malformed checkout session id: ' . sanitize_for_logging($checkout_session_id));
+            $this->session->set_flashdata('alert_error', trans('online_payment_error'));
+
+            redirect('guest/view/invoices');
+        }
+
+        // Initialised up front: the finally block runs even when retrieve() throws.
+        $session  = null;
+        $invoice  = null;
+        $response = '';
+        $user_msg = '';
+        $paid     = 'error';
+
         try {
             // Retrieve the Checkout Session from Stripe
             $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
@@ -201,21 +216,24 @@ class Stripe extends Base_Controller
         } finally {
             $paid = is_bool($paid) ? ($paid ? 'success' : 'info') : $paid; // Tweak to reuse (flashdata alert_*)
             // Check stripe server ok
-            $ok = $session->status !== null; // Stripe is accessible?
-            // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts)
-            $this->db->insert('ip_merchant_responses', [
-                'invoice_id'                   => $invoice->invoice_id,
-                'merchant_response_successful' => (int) $ok, // response server API (no)ok
-                'merchant_response_date'       => date('Y-m-d'),
-                'merchant_response_driver'     => __CLASS__,
-                'merchant_response'            => ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
-                'merchant_response_reference'  => $ok ? 'intent_id: ' . $session->payment_intent : 'none',
-            ]);
+            $ok = $session !== null && $session->status !== null; // Stripe is accessible?
+            // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts).
+            // Without a resolved invoice there is nothing to attach it to (ip_merchant_responses.invoice_id is NOT NULL).
+            if ($invoice !== null) {
+                $this->db->insert('ip_merchant_responses', [
+                    'invoice_id'                   => $invoice->invoice_id,
+                    'merchant_response_successful' => (int) $ok, // response server API (no)ok
+                    'merchant_response_date'       => date('Y-m-d'),
+                    'merchant_response_driver'     => __CLASS__,
+                    'merchant_response'            => ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
+                    'merchant_response_reference'  => $ok ? 'intent_id: ' . $session->payment_intent : 'none',
+                ]);
+            }
 
             // Notify user
             $this->session->set_flashdata('alert_' . $paid, $user_msg);
             // Attempt to redirect them to the invoice. invoice_url_key? No, return to invoices view
-            redirect('guest/view/invoice' . (empty($invoice->invoice_url_key) ? 's' : '/' . $invoice->invoice_url_key));
+            redirect('guest/view/invoice' . (empty($invoice->invoice_url_key ?? null) ? 's' : '/' . $invoice->invoice_url_key));
         }
     }
 }
