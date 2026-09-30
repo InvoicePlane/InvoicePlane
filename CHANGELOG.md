@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | #1567 |
 | Stored XSS via `currency_symbol` on public invoice/quote pages | Medium | 4.3 | CWE-79 | — | [@crypto-nidh](https://github.com/crypto-nidh) | — |
 
+| Stored XSS via custom field labels in validation error messages | Medium | — | CWE-79 | [[GHSA-xvpx-fwvm-346g](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-xvpx-fwvm-346g)] | [@fr1d4yy](https://github.com/fr1d4yy) | #1737 |
 ---
 
 ### Security
