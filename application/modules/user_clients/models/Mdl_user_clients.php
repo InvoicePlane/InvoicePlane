@@ -105,16 +105,6 @@ class Mdl_User_Clients extends MY_Model
     }
 
     /**
-     * Check if the current user can manage (delete/edit) this user-client authorization mapping.
-     *
-     * Security: Prevents IDOR vulnerabilities by verifying the user can manage
-     * the user_client mapping (typically only admins).
-     *
-     * @param int $user_client_id The user_client ID to check
-     *
-     * @return bool True if user can manage, false otherwise
-     */
-    /**
      * Whether the acting user may read or change the client assignments of $target_user_id:
      * the primary administrator may manage anyone's, everybody else only their own
      * (CWE-639 / CWE-862).
@@ -131,6 +121,16 @@ class Mdl_User_Clients extends MY_Model
             || Mdl_Users::is_primary_administrator($acting_user_id);
     }
 
+    /**
+     * Check if the current user can manage (delete/edit) this user-client authorization mapping.
+     *
+     * Security: Prevents IDOR vulnerabilities by verifying the user can manage
+     * the user_client mapping (typically only admins).
+     *
+     * @param int $user_client_id The user_client ID to check
+     *
+     * @return bool True if user can manage, false otherwise
+     */
     public function can_user_manage($user_client_id)
     {
         $CI = & get_instance();
