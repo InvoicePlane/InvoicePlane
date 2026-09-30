@@ -83,12 +83,13 @@ class Sessions extends Base_Controller
             }
 
             //prevent brute force attacks by counting times a token is used
-            $login_log_check = $this->_login_log_check($token);
+            $token_log_key   = $this->_password_reset_token_log_key($token);
+            $login_log_check = $this->_login_log_check($token_log_key);
             if ( ! empty($login_log_check) && $login_log_check->log_count > 10) {
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             } else {
                 //the use of a token counts as a failure
-                $this->_login_log_addfailure($token);
+                $this->_login_log_addfailure($token_log_key);
             }
 
             $this->db->where('user_passwordreset_token', $token);
@@ -108,7 +109,7 @@ class Sessions extends Base_Controller
 
             //if token is valid, delete the failure attempt from
             //the login_log table
-            $this->_login_log_reset($token);
+            $this->_login_log_reset($token_log_key);
 
             $formdata = [
                 'token'   => $token,
@@ -169,7 +170,7 @@ class Sessions extends Base_Controller
 
             // Delete failed login attempts from login_log table
             $user = $this->db->where('user_id', $user_id)->get('ip_users')->row();
-            $this->_login_log_reset($user->user_email);
+            $this->_login_log_reset($this->_login_account_log_key($user->user_email));
 
             // Redirect back to the login form
             redirect('sessions/login');
@@ -351,17 +352,19 @@ class Sessions extends Base_Controller
             return false;
         }
 
-        // Per-account lockout (email-keyed).
-        $login_log = $this->_login_log_check($email_address);
+        // Per-account lockout (email-keyed, namespaced so a submitted email cannot collide with
+        // another counter's key in ip_login_log).
+        $login_log_key = $this->_login_account_log_key($email_address);
+        $login_log     = $this->_login_log_check($login_log_key);
         if (empty($login_log) || $login_log->log_count < 10) {
             if ($this->mdl_sessions->auth($email_address, $password)) {
-                $this->_login_log_reset($email_address);
+                $this->_login_log_reset($login_log_key);
                 $this->_reset_ip_login_attempts();
 
                 return true;
             }
 
-            $this->_login_log_addfailure($email_address);
+            $this->_login_log_addfailure($login_log_key);
             $this->_record_ip_login_attempt();
         }
 
@@ -523,6 +526,16 @@ class Sessions extends Base_Controller
             $this->_password_reset_email_log_key($email),
             $window_hours * 3600
         );
+    }
+
+    private function _login_account_log_key(string $email): string
+    {
+        return 'login_account:' . hash('sha256', mb_strtolower($email));
+    }
+
+    private function _password_reset_token_log_key(string $token): string
+    {
+        return 'password_reset_token:' . hash('sha256', $token);
     }
 
     private function _password_reset_ip_log_key(string $ip_address): string
