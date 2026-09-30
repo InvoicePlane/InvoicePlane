@@ -15,6 +15,15 @@ if ( ! defined('BASEPATH')) {
  * eInvoicing add-ons by Verony
  */
 /**
+ * The document filename as shown in the PDF footer, HTML-escaped: it is derived from the invoice or
+ * quote number, which is free text, and mPDF fetches any remote resource referenced in footer HTML.
+ */
+function pdf_footer_filename(string $filename): string
+{
+    return htmlspecialchars(str_replace('_', ' ', $filename), ENT_QUOTES, 'UTF-8');
+}
+
+/**
  * Sanitize PDF footer content to prevent remote resource fetching (SSRF) during rendering.
  *
  * @param string|null $footer
@@ -161,7 +170,7 @@ function pdf_create(
     // Set the footer if voucher is invoice and if set in settings
     if ($isInvoice && $invoiceFooter !== '') {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $escaped_filename = htmlspecialchars(str_replace('_', ' ', $filename), ENT_QUOTES, 'UTF-8');
+        $escaped_filename = pdf_footer_filename($filename);
         $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $invoiceFooter . '</div><div><p align="center">' . $escaped_filename . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
         $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $invoiceFooter . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $invoiceFooter . '</div>');
@@ -171,7 +180,7 @@ function pdf_create(
     // Set the footer if voucher is quote and if set in settings
     if ( ! $isInvoice && $quoteFooter !== '') {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $escaped_filename = htmlspecialchars(str_replace('_', ' ', $filename), ENT_QUOTES, 'UTF-8');
+        $escaped_filename = pdf_footer_filename($filename);
         $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $quoteFooter . '</div><div><p align="center">' . $escaped_filename . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
         $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $quoteFooter . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $quoteFooter . '</div>');
