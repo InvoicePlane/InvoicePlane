@@ -342,6 +342,11 @@ class Sessions extends Base_Controller
             return false;
         }
 
+        // Validate email format to prevent forged counter keys
+        if ( ! filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
         $this->load->model('mdl_sessions');
 
         // IP-based rate limiting mirrors the password-reset throttle.
