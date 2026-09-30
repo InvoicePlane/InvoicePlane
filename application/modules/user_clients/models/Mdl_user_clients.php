@@ -115,6 +115,12 @@ class Mdl_User_Clients extends MY_Model
     {
         $this->load->model('users/mdl_users');
 
+        // Only a plain integer id may pass: "2.9" would be authorized as user 2 by the (int) cast below
+        // but stored as 3 by the INT column it is later persisted to.
+        if ( ! ctype_digit((string) $target_user_id)) {
+            return false;
+        }
+
         $acting_user_id = (int) $this->session->userdata('user_id');
 
         return (int) $target_user_id === $acting_user_id
@@ -140,11 +146,8 @@ class Mdl_User_Clients extends MY_Model
         $user_client_id = (int) $user_client_id;
 
         // Only admin users (type 1) can manage user-client mappings
-        if ($user_type === 1) {
-            return true;
-        }
+        return (bool) ($user_type === 1);
 
         // Non-admin users cannot manage authorization mappings
-        return false;
     }
 }
