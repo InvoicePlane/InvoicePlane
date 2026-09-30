@@ -114,6 +114,23 @@ class Mdl_User_Clients extends MY_Model
      *
      * @return bool True if user can manage, false otherwise
      */
+    /**
+     * Whether the acting user may read or change the client assignments of $target_user_id:
+     * the primary administrator may manage anyone's, everybody else only their own
+     * (CWE-639 / CWE-862).
+     *
+     * @param int|string|null $target_user_id
+     */
+    public function can_manage_user_clients($target_user_id): bool
+    {
+        $this->load->model('users/mdl_users');
+
+        $acting_user_id = (int) $this->session->userdata('user_id');
+
+        return (int) $target_user_id === $acting_user_id
+            || Mdl_Users::is_primary_administrator($acting_user_id);
+    }
+
     public function can_user_manage($user_client_id)
     {
         $CI = & get_instance();

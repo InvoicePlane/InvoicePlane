@@ -66,6 +66,25 @@ class User_Clients extends Admin_Controller
             redirect('user_clients/field/' . $user_id);
         }
 
+        // Object-level authorization: the URL user and the POSTed user (which the model saves) must both
+        // be accounts the acting user may manage.
+        $posted_user_id = $this->input->post('user_id');
+        if ( ! $this->mdl_user_clients->can_manage_user_clients($user_id)
+            || ($posted_user_id !== null && ! $this->mdl_user_clients->can_manage_user_clients($posted_user_id))
+        ) {
+            show_error(trans('access_denied'), 403);
+
+            return;
+        }
+
+        // user_all_clients grants read access to every client in the system, so a peer administrator
+        // must not be able to set it, not even on their own account.
+        if ($this->input->post('user_all_clients') && ! Mdl_Users::is_primary_administrator($this->session->userdata('user_id'))) {
+            show_error(trans('access_denied'), 403);
+
+            return;
+        }
+
         if ($this->mdl_user_clients->run_validation()) {
             if ($this->input->post('user_all_clients')) {
                 $users_id = [$user_id];
@@ -116,6 +135,12 @@ class User_Clients extends Admin_Controller
 
         if ( ! $ref) {
             show_404();
+        }
+
+        if ( ! $this->mdl_user_clients->can_manage_user_clients($ref->user_id)) {
+            show_error(trans('access_denied'), 403);
+
+            return;
         }
 
         $this->mdl_user_clients->delete($user_client_id);
