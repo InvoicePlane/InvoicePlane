@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Log injection via password-reset token/email | Low | 3.7 | CWE-117 | — | Internal audit | #1567 |
 | Open redirect via raw `$_SERVER['HTTP_REFERER']` | Medium | 6.1 | CWE-601 | — | Internal audit | #1567 |
 | Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | #1567 |
-| Stored XSS via `currency_symbol` on public invoice/quote pages | Medium | 4.3 | CWE-79 | — | [@crypto-nidh](https://github.com/crypto-nidh) | — |
+| Stored XSS via `currency_symbol` on public invoice/quote pages | Medium | 4.3 | CWE-79 | [[GHSA-rg9r-j4c2-8xr6](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-rg9r-j4c2-8xr6)], [[GHSA-gpv9-p6gj-238h](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-gpv9-p6gj-238h)] | [@crypto-nidh](https://github.com/crypto-nidh), [@fr1d4yy](https://github.com/fr1d4yy) | #1736 |
 
 ---
 
