@@ -261,11 +261,14 @@ class Paypal extends Base_Controller
                 // The invoice balance is not updated; the transaction awaits PayPal settlement confirmation.
                 // This prevents reconciliation issues where invoices are marked paid before funds are actually received.
 
-                $invoice_id = $capture_data->invoice_id ?? null;
+                // $capture_data / $capture_id only exist inside the COMPLETED branch above, so read the capture here.
+                $pending_capture = $paypal_object->purchase_units[0]->payments->captures[0] ?? null;
+                $invoice_id      = $pending_capture->invoice_id ?? null;
+                $capture_id      = $pending_capture->id ?? null;
 
                 // Log the pending capture for audit purposes
                 if ($invoice_id) {
-                    log_message('info', __CLASS__ . '::' . __FUNCTION__ . ' - PayPal capture pending settlement. Invoice: ' . sanitize_for_logging($invoice_id) . ', Capture ID: ' . sanitize_for_logging($capture_id));
+                    log_message('info', __CLASS__ . '::' . __FUNCTION__ . ' - PayPal capture pending settlement. Invoice: ' . sanitize_for_logging($invoice_id) . ', Capture ID: ' . sanitize_for_logging((string) $capture_id));
 
                     $this->db->insert('ip_merchant_responses', [
                         'invoice_id'                   => $invoice_id,
