@@ -293,6 +293,16 @@ class Users extends Admin_Controller
             show_404();
         }
 
+        // The assignment must belong to the user in the URL, and the acting user must be
+        // allowed to manage that account.
+        if ((string) $user_client->user_id !== (string) $user_id
+            || ! $this->mdl_user_clients->can_manage_user_clients($user_client->user_id)
+        ) {
+            show_error(trans('access_denied'), 403);
+
+            return;
+        }
+
         $this->mdl_user_clients->delete($user_client_id);
 
         redirect('users/form/' . $user_id);
