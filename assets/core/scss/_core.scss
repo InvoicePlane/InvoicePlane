@@ -668,6 +668,7 @@ div.table-content {
     width: auto;
   }
 
+  &.archvied,
   &.draft {
     background-color: lighten($color_status_draft, 10%);
   }
@@ -678,6 +679,10 @@ div.table-content {
 
   &.viewed {
     background-color: lighten($color_status_viewed, 10%);
+  }
+
+  &.partial {
+    background-color: lighten($color_status_partial, 10%);
   }
 
   &.paid,

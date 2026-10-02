@@ -52,6 +52,15 @@ class Invoices extends Admin_Controller
             case 'paid':
                 $this->mdl_invoices->is_paid();
                 break;
+            case 'unpaid':
+                $this->mdl_invoices->is_unpaid();
+                break;
+            case 'partial':
+                $this->mdl_invoices->is_partial();
+                break;
+            case 'archived':
+                $this->mdl_invoices->is_archived();
+                break;
             case 'overdue':
                 $this->mdl_invoices->is_overdue();
                 break;

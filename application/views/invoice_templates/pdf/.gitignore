@@ -1,5 +1,7 @@
 *
 !InvoicePlane.php
 !InvoicePlane - overdue.php
+!InvoicePlane - partial.php
 !InvoicePlane - paid.php
+!InvoicePlane - unpaid.php
 !.gitignore
