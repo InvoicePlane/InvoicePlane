@@ -18,7 +18,7 @@
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
     <div class="table-responsive">
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped" id="tax-rate-table">
 
             <thead>
             <tr>
@@ -65,3 +65,13 @@
     </div>
 
 </div>
+<script>
+    $(document).ready(function() {
+        $("#tax-rate-table").DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "order": []
+        });
+    });
+</script>
