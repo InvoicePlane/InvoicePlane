@@ -165,6 +165,11 @@ archive keeps the original document, attachments, payments, and status history;
 archived records are hidden from the active list and can be restored through
 the supplier invoice detail page.
 
+The supplier invoice module is restricted to administrator accounts (`user_type
+1`). This applies to reading invoices and documents, editing data, recording
+payments, uploading attachments, and archiving/restoring records. All state-
+changing actions require POST and a valid CSRF token.
+
 ---
 
 # Provider Management

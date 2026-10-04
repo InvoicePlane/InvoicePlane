@@ -4,12 +4,16 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'modules/supplier_invoices/libraries/SupplierInvoiceAccess.php';
+
 #[AllowDynamicProperties]
 class Supplier_invoices extends Admin_Controller
 {
     public function __construct()
     {
         parent::__construct();
+        $this->supplier_invoice_access = new SupplierInvoiceAccess();
+        $this->requireReadAccess();
         $this->load->model('supplier_invoices/Mdl_supplier_invoices');
         $this->load->model('supplier_invoices/Mdl_supplier_invoice_items');
         $this->load->model('supplier_invoices/Mdl_suppliers');
@@ -57,6 +61,7 @@ class Supplier_invoices extends Admin_Controller
 
     public function form($invoiceId = null): void
     {
+        $this->requireWriteAccess();
         $invoiceId = $invoiceId === null ? null : (int) $invoiceId;
         $invoice = $invoiceId === null ? [] : $this->Mdl_supplier_invoices->get_by_id($invoiceId);
         if ($invoiceId !== null && $invoice === []) {
@@ -106,6 +111,7 @@ class Supplier_invoices extends Admin_Controller
 
     public function supplier_form($supplierId = null): void
     {
+        $this->requireWriteAccess();
         $supplierId = $supplierId === null ? null : (int) $supplierId;
         $supplier = $supplierId === null ? [] : $this->Mdl_suppliers->get_by_id($supplierId);
         if ($supplierId !== null && $supplier === []) {
@@ -161,6 +167,11 @@ class Supplier_invoices extends Admin_Controller
 
     public function status($invoiceId): void
     {
+        $this->requireWriteAccess();
+        if ( ! $this->ensure_valid_post_request('supplier_invoices/view/' . (int) $invoiceId)) {
+            return;
+        }
+
         if ($this->input->method() !== 'post') {
             show_error('Method not allowed', 405);
         }
@@ -182,6 +193,9 @@ class Supplier_invoices extends Admin_Controller
 
     public function archive($invoiceId): void
     {
+        if ( ! $this->supplier_invoice_access->canArchive((int) $this->session->userdata('user_type'))) {
+            show_error(trans('access_denied'), 403);
+        }
         if ( ! $this->ensure_valid_post_request('supplier_invoices/view/' . (int) $invoiceId)) {
             return;
         }
@@ -201,6 +215,9 @@ class Supplier_invoices extends Admin_Controller
 
     public function restore($invoiceId): void
     {
+        if ( ! $this->supplier_invoice_access->canArchive((int) $this->session->userdata('user_type'))) {
+            show_error(trans('access_denied'), 403);
+        }
         if ( ! $this->ensure_valid_post_request('supplier_invoices/view/' . (int) $invoiceId)) {
             return;
         }
@@ -220,6 +237,11 @@ class Supplier_invoices extends Admin_Controller
 
     public function payment($invoiceId): void
     {
+        $this->requirePaymentAccess();
+        if ( ! $this->ensure_valid_post_request('supplier_invoices/view/' . (int) $invoiceId)) {
+            return;
+        }
+
         if ($this->input->method() !== 'post') {
             show_error('Method not allowed', 405);
         }
@@ -259,6 +281,11 @@ class Supplier_invoices extends Admin_Controller
 
     public function upload_attachment($invoiceId): void
     {
+        $this->requireAttachmentAccess();
+        if ( ! $this->ensure_valid_post_request('supplier_invoices/view/' . (int) $invoiceId)) {
+            return;
+        }
+
         if ($this->input->method() !== 'post') {
             show_error('Method not allowed', 405);
         }
@@ -496,5 +523,33 @@ class Supplier_invoices extends Admin_Controller
             ->set_content_type($safeMimeType)
             ->set_header('Content-Disposition: attachment; filename="' . $safeFilename . '"')
             ->set_output($content);
+    }
+
+    private function requireReadAccess(): void
+    {
+        if ( ! $this->supplier_invoice_access->canRead((int) $this->session->userdata('user_type'))) {
+            show_error(trans('access_denied'), 403);
+        }
+    }
+
+    private function requireWriteAccess(): void
+    {
+        if ( ! $this->supplier_invoice_access->canWrite((int) $this->session->userdata('user_type'))) {
+            show_error(trans('access_denied'), 403);
+        }
+    }
+
+    private function requirePaymentAccess(): void
+    {
+        if ( ! $this->supplier_invoice_access->canManagePayments((int) $this->session->userdata('user_type'))) {
+            show_error(trans('access_denied'), 403);
+        }
+    }
+
+    private function requireAttachmentAccess(): void
+    {
+        if ( ! $this->supplier_invoice_access->canManageAttachments((int) $this->session->userdata('user_type'))) {
+            show_error(trans('access_denied'), 403);
+        }
     }
 }
