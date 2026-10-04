@@ -145,6 +145,11 @@ original archived document remains linked to the imported record. Documents
 whose structured content cannot be read are rejected instead of being imported
 with misleading totals.
 
+The `Add to accounting` action on the PDP incoming-invoices page now calls the
+supplier invoice module directly. The import remains idempotent through the
+unique `incoming_response_id` link, so retrying the action does not create a
+second supplier invoice.
+
 ---
 
 # Provider Management

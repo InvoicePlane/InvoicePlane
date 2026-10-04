@@ -2,6 +2,9 @@
     <h1 class="headerbar-title">Supplier accounting</h1>
 
     <div class="headerbar-item pull-right">
+        <a href="<?php echo site_url('supplier_invoices'); ?>" class="btn btn-sm btn-primary">
+            <i class="fa fa-book"></i> Supplier invoice module
+        </a>
         <a href="<?php echo site_url('integrations/incoming'); ?>" class="btn btn-sm btn-default">
             <i class="fa fa-arrow-left"></i> Incoming invoices
         </a>

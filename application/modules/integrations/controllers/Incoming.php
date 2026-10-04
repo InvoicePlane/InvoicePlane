@@ -13,7 +13,7 @@ class Incoming extends Admin_Controller
         $this->load->model('integrations/Merchant_clients_model');
         $this->load->model('integrations/Merchant_responses_model');
         $this->load->model('integrations/Integration_sync_runs_model');
-        $this->load->model('integrations/Supplier_invoices_model');
+        $this->load->model('supplier_invoices/Mdl_supplier_invoices');
 
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
@@ -54,7 +54,7 @@ class Incoming extends Admin_Controller
             'clients'    => $this->Merchant_clients_model->get_enabled_clients(),
             'incoming'   => $this->Merchant_responses_model->get_incoming(),
             'client_map' => $client_map,
-            'supplier_invoices' => $this->Supplier_invoices_model->get_by_incoming_response_ids(),
+            'supplier_invoices' => $this->Mdl_supplier_invoices->get_by_incoming_response_ids(),
         ]);
 
         $this->layout->buffer('content', 'integrations/incoming');
@@ -64,7 +64,7 @@ class Incoming extends Admin_Controller
     public function accounting(): void
     {
         $this->layout->set([
-            'supplier_invoices' => $this->Supplier_invoices_model->get_all(),
+            'supplier_invoices' => $this->Mdl_supplier_invoices->get_all(),
         ]);
         $this->layout->buffer('content', 'integrations/supplier_invoices');
         $this->layout->render();
@@ -119,8 +119,8 @@ class Incoming extends Admin_Controller
         }
 
         try {
-            $this->Supplier_invoices_model->import_from_incoming_response((int) $responseId);
-            $this->session->set_flashdata('alert_success', 'Supplier invoice added to the accounting register.');
+            $this->Mdl_supplier_invoices->import_from_incoming_response((int) $responseId);
+            $this->session->set_flashdata('alert_success', 'Supplier invoice imported into the supplier invoice module.');
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice import failed: ' . sanitize_for_logging($e->getMessage()));
             $this->session->set_flashdata('alert_error', 'Unable to add the supplier invoice.');
@@ -139,7 +139,7 @@ class Incoming extends Admin_Controller
 
         try {
             $status = trim((string) $this->input->post('status'));
-            $this->Supplier_invoices_model->update_status((int) $supplierInvoiceId, $status);
+            $this->Mdl_supplier_invoices->update_status((int) $supplierInvoiceId, $status);
             $this->session->set_flashdata('alert_success', 'Supplier invoice status updated.');
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice status update failed: ' . sanitize_for_logging($e->getMessage()));
