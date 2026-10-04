@@ -16,7 +16,18 @@
         <dt>Amount paid</dt><dd><?php _htmlsc($invoice['amount_paid'] ?? '0'); ?> <?php _htmlsc($invoice['currency_code'] ?? 'EUR'); ?></dd>
         <dt>Balance</dt><dd><?php _htmlsc($invoice['balance'] ?? '—'); ?> <?php _htmlsc($invoice['currency_code'] ?? 'EUR'); ?></dd>
         <dt>Status</dt><dd><?php _htmlsc($invoice['status']); ?></dd>
+        <dt>Archive status</dt><dd><?php echo $invoice['archived_at'] === null ? 'Active' : 'Archived'; ?><?php if ($invoice['archived_at'] !== null) : ?> (<?php _htmlsc($invoice['archived_at']); ?>)<?php endif; ?></dd>
     </dl>
+
+    <?php if ($invoice['archived_at'] === null) : ?>
+        <form method="post" action="<?php echo site_url('supplier_invoices/archive/' . (int) $invoice['supplier_invoice_id']); ?>" style="margin-bottom: 15px;">
+            <?php _csrf_field(); ?><button class="btn btn-warning" type="submit">Archive invoice</button>
+        </form>
+    <?php else : ?>
+        <form method="post" action="<?php echo site_url('supplier_invoices/restore/' . (int) $invoice['supplier_invoice_id']); ?>" style="margin-bottom: 15px;">
+            <?php _csrf_field(); ?><button class="btn btn-success" type="submit">Restore invoice</button>
+        </form>
+    <?php endif; ?>
 
     <form method="post" action="<?php echo site_url('supplier_invoices/status/' . (int) $invoice['supplier_invoice_id']); ?>" class="form-inline">
         <?php _csrf_field(); ?>

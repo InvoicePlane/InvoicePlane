@@ -18,6 +18,7 @@
     <form method="get" class="form-inline" style="margin-bottom: 15px;">
         <input class="form-control" name="q" value="<?php _htmlsc($filters['q']); ?>" placeholder="Supplier, invoice number or reference">
         <select class="form-control" name="status"><option value="">All statuses</option><?php foreach ($statuses as $status) : ?><option value="<?php echo $status; ?>" <?php echo $filters['status'] === $status ? 'selected' : ''; ?>><?php _htmlsc($status); ?></option><?php endforeach; ?></select>
+        <select class="form-control" name="archived"><option value="active" <?php echo $filters['archived'] === 'active' ? 'selected' : ''; ?>>Active invoices</option><option value="archived" <?php echo $filters['archived'] === 'archived' ? 'selected' : ''; ?>>Archived invoices</option><option value="all" <?php echo $filters['archived'] === 'all' ? 'selected' : ''; ?>>All invoices</option></select>
         <input type="date" class="form-control" name="date_from" value="<?php _htmlsc($filters['date_from']); ?>">
         <input type="date" class="form-control" name="date_to" value="<?php _htmlsc($filters['date_to']); ?>">
         <button class="btn btn-primary" type="submit">Filter</button>
