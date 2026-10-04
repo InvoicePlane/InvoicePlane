@@ -12,6 +12,27 @@ class Mdl_Supplier_invoices extends CI_Model
 {
     public const STATUSES = ['received', 'approved', 'paid', 'rejected'];
 
+    public function search(array $filters, int $offset, int $perPage): array
+    {
+        $this->applySearchFilters($filters);
+        $total = $this->db->count_all_results('ip_supplier_invoices');
+
+        $this->applySearchFilters($filters);
+        $invoices = $this->db
+            ->select('ip_supplier_invoices.*, ip_suppliers.supplier_name')
+            ->order_by('supplier_invoice_date', 'DESC')
+            ->order_by('supplier_invoice_id', 'DESC')
+            ->limit($perPage, $offset)
+            ->get('ip_supplier_invoices')
+            ->result_array();
+
+        foreach ($invoices as &$invoice) {
+            $invoice['balance'] = $this->balance($invoice);
+        }
+
+        return ['rows' => $invoices, 'total' => $total];
+    }
+
     public function __construct()
     {
         parent::__construct();
@@ -264,5 +285,29 @@ class Mdl_Supplier_invoices extends CI_Model
         }
 
         return max(0, (float) $invoice['total'] - (float) ($invoice['amount_paid'] ?? 0));
+    }
+
+    private function applySearchFilters(array $filters): void
+    {
+        $term = trim((string) ($filters['q'] ?? ''));
+        if ($term !== '') {
+            $this->db->group_start()
+                ->like('ip_suppliers.supplier_name', $term)
+                ->or_like('ip_supplier_invoices.supplier_invoice_number', $term)
+                ->or_like('ip_supplier_invoices.external_reference', $term)
+                ->group_end();
+        }
+
+        if (isset($filters['status']) && in_array($filters['status'], self::STATUSES, true)) {
+            $this->db->where('ip_supplier_invoices.status', $filters['status']);
+        }
+        if (! empty($filters['date_from'])) {
+            $this->db->where('ip_supplier_invoices.supplier_invoice_date >=', $filters['date_from']);
+        }
+        if (! empty($filters['date_to'])) {
+            $this->db->where('ip_supplier_invoices.supplier_invoice_date <=', $filters['date_to']);
+        }
+
+        $this->db->join('ip_suppliers', 'ip_suppliers.supplier_id = ip_supplier_invoices.supplier_id', 'left');
     }
 }
