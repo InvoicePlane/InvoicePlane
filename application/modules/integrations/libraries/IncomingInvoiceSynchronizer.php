@@ -12,7 +12,7 @@ final class IncomingInvoiceSynchronizer
     }
 
     /**
-     * @return array{received: int, archived: int, skipped: int, failed: int, error_codes: array<string, int>, errors: string[]}
+     * @return array{received: int, archived: int, skipped: int, failed: int, supplier_imported: int, supplier_import_failed: int, error_codes: array<string, int>, errors: string[]}
      */
     public function synchronize(
         IntegrationClient $client,
@@ -21,13 +21,16 @@ final class IncomingInvoiceSynchronizer
         MerchantResponseDriver $driver,
         array $items,
         object $responsesModel,
-        string $archiveDirectory
+        string $archiveDirectory,
+        ?callable $supplierInvoiceImporter = null
     ): array {
         $result = [
             'received'    => 0,
             'archived'    => 0,
             'skipped'     => 0,
             'failed'      => 0,
+            'supplier_imported' => 0,
+            'supplier_import_failed' => 0,
             'error_codes' => [],
             'errors'      => [],
         ];
@@ -49,6 +52,15 @@ final class IncomingInvoiceSynchronizer
                 && $externalId !== ''
                 && $responsesModel->has_valid_incoming_document($merchantClientId, $externalId)) {
                 $result['skipped']++;
+
+                if ($supplierInvoiceImporter !== null) {
+                    $responseId = $responsesModel->get_valid_incoming_document_id($merchantClientId, $externalId);
+                    $this->importSupplierInvoice(
+                        $responseId,
+                        $supplierInvoiceImporter,
+                        $result
+                    );
+                }
 
                 continue;
             }
@@ -86,7 +98,7 @@ final class IncomingInvoiceSynchronizer
                 }
             }
 
-            $responsesModel->create_inbound_item(
+            $responseId = $responsesModel->create_inbound_item(
                 $merchantClientId,
                 $item,
                 $driver,
@@ -94,9 +106,45 @@ final class IncomingInvoiceSynchronizer
                 $documentType,
                 $document
             );
+
+            if (($document['document_validation_status'] ?? null) === 'valid'
+                && $supplierInvoiceImporter !== null) {
+                $this->importSupplierInvoice(
+                    $responseId,
+                    $supplierInvoiceImporter,
+                    $result
+                );
+            }
         }
 
         return $result;
+    }
+
+    /**
+     * @param array{supplier_imported: int, supplier_import_failed: int, error_codes: array<string, int>, errors: string[]} $result
+     */
+    private function importSupplierInvoice(
+        ?int $responseId,
+        callable $supplierInvoiceImporter,
+        array &$result
+    ): void {
+        if ($responseId === null || $responseId <= 0) {
+            return;
+        }
+
+        try {
+            $supplierInvoiceImporter($responseId);
+            $result['supplier_imported']++;
+        } catch (Throwable $e) {
+            $errorCode = 'supplier_invoice_import_failed';
+            $message = IntegrationPayloadSanitizer::text($e->getMessage(), 500)
+                ?? 'Unable to import the supplier invoice.';
+            $result['supplier_import_failed']++;
+            $result['error_codes'][$errorCode] = ($result['error_codes'][$errorCode] ?? 0) + 1;
+            if (count($result['errors']) < 10) {
+                $result['errors'][] = 'Supplier invoice import [' . $errorCode . ']: ' . $message;
+            }
+        }
     }
 
     private function errorCode(Throwable $error): string

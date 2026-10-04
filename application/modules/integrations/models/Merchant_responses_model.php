@@ -223,6 +223,21 @@ class Merchant_responses_model extends CI_Model
             ->count_all_results(self::TABLE) > 0;
     }
 
+    public function get_valid_incoming_document_id(int $merchantClientId, string $externalId): ?int
+    {
+        $row = $this->db
+            ->select('merchant_response_id')
+            ->where('merchant_client_id', $merchantClientId)
+            ->where('merchant_response_reference', $externalId)
+            ->where('direction', MerchantResponseDirection::In->value)
+            ->where('record_type', MerchantResponseType::IncomingInvoice->value)
+            ->where('document_validation_status', 'valid')
+            ->get(self::TABLE)
+            ->row_array();
+
+        return $row === [] ? null : (int) $row['merchant_response_id'];
+    }
+
     public function create_event_item(
         int $merchantClientId,
         array $event,
