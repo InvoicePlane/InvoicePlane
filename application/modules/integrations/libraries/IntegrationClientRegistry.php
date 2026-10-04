@@ -83,6 +83,7 @@ class IntegrationClientRegistry
     {
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/ProviderResponseNormalizer.php';
+        require_once APPPATH . 'modules/integrations/libraries/ProviderPing.php';
         require_once APPPATH . 'modules/integrations/libraries/RemoteUrlGuard.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationSettingsCipher.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationTransport.php';
