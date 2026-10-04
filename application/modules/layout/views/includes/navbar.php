@@ -51,6 +51,7 @@
                         <li><a href="#" class="create-invoice"><?php _trans('create_invoice'); ?></a></li>
                         <li><?php echo anchor('invoices/index', trans('view_invoices')); ?></li>
                         <li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
+                        <li><?php echo anchor('supplier_invoices', 'Supplier invoices'); ?></li>
 <?php if (get_setting('einvoicing') == '1') { ?>
                         <li><?php echo anchor('integrations/incoming', trans('incoming_invoices')); ?></li>
 <?php } ?>
