@@ -36,6 +36,18 @@
     <?php foreach ($items as $item) : ?><tr><td><?php _htmlsc($item['item_name']); ?></td><td><?php _htmlsc($item['quantity']); ?></td><td><?php _htmlsc($item['unit_price'] ?? '—'); ?></td><td><?php _htmlsc($item['total'] ?? '—'); ?></td></tr><?php endforeach; ?>
     </tbody></table>
 
+    <h3>Documents</h3>
+    <?php if ( ! empty($invoice['document_path'])) : ?><p><a class="btn btn-xs btn-default" href="<?php echo site_url('supplier_invoices/download_document/' . (int) $invoice['supplier_invoice_id']); ?>"><i class="fa fa-download"></i> <?php _htmlsc($invoice['document_name'] ?? 'Original document'); ?></a></p><?php endif; ?>
+    <form method="post" enctype="multipart/form-data" action="<?php echo site_url('supplier_invoices/upload_attachment/' . (int) $invoice['supplier_invoice_id']); ?>" class="form-inline">
+        <?php _csrf_field(); ?>
+        <input type="file" name="attachment" accept=".pdf,.xml,.jpg,.jpeg,.png,.gif,.webp" required>
+        <button class="btn btn-primary" type="submit">Upload attachment</button>
+    </form>
+    <table class="table table-striped"><thead><tr><th>File</th><th>Type</th><th>Size</th><th>Date</th><th></th></tr></thead><tbody>
+    <?php if (empty($attachments)) : ?><tr><td colspan="5" class="text-muted">No additional attachments.</td></tr><?php endif; ?>
+    <?php foreach ($attachments as $attachment) : ?><tr><td><?php _htmlsc($attachment['file_name']); ?></td><td><?php _htmlsc($attachment['mime_type']); ?></td><td><?php _htmlsc($attachment['file_size']); ?> bytes</td><td><?php _htmlsc($attachment['created_at']); ?></td><td><a class="btn btn-xs btn-default" href="<?php echo site_url('supplier_invoices/download_attachment/' . (int) $attachment['supplier_invoice_attachment_id']); ?>">Download</a></td></tr><?php endforeach; ?>
+    </tbody></table>
+
     <h3>Payments</h3>
     <form method="post" action="<?php echo site_url('supplier_invoices/payment/' . (int) $invoice['supplier_invoice_id']); ?>" class="form-inline">
         <?php _csrf_field(); ?>
