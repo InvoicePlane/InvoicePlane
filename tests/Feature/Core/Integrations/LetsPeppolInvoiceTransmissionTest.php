@@ -78,12 +78,15 @@ final class LetsPeppolInvoiceTransmissionTest extends AbstractInvoiceTransmissio
         /* Act */
         $response = $this->send($invoiceId, $merchantId);
 
-        /* Assert — auth throws before any transmission; nothing is logged */
+        /* Assert — auth throws before transmission, but the failure is logged */
         self::assertTrue($response->isRedirect());
-        $this->assertDatabaseMissing('ip_merchant_responses', [
-            'invoice_id'         => $invoiceId,
-            'merchant_client_id' => $merchantId,
-            'direction'          => 'out',
+        $this->assertDatabaseHas('ip_merchant_responses', [
+            'invoice_id'                   => $invoiceId,
+            'merchant_client_id'           => $merchantId,
+            'direction'                    => 'out',
+            'merchant_response_successful' => 0,
+            'status'                       => 'error',
+            'error_code'                   => 'send_exception',
         ]);
     }
 }
