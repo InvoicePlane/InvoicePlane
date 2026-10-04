@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
-use Tests\Support\AbstractTestCase;
+use Tests\AbstractTestCase;
 
 class SessionInvalidationTest extends AbstractTestCase
 {
