@@ -161,4 +161,81 @@ class CurrencySymbolSecurityTest extends AbstractTestCase
         $this->assertSessionHasErrors();
         $this->assertEquals($originalSymbol, setting('currency_symbol'));
     }
+
+    #[Test]
+    public function currency_symbol_rejects_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'currency_symbol' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function currency_symbol_rejects_5_character_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'currency_symbol' => 'USDA',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function currency_symbol_accepts_exactly_4_characters()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'currency_symbol' => 'USDC',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+    }
+
+    #[Test]
+    public function currency_symbol_rejects_null_byte()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'currency_symbol' => "\x00$",
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function decimal_point_rejects_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'decimal_point' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function thousands_separator_rejects_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'thousands_separator' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
 }

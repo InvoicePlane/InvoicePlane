@@ -174,4 +174,82 @@ class Phase3VulnerabilitiesSecurityTest extends AbstractTestCase
         $this->assertSessionHasErrors();
         $this->assertEquals($originalCtry, setting('default_country'));
     }
+
+    #[Test]
+    public function default_language_rejects_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'default_language' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function default_country_rejects_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'default_country' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function default_language_rejects_case_variant()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'default_language' => 'English',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function default_country_rejects_lowercase_code()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'default_country' => 'us',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function default_language_rejects_null_byte()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'default_language' => "english\x00",
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function default_country_rejects_null_byte()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'default_country' => "US\x00",
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
 }

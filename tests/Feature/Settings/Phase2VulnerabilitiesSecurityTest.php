@@ -238,4 +238,69 @@ class Phase2VulnerabilitiesSecurityTest extends AbstractTestCase
         $this->assertSessionHasErrors();
         $this->assertEquals($originalValue, setting('pdf_watermark'));
     }
+
+    #[Test]
+    public function date_format_rejects_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'date_format' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function number_format_rejects_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'number_format' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function pdf_watermark_rejects_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'pdf_watermark' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function pdf_watermark_rejects_non_boolean_number()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'pdf_watermark' => '2',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function pdf_watermark_rejects_string_true()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'pdf_watermark' => 'true',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
 }

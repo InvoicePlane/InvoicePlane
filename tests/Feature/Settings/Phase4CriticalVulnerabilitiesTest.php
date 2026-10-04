@@ -183,7 +183,7 @@ class Phase4CriticalVulnerabilitiesTest extends AbstractTestCase
     }
 
     #[Test]
-    public void pdf_quote_footer_rejects_javascript_injection()
+    public function pdf_quote_footer_rejects_javascript_injection()
     {
         $response = $this->postWithValidCsrfToken('/settings', [
             'settings' => [
@@ -253,5 +253,130 @@ class Phase4CriticalVulnerabilitiesTest extends AbstractTestCase
 
         $this->assertSessionHasErrors();
         $this->assertEquals($originalFooter, setting('pdf_quote_footer'));
+    }
+
+    #[Test]
+    public function custom_title_accepts_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'custom_title' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+    }
+
+    #[Test]
+    public function default_invoice_terms_accepts_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'default_invoice_terms' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+    }
+
+    #[Test]
+    public function pdf_invoice_footer_accepts_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'pdf_invoice_footer' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+    }
+
+    #[Test]
+    public function pdf_quote_footer_accepts_empty_string()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'pdf_quote_footer' => '',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+    }
+
+    #[Test]
+    public function custom_title_accepts_very_long_string()
+    {
+        $longString = str_repeat('A', 500);
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'custom_title' => $longString,
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+    }
+
+    #[Test]
+    public function default_invoice_terms_accepts_very_long_string()
+    {
+        $longString = str_repeat('Terms paragraph. ', 100);
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'default_invoice_terms' => $longString,
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+    }
+
+    #[Test]
+    public function custom_title_rejects_null_byte()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'custom_title' => "My Company\x00",
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function default_invoice_terms_rejects_null_byte()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'default_invoice_terms' => "Due in 30 days\x00",
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function custom_title_rejects_control_characters()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'custom_title' => "My Company\x1b[31m",
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertSessionHasErrors();
+    }
+
+    #[Test]
+    public function pdf_invoice_footer_accepts_html_entities()
+    {
+        $response = $this->postWithValidCsrfToken('/settings', [
+            'settings' => [
+                'pdf_invoice_footer' => 'Company &copy; 2026 - All Rights Reserved',
+            ],
+        ]);
+
+        $this->assertResponseRedirectsToRoute($response, 'settings');
     }
 }
