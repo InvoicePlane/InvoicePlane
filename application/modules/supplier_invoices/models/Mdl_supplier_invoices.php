@@ -5,6 +5,7 @@ if ( ! defined('BASEPATH')) {
 }
 
 require_once APPPATH . 'modules/supplier_invoices/libraries/SupplierInvoiceDocumentParser.php';
+require_once APPPATH . 'modules/supplier_invoices/libraries/SupplierInvoiceTotalsCalculator.php';
 
 #[AllowDynamicProperties]
 class Mdl_Supplier_invoices extends CI_Model
@@ -147,6 +148,12 @@ class Mdl_Supplier_invoices extends CI_Model
 
     public function save_invoice(?int $invoiceId, array $data, array $items = []): int
     {
+        $calculated = (new SupplierInvoiceTotalsCalculator())->calculate($items);
+        if ($calculated['items'] === []) {
+            $calculated['subtotal'] = ($data['subtotal'] ?? '') === '' ? null : (float) $data['subtotal'];
+            $calculated['tax_total'] = ($data['tax_total'] ?? '') === '' ? null : (float) $data['tax_total'];
+            $calculated['total'] = ($data['total'] ?? '') === '' ? null : (float) $data['total'];
+        }
         $values = [
             'supplier_id' => (int) ($data['supplier_id'] ?? 0) ?: null,
             'external_reference' => trim((string) ($data['external_reference'] ?? '')) ?: null,
@@ -154,9 +161,9 @@ class Mdl_Supplier_invoices extends CI_Model
             'supplier_invoice_date' => $data['supplier_invoice_date'] ?: null,
             'supplier_due_date' => $data['supplier_due_date'] ?: null,
             'currency_code' => strtoupper(trim((string) ($data['currency_code'] ?? 'EUR'))),
-            'subtotal' => ($data['subtotal'] ?? '') === '' ? null : (float) $data['subtotal'],
-            'tax_total' => ($data['tax_total'] ?? '') === '' ? null : (float) $data['tax_total'],
-            'total' => ($data['total'] ?? '') === '' ? null : (float) $data['total'],
+            'subtotal' => $calculated['subtotal'],
+            'tax_total' => $calculated['tax_total'],
+            'total' => $calculated['total'],
             'notes' => trim((string) ($data['notes'] ?? '')) ?: null,
             'updated_at' => date('Y-m-d H:i:s'),
         ];
@@ -173,7 +180,7 @@ class Mdl_Supplier_invoices extends CI_Model
         }
 
         $this->load->model('supplier_invoices/Mdl_supplier_invoice_items');
-        $this->Mdl_supplier_invoice_items->replace_for_invoice($invoiceId, $items);
+        $this->Mdl_supplier_invoice_items->replace_for_invoice($invoiceId, $calculated['items']);
         $this->db->trans_complete();
 
         if ($this->db->trans_status() === false) {

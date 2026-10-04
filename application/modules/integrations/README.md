@@ -145,6 +145,11 @@ original archived document remains linked to the imported record. Documents
 whose structured content cannot be read are rejected instead of being imported
 with misleading totals.
 
+For manually entered invoices, the supplier invoice form recalculates each line
+subtotal, VAT amount, and total on the server from quantity, unit price, and
+VAT rate. The browser preview is only a convenience and is not trusted for
+persisting monetary values.
+
 The `Add to accounting` action on the PDP incoming-invoices page now calls the
 supplier invoice module directly. The import remains idempotent through the
 unique `incoming_response_id` link, so retrying the action does not create a
