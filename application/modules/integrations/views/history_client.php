@@ -19,6 +19,7 @@
                 <th><?php _trans('invoice'); ?></th>
                 <th><?php _trans('provider'); ?></th>
                 <th><?php _trans('status'); ?></th>
+                <th>Error code</th>
                 <th><?php _trans('message'); ?></th>
                 <th><?php _trans('external_id'); ?></th>
                 <th><?php _trans('http_code'); ?></th>
@@ -27,7 +28,7 @@
             <tbody>
             <?php if (empty($history)) : ?>
                 <tr>
-                    <td colspan="7" class="text-center text-muted"><?php _trans('no_send_history'); ?></td>
+                    <td colspan="8" class="text-center text-muted"><?php _trans('no_send_history'); ?></td>
                 </tr>
             <?php else : ?>
                 <?php foreach ($history as $row) : ?>
@@ -54,6 +55,7 @@
                     ?>
                             <span class="label label-<?php echo $badge; ?>"><?php _htmlsc($status); ?></span>
                         </td>
+                        <td><?php _htmlsc($row['error_code'] ?? '—'); ?></td>
                         <td><?php _htmlsc($row['merchant_response']); ?></td>
                         <td><?php _htmlsc($row['merchant_response_reference']); ?></td>
                         <td><?php _htmlsc($row['http_code']); ?></td>

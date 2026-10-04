@@ -62,8 +62,12 @@ class Merchant_responses_model extends CI_Model
             'record_type'                  => MerchantResponseType::OutboundStatus->value,
             'status'                       => $status->value,
             'http_code'                    => $providerResponse['http_code'] ?? null,
-            'error_code'                   => $errorCode,
-            'error_detail'                 => IntegrationPayloadSanitizer::text($errorDetail, 500),
+            'error_code'                   => $errorCode
+                ?? IntegrationPayloadSanitizer::text($providerResponse['error_code'] ?? $providerResponse['code'] ?? null, 100),
+            'error_detail'                 => IntegrationPayloadSanitizer::text(
+                $errorDetail ?? (! empty($providerResponse['success']) ? null : $providerResponse['message'] ?? null),
+                500
+            ),
             'created_at'                   => date('Y-m-d H:i:s'),
             'raw_payload'                  => IntegrationPayloadSanitizer::json($providerResponse),
         ]);
@@ -120,6 +124,11 @@ class Merchant_responses_model extends CI_Model
             'record_type'                  => MerchantResponseType::OutboundStatus->value,
             'status'                       => $resolvedStatus->value,
             'http_code'                    => $status['http_code'] ?? null,
+            'error_code'                   => IntegrationPayloadSanitizer::text($status['error_code'] ?? $status['code'] ?? null, 100),
+            'error_detail'                 => IntegrationPayloadSanitizer::text(
+                ($resolvedStatus->isSuccessful() === false) ? $status['message'] ?? null : null,
+                500
+            ),
             'created_at'                   => date('Y-m-d H:i:s'),
             'raw_payload'                  => IntegrationPayloadSanitizer::json($status),
         ]);
@@ -180,6 +189,8 @@ class Merchant_responses_model extends CI_Model
             'record_type'                  => MerchantResponseType::IncomingInvoice->value,
             'status'                       => $status->value,
             'http_code'                    => $invoice['http_code'] ?? null,
+            'error_code'                   => IntegrationPayloadSanitizer::text($invoice['error_code'] ?? null, 100),
+            'error_detail'                 => IntegrationPayloadSanitizer::text($invoice['error_detail'] ?? null, 500),
             'peppol_participant_id'        => $peppolParticipantId,
             'peppol_document_type'         => $peppolDocumentType?->value,
             'created_at'                   => date('Y-m-d H:i:s'),

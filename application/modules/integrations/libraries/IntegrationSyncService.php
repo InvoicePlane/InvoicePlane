@@ -117,6 +117,9 @@ final class IntegrationSyncService
                         $this->responses,
                         $this->archiveDirectory
                     );
+                    foreach ($result['incoming']['errors'] as $error) {
+                        $result['errors'][] = $error;
+                    }
                     $successfulPhases++;
                 } catch (Throwable $e) {
                     if ($phaseAttempts === 0) {
@@ -148,9 +151,13 @@ final class IntegrationSyncService
                             );
                             $result['statuses']['updated']++;
                         } catch (Throwable $e) {
+                            $attempts = $this->retry->lastAttempts();
+                            $phaseAttempts += $attempts;
+                            $result['attempts'] += $attempts;
                             $result['statuses']['failed']++;
                             $result['errors'][] = $this->safeError(
-                                'Invoice status synchronization failed',
+                                'Invoice status synchronization failed for reference '
+                                    . (IntegrationPayloadSanitizer::text($reference, 100) ?? 'unknown'),
                                 $e
                             );
                         }
