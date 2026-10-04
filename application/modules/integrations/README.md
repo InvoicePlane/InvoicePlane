@@ -132,6 +132,12 @@ allows the system to:
 * Retrieve supplier invoices
 * Store incoming invoice data locally
 
+Validated incoming documents can be added to the supplier accounting register
+from the Incoming Invoices page. The register keeps the supplier identity,
+invoice reference, document link, and workflow status (`received`, `approved`,
+`paid`, or `rejected`). It is intentionally separate from `ip_invoices`, which
+contains sales invoices issued by InvoicePlane.
+
 ---
 
 # Provider Management

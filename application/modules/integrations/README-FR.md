@@ -547,6 +547,12 @@ Base locale
 Consultation utilisateur
 ```
 
+Les documents entrants validés peuvent être ajoutés à la comptabilité
+fournisseurs depuis la page des factures entrantes. Le registre conserve le
+fournisseur, la référence, le document archivé et le statut (`received`,
+`approved`, `paid` ou `rejected`). Il reste séparé de `ip_invoices`, qui
+représente les factures de vente émises par InvoicePlane.
+
 ---
 
 # Compatibilité actuelle

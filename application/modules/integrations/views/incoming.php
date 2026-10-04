@@ -2,6 +2,9 @@
     <h1 class="headerbar-title"><?php _trans('incoming_invoices'); ?></h1>
 
     <div class="headerbar-item pull-right">
+        <a href="<?php echo site_url('integrations/incoming/accounting'); ?>" class="btn btn-sm btn-default">
+            <i class="fa fa-book"></i> Supplier accounting
+        </a>
         <?php foreach ($clients as $client) : ?>
             <form method="post"
                   action="<?php echo site_url('integrations/incoming/sync/' . (int) $client['id']); ?>"
@@ -30,12 +33,13 @@
                 <th><?php _trans('message'); ?></th>
                 <th><?php _trans('external_id'); ?></th>
                 <th>Document</th>
+                <th>Accounting</th>
             </tr>
             </thead>
             <tbody>
             <?php if (empty($incoming)) : ?>
                 <tr>
-                    <td colspan="7" class="text-center text-muted"><?php _trans('no_incoming_invoices'); ?></td>
+                    <td colspan="8" class="text-center text-muted"><?php _trans('no_incoming_invoices'); ?></td>
                 </tr>
             <?php else : ?>
                 <?php foreach ($incoming as $row) : ?>
@@ -50,6 +54,19 @@
                                         <?php _htmlsc($client_map[$row['peppol_participant_id']]['client_name']); ?>
                                     </a>
                                 <?php endif; ?>
+                            <?php else : ?>
+                                —
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php $supplierInvoice = $supplier_invoices[(int) $row['merchant_response_id']] ?? null; ?>
+                            <?php if ($supplierInvoice !== null) : ?>
+                                <span class="label label-info"><?php _htmlsc($supplierInvoice['status']); ?></span>
+                            <?php elseif (($row['document_validation_status'] ?? null) === 'valid') : ?>
+                                <form method="post" action="<?php echo site_url('integrations/incoming/create_supplier_invoice/' . (int) $row['merchant_response_id']); ?>">
+                                    <?php _csrf_field(); ?>
+                                    <button type="submit" class="btn btn-xs btn-primary">Add to accounting</button>
+                                </form>
                             <?php else : ?>
                                 —
                             <?php endif; ?>

@@ -13,6 +13,7 @@ class Incoming extends Admin_Controller
         $this->load->model('integrations/Merchant_clients_model');
         $this->load->model('integrations/Merchant_responses_model');
         $this->load->model('integrations/Integration_sync_runs_model');
+        $this->load->model('integrations/Supplier_invoices_model');
 
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientRegistry.php';
@@ -53,9 +54,19 @@ class Incoming extends Admin_Controller
             'clients'    => $this->Merchant_clients_model->get_enabled_clients(),
             'incoming'   => $this->Merchant_responses_model->get_incoming(),
             'client_map' => $client_map,
+            'supplier_invoices' => $this->Supplier_invoices_model->get_by_incoming_response_ids(),
         ]);
 
         $this->layout->buffer('content', 'integrations/incoming');
+        $this->layout->render();
+    }
+
+    public function accounting(): void
+    {
+        $this->layout->set([
+            'supplier_invoices' => $this->Supplier_invoices_model->get_all(),
+        ]);
+        $this->layout->buffer('content', 'integrations/supplier_invoices');
         $this->layout->render();
     }
 
@@ -99,6 +110,45 @@ class Incoming extends Admin_Controller
         redirect('integrations/incoming');
     }
 
+    public function create_supplier_invoice($responseId): void
+    {
+        if ($this->input->method() !== 'post') {
+            show_error('Method not allowed', 405);
+
+            return;
+        }
+
+        try {
+            $this->Supplier_invoices_model->import_from_incoming_response((int) $responseId);
+            $this->session->set_flashdata('alert_success', 'Supplier invoice added to the accounting register.');
+        } catch (Throwable $e) {
+            log_message('error', 'Supplier invoice import failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', 'Unable to add the supplier invoice.');
+        }
+
+        redirect('integrations/incoming');
+    }
+
+    public function update_supplier_invoice_status($supplierInvoiceId): void
+    {
+        if ($this->input->method() !== 'post') {
+            show_error('Method not allowed', 405);
+
+            return;
+        }
+
+        try {
+            $status = trim((string) $this->input->post('status'));
+            $this->Supplier_invoices_model->update_status((int) $supplierInvoiceId, $status);
+            $this->session->set_flashdata('alert_success', 'Supplier invoice status updated.');
+        } catch (Throwable $e) {
+            log_message('error', 'Supplier invoice status update failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', 'Unable to update the supplier invoice status.');
+        }
+
+        redirect('integrations/incoming/accounting');
+    }
+
     public function download($responseId): void
     {
         $this->load->helper('file_security');
@@ -140,7 +190,7 @@ class Incoming extends Admin_Controller
             ->set_header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0')
             ->set_header('Pragma: no-cache')
             ->set_header('X-Content-Type-Options: nosniff')
-            ->set_header('Content-Length: ' . mb_strlen($content, '8bit'))
+            ->set_header('Content-Length: ' . strlen($content))
             ->set_content_type($mimeType)
             ->set_header('Content-Disposition: attachment; filename="' . $filename . '"')
             ->set_output($content);

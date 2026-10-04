@@ -31,7 +31,11 @@ final class IncomingInvoiceSynchronizer
             }
 
             $result['received']++;
-            $externalId = $item['id'] ?? $item['external_id'] ?? null;
+            $externalId = $item['id']
+                ?? $item['external_id']
+                ?? $item['document_id']
+                ?? $item['invoice_id']
+                ?? null;
             $externalId = is_scalar($externalId) ? (string) $externalId : null;
 
             if (is_string($externalId)

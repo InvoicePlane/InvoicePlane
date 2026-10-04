@@ -1,0 +1,70 @@
+-- Supplier accounting register for validated incoming e-invoices.
+
+CREATE TABLE IF NOT EXISTS `ip_suppliers` (
+  `supplier_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `supplier_name` VARCHAR(255) NOT NULL,
+  `supplier_company` VARCHAR(255) NULL,
+  `supplier_vat_id` VARCHAR(100) NULL,
+  `supplier_tax_code` VARCHAR(100) NULL,
+  `supplier_peppol_id` VARCHAR(100) NULL,
+  `supplier_email` VARCHAR(255) NULL,
+  `supplier_address_1` VARCHAR(255) NULL,
+  `supplier_address_2` VARCHAR(255) NULL,
+  `supplier_city` VARCHAR(100) NULL,
+  `supplier_state` VARCHAR(100) NULL,
+  `supplier_zip` VARCHAR(30) NULL,
+  `supplier_country` VARCHAR(2) NULL,
+  `supplier_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `supplier_date_created` DATE NOT NULL,
+  `supplier_date_modified` DATE NOT NULL,
+  PRIMARY KEY (`supplier_id`),
+  KEY `idx_supplier_peppol_id` (`supplier_peppol_id`),
+  KEY `idx_supplier_vat_id` (`supplier_vat_id`),
+  KEY `idx_supplier_name` (`supplier_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `ip_supplier_invoices` (
+  `supplier_invoice_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `supplier_id` INT(11) NULL,
+  `incoming_response_id` INT(11) NOT NULL,
+  `merchant_client_id` INT(11) NULL,
+  `external_reference` VARCHAR(255) NULL,
+  `supplier_invoice_number` VARCHAR(255) NULL,
+  `supplier_invoice_date` DATE NULL,
+  `supplier_due_date` DATE NULL,
+  `currency_code` CHAR(3) NOT NULL DEFAULT 'EUR',
+  `subtotal` DECIMAL(20, 6) NULL,
+  `tax_total` DECIMAL(20, 6) NULL,
+  `total` DECIMAL(20, 6) NULL,
+  `amount_paid` DECIMAL(20, 6) NOT NULL DEFAULT 0,
+  `status` VARCHAR(30) NOT NULL DEFAULT 'received',
+  `document_path` VARCHAR(500) NULL,
+  `document_name` VARCHAR(255) NULL,
+  `document_mime_type` VARCHAR(100) NULL,
+  `document_sha256` CHAR(64) NULL,
+  `raw_payload` LONGTEXT NULL,
+  `notes` TEXT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`supplier_invoice_id`),
+  UNIQUE KEY `uq_supplier_invoice_response` (`incoming_response_id`),
+  KEY `idx_supplier_invoice_supplier` (`supplier_id`),
+  KEY `idx_supplier_invoice_status` (`status`),
+  KEY `idx_supplier_invoice_reference` (`merchant_client_id`, `external_reference`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `ip_supplier_invoice_items` (
+  `supplier_invoice_item_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `supplier_invoice_id` INT(11) NOT NULL,
+  `item_name` VARCHAR(255) NOT NULL,
+  `item_description` TEXT NULL,
+  `quantity` DECIMAL(20, 6) NOT NULL DEFAULT 1,
+  `unit_price` DECIMAL(20, 6) NULL,
+  `tax_rate` DECIMAL(8, 4) NULL,
+  `subtotal` DECIMAL(20, 6) NULL,
+  `tax_total` DECIMAL(20, 6) NULL,
+  `total` DECIMAL(20, 6) NULL,
+  `created_at` DATETIME NOT NULL,
+  PRIMARY KEY (`supplier_invoice_item_id`),
+  KEY `idx_supplier_invoice_items_invoice` (`supplier_invoice_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
