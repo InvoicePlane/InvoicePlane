@@ -879,6 +879,7 @@ $lang = [
     'external_id'                      => 'External ID',
     'no_send_history'                  => 'No send history yet.',
     'no_incoming_invoices'             => 'No incoming invoices yet.',
+    'supplier_invoice_accounting'      => 'Supplier accounting',
     'peppol_participant_id'            => 'Peppol Participant ID',
     'auth_type'                        => 'Authentication Type',
     'leave_blank_to_keep'              => 'Leave blank to keep the current value',

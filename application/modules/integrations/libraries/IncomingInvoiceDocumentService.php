@@ -131,7 +131,9 @@ final class IncomingInvoiceDocumentService
         }
 
         $profile  = $this->detectXmlProfile($path, $providerCode, $invoice);
-        $artifact = $this->validator->validate($path, $profile);
+        $artifact = $profile->extension() === 'xml'
+            ? $this->validator->validate($path, $profile)
+            : new EInvoiceArtifact($path, $profile, $this->validator->validateStructuredData($path, $profile));
         $this->assertValid($artifact->validationErrors());
 
         return ['xml', 'application/xml', $profile];
@@ -155,7 +157,8 @@ final class IncomingInvoiceDocumentService
         $declaredCode = $invoice['profile'] ?? $invoice['profile_code'] ?? null;
         if (is_string($declaredCode) && $this->profiles->has($declaredCode)) {
             $declared = $this->profiles->get($declaredCode);
-            if ($declared->extension() === 'xml' && $declared->supportsProvider($providerCode)) {
+            if (($declared->extension() === 'xml' || $declared->syntax() === 'cii')
+                && $declared->supportsProvider($providerCode)) {
                 return $declared;
             }
         }
@@ -167,7 +170,8 @@ final class IncomingInvoiceDocumentService
             : '';
 
         foreach ($this->profiles->all() as $profile) {
-            if ($profile->extension() !== 'xml' || ! $profile->supportsProvider($providerCode)) {
+            if (($profile->extension() !== 'xml' && $profile->syntax() !== 'cii')
+                || ! $profile->supportsProvider($providerCode)) {
                 continue;
             }
 
@@ -185,6 +189,8 @@ final class IncomingInvoiceDocumentService
             throw new RuntimeException('Factur-X reception requires PHP proc_open.');
         }
 
+        $attachmentNumber = $this->findFacturXAttachment($pdfPath);
+
         $outputPath = tempnam(sys_get_temp_dir(), 'ip-facturx-');
         if ($outputPath === false) {
             throw new RuntimeException('Unable to create a temporary Factur-X XML path.');
@@ -193,8 +199,8 @@ final class IncomingInvoiceDocumentService
 
         $command = [
             $this->pdfDetachBinary,
-            '-savefile',
-            'factur-x.xml',
+            '-save',
+            (string) $attachmentNumber,
             '-o',
             $outputPath,
             $pdfPath,
@@ -251,6 +257,38 @@ final class IncomingInvoiceDocumentService
         }
 
         return $outputPath;
+    }
+
+    private function findFacturXAttachment(string $pdfPath): int
+    {
+        $command = [$this->pdfDetachBinary, '-list', $pdfPath];
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+        ];
+        $pipes   = [];
+        $process = @proc_open($command, $descriptorSpec, $pipes, null, null, ['bypass_shell' => true]);
+
+        if ( ! is_resource($process)) {
+            throw new RuntimeException('Unable to inspect embedded Factur-X attachments.');
+        }
+
+        fclose($pipes[0]);
+        $output = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $exitCode = proc_close($process);
+
+        if ($exitCode !== 0 || ! is_string($output)) {
+            throw new RuntimeException('Unable to inspect embedded Factur-X attachments.');
+        }
+
+        if (preg_match('/^\s*(\d+)\s*:\s*factur-x\.xml\s*$/im', $output, $matches) !== 1) {
+            throw new RuntimeException('Factur-X PDF does not contain a factur-x.xml attachment.');
+        }
+
+        return (int) $matches[1];
     }
 
     /**
