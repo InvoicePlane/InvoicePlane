@@ -155,6 +155,13 @@ supplier invoice module directly. The import remains idempotent through the
 unique `incoming_response_id` link, so retrying the action does not create a
 second supplier invoice.
 
+The supplier invoice module is now the canonical register. The historical
+`/integrations/incoming/accounting` URL remains as a compatibility redirect to
+`/supplier_invoices`, and the legacy status endpoint redirects to the supplier
+invoice detail page after processing existing bookmarked forms. The duplicate
+integration register view is no longer part of the active navigation and can
+be removed after downstream integrations have migrated.
+
 Manual supplier invoice creation also checks the supplier/number combination.
 The same rule is enforced by the `uq_supplier_invoice_supplier_number`
 database constraint, while allowing identical invoice numbers for different

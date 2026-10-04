@@ -121,6 +121,16 @@ class IntegrationsControllerTest extends AbstractTestCase
         $this->assertResponseBodyContains($response, 'My Incoming Provider');
     }
 
+    #[Test]
+    public function it_redirects_the_legacy_supplier_accounting_route_to_the_supplier_invoice_module(): void
+    {
+        /* Act */
+        $response = $this->get('/integrations/incoming/accounting');
+
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'supplier_invoices');
+    }
+
     // -------------------------------------------------------------------------
     // History — transmission log for one invoice
     // -------------------------------------------------------------------------
