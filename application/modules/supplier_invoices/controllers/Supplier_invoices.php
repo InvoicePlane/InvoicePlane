@@ -14,6 +14,8 @@ class Supplier_invoices extends Admin_Controller
         $this->load->model('supplier_invoices/Mdl_supplier_invoice_items');
         $this->load->model('supplier_invoices/Mdl_suppliers');
         $this->load->model('supplier_invoices/Mdl_supplier_invoice_payments');
+        $this->load->model('supplier_invoices/Mdl_supplier_invoice_attachments');
+        $this->load->helper('file_security');
     }
 
     public function index($page = 0): void
@@ -146,6 +148,7 @@ class Supplier_invoices extends Admin_Controller
             'invoice' => $invoice,
             'items' => $this->Mdl_supplier_invoice_items->get_by_invoice_id((int) $invoiceId),
             'payments' => $this->Mdl_supplier_invoice_payments->get_by_invoice_id((int) $invoiceId),
+            'attachments' => $this->Mdl_supplier_invoice_attachments->get_by_invoice_id((int) $invoiceId),
             'history' => $this->Mdl_supplier_invoices->get_status_history((int) $invoiceId),
             'statuses' => Mdl_Supplier_invoices::STATUSES,
         ]);
@@ -211,6 +214,105 @@ class Supplier_invoices extends Admin_Controller
         }
 
         redirect('supplier_invoices/view/' . $invoiceId);
+    }
+
+    public function upload_attachment($invoiceId): void
+    {
+        if ($this->input->method() !== 'post') {
+            show_error('Method not allowed', 405);
+        }
+
+        $invoiceId = (int) $invoiceId;
+        if ($this->Mdl_supplier_invoices->get_by_id($invoiceId) === []) {
+            show_404();
+        }
+
+        try {
+            $file = $_FILES['attachment'] ?? null;
+            if ( ! is_array($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+                throw new InvalidArgumentException('A valid attachment is required.');
+            }
+            if ( ! is_string($file['tmp_name']) || ! is_uploaded_file($file['tmp_name'])) {
+                throw new InvalidArgumentException('The uploaded attachment is invalid.');
+            }
+            if ((int) $file['size'] <= 0 || (int) $file['size'] > 15 * 1024 * 1024) {
+                throw new InvalidArgumentException('Attachments must be smaller than 15 MB.');
+            }
+
+            $originalName = is_string($file['name'] ?? null) ? basename($file['name']) : '';
+            if ( ! validate_safe_filename($originalName)['valid']) {
+                throw new InvalidArgumentException('The attachment filename is invalid.');
+            }
+            $extension = strtolower((string) pathinfo($originalName, PATHINFO_EXTENSION));
+            $allowedExtensions = ['pdf', 'xml', 'jpg', 'jpeg', 'png', 'gif', 'webp'];
+            if ( ! in_array($extension, $allowedExtensions, true)) {
+                throw new InvalidArgumentException('This attachment type is not supported.');
+            }
+
+            $mimeType = function_exists('finfo_open')
+                ? (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name'])
+                : 'application/octet-stream';
+            $allowedMimeTypes = ['application/pdf', 'application/xml', 'text/xml', 'image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if ( ! in_array($mimeType, $allowedMimeTypes, true)) {
+                throw new InvalidArgumentException('The attachment content type is not supported.');
+            }
+
+            $directory = rtrim(UPLOADS_ARCHIVE_FOLDER, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'supplier-invoices' . DIRECTORY_SEPARATOR . $invoiceId;
+            if ( ! is_dir($directory) && ! mkdir($directory, 0750, true) && ! is_dir($directory)) {
+                throw new RuntimeException('Unable to create the attachment directory.');
+            }
+            if ( ! validate_file_in_directory($directory, UPLOADS_ARCHIVE_FOLDER)) {
+                throw new RuntimeException('The attachment directory is outside the archive.');
+            }
+            $hash = hash_file('sha256', $file['tmp_name']);
+            $storedName = $hash . '.' . $extension;
+            $storedPath = $directory . DIRECTORY_SEPARATOR . $storedName;
+            if (is_file($storedPath)) {
+                throw new InvalidArgumentException('This attachment is already registered.');
+            }
+            if ( ! move_uploaded_file($file['tmp_name'], $storedPath) || ! chmod($storedPath, 0640)) {
+                throw new RuntimeException('Unable to store the attachment.');
+            }
+
+            $relativePath = 'supplier-invoices/' . $invoiceId . '/' . $storedName;
+            $attachmentId = $this->Mdl_supplier_invoice_attachments->save_attachment($invoiceId, [
+                'file_name' => sanitize_filename_for_header($originalName),
+                'storage_path' => $relativePath,
+                'mime_type' => $mimeType,
+                'file_size' => (int) $file['size'],
+                'sha256' => $hash,
+            ]);
+            if ($attachmentId <= 0) {
+                @unlink($storedPath);
+                throw new RuntimeException('Unable to register the attachment.');
+            }
+            $this->session->set_flashdata('alert_success', 'Attachment uploaded.');
+        } catch (Throwable $e) {
+            log_message('error', 'Supplier invoice attachment upload failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', $e->getMessage());
+        }
+
+        redirect('supplier_invoices/view/' . $invoiceId);
+    }
+
+    public function download_document($invoiceId): void
+    {
+        $invoice = $this->Mdl_supplier_invoices->get_by_id((int) $invoiceId);
+        if ($invoice === []) {
+            show_404();
+        }
+
+        $this->streamAttachment($invoice['document_path'], $invoice['document_name'], $invoice['document_mime_type']);
+    }
+
+    public function download_attachment($attachmentId): void
+    {
+        $attachment = $this->Mdl_supplier_invoice_attachments->get_by_id((int) $attachmentId);
+        if ($attachment === []) {
+            show_404();
+        }
+
+        $this->streamAttachment($attachment['storage_path'], $attachment['file_name'], $attachment['mime_type']);
     }
 
     private function invoicePostData(): array
@@ -316,5 +418,35 @@ class Supplier_invoices extends Admin_Controller
         $value = $this->getScalar($key);
 
         return preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1 ? $value : '';
+    }
+
+    private function streamAttachment(?string $relativePath, ?string $filename, ?string $mimeType): void
+    {
+        if ( ! is_string($relativePath) || $relativePath === '') {
+            show_404();
+        }
+
+        $path = UPLOADS_ARCHIVE_FOLDER . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+        if ( ! is_file($path) || ! validate_file_in_directory($path, UPLOADS_ARCHIVE_FOLDER)) {
+            show_404();
+        }
+
+        $content = file_get_contents($path);
+        if ($content === false) {
+            show_404();
+        }
+        $safeMimeType = in_array($mimeType, ['application/pdf', 'application/xml', 'text/xml', 'image/jpeg', 'image/png', 'image/gif', 'image/webp'], true)
+            ? $mimeType
+            : 'application/octet-stream';
+        $safeFilename = sanitize_filename_for_header($filename ?: basename($path));
+
+        $this->output
+            ->set_header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0')
+            ->set_header('Pragma: no-cache')
+            ->set_header('X-Content-Type-Options: nosniff')
+            ->set_header('Content-Length: ' . strlen($content))
+            ->set_content_type($safeMimeType)
+            ->set_header('Content-Disposition: attachment; filename="' . $safeFilename . '"')
+            ->set_output($content);
     }
 }
