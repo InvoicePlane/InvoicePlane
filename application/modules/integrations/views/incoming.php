@@ -2,8 +2,8 @@
     <h1 class="headerbar-title"><?php _trans('incoming_invoices'); ?></h1>
 
     <div class="headerbar-item pull-right">
-        <a href="<?php echo site_url('integrations/incoming/accounting'); ?>" class="btn btn-sm btn-default">
-            <i class="fa fa-book"></i> Supplier accounting
+        <a href="<?php echo site_url('supplier_invoices'); ?>" class="btn btn-sm btn-default">
+            <i class="fa fa-book"></i> Supplier invoices
         </a>
         <?php foreach ($clients as $client) : ?>
             <form method="post"
