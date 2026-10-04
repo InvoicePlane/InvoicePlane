@@ -31,17 +31,28 @@ class Mdl_Supplier_invoices extends CI_Model
             $this->db->where('status', $status);
         }
 
-        return $this->db->get('ip_supplier_invoices')->result_array();
+        $invoices = $this->db->get('ip_supplier_invoices')->result_array();
+        foreach ($invoices as &$invoice) {
+            $invoice['balance'] = $this->balance($invoice);
+        }
+
+        return $invoices;
     }
 
     public function get_by_id(int $invoiceId): array
     {
-        return $this->db
+        $invoice = $this->db
             ->select('ip_supplier_invoices.*, ip_suppliers.supplier_name')
             ->join('ip_suppliers', 'ip_suppliers.supplier_id = ip_supplier_invoices.supplier_id', 'left')
             ->where('supplier_invoice_id', $invoiceId)
             ->get('ip_supplier_invoices')
             ->row_array() ?: [];
+
+        if ($invoice !== []) {
+            $invoice['balance'] = $this->balance($invoice);
+        }
+
+        return $invoice;
     }
 
     public function get_by_incoming_response_ids(): array
@@ -237,5 +248,14 @@ class Mdl_Supplier_invoices extends CI_Model
         $value = trim((string) $value);
 
         return $value === '' ? null : mb_substr($value, 0, 255);
+    }
+
+    private function balance(array $invoice): ?float
+    {
+        if ($invoice['total'] === null) {
+            return null;
+        }
+
+        return max(0, (float) $invoice['total'] - (float) ($invoice['amount_paid'] ?? 0));
     }
 }

@@ -13,6 +13,8 @@
         <dt>Invoice date</dt><dd><?php _htmlsc($invoice['supplier_invoice_date'] ?? '—'); ?></dd>
         <dt>Due date</dt><dd><?php _htmlsc($invoice['supplier_due_date'] ?? '—'); ?></dd>
         <dt>Total</dt><dd><?php _htmlsc($invoice['total'] ?? '—'); ?> <?php _htmlsc($invoice['currency_code'] ?? 'EUR'); ?></dd>
+        <dt>Amount paid</dt><dd><?php _htmlsc($invoice['amount_paid'] ?? '0'); ?> <?php _htmlsc($invoice['currency_code'] ?? 'EUR'); ?></dd>
+        <dt>Balance</dt><dd><?php _htmlsc($invoice['balance'] ?? '—'); ?> <?php _htmlsc($invoice['currency_code'] ?? 'EUR'); ?></dd>
         <dt>Status</dt><dd><?php _htmlsc($invoice['status']); ?></dd>
     </dl>
 
@@ -32,6 +34,22 @@
     <table class="table table-striped"><thead><tr><th>Description</th><th>Quantity</th><th>Unit price</th><th>Total</th></tr></thead><tbody>
     <?php if (empty($items)) : ?><tr><td colspan="4" class="text-muted">No items imported.</td></tr><?php endif; ?>
     <?php foreach ($items as $item) : ?><tr><td><?php _htmlsc($item['item_name']); ?></td><td><?php _htmlsc($item['quantity']); ?></td><td><?php _htmlsc($item['unit_price'] ?? '—'); ?></td><td><?php _htmlsc($item['total'] ?? '—'); ?></td></tr><?php endforeach; ?>
+    </tbody></table>
+
+    <h3>Payments</h3>
+    <form method="post" action="<?php echo site_url('supplier_invoices/payment/' . (int) $invoice['supplier_invoice_id']); ?>" class="form-inline">
+        <?php _csrf_field(); ?>
+        <input type="date" name="payment_date" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+        <input type="text" name="amount" class="form-control" placeholder="Amount" required>
+        <input type="text" name="payment_method" class="form-control" placeholder="Payment method">
+        <input type="text" name="reference" class="form-control" placeholder="Reference">
+        <input type="text" name="notes" class="form-control" placeholder="Notes">
+        <input type="hidden" name="currency_code" value="<?php _htmlsc($invoice['currency_code'] ?? 'EUR'); ?>">
+        <button class="btn btn-primary" type="submit">Record payment</button>
+    </form>
+    <table class="table table-striped"><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Reference</th><th>Notes</th></tr></thead><tbody>
+    <?php if (empty($payments)) : ?><tr><td colspan="5" class="text-muted">No payments recorded.</td></tr><?php endif; ?>
+    <?php foreach ($payments as $payment) : ?><tr><td><?php _htmlsc($payment['payment_date']); ?></td><td><?php _htmlsc($payment['amount']); ?> <?php _htmlsc($payment['currency_code']); ?></td><td><?php _htmlsc($payment['payment_method'] ?? '—'); ?></td><td><?php _htmlsc($payment['reference'] ?? '—'); ?></td><td><?php _htmlsc($payment['notes'] ?? ''); ?></td></tr><?php endforeach; ?>
     </tbody></table>
 
     <h3>Status history</h3>
