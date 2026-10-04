@@ -63,11 +63,9 @@ class Incoming extends Admin_Controller
 
     public function accounting(): void
     {
-        $this->layout->set([
-            'supplier_invoices' => $this->Mdl_supplier_invoices->get_all(),
-        ]);
-        $this->layout->buffer('content', 'integrations/supplier_invoices');
-        $this->layout->render();
+        // Keep the historical URL working while the supplier invoice module
+        // becomes the single canonical register.
+        redirect('supplier_invoices');
     }
 
     public function sync($merchant_client_id)
@@ -146,7 +144,9 @@ class Incoming extends Admin_Controller
             $this->session->set_flashdata('alert_error', trans('unable_to_update_supplier_invoice_status'));
         }
 
-        redirect('integrations/incoming/accounting');
+        // The old status endpoint remains available for bookmarked forms, but
+        // the user continues in the canonical supplier invoice module.
+        redirect('supplier_invoices/view/' . (int) $supplierInvoiceId);
     }
 
     public function download($responseId): void
