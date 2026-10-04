@@ -45,6 +45,7 @@ XML);
         $invoice = (new SupplierInvoiceDocumentParser())->parse($path);
 
         self::assertSame('Supplier Ltd', $invoice['supplier']['supplier_name']);
+        self::assertSame('', $invoice['supplier']['supplier_tax_code']);
         self::assertSame('INV-42', $invoice['invoice']['supplier_invoice_number']);
         self::assertSame(40.0, $invoice['invoice']['tax_total']);
         self::assertSame(240.0, $invoice['invoice']['total']);

@@ -42,6 +42,7 @@ class Mdl_Suppliers extends CI_Model
             'supplier_name' => $name,
             'supplier_company' => $data['supplier_company'] ?? null,
             'supplier_vat_id' => $vatId,
+            'supplier_tax_code' => $data['supplier_tax_code'] ?? null,
             'supplier_peppol_id' => $participantId,
             'supplier_email' => $data['supplier_email'] ?? null,
             'supplier_address_1' => $data['supplier_address_1'] ?? null,

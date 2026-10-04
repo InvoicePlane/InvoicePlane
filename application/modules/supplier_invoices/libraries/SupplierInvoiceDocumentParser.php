@@ -132,6 +132,9 @@ final class SupplierInvoiceDocumentParser
             'supplier_vat_id' => $this->value($xpath, $syntax === 'ubl'
                 ? './/*[local-name()="PartyTaxScheme"]/*[local-name()="CompanyID"]'
                 : './/*[local-name()="SpecifiedTaxRegistration"]/*[local-name()="ID"]', $seller),
+            'supplier_tax_code' => $this->value($xpath, $syntax === 'ubl'
+                ? './/*[local-name()="PartyLegalEntity"]/*[local-name()="CompanyID"]'
+                : './/*[local-name()="SpecifiedLegalOrganization"]/*[local-name()="ID"]', $seller),
             'supplier_peppol_id' => $this->value($xpath, $syntax === 'ubl'
                 ? './*[local-name()="EndpointID"]'
                 : './/*[local-name()="URIUniversalCommunication"]/*[local-name()="URIID"]', $seller),
