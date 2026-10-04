@@ -85,6 +85,14 @@ class Settings extends Admin_Controller
                             }
                         }
                     }
+                    // Security: Validate first_day_of_week to prevent XSS via JavaScript context injection
+                    if ($key === 'first_day_of_week') {
+                        if ( ! in_array($value, ['0', '1', '2', '3', '4', '5', '6'], true)) {
+                            log_message('error', sprintf('Invalid first_day_of_week value attempted by user %d: %s', $this->session->userdata('user_id'), sanitize_for_logging($value)));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
                     $batch_settings[$key] = $value;
                 }
 
