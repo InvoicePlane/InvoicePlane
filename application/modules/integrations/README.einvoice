@@ -354,6 +354,13 @@ Repeated status and event synchronization is safe: status polling uses the
 latest non-terminal transmission for each invoice, while an identical raw
 event from the same provider is stored only once.
 
+Incoming document failures are stored with a bounded diagnostic code. The
+main codes are `document_download_failed`, `document_validation_failed`,
+`document_archive_failed`, and `incoming_document_failed`. The same diagnostic
+is included in the synchronization run summary together with the correlation
+ID, so an operator can identify the failing document without exposing provider
+credentials or raw payloads.
+
 All state-changing browser actions use POST requests with CSRF protection.
 
 ### Operational synchronization guarantees

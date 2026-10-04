@@ -45,7 +45,7 @@ class CurlApiClient implements ApiClientInterface
             $maximumBytes                        = max(1, (int) ($options['max_response_bytes'] ?? 15 * 1024 * 1024));
             $curlOptions[CURLOPT_RETURNTRANSFER] = false;
             $curlOptions[CURLOPT_WRITEFUNCTION]  = static function ($curl, string $chunk) use (&$binaryBody, &$binaryTooLarge, $maximumBytes): int {
-                if (mb_strlen($binaryBody, '8bit') + mb_strlen($chunk, '8bit') > $maximumBytes) {
+                if (strlen($binaryBody) + strlen($chunk) > $maximumBytes) {
                     $binaryTooLarge = true;
 
                     return 0;
@@ -53,7 +53,7 @@ class CurlApiClient implements ApiClientInterface
 
                 $binaryBody .= $chunk;
 
-                return mb_strlen($chunk, '8bit');
+                return strlen($chunk);
             };
         }
 
@@ -99,6 +99,7 @@ class CurlApiClient implements ApiClientInterface
                 'success'      => false,
                 'external_id'  => null,
                 'status'       => 'error',
+                'error_code'   => 'transport_error',
                 'message'      => $binaryTooLarge ? 'Provider document exceeds the download size limit.' : $curlError,
                 'http_code'    => 0,
                 'request'      => ['url' => $url, 'method' => $method->value],
@@ -112,6 +113,7 @@ class CurlApiClient implements ApiClientInterface
             'success'      => $httpCode >= 200 && $httpCode < 300,
             'external_id'  => $decoded['id'] ?? $decoded['external_id'] ?? null,
             'status'       => $decoded['status'] ?? ($httpCode >= 200 && $httpCode < 300 ? 'sent' : 'error'),
+            'error_code'   => $httpCode >= 400 ? 'provider_http_' . $httpCode : null,
             'message'      => $decoded['message'] ?? 'API response received',
             'http_code'    => $httpCode,
             'request'      => ['url' => $url, 'method' => $method->value],

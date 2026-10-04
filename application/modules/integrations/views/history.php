@@ -20,6 +20,7 @@
                 <th><?php _trans('date'); ?></th>
                 <th><?php _trans('direction'); ?></th>
                 <th><?php _trans('status'); ?></th>
+                <th>Error code</th>
                 <th><?php _trans('message'); ?></th>
                 <th><?php _trans('external_id'); ?></th>
                 <th><?php _trans('http_code'); ?></th>
@@ -31,6 +32,7 @@
                     <td><?php _htmlsc($row['created_at']); ?></td>
                     <td><?php _htmlsc($row['direction']); ?></td>
                     <td><?php _htmlsc($row['status']); ?></td>
+                    <td><?php _htmlsc($row['error_code'] ?? '—'); ?></td>
                     <td><?php _htmlsc($row['merchant_response']); ?></td>
                     <td><?php _htmlsc($row['merchant_response_reference']); ?></td>
                     <td><?php _htmlsc($row['http_code']); ?></td>

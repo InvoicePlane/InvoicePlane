@@ -12,7 +12,7 @@ final class IncomingInvoiceSynchronizer
     }
 
     /**
-     * @return array{received: int, archived: int, skipped: int, failed: int}
+     * @return array{received: int, archived: int, skipped: int, failed: int, error_codes: array<string, int>, errors: string[]}
      */
     public function synchronize(
         IntegrationClient $client,
@@ -23,7 +23,14 @@ final class IncomingInvoiceSynchronizer
         object $responsesModel,
         string $archiveDirectory
     ): array {
-        $result = ['received' => 0, 'archived' => 0, 'skipped' => 0, 'failed' => 0];
+        $result = [
+            'received'    => 0,
+            'archived'    => 0,
+            'skipped'     => 0,
+            'failed'      => 0,
+            'error_codes' => [],
+            'errors'      => [],
+        ];
 
         foreach ($items as $item) {
             if ( ! is_array($item)) {
@@ -59,14 +66,24 @@ final class IncomingInvoiceSynchronizer
                 );
                 $result['archived']++;
             } catch (Throwable $e) {
-                $message         = IntegrationPayloadSanitizer::text($e->getMessage()) ?? 'Incoming document validation failed.';
-                $item['status']  = 'error';
-                $item['message'] = 'Incoming document rejected: ' . $message;
-                $document        = [
+                $errorCode         = $this->errorCode($e);
+                $message           = IntegrationPayloadSanitizer::text($e->getMessage()) ?? 'Incoming document validation failed.';
+                $item['status']    = 'error';
+                $item['error_code'] = $errorCode;
+                $item['error_detail'] = $message;
+                $item['message']      = 'Incoming document rejected [' . $errorCode . ']: ' . $message;
+                $document             = [
                     'document_validation_status' => 'failed',
                     'document_validation_error'  => $message,
                 ];
                 $result['failed']++;
+                $result['error_codes'][$errorCode] = ($result['error_codes'][$errorCode] ?? 0) + 1;
+                if (count($result['errors']) < 10) {
+                    $reference = $externalId !== null
+                        ? ' (' . (IntegrationPayloadSanitizer::text($externalId, 100) ?? 'unknown') . ')'
+                        : '';
+                    $result['errors'][] = 'Incoming document [' . $errorCode . ']' . $reference . ': ' . $message;
+                }
             }
 
             $responsesModel->create_inbound_item(
@@ -80,6 +97,18 @@ final class IncomingInvoiceSynchronizer
         }
 
         return $result;
+    }
+
+    private function errorCode(Throwable $error): string
+    {
+        $message = mb_strtolower($error->getMessage());
+
+        return match (true) {
+            str_contains($message, 'download') || str_contains($message, 'provider returned') => 'document_download_failed',
+            str_contains($message, 'archive') || str_contains($message, 'stage') => 'document_archive_failed',
+            str_contains($message, 'factur-x') || str_contains($message, 'xml') || str_contains($message, 'validation') => 'document_validation_failed',
+            default => 'incoming_document_failed',
+        };
     }
 
     private function documentType(array $item): ?PeppolDocumentType
