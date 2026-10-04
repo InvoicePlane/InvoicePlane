@@ -1,6 +1,9 @@
 -- Supplier invoice module: payments and status history.
 -- Core supplier and invoice tables are created by 049_supplier_accounting.sql.
 
+ALTER TABLE `ip_supplier_invoices`
+  MODIFY `incoming_response_id` INT(11) NULL;
+
 CREATE TABLE IF NOT EXISTS `ip_supplier_invoice_payments` (
   `supplier_invoice_payment_id` INT(11) NOT NULL AUTO_INCREMENT,
   `supplier_invoice_id` INT(11) NOT NULL,

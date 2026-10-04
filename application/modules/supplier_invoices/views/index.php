@@ -1,6 +1,12 @@
 <div id="headerbar">
     <h1 class="headerbar-title">Supplier invoices</h1>
     <div class="headerbar-item pull-right">
+        <a href="<?php echo site_url('supplier_invoices/form'); ?>" class="btn btn-sm btn-primary">
+            <i class="fa fa-plus"></i> New supplier invoice
+        </a>
+        <a href="<?php echo site_url('supplier_invoices/suppliers'); ?>" class="btn btn-sm btn-default">
+            <i class="fa fa-users"></i> Suppliers
+        </a>
         <a href="<?php echo site_url('integrations/incoming'); ?>" class="btn btn-sm btn-default">
             <i class="fa fa-download"></i> Incoming invoices
         </a>

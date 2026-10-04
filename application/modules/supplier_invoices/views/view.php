@@ -1,6 +1,9 @@
-<div id="headerbar">
+    <div id="headerbar">
     <h1 class="headerbar-title">Supplier invoice <?php _htmlsc($invoice['supplier_invoice_number'] ?? ''); ?></h1>
-    <div class="headerbar-item pull-right"><a class="btn btn-sm btn-default" href="<?php echo site_url('supplier_invoices'); ?>">Back</a></div>
+    <div class="headerbar-item pull-right">
+        <a class="btn btn-sm btn-primary" href="<?php echo site_url('supplier_invoices/form/' . (int) $invoice['supplier_invoice_id']); ?>">Edit</a>
+        <a class="btn btn-sm btn-default" href="<?php echo site_url('supplier_invoices'); ?>">Back</a>
+    </div>
 </div>
 
 <div id="content">
