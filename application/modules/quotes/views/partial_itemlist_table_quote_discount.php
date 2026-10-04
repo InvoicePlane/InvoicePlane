@@ -6,7 +6,7 @@
                             <input id="quote_discount_amount" name="quote_discount_amount"
                                    class="discount-option form-control amount" aria-label="<?php _trans('global_discount'); ?>"
                                    value="<?php echo format_amount($quote->quote_discount_amount != 0 ? $quote->quote_discount_amount : ''); ?>">
-                            <span class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></span>
+                            <span class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')); ?></span>
                         </div>
                     </div>
                     <div class="discount-field">
