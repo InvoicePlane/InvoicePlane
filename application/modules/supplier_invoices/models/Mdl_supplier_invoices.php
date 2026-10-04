@@ -77,6 +77,18 @@ class Mdl_Supplier_invoices extends CI_Model
         return $invoice;
     }
 
+    public function has_duplicate_number(int $supplierId, string $invoiceNumber, ?int $invoiceId = null): bool
+    {
+        $this->db
+            ->where('supplier_id', $supplierId)
+            ->where('supplier_invoice_number', trim($invoiceNumber));
+        if ($invoiceId !== null) {
+            $this->db->where('supplier_invoice_id !=', $invoiceId);
+        }
+
+        return $this->db->count_all_results('ip_supplier_invoices') > 0;
+    }
+
     public function get_by_incoming_response_ids(): array
     {
         $rows = $this->db
@@ -169,6 +181,12 @@ class Mdl_Supplier_invoices extends CI_Model
 
     public function save_invoice(?int $invoiceId, array $data, array $items = []): int
     {
+        $supplierId = (int) ($data['supplier_id'] ?? 0);
+        $invoiceNumber = trim((string) ($data['supplier_invoice_number'] ?? ''));
+        if ($supplierId > 0 && $invoiceNumber !== '' && $this->has_duplicate_number($supplierId, $invoiceNumber, $invoiceId)) {
+            throw new InvalidArgumentException('A supplier invoice with this number already exists.');
+        }
+
         $calculated = (new SupplierInvoiceTotalsCalculator())->calculate($items);
         if ($calculated['items'] === []) {
             $calculated['subtotal'] = ($data['subtotal'] ?? '') === '' ? null : (float) $data['subtotal'];
@@ -176,7 +194,7 @@ class Mdl_Supplier_invoices extends CI_Model
             $calculated['total'] = ($data['total'] ?? '') === '' ? null : (float) $data['total'];
         }
         $values = [
-            'supplier_id' => (int) ($data['supplier_id'] ?? 0) ?: null,
+            'supplier_id' => $supplierId ?: null,
             'external_reference' => trim((string) ($data['external_reference'] ?? '')) ?: null,
             'supplier_invoice_number' => trim((string) ($data['supplier_invoice_number'] ?? '')) ?: null,
             'supplier_invoice_date' => $data['supplier_invoice_date'] ?: null,

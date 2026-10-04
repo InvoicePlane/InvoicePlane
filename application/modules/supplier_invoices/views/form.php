@@ -7,6 +7,7 @@
     <?php if ( ! empty($form_errors)) : ?><div class="alert alert-danger"><ul><?php foreach ($form_errors as $error) : ?><li><?php _htmlsc($error); ?></li><?php endforeach; ?></ul></div><?php endif; ?>
     <form method="post" class="form-horizontal">
         <?php _csrf_field(); ?>
+        <input type="hidden" name="supplier_invoice_id" value="<?php echo (int) ($invoice['supplier_invoice_id'] ?? 0); ?>">
         <div class="form-group"><label class="col-sm-3 control-label">Supplier</label><div class="col-sm-6"><select name="supplier_id" class="form-control" required><option value="">Select a supplier</option><?php foreach ($suppliers as $supplier) : ?><option value="<?php echo (int) $supplier['supplier_id']; ?>" <?php echo (int) ($invoice['supplier_id'] ?? 0) === (int) $supplier['supplier_id'] ? 'selected' : ''; ?>><?php _htmlsc($supplier['supplier_name']); ?></option><?php endforeach; ?></select></div></div>
         <div class="form-group"><label class="col-sm-3 control-label">Invoice number</label><div class="col-sm-6"><input class="form-control" name="supplier_invoice_number" value="<?php _htmlsc($invoice['supplier_invoice_number'] ?? ''); ?>" required></div></div>
         <div class="form-group"><label class="col-sm-3 control-label">External reference</label><div class="col-sm-6"><input class="form-control" name="external_reference" value="<?php _htmlsc($invoice['external_reference'] ?? ''); ?>"></div></div>

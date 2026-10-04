@@ -155,6 +155,11 @@ supplier invoice module directly. The import remains idempotent through the
 unique `incoming_response_id` link, so retrying the action does not create a
 second supplier invoice.
 
+Manual supplier invoice creation also checks the supplier/number combination.
+The same rule is enforced by the `uq_supplier_invoice_supplier_number`
+database constraint, while allowing identical invoice numbers for different
+suppliers.
+
 ---
 
 # Provider Management

@@ -68,7 +68,7 @@ class Supplier_invoices extends Admin_Controller
 
             $data = $this->invoicePostData();
             $items = $this->itemsPostData();
-            $errors = $this->validateInvoiceData($data);
+            $errors = $this->validateInvoiceData($data, $invoiceId);
 
             if ($errors === []) {
                 try {
@@ -359,7 +359,7 @@ class Supplier_invoices extends Admin_Controller
         return $items;
     }
 
-    private function validateInvoiceData(array $data): array
+    private function validateInvoiceData(array $data, ?int $invoiceId = null): array
     {
         $errors = [];
         if ($data['supplier_id'] <= 0 || $this->Mdl_suppliers->get_by_id($data['supplier_id']) === []) {
@@ -367,6 +367,13 @@ class Supplier_invoices extends Admin_Controller
         }
         if ($data['supplier_invoice_number'] === '') {
             $errors[] = 'Invoice number is required.';
+        }
+        if ($errors === [] && $this->Mdl_supplier_invoices->has_duplicate_number(
+            $data['supplier_id'],
+            $data['supplier_invoice_number'],
+            $invoiceId
+        )) {
+            $errors[] = 'A supplier invoice with this number already exists for the selected supplier.';
         }
         if ($data['supplier_invoice_date'] === '') {
             $errors[] = 'Invoice date is required.';
