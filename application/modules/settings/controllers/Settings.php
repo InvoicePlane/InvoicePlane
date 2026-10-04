@@ -170,6 +170,30 @@ class Settings extends Admin_Controller
                             redirect('settings');
                         }
                     }
+                    // Security: Validate default_language to prevent path traversal and XSS
+                    if ($key === 'default_language') {
+                        $this->load->helper('trans');
+                        $default_lang = is_scalar($value) ? (string) $value : '';
+                        $available_langs = get_available_languages();
+                        if ( ! in_array($default_lang, $available_langs, true) || preg_match('/<|>|javascript:|onerror|onload|onclick|\/|\\\\/', $default_lang)) {
+                            $safe_value = sanitize_for_logging($default_lang);
+                            log_message('error', sprintf('Invalid default_language value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate default_country to prevent path traversal and XSS
+                    if ($key === 'default_country') {
+                        $this->load->helper('country');
+                        $default_ctry = is_scalar($value) ? (string) $value : '';
+                        $country_list = get_country_list(trans('cldr'));
+                        if ( ! isset($country_list[$default_ctry]) || preg_match('/<|>|javascript:|onerror|onload|onclick|\/|\\\\/', $default_ctry)) {
+                            $safe_value = sanitize_for_logging($default_ctry);
+                            log_message('error', sprintf('Invalid default_country value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
                     $batch_settings[$key] = $value;
                 }
 
