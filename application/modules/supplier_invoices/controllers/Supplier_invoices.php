@@ -13,6 +13,7 @@ class Supplier_invoices extends Admin_Controller
         $this->load->model('supplier_invoices/Mdl_supplier_invoices');
         $this->load->model('supplier_invoices/Mdl_supplier_invoice_items');
         $this->load->model('supplier_invoices/Mdl_suppliers');
+        $this->load->model('supplier_invoices/Mdl_supplier_invoice_payments');
     }
 
     public function index(): void
@@ -122,6 +123,7 @@ class Supplier_invoices extends Admin_Controller
         $this->layout->set([
             'invoice' => $invoice,
             'items' => $this->Mdl_supplier_invoice_items->get_by_invoice_id((int) $invoiceId),
+            'payments' => $this->Mdl_supplier_invoice_payments->get_by_invoice_id((int) $invoiceId),
             'history' => $this->Mdl_supplier_invoices->get_status_history((int) $invoiceId),
             'statuses' => Mdl_Supplier_invoices::STATUSES,
         ]);
@@ -148,6 +150,45 @@ class Supplier_invoices extends Admin_Controller
         }
 
         redirect('supplier_invoices/view/' . (int) $invoiceId);
+    }
+
+    public function payment($invoiceId): void
+    {
+        if ($this->input->method() !== 'post') {
+            show_error('Method not allowed', 405);
+        }
+
+        $invoiceId = (int) $invoiceId;
+        if ($this->Mdl_supplier_invoices->get_by_id($invoiceId) === []) {
+            show_404();
+        }
+
+        try {
+            $amount = $this->postScalar('amount');
+            if ($amount === '' || ! is_numeric(str_replace(',', '.', $amount))) {
+                throw new InvalidArgumentException('A valid payment amount is required.');
+            }
+
+            $paymentDate = $this->postScalar('payment_date');
+            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $paymentDate) !== 1) {
+                throw new InvalidArgumentException('A valid payment date is required.');
+            }
+
+            $this->Mdl_supplier_invoice_payments->add_payment($invoiceId, [
+                'amount' => str_replace(',', '.', $amount),
+                'payment_date' => $paymentDate,
+                'currency_code' => $this->postScalar('currency_code'),
+                'payment_method' => $this->postScalar('payment_method'),
+                'reference' => $this->postScalar('reference'),
+                'notes' => $this->postScalar('notes'),
+            ]);
+            $this->session->set_flashdata('alert_success', 'Supplier invoice payment recorded.');
+        } catch (Throwable $e) {
+            log_message('error', 'Supplier invoice payment failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', $e->getMessage());
+        }
+
+        redirect('supplier_invoices/view/' . $invoiceId);
     }
 
     private function invoicePostData(): array
