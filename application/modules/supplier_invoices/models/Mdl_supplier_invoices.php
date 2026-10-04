@@ -6,6 +6,7 @@ if ( ! defined('BASEPATH')) {
 
 require_once APPPATH . 'modules/supplier_invoices/libraries/SupplierInvoiceDocumentParser.php';
 require_once APPPATH . 'modules/supplier_invoices/libraries/SupplierInvoiceTotalsCalculator.php';
+require_once APPPATH . 'modules/supplier_invoices/libraries/FrenchSupplierInvoiceDataValidator.php';
 
 #[AllowDynamicProperties]
 class Mdl_Supplier_invoices extends CI_Model
@@ -166,6 +167,10 @@ class Mdl_Supplier_invoices extends CI_Model
         }
 
         $parsed = (new SupplierInvoiceDocumentParser())->parse($this->documentPath($incoming['document_path'] ?? null));
+        $frenchValidationErrors = (new FrenchSupplierInvoiceDataValidator())->validate($parsed);
+        if ($frenchValidationErrors !== []) {
+            throw new RuntimeException(implode(' ', $frenchValidationErrors));
+        }
         $supplierData = array_merge(
             $incoming,
             array_filter($parsed['supplier'], static fn ($value): bool => $value !== null && $value !== '')
