@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="<?php _trans('cldr'); ?>">
 <head>
-    <title><?php echo get_setting('custom_title', 'InvoicePlane', true); ?> - <?php _trans('invoice_aging'); ?></title>
+    <title><?php echo htmlsc(get_setting('custom_title', 'InvoicePlane', true); ?> - <?php _trans('invoice_aging'); ?></title>
     <link rel="stylesheet" href="<?php _theme_asset('css/reports.css'); ?>" type="text/css">
 </head>
 <body>

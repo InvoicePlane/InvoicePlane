@@ -194,6 +194,46 @@ class Settings extends Admin_Controller
                             redirect('settings');
                         }
                     }
+                    // Security: Validate custom_title to prevent XSS injection in page titles and forms
+                    if ($key === 'custom_title') {
+                        $custom_title = is_scalar($value) ? (string) $value : '';
+                        if (preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $custom_title)) {
+                            $safe_value = sanitize_for_logging($custom_title);
+                            log_message('error', sprintf('Invalid custom_title value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate default_invoice_terms to prevent XSS injection
+                    if ($key === 'default_invoice_terms') {
+                        $terms = is_scalar($value) ? (string) $value : '';
+                        if (preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $terms)) {
+                            $safe_value = sanitize_for_logging($terms);
+                            log_message('error', sprintf('Invalid default_invoice_terms value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate pdf_invoice_footer to prevent XSS injection in PDF output
+                    if ($key === 'pdf_invoice_footer') {
+                        $footer = is_scalar($value) ? (string) $value : '';
+                        if (preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $footer)) {
+                            $safe_value = sanitize_for_logging($footer);
+                            log_message('error', sprintf('Invalid pdf_invoice_footer value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate pdf_quote_footer to prevent XSS injection in PDF output
+                    if ($key === 'pdf_quote_footer') {
+                        $footer = is_scalar($value) ? (string) $value : '';
+                        if (preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $footer)) {
+                            $safe_value = sanitize_for_logging($footer);
+                            log_message('error', sprintf('Invalid pdf_quote_footer value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
                     $batch_settings[$key] = $value;
                 }
 
