@@ -46,6 +46,7 @@ class Mdl_Supplier_invoices extends CI_Model
         $this->db
             ->select('ip_supplier_invoices.*, ip_suppliers.supplier_name')
             ->join('ip_suppliers', 'ip_suppliers.supplier_id = ip_supplier_invoices.supplier_id', 'left')
+            ->where('ip_supplier_invoices.archived_at IS NULL')
             ->order_by('supplier_invoice_date', 'DESC')
             ->order_by('supplier_invoice_id', 'DESC');
 
@@ -75,6 +76,44 @@ class Mdl_Supplier_invoices extends CI_Model
         }
 
         return $invoice;
+    }
+
+    public function archive(int $invoiceId, ?int $userId = null): bool
+    {
+        $invoice = $this->get_by_id($invoiceId);
+        if ($invoice === [] || $invoice['archived_at'] !== null) {
+            return false;
+        }
+
+        $this->db->trans_start();
+        $this->db->where('supplier_invoice_id', $invoiceId)->update('ip_supplier_invoices', [
+            'archived_at' => date('Y-m-d H:i:s'),
+            'archived_by' => $userId,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+        $this->record_status($invoiceId, $invoice['status'], $invoice['status'], 'Invoice archived.');
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
+    }
+
+    public function restore(int $invoiceId): bool
+    {
+        $invoice = $this->get_by_id($invoiceId);
+        if ($invoice === [] || $invoice['archived_at'] === null) {
+            return false;
+        }
+
+        $this->db->trans_start();
+        $this->db->where('supplier_invoice_id', $invoiceId)->update('ip_supplier_invoices', [
+            'archived_at' => null,
+            'archived_by' => null,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+        $this->record_status($invoiceId, $invoice['status'], $invoice['status'], 'Invoice restored from archive.');
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
     }
 
     public function has_duplicate_number(int $supplierId, string $invoiceNumber, ?int $invoiceId = null): bool
@@ -324,6 +363,12 @@ class Mdl_Supplier_invoices extends CI_Model
         }
         if (! empty($filters['date_to'])) {
             $this->db->where('ip_supplier_invoices.supplier_invoice_date <=', $filters['date_to']);
+        }
+
+        if (($filters['archived'] ?? 'active') === 'archived') {
+            $this->db->where('ip_supplier_invoices.archived_at IS NOT NULL');
+        } elseif (($filters['archived'] ?? 'active') !== 'all') {
+            $this->db->where('ip_supplier_invoices.archived_at IS NULL');
         }
 
         $this->db->join('ip_suppliers', 'ip_suppliers.supplier_id = ip_supplier_invoices.supplier_id', 'left');

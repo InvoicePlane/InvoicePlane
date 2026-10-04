@@ -160,6 +160,11 @@ The same rule is enforced by the `uq_supplier_invoice_supplier_number`
 database constraint, while allowing identical invoice numbers for different
 suppliers.
 
+Supplier invoices are archived reversibly rather than physically deleted. The
+archive keeps the original document, attachments, payments, and status history;
+archived records are hidden from the active list and can be restored through
+the supplier invoice detail page.
+
 ---
 
 # Provider Management

@@ -25,6 +25,9 @@ class Supplier_invoices extends Admin_Controller
             'status' => $this->getScalar('status'),
             'date_from' => $this->getDateFilter('date_from'),
             'date_to' => $this->getDateFilter('date_to'),
+            'archived' => in_array($this->getScalar('archived'), ['active', 'archived', 'all'], true)
+                ? $this->getScalar('archived')
+                : 'active',
         ];
         $page = max(0, (int) $page);
         $perPage = max(1, (int) get_setting('default_list_limit', 20));
@@ -172,6 +175,44 @@ class Supplier_invoices extends Admin_Controller
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice status update failed: ' . sanitize_for_logging($e->getMessage()));
             $this->session->set_flashdata('alert_error', 'Unable to update the supplier invoice status.');
+        }
+
+        redirect('supplier_invoices/view/' . (int) $invoiceId);
+    }
+
+    public function archive($invoiceId): void
+    {
+        if ( ! $this->ensure_valid_post_request('supplier_invoices/view/' . (int) $invoiceId)) {
+            return;
+        }
+
+        try {
+            if ( ! $this->Mdl_supplier_invoices->archive((int) $invoiceId, (int) $this->session->userdata('user_id'))) {
+                throw new RuntimeException('Supplier invoice is already archived or does not exist.');
+            }
+            $this->session->set_flashdata('alert_success', 'Supplier invoice archived.');
+        } catch (Throwable $e) {
+            log_message('error', 'Supplier invoice archive failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', 'Unable to archive the supplier invoice.');
+        }
+
+        redirect('supplier_invoices/view/' . (int) $invoiceId);
+    }
+
+    public function restore($invoiceId): void
+    {
+        if ( ! $this->ensure_valid_post_request('supplier_invoices/view/' . (int) $invoiceId)) {
+            return;
+        }
+
+        try {
+            if ( ! $this->Mdl_supplier_invoices->restore((int) $invoiceId)) {
+                throw new RuntimeException('Supplier invoice is already active or does not exist.');
+            }
+            $this->session->set_flashdata('alert_success', 'Supplier invoice restored.');
+        } catch (Throwable $e) {
+            log_message('error', 'Supplier invoice restore failed: ' . sanitize_for_logging($e->getMessage()));
+            $this->session->set_flashdata('alert_error', 'Unable to restore the supplier invoice.');
         }
 
         redirect('supplier_invoices/view/' . (int) $invoiceId);
