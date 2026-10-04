@@ -2,7 +2,7 @@
     <h1 class="headerbar-title"><?php _trans('einvoice_providers'); ?></h1>
     <div class="headerbar-item pull-right">
         <a href="<?php echo site_url('integrations/operations'); ?>" class="btn btn-sm btn-default">
-            <i class="fa fa-heartbeat"></i> Operations
+            <i class="fa fa-heartbeat"></i> <?php _trans('operations'); ?>
         </a>
 
         <a href="<?php echo site_url('integrations/incoming'); ?>" class="btn btn-sm btn-default">
@@ -25,7 +25,7 @@
                 <th><?php _trans('provider'); ?></th>
                 <th><?php _trans('label'); ?></th>
                 <th><?php _trans('status'); ?></th>
-                <th>Last synchronization</th>
+                <th><?php _trans('last_synchronization'); ?></th>
                 <th><?php _trans('actions'); ?></th>
             </tr>
             </thead>
@@ -48,7 +48,7 @@
                                 <?php _htmlsc(mb_substr($lastRun['correlation_id'], 0, 8)); ?>
                             </small>
                         <?php else : ?>
-                            <span class="text-muted">Never</span>
+                            <span class="text-muted"><?php _trans('never'); ?></span>
                         <?php endif; ?>
                     </td>
                     <td>

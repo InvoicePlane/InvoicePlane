@@ -81,11 +81,11 @@ class Supplier_invoices extends Admin_Controller
             if ($errors === []) {
                 try {
                     $savedId = $this->Mdl_supplier_invoices->save_invoice($invoiceId, $data, $items);
-                    $this->session->set_flashdata('alert_success', 'Supplier invoice saved.');
+                    $this->session->set_flashdata('alert_success', trans('supplier_invoice_saved'));
                     redirect('supplier_invoices/view/' . $savedId);
                 } catch (Throwable $e) {
                     log_message('error', 'Supplier invoice save failed: ' . sanitize_for_logging($e->getMessage()));
-                    $errors[] = 'Unable to save the supplier invoice.';
+                    $errors[] = trans('unable_to_save_supplier_invoice');
                 }
             }
 
@@ -126,17 +126,17 @@ class Supplier_invoices extends Admin_Controller
 
             $supplier = array_merge($supplier, $this->supplierPostData());
             if (trim((string) ($supplier['supplier_name'] ?? '')) === '') {
-                $errors[] = 'Supplier name is required.';
+                $errors[] = trans('supplier_name_required');
             }
 
             if ($errors === []) {
                 try {
                     $this->Mdl_suppliers->save_supplier($supplierId, $supplier);
-                    $this->session->set_flashdata('alert_success', 'Supplier saved.');
+                    $this->session->set_flashdata('alert_success', trans('supplier_saved'));
                     redirect('supplier_invoices/suppliers');
                 } catch (Throwable $e) {
                     log_message('error', 'Supplier save failed: ' . sanitize_for_logging($e->getMessage()));
-                    $errors[] = 'Unable to save the supplier.';
+                    $errors[] = trans('unable_to_save_supplier');
                 }
             }
         }
@@ -182,10 +182,10 @@ class Supplier_invoices extends Admin_Controller
                 trim((string) $this->input->post('status')),
                 trim((string) $this->input->post('comment')) ?: null
             );
-            $this->session->set_flashdata('alert_success', 'Supplier invoice status updated.');
+            $this->session->set_flashdata('alert_success', trans('supplier_invoice_status_updated'));
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice status update failed: ' . sanitize_for_logging($e->getMessage()));
-            $this->session->set_flashdata('alert_error', 'Unable to update the supplier invoice status.');
+            $this->session->set_flashdata('alert_error', trans('unable_to_update_supplier_invoice_status'));
         }
 
         redirect('supplier_invoices/view/' . (int) $invoiceId);
@@ -204,10 +204,10 @@ class Supplier_invoices extends Admin_Controller
             if ( ! $this->Mdl_supplier_invoices->archive((int) $invoiceId, (int) $this->session->userdata('user_id'))) {
                 throw new RuntimeException('Supplier invoice is already archived or does not exist.');
             }
-            $this->session->set_flashdata('alert_success', 'Supplier invoice archived.');
+            $this->session->set_flashdata('alert_success', trans('supplier_invoice_archived'));
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice archive failed: ' . sanitize_for_logging($e->getMessage()));
-            $this->session->set_flashdata('alert_error', 'Unable to archive the supplier invoice.');
+            $this->session->set_flashdata('alert_error', trans('unable_to_archive_supplier_invoice'));
         }
 
         redirect('supplier_invoices/view/' . (int) $invoiceId);
@@ -226,10 +226,10 @@ class Supplier_invoices extends Admin_Controller
             if ( ! $this->Mdl_supplier_invoices->restore((int) $invoiceId)) {
                 throw new RuntimeException('Supplier invoice is already active or does not exist.');
             }
-            $this->session->set_flashdata('alert_success', 'Supplier invoice restored.');
+            $this->session->set_flashdata('alert_success', trans('supplier_invoice_restored'));
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice restore failed: ' . sanitize_for_logging($e->getMessage()));
-            $this->session->set_flashdata('alert_error', 'Unable to restore the supplier invoice.');
+            $this->session->set_flashdata('alert_error', trans('unable_to_restore_supplier_invoice'));
         }
 
         redirect('supplier_invoices/view/' . (int) $invoiceId);
@@ -270,7 +270,7 @@ class Supplier_invoices extends Admin_Controller
                 'reference' => $this->postScalar('reference'),
                 'notes' => $this->postScalar('notes'),
             ]);
-            $this->session->set_flashdata('alert_success', 'Supplier invoice payment recorded.');
+            $this->session->set_flashdata('alert_success', trans('supplier_invoice_payment_recorded'));
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice payment failed: ' . sanitize_for_logging($e->getMessage()));
             $this->session->set_flashdata('alert_error', $e->getMessage());
@@ -354,7 +354,7 @@ class Supplier_invoices extends Admin_Controller
                 @unlink($storedPath);
                 throw new RuntimeException('Unable to register the attachment.');
             }
-            $this->session->set_flashdata('alert_success', 'Attachment uploaded.');
+            $this->session->set_flashdata('alert_success', trans('attachment_uploaded'));
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice attachment upload failed: ' . sanitize_for_logging($e->getMessage()));
             $this->session->set_flashdata('alert_error', $e->getMessage());
@@ -431,20 +431,20 @@ class Supplier_invoices extends Admin_Controller
     {
         $errors = [];
         if ($data['supplier_id'] <= 0 || $this->Mdl_suppliers->get_by_id($data['supplier_id']) === []) {
-            $errors[] = 'A valid supplier is required.';
+            $errors[] = trans('valid_supplier_required');
         }
         if ($data['supplier_invoice_number'] === '') {
-            $errors[] = 'Invoice number is required.';
+            $errors[] = trans('invoice_number_required');
         }
         if ($errors === [] && $this->Mdl_supplier_invoices->has_duplicate_number(
             $data['supplier_id'],
             $data['supplier_invoice_number'],
             $invoiceId
         )) {
-            $errors[] = 'A supplier invoice with this number already exists for the selected supplier.';
+            $errors[] = trans('duplicate_supplier_invoice_number');
         }
         if ($data['supplier_invoice_date'] === '') {
-            $errors[] = 'Invoice date is required.';
+            $errors[] = trans('invoice_date_required');
         }
 
         return $errors;

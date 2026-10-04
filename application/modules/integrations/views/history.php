@@ -20,7 +20,7 @@
                 <th><?php _trans('date'); ?></th>
                 <th><?php _trans('direction'); ?></th>
                 <th><?php _trans('status'); ?></th>
-                <th>Error code</th>
+                <th><?php _trans('error_code'); ?></th>
                 <th><?php _trans('message'); ?></th>
                 <th><?php _trans('external_id'); ?></th>
                 <th><?php _trans('http_code'); ?></th>
