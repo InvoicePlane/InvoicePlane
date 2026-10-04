@@ -19,7 +19,7 @@
                 <th><?php _trans('invoice'); ?></th>
                 <th><?php _trans('provider'); ?></th>
                 <th><?php _trans('status'); ?></th>
-                <th>Error code</th>
+                <th><?php _trans('error_code'); ?></th>
                 <th><?php _trans('message'); ?></th>
                 <th><?php _trans('external_id'); ?></th>
                 <th><?php _trans('http_code'); ?></th>

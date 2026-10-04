@@ -3,7 +3,7 @@
 
     <div class="headerbar-item pull-right">
         <a href="<?php echo site_url('supplier_invoices'); ?>" class="btn btn-sm btn-default">
-            <i class="fa fa-book"></i> Supplier invoices
+            <i class="fa fa-book"></i> <?php _trans('supplier_invoices'); ?>
         </a>
         <?php foreach ($clients as $client) : ?>
             <form method="post"
@@ -30,11 +30,11 @@
                 <th><?php _trans('provider'); ?></th>
                 <th><?php _trans('peppol_participant_id'); ?></th>
                 <th><?php _trans('status'); ?></th>
-                <th>Error code</th>
+                <th><?php _trans('error_code'); ?></th>
                 <th><?php _trans('message'); ?></th>
                 <th><?php _trans('external_id'); ?></th>
-                <th>Document</th>
-                <th>Accounting</th>
+                <th><?php _trans('document'); ?></th>
+                <th><?php _trans('accounting'); ?></th>
             </tr>
             </thead>
             <tbody>
@@ -77,7 +77,7 @@
                                 </a>
                             <?php elseif (($row['document_validation_status'] ?? null) === 'failed') : ?>
                                 <span class="text-danger" title="<?php _htmlsc($row['document_validation_error'] ?? ''); ?>">
-                                    <i class="fa fa-exclamation-triangle"></i> Rejected
+                                    <i class="fa fa-exclamation-triangle"></i> <?php _trans('rejected'); ?>
                                 </span>
                             <?php else : ?>
                                 —
@@ -90,7 +90,7 @@
                             <?php elseif (($row['document_validation_status'] ?? null) === 'valid') : ?>
                                 <form method="post" action="<?php echo site_url('integrations/incoming/create_supplier_invoice/' . (int) $row['merchant_response_id']); ?>">
                                     <?php _csrf_field(); ?>
-                                    <button type="submit" class="btn btn-xs btn-primary">Add to accounting</button>
+                                    <button type="submit" class="btn btn-xs btn-primary"><?php _trans('add_to_accounting'); ?></button>
                                 </form>
                             <?php else : ?>
                                 —

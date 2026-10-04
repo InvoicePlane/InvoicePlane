@@ -90,7 +90,7 @@ class Incoming extends Admin_Controller
             $result = $this->syncService()->run((int) $merchant_client_id, 'manual', 'incoming');
         } catch (Throwable $e) {
             log_message('error', 'Incoming e-invoice sync failed: ' . sanitize_for_logging($e->getMessage()));
-            $this->session->set_flashdata('alert_error', 'Provider request failed.');
+            $this->session->set_flashdata('alert_error', trans('provider_request_failed'));
             redirect('integrations/incoming');
 
             return;
@@ -99,7 +99,7 @@ class Incoming extends Admin_Controller
         $this->session->set_flashdata(
             $result['status'] === 'success' ? 'alert_success' : 'alert_error',
             sprintf(
-                '%d incoming invoice(s) archived; %d already present; %d rejected. Run %s (%s).',
+                trans('incoming_sync_summary'),
                 $result['incoming']['archived'],
                 $result['incoming']['skipped'],
                 $result['incoming']['failed'],
@@ -120,10 +120,10 @@ class Incoming extends Admin_Controller
 
         try {
             $this->Mdl_supplier_invoices->import_from_incoming_response((int) $responseId);
-            $this->session->set_flashdata('alert_success', 'Supplier invoice imported into the supplier invoice module.');
+            $this->session->set_flashdata('alert_success', trans('supplier_invoice_imported'));
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice import failed: ' . sanitize_for_logging($e->getMessage()));
-            $this->session->set_flashdata('alert_error', 'Unable to add the supplier invoice.');
+            $this->session->set_flashdata('alert_error', trans('unable_to_add_supplier_invoice'));
         }
 
         redirect('integrations/incoming');
@@ -140,10 +140,10 @@ class Incoming extends Admin_Controller
         try {
             $status = trim((string) $this->input->post('status'));
             $this->Mdl_supplier_invoices->update_status((int) $supplierInvoiceId, $status);
-            $this->session->set_flashdata('alert_success', 'Supplier invoice status updated.');
+            $this->session->set_flashdata('alert_success', trans('supplier_invoice_status_updated'));
         } catch (Throwable $e) {
             log_message('error', 'Supplier invoice status update failed: ' . sanitize_for_logging($e->getMessage()));
-            $this->session->set_flashdata('alert_error', 'Unable to update the supplier invoice status.');
+            $this->session->set_flashdata('alert_error', trans('unable_to_update_supplier_invoice_status'));
         }
 
         redirect('integrations/incoming/accounting');
