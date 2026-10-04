@@ -138,6 +138,13 @@ invoice reference, document link, and workflow status (`received`, `approved`,
 `paid`, or `rejected`). It is intentionally separate from `ip_invoices`, which
 contains sales invoices issued by InvoicePlane.
 
+When a validated Factur-X/CII or UBL document is added, the supplier invoice
+module also extracts the supplier identity, invoice number, issue and due
+dates, currency, VAT totals, invoice totals, and structured invoice lines. The
+original archived document remains linked to the imported record. Documents
+whose structured content cannot be read are rejected instead of being imported
+with misleading totals.
+
 ---
 
 # Provider Management
