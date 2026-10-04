@@ -16,13 +16,35 @@ class Supplier_invoices extends Admin_Controller
         $this->load->model('supplier_invoices/Mdl_supplier_invoice_payments');
     }
 
-    public function index(): void
+    public function index($page = 0): void
     {
-        $status = trim((string) $this->input->get('status')) ?: null;
+        $filters = [
+            'q' => $this->getScalar('q'),
+            'status' => $this->getScalar('status'),
+            'date_from' => $this->getDateFilter('date_from'),
+            'date_to' => $this->getDateFilter('date_to'),
+        ];
+        $page = max(0, (int) $page);
+        $perPage = max(1, (int) get_setting('default_list_limit', 20));
+        $result = $this->Mdl_supplier_invoices->search($filters, $page, $perPage);
+        $query = http_build_query(array_filter($filters, static fn ($value): bool => $value !== ''));
+        $this->load->library('pagination');
+        $config = [
+            'base_url' => site_url('supplier_invoices/index'),
+            'total_rows' => $result['total'],
+            'per_page' => $perPage,
+            'suffix' => $query === '' ? '' : '?' . $query,
+        ];
+        if ($this->config->item('pagination_style')) {
+            $config = array_merge($config, $this->config->item('pagination_style'));
+        }
+        $this->pagination->initialize($config);
+
         $this->layout->set([
-            'supplier_invoices' => $this->Mdl_supplier_invoices->get_all($status),
-            'selected_status' => $status,
+            'supplier_invoices' => $result['rows'],
+            'filters' => $filters,
             'statuses' => Mdl_Supplier_invoices::STATUSES,
+            'pagination' => $this->pagination->create_links(),
         ]);
         $this->layout->buffer('content', 'supplier_invoices/index');
         $this->layout->render();
@@ -280,5 +302,19 @@ class Supplier_invoices extends Admin_Controller
         $value = is_array($values) ? ($values[$index] ?? '') : '';
 
         return is_scalar($value) ? trim((string) $value) : '';
+    }
+
+    private function getScalar(string $key): string
+    {
+        $value = $this->input->get($key);
+
+        return is_scalar($value) ? trim((string) $value) : '';
+    }
+
+    private function getDateFilter(string $key): string
+    {
+        $value = $this->getScalar($key);
+
+        return preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1 ? $value : '';
     }
 }
