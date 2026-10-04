@@ -79,6 +79,14 @@ class Integrations extends Admin_Controller
             ->get()
             ->result();
 
+        $driver = MerchantResponseDriver::tryFrom((string) $merchantClient['merchant_type']);
+
+        if ($driver === null) {
+            show_error('Unrecognized integration provider.', 500);
+
+            return;
+        }
+
         try {
             $profileCode = (string) ($invoice->client_einvoicing_version ?? '');
             $profile     = EInvoiceProfileRegistry::builtIn()->get($profileCode);
@@ -111,14 +119,26 @@ class Integrations extends Admin_Controller
             $client   = new IntegrationClient($provider, $settings);
             $metadata = $provider->buildInvoicePayload($invoice, $items, $metadata);
             $response = $client->sendInvoice($documentPath, $metadata);
-
-            $driver = MerchantResponseDriver::tryFrom($merchantClient['merchant_type']);
-            if ($driver === null) {
-                throw new RuntimeException('Unrecognized integration provider: ' . $merchantClient['merchant_type']);
-            }
         } catch (Throwable $e) {
             $message = $e->getMessage();
             log_message('error', 'E-invoice send failed: ' . sanitize_for_logging($message));
+
+            $this->Merchant_responses_model->create_outbound(
+                $merchantClientId,
+                $invoiceId,
+                [
+                    'success'    => false,
+                    'status'     => MerchantResponseStatus::Error->value,
+                    'message'    => $message,
+                    'http_code'  => 0,
+                    'response'   => [],
+                    'external_id' => null,
+                ],
+                $driver,
+                'send_exception',
+                $message
+            );
+
             $this->session->set_flashdata(
                 'alert_error',
                 trans('einvoice_send_failed') . ': ' . html_escape($message)
