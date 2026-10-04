@@ -65,9 +65,10 @@ class Sync extends Admin_Controller
         $this->session->set_flashdata(
             $result['status'] === 'success' ? 'alert_success' : 'alert_error',
             sprintf(
-                '%s %d incoming invoice(s) archived; %d already present; %d rejected. Run %s (%s).',
+                '%s %d incoming invoice(s) archived; %d imported into supplier accounting; %d already present; %d rejected. Run %s (%s).',
                 trans('einvoice_manual_sync_success'),
                 $result['incoming']['archived'],
+                $result['incoming']['supplier_imported'],
                 $result['incoming']['skipped'],
                 $result['incoming']['failed'],
                 $result['correlation_id'],

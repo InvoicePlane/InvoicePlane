@@ -99,6 +99,7 @@ class Incoming extends Admin_Controller
             sprintf(
                 trans('incoming_sync_summary'),
                 $result['incoming']['archived'],
+                $result['incoming']['supplier_imported'],
                 $result['incoming']['skipped'],
                 $result['incoming']['failed'],
                 $result['correlation_id'],

@@ -115,7 +115,8 @@ final class IntegrationSyncService
                         $driver,
                         $items,
                         $this->responses,
-                        $this->archiveDirectory
+                        $this->archiveDirectory,
+                        $this->supplierInvoiceImporter()
                     );
                     foreach ($result['incoming']['errors'] as $error) {
                         $result['errors'][] = $error;
@@ -210,7 +211,8 @@ final class IntegrationSyncService
             }
 
             $expectedPhases   = $scope === 'all' ? 3 : 1;
-            $documentFailures = $result['incoming']['failed'] > 0;
+            $documentFailures = $result['incoming']['failed'] > 0
+                || $result['incoming']['supplier_import_failed'] > 0;
             $result['status'] = match (true) {
                 $successfulPhases === 0                                      => 'failed',
                 $successfulPhases < $expectedPhases
@@ -248,7 +250,14 @@ final class IntegrationSyncService
             'scope'          => $scope,
             'status'         => 'running',
             'attempts'       => 0,
-            'incoming'       => ['received' => 0, 'archived' => 0, 'skipped' => 0, 'failed' => 0],
+            'incoming'       => [
+                'received' => 0,
+                'archived' => 0,
+                'skipped' => 0,
+                'failed' => 0,
+                'supplier_imported' => 0,
+                'supplier_import_failed' => 0,
+            ],
             'statuses'       => ['updated' => 0, 'failed' => 0],
             'events'         => ['received' => 0, 'created' => 0, 'skipped' => 0],
             'errors'         => [],
@@ -261,6 +270,16 @@ final class IntegrationSyncService
             IntegrationPayloadSanitizer::text($error->getMessage(), 500)
                 ?? 'unknown error'
         );
+    }
+
+    private function supplierInvoiceImporter(): Closure
+    {
+        return static function (int $responseId): int {
+            $codeIgniter = get_instance();
+            $codeIgniter->load->model('supplier_invoices/Mdl_supplier_invoices');
+
+            return $codeIgniter->Mdl_supplier_invoices->import_from_incoming_response($responseId);
+        };
     }
 
     private function durationMilliseconds(int $startedAt): int
