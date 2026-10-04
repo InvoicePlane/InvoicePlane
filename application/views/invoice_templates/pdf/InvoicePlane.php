@@ -40,7 +40,7 @@ switch ($invoice_mode) {
 <html lang="<?php _trans('cldr'); ?>">
 <head>
     <meta charset="utf-8">
-    <title><?php echo htmlsc(get_setting('custom_title', 'InvoicePlane', true); ?> - <?php _trans('invoice'); ?></title>
+    <title><?php echo htmlsc(get_setting('custom_title', 'InvoicePlane', true)); ?> - <?php _trans('invoice'); ?></title>
     <link rel="stylesheet" href="<?php _theme_asset('css/templates.css'); ?>" type="text/css">
     <link rel="stylesheet" href="<?php _core_asset('css/custom-pdf.css'); ?>" type="text/css">
 </head>
