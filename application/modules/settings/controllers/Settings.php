@@ -138,6 +138,38 @@ class Settings extends Admin_Controller
                             redirect('settings');
                         }
                     }
+                    // Security: Validate date_format to prevent XSS injection via arbitrary format strings
+                    if ($key === 'date_format') {
+                        $date_format = is_scalar($value) ? (string) $value : '';
+                        $valid_formats = array_keys(date_formats());
+                        if ( ! in_array($date_format, $valid_formats, true) || preg_match('/<|>|javascript:|onerror|onload|onclick/', $date_format)) {
+                            $safe_value = sanitize_for_logging($date_format);
+                            log_message('error', sprintf('Invalid date_format value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate number_format to prevent XSS injection via format key tampering
+                    if ($key === 'number_format') {
+                        $number_fmt = is_scalar($value) ? (string) $value : '';
+                        $valid_formats = array_keys($number_formats);
+                        if ( ! in_array($number_fmt, $valid_formats, true) || preg_match('/<|>|javascript:|onerror|onload|onclick/', $number_fmt)) {
+                            $safe_value = sanitize_for_logging($number_fmt);
+                            log_message('error', sprintf('Invalid number_format value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate pdf_watermark to prevent type confusion attacks
+                    if ($key === 'pdf_watermark') {
+                        $pdf_wm = is_scalar($value) ? (string) $value : '';
+                        if ( ! in_array($pdf_wm, ['0', '1'], true) || preg_match('/<|>|javascript:|onerror|onload|onclick/', $pdf_wm)) {
+                            $safe_value = sanitize_for_logging($pdf_wm);
+                            log_message('error', sprintf('Invalid pdf_watermark value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
                     $batch_settings[$key] = $value;
                 }
 
