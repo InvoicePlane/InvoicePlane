@@ -92,10 +92,10 @@ After submission, the module can query the provider to retrieve invoice processi
 * Paid
 * Any additional status exposed by the provider
 
-Status information is stored in:
+Status information is stored in the unified provider response history:
 
 ```sql
-ip_einvoice_responses
+ip_merchant_responses
 ```
 
 ---
