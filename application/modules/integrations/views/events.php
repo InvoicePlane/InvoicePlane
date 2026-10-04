@@ -24,6 +24,7 @@
             <thead>
             <tr>
                 <th><?php _trans('date'); ?></th>
+                <th><?php _trans('invoice'); ?></th>
                 <th><?php _trans('provider'); ?></th>
                 <th><?php _trans('status'); ?></th>
                 <th><?php _trans('message'); ?></th>
@@ -31,15 +32,24 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($events as $row) : ?>
-                <tr>
-                    <td><?php _htmlsc($row['created_at']); ?></td>
-                    <td><?php _htmlsc($row['merchant_client_label'] ?? $row['merchant_response_driver'] ?? $row['merchant_client_id'] ?? ''); ?></td>
-                    <td><?php _htmlsc($row['status'] ?? ''); ?></td>
-                    <td><?php _htmlsc($row['merchant_response'] ?? ''); ?></td>
-                    <td><?php _htmlsc($row['http_code'] ?? ''); ?></td>
-                </tr>
-            <?php endforeach; ?>
+                <?php foreach ($events as $row) : ?>
+                    <tr>
+                        <td><?php _htmlsc($row['created_at']); ?></td>
+                        <td>
+                            <?php if ( ! empty($row['invoice_id'])) : ?>
+                                <a href="<?php echo site_url('invoices/view/' . (int) $row['invoice_id']); ?>">
+                                    <?php _htmlsc($row['invoice_number'] ?? '#' . (int) $row['invoice_id']); ?>
+                                </a>
+                            <?php else : ?>
+                                —
+                            <?php endif; ?>
+                        </td>
+                        <td><?php _htmlsc($row['merchant_client_label'] ?? $row['merchant_response_driver'] ?? $row['merchant_client_id'] ?? ''); ?></td>
+                        <td><?php _htmlsc($row['status'] ?? ''); ?></td>
+                        <td><?php _htmlsc($row['merchant_response'] ?? ''); ?></td>
+                        <td><?php _htmlsc($row['http_code'] ?? ''); ?></td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>

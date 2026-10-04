@@ -51,7 +51,7 @@ final class IntegrationSyncService
     public function run(int $merchantClientId, string $trigger = 'manual', string $scope = 'all'): array
     {
         if ( ! in_array($trigger, ['manual', 'api', 'cron'], true)
-            || ! in_array($scope, ['all', 'incoming', 'events'], true)) {
+            || ! in_array($scope, ['all', 'incoming', 'statuses', 'events'], true)) {
             throw new InvalidArgumentException('Invalid integration synchronization mode.');
         }
 
@@ -126,7 +126,46 @@ final class IntegrationSyncService
                 }
             }
 
-            if ($scope !== 'incoming') {
+            if ($scope !== 'incoming' && $scope !== 'events') {
+                $phaseAttempts = 0;
+                try {
+                    $statusCandidates = $this->responses->get_status_candidates($merchantClientId);
+
+                    foreach ($statusCandidates as $candidate) {
+                        $reference = (string) ($candidate['merchant_response_reference'] ?? '');
+
+                        try {
+                            $operation = $this->retry->execute(
+                                fn (): array => $client->getInvoiceStatus($reference)
+                            );
+                            $phaseAttempts += $operation['attempts'];
+                            $result['attempts'] += $operation['attempts'];
+                            $this->responses->save_status(
+                                (int) $candidate['invoice_id'],
+                                $operation['response'],
+                                $driver,
+                                $candidate
+                            );
+                            $result['statuses']['updated']++;
+                        } catch (Throwable $e) {
+                            $result['statuses']['failed']++;
+                            $result['errors'][] = $this->safeError(
+                                'Invoice status synchronization failed',
+                                $e
+                            );
+                        }
+                    }
+
+                    $successfulPhases++;
+                } catch (Throwable $e) {
+                    if ($phaseAttempts === 0) {
+                        $result['attempts'] += $this->retry->lastAttempts();
+                    }
+                    $result['errors'][] = $this->safeError('Status synchronization failed', $e);
+                }
+            }
+
+            if ($scope !== 'incoming' && $scope !== 'statuses') {
                 $phaseAttempts = 0;
                 try {
                     $operation     = $this->retry->execute(fn (): array => $client->getInvoiceEvents());
@@ -163,12 +202,14 @@ final class IntegrationSyncService
                 }
             }
 
-            $expectedPhases   = $scope === 'all' ? 2 : 1;
+            $expectedPhases   = $scope === 'all' ? 3 : 1;
             $documentFailures = $result['incoming']['failed'] > 0;
             $result['status'] = match (true) {
-                $successfulPhases === 0                                  => 'failed',
-                $successfulPhases < $expectedPhases || $documentFailures => 'partial',
-                default                                                  => 'success',
+                $successfulPhases === 0                                      => 'failed',
+                $successfulPhases < $expectedPhases
+                    || $documentFailures
+                    || $result['statuses']['failed'] > 0                     => 'partial',
+                default                                                      => 'success',
             };
         } catch (Throwable $e) {
             $result['status']   = 'failed';
@@ -201,6 +242,7 @@ final class IntegrationSyncService
             'status'         => 'running',
             'attempts'       => 0,
             'incoming'       => ['received' => 0, 'archived' => 0, 'skipped' => 0, 'failed' => 0],
+            'statuses'       => ['updated' => 0, 'failed' => 0],
             'events'         => ['received' => 0, 'created' => 0, 'skipped' => 0],
             'errors'         => [],
         ];

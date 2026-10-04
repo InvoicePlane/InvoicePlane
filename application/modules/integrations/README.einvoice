@@ -66,7 +66,7 @@ The main components are:
 | `RemoteUrlGuard` | Restricts provider-supplied download URLs to pinned public HTTPS destinations |
 | `IntegrationSettingsCipher` | Authenticates and encrypts provider configuration at rest |
 | `IntegrationPayloadSanitizer` | Redacts and bounds provider data before audit persistence |
-| `IntegrationSyncService` | Runs incoming/event synchronization with locking, retries, metrics, and correlation IDs |
+| `IntegrationSyncService` | Runs incoming/status/event synchronization with locking, retries, metrics, and correlation IDs |
 | `IntegrationSyncLock` | Uses a connection-scoped MySQL advisory lock to prevent overlap per provider |
 | `IntegrationRetryPolicy` | Applies bounded exponential retries to idempotent provider reads |
 | `Integration_sync_runs_model` | Persists operational outcomes and health history |
@@ -350,21 +350,23 @@ control-character, and length filtering. Existing application access controls
 and database backups must still be protected because business metadata remains
 present.
 
-Repeated event synchronization is idempotent: an identical raw event from the
-same provider is stored only once.
+Repeated status and event synchronization is safe: status polling uses the
+latest non-terminal transmission for each invoice, while an identical raw
+event from the same provider is stored only once.
 
 All state-changing browser actions use POST requests with CSRF protection.
 
 ### Operational synchronization guarantees
 
-Every incoming/event synchronization, whether started from the administration
+Every incoming/status/event synchronization, whether started from the administration
 UI, the authenticated JSON controller, or cron, passes through
 `IntegrationSyncService`:
 
 1. a durable `running` record and 32-character correlation ID are created;
 2. a non-blocking MySQL advisory lock is acquired for the provider account;
-3. provider incoming-list and event-list reads receive at most three attempts
-   with exponential delays of 250 ms and 500 ms before completion or failure;
+3. provider incoming-list, status, and event reads receive at most three
+   attempts with exponential delays of 250 ms and 500 ms before completion or
+   failure;
 4. authentication, validation, archive, deduplication, and event persistence
    share the same execution context;
 5. the run is finalized as `success`, `partial`, `failed`, or `skipped` with
