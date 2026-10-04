@@ -57,7 +57,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('price'); ?></span>
                     <input type="text" name="item_price" class="form-control amount" value="">
-                    <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                    <div class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')); ?></div>
                 </div>
             </td>
 <?php
@@ -205,7 +205,7 @@ foreach ($items as $item) {
                     <span class="input-group-addon"><?php _trans('price'); ?></span>
                     <input type="text" name="item_price" class="form-control amount"
                            value="<?php echo format_amount($item->item_price); ?>"<?php echo $invoice_disabled; ?>>
-                    <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                    <div class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')); ?></div>
                 </div>
             </td>
 <?php

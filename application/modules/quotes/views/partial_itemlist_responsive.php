@@ -53,7 +53,7 @@ foreach ($units as $unit) {
                             <div class="input-group">
                                 <label for="item_price" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
                                 <input type="text" name="item_price" id="item_price" class="form-control" value="">
-                                <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                                <div class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')); ?></div>
                             </div>
 <?php
 if ( ! $legacy_calculation) {
@@ -186,7 +186,7 @@ foreach ($items as $item) {
                                 <label for="item_price_<?php echo $item->item_id; ?>" class="input-group-addon ig-addon-aligned"><?php _trans('price'); ?></label>
                                 <input type="text" name="item_price" id="item_price_<?php echo $item->item_id; ?>" class="form-control"
                                        value="<?php echo format_amount($item->item_price); ?>">
-                                <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                                <div class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')); ?></div>
                             </div>
 <?php
         if ( ! $legacy_calculation) {

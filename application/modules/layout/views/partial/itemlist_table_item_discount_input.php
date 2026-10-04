@@ -9,6 +9,6 @@ $item_value       = isset($item->item_discount_amount) ? format_amount($item->it
                     <input type="text" name="item_discount_amount" class="form-control amount"
                            value="<?php echo $item_value; ?>"<?php echo $invoice_disabled; ?>
                            data-toggle="tooltip" data-placement="bottom" title="<?php _trans('item_discount'); ?>">
-                    <span class="input-group-addon"><?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?></span>
+                    <span class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')) . ' ' . trans('per_item'); ?></span>
                 </div>
             </td>
