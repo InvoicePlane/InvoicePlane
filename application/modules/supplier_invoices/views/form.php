@@ -19,9 +19,36 @@
 
         <h3>Items</h3>
         <?php $formItems = $items ?: [[]]; for ($row = 0; $row < max(3, count($formItems)); $row++) : $item = $formItems[$row] ?? []; ?>
-            <div class="form-inline" style="margin-bottom: 8px;"><input class="form-control" name="item_name[]" placeholder="Description" value="<?php _htmlsc($item['item_name'] ?? ''); ?>"><input class="form-control" name="quantity[]" type="number" step="0.000001" placeholder="Qty" value="<?php _htmlsc($item['quantity'] ?? '1'); ?>"><input class="form-control" name="unit_price[]" placeholder="Unit price" value="<?php _htmlsc($item['unit_price'] ?? ''); ?>"><input class="form-control" name="tax_rate[]" placeholder="Tax %" value="<?php _htmlsc($item['tax_rate'] ?? ''); ?>"><input class="form-control" name="item_total[]" placeholder="Total" value="<?php _htmlsc($item['total'] ?? ''); ?>"></div>
+            <div class="form-inline supplier-invoice-line" style="margin-bottom: 8px;"><input class="form-control" name="item_name[]" placeholder="Description" value="<?php _htmlsc($item['item_name'] ?? ''); ?>"><input class="form-control" name="quantity[]" type="number" step="0.000001" placeholder="Qty" value="<?php _htmlsc($item['quantity'] ?? '1'); ?>"><input class="form-control" name="unit_price[]" type="number" step="0.01" placeholder="Unit price" value="<?php _htmlsc($item['unit_price'] ?? ''); ?>"><input class="form-control" name="tax_rate[]" type="number" step="0.01" placeholder="Tax %" value="<?php _htmlsc($item['tax_rate'] ?? ''); ?>"><input class="form-control item-subtotal" name="item_subtotal[]" placeholder="Subtotal" value="<?php _htmlsc($item['subtotal'] ?? ''); ?>" readonly><input class="form-control item-tax-total" name="tax_total[]" placeholder="Tax" value="<?php _htmlsc($item['tax_total'] ?? ''); ?>" readonly><input class="form-control item-total" name="item_total[]" placeholder="Total" value="<?php _htmlsc($item['total'] ?? ''); ?>" readonly></div>
         <?php endfor; ?>
         <button class="btn btn-primary" type="submit" name="btn_submit" value="1">Save</button>
         <button class="btn btn-default" type="submit" name="btn_cancel" value="1">Cancel</button>
     </form>
 </div>
+<script>
+(function () {
+    function recalculate() {
+        var subtotal = 0;
+        var taxTotal = 0;
+        document.querySelectorAll('.supplier-invoice-line').forEach(function (line) {
+            var quantity = parseFloat(line.querySelector('[name="quantity[]"]').value) || 0;
+            var unitPrice = parseFloat(line.querySelector('[name="unit_price[]"]').value) || 0;
+            var taxRate = parseFloat(line.querySelector('[name="tax_rate[]"]').value) || 0;
+            var lineSubtotal = Math.round(quantity * unitPrice * 100) / 100;
+            var lineTax = Math.round(lineSubtotal * taxRate) / 100;
+            line.querySelector('.item-subtotal').value = lineSubtotal.toFixed(2);
+            line.querySelector('.item-tax-total').value = lineTax.toFixed(2);
+            line.querySelector('.item-total').value = (lineSubtotal + lineTax).toFixed(2);
+            subtotal += lineSubtotal;
+            taxTotal += lineTax;
+        });
+        document.querySelector('[name="subtotal"]').value = subtotal.toFixed(2);
+        document.querySelector('[name="tax_total"]').value = taxTotal.toFixed(2);
+        document.querySelector('[name="total"]').value = (subtotal + taxTotal).toFixed(2);
+    }
+    document.querySelectorAll('.supplier-invoice-line input').forEach(function (input) {
+        input.addEventListener('input', recalculate);
+    });
+    recalculate();
+}());
+</script>

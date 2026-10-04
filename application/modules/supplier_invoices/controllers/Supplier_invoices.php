@@ -226,7 +226,7 @@ class Supplier_invoices extends Admin_Controller
                 'quantity' => $this->arrayPostScalar('quantity', $index) ?: 1,
                 'unit_price' => $this->arrayPostScalar('unit_price', $index),
                 'tax_rate' => $this->arrayPostScalar('tax_rate', $index),
-                'subtotal' => $this->arrayPostScalar('subtotal', $index),
+                'subtotal' => $this->arrayPostScalar('item_subtotal', $index),
                 'tax_total' => $this->arrayPostScalar('tax_total', $index),
                 'total' => $this->arrayPostScalar('item_total', $index),
             ];
