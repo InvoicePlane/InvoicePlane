@@ -69,7 +69,7 @@ class Settings extends Admin_Controller
 
                 if (isset($settings[$key . '_field_is_password']) && $value !== '') {
                     // Encrypt passwords but don't save empty passwords
-                    $batch_settings[$key] = $this->crypt->encode(trim($value));
+                    $batch_settings[$key] = $this->crypt->encode(mb_trim($value));
                 } elseif (isset($settings[$key . '_field_is_amount'])) {
                     // Format amount inputs
                     $batch_settings[$key] = standardize_amount($value);
@@ -88,7 +88,52 @@ class Settings extends Admin_Controller
                     // Security: Validate first_day_of_week to prevent XSS via JavaScript context injection
                     if ($key === 'first_day_of_week') {
                         if ( ! in_array($value, ['0', '1', '2', '3', '4', '5', '6'], true)) {
-                            log_message('error', sprintf('Invalid first_day_of_week value attempted by user %d: %s', $this->session->userdata('user_id'), sanitize_for_logging($value)));
+                            $safe_value = is_scalar($value) ? sanitize_for_logging((string) $value) : '[non-scalar]';
+                            log_message('error', sprintf('Invalid first_day_of_week value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate decimal_point to prevent XSS injection
+                    if ($key === 'decimal_point') {
+                        $decimal_point = is_scalar($value) ? (string) $value : '';
+                        if (empty($decimal_point) || mb_strlen($decimal_point) !== 1 || preg_match('/<|>|javascript:|onerror|onload|onclick/', $decimal_point)) {
+                            $safe_value = sanitize_for_logging($decimal_point);
+                            log_message('error', sprintf('Invalid decimal_point value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                        // Check that decimal_point and thousands_separator are different
+                        $thousands_sep = $settings['thousands_separator'] ?? get_setting('thousands_separator');
+                        if ($decimal_point === $thousands_sep) {
+                            log_message('error', sprintf('Decimal point and thousands separator are identical, attempted by user %d', $this->session->userdata('user_id')));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate thousands_separator to prevent XSS injection
+                    if ($key === 'thousands_separator') {
+                        $thousands_sep = is_scalar($value) ? (string) $value : '';
+                        if (empty($thousands_sep) || mb_strlen($thousands_sep) !== 1 || preg_match('/<|>|javascript:|onerror|onload|onclick/', $thousands_sep)) {
+                            $safe_value = sanitize_for_logging($thousands_sep);
+                            log_message('error', sprintf('Invalid thousands_separator value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                        // Check that decimal_point and thousands_separator are different
+                        $decimal_pt = $settings['decimal_point'] ?? get_setting('decimal_point');
+                        if ($thousands_sep === $decimal_pt) {
+                            log_message('error', sprintf('Decimal point and thousands separator are identical, attempted by user %d', $this->session->userdata('user_id')));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate currency_symbol to prevent XSS injection
+                    if ($key === 'currency_symbol') {
+                        $currency_symbol = is_scalar($value) ? (string) $value : '';
+                        if (empty($currency_symbol) || mb_strlen($currency_symbol) > 4 || preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $currency_symbol)) {
+                            $safe_value = sanitize_for_logging($currency_symbol);
+                            log_message('error', sprintf('Invalid currency_symbol value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
                             $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
                             redirect('settings');
                         }
@@ -181,10 +226,10 @@ class Settings extends Admin_Controller
         ]);
 
         // Collect the list of templates
-        $pdf_invoice_templates                 = $this->mdl_templates->get_invoice_templates('pdf');
-        $public_invoice_templates              = $this->mdl_templates->get_invoice_templates('public');
-        $pdf_quote_templates                   = $this->mdl_templates->get_quote_templates('pdf');
-        $public_quote_templates                = $this->mdl_templates->get_quote_templates('public');
+        $pdf_invoice_templates    = $this->mdl_templates->get_invoice_templates('pdf');
+        $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
+        $pdf_quote_templates      = $this->mdl_templates->get_quote_templates('pdf');
+        $public_quote_templates   = $this->mdl_templates->get_quote_templates('public');
         $missing_allowlisted_template_settings = $this->mdl_templates->get_missing_allowlisted_template_settings();
 
         // Get all themes
@@ -193,27 +238,27 @@ class Settings extends Admin_Controller
         // Set data in the layout
         $this->layout->set(
             [
-                'invoice_groups'                        => $this->mdl_invoice_groups->get()->result(),
-                'tax_rates'                             => $this->mdl_tax_rates->get()->result(),
-                'payment_methods'                       => $this->mdl_payment_methods->get()->result(),
-                'public_invoice_templates'              => $public_invoice_templates,
-                'pdf_invoice_templates'                 => $pdf_invoice_templates,
-                'public_quote_templates'                => $public_quote_templates,
-                'pdf_quote_templates'                   => $pdf_quote_templates,
+                'invoice_groups'           => $this->mdl_invoice_groups->get()->result(),
+                'tax_rates'                => $this->mdl_tax_rates->get()->result(),
+                'payment_methods'          => $this->mdl_payment_methods->get()->result(),
+                'public_invoice_templates' => $public_invoice_templates,
+                'pdf_invoice_templates'    => $pdf_invoice_templates,
+                'public_quote_templates'   => $public_quote_templates,
+                'pdf_quote_templates'      => $pdf_quote_templates,
                 'missing_allowlisted_template_settings' => $missing_allowlisted_template_settings,
-                'languages'                             => get_available_languages(),
-                'countries'                             => get_country_list(trans('cldr')),
-                'date_formats'                          => date_formats(),
-                'current_date'                          => new DateTime(),
-                'available_themes'                      => $available_themes,
-                'email_templates_quote'                 => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
-                'email_templates_invoice'               => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'custom_fields'                         => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
-                'gateway_drivers'                       => $gateways,
-                'number_formats'                        => $number_formats,
-                'gateway_currency_codes'                => get_currencies(),
-                'first_days_of_weeks'                   => ['0' => lang('sunday'), '1' => lang('monday')],
-                'legacy_calculation'                    => config_item('legacy_calculation'),
+                'languages'                => get_available_languages(),
+                'countries'                => get_country_list(trans('cldr')),
+                'date_formats'             => date_formats(),
+                'current_date'             => new DateTime(),
+                'available_themes'         => $available_themes,
+                'email_templates_quote'    => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
+                'email_templates_invoice'  => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'custom_fields'            => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
+                'gateway_drivers'          => $gateways,
+                'number_formats'           => $number_formats,
+                'gateway_currency_codes'   => get_currencies(),
+                'first_days_of_weeks'      => ['0' => lang('sunday'), '1' => lang('monday')],
+                'legacy_calculation'       => config_item('legacy_calculation'),
             ]
         );
 
