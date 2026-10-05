@@ -46,21 +46,31 @@ final class IntegrationPayloadSanitizer
         }
 
         $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', (string) $value) ?? '';
+        $text = self::scrub($text);
+
+        return mb_strlen($text, '8bit') <= $maximumBytes
+            ? $text
+            : mb_strcut($text, 0, $maximumBytes) . '[TRUNCATED]';
+    }
+
+    /**
+     * Redacts credentials and signed URLs that appear INSIDE free text (provider error messages
+     * routinely echo the Authorization header or a request URL).
+     */
+    private static function scrub(string $text): string
+    {
         $text = preg_replace('/\bBearer\s+[A-Za-z0-9._~+\/=:-]+/i', 'Bearer ' . self::REDACTED, $text) ?? '';
         $text = preg_replace(
             '/\b(access[_-]?token|refresh[_-]?token|client[_-]?secret|api[_-]?key|password)\s*[:=]\s*[^\s,;]+/i',
             '$1=' . self::REDACTED,
             $text
         ) ?? '';
-        $text = preg_replace_callback(
+
+        return preg_replace_callback(
             '~https://[^\s<>"\']+~i',
             static fn (array $matches): string => self::sanitizeUrl($matches[0]),
             $text
         ) ?? '';
-
-        return mb_strlen($text, '8bit') <= $maximumBytes
-            ? $text
-            : mb_strcut($text, 0, $maximumBytes) . '[TRUNCATED]';
     }
 
     private static function sanitizeArray(array $payload, int $depth): array
@@ -92,7 +102,7 @@ final class IntegrationPayloadSanitizer
             } elseif (is_string($value)) {
                 $sanitized[$key] = self::isUrlKey($normalizedKey)
                     ? self::sanitizeUrl($value)
-                    : self::boundedString($value);
+                    : self::boundedString(self::scrub($value));
             } elseif (is_scalar($value) || $value === null) {
                 $sanitized[$key] = $value;
             } else {

@@ -54,7 +54,7 @@ class Merchant_responses_model extends CI_Model
             'invoice_id'                   => $invoiceId,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => IntegrationPayloadSanitizer::text($providerResponse['message'] ?? null),
+            'merchant_response'            => IntegrationPayloadSanitizer::text($providerResponse['message'] ?? null) ?? '',
             'merchant_response_reference'  => $reference,
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
@@ -89,8 +89,8 @@ class Merchant_responses_model extends CI_Model
             'invoice_id'                   => null,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => IntegrationPayloadSanitizer::text($providerResponse['message'] ?? null),
-            'merchant_response_reference'  => $providerResponse['external_id'] ?? null,
+            'merchant_response'            => IntegrationPayloadSanitizer::text($providerResponse['message'] ?? null) ?? '',
+            'merchant_response_reference'  => (string) ($providerResponse['external_id'] ?? ''),
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
             'direction'                    => MerchantResponseDirection::In->value,
@@ -116,8 +116,8 @@ class Merchant_responses_model extends CI_Model
             'invoice_id'                   => $invoiceId,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => IntegrationPayloadSanitizer::text($status['message'] ?? null),
-            'merchant_response_reference'  => $status['external_id'] ?? $lastResponse['merchant_response_reference'] ?? null,
+            'merchant_response'            => IntegrationPayloadSanitizer::text($status['message'] ?? null) ?? '',
+            'merchant_response_reference'  => (string) ($status['external_id'] ?? $lastResponse['merchant_response_reference'] ?? ''),
             'merchant_response_successful' => $resolvedStatus->isSuccessful(),
             'merchant_client_id'           => $lastResponse['merchant_client_id'] ?? null,
             'direction'                    => MerchantResponseDirection::Out->value,
@@ -181,8 +181,8 @@ class Merchant_responses_model extends CI_Model
             'invoice_id'                   => null,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => IntegrationPayloadSanitizer::text($invoice['message'] ?? null),
-            'merchant_response_reference'  => $externalId,
+            'merchant_response'            => IntegrationPayloadSanitizer::text($invoice['message'] ?? null) ?? '',
+            'merchant_response_reference'  => (string) ($externalId ?? ''),
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
             'direction'                    => MerchantResponseDirection::In->value,
@@ -235,7 +235,7 @@ class Merchant_responses_model extends CI_Model
             ->get(self::TABLE)
             ->row_array();
 
-        return $row === [] ? null : (int) $row['merchant_response_id'];
+        return empty($row) ? null : (int) $row['merchant_response_id'];
     }
 
     public function create_event_item(
@@ -291,8 +291,8 @@ class Merchant_responses_model extends CI_Model
             'invoice_id'                   => $invoiceId,
             'merchant_response_date'       => date('Y-m-d'),
             'merchant_response_driver'     => $driver->value,
-            'merchant_response'            => IntegrationPayloadSanitizer::text($message),
-            'merchant_response_reference'  => $reference,
+            'merchant_response'            => IntegrationPayloadSanitizer::text($message) ?? '',
+            'merchant_response_reference'  => (string) ($reference ?? ''),
             'merchant_response_successful' => $status->isSuccessful(),
             'merchant_client_id'           => $merchantClientId,
             'direction'                    => MerchantResponseDirection::In->value,
