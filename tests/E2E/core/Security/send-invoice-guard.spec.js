@@ -33,9 +33,15 @@ test.describe('Send invoice — guards', () => {
     /* Act */
     const response = await page.request.post(`/integrations/send_invoice/${invoice.id}/${merchantId}`, { maxRedirects: 0 });
 
-    /* Assert: bounced, nothing transmitted */
+    /* Assert: bounced, nothing transmitted (http_code 0), and the failure is recorded with its reason */
     expect([301, 302, 303, 307]).toContain(response.status());
-    expect(outResponses(invoice.id, merchantId)).toEqual([]);
+    const attempts = dbQuery(
+      `SELECT status, http_code, error_code, error_detail FROM ip_merchant_responses WHERE invoice_id = ${invoice.id}`
+      + ` AND merchant_client_id = ${merchantId} AND direction = 'out'`,
+    );
+    expect(attempts).toHaveLength(1);
+    expect(attempts[0]).toMatchObject({ status: 'error', http_code: 0, error_code: 'send_exception' });
+    expect(attempts[0].error_detail).toContain('does not support this e-invoice profile');
   });
 
   test('it does not transmit on a plain get request', async ({ page }) => {

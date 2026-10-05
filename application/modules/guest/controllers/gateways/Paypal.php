@@ -27,7 +27,6 @@ class Paypal extends Base_Controller
         // paypal_capture_payment() needs this and previously never loaded it,
         // so every capture attempt fataled on a null $this->mdl_invoices.
         $this->load->model('invoices/mdl_invoices');
-        $this->_create_client();
     }
 
     /**
@@ -61,7 +60,7 @@ class Paypal extends Base_Controller
         }
 
         //create the order
-        $paypal_client = $this->lib_paypal->createOrder([
+        $paypal_client = $this->paypal()->createOrder([
             'invoice_id'    => $invoice->invoice_id,
             'currency_code' => get_setting('gateway_paypal_currency'),
             'value'         => $invoice->invoice_balance,
@@ -126,7 +125,7 @@ class Paypal extends Base_Controller
             show_404();
         }
 
-        $paypal_response = $this->lib_paypal->captureOrder($order_id);
+        $paypal_response = $this->paypal()->captureOrder($order_id);
 
         //handle the payment
         if ($paypal_response['status']) {
@@ -361,6 +360,20 @@ class Paypal extends Base_Controller
         }
     }
 
+    /**
+     * The PayPal client authorizes against PayPal's API when it is constructed, so it is built
+     * only once a request has passed its local guards. Constructing it in __construct() made
+     * every request - including ones that must simply 404 - depend on PayPal being reachable.
+     */
+    private function paypal(): PaypalLib
+    {
+        if (empty($this->lib_paypal)) {
+            $this->_create_client();
+        }
+
+        return $this->lib_paypal;
+    }
+
     protected function _create_client(): void
     {
         $this->load->library('crypt');
@@ -381,7 +394,7 @@ class Paypal extends Base_Controller
      */
     private function _paypal_order_invoice_id(string $order_id): ?string
     {
-        $response = $this->lib_paypal->showOrderDetails($order_id);
+        $response = $this->paypal()->showOrderDetails($order_id);
 
         if ( ! $response['status']) {
             return null;

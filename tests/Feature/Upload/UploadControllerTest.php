@@ -134,18 +134,20 @@ final class UploadControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_rejects_a_traversal_name_on_delete_and_leaves_other_files_alone(): void
+    public function it_confines_a_traversal_name_on_delete_to_the_upload_folder(): void
     {
         /* Arrange */
         $urlKey = $this->urlKey();
         $canary = ROOT_PATH . '/ipconfig.php';
+        $own    = $this->storeFile($urlKey, 'ipconfig.php.pdf', '%PDF own');
 
-        /* Act */
+        /* Act: basename() reduces the name to "ipconfig.php", which can only ever address "<key>_ipconfig.php" in the folder */
         $response = $this->post('/upload/delete_file/' . $urlKey, ['name' => '../../ipconfig.php']);
 
-        /* Assert */
-        $this->assertResponseStatusCode($response, 400);
+        /* Assert: the real config is untouched, and so is an unrelated upload under the same key */
+        $this->assertResponseStatusCode($response, 200);
         self::assertFileExists($canary);
+        self::assertFileExists($own);
     }
 
     #[Test]

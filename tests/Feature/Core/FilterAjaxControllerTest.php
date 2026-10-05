@@ -129,21 +129,21 @@ class FilterAjaxControllerTest extends AbstractTestCase
     #[Test]
     public function it_filters_custom_values_by_query(): void
     {
-        /* Arrange */
-        $fieldId = $this->databaseInsert('ip_custom_fields', [
-            'custom_field_table' => 'ip_client_custom', 'custom_field_label' => 'Choice field', 'custom_field_type' => 'SINGLE-CHOICE',
-            'custom_field_order' => 1, 'custom_field_location' => 0,
-        ]);
-        foreach (['FilterValueMatch', 'UnrelatedValueText'] as $value) {
+        /* Arrange: two choice fields, each owning one value; the filter matches on the value text */
+        foreach (['Matching field' => 'FilterValueMatch', 'Other field' => 'UnrelatedValueText'] as $label => $value) {
+            $fieldId = $this->databaseInsert('ip_custom_fields', [
+                'custom_field_table' => 'ip_client_custom', 'custom_field_label' => $label, 'custom_field_type' => 'SINGLE-CHOICE',
+                'custom_field_order' => 1, 'custom_field_location' => 0,
+            ]);
             $this->databaseInsert('ip_custom_values', ['custom_values_field' => $fieldId, 'custom_values_value' => $value]);
         }
 
         /* Act */
         $response = $this->ajax('POST', '/filter/ajax/filter_custom_values', ['filter_query' => 'FilterValueMatch']);
 
-        /* Assert */
-        $this->assertResponseBodyContains($response, 'FilterValueMatch');
-        $this->assertResponseBodyNotContains($response, 'UnrelatedValueText');
+        /* Assert: the field owning the matching value is listed; the other field is not */
+        $this->assertResponseBodyContains($response, 'Matching field');
+        $this->assertResponseBodyNotContains($response, 'Other field');
     }
 
     #[Test]

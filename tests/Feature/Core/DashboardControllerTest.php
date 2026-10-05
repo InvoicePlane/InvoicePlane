@@ -170,7 +170,7 @@ class DashboardControllerTest extends AbstractTestCase
         $this->assertResponseBodyContains($none, 'No overdue Invoice');
         $this->assertResponseBodyNotContains($late, 'No overdue Invoice');
         $this->assertResponseBodyContains($late, 'Overdue Invoices');
-        $this->assertResponseBodyContains($late, '75.00');
+        self::assertMatchesRegularExpression('/text-danger">\s*\$75\s*</', $late->body(), 'The overdue panel must total the overdue balance.');
     }
 
 }
