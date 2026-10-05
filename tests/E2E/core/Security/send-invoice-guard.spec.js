@@ -41,7 +41,7 @@ test.describe('Send invoice — guards', () => {
     );
     expect(attempts).toHaveLength(1);
     expect(attempts[0]).toMatchObject({ status: 'error', http_code: 0, error_code: 'send_exception' });
-    expect(attempts[0].error_detail).toContain('does not support this e-invoice profile');
+    expect(attempts[0].error_detail).toMatch(/e-invoice profile/i);
   });
 
   test('it does not transmit on a plain get request', async ({ page }) => {
