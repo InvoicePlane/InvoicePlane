@@ -46,6 +46,9 @@ class Mdl_Archive_documents extends CI_Model
             'mime_type' => trim((string) ($data['mime_type'] ?? 'application/octet-stream')),
             'file_size' => max(0, (int) ($data['file_size'] ?? 0)),
             'sha256' => $sha256,
+            'integrity_status' => $this->nullableString($data['integrity_status'] ?? null),
+            'integrity_verified_at' => $this->nullableDateTime($data['integrity_verified_at'] ?? null),
+            'integrity_error' => $this->nullableString($data['integrity_error'] ?? null),
             'document_profile' => $this->nullableString($data['document_profile'] ?? null),
             'validation_status' => $this->nullableString($data['validation_status'] ?? null),
             'validation_error' => $this->nullableString($data['validation_error'] ?? null),
@@ -216,6 +219,79 @@ class Mdl_Archive_documents extends CI_Model
             ->result_array();
     }
 
+    /**
+     * Verify the stored document against its registered SHA-256 digest.
+     *
+     * @return array{valid: bool, expected_sha256: string, actual_sha256: string|null}
+     */
+    public function verify_integrity(
+        int $archiveDocumentId,
+        ?int $actorUserId = null,
+        string $actorType = 'system'
+    ): array {
+        $document = $this->requireDocument($archiveDocumentId);
+        $path = $this->archivePath((string) $document['storage_path']);
+        $actualSha256 = hash_file('sha256', $path);
+        $expectedSha256 = strtolower((string) $document['sha256']);
+        $valid = is_string($actualSha256)
+            && preg_match('/^[a-f0-9]{64}$/', $actualSha256) === 1
+            && hash_equals($expectedSha256, $actualSha256);
+        $now = date('Y-m-d H:i:s');
+
+        $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
+            'integrity_status' => $valid ? 'verified' : 'failed',
+            'integrity_verified_at' => $now,
+            'integrity_error' => $valid ? null : 'The stored document does not match its registered SHA-256 digest.',
+            'updated_at' => $now,
+        ]);
+
+        $this->audit(
+            $archiveDocumentId,
+            $valid ? 'integrity_verified' : 'integrity_failed',
+            $actorUserId,
+            $actorType,
+            [
+                'expected_sha256' => $expectedSha256,
+                'actual_sha256' => is_string($actualSha256) ? $actualSha256 : null,
+                'valid' => $valid,
+            ]
+        );
+
+        return [
+            'valid' => $valid,
+            'expected_sha256' => $expectedSha256,
+            'actual_sha256' => is_string($actualSha256) ? $actualSha256 : null,
+        ];
+    }
+
+    public function seal(
+        int $archiveDocumentId,
+        ?int $actorUserId = null,
+        string $actorType = 'system'
+    ): bool {
+        $document = $this->requireDocument($archiveDocumentId);
+        if (($document['sealed_at'] ?? null) !== null && $document['sealed_at'] !== '') {
+            return false;
+        }
+
+        $verification = $this->verify_integrity($archiveDocumentId, $actorUserId, $actorType);
+        if ($verification['valid'] !== true) {
+            throw new RuntimeException('The archive document cannot be sealed because its integrity check failed.');
+        }
+
+        $sealedAt = date('Y-m-d H:i:s');
+        $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
+            'sealed_at' => $sealedAt,
+            'updated_at' => $sealedAt,
+        ]);
+        $this->audit($archiveDocumentId, 'sealed', $actorUserId, $actorType, [
+            'sealed_at' => $sealedAt,
+            'sha256' => $verification['actual_sha256'],
+        ]);
+
+        return true;
+    }
+
     private function requireDocument(int $archiveDocumentId): array
     {
         if ($archiveDocumentId < 1) {
@@ -245,6 +321,23 @@ class Mdl_Archive_documents extends CI_Model
             $actorType,
             $payload
         );
+    }
+
+    private function archivePath(string $storagePath): string
+    {
+        $this->load->helper('file_security');
+        if ( ! validate_safe_filename($storagePath)['valid']) {
+            throw new RuntimeException('The archive document path is invalid.');
+        }
+
+        $path = rtrim(UPLOADS_ARCHIVE_FOLDER, DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . str_replace('/', DIRECTORY_SEPARATOR, $storagePath);
+        if ( ! is_file($path) || ! validate_file_in_directory($path, UPLOADS_ARCHIVE_FOLDER)) {
+            throw new RuntimeException('The archived document is unavailable.');
+        }
+
+        return $path;
     }
 
     private function nullableString(mixed $value): ?string
