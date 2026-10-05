@@ -85,6 +85,7 @@ class User_Controller extends Base_Controller
         }
         $fingerprint = session_credential_fingerprint((string) $current->user_password);
         $session_fp  = (string) $this->session->userdata('user_credential');
+
         if ($session_fp === '') {
             // Session created before fingerprints existed: bind it to the current password once.
             $this->session->set_userdata('user_credential', $fingerprint);
