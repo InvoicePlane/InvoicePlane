@@ -4,6 +4,7 @@
  * Mirrors tests/Feature/Core/LoginSecurityTest.php.
  */
 
+import { createHash } from 'node:crypto';
 import { test, expect } from '../../test.js';
 import { createSecondaryUser } from '../../support/fixtures.js';
 import { dbExec, dbQuery } from '../../support/db.js';
@@ -72,7 +73,8 @@ test.describe('Login security — account status', () => {
 
     /* Assert: redirected, and a failure row is logged (auth() returned false) */
     expect([301, 302, 303]).toContain(response.status());
-    expect(dbQuery(`SELECT log_count FROM ip_login_log WHERE login_name = '${user.email}'`)).toEqual([{ log_count: 1 }]);
+    const logKey = `login_account:${createHash('sha256').update(user.email.toLowerCase()).digest('hex')}`;
+    expect(dbQuery(`SELECT log_count FROM ip_login_log WHERE login_name = '${logKey}'`)).toEqual([{ log_count: 1 }]);
     await admin.close();
   });
 

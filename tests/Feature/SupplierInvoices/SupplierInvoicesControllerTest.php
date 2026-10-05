@@ -108,6 +108,91 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
         $this->assertResponseRedirectsToRoute($response, 'sessions/login');
     }
 
+    #[Test]
+    public function it_changes_an_invoice_status_and_records_the_history(): void
+    {
+        /* Arrange */
+        $invoiceId = $this->seedSupplierInvoice($this->seedSupplier('Status Supplier'), 'STA-001', '80.00');
+        $this->enableCsrfProtection();
+
+        /* Act */
+        $response = $this->postWithValidCsrfToken('/supplier_invoices/status/' . $invoiceId, [
+            'status'  => 'approved',
+            'comment' => 'Checked against the purchase order',
+        ]);
+
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'supplier_invoices/view/' . $invoiceId);
+        $this->assertDatabaseHas('ip_supplier_invoices', ['supplier_invoice_id' => $invoiceId, 'status' => 'approved']);
+        $this->assertDatabaseHas('ip_supplier_invoice_status_history', [
+            'supplier_invoice_id' => $invoiceId,
+            'old_status'          => 'received',
+            'new_status'          => 'approved',
+            'comment'             => 'Checked against the purchase order',
+        ]);
+    }
+
+    #[Test]
+    public function it_rejects_an_unknown_status_without_changing_the_invoice(): void
+    {
+        /* Arrange */
+        $invoiceId = $this->seedSupplierInvoice($this->seedSupplier('Bogus Status Supplier'), 'STA-002', '80.00');
+        $this->enableCsrfProtection();
+
+        /* Act */
+        $response = $this->postWithValidCsrfToken('/supplier_invoices/status/' . $invoiceId, ['status' => 'bogus']);
+
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'supplier_invoices/view/' . $invoiceId);
+        $this->assertDatabaseHas('ip_supplier_invoices', ['supplier_invoice_id' => $invoiceId, 'status' => 'received']);
+        $this->assertDatabaseMissing('ip_supplier_invoice_status_history', ['supplier_invoice_id' => $invoiceId]);
+    }
+
+    #[Test]
+    public function it_refuses_a_status_change_without_a_csrf_token(): void
+    {
+        /* Arrange */
+        $invoiceId = $this->seedSupplierInvoice($this->seedSupplier('No Token Supplier'), 'STA-003', '80.00');
+        $this->enableCsrfProtection();
+
+        /* Act */
+        $response = $this->postWithoutCsrfToken('/supplier_invoices/status/' . $invoiceId, ['status' => 'approved']);
+
+        /* Assert */
+        self::assertFalse($response->isRedirect(), 'A token-less status change must not reach the controller.');
+        $this->assertDatabaseHas('ip_supplier_invoices', ['supplier_invoice_id' => $invoiceId, 'status' => 'received']);
+    }
+
+    #[Test]
+    public function it_registers_no_attachment_when_the_upload_carries_no_file(): void
+    {
+        /* Arrange */
+        $invoiceId = $this->seedSupplierInvoice($this->seedSupplier('Attachment Supplier'), 'ATT-001', '40.00');
+        $this->enableCsrfProtection();
+
+        /* Act */
+        $response = $this->postWithValidCsrfToken('/supplier_invoices/upload_attachment/' . $invoiceId);
+
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'supplier_invoices/view/' . $invoiceId);
+        $this->assertDatabaseMissing('ip_supplier_invoice_attachments', ['supplier_invoice_id' => $invoiceId]);
+    }
+
+    #[Test]
+    public function it_refuses_an_attachment_upload_without_a_csrf_token(): void
+    {
+        /* Arrange */
+        $invoiceId = $this->seedSupplierInvoice($this->seedSupplier('Attachment No Token'), 'ATT-002', '40.00');
+        $this->enableCsrfProtection();
+
+        /* Act */
+        $response = $this->postWithoutCsrfToken('/supplier_invoices/upload_attachment/' . $invoiceId);
+
+        /* Assert */
+        self::assertFalse($response->isRedirect(), 'A token-less upload must not reach the controller.');
+        $this->assertDatabaseMissing('ip_supplier_invoice_attachments', ['supplier_invoice_id' => $invoiceId]);
+    }
+
     private function seedSupplier(string $name): int
     {
         return $this->databaseInsert('ip_suppliers', [
