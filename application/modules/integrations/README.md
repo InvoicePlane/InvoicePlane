@@ -199,6 +199,13 @@ with a missing or altered file cannot be sealed. Sealing remains an
 application-level control until a WORM or external SAE storage backend is
 connected.
 
+`export_compliant()` produces a versioned ZIP package containing the sealed
+document, `manifest.json`, and `audit-events.json`. The export is refused for
+unsealed or unverifiable documents, is written below the archive directory,
+and never overwrites an existing package. The package is an interoperable
+evidence export; legal qualification and long-term preservation still depend
+on the configured SAE/WORM infrastructure and applicable policy.
+
 Manual supplier invoice creation also checks the supplier/number combination.
 The same rule is enforced by the `uq_supplier_invoice_supplier_number`
 database constraint, while allowing identical invoice numbers for different
