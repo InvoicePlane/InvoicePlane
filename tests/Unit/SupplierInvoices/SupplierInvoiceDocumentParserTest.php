@@ -26,6 +26,7 @@ final class SupplierInvoiceDocumentParserTest extends TestCase
     #[Test]
     public function it_extracts_supplier_totals_and_lines_from_cii(): void
     {
+        /* Arrange */
         $path = $this->writeDocument(<<<'XML'
 <CrossIndustryInvoice xmlns="urn:example">
   <ExchangedDocument><ID>INV-42</ID><IssueDateTime><DateTimeString format="102">20261004</DateTimeString></IssueDateTime></ExchangedDocument>
@@ -42,8 +43,10 @@ final class SupplierInvoiceDocumentParserTest extends TestCase
 </CrossIndustryInvoice>
 XML);
 
+        /* Act */
         $invoice = (new SupplierInvoiceDocumentParser())->parse($path);
 
+        /* Assert */
         self::assertSame('Supplier Ltd', $invoice['supplier']['supplier_name']);
         self::assertSame('', $invoice['supplier']['supplier_tax_code']);
         self::assertSame('INV-42', $invoice['invoice']['supplier_invoice_number']);
@@ -55,6 +58,7 @@ XML);
     #[Test]
     public function it_extracts_supplier_totals_and_lines_from_ubl(): void
     {
+        /* Arrange */
         $path = $this->writeDocument(<<<'XML'
 <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
   <ID>UBL-7</ID><IssueDate>2026-10-04</IssueDate><DocumentCurrencyCode>EUR</DocumentCurrencyCode>
@@ -64,8 +68,10 @@ XML);
 </Invoice>
 XML);
 
+        /* Act */
         $invoice = (new SupplierInvoiceDocumentParser())->parse($path);
 
+        /* Assert */
         self::assertSame('UBL Supplier', $invoice['supplier']['supplier_name']);
         self::assertSame('UBL-7', $invoice['invoice']['supplier_invoice_number']);
         self::assertSame(33.0, $invoice['invoice']['total']);

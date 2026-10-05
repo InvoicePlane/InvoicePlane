@@ -15,7 +15,9 @@ final class FrenchSupplierInvoiceDataValidatorTest extends TestCase
     #[Test]
     public function it_accepts_a_consistent_french_supplier_invoice(): void
     {
-        $errors = (new FrenchSupplierInvoiceDataValidator())->validate([
+        /* Arrange */
+        $validator = new FrenchSupplierInvoiceDataValidator();
+        $invoice = [
             'supplier' => [
                 'supplier_name' => 'French Supplier',
                 'supplier_address_1' => '1 Rue de Paris',
@@ -32,15 +34,21 @@ final class FrenchSupplierInvoiceDataValidatorTest extends TestCase
                 'total' => 120,
             ],
             'items' => [['item_name' => 'Consulting']],
-        ]);
+        ];
 
+        /* Act */
+        $errors = $validator->validate($invoice);
+
+        /* Assert */
         self::assertSame([], $errors);
     }
 
     #[Test]
     public function it_rejects_invalid_french_identifiers_and_totals(): void
     {
-        $errors = (new FrenchSupplierInvoiceDataValidator())->validate([
+        /* Arrange */
+        $validator = new FrenchSupplierInvoiceDataValidator();
+        $invoice = [
             'supplier' => [
                 'supplier_country' => 'FR',
                 'supplier_tax_code' => '123',
@@ -55,8 +63,12 @@ final class FrenchSupplierInvoiceDataValidatorTest extends TestCase
                 'total' => 125,
             ],
             'items' => [],
-        ]);
+        ];
 
+        /* Act */
+        $errors = $validator->validate($invoice);
+
+        /* Assert */
         self::assertContains('France: supplier SIREN must contain exactly 9 digits.', $errors);
         self::assertContains('France: supplier VAT ID key does not match the SIREN.', $errors);
         self::assertContains('France: invoice number must use only letters, digits, +, -, _, or /.', $errors);
@@ -69,12 +81,18 @@ final class FrenchSupplierInvoiceDataValidatorTest extends TestCase
     #[Test]
     public function it_does_not_apply_french_rules_to_foreign_suppliers(): void
     {
-        $errors = (new FrenchSupplierInvoiceDataValidator())->validate([
+        /* Arrange */
+        $validator = new FrenchSupplierInvoiceDataValidator();
+        $invoice = [
             'supplier' => ['supplier_country' => 'DE'],
             'invoice' => [],
             'items' => [],
-        ]);
+        ];
 
+        /* Act */
+        $errors = $validator->validate($invoice);
+
+        /* Assert */
         self::assertSame([], $errors);
     }
 }

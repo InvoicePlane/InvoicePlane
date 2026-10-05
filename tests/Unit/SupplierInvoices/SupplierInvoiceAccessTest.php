@@ -15,8 +15,10 @@ final class SupplierInvoiceAccessTest extends TestCase
     #[Test]
     public function it_allows_supplier_invoice_access_only_to_administrators(): void
     {
+        /* Arrange */
         $access = new SupplierInvoiceAccess();
 
+        /* Act & Assert */
         self::assertTrue($access->canRead(SupplierInvoiceAccess::ADMINISTRATOR));
         self::assertTrue($access->canManagePayments(SupplierInvoiceAccess::ADMINISTRATOR));
         self::assertFalse($access->canRead(2));
