@@ -62,7 +62,7 @@ class Mdl_Archive_documents extends CI_Model
         $archiveDocumentId = (int) $this->db->insert_id();
 
         $this->load->model('integrations/Mdl_archive_audit_events');
-        $this->mdl_archive_audit_events->append(
+        $this->Mdl_archive_audit_events->append(
             $archiveDocumentId,
             'registered',
             isset($data['created_by']) ? (int) $data['created_by'] : null,
@@ -102,6 +102,8 @@ class Mdl_Archive_documents extends CI_Model
      */
     public function get_retention_candidates(string $beforeDate, int $limit = 100): array
     {
+        $beforeDate = $this->requiredDate($beforeDate);
+
         return $this->db
             ->where('retention_until IS NOT NULL')
             ->where('retention_until <=', $beforeDate)
@@ -111,6 +113,138 @@ class Mdl_Archive_documents extends CI_Model
             ->limit(max(1, min(1000, $limit)))
             ->get(self::TABLE)
             ->result_array();
+    }
+
+    public function set_retention_until(
+        int $archiveDocumentId,
+        ?string $retentionUntil,
+        ?int $actorUserId = null,
+        string $actorType = 'system'
+    ): bool {
+        $document = $this->requireDocument($archiveDocumentId);
+        $normalisedDate = $retentionUntil === null || trim($retentionUntil) === ''
+            ? null
+            : $this->requiredDate($retentionUntil);
+
+        if (($document['retention_until'] ?: null) === $normalisedDate) {
+            return false;
+        }
+
+        $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
+            'retention_until' => $normalisedDate,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        $this->audit(
+            $archiveDocumentId,
+            'retention_updated',
+            $actorUserId,
+            $actorType,
+            [
+                'previous_retention_until' => $document['retention_until'] ?: null,
+                'retention_until' => $normalisedDate,
+            ]
+        );
+
+        return true;
+    }
+
+    public function place_legal_hold(
+        int $archiveDocumentId,
+        string $reason,
+        ?int $actorUserId = null,
+        string $actorType = 'system'
+    ): bool {
+        $document = $this->requireDocument($archiveDocumentId);
+        $reason = trim($reason);
+        if ($reason === '' || mb_strlen($reason) > 1000) {
+            throw new InvalidArgumentException('A legal hold reason is required.');
+        }
+        if ((int) $document['legal_hold'] === 1) {
+            return false;
+        }
+
+        $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
+            'legal_hold' => 1,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        $this->audit($archiveDocumentId, 'legal_hold_placed', $actorUserId, $actorType, [
+            'reason' => $reason,
+        ]);
+
+        return true;
+    }
+
+    public function release_legal_hold(
+        int $archiveDocumentId,
+        string $reason,
+        ?int $actorUserId = null,
+        string $actorType = 'system'
+    ): bool {
+        $document = $this->requireDocument($archiveDocumentId);
+        $reason = trim($reason);
+        if ($reason === '' || mb_strlen($reason) > 1000) {
+            throw new InvalidArgumentException('A legal hold release reason is required.');
+        }
+        if ((int) $document['legal_hold'] !== 1) {
+            return false;
+        }
+
+        $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
+            'legal_hold' => 0,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        $this->audit($archiveDocumentId, 'legal_hold_released', $actorUserId, $actorType, [
+            'reason' => $reason,
+        ]);
+
+        return true;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function get_legal_holds(int $limit = 100): array
+    {
+        return $this->db
+            ->where('legal_hold', 1)
+            ->order_by('updated_at', 'DESC')
+            ->limit(max(1, min(1000, $limit)))
+            ->get(self::TABLE)
+            ->result_array();
+    }
+
+    private function requireDocument(int $archiveDocumentId): array
+    {
+        if ($archiveDocumentId < 1) {
+            throw new InvalidArgumentException('Archive document ID is invalid.');
+        }
+
+        $document = $this->get_by_id($archiveDocumentId);
+        if ($document === []) {
+            throw new RuntimeException('Archive document was not found.');
+        }
+
+        return $document;
+    }
+
+    private function audit(
+        int $archiveDocumentId,
+        string $eventType,
+        ?int $actorUserId,
+        string $actorType,
+        array $payload
+    ): void {
+        $this->load->model('integrations/Mdl_archive_audit_events');
+        $this->Mdl_archive_audit_events->append(
+            $archiveDocumentId,
+            $eventType,
+            $actorUserId,
+            $actorType,
+            $payload
+        );
     }
 
     private function nullableString(mixed $value): ?string
@@ -144,5 +278,16 @@ class Mdl_Archive_documents extends CI_Model
         $date = DateTimeImmutable::createFromFormat('!Y-m-d', trim((string) $value));
 
         return $date === false ? null : $date->format('Y-m-d');
+    }
+
+    private function requiredDate(string $value): string
+    {
+        $date = DateTimeImmutable::createFromFormat('!Y-m-d', trim($value));
+        $errors = DateTimeImmutable::getLastErrors();
+        if ($date === false || ($errors !== false && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))) {
+            throw new InvalidArgumentException('Archive retention date is invalid.');
+        }
+
+        return $date->format('Y-m-d');
     }
 }
