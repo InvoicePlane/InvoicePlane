@@ -24,6 +24,7 @@ $post    = is_array($request['post'] ?? null) ? $request['post'] : [];
 $cookies = is_array($request['cookies'] ?? null) ? $request['cookies'] : [];
 $session = is_array($request['session'] ?? null) ? $request['session'] : [];
 $env     = is_array($request['env'] ?? null) ? $request['env'] : [];
+$server  = is_array($request['server'] ?? null) ? $request['server'] : [];
 $isAjax  = ! empty($request['ajax']);
 
 // Ajax controllers (Base_Controller::$ajax_controller) show_404() unless the
@@ -69,6 +70,12 @@ $_SERVER['SCRIPT_FILENAME']    = ROOT_PATH . '/public/index.php';
 $_SERVER['CI_ENV']             = 'testing';
 $_SERVER['REQUEST_TIME']       = time();
 $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
+
+foreach ($server as $key => $value) {
+    if (is_string($key)) {
+        $_SERVER[$key] = (string) $value;
+    }
+}
 
 foreach ($env as $key => $value) {
     if ( ! is_string($key)) {

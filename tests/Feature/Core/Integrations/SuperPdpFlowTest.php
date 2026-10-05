@@ -340,12 +340,19 @@ class SuperPdpFlowTest extends AbstractTestCase
             'http_code'                    => 422,
         ]);
 
+        $otherInvoiceId = $this->seedInvoice($clientId);
+        $this->seedOutboundResponse($otherInvoiceId, $merchantClientId, ['merchant_response' => 'OTHER-INVOICE-RESPONSE']);
+
         /* Act */
         $response = $this->get('/integrations/history/' . $invoiceId);
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
         $this->assertNoApplicationError($response);
+        $this->assertResponseBodyContains($response, 'rejected');
+        $this->assertResponseBodyContains($response, 'Document rejected by the platform');
+        $this->assertResponseBodyContains($response, '422');
+        $this->assertResponseBodyNotContains($response, 'OTHER-INVOICE-RESPONSE');
     }
 
     #[Test]

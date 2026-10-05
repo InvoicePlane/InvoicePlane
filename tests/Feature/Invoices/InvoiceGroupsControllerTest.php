@@ -3,6 +3,7 @@
 namespace Tests\Feature\Invoices;
 
 use Invoice_Groups;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;

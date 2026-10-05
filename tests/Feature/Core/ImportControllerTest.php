@@ -3,9 +3,10 @@
 namespace Tests\Feature\Core;
 
 use Import;
-use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
+use Tests\Concerns\PerformsCsrfProtectedRequests;
 
 /**
  * Core Import Feature Tests.
@@ -15,6 +16,8 @@ use Tests\AbstractTestCase;
 #[CoversClass(Import::class)]
 class ImportControllerTest extends AbstractTestCase
 {
+    use PerformsCsrfProtectedRequests;
+
     private string $importDir;
 
     protected function setUp(): void
@@ -41,17 +44,34 @@ class ImportControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('smoke')]
-    public function it_returns_a_successful_response_or_redirect(): void
+    public function it_lists_past_imports(): void
     {
         /* Arrange */
-        /* (authenticated admin via setUp) */
+        $this->databaseInsert('ip_imports', ['import_date' => '2025-03-04 10:11:12']);
 
         /* Act */
         $response = $this->get('/import');
 
         /* Assert */
-        $this->assertResponseBodyContains($response, '<html');
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, '2025-03-04 10:11:12');
+    }
+
+    #[Test]
+    public function it_deletes_a_past_import(): void
+    {
+        /* Arrange */
+        $keepId   = $this->databaseInsert('ip_imports', ['import_date' => '2025-03-05 08:00:00']);
+        $deleteId = $this->databaseInsert('ip_imports', ['import_date' => '2025-03-04 08:00:00']);
+        $this->enableCsrfProtection();
+
+        /* Act */
+        $response = $this->postWithValidCsrfToken('/import/delete/' . $deleteId);
+
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'import');
+        $this->assertDatabaseMissing('ip_imports', ['import_id' => $deleteId]);
+        $this->assertDatabaseHas('ip_imports', ['import_id' => $keepId]);
     }
 
     #[Test]

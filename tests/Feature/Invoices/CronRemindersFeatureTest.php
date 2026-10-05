@@ -25,38 +25,8 @@ class CronRemindersFeatureTest extends AbstractTestCase
     public function it_sends_a_before_due_reminder_for_an_invoice_matching_the_offset(): void
     {
         /* Arrange: invoice due in 7 days, reminder configured for 7 days before */
-        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
-        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
-        // Cron::_process_reminders() gates the whole run on mailer_configured() before
-        // Invoice_reminders::run() is ever called — without this the reminder is never
-        // claimed at all, not even as a failed send.
-        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'email_send_method', 'setting_value' => 'phpmail']);
-        // resolve_templates() reads email_invoice_template_reminder (not
-        // email_invoice_template, the original invoice email's own setting), and it must
-        // point to a real ip_email_templates row or the send is silently skipped.
-        $templateId = $this->databaseInsert('ip_email_templates', [
-            'email_template_title'   => 'Reminder',
-            'email_template_subject' => 'Reminder',
-            'email_template_body'    => 'This invoice is due soon.',
-        ]);
-        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'email_invoice_template_reminder', 'setting_value' => (string) $templateId]);
+        $seeded = ['invoiceId' => $this->armEligibleReminder()];
 
-        // eligible_invoices() requires invoice_status_id IN (2,3) and a positive
-        // ip_invoice_amounts.invoice_balance — seedSimpleInvoice()'s defaults (draft
-        // status, no amounts row) never qualify, so this test needs both explicitly.
-        $seeded = $this->seedSimpleInvoice([
-            'invoice_date_due'  => date('Y-m-d', strtotime('+7 days')),
-            'invoice_status_id' => 2,
-        ]);
-        $this->databaseInsert('ip_invoice_amounts', [
-            'invoice_id'             => $seeded['invoiceId'],
-            'invoice_item_subtotal'  => '100.00',
-            'invoice_item_tax_total' => '0.00',
-            'invoice_tax_total'      => '0.00',
-            'invoice_total'          => '100.00',
-            'invoice_paid'           => '0.00',
-            'invoice_balance'        => '100.00',
-        ]);
         /* Act */
         $response = $this->get('/invoices/cron/reminders/test-cron-key');
 
@@ -274,24 +244,69 @@ class CronRemindersFeatureTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_logs_the_reminder_summary_at_error_level_for_production_visibility(): void
+    public function it_logs_a_failed_send_summary_at_error_level_for_production_visibility(): void
     {
         /* Arrange */
-        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
-        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
-        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'email_invoice_template', 'setting_value' => '1']);
-
-        $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
+        $invoiceId = $this->armEligibleReminder();
+        $logFile   = APPPATH . 'logs/log-' . date('Y-m-d') . '.php';
+        $offset    = is_file($logFile) ? filesize($logFile) : 0;
 
         /* Act */
         $response = $this->get('/invoices/cron/reminders/test-cron-key');
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
+        $reminder = $this->databaseFetchOne('ip_invoice_reminders', ['invoice_id' => $invoiceId, 'reminder_type' => 'before_due', 'reminder_offset' => 7]);
+        self::assertNotNull($reminder, 'The reminder slot must have been claimed.');
+        clearstatcache(true, $logFile);
+        $logged = is_file($logFile) ? (string) file_get_contents($logFile, false, null, $offset) : '';
 
-        /* Behavior: Reminder summary was logged (ideally would check logs, but depends on logging implementation) */
-        // In production with IP_DEBUG=false, the summary is still logged at 'error' level
-        // This test verifies no exception is thrown and cron completes
+        if ($reminder['reminder_status'] === 'failed') {
+            self::assertMatchesRegularExpression('/ERROR - .*\[Cron Invoice Reminders\] 1 candidates, 0 sent, 1 FAILED, 0 skipped/', $logged);
+        } else {
+            self::assertStringNotContainsString('FAILED', $logged, 'No FAILED summary may be logged when nothing failed.');
+        }
+    }
+
+    /**
+     * Configure reminders so exactly one invoice is eligible for a before_due/7 reminder.
+     */
+    protected function armEligibleReminder(): int
+    {
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
+        // Cron::_process_reminders() gates the whole run on mailer_configured() before
+        // Invoice_reminders::run() is ever called — without this the reminder is never
+        // claimed at all, not even as a failed send.
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'email_send_method', 'setting_value' => 'phpmail']);
+        // resolve_templates() reads email_invoice_template_reminder (not
+        // email_invoice_template, the original invoice email's own setting), and it must
+        // point to a real ip_email_templates row or the send is silently skipped.
+        $templateId = $this->databaseInsert('ip_email_templates', [
+            'email_template_title'   => 'Reminder',
+            'email_template_subject' => 'Reminder',
+            'email_template_body'    => 'This invoice is due soon.',
+        ]);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'email_invoice_template_reminder', 'setting_value' => (string) $templateId]);
+
+        // eligible_invoices() requires invoice_status_id IN (2,3) and a positive
+        // ip_invoice_amounts.invoice_balance — seedSimpleInvoice()'s defaults (draft
+        // status, no amounts row) never qualify, so this test needs both explicitly.
+        $seeded = $this->seedSimpleInvoice([
+            'invoice_date_due'  => date('Y-m-d', strtotime('+7 days')),
+            'invoice_status_id' => 2,
+        ]);
+        $this->databaseInsert('ip_invoice_amounts', [
+            'invoice_id'             => $seeded['invoiceId'],
+            'invoice_item_subtotal'  => '100.00',
+            'invoice_item_tax_total' => '0.00',
+            'invoice_tax_total'      => '0.00',
+            'invoice_total'          => '100.00',
+            'invoice_paid'           => '0.00',
+            'invoice_balance'        => '100.00',
+        ]);
+
+        return $seeded['invoiceId'];
     }
 
     /**

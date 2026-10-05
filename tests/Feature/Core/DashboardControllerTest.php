@@ -3,6 +3,7 @@
 namespace Tests\Feature\Core;
 
 use Dashboard;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -100,24 +101,6 @@ class DashboardControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_produces_a_deterministic_dashboard_response_on_two_consecutive_requests(): void
-    {
-        /* Arrange */
-        /* (authenticated admin via setUp) */
-
-        /* Act */
-        $first  = $this->get('/dashboard');
-        $second = $this->get('/dashboard');
-
-        /* Assert */
-        self::assertSame(
-            $first->statusCode(),
-            $second->statusCode(),
-            'Two consecutive GET /dashboard requests must return the same HTTP status.'
-        );
-    }
-
-    #[Test]
     public function it_does_not_display_invoice_form_content_on_the_dashboard(): void
     {
         /* Arrange */
@@ -150,31 +133,44 @@ class DashboardControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_returns_200_with_seeded_invoices_and_clients(): void
+    public function it_lists_recent_invoices_with_their_client(): void
     {
         /* Arrange */
         $clientId = $this->seedClient(['client_name' => 'Dashboard Test Client']);
-        $this->seedInvoice($clientId, ['invoice_date_created' => date('Y-m-d')]);
+        $this->seedInvoice($clientId, ['invoice_number' => 'DASH-RECENT-001']);
+        $this->seedInvoice($clientId, ['invoice_number' => 'DASH-RECENT-002']);
 
         /* Act */
         $response = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseBodyContains($response, 'DASH-RECENT-001');
+        $this->assertResponseBodyContains($response, 'DASH-RECENT-002');
+        $this->assertResponseBodyContains($response, 'Dashboard Test Client');
     }
 
     #[Test]
-    public function it_returns_200_with_multiple_seeded_clients(): void
+    public function it_flags_overdue_invoices_and_otherwise_reports_none(): void
     {
-        /* Arrange */
-        $this->seedClient(['client_name' => 'Alpha Corp']);
-        $this->seedClient(['client_name' => 'Beta Ltd']);
-        $this->seedClient(['client_name' => 'Gamma BV']);
+        /* Arrange: nothing overdue yet */
+        $none = $this->get('/dashboard');
+
+        $clientId = $this->seedClient();
+        $this->seedInvoice(
+            $clientId,
+            ['invoice_number' => 'DASH-LATE-001', 'invoice_status_id' => 2, 'invoice_date_due' => date('Y-m-d', strtotime('-10 days'))],
+            ['invoice_total' => '75.00', 'invoice_balance' => '75.00'],
+        );
 
         /* Act */
-        $response = $this->get('/dashboard');
+        $late = $this->get('/dashboard');
 
         /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseBodyContains($none, 'No overdue Invoice');
+        $this->assertResponseBodyNotContains($late, 'No overdue Invoice');
+        $this->assertResponseBodyContains($late, 'Overdue Invoices');
+        $this->assertResponseBodyContains($late, '75.00');
     }
+
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Invoices;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use View;
@@ -49,13 +50,14 @@ class GuestViewControllerTest extends AbstractTestCase
         /* Arrange: draft (status 1) is never guest_visible() */
         $clientId = $this->seedClient();
         $urlKey   = 'draft-inv-' . bin2hex(random_bytes(4));
-        $this->seedInvoice($clientId, ['invoice_url_key' => $urlKey, 'invoice_status_id' => 1]);
+        $this->seedInvoice($clientId, ['invoice_url_key' => $urlKey, 'invoice_status_id' => 1, 'invoice_number' => 'DRAFT-LEAK-001']);
 
         /* Act */
         $response = $this->get('/guest/view/invoice/' . $urlKey);
 
-        /* Assert */
+        /* Assert: 404, and the draft's number never reaches the guest */
         $this->assertResponseStatusCode($response, 404);
+        $this->assertResponseBodyNotContains($response, 'DRAFT-LEAK-001');
     }
 
     #[Test]

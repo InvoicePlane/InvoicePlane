@@ -3,6 +3,7 @@
 namespace Tests\Feature\Invoices;
 
 use Get;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -192,8 +193,9 @@ class GuestGetControllerTest extends AbstractTestCase
         /* Act */
         $response = $this->get('/guest/get/get_file/' . rawurlencode($urlKey . '_../../../../etc/passwd'));
 
-        /* Assert */
-        self::assertNotSame(200, $response->statusCode());
+        /* Assert: refused outright, and nothing from outside the upload directory is returned */
+        self::assertContains($response->statusCode(), [400, 403, 404]);
+        $this->assertResponseBodyNotContains($response, 'root:');
     }
 
     #[Test]

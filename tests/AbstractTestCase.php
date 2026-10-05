@@ -15,6 +15,8 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
     protected array $environmentData = [];
 
+    protected array $serverData = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -91,6 +93,16 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         $this->environmentData = array_merge($this->environmentData, $environment);
     }
 
+    /**
+     * Extra $_SERVER entries for the request subprocess (e.g. HTTP_REFERER).
+     *
+     * @param array<string, string> $server
+     */
+    protected function withServer(array $server): void
+    {
+        $this->serverData = array_merge($this->serverData, $server);
+    }
+
     protected function request(string $method, string $uri, array $query = [], array $post = [], bool $ajax = false, array $cookies = []): HttpResponse
     {
         $payload = [
@@ -101,6 +113,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             'cookies' => $cookies,
             'session' => $this->sessionData,
             'env'     => $this->environmentData,
+            'server'  => $this->serverData,
             'ajax'    => $ajax,
         ];
 

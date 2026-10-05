@@ -3,6 +3,7 @@
 namespace Tests\Feature\Payments;
 
 use Ajax;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 

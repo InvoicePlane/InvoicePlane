@@ -32,8 +32,10 @@ class SettingsAjaxAndVersionsTest extends AbstractTestCase
         $first  = trim($this->ajax('GET', '/settings/ajax/get_cron_key', [])->body());
         $second = trim($this->ajax('GET', '/settings/ajax/get_cron_key', [])->body());
 
-        /* Assert */
+        /* Assert: each call yields a fresh, well-formed key, not a constant or an error string */
         self::assertNotSame($first, $second);
+        self::assertMatchesRegularExpression('/^[0-9a-f]{16}$/', $first);
+        self::assertMatchesRegularExpression('/^[0-9a-f]{16}$/', $second);
     }
 
     #[Test]

@@ -36,89 +36,50 @@ class LoginSecurityTest extends AbstractTestCase
     public function it_redirects_after_a_login_attempt_with_an_unknown_email(): void
     {
         /* Arrange */
-        $payload = [
-            'btn_login' => '1',
-            'email'     => 'nobody@does-not-exist.example',
-            'password'  => 'irrelevant-password',
-        ];
+        $email = 'nobody@does-not-exist.example';
 
         /* Act */
-        $response = $this->post('/sessions/login', $payload);
+        $response = $this->post('/sessions/login', ['btn_login' => '1', 'email' => $email, 'password' => 'irrelevant-password']);
 
-        /* Assert */
-        self::assertTrue(
-            $response->isRedirect(),
-            'An unknown email must trigger a redirect, not a 200 with details. Got: ' . $response->statusCode()
-        );
+        /* Assert: redirected, and the failure was counted against both the account key and the IP */
+        self::assertTrue($response->isRedirect(), 'An unknown email must redirect. Got: ' . $response->statusCode());
+        $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->accountKey($email), 'log_count' => 1]);
+        $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->ipKey(), 'log_count' => 1]);
     }
 
     #[Test]
     public function it_redirects_after_a_login_attempt_with_a_wrong_password(): void
     {
         /* Arrange */
-        $this->databaseInsert('ip_users', [
-            'user_name'          => 'Login Security Tester',
-            'user_password'      => password_hash('correct-password', PASSWORD_BCRYPT),
-            'user_psalt'         => bin2hex(random_bytes(10)),
-            'user_email'         => 'loginsec@test.local',
-            'user_type'          => 1,
-            'user_active'        => 1,
-            'user_date_created'  => date('Y-m-d H:i:s'),
-            'user_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-
-        $payload = [
-            'btn_login' => '1',
-            'email'     => 'loginsec@test.local',
-            'password'  => 'wrong-password',
-        ];
+        $email = 'loginsec@test.local';
+        $this->seedLoginUser($email);
 
         /* Act */
-        $response = $this->post('/sessions/login', $payload);
+        $response = $this->post('/sessions/login', ['btn_login' => '1', 'email' => $email, 'password' => 'wrong-password']);
 
         /* Assert */
-        self::assertTrue(
-            $response->isRedirect(),
-            'A wrong password must trigger a redirect, not reveal any account info. Got: ' . $response->statusCode()
-        );
+        self::assertTrue($response->isRedirect(), 'A wrong password must redirect. Got: ' . $response->statusCode());
+        $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->accountKey($email), 'log_count' => 1]);
+        $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->ipKey(), 'log_count' => 1]);
     }
 
     #[Test]
     public function it_does_not_reveal_whether_an_email_exists_in_error_responses(): void
     {
         /* Arrange */
-        $unknownPayload = [
-            'btn_login' => '1',
-            'email'     => 'ghost@no-account.example',
-            'password'  => 'password123',
-        ];
-
-        $wrongPasswordPayload = [
-            'btn_login' => '1',
-            'email'     => 'admin@test.local',
-            'password'  => 'definitely-wrong',
-        ];
+        $this->seedLoginUser('known@test.local');
 
         /* Act */
-        $unknownResponse       = $this->post('/sessions/login', $unknownPayload);
-        $wrongPasswordResponse = $this->post('/sessions/login', $wrongPasswordPayload);
+        $unknown = $this->post('/sessions/login', ['btn_login' => '1', 'email' => 'ghost@no-account.example', 'password' => 'password123']);
+        $wrong   = $this->post('/sessions/login', ['btn_login' => '1', 'email' => 'known@test.local', 'password' => 'definitely-wrong']);
 
-        /* Assert */
-        // Both must redirect — not 200, not 403, not 401
-        self::assertTrue(
-            $unknownResponse->isRedirect(),
-            'Unknown email must redirect, not produce a distinguishable response. Got: ' . $unknownResponse->statusCode()
-        );
-        self::assertTrue(
-            $wrongPasswordResponse->isRedirect(),
-            'Wrong password must redirect, not produce a distinguishable response. Got: ' . $wrongPasswordResponse->statusCode()
-        );
-        // Both must return the same status code so callers cannot distinguish them
-        self::assertSame(
-            $unknownResponse->statusCode(),
-            $wrongPasswordResponse->statusCode(),
-            'Unknown-email and wrong-password failures must produce identical HTTP status codes.'
-        );
+        /* Assert: identical status, identical observable side effects */
+        self::assertTrue($unknown->isRedirect());
+        self::assertTrue($wrong->isRedirect());
+        self::assertSame($unknown->statusCode(), $wrong->statusCode(), 'Unknown-email and wrong-password failures must return identical status codes.');
+        $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->accountKey('ghost@no-account.example'), 'log_count' => 1]);
+        $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->accountKey('known@test.local'), 'log_count' => 1]);
+        $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->ipKey(), 'log_count' => 2]);
     }
 
     #[Test]
@@ -195,38 +156,19 @@ class LoginSecurityTest extends AbstractTestCase
     #[Test]
     public function it_allows_login_for_an_active_user_with_the_correct_password(): void
     {
-        /* Arrange */
-        $email = 'active-' . bin2hex(random_bytes(4)) . '@test.local';
-        $this->databaseInsert('ip_users', [
-            'user_name'          => 'Active User',
-            'user_password'      => password_hash('correct-password', PASSWORD_BCRYPT),
-            'user_psalt'         => bin2hex(random_bytes(10)),
-            'user_email'         => $email,
-            'user_type'          => 1,
-            'user_active'        => 1,
-            'user_date_created'  => date('Y-m-d H:i:s'),
-            'user_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-
-        $payload = [
-            'btn_login' => '1',
-            'email'     => $email,
-            'password'  => 'correct-password',
-        ];
+        /* Arrange: earlier failures exist for both the account and the IP */
+        $email = 'activeuser@test.local';
+        $this->seedLoginUser($email);
+        $this->seedLoginLog($this->accountKey($email), 3, 'now');
+        $this->seedLoginLog($this->ipKey(), 3, 'now');
 
         /* Act */
-        $response = $this->post('/sessions/login', $payload);
+        $response = $this->post('/sessions/login', ['btn_login' => '1', 'email' => $email, 'password' => 'correct-password']);
 
-        /* Assert */
-        self::assertTrue(
-            $response->isRedirect(),
-            'A successful login must redirect to the dashboard. Got: ' . $response->statusCode()
-        );
-        // No failure log for a genuinely successful login — contrast with the
-        // inactive-user case above, which always writes one.
-        $this->assertDatabaseMissing('ip_login_log', [
-            'login_name' => $email,
-        ]);
+        /* Assert: success clears both counters (only the success branch does that) */
+        self::assertTrue($response->isRedirect(), 'A successful login must redirect. Got: ' . $response->statusCode());
+        $this->assertDatabaseMissing('ip_login_log', ['login_name' => $this->accountKey($email)]);
+        $this->assertDatabaseMissing('ip_login_log', ['login_name' => $this->ipKey()]);
     }
 
     // -------------------------------------------------------------------------
@@ -236,66 +178,60 @@ class LoginSecurityTest extends AbstractTestCase
     #[Test]
     public function it_blocks_login_attempts_after_exceeding_the_ip_rate_limit(): void
     {
-        /* Arrange */
-        // Seed the session with pre-existing failed attempts that fill the window.
-        // LOGIN_IP_MAX_ATTEMPTS defaults to 20. We set 20 timestamps within the window.
-        $now      = time();
-        $attempts = array_fill(0, 20, $now - 30);
-        $key      = 'login_attempts_ip_' . md5('127.0.0.1');
+        /* Arrange: a valid user, and an IP that has used up its attempts inside the window */
+        $email = 'throttled@test.local';
+        $this->seedLoginUser($email);
+        $this->seedLoginLog($this->ipKey(), 20, '-30 seconds');
+        $this->seedLoginLog($this->accountKey($email), 1, 'now');
 
-        $this->sessionData[$key] = $attempts;
+        /* Act: the CORRECT password must still be refused */
+        $response = $this->post('/sessions/login', ['btn_login' => '1', 'email' => $email, 'password' => 'correct-password']);
 
-        $payload = [
-            'btn_login' => '1',
-            'email'     => 'anyone@example.com',
-            'password'  => 'anypassword',
-        ];
-
-        /* Act */
-        $response = $this->post('/sessions/login', $payload);
-
-        /* Assert */
-        self::assertTrue(
-            $response->isRedirect(),
-            'A rate-limited IP must be redirected back to login. Got: ' . $response->statusCode()
-        );
-        self::assertFalse(
-            $response->contains('dashboard'),
-            'A rate-limited login attempt must never reach the dashboard.'
-        );
+        /* Assert: no success path ran, so neither counter was cleared or advanced */
+        self::assertTrue($response->isRedirect());
+        $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->ipKey(), 'log_count' => 20]);
+        $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->accountKey($email), 'log_count' => 1]);
     }
 
     #[Test]
     public function it_allows_login_when_previous_attempts_have_expired_from_the_window(): void
     {
-        /* Arrange */
-        // 20 attempts, all older than the 15-minute window — they should be pruned.
-        $expired  = time() - (16 * 60);
-        $attempts = array_fill(0, 20, $expired);
-        $key      = 'login_attempts_ip_' . md5('127.0.0.1');
-
-        $this->sessionData[$key] = $attempts;
-
-        $payload = [
-            'btn_login' => '1',
-            'email'     => 'nobody@no-account.example',
-            'password'  => 'irrelevant',
-        ];
+        /* Arrange: the IP hit the limit, but all of it is older than the 15-minute window */
+        $email = 'expired-window@test.local';
+        $this->seedLoginUser($email);
+        $this->seedLoginLog($this->ipKey(), 20, '-16 minutes');
 
         /* Act */
-        $response = $this->post('/sessions/login', $payload);
+        $response = $this->post('/sessions/login', ['btn_login' => '1', 'email' => $email, 'password' => 'correct-password']);
 
-        /* Assert */
-        // Should redirect (failed credentials), but NOT be blocked by rate limiting.
-        // Both rate-limited and credential-failed paths redirect — we verify it's not a 500.
-        self::assertNotSame(
-            500,
-            $response->statusCode(),
-            'Expired rate-limit attempts must not block a login attempt or cause a server error.'
-        );
-        self::assertTrue(
-            $response->isRedirect(),
-            'A login with expired-window attempts should redirect normally (not be rate-limited). Got: ' . $response->statusCode()
-        );
+        /* Assert: login succeeded (the success branch cleared the stale IP counter) */
+        self::assertTrue($response->isRedirect());
+        $this->assertDatabaseMissing('ip_login_log', ['login_name' => $this->ipKey()]);
+    }
+
+    private function ipKey(): string
+    {
+        return 'login_ip:' . hash('sha256', '127.0.0.1');
+    }
+
+    private function accountKey(string $email): string
+    {
+        return 'login_account:' . hash('sha256', mb_strtolower($email));
+    }
+
+    private function seedLoginLog(string $key, int $count, string $when): void
+    {
+        $this->databaseInsert('ip_login_log', [
+            'login_name' => $key, 'log_count' => $count, 'log_create_timestamp' => date('Y-m-d H:i:s', strtotime($when)),
+        ]);
+    }
+
+    private function seedLoginUser(string $email): void
+    {
+        $this->databaseInsert('ip_users', [
+            'user_name' => 'Login Tester', 'user_password' => password_hash('correct-password', PASSWORD_BCRYPT),
+            'user_psalt' => bin2hex(random_bytes(10)), 'user_email' => $email, 'user_type' => 1, 'user_active' => 1,
+            'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
     }
 }

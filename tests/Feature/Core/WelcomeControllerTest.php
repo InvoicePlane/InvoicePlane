@@ -74,24 +74,6 @@ class WelcomeControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_loads_deterministically(): void
-    {
-        /* Arrange */
-        $this->actingAsGuest();
-
-        /* Act: make two consecutive requests */
-        $first  = $this->get('/welcome');
-        $second = $this->get('/welcome');
-
-        /* Assert: both requests return same status code */
-        self::assertSame(
-            $first->statusCode(),
-            $second->statusCode(),
-            'Welcome page should load consistently across multiple requests'
-        );
-    }
-
-    #[Test]
     public function it_contains_expected_content_elements(): void
     {
         /* Arrange */

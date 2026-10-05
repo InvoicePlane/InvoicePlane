@@ -3,6 +3,7 @@
 namespace Tests\Feature\Invoices;
 
 use Ajax;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -131,14 +132,30 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'SAVE-REQ-001']);
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'SAVE-REQ-001', 'invoice_date_due' => '2029-01-01']);
+        $payload   = array_merge($this->validSavePayload($invoiceId), [
+            'invoice_date_due'         => '2030-01-15',
+            'invoice_discount_percent' => '10',
+            'items'                    => json_encode([[
+                'item_id' => '', 'item_name' => 'Widget', 'item_description' => '', 'item_quantity' => '2',
+                'item_price' => '50', 'item_discount_amount' => '', 'item_product_id' => '', 'item_product_unit_id' => '',
+                'item_task_id' => '', 'item_tax_rate_id' => '0',
+            ]]),
+        ]);
 
         /* Act */
-        $response = $this->ajax('POST', '/invoices/ajax/save', $this->validSavePayload($invoiceId));
+        $response = $this->ajax('POST', '/invoices/ajax/save', $payload);
 
         /* Assert */
         $json = json_decode($response->body(), true);
         self::assertSame(1, $json['success'] ?? null, 'Body: ' . $response->body());
+        $this->assertDatabaseHas('ip_invoices', [
+            'invoice_id'               => $invoiceId,
+            'invoice_date_due'         => '2030-01-15',
+            'invoice_discount_percent' => '10.00',
+            'client_id'                => $clientId,
+        ]);
+        $this->assertDatabaseHas('ip_invoice_items', ['invoice_id' => $invoiceId, 'item_name' => 'Widget']);
     }
 
     #[Test]
@@ -164,16 +181,18 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $clientId  = $this->seedClient();
-        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'SAVE-REQ-003']);
-        $payload   = $this->validSavePayload($invoiceId);
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'SAVE-REQ-003', 'invoice_date_due' => '2029-01-01']);
+        $payload   = array_merge($this->validSavePayload($invoiceId), ['invoice_date_due' => '2031-02-02']);
         unset($payload['invoice_date_created']);
 
         /* Act */
         $response = $this->ajax('POST', '/invoices/ajax/save', $payload);
 
-        /* Assert */
+        /* Assert: rejected, and nothing from the rejected payload reached the database */
         $json = json_decode($response->body(), true);
         self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_date_due' => '2029-01-01']);
+        $this->assertDatabaseMissing('ip_invoice_items', ['invoice_id' => $invoiceId]);
     }
 
     #[Test]
@@ -382,18 +401,28 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
     public function it_copies_an_invoice(): void
     {
         /* Arrange */
-        $clientId = $this->seedClient();
-        $sourceId = $this->seedInvoice($clientId, ['invoice_number' => 'COPY-SRC-001']);
+        $sourceClientId = $this->seedClient(['client_name' => 'Copy Source Client']);
+        $targetClientId = $this->seedClient(['client_name' => 'Copy Target Client']);
+        $sourceId       = $this->seedInvoice($sourceClientId, ['invoice_number' => 'COPY-SRC-001']);
+        $this->databaseInsert('ip_invoice_items', [
+            'invoice_id' => $sourceId, 'item_name' => 'Copied item', 'item_description' => '', 'item_quantity' => '3',
+            'item_price' => '20.00', 'item_order' => 1,
+        ]);
 
         /* Act */
-        $response = $this->ajax('POST', '/invoices/ajax/copy_invoice', array_merge($this->validCreatePayload($clientId), [
+        $response = $this->ajax('POST', '/invoices/ajax/copy_invoice', array_merge($this->validCreatePayload($targetClientId), [
             'invoice_id' => (string) $sourceId,
         ]));
 
         /* Assert */
         $json = json_decode($response->body(), true);
         self::assertSame(1, $json['success'] ?? null, 'Body: ' . $response->body());
-        self::assertNotSame($sourceId, $json['invoice_id']);
+        $targetId = (int) $json['invoice_id'];
+        self::assertNotSame($sourceId, $targetId);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $targetId, 'client_id' => $targetClientId]);
+        $this->assertDatabaseHas('ip_invoice_items', ['invoice_id' => $targetId, 'item_name' => 'Copied item']);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $sourceId, 'client_id' => $sourceClientId, 'invoice_number' => 'COPY-SRC-001']);
+        $this->assertDatabaseHas('ip_invoice_items', ['invoice_id' => $sourceId, 'item_name' => 'Copied item']);
     }
 
     #[Test]

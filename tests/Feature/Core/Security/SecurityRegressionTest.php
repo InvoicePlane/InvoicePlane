@@ -641,12 +641,10 @@ class SecurityRegressionTest extends AbstractTestCase
         /* Act */
         $response = $this->get("/invoices/generate_pdf/{$invoiceId}/1/EvilAttackerTemplate");
 
-        /* Assert */
-        self::assertNotSame(
-            500,
-            $response->statusCode(),
-            'A template name outside the static whitelist must not crash the request — it must fall back to the safe default.'
-        );
+        /* Assert: the request is served with the safe default template, never an error or the attacker's name */
+        $this->assertResponseStatusCode($response, 200);
+        self::assertStringStartsWith('%PDF', $response->body(), 'A template outside the whitelist must fall back to a real PDF.');
+        $this->assertResponseBodyNotContains($response, 'EvilAttackerTemplate');
     }
 
     protected function seedSecurityQuote(): int
