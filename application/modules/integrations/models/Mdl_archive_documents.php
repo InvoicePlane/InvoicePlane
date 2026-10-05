@@ -4,6 +4,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 require_once APPPATH . 'modules/integrations/libraries/EncryptedArchiveStorageAdapter.php';
 require_once APPPATH . 'modules/integrations/libraries/S3ObjectLockArchiveConnector.php';
+require_once APPPATH . 'modules/integrations/libraries/Rfc3161TimestampAuthority.php';
 
 /**
  * Registry of documents held by the archive layer.
@@ -625,6 +626,102 @@ class Mdl_Archive_documents extends CI_Model
         return $result;
     }
 
+    /**
+     * Obtain and persist a provider-neutral RFC 3161 timestamp for the archive package.
+     *
+     * @return array{provider: string, subject_sha256: string, token_path: string, token_sha256: string}
+     */
+    public function timestamp_externally(
+        int $archiveDocumentId,
+        Rfc3161TimestampAuthority $authority,
+        ?int $actorUserId = null,
+        string $actorType = 'system',
+        ?string $provider = null
+    ): array {
+        $document = $this->requireDocument($archiveDocumentId);
+        if (($document['sealed_at'] ?? null) === null || $document['sealed_at'] === '') {
+            throw new RuntimeException('Only sealed archive documents can be timestamped.');
+        }
+
+        $packageRelativePath = 'exports/archive-' . $archiveDocumentId . '-'
+            . substr((string) $document['sha256'], 0, 16) . '.zip';
+        try {
+            $packagePath = $this->archivePath($packageRelativePath);
+        } catch (RuntimeException) {
+            $packageRelativePath = $this->export_compliant($archiveDocumentId, $actorUserId, $actorType);
+            $packagePath = $this->archivePath($packageRelativePath);
+        }
+        $subjectSha256 = hash_file('sha256', $packagePath);
+        if ( ! is_string($subjectSha256)) {
+            throw new RuntimeException('The archive package hash could not be calculated.');
+        }
+
+        $timestamp = $authority->timestamp($subjectSha256);
+        $tokenRelativePath = 'timestamps/' . $archiveDocumentId . '-' . $subjectSha256 . '.tsr';
+        $tokenPath = $this->archiveWritablePath($tokenRelativePath);
+        if (file_exists($tokenPath)) {
+            throw new RuntimeException('The external timestamp token already exists.');
+        }
+        if (file_put_contents($tokenPath, $timestamp['token'], LOCK_EX) !== strlen($timestamp['token'])) {
+            if (is_file($tokenPath)) {
+                unlink($tokenPath);
+            }
+
+            throw new RuntimeException('The external timestamp token could not be stored.');
+        }
+
+        $provider = $this->nullableString($provider) ?? 'rfc3161';
+        $now = date('Y-m-d H:i:s');
+        $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
+            'external_timestamp_provider' => $provider,
+            'external_timestamp_subject' => $packageRelativePath,
+            'external_timestamp_token_path' => $tokenRelativePath,
+            'external_timestamp_token_sha256' => $timestamp['token_sha256'],
+            'external_timestamp_status' => 'verified',
+            'external_timestamped_at' => $now,
+            'updated_at' => $now,
+        ]);
+        $this->audit($archiveDocumentId, 'external_timestamped', $actorUserId, $actorType, [
+            'provider' => $provider,
+            'subject_sha256' => $subjectSha256,
+            'token_sha256' => $timestamp['token_sha256'],
+        ]);
+
+        return [
+            'provider' => $provider,
+            'subject_sha256' => $subjectSha256,
+            'token_path' => $tokenRelativePath,
+            'token_sha256' => $timestamp['token_sha256'],
+        ];
+    }
+
+    public function verify_external_timestamp(
+        int $archiveDocumentId,
+        Rfc3161TimestampAuthority $authority,
+        ?int $actorUserId = null,
+        string $actorType = 'system'
+    ): bool {
+        $document = $this->requireDocument($archiveDocumentId);
+        $subjectPath = $this->archivePath((string) ($document['external_timestamp_subject'] ?? ''));
+        $tokenPath = $this->archivePath((string) ($document['external_timestamp_token_path'] ?? ''));
+        $subjectSha256 = hash_file('sha256', $subjectPath);
+        $token = file_get_contents($tokenPath);
+        $valid = is_string($subjectSha256) && is_string($token)
+            && hash_equals((string) $document['external_timestamp_token_sha256'], hash('sha256', $token))
+            && $authority->verify($token, $subjectSha256);
+        $now = date('Y-m-d H:i:s');
+        $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
+            'external_timestamp_status' => $valid ? 'verified' : 'failed',
+            'updated_at' => $now,
+        ]);
+        $this->audit($archiveDocumentId, $valid ? 'external_timestamp_verified' : 'external_timestamp_failed', $actorUserId, $actorType, [
+            'subject_sha256' => $subjectSha256,
+            'valid' => $valid,
+        ]);
+
+        return $valid;
+    }
+
     private function requireDocument(int $archiveDocumentId): array
     {
         if ($archiveDocumentId < 1) {
@@ -668,6 +765,27 @@ class Mdl_Archive_documents extends CI_Model
             . str_replace('/', DIRECTORY_SEPARATOR, $storagePath);
         if ( ! is_file($path) || ! validate_file_in_directory($path, UPLOADS_ARCHIVE_FOLDER)) {
             throw new RuntimeException('The archived document is unavailable.');
+        }
+
+        return $path;
+    }
+
+    private function archiveWritablePath(string $relativePath): string
+    {
+        $this->load->helper('file_security');
+        if ( ! validate_safe_filename($relativePath)['valid']) {
+            throw new RuntimeException('The archive path is invalid.');
+        }
+
+        $path = rtrim(UPLOADS_ARCHIVE_FOLDER, DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+        $directory = dirname($path);
+        if ( ! is_dir($directory) && ! mkdir($directory, 0750, true) && ! is_dir($directory)) {
+            throw new RuntimeException('The archive directory could not be created.');
+        }
+        if ( ! validate_file_in_directory($directory, UPLOADS_ARCHIVE_FOLDER)) {
+            throw new RuntimeException('The archive destination is invalid.');
         }
 
         return $path;

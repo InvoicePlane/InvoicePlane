@@ -229,6 +229,15 @@ processes documents that do not use the configured active key version. It is
 safe to run repeatedly; failures are reported by document ID for a later
 retry, while each successful rotation remains auditable.
 
+Migration `059_external_timestamping.sql` adds provider-neutral RFC 3161
+timestamp evidence. `Rfc3161TimestampAuthority` accepts an HTTPS TSA URL,
+posts the SHA-256 imprint of the compliant archive package, stores the binary
+timestamp token, and verifies the token imprint before marking it as valid.
+`timestamp_externally()` and `verify_external_timestamp()` record the subject
+and token digests in the registry and audit chain. The configured TSA remains
+responsible for qualified status, certificate trust, and its applicable
+eIDAS policy; InvoicePlane does not infer qualification from the endpoint.
+
 Migration `058_external_sae_storage.sql` records the remote SAE object key,
 version ID, provider, and retention date. `S3ObjectLockArchiveConnector`
 requires an S3 bucket with versioning and Object Lock already enabled. It
