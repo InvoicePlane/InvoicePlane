@@ -130,6 +130,52 @@ class UsersAjaxControllerTest extends AbstractTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    #[Test]
+    public function it_returns_an_empty_json_list_for_an_empty_name_query(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $this->seedUser(['user_name' => 'Searchable Person']);
+
+        /* Act */
+        $response = $this->request('GET', '/users/ajax/name_query/1', ['query' => ''], [], true);
+
+        /* Assert: exactly one JSON document - the search below the guard must not also run and append results */
+        self::assertSame([], json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR));
+    }
+
+    #[Test]
+    public function it_finds_only_active_users_of_the_requested_type_by_name_prefix(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $matchId = $this->seedUser(['user_type' => 1, 'user_name' => 'Zed Alpha', 'user_active' => 1]);
+        $this->seedUser(['user_type' => 1, 'user_name' => 'Zed Inactive', 'user_active' => 0]);
+        $this->seedUser(['user_type' => 2, 'user_name' => 'Zed Guest', 'user_active' => 1]);
+        $this->seedUser(['user_type' => 1, 'user_name' => 'Unrelated Name', 'user_active' => 1]);
+
+        /* Act */
+        $response = $this->request('GET', '/users/ajax/name_query/1', ['query' => 'Zed'], [], true);
+
+        /* Assert */
+        $found = json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR);
+        self::assertCount(1, $found);
+        self::assertSame((string) $matchId, (string) $found[0]['id']);
+        self::assertStringContainsString('Zed Alpha', $found[0]['text']);
+    }
+
+    /** @param array<string,mixed> $overrides */
+    protected function seedUser(array $overrides = []): int
+    {
+        return $this->databaseInsert('ip_users', array_merge([
+            'user_type' => 2, 'user_name' => 'Seeded ' . bin2hex(random_bytes(3)),
+            'user_email' => 'seed+' . bin2hex(random_bytes(4)) . '@test.local',
+            'user_password' => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
+            'user_language' => 'system', 'user_active' => 1,
+            'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ], $overrides));
+    }
+
     protected function seedClient(array $overrides = []): int
     {
         return $this->databaseInsert('ip_clients', array_merge([
