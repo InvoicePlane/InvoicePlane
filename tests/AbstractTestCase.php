@@ -44,6 +44,20 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             'user_company'  => 'Test Co',
             'user_language' => 'system',
         ];
+
+        // Fetch the user from the database to get auth_version and compute credential fingerprint.
+        // User_Controller::revalidate_user_type() validates both of these on every request.
+        $user = $this->databaseFetchOne('ip_users', ['user_id' => $userId]);
+        if ($user) {
+            $this->sessionData['user_auth_version'] = (int) ($user['user_auth_version'] ?? 0);
+
+            // Compute the credential fingerprint: HMAC-SHA256 of the password hash with the encryption key.
+            // This ties the session to the password it was created with so password changes revoke old sessions.
+            if ( ! function_exists('session_credential_fingerprint')) {
+                require_once dirname(__DIR__) . '/application/helpers/ip_security_helper.php';
+            }
+            $this->sessionData['user_credential'] = session_credential_fingerprint((string) $user['user_password']);
+        }
     }
 
     protected function actingAsGuest(): void
