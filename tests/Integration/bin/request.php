@@ -25,6 +25,7 @@ $cookies = is_array($request['cookies'] ?? null) ? $request['cookies'] : [];
 $session = is_array($request['session'] ?? null) ? $request['session'] : [];
 $env     = is_array($request['env'] ?? null) ? $request['env'] : [];
 $server  = is_array($request['server'] ?? null) ? $request['server'] : [];
+$files   = is_array($request['files'] ?? null) ? $request['files'] : [];
 $isAjax  = ! empty($request['ajax']);
 
 // Ajax controllers (Base_Controller::$ajax_controller) show_404() unless the
@@ -48,7 +49,7 @@ $requestUri  = '/index.php' . $uri . ($queryString !== '' ? '?' . $queryString :
 $_GET     = $query;
 $_POST    = $post;
 $_COOKIE  = $cookies;
-$_FILES   = [];
+$_FILES   = $files;
 $_REQUEST = $method === 'POST' ? array_merge($query, $post) : $query;
 
 $_SERVER['REQUEST_METHOD']     = $method;

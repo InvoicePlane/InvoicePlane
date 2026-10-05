@@ -17,6 +17,8 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
     protected array $serverData = [];
 
+    protected array $filesData = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -94,6 +96,18 @@ abstract class AbstractTestCase extends PhpUnitTestCase
     }
 
     /**
+     * $_FILES for the request subprocess. The entries are only descriptors (name/type/size/error):
+     * is_uploaded_file() is false for them, so this exercises the checks that run BEFORE a real
+     * upload is accepted (extension and name rules), never a successful upload.
+     *
+     * @param array<string, array<string, mixed>> $files
+     */
+    protected function withFiles(array $files): void
+    {
+        $this->filesData = $files;
+    }
+
+    /**
      * Extra $_SERVER entries for the request subprocess (e.g. HTTP_REFERER).
      *
      * @param array<string, string> $server
@@ -114,6 +128,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             'session' => $this->sessionData,
             'env'     => $this->environmentData,
             'server'  => $this->serverData,
+            'files'   => $this->filesData,
             'ajax'    => $ajax,
         ];
 

@@ -199,6 +199,166 @@ class SettingsControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'guest-must-not-see-this');
     }
 
+    // -------------------------------------------------------------------------
+    // Save — field handling rules
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_stores_password_settings_encrypted_never_in_plain_text(): void
+    {
+        /* Act */
+        $this->post('/settings', [
+            'settings'   => ['smtp_password' => 'S3cret-Pa55', 'smtp_password_field_is_password' => '1'],
+            'btn_submit' => '1',
+        ]);
+
+        /* Assert: stored, but not as the plain text, and the meta flag is not persisted as a setting */
+        $stored = $this->databaseFetchOne('ip_settings', ['setting_key' => 'smtp_password']);
+        self::assertNotNull($stored);
+        self::assertNotSame('S3cret-Pa55', $stored['setting_value']);
+        self::assertStringNotContainsString('S3cret-Pa55', $stored['setting_value']);
+        self::assertGreaterThan(20, strlen($stored['setting_value']), 'An encrypted value is longer than the secret.');
+        $this->assertDatabaseMissing('ip_settings', ['setting_key' => 'smtp_password_field_is_password']);
+    }
+
+    #[Test]
+    public function it_keeps_the_stored_password_when_the_password_field_is_left_blank(): void
+    {
+        /* Arrange */
+        $this->setSetting('smtp_password', 'previously-encrypted-blob');
+
+        /* Act: the form re-posts the password input empty unless the admin retypes it */
+        $this->post('/settings', [
+            'settings'   => ['smtp_password' => '', 'smtp_password_field_is_password' => '1', 'cron_key' => 'touched-' . 'cron'],
+            'btn_submit' => '1',
+        ]);
+
+        /* Assert */
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'smtp_password', 'setting_value' => 'previously-encrypted-blob']);
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'cron_key', 'setting_value' => 'touched-cron']);
+    }
+
+    #[Test]
+    public function it_normalizes_amount_fields_using_the_configured_number_format(): void
+    {
+        /* Arrange: European format */
+        $this->setSetting('decimal_point', ',');
+        $this->setSetting('thousands_separator', '.');
+
+        /* Act */
+        $this->post('/settings', [
+            'settings'   => ['default_amount_probe' => '1.234,56', 'default_amount_probe_field_is_amount' => '1'],
+            'btn_submit' => '1',
+        ]);
+
+        /* Assert */
+        $stored = $this->databaseFetchOne('ip_settings', ['setting_key' => 'default_amount_probe']);
+        self::assertEquals(1234.56, (float) $stored['setting_value']);
+    }
+
+    #[Test]
+    public function it_derives_the_separators_from_the_selected_number_format(): void
+    {
+        /* Act */
+        $this->post('/settings', ['settings' => ['number_format' => 'number_format_european'], 'btn_submit' => '1']);
+
+        /* Assert */
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'decimal_point', 'setting_value' => ',']);
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'thousands_separator', 'setting_value' => '.']);
+    }
+
+    /** @return array<string, array{0: string, 1: string}> */
+    public static function unsafeLogoNames(): array
+    {
+        return [
+            'invoice traversal'  => ['invoice_logo', '../../ipconfig.php'],
+            'login traversal'    => ['login_logo', '../bootstrap/kernel.php'],
+            'absolute path'      => ['invoice_logo', '/etc/passwd'],
+            'windows traversal'  => ['login_logo', '..\\..\\ipconfig.php'],
+        ];
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('unsafeLogoNames')]
+    public function it_refuses_an_unsafe_logo_filename_and_saves_none_of_the_batch(string $key, string $value): void
+    {
+        /* Arrange */
+        $this->setSetting('cron_key', 'original-cron-key');
+
+        /* Act */
+        $response = $this->post('/settings', ['settings' => [$key => $value, 'cron_key' => 'must-not-be-saved'], 'btn_submit' => '1']);
+
+        /* Assert: rejected before the batch write, so even the harmless sibling field is not persisted */
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertDatabaseMissing('ip_settings', ['setting_key' => $key, 'setting_value' => $value]);
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'cron_key', 'setting_value' => 'original-cron-key']);
+    }
+
+    #[Test]
+    public function it_blocks_svg_logo_uploads_and_saves_nothing(): void
+    {
+        /* Arrange: SVG can carry script, so it is refused before any upload handling. Warnings are only
+         * logged in debug mode; the log line is what distinguishes this guard from a generic upload failure. */
+        $this->withEnvironment(['ENABLE_DEBUG' => 'true']);
+        $this->withFiles([
+            'invoice_logo' => ['name' => 'logo.SVG', 'type' => 'image/svg+xml', 'tmp_name' => '/tmp/none', 'error' => 0, 'size' => 120],
+            'login_logo'   => ['name' => '', 'type' => '', 'tmp_name' => '', 'error' => 4, 'size' => 0],
+        ]);
+        $logFile = APPPATH . 'logs/log-' . date('Y-m-d') . '.php';
+        $offset  = is_file($logFile) ? filesize($logFile) : 0;
+
+        /* Act */
+        $response = $this->post('/settings', ['settings' => ['cron_key' => 'x'], 'btn_submit' => '1']);
+
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertDatabaseMissing('ip_settings', ['setting_key' => 'invoice_logo', 'setting_value' => 'logo.SVG']);
+        self::assertFileDoesNotExist(ROOT_PATH . '/uploads/logo.SVG');
+        clearstatcache(true, $logFile);
+        $logged = is_file($logFile) ? (string) file_get_contents($logFile, false, null, $offset) : '';
+        self::assertStringContainsString('SVG upload attempt blocked for invoice_logo', $logged, 'The SVG guard, not a generic upload error, must have refused the file.');
+    }
+
+    // -------------------------------------------------------------------------
+    // Logo removal — refusal paths
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_refuses_to_remove_a_logo_whose_stored_name_escapes_the_uploads_folder(): void
+    {
+        /* Arrange: a tampered setting pointing at a real, important file */
+        $this->setSetting('invoice_logo', '../ipconfig.php');
+
+        /* Act */
+        $response = $this->post('/settings/remove_logo/invoice', []);
+
+        /* Assert: the file survives and the setting is left for an operator to inspect */
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        self::assertFileExists(ROOT_PATH . '/ipconfig.php');
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'invoice_logo', 'setting_value' => '../ipconfig.php']);
+    }
+
+    #[Test]
+    public function it_deletes_the_logo_file_and_clears_the_setting(): void
+    {
+        /* Arrange */
+        $file = ROOT_PATH . '/uploads/test-remove-logo.png';
+        file_put_contents($file, 'png-bytes');
+        $this->setSetting('login_logo', 'test-remove-logo.png');
+
+        try {
+            /* Act */
+            $response = $this->post('/settings/remove_logo/login', []);
+
+            /* Assert */
+            $this->assertResponseRedirectsToRoute($response, 'settings');
+            self::assertFileDoesNotExist($file);
+            $this->assertDatabaseHas('ip_settings', ['setting_key' => 'login_logo', 'setting_value' => '']);
+        } finally {
+            @unlink($file);
+        }
+    }
+
     private function setSetting(string $key, string $value): void
     {
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => $key, 'setting_value' => '']);
