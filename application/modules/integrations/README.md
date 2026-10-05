@@ -214,6 +214,16 @@ before decryption, and archive integrity verification validates the plaintext
 digest as well as the encrypted storage digest. The encryption key must be
 kept outside the repository and backed up separately.
 
+Migration `058_external_sae_storage.sql` records the remote SAE object key,
+version ID, provider, and retention date. `S3ObjectLockArchiveConnector`
+requires an S3 bucket with versioning and Object Lock already enabled. It
+uses per-object `COMPLIANCE` retention, optionally enables an S3 legal hold,
+and sends a SHA-256 checksum with the package. `store_on_s3_worm()` refuses
+documents without a retention date and keeps the remote version ID in the
+local registry. The bucket must be configured and credentials supplied
+outside the repository; Object Lock cannot be retrofitted safely to an
+ordinary bucket after documents have been stored.
+
 Manual supplier invoice creation also checks the supplier/number combination.
 The same rule is enforced by the `uq_supplier_invoice_supplier_number`
 database constraint, while allowing identical invoice numbers for different
