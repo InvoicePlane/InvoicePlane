@@ -64,8 +64,7 @@
         "classmap": [
             "application/modules/integrations/libraries/",
             "application/modules/integrations/models/",
-            "application/libraries/gateways/",
-            "application/libraries/services/"
+            "application/libraries/gateways/"
         ]
     },
     "autoload-dev": {
