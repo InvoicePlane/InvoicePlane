@@ -292,6 +292,128 @@ class Mdl_Archive_documents extends CI_Model
         return true;
     }
 
+    /**
+     * Export a sealed document with its metadata and audit chain.
+     *
+     * @return string Relative path below UPLOADS_ARCHIVE_FOLDER.
+     */
+    public function export_compliant(
+        int $archiveDocumentId,
+        ?int $actorUserId = null,
+        string $actorType = 'system'
+    ): string {
+        if ( ! class_exists('ZipArchive')) {
+            throw new RuntimeException('The PHP ZIP extension is required for archive export.');
+        }
+
+        $document = $this->requireDocument($archiveDocumentId);
+        if (($document['sealed_at'] ?? null) === null || $document['sealed_at'] === '') {
+            throw new RuntimeException('Only sealed archive documents can be exported.');
+        }
+
+        $verification = $this->verify_integrity($archiveDocumentId, $actorUserId, $actorType);
+        if ($verification['valid'] !== true) {
+            throw new RuntimeException('The archive document cannot be exported because its integrity check failed.');
+        }
+
+        $path = $this->archivePath((string) $document['storage_path']);
+        $exportDirectory = rtrim(UPLOADS_ARCHIVE_FOLDER, DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR . 'exports';
+        if ( ! is_dir($exportDirectory) && ! mkdir($exportDirectory, 0750, true) && ! is_dir($exportDirectory)) {
+            throw new RuntimeException('The archive export directory could not be created.');
+        }
+        if ( ! is_writable($exportDirectory) || ! validate_file_in_directory($exportDirectory, UPLOADS_ARCHIVE_FOLDER)) {
+            throw new RuntimeException('The archive export directory is not writable or is invalid.');
+        }
+
+        $exportName = 'archive-' . $archiveDocumentId . '-' . substr($verification['actual_sha256'], 0, 16) . '.zip';
+        $finalPath = $exportDirectory . DIRECTORY_SEPARATOR . $exportName;
+        if (file_exists($finalPath)) {
+            throw new RuntimeException('The archive export already exists and cannot be overwritten.');
+        }
+
+        $temporaryPath = tempnam($exportDirectory, '.archive-export-');
+        if ($temporaryPath === false || ! validate_file_in_directory($temporaryPath, UPLOADS_ARCHIVE_FOLDER)) {
+            throw new RuntimeException('A secure temporary archive export could not be created.');
+        }
+
+        $generatedAt = date('Y-m-d H:i:s');
+        $this->audit($archiveDocumentId, 'export_started', $actorUserId, $actorType, [
+            'export_name' => $exportName,
+            'generated_at' => $generatedAt,
+        ]);
+
+        try {
+            $this->load->model('integrations/Mdl_archive_audit_events');
+            $events = $this->Mdl_archive_audit_events->get_by_document($archiveDocumentId);
+            if ( ! $this->Mdl_archive_audit_events->verify_chain($archiveDocumentId)) {
+                throw new RuntimeException('The archive audit chain could not be verified.');
+            }
+
+            $documentEntryName = $this->exportDocumentName($document, $archiveDocumentId);
+            $manifest = [
+                'format' => 'InvoicePlane archive package',
+                'format_version' => '1.0',
+                'generated_at' => $generatedAt,
+                'document' => [
+                    'archive_document_id' => $archiveDocumentId,
+                    'document_type' => $document['document_type'],
+                    'source_module' => $document['source_module'],
+                    'source_reference' => $document['source_reference'],
+                    'file_name' => $document['file_name'],
+                    'mime_type' => $document['mime_type'],
+                    'file_size' => (int) $document['file_size'],
+                    'sha256' => $verification['actual_sha256'],
+                    'document_profile' => $document['document_profile'],
+                    'validation_status' => $document['validation_status'],
+                    'received_at' => $document['received_at'],
+                    'archived_at' => $document['archived_at'],
+                    'retention_until' => $document['retention_until'],
+                    'legal_hold' => (int) $document['legal_hold'] === 1,
+                    'sealed_at' => $document['sealed_at'],
+                    'integrity_verified_at' => $document['integrity_verified_at'],
+                    'package_entry' => 'document/' . $documentEntryName,
+                ],
+                'audit_chain_verified' => true,
+                'audit_event_count' => count($events),
+            ];
+
+            $zip = new ZipArchive();
+            if ($zip->open($temporaryPath, ZipArchive::OVERWRITE) !== true) {
+                throw new RuntimeException('The archive export could not be opened.');
+            }
+            if ( ! $zip->addFile($path, 'document/' . $documentEntryName)) {
+                $zip->close();
+                throw new RuntimeException('The archived document could not be added to the export.');
+            }
+            $zip->addFromString(
+                'manifest.json',
+                json_encode($manifest, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . "\n"
+            );
+            $zip->addFromString(
+                'audit-events.json',
+                json_encode($events, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . "\n"
+            );
+            if ( ! $zip->close() || ! rename($temporaryPath, $finalPath)) {
+                throw new RuntimeException('The archive export could not be finalized.');
+            }
+        } catch (Throwable $exception) {
+            if (is_file($temporaryPath)) {
+                unlink($temporaryPath);
+            }
+
+            throw $exception;
+        }
+
+        $this->audit($archiveDocumentId, 'exported', $actorUserId, $actorType, [
+            'export_name' => $exportName,
+            'generated_at' => $generatedAt,
+            'sha256' => hash_file('sha256', $finalPath),
+        ]);
+
+        return 'exports/' . $exportName;
+    }
+
     private function requireDocument(int $archiveDocumentId): array
     {
         if ($archiveDocumentId < 1) {
@@ -338,6 +460,15 @@ class Mdl_Archive_documents extends CI_Model
         }
 
         return $path;
+    }
+
+    private function exportDocumentName(array $document, int $archiveDocumentId): string
+    {
+        $name = basename((string) ($document['file_name'] ?? ''));
+        $name = preg_replace('/[^A-Za-z0-9._-]/', '_', $name) ?? '';
+        $name = trim($name, '._-');
+
+        return $name === '' ? 'document-' . $archiveDocumentId . '.bin' : $name;
     }
 
     private function nullableString(mixed $value): ?string
