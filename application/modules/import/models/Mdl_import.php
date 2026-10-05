@@ -119,7 +119,7 @@ class Mdl_Import extends Response_Model
 
         $fileheaders = null;
 
-        while (($data = fgetcsv($handle, 1000, ',')) != false) {
+        while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) != false) {
             // Check to make sure the file headers match the expected headers
             if ($row == 1) {
                 foreach ($headers as $header) {
@@ -180,7 +180,7 @@ class Mdl_Import extends Response_Model
         // Init an array to store the inserted ids
         $ids = [];
 
-        while (($data = fgetcsv($handle, 1000, ',')) != false) {
+        while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) != false) {
             // Init $record_error as false
             $record_error = false;
 
@@ -265,7 +265,7 @@ class Mdl_Import extends Response_Model
         // Init an array to store the inserted ids
         $ids = [];
 
-        while (($data = fgetcsv($handle, 1000, ',')) != false) {
+        while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) != false) {
             // Init record_error as false
             $record_error = false;
 
@@ -346,7 +346,7 @@ class Mdl_Import extends Response_Model
 
         $ids = [];
 
-        while (($data = fgetcsv($handle, 1000, ',')) != false) {
+        while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) != false) {
             $record_error = false;
 
             if ($row == 1 && $data != $headers) {
