@@ -175,6 +175,14 @@ for an existing source. It is the foundation for retention, legal holds,
 append-only audit trails, and future WORM or external SAE storage. It does not
 by itself make the underlying filesystem immutable.
 
+Migration `055_archive_audit_trail.sql` adds `ip_archive_audit_events`, an
+append-only audit trail for registry activity. Each event contains a
+sanitized payload and a SHA-256 hash linked to the previous event for the
+same document. The `Mdl_Archive_audit_events::verify_chain()` method can be
+used to detect altered or removed events. The first `registered` event is
+created automatically when a document enters the archive registry. Database
+and storage-level WORM guarantees remain a separate concern.
+
 Manual supplier invoice creation also checks the supplier/number combination.
 The same rule is enforced by the `uq_supplier_invoice_supplier_number`
 database constraint, while allowing identical invoice numbers for different
