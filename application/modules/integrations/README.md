@@ -214,6 +214,21 @@ before decryption, and archive integrity verification validates the plaintext
 digest as well as the encrypted storage digest. The encryption key must be
 kept outside the repository and backed up separately.
 
+Archive key rotation is configuration-driven. Set
+`ARCHIVE_ENCRYPTION_KEYS` to a JSON object containing the retained key
+versions and set `ARCHIVE_ENCRYPTION_ACTIVE_KEY_VERSION` to the new version.
+Existing documents continue to decrypt with their recorded version. Calling
+`rotate_encryption_key()` verifies the existing content, writes a new
+authenticated ciphertext under the active key, updates the registry, and
+records the old and new versions in the audit chain. The previous ciphertext
+is retained for recovery; old keys must remain available until every document
+using them has been rotated and verified.
+
+The batch command `php index.php integrations/cli/rotate_archive_keys [limit]`
+processes documents that do not use the configured active key version. It is
+safe to run repeatedly; failures are reported by document ID for a later
+retry, while each successful rotation remains auditable.
+
 Migration `058_external_sae_storage.sql` records the remote SAE object key,
 version ID, provider, and retention date. `S3ObjectLockArchiveConnector`
 requires an S3 bucket with versioning and Object Lock already enabled. It

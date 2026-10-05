@@ -8,9 +8,8 @@ require_once APPPATH . 'modules/integrations/libraries/S3ObjectLockArchiveConnec
 /**
  * Registry of documents held by the archive layer.
  *
- * This model records the document identity and provenance without claiming
- * that the underlying filesystem is immutable. A future storage adapter will
- * provide WORM or external SAE guarantees.
+ * This model records document identity and provenance. Local storage remains
+ * application-controlled; S3 Object Lock provides the external WORM layer.
  */
 class Mdl_Archive_documents extends CI_Model
 {
@@ -31,6 +30,50 @@ class Mdl_Archive_documents extends CI_Model
             'encryption_status' => $stored['encryption_status'],
             'encryption_key_version' => $stored['encryption_key_version'],
         ]));
+    }
+
+    public function rotate_encryption_key(
+        int $archiveDocumentId,
+        ?int $actorUserId = null,
+        string $actorType = 'system'
+    ): bool {
+        $document = $this->requireDocument($archiveDocumentId);
+        if (($document['encryption_status'] ?? null) !== 'encrypted') {
+            throw new RuntimeException('Only encrypted archive documents can be rotated.');
+        }
+
+        $adapter = new EncryptedArchiveStorageAdapter();
+        $currentVersion = (string) ($document['encryption_key_version'] ?? 'v1');
+        $activeVersion = $adapter->activeKeyVersion();
+        if ($currentVersion === $activeVersion) {
+            return false;
+        }
+
+        if ( ! $adapter->verify((string) $document['storage_path'], (string) $document['sha256'], $currentVersion)) {
+            throw new RuntimeException('The archive document cannot be rotated because its integrity check failed.');
+        }
+
+        $destinationPath = 'encrypted/rotated/' . $archiveDocumentId . '-'
+            . (string) $document['sha256'] . '-' . $activeVersion . '.bin';
+        $stored = $adapter->rotate((string) $document['storage_path'], $currentVersion, $destinationPath);
+        $now = date('Y-m-d H:i:s');
+        $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
+            'storage_path' => $stored['path'],
+            'storage_sha256' => $stored['storage_sha256'],
+            'encryption_key_version' => $stored['encryption_key_version'],
+            'integrity_status' => 'verified',
+            'integrity_verified_at' => $now,
+            'integrity_error' => null,
+            'updated_at' => $now,
+        ]);
+        $this->audit($archiveDocumentId, 'encryption_key_rotated', $actorUserId, $actorType, [
+            'previous_key_version' => $currentVersion,
+            'new_key_version' => $activeVersion,
+            'previous_storage_path' => $document['storage_path'],
+            'new_storage_path' => $stored['path'],
+        ]);
+
+        return true;
     }
 
     public function register(array $data): int
@@ -244,6 +287,24 @@ class Mdl_Archive_documents extends CI_Model
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function get_documents_pending_key_rotation(string $activeVersion, int $limit = 100): array
+    {
+        if (preg_match('/^[A-Za-z0-9][A-Za-z0-9._-]{0,19}$/', $activeVersion) !== 1) {
+            throw new InvalidArgumentException('Archive encryption key version is invalid.');
+        }
+
+        return $this->db
+            ->where('encryption_status', 'encrypted')
+            ->where('encryption_key_version !=', $activeVersion)
+            ->order_by('archive_document_id', 'ASC')
+            ->limit(max(1, min(1000, $limit)))
+            ->get(self::TABLE)
+            ->result_array();
+    }
+
+    /**
      * Verify the stored document against its registered SHA-256 digest.
      *
      * @return array{valid: bool, expected_sha256: string, actual_sha256: string|null}
@@ -268,7 +329,10 @@ class Mdl_Archive_documents extends CI_Model
                 $integrityError = 'The encrypted archive storage digest does not match its registered digest.';
             } elseif (($document['encryption_status'] ?? null) === 'encrypted') {
                 $adapter = new EncryptedArchiveStorageAdapter();
-                $actualSha256 = $adapter->plaintextSha256((string) $document['storage_path']);
+                $actualSha256 = $adapter->plaintextSha256(
+                    (string) $document['storage_path'],
+                    (string) ($document['encryption_key_version'] ?? 'v1')
+                );
                 $valid = hash_equals($expectedSha256, $actualSha256);
             } else {
                 $actualSha256 = $storageSha256;
@@ -394,7 +458,10 @@ class Mdl_Archive_documents extends CI_Model
 
                 throw new RuntimeException('A secure temporary plaintext export could not be created.');
             }
-            $plaintext = (new EncryptedArchiveStorageAdapter())->read((string) $document['storage_path']);
+            $plaintext = (new EncryptedArchiveStorageAdapter())->read(
+                (string) $document['storage_path'],
+                (string) ($document['encryption_key_version'] ?? 'v1')
+            );
             if (file_put_contents($decryptedPath, $plaintext, LOCK_EX) !== strlen($plaintext)) {
                 unlink($decryptedPath);
                 unlink($temporaryPath);
