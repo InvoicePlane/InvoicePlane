@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Users;
 
-use Tests\Support\AbstractTestCase;
+use Tests\AbstractTestCase;
 
 class UserClientsIdorTest extends AbstractTestCase
 {

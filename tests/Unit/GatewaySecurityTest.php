@@ -28,7 +28,7 @@ class GatewaySecurityTest extends TestCase
         $payload = "'-window.location='http://attacker.com'-'";
         $encoded = json_encode($payload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 
-        // When used in: clientId: <?php echo json_encode(...); ?>
+        // When used in a template as: clientId: json_encode($value)
         // Result becomes: clientId: "...escaped..."
         // The outer quotes from json_encode prevent breakout
         $this->assertStringStartsWith('"', $encoded);
