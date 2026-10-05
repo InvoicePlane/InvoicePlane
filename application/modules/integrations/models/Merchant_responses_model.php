@@ -204,12 +204,18 @@ class Merchant_responses_model extends CI_Model
                 ->where('merchant_response_id', $existing['merchant_response_id'])
                 ->update(self::TABLE, $data);
 
-            return (int) $existing['merchant_response_id'];
+            $responseId = (int) $existing['merchant_response_id'];
+            $this->registerArchivedDocument($responseId, $data);
+
+            return $responseId;
         }
 
         $this->db->insert(self::TABLE, $data);
 
-        return (int) $this->db->insert_id();
+        $responseId = (int) $this->db->insert_id();
+        $this->registerArchivedDocument($responseId, $data);
+
+        return $responseId;
     }
 
     public function has_valid_incoming_document(int $merchantClientId, string $externalId): bool
@@ -221,6 +227,33 @@ class Merchant_responses_model extends CI_Model
             ->where('record_type', MerchantResponseType::IncomingInvoice->value)
             ->where('document_validation_status', 'valid')
             ->count_all_results(self::TABLE) > 0;
+    }
+
+    private function registerArchivedDocument(int $responseId, array $data): void
+    {
+        if (($data['document_validation_status'] ?? null) !== 'valid'
+            || ! is_string($data['document_path'] ?? null)
+            || trim($data['document_path']) === ''
+            || ! is_string($data['document_sha256'] ?? null)
+            || trim($data['document_sha256']) === '') {
+            return;
+        }
+
+        $this->load->model('integrations/Mdl_archive_documents');
+        $this->Mdl_archive_documents->register([
+            'document_type' => 'incoming_invoice',
+            'source_module' => 'integrations',
+            'source_reference' => 'incoming_response:' . $responseId,
+            'storage_path' => $data['document_path'],
+            'file_name' => $data['document_name'] ?? basename($data['document_path']),
+            'mime_type' => $data['document_mime_type'] ?? 'application/octet-stream',
+            'file_size' => $data['document_size'] ?? 0,
+            'sha256' => $data['document_sha256'],
+            'document_profile' => $data['document_profile'] ?? null,
+            'validation_status' => $data['document_validation_status'],
+            'validation_error' => $data['document_validation_error'] ?? null,
+            'received_at' => $data['created_at'] ?? null,
+        ]);
     }
 
     public function get_valid_incoming_document_id(int $merchantClientId, string $externalId): ?int
