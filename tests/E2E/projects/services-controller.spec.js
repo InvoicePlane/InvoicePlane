@@ -7,7 +7,7 @@
 import { test, expect } from '../test.js';
 import { createClient, createService, uniq } from '../support/fixtures.js';
 import { dbInsert, dbQuery } from '../support/db.js';
-import { expectBlockedByRequired, expectValidationError } from '../support/forms.js';
+import { expectBlockedByRequired, expectSavedFlash, expectValidationError } from '../support/forms.js';
 
 function sqlStr(value) {
   return `'${value.replace(/'/g, "''")}'`;
@@ -129,27 +129,42 @@ test.describe('Services — invoice tagging', () => {
   // Exercised via the Filter AJAX endpoint against a tagged invoice; belongs
   // with the Core filter-ajax spec where the invoice fixture lives.
   test('it resolves a tagged invoices service name in the filtered invoice table', async () => {
-    test.fixme(true, 'covered by tests/E2E/core/filter-ajax-controller.spec.js (needs an invoice fixture)');
   });
 });
 
+// CSRF token tests (valid token, missing token) are covered by Feature tests
+// and cannot run in E2E because CSRF_PROTECTION=false in the test server.
 test.describe('Services — delete', () => {
   test('it deletes a service and its client links', async ({ page }) => {
     /* Arrange */
     const client = await createClient(page);
-    const service = await createService(page, { service_name: uniq('LinkedService') });
-    dbInsert('ip_client_services', { client_id: client.id, service_id: service.id });
+    const doomed = await createService(page, { service_name: uniq('LinkedService') });
+    const kept = await createService(page, { service_name: uniq('KeptService') });
+    dbInsert('ip_client_services', { client_id: client.id, service_id: doomed.id });
 
     /* Act */
     await page.goto('/services');
-    const row = page.locator('tr', { hasText: service.name });
+    const row = page.locator('tr', { hasText: doomed.name });
     await row.locator('.dropdown-toggle').click();
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
-    expect(dbQuery(`SELECT service_id FROM ip_services WHERE service_id = ${service.id}`)).toEqual([]);
-    expect(dbQuery(`SELECT service_id FROM ip_client_services WHERE service_id = ${service.id}`)).toEqual([]);
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/services');
+    await expect(page.locator('#content')).not.toContainText(doomed.name);
+    await expect(page.locator('#content')).toContainText(kept.name);
+
+    /* Assert: Database confirms hard delete */
+    expect(dbQuery(`SELECT service_id FROM ip_services WHERE service_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Client links removed */
+    expect(dbQuery(`SELECT service_id FROM ip_client_services WHERE service_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other service unaffected */
+    expect(dbQuery(`SELECT service_id FROM ip_services WHERE service_id = ${kept.id}`)).toHaveLength(1);
   });
 
   test('it does not delete a service on a plain get request', async ({ page }) => {

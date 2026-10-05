@@ -14,8 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Vulnerability | Severity | CVSSv3 | CWE | Security Advisory | Reported By | Fixed In |
 |---|---|---|---|---|---|---|
 | XSS session hijack via `cookie_httponly=false` | High | 7.4 | CWE-1004 | — | Internal audit | #1567 |
-| Clickjacking — `X-Frame-Options` not always sent | Medium | 4.3 | CWE-1021 | — | Internal audit | #1567 |
+| Clickjacking — `X-Frame-Options` not always sent | Medium | 4.3 | CWE-1021 | [[GHSA-858w-pp5p-wphm](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-858w-pp5p-wphm)] | Internal audit | — |
 | Session fixation — `SESS_REGENERATE_DESTROY` defaulted `false` | Medium | 6.8 | CWE-384 | — | Internal audit | #1567 |
+| Unauthenticated session file + upload access via missing nginx deny rules | High | 7.5 | CWE-639 | [[GHSA-qq8q-gf24-576m](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-qq8q-gf24-576m)] | [@nirtem](https://github.com/nirtem) | — |
+| Guest invoice IDOR via ungrouped OR in is_paid() | Moderate | 5.3 | CWE-639 | [[GHSA-w5r4-8w63-c5h2](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-w5r4-8w63-c5h2)] | [@d3do-23](https://github.com/d3do-23) | — |
+| Secondary admin can delete other admin accounts | Moderate | 6.5 | CWE-862 | [[GHSA-6r23-8rf2-78h3](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-6r23-8rf2-78h3)] | [@capivara-research](https://github.com/capivara-research) | — |
+| Admin IDOR on save_user_client reassigns any user's clients | High | 7.1 | CWE-639 | [[GHSA-h4xh-4jwc-485r](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-h4xh-4jwc-485r)] | [@0raN9ewww](https://github.com/0raN9ewww) | — |
 | Log injection via password-reset token/email | Low | 3.7 | CWE-117 | — | Internal audit | #1567 |
 | Open redirect via raw `$_SERVER['HTTP_REFERER']` | Medium | 6.1 | CWE-601 | — | Internal audit | #1567 |
 | Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | #1567 |
@@ -97,6 +101,161 @@ clickjacking attacks.
 
 **Affected Versions:** All InvoicePlane versions prior to this fix  
 **Recommended Action:** Upgrade; if you need a different policy, set `X_FRAME_OPTIONS` in `ipconfig.php`
+
+---
+
+**HIGH: Fixed Unauthenticated Session File Access via Missing nginx Deny Rules (CWE-639)**
+
+The nginx configuration was missing `deny all` blocks for five sensitive directories. On nginx deployments (including the Docker default), an unauthenticated attacker could directly fetch PHP session files, archived invoice PDFs, and bulk import CSVs by making direct HTTP requests to `/storage/`, `/uploads/archive/`, `/uploads/import/`, `/uploads/customer_files/`, and `/uploads/temp/`. The `.htaccess` `Deny from all` directives in those directories only protect Apache; nginx ignores `.htaccess` files entirely.
+
+**Vulnerability Details:**
+- **CWE-639:** Authorization Through User-Controlled Key
+- **CVSSv3:** 7.5 — `CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N`
+- **Attack Vector (Highest Impact):** Fetch `/storage/ci_session<hex>` → obtain serialized session with `user_id`, `user_name`, `user_type` → replay the `ip_session` cookie → attacker gains full access as that user
+- **Additional Impacts:** Archive PDFs expose financial records (invoices with client PII); import CSVs expose bulk client data; temp XML files may contain SUMEX patient PII
+
+**Root Cause:**
+- v1.7.3 nginx config in `resources/docker/nginx/invoiceplane.conf` had no location blocks restricting these paths
+- `.htaccess` files in `uploads/archive/`, `uploads/customer_files/`, `uploads/import/`, `uploads/temp/` only protect Apache, not nginx
+- Docker deployments (primary documented installation method) all use the bundled nginx config
+
+**Fix Implementation:**
+- **Added explicit `deny all` + `return 404` blocks to nginx config**:
+  - `location ^~ /storage/` — deny all PHP session files, logs, cache
+  - `location ^~ /uploads/archive/` — deny archived PDFs
+  - `location ^~ /uploads/customer_files/` — deny customer attachments
+  - `location ^~ /uploads/import/` — deny import CSVs
+  - `location ^~ /uploads/temp/` — deny temporary SUMEX XML files
+- Blocks are evaluated before the final catch-all `/` location
+- No application restart needed; `nginx -s reload` applies immediately
+
+**Files Changed:**
+- `resources/docker/nginx/invoiceplane.conf` — added five location blocks with deny rules
+
+**Impact:**
+- **Before:** Unauthenticated attackers could download any session, PDF, CSV, or temp file from the web root
+- **After:** All sensitive paths return 404 on nginx
+
+**Affected Versions:** v1.7.3 and earlier (nginx deployments only; Apache deployments unaffected)  
+**Recommended Action:** Upgrade or manually add the five location blocks to your nginx config; invalidate all active sessions as a precaution
+
+---
+
+**MODERATE: Fixed Guest Invoice IDOR via Ungrouped OR in is_paid() (CWE-639)**
+
+The `Mdl_invoices::is_paid()` method used deferred filter conditions (via `filter_where()` and `filter_or_where()`) but did not wrap them in a group. This caused MySQL operator precedence to break the intended scoping: `(client_id IN (...) AND status=4) OR (balance='0.00')` instead of `client_id IN (...) AND (status=4 OR balance='0.00')`. The second OR branch had no client constraint, exposing all zero-balance invoices from all clients to every guest user.
+
+**Vulnerability Details:**
+- **CWE-639:** Authorization Through User-Controlled Key
+- **CVSSv3:** 5.3 — `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N`
+- **Attack Vector:** Authenticated guest user accesses `/guest/invoices/status/paid` → server returns invoices from other clients with `invoice_balance = '0.00'`
+- **Leaked Data:** Invoice number, client name, total, dates, and status badge visible in HTML table
+
+**Root Cause:**
+- `where_in('ip_invoices.client_id', ...)` executes immediately (not deferred)
+- `filter_where()` and `filter_or_where()` are deferred into a queue applied later
+- Without grouping, the deferred OR clause lands outside the client_id scope
+
+**Fix Implementation:**
+- **Wrapped the OR condition with filter group delimiters**:
+  ```php
+  $this->filter_group_start();
+  $this->filter_where('invoice_status_id', 4);
+  $this->filter_or_where('invoice_balance', '0.00');
+  $this->filter_group_end();
+  ```
+- This ensures the OR clause is parenthesized in the final SQL as intended
+
+**Files Changed:**
+- `application/modules/invoices/models/Mdl_invoices.php:649–668` — `is_paid()` method now uses filter grouping
+
+**Impact:**
+- **Before:** Any guest user could view paid invoices from other clients
+- **After:** Guest users only see invoices belonging to their assigned client(s)
+
+**Affected Versions:** v1.7.3 and earlier  
+**Recommended Action:** Upgrade; audit access logs for `/guest/invoices/status/paid` requests to identify potential data leakage
+
+---
+
+**MODERATE: Fixed Secondary Administrator Account Deletion Authorization Bypass (CWE-862)**
+
+The `Users::delete()` endpoint checked that the target user was not the primary administrator (`user_id=1`), but did not verify that the **acting user** had permission to delete other accounts. A secondary administrator could send a POST request to delete any other non-primary admin account, eliminating rival admins and consolidating access.
+
+**Vulnerability Details:**
+- **CWE-862:** Missing Authorization
+- **CVSSv3:** 6.5 — `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:L`
+- **Attack Vector:** Secondary admin (user_type=1, user_id>1) sends `POST /users/delete/4` → target user is deleted permanently
+- **Impact Chain:** Delete all peer admins → reassign their clients (via save_user_client IDOR) → attacker controls all client data while primary admin is offline
+
+**Root Cause:**
+- `delete()` only checked `if (!Mdl_Users::is_primary_administrator($id))` — target-side check only
+- No check of `$this->session->userdata('user_id')` against `is_primary_administrator()` — missing actor-side check
+
+**Fix Implementation:**
+- **Added actor-side authorization check before processing any deletion**:
+  ```php
+  $current_user_id = (int) $this->session->userdata('user_id');
+  if (!Mdl_Users::is_primary_administrator($current_user_id)) {
+      show_error(trans('access_denied'), 403);
+      return;
+  }
+  ```
+- Only the primary admin (user_id=1) may delete other accounts
+- Secondary admins may not delete any accounts, including themselves (hardened behavior)
+
+**Files Changed:**
+- `application/modules/users/controllers/Users.php:247–270` — `delete()` method now checks actor authorization
+
+**Impact:**
+- **Before:** Any secondary admin could permanently delete peer admin accounts
+- **After:** Only the primary administrator may delete other user accounts
+
+**Affected Versions:** v1.7.3 and earlier  
+**Recommended Action:** Upgrade; audit user deletion logs and restore any accounts deleted by non-primary admins
+
+---
+
+**HIGH: Fixed Admin IDOR on save_user_client Allows Reassignment of Any User's Clients (CWE-639)**
+
+The `POST /users/ajax/save_user_client` endpoint accepted a `user_id` parameter from the request body and assigned clients to that user without verifying the acting admin had permission to modify that user's account. A secondary administrator could reassign another admin's clients, silently denying them data access or escalating their scope.
+
+**Vulnerability Details:**
+- **CWE-639:** Authorization Through User-Controlled Key  
+- **CVSSv3:** 7.1 — `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:L`
+- **Attack Vector A (Escalation):** Secondary admin sends `POST /users/ajax/save_user_client` with target `user_id=3` and `client_id=7` → attacker assigns client 7 to another admin's account
+- **Attack Vector B (Denial):** Secondary admin sends multiple requests deleting the `user_client` associations for user_id=4 → user 4 can no longer see any invoices
+- **Combined Impact (with admin delete IDOR):** Reassign all clients from peer admins, then delete their accounts → sole operational control
+
+**Root Cause:**
+- `save_user_client()` accepted raw `user_id` from POST without authorization check
+- Only verified the client existed; never verified acting user had permission to modify target user's scope
+
+**Fix Implementation:**
+- **Added actor authorization check**:
+  ```php
+  if (!empty($user_id)) {
+      $current_user_id = (int) $this->session->userdata('user_id');
+      $target_user_id = (int) $user_id;
+      
+      if ($target_user_id !== $current_user_id && !Mdl_Users::is_primary_administrator($current_user_id)) {
+          show_error(trans('access_denied'), 403);
+          return;
+      }
+  }
+  ```
+- Secondary admins may only modify their own client assignments
+- Only the primary admin may assign or remove clients for other users
+
+**Files Changed:**
+- `application/modules/users/controllers/Ajax.php:107–152` — `save_user_client()` method now checks actor authorization
+
+**Impact:**
+- **Before:** Any secondary admin could silently modify any other admin's client scope
+- **After:** Only the primary admin or the user themselves may change their client assignments
+
+**Affected Versions:** v1.7.3 and earlier  
+**Recommended Action:** Upgrade; audit user_client assignment logs for unauthorized changes
 
 ---
 

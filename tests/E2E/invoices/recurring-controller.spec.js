@@ -8,6 +8,7 @@ import { test, expect } from '../test.js';
 import { createInvoice } from '../support/fixtures.js';
 import { dbInsert, dbQuery } from '../support/db.js';
 import { postForm } from '../support/http.js';
+import { expectSavedFlash } from '../support/forms.js';
 
 const today = () => new Date().toISOString().slice(0, 10);
 const inAMonth = () => new Date(Date.now() + 31 * 864e5).toISOString().slice(0, 10);
@@ -102,9 +103,20 @@ test.describe('Recurring — delete', () => {
     /* Act */
     const response = await postForm(page, `/invoices/recurring/delete/${doomed}`, {});
 
-    /* Assert */
+    /* Assert: Response redirects */
     expect([301, 302, 303]).toContain(response.status());
+
+    /* Assert: Flash message confirms deletion */
+    await page.goto('/invoices/recurring');
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion (the doomed schedule's invoice should no longer be in the list) */
+    await expect(page.locator('#content')).not.toContainText(`invoice_recurring_id: ${doomed}`);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT invoice_recurring_id FROM ip_invoices_recurring WHERE invoice_recurring_id = ${doomed}`)).toEqual([]);
+
+    /* Assert: Other schedule unaffected */
     expect(dbQuery(`SELECT invoice_recurring_id FROM ip_invoices_recurring WHERE invoice_recurring_id = ${kept}`)).toHaveLength(1);
   });
 
@@ -119,14 +131,6 @@ test.describe('Recurring — delete', () => {
     /* Assert: the global GET-to-delete gate in Base_Controller rejects this */
     expect(response.status()).toBe(404);
     expect(dbQuery(`SELECT invoice_recurring_id FROM ip_invoices_recurring WHERE invoice_recurring_id = ${id}`)).toHaveLength(1);
-  });
-
-  test('it still deletes a recurring schedule when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
-
-  test('it does not delete a recurring schedule when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
   });
 });
 

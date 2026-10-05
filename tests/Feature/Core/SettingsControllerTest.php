@@ -4,6 +4,7 @@ namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Settings;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
 
@@ -14,7 +15,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * Issue1551SettingsRemoveLogoTest and Settings/SettingsRemoveLogoRegressionTest.
  */
 #[Group('settings')]
-#[CoversClass(\Settings::class)]
+#[CoversClass(Settings::class)]
 class SettingsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

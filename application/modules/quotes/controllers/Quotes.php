@@ -205,7 +205,7 @@ class Quotes extends Admin_Controller
      */
     public function delete($quote_id)
     {
-        if ( ! $this->ensure_valid_post_request('quotes/index')) {
+        if ( ! $this->ensure_valid_post_request('quotes/status/all')) {
             return;
         }
 
@@ -221,7 +221,7 @@ class Quotes extends Admin_Controller
         $this->mdl_quotes->delete($quote_id);
 
         // Redirect to quote index
-        redirect('quotes/index');
+        redirect('quotes/status/all');
     }
 
     /**

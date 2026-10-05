@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Invoices;
 
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -95,7 +94,7 @@ class CronControllerTest extends AbstractTestCase
     public function it_displays_invoice_with_client_information(): void
     {
         /* Arrange: create invoice with associated client */
-        $clientId = $this->seedClient(['client_name' => 'Test Company Ltd']);
+        $clientId  = $this->seedClient(['client_name' => 'Test Company Ltd']);
         $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'INV-2025-001']);
 
         /* Act */

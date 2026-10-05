@@ -77,9 +77,9 @@ class ClientsTest extends TestCase
     protected function setUpClientTitleEnum(): void
     {
         if ( ! defined('BASEPATH')) {
-            define('BASEPATH', dirname(__DIR__, 3) . '/system/');
+            define('BASEPATH', ROOT_PATH . '/system/');
         }
 
-        require_once dirname(__DIR__, 3) . '/application/libraries/ClientTitleEnum.php';
+        require_once ROOT_PATH . '/application/libraries/ClientTitleEnum.php';
     }
 }

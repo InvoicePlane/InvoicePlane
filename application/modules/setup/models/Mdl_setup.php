@@ -496,7 +496,7 @@ class Mdl_Setup extends CI_Model
 
             // Retry once on lock wait timeout (error 1205), which is common on live
             // databases when a long-running query holds a lock the ALTER needs.
-            $attempt = 0;
+            $attempt      = 0;
             $max_attempts = 2;
             while ($attempt < $max_attempts) {
                 $attempt++;

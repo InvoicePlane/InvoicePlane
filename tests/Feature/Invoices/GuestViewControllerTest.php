@@ -4,6 +4,7 @@ namespace Tests\Feature\Invoices;
 
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
+use View;
 
 /**
  * guest/controllers/View.php — the public invoice/quote viewer (magic-link
@@ -11,7 +12,7 @@ use Tests\AbstractTestCase;
  * the session-scoped quote approve/reject actions (real IDOR surface: a
  * guest must only be able to approve/reject quotes for their own clients).
  */
-#[CoversClass(\View::class)]
+#[CoversClass(View::class)]
 class GuestViewControllerTest extends AbstractTestCase
 {
     // -------------------------------------------------------------------------
@@ -277,6 +278,25 @@ class GuestViewControllerTest extends AbstractTestCase
         $this->assertResponseStatusCode($response, 404);
     }
 
+    // -------------------------------------------------------------------------
+    // quote()
+    // -------------------------------------------------------------------------
+
+    protected function seedQuote(int $clientId, array $overrides = []): int
+    {
+        return $this->databaseInsert('ip_quotes', array_merge([
+            'user_id'             => 1,
+            'client_id'           => $clientId,
+            'invoice_group_id'    => 1,
+            'quote_status_id'     => 2,
+            'quote_date_created'  => date('Y-m-d'),
+            'quote_date_modified' => date('Y-m-d H:i:s'),
+            'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
+            'quote_number'        => 'QUO-' . time() . '-' . random_int(100, 999),
+            'quote_url_key'       => bin2hex(random_bytes(16)),
+        ], $overrides));
+    }
+
     private function actingAsGuestUser(int $clientId): int
     {
         $guestUserId = $this->databaseInsert('ip_users', [
@@ -296,24 +316,5 @@ class GuestViewControllerTest extends AbstractTestCase
         ]);
 
         return $guestUserId;
-    }
-
-    // -------------------------------------------------------------------------
-    // quote()
-    // -------------------------------------------------------------------------
-
-    private function seedQuote(int $clientId, array $overrides = []): int
-    {
-        return $this->databaseInsert('ip_quotes', array_merge([
-            'user_id'             => 1,
-            'client_id'           => $clientId,
-            'invoice_group_id'    => 1,
-            'quote_status_id'     => 2,
-            'quote_date_created'  => date('Y-m-d'),
-            'quote_date_modified' => date('Y-m-d H:i:s'),
-            'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
-            'quote_number'        => 'QUO-' . time() . '-' . random_int(100, 999),
-            'quote_url_key'       => bin2hex(random_bytes(16)),
-        ], $overrides));
     }
 }

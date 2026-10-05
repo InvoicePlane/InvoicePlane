@@ -24,8 +24,8 @@ class PaypalFlowTest extends AbstractTestCase
     public function it_returns_404_for_a_non_post_create_order_request(): void
     {
         /* Arrange */
-        $invoiceId = $this->seedPayableInvoice();
-        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $invoiceId                   = $this->seedPayableInvoice();
+        $urlKey                      = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
@@ -76,8 +76,8 @@ class PaypalFlowTest extends AbstractTestCase
     public function it_returns_404_for_create_order_on_a_draft_invoice(): void
     {
         /* Arrange: draft (status 1) invoices are never guest_visible() */
-        $invoiceId = $this->seedPayableInvoice(['invoice_status_id' => 1]);
-        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $invoiceId                   = $this->seedPayableInvoice(['invoice_status_id' => 1]);
+        $urlKey                      = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         /* Act */
@@ -122,9 +122,9 @@ class PaypalFlowTest extends AbstractTestCase
         $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
         $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
 
-        /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('0.00', $invoice['invoice_balance']);
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
@@ -158,11 +158,11 @@ class PaypalFlowTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertGreaterThan(0, (int) $invoice['invoice_id']);
+        $this->assertNotNull($invoice);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
-        $json2 = json_decode($response2->body(), true);
+        $json2     = json_decode($response2->body(), true);
         $this->assertArrayHasKey('id', $json2);
     }
 
@@ -170,8 +170,8 @@ class PaypalFlowTest extends AbstractTestCase
     public function it_returns_500_when_paypal_returns_malformed_json_for_create_order(): void
     {
         /* Arrange */
-        $invoiceId = $this->seedPayableInvoice();
-        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $invoiceId                   = $this->seedPayableInvoice();
+        $urlKey                      = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         $this->mockPaypal([
@@ -202,8 +202,8 @@ class PaypalFlowTest extends AbstractTestCase
     public function it_returns_500_when_paypal_response_is_missing_the_order_id(): void
     {
         /* Arrange */
-        $invoiceId = $this->seedPayableInvoice();
-        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $invoiceId                   = $this->seedPayableInvoice();
+        $urlKey                      = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         $this->mockPaypal([
@@ -243,7 +243,7 @@ class PaypalFlowTest extends AbstractTestCase
     {
         /* Arrange */
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
-        $paymentCountBefore = $this->databaseCount('ip_payments');
+        $paymentCountBefore          = $this->databaseCount('ip_payments');
 
         /* Act */
         $response = $this->get('/guest/gateways/paypal/paypal_capture_payment/ORDER-1');
@@ -253,7 +253,7 @@ class PaypalFlowTest extends AbstractTestCase
 
         /* Assert: State Isolation (B) */
         $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
-        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $paymentCountAfter          = $this->databaseCount('ip_payments');
         $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
         $this->assertSame($paymentCountBefore, $paymentCountAfter);
 
@@ -272,7 +272,7 @@ class PaypalFlowTest extends AbstractTestCase
         /* Arrange */
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_payment_method', 'setting_value' => '1']);
-        $invoiceId = $this->seedPayableInvoice();
+        $invoiceId          = $this->seedPayableInvoice();
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockPaypal([
@@ -292,7 +292,7 @@ class PaypalFlowTest extends AbstractTestCase
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
-        $this->assertGreaterThan($paymentCountBefore, $paymentCountAfter);
+        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
 
         /* Assert: Data Integrity (D) */
         $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'CAP-1']);
@@ -309,7 +309,7 @@ class PaypalFlowTest extends AbstractTestCase
     {
         /* Arrange */
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
-        $invoiceId = $this->seedPayableInvoice();
+        $invoiceId          = $this->seedPayableInvoice();
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockPaypal([
@@ -325,7 +325,7 @@ class PaypalFlowTest extends AbstractTestCase
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
-        $this->assertGreaterThan($paymentCountBefore, $paymentCountAfter);
+        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
 
         /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
@@ -381,7 +381,7 @@ class PaypalFlowTest extends AbstractTestCase
     {
         /* Arrange */
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
-        $invoiceId = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
+        $invoiceId          = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockPaypal([
@@ -402,9 +402,9 @@ class PaypalFlowTest extends AbstractTestCase
         /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
 
-        /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('0.00', $invoice['invoice_balance']);
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER-4');
@@ -416,7 +416,7 @@ class PaypalFlowTest extends AbstractTestCase
     {
         /* Arrange */
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
-        $invoiceId = $this->seedPayableInvoice();
+        $invoiceId          = $this->seedPayableInvoice();
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockPaypal([
@@ -451,7 +451,7 @@ class PaypalFlowTest extends AbstractTestCase
     {
         /* Arrange */
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
-        $invoiceId = $this->seedPayableInvoice([], ['invoice_balance' => '50.00']);
+        $invoiceId          = $this->seedPayableInvoice([], ['invoice_balance' => '50.00']);
         $paymentCountBefore = $this->databaseCount('ip_payments');
 
         $this->mockPaypal([
@@ -472,9 +472,9 @@ class PaypalFlowTest extends AbstractTestCase
         /* Assert: Error Semantics (C) */
         self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
 
-        /* Assert: Data Integrity (D) */
-        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
-        $this->assertSame('50.00', $invoice['invoice_balance']);
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('50.00', $amounts['invoice_balance']);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER-6');
@@ -485,8 +485,8 @@ class PaypalFlowTest extends AbstractTestCase
     public function it_records_a_declined_capture_as_an_unsuccessful_merchant_response(): void
     {
         /* Arrange */
-        $invoiceId = $this->seedPayableInvoice();
-        $paymentCountBefore = $this->databaseCount('ip_payments');
+        $invoiceId                   = $this->seedPayableInvoice();
+        $paymentCountBefore          = $this->databaseCount('ip_payments');
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         $this->mockPaypal([
@@ -532,8 +532,8 @@ class PaypalFlowTest extends AbstractTestCase
     public function it_throws_and_records_nothing_when_the_captured_invoice_is_not_guest_visible(): void
     {
         /* Arrange: draft invoice — never guest_visible() */
-        $invoiceId = $this->seedPayableInvoice(['invoice_status_id' => 1]);
-        $paymentCountBefore = $this->databaseCount('ip_payments');
+        $invoiceId                   = $this->seedPayableInvoice(['invoice_status_id' => 1]);
+        $paymentCountBefore          = $this->databaseCount('ip_payments');
         $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
 
         $this->mockPaypal([
@@ -555,7 +555,7 @@ class PaypalFlowTest extends AbstractTestCase
         $this->assertDatabaseMissing('ip_merchant_responses', ['invoice_id' => $invoiceId]);
 
         /* Assert: State Isolation (B) */
-        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $paymentCountAfter          = $this->databaseCount('ip_payments');
         $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
         $this->assertSame($paymentCountBefore, $paymentCountAfter);
         $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
@@ -569,6 +569,13 @@ class PaypalFlowTest extends AbstractTestCase
         $this->assertNotNull($draftInvoice);
     }
 
+    protected function seedPayableInvoice(array $overrides = [], array $amountOverrides = []): int
+    {
+        $clientId = $this->seedClient();
+
+        return $this->seedInvoice($clientId, array_merge(['invoice_status_id' => 2], $overrides), array_merge(['invoice_balance' => '50.00'], $amountOverrides));
+    }
+
     private function mockPaypal(array $responses): void
     {
         $this->withEnvironment(['PAYPAL_MOCK_RESPONSES' => json_encode($responses)]);
@@ -577,13 +584,6 @@ class PaypalFlowTest extends AbstractTestCase
     private function authResponse(): array
     {
         return ['status' => 200, 'body' => json_encode(['access_token' => 'fake-bearer-token'])];
-    }
-
-    private function seedPayableInvoice(array $overrides = [], array $amountOverrides = []): int
-    {
-        $clientId = $this->seedClient();
-
-        return $this->seedInvoice($clientId, array_merge(['invoice_status_id' => 2], $overrides), array_merge(['invoice_balance' => '50.00'], $amountOverrides));
     }
 
     private function captureResponse(array $capture, string $status = 'COMPLETED'): array

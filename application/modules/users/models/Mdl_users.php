@@ -362,8 +362,9 @@ class Mdl_Users extends Response_Model
         $user_password = $this->crypt->generate_password($password, $user_psalt);
 
         $db_array = [
-            'user_psalt'    => $user_psalt,
-            'user_password' => $user_password,
+            'user_psalt'      => $user_psalt,
+            'user_password'   => $user_password,
+            'user_auth_version' => $this->db->raw('user_auth_version + 1'),
         ];
 
         $this->db->where('user_id', $user_id);

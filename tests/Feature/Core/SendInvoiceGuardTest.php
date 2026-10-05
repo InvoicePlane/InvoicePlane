@@ -4,6 +4,7 @@ namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Feature\Core\Integrations\AbstractInvoiceTransmissionTestCase;
 
 /**
  * Provider-agnostic guards on POST /integrations/send_invoice — the checks

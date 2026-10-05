@@ -48,6 +48,7 @@ yarn-error.log
 /.phpunit.cache/
 /.phpstan.cache/
 /uploads/temp/
+/.sandbox-tools/
 
 # Playwright (frontend E2E)
 /test-results/
@@ -57,3 +58,4 @@ yarn-error.log
 /tests/E2E/.auth/
 /tests/E2E/error-report.md
 package-lock.json
+_scratch/

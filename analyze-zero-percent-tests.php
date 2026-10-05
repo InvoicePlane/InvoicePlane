@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Analyze 0% hollow tests to identify patterns and refactoring opportunities
+ * Analyze 0% hollow tests to identify patterns and refactoring opportunities.
  */
 
 // Find all test files
@@ -10,23 +11,23 @@ $iterator = new RecursiveIteratorIterator(
 );
 
 $patterns = [
-    'no_assertions' => 0,
-    'single_assertion' => 0,
+    'no_assertions'        => 0,
+    'single_assertion'     => 0,
     'only_response_status' => 0,
-    'only_response_body' => 0,
-    'only_database_check' => 0,
-    'redirect_only' => 0,
+    'only_response_body'   => 0,
+    'only_database_check'  => 0,
+    'redirect_only'        => 0,
 ];
 
 $examples = [
-    'no_assertions' => [],
+    'no_assertions'        => [],
     'only_response_status' => [],
-    'only_response_body' => [],
-    'redirect_only' => [],
+    'only_response_body'   => [],
+    'redirect_only'        => [],
 ];
 
 foreach ($iterator as $file) {
-    if ($file->getExtension() !== 'php' || strpos($file->getFilename(), 'Test.php') === false) {
+    if ($file->getExtension() !== 'php' || ! str_contains($file->getFilename(), 'Test.php')) {
         continue;
     }
 
@@ -40,23 +41,23 @@ foreach ($iterator as $file) {
 
             // Extract function body
             $braceCount = 0;
-            $inString = false;
+            $inString   = false;
             $stringChar = '';
-            $testBody = '';
+            $testBody   = '';
 
             for ($pos = strpos($content, '{', $startPos); $pos < strlen($content); $pos++) {
                 $char = $content[$pos];
 
                 if ($char === '"' || $char === "'") {
-                    if (!$inString) {
-                        $inString = true;
+                    if ( ! $inString) {
+                        $inString   = true;
                         $stringChar = $char;
                     } elseif ($char === $stringChar && ($pos === 0 || $content[$pos - 1] !== '\\')) {
                         $inString = false;
                     }
                 }
 
-                if (!$inString) {
+                if ( ! $inString) {
                     if ($char === '{') {
                         $braceCount++;
                     } elseif ($char === '}') {
@@ -72,7 +73,7 @@ foreach ($iterator as $file) {
 
             // Count assertions
             $assertCount = preg_match_all('/\$this->assert/', $testBody);
-            
+
             if ($assertCount === 0) {
                 $patterns['no_assertions']++;
                 if (count($examples['no_assertions']) < 5) {
@@ -83,7 +84,7 @@ foreach ($iterator as $file) {
                 }
             } elseif ($assertCount === 1) {
                 $patterns['single_assertion']++;
-                
+
                 if (preg_match('/assertResponseStatusCode|assertStatus/', $testBody)) {
                     $patterns['only_response_status']++;
                     if (count($examples['only_response_status']) < 5) {
@@ -118,17 +119,17 @@ foreach ($iterator as $file) {
 
 echo "## 0% Hollow Test Patterns Analysis\n\n";
 echo "### Pattern Distribution\n";
-echo "- **No assertions at all**: " . $patterns['no_assertions'] . "\n";
-echo "- **Single assertion (status only)**: " . $patterns['only_response_status'] . "\n";
-echo "- **Single assertion (body only)**: " . $patterns['only_response_body'] . "\n";
-echo "- **Redirect-only tests**: " . $patterns['redirect_only'] . "\n";
+echo '- **No assertions at all**: ' . $patterns['no_assertions'] . "\n";
+echo '- **Single assertion (status only)**: ' . $patterns['only_response_status'] . "\n";
+echo '- **Single assertion (body only)**: ' . $patterns['only_response_body'] . "\n";
+echo '- **Redirect-only tests**: ' . $patterns['redirect_only'] . "\n";
 echo "\n";
 
 foreach ($examples as $pattern => $tests) {
-    if (!empty($tests)) {
-        echo "### Examples: " . ucfirst(str_replace('_', ' ', $pattern)) . "\n";
+    if ( ! empty($tests)) {
+        echo '### Examples: ' . ucfirst(str_replace('_', ' ', $pattern)) . "\n";
         foreach ($tests as $test) {
-            echo "- `" . $test['file'] . "::" . $test['test'] . "`\n";
+            echo '- `' . $test['file'] . '::' . $test['test'] . "`\n";
         }
         echo "\n";
     }
