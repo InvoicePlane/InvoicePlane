@@ -122,6 +122,17 @@ abstract class AbstractInvoiceTransmissionTestCase extends AbstractTestCase
             'invoice_number' => $invoiceNumber,
         ]);
 
+        $this->seedStandardInvoiceBody($invoiceId);
+
+        return [$invoiceId, $merchantId];
+    }
+
+    /**
+     * One 20 % VAT line (100.00 + 20.00 = 120.00) with its item amounts, matching invoice totals, and the
+     * currency_code / einvoicing settings the PDF helper's embed path requires.
+     */
+    protected function seedStandardInvoiceBody(int $invoiceId): void
+    {
         $this->databaseUpdate('ip_invoice_amounts', [
             'invoice_item_subtotal'  => '100.00',
             'invoice_item_tax_total' => '20.00',
@@ -157,8 +168,6 @@ abstract class AbstractInvoiceTransmissionTestCase extends AbstractTestCase
 
         $this->setSetting('currency_code', 'EUR');
         $this->setSetting('einvoicing', '1');
-
-        return [$invoiceId, $merchantId];
     }
 
     /**
