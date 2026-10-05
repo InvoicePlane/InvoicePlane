@@ -705,3 +705,7 @@ User Consultation
 # Conclusion
 
 The **eInvoice** module provides a generic integration layer between InvoicePlane and electronic invoicing providers. Its provider-based architecture allows new PDPs and service providers to be added with minimal development effort while maintaining a unified user experience within InvoicePlane.
+
+Operational procedures for the digital archive are documented in
+`.github/docs/DIGITAL_ARCHIVE_OPERATIONS.md`, including backup, restore, key
+rotation, integrity verification, S3 Object Lock, and incident response.
