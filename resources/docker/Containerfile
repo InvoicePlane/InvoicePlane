@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 COPY Gruntfile.js ./
-COPY assets ./assets
+COPY public/assets ./assets
 RUN yarn build
 
 FROM php:8.4-apache
@@ -40,8 +40,6 @@ COPY --from=composer-build /usr/bin/composer /usr/local/bin/composer
 COPY --from=composer-build /app/composer.json /app/composer.lock /tmp/composer-check/
 RUN composer check-platform-reqs --no-dev --working-dir=/tmp/composer-check \
 	&& rm -rf /tmp/composer-check /usr/local/bin/composer
-COPY --from=asset-build   /app/assets /var/www/html/assets
-
 COPY application /var/www/html/application
 COPY bootstrap /var/www/html/bootstrap
 COPY public /var/www/html/public
@@ -49,6 +47,7 @@ COPY storage /var/www/html/storage
 COPY uploads /var/www/html/uploads
 COPY favicon.ico robots.txt /var/www/html/public/
 COPY htaccess /var/www/html/public/.htaccess
+COPY --from=asset-build   /app/assets /var/www/html/public/assets
 
 # Serve from the public/ web root: only public/index.php is reachable over HTTP;
 # application/, bootstrap/, vendor/, storage/ and uploads/ stay above the root.

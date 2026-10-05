@@ -1,8 +1,7 @@
-/*
+/*!
 |   =========================================================
-|   InvoicePlane
-|   Sass Stylesheet
-|   for welcome screen and setup process
+|   InvoicePlane Styles
+|   https://invoiceplane.com
 |   =========================================================
 */
 
@@ -15,18 +14,19 @@
 |   =========================================================
 */
 
-// Dependencies
-@import "../../core/scss/bootstrap-welcome";
-@import "../../../node_modules/font-awesome/scss/font-awesome";
-@import "../../../node_modules/select2/src/scss/core";
+@import "../../core/scss/bootstrap";
+@import "../../core/scss/bootstrap-datepicker";
+@import "../../../../node_modules/font-awesome/scss/font-awesome";
+@import "../../../../node_modules/dropzone/dist/dropzone";
+@import "../../../../node_modules/select2/src/scss/core";
 
 /*
 |   =========================================================
-|   Setup styles
+|   Import InvoicePlane Core Styles
 |   =========================================================
 */
 
-@import "../../core/scss/welcome";
+@import "../../core/scss/core";
 
 /*
 |   =========================================================
