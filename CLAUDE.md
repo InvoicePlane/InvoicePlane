@@ -104,6 +104,21 @@ vendor/bin/phpstan analyse    # static analysis
 
 Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `TestCase`.
 
+### Real line coverage (PCOV) — find untested code, don't guess
+
+`class-coverage-inventory.md` is only a name-grep. For actual executed-line coverage of the
+application — including code that Feature tests run inside the request subprocess — use:
+
+```bash
+bash tests/Support/coverage/run.sh [phpunit args]   # whole suite, or e.g. tests/Feature/Upload
+```
+
+It needs the `pcov` extension (not installable via apt/pecl here, but it builds from
+`github.com/krakjoe/pcov` with `phpize`; see the script header and set `PCOV_SO`). It prints a
+ranked "most uncovered lines" report. Run it ALONE (it truncates the shared test DB like the
+normal suite). Baseline on 2026-10-05: **47.1%** of logic code (views/language/country data
+excluded). It does not include Playwright E2E, and files no test ever loads are estimated.
+
 ### Running tests locally — ALWAYS inside the ivpldock Docker stack
 
 **Never run `phpunit` / `php` / `composer` on the host.** The DB-backed Feature and
