@@ -3,6 +3,7 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 require_once APPPATH . 'modules/integrations/libraries/EncryptedArchiveStorageAdapter.php';
+require_once APPPATH . 'modules/integrations/libraries/S3ObjectLockArchiveConnector.php';
 
 /**
  * Registry of documents held by the archive layer.
@@ -485,6 +486,76 @@ class Mdl_Archive_documents extends CI_Model
         ]);
 
         return 'exports/' . $exportName;
+    }
+
+    /**
+     * Store the compliant export in an S3 Object Lock bucket.
+     *
+     * @return array<string, mixed>
+     */
+    public function store_on_s3_worm(
+        int $archiveDocumentId,
+        S3ObjectLockArchiveConnector $connector,
+        ?int $actorUserId = null,
+        string $actorType = 'system'
+    ): array {
+        $document = $this->requireDocument($archiveDocumentId);
+        $retentionUntil = trim((string) ($document['retention_until'] ?? ''));
+        if ($retentionUntil === '') {
+            throw new RuntimeException('A retention date is required before S3 Object Lock storage.');
+        }
+
+        $retentionDate = DateTimeImmutable::createFromFormat(
+            '!Y-m-d H:i:s',
+            $retentionUntil . ' 23:59:59',
+            new DateTimeZone('UTC')
+        );
+        if ($retentionDate === false) {
+            throw new RuntimeException('The archive retention date is invalid.');
+        }
+
+        $packageRelativePath = $this->export_compliant($archiveDocumentId, $actorUserId, $actorType);
+        $packagePath = $this->archivePath($packageRelativePath);
+        $objectKey = 'invoiceplane/archive/' . $archiveDocumentId . '/' . $document['sha256'] . '.zip';
+
+        try {
+            $result = $connector->store(
+                $packagePath,
+                $objectKey,
+                $retentionDate,
+                (int) $document['legal_hold'] === 1,
+                [
+                    'archive-document-id' => (string) $archiveDocumentId,
+                    'document-type' => (string) $document['document_type'],
+                ]
+            );
+        } catch (Throwable $exception) {
+            $this->audit($archiveDocumentId, 'external_sae_failed', $actorUserId, $actorType, [
+                'provider' => 's3-object-lock',
+                'object_key' => $objectKey,
+            ]);
+
+            throw $exception;
+        }
+
+        $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
+            'external_storage_provider' => 's3-object-lock',
+            'external_storage_key' => $result['key'],
+            'external_storage_version_id' => $result['version_id'],
+            'external_storage_status' => 'stored',
+            'external_retention_until' => $result['retain_until'],
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+        $this->audit($archiveDocumentId, 'external_sae_stored', $actorUserId, $actorType, [
+            'provider' => 's3-object-lock',
+            'object_key' => $result['key'],
+            'version_id' => $result['version_id'],
+            'retain_until' => $result['retain_until'],
+            'mode' => $result['mode'],
+            'legal_hold' => $result['legal_hold'],
+        ]);
+
+        return $result;
     }
 
     private function requireDocument(int $archiveDocumentId): array
