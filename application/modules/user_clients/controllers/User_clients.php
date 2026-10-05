@@ -80,6 +80,11 @@ class User_Clients extends Admin_Controller
             return;
         }
 
+        if ($this->input->post('user_all_clients') && ! $this->mdl_users->is_primary_administrator($current_user_id)) {
+            show_error(trans('access_denied'), 403);
+            return;
+        }
+
         if ($this->mdl_user_clients->run_validation()) {
             if ($this->input->post('user_all_clients')) {
                 $users_id = [$user_id];

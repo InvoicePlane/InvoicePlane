@@ -39,7 +39,7 @@ class NginxDenyRulesTest extends TestCase
     {
         parent::setUp();
         // Navigate from tests/Feature/Core/Security/ to project root (5 levels up)
-        $this->rootPath = dirname(__DIR__, 5);
+        $this->rootPath = dirname(__DIR__, 4);
     }
 
     #[Test]

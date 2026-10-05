@@ -36,6 +36,22 @@ class HttpResponse
         return $this->headers;
     }
 
+    public function header(string $name): ?string
+    {
+        foreach ($this->headers as $header) {
+            if (mb_stripos($header, $name . ':') === 0) {
+                return trim(mb_substr($header, mb_strlen($name) + 1));
+            }
+        }
+
+        return null;
+    }
+
+    public function hasHeader(string $name): bool
+    {
+        return $this->header($name) !== null;
+    }
+
     public function stderr(): string
     {
         return $this->stderr;

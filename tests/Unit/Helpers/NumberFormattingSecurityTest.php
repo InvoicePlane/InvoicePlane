@@ -3,9 +3,29 @@
 namespace Tests\Unit\Helpers;
 
 use PHPUnit\Framework\TestCase;
+use Tests\Support\FakeCiSettings;
 
 class NumberFormattingSecurityTest extends TestCase
 {
+    private mixed $previousCi = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->previousCi = $GLOBALS['unitCiInstance'] ?? null;
+        $GLOBALS['unitCiInstance'] = (object) ['mdl_settings' => new FakeCiSettings()];
+        require_once dirname(__DIR__, 3) . '/application/helpers/echo_helper.php';
+        require_once dirname(__DIR__, 3) . '/application/helpers/number_helper.php';
+    }
+
+    protected function tearDown(): void
+    {
+        $GLOBALS['unitCiInstance'] = $this->previousCi;
+
+        parent::tearDown();
+    }
+
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_escapes_thousands_separator_in_format_currency(): void
     {

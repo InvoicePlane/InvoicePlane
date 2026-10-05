@@ -116,7 +116,7 @@ register_shutdown_function(static function () use (&$exception): void {
 
     $result = [
         'status'  => http_response_code() ?: 200,
-        'headers' => headers_list(),
+        'headers' => array_merge(headers_list(), $GLOBALS['ip_security_response_headers'] ?? []),
         // base64-encoded: the body may be binary (a streamed PDF, an image, ...),
         // which isn't valid UTF-8 and would make json_encode() throw below.
         'output'    => base64_encode($output),
@@ -152,7 +152,7 @@ $output = ob_get_clean() ?: '';
 
 $result = [
     'status'  => http_response_code() ?: 200,
-    'headers' => headers_list(),
+    'headers' => array_merge(headers_list(), $GLOBALS['ip_security_response_headers'] ?? []),
     // base64-encoded: see the shutdown-function comment above.
     'output'    => base64_encode($output),
     'exception' => $exception,

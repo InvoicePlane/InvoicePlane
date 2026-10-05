@@ -2,88 +2,102 @@
 
 namespace Tests\Unit\Security;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Executes the real bootstrap/kernel.php in a child process and inspects the
+ * header list it computes, so a regression in the kernel fails these tests.
+ */
 class SecurityHeadersTest extends TestCase
 {
     /**
-     * Validates X-Frame-Options fallback behavior: unknown values should fall back
-     * to SAMEORIGIN to prevent accidental security degradation from misconfiguration.
+     * @return array<string, array{0: string|null, 1: string, 2: string}>
      */
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_falls_back_to_sameorigin_for_invalid_x_frame_options(): void
+    public static function frameOptionProvider(): array
     {
-        $allowed_values = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"];
+        return [
+            'default is SAMEORIGIN'            => [null, 'SAMEORIGIN', "'self'"],
+            'explicit SAMEORIGIN'              => ['SAMEORIGIN', 'SAMEORIGIN', "'self'"],
+            'explicit DENY'                    => ['DENY', 'DENY', "'none'"],
+            'lowercase is normalised'          => ['deny', 'DENY', "'none'"],
+            'whitespace is trimmed'            => ['  DENY  ', 'DENY', "'none'"],
+            'ALLOWALL falls back'              => ['ALLOWALL', 'SAMEORIGIN', "'self'"],
+            'ALLOW-FROM falls back'            => ['ALLOW-FROM https://evil.example', 'SAMEORIGIN', "'self'"],
+            'empty string falls back'          => ['', 'SAMEORIGIN', "'self'"],
+        ];
+    }
 
-        // Test case 1: Valid SAMEORIGIN
-        $value = mb_strtoupper(trim('SAMEORIGIN'));
-        $this->assertArrayHasKey($value, $allowed_values);
-        $this->assertSame('SAMEORIGIN', $value);
+    #[Test]
+    #[DataProvider('frameOptionProvider')]
+    public function it_derives_matching_frame_headers_from_the_configured_value(?string $configured, string $expectedOption, string $expectedAncestors): void
+    {
+        /* Arrange */
+        $env = $configured === null ? [] : ['X_FRAME_OPTIONS' => $configured];
 
-        // Test case 2: Valid DENY
-        $value = mb_strtoupper(trim('DENY'));
-        $this->assertArrayHasKey($value, $allowed_values);
-        $this->assertSame('DENY', $value);
+        /* Act */
+        $headers = $this->kernelHeaders($env);
 
-        // Test case 3: Invalid value (should fail isset check and fallback to SAMEORIGIN)
-        $value = mb_strtoupper(trim('ALLOWALL'));
-        $this->assertFalse(isset($allowed_values[$value]));
-        // Simulate fallback
-        if ( ! isset($allowed_values[$value])) {
-            $value = 'SAMEORIGIN';
-        }
-        $this->assertSame('SAMEORIGIN', $value);
-        $this->assertArrayHasKey($value, $allowed_values);
+        /* Assert */
+        self::assertContains('X-Frame-Options: ' . $expectedOption, $headers);
+        self::assertContains(
+            "Content-Security-Policy: frame-ancestors {$expectedAncestors}; object-src 'none'; base-uri 'self'",
+            $headers,
+        );
+    }
 
-        // Test case 4: Lowercase value is converted to uppercase before check
-        $value = mb_strtoupper(trim('sameorigin'));
-        $this->assertArrayHasKey($value, $allowed_values);
+    #[Test]
+    public function it_always_sends_a_strict_referrer_policy(): void
+    {
+        /* Act */
+        $headers = $this->kernelHeaders([]);
 
-        // Test case 5: Whitespace is trimmed before validation
-        $value = mb_strtoupper(trim('  SAMEORIGIN  '));
-        $this->assertArrayHasKey($value, $allowed_values);
+        /* Assert */
+        self::assertContains('Referrer-Policy: strict-origin-when-cross-origin', $headers);
+    }
 
-        // Test case 6: Empty string falls back
-        $value = mb_strtoupper(trim(''));
-        $this->assertFalse(isset($allowed_values[$value]));
-        if ( ! isset($allowed_values[$value])) {
-            $value = 'SAMEORIGIN';
-        }
-        $this->assertSame('SAMEORIGIN', $value);
+    #[Test]
+    public function it_sends_nosniff_by_default_and_omits_it_when_disabled(): void
+    {
+        /* Act */
+        $enabled  = $this->kernelHeaders([]);
+        $disabled = $this->kernelHeaders(['ENABLE_X_CONTENT_TYPE_OPTIONS' => 'false']);
+
+        /* Assert */
+        self::assertContains('X-Content-Type-Options: nosniff', $enabled);
+        self::assertNotContains('X-Content-Type-Options: nosniff', $disabled);
     }
 
     /**
-     * Validates that CSP frame-ancestors value matches the X-Frame-Options setting.
+     * @param array<string, string> $env
+     *
+     * @return list<string>
      */
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_matches_csp_frame_ancestors_to_x_frame_options(): void
+    private function kernelHeaders(array $env): array
     {
-        $allowed_values = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"];
+        $root   = dirname(__DIR__, 4);
+        $script = <<<'PHP'
+            define('CI_TESTING', true);
+            define('ROOT_PATH', $argv[1]);
+            foreach (json_decode($argv[2], true) as $k => $v) {
+                $_ENV[$k] = $v;
+            }
+            require $argv[1] . '/bootstrap/kernel.php';
+            echo "\n__HEADERS__" . json_encode($GLOBALS['ip_security_response_headers'] ?? null);
+            PHP;
 
-        // For each valid X-Frame-Options value, verify CSP frame-ancestors matches
-        foreach ($allowed_values as $frame_option => $csp_value) {
-            $expected_csp = "Content-Security-Policy: frame-ancestors {$csp_value}; object-src 'none'; base-uri 'self'";
+        $command = sprintf(
+            'php -r %s %s %s 2>&1',
+            escapeshellarg($script),
+            escapeshellarg($root),
+            escapeshellarg((string) json_encode($env, JSON_FORCE_OBJECT)),
+        );
+        $output = (string) shell_exec($command);
 
-            // Verify the CSP value for this frame option is correct
-            $this->assertStringContainsString("frame-ancestors {$csp_value}", $expected_csp);
-            $this->assertStringContainsString("object-src 'none'", $expected_csp);
-            $this->assertStringContainsString("base-uri 'self'", $expected_csp);
-        }
-    }
+        self::assertMatchesRegularExpression('/__HEADERS__(\[.*\])\s*$/s', $output, 'Kernel did not report headers. Output: ' . $output);
+        preg_match('/__HEADERS__(\[.*\])\s*$/s', $output, $m);
 
-    /**
-     * Validates referrer policy and X-Content-Type-Options headers are always set
-     * (or conditionally set based on configuration).
-     */
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_sets_security_headers_consistently(): void
-    {
-        // Referrer-Policy should always be set to strict-origin-when-cross-origin
-        $referrer_policy = 'Referrer-Policy: strict-origin-when-cross-origin';
-        $this->assertStringContainsString('strict-origin-when-cross-origin', $referrer_policy);
-
-        // X-Content-Type-Options should be set when enabled (default behavior)
-        $x_content_type = 'X-Content-Type-Options: nosniff';
-        $this->assertStringContainsString('nosniff', $x_content_type);
+        return json_decode($m[1], true, 512, JSON_THROW_ON_ERROR);
     }
 }

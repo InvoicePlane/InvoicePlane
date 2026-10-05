@@ -26,11 +26,16 @@ final class SendInvoiceGuardTest extends AbstractInvoiceTransmissionTestCase
 
         /* Assert */
         self::assertTrue($response->isRedirect());
-        $this->assertDatabaseMissing('ip_merchant_responses', [
+        $attempt = $this->databaseFetchOne('ip_merchant_responses', [
             'invoice_id'         => $invoiceId,
             'merchant_client_id' => $merchantId,
             'direction'          => 'out',
         ]);
+        self::assertNotNull($attempt, 'The failed attempt must be recorded for the operator.');
+        self::assertSame('error', $attempt['status']);
+        self::assertSame(0, (int) $attempt['http_code'], 'No HTTP request may have been made.');
+        self::assertSame('send_exception', $attempt['error_code']);
+        self::assertStringContainsString('does not support this e-invoice profile', (string) $attempt['error_detail']);
     }
 
     #[Test]

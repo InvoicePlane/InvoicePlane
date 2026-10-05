@@ -3,9 +3,29 @@
 namespace Tests\Unit\Views;
 
 use PHPUnit\Framework\TestCase;
+use Tests\Support\FakeCiSettings;
 
 class CurrencySymbolSecurityTest extends TestCase
 {
+    private mixed $previousCi = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->previousCi = $GLOBALS['unitCiInstance'] ?? null;
+        $GLOBALS['unitCiInstance'] = (object) ['mdl_settings' => new FakeCiSettings()];
+        require_once dirname(__DIR__, 3) . '/application/helpers/echo_helper.php';
+        require_once dirname(__DIR__, 3) . '/application/helpers/settings_helper.php';
+    }
+
+    protected function tearDown(): void
+    {
+        $GLOBALS['unitCiInstance'] = $this->previousCi;
+
+        parent::tearDown();
+    }
+
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_escapes_currency_symbol_in_get_setting(): void
     {

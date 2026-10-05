@@ -87,20 +87,28 @@ switch (ENVIRONMENT) {
 | browsers send public invoice URLs -- which contain the invoice's secret
 | access key -- to third-party payment scripts in the Referer header.
 */
-if (PHP_SAPI !== 'cli' && ! headers_sent()) {
-    $ip_frame_ancestors = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"];
-    $ip_frame_options   = mb_strtoupper(trim((string) env('X_FRAME_OPTIONS', 'SAMEORIGIN')));
-    if ( ! isset($ip_frame_ancestors[$ip_frame_options])) {
-        $ip_frame_options = 'SAMEORIGIN';
-    }
-    header('X-Frame-Options: ' . $ip_frame_options);
-    header("Content-Security-Policy: frame-ancestors {$ip_frame_ancestors[$ip_frame_options]}; object-src 'none'; base-uri 'self'");
-    header('Referrer-Policy: strict-origin-when-cross-origin');
-    if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
-        header('X-Content-Type-Options: nosniff');
-    }
-    unset($ip_frame_options, $ip_frame_ancestors);
+$ip_frame_ancestors = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"];
+$ip_frame_options   = mb_strtoupper(trim((string) env('X_FRAME_OPTIONS', 'SAMEORIGIN')));
+if ( ! isset($ip_frame_ancestors[$ip_frame_options])) {
+    $ip_frame_options = 'SAMEORIGIN';
 }
+// Always computed (also under CLI) so the test runner, whose SAPI never exposes
+// header() output through headers_list(), can read exactly what a web request sends.
+$GLOBALS['ip_security_response_headers'] = [
+    'X-Frame-Options: ' . $ip_frame_options,
+    "Content-Security-Policy: frame-ancestors {$ip_frame_ancestors[$ip_frame_options]}; object-src 'none'; base-uri 'self'",
+    'Referrer-Policy: strict-origin-when-cross-origin',
+];
+if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
+    $GLOBALS['ip_security_response_headers'][] = 'X-Content-Type-Options: nosniff';
+}
+if (PHP_SAPI !== 'cli' && ! headers_sent()) {
+    foreach ($GLOBALS['ip_security_response_headers'] as $ip_security_header) {
+        header($ip_security_header);
+    }
+    unset($ip_security_header);
+}
+unset($ip_frame_options, $ip_frame_ancestors);
 
 defined('FCPATH') || define('FCPATH', $base . '/public/');
 defined('APPPATH') || define('APPPATH', $base . '/application/');

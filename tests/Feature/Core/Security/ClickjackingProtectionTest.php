@@ -156,7 +156,7 @@ class ClickjackingProtectionTest extends AbstractTestCase
     public function it_configures_nginx_cookie_samesite_safely(): void
     {
         /* Arrange */
-        $nginxConfig = dirname(__DIR__, 5) . '/resources/docker/nginx/invoiceplane.conf';
+        $nginxConfig = dirname(__DIR__, 4) . '/resources/docker/nginx/invoiceplane.conf';
 
         /* Act */
         $content = file_get_contents($nginxConfig);
@@ -222,47 +222,41 @@ class ClickjackingProtectionTest extends AbstractTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
-    protected function seedClient(array $overrides = []): int
-    {
-        $id = $this->databaseInsert('ip_clients', array_merge([
-            'client_name'          => 'Seed Client ' . bin2hex(random_bytes(3)),
-            'client_active'        => 1,
-            'client_date_created'  => date('Y-m-d H:i:s'),
-            'client_date_modified' => date('Y-m-d H:i:s'),
-        ], $overrides));
-
-        return $id;
-    }
-
     protected function seedGuestInvoice(int $clientId, array $overrides = []): object
     {
-        $id = $this->databaseInsert('ip_invoices', array_merge([
-            'client_id'             => $clientId,
-            'invoice_number'        => 'INV-' . bin2hex(random_bytes(3)),
-            'invoice_status_id'     => 2,
-            'invoice_total'         => '100.00',
-            'invoice_balance'       => '100.00',
-            'invoice_url_key'       => bin2hex(random_bytes(16)),
-            'invoice_date_created'  => date('Y-m-d H:i:s'),
-            'invoice_date_modified' => date('Y-m-d H:i:s'),
-        ], $overrides));
+        $urlKey = bin2hex(random_bytes(16));
+        $id     = $this->seedInvoice(
+            $clientId,
+            array_merge(['invoice_status_id' => 2, 'invoice_url_key' => $urlKey], $overrides),
+            ['invoice_total' => '100.00', 'invoice_balance' => '100.00'],
+        );
 
-        return (object) ['invoice_id' => $id, 'invoice_url_key' => $overrides['invoice_url_key'] ?? bin2hex(random_bytes(16))];
+        return (object) ['invoice_id' => $id, 'invoice_url_key' => $overrides['invoice_url_key'] ?? $urlKey];
     }
 
     protected function seedQuote(int $clientId, array $overrides = []): object
     {
         $urlKey = bin2hex(random_bytes(16));
-        $id = $this->databaseInsert('ip_quotes', array_merge([
-            'client_id'            => $clientId,
-            'quote_number'         => 'QT-' . bin2hex(random_bytes(3)),
-            'quote_status_id'      => 1,
-            'quote_total'          => '500.00',
-            'quote_url_key'        => $urlKey,
-            'quote_date_created'   => date('Y-m-d H:i:s'),
-            'quote_date_modified'  => date('Y-m-d H:i:s'),
+        $id     = $this->databaseInsert('ip_quotes', array_merge([
+            'user_id'             => 1,
+            'client_id'           => $clientId,
+            'invoice_group_id'    => 1,
+            'quote_number'        => 'QT-' . bin2hex(random_bytes(3)),
+            'quote_status_id'     => 2,
+            'quote_url_key'       => $urlKey,
+            'quote_date_created'  => date('Y-m-d'),
+            'quote_date_expires'  => date('Y-m-d', strtotime('+30 days')),
+            'quote_date_modified' => date('Y-m-d H:i:s'),
         ], $overrides));
 
-        return (object) ['quote_id' => $id, 'quote_url_key' => $urlKey];
+        $this->databaseInsert('ip_quote_amounts', [
+            'quote_id'             => $id,
+            'quote_item_subtotal'  => '500.00',
+            'quote_item_tax_total' => '0.00',
+            'quote_tax_total'      => '0.00',
+            'quote_total'          => '500.00',
+        ]);
+
+        return (object) ['quote_id' => $id, 'quote_url_key' => $overrides['quote_url_key'] ?? $urlKey];
     }
 }

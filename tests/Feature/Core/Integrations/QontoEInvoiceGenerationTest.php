@@ -83,13 +83,18 @@ final class QontoEInvoiceGenerationTest extends AbstractInvoiceTransmissionTestC
         /* Act */
         $response = $this->send($invoiceId, $merchantId);
 
-        /* Assert — DGFiP SIREN check fails closed; nothing is sent or logged */
+        /* Assert — DGFiP SIREN check fails closed: nothing is sent, the failure is recorded */
         self::assertTrue($response->isRedirect());
-        $this->assertDatabaseMissing('ip_merchant_responses', [
+        $attempt = $this->databaseFetchOne('ip_merchant_responses', [
             'invoice_id'         => $invoiceId,
             'merchant_client_id' => $merchantId,
             'direction'          => 'out',
         ]);
+        self::assertNotNull($attempt, 'The failed attempt must be recorded for the operator.');
+        self::assertSame('error', $attempt['status']);
+        self::assertSame(0, (int) $attempt['http_code'], 'No HTTP request may have been made.');
+        self::assertSame('send_exception', $attempt['error_code']);
+        self::assertStringContainsString('SIREN', (string) $attempt['error_detail']);
     }
 
     #[Test]
@@ -107,11 +112,16 @@ final class QontoEInvoiceGenerationTest extends AbstractInvoiceTransmissionTestC
 
         /* Assert — EN 16931 BR-05 (currency code) fails the Schematron step */
         self::assertTrue($response->isRedirect());
-        $this->assertDatabaseMissing('ip_merchant_responses', [
+        $attempt = $this->databaseFetchOne('ip_merchant_responses', [
             'invoice_id'         => $invoiceId,
             'merchant_client_id' => $merchantId,
             'direction'          => 'out',
         ]);
+        self::assertNotNull($attempt, 'The failed attempt must be recorded for the operator.');
+        self::assertSame('error', $attempt['status']);
+        self::assertSame(0, (int) $attempt['http_code'], 'No HTTP request may have been made.');
+        self::assertSame('send_exception', $attempt['error_code']);
+        self::assertStringContainsString('BR-05', (string) $attempt['error_detail']);
     }
 
     /**

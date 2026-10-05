@@ -2,75 +2,123 @@
 
 namespace Tests\Feature\Users;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
+use Tests\Concerns\PerformsCsrfProtectedRequests;
 
-class UserClientsIdorTest extends AbstractTestCase
+final class UserClientsIdorTest extends AbstractTestCase
 {
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function secondary_admin_cannot_create_user_client_for_other_users(): void
+    use PerformsCsrfProtectedRequests;
+
+    #[Test]
+    public function it_denies_a_secondary_admin_creating_a_client_mapping_for_another_user(): void
     {
-        // Setup: create primary admin, secondary admin, and victim admin
-        $primary_id = $this->create_user(['user_type' => '1', 'user_email' => 'primary@test.local']);
-        $secondary_id = $this->create_user(['user_type' => '1', 'user_email' => 'secondary@test.local']);
-        $victim_id = $this->create_user(['user_type' => '1', 'user_email' => 'victim@test.local']);
+        /* Arrange */
+        $secondaryId = $this->seedAdmin();
+        $victimId    = $this->seedAdmin();
+        $clientId    = $this->seedClient();
+        $this->actingAsAdmin($secondaryId);
 
-        $client = $this->create_client(['client_name' => 'Test Client']);
-
-        // Act: secondary admin tries to create a user_client mapping for victim
-        $this->acting_as_user($secondary_id);
-        $response = $this->request('POST', '/user_clients/create/' . $victim_id, [
-            'user_id' => $victim_id,
-            'client_id' => $client->client_id,
+        /* Act */
+        $response = $this->postWithValidCsrfToken('/user_clients/create/' . $victimId, [
+            'user_id'   => $victimId,
+            'client_id' => $clientId,
         ]);
 
-        // Assert: should be denied
-        $this->assertResponseStatus(403, $response);
+        /* Assert */
+        $this->assertResponseStatusCode($response, 403);
+        $this->assertDatabaseMissing('ip_user_clients', ['user_id' => $victimId]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function secondary_admin_cannot_delete_other_users_client_mapping(): void
+    #[Test]
+    public function it_allows_the_primary_admin_to_create_a_client_mapping_for_another_user(): void
     {
-        $primary_id = $this->create_user(['user_type' => '1', 'user_email' => 'primary@test.local']);
-        $secondary_id = $this->create_user(['user_type' => '1', 'user_email' => 'secondary@test.local']);
-        $victim_id = $this->create_user(['user_type' => '1', 'user_email' => 'victim@test.local']);
+        /* Arrange */
+        $targetId = $this->seedAdmin();
+        $clientId = $this->seedClient();
+        $this->actingAsAdmin(1);
 
-        $client = $this->create_client(['client_name' => 'Test Client']);
+        /* Act */
+        $response = $this->postWithValidCsrfToken('/user_clients/create/' . $targetId, [
+            'user_id'   => $targetId,
+            'client_id' => $clientId,
+        ]);
 
-        // Create a client mapping for the victim (as primary admin)
-        $this->acting_as_user($primary_id);
-        $this->mdl_user_clients->insert(['user_id' => $victim_id, 'client_id' => $client->client_id]);
-        $user_client_id = $this->db->insert_id();
-
-        // Act: secondary admin tries to delete victim's mapping
-        $this->acting_as_user($secondary_id);
-        $response = $this->request('POST', '/user_clients/delete/' . $user_client_id);
-
-        // Assert: should be denied
-        $this->assertResponseStatus(403, $response);
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'user_clients/user/' . $targetId);
+        $this->assertDatabaseHas('ip_user_clients', ['user_id' => $targetId, 'client_id' => $clientId]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function secondary_admin_cannot_escalate_via_user_all_clients(): void
+    #[Test]
+    public function it_denies_a_secondary_admin_deleting_another_users_client_mapping(): void
     {
-        $primary_id = $this->create_user(['user_type' => '1', 'user_email' => 'primary@test.local']);
-        $secondary_id = $this->create_user(['user_type' => '1', 'user_email' => 'secondary@test.local']);
+        /* Arrange */
+        $secondaryId = $this->seedAdmin();
+        $victimId    = $this->seedAdmin();
+        $clientId    = $this->seedClient();
+        $mappingId   = $this->databaseInsert('ip_user_clients', ['user_id' => $victimId, 'client_id' => $clientId]);
+        $this->actingAsAdmin($secondaryId);
 
-        // Create multiple clients
-        $client1 = $this->create_client(['client_name' => 'Client 1']);
-        $client2 = $this->create_client(['client_name' => 'Client 2']);
+        /* Act */
+        $response = $this->postWithValidCsrfToken('/user_clients/delete/' . $mappingId);
 
-        // Act: secondary admin tries to set user_all_clients flag on themselves
-        $this->acting_as_user($secondary_id);
-        $response = $this->request('POST', '/user_clients/create/' . $secondary_id, [
-            'user_id' => $secondary_id,
+        /* Assert */
+        $this->assertResponseStatusCode($response, 403);
+        $this->assertDatabaseHas('ip_user_clients', ['user_client_id' => $mappingId]);
+    }
+
+    #[Test]
+    public function it_denies_a_secondary_admin_granting_themselves_all_clients(): void
+    {
+        /* Arrange */
+        $secondaryId = $this->seedAdmin();
+        $clientId    = $this->seedClient();
+        $this->actingAsAdmin($secondaryId);
+
+        /* Act */
+        $response = $this->postWithValidCsrfToken('/user_clients/create/' . $secondaryId, [
+            'user_id'          => $secondaryId,
+            'client_id'        => $clientId,
             'user_all_clients' => '1',
         ]);
 
-        // Assert: should be denied (only primary admin can set this flag)
-        $this->assertResponseStatus(403, $response);
+        /* Assert */
+        $this->assertResponseStatusCode($response, 403);
+        $this->assertDatabaseHas('ip_users', ['user_id' => $secondaryId, 'user_all_clients' => 0]);
+    }
 
-        // Verify flag was not set
-        $user = $this->mdl_users->get_by_id($secondary_id)->row();
-        $this->assertEquals('0', $user->user_all_clients);
+    #[Test]
+    public function it_allows_the_primary_admin_to_grant_all_clients(): void
+    {
+        /* Arrange */
+        $targetId = $this->seedAdmin();
+        $clientId = $this->seedClient();
+        $this->actingAsAdmin(1);
+
+        /* Act */
+        $response = $this->postWithValidCsrfToken('/user_clients/create/' . $targetId, [
+            'user_id'          => $targetId,
+            'client_id'        => $clientId,
+            'user_all_clients' => '1',
+        ]);
+
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'user_clients/user/' . $targetId);
+        $this->assertDatabaseHas('ip_users', ['user_id' => $targetId, 'user_all_clients' => 1]);
+    }
+
+    private function seedAdmin(): int
+    {
+        return $this->databaseInsert('ip_users', [
+            'user_type'          => 1,
+            'user_name'          => 'Admin ' . bin2hex(random_bytes(3)),
+            'user_email'         => 'admin+' . bin2hex(random_bytes(4)) . '@test.local',
+            'user_password'      => password_hash('secret123', PASSWORD_DEFAULT),
+            'user_psalt'         => bin2hex(random_bytes(8)),
+            'user_language'      => 'system',
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
     }
 }
