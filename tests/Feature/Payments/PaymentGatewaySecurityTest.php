@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Payments;
 
-use Tests\Support\AbstractTestCase;
+use Tests\AbstractTestCase;
 
 class PaymentGatewaySecurityTest extends AbstractTestCase
 {
