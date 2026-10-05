@@ -191,6 +191,14 @@ append-only audit chain. The model does not delete expired documents:
 expiration is an explicit review signal for a future retention worker or
 external SAE policy.
 
+Migration `056_archive_integrity_status.sql` adds verification state to the
+registry. `verify_integrity()` resolves the archived path within the configured
+archive directory, recalculates its SHA-256 digest, and records the result.
+`seal()` performs that verification before setting `sealed_at`; a document
+with a missing or altered file cannot be sealed. Sealing remains an
+application-level control until a WORM or external SAE storage backend is
+connected.
+
 Manual supplier invoice creation also checks the supplier/number combination.
 The same rule is enforced by the `uq_supplier_invoice_supplier_number`
 database constraint, while allowing identical invoice numbers for different
