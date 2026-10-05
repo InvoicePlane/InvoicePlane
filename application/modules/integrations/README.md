@@ -206,6 +206,14 @@ and never overwrites an existing package. The package is an interoperable
 evidence export; legal qualification and long-term preservation still depend
 on the configured SAE/WORM infrastructure and applicable policy.
 
+Migration `057_encrypted_archive_storage.sql` adds encryption metadata for
+the `EncryptedArchiveStorageAdapter`. The adapter uses AES-256-GCM with a
+versioned envelope and InvoicePlane's `ENCRYPTION_KEY`; it keeps separate
+plaintext and ciphertext SHA-256 digests. Encrypted files are authenticated
+before decryption, and archive integrity verification validates the plaintext
+digest as well as the encrypted storage digest. The encryption key must be
+kept outside the repository and backed up separately.
+
 Manual supplier invoice creation also checks the supplier/number combination.
 The same rule is enforced by the `uq_supplier_invoice_supplier_number`
 database constraint, while allowing identical invoice numbers for different

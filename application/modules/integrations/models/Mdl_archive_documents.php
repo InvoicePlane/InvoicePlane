@@ -2,6 +2,8 @@
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
+require_once APPPATH . 'modules/integrations/libraries/EncryptedArchiveStorageAdapter.php';
+
 /**
  * Registry of documents held by the archive layer.
  *
@@ -12,6 +14,23 @@ defined('BASEPATH') || exit('No direct script access allowed');
 class Mdl_Archive_documents extends CI_Model
 {
     private const TABLE = 'ip_archive_documents';
+
+    public function register_encrypted(
+        string $sourcePath,
+        string $destinationRelativePath,
+        array $data = []
+    ): int {
+        $stored = (new EncryptedArchiveStorageAdapter())->store($sourcePath, $destinationRelativePath);
+
+        return $this->register(array_merge($data, [
+            'storage_path' => $stored['path'],
+            'sha256' => $stored['plaintext_sha256'],
+            'file_size' => $stored['file_size'],
+            'storage_sha256' => $stored['storage_sha256'],
+            'encryption_status' => $stored['encryption_status'],
+            'encryption_key_version' => $stored['encryption_key_version'],
+        ]));
+    }
 
     public function register(array $data): int
     {
@@ -46,6 +65,9 @@ class Mdl_Archive_documents extends CI_Model
             'mime_type' => trim((string) ($data['mime_type'] ?? 'application/octet-stream')),
             'file_size' => max(0, (int) ($data['file_size'] ?? 0)),
             'sha256' => $sha256,
+            'storage_sha256' => $this->nullableString($data['storage_sha256'] ?? null),
+            'encryption_status' => $this->nullableString($data['encryption_status'] ?? null),
+            'encryption_key_version' => $this->nullableString($data['encryption_key_version'] ?? null),
             'integrity_status' => $this->nullableString($data['integrity_status'] ?? null),
             'integrity_verified_at' => $this->nullableDateTime($data['integrity_verified_at'] ?? null),
             'integrity_error' => $this->nullableString($data['integrity_error'] ?? null),
@@ -75,6 +97,7 @@ class Mdl_Archive_documents extends CI_Model
                 'source_module' => $sourceModule,
                 'source_reference' => $sourceReference,
                 'sha256' => $sha256,
+                'encryption_status' => $this->nullableString($data['encryption_status'] ?? null),
                 'validation_status' => $this->nullableString($data['validation_status'] ?? null),
             ],
             $now
@@ -231,17 +254,39 @@ class Mdl_Archive_documents extends CI_Model
     ): array {
         $document = $this->requireDocument($archiveDocumentId);
         $path = $this->archivePath((string) $document['storage_path']);
-        $actualSha256 = hash_file('sha256', $path);
         $expectedSha256 = strtolower((string) $document['sha256']);
-        $valid = is_string($actualSha256)
-            && preg_match('/^[a-f0-9]{64}$/', $actualSha256) === 1
-            && hash_equals($expectedSha256, $actualSha256);
+        $actualSha256 = null;
+        $valid = false;
+        $integrityError = null;
+
+        try {
+            $storageSha256 = hash_file('sha256', $path);
+            $storageShaExpected = strtolower((string) ($document['storage_sha256'] ?? ''));
+            if ($storageShaExpected !== ''
+                && ( ! is_string($storageSha256) || ! hash_equals($storageShaExpected, $storageSha256))) {
+                $integrityError = 'The encrypted archive storage digest does not match its registered digest.';
+            } elseif (($document['encryption_status'] ?? null) === 'encrypted') {
+                $adapter = new EncryptedArchiveStorageAdapter();
+                $actualSha256 = $adapter->plaintextSha256((string) $document['storage_path']);
+                $valid = hash_equals($expectedSha256, $actualSha256);
+            } else {
+                $actualSha256 = $storageSha256;
+                $valid = is_string($actualSha256)
+                    && preg_match('/^[a-f0-9]{64}$/', $actualSha256) === 1
+                    && hash_equals($expectedSha256, $actualSha256);
+            }
+        } catch (Throwable) {
+            $integrityError = 'The archive document could not be authenticated or read.';
+        }
+        if ( ! $valid && $integrityError === null) {
+            $integrityError = 'The stored document does not match its registered SHA-256 digest.';
+        }
         $now = date('Y-m-d H:i:s');
 
         $this->db->where('archive_document_id', $archiveDocumentId)->update(self::TABLE, [
             'integrity_status' => $valid ? 'verified' : 'failed',
             'integrity_verified_at' => $now,
-            'integrity_error' => $valid ? null : 'The stored document does not match its registered SHA-256 digest.',
+            'integrity_error' => $valid ? null : $integrityError,
             'updated_at' => $now,
         ]);
 
@@ -337,6 +382,27 @@ class Mdl_Archive_documents extends CI_Model
             throw new RuntimeException('A secure temporary archive export could not be created.');
         }
 
+        $documentPathForExport = $path;
+        $decryptedPath = null;
+        if (($document['encryption_status'] ?? null) === 'encrypted') {
+            $decryptedPath = tempnam($exportDirectory, '.archive-plaintext-');
+            if ($decryptedPath === false || ! validate_file_in_directory($decryptedPath, UPLOADS_ARCHIVE_FOLDER)) {
+                if (is_file($temporaryPath)) {
+                    unlink($temporaryPath);
+                }
+
+                throw new RuntimeException('A secure temporary plaintext export could not be created.');
+            }
+            $plaintext = (new EncryptedArchiveStorageAdapter())->read((string) $document['storage_path']);
+            if (file_put_contents($decryptedPath, $plaintext, LOCK_EX) !== strlen($plaintext)) {
+                unlink($decryptedPath);
+                unlink($temporaryPath);
+
+                throw new RuntimeException('The encrypted archive document could not be decrypted for export.');
+            }
+            $documentPathForExport = $decryptedPath;
+        }
+
         $generatedAt = date('Y-m-d H:i:s');
         $this->audit($archiveDocumentId, 'export_started', $actorUserId, $actorType, [
             'export_name' => $exportName,
@@ -382,7 +448,7 @@ class Mdl_Archive_documents extends CI_Model
             if ($zip->open($temporaryPath, ZipArchive::OVERWRITE) !== true) {
                 throw new RuntimeException('The archive export could not be opened.');
             }
-            if ( ! $zip->addFile($path, 'document/' . $documentEntryName)) {
+            if ( ! $zip->addFile($documentPathForExport, 'document/' . $documentEntryName)) {
                 $zip->close();
                 throw new RuntimeException('The archived document could not be added to the export.');
             }
@@ -401,8 +467,15 @@ class Mdl_Archive_documents extends CI_Model
             if (is_file($temporaryPath)) {
                 unlink($temporaryPath);
             }
+            if ($decryptedPath !== null && is_file($decryptedPath)) {
+                unlink($decryptedPath);
+            }
 
             throw $exception;
+        }
+
+        if ($decryptedPath !== null && is_file($decryptedPath)) {
+            unlink($decryptedPath);
         }
 
         $this->audit($archiveDocumentId, 'exported', $actorUserId, $actorType, [
