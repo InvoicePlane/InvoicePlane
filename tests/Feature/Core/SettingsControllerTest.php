@@ -295,11 +295,10 @@ class SettingsControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_blocks_svg_logo_uploads_and_saves_nothing(): void
+    public function it_blocks_svg_logo_uploads_and_records_the_attempt_in_the_log(): void
     {
-        /* Arrange: SVG can carry script, so it is refused before any upload handling. Warnings are only
-         * logged in debug mode; the log line is what distinguishes this guard from a generic upload failure. */
-        $this->withEnvironment(['ENABLE_DEBUG' => 'true']);
+        /* Arrange: SVG can carry script, so it is refused before any upload handling. The audit line is also
+         * what distinguishes this guard from a generic upload failure (both redirect and save nothing). */
         $this->withFiles([
             'invoice_logo' => ['name' => 'logo.SVG', 'type' => 'image/svg+xml', 'tmp_name' => '/tmp/none', 'error' => 0, 'size' => 120],
             'login_logo'   => ['name' => '', 'type' => '', 'tmp_name' => '', 'error' => 4, 'size' => 0],
@@ -316,7 +315,9 @@ class SettingsControllerTest extends AbstractTestCase
         self::assertFileDoesNotExist(ROOT_PATH . '/uploads/logo.SVG');
         clearstatcache(true, $logFile);
         $logged = is_file($logFile) ? (string) file_get_contents($logFile, false, null, $offset) : '';
-        self::assertStringContainsString('SVG upload attempt blocked for invoice_logo', $logged, 'The SVG guard, not a generic upload error, must have refused the file.');
+        self::assertStringContainsString('WARNING - ', $logged);
+        self::assertStringContainsString('SVG upload attempt blocked for invoice_logo', $logged);
+        self::assertStringNotContainsString('Undefined array key "WARNING"', $logged, 'CodeIgniter must know the warning level.');
     }
 
     // -------------------------------------------------------------------------

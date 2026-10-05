@@ -184,6 +184,9 @@ class LoginSecurityTest extends AbstractTestCase
         $this->seedLoginLog($this->ipKey(), 20, '-30 seconds');
         $this->seedLoginLog($this->accountKey($email), 1, 'now');
 
+        $logFile = APPPATH . 'logs/log-' . date('Y-m-d') . '.php';
+        $offset  = is_file($logFile) ? filesize($logFile) : 0;
+
         /* Act: the CORRECT password must still be refused */
         $response = $this->post('/sessions/login', ['btn_login' => '1', 'email' => $email, 'password' => 'correct-password']);
 
@@ -191,6 +194,9 @@ class LoginSecurityTest extends AbstractTestCase
         self::assertTrue($response->isRedirect());
         $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->ipKey(), 'log_count' => 20]);
         $this->assertDatabaseHas('ip_login_log', ['login_name' => $this->accountKey($email), 'log_count' => 1]);
+        clearstatcache(true, $logFile);
+        $logged = is_file($logFile) ? (string) file_get_contents($logFile, false, null, $offset) : '';
+        self::assertStringContainsString('Login IP rate limit exceeded', $logged, 'A throttled login is a security event and must reach the log.');
     }
 
     #[Test]
