@@ -183,6 +183,14 @@ used to detect altered or removed events. The first `registered` event is
 created automatically when a document enters the archive registry. Database
 and storage-level WORM guarantees remain a separate concern.
 
+The archive model supports retention dates and legal holds. Retention dates
+are normalized and can be cleared or replaced; due documents are returned
+only when they are sealed and not under legal hold. A legal hold requires a
+reason to place or release it, and both operations are recorded in the
+append-only audit chain. The model does not delete expired documents:
+expiration is an explicit review signal for a future retention worker or
+external SAE policy.
+
 Manual supplier invoice creation also checks the supplier/number combination.
 The same rule is enforced by the `uq_supplier_invoice_supplier_number`
 database constraint, while allowing identical invoice numbers for different
