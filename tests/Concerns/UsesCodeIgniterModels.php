@@ -19,6 +19,11 @@ trait UsesCodeIgniterModels
 
     private ?object $ci = null;
 
+    protected function ciDatabaseName(): string
+    {
+        return (string) env('DB_DATABASE');
+    }
+
     protected function bootCodeIgniter(): object
     {
         if ($this->ci !== null) {
@@ -28,13 +33,18 @@ trait UsesCodeIgniterModels
         require_once BASEPATH . 'core/Common.php';
         require_once BASEPATH . 'database/DB.php';
         require_once BASEPATH . 'core/Model.php';
+        foreach (['MY_Model', 'Form_Validation_Model', 'Response_Model'] as $base) {
+            if ( ! class_exists($base, false)) {
+                require_once APPPATH . 'core/' . $base . '.php';
+            }
+        }
 
         $this->ciBackup = $GLOBALS['unitCiInstance'] ?? null;
 
         $ci         = new \stdClass();
         $ci->db     = DB([
             'dsn' => '', 'hostname' => env('DB_HOSTNAME'), 'username' => env('DB_USERNAME'), 'password' => env('DB_PASSWORD'),
-            'database' => env('DB_DATABASE'), 'dbdriver' => 'mysqli', 'dbprefix' => '', 'pconnect' => false, 'db_debug' => true,
+            'database' => $this->ciDatabaseName(), 'dbdriver' => 'mysqli', 'dbprefix' => '', 'pconnect' => false, 'db_debug' => true,
             'cache_on' => false, 'cachedir' => '', 'char_set' => 'utf8mb4', 'dbcollat' => 'utf8mb4_general_ci', 'swap_pre' => '',
             'encrypt' => false, 'compress' => false, 'stricton' => false, 'failover' => [], 'save_queries' => false,
         ]);
@@ -48,6 +58,11 @@ trait UsesCodeIgniterModels
                     $class                                = $this->resolveModel($path);
                     $this->ci->{$alias ?? strtolower(basename($path))} = new $class();
                 }
+            }
+
+            public function library(string $name): void
+            {
+                $this->ci->{$name} ??= new \stdClass();
             }
 
             /** @return list<string> */

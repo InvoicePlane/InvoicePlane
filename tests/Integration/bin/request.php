@@ -109,6 +109,27 @@ if ( ! function_exists('is_cli')) {
     }
 }
 
+// headers_list() is empty under the CLI SAPI, so a redirect's Location header would be lost and
+// destination assertions could never fail. Mirror CI's redirect() but also record the target.
+if ( ! function_exists('redirect')) {
+    function redirect($uri = '', $method = 'auto', $code = null): void
+    {
+        if ( ! preg_match('#^(\w+:)?//#i', $uri)) {
+            $uri = site_url($uri);
+        }
+
+        if ($method !== 'refresh' && (empty($code) || ! is_numeric($code))) {
+            $code = (isset($_SERVER['SERVER_PROTOCOL'], $_SERVER['REQUEST_METHOD']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.1')
+                ? ($_SERVER['REQUEST_METHOD'] !== 'GET' ? 303 : 307)
+                : 302;
+        }
+
+        $GLOBALS['ip_test_location'] = $uri;
+        $method === 'refresh' ? header('Refresh:0;url=' . $uri) : header('Location: ' . $uri, true, $code);
+        exit;
+    }
+}
+
 ob_start();
 $exception = null;
 
@@ -124,7 +145,7 @@ register_shutdown_function(static function () use (&$exception): void {
 
     $result = [
         'status'  => http_response_code() ?: 200,
-        'headers' => array_merge(headers_list(), $GLOBALS['ip_security_response_headers'] ?? []),
+        'headers' => array_merge(headers_list(), isset($GLOBALS['ip_test_location']) ? ['Location: ' . $GLOBALS['ip_test_location']] : [], $GLOBALS['ip_security_response_headers'] ?? []),
         // base64-encoded: the body may be binary (a streamed PDF, an image, ...),
         // which isn't valid UTF-8 and would make json_encode() throw below.
         'output'    => base64_encode($output),
@@ -160,7 +181,7 @@ $output = ob_get_clean() ?: '';
 
 $result = [
     'status'  => http_response_code() ?: 200,
-    'headers' => array_merge(headers_list(), $GLOBALS['ip_security_response_headers'] ?? []),
+    'headers' => array_merge(headers_list(), isset($GLOBALS['ip_test_location']) ? ['Location: ' . $GLOBALS['ip_test_location']] : [], $GLOBALS['ip_security_response_headers'] ?? []),
     // base64-encoded: see the shutdown-function comment above.
     'output'    => base64_encode($output),
     'exception' => $exception,

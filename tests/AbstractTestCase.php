@@ -273,14 +273,7 @@ abstract class AbstractTestCase extends PhpUnitTestCase
 
         $redirectUrl = $response->redirectUrl();
 
-        // PHP's CLI SAPI does not expose headers sent with header() through
-        // headers_list(), even though it preserves the redirect status code.
-        // Keep validating that the response is a redirect, and validate the
-        // route whenever the execution environment provides the Location
-        // header (for example, a web SAPI).
-        if ($redirectUrl === '') {
-            return;
-        }
+        self::assertNotSame('', $redirectUrl, 'A redirect response must carry its Location header.');
 
         $path          = parse_url($redirectUrl, PHP_URL_PATH);
         $normalized    = trim((string) $path, '/');
