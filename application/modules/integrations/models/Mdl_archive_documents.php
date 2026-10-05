@@ -595,7 +595,8 @@ class Mdl_Archive_documents extends CI_Model
                 [
                     'archive-document-id' => (string) $archiveDocumentId,
                     'document-type' => (string) $document['document_type'],
-                ]
+                ],
+                'application/zip'
             );
         } catch (Throwable $exception) {
             $this->audit($archiveDocumentId, 'external_sae_failed', $actorUserId, $actorType, [

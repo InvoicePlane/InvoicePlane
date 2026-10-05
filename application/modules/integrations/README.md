@@ -238,6 +238,16 @@ and token digests in the registry and audit chain. The configured TSA remains
 responsible for qualified status, certificate trust, and its applicable
 eIDAS policy; InvoicePlane does not infer qualification from the endpoint.
 
+Migration `060_archive_audit_anchors.sql` adds database-level tamper
+resistance. SQL triggers reject updates and deletes on audit events and
+external anchor records. `Mdl_Archive_audit_anchors::anchor_on_s3_worm()`
+also stores the current chain digest and last event hash as an independent
+JSON object in S3 Object Lock. `verify_local_anchor()` detects divergence
+between the local audit prefix and its immutable external anchor. These
+controls protect against application-level changes; a privileged database
+administrator must still be controlled through database roles, credentials,
+and operational monitoring.
+
 Migration `058_external_sae_storage.sql` records the remote SAE object key,
 version ID, provider, and retention date. `S3ObjectLockArchiveConnector`
 requires an S3 bucket with versioning and Object Lock already enabled. It
