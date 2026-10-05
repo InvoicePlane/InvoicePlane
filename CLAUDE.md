@@ -240,6 +240,24 @@ either side is right.
   => '1'`), because `User_Controller` guards with `!== (string)$required_val` and a real
   DB-backed login stores strings. Int-typed session data silently redirects every admin
   request to the login page (307). This is wired correctly now — don't regress it.
+- **Authenticated Feature tests 307 even with a correct string-typed session? Check the
+  credential fingerprint.** `User_Controller::revalidate_user_type()` (every request for a
+  `user_type` controller) also requires `user_auth_version` and `user_credential` in the
+  session. `user_credential` = `session_credential_fingerprint($user_password_hash)` =
+  `HMAC-SHA256(hash, ENCRYPTION_KEY)`. The harness must put both in the session, read from
+  the real `ip_users` row — see `AbstractTestCase::actingAsAdmin()`; any new `actingAs*()`
+  helper must do the same, otherwise every request redirects to `sessions/login`.
+  Root cause of the long-running mystery (2026-10): the phpunit *parent* computed the
+  fingerprint with `config_item('encryption_key')`, which is **empty** there (CI3's config
+  isn't loaded in the parent), while the request subprocess had the real key — so the two
+  HMACs never matched. `session_credential_fingerprint()` now reads `env('ENCRYPTION_KEY')`
+  first. Diagnose by comparing `strlen(key)` on both sides; do not chase session
+  serialization — the session data arrives intact.
+- **A sudden wall of failures with "MariaDB is unreachable" or mass 307s = the DB died**,
+  not a regression. Do not run a second phpunit (or anything touching the DB) while a
+  full-suite run is in flight in the sandbox; re-run `bash tests/Support/sandbox-mariadb.sh`
+  and retry. (A concurrent run made 3 of 4 `SupplierInvoicesControllerTest` tests look like
+  "missing fixtures" — they were not.)
 
 #### Debugging a Feature-test request subprocess (do it right or you chase ghosts)
 
