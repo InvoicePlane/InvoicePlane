@@ -180,6 +180,10 @@ CUSTOM_QUOTE_TEMPLATES_PUBLIC=
 ENCRYPTION_KEY=
 ENCRYPTION_CIPHER=AES-256
 
+# Optional versioned archive keyring. Keep key material outside source control.
+# ARCHIVE_ENCRYPTION_KEYS={"v1":"base64:old-key","v2":"base64:new-key"}
+# ARCHIVE_ENCRYPTION_ACTIVE_KEY_VERSION=v2
+
 # Set to true after the initial setup. Access to the setup wizard is blocked when this is true.
 # To re-run the setup (e.g. after an upgrade), temporarily set this to false.
 SETUP_COMPLETED=false

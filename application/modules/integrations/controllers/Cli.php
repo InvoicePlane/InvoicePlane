@@ -17,6 +17,7 @@ class Cli extends MX_Controller
         $this->load->model('integrations/Merchant_clients_model');
         $this->load->model('integrations/Merchant_responses_model');
         $this->load->model('integrations/Integration_sync_runs_model');
+        $this->load->model('integrations/Mdl_archive_documents');
 
         require_once APPPATH . 'modules/integrations/libraries/IntegrationSyncService.php';
     }
@@ -138,6 +139,41 @@ class Cli extends MX_Controller
             'retention_days' => $retentionDays,
             'deleted_runs'   => $deleted,
         ]) . PHP_EOL;
+    }
+
+    /**
+     * Usage: php index.php integrations/cli/rotate_archive_keys [limit].
+     */
+    public function rotate_archive_keys($limit = 100): void
+    {
+        $limit = filter_var($limit, FILTER_VALIDATE_INT);
+        if ($limit === false || $limit < 1 || $limit > 1000) {
+            fwrite(STDERR, 'Rotation limit must be between 1 and 1000.' . PHP_EOL);
+            exit(2);
+        }
+
+        $adapter = new EncryptedArchiveStorageAdapter();
+        $activeVersion = $adapter->activeKeyVersion();
+        $documents = $this->Mdl_archive_documents->get_documents_pending_key_rotation($activeVersion, $limit);
+        $rotated = 0;
+        $failedIds = [];
+        foreach ($documents as $document) {
+            $documentId = (int) $document['archive_document_id'];
+            try {
+                if ($this->Mdl_archive_documents->rotate_encryption_key($documentId, null, 'system')) {
+                    $rotated++;
+                }
+            } catch (Throwable) {
+                $failedIds[] = $documentId;
+            }
+        }
+
+        echo json_encode([
+            'active_key_version' => $activeVersion,
+            'scanned' => count($documents),
+            'rotated' => $rotated,
+            'failed_ids' => $failedIds,
+        ], JSON_UNESCAPED_SLASHES) . PHP_EOL;
     }
 
     private function clientsToRun(mixed $merchantClientId): array
