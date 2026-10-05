@@ -4,6 +4,30 @@ InvoicePlane is a self-hosted, open-source invoicing app built on **CodeIgniter 
 (`application/modules/`). It is **not** a Laravel application — there is no Artisan CLI, no
 Eloquent ORM, and no `.env` file. Configuration lives in `ipconfig.php`.
 
+## Feature tests failing? Start here (do this BEFORE debugging code)
+
+1. **Is the DB up?** `bash tests/Support/sandbox-mariadb.sh` (idempotent). "MariaDB is
+   unreachable", mass 307s, or a wall of failures usually means the DB died, not a regression.
+2. **One phpunit at a time.** A second run (or a background full suite) kills the sandbox DB
+   and produces fake failures such as "missing fixtures".
+3. **Never call a failure "pre-existing" or "unrelated" without proof.** Reproduce it on a
+   clean, DB-isolated run and read the real message. Every failure seen so far had a concrete,
+   fixable cause.
+4. **307 on an authenticated request?** The session needs `user_auth_version` and
+   `user_credential` (HMAC of the stored password hash with `ENCRYPTION_KEY`), taken from the
+   real `ip_users` row. `AbstractTestCase::actingAs()` and `actingAsAdmin()` do this through
+   `bindSessionToStoredCredentials()`; any new `actingAs*()` helper must too. Details: the
+   "Authenticated Feature tests 307" bullet under "MariaDB test database in the sandbox".
+5. **Headers:** `headers_list()` is always empty under CLI. The harness reads
+   `$GLOBALS['ip_security_response_headers']` (set by `bootstrap/kernel.php`) instead.
+6. **No hollow tests.** Never `assertTrue(true)`, and never re-implement production logic
+   inside a test. Assert on the real code path, and mutation-check security tests (break the
+   code and confirm the test fails).
+7. **Calling helpers that don't exist** (`create_user`, `acting_as_user`,
+   `databaseCount` ...) means the test came from another lineage. Use the harness in
+   `tests/AbstractTestCase.php` and `tests/Concerns/` (`seedClient`, `seedInvoice`,
+   `databaseInsert`, `postWithValidCsrfToken` ...).
+
 ## Quick-start mental model
 
 | Concept               | CI3 / InvoicePlane pattern                                                  |
