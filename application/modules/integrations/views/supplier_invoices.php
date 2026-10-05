@@ -43,7 +43,8 @@
                         <td>
                             <form method="post" action="<?php echo site_url('integrations/incoming/update_supplier_invoice_status/' . (int) $invoice['supplier_invoice_id']); ?>">
                                 <?php _csrf_field(); ?>
-                                <select name="status" class="form-control input-sm" onchange="this.form.submit()">
+                                <label class="sr-only" for="supplier-invoice-status-<?php echo (int) $invoice['supplier_invoice_id']; ?>"><?php _trans('status'); ?></label>
+                                <select id="supplier-invoice-status-<?php echo (int) $invoice['supplier_invoice_id']; ?>" name="status" class="form-control input-sm" onchange="this.form.submit()">
                                     <?php foreach (['received', 'approved', 'paid', 'rejected'] as $status) : ?>
                                         <option value="<?php echo $status; ?>" <?php echo $invoice['status'] === $status ? 'selected' : ''; ?>><?php _htmlsc($status); ?></option>
                                     <?php endforeach; ?>
