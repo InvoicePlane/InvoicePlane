@@ -107,7 +107,8 @@ final class S3ObjectLockArchiveConnector
         string $objectKey,
         DateTimeInterface $retainUntil,
         bool $legalHold = false,
-        array $metadata = []
+        array $metadata = [],
+        string $contentType = 'application/octet-stream'
     ): array {
         $this->assertWormBucket();
         if ( ! is_file($packagePath) || ! is_readable($packagePath)) {
@@ -137,7 +138,7 @@ final class S3ObjectLockArchiveConnector
                 'Bucket' => $this->bucket,
                 'Key' => $objectKey,
                 'Body' => $stream,
-                'ContentType' => 'application/zip',
+                'ContentType' => $contentType,
                 'ChecksumSHA256' => base64_encode(hex2bin($sha256)),
                 'ObjectLockMode' => 'COMPLIANCE',
                 'ObjectLockRetainUntilDate' => $retainUntilUtc->format(DateTimeInterface::ATOM),
