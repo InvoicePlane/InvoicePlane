@@ -70,6 +70,10 @@ class Supplier_invoices extends Admin_Controller
 
         $items = $invoiceId === null ? [] : $this->Mdl_supplier_invoice_items->get_by_invoice_id($invoiceId);
         if ($this->input->method() === 'post') {
+            if ( ! $this->ensure_valid_post_request('supplier_invoices')) {
+                return;
+            }
+
             if ($this->input->post('btn_cancel')) {
                 redirect('supplier_invoices');
             }
@@ -120,6 +124,10 @@ class Supplier_invoices extends Admin_Controller
 
         $errors = [];
         if ($this->input->method() === 'post') {
+            if ( ! $this->ensure_valid_post_request('supplier_invoices/suppliers')) {
+                return;
+            }
+
             if ($this->input->post('btn_cancel')) {
                 redirect('supplier_invoices/suppliers');
             }

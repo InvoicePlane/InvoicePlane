@@ -578,7 +578,14 @@ class Mdl_Invoices extends Response_Model
         $invoice_array = [];
 
         if ( ! empty($invoice_number)) {
-            $invoice_array = glob(UPLOADS_ARCHIVE_FOLDER . '*_*' . $invoice_number . '*.pdf');
+            // Literal match (same shape as the old '*_*<number>*.pdf' glob): the number comes from
+            // user input, so glob metacharacters ("*", "?", "[") and "/" must not be interpreted.
+            $needle = '/_.*' . preg_quote((string) $invoice_number, '/') . '/';
+            foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') ?: [] as $file) {
+                if (preg_match($needle, basename($file)) === 1) {
+                    $invoice_array[] = $file;
+                }
+            }
         } else {
             foreach (glob(UPLOADS_ARCHIVE_FOLDER . '*.pdf') as $file) {
                 $invoice_array[] = $file;

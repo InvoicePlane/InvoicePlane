@@ -569,6 +569,27 @@ class PaypalFlowTest extends AbstractTestCase
         $this->assertNotNull($draftInvoice);
     }
 
+    #[Test]
+    public function it_never_contacts_paypal_for_requests_that_fail_a_local_guard(): void
+    {
+        /* Arrange: an EMPTY response queue — any PayPal call at all (including authorize()) would throw */
+        $this->mockPaypal([]);
+        $payable = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $this->seedPayableInvoice()])['invoice_url_key'];
+        $draft   = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $this->seedPayableInvoice(['invoice_status_id' => 1])])['invoice_url_key'];
+
+        /* Act */
+        $nonPost       = $this->get('/guest/gateways/paypal/paypal_create_order/' . $payable);
+        $unknownKey    = $this->post('/guest/gateways/paypal/paypal_create_order/does-not-exist');
+        $draftInvoice  = $this->post('/guest/gateways/paypal/paypal_create_order/' . $draft);
+        $captureNonPost = $this->get('/guest/gateways/paypal/paypal_capture_payment/ORDER123');
+
+        /* Assert: clean 404s, never a 500 from a gateway we should not have reached */
+        foreach ([$nonPost, $unknownKey, $draftInvoice, $captureNonPost] as $response) {
+            $this->assertResponseStatusCode($response, 404);
+        }
+        $this->assertDatabaseCount('ip_merchant_responses', 0);
+    }
+
     protected function seedPayableInvoice(array $overrides = [], array $amountOverrides = []): int
     {
         $clientId = $this->seedClient();

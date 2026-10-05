@@ -313,6 +313,26 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
     }
 
     #[Test]
+    public function it_refuses_to_delete_an_item_through_another_invoices_url(): void
+    {
+        /* Arrange: the item belongs to invoice B, the request is addressed to invoice A */
+        $clientId = $this->seedClient();
+        $invoiceA = $this->seedInvoice($clientId);
+        $invoiceB = $this->seedInvoice($clientId);
+        $itemOfB  = $this->databaseInsert('ip_invoice_items', [
+            'invoice_id' => $invoiceB, 'item_tax_rate_id' => 0, 'item_date_added' => date('Y-m-d'),
+            'item_name'  => 'Belongs to B', 'item_description' => '', 'item_quantity' => '1.00', 'item_price' => '10.00', 'item_order' => 0,
+        ]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/delete_item/' . $invoiceA, ['item_id' => (string) $itemOfB]);
+
+        /* Assert */
+        self::assertSame(0, json_decode($response->body(), true)['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoice_items', ['item_id' => $itemOfB, 'invoice_id' => $invoiceB]);
+    }
+
+    #[Test]
     public function it_does_not_delete_anything_for_a_nonexistent_item_id(): void
     {
         /* Arrange */

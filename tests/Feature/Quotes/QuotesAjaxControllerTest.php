@@ -278,6 +278,23 @@ class QuotesAjaxControllerTest extends AbstractTestCase
     }
 
     #[Test]
+    public function it_refuses_to_delete_an_item_through_another_quotes_url(): void
+    {
+        /* Arrange: the item belongs to quote B, the request is addressed to quote A */
+        $clientId = $this->seedClient();
+        $quoteA   = $this->seedQuote($clientId);
+        $quoteB   = $this->seedQuote($clientId);
+        $itemOfB  = $this->seedQuoteItem($quoteB, 'Belongs to B');
+
+        /* Act */
+        $response = $this->ajax('POST', '/quotes/ajax/delete_item/' . $quoteA, ['item_id' => (string) $itemOfB]);
+
+        /* Assert */
+        self::assertSame(0, json_decode($response->body(), true)['success'] ?? null);
+        $this->assertDatabaseHas('ip_quote_items', ['item_id' => $itemOfB, 'quote_id' => $quoteB]);
+    }
+
+    #[Test]
     public function it_returns_a_quote_item_by_id(): void
     {
         /* Arrange */

@@ -217,8 +217,12 @@ class Ajax extends Admin_Controller
         $item_id = $this->input->post('item_id');
         $this->load->model('mdl_quotes');
 
-        // Only continue if the quote exists or no item id was provided
-        if ($this->mdl_quotes->get_by_id($quote_id) || empty($item_id)) {
+        // Only continue if the quote exists and the item really belongs to it; deleting by bare
+        // item id would let one quote's URL remove (and recalculate) another quote's line.
+        $item_belongs_to_quote = ! empty($item_id)
+            && $this->db->where(['item_id' => $item_id, 'quote_id' => $quote_id])->count_all_results('ip_quote_items') > 0;
+
+        if ($item_belongs_to_quote && $this->mdl_quotes->get_by_id($quote_id)) {
             // Delete quote item
             $this->load->model('mdl_quote_items');
             $item = $this->mdl_quote_items->delete($item_id);

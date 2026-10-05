@@ -271,8 +271,12 @@ class Ajax extends Admin_Controller
         $item_id = $this->security->xss_clean($this->input->post('item_id'));
         $this->load->model('mdl_invoices');
 
-        // Only continue if the invoice exists or no item id was provided
-        if ($this->mdl_invoices->get_by_id($invoice_id) || empty($item_id)) {
+        // Only continue if the invoice exists and the item really belongs to it; deleting by bare
+        // item id would let one invoice's URL remove (and recalculate) another invoice's line.
+        $item_belongs_to_invoice = ! empty($item_id)
+            && $this->db->where(['item_id' => $item_id, 'invoice_id' => $invoice_id])->count_all_results('ip_invoice_items') > 0;
+
+        if ($item_belongs_to_invoice && $this->mdl_invoices->get_by_id($invoice_id)) {
             // Delete invoice item
             $this->load->model('mdl_items');
             $item = $this->mdl_items->delete($item_id);

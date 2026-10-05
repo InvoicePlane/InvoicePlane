@@ -327,6 +327,34 @@ class FilterAjaxControllerTest extends AbstractTestCase
     }
 
     #[Test]
+    public function it_treats_glob_metacharacters_in_the_archive_query_literally(): void
+    {
+        /* Arrange */
+        $folder = rtrim(UPLOADS_ARCHIVE_FOLDER, '/') . '/';
+        $files  = [$folder . '2026-10-05_GLOBARCH-001.pdf', $folder . '2026-10-05_GLOBARCH-002.pdf'];
+        foreach ($files as $file) {
+            file_put_contents($file, '%PDF-1.4');
+        }
+
+        try {
+            /* Act: each of these would have matched both files if interpreted as a glob pattern */
+            $star    = $this->ajax('POST', '/filter/ajax/filter_archives', ['filter_query' => 'GLOBARCH-*']);
+            $query   = $this->ajax('POST', '/filter/ajax/filter_archives', ['filter_query' => 'GLOBARCH-00?']);
+            $bracket = $this->ajax('POST', '/filter/ajax/filter_archives', ['filter_query' => 'GLOBARCH-00[12]']);
+            $escape  = $this->ajax('POST', '/filter/ajax/filter_archives', ['filter_query' => '../../ipconfig']);
+
+            /* Assert */
+            foreach ([$star, $query, $bracket, $escape] as $response) {
+                $this->assertResponseBodyNotContains($response, 'GLOBARCH-001');
+                $this->assertResponseBodyNotContains($response, 'GLOBARCH-002');
+                $this->assertResponseBodyNotContains($response, 'ENCRYPTION_KEY');
+            }
+        } finally {
+            array_map('unlink', array_filter($files, 'is_file'));
+        }
+    }
+
+    #[Test]
     public function it_filters_payments_by_query(): void
     {
         /* Arrange */
