@@ -59,7 +59,25 @@ class Mdl_Archive_documents extends CI_Model
             'updated_at' => $now,
         ]);
 
-        return (int) $this->db->insert_id();
+        $archiveDocumentId = (int) $this->db->insert_id();
+
+        $this->load->model('integrations/Mdl_archive_audit_events');
+        $this->mdl_archive_audit_events->append(
+            $archiveDocumentId,
+            'registered',
+            isset($data['created_by']) ? (int) $data['created_by'] : null,
+            isset($data['created_by']) ? 'user' : 'system',
+            [
+                'document_type' => trim((string) ($data['document_type'] ?? 'document')),
+                'source_module' => $sourceModule,
+                'source_reference' => $sourceReference,
+                'sha256' => $sha256,
+                'validation_status' => $this->nullableString($data['validation_status'] ?? null),
+            ],
+            $now
+        );
+
+        return $archiveDocumentId;
     }
 
     public function get_by_id(int $archiveDocumentId): array
