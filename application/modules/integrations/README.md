@@ -162,6 +162,19 @@ invoice detail page after processing existing bookmarked forms. The duplicate
 integration register view is no longer part of the active navigation and can
 be removed after downstream integrations have migrated.
 
+## Archive document registry
+
+Migration `054_archive_document_registry.sql` adds `ip_archive_documents`, a
+metadata registry for documents that have been validated and stored by the
+archive layer. Incoming PDP invoices are registered automatically with their
+source reference, storage path, MIME type, size, profile, validation status,
+receipt date, and SHA-256 digest.
+
+The registry is idempotent for a source reference and rejects a different hash
+for an existing source. It is the foundation for retention, legal holds,
+append-only audit trails, and future WORM or external SAE storage. It does not
+by itself make the underlying filesystem immutable.
+
 Manual supplier invoice creation also checks the supplier/number combination.
 The same rule is enforced by the `uq_supplier_invoice_supplier_number`
 database constraint, while allowing identical invoice numbers for different
