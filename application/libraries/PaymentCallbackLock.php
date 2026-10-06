@@ -36,8 +36,17 @@ class PaymentCallbackLock
         $row  = $this->database
             ->query('SELECT GET_LOCK(?, ?) AS acquired', [$name, $timeoutSeconds])
             ->row_array();
+        $acquired = $row['acquired'] ?? null;
 
-        if ((int) ($row['acquired'] ?? 0) !== 1) {
+        // GET_LOCK() returns NULL only on a server-side error (e.g. the lock
+        // request was killed, or the connection ran out of resources) -- never
+        // as the ordinary "someone else is holding it" outcome. Surface that as
+        // a real error instead of silently treating it the same as a timeout.
+        if ($acquired === null) {
+            throw new RuntimeException('GET_LOCK() failed for invoice lock ' . $name . '.');
+        }
+
+        if ((int) $acquired !== 1) {
             return false;
         }
 
