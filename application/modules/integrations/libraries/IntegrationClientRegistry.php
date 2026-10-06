@@ -4,12 +4,31 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class IntegrationClientRegistry
 {
-    private array $providers = [];
+    private static array $maps = [];
 
-    public function __construct()
+    private static int $scans = 0;
+
+    private array $providers;
+
+    public function __construct(?string $providersDirectory = null)
     {
         get_instance()->load->helper('file_security');
-        $this->loadProviders();
+
+        $directory = rtrim($providersDirectory ?? APPPATH . 'modules/integrations/libraries/providers', '/');
+
+        self::$maps[$directory] ??= $this->scan($directory);
+        $this->providers = self::$maps[$directory];
+    }
+
+    public static function scanCount(): int
+    {
+        return self::$scans;
+    }
+
+    public static function flushCache(): void
+    {
+        self::$maps  = [];
+        self::$scans = 0;
     }
 
     public function getClient(string $clientCode): IntegrationClientInterface
@@ -79,8 +98,17 @@ class IntegrationClientRegistry
         }
     }
 
-    private function loadProviders(): void
+    /**
+     * Index every IntegrationClientInterface implementation found in the providers directory by its
+     * client code: providers/FooClient.php, or providers/Foo/FooClient.php with any helper classes
+     * that live beside it (including Foo/Endpoints/).
+     *
+     * @return array<string, class-string<IntegrationClientInterface>>
+     */
+    private function scan(string $directory): array
     {
+        self::$scans++;
+
         require_once APPPATH . 'modules/integrations/libraries/IntegrationClientInterface.php';
         require_once APPPATH . 'modules/integrations/libraries/ProviderResponseNormalizer.php';
         require_once APPPATH . 'modules/integrations/libraries/ProviderPing.php';
@@ -88,42 +116,18 @@ class IntegrationClientRegistry
         require_once APPPATH . 'modules/integrations/libraries/IntegrationSettingsCipher.php';
         require_once APPPATH . 'modules/integrations/libraries/IntegrationTransport.php';
 
-        $clientPath = APPPATH . 'modules/integrations/libraries/providers/';
+        $files = array_merge(
+            glob($directory . '/*Client.php') ?: [],
+            glob($directory . '/*/*Client.php') ?: []
+        );
 
-        $patterns = [
-            $clientPath . '*Client.php',
-            $clientPath . '*/*Client.php',
-        ];
-
-        $files = [];
-        foreach ($patterns as $pattern) {
-            $files = array_merge($files, glob($pattern) ?: []);
-        }
-
+        $providers = [];
         foreach ($files as $file) {
-            $dir = dirname($file);
-            foreach (glob($dir . '/*.php') as $depFile) {
-                if ($depFile !== $file) {
-                    require_once $depFile;
-                }
-            }
-            foreach (glob($dir . '/Endpoints/*.php') as $endpointFile) {
-                require_once $endpointFile;
-            }
-
+            $this->requireCompanions($directory, $file);
             require_once $file;
 
             $className = basename($file, '.php');
-
-            if ( ! class_exists($className)) {
-                continue;
-            }
-
-            if ( ! is_subclass_of($className, IntegrationClientInterface::class)) {
-                continue;
-            }
-
-            if ( ! method_exists($className, 'clientCode')) {
+            if ( ! class_exists($className) || ! is_subclass_of($className, IntegrationClientInterface::class)) {
                 continue;
             }
 
@@ -132,11 +136,27 @@ class IntegrationClientRegistry
                 throw new RuntimeException('Invalid e-invoicing provider code.');
             }
 
-            if (isset($this->providers[$clientCode])) {
+            if (isset($providers[$clientCode])) {
                 throw new RuntimeException('Duplicate e-invoicing provider code: ' . $clientCode);
             }
 
-            $this->providers[$clientCode] = $className;
+            $providers[$clientCode] = $className;
+        }
+
+        return $providers;
+    }
+
+    private function requireCompanions(string $root, string $file): void
+    {
+        $dir = dirname($file);
+        if ($dir === $root) {
+            return;
+        }
+
+        foreach (array_merge(glob($dir . '/*.php') ?: [], glob($dir . '/Endpoints/*.php') ?: []) as $companion) {
+            if ($companion !== $file) {
+                require_once $companion;
+            }
         }
     }
 

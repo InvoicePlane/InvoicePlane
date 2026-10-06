@@ -116,4 +116,133 @@ class IntegrationClientRegistryTest extends TestCase
         /* Act */
         $this->registry->getClient('does-not-exist');
     }
+
+    #[Test]
+    public function it_scans_the_providers_directory_only_once_per_process(): void
+    {
+        /* Arrange */
+        $before = IntegrationClientRegistry::scanCount();
+
+        /* Act */
+        new IntegrationClientRegistry();
+        new IntegrationClientRegistry();
+
+        /* Assert */
+        self::assertSame($before, IntegrationClientRegistry::scanCount(), 'Constructing the registry again must reuse the cached map.');
+    }
+
+    #[Test]
+    public function it_rescans_after_the_cache_is_flushed(): void
+    {
+        /* Arrange */
+        IntegrationClientRegistry::flushCache();
+
+        /* Act */
+        $registry = new IntegrationClientRegistry();
+
+        /* Assert */
+        self::assertSame(1, IntegrationClientRegistry::scanCount());
+        self::assertArrayHasKey('qonto', $registry->all());
+    }
+
+    #[Test]
+    public function it_registers_a_provider_dropped_into_a_directory_and_skips_helper_classes(): void
+    {
+        /* Arrange */
+        $dir = $this->providerDirectory([
+            'RegFixtureAlphaClient.php' => $this->providerSource('RegFixtureAlphaClient', 'reg-alpha'),
+            'RegFixtureHelperClient.php' => '<?php class RegFixtureHelperClient {}',
+        ]);
+
+        /* Act */
+        $providers = (new IntegrationClientRegistry($dir))->all();
+
+        /* Assert */
+        self::assertSame(['reg-alpha' => 'RegFixtureAlphaClient'], $providers);
+    }
+
+    #[Test]
+    public function it_registers_a_provider_that_lives_in_its_own_subdirectory(): void
+    {
+        /* Arrange */
+        $dir = $this->providerDirectory([
+            'RegFixtureNested/RegFixtureNestedClient.php' => $this->providerSource('RegFixtureNestedClient', 'reg-nested'),
+        ]);
+
+        /* Act */
+        $providers = (new IntegrationClientRegistry($dir))->all();
+
+        /* Assert */
+        self::assertSame(['reg-nested' => 'RegFixtureNestedClient'], $providers);
+    }
+
+    #[Test]
+    public function it_rejects_two_providers_with_the_same_code(): void
+    {
+        /* Arrange */
+        $dir = $this->providerDirectory([
+            'RegFixtureOneClient.php' => $this->providerSource('RegFixtureOneClient', 'reg-dup'),
+            'RegFixtureTwoClient.php' => $this->providerSource('RegFixtureTwoClient', 'reg-dup'),
+        ]);
+
+        /* Assert */
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Duplicate e-invoicing provider code: reg-dup');
+
+        /* Act */
+        new IntegrationClientRegistry($dir);
+    }
+
+    #[Test]
+    public function it_rejects_a_provider_code_with_unsafe_characters(): void
+    {
+        /* Arrange */
+        $dir = $this->providerDirectory([
+            'RegFixtureBadClient.php' => $this->providerSource('RegFixtureBadClient', '../etc'),
+        ]);
+
+        /* Assert */
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid e-invoicing provider code.');
+
+        /* Act */
+        new IntegrationClientRegistry($dir);
+    }
+
+    /**
+     * @param array<string, string> $files
+     */
+    private function providerDirectory(array $files): string
+    {
+        $dir = sys_get_temp_dir() . '/ip-registry-' . bin2hex(random_bytes(4));
+        foreach ($files as $relative => $source) {
+            $path = $dir . '/' . $relative;
+            if ( ! is_dir(dirname($path))) {
+                mkdir(dirname($path), 0777, true);
+            }
+            file_put_contents($path, $source);
+        }
+
+        return $dir;
+    }
+
+    private function providerSource(string $class, string $code): string
+    {
+        return '<?php class ' . $class . ' implements IntegrationClientInterface {'
+            . ' public static function clientCode(): string { return ' . var_export($code, true) . '; }'
+            . ' public static function clientName(): string { return "Fixture"; }'
+            . ' public static function authType(): string { return "none"; }'
+            . ' public static function defaultSettings(): array { return []; }'
+            . ' public static function settingsSchema(): array { return []; }'
+            . ' public function authenticate(array $settings): bool { return true; }'
+            . ' public function sendInvoice(string $documentPath, array $metadata): array { return []; }'
+            . ' public function getInvoiceStatus(string $externalId): array { return []; }'
+            . ' public function receiveInvoices(array $filters = []): array { return []; }'
+            . ' public function downloadInvoiceDocument(array $invoice): array { return []; }'
+            . ' public function getInvoiceEvents(array $filters = []): array { return []; }'
+            . ' public function buildInvoicePayload($invoice, array $items, array $metadata = []): array { return []; }'
+            . ' public function fetchToken(array $settings): string { return ""; }'
+            . ' public function ping(array $settings): array { return []; }'
+            . ' }';
+    }
 }
