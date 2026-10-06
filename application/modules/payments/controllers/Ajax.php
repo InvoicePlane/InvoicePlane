@@ -36,7 +36,7 @@ class Ajax extends Admin_Controller
             if ( ! $lock_acquired) {
                 $response = [
                     'success'           => 0,
-                    'validation_errors' => [trans('payment_cannot_exceed_balance')],
+                    'validation_errors' => [trans('payment_in_progress_try_again')],
                 ];
             } elseif ($this->mdl_payments->run_validation()) {
                 $payment_id = $this->mdl_payments->save();

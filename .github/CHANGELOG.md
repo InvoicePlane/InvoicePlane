@@ -16,6 +16,21 @@ record *why* and *how*.
 
 ### Security fixes
 
+- **Payment-amount validation race (TOCTOU, CWE-362 / CWE-367).** `Mdl_Payments::validate_payment_amount()`
+  read `invoice_balance` and `Mdl_Payments::save()` inserted the payment row as separate,
+  non-atomic steps. Concurrent payment submissions from distinct authenticated admin sessions
+  for the same invoice could each read the same stale balance and pass validation before either
+  committed, driving the invoice into an overpaid (negative-balance) state. Both admin payment
+  entry points (`Payments::form()`, `Ajax::add()`) now serialize on the invoice with
+  `PaymentCallbackLock` — the same connection-scoped MySQL advisory lock already used to close
+  the equivalent gateway-callback race — so a losing submission blocks until the winner commits,
+  then re-validates against the now-current balance. **Note on scope:** this is distinct from
+  gateway replay deduplication (the unique index on `ip_payments.payment_external_id`, shipped in
+  1.7.3). That index does not exist on installations still running the released 1.7.2; this fix
+  does not add it retroactively — it only closes the admin-side balance race. Reported by
+  [@hariprakash6969-create](https://github.com/hariprakash6969-create).
+  [#4](https://github.com/underdogg-forks/ivpl-xprmt/pull/4)
+
 **nginx and Apache served private files** (GHSA-qq8q-gf24-576m) — Reported by [@nirtem](https://github.com/nirtem); Fixed by [@DylanUnderwood](https://github.com/DylanUnderwood).
 
 - **nginx and Apache served private files.** The bundled `resources/docker/nginx/invoiceplane.conf` served
@@ -311,7 +326,6 @@ and [@Kapmeister](https://github.com/Kapmeister) (Cryptor binary-safety fix, [#1
 | `Upload::create_dir()` was a `public` method with the same directly-routable shape as the `authenticate()` finding above — reachable at `/upload/upload/create_dir/<path>/<chmod>` with an attacker-controlled path and permission bits passed straight to `mkdir()` | High | — | Internal audit (found while checking for other instances of GHSA-x2m4-962x-cphw's bug class) | [#1684](https://github.com/InvoicePlane/InvoicePlane/pull/1684) |
 | Stored XSS via unescaped client name in the quote-status HTML email (`email_quote_status()`), triggerable by a guest approving/rejecting their own quote; same function also forced `display_errors`/`E_ALL` on every call (CWE-209 info leak) | Medium | [Stored XSS via Unescaped Client Name in Quote Status HTML Email](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-prmc-vrjx-5hxc) | [@Char0n1507](https://github.com/Char0n1507) | [#1684](https://github.com/InvoicePlane/InvoicePlane/pull/1684) |
 | Stored XSS in invoice/quote HTML emails: `parse_template()` (used by `email_invoice()`/`email_quote()`, the app's primary send path) substituted ~40 fields — client name/address/email, user company, custom field values — into the HTML email body with no escaping | Medium | — | Internal audit (found while checking for other instances of GHSA-prmc-vrjx-5hxc's bug class) | [#1684](https://github.com/InvoicePlane/InvoicePlane/pull/1684) |
-| Payment-amount validation race (TOCTOU): `Mdl_Payments::validate_payment_amount()` read `invoice_balance` and `save()` inserted the payment as separate non-atomic steps, so concurrent admin payment submissions for the same invoice could each pass the balance check before either committed, driving the invoice into an overpaid (negative-balance) state | Medium | — | [@hariprakash6969-create](https://github.com/hariprakash6969-create) | [#4](https://github.com/underdogg-forks/ivpl-xprmt/pull/4) |
 
 ### Security fixes
 
