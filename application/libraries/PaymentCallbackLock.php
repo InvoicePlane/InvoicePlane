@@ -15,7 +15,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * winner to commit, then re-check the now up-to-date balance and correctly
  * reject instead of over-crediting.
  */
-final class PaymentCallbackLock
+class PaymentCallbackLock
 {
     private ?string $name = null;
 
