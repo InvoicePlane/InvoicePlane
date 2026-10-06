@@ -2,10 +2,8 @@
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
-class LetsPeppolClient implements IntegrationClientInterface
+class LetsPeppolClient extends AbstractRestProvider
 {
-    use ProviderPing;
-
     private LetsPeppolApiClient $apiClient;
 
     private LetsPeppolInvoiceEndpoint $invoices;
@@ -20,6 +18,7 @@ class LetsPeppolClient implements IntegrationClientInterface
 
     public function __construct(?LetsPeppolApiClient $apiClient = null)
     {
+        // HTTP goes through LetsPeppolApiClient, so the base transport is not built.
         $this->apiClient     = $apiClient ?? new LetsPeppolApiClient();
         $this->invoices      = new LetsPeppolInvoiceEndpoint($this->apiClient);
         $this->participants  = new LetsPeppolParticipantEndpoint($this->apiClient);
@@ -28,137 +27,9 @@ class LetsPeppolClient implements IntegrationClientInterface
         $this->documents     = new LetsPeppolDocumentEndpoint($this->apiClient);
     }
 
-    public static function clientCode(): string
-    {
-        return 'letspeppol';
-    }
-
-    public static function clientName(): string
-    {
-        return 'LetsPeppol';
-    }
-
-    public static function authType(): string
-    {
-        return 'oauth2';
-    }
-
-    public static function defaultSettings(): array
-    {
-        return [
-            'client_id'                    => '',
-            'client_secret'                => '',
-            'token_url'                    => 'https://api.letspeppol.eu/oauth2/token',
-            'api_base_url'                 => 'https://api.letspeppol.eu',
-            'invoice_endpoint'             => '/v1/invoices',
-            'invoice_status_endpoint'      => '/v1/invoices/{id}',
-            'incoming_invoices_endpoint'   => '/v1/incoming-invoices',
-            'invoice_events_endpoint'      => '/v1/invoice-events',
-            'credit_note_endpoint'         => '/v1/credit-notes',
-            'credit_note_status_endpoint'  => '/v1/credit-notes/{id}',
-            'participants_endpoint'        => '/v1/participants',
-            'participant_lookup_endpoint'  => '/v1/participants/{id}',
-            'transmissions_endpoint'       => '/v1/transmissions',
-            'transmission_status_endpoint' => '/v1/transmissions/{id}',
-            'documents_endpoint'           => '/v1/documents',
-            'document_endpoint'            => '/v1/documents/{id}',
-        ];
-    }
-
-    public static function settingsSchema(): array
-    {
-        return [
-            'client_id' => [
-                'type'     => 'text',
-                'label'    => 'client_id',
-                'required' => true,
-            ],
-            'client_secret' => [
-                'type'      => 'password',
-                'label'     => 'client_secret',
-                'required'  => true,
-                'sensitive' => true,
-            ],
-            'token_url' => [
-                'type'     => 'url',
-                'label'    => 'token_url',
-                'required' => true,
-            ],
-            'api_base_url' => [
-                'type'     => 'url',
-                'label'    => 'api_base_url',
-                'required' => true,
-            ],
-            'invoice_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_endpoint',
-                'required' => true,
-            ],
-            'invoice_status_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_status_endpoint',
-                'required' => true,
-            ],
-            'incoming_invoices_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'incoming_invoices_endpoint',
-                'required' => true,
-            ],
-            'invoice_events_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_events_endpoint',
-                'required' => true,
-            ],
-            'credit_note_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'credit_note_endpoint',
-                'required' => true,
-            ],
-            'credit_note_status_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'credit_note_status_endpoint',
-                'required' => true,
-            ],
-            'participants_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'participants_endpoint',
-                'required' => true,
-            ],
-            'participant_lookup_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'participant_lookup_endpoint',
-                'required' => true,
-            ],
-            'transmissions_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'transmissions_endpoint',
-                'required' => true,
-            ],
-            'transmission_status_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'transmission_status_endpoint',
-                'required' => true,
-            ],
-            'documents_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'documents_endpoint',
-                'required' => true,
-            ],
-            'document_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'document_endpoint',
-                'required' => true,
-            ],
-        ];
-    }
-
     public function authenticate(array $settings): bool
     {
-        foreach (['client_id', 'client_secret', 'token_url', 'api_base_url'] as $field) {
-            if (empty($settings[$field])) {
-                throw new RuntimeException('Missing LetsPeppol setting: ' . $field);
-            }
-        }
+        $this->requireSettings($settings, ['client_id', 'client_secret', 'token_url', 'api_base_url']);
 
         $this->apiClient->configure($settings);
         $this->apiClient->authenticate();
@@ -233,11 +104,6 @@ class LetsPeppolClient implements IntegrationClientInterface
         return $this->invoices->events($filters);
     }
 
-    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
-    {
-        return $metadata;
-    }
-
     public function fetchToken(array $settings): string
     {
         $this->apiClient->configure($settings);
@@ -264,6 +130,33 @@ class LetsPeppolClient implements IntegrationClientInterface
     public function documents(): LetsPeppolDocumentEndpoint
     {
         return $this->documents;
+    }
+
+    protected static function definition(): array
+    {
+        return [
+            'code'     => 'letspeppol',
+            'name'     => 'LetsPeppol',
+            'auth'     => 'oauth2',
+            'settings' => [
+                'client_id'                    => ['type' => 'text', 'required' => true],
+                'client_secret'                => ['type' => 'password', 'required' => true, 'sensitive' => true],
+                'token_url'                    => ['default' => 'https://api.letspeppol.eu/oauth2/token', 'type' => 'url', 'required' => true],
+                'api_base_url'                 => ['default' => 'https://api.letspeppol.eu', 'type' => 'url', 'required' => true],
+                'invoice_endpoint'             => ['default' => '/v1/invoices', 'type' => 'path', 'required' => true],
+                'invoice_status_endpoint'      => ['default' => '/v1/invoices/{id}', 'type' => 'path', 'required' => true],
+                'incoming_invoices_endpoint'   => ['default' => '/v1/incoming-invoices', 'type' => 'path', 'required' => true],
+                'invoice_events_endpoint'      => ['default' => '/v1/invoice-events', 'type' => 'path', 'required' => true],
+                'credit_note_endpoint'         => ['default' => '/v1/credit-notes', 'type' => 'path', 'required' => true],
+                'credit_note_status_endpoint'  => ['default' => '/v1/credit-notes/{id}', 'type' => 'path', 'required' => true],
+                'participants_endpoint'        => ['default' => '/v1/participants', 'type' => 'path', 'required' => true],
+                'participant_lookup_endpoint'  => ['default' => '/v1/participants/{id}', 'type' => 'path', 'required' => true],
+                'transmissions_endpoint'       => ['default' => '/v1/transmissions', 'type' => 'path', 'required' => true],
+                'transmission_status_endpoint' => ['default' => '/v1/transmissions/{id}', 'type' => 'path', 'required' => true],
+                'documents_endpoint'           => ['default' => '/v1/documents', 'type' => 'path', 'required' => true],
+                'document_endpoint'            => ['default' => '/v1/documents/{id}', 'type' => 'path', 'required' => true],
+            ],
+        ];
     }
 
     private function encodedDocument(array $document): ?string
