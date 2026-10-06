@@ -27,6 +27,9 @@ abstract class AbstractRestProvider implements IntegrationClientInterface
 
     protected ApiClientInterface $http;
 
+    /** Providers whose callers pass request context opt in to having it echoed under response['request']. */
+    protected bool $mergeRequestDebug = false;
+
     public function __construct(?ApiClientInterface $http = null)
     {
         $this->http = $http ?? IntegrationTransport::httpClient() ?? new CurlApiClient();
@@ -97,6 +100,11 @@ abstract class AbstractRestProvider implements IntegrationClientInterface
         return $url;
     }
 
+    protected function requireSetting(string $key): void
+    {
+        $this->requireSettings($this->settings, [$key]);
+    }
+
     protected function requireSettings(array $settings, array $keys): void
     {
         foreach ($keys as $key) {
@@ -140,7 +148,7 @@ abstract class AbstractRestProvider implements IntegrationClientInterface
 
         $response = $this->http->request($method, $url, $options);
 
-        if ($requestDebug !== []) {
+        if ($this->mergeRequestDebug && $requestDebug !== []) {
             $response['request'] = array_merge($response['request'] ?? [], $requestDebug);
         }
 

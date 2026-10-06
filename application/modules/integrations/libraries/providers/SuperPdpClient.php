@@ -4,6 +4,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class SuperPdpClient extends AbstractRestProvider
 {
+    protected bool $mergeRequestDebug = true;
+
     protected static function definition(): array
     {
         return [

@@ -2,102 +2,54 @@
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
-class QontoClient implements IntegrationClientInterface
+class QontoClient extends AbstractRestProvider
 {
-    use ProviderPing;
-
-    private array $settings = [];
-
-    private ApiClientInterface $http;
-
     private RemoteUrlGuard $urlGuard;
 
     public function __construct(?ApiClientInterface $http = null, ?RemoteUrlGuard $urlGuard = null)
     {
-        $this->http     = $http ?? IntegrationTransport::httpClient() ?? new CurlApiClient();
+        parent::__construct($http);
         $this->urlGuard = $urlGuard ?? new RemoteUrlGuard();
     }
 
-    public static function clientCode(): string
-    {
-        return 'qonto';
-    }
-
-    public static function clientName(): string
-    {
-        return 'Qonto PA';
-    }
-
-    public static function authType(): string
-    {
-        return 'bearer';
-    }
-
-    public static function defaultSettings(): array
+    protected static function definition(): array
     {
         return [
-            'access_token'               => '',
-            'staging_token'              => '',
-            'api_base_url'               => 'https://thirdparty.qonto.com',
-            'import_endpoint'            => '/v2/client_invoices/bulk',
-            'client_invoices_endpoint'   => '/v2/client_invoices',
-            'send_invoice_endpoint'      => '/v2/client_invoices/{id}/send_by_einvoice',
-            'invoice_status_endpoint'    => '/v2/client_invoices/{id}',
-            'incoming_invoices_endpoint' => '/v2/supplier_invoices',
-            'attachment_endpoint'        => '/v2/attachments/{id}',
+            'code'     => 'qonto',
+            'name'     => 'Qonto PA',
+            'label'    => 'Qonto',
+            'auth'     => 'bearer',
+            'settings' => [
+                'access_token' => ['type' => 'password', 'required' => true, 'sensitive' => true],
+                'staging_token' => ['type' => 'password', 'sensitive' => true],
+                'api_base_url' => ['default' => 'https://thirdparty.qonto.com', 'type' => 'url', 'required' => true],
+                'import_endpoint' => ['default' => '/v2/client_invoices/bulk', 'type' => 'path', 'required' => true],
+                'client_invoices_endpoint' => ['default' => '/v2/client_invoices', 'type' => 'path', 'required' => true],
+                'send_invoice_endpoint' => ['default' => '/v2/client_invoices/{id}/send_by_einvoice', 'type' => 'path', 'required' => true],
+                'invoice_status_endpoint' => ['default' => '/v2/client_invoices/{id}', 'type' => 'path', 'required' => true],
+                'incoming_invoices_endpoint' => ['default' => '/v2/supplier_invoices', 'type' => 'path', 'required' => true],
+                'attachment_endpoint' => ['default' => '/v2/attachments/{id}', 'type' => 'path', 'required' => true],
+            ],
         ];
     }
 
-    public static function settingsSchema(): array
+    protected function bearerToken(): ?string
     {
-        return [
-            'access_token' => [
-                'type'      => 'password',
-                'label'     => 'access_token',
-                'required'  => true,
-                'sensitive' => true,
-            ],
-            'staging_token' => [
-                'type'      => 'password',
-                'label'     => 'staging_token',
-                'sensitive' => true,
-            ],
-            'api_base_url' => [
-                'type'     => 'url',
-                'label'    => 'api_base_url',
-                'required' => true,
-            ],
-            'import_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'import_endpoint',
-                'required' => true,
-            ],
-            'client_invoices_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'client_invoices_endpoint',
-                'required' => true,
-            ],
-            'send_invoice_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'send_invoice_endpoint',
-                'required' => true,
-            ],
-            'invoice_status_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_status_endpoint',
-                'required' => true,
-            ],
-            'incoming_invoices_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'incoming_invoices_endpoint',
-                'required' => true,
-            ],
-            'attachment_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'attachment_endpoint',
-                'required' => true,
-            ],
-        ];
+        return $this->settings['access_token'] ?? null;
+    }
+
+    protected function extraHeaders(): array
+    {
+        return empty($this->settings['staging_token'])
+            ? []
+            : ['X-Qonto-Staging-Token: ' . $this->settings['staging_token']];
+    }
+
+    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
+    {
+        $metadata['invoice_number'] = $invoice->invoice_number ?? null;
+
+        return $metadata;
     }
 
     public function authenticate(array $settings): bool
@@ -316,35 +268,6 @@ class QontoClient implements IntegrationClientInterface
         return $response;
     }
 
-    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
-    {
-        $metadata['invoice_number'] = $invoice->invoice_number ?? null;
-
-        return $metadata;
-    }
-
-    protected function request(
-        RequestMethod $method,
-        string $url,
-        array $payload = [],
-        bool $multipart = false,
-        array $requestDebug = []
-    ): array {
-        $options = ['bearer' => $this->settings['access_token']];
-
-        if ( ! empty($this->settings['staging_token'])) {
-            $options['headers'] = ['X-Qonto-Staging-Token: ' . $this->settings['staging_token']];
-        }
-
-        if ($multipart) {
-            $options['multipart'] = $payload;
-        } elseif ($method === RequestMethod::POST && ! empty($payload)) {
-            $options['json'] = $payload;
-        }
-
-        return $this->http->request($method, $url, $options);
-    }
-
     /**
      * POST /v2/client_invoices/bulk with one already-issued Factur-X PDF.
      */
@@ -400,24 +323,6 @@ class QontoClient implements IntegrationClientInterface
         return $this->request(RequestMethod::POST, $url, [], false, [
             'client_invoice_id' => $clientInvoiceId,
         ]);
-    }
-
-    private function buildUrl(string $endpoint, array $query = []): string
-    {
-        $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
-
-        if ( ! empty($query)) {
-            $url .= '?' . http_build_query($query);
-        }
-
-        return $url;
-    }
-
-    private function requireSetting(string $key): void
-    {
-        if (empty($this->settings[$key])) {
-            throw new \RuntimeException('Missing Qonto setting: ' . $key);
-        }
     }
 
     private function latestLifecycleEvent(array $events): array
