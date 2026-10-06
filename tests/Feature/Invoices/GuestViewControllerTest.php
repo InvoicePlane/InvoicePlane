@@ -66,13 +66,15 @@ class GuestViewControllerTest extends AbstractTestCase
         /* Arrange */
         $clientId = $this->seedClient();
         $urlKey   = 'visible-inv-' . bin2hex(random_bytes(4));
-        $this->seedInvoice($clientId, ['invoice_url_key' => $urlKey, 'invoice_status_id' => 2, 'payment_method' => 0]);
+        $this->seedInvoice($clientId, ['invoice_url_key' => $urlKey, 'invoice_status_id' => 2, 'payment_method' => 0, 'invoice_number' => 'GV-INV-77']);
 
         /* Act */
         $response = $this->get('/guest/view/invoice/' . $urlKey);
 
         /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseOk($response);
+        $this->assertResponseBodyContains($response, 'GV-INV-77');
+        $this->assertResponseBodyContains($response, 'guest/view/generate_invoice_pdf/' . $urlKey);
     }
 
     #[Test]
@@ -120,13 +122,15 @@ class GuestViewControllerTest extends AbstractTestCase
         /* Arrange */
         $clientId = $this->seedClient();
         $urlKey   = 'visible-quo-' . bin2hex(random_bytes(4));
-        $this->seedQuote($clientId, ['quote_url_key' => $urlKey, 'quote_status_id' => 2]);
+        $this->seedQuote($clientId, ['quote_url_key' => $urlKey, 'quote_status_id' => 2, 'quote_number' => 'GV-QUO-88']);
 
         /* Act */
         $response = $this->get('/guest/view/quote/' . $urlKey);
 
         /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseOk($response);
+        $this->assertResponseBodyContains($response, 'GV-QUO-88');
+        $this->assertResponseBodyContains($response, 'guest/view/generate_quote_pdf/' . $urlKey);
     }
 
     // -------------------------------------------------------------------------
@@ -249,8 +253,9 @@ class GuestViewControllerTest extends AbstractTestCase
         /* Act */
         $response = $this->get('/guest/view/generate_invoice_pdf/does-not-exist');
 
-        /* Assert: no matching invoice means the method falls through with no output, no crash */
-        $this->assertResponseHasNoPhpErrors($response);
+        /* Assert: no matching invoice means no document: empty body, no PDF headers */
+        self::assertSame('', $response->body());
+        self::assertStringNotContainsString('pdf', (string) $response->header('Content-Type'));
     }
 
     #[Test]

@@ -34,7 +34,7 @@ class MailerAjaxControllerTest extends AbstractTestCase
         $response = $this->get('/mailer/invoice/' . $invoiceId);
 
         /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseBodyContains($response, 'you have to configure your Email settings');
     }
 
     #[Test]
@@ -53,7 +53,7 @@ class MailerAjaxControllerTest extends AbstractTestCase
         $response = $this->get('/mailer/quote/' . $quoteId);
 
         /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseBodyContains($response, 'you have to configure your Email settings');
     }
 
     #[Test]

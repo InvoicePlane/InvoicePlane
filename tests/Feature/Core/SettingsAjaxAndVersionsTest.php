@@ -53,11 +53,14 @@ class SettingsAjaxAndVersionsTest extends AbstractTestCase
     public function it_lists_applied_versions(): void
     {
         /* Arrange */
+        $this->databaseInsert('ip_versions', ['version_date_applied' => 1700000000, 'version_file' => '998_probe_versions_listing.sql', 'version_sql_errors' => 0]);
+
         /* Act */
         $response = $this->get('/settings/versions');
 
         /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseOk($response);
+        $this->assertResponseBodyContains($response, '998_probe_versions_listing.sql');
     }
 
     #[Test]

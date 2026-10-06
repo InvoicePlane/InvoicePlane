@@ -36,7 +36,7 @@ class WelcomeControllerTest extends AbstractTestCase
 
         /* Assert: page still loads for authenticated users */
         $this->assertResponseStatusCode($response, 200);
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseBodyContains($response, 'Please install InvoicePlane.');
     }
 
     #[Test]
@@ -58,19 +58,6 @@ class WelcomeControllerTest extends AbstractTestCase
             $response->bodyLength(),
             'Welcome page body should contain meaningful content (> 500 bytes)'
         );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors(): void
-    {
-        /* Arrange */
-        $this->actingAsGuest();
-
-        /* Act */
-        $response = $this->get('/welcome');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]

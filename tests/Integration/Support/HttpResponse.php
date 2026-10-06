@@ -9,7 +9,26 @@ class HttpResponse
         private readonly int $statusCode,
         private readonly array $headers,
         private readonly string $stderr = '',
+        private readonly array $session = [],
+        private readonly bool $sessionActive = false,
     ) {}
+
+    /** Session contents at the end of the request (what the app wrote back). */
+    public function session(): array
+    {
+        return $this->session;
+    }
+
+    /** False once the app destroyed the session (e.g. logout). */
+    public function sessionActive(): bool
+    {
+        return $this->sessionActive;
+    }
+
+    public function sessionValue(string $key): mixed
+    {
+        return $this->session[$key] ?? null;
+    }
 
     public function body(): string
     {

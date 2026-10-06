@@ -24,18 +24,6 @@ class SessionsFeatureTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_renders_the_login_page_with_a_200_status_when_unauthenticated(): void
-    {
-        /* Arrange */
-
-        /* Act */
-        $response = $this->get('/sessions/login');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
-    }
-
-    #[Test]
     public function it_includes_a_login_form_on_the_sessions_login_page(): void
     {
         /* Arrange */
@@ -117,7 +105,9 @@ class SessionsFeatureTest extends AbstractTestCase
         $response = $this->get('/sessions/passwordreset');
 
         /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseOk($response);
+        $this->assertResponseBodyContains($response, 'id="password_reset"');
+        $this->assertResponseBodyContains($response, 'btn_reset');
     }
 
     #[Test]
@@ -219,23 +209,14 @@ class SessionsFeatureTest extends AbstractTestCase
     {
         /* Arrange */
         $this->actingAsAdmin();
+        $control = $this->get('/supplier_invoices');
 
         /* Act */
         $response = $this->get('/sessions/logout');
 
-        /* Assert: a redirect, and to the login route whenever the SAPI exposes Location */
-        $this->assertResponseRedirectsToRoute($response, 'sessions/login');
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors_on_the_login_page(): void
-    {
-        /* Arrange */
-
-        /* Act */
-        $response = $this->get('/sessions/login');
-
         /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseRedirectsToRoute($response, 'sessions/login');
+        self::assertTrue($control->sessionActive(), 'Control: a normal authenticated request keeps its session open.');
+        self::assertFalse($response->sessionActive(), 'Logout must destroy the session.');
     }
 }

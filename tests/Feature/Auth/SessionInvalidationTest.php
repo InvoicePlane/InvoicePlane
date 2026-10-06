@@ -19,6 +19,7 @@ final class SessionInvalidationTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseStatusCode($response, 200);
+        self::assertNotSame('', $response->body(), 'The protected page must actually render.');
     }
 
     #[Test]
@@ -27,6 +28,7 @@ final class SessionInvalidationTest extends AbstractTestCase
         /* Arrange */
         $userId = $this->seedAdmin();
         $this->actingAsAdmin($userId);
+        $before = $this->get('/supplier_invoices');
         $this->databaseUpdate('ip_users', [
             'user_password'     => password_hash('NewPassword456!', PASSWORD_DEFAULT),
             'user_auth_version' => 1,
@@ -35,8 +37,10 @@ final class SessionInvalidationTest extends AbstractTestCase
         /* Act */
         $response = $this->get('/supplier_invoices');
 
-        /* Assert */
+        /* Assert: the same session worked until the password changed, then no longer does */
+        $this->assertResponseOk($before);
         $this->assertResponseRedirectsToRoute($response, 'sessions/login');
+        self::assertSame('', $response->body(), 'The protected page must not be rendered for a stale session.');
     }
 
     #[Test]
@@ -45,6 +49,7 @@ final class SessionInvalidationTest extends AbstractTestCase
         /* Arrange */
         $userId = $this->seedAdmin();
         $this->actingAsAdmin($userId);
+        $before = $this->get('/supplier_invoices');
         $this->databaseUpdate('ip_users', [
             'user_password' => password_hash('AnotherPassword789!', PASSWORD_DEFAULT),
         ], ['user_id' => $userId]);
@@ -53,7 +58,9 @@ final class SessionInvalidationTest extends AbstractTestCase
         $response = $this->get('/supplier_invoices');
 
         /* Assert */
+        $this->assertResponseOk($before);
         $this->assertResponseRedirectsToRoute($response, 'sessions/login');
+        self::assertSame('', $response->body(), 'The protected page must not be rendered for a stale session.');
     }
 
     private function seedAdmin(): int

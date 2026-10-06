@@ -21,11 +21,14 @@ class TasksAjaxControllerTest extends AbstractTestCase
     public function it_renders_the_task_lookup_modal_with_no_invoice(): void
     {
         /* Arrange */
+        $seeded = $this->seedProjectAndTask();
+
         /* Act */
         $response = $this->ajax('POST', '/tasks/ajax/modal_task_lookups', []);
 
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
+        /* Assert: the modal is rendered, but without an invoice no task is offered for invoicing */
+        $this->assertResponseBodyContains($response, "$('#modal-choose-items').modal('show')");
+        $this->assertResponseBodyNotContains($response, 'Lookup Task Marker');
     }
 
     #[Test]

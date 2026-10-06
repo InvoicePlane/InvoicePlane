@@ -130,6 +130,8 @@ class IntegrationsControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseRedirectsToRoute($response, 'supplier_invoices');
+        self::assertSame('', $response->body(), 'The legacy route must only redirect, not render a page.');
+        $this->assertResponseOk($this->get('/supplier_invoices'));
     }
 
     // -------------------------------------------------------------------------

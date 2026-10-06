@@ -52,6 +52,7 @@ final class GuestQuotesControllerTest extends AbstractTestCase
 
         /* Assert */
         $this->assertResponseRedirectsToRoute($response, 'guest/quotes/status/open');
+        $this->assertResponseOk($this->get('/guest/quotes/status/open'));
     }
 
     #[Test]

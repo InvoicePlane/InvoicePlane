@@ -35,21 +35,30 @@ final class SetupWizardFlowTest extends AbstractTestCase
     #[Test]
     public function it_moves_to_prerequisites_after_choosing_a_language(): void
     {
-        $response = $this->post('/setup/language', ['btn_continue' => '1', 'ip_lang' => 'english']);
+        $response = $this->post('/setup/language', ['btn_continue' => '1', 'ip_lang' => 'dutch']);
 
         $this->assertResponseRedirectsToRoute($response, 'setup/prerequisites');
+        self::assertSame('prerequisites', $response->sessionValue('install_step'));
+        self::assertSame('dutch', $response->sessionValue('ip_lang'), 'The chosen language must be stored for the later steps.');
     }
 
     #[Test]
     public function it_sends_the_root_of_the_wizard_to_the_language_step(): void
     {
-        $this->assertResponseRedirectsToRoute($this->get('/setup'), 'setup/language');
+        $response = $this->get('/setup');
+
+        $this->assertResponseRedirectsToRoute($response, 'setup/language');
+        self::assertNull($response->sessionValue('install_step'), 'Entering the wizard must not skip a step.');
     }
 
     #[Test]
     public function it_bounces_prerequisites_back_to_language_without_the_step_in_session(): void
     {
-        $this->assertResponseRedirectsToRoute($this->get('/setup/prerequisites'), 'setup/language');
+        $response = $this->get('/setup/prerequisites');
+
+        $this->assertResponseRedirectsToRoute($response, 'setup/language');
+        self::assertNotSame('configure_database', $response->sessionValue('install_step'));
+        self::assertSame('', $response->body(), 'A bounced step must not render the prerequisites page.');
     }
 
     #[Test]
@@ -72,6 +81,7 @@ final class SetupWizardFlowTest extends AbstractTestCase
         $response = $this->post('/setup/prerequisites', ['btn_continue' => '1']);
 
         $this->assertResponseRedirectsToRoute($response, 'setup/configure_database');
+        self::assertSame('configure_database', $response->sessionValue('install_step'));
     }
 
     #[Test]
@@ -80,7 +90,11 @@ final class SetupWizardFlowTest extends AbstractTestCase
     {
         $this->sessionData = (['install_step' => 'language', 'ip_lang' => 'english']);
 
-        $this->assertResponseRedirectsToRoute($this->get($route), 'setup/prerequisites');
+        $response = $this->get($route);
+
+        $this->assertResponseRedirectsToRoute($response, 'setup/prerequisites');
+        self::assertSame('language', $response->sessionValue('install_step'), 'An out-of-order request must not advance the wizard.');
+        self::assertSame('', $response->body(), 'An out-of-order request must not render the step.');
     }
 
     /** @return array<string, array{string}> */
@@ -104,7 +118,8 @@ final class SetupWizardFlowTest extends AbstractTestCase
         $response = $this->get('/setup/configure_database');
 
         $this->assertResponseOk($response);
-        $this->assertResponseHasNoPhpErrors($response);
+        $this->assertResponseBodyContains($response, 'The database is successfully configured.');
+        $this->assertResponseBodyContains($response, 'name="btn_continue"');
     }
 
     #[Test]
@@ -115,6 +130,25 @@ final class SetupWizardFlowTest extends AbstractTestCase
         $response = $this->post('/setup/configure_database', ['btn_continue' => '1']);
 
         $this->assertResponseRedirectsToRoute($response, 'setup/upgrade_tables');
+        self::assertSame('upgrade_tables', $response->sessionValue('install_step'));
+        self::assertTrue($response->sessionValue('is_upgrade'), 'An existing ip_versions table must flag the run as an upgrade.');
+    }
+
+    #[Test]
+    public function it_treats_a_missing_versions_table_as_a_fresh_install(): void
+    {
+        $this->sessionData = ['install_step' => 'configure_database', 'ip_lang' => 'english'];
+        $this->databaseRunScript('RENAME TABLE `ip_versions` TO `ip_versions_hidden`');
+
+        try {
+            $response = $this->post('/setup/configure_database', ['btn_continue' => '1']);
+        } finally {
+            $this->databaseRunScript('RENAME TABLE `ip_versions_hidden` TO `ip_versions`');
+        }
+
+        $this->assertResponseRedirectsToRoute($response, 'setup/install_tables');
+        self::assertSame('install_tables', $response->sessionValue('install_step'));
+        self::assertNull($response->sessionValue('is_upgrade'));
     }
 
     #[Test]
@@ -155,7 +189,10 @@ final class SetupWizardFlowTest extends AbstractTestCase
     {
         $this->sessionData = (['install_step' => 'upgrade_tables', 'ip_lang' => 'english']);
 
-        $this->assertResponseRedirectsToRoute($this->post('/setup/upgrade_tables', ['btn_continue' => '1']), 'setup/create_user');
+        $response = $this->post('/setup/upgrade_tables', ['btn_continue' => '1']);
+
+        $this->assertResponseRedirectsToRoute($response, 'setup/create_user');
+        self::assertSame('create_user', $response->sessionValue('install_step'));
     }
 
     #[Test]
@@ -163,7 +200,10 @@ final class SetupWizardFlowTest extends AbstractTestCase
     {
         $this->sessionData = (['install_step' => 'upgrade_tables', 'ip_lang' => 'english', 'is_upgrade' => true]);
 
-        $this->assertResponseRedirectsToRoute($this->post('/setup/upgrade_tables', ['btn_continue' => '1']), 'setup/calculation_info');
+        $response = $this->post('/setup/upgrade_tables', ['btn_continue' => '1']);
+
+        $this->assertResponseRedirectsToRoute($response, 'setup/calculation_info');
+        self::assertSame('calculation_info', $response->sessionValue('install_step'));
     }
 
     #[Test]
@@ -171,7 +211,10 @@ final class SetupWizardFlowTest extends AbstractTestCase
     {
         $this->sessionData = (['install_step' => 'install_tables', 'ip_lang' => 'english']);
 
-        $this->assertResponseRedirectsToRoute($this->post('/setup/install_tables', ['btn_continue' => '1']), 'setup/upgrade_tables');
+        $response = $this->post('/setup/install_tables', ['btn_continue' => '1']);
+
+        $this->assertResponseRedirectsToRoute($response, 'setup/upgrade_tables');
+        self::assertSame('upgrade_tables', $response->sessionValue('install_step'));
     }
 
     #[Test]
@@ -179,6 +222,9 @@ final class SetupWizardFlowTest extends AbstractTestCase
     {
         $this->sessionData = (['install_step' => 'calculation_info', 'ip_lang' => 'english']);
 
-        $this->assertResponseRedirectsToRoute($this->post('/setup/calculation_info', ['btn_continue' => '1']), 'setup/complete');
+        $response = $this->post('/setup/calculation_info', ['btn_continue' => '1']);
+
+        $this->assertResponseRedirectsToRoute($response, 'setup/complete');
+        self::assertSame('complete', $response->sessionValue('install_step'));
     }
 }

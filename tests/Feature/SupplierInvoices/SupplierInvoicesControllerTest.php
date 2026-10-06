@@ -99,13 +99,17 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
     public function it_redirects_unauthenticated_users_to_login(): void
     {
         /* Arrange */
+        $this->actingAsAdmin();
+        $control = $this->get('/supplier_invoices');
         $this->actingAsGuest();
 
         /* Act */
         $response = $this->get('/supplier_invoices');
 
-        /* Assert */
+        /* Assert: the page exists for an admin, and is withheld from a guest */
+        $this->assertResponseOk($control);
         $this->assertResponseRedirectsToRoute($response, 'sessions/login');
+        self::assertSame('', $response->body(), 'The protected page must not be rendered for a guest.');
     }
 
     #[Test]

@@ -23,20 +23,6 @@ class DashboardControllerTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    public function it_displays_dashboard_with_a_200_status(): void
-    {
-        /* Arrange */
-        /* (authenticated admin via setUp) */
-
-        /* Act */
-        $response = $this->get('/dashboard');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
-    }
-
-    #[Test]
     public function it_renders_a_full_html_document_on_the_dashboard(): void
     {
         /* Arrange */
@@ -85,19 +71,6 @@ class DashboardControllerTest extends AbstractTestCase
             $response->isRedirect(),
             sprintf('Unauthenticated GET /dashboard must redirect. Got status [%d].', $response->statusCode())
         );
-    }
-
-    #[Test]
-    public function it_does_not_expose_php_errors_on_the_dashboard(): void
-    {
-        /* Arrange */
-        /* (authenticated admin via setUp) */
-
-        /* Act */
-        $response = $this->get('/dashboard');
-
-        /* Assert */
-        $this->assertResponseHasNoPhpErrors($response);
     }
 
     #[Test]

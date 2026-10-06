@@ -81,17 +81,4 @@ class ControllersAuthGuardTest extends AbstractTestCase
             );
         }
     }
-
-    #[Test]
-    public function it_does_not_expose_php_errors_on_an_unauthenticated_request_to_admin_route(): void
-    {
-        /* Arrange */
-        foreach (self::adminRouteProvider() as [$uri]) {
-            /* Act */
-            $response = $this->get($uri);
-
-            /* Assert */
-            $this->assertResponseHasNoPhpErrors($response);
-        }
-    }
 }

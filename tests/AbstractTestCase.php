@@ -214,6 +214,8 @@ abstract class AbstractTestCase extends PhpUnitTestCase
             (int) ($result['status'] ?? 200),
             $result['headers'] ?? [],
             (string) $stderr,
+            is_array($result['session'] ?? null) ? $result['session'] : [],
+            (bool) ($result['session_active'] ?? false),
         );
     }
 
