@@ -19,12 +19,17 @@ final class GuestQuotesControllerTest extends AbstractTestCase
     use PerformsCsrfProtectedRequests;
 
     private const DRAFT = 1;
+
     private const SENT = 2;
+
     private const VIEWED = 3;
+
     private const APPROVED = 4;
+
     private const REJECTED = 5;
 
     private int $ownClient;
+
     private int $otherClient;
 
     protected function setUp(): void
@@ -34,14 +39,31 @@ final class GuestQuotesControllerTest extends AbstractTestCase
         $this->otherClient = $this->seedClient(['client_name' => 'Other Client']);
 
         $guestId = $this->databaseInsert('ip_users', [
-            'user_type' => 2, 'user_name' => 'Portal Guest', 'user_email' => 'portal-guest@test.local',
-            'user_password' => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
-            'user_language' => 'system', 'user_active' => 1,
+            'user_type'         => 2, 'user_name' => 'Portal Guest', 'user_email' => 'portal-guest@test.local',
+            'user_password'     => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
+            'user_language'     => 'system', 'user_active' => 1,
             'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
         ]);
         $this->databaseInsert('ip_user_clients', ['user_id' => $guestId, 'client_id' => $this->ownClient]);
         $this->actingAs(['user_id' => $guestId, 'user_type' => 2, 'user_email' => 'portal-guest@test.local', 'user_name' => 'Portal Guest']);
         $this->enableCsrfProtection();
+    }
+
+    /** @return array<string, array{0: string, 1: list<string>, 2: list<string>}> */
+    public static function statusFilters(): array
+    {
+        return [
+            'all shows every guest-visible own quote' => ['all', ['OWN-SENT', 'OWN-APPROVED', 'OWN-REJECTED'], ['OWN-DRAFT', 'OTHER-APPROVED']],
+            'viewed'                                  => ['viewed', ['OWN-VIEWED'], ['OWN-SENT', 'OWN-APPROVED']],
+            'approved'                                => ['approved', ['OWN-APPROVED'], ['OWN-REJECTED', 'OTHER-APPROVED']],
+            'rejected'                                => ['rejected', ['OWN-REJECTED'], ['OWN-APPROVED', 'OTHER-APPROVED']],
+        ];
+    }
+
+    /** @return array<string, array{0: string, 1: int}> */
+    public static function decisions(): array
+    {
+        return ['approve' => ['approve', self::APPROVED], 'reject' => ['reject', self::REJECTED]];
     }
 
     #[Test]
@@ -75,17 +97,6 @@ final class GuestQuotesControllerTest extends AbstractTestCase
         foreach (['OWN-DRAFT', 'OWN-APPROVED', 'OTHER-SENT'] as $hidden) {
             $this->assertResponseBodyNotContains($response, $hidden);
         }
-    }
-
-    /** @return array<string, array{0: string, 1: list<string>, 2: list<string>}> */
-    public static function statusFilters(): array
-    {
-        return [
-            'all shows every guest-visible own quote' => ['all', ['OWN-SENT', 'OWN-APPROVED', 'OWN-REJECTED'], ['OWN-DRAFT', 'OTHER-APPROVED']],
-            'viewed'                                   => ['viewed', ['OWN-VIEWED'], ['OWN-SENT', 'OWN-APPROVED']],
-            'approved'                                 => ['approved', ['OWN-APPROVED'], ['OWN-REJECTED', 'OTHER-APPROVED']],
-            'rejected'                                 => ['rejected', ['OWN-REJECTED'], ['OWN-APPROVED', 'OTHER-APPROVED']],
-        ];
     }
 
     /**
@@ -174,12 +185,6 @@ final class GuestQuotesControllerTest extends AbstractTestCase
         $this->assertDatabaseHas('ip_quotes', ['quote_id' => $quoteId, 'quote_status_id' => self::SENT]);
     }
 
-    /** @return array<string, array{0: string, 1: int}> */
-    public static function decisions(): array
-    {
-        return ['approve' => ['approve', self::APPROVED], 'reject' => ['reject', self::REJECTED]];
-    }
-
     #[Test]
     #[DataProvider('decisions')]
     public function it_applies_the_decision_to_an_own_open_quote(string $action, int $expectedStatus): void
@@ -258,13 +263,13 @@ final class GuestQuotesControllerTest extends AbstractTestCase
     private function seedGuestQuote(int $clientId, int $status, string $number): int
     {
         $quoteId = $this->databaseInsert('ip_quotes', [
-            'user_id' => 1, 'client_id' => $clientId, 'invoice_group_id' => 1, 'quote_status_id' => $status,
-            'quote_number' => $number, 'quote_url_key' => bin2hex(random_bytes(16)),
+            'user_id'            => 1, 'client_id' => $clientId, 'invoice_group_id' => 1, 'quote_status_id' => $status,
+            'quote_number'       => $number, 'quote_url_key' => bin2hex(random_bytes(16)),
             'quote_date_created' => date('Y-m-d'), 'quote_date_modified' => date('Y-m-d H:i:s'),
             'quote_date_expires' => date('Y-m-d', strtotime('+15 days')),
         ]);
         $this->databaseInsert('ip_quote_amounts', [
-            'quote_id' => $quoteId, 'quote_item_subtotal' => '10.00', 'quote_item_tax_total' => '0.00',
+            'quote_id'        => $quoteId, 'quote_item_subtotal' => '10.00', 'quote_item_tax_total' => '0.00',
             'quote_tax_total' => '0.00', 'quote_total' => '10.00',
         ]);
 

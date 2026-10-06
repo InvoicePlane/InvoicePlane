@@ -98,6 +98,7 @@ function session_credential_fingerprint(string $password_hash): string
     // Use env() instead of config_item() to avoid relying on CI's config cache, which may not be
     // loaded during early test setup. env() reads directly from $_ENV which is populated by bootstrap/kernel.php.
     $key = (string) env('ENCRYPTION_KEY', config_item('encryption_key'));
+
     return hash_hmac('sha256', $password_hash, $key);
 }
 

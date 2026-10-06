@@ -3,6 +3,7 @@
 namespace Tests\Unit\Validators;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class CustomFieldValidationSecurityTest extends TestCase
 {
@@ -35,7 +36,7 @@ class CustomFieldValidationSecurityTest extends TestCase
         }
 
         // create_error_text() is pure output formatting; skip MY_Model's DB-bound constructor.
-        $this->validator = (new \ReflectionClass('Validator'))->newInstanceWithoutConstructor();
+        $this->validator = (new ReflectionClass('Validator'))->newInstanceWithoutConstructor();
     }
 
     protected function tearDown(): void
@@ -50,10 +51,10 @@ class CustomFieldValidationSecurityTest extends TestCase
     {
         $errors = [
             [
-                'label' => '<script src=//evil.com/x.js></script>',
-                'error' => 'invalid input',
-                'error_msg' => 'must be a valid date'
-            ]
+                'label'     => '<script src=//evil.com/x.js></script>',
+                'error'     => 'invalid input',
+                'error_msg' => 'must be a valid date',
+            ],
         ];
 
         $result = $this->validator->create_error_text($errors);
@@ -69,10 +70,10 @@ class CustomFieldValidationSecurityTest extends TestCase
     {
         $errors = [
             [
-                'label' => 'Custom Field',
-                'error' => 'invalid input',
-                'error_msg' => '<img src=x onerror=alert(1)>'
-            ]
+                'label'     => 'Custom Field',
+                'error'     => 'invalid input',
+                'error_msg' => '<img src=x onerror=alert(1)>',
+            ],
         ];
 
         $result = $this->validator->create_error_text($errors);

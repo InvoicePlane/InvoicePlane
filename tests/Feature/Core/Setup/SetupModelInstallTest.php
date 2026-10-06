@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Core\Setup;
 
+use Mdl_Setup;
 use mysqli;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use Tests\Concerns\UsesCodeIgniterModels;
 
 /**
@@ -39,7 +41,7 @@ final class SetupModelInstallTest extends TestCase
         self::assertTrue($admin->query('CREATE DATABASE `' . self::SCRATCH . '` CHARACTER SET utf8mb4'), 'The DB user must be allowed to CREATE DATABASE: ' . $admin->error);
         $admin->close();
 
-        $this->session = new class {
+        $this->session = new class () {
             /** @var array<string, mixed> */
             public array $data = ['ip_lang' => 'english'];
 
@@ -59,11 +61,6 @@ final class SetupModelInstallTest extends TestCase
         $ci->session = $this->session;
     }
 
-    protected function ciDatabaseName(): string
-    {
-        return self::SCRATCH;
-    }
-
     protected function tearDown(): void
     {
         $this->tearDownCodeIgniter();
@@ -75,7 +72,7 @@ final class SetupModelInstallTest extends TestCase
     #[Test]
     public function it_installs_the_base_schema_with_default_groups_and_payment_methods(): void
     {
-        $model = new \Mdl_Setup();
+        $model = new Mdl_Setup();
 
         self::assertTrue($model->install_tables(), implode('; ', $model->errors));
 
@@ -94,7 +91,7 @@ final class SetupModelInstallTest extends TestCase
     #[Test]
     public function it_seeds_default_settings_without_overwriting_existing_ones(): void
     {
-        $model = new \Mdl_Setup();
+        $model = new Mdl_Setup();
         $model->install_tables();
         $this->db->where('setting_key', 'currency_code')->update('ip_settings', ['setting_value' => 'EUR']);
 
@@ -104,13 +101,13 @@ final class SetupModelInstallTest extends TestCase
         self::assertSame('EUR', $this->setting('currency_code'), 'An operator-chosen value must survive a re-run.');
         self::assertSame('english', $this->setting('default_language'));
         self::assertSame('0', $this->setting('invoice_reminders_enabled'));
-        self::assertMatchesRegularExpression("/^[0-9a-f]{16}$/", $this->setting("cron_key"));
+        self::assertMatchesRegularExpression('/^[0-9a-f]{16}$/', $this->setting('cron_key'));
     }
 
     #[Test]
     public function it_applies_every_migration_file_exactly_once_in_order(): void
     {
-        $model = new \Mdl_Setup();
+        $model = new Mdl_Setup();
         $model->install_tables();
 
         self::assertTrue($model->upgrade_tables(), implode('; ', $model->errors));
@@ -128,7 +125,7 @@ final class SetupModelInstallTest extends TestCase
     #[Test]
     public function it_converts_every_table_to_innodb(): void
     {
-        $model = new \Mdl_Setup();
+        $model = new Mdl_Setup();
         $model->install_tables();
         $model->upgrade_tables();
 
@@ -142,7 +139,7 @@ final class SetupModelInstallTest extends TestCase
     #[Test]
     public function it_converts_a_leftover_myisam_table_when_the_hook_runs_again(): void
     {
-        $model = new \Mdl_Setup();
+        $model = new Mdl_Setup();
         $model->install_tables();
         $model->upgrade_tables();
         $this->db->query('CREATE TABLE ip_legacy_probe (id INT) ENGINE=MyISAM');
@@ -155,7 +152,7 @@ final class SetupModelInstallTest extends TestCase
     #[Test]
     public function it_records_an_error_when_a_migration_file_cannot_be_read(): void
     {
-        $model = new \Mdl_Setup();
+        $model = new Mdl_Setup();
 
         $this->invoke($model, 'execute_contents', [false, '999_missing.sql']);
 
@@ -167,7 +164,7 @@ final class SetupModelInstallTest extends TestCase
     #[Test]
     public function it_records_the_database_error_of_a_failing_statement_and_carries_on(): void
     {
-        $model = new \Mdl_Setup();
+        $model = new Mdl_Setup();
 
         $this->invoke($model, 'execute_contents', ["SELECT * FROM ip_does_not_exist;\nCREATE TABLE ip_after (id INT);", 'bad.sql']);
 
@@ -179,7 +176,7 @@ final class SetupModelInstallTest extends TestCase
     #[Test]
     public function it_stores_the_error_count_with_the_version_row(): void
     {
-        $model = new \Mdl_Setup();
+        $model = new Mdl_Setup();
         $model->install_tables();
         $model->errors = ['x', 'y'];
 
@@ -188,10 +185,15 @@ final class SetupModelInstallTest extends TestCase
         self::assertSame(2, (int) $this->db->where('version_file', 'zzz_test.sql')->get('ip_versions')->row()->version_sql_errors);
     }
 
+    protected function ciDatabaseName(): string
+    {
+        return self::SCRATCH;
+    }
+
     /** @param array<int, mixed> $args */
     private function invoke(object $obj, string $method, array $args): mixed
     {
-        $m = new \ReflectionMethod($obj, $method);
+        $m = new ReflectionMethod($obj, $method);
 
         return $m->invoke($obj, ...$args);
     }

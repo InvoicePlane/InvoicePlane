@@ -22,6 +22,32 @@ final class SetupWizardFlowTest extends AbstractTestCase
         $this->withEnvironment(['SETUP_COMPLETED' => 'false', 'DISABLE_SETUP' => 'false']);
     }
 
+    /** @return array<string, array{string}> */
+    public static function guardedSteps(): array
+    {
+        return [
+            'configure_database' => ['/setup/configure_database'],
+            'install_tables'     => ['/setup/install_tables'],
+            'upgrade_tables'     => ['/setup/upgrade_tables'],
+            'create_user'        => ['/setup/create_user'],
+            'calculation_info'   => ['/setup/calculation_info'],
+            'complete'           => ['/setup/complete'],
+        ];
+    }
+
+    /** @return array<string, array{array<string, string>, string}> */
+    public static function rejectedDatabaseConfigurations(): array
+    {
+        return [
+            'hostname with shell chars' => [['db_hostname' => 'db;rm -rf /'], 'Invalid hostname format'],
+            'username with a newline'   => [['db_username' => "root\nDB_X=1"], 'Invalid'],
+            'password with a quote'     => [['db_password' => "pa'ss"], 'contains a single quote'],
+            'database with a slash'     => [['db_database' => '../etc'], 'Invalid database name format'],
+            'port out of range'         => [['db_port' => '70000'], 'Invalid port'],
+            'port not numeric'          => [['db_port' => 'abc'], 'Invalid port'],
+        ];
+    }
+
     #[Test]
     public function it_lists_the_available_languages_on_the_first_step(): void
     {
@@ -97,19 +123,6 @@ final class SetupWizardFlowTest extends AbstractTestCase
         self::assertSame('', $response->body(), 'An out-of-order request must not render the step.');
     }
 
-    /** @return array<string, array{string}> */
-    public static function guardedSteps(): array
-    {
-        return [
-            'configure_database' => ['/setup/configure_database'],
-            'install_tables'     => ['/setup/install_tables'],
-            'upgrade_tables'     => ['/setup/upgrade_tables'],
-            'create_user'        => ['/setup/create_user'],
-            'calculation_info'   => ['/setup/calculation_info'],
-            'complete'           => ['/setup/complete'],
-        ];
-    }
-
     #[Test]
     public function it_shows_the_database_check_on_the_configure_step(): void
     {
@@ -156,7 +169,7 @@ final class SetupWizardFlowTest extends AbstractTestCase
     public function it_rejects_unsafe_database_settings_without_touching_ipconfig(array $post, string $message): void
     {
         $this->sessionData = (['install_step' => 'configure_database', 'ip_lang' => 'english']);
-        $before = hash_file('sha256', IPCONFIG_FILE);
+        $before            = hash_file('sha256', IPCONFIG_FILE);
 
         $response = $this->post('/setup/configure_database', $post + [
             'db_hostname' => 'mariadb',
@@ -169,19 +182,6 @@ final class SetupWizardFlowTest extends AbstractTestCase
         $this->assertResponseOk($response);
         $this->assertResponseBodyContains($response, htmlspecialchars($message, ENT_QUOTES));
         self::assertSame($before, hash_file('sha256', IPCONFIG_FILE), 'ipconfig.php must not be rewritten for a rejected input.');
-    }
-
-    /** @return array<string, array{array<string, string>, string}> */
-    public static function rejectedDatabaseConfigurations(): array
-    {
-        return [
-            'hostname with shell chars' => [['db_hostname' => 'db;rm -rf /'], 'Invalid hostname format'],
-            'username with a newline'   => [['db_username' => "root\nDB_X=1"], 'Invalid'],
-            'password with a quote'     => [['db_password' => "pa'ss"], "contains a single quote"],
-            'database with a slash'     => [['db_database' => '../etc'], 'Invalid database name format'],
-            'port out of range'         => [['db_port' => '70000'], 'Invalid port'],
-            'port not numeric'          => [['db_port' => 'abc'], 'Invalid port'],
-        ];
     }
 
     #[Test]

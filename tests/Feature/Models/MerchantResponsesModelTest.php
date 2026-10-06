@@ -225,7 +225,7 @@ final class MerchantResponsesModelTest extends AbstractTestCase
             '0208:0123456789',
             PeppolDocumentType::BillingInvoice,
             [
-                'document_path' => 'incoming/doc-2.xml', 'document_name' => 'doc-2.xml', 'document_validation_status' => 'invalid',
+                'document_path'             => 'incoming/doc-2.xml', 'document_name' => 'doc-2.xml', 'document_validation_status' => 'invalid',
                 'document_validation_error' => "Bad XML: password=hunter2\x00", 'evil_column' => 'DROP TABLE', 'created_at' => '1999-01-01 00:00:00',
             ],
         );
@@ -363,9 +363,9 @@ final class MerchantResponsesModelTest extends AbstractTestCase
     public function it_separates_outbound_history_from_inbound_and_scopes_it_to_the_invoice_and_client(): void
     {
         /* Arrange */
-        $mine      = $this->seedInvoice($this->clientId, ['invoice_number' => 'MINE']);
+        $mine        = $this->seedInvoice($this->clientId, ['invoice_number' => 'MINE']);
         $otherClient = $this->seedClient(['client_name' => 'Other Co']);
-        $theirs    = $this->seedInvoice($otherClient, ['invoice_number' => 'THEIRS']);
+        $theirs      = $this->seedInvoice($otherClient, ['invoice_number' => 'THEIRS']);
         $this->outbound($mine, 'sent', 'mine-1');
         $this->outbound($theirs, 'sent', 'theirs-1');
         $this->model->create_inbound($this->merchantId, ['external_id' => 'inbound-1'], MerchantResponseDriver::Qonto);

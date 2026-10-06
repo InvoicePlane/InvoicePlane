@@ -137,8 +137,8 @@ class InvoicesAjaxControllerTest extends AbstractTestCase
             'invoice_date_due'         => '2030-01-15',
             'invoice_discount_percent' => '10',
             'items'                    => json_encode([[
-                'invoice_id' => (string) $invoiceId, 'item_id' => '', 'item_name' => 'Widget', 'item_description' => '', 'item_quantity' => '2',
-                'item_price' => '50', 'item_discount_amount' => '', 'item_product_id' => '', 'item_product_unit_id' => '',
+                'invoice_id'   => (string) $invoiceId, 'item_id' => '', 'item_name' => 'Widget', 'item_description' => '', 'item_quantity' => '2',
+                'item_price'   => '50', 'item_discount_amount' => '', 'item_product_id' => '', 'item_product_unit_id' => '',
                 'item_task_id' => '', 'item_tax_rate_id' => '0',
             ]]),
         ]);

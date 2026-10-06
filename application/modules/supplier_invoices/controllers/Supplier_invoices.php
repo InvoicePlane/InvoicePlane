@@ -25,24 +25,24 @@ class Supplier_invoices extends Admin_Controller
     public function index($page = 0): void
     {
         $filters = [
-            'q' => $this->getScalar('q'),
-            'status' => $this->getScalar('status'),
+            'q'         => $this->getScalar('q'),
+            'status'    => $this->getScalar('status'),
             'date_from' => $this->getDateFilter('date_from'),
-            'date_to' => $this->getDateFilter('date_to'),
-            'archived' => in_array($this->getScalar('archived'), ['active', 'archived', 'all'], true)
+            'date_to'   => $this->getDateFilter('date_to'),
+            'archived'  => in_array($this->getScalar('archived'), ['active', 'archived', 'all'], true)
                 ? $this->getScalar('archived')
                 : 'active',
         ];
-        $page = max(0, (int) $page);
+        $page    = max(0, (int) $page);
         $perPage = max(1, (int) get_setting('default_list_limit', 20));
-        $result = $this->Mdl_supplier_invoices->search($filters, $page, $perPage);
-        $query = http_build_query(array_filter($filters, static fn ($value): bool => $value !== ''));
+        $result  = $this->Mdl_supplier_invoices->search($filters, $page, $perPage);
+        $query   = http_build_query(array_filter($filters, static fn ($value): bool => $value !== ''));
         $this->load->library('pagination');
         $config = [
-            'base_url' => site_url('supplier_invoices/index'),
+            'base_url'   => site_url('supplier_invoices/index'),
             'total_rows' => $result['total'],
-            'per_page' => $perPage,
-            'suffix' => $query === '' ? '' : '?' . $query,
+            'per_page'   => $perPage,
+            'suffix'     => $query === '' ? '' : '?' . $query,
         ];
         if ($this->config->item('pagination_style')) {
             $config = array_merge($config, $this->config->item('pagination_style'));
@@ -51,9 +51,9 @@ class Supplier_invoices extends Admin_Controller
 
         $this->layout->set([
             'supplier_invoices' => $result['rows'],
-            'filters' => $filters,
-            'statuses' => Mdl_Supplier_invoices::STATUSES,
-            'pagination' => $this->pagination->create_links(),
+            'filters'           => $filters,
+            'statuses'          => Mdl_Supplier_invoices::STATUSES,
+            'pagination'        => $this->pagination->create_links(),
         ]);
         $this->layout->buffer('content', 'supplier_invoices/index');
         $this->layout->render();
@@ -63,7 +63,7 @@ class Supplier_invoices extends Admin_Controller
     {
         $this->requireWriteAccess();
         $invoiceId = $invoiceId === null ? null : (int) $invoiceId;
-        $invoice = $invoiceId === null ? [] : $this->Mdl_supplier_invoices->get_by_id($invoiceId);
+        $invoice   = $invoiceId === null ? [] : $this->Mdl_supplier_invoices->get_by_id($invoiceId);
         if ($invoiceId !== null && $invoice === []) {
             show_404();
         }
@@ -78,8 +78,8 @@ class Supplier_invoices extends Admin_Controller
                 redirect('supplier_invoices');
             }
 
-            $data = $this->invoicePostData();
-            $items = $this->itemsPostData();
+            $data   = $this->invoicePostData();
+            $items  = $this->itemsPostData();
             $errors = $this->validateInvoiceData($data, $invoiceId);
 
             if ($errors === []) {
@@ -98,8 +98,8 @@ class Supplier_invoices extends Admin_Controller
         }
 
         $this->layout->set([
-            'invoice' => $invoice,
-            'items' => $items,
+            'invoice'   => $invoice,
+            'items'     => $items,
             'suppliers' => $this->Mdl_suppliers->get_all(),
         ]);
         $this->layout->buffer('content', 'supplier_invoices/form');
@@ -117,7 +117,7 @@ class Supplier_invoices extends Admin_Controller
     {
         $this->requireWriteAccess();
         $supplierId = $supplierId === null ? null : (int) $supplierId;
-        $supplier = $supplierId === null ? [] : $this->Mdl_suppliers->get_by_id($supplierId);
+        $supplier   = $supplierId === null ? [] : $this->Mdl_suppliers->get_by_id($supplierId);
         if ($supplierId !== null && $supplier === []) {
             show_404();
         }
@@ -162,12 +162,12 @@ class Supplier_invoices extends Admin_Controller
         }
 
         $this->layout->set([
-            'invoice' => $invoice,
-            'items' => $this->Mdl_supplier_invoice_items->get_by_invoice_id((int) $invoiceId),
-            'payments' => $this->Mdl_supplier_invoice_payments->get_by_invoice_id((int) $invoiceId),
+            'invoice'     => $invoice,
+            'items'       => $this->Mdl_supplier_invoice_items->get_by_invoice_id((int) $invoiceId),
+            'payments'    => $this->Mdl_supplier_invoice_payments->get_by_invoice_id((int) $invoiceId),
             'attachments' => $this->Mdl_supplier_invoice_attachments->get_by_invoice_id((int) $invoiceId),
-            'history' => $this->Mdl_supplier_invoices->get_status_history((int) $invoiceId),
-            'statuses' => Mdl_Supplier_invoices::STATUSES,
+            'history'     => $this->Mdl_supplier_invoices->get_status_history((int) $invoiceId),
+            'statuses'    => Mdl_Supplier_invoices::STATUSES,
         ]);
         $this->layout->buffer('content', 'supplier_invoices/view');
         $this->layout->render();
@@ -271,12 +271,12 @@ class Supplier_invoices extends Admin_Controller
             }
 
             $this->Mdl_supplier_invoice_payments->add_payment($invoiceId, [
-                'amount' => str_replace(',', '.', $amount),
-                'payment_date' => $paymentDate,
-                'currency_code' => $this->postScalar('currency_code'),
+                'amount'         => str_replace(',', '.', $amount),
+                'payment_date'   => $paymentDate,
+                'currency_code'  => $this->postScalar('currency_code'),
                 'payment_method' => $this->postScalar('payment_method'),
-                'reference' => $this->postScalar('reference'),
-                'notes' => $this->postScalar('notes'),
+                'reference'      => $this->postScalar('reference'),
+                'notes'          => $this->postScalar('notes'),
             ]);
             $this->session->set_flashdata('alert_success', trans('supplier_invoice_payment_recorded'));
         } catch (Throwable $e) {
@@ -319,7 +319,7 @@ class Supplier_invoices extends Admin_Controller
             if ( ! validate_safe_filename($originalName)['valid']) {
                 throw new InvalidArgumentException('The attachment filename is invalid.');
             }
-            $extension = strtolower((string) pathinfo($originalName, PATHINFO_EXTENSION));
+            $extension         = strtolower((string) pathinfo($originalName, PATHINFO_EXTENSION));
             $allowedExtensions = ['pdf', 'xml', 'jpg', 'jpeg', 'png', 'gif', 'webp'];
             if ( ! in_array($extension, $allowedExtensions, true)) {
                 throw new InvalidArgumentException('This attachment type is not supported.');
@@ -340,7 +340,7 @@ class Supplier_invoices extends Admin_Controller
             if ( ! validate_file_in_directory($directory, UPLOADS_ARCHIVE_FOLDER)) {
                 throw new RuntimeException('The attachment directory is outside the archive.');
             }
-            $hash = hash_file('sha256', $file['tmp_name']);
+            $hash       = hash_file('sha256', $file['tmp_name']);
             $storedName = $hash . '.' . $extension;
             $storedPath = $directory . DIRECTORY_SEPARATOR . $storedName;
             if (is_file($storedPath)) {
@@ -352,11 +352,11 @@ class Supplier_invoices extends Admin_Controller
 
             $relativePath = 'supplier-invoices/' . $invoiceId . '/' . $storedName;
             $attachmentId = $this->Mdl_supplier_invoice_attachments->save_attachment($invoiceId, [
-                'file_name' => sanitize_filename_for_header($originalName),
+                'file_name'    => sanitize_filename_for_header($originalName),
                 'storage_path' => $relativePath,
-                'mime_type' => $mimeType,
-                'file_size' => (int) $file['size'],
-                'sha256' => $hash,
+                'mime_type'    => $mimeType,
+                'file_size'    => (int) $file['size'],
+                'sha256'       => $hash,
             ]);
             if ($attachmentId <= 0) {
                 @unlink($storedPath);
@@ -394,16 +394,16 @@ class Supplier_invoices extends Admin_Controller
     private function invoicePostData(): array
     {
         return [
-            'supplier_id' => (int) $this->input->post('supplier_id'),
+            'supplier_id'             => (int) $this->input->post('supplier_id'),
             'supplier_invoice_number' => $this->postScalar('supplier_invoice_number'),
-            'external_reference' => $this->postScalar('external_reference'),
-            'supplier_invoice_date' => $this->postScalar('supplier_invoice_date'),
-            'supplier_due_date' => $this->postScalar('supplier_due_date'),
-            'currency_code' => $this->postScalar('currency_code') ?: 'EUR',
-            'subtotal' => $this->postScalar('subtotal'),
-            'tax_total' => $this->postScalar('tax_total'),
-            'total' => $this->postScalar('total'),
-            'notes' => $this->postScalar('notes'),
+            'external_reference'      => $this->postScalar('external_reference'),
+            'supplier_invoice_date'   => $this->postScalar('supplier_invoice_date'),
+            'supplier_due_date'       => $this->postScalar('supplier_due_date'),
+            'currency_code'           => $this->postScalar('currency_code') ?: 'EUR',
+            'subtotal'                => $this->postScalar('subtotal'),
+            'tax_total'               => $this->postScalar('tax_total'),
+            'total'                   => $this->postScalar('total'),
+            'notes'                   => $this->postScalar('notes'),
         ];
     }
 
@@ -421,14 +421,14 @@ class Supplier_invoices extends Admin_Controller
             }
 
             $items[] = [
-                'item_name' => trim((string) $name),
+                'item_name'        => trim((string) $name),
                 'item_description' => $this->arrayPostScalar('item_description', $index),
-                'quantity' => $this->arrayPostScalar('quantity', $index) ?: 1,
-                'unit_price' => $this->arrayPostScalar('unit_price', $index),
-                'tax_rate' => $this->arrayPostScalar('tax_rate', $index),
-                'subtotal' => $this->arrayPostScalar('item_subtotal', $index),
-                'tax_total' => $this->arrayPostScalar('tax_total', $index),
-                'total' => $this->arrayPostScalar('item_total', $index),
+                'quantity'         => $this->arrayPostScalar('quantity', $index) ?: 1,
+                'unit_price'       => $this->arrayPostScalar('unit_price', $index),
+                'tax_rate'         => $this->arrayPostScalar('tax_rate', $index),
+                'subtotal'         => $this->arrayPostScalar('item_subtotal', $index),
+                'tax_total'        => $this->arrayPostScalar('tax_total', $index),
+                'total'            => $this->arrayPostScalar('item_total', $index),
             ];
         }
 
@@ -484,7 +484,7 @@ class Supplier_invoices extends Admin_Controller
     private function arrayPostScalar(string $key, $index): string
     {
         $values = $this->input->post($key);
-        $value = is_array($values) ? ($values[$index] ?? '') : '';
+        $value  = is_array($values) ? ($values[$index] ?? '') : '';
 
         return is_scalar($value) ? trim((string) $value) : '';
     }

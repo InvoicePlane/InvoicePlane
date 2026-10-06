@@ -2,8 +2,8 @@
 
 // Merge the per-process dumps from run.sh into one line-coverage report.
 // usage: php tests/Support/coverage/report.php <dump-dir> [min-uncovered-lines]
-$dir = $argv[1] ?? '';
-$min = (int) ($argv[2] ?? 30);
+$dir  = $argv[1] ?? '';
+$min  = (int) ($argv[2] ?? 30);
 $root = dirname(__DIR__, 3);
 
 if ( ! is_dir($dir)) {
@@ -52,7 +52,7 @@ foreach ($it as $f) {
     $rows[substr($p, strlen($root) + 1)] = [$n, 0, 'never loaded (lines estimated)'];
 }
 
-$total = array_sum(array_column($rows, 0));
+$total   = array_sum(array_column($rows, 0));
 $covered = array_sum(array_column($rows, 1));
 printf("Logic-code line coverage: %d/%d = %.1f%%  (%d files; views, language, config, country data excluded)\n\n", $covered, $total, $total ? 100 * $covered / $total : 0, count($rows));
 

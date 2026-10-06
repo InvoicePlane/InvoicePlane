@@ -73,23 +73,6 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         $this->bindSessionToStoredCredentials((int) $this->sessionData['user_id']);
     }
 
-    private function bindSessionToStoredCredentials(int $userId): void
-    {
-        // User_Controller::revalidate_user_type() rejects any session lacking the stored
-        // auth_version and the HMAC of the stored password hash, for admin and guest alike.
-        $user = $this->databaseFetchOne('ip_users', ['user_id' => $userId]);
-        if ( ! $user) {
-            return;
-        }
-
-        if ( ! function_exists('session_credential_fingerprint')) {
-            require_once dirname(__DIR__) . '/application/helpers/ip_security_helper.php';
-        }
-
-        $this->sessionData['user_auth_version'] = (int) ($user['user_auth_version'] ?? 0);
-        $this->sessionData['user_credential']   = session_credential_fingerprint((string) $user['user_password']);
-    }
-
     protected function withEnvironment(array $environment): void
     {
         $this->environmentData = array_merge($this->environmentData, $environment);
@@ -370,6 +353,23 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         }
 
         self::assertSame((string) file_get_contents($path), $response->body());
+    }
+
+    private function bindSessionToStoredCredentials(int $userId): void
+    {
+        // User_Controller::revalidate_user_type() rejects any session lacking the stored
+        // auth_version and the HMAC of the stored password hash, for admin and guest alike.
+        $user = $this->databaseFetchOne('ip_users', ['user_id' => $userId]);
+        if ( ! $user) {
+            return;
+        }
+
+        if ( ! function_exists('session_credential_fingerprint')) {
+            require_once dirname(__DIR__) . '/application/helpers/ip_security_helper.php';
+        }
+
+        $this->sessionData['user_auth_version'] = (int) ($user['user_auth_version'] ?? 0);
+        $this->sessionData['user_credential']   = session_credential_fingerprint((string) $user['user_password']);
     }
 
     private function normalizeUri(string $uri): string

@@ -461,7 +461,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act */
         $response = $this->ajax('POST', '/quotes/ajax/quote_to_invoice', [
-            'quote_id' => (string) $quoteId, 'client_id' => (string) $clientId, 'invoice_date_created' => date('Y-m-d'),
+            'quote_id'             => (string) $quoteId, 'client_id' => (string) $clientId, 'invoice_date_created' => date('Y-m-d'),
             'invoice_time_created' => date('H:i:s'), 'invoice_group_id' => '1', 'user_id' => '1',
         ]);
 
@@ -485,7 +485,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
 
         /* Act: no invoice_group_id */
         $response = $this->ajax('POST', '/quotes/ajax/quote_to_invoice', [
-            'quote_id' => (string) $quoteId, 'client_id' => (string) $clientId, 'invoice_date_created' => date('Y-m-d'),
+            'quote_id'             => (string) $quoteId, 'client_id' => (string) $clientId, 'invoice_date_created' => date('Y-m-d'),
             'invoice_time_created' => date('H:i:s'), 'user_id' => '1',
         ]);
 
@@ -528,13 +528,13 @@ class QuotesAjaxControllerTest extends AbstractTestCase
     private function seedQuote(int $clientId, array $overrides = []): int
     {
         $quoteId = $this->databaseInsert('ip_quotes', array_merge([
-            'user_id' => 1, 'client_id' => $clientId, 'invoice_group_id' => 1, 'quote_status_id' => 2,
-            'quote_number' => 'QUO-' . bin2hex(random_bytes(3)), 'quote_url_key' => bin2hex(random_bytes(16)),
+            'user_id'            => 1, 'client_id' => $clientId, 'invoice_group_id' => 1, 'quote_status_id' => 2,
+            'quote_number'       => 'QUO-' . bin2hex(random_bytes(3)), 'quote_url_key' => bin2hex(random_bytes(16)),
             'quote_date_created' => date('Y-m-d'), 'quote_date_modified' => date('Y-m-d H:i:s'),
             'quote_date_expires' => date('Y-m-d', strtotime('+15 days')),
         ], $overrides));
         $this->databaseInsert('ip_quote_amounts', [
-            'quote_id' => $quoteId, 'quote_item_subtotal' => '0.00', 'quote_item_tax_total' => '0.00',
+            'quote_id'        => $quoteId, 'quote_item_subtotal' => '0.00', 'quote_item_tax_total' => '0.00',
             'quote_tax_total' => '0.00', 'quote_total' => '0.00',
         ]);
 
@@ -544,7 +544,7 @@ class QuotesAjaxControllerTest extends AbstractTestCase
     private function seedQuoteItem(int $quoteId, string $name, string $quantity = '1', string $price = '10'): int
     {
         return $this->databaseInsert('ip_quote_items', [
-            'quote_id' => $quoteId, 'item_name' => $name, 'item_description' => '', 'item_quantity' => $quantity,
+            'quote_id'   => $quoteId, 'item_name' => $name, 'item_description' => '', 'item_quantity' => $quantity,
             'item_price' => $price, 'item_order' => 1, 'item_date_added' => date('Y-m-d'),
         ]);
     }
@@ -553,8 +553,8 @@ class QuotesAjaxControllerTest extends AbstractTestCase
     private function itemPayload(int $quoteId, string $name, string $quantity, string $price): array
     {
         return [
-            'quote_id' => (string) $quoteId, 'item_id' => '', 'item_name' => $name, 'item_description' => '',
-            'item_quantity' => $quantity, 'item_price' => $price, 'item_discount_amount' => '', 'item_product_id' => '',
+            'quote_id'             => (string) $quoteId, 'item_id' => '', 'item_name' => $name, 'item_description' => '',
+            'item_quantity'        => $quantity, 'item_price' => $price, 'item_discount_amount' => '', 'item_product_id' => '',
             'item_product_unit_id' => '', 'item_tax_rate_id' => '0',
         ];
     }
@@ -563,10 +563,10 @@ class QuotesAjaxControllerTest extends AbstractTestCase
     private function savePayload(int $quoteId): array
     {
         return [
-            'quote_id' => (string) $quoteId, 'quote_status_id' => '2', 'quote_number' => 'QUO-SAVED-' . $quoteId,
+            'quote_id'           => (string) $quoteId, 'quote_status_id' => '2', 'quote_number' => 'QUO-SAVED-' . $quoteId,
             'quote_date_created' => date('Y-m-d'), 'quote_date_expires' => date('Y-m-d', strtotime('+15 days')),
-            'quote_password' => '', 'notes' => '', 'quote_discount_percent' => '0', 'quote_discount_amount' => '0',
-            'service_id' => '', 'items' => '[]',
+            'quote_password'     => '', 'notes' => '', 'quote_discount_percent' => '0', 'quote_discount_amount' => '0',
+            'service_id'         => '', 'items' => '[]',
         ];
     }
 
@@ -574,9 +574,9 @@ class QuotesAjaxControllerTest extends AbstractTestCase
     private function userRow(string $email): array
     {
         return [
-            'user_type' => 1, 'user_name' => 'User ' . $email, 'user_email' => $email,
-            'user_password' => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
-            'user_language' => 'system', 'user_active' => 1,
+            'user_type'         => 1, 'user_name' => 'User ' . $email, 'user_email' => $email,
+            'user_password'     => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
+            'user_language'     => 'system', 'user_active' => 1,
             'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
         ];
     }

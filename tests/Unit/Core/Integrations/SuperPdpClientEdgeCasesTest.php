@@ -5,7 +5,6 @@ namespace Tests\Unit\Core;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use SuperPdpClient;
 use Tests\Fakes\Integration\FakeSuperPdpClient;
 
 class SuperPdpClientEdgeCasesTest extends TestCase
@@ -14,8 +13,8 @@ class SuperPdpClientEdgeCasesTest extends TestCase
     public function it_rejects_authenticate_with_missing_client_id(): void
     {
         /* Arrange */
-        $provider = new FakeSuperPdpClient();
-        $settings = $this->defaultSettings();
+        $provider              = new FakeSuperPdpClient();
+        $settings              = $this->defaultSettings();
         $settings['client_id'] = '';
 
         /* Act */
@@ -30,8 +29,8 @@ class SuperPdpClientEdgeCasesTest extends TestCase
     public function it_rejects_authenticate_with_missing_client_secret(): void
     {
         /* Arrange */
-        $provider = new FakeSuperPdpClient();
-        $settings = $this->defaultSettings();
+        $provider                  = new FakeSuperPdpClient();
+        $settings                  = $this->defaultSettings();
         $settings['client_secret'] = '';
 
         /* Act */
@@ -107,7 +106,7 @@ class SuperPdpClientEdgeCasesTest extends TestCase
 
         /* Act */
         $result = $provider->sendInvoice($tmpFile, [
-            'invoice_id' => 'INV-2026/001-A&B',
+            'invoice_id'  => 'INV-2026/001-A&B',
             'external_id' => 'Société Générale SARL',
         ]);
         unlink($tmpFile);
@@ -141,9 +140,9 @@ class SuperPdpClientEdgeCasesTest extends TestCase
     public function it_respects_disable_pre_check_setting(): void
     {
         /* Arrange */
-        $settings = $this->defaultSettings();
+        $settings                      = $this->defaultSettings();
         $settings['disable_pre_check'] = true;
-        $provider = new FakeSuperPdpClient([
+        $provider                      = new FakeSuperPdpClient([
             ['success' => true, 'status' => 'sent', 'message' => 'ok', 'http_code' => 200, 'request' => [], 'response' => ['id' => 'inv-789']],
         ]);
         $provider->authenticate($settings);

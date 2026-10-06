@@ -360,6 +360,18 @@ class Paypal extends Base_Controller
         }
     }
 
+    protected function _create_client(): void
+    {
+        $this->load->library('crypt');
+
+        //load the REST API consumer library
+        $this->load->library('gateways/PaypalLib', [
+            'client_id'     => get_setting('gateway_paypal_clientId'),
+            'client_secret' => $this->crypt->decode(get_setting('gateway_paypal_clientSecret')),
+            'demo'          => get_setting('gateway_paypal_testMode') == 1,
+        ], 'lib_paypal');
+    }
+
     /**
      * The PayPal client authorizes against PayPal's API when it is constructed, so it is built
      * only once a request has passed its local guards. Constructing it in __construct() made
@@ -372,18 +384,6 @@ class Paypal extends Base_Controller
         }
 
         return $this->lib_paypal;
-    }
-
-    protected function _create_client(): void
-    {
-        $this->load->library('crypt');
-
-        //load the REST API consumer library
-        $this->load->library('gateways/PaypalLib', [
-            'client_id'     => get_setting('gateway_paypal_clientId'),
-            'client_secret' => $this->crypt->decode(get_setting('gateway_paypal_clientSecret')),
-            'demo'          => get_setting('gateway_paypal_testMode') == 1,
-        ], 'lib_paypal');
     }
 
     /**

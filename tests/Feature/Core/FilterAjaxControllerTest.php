@@ -196,7 +196,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
         $projectId = $this->databaseInsert('ip_projects', ['client_id' => $clientId, 'project_name' => 'Task Filter Project']);
         foreach (['FilterTaskMatch', 'UnrelatedTaskName'] as $name) {
             $this->databaseInsert('ip_tasks', [
-                'project_id' => $projectId, 'task_name' => $name, 'task_description' => '', 'task_price' => '10.00',
+                'project_id'       => $projectId, 'task_name' => $name, 'task_description' => '', 'task_price' => '10.00',
                 'task_finish_date' => date('Y-m-d'), 'task_status' => 1, 'tax_rate_id' => 0,
             ]);
         }
@@ -231,9 +231,9 @@ class FilterAjaxControllerTest extends AbstractTestCase
         /* Arrange */
         foreach (['FilterUserMatch', 'UnrelatedUserName'] as $name) {
             $this->databaseInsert('ip_users', [
-                'user_type' => 2, 'user_name' => $name, 'user_email' => strtolower($name) . '@test.local',
-                'user_password' => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
-                'user_language' => 'system', 'user_active' => 1,
+                'user_type'         => 2, 'user_name' => $name, 'user_email' => strtolower($name) . '@test.local',
+                'user_password'     => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
+                'user_language'     => 'system', 'user_active' => 1,
                 'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
             ]);
         }
@@ -270,7 +270,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
         foreach (['RECURFILTER-001', 'RECUROTHER-002'] as $number) {
             $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => $number]);
             $this->databaseInsert('ip_invoices_recurring', [
-                'invoice_id' => $invoiceId, 'recur_start_date' => date('Y-m-d'), 'recur_end_date' => null,
+                'invoice_id'      => $invoiceId, 'recur_start_date' => date('Y-m-d'), 'recur_end_date' => null,
                 'recur_frequency' => '1M', 'recur_next_date' => date('Y-m-d', strtotime('+1 month')),
             ]);
         }
@@ -291,7 +291,7 @@ class FilterAjaxControllerTest extends AbstractTestCase
         foreach (['LOGMATCH-001', 'LOGOTHER-002'] as $number) {
             $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => $number]);
             $this->databaseInsert('ip_merchant_responses', [
-                'invoice_id' => $invoiceId, 'merchant_response_successful' => 1, 'merchant_response_date' => date('Y-m-d'),
+                'invoice_id'               => $invoiceId, 'merchant_response_successful' => 1, 'merchant_response_date' => date('Y-m-d'),
                 'merchant_response_driver' => 'stripe', 'merchant_response' => 'ok', 'merchant_response_reference' => 'ref-' . $number,
             ]);
         }

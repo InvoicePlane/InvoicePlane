@@ -18,14 +18,14 @@ class SecurityHeadersTest extends TestCase
     public static function frameOptionProvider(): array
     {
         return [
-            'default is SAMEORIGIN'            => [null, 'SAMEORIGIN', "'self'"],
-            'explicit SAMEORIGIN'              => ['SAMEORIGIN', 'SAMEORIGIN', "'self'"],
-            'explicit DENY'                    => ['DENY', 'DENY', "'none'"],
-            'lowercase is normalised'          => ['deny', 'DENY', "'none'"],
-            'whitespace is trimmed'            => ['  DENY  ', 'DENY', "'none'"],
-            'ALLOWALL falls back'              => ['ALLOWALL', 'SAMEORIGIN', "'self'"],
-            'ALLOW-FROM falls back'            => ['ALLOW-FROM https://evil.example', 'SAMEORIGIN', "'self'"],
-            'empty string falls back'          => ['', 'SAMEORIGIN', "'self'"],
+            'default is SAMEORIGIN'   => [null, 'SAMEORIGIN', "'self'"],
+            'explicit SAMEORIGIN'     => ['SAMEORIGIN', 'SAMEORIGIN', "'self'"],
+            'explicit DENY'           => ['DENY', 'DENY', "'none'"],
+            'lowercase is normalised' => ['deny', 'DENY', "'none'"],
+            'whitespace is trimmed'   => ['  DENY  ', 'DENY', "'none'"],
+            'ALLOWALL falls back'     => ['ALLOWALL', 'SAMEORIGIN', "'self'"],
+            'ALLOW-FROM falls back'   => ['ALLOW-FROM https://evil.example', 'SAMEORIGIN', "'self'"],
+            'empty string falls back' => ['', 'SAMEORIGIN', "'self'"],
         ];
     }
 

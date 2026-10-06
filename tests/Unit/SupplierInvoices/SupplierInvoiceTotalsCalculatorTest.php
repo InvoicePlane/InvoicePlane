@@ -17,7 +17,7 @@ final class SupplierInvoiceTotalsCalculatorTest extends TestCase
     {
         /* Arrange */
         $calculator = new SupplierInvoiceTotalsCalculator();
-        $items = [
+        $items      = [
             ['item_name' => 'Consulting', 'quantity' => '2', 'unit_price' => '100', 'tax_rate' => '20'],
             ['item_name' => 'Hosting', 'quantity' => '1', 'unit_price' => '50', 'tax_rate' => '10'],
         ];
@@ -37,7 +37,7 @@ final class SupplierInvoiceTotalsCalculatorTest extends TestCase
     {
         /* Arrange */
         $calculator = new SupplierInvoiceTotalsCalculator();
-        $items = [
+        $items      = [
             ['item_name' => '', 'quantity' => 1, 'unit_price' => 10, 'tax_rate' => 20],
             ['item_name' => 'Rounded', 'quantity' => 3, 'unit_price' => 0.333, 'tax_rate' => 20],
         ];

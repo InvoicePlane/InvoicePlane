@@ -50,8 +50,8 @@ final class ClientDetailViewTest extends AbstractTestCase
     public function it_lists_only_this_clients_invoices_quotes_and_payments_and_notes(): void
     {
         /* Arrange */
-        $mine  = $this->seedClient(['client_name' => 'Mine Client']);
-        $other = $this->seedClient(['client_name' => 'Other Client']);
+        $mine      = $this->seedClient(['client_name' => 'Mine Client']);
+        $other     = $this->seedClient(['client_name' => 'Other Client']);
         $myInvoice = $this->seedInvoice($mine, ['invoice_number' => 'MINE-INV-1']);
         $this->seedInvoice($other, ['invoice_number' => 'OTHER-INV-1']);
         $this->seedPayment($myInvoice, ['payment_note' => 'MINE-PAYMENT-NOTE']);
@@ -137,7 +137,7 @@ final class ClientDetailViewTest extends AbstractTestCase
         /* Act */
         $this->post('/clients/form', [
             'client_name' => 'Titled Client', 'client_title' => 'custom', 'client_title_custom' => 'Dr. Prof.',
-            'is_update' => '0', 'btn_submit' => '1',
+            'is_update'   => '0', 'btn_submit' => '1',
         ]);
 
         /* Assert */
@@ -153,7 +153,7 @@ final class ClientDetailViewTest extends AbstractTestCase
         /* Act */
         $this->post('/clients/form/' . $clientId, [
             'client_name' => 'E-Invoicing Client', 'client_start_einvoicing' => '0', 'client_einvoicing_version' => 'Facturxv10',
-            'is_update' => '1', 'btn_submit' => '1',
+            'is_update'   => '1', 'btn_submit' => '1',
         ]);
 
         /* Assert */
@@ -213,8 +213,8 @@ final class ClientDetailViewTest extends AbstractTestCase
     private function seedClientQuote(int $clientId, string $number): int
     {
         return $this->databaseInsert('ip_quotes', [
-            'user_id' => 1, 'client_id' => $clientId, 'invoice_group_id' => 1, 'quote_status_id' => 2,
-            'quote_number' => $number, 'quote_url_key' => bin2hex(random_bytes(16)),
+            'user_id'            => 1, 'client_id' => $clientId, 'invoice_group_id' => 1, 'quote_status_id' => 2,
+            'quote_number'       => $number, 'quote_url_key' => bin2hex(random_bytes(16)),
             'quote_date_created' => date('Y-m-d'), 'quote_date_modified' => date('Y-m-d H:i:s'),
             'quote_date_expires' => date('Y-m-d', strtotime('+15 days')),
         ]) ?: 0;
@@ -223,9 +223,9 @@ final class ClientDetailViewTest extends AbstractTestCase
     private function seedGuest(string $email, int $allClients): int
     {
         return $this->databaseInsert('ip_users', [
-            'user_type' => 2, 'user_name' => $email, 'user_email' => $email, 'user_all_clients' => $allClients,
-            'user_password' => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
-            'user_language' => 'system', 'user_active' => 1,
+            'user_type'         => 2, 'user_name' => $email, 'user_email' => $email, 'user_all_clients' => $allClients,
+            'user_password'     => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
+            'user_language'     => 'system', 'user_active' => 1,
             'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
         ]);
     }
