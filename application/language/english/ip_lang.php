@@ -443,6 +443,7 @@ $lang = [
     'pay_now'                                       => 'Pay Now',
     'payment'                                       => 'Payment',
     'payment_cannot_exceed_balance'                 => 'Payment amount cannot exceed invoice balance.',
+    'payment_in_progress_try_again'                 => 'Another payment for this invoice is being processed. Please try again in a moment.',
     'payment_date'                                  => 'Payment Date',
     'payment_form'                                  => 'Payment Form',
     'payment_history'                               => 'Payment History',
