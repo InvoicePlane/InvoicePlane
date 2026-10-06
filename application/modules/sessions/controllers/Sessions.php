@@ -386,7 +386,7 @@ class Sessions extends Base_Controller
 
         // Per-account lockout (email-keyed with namespace to prevent counter spoofing).
         $login_log_key = $this->_login_account_log_key($email_address);
-        $login_log = $this->_login_log_check($login_log_key);
+        $login_log     = $this->_login_log_check($login_log_key);
         if (empty($login_log) || $login_log->log_count < 10) {
             if ($this->mdl_sessions->auth($email_address, $password)) {
                 $this->_login_log_reset($login_log_key);
@@ -404,7 +404,7 @@ class Sessions extends Base_Controller
 
     /**
      * Generate a namespaced login counter key to prevent spoofing other rate limiters.
-     * Format: login_account:<sha256(lowercase_email)>
+     * Format: login_account:<sha256(lowercase_email)>.
      *
      * @param string $email_address
      *

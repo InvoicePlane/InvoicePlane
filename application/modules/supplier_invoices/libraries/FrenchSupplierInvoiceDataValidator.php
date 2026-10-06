@@ -54,7 +54,7 @@ final class FrenchSupplierInvoiceDataValidator
         }
 
         $invoiceDate = (string) ($invoice['supplier_invoice_date'] ?? '');
-        $date = DateTimeImmutable::createFromFormat('!Y-m-d', $invoiceDate);
+        $date        = DateTimeImmutable::createFromFormat('!Y-m-d', $invoiceDate);
         if ($date === false || $date->format('Y-m-d') !== $invoiceDate) {
             $errors[] = 'France: invoice date must be a valid ISO date.';
         }

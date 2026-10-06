@@ -291,6 +291,7 @@ class Users extends Admin_Controller
         $target_user_id  = (int) $user_client->user_id;
         if ($target_user_id !== $current_user_id && ! $this->mdl_users->is_primary_administrator($current_user_id)) {
             show_error(trans('access_denied'), 403);
+
             return;
         }
 

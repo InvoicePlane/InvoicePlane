@@ -23,7 +23,7 @@ class PdfSecurityTest extends TestCase
     public function it_sanitizes_pdf_footer_content(): void
     {
         $malicious = '<img src="http://169.254.169.254/latest/meta-data/">';
-        $result = sanitize_pdf_footer_content($malicious);
+        $result    = sanitize_pdf_footer_content($malicious);
 
         // sanitize_pdf_footer_content should strip img tags since they're not in allowedTags
         $this->assertStringNotContainsString('<img', $result);
@@ -32,7 +32,7 @@ class PdfSecurityTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_safe_html_in_pdf_footer(): void
     {
-        $safe = '<b>Important</b> <i>Notice</i>';
+        $safe   = '<b>Important</b> <i>Notice</i>';
         $result = sanitize_pdf_footer_content($safe);
 
         // Should preserve allowed tags

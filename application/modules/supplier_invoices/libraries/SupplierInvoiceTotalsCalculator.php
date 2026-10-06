@@ -9,8 +9,8 @@ final class SupplierInvoiceTotalsCalculator
     public function calculate(array $items): array
     {
         $normalizedItems = [];
-        $subtotal = 0.0;
-        $taxTotal = 0.0;
+        $subtotal        = 0.0;
+        $taxTotal        = 0.0;
 
         foreach ($items as $item) {
             $name = trim((string) ($item['item_name'] ?? ''));
@@ -18,9 +18,9 @@ final class SupplierInvoiceTotalsCalculator
                 continue;
             }
 
-            $quantity = $this->number($item['quantity'] ?? null, 1.0);
-            $unitPrice = $this->nullableNumber($item['unit_price'] ?? null);
-            $taxRate = $this->number($item['tax_rate'] ?? null, 0.0);
+            $quantity     = $this->number($item['quantity'] ?? null, 1.0);
+            $unitPrice    = $this->nullableNumber($item['unit_price'] ?? null);
+            $taxRate      = $this->number($item['tax_rate'] ?? null, 0.0);
             $lineSubtotal = $unitPrice === null
                 ? $this->nullableNumber($item['subtotal'] ?? null)
                 : $this->money($quantity * $unitPrice);
@@ -32,24 +32,24 @@ final class SupplierInvoiceTotalsCalculator
                 : $this->money(($lineSubtotal ?? 0) + ($lineTax ?? 0));
 
             $normalizedItems[] = [
-                'item_name' => $name,
+                'item_name'        => $name,
                 'item_description' => trim((string) ($item['item_description'] ?? '')) ?: null,
-                'quantity' => $quantity,
-                'unit_price' => $unitPrice,
-                'tax_rate' => $taxRate,
-                'subtotal' => $lineSubtotal,
-                'tax_total' => $lineTax,
-                'total' => $lineTotal,
+                'quantity'         => $quantity,
+                'unit_price'       => $unitPrice,
+                'tax_rate'         => $taxRate,
+                'subtotal'         => $lineSubtotal,
+                'tax_total'        => $lineTax,
+                'total'            => $lineTotal,
             ];
             $subtotal += $lineSubtotal ?? 0;
             $taxTotal += $lineTax ?? 0;
         }
 
         return [
-            'items' => $normalizedItems,
-            'subtotal' => $this->money($subtotal),
+            'items'     => $normalizedItems,
+            'subtotal'  => $this->money($subtotal),
             'tax_total' => $this->money($taxTotal),
-            'total' => $this->money($subtotal + $taxTotal),
+            'total'     => $this->money($subtotal + $taxTotal),
         ];
     }
 

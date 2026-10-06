@@ -13,6 +13,14 @@ class Mdl_Supplier_invoices extends CI_Model
 {
     public const STATUSES = ['received', 'approved', 'paid', 'rejected'];
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('file_security');
+        $this->load->model('supplier_invoices/Mdl_suppliers');
+        $this->load->model('supplier_invoices/Mdl_supplier_invoice_items');
+    }
+
     public function search(array $filters, int $offset, int $perPage): array
     {
         $this->applySearchFilters($filters);
@@ -32,14 +40,6 @@ class Mdl_Supplier_invoices extends CI_Model
         }
 
         return ['rows' => $invoices, 'total' => $total];
-    }
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->load->helper('file_security');
-        $this->load->model('supplier_invoices/Mdl_suppliers');
-        $this->load->model('supplier_invoices/Mdl_supplier_invoice_items');
     }
 
     public function get_all(?string $status = null): array
@@ -90,7 +90,7 @@ class Mdl_Supplier_invoices extends CI_Model
         $this->db->where('supplier_invoice_id', $invoiceId)->update('ip_supplier_invoices', [
             'archived_at' => date('Y-m-d H:i:s'),
             'archived_by' => $userId,
-            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_at'  => date('Y-m-d H:i:s'),
         ]);
         $this->record_status($invoiceId, $invoice['status'], $invoice['status'], 'Invoice archived.');
         $this->db->trans_complete();
@@ -109,7 +109,7 @@ class Mdl_Supplier_invoices extends CI_Model
         $this->db->where('supplier_invoice_id', $invoiceId)->update('ip_supplier_invoices', [
             'archived_at' => null,
             'archived_by' => null,
-            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_at'  => date('Y-m-d H:i:s'),
         ]);
         $this->record_status($invoiceId, $invoice['status'], $invoice['status'], 'Invoice restored from archive.');
         $this->db->trans_complete();
@@ -166,7 +166,7 @@ class Mdl_Supplier_invoices extends CI_Model
             throw new RuntimeException('A validated incoming invoice document is required.');
         }
 
-        $parsed = (new SupplierInvoiceDocumentParser())->parse($this->documentPath($incoming['document_path'] ?? null));
+        $parsed                 = (new SupplierInvoiceDocumentParser())->parse($this->documentPath($incoming['document_path'] ?? null));
         $frenchValidationErrors = (new FrenchSupplierInvoiceDataValidator())->validate($parsed);
         if ($frenchValidationErrors !== []) {
             throw new RuntimeException(implode(' ', $frenchValidationErrors));
@@ -176,9 +176,9 @@ class Mdl_Supplier_invoices extends CI_Model
             array_filter($parsed['supplier'], static fn ($value): bool => $value !== null && $value !== '')
         );
         $supplierId = $this->Mdl_suppliers->find_or_create_from_document($supplierData);
-        $invoice = $parsed['invoice'];
-        $reference = $this->scalar($incoming['merchant_response_reference'] ?? null);
-        $number = $this->scalar($invoice['supplier_invoice_number'] ?? null) ?? $reference;
+        $invoice    = $parsed['invoice'];
+        $reference  = $this->scalar($incoming['merchant_response_reference'] ?? null);
+        $number     = $this->scalar($invoice['supplier_invoice_number'] ?? null) ?? $reference;
         if ($number === null) {
             throw new RuntimeException('The supplier invoice number is missing from the document.');
         }
@@ -186,31 +186,31 @@ class Mdl_Supplier_invoices extends CI_Model
         $now = date('Y-m-d H:i:s');
         $this->db->trans_start();
         $this->db->insert('ip_supplier_invoices', [
-            'supplier_id' => $supplierId,
-            'incoming_response_id' => $responseId,
-            'merchant_client_id' => $incoming['merchant_client_id'] ?? null,
-            'external_reference' => $reference,
+            'supplier_id'             => $supplierId,
+            'incoming_response_id'    => $responseId,
+            'merchant_client_id'      => $incoming['merchant_client_id'] ?? null,
+            'external_reference'      => $reference,
             'supplier_invoice_number' => $number,
-            'supplier_invoice_date' => $invoice['supplier_invoice_date'] ?? null,
-            'supplier_due_date' => $invoice['supplier_due_date'] ?? null,
-            'currency_code' => $invoice['currency_code'] ?? 'EUR',
-            'subtotal' => $invoice['subtotal'] ?? null,
-            'tax_total' => $invoice['tax_total'] ?? null,
-            'total' => $invoice['total'] ?? null,
-            'status' => 'received',
-            'document_path' => $incoming['document_path'] ?? null,
-            'document_name' => $incoming['document_name'] ?? null,
-            'document_mime_type' => $incoming['document_mime_type'] ?? null,
-            'document_sha256' => $incoming['document_sha256'] ?? null,
-            'raw_payload' => $incoming['raw_payload'] ?? null,
-            'created_at' => $now,
-            'updated_at' => $now,
+            'supplier_invoice_date'   => $invoice['supplier_invoice_date'] ?? null,
+            'supplier_due_date'       => $invoice['supplier_due_date'] ?? null,
+            'currency_code'           => $invoice['currency_code'] ?? 'EUR',
+            'subtotal'                => $invoice['subtotal'] ?? null,
+            'tax_total'               => $invoice['tax_total'] ?? null,
+            'total'                   => $invoice['total'] ?? null,
+            'status'                  => 'received',
+            'document_path'           => $incoming['document_path'] ?? null,
+            'document_name'           => $incoming['document_name'] ?? null,
+            'document_mime_type'      => $incoming['document_mime_type'] ?? null,
+            'document_sha256'         => $incoming['document_sha256'] ?? null,
+            'raw_payload'             => $incoming['raw_payload'] ?? null,
+            'created_at'              => $now,
+            'updated_at'              => $now,
         ]);
         $invoiceId = (int) $this->db->insert_id();
 
         foreach ($parsed['items'] as $item) {
             $item['supplier_invoice_id'] = $invoiceId;
-            $item['created_at'] = $now;
+            $item['created_at']          = $now;
             $this->db->insert('ip_supplier_invoice_items', $item);
         }
         $this->record_status($invoiceId, null, 'received', 'Imported from PDP.');
@@ -225,7 +225,7 @@ class Mdl_Supplier_invoices extends CI_Model
 
     public function save_invoice(?int $invoiceId, array $data, array $items = []): int
     {
-        $supplierId = (int) ($data['supplier_id'] ?? 0);
+        $supplierId    = (int) ($data['supplier_id'] ?? 0);
         $invoiceNumber = trim((string) ($data['supplier_invoice_number'] ?? ''));
         if ($supplierId > 0 && $invoiceNumber !== '' && $this->has_duplicate_number($supplierId, $invoiceNumber, $invoiceId)) {
             throw new InvalidArgumentException('A supplier invoice with this number already exists.');
@@ -233,27 +233,27 @@ class Mdl_Supplier_invoices extends CI_Model
 
         $calculated = (new SupplierInvoiceTotalsCalculator())->calculate($items);
         if ($calculated['items'] === []) {
-            $calculated['subtotal'] = ($data['subtotal'] ?? '') === '' ? null : (float) $data['subtotal'];
+            $calculated['subtotal']  = ($data['subtotal'] ?? '') === '' ? null : (float) $data['subtotal'];
             $calculated['tax_total'] = ($data['tax_total'] ?? '') === '' ? null : (float) $data['tax_total'];
-            $calculated['total'] = ($data['total'] ?? '') === '' ? null : (float) $data['total'];
+            $calculated['total']     = ($data['total'] ?? '') === '' ? null : (float) $data['total'];
         }
         $values = [
-            'supplier_id' => $supplierId ?: null,
-            'external_reference' => trim((string) ($data['external_reference'] ?? '')) ?: null,
+            'supplier_id'             => $supplierId ?: null,
+            'external_reference'      => trim((string) ($data['external_reference'] ?? '')) ?: null,
             'supplier_invoice_number' => trim((string) ($data['supplier_invoice_number'] ?? '')) ?: null,
-            'supplier_invoice_date' => $data['supplier_invoice_date'] ?: null,
-            'supplier_due_date' => $data['supplier_due_date'] ?: null,
-            'currency_code' => strtoupper(trim((string) ($data['currency_code'] ?? 'EUR'))),
-            'subtotal' => $calculated['subtotal'],
-            'tax_total' => $calculated['tax_total'],
-            'total' => $calculated['total'],
-            'notes' => trim((string) ($data['notes'] ?? '')) ?: null,
-            'updated_at' => date('Y-m-d H:i:s'),
+            'supplier_invoice_date'   => $data['supplier_invoice_date'] ?: null,
+            'supplier_due_date'       => $data['supplier_due_date'] ?: null,
+            'currency_code'           => strtoupper(trim((string) ($data['currency_code'] ?? 'EUR'))),
+            'subtotal'                => $calculated['subtotal'],
+            'tax_total'               => $calculated['tax_total'],
+            'total'                   => $calculated['total'],
+            'notes'                   => trim((string) ($data['notes'] ?? '')) ?: null,
+            'updated_at'              => date('Y-m-d H:i:s'),
         ];
 
         $this->db->trans_start();
         if ($invoiceId === null) {
-            $values['status'] = 'received';
+            $values['status']     = 'received';
             $values['created_at'] = date('Y-m-d H:i:s');
             $this->db->insert('ip_supplier_invoices', $values);
             $invoiceId = (int) $this->db->insert_id();
@@ -286,7 +286,7 @@ class Mdl_Supplier_invoices extends CI_Model
 
         $this->db->trans_start();
         $this->db->where('supplier_invoice_id', $invoiceId)->update('ip_supplier_invoices', [
-            'status' => $status,
+            'status'     => $status,
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
         $this->record_status($invoiceId, $invoice['status'], $status, $comment);
@@ -308,10 +308,10 @@ class Mdl_Supplier_invoices extends CI_Model
     {
         $this->db->insert('ip_supplier_invoice_status_history', [
             'supplier_invoice_id' => $invoiceId,
-            'old_status' => $oldStatus,
-            'new_status' => $newStatus,
-            'comment' => $comment,
-            'created_at' => date('Y-m-d H:i:s'),
+            'old_status'          => $oldStatus,
+            'new_status'          => $newStatus,
+            'comment'             => $comment,
+            'created_at'          => date('Y-m-d H:i:s'),
         ]);
     }
 
@@ -363,10 +363,10 @@ class Mdl_Supplier_invoices extends CI_Model
         if (isset($filters['status']) && in_array($filters['status'], self::STATUSES, true)) {
             $this->db->where('ip_supplier_invoices.status', $filters['status']);
         }
-        if (! empty($filters['date_from'])) {
+        if ( ! empty($filters['date_from'])) {
             $this->db->where('ip_supplier_invoices.supplier_invoice_date >=', $filters['date_from']);
         }
-        if (! empty($filters['date_to'])) {
+        if ( ! empty($filters['date_to'])) {
             $this->db->where('ip_supplier_invoices.supplier_invoice_date <=', $filters['date_to']);
         }
 

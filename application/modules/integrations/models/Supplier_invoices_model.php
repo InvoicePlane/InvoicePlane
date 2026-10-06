@@ -6,7 +6,8 @@ require_once APPPATH . 'modules/supplier_invoices/libraries/SupplierInvoiceDocum
 
 final class Supplier_invoices_model extends CI_Model
 {
-    private const INVOICE_TABLE  = 'ip_supplier_invoices';
+    private const INVOICE_TABLE = 'ip_supplier_invoices';
+
     private const SUPPLIER_TABLE = 'ip_suppliers';
 
     private const STATUSES = ['received', 'approved', 'paid', 'rejected'];
@@ -40,8 +41,8 @@ final class Supplier_invoices_model extends CI_Model
             return (int) $existing['supplier_invoice_id'];
         }
 
-        $document = $this->documentPath($incoming['document_path'] ?? null);
-        $parsed = (new SupplierInvoiceDocumentParser())->parse($document);
+        $document   = $this->documentPath($incoming['document_path'] ?? null);
+        $parsed     = (new SupplierInvoiceDocumentParser())->parse($document);
         $supplierId = $this->findOrCreateSupplier(array_merge($incoming, $parsed['supplier']));
         $now        = date('Y-m-d H:i:s');
         $reference  = $this->scalarValue($incoming['merchant_response_reference'] ?? null);
@@ -83,7 +84,7 @@ final class Supplier_invoices_model extends CI_Model
         $invoiceId = (int) $this->db->insert_id();
         foreach ($parsed['items'] as $item) {
             $item['supplier_invoice_id'] = $invoiceId;
-            $item['created_at'] = $now;
+            $item['created_at']          = $now;
             $this->db->insert('ip_supplier_invoice_items', $item);
         }
 
@@ -148,9 +149,9 @@ final class Supplier_invoices_model extends CI_Model
     private function findOrCreateSupplier(array $incoming): int
     {
         $participantId = $this->scalarValue($incoming['peppol_participant_id'] ?? null);
-        $vatId = $this->scalarValue($incoming['supplier_vat_id'] ?? null);
-        $name = $this->scalarValue($incoming['supplier_name'] ?? null) ?? 'Unknown supplier';
-        $existing = $participantId !== null
+        $vatId         = $this->scalarValue($incoming['supplier_vat_id'] ?? null);
+        $name          = $this->scalarValue($incoming['supplier_name'] ?? null) ?? 'Unknown supplier';
+        $existing      = $participantId !== null
             ? $this->db->where('supplier_peppol_id', $participantId)->get(self::SUPPLIER_TABLE)->row_array()
             : ($vatId !== null
                 ? $this->db->where('supplier_vat_id', $vatId)->get(self::SUPPLIER_TABLE)->row_array()
@@ -161,17 +162,17 @@ final class Supplier_invoices_model extends CI_Model
 
         $now = date('Y-m-d');
         $this->db->insert(self::SUPPLIER_TABLE, [
-            'supplier_name'        => $name,
-            'supplier_company'     => $this->scalarValue($incoming['supplier_company'] ?? null),
-            'supplier_vat_id'      => $vatId,
-            'supplier_peppol_id'   => $participantId,
-            'supplier_email'       => $this->scalarValue($incoming['supplier_email'] ?? null),
-            'supplier_address_1'   => $this->scalarValue($incoming['supplier_address_1'] ?? null),
-            'supplier_city'        => $this->scalarValue($incoming['supplier_city'] ?? null),
-            'supplier_zip'         => $this->scalarValue($incoming['supplier_zip'] ?? null),
-            'supplier_country'     => $this->scalarValue($incoming['supplier_country'] ?? null),
-            'supplier_active'      => 1,
-            'supplier_date_created' => $now,
+            'supplier_name'          => $name,
+            'supplier_company'       => $this->scalarValue($incoming['supplier_company'] ?? null),
+            'supplier_vat_id'        => $vatId,
+            'supplier_peppol_id'     => $participantId,
+            'supplier_email'         => $this->scalarValue($incoming['supplier_email'] ?? null),
+            'supplier_address_1'     => $this->scalarValue($incoming['supplier_address_1'] ?? null),
+            'supplier_city'          => $this->scalarValue($incoming['supplier_city'] ?? null),
+            'supplier_zip'           => $this->scalarValue($incoming['supplier_zip'] ?? null),
+            'supplier_country'       => $this->scalarValue($incoming['supplier_country'] ?? null),
+            'supplier_active'        => 1,
+            'supplier_date_created'  => $now,
             'supplier_date_modified' => $now,
         ]);
 
