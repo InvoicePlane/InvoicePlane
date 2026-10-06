@@ -4,6 +4,8 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'libraries/PaymentCallbackLock.php';
+
 /*
  * InvoicePlane
  *
@@ -76,12 +78,26 @@ class Payments extends Admin_Controller
 
         $this->load->model('custom_fields/mdl_payment_custom');
 
-        if ($this->mdl_payments->run_validation()) {
-            $id = $this->mdl_payments->save($id);
+        // Serialize concurrent payment submissions for the same invoice (CWE-362/367):
+        // without this, two admin sessions can both read the pre-payment balance in
+        // validate_payment_amount() and both pass before either commits, overpaying
+        // the invoice. The lock is released even if save()/validation throws.
+        $invoice_id    = (int) $this->input->post('invoice_id');
+        $lock          = $invoice_id ? new PaymentCallbackLock($this->db) : null;
+        $lock_acquired = $lock === null || $lock->acquire($invoice_id);
 
-            $this->mdl_payment_custom->save_custom($id, $this->input->post('custom'));
+        try {
+            if ( ! $lock_acquired) {
+                $this->session->set_flashdata('alert_error', trans('payment_cannot_exceed_balance'));
+            } elseif ($this->mdl_payments->run_validation()) {
+                $id = $this->mdl_payments->save($id);
 
-            redirect('payments');
+                $this->mdl_payment_custom->save_custom($id, $this->input->post('custom'));
+
+                redirect('payments');
+            }
+        } finally {
+            $lock?->release();
         }
 
         if ( ! $this->input->post('btn_submit')) {
