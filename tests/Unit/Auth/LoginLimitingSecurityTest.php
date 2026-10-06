@@ -13,7 +13,7 @@ class LoginLimitingSecurityTest extends TestCase
         // to prevent spoofing other rate limiters like password_reset_email: or cron_key:
 
         $email = 'user@example.com';
-        $key = 'login_account:' . hash('sha256', mb_strtolower($email));
+        $key   = 'login_account:' . hash('sha256', mb_strtolower($email));
 
         // Verify the key format prevents collision with other counters
         $this->assertStringStartsWith('login_account:', $key);
@@ -26,7 +26,7 @@ class LoginLimitingSecurityTest extends TestCase
     {
         // Before using email as part of a counter key, it should be validated
 
-        $valid_email = 'user@example.com';
+        $valid_email   = 'user@example.com';
         $invalid_email = 'password_reset_email:' . hash('sha256', 'victim@example.com');
 
         // Valid email passes FILTER_VALIDATE_EMAIL

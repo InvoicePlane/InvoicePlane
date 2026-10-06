@@ -28,15 +28,15 @@ class Mdl_Supplier_invoice_items extends CI_Model
 
             $this->db->insert('ip_supplier_invoice_items', [
                 'supplier_invoice_id' => $invoiceId,
-                'item_name' => $name,
-                'item_description' => trim((string) ($item['item_description'] ?? '')) ?: null,
-                'quantity' => (float) ($item['quantity'] ?? 1),
-                'unit_price' => ($item['unit_price'] ?? '') === '' ? null : (float) $item['unit_price'],
-                'tax_rate' => ($item['tax_rate'] ?? '') === '' ? null : (float) $item['tax_rate'],
-                'subtotal' => ($item['subtotal'] ?? '') === '' ? null : (float) $item['subtotal'],
-                'tax_total' => ($item['tax_total'] ?? '') === '' ? null : (float) $item['tax_total'],
-                'total' => ($item['total'] ?? '') === '' ? null : (float) $item['total'],
-                'created_at' => date('Y-m-d H:i:s'),
+                'item_name'           => $name,
+                'item_description'    => trim((string) ($item['item_description'] ?? '')) ?: null,
+                'quantity'            => (float) ($item['quantity'] ?? 1),
+                'unit_price'          => ($item['unit_price'] ?? '') === '' ? null : (float) $item['unit_price'],
+                'tax_rate'            => ($item['tax_rate'] ?? '') === '' ? null : (float) $item['tax_rate'],
+                'subtotal'            => ($item['subtotal'] ?? '') === '' ? null : (float) $item['subtotal'],
+                'tax_total'           => ($item['tax_total'] ?? '') === '' ? null : (float) $item['tax_total'],
+                'total'               => ($item['total'] ?? '') === '' ? null : (float) $item['total'],
+                'created_at'          => date('Y-m-d H:i:s'),
             ]);
         }
     }

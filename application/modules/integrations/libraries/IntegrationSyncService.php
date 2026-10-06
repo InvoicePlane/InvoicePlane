@@ -214,11 +214,11 @@ final class IntegrationSyncService
             $documentFailures = $result['incoming']['failed'] > 0
                 || $result['incoming']['supplier_import_failed'] > 0;
             $result['status'] = match (true) {
-                $successfulPhases === 0                                      => 'failed',
+                $successfulPhases === 0 => 'failed',
                 $successfulPhases < $expectedPhases
                     || $documentFailures
-                    || $result['statuses']['failed'] > 0                     => 'partial',
-                default                                                      => 'success',
+                    || $result['statuses']['failed'] > 0 => 'partial',
+                default                                  => 'success',
             };
         } catch (Throwable $e) {
             $result['status']   = 'failed';
@@ -251,16 +251,16 @@ final class IntegrationSyncService
             'status'         => 'running',
             'attempts'       => 0,
             'incoming'       => [
-                'received' => 0,
-                'archived' => 0,
-                'skipped' => 0,
-                'failed' => 0,
-                'supplier_imported' => 0,
+                'received'               => 0,
+                'archived'               => 0,
+                'skipped'                => 0,
+                'failed'                 => 0,
+                'supplier_imported'      => 0,
                 'supplier_import_failed' => 0,
             ],
-            'statuses'       => ['updated' => 0, 'failed' => 0],
-            'events'         => ['received' => 0, 'created' => 0, 'skipped' => 0],
-            'errors'         => [],
+            'statuses' => ['updated' => 0, 'failed' => 0],
+            'events'   => ['received' => 0, 'created' => 0, 'skipped' => 0],
+            'errors'   => [],
         ];
     }
 

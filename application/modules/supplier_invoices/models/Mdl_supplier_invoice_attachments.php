@@ -28,12 +28,12 @@ class Mdl_Supplier_invoice_attachments extends CI_Model
     {
         $this->db->insert('ip_supplier_invoice_attachments', [
             'supplier_invoice_id' => $invoiceId,
-            'file_name' => $data['file_name'],
-            'storage_path' => $data['storage_path'],
-            'mime_type' => $data['mime_type'],
-            'file_size' => (int) $data['file_size'],
-            'sha256' => $data['sha256'],
-            'created_at' => date('Y-m-d H:i:s'),
+            'file_name'           => $data['file_name'],
+            'storage_path'        => $data['storage_path'],
+            'mime_type'           => $data['mime_type'],
+            'file_size'           => (int) $data['file_size'],
+            'sha256'              => $data['sha256'],
+            'created_at'          => date('Y-m-d H:i:s'),
         ]);
 
         return (int) $this->db->insert_id();

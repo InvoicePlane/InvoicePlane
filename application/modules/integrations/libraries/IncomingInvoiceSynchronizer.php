@@ -25,14 +25,14 @@ final class IncomingInvoiceSynchronizer
         ?callable $supplierInvoiceImporter = null
     ): array {
         $result = [
-            'received'    => 0,
-            'archived'    => 0,
-            'skipped'     => 0,
-            'failed'      => 0,
-            'supplier_imported' => 0,
+            'received'               => 0,
+            'archived'               => 0,
+            'skipped'                => 0,
+            'failed'                 => 0,
+            'supplier_imported'      => 0,
             'supplier_import_failed' => 0,
-            'error_codes' => [],
-            'errors'      => [],
+            'error_codes'            => [],
+            'errors'                 => [],
         ];
 
         foreach ($items as $item) {
@@ -78,10 +78,10 @@ final class IncomingInvoiceSynchronizer
                 );
                 $result['archived']++;
             } catch (Throwable $e) {
-                $errorCode         = $this->errorCode($e);
-                $message           = IntegrationPayloadSanitizer::text($e->getMessage()) ?? 'Incoming document validation failed.';
-                $item['status']    = 'error';
-                $item['error_code'] = $errorCode;
+                $errorCode            = $this->errorCode($e);
+                $message              = IntegrationPayloadSanitizer::text($e->getMessage()) ?? 'Incoming document validation failed.';
+                $item['status']       = 'error';
+                $item['error_code']   = $errorCode;
                 $item['error_detail'] = $message;
                 $item['message']      = 'Incoming document rejected [' . $errorCode . ']: ' . $message;
                 $document             = [
@@ -137,7 +137,7 @@ final class IncomingInvoiceSynchronizer
             $result['supplier_imported']++;
         } catch (Throwable $e) {
             $errorCode = 'supplier_invoice_import_failed';
-            $message = IntegrationPayloadSanitizer::text($e->getMessage(), 500)
+            $message   = IntegrationPayloadSanitizer::text($e->getMessage(), 500)
                 ?? 'Unable to import the supplier invoice.';
             $result['supplier_import_failed']++;
             $result['error_codes'][$errorCode] = ($result['error_codes'][$errorCode] ?? 0) + 1;
@@ -152,10 +152,10 @@ final class IncomingInvoiceSynchronizer
         $message = mb_strtolower($error->getMessage());
 
         return match (true) {
-            str_contains($message, 'download') || str_contains($message, 'provider returned') => 'document_download_failed',
-            str_contains($message, 'archive') || str_contains($message, 'stage') => 'document_archive_failed',
+            str_contains($message, 'download') || str_contains($message, 'provider returned')                           => 'document_download_failed',
+            str_contains($message, 'archive') || str_contains($message, 'stage')                                        => 'document_archive_failed',
             str_contains($message, 'factur-x') || str_contains($message, 'xml') || str_contains($message, 'validation') => 'document_validation_failed',
-            default => 'incoming_document_failed',
+            default                                                                                                     => 'incoming_document_failed',
         };
     }
 

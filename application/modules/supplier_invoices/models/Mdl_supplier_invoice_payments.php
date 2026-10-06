@@ -34,7 +34,7 @@ class Mdl_Supplier_invoice_payments extends CI_Model
         }
 
         $total = $invoice['total'] === null ? null : (float) $invoice['total'];
-        $paid = (float) $invoice['amount_paid'];
+        $paid  = (float) $invoice['amount_paid'];
         if ($total !== null && $paid + $amount > $total + 0.000001) {
             $this->db->trans_complete();
             throw new InvalidArgumentException('Payment amount exceeds the outstanding balance.');
@@ -43,29 +43,29 @@ class Mdl_Supplier_invoice_payments extends CI_Model
         $newPaid = $paid + $amount;
         $this->db->insert('ip_supplier_invoice_payments', [
             'supplier_invoice_id' => $invoiceId,
-            'payment_date' => $data['payment_date'],
-            'amount' => $amount,
-            'currency_code' => strtoupper((string) ($data['currency_code'] ?? $invoice['currency_code'] ?? 'EUR')),
-            'payment_method' => trim((string) ($data['payment_method'] ?? '')) ?: null,
-            'reference' => trim((string) ($data['reference'] ?? '')) ?: null,
-            'notes' => trim((string) ($data['notes'] ?? '')) ?: null,
-            'created_at' => date('Y-m-d H:i:s'),
+            'payment_date'        => $data['payment_date'],
+            'amount'              => $amount,
+            'currency_code'       => strtoupper((string) ($data['currency_code'] ?? $invoice['currency_code'] ?? 'EUR')),
+            'payment_method'      => trim((string) ($data['payment_method'] ?? '')) ?: null,
+            'reference'           => trim((string) ($data['reference'] ?? '')) ?: null,
+            'notes'               => trim((string) ($data['notes'] ?? '')) ?: null,
+            'created_at'          => date('Y-m-d H:i:s'),
         ]);
         $paymentId = (int) $this->db->insert_id();
 
         $this->db->where('supplier_invoice_id', $invoiceId)->update('ip_supplier_invoices', [
             'amount_paid' => $newPaid,
-            'status' => $total !== null && $newPaid >= $total - 0.000001 ? 'paid' : $invoice['status'],
-            'updated_at' => date('Y-m-d H:i:s'),
+            'status'      => $total !== null && $newPaid >= $total - 0.000001 ? 'paid' : $invoice['status'],
+            'updated_at'  => date('Y-m-d H:i:s'),
         ]);
 
         if ($total !== null && $newPaid >= $total - 0.000001 && $invoice['status'] !== 'paid') {
             $this->db->insert('ip_supplier_invoice_status_history', [
                 'supplier_invoice_id' => $invoiceId,
-                'old_status' => $invoice['status'],
-                'new_status' => 'paid',
-                'comment' => 'Automatically marked as paid after payment.',
-                'created_at' => date('Y-m-d H:i:s'),
+                'old_status'          => $invoice['status'],
+                'new_status'          => 'paid',
+                'comment'             => 'Automatically marked as paid after payment.',
+                'created_at'          => date('Y-m-d H:i:s'),
             ]);
         }
 

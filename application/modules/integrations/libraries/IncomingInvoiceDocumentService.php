@@ -261,7 +261,7 @@ final class IncomingInvoiceDocumentService
 
     private function findFacturXAttachment(string $pdfPath): int
     {
-        $command = [$this->pdfDetachBinary, '-list', $pdfPath];
+        $command        = [$this->pdfDetachBinary, '-list', $pdfPath];
         $descriptorSpec = [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],

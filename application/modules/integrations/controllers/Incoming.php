@@ -51,9 +51,9 @@ class Incoming extends Admin_Controller
         }
 
         $this->layout->set([
-            'clients'    => $this->Merchant_clients_model->get_enabled_clients(),
-            'incoming'   => $this->Merchant_responses_model->get_incoming(),
-            'client_map' => $client_map,
+            'clients'           => $this->Merchant_clients_model->get_enabled_clients(),
+            'incoming'          => $this->Merchant_responses_model->get_incoming(),
+            'client_map'        => $client_map,
             'supplier_invoices' => $this->Mdl_supplier_invoices->get_by_incoming_response_ids(),
         ]);
 
