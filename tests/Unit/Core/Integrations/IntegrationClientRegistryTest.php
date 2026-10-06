@@ -209,6 +209,71 @@ class IntegrationClientRegistryTest extends TestCase
         new IntegrationClientRegistry($dir);
     }
 
+    #[Test]
+    public function it_loads_the_helper_classes_that_sit_beside_a_nested_provider(): void
+    {
+        /* Arrange */
+        $dir = $this->providerDirectory([
+            'RegCompanion/RegCompanionClient.php' => '<?php class RegCompanionClient implements IntegrationClientInterface {'
+                . ' public static function clientCode(): string { return RegCompanionHelper::CODE . RegCompanionEndpoint::SUFFIX; }'
+                . substr($this->providerSource('X', 'x'), strpos($this->providerSource('X', 'x'), 'public static function clientName')),
+            'RegCompanion/RegCompanionHelper.php'             => '<?php class RegCompanionHelper { public const CODE = "reg-comp"; }',
+            'RegCompanion/Endpoints/RegCompanionEndpoint.php' => '<?php class RegCompanionEndpoint { public const SUFFIX = "-ep"; }',
+        ]);
+
+        /* Act */
+        $providers = (new IntegrationClientRegistry($dir))->all();
+
+        /* Assert */
+        self::assertSame(['reg-comp-ep' => 'RegCompanionClient'], $providers);
+    }
+
+    #[Test]
+    public function it_does_not_load_unrelated_siblings_of_a_top_level_provider(): void
+    {
+        /* Arrange */
+        $dir = $this->providerDirectory([
+            'RegTopClient.php' => $this->providerSource('RegTopClient', 'reg-top'),
+            'RegUnrelated.php' => '<?php define("REG_UNRELATED_LOADED", true);',
+        ]);
+
+        /* Act */
+        (new IntegrationClientRegistry($dir))->all();
+
+        /* Assert */
+        self::assertFalse(defined('REG_UNRELATED_LOADED'), 'Only a provider file itself (and its own folder) may be loaded.');
+    }
+
+    #[Test]
+    public function it_refuses_a_provider_with_an_unsupported_auth_type_when_building_its_settings(): void
+    {
+        /* Arrange */
+        $dir      = $this->providerDirectory(['RegAuthClient.php' => str_replace('return "none"', 'return "kerberos"', $this->providerSource('RegAuthClient', 'reg-auth'))]);
+        $registry = new IntegrationClientRegistry($dir);
+
+        /* Assert */
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported provider authentication type: reg-auth');
+
+        /* Act */
+        $registry->getSettingsDefinition('reg-auth');
+    }
+
+    #[Test]
+    public function it_exposes_auth_type_defaults_and_a_normalized_schema_for_a_supported_provider(): void
+    {
+        /* Arrange */
+        $registry = new IntegrationClientRegistry(dirname(__DIR__, 3) . '/Fixtures/integrations/providers');
+
+        /* Act */
+        $definition = $registry->getSettingsDefinition('demopdp');
+
+        /* Assert */
+        self::assertSame('bearer', $definition['auth_type']);
+        self::assertSame('https://api.demo-pdp.test', $definition['defaults']['api_base_url']);
+        self::assertArrayHasKey('access_token', $definition['schema']);
+    }
+
     /**
      * @param array<string, string> $files
      */
