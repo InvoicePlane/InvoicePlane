@@ -2,104 +2,25 @@
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
-class SuperPdpClient implements IntegrationClientInterface
+class SuperPdpClient extends AbstractRestProvider
 {
-    use ProviderPing;
-
-    private ?string $accessToken = null;
-
-    private array $settings = [];
-
-    private ApiClientInterface $http;
-
-    public function __construct(?ApiClientInterface $http = null)
-    {
-        $this->http = $http ?? IntegrationTransport::httpClient() ?? new CurlApiClient();
-    }
-
-    public static function clientCode(): string
-    {
-        return 'superpdp';
-    }
-
-    public static function clientName(): string
-    {
-        return 'SuperPDP';
-    }
-
-    public static function authType(): string
-    {
-        return 'oauth2';
-    }
-
-    public static function defaultSettings(): array
+    protected static function definition(): array
     {
         return [
-            'client_id'                  => '',
-            'client_secret'              => '',
-            'token_url'                  => 'https://api.superpdp.tech/oauth2/token',
-            'api_base_url'               => 'https://api.superpdp.tech',
-            'invoice_endpoint'           => '/v1.beta/invoices',
-            'invoice_status_endpoint'    => '/v1.beta/invoices/{id}',
-            'incoming_invoices_endpoint' => '/v1.beta/invoices',
-            'incoming_document_endpoint' => '/v1.beta/invoices/{id}/document',
-            'invoice_events_endpoint'    => '/v1.beta/invoice_events',
-            'disable_pre_check'          => false,
-        ];
-    }
-
-    public static function settingsSchema(): array
-    {
-        return [
-            'client_id' => [
-                'type'     => 'text',
-                'label'    => 'client_id',
-                'required' => true,
-            ],
-            'client_secret' => [
-                'type'      => 'password',
-                'label'     => 'client_secret',
-                'required'  => true,
-                'sensitive' => true,
-            ],
-            'token_url' => [
-                'type'     => 'url',
-                'label'    => 'token_url',
-                'required' => true,
-            ],
-            'api_base_url' => [
-                'type'     => 'url',
-                'label'    => 'api_base_url',
-                'required' => true,
-            ],
-            'invoice_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_endpoint',
-                'required' => true,
-            ],
-            'invoice_status_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_status_endpoint',
-                'required' => true,
-            ],
-            'incoming_invoices_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'incoming_invoices_endpoint',
-                'required' => true,
-            ],
-            'incoming_document_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'incoming_document_endpoint',
-                'required' => true,
-            ],
-            'invoice_events_endpoint' => [
-                'type'     => 'path',
-                'label'    => 'invoice_events_endpoint',
-                'required' => true,
-            ],
-            'disable_pre_check' => [
-                'type'  => 'checkbox',
-                'label' => 'disable_pre_check',
+            'code'     => 'superpdp',
+            'name'     => 'SuperPDP',
+            'auth'     => 'oauth2',
+            'settings' => [
+                'client_id' => ['type' => 'text', 'required' => true],
+                'client_secret' => ['type' => 'password', 'required' => true, 'sensitive' => true],
+                'token_url' => ['default' => 'https://api.superpdp.tech/oauth2/token', 'type' => 'url', 'required' => true],
+                'api_base_url' => ['default' => 'https://api.superpdp.tech', 'type' => 'url', 'required' => true],
+                'invoice_endpoint' => ['default' => '/v1.beta/invoices', 'type' => 'path', 'required' => true],
+                'invoice_status_endpoint' => ['default' => '/v1.beta/invoices/{id}', 'type' => 'path', 'required' => true],
+                'incoming_invoices_endpoint' => ['default' => '/v1.beta/invoices', 'type' => 'path', 'required' => true],
+                'incoming_document_endpoint' => ['default' => '/v1.beta/invoices/{id}/document', 'type' => 'path', 'required' => true],
+                'invoice_events_endpoint' => ['default' => '/v1.beta/invoice_events', 'type' => 'path', 'required' => true],
+                'disable_pre_check' => ['default' => false, 'type' => 'checkbox'],
             ],
         ];
     }
@@ -301,76 +222,6 @@ class SuperPdpClient implements IntegrationClientInterface
             ['events', 'items', 'data'],
             'events'
         );
-    }
-
-    public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
-    {
-        return $metadata;
-    }
-
-    /**
-     * POST {token_url}  (form-encoded).
-     *
-     * Request:
-     *   grant_type     client_credentials
-     *   client_id      string
-     *   client_secret  string
-     *
-     * Response (JSON):
-     *   access_token  string
-     *   token_type    string  "Bearer"
-     *   expires_in    int
-     */
-    protected function oauthFetchToken(string $tokenUrl, string $clientId, string $clientSecret): array
-    {
-        $result = $this->http->request(RequestMethod::POST, $tokenUrl, [
-            'form_params' => [
-                'grant_type'    => 'client_credentials',
-                'client_id'     => $clientId,
-                'client_secret' => $clientSecret,
-            ],
-        ]);
-
-        if ( ! $result['success']) {
-            throw new \RuntimeException('SuperPDP OAuth error: ' . $result['message']);
-        }
-
-        return $result['response'];
-    }
-
-    protected function request(
-        RequestMethod $method,
-        string $url,
-        array $payload = [],
-        bool $multipart = false,
-        array $requestDebug = []
-    ): array {
-        $options = ['bearer' => $this->accessToken];
-
-        if ($multipart) {
-            $options['multipart'] = $payload;
-        } elseif ($method === RequestMethod::POST && ! empty($payload)) {
-            $options['json'] = $payload;
-        }
-
-        $response = $this->http->request($method, $url, $options);
-
-        if ($requestDebug !== []) {
-            $response['request'] = array_merge($response['request'] ?? [], $requestDebug);
-        }
-
-        return $response;
-    }
-
-    private function buildUrl(string $endpoint, array $query = []): string
-    {
-        $url = rtrim($this->settings['api_base_url'], '/') . '/' . ltrim($endpoint, '/');
-
-        if ( ! empty($query)) {
-            $url .= '?' . http_build_query($query);
-        }
-
-        return $url;
     }
 
     private function decodeInlineDocument(array $invoice): ?array

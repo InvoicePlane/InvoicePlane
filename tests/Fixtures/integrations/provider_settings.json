@@ -1,0 +1,238 @@
+{
+    "letspeppol": {
+        "name": "LetsPeppol",
+        "auth_type": "oauth2",
+        "defaults": {
+            "client_id": "",
+            "client_secret": "",
+            "token_url": "https://api.letspeppol.eu/oauth2/token",
+            "api_base_url": "https://api.letspeppol.eu",
+            "invoice_endpoint": "/v1/invoices",
+            "invoice_status_endpoint": "/v1/invoices/{id}",
+            "incoming_invoices_endpoint": "/v1/incoming-invoices",
+            "invoice_events_endpoint": "/v1/invoice-events",
+            "credit_note_endpoint": "/v1/credit-notes",
+            "credit_note_status_endpoint": "/v1/credit-notes/{id}",
+            "participants_endpoint": "/v1/participants",
+            "participant_lookup_endpoint": "/v1/participants/{id}",
+            "transmissions_endpoint": "/v1/transmissions",
+            "transmission_status_endpoint": "/v1/transmissions/{id}",
+            "documents_endpoint": "/v1/documents",
+            "document_endpoint": "/v1/documents/{id}"
+        },
+        "schema": {
+            "client_id": {
+                "type": "text",
+                "label": "client_id",
+                "required": true
+            },
+            "client_secret": {
+                "type": "password",
+                "label": "client_secret",
+                "required": true,
+                "sensitive": true
+            },
+            "token_url": {
+                "type": "url",
+                "label": "token_url",
+                "required": true
+            },
+            "api_base_url": {
+                "type": "url",
+                "label": "api_base_url",
+                "required": true
+            },
+            "invoice_endpoint": {
+                "type": "path",
+                "label": "invoice_endpoint",
+                "required": true
+            },
+            "invoice_status_endpoint": {
+                "type": "path",
+                "label": "invoice_status_endpoint",
+                "required": true
+            },
+            "incoming_invoices_endpoint": {
+                "type": "path",
+                "label": "incoming_invoices_endpoint",
+                "required": true
+            },
+            "invoice_events_endpoint": {
+                "type": "path",
+                "label": "invoice_events_endpoint",
+                "required": true
+            },
+            "credit_note_endpoint": {
+                "type": "path",
+                "label": "credit_note_endpoint",
+                "required": true
+            },
+            "credit_note_status_endpoint": {
+                "type": "path",
+                "label": "credit_note_status_endpoint",
+                "required": true
+            },
+            "participants_endpoint": {
+                "type": "path",
+                "label": "participants_endpoint",
+                "required": true
+            },
+            "participant_lookup_endpoint": {
+                "type": "path",
+                "label": "participant_lookup_endpoint",
+                "required": true
+            },
+            "transmissions_endpoint": {
+                "type": "path",
+                "label": "transmissions_endpoint",
+                "required": true
+            },
+            "transmission_status_endpoint": {
+                "type": "path",
+                "label": "transmission_status_endpoint",
+                "required": true
+            },
+            "documents_endpoint": {
+                "type": "path",
+                "label": "documents_endpoint",
+                "required": true
+            },
+            "document_endpoint": {
+                "type": "path",
+                "label": "document_endpoint",
+                "required": true
+            }
+        }
+    },
+    "qonto": {
+        "name": "Qonto PA",
+        "auth_type": "bearer",
+        "defaults": {
+            "access_token": "",
+            "staging_token": "",
+            "api_base_url": "https://thirdparty.qonto.com",
+            "import_endpoint": "/v2/client_invoices/bulk",
+            "client_invoices_endpoint": "/v2/client_invoices",
+            "send_invoice_endpoint": "/v2/client_invoices/{id}/send_by_einvoice",
+            "invoice_status_endpoint": "/v2/client_invoices/{id}",
+            "incoming_invoices_endpoint": "/v2/supplier_invoices",
+            "attachment_endpoint": "/v2/attachments/{id}"
+        },
+        "schema": {
+            "access_token": {
+                "type": "password",
+                "label": "access_token",
+                "required": true,
+                "sensitive": true
+            },
+            "staging_token": {
+                "type": "password",
+                "label": "staging_token",
+                "sensitive": true
+            },
+            "api_base_url": {
+                "type": "url",
+                "label": "api_base_url",
+                "required": true
+            },
+            "import_endpoint": {
+                "type": "path",
+                "label": "import_endpoint",
+                "required": true
+            },
+            "client_invoices_endpoint": {
+                "type": "path",
+                "label": "client_invoices_endpoint",
+                "required": true
+            },
+            "send_invoice_endpoint": {
+                "type": "path",
+                "label": "send_invoice_endpoint",
+                "required": true
+            },
+            "invoice_status_endpoint": {
+                "type": "path",
+                "label": "invoice_status_endpoint",
+                "required": true
+            },
+            "incoming_invoices_endpoint": {
+                "type": "path",
+                "label": "incoming_invoices_endpoint",
+                "required": true
+            },
+            "attachment_endpoint": {
+                "type": "path",
+                "label": "attachment_endpoint",
+                "required": true
+            }
+        }
+    },
+    "superpdp": {
+        "name": "SuperPDP",
+        "auth_type": "oauth2",
+        "defaults": {
+            "client_id": "",
+            "client_secret": "",
+            "token_url": "https://api.superpdp.tech/oauth2/token",
+            "api_base_url": "https://api.superpdp.tech",
+            "invoice_endpoint": "/v1.beta/invoices",
+            "invoice_status_endpoint": "/v1.beta/invoices/{id}",
+            "incoming_invoices_endpoint": "/v1.beta/invoices",
+            "incoming_document_endpoint": "/v1.beta/invoices/{id}/document",
+            "invoice_events_endpoint": "/v1.beta/invoice_events",
+            "disable_pre_check": false
+        },
+        "schema": {
+            "client_id": {
+                "type": "text",
+                "label": "client_id",
+                "required": true
+            },
+            "client_secret": {
+                "type": "password",
+                "label": "client_secret",
+                "required": true,
+                "sensitive": true
+            },
+            "token_url": {
+                "type": "url",
+                "label": "token_url",
+                "required": true
+            },
+            "api_base_url": {
+                "type": "url",
+                "label": "api_base_url",
+                "required": true
+            },
+            "invoice_endpoint": {
+                "type": "path",
+                "label": "invoice_endpoint",
+                "required": true
+            },
+            "invoice_status_endpoint": {
+                "type": "path",
+                "label": "invoice_status_endpoint",
+                "required": true
+            },
+            "incoming_invoices_endpoint": {
+                "type": "path",
+                "label": "incoming_invoices_endpoint",
+                "required": true
+            },
+            "incoming_document_endpoint": {
+                "type": "path",
+                "label": "incoming_document_endpoint",
+                "required": true
+            },
+            "invoice_events_endpoint": {
+                "type": "path",
+                "label": "invoice_events_endpoint",
+                "required": true
+            },
+            "disable_pre_check": {
+                "type": "checkbox",
+                "label": "disable_pre_check"
+            }
+        }
+    }
+}
