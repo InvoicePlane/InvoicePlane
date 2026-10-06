@@ -114,6 +114,65 @@ class AdminPaymentAmountRaceTest extends AbstractTestCase
     }
 
     #[Test]
+    public function it_blocks_a_concurrent_admin_form_payment_until_a_racing_submission_releases_the_invoice_lock(): void
+    {
+        /* Arrange: same setup, but through the non-ajax Payments::form() entry point */
+        $invoiceId  = $this->seedPayableInvoice(500.00);
+        $lockName   = 'ip:payment:invoice:' . $invoiceId;
+        $lockHolder = $this->openSecondaryConnection();
+
+        $acquired = $lockHolder->prepare('SELECT GET_LOCK(?, ?) AS acquired');
+        $acquired->execute([$lockName, 5]);
+        self::assertSame(1, (int) $acquired->fetch(PDO::FETCH_ASSOC)['acquired'], 'Test setup could not acquire the named lock.');
+
+        /* Act: dispatch the real form submission without waiting for it */
+        $handle = $this->startAsyncPost('/payments/form', [
+            'invoice_id'     => (string) $invoiceId,
+            'payment_date'   => date('Y-m-d'),
+            'payment_amount' => '400.00',
+            'btn_submit'     => '1',
+        ]);
+
+        usleep((int) (self::LOCK_HOLD_SECONDS * 1_000_000));
+
+        /* Assert: the request must still be waiting on the lock at this point —
+         * same non-blocking process-status discriminator as the ajax test. */
+        $status = proc_get_status($handle['proc']);
+        self::assertTrue(
+            $status['running'],
+            'The admin form payment request already completed before the racing submission released the '
+            . 'invoice lock — Payments::form() is not serializing on PaymentCallbackLock.'
+        );
+
+        $lockHolder->exec(sprintf(
+            'INSERT INTO ip_payments (invoice_id, payment_date, payment_amount, payment_method_id) VALUES (%d, CURDATE(), 400.00, 1)',
+            $invoiceId
+        ));
+        $lockHolder->exec(sprintf(
+            'UPDATE ip_invoice_amounts SET invoice_paid = 400.00, invoice_balance = 100.00 WHERE invoice_id = %d',
+            $invoiceId
+        ));
+
+        $release = $lockHolder->prepare('SELECT RELEASE_LOCK(?)');
+        $release->execute([$lockName]);
+
+        $result = $this->finishAsyncRequestFull($handle);
+
+        /* Assert: once unblocked, it must re-validate against the now-current
+         * balance (100.00) and reject the 400.00 — i.e. NOT redirect to the
+         * payments list the way a successful save does. */
+        $redirected = array_filter($result['headers'], static fn ($h) => stripos((string) $h, 'Location:') === 0);
+        self::assertSame([], array_values($redirected), 'The form submission redirected as if it had succeeded, despite the balance no longer covering the payment.');
+
+        /* Assert: Data Integrity — only the racing payment landed, balance never went negative */
+        $this->resetDatabaseConnection();
+        $this->assertDatabaseCount('ip_payments', 1, ['invoice_id' => $invoiceId]);
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        self::assertEqualsWithDelta(100.00, (float) $amounts['invoice_balance'], 0.001);
+        self::assertGreaterThanOrEqual(-0.001, (float) $amounts['invoice_balance']);
+    }
+
+    #[Test]
     public function it_still_allows_a_single_legitimate_payment_to_succeed(): void
     {
         /* Arrange */
@@ -214,6 +273,16 @@ class AdminPaymentAmountRaceTest extends AbstractTestCase
      */
     private function startAsyncAjaxPost(string $uri, array $data): array
     {
+        return $this->startAsyncPost($uri, $data, true);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array{proc: resource, pipes: array<int, resource>}
+     */
+    private function startAsyncPost(string $uri, array $data, bool $ajax = false): array
+    {
         $this->actingAsAdmin();
         $this->resetDatabaseConnection();
 
@@ -225,7 +294,7 @@ class AdminPaymentAmountRaceTest extends AbstractTestCase
             'cookies' => [],
             'session' => $this->sessionData,
             'env'     => [],
-            'ajax'    => true,
+            'ajax'    => $ajax,
         ];
 
         $command      = sprintf('php %s', escapeshellarg(dirname(__DIR__, 2) . '/Integration/bin/request.php'));
@@ -259,6 +328,16 @@ class AdminPaymentAmountRaceTest extends AbstractTestCase
      */
     private function finishAsyncRequest(array $handle): string
     {
+        return $this->finishAsyncRequestFull($handle)['body'];
+    }
+
+    /**
+     * @param array{proc: resource, pipes: array<int, resource>} $handle
+     *
+     * @return array{body: string, status: int, headers: array<int, string>}
+     */
+    private function finishAsyncRequestFull(array $handle): array
+    {
         $stdout = stream_get_contents($handle['pipes'][1]);
         fclose($handle['pipes'][1]);
         stream_get_contents($handle['pipes'][2]);
@@ -274,6 +353,10 @@ class AdminPaymentAmountRaceTest extends AbstractTestCase
 
         $result = json_decode(base64_decode($matches[1], true), true, 512, JSON_THROW_ON_ERROR);
 
-        return base64_decode((string) ($result['output'] ?? ''), true) ?: '';
+        return [
+            'body'    => base64_decode((string) ($result['output'] ?? ''), true) ?: '',
+            'status'  => (int) ($result['status'] ?? 200),
+            'headers' => $result['headers'] ?? [],
+        ];
     }
 }
