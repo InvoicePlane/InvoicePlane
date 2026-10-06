@@ -67,7 +67,7 @@ class Payments extends Admin_Controller
 
         try {
             if ( ! $lock_acquired) {
-                $this->session->set_flashdata('alert_error', trans('payment_cannot_exceed_balance'));
+                $this->session->set_flashdata('alert_error', trans('payment_in_progress_try_again'));
             } elseif ($this->mdl_payments->run_validation()) {
                 $id = $this->mdl_payments->save($id);
 
