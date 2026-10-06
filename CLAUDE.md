@@ -1,32 +1,8 @@
 # CLAUDE.md — InvoicePlane Development Guide
 
 InvoicePlane is a self-hosted, open-source invoicing app built on **CodeIgniter 3** with HMVC
-(`application/modules/`). It is **not** a Laravel application — there is no Artisan CLI, no
-Eloquent ORM, and no `.env` file. Configuration lives in `ipconfig.php`.
-
-## Feature tests failing? Start here (do this BEFORE debugging code)
-
-1. **Is the DB up?** `bash tests/Support/sandbox-mariadb.sh` (idempotent). "MariaDB is
-   unreachable", mass 307s, or a wall of failures usually means the DB died, not a regression.
-2. **One phpunit at a time.** A second run (or a background full suite) kills the sandbox DB
-   and produces fake failures such as "missing fixtures".
-3. **Never call a failure "pre-existing" or "unrelated" without proof.** Reproduce it on a
-   clean, DB-isolated run and read the real message. Every failure seen so far had a concrete,
-   fixable cause.
-4. **307 on an authenticated request?** The session needs `user_auth_version` and
-   `user_credential` (HMAC of the stored password hash with `ENCRYPTION_KEY`), taken from the
-   real `ip_users` row. `AbstractTestCase::actingAs()` and `actingAsAdmin()` do this through
-   `bindSessionToStoredCredentials()`; any new `actingAs*()` helper must too. Details: the
-   "Authenticated Feature tests 307" bullet under "MariaDB test database in the sandbox".
-5. **Headers:** `headers_list()` is always empty under CLI. The harness reads
-   `$GLOBALS['ip_security_response_headers']` (set by `bootstrap/kernel.php`) instead.
-6. **No hollow tests.** Never `assertTrue(true)`, and never re-implement production logic
-   inside a test. Assert on the real code path, and mutation-check security tests (break the
-   code and confirm the test fails).
-7. **Calling helpers that don't exist** (`create_user`, `acting_as_user`,
-   `databaseCount` ...) means the test came from another lineage. Use the harness in
-   `tests/AbstractTestCase.php` and `tests/Concerns/` (`seedClient`, `seedInvoice`,
-   `databaseInsert`, `postWithValidCsrfToken` ...).
+(`application/modules/`). It is **not** a Laravel application: there is no Artisan CLI, no
+Eloquent ORM and no `.env` file. Configuration lives in `ipconfig.php`.
 
 ## Quick-start mental model
 
@@ -90,277 +66,141 @@ pattern in new guest-facing code rather than inventing a wrapper function.
 - Method names: `snake_case`; test methods: `it_<snake_case>` with `#[Test]`.
 - No comments unless the *why* is non-obvious.
 
-## Testing & Code Quality
+## Testing
 
-Before pushing:
-```bash
-php -l application/**/*.php   # Syntax check (finds parse errors)
-vendor/bin/phpunit            # run all tests
-vendor/bin/pint               # fix code style
-vendor/bin/phpstan analyse    # static analysis
-```
-
-**CRITICAL:** `php -l` must be run before any push to prevent parse errors in GitHub Actions. The workflow `.github/workflows/php-lint.yml` will block commits with syntax errors, so catch them locally first. This catches issues like embedded `<?php` tags in comments that confuse the lexer.
-
-Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `TestCase`.
-
-### Real line coverage (PCOV) — find untested code, don't guess
-
-`class-coverage-inventory.md` is only a name-grep. For actual executed-line coverage of the
-application — including code that Feature tests run inside the request subprocess — use:
+### Quality gate before pushing
 
 ```bash
-bash tests/Support/coverage/run.sh [phpunit args]   # whole suite, or e.g. tests/Feature/Upload
+php -l <changed files>                  # syntax check; the php-lint workflow blocks parse errors
+vendor/bin/phpunit                      # full suite, run on its own (see "One run at a time")
+vendor/bin/pint                         # code style
+vendor/bin/phpstan analyse              # static analysis (level 0, baseline in phpstan-baseline.neon)
+php .claude/skills/config-parity-guard/audit.php   # every mutating endpoint is tested with CSRF on
 ```
 
-It needs the `pcov` extension (not installable via apt/pecl here, but it builds from
-`github.com/krakjoe/pcov` with `phpize`; see the script header and set `PCOV_SO`). It prints a
-ranked "most uncovered lines" report. Run it ALONE (it truncates the shared test DB like the
-normal suite). Baseline on 2026-10-05: **47.1%** of logic code (views/language/country data
-excluded). It does not include Playwright E2E, and files no test ever loads are estimated.
-
-### Running tests locally — ALWAYS inside the ivpldock Docker stack
-
-**Never run `phpunit` / `php` / `composer` on the host.** The DB-backed Feature and
-Integration tests connect to the host `mariadb`, which only resolves **inside the ivpldock
-Docker network**. On the host that hostname does not resolve, so `InteractsWithDatabase::db()`
-hits a connection failure and every DB-backed test silently `markTestSkipped`s — a run that
-looks green ("0 failures") but actually skipped ~600 tests and proved nothing. Run everything
-in the containers that exist for exactly this purpose (`docker ps` → `ivpldock-workspace-1`,
-`ivpldock-mariadb-1`, …).
-
-The `Makefile` wraps this. **This checkout is mounted at
-`/var/www/projects/invoiceplane/ivplv1` inside the workspace container, but the Makefile
-still defaults `DOCKER_PROJECT_DIR` to `/var/www/projects/exprmt`** — always pass the
-override or `docker-db-prepare`'s `ipconfig.php`-write + `seed-test-db.php` step fails
-(`cd: .../exprmt: No such file or directory`), leaving the schema imported but **unseeded**.
-An unseeded DB is the cause of cascades of `Expected row in [ip_*] not found` /
-`Table 'invoiceplane_test.ip_settings' doesn't exist` failures — not a code regression.
+After adding, removing or renaming test files, regenerate the class inventory, otherwise
+`ClassCoverageInventoryTest` fails:
 
 ```bash
-# Full suite: (re)builds invoiceplane_test from the setup SQL migrations, applies
-# schema_fixups.sql, writes ipconfig.php (DB_HOSTNAME=mariadb), seeds the baseline,
-# then runs phpunit as the ivpldock user with DB_* unset.
-make docker-test DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
-
-make docker-test-suite  SUITE=Unit    DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
-make docker-test-filter FILTER=Session DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
-make docker-phpstan     DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
-make docker-lint-php    DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
-
-# Ad-hoc: run a targeted slice against an already-prepared DB
-docker exec -e XDEBUG_MODE=off --user=ivpldock ivpldock-workspace-1 bash -lc \
-  'cd /var/www/projects/invoiceplane/ivplv1 && \
-   env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE -u DB_USERNAME -u DB_PASSWORD \
-   vendor/bin/phpunit tests/Feature/Core/SessionsFeatureTest.php'
+php -r 'require "tests/Support/ClassCoverageInventory.php"; $r = getcwd();
+  file_put_contents("$r/tests/Support/class-coverage-inventory.md",
+  ClassCoverageInventory::toMarkdown(ClassCoverageInventory::build($r)));'
 ```
 
-`docker-db-prepare` imports `application/modules/setup/sql/*.sql` one file per `mysql`
-connection. In the shared ivpldock mariadb this intermittently hits transient InnoDB
-deadlocks (`ERROR 1213 … try restarting transaction`) on the `ALTER TABLE` DDL. The recipe
-now retries each file on that error (`tests/Support/docker-import-sql.sh`) and then runs a
-hard schema-completeness check — a build that still can't apply a migration **fails loudly**
-instead of silently shipping a half-built schema. If you ever see a cascade of
-`Unknown column 'ip_users.user_bank'` / `Table '…ip_settings' doesn't exist` across hundreds
-of tests, the schema build was incomplete: just re-run `make docker-db-prepare
-DOCKER_PROJECT_DIR=…`. (The old recipe used `mysql --force`, which swallowed the deadlock and
-left the columns missing.)
+### Test conventions
 
-### Bootstrapping `vendor/` in resource-constrained environments
+- Plain `\PHPUnit\Framework\TestCase` (unit) or `Tests\AbstractTestCase` (feature); no Laravel base classes.
+- Method names `it_<snake_case>` with `#[Test]`; Arrange / Act / Assert sections.
+- A test must be able to fail for the reason it names:
+  - no `assertTrue(true)`, and no re-implementation of production logic inside a test;
+  - "renders without PHP errors" is not an assertion; assert on content or state;
+  - a redirect test asserts the destination **and** the state change or a positive control
+    (the same request succeeding for an authorised user);
+  - security and money logic is mutation-checked: break the production code and confirm the
+    test turns red.
+- Use the harness instead of inventing helpers: `seedClient`, `seedInvoice`, `databaseInsert`,
+  `assertDatabaseHas`, `actingAsAdmin`, `postWithValidCsrfToken`, `withEnvironment`,
+  `withServer`, `withFiles` (`tests/AbstractTestCase.php`, `tests/Concerns/`).
+- Model logic can be tested in-process with `tests/Concerns/UsesCodeIgniterModels.php`
+  (real CI database driver, no HTTP round trip). Override `ciDatabaseName()` to target a
+  scratch database, as `SetupModelInstallTest` does.
+- External services are replaced by fakes in `tests/Fakes/` (`FakePaypalHttpClient`,
+  `FakeStripeHttpClient`, `QueueApiClient`), armed through `PAYPAL_MOCK_RESPONSES` and
+  `INTEGRATION_MOCK_RESPONSES`. Never call a live provider from a test.
 
-**Applies to:** Claude Code web sandbox, remote sessions with proxy restrictions, or any environment where `composer install` times out on dev dependencies.
+### How the feature harness works
 
-The environment may have `vendor/` missing or `composer install` fails due to proxy policies blocking `api.github.com` and `codeload.github.com`. Git reaches GitHub through the proxy, but Composer's HTTP **dist** downloads do not. Always use `--prefer-source` (git clones) for all composer operations.
+`AbstractTestCase::request()` runs the application in a clean-environment subprocess
+(`tests/Integration/bin/request.php`) and returns an `HttpResponse` carrying the status,
+headers, body and the final session contents (`session()`, `sessionValue()`,
+`sessionActive()`).
 
-**The Problem:**
-```bash
-# ❌ This will time out:
-composer install --prefer-source --ignore-platform-req=ext-bcmath
-# Reason: phpstan is a dist-only phar behind blocked hosts, and it's a transitive dev dep
-```
-
-**The Working Solution — one script, not a manual copy-paste:**
-
-```bash
-bash tests/Support/sandbox-bootstrap.sh
-```
-
-This is idempotent (safe to re-run if it fails partway — it resumes) and does exactly
-the same 4 steps documented for years in this file by hand: `--no-dev` runtime install →
-throwaway PHPUnit install → `dump-autoload --dev` to restore the `Tests\` mapping →
-plain-HTTPS PHPStan phar download. The one thing it changes from the old manual version:
-**all state lives under `$REPO/.sandbox-tools/` (gitignored), never `/tmp`.** `/tmp` in
-this environment is not guaranteed to survive the session, and mixing throwaway installer
-state into a shared temp directory has caused collisions before — a repo-local, gitignored
-directory is both safer and easier to inspect/clean (`rm -rf .sandbox-tools/`).
-
-It prints the exact `phpunit` / `phpstan` invocations to run afterward. Read the script's
-header comment for what each step does and why; don't re-derive this by hand again.
-
-**Critical gotchas (still apply — the script doesn't paper over these):**
-1. Do **not** put a real GitHub token in `COMPOSER_HOME/auth.json` — the proxy won't rewrite it (the script writes an empty one).
-2. Do **not** export `DB_*` environment variables before running phpunit — see the MariaDB section below for why.
-3. Each session requires this full setup; there is no persistent vendor cache across sessions (only within one session, via the idempotency checks).
-4. If the throwaway PHPUnit install times out, just re-run the script — it skips completed steps and retries only what's missing.
-
-### MariaDB test database in the sandbox (Feature/Integration tests)
-
-**MariaDB is the only supported test database** — the harness rejects any other driver
-(`InteractsWithDatabase::db()` fails loud on a non-MariaDB driver, but on a *connection*
-failure it `markTestSkipped`s). Unit tests run without a DB; Feature and Integration tests
-need one. When the parent process can't connect they don't fail — they silently **skip**
-(and any that don't gate on `db()` fall through to 307 login redirects). That silent-skip is
-exactly the trap documented below: a "green" 200-skip run can mean the DB tests never ran.
-
-Do **not** reinvent the setup each session. One idempotent script installs MariaDB, starts
-it, (re)builds the `invoiceplane_test` schema from the setup SQL migrations, seeds the
-baseline, and writes `ipconfig.php` — matching `.github/workflows/phpunit.yml` exactly:
-
-```bash
-bash tests/Support/sandbox-mariadb.sh          # provision (safe to re-run)
-bash tests/Support/sandbox-bootstrap.sh        # provision phpunit/phpstan (safe to re-run)
-# Do NOT export DB_* here — see the gotcha below. The script writes ipconfig.php,
-# and the parent phpunit process reads its DB config from there via env().
-php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
-```
-
-**Current known state, verified 2026-09-23 against ivpldock (confirmed identically in CI,
-runs 35827324398/35822902549/... — this is not new, it's been red on `prep/v180` since at
-least 2026-09-22): 1131 tests, 3054 assertions, 100 errors, 27 failures, 1 warning. This is
-NOT green — do not trust an older "0 failures" claim in this file's history, it was
-verified against the wrong checkout.** Root causes identified so far (see
-`~/projects/invoiceplane/_notes/` for the full incident writeup): the vast majority trace
-to two test-support methods (`databaseCount()`, `databaseInsertGetId()`) that were deleted
-from `tests/Concerns/InteractsWithDatabase.php` in a refactor but never removed from ~15
-call sites that came in from a different lineage, plus a root `index.php` that was
-deliberately removed (commit `82bf7ef1`) but silently reintroduced by a later merge
-(`dfeb8118`). A smaller residual set (LetsPeppol/Qonto/SuperPdp error-path assertions,
-password-reset token expiry, Stripe JPY handling, a couple of view-rendering assertions)
-are separate, narrower issues — check git history/notes for current status before assuming
-any of this is fixed.
-
-Any run that reports **0 failures but a suspiciously large skip count** (observed shape:
-~562/0/~200 skipped/891 assertions) is **not** green either — it is the *masked* profile
-where the DB-backed integration tests never ran. Re-verify the actual skip count is small
-(genuine guards only — snapshot / "requires running server" / manual code-review) before
-trusting a "0 failures" result.
-
-Gotchas learned the hard way:
-- `mysqld_safe` can be reaped in the sandbox; re-running the script restarts it. If a run
-  suddenly shows ~192 *errors* (not failures), the DB died — restart and rebuild.
-- **Do NOT export the `DB_*` vars before phpunit — exporting *breaks* the parent's DB
-  connection in this sandbox.** The request subprocess runs in a clean env and reads
-  `ipconfig.php` into `$_ENV` fine either way. But the phpunit *parent* resolves DB config
-  through `env()`, which reads **only `$_ENV`**. This sandbox's PHP has `variables_order=GPCS`
-  (no `E`), so exported vars land in `getenv()`/`$_SERVER` but never `$_ENV`; Dotenv's
-  `createImmutable` then **skips** those keys (it sees them already set) and never copies the
-  `ipconfig.php` values into `$_ENV`. Net effect: `env('DB_USERNAME')` returns `null`, the
-  parent's `InteractsWithDatabase::db()` connects as `''@'localhost'` → *Access denied* →
-  every DB-backed test calls `markTestSkipped`. Verified empirically: **without** the export
-  `env('DB_HOSTNAME')` → `127.0.0.1` and the suite does 1298 assertions / 17 skips; **with**
-  it → `null` and 891 assertions / 200 skips. Same mechanism hits CI, where `DB_*` is a
-  job-level `env:` (so CI skips the 183 too). If you must have `DB_*` exported for other
-  tooling, unset them just for phpunit: `env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE
-  -u DB_USERNAME -u DB_PASSWORD php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php`.
-
-**Correction (2026-09-23): the note that used to be here claiming this was "fixed" was
-wrong** — it was verified against a different checkout (`ivplv1`, upstream
-`InvoicePlane/InvoicePlane`, not this repo) by mistake. On `prep/v180` itself, this is
-currently **worse than the original 3-test note ever said**: `LetsPeppolFlowTest`'s 3
-error-path tests now *expect* 404 (someone updated the test assertions to the `c45f534a`-era
-behavior) but the controller on this branch still calls `show_error()` and returns 500 — the
-matching controller fix (`7fe13ea4`, "return 404 for invalid merchant/invoice requests") was
-never actually merged into `prep/v180`. And `QontoFlowTest`/`SuperPdpFlowTest` have the
-*original* 3-tests-each `RuntimeException`/`show_error()` mismatch this note used to describe
-(9 tests total across the 3 files). Don't "fix" this by just changing assertions again without
-checking whether the controller fix needs merging too — check current status before assuming
-either side is right.
-- Session identity in the harness (`actingAsAdmin()`) must be **string-typed** (`user_type
-  => '1'`), because `User_Controller` guards with `!== (string)$required_val` and a real
-  DB-backed login stores strings. Int-typed session data silently redirects every admin
-  request to the login page (307). This is wired correctly now — don't regress it.
-- **Authenticated Feature tests 307 even with a correct string-typed session? Check the
-  credential fingerprint.** `User_Controller::revalidate_user_type()` (every request for a
-  `user_type` controller) also requires `user_auth_version` and `user_credential` in the
-  session. `user_credential` = `session_credential_fingerprint($user_password_hash)` =
-  `HMAC-SHA256(hash, ENCRYPTION_KEY)`. The harness must put both in the session, read from
-  the real `ip_users` row — see `AbstractTestCase::actingAsAdmin()`; any new `actingAs*()`
-  helper must do the same, otherwise every request redirects to `sessions/login`.
-  Root cause of the long-running mystery (2026-10): the phpunit *parent* computed the
-  fingerprint with `config_item('encryption_key')`, which is **empty** there (CI3's config
-  isn't loaded in the parent), while the request subprocess had the real key — so the two
-  HMACs never matched. `session_credential_fingerprint()` now reads `env('ENCRYPTION_KEY')`
-  first. Diagnose by comparing `strlen(key)` on both sides; do not chase session
-  serialization — the session data arrives intact.
-- **A sudden wall of failures with "MariaDB is unreachable" or mass 307s = the DB died**,
-  not a regression. Do not run a second phpunit (or anything touching the DB) while a
-  full-suite run is in flight in the sandbox; re-run `bash tests/Support/sandbox-mariadb.sh`
-  and retry. (A concurrent run made 3 of 4 `SupplierInvoicesControllerTest` tests look like
-  "missing fixtures" — they were not.)
-
-#### Debugging a Feature-test request subprocess (do it right or you chase ghosts)
-
-`AbstractTestCase::request()` spawns `tests/Integration/bin/request.php` via `proc_open`
-with a **clean env** — only `CI_TEST_REQUEST` is passed, nothing inherited. To reproduce a
-single request exactly as the suite does, match that clean env:
+- `headers_list()` is empty under the CLI SAPI. The harness therefore records redirect targets
+  itself and reads security headers from `$GLOBALS['ip_security_response_headers']`
+  (set in `bootstrap/kernel.php`).
+- Authenticated requests need `user_auth_version` and `user_credential` in the session
+  (`HMAC-SHA256(password_hash, ENCRYPTION_KEY)`). `actingAs()` / `actingAsAdmin()` bind both
+  from the stored `ip_users` row; any new `actingAs*()` helper must do the same, otherwise
+  every request redirects to `sessions/login` (307). Session values are strings
+  (`user_type => '1'`).
+- To reproduce one request by hand, use the same clean environment:
 
 ```bash
 PAYLOAD=$(php -r 'echo base64_encode(json_encode(["method"=>"GET","uri"=>"/clients","query"=>[],"post"=>[],"session"=>["user_id"=>"1","user_type"=>"1","user_email"=>"admin@test.local","user_language"=>"system"],"ajax"=>false]));')
-env -i CI_TEST_REQUEST="$PAYLOAD" php tests/Integration/bin/request.php   # <-- env -i is mandatory
+env -i CI_TEST_REQUEST="$PAYLOAD" php tests/Integration/bin/request.php
 ```
 
-Do **not** run it as `CI_TEST_REQUEST=… php …` from a shell where you exported `DB_*`: that
-inline form leaks the exported vars into the child, and then a confusing chain fires —
-Dotenv's `createImmutable` (in `bootstrap/kernel.php`) **skips** any key already present in
-the OS env, CLI never copies the OS env into `$_ENV` (default `variables_order` has no `E`),
-and kernel's `env()` reads **only** `$_ENV`. Net effect: `env('DB_HOSTNAME')` returns null
-and you get a bogus "Unable to connect to the database" that never happens under the real
-`proc_open` (clean-env) path. The clean-env child instead loads `ipconfig.php` into `$_ENV`
-normally and connects fine.
+### Environment setup
 
-To find *where* a 307 comes from, temporarily add one line to CI3's `redirect()`
-(`vendor/pocketarc/codeigniter/system/helpers/url_helper.php`) dumping `$uri` +
-`debug_backtrace()` to a tmp file, run the clean-env request above, then revert. That is how
-the login-redirect (int session) vs. the app's own `clients/status/active` redirect were
-told apart.
+Two supported setups. Both use MariaDB, the only supported test database.
 
-### Hard-blocked hosts in the sandbox (don't retry these)
-
-The agent proxy does not just fail to authenticate for some hosts — it returns an outright
-**403 policy denial** for `api.github.com` and `codeload.github.com`. Composer **dist**
-(zipball) downloads go through those hosts, so there is no dist fallback at all — `--prefer-source`
-(git through the proxy) is mandatory, never dist. `apt` is likewise blocked, so a missing PHP
-extension like `ext-bcmath` cannot be installed — use `--ignore-platform-req=ext-bcmath`, never
-"install the extension". Do not burn time probing these hosts; they will not start working.
-(Note: plain `https://github.com/…/releases/download/…` **does** work through the outbound HTTPS
-proxy — that's how the PHPStan phar is fetched below. Only the composer api/codeload path is blocked.)
-
-### Static analysis (PHPStan) in the sandbox
-
-Composer cannot install `phpstan/phpstan` here (dist-only phar behind the blocked hosts above),
-but the release phar downloads fine via the HTTPS proxy. `tests/Support/sandbox-bootstrap.sh`
-(see above) fetches it to `.sandbox-tools/phpstan.phar` as part of the same idempotent setup:
+**Docker (ivpldock).** Run phpunit inside the containers, never on the host: the `mariadb`
+hostname only resolves inside the Docker network. The Makefile defaults
+`DOCKER_PROJECT_DIR` to `/var/www/projects/exprmt`; pass the real mount point:
 
 ```bash
-bash tests/Support/sandbox-bootstrap.sh             # no-op if phpstan.phar already present
-php .sandbox-tools/phpstan.phar analyse --memory-limit=1G     # config: phpstan.neon (level 0)
+make docker-test        DOCKER_PROJECT_DIR=/var/www/projects/invoiceplane/ivplv1
+make docker-test-suite  SUITE=Unit DOCKER_PROJECT_DIR=...
+make docker-test-filter FILTER=Session DOCKER_PROJECT_DIR=...
+make docker-phpstan     DOCKER_PROJECT_DIR=...
 ```
 
-CI3 has **no PSR-4 autoloading or classmap**, so PHPStan needs help resolving symbols. The
-committed config already wires this up — do not re-derive it:
-- `bootstrapFiles: tests/Support/phpstan-bootstrap.php` defines the CI path constants and
-  `require`s every `application/helpers/*_helper.php` (so helper functions resolve) plus
-  `tests/Support/phpstan-ci-stubs.php` (side-effect-free signatures for CI *system* functions
-  like `site_url`, `redirect`, `log_message`, `random_string`, …).
-- `scanDirectories` covers `application/modules`, `core`, `libraries`, `third_party/MX` and
-  `vendor/pocketarc/codeigniter/system/core` so HMVC classes/traits and base classes
-  (`CI_Model`, `CI_Controller`, `MX_Controller`) resolve.
-- Remaining genuinely-dynamic CI3 magic is suppressed by `identifier:`-based ignores
-  (`property.notFound`, `method.notFound`, `class.extendsUnknownClass`, `class.nameCase`,
-  `class.noParent`), and the handful of real legacy findings live in `phpstan-baseline.neon`.
+`docker-db-prepare` rebuilds `invoiceplane_test` from `application/modules/setup/sql/*.sql`,
+retrying transient InnoDB deadlocks (`tests/Support/docker-import-sql.sh`) and failing loudly
+if the schema is incomplete. An unseeded or half-built schema shows up as `Expected row in
+[ip_*] not found` or `Table ... doesn't exist` across many tests; re-run the prepare step.
 
-A clean run is **`[OK] No errors`**. If you add code that references a new CI system function,
-add its signature to `phpstan-ci-stubs.php` rather than baselining the `function.notFound`.
+**Sandbox (no Docker).**
+
+```bash
+bash tests/Support/sandbox-mariadb.sh     # install/start MariaDB, build and seed invoiceplane_test, write ipconfig.php
+bash tests/Support/sandbox-bootstrap.sh   # install phpunit and the phpstan phar under .sandbox-tools/
+env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE -u DB_USERNAME -u DB_PASSWORD \
+  php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
+php .sandbox-tools/phpstan.phar analyse --memory-limit=1G
+```
+
+Both scripts are idempotent. In the sandbox, Composer's dist downloads (`api.github.com`,
+`codeload.github.com`) are blocked and `apt` is unavailable, so use `--prefer-source` and
+`--ignore-platform-req=ext-bcmath`; the bootstrap script already does. State lives in the
+gitignored `.sandbox-tools/`.
+
+### One run at a time
+
+phpunit truncates the shared test database. Never start a second run, or touch the database,
+while a full run is in progress. If tests suddenly fail with "MariaDB is unreachable" or a
+wall of 307 redirects, the database was stopped (the sandbox reaps `mysqld_safe`), not the
+code: re-run `sandbox-mariadb.sh` and retry.
+
+### Do not export `DB_*`
+
+The phpunit parent reads its database settings through `env()`, which only reads `$_ENV`.
+With `variables_order=GPCS`, exported variables land in `getenv()` but not `$_ENV`, and
+Dotenv's `createImmutable` then refuses to load the `ipconfig.php` values. `env('DB_USERNAME')`
+becomes `null`, the connection is denied, and every DB-backed test is **skipped** instead of
+failing. A run with zero failures but a large skip count is therefore not green: check the skip
+count. The same applies to CI: keep `DB_*` out of the job-level `env:` of the phpunit step.
+
+### Line coverage (PCOV)
+
+`tests/Support/class-coverage-inventory.md` is only a name search. For executed-line coverage,
+including code that feature tests run in the request subprocess:
+
+```bash
+PCOV_SO=/path/to/pcov.so bash tests/Support/coverage/run.sh [phpunit args]
+```
+
+The `pcov` extension has to be built from `github.com/krakjoe/pcov` with `phpize`; see the
+script header. Output is a ranked list of the least-covered files. Playwright E2E is not
+included, and files that no test loads are estimated. Run it on its own, like the full suite.
+
+### Static analysis
+
+PHPStan runs at level 0 with `phpstan.neon`. CodeIgniter 3 has no autoloader, so
+`tests/Support/phpstan-bootstrap.php` defines the path constants and loads every helper, and
+`tests/Support/phpstan-ci-stubs.php` declares the CI system functions. If code calls a new CI
+system function, add its signature to the stubs file instead of baselining `function.notFound`.
+A clean run reports `[OK] No errors`.
 
 ## Common pitfalls
 
